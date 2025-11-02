@@ -43,7 +43,7 @@ internal sealed partial class PrivateNamedPipeServer : IDisposable
         pipeSecurity.AddAccessRule(new(SecurityIdentifiers.Everyone, PipeAccessRights.FullControl, AccessControlType.Allow));
 
         return NamedPipeServerStreamAcl.Create(
-            PrivateNamedPipe.Name,
+            PrivateNamedPipe.PrivateName,
             PipeDirection.InOut,
             NamedPipeServerStream.MaxAllowedServerInstances,
             PipeTransmissionMode.Byte,

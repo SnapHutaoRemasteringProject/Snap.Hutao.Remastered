@@ -13,7 +13,7 @@ namespace Snap.Hutao.Core.LifeCycle.InterProcess;
 [Service(ServiceLifetime.Singleton)]
 internal sealed partial class PrivateNamedPipeClient : IDisposable
 {
-    private readonly NamedPipeClientStream clientStream = new(".", PrivateNamedPipe.Name, PipeDirection.InOut, PipeOptions.Asynchronous | PipeOptions.WriteThrough);
+    private readonly NamedPipeClientStream clientStream = new(".", PrivateNamedPipe.PrivateName, PipeDirection.InOut, PipeOptions.Asynchronous | PipeOptions.WriteThrough);
 
     public bool TryRedirectActivationTo(AppActivationArguments args)
     {
