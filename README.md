@@ -47,10 +47,10 @@
 ## 📖 简介 / Introduction
 
 **中文**  
-胡桃工具箱是一款以 MIT 协议开源的原神工具箱，专为现代化 Windows 平台设计，旨在改善桌面端玩家的游戏体验。通过将既有的官方资源与开发团队设计的全新功能相结合，提供了一套完整且实用的工具集，且无需依赖任何移动设备。它不对游戏客户端进行任何破坏性修改以确保工具箱的安全性。  
+胡桃工具箱是一款以 MIT 协议开源的原神工具箱，专为现代化 Windows 平台设计，旨在改善桌面端玩家的游戏体验。
 
 **English**  
-Snap Hutao is an open-source Genshin Impact toolkit under MIT license, designed for modern Windows platform to improve the gaming experience for desktop players. By combining existing official resources with new features designed by the development team, it provides a complete and useful set of tools without the need to rely on mobile devices. Snap Hutao does not take any destructive modification to the game client to ensure the security of the toolkit.  
+Snap Hutao is an open-source Genshin Impact toolkit under MIT license, designed for modern Windows platform to improve the gaming experience for desktop players.
 
 ---
 
@@ -84,13 +84,6 @@ Snap Hutao uses [Crowdin](https://translate.hut.ao/) as a client text translatio
 
 ---
 
-## 🤝 社区 / Community
-
-- 💬 [Discord](https://discord.gg/CcH5XtDtvR)  
-- 💬 [QQ 群: 567908135](https://qm.qq.com/q/WJKykrY9W)  
-
----
-
 ## 🛠️ 贡献 / Contribute
 
 - [向我们提交 PR / Make Pull Requests](https://hut.ao/development/contribute.html)  
@@ -117,18 +110,10 @@ Snap Hutao uses [Crowdin](https://translate.hut.ao/) as a client text translatio
 - [CommunityToolkit/Windows](https://github.com/CommunityToolkit/Windows)  
 - [dotnet/efcore](https://github.com/dotnet/efcore)  
 - [dotnet/runtime](https://github.com/dotnet/runtime)  
-- [DotNetAnalyzers/StyleCopAnalyzers](https://github.com/DotNetAnalyzers/StyleCopAnalyzers)  
 - [microsoft/vs-validation](https://github.com/microsoft/vs-validation)  
 - [microsoft/WindowsAppSDK](https://github.com/microsoft/WindowsAppSDK)  
 - [microsoft/microsoft-ui-xaml](https://github.com/microsoft/microsoft-ui-xaml)  
 - [quartznet/quartznet](https://github.com/quartznet/quartznet)  
-
----
-
-## 🔗 支撑项目 / Supporter Project
-
-- [Snap.Hutao.Server](https://github.com/DGP-Studio/Snap.Hutao.Server)  
-- [Snap.Metadata](https://github.com/DGP-Studio/Snap.Metadata)  
 
 ---
 
