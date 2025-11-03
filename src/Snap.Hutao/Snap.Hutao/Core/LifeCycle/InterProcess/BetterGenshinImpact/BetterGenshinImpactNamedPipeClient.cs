@@ -36,7 +36,7 @@ internal sealed partial class BetterGenshinImpactNamedPipeClient : IDisposable
                 Kind = PipeRequestKind.GetContractVersion,
                 Data = default,
             };
-            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.Version, PipePacketType.Request, PipePacketCommand.SnapHutaoToBetterGenshinImpactRequest, getContractVersionRequest);
+            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.PrivateVersion, PipePacketType.Request, PipePacketCommand.SnapHutaoToBetterGenshinImpactRequest, getContractVersionRequest);
             clientStream.ReadPacket(out _, out PipeResponse<JsonElement>? response);
 
             if (response is { Kind: PipeResponseKind.Number })
@@ -51,7 +51,7 @@ internal sealed partial class BetterGenshinImpactNamedPipeClient : IDisposable
         }
         finally
         {
-            clientStream.WritePacket(PrivateNamedPipe.Version, PipePacketType.SessionTermination, PipePacketCommand.None);
+            clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.SessionTermination, PipePacketCommand.None);
             clientStream.Flush();
         }
     }
@@ -71,14 +71,14 @@ internal sealed partial class BetterGenshinImpactNamedPipeClient : IDisposable
         try
         {
             PipeRequest<long> startCaptureRequest = new() { Kind = PipeRequestKind.StartCapture, Data = hwnd };
-            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.Version, PipePacketType.Request, PipePacketCommand.SnapHutaoToBetterGenshinImpactRequest, startCaptureRequest);
+            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.PrivateVersion, PipePacketType.Request, PipePacketCommand.SnapHutaoToBetterGenshinImpactRequest, startCaptureRequest);
             clientStream.ReadPacket(out _, out PipeResponse<JsonElement>? response);
 
             return response is { Kind: PipeResponseKind.Boolean } && response.Data.GetBoolean();
         }
         finally
         {
-            clientStream.WritePacket(PrivateNamedPipe.Version, PipePacketType.SessionTermination, PipePacketCommand.None);
+            clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.SessionTermination, PipePacketCommand.None);
             clientStream.Flush();
         }
     }
@@ -102,14 +102,14 @@ internal sealed partial class BetterGenshinImpactNamedPipeClient : IDisposable
                 Kind = PipeRequestKind.StopCapture,
                 Data = default,
             };
-            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.Version, PipePacketType.Request, PipePacketCommand.SnapHutaoToBetterGenshinImpactRequest, stopCaptureRequest);
+            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.PrivateVersion, PipePacketType.Request, PipePacketCommand.SnapHutaoToBetterGenshinImpactRequest, stopCaptureRequest);
             clientStream.ReadPacket(out _, out PipeResponse<JsonElement>? response);
 
             return response is { Kind: PipeResponseKind.Boolean } && response.Data.GetBoolean();
         }
         finally
         {
-            clientStream.WritePacket(PrivateNamedPipe.Version, PipePacketType.SessionTermination, PipePacketCommand.None);
+            clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.SessionTermination, PipePacketCommand.None);
             clientStream.Flush();
         }
     }
@@ -133,14 +133,14 @@ internal sealed partial class BetterGenshinImpactNamedPipeClient : IDisposable
                 Kind = PipeRequestKind.EndSwitchToNextGameAccount,
                 Data = default,
             };
-            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.Version, PipePacketType.Request, PipePacketCommand.SnapHutaoToBetterGenshinImpactRequest, endSwitchToNextGameAccountRequest);
+            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.PrivateVersion, PipePacketType.Request, PipePacketCommand.SnapHutaoToBetterGenshinImpactRequest, endSwitchToNextGameAccountRequest);
             clientStream.ReadPacket(out _, out PipeResponse<JsonElement>? response);
 
             return response is { Kind: PipeResponseKind.Boolean } && response.Data.GetBoolean();
         }
         finally
         {
-            clientStream.WritePacket(PrivateNamedPipe.Version, PipePacketType.SessionTermination, PipePacketCommand.None);
+            clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.SessionTermination, PipePacketCommand.None);
             clientStream.Flush();
         }
     }
@@ -166,7 +166,7 @@ internal sealed partial class BetterGenshinImpactNamedPipeClient : IDisposable
                 Kind = PipeRequestKind.QueryTaskArray,
                 Data = default,
             };
-            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.Version, PipePacketType.Request, PipePacketCommand.SnapHutaoToBetterGenshinImpactRequest, queryTaskArrayRequest);
+            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.PrivateVersion, PipePacketType.Request, PipePacketCommand.SnapHutaoToBetterGenshinImpactRequest, queryTaskArrayRequest);
             clientStream.ReadPacket(out _, out PipeResponse<JsonElement>? response);
 
             if (response is { Kind: PipeResponseKind.Array })
@@ -181,7 +181,7 @@ internal sealed partial class BetterGenshinImpactNamedPipeClient : IDisposable
         }
         finally
         {
-            clientStream.WritePacket(PrivateNamedPipe.Version, PipePacketType.SessionTermination, PipePacketCommand.None);
+            clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.SessionTermination, PipePacketCommand.None);
             clientStream.Flush();
         }
     }
@@ -205,14 +205,14 @@ internal sealed partial class BetterGenshinImpactNamedPipeClient : IDisposable
                 Kind = PipeRequestKind.StartTask,
                 Data = id,
             };
-            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.Version, PipePacketType.Request, PipePacketCommand.SnapHutaoToBetterGenshinImpactRequest, startTaskRequest);
+            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.PrivateVersion, PipePacketType.Request, PipePacketCommand.SnapHutaoToBetterGenshinImpactRequest, startTaskRequest);
             clientStream.ReadPacket(out _, out PipeResponse<JsonElement>? response);
 
             return response is { Kind: PipeResponseKind.Boolean } && response.Data.GetBoolean();
         }
         finally
         {
-            clientStream.WritePacket(PrivateNamedPipe.Version, PipePacketType.SessionTermination, PipePacketCommand.None);
+            clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.SessionTermination, PipePacketCommand.None);
             clientStream.Flush();
         }
     }

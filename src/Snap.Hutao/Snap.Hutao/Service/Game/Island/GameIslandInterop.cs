@@ -4,7 +4,9 @@
 using Snap.Hutao.Core;
 using Snap.Hutao.Core.Diagnostics;
 using Snap.Hutao.Core.ExceptionService;
+using Snap.Hutao.Core.LifeCycle.InterProcess.FullTrust;
 using Snap.Hutao.Core.Setting;
+using Snap.Hutao.Factory.Process;
 using Snap.Hutao.Service.Feature;
 using Snap.Hutao.Service.Game.FileSystem;
 using Snap.Hutao.Service.Game.Launching.Context;
@@ -88,7 +90,12 @@ internal sealed class GameIslandInterop : IGameIslandInterop
                 InitializeIslandEnvironment(handle, in offsets, context.LaunchOptions);
                 if (!resume)
                 {
-                    DllInjectionUtilities.InjectUsingRemoteThread(DataFolderIslandPath, context.Process.Id);
+                    if (context.Process is not FullTrustProcess fullTrustProcess)
+                    {
+                        throw HutaoException.InvalidOperation("Process is not full trust");
+                    }
+
+                    fullTrustProcess.LoadLibrary(FullTrustLoadLibraryRequest.Create(DataFolderIslandPath));
                 }
 
                 await PeriodicUpdateIslandEnvironmentAsync(context, handle, token).ConfigureAwait(false);

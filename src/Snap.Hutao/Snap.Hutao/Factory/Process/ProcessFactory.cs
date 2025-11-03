@@ -1,7 +1,9 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Core;
 using Snap.Hutao.Core.Diagnostics;
+using Snap.Hutao.Core.LifeCycle.InterProcess.FullTrust;
 using Snap.Hutao.Win32;
 using Snap.Hutao.Win32.Foundation;
 
@@ -137,6 +139,25 @@ internal sealed class ProcessFactory
                     return new NativeProcess(HutaoNative.Instance.MakeProcess(startInfo));
                 }
             }
+        }
+    }
+
+    public static unsafe IProcess CreateFullTrustSuspended(string arguments, string fileName, string workingDirectory)
+    {
+        string fullTrustFilePath = HutaoRuntime.GetDataDirectoryFile("Snap.Hutao.FullTrust.exe");
+        InstalledLocation.CopyFileFromApplicationUri("ms-appx:///Snap.Hutao.FullTrust.exe", fullTrustFilePath);
+        using (IProcess trust = CreateUsingShellExecuteRunAs(string.Empty, fullTrustFilePath, HutaoRuntime.DataDirectory))
+        {
+            trust.Start();
+            FullTrustProcessStartInfoRequest request = new()
+            {
+                ApplicationName = fileName,
+                CommandLine = arguments,
+                CreationFlags = Win32.System.Threading.PROCESS_CREATION_FLAGS.CREATE_SUSPENDED,
+                CurrentDirectory = workingDirectory,
+            };
+
+            return new FullTrustProcess(request);
         }
     }
 

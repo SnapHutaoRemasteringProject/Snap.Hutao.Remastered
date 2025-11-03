@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Core.ExceptionService;
@@ -73,6 +74,14 @@ internal sealed class HutaoException : Exception
     public static InvalidOperationException InvalidOperation(string message, Exception? innerException = default)
     {
         throw new InvalidOperationException(message, innerException);
+    }
+
+    [StackTraceHidden]
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static IOException IO(string message, Exception? innerException = default)
+    {
+        throw new IOException(message, innerException);
     }
 
     [StackTraceHidden]

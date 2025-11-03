@@ -2,40 +2,71 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Core.Diagnostics;
+using Snap.Hutao.Core.ExceptionService;
+using Snap.Hutao.Core.LifeCycle.InterProcess.FullTrust;
 using Snap.Hutao.Win32.Foundation;
 
 namespace Snap.Hutao.Factory.Process;
 
-internal sealed class FullTrustProcess : IProcess
+internal sealed partial class FullTrustProcess : IProcess
 {
-    public int Id { get; }
-    public nint Handle { get; }
-    public HWND MainWindowHandle { get; }
-    public bool HasExited { get; }
-    public int ExitCode { get; }
+    private readonly FullTrustNamedPipeClient client = new();
+    private global::System.Diagnostics.Process? process;
+
+    public FullTrustProcess(FullTrustProcessStartInfoRequest startInfo)
+    {
+        client.Create(startInfo);
+    }
+
+    public int Id { get => process?.Id ?? throw HutaoException.InvalidOperation("Process not created"); }
+
+    public nint Handle { get => process?.Handle ?? throw HutaoException.InvalidOperation("Process not created"); }
+
+    public HWND MainWindowHandle { get => process?.MainWindowHandle ?? throw HutaoException.InvalidOperation("Process not created"); }
+
+    public bool HasExited { get => process?.HasExited ?? throw HutaoException.InvalidOperation("Process not created"); }
+
+    public int ExitCode { get => process?.ExitCode ?? throw HutaoException.InvalidOperation("Process not created"); }
 
     public void Dispose()
     {
-        throw new NotImplementedException();
+        client.Dispose();
+        process?.Dispose();
     }
 
     public void Kill()
     {
-        throw new NotImplementedException();
+        if (process is null)
+        {
+            throw HutaoException.InvalidOperation("Process not created");
+        }
+
+        process.Kill();
     }
 
     public void ResumeMainThread()
     {
-        throw new NotImplementedException();
+        client.ResumeMainThread();
     }
 
     public void Start()
     {
-        throw new NotImplementedException();
+        uint processId = client.StartProcess();
+        process = global::System.Diagnostics.Process.GetProcessById((int)processId);
     }
 
     public void WaitForExit()
     {
-        throw new NotImplementedException();
+        if (process is null)
+        {
+            throw HutaoException.InvalidOperation("Process not created");
+        }
+
+        process.WaitForExit();
+    }
+
+    internal void LoadLibrary(FullTrustLoadLibraryRequest request)
+    {
+        client.LoadLibrary(request);
     }
 }

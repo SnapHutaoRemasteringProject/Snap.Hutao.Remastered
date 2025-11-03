@@ -24,7 +24,7 @@ internal sealed partial class PrivateNamedPipeClient : IDisposable
 
         try
         {
-            clientStream.WritePacket(PrivateNamedPipe.Version, PipePacketType.Request, PipePacketCommand.RequestElevationStatus);
+            clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.Request, PipePacketCommand.RequestElevationStatus);
             clientStream.ReadPacket(out PipePacketHeader _, out ElevationStatusResponse? response);
             ArgumentNullException.ThrowIfNull(response);
 
@@ -32,7 +32,7 @@ internal sealed partial class PrivateNamedPipeClient : IDisposable
             if (HutaoRuntime.IsProcessElevated && !response.IsElevated)
             {
                 // Notify previous instance to exit
-                clientStream.WritePacket(PrivateNamedPipe.Version, PipePacketType.SessionTermination, PipePacketCommand.Exit);
+                clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.SessionTermination, PipePacketCommand.Exit);
                 clientStream.Flush();
                 WaitPreviousProcessExit(response);
 
@@ -42,8 +42,8 @@ internal sealed partial class PrivateNamedPipeClient : IDisposable
 
             // Redirect to previous instance
             HutaoActivationArguments hutaoArgs = HutaoActivationArguments.FromAppActivationArguments(args, isRedirected: true);
-            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.Version, PipePacketType.Request, PipePacketCommand.RedirectActivation, hutaoArgs);
-            clientStream.WritePacket(PrivateNamedPipe.Version, PipePacketType.SessionTermination, PipePacketCommand.None);
+            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.PrivateVersion, PipePacketType.Request, PipePacketCommand.RedirectActivation, hutaoArgs);
+            clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.SessionTermination, PipePacketCommand.None);
             clientStream.Flush();
 
             return true;
