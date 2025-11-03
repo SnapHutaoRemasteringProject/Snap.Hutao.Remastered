@@ -8,7 +8,6 @@ using Snap.Hutao.Core.Security.Principal;
 using Snap.Hutao.Win32;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using WinRT;
 

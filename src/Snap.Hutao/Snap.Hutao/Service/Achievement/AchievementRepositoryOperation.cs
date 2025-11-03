@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using Microsoft.EntityFrameworkCore;
-using Snap.Hutao.Core.Collection;
 using Snap.Hutao.Core.Database;
 using Snap.Hutao.Core.ExceptionService;
 using Snap.Hutao.Model.Entity.Database;
