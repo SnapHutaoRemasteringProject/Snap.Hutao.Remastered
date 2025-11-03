@@ -482,13 +482,13 @@
                                                                                         Height="20"
                                                                                         ShowAsMonochrome="False"
                                                                                         UriSource="ms-appx:///Resource/Icon/UI_Icon_RoleCombat_Reward_Tarot_04.png"
-                                                                                        Visibility="{Binding IsGetMedal, Converter={StaticResource Int32ToVisibilityConverter}}"/>
+                                                                                        Visibility="{Binding IsGetMedal, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                                                                     <BitmapIcon
                                                                                         Width="20"
                                                                                         Height="20"
                                                                                         Foreground="#FF808080"
                                                                                         UriSource="ms-appx:///Resource/Icon/UI_Icon_RoleCombat_Reward_Tarot_05.png"
-                                                                                        Visibility="{Binding IsGetMedal, Converter={StaticResource Int32ToVisibilityRevertConverter}}"/>
+                                                                                        Visibility="{Binding IsGetMedal, Converter={StaticResource BoolToVisibilityRevertConverter}}"/>
                                                                                 </Grid>
                                                                                 <Grid Visibility="{Binding IsTarot, Converter={StaticResource BoolToVisibilityRevertConverter}}">
                                                                                     <BitmapIcon
@@ -496,13 +496,13 @@
                                                                                         Height="20"
                                                                                         ShowAsMonochrome="False"
                                                                                         UriSource="ms-appx:///Resource/Icon/UI_Icon_Tower_Star1.png"
-                                                                                        Visibility="{Binding IsGetMedal, Converter={StaticResource Int32ToVisibilityConverter}}"/>
+                                                                                        Visibility="{Binding IsGetMedal, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                                                                     <BitmapIcon
                                                                                         Width="20"
                                                                                         Height="20"
                                                                                         Foreground="#FF808080"
                                                                                         UriSource="ms-appx:///Resource/Icon/UI_Icon_Tower_Star2.png"
-                                                                                        Visibility="{Binding IsGetMedal, Converter={StaticResource Int32ToVisibilityRevertConverter}}"/>
+                                                                                        Visibility="{Binding IsGetMedal, Converter={StaticResource BoolToVisibilityRevertConverter}}"/>
                                                                                 </Grid>
                                                                             </Grid>
                                                                         </DataTemplate>
