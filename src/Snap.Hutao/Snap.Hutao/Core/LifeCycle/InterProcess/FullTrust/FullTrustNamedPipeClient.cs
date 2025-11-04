@@ -52,8 +52,13 @@ internal sealed partial class FullTrustNamedPipeClient : IDisposable
         lock (syncRoot)
         {
             clientStream.WritePacketWithJsonContent(PrivateNamedPipe.FullTrustVersion, FullTrustPipePacketType.Request, FullTrustPipePacketCommand.LoadLibrary, request);
-            clientStream.ReadPacket(out FullTrustPipePacketHeader header);
+            clientStream.ReadPacket(out FullTrustPipePacketHeader header, out FullTrustLoadLibraryResult? result);
             HutaoException.ThrowIf(header is not { Type: FullTrustPipePacketType.Response, Command: FullTrustPipePacketCommand.LoadLibrary }, "Unexpected pipe result");
+
+            if (result is null || !result.Succeeded)
+            {
+                throw HutaoException.Throw($"Failed to load library on full trust process: [{result?.ErrorMessage}]");
+            }
         }
     }
 

@@ -3,9 +3,4 @@
 
 namespace Snap.Hutao.Core.LifeCycle.InterProcess.FullTrust;
 
-internal abstract class FullTrustResult
-{
-    public bool Succeeded { get; set; }
-
-    public string? ErrorMessage { get; set; }
-}
+internal sealed class FullTrustLoadLibraryResult : FullTrustResult;
