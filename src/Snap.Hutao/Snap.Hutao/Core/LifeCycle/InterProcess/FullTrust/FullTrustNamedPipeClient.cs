@@ -23,7 +23,7 @@ internal sealed partial class FullTrustNamedPipeClient : IDisposable
     {
         lock (syncRoot)
         {
-            clientStream.Connect();
+            EnsureConnected();
             clientStream.WritePacketWithJsonContent(PrivateNamedPipe.FullTrustVersion, FullTrustPipePacketType.Request, FullTrustPipePacketCommand.Create, request);
             clientStream.ReadPacket(out FullTrustPipePacketHeader header);
             HutaoException.ThrowIf(header is not { Type: FullTrustPipePacketType.Response, Command: FullTrustPipePacketCommand.Create }, "Unexpected pipe result");
@@ -34,6 +34,7 @@ internal sealed partial class FullTrustNamedPipeClient : IDisposable
     {
         lock (syncRoot)
         {
+            EnsureConnected();
             clientStream.WritePacket(PrivateNamedPipe.FullTrustVersion, FullTrustPipePacketType.Request, FullTrustPipePacketCommand.StartProcess);
             clientStream.ReadPacket(out FullTrustPipePacketHeader header, out FullTrustStartProcessResult? result);
             HutaoException.ThrowIf(header is not { Type: FullTrustPipePacketType.Response, Command: FullTrustPipePacketCommand.StartProcess }, "Unexpected pipe result");
@@ -51,6 +52,7 @@ internal sealed partial class FullTrustNamedPipeClient : IDisposable
     {
         lock (syncRoot)
         {
+            EnsureConnected();
             clientStream.WritePacketWithJsonContent(PrivateNamedPipe.FullTrustVersion, FullTrustPipePacketType.Request, FullTrustPipePacketCommand.LoadLibrary, request);
             clientStream.ReadPacket(out FullTrustPipePacketHeader header, out FullTrustLoadLibraryResult? result);
             HutaoException.ThrowIf(header is not { Type: FullTrustPipePacketType.Response, Command: FullTrustPipePacketCommand.LoadLibrary }, "Unexpected pipe result");
@@ -66,6 +68,7 @@ internal sealed partial class FullTrustNamedPipeClient : IDisposable
     {
         lock (syncRoot)
         {
+            EnsureConnected();
             clientStream.WritePacket(PrivateNamedPipe.FullTrustVersion, FullTrustPipePacketType.Request, FullTrustPipePacketCommand.ResumeMainThread);
             clientStream.ReadPacket(out FullTrustPipePacketHeader header, out FullTrustResumeMainThreadResult? result);
             HutaoException.ThrowIf(header is not { Type: FullTrustPipePacketType.Response, Command: FullTrustPipePacketCommand.ResumeMainThread }, "Unexpected pipe result");
@@ -76,6 +79,14 @@ internal sealed partial class FullTrustNamedPipeClient : IDisposable
             }
 
             clientStream.WritePacket(PrivateNamedPipe.FullTrustVersion, FullTrustPipePacketType.SessionTermination, FullTrustPipePacketCommand.None);
+        }
+    }
+
+    private void EnsureConnected()
+    {
+        if (!clientStream.IsConnected)
+        {
+            clientStream.Connect();
         }
     }
 }
