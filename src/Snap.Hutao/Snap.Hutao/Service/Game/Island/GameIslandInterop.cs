@@ -7,8 +7,6 @@ using Snap.Hutao.Core.ExceptionService;
 using Snap.Hutao.Core.LifeCycle.InterProcess.FullTrust;
 using Snap.Hutao.Core.Setting;
 using Snap.Hutao.Factory.Process;
-using Snap.Hutao.Service.Feature;
-using Snap.Hutao.Service.Game.FileSystem;
 using Snap.Hutao.Service.Game.Launching.Context;
 using Snap.Hutao.Web.Hutao;
 using Snap.Hutao.Web.Hutao.Response;
@@ -26,7 +24,6 @@ internal sealed class GameIslandInterop : IGameIslandInterop
     private static readonly string DataFolderIslandPath = HutaoRuntime.GetDataDirectoryFile("Snap.Hutao.UnlockerIsland.dll");
     private readonly bool resume;
 
-    private IslandFunctionOffsets offsets;
     private int accumulatedBadStateCount;
     private uint previousUid;
 
@@ -35,30 +32,14 @@ internal sealed class GameIslandInterop : IGameIslandInterop
         this.resume = resume;
     }
 
-    public async ValueTask BeforeAsync(BeforeLaunchExecutionContext context, CancellationToken token = default)
+    public ValueTask BeforeAsync(BeforeLaunchExecutionContext context, CancellationToken token = default)
     {
-        if (!context.FileSystem.TryGetGameVersion(out string? gameVersion))
-        {
-            throw HutaoException.NotSupported(SH.ServiceGameIslandFileSystemGetGameVersionFailed);
-        }
-
-        IFeatureService featureService = context.ServiceProvider.GetRequiredService<IFeatureService>();
-        if (await featureService.GetIslandFeatureAsync(gameVersion).ConfigureAwait(false) is not { } feature)
-        {
-            throw HutaoException.NotSupported(SH.ServiceGameIslandFeature404);
-        }
-
-        if (feature.Message is { } message)
-        {
-            throw HutaoException.NotSupported(message);
-        }
-
-        offsets = context.TargetScheme.IsOversea ? feature.Oversea : feature.Chinese;
-
         if (!resume && /* CopyDll */ !LocalSetting.Get(SettingKeys.PreventCopyIslandDll, false))
         {
             InstalledLocation.CopyFileFromApplicationUri("ms-appx:///Snap.Hutao.UnlockerIsland.dll", DataFolderIslandPath);
         }
+
+        return ValueTask.CompletedTask;
     }
 
     public async ValueTask WaitForExitAsync(LaunchExecutionContext context, CancellationToken token = default)
@@ -87,7 +68,7 @@ internal sealed class GameIslandInterop : IGameIslandInterop
             using (MemoryMappedViewAccessor accessor = file.CreateViewAccessor())
             {
                 nint handle = accessor.SafeMemoryMappedViewHandle.DangerousGetHandle();
-                InitializeIslandEnvironment(handle, in offsets, context.LaunchOptions);
+                InitializeIslandEnvironment(handle, context.LaunchOptions, context.IsOversea);
                 if (!resume)
                 {
                     if (context.Process is not FullTrustProcess fullTrustProcess)
@@ -96,6 +77,7 @@ internal sealed class GameIslandInterop : IGameIslandInterop
                     }
 
                     fullTrustProcess.LoadLibrary(FullTrustLoadLibraryRequest.Create(DataFolderIslandPath));
+                    fullTrustProcess.ResumeMainThread();
                 }
 
                 await PeriodicUpdateIslandEnvironmentAsync(context, handle, token).ConfigureAwait(false);
@@ -103,11 +85,11 @@ internal sealed class GameIslandInterop : IGameIslandInterop
         }
     }
 
-    private static unsafe void InitializeIslandEnvironment(nint handle, ref readonly IslandFunctionOffsets offsets, LaunchOptions options)
+    private static unsafe void InitializeIslandEnvironment(nint handle, LaunchOptions options, bool isOversea)
     {
         IslandEnvironment* pIslandEnvironment = (IslandEnvironment*)handle;
 
-        pIslandEnvironment->FunctionOffsets = offsets;
+        pIslandEnvironment->IsOversea = isOversea;
 
         if (LocalSetting.Get(SettingKeys.LaunchForceUsingTouchScreenWhenIntegratedTouchPresent, false))
         {

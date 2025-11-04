@@ -24,11 +24,6 @@ internal sealed partial class FeatureService : IFeatureService
     [GeneratedConstructor]
     public partial FeatureService(IServiceProvider serviceProvider);
 
-    public ValueTask<IslandFeature2?> GetIslandFeatureAsync(string tag)
-    {
-        return GetTaggedFeatureAsync<IslandFeature2>(tag, TimeSpan.FromMinutes(5));
-    }
-
     public ValueTask<AchievementFieldId?> GetAchievementFieldIdAsync(string tag)
     {
         return GetTaggedFeatureAsync<AchievementFieldId>(tag, TimeSpan.FromHours(6));

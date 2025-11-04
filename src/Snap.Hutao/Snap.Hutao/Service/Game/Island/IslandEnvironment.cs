@@ -10,7 +10,7 @@ internal struct IslandEnvironment
 #pragma warning disable CS0649
     public IslandEnvironmentView View;
 #pragma warning restore CS0649
-    public IslandFunctionOffsets FunctionOffsets;
+    public BOOL IsOversea;
 
     public BOOL EnableSetFieldOfView;
     public float FieldOfView;
