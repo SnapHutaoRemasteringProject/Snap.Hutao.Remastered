@@ -3,7 +3,6 @@
 
 using Microsoft.Extensions.Caching.Memory;
 using Snap.Hutao.Core.DependencyInjection.Annotation.HttpClient;
-using Snap.Hutao.Service.Game.Island;
 using Snap.Hutao.Service.Yae.Achievement;
 using Snap.Hutao.Web.Endpoint.Hutao;
 using Snap.Hutao.Web.Request.Builder;

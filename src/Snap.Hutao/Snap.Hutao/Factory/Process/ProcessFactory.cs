@@ -142,23 +142,21 @@ internal sealed class ProcessFactory
         }
     }
 
-    public static unsafe IProcess CreateFullTrustSuspended(string arguments, string fileName, string workingDirectory)
+    public static IProcess CreateUsingFullTrustSuspended(string arguments, string fileName, string workingDirectory)
     {
         string fullTrustFilePath = HutaoRuntime.GetDataDirectoryFile("Snap.Hutao.FullTrust.exe");
-        InstalledLocation.CopyFileFromApplicationUri("ms-appx:///Snap.Hutao.FullTrust.exe", fullTrustFilePath);
-        using (IProcess trust = CreateUsingShellExecuteRunAs(string.Empty, fullTrustFilePath, HutaoRuntime.DataDirectory))
-        {
-            trust.Start();
-            FullTrustProcessStartInfoRequest request = new()
-            {
-                ApplicationName = fileName,
-                CommandLine = arguments,
-                CreationFlags = Win32.System.Threading.PROCESS_CREATION_FLAGS.CREATE_SUSPENDED,
-                CurrentDirectory = workingDirectory,
-            };
+        InstalledLocation.CopyFileFromApplicationUri("ms-appx:///Resource/Snap.Hutao.FullTrust.exe", fullTrustFilePath);
+        StartUsingShellExecuteRunAs(fullTrustFilePath);
 
-            return new FullTrustProcess(request);
-        }
+        FullTrustProcessStartInfoRequest request = new()
+        {
+            ApplicationName = fileName,
+            CommandLine = arguments,
+            CreationFlags = Win32.System.Threading.PROCESS_CREATION_FLAGS.CREATE_SUSPENDED,
+            CurrentDirectory = workingDirectory,
+        };
+
+        return new FullTrustProcess(request);
     }
 
     public static void StartUsingShellExecute(string arguments, string fileName)
