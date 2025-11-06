@@ -5,7 +5,7 @@ namespace Snap.Hutao.Web.Endpoint.Hutao;
 
 internal interface IHomaRedeemCodeEndpoints : IHomaRootAccess
 {
-    public string RedeemCodeUse()
+    string RedeemCodeUse()
     {
         return $"{Root}/Redeem/Use";
     }

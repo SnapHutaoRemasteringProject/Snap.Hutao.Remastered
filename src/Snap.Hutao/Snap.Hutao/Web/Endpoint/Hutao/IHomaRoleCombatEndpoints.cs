@@ -5,12 +5,12 @@ namespace Snap.Hutao.Web.Endpoint.Hutao;
 
 internal interface IHomaRoleCombatEndpoints : IHomaRootAccess
 {
-    public string RoleCombatRecordUpload()
+    string RoleCombatRecordUpload()
     {
         return $"{Root}/RoleCombat/Upload";
     }
 
-    public string RoleCombatStatistics(bool last = false)
+    string RoleCombatStatistics(bool last = false)
     {
         return $"{Root}/RoleCombat/Statistics?Last={last}";
     }

@@ -6,11 +6,9 @@ namespace Snap.Hutao.Web.Endpoint.Hutao;
 internal interface IHomaEndpoints :
     IHomaGachaLogEndpoints,
     IHomaServiceEndpoints,
-    IHomaLogEndpoints,
     IHomaPassportEndpoints,
     IHomaSpiralAbyssEndpoints,
     IHomaRoleCombatEndpoints,
-    IHomaDistributionEndpoints,
     IHomaRedeemCodeEndpoints
 {
     public string HomaWebsite(string path)

@@ -9,16 +9,17 @@ internal interface IInfrastructureEndpoints :
     IInfrastructureFeatureEndpoints,
     IInfrastructureMetadataEndpoints,
     IInfrastructurePatchEndpoints,
+    IInfrastructureGitRepositoryEndpoints,
     IInfrastructureWallpaperEndpoints,
     IInfrastructureRootAccess,
     IInfrastructureManagementEndpoints
 {
-    public string Ip()
+    string Ip()
     {
         return $"{Root}/ip";
     }
 
-    public string IpString()
+    string IpString()
     {
         return $"{Root}/ips";
     }

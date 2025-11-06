@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Win32;
 using Microsoft.Windows.AppNotifications;
@@ -87,6 +88,13 @@ internal static class HutaoRuntime
     public static ValueDirectory GetDataScreenshotDirectory()
     {
         string directory = Path.Combine(DataDirectory, "Screenshot");
+        Directory.CreateDirectory(directory);
+        return string.Intern(directory);
+    }
+
+    public static ValueDirectory GetDataRepositoryDirectory()
+    {
+        string directory = Path.Combine(DataDirectory, "Repository");
         Directory.CreateDirectory(directory);
         return string.Intern(directory);
     }

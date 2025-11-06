@@ -7,7 +7,7 @@ namespace Snap.Hutao.Web.Endpoint.Hutao;
 
 internal interface IInfrastructureStrategyEndpoints : IInfrastructureRootAccess
 {
-    public string StrategyAll()
+    string StrategyAll()
     {
         return $"{Root}/strategy/all";
     }

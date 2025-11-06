@@ -68,7 +68,7 @@
                                             Header="{shuxm:ResourceString Name=ViewPageSettingDeviceIdHeader}"
                                             IsClickEnabled="True"/>
                                         <cwcont:SettingsCard Description="{Binding IPInformation}" Header="{shuxm:ResourceString Name=ViewPageSettingDeviceIpHeader}"/>
-                                        <cwcont:SettingsCard Description="{Binding DynamicHttpProxy.CurrentProxyUri}" Header="{shuxm:ResourceString Name=ViewPageFeedbackCurrentProxyHeader}"/>
+                                        <cwcont:SettingsCard Description="{Binding DynamicHttpProxy.DisplayProxyUri}" Header="{shuxm:ResourceString Name=ViewPageFeedbackCurrentProxyHeader}"/>
                                         <cwcont:SettingsCard
                                             Command="{Binding EnableLoopbackCommand}"
                                             Header="{shuxm:ResourceString Name=ViewPageFeedbackEnableLoopbackHeader}"

@@ -6,6 +6,7 @@ using Snap.Hutao.Core.DependencyInjection.Annotation.HttpClient;
 using Snap.Hutao.Core.Diagnostics;
 using Snap.Hutao.Core.ExceptionService;
 using Snap.Hutao.Core.IO.Hashing;
+using Snap.Hutao.Service.Git;
 using Snap.Hutao.Service.Notification;
 using Snap.Hutao.Web.Request.Builder;
 using Snap.Hutao.Web.Request.Builder.Abstraction;
@@ -30,6 +31,7 @@ internal sealed partial class MetadataService : IMetadataService
     private readonly TaskCompletionSource initializeCompletionSource = new();
 
     private readonly IHttpRequestMessageBuilderFactory requestBuilderFactory;
+    private readonly IGitRepositoryService gitRepositoryService;
     private readonly IHttpClientFactory httpClientFactory;
     private readonly ILogger<MetadataService> logger;
     private readonly MetadataOptions metadataOptions;
@@ -59,6 +61,7 @@ internal sealed partial class MetadataService : IMetadataService
 
         using (ValueStopwatch.MeasureExecution(logger))
         {
+            await gitRepositoryService.EnsureRepositoryAsync("Snap.Metadata").ConfigureAwait(false);
             isInitialized = await DownloadMetadataDescriptionFileAndValidateAsync(token).ConfigureAwait(false);
             initializeCompletionSource.TrySetResult();
         }
