@@ -7,5 +7,5 @@ internal enum GitRepositoryType
 {
     None,
     Public,
-    Private
+    Private,
 }

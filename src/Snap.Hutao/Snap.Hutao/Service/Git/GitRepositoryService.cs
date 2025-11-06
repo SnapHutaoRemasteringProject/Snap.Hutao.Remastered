@@ -36,7 +36,7 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
 
         string directory = Path.GetFullPath(Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), name));
 
-        GitRepository info = infos!.First();
+        GitRepository info = infos.Single();
 
         FetchOptions fetchOptions = new()
         {
