@@ -43,6 +43,7 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
             Depth = 1,
             ProxyOptions =
             {
+                ProxyType = ProxyType.Specified,
                 Url = HttpProxyUsingSystemProxy.Instance.CurrentProxyUri,
             },
             CredentialsProvider = (url, user, types) => string.IsNullOrEmpty(info.Token)
