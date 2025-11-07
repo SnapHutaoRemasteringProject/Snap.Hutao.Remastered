@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Model.Metadata;
 
-internal sealed class LevelParameters<TLevel, TParam>
+internal class LevelParameters<TLevel, TParam>
 {
     public LevelParameters(TLevel level, ImmutableArray<TParam> parameters)
     {

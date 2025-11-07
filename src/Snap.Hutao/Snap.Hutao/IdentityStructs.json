@@ -96,6 +96,10 @@
     "Documentation": "突破等级 0 - 6"
   },
   {
+    "Name": "ProudSkillId",
+    "Documentation": "技能组内技能 Id"
+  },
+  {
     "Name": "QuestId",
     "Documentation": "任务 Id"
   },

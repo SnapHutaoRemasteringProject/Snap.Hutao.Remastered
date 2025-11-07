@@ -43,6 +43,14 @@ internal ref struct MiHoYoSyntaxLexer
             }
         }
 
+        if (Match("{PARAM#"))
+        {
+            if (ReadUntil('}', out int idEnd))
+            {
+                return new(MiHoYoSyntaxTokenKind.Parameter, new(start, idEnd + 1));
+            }
+        }
+
         if (Match("<color="))
         {
             if (ReadUntil('>', out int end))
