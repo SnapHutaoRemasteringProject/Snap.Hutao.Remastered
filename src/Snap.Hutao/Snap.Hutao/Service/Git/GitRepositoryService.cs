@@ -43,7 +43,7 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
             Depth = 1,
             ProxyOptions =
             {
-                ProxyType = ProxyType.Specified,
+                ProxyType = HttpProxyUsingSystemProxy.Instance.CurrentProxyUri is null ? ProxyType.None : ProxyType.Specified,
                 Url = HttpProxyUsingSystemProxy.Instance.CurrentProxyUri,
             },
             CredentialsProvider = (url, user, types) => string.IsNullOrEmpty(info.Token)
@@ -62,7 +62,7 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                 Directory.Delete(directory, true);
             }
 
-            Repository.Clone(info.HttpsUrl.OriginalString, directory, new(fetchOptions)
+            Repository.AdvancedClone(info.HttpsUrl.OriginalString, directory, new(fetchOptions)
             {
                 Checkout = true,
             });
@@ -72,6 +72,10 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
             // We need to ensure local repo is up to date
             using (Repository repo = new(directory))
             {
+                Configuration config = repo.Config;
+                config.Set("core.longpaths", true);
+                config.Set("safe.directory", true);
+
                 Commands.Fetch(repo, "origin", WinRTAdaptive.Array(["+refs/heads/main:refs/remotes/origin/main"]), fetchOptions, default);
                 Branch remoteBranch = repo.Branches["origin/main"];
                 Branch localBranch = repo.Branches["main"];
