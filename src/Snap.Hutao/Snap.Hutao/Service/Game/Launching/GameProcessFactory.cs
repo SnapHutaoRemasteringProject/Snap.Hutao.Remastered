@@ -45,7 +45,7 @@ internal sealed class GameProcessFactory
         string gameFilePath = context.FileSystem.GameFilePath;
         string gameDirectory = context.FileSystem.GetGameDirectory();
 
-        return HutaoRuntime.IsProcessElevated && launchOptions.IsIslandEnabled.Value
+        return launchOptions.IsIslandEnabled.Value
             ? ProcessFactory.CreateUsingFullTrustSuspended(commandLine, gameFilePath, gameDirectory)
             : ProcessFactory.CreateUsingShellExecuteRunAs(commandLine, gameFilePath, gameDirectory);
     }

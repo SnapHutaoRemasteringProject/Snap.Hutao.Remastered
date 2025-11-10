@@ -6,6 +6,7 @@ using Snap.Hutao.Core.Diagnostics;
 using Snap.Hutao.Core.LifeCycle.InterProcess.FullTrust;
 using Snap.Hutao.Win32;
 using Snap.Hutao.Win32.Foundation;
+using System.IO;
 
 namespace Snap.Hutao.Factory.Process;
 
@@ -144,8 +145,8 @@ internal sealed class ProcessFactory
 
     public static IProcess CreateUsingFullTrustSuspended(string arguments, string fileName, string workingDirectory)
     {
-        string fullTrustFilePath = HutaoRuntime.GetDataDirectoryFile("Snap.Hutao.FullTrust.exe");
-        InstalledLocation.CopyFileFromApplicationUri("ms-appx:///Resource/Snap.Hutao.FullTrust.exe", fullTrustFilePath);
+        string repoDirectory = HutaoRuntime.GetDataRepositoryDirectory();
+        string fullTrustFilePath = Path.Combine(repoDirectory, "Snap.ContentDelivery", "Snap.Hutao.FullTrust.exe");
         StartUsingShellExecuteRunAs(fullTrustFilePath);
 
         FullTrustProcessStartInfoRequest request = new()

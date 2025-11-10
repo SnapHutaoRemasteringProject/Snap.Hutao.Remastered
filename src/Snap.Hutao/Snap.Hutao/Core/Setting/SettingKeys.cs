@@ -106,7 +106,7 @@ internal static class SettingKeys
     public const string AlphaBuildUseFjPatchEndpoint = "AlphaBuildUseFJPatchEndpoint";
     public const string TreatPredownloadAsMain = "TreatPredownloadAsMain";
     public const string EnableBetaGameInstall = "EnableBetaGameInstall";
-    public const string PreventCopyIslandDll = "PreventCopyIslandDll";
+    public const string PreventCopyIslandDll = "PreventCopyIslandDll2";
     #endregion
 
     #region Obsolete
@@ -164,5 +164,8 @@ internal static class SettingKeys
 
     [Obsolete]
     public const string EnableOfflineCultivationCalculator = "EnableOfflineCultivationCalculator";
+
+    [Obsolete]
+    public const string PreventCopyIslandDll1 = "PreventCopyIslandDll";
     #endregion
 }

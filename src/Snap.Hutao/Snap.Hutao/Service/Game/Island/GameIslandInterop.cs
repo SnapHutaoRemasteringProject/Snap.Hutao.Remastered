@@ -7,6 +7,7 @@ using Snap.Hutao.Core.ExceptionService;
 using Snap.Hutao.Core.LifeCycle.InterProcess.FullTrust;
 using Snap.Hutao.Core.Setting;
 using Snap.Hutao.Factory.Process;
+using Snap.Hutao.Service.Game.FileSystem;
 using Snap.Hutao.Service.Game.Launching.Context;
 using Snap.Hutao.Web.Hutao;
 using Snap.Hutao.Web.Hutao.Response;
@@ -21,9 +22,9 @@ internal sealed class GameIslandInterop : IGameIslandInterop
 {
     private const string IslandEnvironmentName = "4F3E8543-40F7-4808-82DC-21E48A6037A7";
 
-    private static readonly string DataFolderIslandPath = HutaoRuntime.GetDataDirectoryFile("Snap.Hutao.UnlockerIsland.dll");
     private readonly bool resume;
 
+    private string? islandPath;
     private int accumulatedBadStateCount;
     private uint previousUid;
 
@@ -32,13 +33,15 @@ internal sealed class GameIslandInterop : IGameIslandInterop
         this.resume = resume;
     }
 
-    public ValueTask BeforeAsync(BeforeLaunchExecutionContext context, CancellationToken token = default)
+    public ValueTask BeforeAsync(BeforeLaunchExecutionContext context)
     {
-        if (!resume && /* CopyDll */ !LocalSetting.Get(SettingKeys.PreventCopyIslandDll, false))
+        if (!context.FileSystem.TryGetGameVersion(out string? gameVersion))
         {
-            InstalledLocation.CopyFileFromApplicationUri("ms-appx:///Snap.Hutao.UnlockerIsland.dll", DataFolderIslandPath);
+            throw HutaoException.NotSupported(SH.ServiceGameIslandFileSystemGetGameVersionFailed);
         }
 
+        string repoPath = Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), "Snap.ContentDelivery");
+        islandPath = Path.Combine(repoPath, $"Snap.Hutao.UnlockerIsland_{gameVersion}.dll");
         return ValueTask.CompletedTask;
     }
 
@@ -76,7 +79,13 @@ internal sealed class GameIslandInterop : IGameIslandInterop
                         throw HutaoException.InvalidOperation("Process is not full trust");
                     }
 
-                    fullTrustProcess.LoadLibrary(FullTrustLoadLibraryRequest.Create(DataFolderIslandPath));
+                    ArgumentException.ThrowIfNullOrEmpty(islandPath);
+                    if (!File.Exists(islandPath))
+                    {
+                        throw HutaoException.InvalidOperation(SH.ServiceGameIslandTargetVersionFileNotExists);
+                    }
+
+                    fullTrustProcess.LoadLibrary(FullTrustLoadLibraryRequest.Create(islandPath));
                     fullTrustProcess.ResumeMainThread();
                 }
 

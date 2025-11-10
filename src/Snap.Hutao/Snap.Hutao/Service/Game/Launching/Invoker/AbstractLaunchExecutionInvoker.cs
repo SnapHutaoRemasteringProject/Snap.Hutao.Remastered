@@ -100,42 +100,44 @@ internal abstract class AbstractLaunchExecutionInvoker
 
             fileSystemReference.Exchange(beforeContext.FileSystem);
 
-            IProcess? process = CreateProcess(beforeContext);
-            if (process is null)
+            using (IProcess? process = CreateProcess(beforeContext))
             {
-                return;
-            }
-
-            LaunchExecutionContext executionContext = new()
-            {
-                Progress = progress,
-                ServiceProvider = context.ServiceProvider,
-                TaskContext = taskContext,
-                Messenger = context.ServiceProvider.GetRequiredService<IMessenger>(),
-                LaunchOptions = context.LaunchOptions,
-                Process = process,
-                IsOversea = targetScheme.IsOversea,
-            };
-
-            foreach (ILaunchExecutionHandler handler in Handlers)
-            {
-                await handler.ExecuteAsync(executionContext).ConfigureAwait(false);
-            }
-
-            if (process.IsRunning())
-            {
-                progress.Report(new(SH.ServiceGameLaunchPhaseWaitingProcessExit));
-                try
+                if (process is null)
                 {
-                    await taskContext.SwitchToBackgroundAsync();
-                    process.WaitForExit();
-                }
-                catch (Exception ex)
-                {
-                    // Access denied, we are in non-elevated process
-                    // Just leave and let invoker spin wait
-                    SentrySdk.CaptureException(ex);
                     return;
+                }
+
+                LaunchExecutionContext executionContext = new()
+                {
+                    Progress = progress,
+                    ServiceProvider = context.ServiceProvider,
+                    TaskContext = taskContext,
+                    Messenger = context.ServiceProvider.GetRequiredService<IMessenger>(),
+                    LaunchOptions = context.LaunchOptions,
+                    Process = process,
+                    IsOversea = targetScheme.IsOversea,
+                };
+
+                foreach (ILaunchExecutionHandler handler in Handlers)
+                {
+                    await handler.ExecuteAsync(executionContext).ConfigureAwait(false);
+                }
+
+                if (process.IsRunning())
+                {
+                    progress.Report(new(SH.ServiceGameLaunchPhaseWaitingProcessExit));
+                    try
+                    {
+                        await taskContext.SwitchToBackgroundAsync();
+                        process.WaitForExit();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Access denied, we are in non-elevated process
+                        // Just leave and let invoker spin wait
+                        SentrySdk.CaptureException(ex);
+                        return;
+                    }
                 }
             }
 

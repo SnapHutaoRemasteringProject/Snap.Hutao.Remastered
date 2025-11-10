@@ -1014,6 +1014,9 @@
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>获取本地游戏版本失败，无法获取注入配置信息</value>
   </data>
+  <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
+    <value>尚未支持当前游戏版本</value>
+  </data>
   <data name="ServiceGameLaunchExecutionArbitraryLibraryInjectionException" xml:space="preserve">
     <value>在注入 DLL: '{0}' 时发生错误</value>
   </data>
@@ -1067,6 +1070,9 @@
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>使用 Embedded Yae 前，需要您了解相关风险并在「启动游戏」页面开启注入功能</value>
+  </data>
+  <data name="ServiceGameLaunchingHandlerGameProcessStartRepositorySyncFailed" xml:space="preserve">
+    <value>在获取必要的启动游戏组件时发生错误</value>
   </data>
   <data name="ServiceGameLocatorFileOpenPickerCommitText" xml:space="preserve">
     <value>选择游戏本体</value>

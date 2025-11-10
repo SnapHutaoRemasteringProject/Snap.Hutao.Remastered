@@ -7,7 +7,7 @@ namespace Snap.Hutao.Service.Game.Island;
 
 internal interface IGameIslandInterop
 {
-    ValueTask BeforeAsync(BeforeLaunchExecutionContext context, CancellationToken token = default);
+    ValueTask BeforeAsync(BeforeLaunchExecutionContext context);
 
     ValueTask WaitForExitAsync(LaunchExecutionContext context, CancellationToken token = default);
 }

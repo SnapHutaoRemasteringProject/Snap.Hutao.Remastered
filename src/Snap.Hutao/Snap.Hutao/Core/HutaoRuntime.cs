@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Google.Protobuf.WellKnownTypes;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Win32;
 using Microsoft.Windows.AppNotifications;

@@ -211,7 +211,6 @@
     <Content Include="Resource\Navigation\WikiAvatar.png" />
     <Content Include="Resource\Navigation\WikiMonster.png" />
     <Content Include="Resource\Navigation\WikiWeapon.png" />
-    <Content Include="Resource\Snap.Hutao.FullTrust.exe" />
     <Content Include="Resource\TeachingTip\LaunchGameIslandHideQuestBanner.png" />
     <Content Include="Resource\TeachingTip\LaunchGameIslandRedirectCombineEntry.gif" />
     <Content Include="Resource\ThirdParty\Apple.png" />
