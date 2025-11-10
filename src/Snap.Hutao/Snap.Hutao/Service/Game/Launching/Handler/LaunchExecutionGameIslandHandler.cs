@@ -23,6 +23,7 @@ internal sealed class LaunchExecutionGameIslandHandler : AbstractLaunchExecution
         if (context.LaunchOptions.IsIslandEnabled.Value)
         {
             interop = new(resume);
+            return interop.BeforeAsync(context);
         }
 
         return ValueTask.CompletedTask;

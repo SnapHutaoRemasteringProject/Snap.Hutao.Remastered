@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Common;
 using LibGit2Sharp;
 using Snap.Hutao.Core;
 using Snap.Hutao.Core.IO;
@@ -9,6 +10,7 @@ using Snap.Hutao.Web.Hutao;
 using Snap.Hutao.Web.Hutao.Response;
 using Snap.Hutao.Web.Response;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.IO;
 
 namespace Snap.Hutao.Service.Git;
@@ -41,9 +43,10 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
         FetchOptions fetchOptions = new()
         {
             Depth = 1,
+            TagFetchMode = TagFetchMode.None,
             ProxyOptions =
             {
-                ProxyType = HttpProxyUsingSystemProxy.Instance.CurrentProxyUri is null ? ProxyType.None : ProxyType.Specified,
+                ProxyType = ProxyType.Auto,
                 Url = HttpProxyUsingSystemProxy.Instance.CurrentProxyUri,
             },
             CredentialsProvider = (url, user, types) => string.IsNullOrEmpty(info.Token)
@@ -53,6 +56,16 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                     Username = "TODO",
                     Password = info.Token,
                 },
+            OnProgress = static output =>
+            {
+                Debug.WriteLine($"[Repo] {output}");
+                return true;
+            },
+            OnTransferProgress = static progress =>
+            {
+                Debug.WriteLine($"[Repo Progress] {progress.ReceivedObjects}/{progress.TotalObjects}, {Converters.ToFileSizeString(progress.ReceivedBytes)}");
+                return true;
+            },
         };
 
         if (!Repository.IsValid(directory))
@@ -75,8 +88,11 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                 Configuration config = repo.Config;
                 config.Set("core.longpaths", true);
                 config.Set("safe.directory", true);
+                config.Set("http.proxy", fetchOptions.ProxyOptions.Url);
+                config.Set("https.proxy", fetchOptions.ProxyOptions.Url);
 
-                Commands.Fetch(repo, "origin", WinRTAdaptive.Array(["+refs/heads/main:refs/remotes/origin/main"]), fetchOptions, default);
+                Commands.Fetch(repo, "origin", Array.Empty<string>(), fetchOptions, default);
+
                 Branch remoteBranch = repo.Branches["origin/main"];
                 Branch localBranch = repo.Branches["main"];
                 if (localBranch is null)

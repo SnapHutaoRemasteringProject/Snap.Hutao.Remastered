@@ -3,7 +3,6 @@
 
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.ViewModel.Wiki;
-using WinRT;
 
 namespace Snap.Hutao.UI.Xaml.Control.TextBlock;
 
