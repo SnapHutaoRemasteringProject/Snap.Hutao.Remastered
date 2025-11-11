@@ -39,13 +39,12 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                 }
             }
 
-            string directory = Path.GetFullPath(Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), name));
-
             GitRepository info = infos.Single();
+            string directory = Path.GetFullPath(Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), name));
 
             try
             {
-                return await EnsureRepositoryCoreAsync(directory, name, info).ConfigureAwait(false);
+                return EnsureRepository(directory, name, info);
             }
             catch (Exception)
             {
@@ -55,12 +54,12 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                     Directory.Delete(directory, true);
                 }
 
-                return await EnsureRepositoryCoreAsync(directory, name, info).ConfigureAwait(false);
+                return EnsureRepository(directory, name, info);
             }
         }
     }
 
-    private async ValueTask<ValueResult<bool, ValueDirectory>> EnsureRepositoryCoreAsync(string directory, string name, GitRepository info)
+    private ValueResult<bool, ValueDirectory> EnsureRepository(string directory, string name, GitRepository info)
     {
         FetchOptions fetchOptions = new()
         {
