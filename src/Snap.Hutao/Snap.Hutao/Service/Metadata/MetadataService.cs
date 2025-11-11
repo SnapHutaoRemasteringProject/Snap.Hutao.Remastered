@@ -45,7 +45,6 @@ internal sealed partial class MetadataService : IMetadataService
 
         using (ValueStopwatch.MeasureExecution(logger))
         {
-            await gitRepositoryService.EnsureRepositoryAsync("Snap.Metadata").ConfigureAwait(false);
             (isInitialized, _) = await gitRepositoryService.EnsureRepositoryAsync("Snap.Metadata").ConfigureAwait(false);
             initializeCompletionSource.TrySetResult();
         }

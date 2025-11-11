@@ -226,21 +226,20 @@
   <!-- Packages -->
   <ItemGroup>
     <!-- https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-Labs/nuget/v3/index.json -->
-    <PackageReference Include="CommunityToolkit.Labs.WinUI.Shimmer" Version="0.1.250513-build.2126" />
-    <PackageReference Include="CommunityToolkit.Labs.WinUI.TokenView" Version="0.1.250513-build.2126" />
-    <PackageReference Include="CommunityToolkit.Labs.WinUI.TransitionHelper" Version="0.1.250513-build.2126" />
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.Shimmer" Version="0.1.250828-build.2223" />
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.TokenView" Version="0.1.250828-build.2223" />
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.TransitionHelper" Version="0.1.251101-build.2372" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageReference Include="CommunityToolkit.WinUI.Behaviors" Version="8.2.250402" />
-    <PackageReference Include="CommunityToolkit.WinUI.Collections" Version="8.2.250402" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.HeaderedControls" Version="8.2.250402" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.250402" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.250402" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.250402" />
-    <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.2.250402" />
-    <PackageReference Include="CommunityToolkit.WinUI.Media" Version="8.2.250402" />
+    <PackageReference Include="CommunityToolkit.WinUI.Behaviors" Version="8.2.251105-build.1544" />
+    <PackageReference Include="CommunityToolkit.WinUI.Collections" Version="8.2.251105-build.1544" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.HeaderedControls" Version="8.2.251105-build.1544" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251105-build.1544" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.251105-build.1544" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251105-build.1544" />
+    <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.2.251105-build.1544" />
+    <PackageReference Include="CommunityToolkit.WinUI.Media" Version="8.2.251105-build.1544" />
     <PackageReference Include="Google.Protobuf" Version="3.33.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2025.2.2" />
-    <PackageReference Include="LibGit2Sharp" Version="0.31.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="4.14.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -262,7 +261,7 @@
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Validation" Version="17.13.22" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3595.46" />
-    <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.3.0-prerelease.250720.1" />
+    <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.3.0-prerelease.251015.2" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.6901" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.251003001" />
     <PackageReference Include="QRCoder" Version="1.7.0" />
@@ -288,6 +287,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Snap.LibGit2Sharp" Version="0.31.1-preview.0.4" />
     <PackageReference Include="Snap.ZStandard" Version="1.5.7" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.10" />
     <PackageReference Include="System.Formats.Asn1" Version="9.0.10" />

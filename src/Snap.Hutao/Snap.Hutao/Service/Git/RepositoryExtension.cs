@@ -15,18 +15,26 @@ internal static class RepositoryExtension
         {
             Directory.CreateDirectory(workdirPath);
             Repository.Init(workdirPath);
-
             using (Repository repo = new(workdirPath))
             {
                 Configuration config = repo.Config;
                 config.Set("core.longpaths", true);
                 config.Set("safe.directory", true);
-                config.Set("http.proxy", options.FetchOptions.ProxyOptions.Url);
-                config.Set("https.proxy", options.FetchOptions.ProxyOptions.Url);
+                if (string.IsNullOrEmpty(options.FetchOptions.ProxyOptions.Url))
+                {
+                    config.Unset("http.proxy");
+                    config.Unset("https.proxy");
+                }
+                else
+                {
+                    config.Set("http.proxy", options.FetchOptions.ProxyOptions.Url);
+                    config.Set("https.proxy", options.FetchOptions.ProxyOptions.Url);
+                }
 
                 Remote remote = repo.Network.Remotes.Add("origin", sourceUrl);
-                Commands.Fetch(repo, remote.Name, WinRTAdaptive.Array(["+refs/heads/main:refs/remotes/origin/main"]), options.FetchOptions, default);
-                Branch remoteBranch = repo.Branches["refs/remotes/origin/main"];
+                options.FetchOptions.UpdateFetchHead = false;
+                Commands.Fetch(repo, remote.Name, Array.Empty<string>(), options.FetchOptions, default);
+                Branch remoteBranch = repo.Branches["origin/main"];
                 Branch localBranch = repo.CreateBranch("main", remoteBranch.Tip);
                 repo.Branches.Update(localBranch, b => b.TrackedBranch = remoteBranch.CanonicalName);
 

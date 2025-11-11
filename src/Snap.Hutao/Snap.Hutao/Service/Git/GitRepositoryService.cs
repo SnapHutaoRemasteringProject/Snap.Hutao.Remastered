@@ -18,12 +18,21 @@ namespace Snap.Hutao.Service.Git;
 [Service(ServiceLifetime.Singleton, typeof(IGitRepositoryService))]
 internal sealed partial class GitRepositoryService : IGitRepositoryService
 {
+    private readonly AsyncKeyedLock<string> repoLock = new();
     private readonly IServiceProvider serviceProvider;
 
     [GeneratedConstructor]
     public partial GitRepositoryService(IServiceProvider serviceProvider);
 
     public async ValueTask<ValueResult<bool, ValueDirectory>> EnsureRepositoryAsync(string name)
+    {
+        using (await repoLock.LockAsync(name).ConfigureAwait(false))
+        {
+            return await EnsureRepositoryCoreAsync(name).ConfigureAwait(false);
+        }
+    }
+
+    private async ValueTask<ValueResult<bool, ValueDirectory>> EnsureRepositoryCoreAsync(string name)
     {
         ImmutableArray<GitRepository> infos;
         using (IServiceScope scope = serviceProvider.CreateScope())
@@ -53,12 +62,12 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                 ? default
                 : new UsernamePasswordCredentials
                 {
-                    Username = "TODO",
+                    Username = info.Username,
                     Password = info.Token,
                 },
             OnProgress = static output =>
             {
-                Debug.WriteLine($"[Repo] {output}");
+                Debug.Write($"[Repo] {output}");
                 return true;
             },
             OnTransferProgress = static progress =>
@@ -88,25 +97,25 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                 Configuration config = repo.Config;
                 config.Set("core.longpaths", true);
                 config.Set("safe.directory", true);
-                config.Set("http.proxy", fetchOptions.ProxyOptions.Url);
-                config.Set("https.proxy", fetchOptions.ProxyOptions.Url);
-
-                Commands.Fetch(repo, "origin", Array.Empty<string>(), fetchOptions, default);
-
-                Branch remoteBranch = repo.Branches["origin/main"];
-                Branch localBranch = repo.Branches["main"];
-                if (localBranch is null)
+                if (string.IsNullOrEmpty(fetchOptions.ProxyOptions.Url))
                 {
-                    localBranch = repo.CreateBranch("main", remoteBranch.Tip);
-                    repo.Branches.Update(localBranch, b => b.TrackedBranch = remoteBranch.CanonicalName);
+                    config.Unset("http.proxy");
+                    config.Unset("https.proxy");
+                }
+                else
+                {
+                    config.Set("http.proxy", fetchOptions.ProxyOptions.Url);
+                    config.Set("https.proxy", fetchOptions.ProxyOptions.Url);
                 }
 
-                Commands.Checkout(repo, localBranch, new()
-                {
-                    CheckoutModifiers = CheckoutModifiers.Force,
-                });
+                repo.Network.Remotes.Update("origin", remote => remote.Url = info.HttpsUrl.OriginalString);
+                fetchOptions.Depth = 0;
+                Commands.Fetch(repo, repo.Head.RemoteName, Array.Empty<string>(), fetchOptions, default);
 
-                repo.Reset(ResetMode.Hard, remoteBranch.Tip);
+                Branch remoteBranch = repo.Branches["origin/main"];
+                Branch localBranch = repo.Branches["main"] ?? repo.CreateBranch("main", remoteBranch.Tip);
+                repo.Branches.Update(localBranch, b => b.TrackedBranch = remoteBranch.CanonicalName);
+                Commands.Checkout(repo, localBranch);
             }
         }
 

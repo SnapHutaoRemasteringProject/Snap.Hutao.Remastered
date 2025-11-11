@@ -54,15 +54,15 @@
             ActionButtonDisabled="{StaticResource InfoBarTemplate}"
             ActionButtonEnabled="{StaticResource InfoBarWithActionButtonTemplate}"/>
 
-        <clw:TransitionHelper
+        <cw:TransitionHelper
             x:Key="InfoBarPanelTransitionHelper"
             x:Name="InfoBarPanelTransitionHelper"
             DefaultEasingMode="EaseOut"
             DefaultEasingType="Cubic"
             Duration="0:0:0.2">
-            <clw:TransitionConfig Id="Body" ScaleMode="ScaleX"/>
-            <clw:TransitionConfig Id="Header" ScaleMode="ScaleX"/>
-        </clw:TransitionHelper>
+            <cw:TransitionConfig Id="Body" ScaleMode="ScaleX"/>
+            <cw:TransitionConfig Id="Header" ScaleMode="ScaleX"/>
+        </cw:TransitionHelper>
     </UserControl.Resources>
 
     <Grid Name="VisibilityRoot" Visibility="Collapsed">
@@ -72,19 +72,19 @@
             Margin="16"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            clw:TransitionHelper.Id="Body"
+            cw:TransitionHelper.Id="Body"
             Background="{ThemeResource SystemControlAcrylicElementBrush}"
             CornerRadius="{ThemeResource ControlCornerRadius}">
             <Button>
                 <mxi:Interaction.Behaviors>
                     <mxi:EventTriggerBehavior EventName="Click">
-                        <clw:StartTransitionAction
+                        <cw:StartTransitionAction
                             Source="{x:Bind ShowButtonBorder}"
                             Target="{x:Bind InfoBarItemsBorder}"
                             Transition="{StaticResource InfoBarPanelTransitionHelper}"/>
                     </mxi:EventTriggerBehavior>
                 </mxi:Interaction.Behaviors>
-                <Grid clw:TransitionHelper.Id="Header">
+                <Grid cw:TransitionHelper.Id="Header">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition MinWidth="32"/>
@@ -105,7 +105,7 @@
             Margin="16"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            clw:TransitionHelper.Id="Body"
+            cw:TransitionHelper.Id="Body"
             cw:Effects.Shadow="{ThemeResource CompatCardShadow}"
             Visibility="Collapsed">
             <Border Padding="16" Style="{ThemeResource AcrylicBorderCardStyle}">
@@ -132,7 +132,7 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock
                             VerticalAlignment="Center"
-                            clw:TransitionHelper.Id="Header"
+                            cw:TransitionHelper.Id="Header"
                             Style="{StaticResource SubtitleTextBlockStyle}"
                             Text="{shuxm:ResourceString Name=ViewInfoBarPanelTitle}"/>
                         <StackPanel
@@ -155,7 +155,7 @@
                             <Button>
                                 <mxi:Interaction.Behaviors>
                                     <mxi:EventTriggerBehavior EventName="Click">
-                                        <clw:StartTransitionAction
+                                        <cw:StartTransitionAction
                                             Source="{x:Bind InfoBarItemsBorder}"
                                             Target="{x:Bind ShowButtonBorder}"
                                             Transition="{StaticResource InfoBarPanelTransitionHelper}"/>
