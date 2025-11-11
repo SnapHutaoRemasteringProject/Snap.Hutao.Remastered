@@ -105,8 +105,8 @@
             Margin="16"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            cw:TransitionHelper.Id="Body"
             cw:Effects.Shadow="{ThemeResource CompatCardShadow}"
+            cw:TransitionHelper.Id="Body"
             Visibility="Collapsed">
             <Border Padding="16" Style="{ThemeResource AcrylicBorderCardStyle}">
                 <Grid RowSpacing="16">

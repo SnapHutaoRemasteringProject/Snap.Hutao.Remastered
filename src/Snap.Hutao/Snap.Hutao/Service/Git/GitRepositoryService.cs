@@ -28,27 +28,40 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
     {
         using (await repoLock.LockAsync(name).ConfigureAwait(false))
         {
-            return await EnsureRepositoryCoreAsync(name).ConfigureAwait(false);
+            ImmutableArray<GitRepository> infos;
+            using (IServiceScope scope = serviceProvider.CreateScope())
+            {
+                HutaoInfrastructureClient infrastructureClient = scope.ServiceProvider.GetRequiredService<HutaoInfrastructureClient>();
+                HutaoResponse<ImmutableArray<GitRepository>> response = await infrastructureClient.GetGitRepositoryAsync(name).ConfigureAwait(false);
+                if (!ResponseValidator.TryValidate(response, scope.ServiceProvider, out infos))
+                {
+                    return new(false, default);
+                }
+            }
+
+            string directory = Path.GetFullPath(Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), name));
+
+            GitRepository info = infos.Single();
+
+            try
+            {
+                return await EnsureRepositoryCoreAsync(directory, name, info).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                // Retry once
+                if (Directory.Exists(directory))
+                {
+                    Directory.Delete(directory, true);
+                }
+
+                return await EnsureRepositoryCoreAsync(directory, name, info).ConfigureAwait(false);
+            }
         }
     }
 
-    private async ValueTask<ValueResult<bool, ValueDirectory>> EnsureRepositoryCoreAsync(string name)
+    private async ValueTask<ValueResult<bool, ValueDirectory>> EnsureRepositoryCoreAsync(string directory, string name, GitRepository info)
     {
-        ImmutableArray<GitRepository> infos;
-        using (IServiceScope scope = serviceProvider.CreateScope())
-        {
-            HutaoInfrastructureClient infrastructureClient = scope.ServiceProvider.GetRequiredService<HutaoInfrastructureClient>();
-            HutaoResponse<ImmutableArray<GitRepository>> response = await infrastructureClient.GetGitRepositoryAsync(name).ConfigureAwait(false);
-            if (!ResponseValidator.TryValidate(response, scope.ServiceProvider, out infos))
-            {
-                return new(false, default);
-            }
-        }
-
-        string directory = Path.GetFullPath(Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), name));
-
-        GitRepository info = infos.Single();
-
         FetchOptions fetchOptions = new()
         {
             Depth = 1,
