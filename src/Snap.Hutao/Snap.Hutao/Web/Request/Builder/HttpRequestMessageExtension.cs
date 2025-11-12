@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using System.IO;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 
@@ -19,7 +18,9 @@ internal static class HttpRequestMessageExtension
         if (httpRequestMessage.Content is { } content)
         {
             // Clear the buffered content, so that it can trigger a new read attempt
-            Volatile.Write(ref GetPrivateBufferedContent(content), default);
+            // TODO: Remove reflection usage when UnsafeAccessorType supports fields
+            // https://github.com/dotnet/runtime/issues/119664
+            content.GetType().GetField("_bufferedContent", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(content, null);
             Volatile.Write(ref GetPrivateDisposed(content), false);
         }
     }
@@ -31,8 +32,4 @@ internal static class HttpRequestMessageExtension
     // private bool _disposed
     [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_disposed")]
     private static extern ref bool GetPrivateDisposed(HttpContent content);
-
-    // private MemoryStream? _bufferedContent
-    [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_bufferedContent")]
-    private static extern ref MemoryStream? GetPrivateBufferedContent(HttpContent content);
 }

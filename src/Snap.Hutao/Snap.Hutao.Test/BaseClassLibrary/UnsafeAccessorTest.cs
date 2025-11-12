@@ -27,10 +27,10 @@ public class UnsafeAccessorTest
 
     // private readonly int _offsetMinutes;
     [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_offsetMinutes")]
-    private static extern ref short RefValueGetFieldRef(ref DateTimeOffset dto);
+    private static extern ref int RefValueGetFieldRef(ref DateTimeOffset dto);
 
     [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_offsetMinutes")]
-    private static extern ref readonly short RefValueGetFieldRefReadonly(ref DateTimeOffset dto);
+    private static extern ref readonly int RefValueGetFieldRefReadonly(ref DateTimeOffset dto);
 
     internal interface ITestInterface
     {
