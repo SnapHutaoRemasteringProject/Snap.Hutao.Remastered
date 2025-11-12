@@ -113,7 +113,7 @@ internal abstract partial class GameAssetOperation : IGameAssetOperation
 
         using (Stream sdkStream = await context.HttpClient.GetStreamAsync(context.Operation.GameChannelSDK.ChannelSdkPackage.Url, token).ConfigureAwait(false))
         {
-            ZipFile.ExtractToDirectory(sdkStream, context.Operation.GameFileSystem.GetGameDirectory(), true);
+            await ZipFile.ExtractToDirectoryAsync(sdkStream, context.Operation.GameFileSystem.GetGameDirectory(), true, token).ConfigureAwait(false);
         }
     }
 

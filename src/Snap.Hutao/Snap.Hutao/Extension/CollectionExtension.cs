@@ -13,7 +13,7 @@ internal static class CollectionExtension
         int count = 0;
         T[] array = GC.AllocateUninitializedArray<T>(collection.Count);
         collection.CopyTo(array, 0);
-        foreach (ref readonly T item in array.AsSpan())
+        foreach (T item in array)
         {
             if (shouldRemovePredicate(item))
             {

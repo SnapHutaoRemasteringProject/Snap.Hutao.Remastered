@@ -51,7 +51,7 @@ internal sealed partial class PackageConverter : IPackageConverter
         {
             using (Stream sdkWebStream = await context.HttpClient.GetStreamAsync(context.GameChannelSdk.ChannelSdkPackage.Url).ConfigureAwait(false))
             {
-                ZipFile.ExtractToDirectory(sdkWebStream, gameDirectory, true);
+                await ZipFile.ExtractToDirectoryAsync(sdkWebStream, gameDirectory, true).ConfigureAwait(false);
             }
         }
 

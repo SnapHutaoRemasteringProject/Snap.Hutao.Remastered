@@ -102,7 +102,7 @@ internal sealed partial class DownloadSummary : ObservableObject
                                         await worker.CopyAsync(progress).ConfigureAwait(false);
                                     }
 
-                                    ExtractFiles(tempStream);
+                                    await ExtractFilesAsync(tempStream).ConfigureAwait(false);
 
                                     await taskContext.SwitchToMainThreadAsync();
                                     ProgressValue = 1;
@@ -150,9 +150,9 @@ internal sealed partial class DownloadSummary : ObservableObject
         ProgressValue = status.TotalBytes is 0 ? 0 : (double)status.BytesReadSinceCopyStart / status.TotalBytes;
     }
 
-    private void ExtractFiles(Stream stream)
+    private async ValueTask ExtractFilesAsync(Stream stream)
     {
-        using (ZipArchive archive = new(stream))
+        using (ZipArchive archive = await ZipArchive.CreateAsync(stream, ZipArchiveMode.Read, false, default))
         {
             foreach (ZipArchiveEntry entry in archive.Entries)
             {
@@ -160,7 +160,7 @@ internal sealed partial class DownloadSummary : ObservableObject
 
                 try
                 {
-                    entry.ExtractToFile(destPath, true);
+                    await entry.ExtractToFileAsync(destPath, true).ConfigureAwait(false);
                 }
                 catch
                 {

@@ -6,6 +6,7 @@ using LibGit2Sharp;
 using Snap.Hutao.Core;
 using Snap.Hutao.Core.IO;
 using Snap.Hutao.Core.IO.Http.Proxy;
+using Snap.Hutao.Service.Notification;
 using Snap.Hutao.Web.Hutao;
 using Snap.Hutao.Web.Hutao.Response;
 using Snap.Hutao.Web.Response;
@@ -20,9 +21,19 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
 {
     private readonly AsyncKeyedLock<string> repoLock = new();
     private readonly IServiceProvider serviceProvider;
+    private readonly IMessenger messenger;
 
     [GeneratedConstructor]
     public partial GitRepositoryService(IServiceProvider serviceProvider);
+
+    static GitRepositoryService()
+    {
+        GlobalSettings.SetConfigSearchPaths(ConfigurationLevel.ProgramData, string.Empty);
+        GlobalSettings.SetConfigSearchPaths(ConfigurationLevel.Global, string.Empty);
+        GlobalSettings.SetConfigSearchPaths(ConfigurationLevel.System, string.Empty);
+        GlobalSettings.SetConfigSearchPaths(ConfigurationLevel.Xdg, string.Empty);
+        GlobalSettings.SetOwnerValidation(false);
+    }
 
     public async ValueTask<ValueResult<bool, ValueDirectory>> EnsureRepositoryAsync(string name)
     {
@@ -44,17 +55,35 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
 
             try
             {
-                return EnsureRepository(directory, info, false);
+                List<Exception> exceptions = [];
+                try
+                {
+                    try
+                    {
+                        return EnsureRepository(directory, info, false);
+                    }
+                    catch (Exception first)
+                    {
+                        // Retry once
+                        exceptions.Add(first);
+                        return EnsureRepository(directory, info, true);
+                    }
+                }
+                catch (Exception second)
+                {
+                    exceptions.Add(second);
+                    throw new AggregateException(exceptions);
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Retry once
-                return EnsureRepository(directory, info, true);
+                messenger.Send(InfoBarMessage.Error(ex));
+                throw;
             }
         }
     }
 
-    private ValueResult<bool, ValueDirectory> EnsureRepository(string directory, GitRepository info, bool forceInvalid)
+    private static ValueResult<bool, ValueDirectory> EnsureRepository(string directory, GitRepository info, bool forceInvalid)
     {
         FetchOptions fetchOptions = new()
         {

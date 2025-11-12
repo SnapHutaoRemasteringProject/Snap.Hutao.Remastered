@@ -43,7 +43,7 @@ internal sealed class ProcessFactory
         global::System.Diagnostics.Process[] processes = global::System.Diagnostics.Process.GetProcesses();
 
         // GetProcesses once and manually loop is O(n)
-        foreach (ref readonly global::System.Diagnostics.Process process in processes.AsSpan())
+        foreach (global::System.Diagnostics.Process process in processes)
         {
             try
             {

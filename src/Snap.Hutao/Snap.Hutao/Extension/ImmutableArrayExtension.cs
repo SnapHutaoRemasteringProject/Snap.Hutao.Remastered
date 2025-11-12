@@ -63,13 +63,11 @@ internal static class ImmutableArrayExtension
             return [];
         }
 
-        ReadOnlySpan<TSource> sourceSpan = array.AsSpan();
         TResult[] results = GC.AllocateUninitializedArray<TResult>(length);
 
-        Span<TResult> resultSpan = results.AsSpan();
-        for (int index = 0; index < sourceSpan.Length; index++)
+        for (int index = 0; index < array.Length; index++)
         {
-            resultSpan[index] = selector(sourceSpan[index], index);
+            results[index] = selector(array[index], index);
         }
 
         return ImmutableCollectionsMarshal.AsImmutableArray(results);
@@ -84,13 +82,11 @@ internal static class ImmutableArrayExtension
             return [];
         }
 
-        ReadOnlySpan<TSource> sourceSpan = array.AsSpan();
         TResult[] results = GC.AllocateUninitializedArray<TResult>(length);
 
-        Span<TResult> resultSpan = results.AsSpan();
-        for (int index = 0; index < sourceSpan.Length; index++)
+        for (int index = 0; index < array.Length; index++)
         {
-            resultSpan[index] = selector(sourceSpan[index], index, state);
+            results[index] = selector(array[index], index, state);
         }
 
         return ImmutableCollectionsMarshal.AsImmutableArray(results);

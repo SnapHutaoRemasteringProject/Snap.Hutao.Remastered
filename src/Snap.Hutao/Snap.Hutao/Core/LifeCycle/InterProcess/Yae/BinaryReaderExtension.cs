@@ -14,9 +14,4 @@ internal static class BinaryReaderExtension
         reader.ReadExactly(new(&data, sizeof(T)));
         return data;
     }
-
-    public static void ReadExactly(this BinaryReader reader, Span<byte> buffer)
-    {
-        reader.BaseStream.ReadExactly(buffer);
-    }
 }
