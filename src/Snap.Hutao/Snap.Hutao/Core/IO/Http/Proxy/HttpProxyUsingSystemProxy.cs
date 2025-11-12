@@ -16,7 +16,6 @@ internal sealed partial class HttpProxyUsingSystemProxy : ObservableObject, IWeb
 {
     private const string ProxySettingPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Connections";
 
-    private static readonly Lazy<MethodInfo> LazyConstructSystemProxyMethod = new(GetConstructSystemProxyMethod);
     private static readonly Uri ProxyTestDestination = "https://hut.ao".ToUri();
 
     // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
@@ -69,19 +68,8 @@ internal sealed partial class HttpProxyUsingSystemProxy : ObservableObject, IWeb
         return InnerProxy.IsBypassed(host);
     }
 
-#if NET10_0_OR_GREATER
-    [Obsolete("Use UnsafeAccessor")]
-#endif
-    private static MethodInfo GetConstructSystemProxyMethod()
-    {
-        Type? systemProxyInfoType = typeof(System.Net.Http.SocketsHttpHandler).Assembly.GetType("System.Net.Http.SystemProxyInfo");
-        ArgumentNullException.ThrowIfNull(systemProxyInfoType);
-
-        MethodInfo? constructSystemProxyMethod = systemProxyInfoType.GetMethod("ConstructSystemProxy", BindingFlags.Static | BindingFlags.Public);
-        ArgumentNullException.ThrowIfNull(constructSystemProxyMethod);
-
-        return constructSystemProxyMethod;
-    }
+    [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "ConstructSystemProxy")]
+    private static extern IWebProxy ConstructSystemProxy([UnsafeAccessorType("System.Net.Http.SystemProxyInfo, System.Net.Http")] object? c);
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
     private static void OnSystemProxySettingsChanged(nint userData)
@@ -100,8 +88,6 @@ internal sealed partial class HttpProxyUsingSystemProxy : ObservableObject, IWeb
     [MemberNotNull(nameof(InnerProxy))]
     private void UpdateInnerProxy()
     {
-        IWebProxy? proxy = LazyConstructSystemProxyMethod.Value.Invoke(default, BindingFlags.DoNotWrapExceptions, default, default, default) as IWebProxy;
-        ArgumentNullException.ThrowIfNull(proxy);
-        InnerProxy = proxy;
+        InnerProxy = ConstructSystemProxy(null);
     }
 }
