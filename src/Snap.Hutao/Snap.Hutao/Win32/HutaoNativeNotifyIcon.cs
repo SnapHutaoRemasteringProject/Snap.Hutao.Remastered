@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.UI.Shell;
 using Snap.Hutao.Win32.Foundation;
 using System.Runtime.InteropServices;
 using WinRT;
@@ -27,7 +28,7 @@ internal sealed unsafe class HutaoNativeNotifyIcon
         }
     }
 
-    public void Create(HutaoNativeNotifyIconCallback callback, nint userData, ReadOnlySpan<char> tip)
+    public void Create(HutaoNativeNotifyIconCallback callback, GCHandle<NotifyIconController> userData, ReadOnlySpan<char> tip)
     {
         fixed (char* pTip = tip)
         {
@@ -53,7 +54,7 @@ internal sealed unsafe class HutaoNativeNotifyIcon
     {
 #pragma warning disable CS0649
         internal readonly IUnknownVftbl IUnknownVftbl;
-        internal readonly delegate* unmanaged[Stdcall]<nint, HutaoNativeNotifyIconCallback, nint, PCWSTR, HRESULT> Create;
+        internal readonly delegate* unmanaged[Stdcall]<nint, HutaoNativeNotifyIconCallback, GCHandle<NotifyIconController>, PCWSTR, HRESULT> Create;
         internal readonly delegate* unmanaged[Stdcall]<nint, PCWSTR, HRESULT> Recreate;
         internal readonly delegate* unmanaged[Stdcall]<nint, HRESULT> Destroy;
         internal readonly delegate* unmanaged[Stdcall]<nint, BOOL*, HRESULT> IsPromoted;

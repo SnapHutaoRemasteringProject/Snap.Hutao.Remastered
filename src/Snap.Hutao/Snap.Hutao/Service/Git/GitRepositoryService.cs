@@ -44,22 +44,17 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
 
             try
             {
-                return EnsureRepository(directory, name, info);
+                return EnsureRepository(directory, info, false);
             }
             catch (Exception)
             {
                 // Retry once
-                if (Directory.Exists(directory))
-                {
-                    Directory.Delete(directory, true);
-                }
-
-                return EnsureRepository(directory, name, info);
+                return EnsureRepository(directory, info, true);
             }
         }
     }
 
-    private ValueResult<bool, ValueDirectory> EnsureRepository(string directory, string name, GitRepository info)
+    private ValueResult<bool, ValueDirectory> EnsureRepository(string directory, GitRepository info, bool forceInvalid)
     {
         FetchOptions fetchOptions = new()
         {
@@ -89,10 +84,11 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
             },
         };
 
-        if (!Repository.IsValid(directory))
+        if (forceInvalid || !Repository.IsValid(directory))
         {
             if (Directory.Exists(directory))
             {
+                Directory.SetReadOnly(directory, false);
                 Directory.Delete(directory, true);
             }
 

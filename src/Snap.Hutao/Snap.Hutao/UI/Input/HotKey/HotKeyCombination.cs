@@ -20,7 +20,7 @@ internal sealed partial class HotKeyCombination : ObservableObject, IDisposable
     private readonly IMessenger messenger;
     private readonly HutaoNativeHotKeyActionKind kind;
     private readonly string settingKey;
-    private readonly nint handle;
+    private GCHandle<HotKeyCombination> handle;
 
     private HutaoNativeHotKeyAction? native;
 
@@ -47,7 +47,7 @@ internal sealed partial class HotKeyCombination : ObservableObject, IDisposable
             FieldRefOfKey(this) = KeyNameValue!.Value;
         }
 
-        handle = GCHandle.ToIntPtr(GCHandle.Alloc(this));
+        handle = new(this);
     }
 
     [FieldAccessor]
@@ -137,7 +137,7 @@ internal sealed partial class HotKeyCombination : ObservableObject, IDisposable
 
     public void Dispose()
     {
-        GCHandle.FromIntPtr(handle).Free();
+        handle.Dispose();
         native = default;
     }
 
@@ -166,9 +166,9 @@ internal sealed partial class HotKeyCombination : ObservableObject, IDisposable
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
-    private static void OnAction(BOOL isOn, nint data)
+    private static void OnAction(BOOL isOn, GCHandle<HotKeyCombination> data)
     {
-        if (GCHandle.FromIntPtr(data).Target is not HotKeyCombination combination)
+        if (data.Target is not { } combination)
         {
             return;
         }

@@ -138,7 +138,9 @@ internal sealed partial class LegacyMetadataService : IMetadataService
                     {
                         await writer.WriteAsync(line).ConfigureAwait(false);
 
+#pragma warning disable CA2404
                         if (!reader.EndOfStream)
+#pragma warning restore CA2404
                         {
                             await writer.WriteAsync("\r\n").ConfigureAwait(false);
                         }
