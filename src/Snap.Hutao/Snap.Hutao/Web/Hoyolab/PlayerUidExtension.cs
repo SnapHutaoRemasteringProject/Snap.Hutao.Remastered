@@ -8,6 +8,8 @@ namespace Snap.Hutao.Web.Hoyolab;
 
 internal static class PlayerUidExtension
 {
+    // IMPORTANT: DO NOT CONVERT TO EXTENSION BLOCK
+    // ReSharper disable once ConvertToExtensionBlock
     public static string ToRoleIdServerQueryString(this in PlayerUid playerUid)
     {
         NameValueCollection collection = HttpUtility.ParseQueryString(string.Empty);
@@ -19,6 +21,8 @@ internal static class PlayerUidExtension
         return query;
     }
 
+    // IMPORTANT: DO NOT CONVERT TO EXTENSION BLOCK
+    // ReSharper disable once ConvertToExtensionBlock
     public static string ToUidRegionQueryString(this in PlayerUid playerUid)
     {
         NameValueCollection collection = HttpUtility.ParseQueryString(string.Empty);

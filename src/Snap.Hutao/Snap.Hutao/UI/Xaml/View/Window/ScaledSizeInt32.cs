@@ -11,6 +11,6 @@ internal static class ScaledSizeInt32
 {
     public static SizeInt32 CreateForWindow(int width, int height, Microsoft.UI.Xaml.Window window)
     {
-        return new SizeInt32(width, height).Scale(window.GetRasterizationScale());
+        return new SizeInt32(width, height).Scale(window.RasterizationScale);
     }
 }

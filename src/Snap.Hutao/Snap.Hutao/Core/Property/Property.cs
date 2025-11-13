@@ -9,21 +9,6 @@ namespace Snap.Hutao.Core.Property;
 
 internal static class Property
 {
-    public static T Get<T>(this IProperty<T> property)
-    {
-        return property.Value;
-    }
-
-    public static T Set<T>(this IProperty<T> property, T value)
-    {
-        return property.Value = value;
-    }
-
-    public static IObservableProperty<T> Debug<T>(this IObservableProperty<T> property, string name)
-    {
-        return new ObservablePropertyDebug<T>(property, name);
-    }
-
     public static IProperty<T> Create<T>(T value)
     {
         return new Property<T>(value);
@@ -34,63 +19,96 @@ internal static class Property
         return new ObservableProperty<T>(value);
     }
 
-    public static IReadOnlyObservableProperty<T> AsReadOnly<T>(this IObservableProperty<T> property)
-    {
-        return new ObservablePropertyReadOnlyWrapper<T>(property);
-    }
-
     public static IReadOnlyObservableProperty<T> Observe<TSource, T>(IObservableProperty<TSource> source, Func<TSource, T> converter)
     {
         return new ObservablePropertyObserver<TSource, T>(source, converter);
     }
 
-    public static IObservableProperty<TSource> Link<TSource, TTarget>(this IObservableProperty<TSource> source, IProperty<TTarget> target, [RequireStaticDelegate] Action<TSource, IProperty<TTarget>> callback)
+    extension<T>(IProperty<T> property)
     {
-        return new ObservablePropertyValueChangedCallbackWrapper<TSource, IProperty<TTarget>>(source, callback, target);
-    }
-
-    public static IObservableProperty<bool> AlsoSetFalseWhenFalse(this IObservableProperty<bool> source, IProperty<bool> target)
-    {
-        return Link(source, target, static (value, target) =>
+        public T Get()
         {
-            if (!value)
-            {
-                target.Value = false;
-            }
-        });
+            return property.Value;
+        }
+
+        public T Set(T value)
+        {
+            return property.Value = value;
+        }
     }
 
-    public static IObservableProperty<T> SetWithCondition<T, TState>(this IObservableProperty<T> source, Func<T, TState, bool> condition, TState state)
+    extension(IProperty<bool> source)
     {
-        return new ObservablePropertyWithConditionalSetMethod<T, TState>(source, condition, state);
+        public IProperty<bool> Negate()
+        {
+            return new BooleanPropertyNegation(source);
+        }
     }
 
-    public static IObservableProperty<T> WithValueChangedCallback<T>(this IObservableProperty<T> source, [RequireStaticDelegate] Action<T> callback)
+    extension<T>(IObservableProperty<T> property)
     {
-        return new ObservablePropertyValueChangedCallbackWrapper<T>(source, callback);
+        public IObservableProperty<T> Debug(string name)
+        {
+            return new ObservablePropertyDebug<T>(property, name);
+        }
+
+        public IReadOnlyObservableProperty<T> AsReadOnly()
+        {
+            return new ObservablePropertyReadOnlyWrapper<T>(property);
+        }
+
+        public IObservableProperty<T> Link<TTarget>(IProperty<TTarget> target, [RequireStaticDelegate] Action<T, IProperty<TTarget>> callback)
+        {
+            return new ObservablePropertyValueChangedCallbackWrapper<T, IProperty<TTarget>>(property, callback, target);
+        }
+
+        public IObservableProperty<T> SetWithCondition<TState>(Func<T, TState, bool> condition, TState state)
+        {
+            return new ObservablePropertyWithConditionalSetMethod<T, TState>(property, condition, state);
+        }
+
+        public IObservableProperty<T> WithValueChangedCallback([RequireStaticDelegate] Action<T> callback)
+        {
+            return new ObservablePropertyValueChangedCallbackWrapper<T>(property, callback);
+        }
+
+        public IObservableProperty<T> WithValueChangedCallback<TState>([RequireStaticDelegate] Action<T, TState> callback, TState state)
+        {
+            return new ObservablePropertyValueChangedCallbackWrapper<T, TState>(property, callback, state);
+        }
     }
 
-    public static IObservableProperty<T> WithValueChangedCallback<T, TState>(this IObservableProperty<T> source, [RequireStaticDelegate] Action<T, TState> callback, TState state)
-    {
-        return new ObservablePropertyValueChangedCallbackWrapper<T, TState>(source, callback, state);
-    }
-
-    public static IObservableProperty<NameValue<T>?> AsNameValue<T>(this IObservableProperty<T> source, ImmutableArray<NameValue<T>> array)
+    extension<T>(IObservableProperty<T> property)
         where T : notnull
     {
-        return new ObservablePropertyNameValueWrapper<T>(source, array);
+        public IObservableProperty<NameValue<T>?> AsNameValue(ImmutableArray<NameValue<T>> array)
+        {
+            return new ObservablePropertyNameValueWrapper<T>(property, array);
+        }
     }
 
-    public static IObservableProperty<T?> AsNullableSelection<TSource, T>(this IProperty<TSource> source, ImmutableArray<T> array, Func<T?, TSource> valueSelector, IEqualityComparer<TSource> equalityComparer)
-        where T : class
-        where TSource : notnull
+    extension(IObservableProperty<bool> source)
     {
-        return new PropertyNullableSelectionWrapper<T, TSource>(source, array, valueSelector, equalityComparer);
+        public IObservableProperty<bool> AlsoSetFalseWhenFalse(IProperty<bool> target)
+        {
+            return Link(source, target, static (value, target) =>
+            {
+                if (!value)
+                {
+                    target.Value = false;
+                }
+            });
+        }
     }
 
-    public static IProperty<bool> Negate(this IProperty<bool> source)
+    extension<T>(IProperty<T> source)
+        where T : notnull
     {
-        return new BooleanPropertyNegation(source);
+        public IObservableProperty<TResult?> AsNullableSelection<TResult>(ImmutableArray<TResult> array, Func<TResult?, T> valueSelector, IEqualityComparer<T> equalityComparer)
+            where TResult : class
+        {
+            return new PropertyNullableSelectionWrapper<TResult, T>(source, array, valueSelector, equalityComparer);
+        }
     }
 }
 

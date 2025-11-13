@@ -8,18 +8,21 @@ namespace Snap.Hutao.Service.Game;
 
 internal static class AspectRatioExtension
 {
-    public static ImmutableArray<AspectRatio> Add(this IProperty<ImmutableArray<AspectRatio>> aspectRatios, AspectRatio aspectRatio)
+    extension(IProperty<ImmutableArray<AspectRatio>> aspectRatios)
     {
-        if (!aspectRatios.Value.Contains(aspectRatio))
+        public ImmutableArray<AspectRatio> Add(AspectRatio aspectRatio)
         {
-            aspectRatios.Value = aspectRatios.Value.Add(aspectRatio);
+            if (!aspectRatios.Value.Contains(aspectRatio))
+            {
+                aspectRatios.Value = aspectRatios.Value.Add(aspectRatio);
+            }
+
+            return aspectRatios.Value;
         }
 
-        return aspectRatios.Value;
-    }
-
-    public static ImmutableArray<AspectRatio> Remove(this IProperty<ImmutableArray<AspectRatio>> aspectRatios, AspectRatio aspectRatio)
-    {
-        return aspectRatios.Value = aspectRatios.Value.Remove(aspectRatio);
+        public ImmutableArray<AspectRatio> Remove(AspectRatio aspectRatio)
+        {
+            return aspectRatios.Value = aspectRatios.Value.Remove(aspectRatio);
+        }
     }
 }

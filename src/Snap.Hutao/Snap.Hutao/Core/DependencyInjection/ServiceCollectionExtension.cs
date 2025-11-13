@@ -15,53 +15,56 @@ internal static partial class ServiceCollectionExtension
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static partial IServiceCollection AddServices(this IServiceCollection services);
 
-    public static IServiceCollection AddJsonOptions(this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        return services.AddSingleton(JsonOptions.Default);
-    }
-
-    public static IServiceCollection AddDatabase(this IServiceCollection services)
-    {
-        return services.AddDbContextPool<AppDbContext>(AddDbContext);
-
-        static void AddDbContext(IServiceProvider serviceProvider, DbContextOptionsBuilder builder)
+        public IServiceCollection AddJsonOptions()
         {
-            string dbFile = HutaoRuntime.GetDataDirectoryFile("Userdata.db");
-            string sqlConnectionString = $"Data Source={dbFile}";
+            return services.AddSingleton(JsonOptions.Default);
+        }
 
-            try
+        public IServiceCollection AddDatabase()
+        {
+            return services.AddDbContextPool<AppDbContext>(AddDbContext);
+
+            static void AddDbContext(IServiceProvider serviceProvider, DbContextOptionsBuilder builder)
             {
-                using (AppDbContext context = AppDbContext.Create(serviceProvider, sqlConnectionString))
+                string dbFile = HutaoRuntime.GetDataDirectoryFile("Userdata.db");
+                string sqlConnectionString = $"Data Source={dbFile}";
+
+                try
                 {
-                    if (context.Database.GetPendingMigrations().Any())
+                    using (AppDbContext context = AppDbContext.Create(serviceProvider, sqlConnectionString))
                     {
-                        serviceProvider.GetRequiredService<ILogger<AppDbContext>>().LogInformation("[Database] Performing AppDbContext Migrations");
-                        context.Database.Migrate();
+                        if (context.Database.GetPendingMigrations().Any())
+                        {
+                            serviceProvider.GetRequiredService<ILogger<AppDbContext>>().LogInformation("[Database] Performing AppDbContext Migrations");
+                            context.Database.Migrate();
+                        }
                     }
                 }
-            }
-            catch (DbException ex)
-            {
-                string message = $"""
-                    Snap Hutao 在执行数据库迁移时发生错误。
-                    Snap Hutao encountered an error while performing database migration.
-                    
-                    Database at '{dbFile}'
-                    
-                    {ex.Message}
-                    """;
-                HutaoNative.Instance.ShowErrorMessage("Warning | 警告", message);
-                ProcessFactory.KillCurrent();
-                return;
-            }
+                catch (DbException ex)
+                {
+                    string message = $"""
+                        Snap Hutao 在执行数据库迁移时发生错误。
+                        Snap Hutao encountered an error while performing database migration.
 
-            builder
+                        Database at '{dbFile}'
+
+                        {ex.Message}
+                        """;
+                    HutaoNative.Instance.ShowErrorMessage("Warning | 警告", message);
+                    ProcessFactory.KillCurrent();
+                    return;
+                }
+
+                builder
 #if DEBUG
-                .EnableSensitiveDataLogging()
+                    .EnableSensitiveDataLogging()
 #endif
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                .UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>())
-                .UseSqlite(sqlConnectionString);
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                    .UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>())
+                    .UseSqlite(sqlConnectionString);
+            }
         }
     }
 }

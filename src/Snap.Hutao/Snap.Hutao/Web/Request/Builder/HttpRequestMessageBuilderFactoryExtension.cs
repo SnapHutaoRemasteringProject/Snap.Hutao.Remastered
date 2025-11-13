@@ -7,8 +7,11 @@ namespace Snap.Hutao.Web.Request.Builder;
 
 internal static class HttpRequestMessageBuilderFactoryExtension
 {
-    public static HttpRequestMessageBuilder Create(this IHttpRequestMessageBuilderFactory factory, string requestUri)
+    extension(IHttpRequestMessageBuilderFactory factory)
     {
-        return factory.Create().SetRequestUri(requestUri);
+        public HttpRequestMessageBuilder Create(string requestUri)
+        {
+            return factory.Create().SetRequestUri(requestUri);
+        }
     }
 }

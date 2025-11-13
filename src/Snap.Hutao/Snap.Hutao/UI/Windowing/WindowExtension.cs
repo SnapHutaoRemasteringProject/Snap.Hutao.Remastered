@@ -13,100 +13,88 @@ internal static class WindowExtension
 {
     private static readonly ConditionalWeakTable<Window, XamlWindowController> WindowControllers = [];
 
-    public static void InitializeController<TWindow>(this TWindow window, IServiceProvider serviceProvider)
+    extension<TWindow>(TWindow window)
         where TWindow : Window
     {
-        XamlWindowController windowController = new(window, serviceProvider);
-        WindowControllers.Add(window, windowController);
-    }
-
-    public static bool TryGetAssociatedServiceProvider(this Window window, out IServiceProvider serviceProvider)
-    {
-        if (WindowControllers.TryGetValue(window, out XamlWindowController? controller))
+        public void InitializeController(IServiceProvider serviceProvider)
         {
-            serviceProvider = controller.ServiceProvider;
-            return true;
+            XamlWindowController windowController = new(window, serviceProvider);
+            WindowControllers.Add(window, windowController);
         }
 
-        serviceProvider = default!;
-        return false;
+        public void UninitializeController()
+        {
+            WindowControllers.Remove(window);
+        }
+
+        public bool TrySetTaskbarProgress(TBPFLAG state, ulong value, ulong maximum)
+        {
+            if (!WindowControllers.TryGetValue(window, out XamlWindowController? controller))
+            {
+                return false;
+            }
+
+            return controller.TrySetTaskbarProgress(state, value, maximum);
+        }
     }
 
-    public static bool IsControllerInitialized<TWindow>()
-        where TWindow : Window
+    extension(Window window)
     {
-        foreach ((Window window, _) in WindowControllers)
+        public double RasterizationScale
         {
-            if (window is TWindow)
+            get
             {
-                return true;
+                return window is { Content.XamlRoot: { } xamlRoot }
+                    ? xamlRoot.RasterizationScale
+                    : WindowUtilities.GetRasterizationScaleForWindow(window.GetWindowHandle());
             }
         }
 
-        return false;
-    }
-
-    public static void UninitializeController<TWindow>(this TWindow window)
-        where TWindow : Window
-    {
-        WindowControllers.Remove(window);
-    }
-
-    public static bool TrySetTaskbarProgress<TWindow>(this TWindow window, TBPFLAG state, ulong value, ulong maximum)
-        where TWindow : Window
-    {
-        if (!WindowControllers.TryGetValue(window, out XamlWindowController? controller))
+        public bool TryGetAssociatedServiceProvider(out IServiceProvider serviceProvider)
         {
+            if (WindowControllers.TryGetValue(window, out XamlWindowController? controller))
+            {
+                serviceProvider = controller.ServiceProvider;
+                return true;
+            }
+
+            serviceProvider = default!;
             return false;
         }
 
-        return controller.TrySetTaskbarProgress(state, value, maximum);
-    }
+        public HWND GetWindowHandle()
+        {
+            return WindowNative.GetWindowHandle(window);
+        }
 
-    public static HWND GetWindowHandle(this Window? window)
-    {
-        return WindowNative.GetWindowHandle(window);
-    }
+        public void SwitchTo()
+        {
+            WindowUtilities.SwitchToWindow(window.GetWindowHandle());
+        }
 
-    public static void SwitchTo(this Window window)
-    {
-        SwitchTo(window.GetWindowHandle());
-    }
+        public void AddExtendedStyleLayered()
+        {
+            WindowUtilities.AddExtendedStyleLayered(window.GetWindowHandle());
+        }
 
-    public static void SwitchTo(HWND hwnd)
-    {
-        WindowUtilities.SwitchToWindow(hwnd);
-    }
+        public void RemoveExtendedStyleLayered()
+        {
+            WindowUtilities.RemoveExtendedStyleLayered(window.GetWindowHandle());
+        }
 
-    public static void AddExtendedStyleLayered(this Window window)
-    {
-        WindowUtilities.AddExtendedStyleLayered(window.GetWindowHandle());
-    }
+        public void SetLayeredWindowTransparency(byte alpha)
+        {
+            WindowUtilities.SetLayeredWindowTransparency(window.GetWindowHandle(), alpha);
+        }
 
-    public static void RemoveExtendedStyleLayered(this Window window)
-    {
-        WindowUtilities.RemoveExtendedStyleLayered(window.GetWindowHandle());
-    }
+        public void AddExtendedStyleToolWindow()
+        {
+            WindowUtilities.AddExtendedStyleToolWindow(window.GetWindowHandle());
+        }
 
-    public static void SetLayeredWindowTransparency(this Window window, byte alpha)
-    {
-        WindowUtilities.SetLayeredWindowTransparency(window.GetWindowHandle(), alpha);
-    }
-
-    public static void AddExtendedStyleToolWindow(this Window window)
-    {
-        WindowUtilities.AddExtendedStyleToolWindow(window.GetWindowHandle());
-    }
-
-    public static void RemoveStyleOverlappedWindow(this Window window)
-    {
-        WindowUtilities.RemoveStyleOverlappedWindow(window.GetWindowHandle());
-    }
-
-    public static double GetRasterizationScale(this Window window)
-    {
-        return window is { Content.XamlRoot: { } xamlRoot }
-            ? xamlRoot.RasterizationScale
-            : WindowUtilities.GetRasterizationScaleForWindow(window.GetWindowHandle());
+        public void RemoveStyleOverlappedWindow()
+        {
+            WindowUtilities.RemoveStyleOverlappedWindow(window.GetWindowHandle());
+        }
     }
 }

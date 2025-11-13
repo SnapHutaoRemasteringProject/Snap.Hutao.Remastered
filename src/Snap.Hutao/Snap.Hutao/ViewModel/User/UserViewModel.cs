@@ -142,7 +142,7 @@ internal sealed partial class UserViewModel : ObservableObject
         SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Add oversea user", "UserViewModel.Command", [("source", "Third Party"), ("kind", kind.ToString())]));
 
         await taskContext.SwitchToMainThreadAsync();
-        if (currentXamlWindowReference.GetXamlRoot() is not { } xamlRoot)
+        if (currentXamlWindowReference.XamlRoot is not { } xamlRoot)
         {
             return;
         }

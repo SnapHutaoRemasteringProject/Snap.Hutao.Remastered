@@ -177,7 +177,7 @@ internal sealed partial class TestViewModel : Abstraction.ViewModel
 
         if (currentXamlWindowReference.Window is MainWindow mainWindow)
         {
-            double scale = mainWindow.GetRasterizationScale();
+            double scale = mainWindow.RasterizationScale;
             mainWindow.AppWindow.Resize(new Windows.Graphics.SizeInt32(1372, 772).Scale(scale));
         }
     }

@@ -8,46 +8,48 @@ namespace Snap.Hutao.UI.Xaml;
 
 internal static class FrameworkElementExtension
 {
-    /// <summary>
-    /// Make properties below false:
-    /// <code>
-    /// * AllowFocusOnInteraction
-    /// * IsDoubleTapEnabled
-    /// * IsHitTestVisible
-    /// * IsHoldingEnabled
-    /// * IsRightTapEnabled
-    /// * IsTabStop
-    /// </code>
-    /// </summary>
-    /// <param name="frameworkElement">元素</param>
-    public static void DisableInteraction(this FrameworkElement frameworkElement)
+    extension(FrameworkElement frameworkElement)
     {
-        frameworkElement.AllowFocusOnInteraction = false;
-        frameworkElement.IsDoubleTapEnabled = false;
-        frameworkElement.IsHitTestVisible = false;
-        frameworkElement.IsHoldingEnabled = false;
-        frameworkElement.IsRightTapEnabled = false;
-        frameworkElement.IsTabStop = false;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T? DataContext<T>(this FrameworkElement element)
-        where T : class
-    {
-        return element.DataContext as T;
-    }
-
-    public static void InitializeDataContext<TDataContext>(this FrameworkElement frameworkElement, IServiceProvider serviceProvider)
-        where TDataContext : class
-    {
-        try
+        /// <summary>
+        /// Make properties below false:
+        /// <code>
+        /// * AllowFocusOnInteraction
+        /// * IsDoubleTapEnabled
+        /// * IsHitTestVisible
+        /// * IsHoldingEnabled
+        /// * IsRightTapEnabled
+        /// * IsTabStop
+        /// </code>
+        /// </summary>
+        public void DisableInteraction()
         {
-            frameworkElement.DataContext = serviceProvider.GetRequiredService<TDataContext>();
-            (frameworkElement as IDataContextInitialized)?.OnDataContextInitialized(serviceProvider);
+            frameworkElement.AllowFocusOnInteraction = false;
+            frameworkElement.IsDoubleTapEnabled = false;
+            frameworkElement.IsHitTestVisible = false;
+            frameworkElement.IsHoldingEnabled = false;
+            frameworkElement.IsRightTapEnabled = false;
+            frameworkElement.IsTabStop = false;
         }
-        catch (Exception ex)
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public T? DataContext<T>()
+            where T : class
         {
-            SentrySdk.CaptureException(ex);
+            return frameworkElement.DataContext as T;
+        }
+
+        public void InitializeDataContext<TDataContext>(IServiceProvider serviceProvider)
+            where TDataContext : class
+        {
+            try
+            {
+                frameworkElement.DataContext = serviceProvider.GetRequiredService<TDataContext>();
+                (frameworkElement as IDataContextInitialized)?.OnDataContextInitialized(serviceProvider);
+            }
+            catch (Exception ex)
+            {
+                SentrySdk.CaptureException(ex);
+            }
         }
     }
 }

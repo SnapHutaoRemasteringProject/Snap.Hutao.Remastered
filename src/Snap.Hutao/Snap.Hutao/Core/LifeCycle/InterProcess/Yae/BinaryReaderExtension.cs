@@ -7,11 +7,14 @@ namespace Snap.Hutao.Core.LifeCycle.InterProcess.Yae;
 
 internal static class BinaryReaderExtension
 {
-    public static unsafe T Read<T>(this BinaryReader reader)
-        where T : unmanaged
+    extension(BinaryReader reader)
     {
-        T data = default;
-        reader.ReadExactly(new(&data, sizeof(T)));
-        return data;
+        public unsafe T Read<T>()
+            where T : unmanaged
+        {
+            T data = default;
+            reader.ReadExactly(new(&data, sizeof(T)));
+            return data;
+        }
     }
 }

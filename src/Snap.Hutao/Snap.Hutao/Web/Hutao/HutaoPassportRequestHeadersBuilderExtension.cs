@@ -8,21 +8,23 @@ namespace Snap.Hutao.Web.Hutao;
 
 internal static class HutaoPassportRequestHeadersBuilderExtension
 {
-    public static TBuilder SetAccessToken<TBuilder>(this TBuilder builder, string? accessToken)
+    extension<TBuilder>(TBuilder builder)
         where TBuilder : IHttpHeadersBuilder<HttpRequestHeaders>
     {
-        builder.Headers.Authorization = string.IsNullOrEmpty(accessToken) ? default : new("Bearer", accessToken);
-        return builder;
-    }
-
-    public static TBuilder SetHomaToken<TBuilder>(this TBuilder builder, string? homaToken)
-        where TBuilder : IHttpHeadersBuilder<HttpRequestHeaders>
-    {
-        if (!string.IsNullOrEmpty(homaToken))
+        public TBuilder SetAccessToken(string? accessToken)
         {
-            builder.Headers.Add("x-homa-token", homaToken);
+            builder.Headers.Authorization = string.IsNullOrEmpty(accessToken) ? default : new("Bearer", accessToken);
+            return builder;
         }
 
-        return builder;
+        public TBuilder SetHomaToken(string? homaToken)
+        {
+            if (!string.IsNullOrEmpty(homaToken))
+            {
+                builder.Headers.Add("x-homa-token", homaToken);
+            }
+
+            return builder;
+        }
     }
 }

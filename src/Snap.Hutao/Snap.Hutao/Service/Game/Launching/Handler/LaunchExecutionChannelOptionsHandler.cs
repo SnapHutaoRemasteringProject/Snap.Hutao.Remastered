@@ -15,7 +15,7 @@ internal sealed class LaunchExecutionChannelOptionsHandler : AbstractLaunchExecu
 {
     public override ValueTask BeforeAsync(BeforeLaunchExecutionContext context)
     {
-        string configPath = context.FileSystem.GetGameConfigurationFilePath();
+        string configPath = context.FileSystem.GameConfigurationFilePath;
 
         IniElement[]? elements;
         try
@@ -47,7 +47,7 @@ internal sealed class LaunchExecutionChannelOptionsHandler : AbstractLaunchExecu
         // Config file has already been overwritten as target scheme at the moment.
         // We should backup config file every time we launch the game due to the possibility of the game version outdated.
         context.ServiceProvider.GetRequiredService<IGameConfigurationFileService>()
-            .Backup(context.FileSystem.GetGameConfigurationFilePath(), context.FileSystem.IsExecutableOversea());
+            .Backup(context.FileSystem.GameConfigurationFilePath, context.FileSystem.IsExecutableOversea);
 
         return ValueTask.CompletedTask;
     }

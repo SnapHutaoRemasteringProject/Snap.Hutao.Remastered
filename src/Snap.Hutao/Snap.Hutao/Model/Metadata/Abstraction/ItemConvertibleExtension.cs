@@ -9,8 +9,11 @@ internal static class ItemConvertibleExtension
 {
     private static readonly ConditionalWeakTable<IItemConvertible, Model.Item> Items = [];
 
-    public static Model.Item GetOrCreateItem(this IItemConvertible source)
+    extension(IItemConvertible source)
     {
-        return Items.GetOrAdd(source, static value => value.ToItem<Model.Item>());
+        public Model.Item GetOrCreateItem()
+        {
+            return Items.GetOrAdd(source, static value => value.ToItem<Model.Item>());
+        }
     }
 }

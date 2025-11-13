@@ -30,13 +30,13 @@ internal sealed partial class GameChannelOptionsService : IGameChannelOptionsSer
         ArgumentNullException.ThrowIfNull(gameFileSystem);
         using (gameFileSystem)
         {
-            string configFilePath = gameFileSystem.GetGameConfigurationFilePath();
+            string configFilePath = gameFileSystem.GameConfigurationFilePath;
 
             if (!File.Exists(configFilePath))
             {
                 // Try restore the configuration file if it does not exist
                 // The configuration file may be deleted by an incompatible launcher(e.g., CN client but OS launcher and vice versa)
-                gameConfigurationFileService.Restore(configFilePath, gameFileSystem.IsExecutableOversea());
+                gameConfigurationFileService.Restore(configFilePath, gameFileSystem.IsExecutableOversea);
 
                 if (!File.Exists(configFilePath))
                 {
@@ -44,7 +44,7 @@ internal sealed partial class GameChannelOptionsService : IGameChannelOptionsSer
                 }
             }
 
-            string scriptVersionFilePath = gameFileSystem.GetScriptVersionFilePath();
+            string scriptVersionFilePath = gameFileSystem.ScriptVersionFilePath;
 
             if (!File.Exists(scriptVersionFilePath))
             {
@@ -52,7 +52,7 @@ internal sealed partial class GameChannelOptionsService : IGameChannelOptionsSer
                 // If the configuration file and ScriptVersion file are both missing, the game content is corrupted
                 if (!GameScriptVersion.Patch(configFilePath, scriptVersionFilePath))
                 {
-                    return ChannelOptions.GameContentCorrupted(gameFileSystem.GetGameDirectory());
+                    return ChannelOptions.GameContentCorrupted(gameFileSystem.GameDirectory);
                 }
             }
 

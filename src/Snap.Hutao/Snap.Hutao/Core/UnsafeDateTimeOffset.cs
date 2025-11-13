@@ -14,6 +14,21 @@ internal static class UnsafeDateTimeOffset
         return new(DateTime.Parse(span, CultureInfo.InvariantCulture), offset);
     }
 
+    public static DateTimeOffset FromUnixTimeRelaxed(long? timestamp, in DateTimeOffset defaultValue)
+    {
+        if (timestamp is not { } value)
+        {
+            return defaultValue;
+        }
+
+        return value switch
+        {
+            >= -62135596800L and <= 253402300799L => DateTimeOffset.FromUnixTimeSeconds(value),
+            >= -62135596800000L and <= 253402300799999L => DateTimeOffset.FromUnixTimeMilliseconds(value),
+            _ => defaultValue,
+        };
+    }
+
     [Pure]
     public static DateTimeOffset AdjustOffsetOnly(DateTimeOffset dateTimeOffset, in TimeSpan offset)
     {

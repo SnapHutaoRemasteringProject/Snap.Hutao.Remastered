@@ -57,7 +57,7 @@ internal sealed class HutaoStatisticsFactory
 
         foreach (ItemCount item in items)
         {
-            IStatisticsItemConvertible source = item.Item.StringLength() switch
+            IStatisticsItemConvertible source = item.Item.StringLength switch
             {
                 8U => context.GetAvatar(item.Item),
                 5U => context.GetWeapon(item.Item),

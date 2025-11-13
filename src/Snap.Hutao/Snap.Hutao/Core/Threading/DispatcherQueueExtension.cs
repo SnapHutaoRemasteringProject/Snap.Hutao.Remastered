@@ -13,135 +13,138 @@ internal static class DispatcherQueueExtension
     // Once disposed, Invoke methods will not work anymore.
     private static readonly ObjectPool<ManualResetEventSlim> EventPool = new DefaultObjectPoolProvider().Create(new PooledManualResetEventSlimPolicy());
 
-    public static void Invoke(this DispatcherQueue dispatcherQueue, Action action)
+    extension(DispatcherQueue dispatcherQueue)
     {
-        if (dispatcherQueue.HasThreadAccess)
+        public void Invoke(Action action)
         {
-            action();
-            return;
-        }
-
-        ExceptionDispatchInfo? exceptionDispatchInfo = null;
-        ManualResetEventSlim blockEvent = EventPool.Get();
-
-        dispatcherQueue.TryEnqueue(() =>
-        {
-            try
+            if (dispatcherQueue.HasThreadAccess)
             {
                 action();
+                return;
             }
-            catch (Exception ex)
+
+            ExceptionDispatchInfo? exceptionDispatchInfo = null;
+            ManualResetEventSlim blockEvent = EventPool.Get();
+
+            dispatcherQueue.TryEnqueue(() =>
             {
-                exceptionDispatchInfo = ExceptionDispatchInfo.Capture(ex);
-            }
-            finally
-            {
-                blockEvent.Set();
-            }
-        });
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    exceptionDispatchInfo = ExceptionDispatchInfo.Capture(ex);
+                }
+                finally
+                {
+                    blockEvent.Set();
+                }
+            });
 
-        blockEvent.Wait();
-        EventPool.Return(blockEvent);
+            blockEvent.Wait();
+            EventPool.Return(blockEvent);
 
-        exceptionDispatchInfo?.Throw();
-    }
-
-    public static void Invoke(this DispatcherQueue dispatcherQueue, DispatcherQueuePriority priority, Action action)
-    {
-        if (dispatcherQueue.HasThreadAccess)
-        {
-            action();
-            return;
+            exceptionDispatchInfo?.Throw();
         }
 
-        ExceptionDispatchInfo? exceptionDispatchInfo = null;
-        ManualResetEventSlim blockEvent = EventPool.Get();
-        dispatcherQueue.TryEnqueue(priority, () =>
+        public void Invoke(DispatcherQueuePriority priority, Action action)
         {
-            try
+            if (dispatcherQueue.HasThreadAccess)
             {
                 action();
+                return;
             }
-            catch (Exception ex)
+
+            ExceptionDispatchInfo? exceptionDispatchInfo = null;
+            ManualResetEventSlim blockEvent = EventPool.Get();
+            dispatcherQueue.TryEnqueue(priority, () =>
             {
-                exceptionDispatchInfo = ExceptionDispatchInfo.Capture(ex);
-            }
-            finally
-            {
-                blockEvent.Set();
-            }
-        });
+                try
+                {
+                    action();
+                }
+                catch (Exception ex)
+                {
+                    exceptionDispatchInfo = ExceptionDispatchInfo.Capture(ex);
+                }
+                finally
+                {
+                    blockEvent.Set();
+                }
+            });
 
-        blockEvent.Wait();
-        EventPool.Return(blockEvent);
+            blockEvent.Wait();
+            EventPool.Return(blockEvent);
 
-        exceptionDispatchInfo?.Throw();
-    }
-
-    public static T Invoke<T>(this DispatcherQueue dispatcherQueue, Func<T> func)
-    {
-        if (dispatcherQueue.HasThreadAccess)
-        {
-            return func();
+            exceptionDispatchInfo?.Throw();
         }
 
-        T result = default!;
-        ExceptionDispatchInfo? exceptionDispatchInfo = null;
-        ManualResetEventSlim blockEvent = EventPool.Get();
-        dispatcherQueue.TryEnqueue(() =>
+        public T Invoke<T>(Func<T> func)
         {
-            try
+            if (dispatcherQueue.HasThreadAccess)
             {
-                result = func();
+                return func();
             }
-            catch (Exception ex)
+
+            T result = default!;
+            ExceptionDispatchInfo? exceptionDispatchInfo = null;
+            ManualResetEventSlim blockEvent = EventPool.Get();
+            dispatcherQueue.TryEnqueue(() =>
             {
-                exceptionDispatchInfo = ExceptionDispatchInfo.Capture(ex);
-            }
-            finally
-            {
-                blockEvent.Set();
-            }
-        });
+                try
+                {
+                    result = func();
+                }
+                catch (Exception ex)
+                {
+                    exceptionDispatchInfo = ExceptionDispatchInfo.Capture(ex);
+                }
+                finally
+                {
+                    blockEvent.Set();
+                }
+            });
 
-        blockEvent.Wait();
-        EventPool.Return(blockEvent);
+            blockEvent.Wait();
+            EventPool.Return(blockEvent);
 
-        exceptionDispatchInfo?.Throw();
-        return result;
-    }
-
-    public static T Invoke<T>(this DispatcherQueue dispatcherQueue, DispatcherQueuePriority priority, Func<T> func)
-    {
-        if (dispatcherQueue.HasThreadAccess)
-        {
-            return func();
+            exceptionDispatchInfo?.Throw();
+            return result;
         }
 
-        T result = default!;
-        ExceptionDispatchInfo? exceptionDispatchInfo = null;
-        ManualResetEventSlim blockEvent = EventPool.Get();
-        dispatcherQueue.TryEnqueue(priority, () =>
+        public T Invoke<T>(DispatcherQueuePriority priority, Func<T> func)
         {
-            try
+            if (dispatcherQueue.HasThreadAccess)
             {
-                result = func();
+                return func();
             }
-            catch (Exception ex)
-            {
-                exceptionDispatchInfo = ExceptionDispatchInfo.Capture(ex);
-            }
-            finally
-            {
-                blockEvent.Set();
-            }
-        });
 
-        blockEvent.Wait();
-        EventPool.Return(blockEvent);
+            T result = default!;
+            ExceptionDispatchInfo? exceptionDispatchInfo = null;
+            ManualResetEventSlim blockEvent = EventPool.Get();
+            dispatcherQueue.TryEnqueue(priority, () =>
+            {
+                try
+                {
+                    result = func();
+                }
+                catch (Exception ex)
+                {
+                    exceptionDispatchInfo = ExceptionDispatchInfo.Capture(ex);
+                }
+                finally
+                {
+                    blockEvent.Set();
+                }
+            });
 
-        exceptionDispatchInfo?.Throw();
-        return result;
+            blockEvent.Wait();
+            EventPool.Return(blockEvent);
+
+            exceptionDispatchInfo?.Throw();
+            return result;
+        }
     }
 
     private sealed class PooledManualResetEventSlimPolicy : PooledObjectPolicy<ManualResetEventSlim>

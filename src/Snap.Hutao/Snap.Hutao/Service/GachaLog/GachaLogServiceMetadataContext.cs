@@ -65,7 +65,7 @@ internal sealed class GachaLogServiceMetadataContext : IMetadataContext,
 
     public INameQualityAccess GetNameQualityByItemId(uint id)
     {
-        uint place = id.StringLength();
+        uint place = id.StringLength;
         return place switch
         {
             8U => IdAvatarMap[id],

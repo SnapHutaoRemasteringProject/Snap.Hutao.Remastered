@@ -19,7 +19,7 @@ internal sealed class UIAFInfo
     [UsedImplicitly]
     public DateTimeOffset ExportDateTime
     {
-        get => DateTimeOffsetExtension.UnsafeRelaxedFromUnixTime(ExportTimestamp, DateTimeOffset.MinValue);
+        get => UnsafeDateTimeOffset.FromUnixTimeRelaxed(ExportTimestamp, DateTimeOffset.MinValue);
     }
 
     [JsonPropertyName("export_app_version")]

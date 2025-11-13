@@ -9,39 +9,42 @@ namespace Snap.Hutao.Core.IO;
 
 internal static class ValueFileExtension
 {
-    public static async ValueTask<ValueResult<bool, T?>> DeserializeFromJsonNoThrowAsync<T>(this ValueFile file, JsonSerializerOptions options)
-        where T : class
+    extension(ValueFile file)
     {
-        try
+        public async ValueTask<ValueResult<bool, T?>> DeserializeFromJsonNoThrowAsync<T>(JsonSerializerOptions options)
+            where T : class
         {
-            using (FileStream stream = File.OpenRead(file))
+            try
             {
-                T? t = await JsonSerializer.DeserializeAsync<T>(stream, options).ConfigureAwait(false);
-                return new(true, t);
+                using (FileStream stream = File.OpenRead(file))
+                {
+                    T? t = await JsonSerializer.DeserializeAsync<T>(stream, options).ConfigureAwait(false);
+                    return new(true, t);
+                }
+            }
+            catch (Exception ex)
+            {
+                HutaoNative.Instance.ShowErrorMessage(ex.Message, ExceptionFormat.Format(ex));
+                return new(false, null);
             }
         }
-        catch (Exception ex)
-        {
-            HutaoNative.Instance.ShowErrorMessage(ex.Message, ExceptionFormat.Format(ex));
-            return new(false, null);
-        }
-    }
 
-    public static async ValueTask<bool> SerializeToJsonNoThrowAsync<T>(this ValueFile file, T obj, JsonSerializerOptions options)
-    {
-        try
+        public async ValueTask<bool> SerializeToJsonNoThrowAsync<T>(T obj, JsonSerializerOptions options)
         {
-            using (FileStream stream = File.Create(file))
+            try
             {
-                await JsonSerializer.SerializeAsync(stream, obj, options).ConfigureAwait(false);
-            }
+                using (FileStream stream = File.Create(file))
+                {
+                    await JsonSerializer.SerializeAsync(stream, obj, options).ConfigureAwait(false);
+                }
 
-            return true;
-        }
-        catch (Exception ex)
-        {
-            HutaoNative.Instance.ShowErrorMessage(ex.Message, ExceptionFormat.Format(ex));
-            return false;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                HutaoNative.Instance.ShowErrorMessage(ex.Message, ExceptionFormat.Format(ex));
+                return false;
+            }
         }
     }
 }

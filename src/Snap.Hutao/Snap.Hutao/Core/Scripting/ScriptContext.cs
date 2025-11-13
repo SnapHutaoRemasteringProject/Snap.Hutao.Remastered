@@ -16,7 +16,7 @@ using System.Net.Http;
 
 namespace Snap.Hutao.Core.Scripting;
 
-[UsedImplicitly]
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 [SuppressMessage("", "SH001", Justification = "ScriptContext must be public in order to be exposed to the scripting environment")]
 public sealed class ScriptContext
 {

@@ -5,28 +5,34 @@ namespace Snap.Hutao.Core.Diagnostics;
 
 internal static class ProcessExtension
 {
-    public static bool IsRunning(this IProcess process)
+    extension(IProcess process)
     {
-        try
+        public bool IsRunning
         {
-            return !process.HasExited;
+            get
+            {
+                try
+                {
+                    return !process.HasExited;
+                }
+                catch (Exception ex)
+                {
+                    SentrySdk.CaptureException(ex);
+                    return false;
+                }
+            }
         }
-        catch (Exception ex)
-        {
-            SentrySdk.CaptureException(ex);
-            return false;
-        }
-    }
 
-    public static void SafeWaitForExit(this IProcess process)
-    {
-        try
+        public void SafeWaitForExit()
         {
-            process.WaitForExit();
-        }
-        catch (Exception e)
-        {
-            SentrySdk.CaptureException(e);
+            try
+            {
+                process.WaitForExit();
+            }
+            catch (Exception e)
+            {
+                SentrySdk.CaptureException(e);
+            }
         }
     }
 }

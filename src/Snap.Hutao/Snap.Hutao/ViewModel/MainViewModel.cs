@@ -81,7 +81,7 @@ internal sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
         if (LocalSetting.Get(SettingKeys.AlwaysIsFirstRunAfterUpdate, false) || XamlApplicationLifetime.IsFirstRunAfterUpdate)
         {
             // Check if the window showed, only set to false if it is shown
-            if (ShowWebView2WindowAction.TryShow<UpdateLogContentProvider>(currentXamlWindowReference.GetXamlRoot()) is not null)
+            if (ShowWebView2WindowAction.TryShow<UpdateLogContentProvider>(currentXamlWindowReference.XamlRoot) is not null)
             {
                 SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Show update log window", "MainViewModel.Command"));
                 XamlApplicationLifetime.IsFirstRunAfterUpdate = false;

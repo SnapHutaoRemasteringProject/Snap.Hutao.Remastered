@@ -7,8 +7,11 @@ namespace Snap.Hutao.Core.DependencyInjection.Abstraction;
 
 internal static class OverseaSupportFactoryExtension
 {
-    public static TClient CreateFor<TClient>(this IOverseaSupportFactory<TClient> factory, UserAndUid userAndUid)
+    extension<TClient>(IOverseaSupportFactory<TClient> factory)
     {
-        return factory.Create(userAndUid.IsOversea);
+        public TClient CreateFor(UserAndUid userAndUid)
+        {
+            return factory.Create(userAndUid.IsOversea);
+        }
     }
 }

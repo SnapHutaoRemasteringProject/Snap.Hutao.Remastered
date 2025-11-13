@@ -158,7 +158,7 @@ internal sealed class YaeNamedPipeServer : IAsyncDisposable
         using BinaryWriter writer = new(serverStream, Encoding.UTF8);
 
         ImmutableArray<YaeData>.Builder builder = ImmutableArray.CreateBuilder<YaeData>();
-        while (gameProcess.IsRunning() && serverStream.IsConnected)
+        while (gameProcess.IsRunning && serverStream.IsConnected)
         {
             try
             {

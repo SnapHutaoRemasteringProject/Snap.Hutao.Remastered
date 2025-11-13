@@ -8,99 +8,109 @@ namespace Snap.Hutao.Extension;
 
 internal static class SpanExtension
 {
-    public static ReadOnlySpan<T> After<T>(this ReadOnlySpan<T> span, T separator)
+    extension<T>(ReadOnlySpan<T> span)
         where T : IEquatable<T>
     {
-        int indexOfSeparator = span.IndexOf(separator);
-        return indexOfSeparator > 0 ? span[(indexOfSeparator + 1)..] : span;
+        public ReadOnlySpan<T> After(T separator)
+        {
+            int indexOfSeparator = span.IndexOf(separator);
+            return indexOfSeparator > 0 ? span[(indexOfSeparator + 1)..] : span;
+        }
+
+        public ReadOnlySpan<T> Before(T separator)
+        {
+            int indexOfSeparator = span.IndexOf(separator);
+            return indexOfSeparator > 0 ? span[..indexOfSeparator] : span;
+        }
+
+        public bool TrySplitIntoTwo(T separator, out ReadOnlySpan<T> left, out ReadOnlySpan<T> right)
+        {
+            int indexOfSeparator = span.IndexOf(separator);
+
+            if (indexOfSeparator > 0)
+            {
+                left = span[..indexOfSeparator];
+                right = span[(indexOfSeparator + 1)..];
+
+                return true;
+            }
+
+            left = default;
+            right = default;
+            return false;
+        }
     }
 
-    public static ReadOnlySpan<T> Before<T>(this ReadOnlySpan<T> span, T separator)
-        where T : IEquatable<T>
-    {
-        int indexOfSeparator = span.IndexOf(separator);
-        return indexOfSeparator > 0 ? span[..indexOfSeparator] : span;
-    }
-
-    [Pure]
-    public static T? BinarySearch<TItem, T>(this ReadOnlySpan<T> span, TItem item, Func<TItem, T, int> compare)
+    extension<TItem, T>(ReadOnlySpan<T> span)
         where T : class
     {
-        int left = 0;
-        int right = span.Length - 1;
-
-        while (left <= right)
+        [Pure]
+        public T? BinarySearch(TItem item, Func<TItem, T, int> compare)
         {
-            int middle = (int)(((uint)left + (uint)right) >> 1);
-            ref readonly T current = ref span[middle];
-            switch (compare(item, current))
-            {
-                case 0:
-                    return current;
-                case < 0:
-                    right = middle - 1;
-                    break;
-                default:
-                    left = middle + 1;
-                    break;
-            }
-        }
+            int left = 0;
+            int right = span.Length - 1;
 
-        return default;
+            while (left <= right)
+            {
+                int middle = (int)(((uint)left + (uint)right) >> 1);
+                ref readonly T current = ref span[middle];
+                switch (compare(item, current))
+                {
+                    case 0:
+                        return current;
+                    case < 0:
+                        right = middle - 1;
+                        break;
+                    default:
+                        left = middle + 1;
+                        break;
+                }
+            }
+
+            return default;
+        }
     }
 
-    public static int IndexOfMax<T>(this in ReadOnlySpan<T> span)
+    extension<T>(ReadOnlySpan<T> span)
         where T : INumber<T>, IMinMaxValue<T>
     {
-        T max = T.MinValue;
-        int maxIndex = 0;
-        for (int i = 0; i < span.Length; i++)
+        public int IndexOfMax()
         {
-            ref readonly T current = ref span[i];
-            if (current > max)
+            T max = T.MinValue;
+            int maxIndex = 0;
+            for (int i = 0; i < span.Length; i++)
             {
-                maxIndex = i;
-                max = current;
+                ref readonly T current = ref span[i];
+                if (current > max)
+                {
+                    maxIndex = i;
+                    max = current;
+                }
             }
-        }
 
-        return maxIndex;
+            return maxIndex;
+        }
     }
 
-    public static bool TrySplitIntoTwo<T>(this in ReadOnlySpan<T> span, T separator, out ReadOnlySpan<T> left, out ReadOnlySpan<T> right)
-        where T : IEquatable<T>?
+    extension(ReadOnlySpan<byte> span)
     {
-        int indexOfSeparator = span.IndexOf(separator);
-
-        if (indexOfSeparator > 0)
+        public byte Average()
         {
-            left = span[..indexOfSeparator];
-            right = span[(indexOfSeparator + 1)..];
+            if (span.IsEmpty)
+            {
+                return 0;
+            }
 
-            return true;
+            int sum = 0;
+            int count = 0;
+            foreach (ref readonly byte b in span)
+            {
+                sum += b;
+                count++;
+            }
+
+            // ReSharper disable once IntDivisionByZero
+            return unchecked((byte)(sum / count));
         }
-
-        left = default;
-        right = default;
-        return false;
-    }
-
-    public static byte Average(this in ReadOnlySpan<byte> span)
-    {
-        if (span.IsEmpty)
-        {
-            return 0;
-        }
-
-        int sum = 0;
-        int count = 0;
-        foreach (ref readonly byte b in span)
-        {
-            sum += b;
-            count++;
-        }
-
-        // ReSharper disable once IntDivisionByZero
-        return unchecked((byte)(sum / count));
     }
 }

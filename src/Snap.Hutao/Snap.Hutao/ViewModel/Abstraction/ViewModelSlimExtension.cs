@@ -9,11 +9,14 @@ namespace Snap.Hutao.ViewModel.Abstraction;
 
 internal static class ViewModelSlimExtension
 {
-    public static void InitializeViewModelSlim<TDataContext>(this FrameworkElement frameworkElement, IServiceProvider serviceProvider)
-        where TDataContext : ViewModelSlim
+    extension(FrameworkElement frameworkElement)
     {
-        frameworkElement.Unloaded += OnFrameworkElementUnloaded;
-        frameworkElement.InitializeDataContext<TDataContext>(serviceProvider);
+        public void InitializeViewModelSlim<TDataContext>(IServiceProvider serviceProvider)
+            where TDataContext : ViewModelSlim
+        {
+            frameworkElement.Unloaded += OnFrameworkElementUnloaded;
+            frameworkElement.InitializeDataContext<TDataContext>(serviceProvider);
+        }
     }
 
     private static void OnFrameworkElementUnloaded(object sender, RoutedEventArgs e)

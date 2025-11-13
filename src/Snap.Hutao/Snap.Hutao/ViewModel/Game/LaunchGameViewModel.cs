@@ -287,8 +287,8 @@ internal sealed partial class LaunchGameViewModel : Abstraction.ViewModel, IView
         ArgumentNullException.ThrowIfNull(gameFileSystem);
         using (gameFileSystem)
         {
-            Directory.CreateDirectory(gameFileSystem.GetScreenShotDirectory());
-            await Windows.System.Launcher.LaunchFolderPathAsync(gameFileSystem.GetScreenShotDirectory());
+            Directory.CreateDirectory(gameFileSystem.ScreenShotDirectory);
+            await Windows.System.Launcher.LaunchFolderPathAsync(gameFileSystem.ScreenShotDirectory);
         }
     }
 

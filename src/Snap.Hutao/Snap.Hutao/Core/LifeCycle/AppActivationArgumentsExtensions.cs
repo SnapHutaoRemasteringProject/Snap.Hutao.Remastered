@@ -9,45 +9,48 @@ namespace Snap.Hutao.Core.LifeCycle;
 
 internal static class AppActivationArgumentsExtensions
 {
-    public static bool TryGetProtocolActivatedUri(this AppActivationArguments activatedEventArgs, [NotNullWhen(true)] out Uri? uri)
+    extension(AppActivationArguments activatedEventArgs)
     {
-        uri = null;
-        if (activatedEventArgs.Data is not IProtocolActivatedEventArgs protocolArgs)
+        public bool TryGetProtocolActivatedUri([NotNullWhen(true)] out Uri? uri)
         {
-            return false;
+            uri = null;
+            if (activatedEventArgs.Data is not IProtocolActivatedEventArgs protocolArgs)
+            {
+                return false;
+            }
+
+            uri = protocolArgs.Uri;
+            return true;
         }
 
-        uri = protocolArgs.Uri;
-        return true;
-    }
-
-    public static bool TryGetLaunchActivatedArguments(this AppActivationArguments activatedEventArgs, [NotNullWhen(true)] out string? arguments)
-    {
-        arguments = null;
-
-        if (activatedEventArgs.Data is not ILaunchActivatedEventArgs launchArgs)
+        public bool TryGetLaunchActivatedArguments([NotNullWhen(true)] out string? arguments)
         {
-            return false;
+            arguments = null;
+
+            if (activatedEventArgs.Data is not ILaunchActivatedEventArgs launchArgs)
+            {
+                return false;
+            }
+
+            arguments = launchArgs.Arguments.Trim();
+            return true;
         }
 
-        arguments = launchArgs.Arguments.Trim();
-        return true;
-    }
-
-    public static bool TryGetAppNotificationActivatedArguments(this AppActivationArguments activatedEventArgs, out string? argument, [NotNullWhen(true)] out IDictionary<string, string>? arguments, [NotNullWhen(true)] out IDictionary<string, string>? userInput)
-    {
-        argument = null;
-        arguments = null;
-        userInput = null;
-
-        if (activatedEventArgs.Data is not AppNotificationActivatedEventArgs appNotificationArgs)
+        public bool TryGetAppNotificationActivatedArguments(out string? argument, [NotNullWhen(true)] out IDictionary<string, string>? arguments, [NotNullWhen(true)] out IDictionary<string, string>? userInput)
         {
-            return false;
-        }
+            argument = null;
+            arguments = null;
+            userInput = null;
 
-        argument = appNotificationArgs.Argument;
-        arguments = appNotificationArgs.Arguments;
-        userInput = appNotificationArgs.UserInput;
-        return true;
+            if (activatedEventArgs.Data is not AppNotificationActivatedEventArgs appNotificationArgs)
+            {
+                return false;
+            }
+
+            argument = appNotificationArgs.Argument;
+            arguments = appNotificationArgs.Arguments;
+            userInput = appNotificationArgs.UserInput;
+            return true;
+        }
     }
 }

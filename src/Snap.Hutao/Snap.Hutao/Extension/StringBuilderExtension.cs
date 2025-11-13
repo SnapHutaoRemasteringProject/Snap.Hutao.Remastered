@@ -8,39 +8,31 @@ namespace Snap.Hutao.Extension;
 
 internal static class StringBuilderExtension
 {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static StringBuilder AppendIf(this StringBuilder sb, bool condition, char? value)
+    extension(StringBuilder sb)
     {
-        return condition ? sb.Append(value) : sb;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static StringBuilder AppendIf(this StringBuilder sb, bool condition, string? value)
-    {
-        return condition ? sb.Append(value) : sb;
-    }
-
-    public static string ToStringTrimEnd(this StringBuilder builder)
-    {
-        int index = builder.Length - 1;
-        while (index >= 0 && char.IsWhiteSpace(builder[index]))
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public StringBuilder AppendIf(bool condition, char? value)
         {
-            index--;
+            return condition ? sb.Append(value) : sb;
         }
 
-        return index < 0 ? string.Empty : builder.ToString(0, index + 1);
-    }
-
-    public static string ToStringTrimEndNewLine(this StringBuilder builder)
-    {
-        int length = builder.Length;
-        int index = length - 1;
-
-        while (index >= 0 && (char.IsWhiteSpace(builder[index]) || builder[index] == '\n' || builder[index] == '\r'))
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public StringBuilder AppendIf(bool condition, string? value)
         {
-            index--;
+            return condition ? sb.Append(value) : sb;
         }
 
-        return index < 0 ? string.Empty : builder.ToString(0, index + 1);
+        public string ToStringTrimEndNewLine()
+        {
+            int length = sb.Length;
+            int index = length - 1;
+
+            while (index >= 0 && (char.IsWhiteSpace(sb[index]) || sb[index] == '\n' || sb[index] == '\r'))
+            {
+                index--;
+            }
+
+            return index < 0 ? string.Empty : sb.ToString(0, index + 1);
+        }
     }
 }

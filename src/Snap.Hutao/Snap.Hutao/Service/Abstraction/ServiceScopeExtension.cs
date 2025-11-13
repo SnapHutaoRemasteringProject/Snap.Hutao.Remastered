@@ -8,20 +8,23 @@ namespace Snap.Hutao.Service.Abstraction;
 
 internal static class ServiceScopeExtension
 {
-    public static TService GetRequiredService<TService>(this IServiceScope scope)
-        where TService : class
+    extension(IServiceScope scope)
     {
-        return scope.ServiceProvider.GetRequiredService<TService>();
-    }
+        public TService GetRequiredService<TService>()
+            where TService : class
+        {
+            return scope.ServiceProvider.GetRequiredService<TService>();
+        }
 
-    public static TDbContext GetDbContext<TDbContext>(this IServiceScope scope)
-        where TDbContext : DbContext
-    {
-        return scope.GetRequiredService<TDbContext>();
-    }
+        public TDbContext GetDbContext<TDbContext>()
+            where TDbContext : DbContext
+        {
+            return scope.GetRequiredService<TDbContext>();
+        }
 
-    public static AppDbContext GetAppDbContext(this IServiceScope scope)
-    {
-        return scope.GetDbContext<AppDbContext>();
+        public AppDbContext GetAppDbContext()
+        {
+            return scope.GetDbContext<AppDbContext>();
+        }
     }
 }

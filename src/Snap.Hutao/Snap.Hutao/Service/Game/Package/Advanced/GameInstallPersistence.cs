@@ -22,7 +22,7 @@ internal sealed class GameInstallPersistence
 
     public static bool TryAcquire(IGameFileSystem gameFileSystem, string version, LaunchScheme launchScheme, [NotNullWhen(true)] out GameInstallPersistence? locker)
     {
-        string gameDirectory = gameFileSystem.GetGameDirectory();
+        string gameDirectory = gameFileSystem.GameDirectory;
         Directory.CreateDirectory(gameDirectory);
 
         // If the directory is not empty
@@ -30,7 +30,7 @@ internal sealed class GameInstallPersistence
         {
             // we need to make sure config file exists and has our installing mark
             // Otherwise, we should prevent installation from proceeding
-            if (!File.Exists(gameFileSystem.GetGameConfigurationFilePath()) || !GameConfiguration.Read(gameFileSystem, InstallingName))
+            if (!File.Exists(gameFileSystem.GameConfigurationFilePath) || !GameConfiguration.Read(gameFileSystem, InstallingName))
             {
                 locker = default;
                 return false;
@@ -42,9 +42,9 @@ internal sealed class GameInstallPersistence
         }
 
         // Directory is empty, create config file with our installing mark
-        GameConfiguration.Create(launchScheme, version, gameFileSystem.GetGameConfigurationFilePath());
-        ImmutableArray<IniElement> elements = IniSerializer.DeserializeFromFile(gameFileSystem.GetGameConfigurationFilePath());
-        IniSerializer.SerializeToFile(gameFileSystem.GetGameConfigurationFilePath(), elements.Add(new IniParameter(InstallingName, string.Empty)));
+        GameConfiguration.Create(launchScheme, version, gameFileSystem.GameConfigurationFilePath);
+        ImmutableArray<IniElement> elements = IniSerializer.DeserializeFromFile(gameFileSystem.GameConfigurationFilePath);
+        IniSerializer.SerializeToFile(gameFileSystem.GameConfigurationFilePath, elements.Add(new IniParameter(InstallingName, string.Empty)));
 
         locker = new(gameFileSystem);
         return true;
@@ -52,7 +52,7 @@ internal sealed class GameInstallPersistence
 
     public void Release()
     {
-        ImmutableArray<IniElement> elements = IniSerializer.DeserializeFromFile(gameFileSystem.GetGameConfigurationFilePath());
-        IniSerializer.SerializeToFile(gameFileSystem.GetGameConfigurationFilePath(), elements.Remove(elements.Single(e => e is IniParameter { Key: InstallingName })));
+        ImmutableArray<IniElement> elements = IniSerializer.DeserializeFromFile(gameFileSystem.GameConfigurationFilePath);
+        IniSerializer.SerializeToFile(gameFileSystem.GameConfigurationFilePath, elements.Remove(elements.Single(e => e is IniParameter { Key: InstallingName })));
     }
 }

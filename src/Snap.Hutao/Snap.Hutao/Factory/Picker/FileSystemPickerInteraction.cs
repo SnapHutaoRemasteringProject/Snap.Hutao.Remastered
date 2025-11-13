@@ -16,19 +16,19 @@ internal sealed partial class FileSystemPickerInteraction : IFileSystemPickerInt
 
     public ValueResult<bool, ValueFile> PickFile(string? title, string? defaultFileName, string? filterName, string? filterType)
     {
-        bool picked = FileSystem.PickFile(currentWindowReference.GetWindowHandle(), title, defaultFileName, filterName, filterType, out string? path);
+        bool picked = FileSystem.PickFile(currentWindowReference.WindowHandle, title, defaultFileName, filterName, filterType, out string? path);
         return new(picked, path);
     }
 
     public ValueResult<bool, ValueFile> SaveFile(string? title, string? defaultFileName, string? filterName, string? filterType)
     {
-        bool picked = FileSystem.SaveFile(currentWindowReference.GetWindowHandle(), title, defaultFileName, filterName, filterType, out string? path);
+        bool picked = FileSystem.SaveFile(currentWindowReference.WindowHandle, title, defaultFileName, filterName, filterType, out string? path);
         return new(picked, path);
     }
 
     public ValueResult<bool, string?> PickFolder(string? title)
     {
-        bool picked = FileSystem.PickFolder(currentWindowReference.GetWindowHandle(), title, out string? path);
+        bool picked = FileSystem.PickFolder(currentWindowReference.WindowHandle, title, out string? path);
         return new(picked, path);
     }
 }

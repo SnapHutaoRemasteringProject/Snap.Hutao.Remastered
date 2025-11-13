@@ -123,7 +123,7 @@ internal abstract class AbstractLaunchExecutionInvoker
                     await handler.ExecuteAsync(executionContext).ConfigureAwait(false);
                 }
 
-                if (process.IsRunning())
+                if (process.IsRunning)
                 {
                     progress.Report(new(SH.ServiceGameLaunchPhaseWaitingProcessExit));
                     try

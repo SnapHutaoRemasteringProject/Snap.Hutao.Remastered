@@ -216,7 +216,7 @@ internal sealed partial class LaunchGameShared
                     .CreateInstanceAsync<LaunchGameConfigurationFixDialog>(scope.ServiceProvider)
                     .ConfigureAwait(false);
 
-                bool isOversea = gameFileSystem.IsExecutableOversea();
+                bool isOversea = gameFileSystem.IsExecutableOversea;
 
                 await taskContext.SwitchToMainThreadAsync();
 
@@ -228,7 +228,7 @@ internal sealed partial class LaunchGameShared
                     return;
                 }
 
-                _ = GameConfiguration.Patch(launchScheme, gameFileSystem.GetScriptVersionFilePath(), gameFileSystem.GetGameConfigurationFilePath())
+                _ = GameConfiguration.Patch(launchScheme, gameFileSystem.ScriptVersionFilePath, gameFileSystem.GameConfigurationFilePath)
                     ? messenger.Send(InfoBarMessage.Success(SH.ViewModelLaunchGameFixConfigurationFileSucceed))
                     : messenger.Send(InfoBarMessage.Error(SH.ViewModelLaunchGameFixConfigurationFileFailed));
             }

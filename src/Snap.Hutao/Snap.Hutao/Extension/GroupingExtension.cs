@@ -5,9 +5,12 @@ namespace Snap.Hutao.Extension;
 
 internal static class GroupingExtension
 {
-    public static void Deconstruct<TKey, TElement>(this IGrouping<TKey, TElement> grouping, out TKey key, out IEnumerable<TElement> elements)
+    extension<TKey, TElement>(IGrouping<TKey, TElement> grouping)
     {
-        key = grouping.Key;
-        elements = grouping;
+        public void Deconstruct(out TKey key, out IEnumerable<TElement> elements)
+        {
+            key = grouping.Key;
+            elements = grouping;
+        }
     }
 }

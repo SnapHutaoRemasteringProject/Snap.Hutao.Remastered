@@ -192,7 +192,7 @@ internal sealed partial class YaeService : IYaeService
                 return false;
             }
 
-            isOversea = gameFileSystem.IsExecutableOversea();
+            isOversea = gameFileSystem.IsExecutableOversea;
         }
 
         return true;

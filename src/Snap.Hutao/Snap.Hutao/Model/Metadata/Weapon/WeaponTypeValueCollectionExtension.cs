@@ -8,8 +8,11 @@ namespace Snap.Hutao.Model.Metadata.Weapon;
 
 internal static class WeaponTypeValueCollectionExtension
 {
-    public static ImmutableArray<PropertyCurveValue> ToPropertyCurveValues(this WeaponTypeValueCollection collection)
+    extension(WeaponTypeValueCollection collection)
     {
-        return collection.Array.SelectAsArray(static curve => new PropertyCurveValue(curve.Type, curve.Value, curve.InitValue));
+        public ImmutableArray<PropertyCurveValue> ToPropertyCurveValues()
+        {
+            return collection.Array.SelectAsArray(static curve => new PropertyCurveValue(curve.Type, curve.Value, curve.InitValue));
+        }
     }
 }

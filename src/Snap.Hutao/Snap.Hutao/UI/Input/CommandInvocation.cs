@@ -5,14 +5,17 @@ namespace Snap.Hutao.UI.Input;
 
 internal static class CommandInvocation
 {
-    public static bool TryExecute(this ICommand? command, object? parameter = null)
+    extension(ICommand? command)
     {
-        if (command is not null && command.CanExecute(parameter))
+        public bool TryExecute(object? parameter = null)
         {
-            command.Execute(parameter);
-            return true;
-        }
+            if (command is not null && command.CanExecute(parameter))
+            {
+                command.Execute(parameter);
+                return true;
+            }
 
-        return false;
+            return false;
+        }
     }
 }

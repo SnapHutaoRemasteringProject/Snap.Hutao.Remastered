@@ -5,9 +5,12 @@ namespace Snap.Hutao.Core.Threading;
 
 internal static class ValueResultExtension
 {
-    public static bool TryGetValue<TValue>(this in ValueResult<bool, TValue> valueResult, [NotNullWhen(true)][MaybeNullWhen(false)] out TValue value)
+    extension<TValue>(in ValueResult<bool, TValue> valueResult)
     {
-        value = valueResult.Value;
-        return valueResult.IsOk;
+        public bool TryGetValue([NotNullWhen(true)][MaybeNullWhen(false)] out TValue value)
+        {
+            value = valueResult.Value;
+            return valueResult.IsOk;
+        }
     }
 }

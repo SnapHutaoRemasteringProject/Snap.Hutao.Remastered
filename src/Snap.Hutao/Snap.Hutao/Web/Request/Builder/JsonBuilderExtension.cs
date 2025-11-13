@@ -8,51 +8,51 @@ namespace Snap.Hutao.Web.Request.Builder;
 
 internal static class JsonBuilderExtension
 {
-    public static TBuilder SetJsonContent<TBuilder, TContent>(this TBuilder builder, TContent content, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
+    extension<TBuilder>(TBuilder builder)
         where TBuilder : class, IHttpContentBuilder
     {
-        return builder.SetContent(serializer ?? builder.HttpContentSerializer, content, encoding);
+        public TBuilder SetJsonContent<TContent>(TContent content, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
+        {
+            return builder.SetContent(serializer ?? builder.HttpContentSerializer, content, encoding);
+        }
+
+        public TBuilder SetJsonContent(object? content, Type contentType, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
+        {
+            return builder.SetContent(serializer ?? builder.HttpContentSerializer, content, contentType, encoding);
+        }
     }
 
-    public static T SetJsonContent<T>(this T builder, object? content, Type contentType, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
-        where T : class, IHttpContentBuilder
-    {
-        return builder.SetContent(serializer ?? builder.HttpContentSerializer, content, contentType, encoding);
-    }
-
-    public static TBuilder PostJson<TBuilder, TContent>(this TBuilder builder, TContent content, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
+    extension<TBuilder>(TBuilder builder)
         where TBuilder : class, IHttpMethodBuilder, IHttpContentBuilder
     {
-        return builder.Post().SetJsonContent(content, encoding, serializer);
-    }
+        public TBuilder PostJson<TContent>(TContent content, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
+        {
+            return builder.Post().SetJsonContent(content, encoding, serializer);
+        }
 
-    public static T PostJson<T>(this T builder, object? content, Type contentType, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
-        where T : class, IHttpMethodBuilder, IHttpContentBuilder
-    {
-        return builder.Post().SetJsonContent(content, contentType, encoding, serializer);
-    }
+        public TBuilder PostJson(object? content, Type contentType, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
+        {
+            return builder.Post().SetJsonContent(content, contentType, encoding, serializer);
+        }
 
-    public static TBuilder PutJson<TBuilder, TContent>(this TBuilder builder, TContent content, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
-        where TBuilder : class, IHttpMethodBuilder, IHttpContentBuilder
-    {
-        return builder.Put().SetJsonContent(content, encoding, serializer);
-    }
+        public TBuilder PutJson<TContent>(TContent content, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
+        {
+            return builder.Put().SetJsonContent(content, encoding, serializer);
+        }
 
-    public static T PutJson<T>(this T builder, object? content, Type contentType, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
-        where T : class, IHttpMethodBuilder, IHttpContentBuilder
-    {
-        return builder.Put().SetJsonContent(content, contentType, encoding, serializer);
-    }
+        public TBuilder PutJson(object? content, Type contentType, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
+        {
+            return builder.Put().SetJsonContent(content, contentType, encoding, serializer);
+        }
 
-    public static TBuilder PatchJson<TBuilder, TContent>(this TBuilder builder, TContent content, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
-        where TBuilder : class, IHttpMethodBuilder, IHttpContentBuilder
-    {
-        return builder.Patch().SetJsonContent(content, encoding, serializer);
-    }
+        public TBuilder PatchJson<TContent>(TContent content, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
+        {
+            return builder.Patch().SetJsonContent(content, encoding, serializer);
+        }
 
-    public static T PatchJson<T>(this T builder, object? content, Type contentType, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
-        where T : class, IHttpMethodBuilder, IHttpContentBuilder
-    {
-        return builder.Patch().SetJsonContent(content, contentType, encoding, serializer);
+        public TBuilder PatchJson(object? content, Type contentType, Encoding? encoding = null, JsonHttpContentSerializer? serializer = null)
+        {
+            return builder.Patch().SetJsonContent(content, contentType, encoding, serializer);
+        }
     }
 }

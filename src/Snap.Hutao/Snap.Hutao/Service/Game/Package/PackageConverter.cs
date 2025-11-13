@@ -38,7 +38,7 @@ internal sealed partial class PackageConverter : IPackageConverter
     public async ValueTask EnsureDeprecatedFilesAndSDKAsync(PackageConverterDeprecationContext context)
     {
         // Just try to delete these files, always download from server when needed
-        string gameDirectory = context.GameFileSystem.GetGameDirectory();
+        string gameDirectory = context.GameFileSystem.GameDirectory;
         FileOperation.Delete(Path.Combine(gameDirectory, GameConstants.YuanShenData, "Plugins\\PCGameSDK.dll"));
         FileOperation.Delete(Path.Combine(gameDirectory, GameConstants.GenshinImpactData, "Plugins\\PCGameSDK.dll"));
         FileOperation.Delete(Path.Combine(gameDirectory, GameConstants.YuanShenData, "Plugins\\EOSSDK-Win64-Shipping.dll"));
@@ -377,7 +377,7 @@ internal sealed partial class PackageConverter : IPackageConverter
     {
         using (MemoryStream newAssetStream = memoryStreamFactory.GetStream())
         {
-            string oldAssetPath = Path.Combine(context.GameFileSystem.GetGameDirectory(), asset.OldAsset.AssetName);
+            string oldAssetPath = Path.Combine(context.GameFileSystem.GameDirectory, asset.OldAsset.AssetName);
             if (!File.Exists(oldAssetPath))
             {
                 // File not found, skip this asset and repair later

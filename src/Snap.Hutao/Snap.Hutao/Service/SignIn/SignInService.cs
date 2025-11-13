@@ -100,7 +100,7 @@ internal sealed partial class SignInService : ISignInService
     {
         await taskContext.SwitchToMainThreadAsync();
 
-        if (currentXamlWindowReference.GetXamlRoot() is not { } xamlRoot)
+        if (currentXamlWindowReference.XamlRoot is not { } xamlRoot)
         {
             return;
         }

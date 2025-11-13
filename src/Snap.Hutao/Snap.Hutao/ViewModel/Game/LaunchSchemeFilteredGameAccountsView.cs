@@ -67,7 +67,7 @@ internal sealed partial class LaunchSchemeFilteredGameAccountsView : ObservableO
 
             // Update GameAccountsView
             await taskContext.SwitchToMainThreadAsync();
-            View.Filter = GameAccountFilter.Create(Scheme?.GetSchemeType());
+            View.Filter = GameAccountFilter.Create(Scheme?.SchemeType);
 
             // Try set to the current registry account.
             if (Scheme is null)

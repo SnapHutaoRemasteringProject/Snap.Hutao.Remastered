@@ -8,13 +8,16 @@ namespace Snap.Hutao.Service.Game.Scheme;
 
 internal static class LaunchSchemeExtension
 {
-    public static SchemeType GetSchemeType(this LaunchScheme scheme)
+    extension(LaunchScheme scheme)
     {
-        return (scheme.Channel, scheme.IsOversea) switch
+        public SchemeType SchemeType
         {
-            (ChannelType.Bili, false) => SchemeType.ChineseBilibili,
-            (_, false) => SchemeType.ChineseOfficial,
-            (_, true) => SchemeType.Oversea,
-        };
+            get => (scheme.Channel, scheme.IsOversea) switch
+            {
+                (ChannelType.Bili, false) => SchemeType.ChineseBilibili,
+                (_, false) => SchemeType.ChineseOfficial,
+                (_, true) => SchemeType.Oversea,
+            };
+        }
     }
 }

@@ -30,7 +30,7 @@ internal sealed class GamePackageExtractBlocksOperation : GamePackageOperation
         context.Progress.Report(new GamePackageOperationReport.Reset("Copying", 0, targetAssets.Length, targetAssets.Sum(sao => sao.OldAsset.AssetSize)));
 
         // We can just use the legacy chunk diffs to copy the required old blocks files because the files needed to patch are the same
-        string oldBlksDirectory = Path.Combine(context.Operation.GameFileSystem.GetDataDirectory(), @"StreamingAssets\AssetBundles\blocks");
+        string oldBlksDirectory = Path.Combine(context.Operation.GameFileSystem.DataDirectory, @"StreamingAssets\AssetBundles\blocks");
         foreach (string file in Directory.GetFiles(oldBlksDirectory, "*.blk", SearchOption.AllDirectories))
         {
             string fileName = Path.GetFileName(file);

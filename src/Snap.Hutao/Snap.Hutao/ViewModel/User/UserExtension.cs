@@ -7,8 +7,11 @@ namespace Snap.Hutao.ViewModel.User;
 
 internal static class UserExtension
 {
-    public static bool TryUpdateFingerprint(this User user, string? deviceFp)
+    extension(User user)
     {
-        return user.Entity.TryUpdateFingerprint(deviceFp);
+        public bool TryUpdateFingerprint(string? deviceFp)
+        {
+            return user.Entity.TryUpdateFingerprint(deviceFp);
+        }
     }
 }

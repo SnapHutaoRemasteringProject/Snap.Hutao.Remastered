@@ -5,8 +5,11 @@ namespace Snap.Hutao.Web.Endpoint.Hoyolab;
 
 internal static class ApiEndpointsFactoryExtension
 {
-    public static IApiEndpoints Create(this IApiEndpointsFactory factory, bool isOversea)
+    extension(IApiEndpointsFactory factory)
     {
-        return factory.Create(isOversea ? ApiEndpointsKind.Oversea : ApiEndpointsKind.Chinese);
+        public IApiEndpoints Create(bool isOversea)
+        {
+            return factory.Create(isOversea ? ApiEndpointsKind.Oversea : ApiEndpointsKind.Chinese);
+        }
     }
 }

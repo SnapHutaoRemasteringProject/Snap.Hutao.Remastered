@@ -8,21 +8,24 @@ namespace Snap.Hutao.Core.Protobuf;
 
 internal static class CodedInputStreamMarshal
 {
-    public static bool TryPeekTag(this CodedInputStream stream, out uint tag)
+    extension(CodedInputStream stream)
     {
-        tag = stream.PeekTag();
-        return tag is not 0;
-    }
+        public bool TryPeekTag(out uint tag)
+        {
+            tag = stream.PeekTag();
+            return tag is not 0;
+        }
 
-    public static bool TryReadTag(this CodedInputStream stream, out uint tag)
-    {
-        tag = stream.ReadTag();
-        return tag is not 0;
-    }
+        public bool TryReadTag(out uint tag)
+        {
+            tag = stream.ReadTag();
+            return tag is not 0;
+        }
 
-    public static CodedInputStream UnsafeReadLengthDelimitedStream(this CodedInputStream stream)
-    {
-        return new(ReadRawBytes(stream, stream.ReadLength()));
+        public CodedInputStream UnsafeReadLengthDelimitedStream()
+        {
+            return new(ReadRawBytes(stream, stream.ReadLength()));
+        }
     }
 
     // internal byte[] ReadRawBytes(int size)

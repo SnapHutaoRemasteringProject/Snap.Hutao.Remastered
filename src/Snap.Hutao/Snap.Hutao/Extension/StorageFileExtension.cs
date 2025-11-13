@@ -8,9 +8,12 @@ namespace Snap.Hutao.Extension;
 
 internal static class StorageFileExtension
 {
-    public static async ValueTask<StorageFile> CopyAsync(this StorageFile sourceFile, string targetFileFullPath, NameCollisionOption option = NameCollisionOption.ReplaceExisting)
+    extension(StorageFile sourceFile)
     {
-        StorageFolder targetFolder = await StorageFolder.GetFolderFromPathAsync(Path.GetDirectoryName(targetFileFullPath));
-        return await sourceFile.CopyAsync(targetFolder, Path.GetFileName(targetFileFullPath), option);
+        public async ValueTask<StorageFile> CopyAsync(string targetFileFullPath, NameCollisionOption option = NameCollisionOption.ReplaceExisting)
+        {
+            StorageFolder targetFolder = await StorageFolder.GetFolderFromPathAsync(Path.GetDirectoryName(targetFileFullPath));
+            return await sourceFile.CopyAsync(targetFolder, Path.GetFileName(targetFileFullPath), option);
+        }
     }
 }

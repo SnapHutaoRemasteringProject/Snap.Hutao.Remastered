@@ -5,15 +5,18 @@ namespace Snap.Hutao.Model.Entity.Extension;
 
 internal static class UserExtension
 {
-    public static bool TryUpdateFingerprint(this User user, string? deviceFp)
+    extension(User user)
     {
-        if (string.IsNullOrEmpty(deviceFp))
+        public bool TryUpdateFingerprint(string? deviceFp)
         {
-            return false;
-        }
+            if (string.IsNullOrEmpty(deviceFp))
+            {
+                return false;
+            }
 
-        user.Fingerprint = deviceFp;
-        user.FingerprintLastUpdateTime = DateTimeOffset.UtcNow;
-        return true;
+            user.Fingerprint = deviceFp;
+            user.FingerprintLastUpdateTime = DateTimeOffset.UtcNow;
+            return true;
+        }
     }
 }

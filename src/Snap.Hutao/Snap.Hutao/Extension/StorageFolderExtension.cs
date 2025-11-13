@@ -8,33 +8,32 @@ namespace Snap.Hutao.Extension;
 
 internal static class StorageFolderExtension
 {
-    public static async ValueTask<StorageFolder> CopyAsync(
-        this StorageFolder sourceFolder,
-        string targetFolderFullPath,
-        NameCollisionOption nameCollisionOption = NameCollisionOption.ReplaceExisting,
-        CreationCollisionOption creationCollisionOption = CreationCollisionOption.ReplaceExisting)
+    extension(StorageFolder sourceFolder)
     {
-        Directory.CreateDirectory(targetFolderFullPath);
-        StorageFolder targetFolder = await StorageFolder.GetFolderFromPathAsync(targetFolderFullPath);
-        await sourceFolder.CopyAsync(targetFolder, nameCollisionOption, creationCollisionOption).ConfigureAwait(false);
-        return targetFolder;
-    }
-
-    public static async ValueTask CopyAsync(
-        this StorageFolder sourceFolder,
-        StorageFolder targetFolder,
-        NameCollisionOption nameCollisionOption = NameCollisionOption.ReplaceExisting,
-        CreationCollisionOption creationCollisionOption = CreationCollisionOption.OpenIfExists)
-    {
-        foreach (StorageFolder folder in await sourceFolder.GetFoldersAsync())
+        public async ValueTask<StorageFolder> CopyAsync(string targetFolderFullPath,
+            NameCollisionOption nameCollisionOption = NameCollisionOption.ReplaceExisting,
+            CreationCollisionOption creationCollisionOption = CreationCollisionOption.ReplaceExisting)
         {
-            StorageFolder subFolder = await targetFolder.CreateFolderAsync(folder.Name, creationCollisionOption);
-            await folder.CopyAsync(subFolder).ConfigureAwait(false);
+            Directory.CreateDirectory(targetFolderFullPath);
+            StorageFolder targetFolder = await StorageFolder.GetFolderFromPathAsync(targetFolderFullPath);
+            await sourceFolder.CopyAsync(targetFolder, nameCollisionOption, creationCollisionOption).ConfigureAwait(false);
+            return targetFolder;
         }
 
-        foreach (StorageFile file in await sourceFolder.GetFilesAsync())
+        public async ValueTask CopyAsync(StorageFolder targetFolder,
+            NameCollisionOption nameCollisionOption = NameCollisionOption.ReplaceExisting,
+            CreationCollisionOption creationCollisionOption = CreationCollisionOption.OpenIfExists)
         {
-            await file.CopyAsync(targetFolder, file.Name, nameCollisionOption);
+            foreach (StorageFolder folder in await sourceFolder.GetFoldersAsync())
+            {
+                StorageFolder subFolder = await targetFolder.CreateFolderAsync(folder.Name, creationCollisionOption);
+                await folder.CopyAsync(subFolder).ConfigureAwait(false);
+            }
+
+            foreach (StorageFile file in await sourceFolder.GetFilesAsync())
+            {
+                await file.CopyAsync(targetFolder, file.Name, nameCollisionOption);
+            }
         }
     }
 }

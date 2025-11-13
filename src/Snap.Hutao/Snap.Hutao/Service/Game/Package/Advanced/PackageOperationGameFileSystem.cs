@@ -10,7 +10,7 @@ internal sealed partial class PackageOperationGameFileSystem : IGameFileSystem
     public PackageOperationGameFileSystem(string gameFilePath, GameAudioInstallation? gameAudioSystem = default)
     {
         GameFilePath = gameFilePath;
-        Audio = gameAudioSystem ?? new(this.GetGameDirectory());
+        Audio = gameAudioSystem ?? new(this.GameDirectory);
     }
 
     public string GameFilePath { get; }

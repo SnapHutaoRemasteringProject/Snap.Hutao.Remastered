@@ -7,19 +7,22 @@ namespace Snap.Hutao.Service.Game.Locator;
 
 internal static class GameLocatorFactoryExtensions
 {
-    public static ValueTask<ValueResult<bool, string>> LocateSingleAsync(this IGameLocatorFactory factory, GameLocationSourceKind source)
+    extension(IGameLocatorFactory factory)
     {
-        return factory.Create(source).LocateSingleGamePathAsync();
-    }
-
-    public static ValueTask<ImmutableArray<string>> LocateMultipleAsync(this IGameLocatorFactory factory, GameLocationSourceKind source)
-    {
-        IGameLocator locator = factory.Create(source);
-        if (locator is IGameLocator2 locator2)
+        public ValueTask<ValueResult<bool, string>> LocateSingleAsync(GameLocationSourceKind source)
         {
-            return locator2.LocateMultipleGamePathAsync();
+            return factory.Create(source).LocateSingleGamePathAsync();
         }
 
-        return ValueTask.FromResult(ImmutableArray<string>.Empty);
+        public ValueTask<ImmutableArray<string>> LocateMultipleAsync(GameLocationSourceKind source)
+        {
+            IGameLocator locator = factory.Create(source);
+            if (locator is IGameLocator2 locator2)
+            {
+                return locator2.LocateMultipleGamePathAsync();
+            }
+
+            return ValueTask.FromResult(ImmutableArray<string>.Empty);
+        }
     }
 }

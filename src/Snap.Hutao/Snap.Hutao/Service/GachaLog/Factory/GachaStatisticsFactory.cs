@@ -55,7 +55,7 @@ internal sealed partial class GachaStatisticsFactory : IGachaStatisticsFactory
                 ? historyWishBuilderMap[item.GachaType].BinarySearch(item, static (pinned, banner) => pinned.Time < banner.From ? -1 : pinned.Time > banner.To ? 1 : 0)
                 : default;
 
-            switch (item.ItemId.StringLength())
+            switch (item.ItemId.StringLength)
             {
                 case 8U:
                     {

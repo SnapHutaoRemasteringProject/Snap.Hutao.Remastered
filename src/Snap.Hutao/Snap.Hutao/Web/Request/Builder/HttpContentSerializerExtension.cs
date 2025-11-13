@@ -9,9 +9,12 @@ namespace Snap.Hutao.Web.Request.Builder;
 
 internal static class HttpContentSerializerExtension
 {
-    public static HttpContent? Serialize<T>(this IHttpContentSerializer serializer, T content, Encoding? encoding)
+    extension(IHttpContentSerializer serializer)
     {
-        ArgumentNullException.ThrowIfNull(serializer);
-        return serializer.Serialize(content, typeof(T), encoding);
+        public HttpContent? Serialize<T>(T content, Encoding? encoding)
+        {
+            ArgumentNullException.ThrowIfNull(serializer);
+            return serializer.Serialize(content, typeof(T), encoding);
+        }
     }
 }

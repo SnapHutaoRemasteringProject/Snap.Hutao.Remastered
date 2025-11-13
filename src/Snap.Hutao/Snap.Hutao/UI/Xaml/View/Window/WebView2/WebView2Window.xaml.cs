@@ -73,7 +73,7 @@ internal sealed partial class WebView2Window : Microsoft.UI.Xaml.Window,
         WindowUtilities.SetWindowIsEnabled(parentHwnd, false);
         base.Activate();
 
-        AppWindow.MoveThenResize(contentProvider.InitializePosition(AppWindow.GetFromWindowId(parentWindowId).GetRect(), this.GetRasterizationScale()));
+        AppWindow.MoveThenResize(contentProvider.InitializePosition(AppWindow.GetFromWindowId(parentWindowId).Rect, this.RasterizationScale));
     }
 
     public void OnWindowClosing(out bool cancel)

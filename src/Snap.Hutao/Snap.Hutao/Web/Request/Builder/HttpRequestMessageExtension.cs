@@ -11,18 +11,21 @@ internal static class HttpRequestMessageExtension
 {
     private const int MessageNotYetSent = 0;
 
-    public static void Resurrect(this HttpRequestMessage httpRequestMessage)
+    extension(HttpRequestMessage httpRequestMessage)
     {
-        // Mark the message as not yet sent
-        Interlocked.Exchange(ref GetPrivateSendStatus(httpRequestMessage), MessageNotYetSent);
-
-        if (httpRequestMessage.Content is { } content)
+        public void Resurrect()
         {
-            // Clear the buffered content, so that it can trigger a new read attempt
-            // TODO: Remove reflection usage when UnsafeAccessorType supports fields
-            // https://github.com/dotnet/runtime/issues/119664
-            typeof(HttpContent).GetField("_bufferedContent", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(content, null);
-            Volatile.Write(ref GetPrivateDisposed(content), false);
+            // Mark the message as not yet sent
+            Interlocked.Exchange(ref GetPrivateSendStatus(httpRequestMessage), MessageNotYetSent);
+
+            if (httpRequestMessage.Content is { } content)
+            {
+                // Clear the buffered content, so that it can trigger a new read attempt
+                // TODO: Remove reflection usage when UnsafeAccessorType supports fields
+                // https://github.com/dotnet/runtime/issues/119664
+                typeof(HttpContent).GetField("_bufferedContent", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(content, null);
+                Volatile.Write(ref GetPrivateDisposed(content), false);
+            }
         }
     }
 

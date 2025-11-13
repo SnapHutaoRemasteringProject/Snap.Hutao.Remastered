@@ -16,7 +16,7 @@ internal static class GameConfiguration
 {
     public static ChannelOptions Read(IGameFileSystem gameFileSystem)
     {
-        string configFilePath = gameFileSystem.GetGameConfigurationFilePath();
+        string configFilePath = gameFileSystem.GameConfigurationFilePath;
         ImmutableArray<IniElement> elements;
         try
         {
@@ -32,7 +32,7 @@ internal static class GameConfiguration
 
             if (HutaoNative.IsWin32(ex.HResult, [WIN32_ERROR.ERROR_NOT_READY, WIN32_ERROR.ERROR_NO_SUCH_DEVICE]))
             {
-                return ChannelOptions.DeviceNotFound(gameFileSystem.GetGameDirectory());
+                return ChannelOptions.DeviceNotFound(gameFileSystem.GameDirectory);
             }
 
             throw;
@@ -64,7 +64,7 @@ internal static class GameConfiguration
             }
         }
 
-        return new(channel, subChannel, gameFileSystem.IsExecutableOversea());
+        return new(channel, subChannel, gameFileSystem.IsExecutableOversea);
     }
 
     public static bool Read(IGameFileSystem gameFileSystem, string parameterKey)
@@ -72,7 +72,7 @@ internal static class GameConfiguration
         ImmutableArray<IniElement> elements;
         try
         {
-            elements = IniSerializer.DeserializeFromFile(gameFileSystem.GetGameConfigurationFilePath());
+            elements = IniSerializer.DeserializeFromFile(gameFileSystem.GameConfigurationFilePath);
         }
         catch (IOException ex)
         {

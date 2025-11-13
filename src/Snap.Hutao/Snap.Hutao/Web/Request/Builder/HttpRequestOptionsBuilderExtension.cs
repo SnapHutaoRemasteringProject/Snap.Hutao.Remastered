@@ -9,10 +9,13 @@ namespace Snap.Hutao.Web.Request.Builder;
 
 internal static class HttpRequestOptionsBuilderExtension
 {
-    [DebuggerStepThrough]
-    public static TBuilder SetOptions<TBuilder, TValue>(this TBuilder builder, HttpRequestOptionsKey<TValue> key, TValue value)
+    extension<TBuilder>(TBuilder builder)
         where TBuilder : class, IHttpRequestOptionsBuilder
     {
-        return builder.Configure(builder => builder.Options.Set(key, value));
+        [DebuggerStepThrough]
+        public TBuilder SetOptions<TValue>(HttpRequestOptionsKey<TValue> key, TValue value)
+        {
+            return builder.Configure(builder => builder.Options.Set(key, value));
+        }
     }
 }
