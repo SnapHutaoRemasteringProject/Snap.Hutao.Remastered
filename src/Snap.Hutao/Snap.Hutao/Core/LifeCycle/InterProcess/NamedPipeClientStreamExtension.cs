@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using System.IO.Compression;
 using System.IO.Pipes;
 
 namespace Snap.Hutao.Core.LifeCycle.InterProcess;
