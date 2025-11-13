@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Web.Request.Builder;
@@ -20,7 +21,7 @@ internal static class HttpRequestMessageExtension
             // Clear the buffered content, so that it can trigger a new read attempt
             // TODO: Remove reflection usage when UnsafeAccessorType supports fields
             // https://github.com/dotnet/runtime/issues/119664
-            typeof(HttpContent).GetField("_bufferedContent", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.SetValue(content, null);
+            typeof(HttpContent).GetField("_bufferedContent", BindingFlags.NonPublic | BindingFlags.Instance)?.SetValue(content, null);
             Volatile.Write(ref GetPrivateDisposed(content), false);
         }
     }

@@ -19,7 +19,7 @@ public sealed class HttpClientBehaviorTest
     [TestMethod]
     public async Task RetrySendHttpRequestMessage()
     {
-        foreach(Type nestType in typeof(HttpContent).GetNestedTypes(BindingFlags.NonPublic))
+        foreach (Type nestType in typeof(HttpContent).GetNestedTypes(BindingFlags.NonPublic))
         {
             Console.WriteLine(nestType.AssemblyQualifiedName);
         }
