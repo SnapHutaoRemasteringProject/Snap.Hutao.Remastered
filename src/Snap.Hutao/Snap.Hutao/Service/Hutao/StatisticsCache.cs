@@ -9,7 +9,7 @@ internal abstract class StatisticsCache
 {
     private readonly ConcurrentDictionary<Type, TaskCompletionSource> typeToTcs = [];
 
-    protected static IEnumerable<TResult> CurrentLeftJoinLast<TElement, TKey, TResult>(IEnumerable<TElement> current, IEnumerable<TElement>? last, Func<TElement, TKey> keySelector, Func<TElement, TElement?, TResult> resultSelector)
+    protected static IEnumerable<TResult> CurrentJoinLast<TElement, TKey, TResult>(IEnumerable<TElement> current, IEnumerable<TElement>? last, Func<TElement, TKey> keySelector, Func<TElement, TElement?, TResult> resultSelector)
         where TKey : notnull
     {
         if (last is null)

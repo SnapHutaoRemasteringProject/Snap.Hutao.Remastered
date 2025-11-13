@@ -11,6 +11,6 @@ internal static class ItemConvertibleExtension
 
     public static Model.Item GetOrCreateItem(this IItemConvertible source)
     {
-        return Items.GetValue(source, value => value.ToItem<Model.Item>());
+        return Items.GetOrAdd(source, static value => value.ToItem<Model.Item>());
     }
 }

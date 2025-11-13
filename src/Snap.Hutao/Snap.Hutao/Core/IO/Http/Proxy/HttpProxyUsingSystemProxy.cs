@@ -5,7 +5,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Win32;
 using System.Diagnostics;
 using System.Net;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -23,7 +22,7 @@ internal sealed partial class HttpProxyUsingSystemProxy : ObservableObject, IWeb
 
     private unsafe HttpProxyUsingSystemProxy()
     {
-        UpdateInnerProxy();
+        InnerProxy = ConstructSystemProxy(null);
 
         native = HutaoNative.Instance.MakeRegistryNotification(ProxySettingPath);
         native.Start(HutaoNativeRegistryNotificationCallback.Create(&OnSystemProxySettingsChanged), 0);
@@ -79,15 +78,9 @@ internal sealed partial class HttpProxyUsingSystemProxy : ObservableObject, IWeb
             return;
         }
 
-        Instance.UpdateInnerProxy();
+        Instance.InnerProxy = ConstructSystemProxy(null);
 
         Debug.Assert(XamlApplicationLifetime.DispatcherQueueInitialized, "DispatcherQueue not initialized");
         SynchronizationContext.Current?.Post(static _ => Instance.OnPropertyChanged(nameof(DisplayProxyUri)), default);
-    }
-
-    [MemberNotNull(nameof(InnerProxy))]
-    private void UpdateInnerProxy()
-    {
-        InnerProxy = ConstructSystemProxy(null);
     }
 }

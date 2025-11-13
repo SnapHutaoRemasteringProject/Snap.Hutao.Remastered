@@ -111,6 +111,11 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                 Debug.WriteLine($"[Repo Progress] {progress.ReceivedObjects}/{progress.TotalObjects}, {Converters.ToFileSizeString(progress.ReceivedBytes)}");
                 return true;
             },
+            CertificateCheck = static (cert, valid, host) =>
+            {
+                Debug.WriteLine($"[Repo Certificate] Host: {host}, Valid: {valid}, CertHash: {cert.ToString()}");
+                return true;
+            },
         };
 
         if (forceInvalid || !Repository.IsValid(directory))

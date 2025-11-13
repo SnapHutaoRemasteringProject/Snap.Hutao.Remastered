@@ -50,7 +50,7 @@ public sealed partial class App : Application
 
     partial void PostConstruct(IServiceProvider serviceProvider)
     {
-        ExceptionHandlingSupport.Initialize(serviceProvider, this);
+        ExceptionHandling.Initialize(serviceProvider, this);
     }
 
     [SuppressMessage("", "SA1202")]

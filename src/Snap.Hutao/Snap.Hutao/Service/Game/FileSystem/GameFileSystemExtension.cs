@@ -66,6 +66,7 @@ internal static class GameFileSystemExtension
 
     public static string GetPCGameSDKFilePath(this IGameFileSystemView gameFileSystem)
     {
+        System.Runtime.ExceptionServices.ExceptionHandling.SetUnhandledExceptionHandler();
         ObjectDisposedException.ThrowIf(gameFileSystem.IsDisposed, gameFileSystem);
 
         if (GameFileSystemPcGameSdkFilePaths.TryGetValue(gameFileSystem, out string? pcGameSdkFilePath))
