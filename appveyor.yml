@@ -9,7 +9,12 @@ cache:
 clone_depth: 3
 clone_folder: C:\Users\Public\appveyor\Snap.Hutao
 install:
+- ps: |
+    Invoke-WebRequest -Uri 'https://dot.net/v1/dotnet-install.ps1' -UseBasicParsing -OutFile "$env:temp\dotnet-install.ps1"
+    & $env:temp\dotnet-install.ps1 -Architecture x64 -Channel '10.0' -InstallDir "$env:ProgramFiles\dotnet"
 - pwsh: dotnet tool restore
+before_build:
+  - cmd: dotnet --version
 build_script:
 - pwsh: dotnet cake
 artifacts:
