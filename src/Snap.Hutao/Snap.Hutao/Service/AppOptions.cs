@@ -3,6 +3,7 @@
 
 using Microsoft.UI.Xaml;
 using Snap.Hutao.Core.Property;
+using Snap.Hutao.Core.Setting;
 using Snap.Hutao.Model;
 using Snap.Hutao.Model.Entity;
 using Snap.Hutao.Service.Abstraction;
@@ -52,35 +53,35 @@ internal sealed partial class AppOptions : DbStoreOptions
     public ImmutableArray<NameValue<LastWindowCloseBehavior>> LastWindowCloseBehaviors { get; } = ImmutableCollectionsNameValue.FromEnum<LastWindowCloseBehavior>(static @enum => @enum.GetLocalizedDescription(SH.ResourceManager, CultureInfo.CurrentCulture) ?? string.Empty);
 
     [field: MaybeNull]
-    public IObservableProperty<bool> IsEmptyHistoryWishVisible { get => field ??= CreateProperty(SettingEntry.IsEmptyHistoryWishVisible, false); }
+    public IObservableProperty<bool> IsEmptyHistoryWishVisible { get => field ??= CreateProperty(SettingKeys.IsEmptyHistoryWishVisible, false); }
 
     [field: MaybeNull]
-    public IObservableProperty<bool> IsUnobtainedWishItemVisible { get => field ??= CreateProperty(SettingEntry.IsUnobtainedWishItemVisible, false); }
+    public IObservableProperty<bool> IsUnobtainedWishItemVisible { get => field ??= CreateProperty(SettingKeys.IsUnobtainedWishItemVisible, false); }
 
     [field: MaybeNull]
-    public IObservableProperty<BackdropType> BackdropType { get => field ??= CreateProperty(SettingEntry.SystemBackdropType, UI.Xaml.Media.Backdrop.BackdropType.Mica); }
+    public IObservableProperty<BackdropType> BackdropType { get => field ??= CreateProperty(SettingKeys.SystemBackdropType, UI.Xaml.Media.Backdrop.BackdropType.Mica); }
 
     [field: MaybeNull]
-    public IObservableProperty<ElementTheme> ElementTheme { get => field ??= CreateProperty(SettingEntry.ElementTheme, Microsoft.UI.Xaml.ElementTheme.Default); }
+    public IObservableProperty<ElementTheme> ElementTheme { get => field ??= CreateProperty(SettingKeys.ElementTheme, Microsoft.UI.Xaml.ElementTheme.Default); }
 
     [field: MaybeNull]
-    public IObservableProperty<BackgroundImageType> BackgroundImageType { get => field ??= CreateProperty(SettingEntry.BackgroundImageType, BackgroundImage.BackgroundImageType.None); }
+    public IObservableProperty<BackgroundImageType> BackgroundImageType { get => field ??= CreateProperty(SettingKeys.BackgroundImageType, BackgroundImage.BackgroundImageType.None); }
 
     [field: MaybeNull]
-    public IObservableProperty<Region> Region { get => field ??= CreatePropertyForStructUsingCustom(SettingEntry.AnnouncementRegion, Web.Hoyolab.Region.CNGF01, Web.Hoyolab.Region.FromRegionString, Web.Hoyolab.Region.ToRegionString); }
+    public IObservableProperty<Region> Region { get => field ??= CreatePropertyForStructUsingCustom(SettingKeys.AnnouncementRegion, Web.Hoyolab.Region.CNGF01, Web.Hoyolab.Region.FromRegionString, Web.Hoyolab.Region.ToRegionString); }
 
     [field: MaybeNull]
-    public IObservableProperty<string> GeetestCustomCompositeUrl { get => field ??= CreateProperty(SettingEntry.GeetestCustomCompositeUrl, string.Empty); }
+    public IObservableProperty<string> GeetestCustomCompositeUrl { get => field ??= CreateProperty(SettingKeys.GeetestCustomCompositeUrl, string.Empty); }
 
     [field: MaybeNull]
-    public IObservableProperty<int> DownloadSpeedLimitPerSecondInKiloByte { get => field ??= CreateProperty(SettingEntry.DownloadSpeedLimitPerSecondInKiloByte, 0); }
+    public IObservableProperty<int> DownloadSpeedLimitPerSecondInKiloByte { get => field ??= CreateProperty(SettingKeys.DownloadSpeedLimitPerSecondInKiloByte, 0); }
 
     [field: MaybeNull]
-    public IObservableProperty<BridgeShareSaveType> BridgeShareSaveType { get => field ??= CreateProperty(SettingEntry.BridgeShareSaveType, Web.Bridge.BridgeShareSaveType.CopyToClipboard); }
+    public IObservableProperty<BridgeShareSaveType> BridgeShareSaveType { get => field ??= CreateProperty(SettingKeys.BridgeShareSaveType, Web.Bridge.BridgeShareSaveType.CopyToClipboard); }
 
     [field: MaybeNull]
-    public IObservableProperty<TimeSpan> CalendarServerTimeZoneOffset { get => field ??= CreatePropertyForStructUsingCustom(SettingEntry.CalendarServerTimeZoneOffset, ServerRegionTimeZone.CommonOffset, TimeSpan.Parse, static v => v.ToString()); }
+    public IObservableProperty<TimeSpan> CalendarServerTimeZoneOffset { get => field ??= CreatePropertyForStructUsingCustom(SettingKeys.CalendarServerTimeZoneOffset, ServerRegionTimeZone.CommonOffset, TimeSpan.Parse, static v => v.ToString()); }
 
     [field: MaybeNull]
-    public IObservableProperty<LastWindowCloseBehavior> LastWindowCloseBehavior { get => field ??= CreateProperty(SettingEntry.LastWindowCloseBehavior, Service.LastWindowCloseBehavior.EnsureNotifyIconCreated); }
+    public IObservableProperty<LastWindowCloseBehavior> LastWindowCloseBehavior { get => field ??= CreateProperty(SettingKeys.LastWindowCloseBehavior, Service.LastWindowCloseBehavior.EnsureNotifyIconCreated); }
 }
