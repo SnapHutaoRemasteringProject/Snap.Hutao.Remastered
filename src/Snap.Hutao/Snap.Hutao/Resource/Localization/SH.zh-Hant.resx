@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -722,15 +722,6 @@
   <data name="ServiceAchievementUserdataCorruptedAchievementIdNotUnique" xml:space="preserve">
     <value>單個成就存檔內發現多個相同的成就 Id</value>
   </data>
-  <data name="ServiceAnnouncementAdventurersBoosterBundlesDurationDescription" xml:space="preserve">
-    <value>【上架時間】</value>
-  </data>
-  <data name="ServiceAnnouncementPermanentKeyword" xml:space="preserve">
-    <value>永久開放</value>
-  </data>
-  <data name="ServiceAnnouncementVersionUpdateTimeDescription" xml:space="preserve">
-    <value>〓更新時間〓</value>
-  </data>
   <data name="ServiceAppOptionsCalendarServerTimeZoneAmerica" xml:space="preserve">
     <value>美服 UTC-05</value>
   </data>
@@ -854,9 +845,6 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>冷卻縮減</value>
   </data>
-  <data name="ServiceAvatarInfoSummaryNotRefreshed" xml:space="preserve">
-    <value>尚未重新整理</value>
-  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing每日一圖</value>
   </data>
@@ -929,15 +917,6 @@
   <data name="ServiceDailyNoteNotifierTransformerHint" xml:space="preserve">
     <value>參數質變儀已準備完成</value>
   </data>
-  <data name="ServiceDiscordActivityElevationRequiredHint" xml:space="preserve">
-    <value>權限不足，將無法為您設定 Discord Activity 狀態</value>
-  </data>
-  <data name="ServiceDiscordGameActivityDetails" xml:space="preserve">
-    <value>正在提瓦特大陸中探索</value>
-  </data>
-  <data name="ServiceDiscordGameLaunchedBy" xml:space="preserve">
-    <value>由 {0} 啟動</value>
-  </data>
   <data name="ServiceGachaLogFactoryAvatarWishName" xml:space="preserve">
     <value>角色活動</value>
   </data>
@@ -1005,17 +984,8 @@
   <data name="ServiceGameEnsureGameResourceQueryResourceInformation" xml:space="preserve">
     <value>下載遊戲資源索引</value>
   </data>
-  <data name="ServiceGameIslandFeature404" xml:space="preserve">
-    <value>獲取注入配置資訊失敗，尚未支援當前遊戲版本</value>
-  </data>
-  <data name="ServiceGameIslandFeatureRequiresHoyolabAccount" xml:space="preserve">
-    <value>為了防止注入功能被濫用，需要使用米遊社/HoYoLAB 帳號登入並選擇一個帳號與角色</value>
-  </data>
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>取得本機遊戲版本失敗，無法取得注入配置資訊</value>
-  </data>
-  <data name="ServiceGameLaunchExecutionArbitraryLibraryInjectionException" xml:space="preserve">
-    <value>在注入 DLL: '{0}' 時發生錯誤</value>
   </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI 已啟動</value>
@@ -1032,9 +1002,6 @@
   <data name="ServiceGameLaunchExecutionGameIsRunning" xml:space="preserve">
     <value>遊戲程序執行中</value>
   </data>
-  <data name="ServiceGameLaunchExecutionGamePathNotValid" xml:space="preserve">
-    <value>請選擇遊戲路徑</value>
-  </data>
   <data name="ServiceGameLaunchExecutionGameResourceQueryIndexFailed" xml:space="preserve">
     <value>下載遊戲資源索引失敗: {0}</value>
   </data>
@@ -1044,14 +1011,8 @@
   <data name="ServiceGameLaunchPhaseProcessExited" xml:space="preserve">
     <value>遊戲程序已退出</value>
   </data>
-  <data name="ServiceGameLaunchPhaseProcessInitializing" xml:space="preserve">
-    <value>正在初始化遊戲程序</value>
-  </data>
   <data name="ServiceGameLaunchPhaseProcessStarted" xml:space="preserve">
     <value>遊戲程序已啟動</value>
-  </data>
-  <data name="ServiceGameLaunchPhaseUnlockingFps" xml:space="preserve">
-    <value>正在獲取注入設定資訊</value>
   </data>
   <data name="ServiceGameLaunchPhaseWaitingProcessExit" xml:space="preserve">
     <value>等待遊戲程序退出</value>
@@ -1133,20 +1094,8 @@
   <data name="ServiceGamePackageConvertMoveFileRestore" xml:space="preserve">
     <value>取代：{0}</value>
   </data>
-  <data name="ServiceGamePackageReadLocalPackageVerionFailed" xml:space="preserve">
-    <value>在讀取本機 Package Version 時遇到問題，修復遊戲可能會有所幫助</value>
-  </data>
   <data name="ServiceGamePackageRenameDataFolderFailed" xml:space="preserve">
     <value>重新命名資料資料夾名稱失敗</value>
-  </data>
-  <data name="ServiceGamePackageRequestPackageVerion" xml:space="preserve">
-    <value>正在獲取 Package Version</value>
-  </data>
-  <data name="ServiceGamePackageRequestPackageVerionFailed" xml:space="preserve">
-    <value>獲取 Package Version 失敗</value>
-  </data>
-  <data name="ServiceGamePackageRequestScatteredFileFailed" xml:space="preserve">
-    <value>下載用戶端檔案失敗：{0}</value>
   </data>
   <data name="ServiceGamePathLocateFailed" xml:space="preserve">
     <value>無法找到遊戲本體路徑，請前往設定修改</value>
@@ -1169,17 +1118,11 @@
   <data name="ServiceMetadataFileNotFound" xml:space="preserve">
     <value>無法找到快取的後設資料檔案</value>
   </data>
-  <data name="ServiceMetadataHttpRequestFailed" xml:space="preserve">
-    <value>HTTP {0} | Error:{1}：後設資料校驗檔案下載失敗</value>
-  </data>
   <data name="ServiceMetadataNotInitialized" xml:space="preserve">
     <value>後設資料服務尚未初始化，或初始化失敗</value>
   </data>
   <data name="ServiceMetadataParseFailed" xml:space="preserve">
     <value>後設資料校驗檔案解析失敗</value>
-  </data>
-  <data name="ServiceMetadataRequestFailed" xml:space="preserve">
-    <value>後設資料校驗檔案下載失敗</value>
   </data>
   <data name="ServiceMetadataVersionNotSupported" xml:space="preserve">
     <value>你的胡桃版本過低，請盡快升級</value>
@@ -1213,9 +1156,6 @@
   </data>
   <data name="ServiceUIGFImportInvalidItem" xml:space="preserve">
     <value>不支援的物品, Id: {0}</value>
-  </data>
-  <data name="ServiceUpdateStatusVersionDescription" xml:space="preserve">
-    <value>發現新版本 {0}</value>
   </data>
   <data name="ServiceUserProcessCookieNoMid" xml:space="preserve">
     <value>輸入的 Cookie 中必須包含 Mid</value>
@@ -1466,9 +1406,6 @@
   <data name="ViewDialogFeedbackEnableLoopbackContent" xml:space="preserve">
     <value>解除限制後需使用其他工具恢復限制</value>
   </data>
-  <data name="ViewDialogFeedbackEnableLoopbackDescription" xml:space="preserve">
-    <value>偵測到系統代理已設定，但未解除 Loopback 限制，胡桃將無法正常連上網路。</value>
-  </data>
   <data name="ViewDialogFeedbackEnableLoopbackTitle" xml:space="preserve">
     <value>是否解除 Loopback 限制</value>
   </data>
@@ -1642,15 +1579,6 @@
   </data>
   <data name="ViewDialogSpiralAbyssUploadRecordHomaNotLoginTitle" xml:space="preserve">
     <value>上傳深淵資料</value>
-  </data>
-  <data name="ViewDialogUpdatePackageDownloadUpdateLogLinkContent" xml:space="preserve">
-    <value>查看更新記錄檔</value>
-  </data>
-  <data name="ViewDialogUpdatePackageMirrorHeader" xml:space="preserve">
-    <value>下載來源</value>
-  </data>
-  <data name="ViewDialogUpdatePackagePrimaryText" xml:space="preserve">
-    <value>更新</value>
   </data>
   <data name="ViewDialogUserAccountPasswordAccountHint" xml:space="preserve">
     <value>請輸入帳號</value>
@@ -1868,14 +1796,8 @@
   <data name="ViewModelAvatarPropertyCalculateWeaponNull" xml:space="preserve">
     <value>目前角色無法計算，請同步資訊後再試</value>
   </data>
-  <data name="ViewModelAvatarPropertyEnkaApiUnavailable" xml:space="preserve">
-    <value>角色資訊服務 [Enka API] 目前不可用</value>
-  </data>
   <data name="ViewModelAvatarPropertyFetch" xml:space="preserve">
     <value>獲取資料中</value>
-  </data>
-  <data name="ViewModelAvatarPropertyShowcaseNotOpen" xml:space="preserve">
-    <value>角色展櫃尚未開啟，請前往遊戲操作後重試</value>
   </data>
   <data name="ViewModelAvatarPropertySortDescriptionKindActivatedConstellationCount" xml:space="preserve">
     <value>命之座解鎖層數順序</value>
@@ -2092,9 +2014,6 @@
   </data>
   <data name="ViewModelGamePackageGetGameBranchFailed" xml:space="preserve">
     <value>獲取遊戲版本配置失敗</value>
-  </data>
-  <data name="ViewModelGamePackageGetGameChannelSDKFailed" xml:space="preserve">
-    <value>獲取遊戲渠道 SDK 失敗</value>
   </data>
   <data name="ViewModelGamePackageLocalLaunchScheme" xml:space="preserve">
     <value>本機遊戲配置 [{0}]</value>
@@ -2432,12 +2351,6 @@
   <data name="ViewPageAchievementSortIncompletedItemsFirst" xml:space="preserve">
     <value>優先未完成</value>
   </data>
-  <data name="ViewPageAnnouncementActivity" xml:space="preserve">
-    <value>活動公告</value>
-  </data>
-  <data name="ViewPageAnnouncementGame" xml:space="preserve">
-    <value>遊戲公告</value>
-  </data>
   <data name="ViewPageAnnouncementRedeemCodeCopySucceed" xml:space="preserve">
     <value>兌換碼複製成功</value>
   </data>
@@ -2470,9 +2383,6 @@
   </data>
   <data name="ViewPageAvatarPropertyRefreshFromHoyolabGameRecord" xml:space="preserve">
     <value>從 HoYoLAB - 戰績同步</value>
-  </data>
-  <data name="ViewPageAvatarPropertyRefreshTimeToggle" xml:space="preserve">
-    <value>重新整理時間</value>
   </data>
   <data name="ViewPageCultivateCalculate" xml:space="preserve">
     <value>養成計算</value>
@@ -2591,9 +2501,6 @@
   <data name="ViewPageDailyNoteSettingRefreshHeader" xml:space="preserve">
     <value>重新整理</value>
   </data>
-  <data name="ViewPageDailyNoteSettingRefreshNotifyIconDisabledHint" xml:space="preserve">
-    <value>未啟用通知區域圖示，關閉視窗後自動重新整理將不會執行</value>
-  </data>
   <data name="ViewPageDailyNoteSettingRefreshNotifyIconFailedToCreateHint" xml:space="preserve">
     <value>通知區域圖示建立失敗，關閉視窗後自動重新整理將不會執行</value>
   </data>
@@ -2611,12 +2518,6 @@
   </data>
   <data name="ViewPageDailyNoteVerify" xml:space="preserve">
     <value>驗證目前使用者與角色</value>
-  </data>
-  <data name="ViewPageEmbeddedYaeLaunchGameAction" xml:space="preserve">
-    <value>啟動遊戲</value>
-  </data>
-  <data name="ViewPageEmbeddedYaeLaunchGameDescription" xml:space="preserve">
-    <value>將 Embedded Yae 注入遊戲以獲取準確資料</value>
   </data>
   <data name="ViewPageFeedbackAutoSuggestBoxPlaceholder" xml:space="preserve">
     <value>搜尋問題與建議</value>
@@ -2786,9 +2687,6 @@
   <data name="ViewPageHomeGreetingTextEpic1" xml:space="preserve">
     <value>吶，旅行者，這是你來到提瓦特大陸的第 {0} 天哦</value>
   </data>
-  <data name="ViewPageHomeLaunchGameSettingAction" xml:space="preserve">
-    <value>設定</value>
-  </data>
   <data name="ViewPageHutaoDatabaseOverview" xml:space="preserve">
     <value>詳情</value>
   </data>
@@ -2912,9 +2810,6 @@
   <data name="ViewPageLaunchGameAppearanceBorderlessDescription" xml:space="preserve">
     <value>將視窗建立為彈出視窗，不帶邊框</value>
   </data>
-  <data name="ViewPageLaunchGameAppearanceCloudThirdPartyMobileDescription" xml:space="preserve">
-    <value>啟用內建觸控佈局，不會回應鍵鼠輸入</value>
-  </data>
   <data name="ViewPageLaunchGameAppearanceExclusiveDescription" xml:space="preserve">
     <value>與遊戲内瀏覽器不相容，切屏等操作也能使遊戲閃退</value>
   </data>
@@ -2942,15 +2837,6 @@
   <data name="ViewPageLaunchGameBetterGIHeader" xml:space="preserve">
     <value>自動化任務</value>
   </data>
-  <data name="ViewPageLaunchGameBypass31Dash4302Description" xml:space="preserve">
-    <value>當出現錯誤程式碼 31-4302 時請啟用此選項</value>
-  </data>
-  <data name="ViewPageLaunchGameBypass31Dash4302Header" xml:space="preserve">
-    <value>讓我進去！</value>
-  </data>
-  <data name="ViewPageLaunchGameColdSwitchDescription" xml:space="preserve">
-    <value>遊戲啟動後無法再次切換</value>
-  </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
     <value>注入功能非常危險且有可能會造成嚴重後果，請謹慎使用</value>
   </data>
@@ -2966,17 +2852,8 @@
   <data name="ViewPageLaunchGameDisableFogOn" xml:space="preserve">
     <value>移除</value>
   </data>
-  <data name="ViewPageLaunchGameDiscordActivityDescription" xml:space="preserve">
-    <value>在我遊戲時設定 Discord Activity 狀態</value>
-  </data>
-  <data name="ViewPageLaunchGameDiscordActivityHeader" xml:space="preserve">
-    <value>Discord Activity</value>
-  </data>
   <data name="ViewPageLaunchGameElevationDescription" xml:space="preserve">
     <value>遊戲檔案管理/切換遊戲伺服器/注入功能需要系統管理員權限</value>
-  </data>
-  <data name="ViewPageLaunchGameEventCameraMoveColdSwitchHeader" xml:space="preserve">
-    <value>元素爆發特寫冷開關</value>
   </data>
   <data name="ViewPageLaunchGameEventCameraMoveHotSwitchHeader" xml:space="preserve">
     <value>移除元素爆發鏡頭特寫</value>
@@ -2992,9 +2869,6 @@
   </data>
   <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipTitle" xml:space="preserve">
     <value>視野與迷霧</value>
-  </data>
-  <data name="ViewPageLaunchGameHideQuestBannerColdSwitchHeader" xml:space="preserve">
-    <value>地圖橫幅冷開關</value>
   </data>
   <data name="ViewPageLaunchGameHideQuestBannerHotSwitchDescription" xml:space="preserve">
     <value>強制移除地圖介面左上角的任務提示</value>
@@ -3053,9 +2927,6 @@
   <data name="ViewPageLaunchGameOverlayDescription" xml:space="preserve">
     <value>需要在設定中通知區域圖示，可能需要啟用無邊框視窗選項來正確顯示</value>
   </data>
-  <data name="ViewPageLaunchGameOverlayDescriptionHint" xml:space="preserve">
-    <value>啟動遊戲後在懸浮窗中調整具體的功能設定，可能需要啟用無邊框視窗選項來正確的顯示懸浮窗</value>
-  </data>
   <data name="ViewPageLaunchGameOverlayHeader" xml:space="preserve">
     <value>懸浮窗</value>
   </data>
@@ -3086,26 +2957,11 @@
   <data name="ViewPageLaunchGamePlayTimeHeader" xml:space="preserve">
     <value>時長統計</value>
   </data>
-  <data name="ViewPageLaunchGameRemoveOpenTeamProgressColdSwitchHeader" xml:space="preserve">
-    <value>隊伍設定冷開關</value>
-  </data>
   <data name="ViewPageLaunchGameRemoveOpenTeamProgressDescription" xml:space="preserve">
     <value>移除開啟隊伍設定介面時顯示的進度條</value>
   </data>
   <data name="ViewPageLaunchGameRemoveOpenTeamProgressHeader" xml:space="preserve">
     <value>移除隊伍設定進度條</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceDiffHeader" xml:space="preserve">
-    <value>附加包</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceHeader" xml:space="preserve">
-    <value>資源下載</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceLatestHeader" xml:space="preserve">
-    <value>完整包</value>
-  </data>
-  <data name="ViewPageLaunchGameResourcePreDownloadHeader" xml:space="preserve">
-    <value>預先下載</value>
   </data>
   <data name="ViewPageLaunchGameSelectGamePath" xml:space="preserve">
     <value>選擇遊戲路徑</value>
@@ -3140,9 +2996,6 @@
   <data name="ViewPageLaunchGameSwitchSchemeHeader" xml:space="preserve">
     <value>伺服器</value>
   </data>
-  <data name="ViewPageLaunchGameTargetFovColdSwitchHeader" xml:space="preserve">
-    <value>視野冷開關</value>
-  </data>
   <data name="ViewPageLaunchGameTargetFovDescription" xml:space="preserve">
     <value>調整相機視野，預設 45</value>
   </data>
@@ -3163,9 +3016,6 @@
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipTitle" xml:space="preserve">
     <value>無法解鎖幀率上限？</value>
-  </data>
-  <data name="ViewPageLaunchGameTooltipDescriptionHint" xml:space="preserve">
-    <value>將滑鼠懸停在功能開關/文字框上查看詳細說明</value>
   </data>
   <data name="ViewPageLaunchGameUnlockFpsDescription" xml:space="preserve">
     <value>請在遊戲內關閉「垂直同步」選項，需要高性能的顯示卡以支援更高的 FPS ，將值設定為 -1 以表示無限制 FPS</value>
@@ -3533,15 +3383,6 @@
   <data name="ViewPageSettingLaunchForceUsingTouchScreenHeader" xml:space="preserve">
     <value>觸控螢幕輸入偵測</value>
   </data>
-  <data name="ViewPageSettingNotifyIconCustomTaskBarWaring" xml:space="preserve">
-    <value>使用系統美化工具取代系統標準工作列後啟用通知區域圖示可能會導致：無法與圖示互動/無法正常建立圖示/重新啟動工作管理員後崩潰/啟動程序後崩潰</value>
-  </data>
-  <data name="ViewPageSettingNotifyIconDescription" xml:space="preserve">
-    <value>在通知區域顯示圖示，以允許執行背景任務，重新啟動後生效</value>
-  </data>
-  <data name="ViewPageSettingNotifyIconHeader" xml:space="preserve">
-    <value>通知區域圖示</value>
-  </data>
   <data name="ViewPageSettingOfficialSiteNavigate" xml:space="preserve">
     <value>前往官網</value>
   </data>
@@ -3550,9 +3391,6 @@
   </data>
   <data name="ViewPageSettingOpenBackgroundImageFolderHeader" xml:space="preserve">
     <value>開啟背景圖片資料夾</value>
-  </data>
-  <data name="ViewPageSettingPackageConverterTypeHeader" xml:space="preserve">
-    <value>轉換伺服器模式</value>
   </data>
   <data name="ViewPageSettingResetAction" xml:space="preserve">
     <value>重設</value>
@@ -3655,9 +3493,6 @@
   </data>
   <data name="ViewPageWiKiAvatarConstellationNameTitle" xml:space="preserve">
     <value>命之座</value>
-  </data>
-  <data name="ViewPageWiKiAvatarCostumeHeader" xml:space="preserve">
-    <value>衣裝</value>
   </data>
   <data name="ViewPageWiKiAvatarDateofBirthTitle" xml:space="preserve">
     <value>生日</value>
@@ -3827,18 +3662,6 @@
   <data name="ViewTitileUpdatePackageAvailableContent" xml:space="preserve">
     <value>是否立即更新？</value>
   </data>
-  <data name="ViewTitileUpdatePackageDownloadFailedMessage" xml:space="preserve">
-    <value>下載更新失敗</value>
-  </data>
-  <data name="ViewTitileUpdatePackageDownloadTitle" xml:space="preserve">
-    <value>胡桃 {0} 版本已發佈</value>
-  </data>
-  <data name="ViewTitileUpdatePackageReadyContent" xml:space="preserve">
-    <value>是否立即安裝？</value>
-  </data>
-  <data name="ViewTitileUpdatePackageReadyTitle" xml:space="preserve">
-    <value>胡桃 {0} 版本已準備就緒</value>
-  </data>
   <data name="ViewTitleAutoClicking" xml:space="preserve">
     <value>自動連續點按</value>
   </data>
@@ -3850,12 +3673,6 @@
   </data>
   <data name="ViewTitleUpdatePackageAvailableTitle" xml:space="preserve">
     <value>胡桃 {0} 版本現已可用</value>
-  </data>
-  <data name="ViewTitleUpdatePackageDownloadContent" xml:space="preserve">
-    <value>是否立即下載？</value>
-  </data>
-  <data name="ViewTitleUpdatePackageInstallingContent" xml:space="preserve">
-    <value>正在安裝更新</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>工具</value>
@@ -3886,9 +3703,6 @@
   </data>
   <data name="ViewUserCookieOperationRefreshCookieAction" xml:space="preserve">
     <value>重新整理 Cookie</value>
-  </data>
-  <data name="ViewUserCookieOperationSignInRewardAction" xml:space="preserve">
-    <value>領取簽到獎勵</value>
   </data>
   <data name="ViewUserCopyCookieAction" xml:space="preserve">
     <value>複製 Cookie</value>
@@ -3934,9 +3748,6 @@
   </data>
   <data name="ViewWindowExceptionClose" xml:space="preserve">
     <value>關閉</value>
-  </data>
-  <data name="ViewWindowExceptionDescription" xml:space="preserve">
-    <value>請截圖此視窗，在回饋中心內找到適合的回饋途徑，並回饋至開發組</value>
   </data>
   <data name="ViewWindowExceptionHeader" xml:space="preserve">
     <value>遇到了無法修復的致命錯誤</value>
@@ -4036,18 +3847,6 @@
   </data>
   <data name="WebDailyNoteHomeLocked" xml:space="preserve">
     <value>尚未解鎖洞天</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay" xml:space="preserve">
-    <value>{0} 天</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay0" xml:space="preserve">
-    <value>今天</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay1" xml:space="preserve">
-    <value>明天</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay2" xml:space="preserve">
-    <value>後天</value>
   </data>
   <data name="WebDailyNoteResinRecovery" xml:space="preserve">
     <value>將於 {0} {1:HH:mm} 後全部恢復</value>

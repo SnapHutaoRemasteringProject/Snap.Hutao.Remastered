@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -672,7 +672,7 @@
     <value>인증 요청 실패, 현재 이메일 주소가 등록되지 않았습니다</value>
   </data>
   <data name="ServerPassportVerifyTooFrequent" xml:space="preserve">
-    <value>인증 요청이 너무 빠릅니다. <b>1</b>분 후에 다시 시도하세요</value>
+    <value />
   </data>
   <data name="ServerRecordBannedUid" xml:space="preserve">
     <value>上传深渊记录失败，当前 Uid 已被胡桃数据库封禁</value>
@@ -721,15 +721,6 @@
   </data>
   <data name="ServiceAchievementUserdataCorruptedAchievementIdNotUnique" xml:space="preserve">
     <value>한 업적 아카이브에서 Id 동일한 업적 발견됨</value>
-  </data>
-  <data name="ServiceAnnouncementAdventurersBoosterBundlesDurationDescription" xml:space="preserve">
-    <value>【출시 시간】</value>
-  </data>
-  <data name="ServiceAnnouncementPermanentKeyword" xml:space="preserve">
-    <value>영구 오픈</value>
-  </data>
-  <data name="ServiceAnnouncementVersionUpdateTimeDescription" xml:space="preserve">
-    <value>〓업데이트 시간〓</value>
   </data>
   <data name="ServiceAppOptionsCalendarServerTimeZoneAmerica" xml:space="preserve">
     <value>미국 서버 UTC-05</value>
@@ -854,9 +845,6 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>재사용 대기시간 감소</value>
   </data>
-  <data name="ServiceAvatarInfoSummaryNotRefreshed" xml:space="preserve">
-    <value>아직 새로 고쳐지지 않음</value>
-  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing 일일 배경화면</value>
   </data>
@@ -929,15 +917,6 @@
   <data name="ServiceDailyNoteNotifierTransformerHint" xml:space="preserve">
     <value>매개 변수 변환기가 준비되었습니다</value>
   </data>
-  <data name="ServiceDiscordActivityElevationRequiredHint" xml:space="preserve">
-    <value>권한이 부족하여 Discord Activity 상태를 설정할 수 없습니다.</value>
-  </data>
-  <data name="ServiceDiscordGameActivityDetails" xml:space="preserve">
-    <value>티바트 대륙을 탐험하는 중</value>
-  </data>
-  <data name="ServiceDiscordGameLaunchedBy" xml:space="preserve">
-    <value>{0}에 의해 시작됨</value>
-  </data>
   <data name="ServiceGachaLogFactoryAvatarWishName" xml:space="preserve">
     <value>캐릭터 이벤트</value>
   </data>
@@ -1005,17 +984,8 @@
   <data name="ServiceGameEnsureGameResourceQueryResourceInformation" xml:space="preserve">
     <value>게임 리소스 인덱스 다운로드</value>
   </data>
-  <data name="ServiceGameIslandFeature404" xml:space="preserve">
-    <value>주입 구성 정보 가져오기 실패, 현재 게임 버전은 아직 지원되지 않습니다</value>
-  </data>
-  <data name="ServiceGameIslandFeatureRequiresHoyolabAccount" xml:space="preserve">
-    <value>주입 기능의 남용을 방지하기 위해, 미호요/호요랩 계정으로 로그인하고 계정과 캐릭터를 선택해야 합니다</value>
-  </data>
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>로컬 게임 버전을 가져오지 못해 주입 설정 정보를 얻을 수 없음</value>
-  </data>
-  <data name="ServiceGameLaunchExecutionArbitraryLibraryInjectionException" xml:space="preserve">
-    <value>DLL: '{0}' 주입 중 오류 발생</value>
   </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI가 시작됨</value>
@@ -1032,9 +1002,6 @@
   <data name="ServiceGameLaunchExecutionGameIsRunning" xml:space="preserve">
     <value>게임 프로세스 실행 중</value>
   </data>
-  <data name="ServiceGameLaunchExecutionGamePathNotValid" xml:space="preserve">
-    <value>게임 경로를 선택하십시오</value>
-  </data>
   <data name="ServiceGameLaunchExecutionGameResourceQueryIndexFailed" xml:space="preserve">
     <value>게임 리소스 인덱스 다운로드 실패: {0}</value>
   </data>
@@ -1044,14 +1011,8 @@
   <data name="ServiceGameLaunchPhaseProcessExited" xml:space="preserve">
     <value>게임 프로세스가 종료되었습니다.</value>
   </data>
-  <data name="ServiceGameLaunchPhaseProcessInitializing" xml:space="preserve">
-    <value>게임 프로세스 초기화 중</value>
-  </data>
   <data name="ServiceGameLaunchPhaseProcessStarted" xml:space="preserve">
     <value>게임 프로세스가 시작되었습니다.</value>
-  </data>
-  <data name="ServiceGameLaunchPhaseUnlockingFps" xml:space="preserve">
-    <value>주입 구성 정보를 가져오는 중</value>
   </data>
   <data name="ServiceGameLaunchPhaseWaitingProcessExit" xml:space="preserve">
     <value>게임 프로세스가 종료될 때까지 대기 중</value>
@@ -1133,20 +1094,8 @@
   <data name="ServiceGamePackageConvertMoveFileRestore" xml:space="preserve">
     <value>교체: {0}</value>
   </data>
-  <data name="ServiceGamePackageReadLocalPackageVerionFailed" xml:space="preserve">
-    <value>로컬 패키지 버전을 읽는 중 문제가 발생했습니다. 게임을 복구하면 도움이 될 수 있습니다.</value>
-  </data>
   <data name="ServiceGamePackageRenameDataFolderFailed" xml:space="preserve">
     <value>데이터 폴더 이름을 변경하지 못했습니다</value>
-  </data>
-  <data name="ServiceGamePackageRequestPackageVerion" xml:space="preserve">
-    <value>Package Version 가져오기</value>
-  </data>
-  <data name="ServiceGamePackageRequestPackageVerionFailed" xml:space="preserve">
-    <value>Package Version을 가져오지 못했습니다</value>
-  </data>
-  <data name="ServiceGamePackageRequestScatteredFileFailed" xml:space="preserve">
-    <value>클라이언트 파일 다운로드 실패: {0}</value>
   </data>
   <data name="ServiceGamePathLocateFailed" xml:space="preserve">
     <value>게임 경로를 찾을 수 없습니다. 설정에서 수정하세요</value>
@@ -1169,17 +1118,11 @@
   <data name="ServiceMetadataFileNotFound" xml:space="preserve">
     <value>캐시된 메타데이터 파일을 찾을 수 없습니다.</value>
   </data>
-  <data name="ServiceMetadataHttpRequestFailed" xml:space="preserve">
-    <value>HTTP {0} | 오류:{1}：메타데이터 검증 파일 다운로드 실패</value>
-  </data>
   <data name="ServiceMetadataNotInitialized" xml:space="preserve">
     <value>메타데이터 서비스가 초기되지 않았거나 초기화에 실패했습니다</value>
   </data>
   <data name="ServiceMetadataParseFailed" xml:space="preserve">
     <value>메타데이터 확인 파일 파싱 실패</value>
-  </data>
-  <data name="ServiceMetadataRequestFailed" xml:space="preserve">
-    <value>메타데이터 확인 파일을 다운로드 하지 못했습니다</value>
   </data>
   <data name="ServiceMetadataVersionNotSupported" xml:space="preserve">
     <value>호두 버전이 낮습니다. 업데이트 해주세요</value>
@@ -1213,9 +1156,6 @@
   </data>
   <data name="ServiceUIGFImportInvalidItem" xml:space="preserve">
     <value>지원되지 않는 아이템, Id: {0}</value>
-  </data>
-  <data name="ServiceUpdateStatusVersionDescription" xml:space="preserve">
-    <value>새 버전 {0}을(를) 찾았습니다</value>
   </data>
   <data name="ServiceUserProcessCookieNoMid" xml:space="preserve">
     <value>입력한 Cookie에 Mid가 없습니다</value>
@@ -1466,9 +1406,6 @@
   <data name="ViewDialogFeedbackEnableLoopbackContent" xml:space="preserve">
     <value>제한 해제 후에는 다른 도구를 사용하여 제한을 복원해야 합니다.</value>
   </data>
-  <data name="ViewDialogFeedbackEnableLoopbackDescription" xml:space="preserve">
-    <value>시스템 프록시가 구성되었지만 Loopback 제한이 해제되지 않아 Snap Hutao가 정상적으로 네트워크에 연결할 수 없습니다.</value>
-  </data>
   <data name="ViewDialogFeedbackEnableLoopbackTitle" xml:space="preserve">
     <value>Loopback 제한을 해제하시겠습니까?</value>
   </data>
@@ -1642,15 +1579,6 @@
   </data>
   <data name="ViewDialogSpiralAbyssUploadRecordHomaNotLoginTitle" xml:space="preserve">
     <value>심연 데이터 업로드</value>
-  </data>
-  <data name="ViewDialogUpdatePackageDownloadUpdateLogLinkContent" xml:space="preserve">
-    <value>업데이트 로그 확인</value>
-  </data>
-  <data name="ViewDialogUpdatePackageMirrorHeader" xml:space="preserve">
-    <value>다운로드 소스</value>
-  </data>
-  <data name="ViewDialogUpdatePackagePrimaryText" xml:space="preserve">
-    <value>업데이트</value>
   </data>
   <data name="ViewDialogUserAccountPasswordAccountHint" xml:space="preserve">
     <value>계정을 입력하세요</value>
@@ -1868,14 +1796,8 @@
   <data name="ViewModelAvatarPropertyCalculateWeaponNull" xml:space="preserve">
     <value>현재 캐릭터를 계산할 수 없습니다. 정보 동기화 후 다시 시도하세요</value>
   </data>
-  <data name="ViewModelAvatarPropertyEnkaApiUnavailable" xml:space="preserve">
-    <value>캐릭터 정보 서비스 [Enka API]는 현재 사용할 수 없습니다</value>
-  </data>
   <data name="ViewModelAvatarPropertyFetch" xml:space="preserve">
     <value>데이터 가져오는 중</value>
-  </data>
-  <data name="ViewModelAvatarPropertyShowcaseNotOpen" xml:space="preserve">
-    <value>캐릭터 상세정보 보기가 꺼져있습니다. 게임에서 설정 후 다시 시도하십시오.</value>
   </data>
   <data name="ViewModelAvatarPropertySortDescriptionKindActivatedConstellationCount" xml:space="preserve">
     <value>운명의 별자리 해제 레벨 순서</value>
@@ -2092,9 +2014,6 @@
   </data>
   <data name="ViewModelGamePackageGetGameBranchFailed" xml:space="preserve">
     <value>게임 버전 구성 가져오기 실패</value>
-  </data>
-  <data name="ViewModelGamePackageGetGameChannelSDKFailed" xml:space="preserve">
-    <value>게임 채널 SDK 가져오기 실패</value>
   </data>
   <data name="ViewModelGamePackageLocalLaunchScheme" xml:space="preserve">
     <value>로컬 게임 구성 [{0}]</value>
@@ -2432,12 +2351,6 @@
   <data name="ViewPageAchievementSortIncompletedItemsFirst" xml:space="preserve">
     <value>미완성 우선</value>
   </data>
-  <data name="ViewPageAnnouncementActivity" xml:space="preserve">
-    <value>다가오는 이벤트</value>
-  </data>
-  <data name="ViewPageAnnouncementGame" xml:space="preserve">
-    <value>게임 공지</value>
-  </data>
   <data name="ViewPageAnnouncementRedeemCodeCopySucceed" xml:space="preserve">
     <value>교환 코드 복사 성공</value>
   </data>
@@ -2470,9 +2383,6 @@
   </data>
   <data name="ViewPageAvatarPropertyRefreshFromHoyolabGameRecord" xml:space="preserve">
     <value>HoYoLAB에서 원신 전적 동기화</value>
-  </data>
-  <data name="ViewPageAvatarPropertyRefreshTimeToggle" xml:space="preserve">
-    <value>데이터 동기화 시간</value>
   </data>
   <data name="ViewPageCultivateCalculate" xml:space="preserve">
     <value>육성 계산</value>
@@ -2591,9 +2501,6 @@
   <data name="ViewPageDailyNoteSettingRefreshHeader" xml:space="preserve">
     <value>동기화</value>
   </data>
-  <data name="ViewPageDailyNoteSettingRefreshNotifyIconDisabledHint" xml:space="preserve">
-    <value>알림 영역 아이콘이 비활성화되어 있어 창을 닫은 후 자동 새로 고침이 실행되지 않습니다.</value>
-  </data>
   <data name="ViewPageDailyNoteSettingRefreshNotifyIconFailedToCreateHint" xml:space="preserve">
     <value>알림 영역 아이콘 생성에 실패했습니다. 창을 닫으면 자동 새로고침이 실행되지 않습니다</value>
   </data>
@@ -2611,12 +2518,6 @@
   </data>
   <data name="ViewPageDailyNoteVerify" xml:space="preserve">
     <value>현재 사용자와 캐릭터 확인</value>
-  </data>
-  <data name="ViewPageEmbeddedYaeLaunchGameAction" xml:space="preserve">
-    <value>게임 시작</value>
-  </data>
-  <data name="ViewPageEmbeddedYaeLaunchGameDescription" xml:space="preserve">
-    <value>정확한 데이터를 얻으려면 Embedded Yae를 게임에 주입하세요.</value>
   </data>
   <data name="ViewPageFeedbackAutoSuggestBoxPlaceholder" xml:space="preserve">
     <value>질문 및 제안 검색</value>
@@ -2685,7 +2586,7 @@
     <value>이 UID 클라우드 아카이브 다운로드</value>
   </data>
   <data name="ViewPageGachaLogHutaoCloudSpiralAbyssActivityDescription" xml:space="preserve">
-    <value>매 시즌 나선 비경 첫 업로드 시 <b>3</b>일 무료 이용 혜택 제공</value>
+    <value />
   </data>
   <data name="ViewPageGachaLogHutaoCloudSpiralAbyssActivityHeader" xml:space="preserve">
     <value>나선 비경 기록 업로드</value>
@@ -2785,9 +2686,6 @@
   </data>
   <data name="ViewPageHomeGreetingTextEpic1" xml:space="preserve">
     <value>저기, 여행자, 티바트 대륙에 온 지 {0}일째 되는 날이야</value>
-  </data>
-  <data name="ViewPageHomeLaunchGameSettingAction" xml:space="preserve">
-    <value>설정</value>
   </data>
   <data name="ViewPageHutaoDatabaseOverview" xml:space="preserve">
     <value>세부</value>
@@ -2912,9 +2810,6 @@
   <data name="ViewPageLaunchGameAppearanceBorderlessDescription" xml:space="preserve">
     <value>테두리 없는 창모드</value>
   </data>
-  <data name="ViewPageLaunchGameAppearanceCloudThirdPartyMobileDescription" xml:space="preserve">
-    <value>내장 터치 레이아웃을 활성화하면 키보드 및 마우스 입력에 응답하지 않습니다.</value>
-  </data>
   <data name="ViewPageLaunchGameAppearanceExclusiveDescription" xml:space="preserve">
     <value>게임 내 브라우저와 호환되지 않아 화면을 자르는 등의 작업으로 게임이 종료 될 수 있습니다</value>
   </data>
@@ -2942,15 +2837,6 @@
   <data name="ViewPageLaunchGameBetterGIHeader" xml:space="preserve">
     <value>자동화 작업</value>
   </data>
-  <data name="ViewPageLaunchGameBypass31Dash4302Description" xml:space="preserve">
-    <value>오류 코드 31-4302가 나타나면 이 옵션을 활성화하세요.</value>
-  </data>
-  <data name="ViewPageLaunchGameBypass31Dash4302Header" xml:space="preserve">
-    <value>들여보내 줘!</value>
-  </data>
-  <data name="ViewPageLaunchGameColdSwitchDescription" xml:space="preserve">
-    <value>게임을 시작한 후에는 다시 전환할 수 없습니다.</value>
-  </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
     <value>주입 기능은 매우 위험하며 심각한 결과를 초래할 수 있으므로 주의하여 사용하십시오.</value>
   </data>
@@ -2966,17 +2852,8 @@
   <data name="ViewPageLaunchGameDisableFogOn" xml:space="preserve">
     <value>제거</value>
   </data>
-  <data name="ViewPageLaunchGameDiscordActivityDescription" xml:space="preserve">
-    <value>게임 플레이 시 Discord Activity 상태를 설정합니다.</value>
-  </data>
-  <data name="ViewPageLaunchGameDiscordActivityHeader" xml:space="preserve">
-    <value>Discord 활동</value>
-  </data>
   <data name="ViewPageLaunchGameElevationDescription" xml:space="preserve">
     <value>게임 파일 관리/게임 서버 전환/기능 주입에는 관리자 권한이 필요합니다.</value>
-  </data>
-  <data name="ViewPageLaunchGameEventCameraMoveColdSwitchHeader" xml:space="preserve">
-    <value>원소 폭발 클로즈업 콜드 스위치</value>
   </data>
   <data name="ViewPageLaunchGameEventCameraMoveHotSwitchHeader" xml:space="preserve">
     <value>원소 폭발 클로즈업 제거</value>
@@ -2992,9 +2869,6 @@
   </data>
   <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipTitle" xml:space="preserve">
     <value>시야와 안개</value>
-  </data>
-  <data name="ViewPageLaunchGameHideQuestBannerColdSwitchHeader" xml:space="preserve">
-    <value>맵 배너 콜드 스위치</value>
   </data>
   <data name="ViewPageLaunchGameHideQuestBannerHotSwitchDescription" xml:space="preserve">
     <value>지도 인터페이스 왼쪽 상단의 퀘스트 알림 강제 제거</value>
@@ -3053,9 +2927,6 @@
   <data name="ViewPageLaunchGameOverlayDescription" xml:space="preserve">
     <value>설정에서 알림 영역 아이콘을 활성화해야 하며, 올바르게 표시하려면 테두리 없는 창 모드가 필요할 수 있습니다</value>
   </data>
-  <data name="ViewPageLaunchGameOverlayDescriptionHint" xml:space="preserve">
-    <value>게임 실행 후 오버레이에서 특정 기능 설정을 조정하세요. 오버레이를 올바르게 표시하려면 테두리 없는 창 모드를 활성화해야 할 수 있습니다</value>
-  </data>
   <data name="ViewPageLaunchGameOverlayHeader" xml:space="preserve">
     <value>인게임 오버레이</value>
   </data>
@@ -3086,26 +2957,11 @@
   <data name="ViewPageLaunchGamePlayTimeHeader" xml:space="preserve">
     <value>플레이 시간 통계</value>
   </data>
-  <data name="ViewPageLaunchGameRemoveOpenTeamProgressColdSwitchHeader" xml:space="preserve">
-    <value>팀 구성 콜드 스위치</value>
-  </data>
   <data name="ViewPageLaunchGameRemoveOpenTeamProgressDescription" xml:space="preserve">
     <value>팀 구성 화면을 열 때 표시되는 진행률 표시줄을 제거합니다.</value>
   </data>
   <data name="ViewPageLaunchGameRemoveOpenTeamProgressHeader" xml:space="preserve">
     <value>팀 구성 진행률 표시줄 제거</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceDiffHeader" xml:space="preserve">
-    <value>증분 패키지</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceHeader" xml:space="preserve">
-    <value>리소스 다운로드</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceLatestHeader" xml:space="preserve">
-    <value>클라이언트</value>
-  </data>
-  <data name="ViewPageLaunchGameResourcePreDownloadHeader" xml:space="preserve">
-    <value>사전 다운로드</value>
   </data>
   <data name="ViewPageLaunchGameSelectGamePath" xml:space="preserve">
     <value>게임 경로 선택</value>
@@ -3140,9 +2996,6 @@
   <data name="ViewPageLaunchGameSwitchSchemeHeader" xml:space="preserve">
     <value>서버</value>
   </data>
-  <data name="ViewPageLaunchGameTargetFovColdSwitchHeader" xml:space="preserve">
-    <value>시야 콜드 스위치</value>
-  </data>
   <data name="ViewPageLaunchGameTargetFovDescription" xml:space="preserve">
     <value>카메라 시야를 조정합니다. 기본값은 45입니다.</value>
   </data>
@@ -3163,9 +3016,6 @@
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipTitle" xml:space="preserve">
     <value>프레임 속도 상한을 해제할 수 없나요?</value>
-  </data>
-  <data name="ViewPageLaunchGameTooltipDescriptionHint" xml:space="preserve">
-    <value>기능 스위치/텍스트 상자에 마우스를 올리면 자세한 내용을 볼 수 있습니다.</value>
   </data>
   <data name="ViewPageLaunchGameUnlockFpsDescription" xml:space="preserve">
     <value>게임에서 수직 동기화 기능을 꺼주세요. 더 높은 프레임 속도를 지원하려면 고성능 그래픽 카드가 필요하며, 무제한 프레임 속도를 위해서는 값을 -1로 설정하세요.</value>
@@ -3533,15 +3383,6 @@
   <data name="ViewPageSettingLaunchForceUsingTouchScreenHeader" xml:space="preserve">
     <value>터치 스크린 입력 감지</value>
   </data>
-  <data name="ViewPageSettingNotifyIconCustomTaskBarWaring" xml:space="preserve">
-    <value>시스템 맞춤 도구로 표준 작업 표시줄을 교체한 후 알림 영역 아이콘을 활성화하면 다음과 같은 문제가 발생할 수 있습니다: 아이콘과 상호 작용할 수 없음/아이콘을 정상적으로 생성할 수 없음/탐색기를 다시 시작한 후 충돌/응용 프로그램 시작 시 충돌</value>
-  </data>
-  <data name="ViewPageSettingNotifyIconDescription" xml:space="preserve">
-    <value>알림 영역에 아이콘을 표시하여 백그라운드 작업을 허용합니다. 재시작 후 적용됩니다.</value>
-  </data>
-  <data name="ViewPageSettingNotifyIconHeader" xml:space="preserve">
-    <value>알림 영역 아이콘</value>
-  </data>
   <data name="ViewPageSettingOfficialSiteNavigate" xml:space="preserve">
     <value>공식 홈페이지로 이동</value>
   </data>
@@ -3550,9 +3391,6 @@
   </data>
   <data name="ViewPageSettingOpenBackgroundImageFolderHeader" xml:space="preserve">
     <value>배경 이미지 폴더 열기</value>
-  </data>
-  <data name="ViewPageSettingPackageConverterTypeHeader" xml:space="preserve">
-    <value>서버 모드 전환</value>
   </data>
   <data name="ViewPageSettingResetAction" xml:space="preserve">
     <value>초기화</value>
@@ -3655,9 +3493,6 @@
   </data>
   <data name="ViewPageWiKiAvatarConstellationNameTitle" xml:space="preserve">
     <value>운명의 자리</value>
-  </data>
-  <data name="ViewPageWiKiAvatarCostumeHeader" xml:space="preserve">
-    <value>코스튬</value>
   </data>
   <data name="ViewPageWiKiAvatarDateofBirthTitle" xml:space="preserve">
     <value>생일</value>
@@ -3827,18 +3662,6 @@
   <data name="ViewTitileUpdatePackageAvailableContent" xml:space="preserve">
     <value>지금 업데이트하시겠습니까?</value>
   </data>
-  <data name="ViewTitileUpdatePackageDownloadFailedMessage" xml:space="preserve">
-    <value>업데이트 다운로드 실패</value>
-  </data>
-  <data name="ViewTitileUpdatePackageDownloadTitle" xml:space="preserve">
-    <value>Snap Hutao {0} 버전이 출시되었습니다</value>
-  </data>
-  <data name="ViewTitileUpdatePackageReadyContent" xml:space="preserve">
-    <value>지금 설치하시겠습니까?</value>
-  </data>
-  <data name="ViewTitileUpdatePackageReadyTitle" xml:space="preserve">
-    <value>Snap Hutao {0} 버전이 준비되었습니다</value>
-  </data>
   <data name="ViewTitleAutoClicking" xml:space="preserve">
     <value>자동 클릭</value>
   </data>
@@ -3850,12 +3673,6 @@
   </data>
   <data name="ViewTitleUpdatePackageAvailableTitle" xml:space="preserve">
     <value>호두 {0} 버전이 현재 사용 가능합니다</value>
-  </data>
-  <data name="ViewTitleUpdatePackageDownloadContent" xml:space="preserve">
-    <value>지금 다운로드하시겠습니까?</value>
-  </data>
-  <data name="ViewTitleUpdatePackageInstallingContent" xml:space="preserve">
-    <value>업데이트를 설치하는 중</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>도구</value>
@@ -3886,9 +3703,6 @@
   </data>
   <data name="ViewUserCookieOperationRefreshCookieAction" xml:space="preserve">
     <value>Cookie 동기화</value>
-  </data>
-  <data name="ViewUserCookieOperationSignInRewardAction" xml:space="preserve">
-    <value>출석 체크 보상 받기</value>
   </data>
   <data name="ViewUserCopyCookieAction" xml:space="preserve">
     <value>Cookie 복사</value>
@@ -3934,9 +3748,6 @@
   </data>
   <data name="ViewWindowExceptionClose" xml:space="preserve">
     <value>닫기</value>
-  </data>
-  <data name="ViewWindowExceptionDescription" xml:space="preserve">
-    <value>이 창의 스크린샷을 찍고 피드백 센터에서 적절한 피드백 방법을 찾아 개발팀에 피드백을 보내주세요.</value>
   </data>
   <data name="ViewWindowExceptionHeader" xml:space="preserve">
     <value>복구할 수 없는 심각한 오류가 발생했습니다.</value>
@@ -4036,18 +3847,6 @@
   </data>
   <data name="WebDailyNoteHomeLocked" xml:space="preserve">
     <value>선계가 아직 해제되지 않음</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay" xml:space="preserve">
-    <value>{0}일</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay0" xml:space="preserve">
-    <value>오늘</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay1" xml:space="preserve">
-    <value>내일</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay2" xml:space="preserve">
-    <value>모레</value>
   </data>
   <data name="WebDailyNoteResinRecovery" xml:space="preserve">
     <value>{0} {1:HH:mm} 이후 전부 회복</value>

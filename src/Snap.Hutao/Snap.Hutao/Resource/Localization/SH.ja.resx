@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -722,15 +722,6 @@
   <data name="ServiceAchievementUserdataCorruptedAchievementIdNotUnique" xml:space="preserve">
     <value>単一のアーカイブに同一のアチーブメント ID が複数存在しています</value>
   </data>
-  <data name="ServiceAnnouncementAdventurersBoosterBundlesDurationDescription" xml:space="preserve">
-    <value>【リリース時間】</value>
-  </data>
-  <data name="ServiceAnnouncementPermanentKeyword" xml:space="preserve">
-    <value>期限なし</value>
-  </data>
-  <data name="ServiceAnnouncementVersionUpdateTimeDescription" xml:space="preserve">
-    <value>〓更新時期〓</value>
-  </data>
   <data name="ServiceAppOptionsCalendarServerTimeZoneAmerica" xml:space="preserve">
     <value>北アメリカ UTC-05</value>
   </data>
@@ -854,9 +845,6 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>クールダウン短縮</value>
   </data>
-  <data name="ServiceAvatarInfoSummaryNotRefreshed" xml:space="preserve">
-    <value>未更新</value>
-  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing 日替わり画像</value>
   </data>
@@ -929,15 +917,6 @@
   <data name="ServiceDailyNoteNotifierTransformerHint" xml:space="preserve">
     <value>参量物質変化器は使用可能</value>
   </data>
-  <data name="ServiceDiscordActivityElevationRequiredHint" xml:space="preserve">
-    <value>権限が足りないため、Discord Activity を設定できません</value>
-  </data>
-  <data name="ServiceDiscordGameActivityDetails" xml:space="preserve">
-    <value>テイワット大陸を探索中</value>
-  </data>
-  <data name="ServiceDiscordGameLaunchedBy" xml:space="preserve">
-    <value>{0} によって開始</value>
-  </data>
   <data name="ServiceGachaLogFactoryAvatarWishName" xml:space="preserve">
     <value>イベント</value>
   </data>
@@ -1005,17 +984,8 @@
   <data name="ServiceGameEnsureGameResourceQueryResourceInformation" xml:space="preserve">
     <value>ゲームリソースのインデックスをダウンロード</value>
   </data>
-  <data name="ServiceGameIslandFeature404" xml:space="preserve">
-    <value>注入の配置情報の取得に失敗しました、現在のゲームバージョンはサポートされていません</value>
-  </data>
-  <data name="ServiceGameIslandFeatureRequiresHoyolabAccount" xml:space="preserve">
-    <value>注入機能の悪用を防ぐため、米游社/HoYoLAB アカウントでログインし、アカウント及びキャラクターを選択する必要があります</value>
-  </data>
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>ローカルゲームバージョンの取得に失敗しました。注入配置情報を取得できません</value>
-  </data>
-  <data name="ServiceGameLaunchExecutionArbitraryLibraryInjectionException" xml:space="preserve">
-    <value>DLL: '{0}' の注入中にエラーが発生しました</value>
   </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>Better GI が起動しました</value>
@@ -1033,9 +1003,6 @@
   <data name="ServiceGameLaunchExecutionGameIsRunning" xml:space="preserve">
     <value>ゲームは実行中です</value>
   </data>
-  <data name="ServiceGameLaunchExecutionGamePathNotValid" xml:space="preserve">
-    <value>ゲームのパスを選択してください</value>
-  </data>
   <data name="ServiceGameLaunchExecutionGameResourceQueryIndexFailed" xml:space="preserve">
     <value>ゲームリソースのインデックスのダウンロードに失敗しました: {0}</value>
   </data>
@@ -1045,14 +1012,8 @@
   <data name="ServiceGameLaunchPhaseProcessExited" xml:space="preserve">
     <value>ゲームプロセスが終了しました</value>
   </data>
-  <data name="ServiceGameLaunchPhaseProcessInitializing" xml:space="preserve">
-    <value>ゲームプロセスを初期化しています</value>
-  </data>
   <data name="ServiceGameLaunchPhaseProcessStarted" xml:space="preserve">
     <value>ゲームプロセスが開始されています</value>
-  </data>
-  <data name="ServiceGameLaunchPhaseUnlockingFps" xml:space="preserve">
-    <value>注入の配置情報を取得中</value>
   </data>
   <data name="ServiceGameLaunchPhaseWaitingProcessExit" xml:space="preserve">
     <value>プロセスが終了するまで待機中</value>
@@ -1134,21 +1095,8 @@
   <data name="ServiceGamePackageConvertMoveFileRestore" xml:space="preserve">
     <value>置き換え：{0}</value>
   </data>
-  <data name="ServiceGamePackageReadLocalPackageVerionFailed" xml:space="preserve">
-    <value>ローカル Package Version の読み込みに問題があって、ゲームを修復することで解決するかもしれません。
-</value>
-  </data>
   <data name="ServiceGamePackageRenameDataFolderFailed" xml:space="preserve">
     <value>データフォルダ名前の変更に失敗しました</value>
-  </data>
-  <data name="ServiceGamePackageRequestPackageVerion" xml:space="preserve">
-    <value>Package Version を取得中</value>
-  </data>
-  <data name="ServiceGamePackageRequestPackageVerionFailed" xml:space="preserve">
-    <value>Package Version を取得できません</value>
-  </data>
-  <data name="ServiceGamePackageRequestScatteredFileFailed" xml:space="preserve">
-    <value>クライアントファイルのダウンロードに失敗しました：{0}</value>
   </data>
   <data name="ServiceGamePathLocateFailed" xml:space="preserve">
     <value>ゲームパスが見つかりません、設定で変更してください</value>
@@ -1171,17 +1119,11 @@
   <data name="ServiceMetadataFileNotFound" xml:space="preserve">
     <value>キャッシュされたメタデータファイルが見つかりませんでした</value>
   </data>
-  <data name="ServiceMetadataHttpRequestFailed" xml:space="preserve">
-    <value>HTTP {0} | Error {1}: メタデータ検証ファイルのダウンロードに失敗しました。</value>
-  </data>
   <data name="ServiceMetadataNotInitialized" xml:space="preserve">
     <value>メタデータサービスが初期化されていないか、または初期化できませんでした</value>
   </data>
   <data name="ServiceMetadataParseFailed" xml:space="preserve">
     <value>メタデータの検証ファイルを解析できませんでした。</value>
-  </data>
-  <data name="ServiceMetadataRequestFailed" xml:space="preserve">
-    <value>メタデータの検証ファイルのダウンロードに失敗しました。</value>
   </data>
   <data name="ServiceMetadataVersionNotSupported" xml:space="preserve">
     <value>あなたの胡桃バージョンは古すぎて、できるだけ早く更新してください！</value>
@@ -1215,9 +1157,6 @@
   </data>
   <data name="ServiceUIGFImportInvalidItem" xml:space="preserve">
     <value>サポートされていないアイテム, Id: {0}</value>
-  </data>
-  <data name="ServiceUpdateStatusVersionDescription" xml:space="preserve">
-    <value>新しいバージョン {0} が利用できます</value>
   </data>
   <data name="ServiceUserProcessCookieNoMid" xml:space="preserve">
     <value>入力した Cookie には Mid が必要です</value>
@@ -1468,9 +1407,6 @@
   <data name="ViewDialogFeedbackEnableLoopbackContent" xml:space="preserve">
     <value>制限を解除した後にループバックを復元するには他のツールが必要です</value>
   </data>
-  <data name="ViewDialogFeedbackEnableLoopbackDescription" xml:space="preserve">
-    <value>システムのプロクシーが設定されていることを検出しましたが Loopback 制限が未解除ため、胡桃は正しくネットワークに接続することができません。</value>
-  </data>
   <data name="ViewDialogFeedbackEnableLoopbackTitle" xml:space="preserve">
     <value>ループバック制限解除の確認</value>
   </data>
@@ -1644,15 +1580,6 @@
   </data>
   <data name="ViewDialogSpiralAbyssUploadRecordHomaNotLoginTitle" xml:space="preserve">
     <value>深境螺旋のデータをアップロード</value>
-  </data>
-  <data name="ViewDialogUpdatePackageDownloadUpdateLogLinkContent" xml:space="preserve">
-    <value>更新ログを表示</value>
-  </data>
-  <data name="ViewDialogUpdatePackageMirrorHeader" xml:space="preserve">
-    <value>ソースをダウンロード</value>
-  </data>
-  <data name="ViewDialogUpdatePackagePrimaryText" xml:space="preserve">
-    <value>アップデート</value>
   </data>
   <data name="ViewDialogUserAccountPasswordAccountHint" xml:space="preserve">
     <value>アカウントを入力してください</value>
@@ -1870,14 +1797,8 @@
   <data name="ViewModelAvatarPropertyCalculateWeaponNull" xml:space="preserve">
     <value>現在のキャラクターを計算できません。データの同期後に再試行してください。</value>
   </data>
-  <data name="ViewModelAvatarPropertyEnkaApiUnavailable" xml:space="preserve">
-    <value>キャラクターデータサービス [Enka API] は現在利用できません。</value>
-  </data>
   <data name="ViewModelAvatarPropertyFetch" xml:space="preserve">
     <value>データを取得中</value>
-  </data>
-  <data name="ViewModelAvatarPropertyShowcaseNotOpen" xml:space="preserve">
-    <value>キャラクターラインナップが未配置か非表示です。ゲーム内のプロフィール編集で設定してください</value>
   </data>
   <data name="ViewModelAvatarPropertySortDescriptionKindActivatedConstellationCount" xml:space="preserve">
     <value>命ノ星座解放数順</value>
@@ -2094,9 +2015,6 @@
   </data>
   <data name="ViewModelGamePackageGetGameBranchFailed" xml:space="preserve">
     <value>ゲームバージョン設定の取得に失敗しました</value>
-  </data>
-  <data name="ViewModelGamePackageGetGameChannelSDKFailed" xml:space="preserve">
-    <value>ゲームチャンネル SDK の取得に失敗しました</value>
   </data>
   <data name="ViewModelGamePackageLocalLaunchScheme" xml:space="preserve">
     <value>ローカルゲーム設定 [{0}]</value>
@@ -2434,12 +2352,6 @@
   <data name="ViewPageAchievementSortIncompletedItemsFirst" xml:space="preserve">
     <value>未達成に優先</value>
   </data>
-  <data name="ViewPageAnnouncementActivity" xml:space="preserve">
-    <value>イベント</value>
-  </data>
-  <data name="ViewPageAnnouncementGame" xml:space="preserve">
-    <value>重要</value>
-  </data>
   <data name="ViewPageAnnouncementRedeemCodeCopySucceed" xml:space="preserve">
     <value>交換コードがコピーされました</value>
   </data>
@@ -2472,9 +2384,6 @@
   </data>
   <data name="ViewPageAvatarPropertyRefreshFromHoyolabGameRecord" xml:space="preserve">
     <value>HoYoLAB 原神戦績から同期</value>
-  </data>
-  <data name="ViewPageAvatarPropertyRefreshTimeToggle" xml:space="preserve">
-    <value>更新日時</value>
   </data>
   <data name="ViewPageCultivateCalculate" xml:space="preserve">
     <value>育成計算</value>
@@ -2593,9 +2502,6 @@
   <data name="ViewPageDailyNoteSettingRefreshHeader" xml:space="preserve">
     <value>更新</value>
   </data>
-  <data name="ViewPageDailyNoteSettingRefreshNotifyIconDisabledHint" xml:space="preserve">
-    <value>通知領域アイコンを無効にすると、ウィンドウを閉じた後、自動更新が実行されなくなります</value>
-  </data>
   <data name="ViewPageDailyNoteSettingRefreshNotifyIconFailedToCreateHint" xml:space="preserve">
     <value>通知領域アイコンの作成に失敗したため、自動更新は、ウィンドウを閉じた後に実行されません</value>
   </data>
@@ -2613,12 +2519,6 @@
   </data>
   <data name="ViewPageDailyNoteVerify" xml:space="preserve">
     <value>現在のユーザーとキャラを認証</value>
-  </data>
-  <data name="ViewPageEmbeddedYaeLaunchGameAction" xml:space="preserve">
-    <value>ゲーム起動</value>
-  </data>
-  <data name="ViewPageEmbeddedYaeLaunchGameDescription" xml:space="preserve">
-    <value>Embedded Yae をゲームに注入して正確なデータを取得できます</value>
   </data>
   <data name="ViewPageFeedbackAutoSuggestBoxPlaceholder" xml:space="preserve">
     <value>質問や提案を検索</value>
@@ -2789,9 +2689,6 @@
   <data name="ViewPageHomeGreetingTextEpic1" xml:space="preserve">
     <value>なあ、旅人、今日はテイワットで {0} 日目の冒険だぞ！</value>
   </data>
-  <data name="ViewPageHomeLaunchGameSettingAction" xml:space="preserve">
-    <value>設定</value>
-  </data>
   <data name="ViewPageHutaoDatabaseOverview" xml:space="preserve">
     <value>詳細</value>
   </data>
@@ -2915,9 +2812,6 @@
   <data name="ViewPageLaunchGameAppearanceBorderlessDescription" xml:space="preserve">
     <value>枠の無いポップアップウィンドウとして作成します。</value>
   </data>
-  <data name="ViewPageLaunchGameAppearanceCloudThirdPartyMobileDescription" xml:space="preserve">
-    <value>内蔵のタッチレイアウトを有効し、キーボードとマウスは使えなくなります。</value>
-  </data>
   <data name="ViewPageLaunchGameAppearanceExclusiveDescription" xml:space="preserve">
     <value>ゲーム内の埋め込みブラウザとの互換性がなく、ウィンドウ切り替えなどの操作でゲームが強制終了することがあります。</value>
   </data>
@@ -2945,15 +2839,6 @@
   <data name="ViewPageLaunchGameBetterGIHeader" xml:space="preserve">
     <value>任務自動化</value>
   </data>
-  <data name="ViewPageLaunchGameBypass31Dash4302Description" xml:space="preserve">
-    <value>エラーコード 31-4302 があった場合はこのオプションを有効にしてください</value>
-  </data>
-  <data name="ViewPageLaunchGameBypass31Dash4302Header" xml:space="preserve">
-    <value>入らせて！</value>
-  </data>
-  <data name="ViewPageLaunchGameColdSwitchDescription" xml:space="preserve">
-    <value>ゲームの起動後に変更できません。</value>
-  </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
     <value>注入機能は非常に危険で、重大な結果をもたらす可能性があるため、慎重に使用してください！</value>
   </data>
@@ -2969,17 +2854,8 @@
   <data name="ViewPageLaunchGameDisableFogOn" xml:space="preserve">
     <value>削除</value>
   </data>
-  <data name="ViewPageLaunchGameDiscordActivityDescription" xml:space="preserve">
-    <value>ゲーム中に Discord Activity のステータスを設定します。</value>
-  </data>
-  <data name="ViewPageLaunchGameDiscordActivityHeader" xml:space="preserve">
-    <value>Discord Activity</value>
-  </data>
   <data name="ViewPageLaunchGameElevationDescription" xml:space="preserve">
     <value>ゲームファイル管理/サーバーの切り換え/注入機能には管理者権限が必要です</value>
-  </data>
-  <data name="ViewPageLaunchGameEventCameraMoveColdSwitchHeader" xml:space="preserve">
-    <value>元素爆発カットインのコールドスイッチ</value>
   </data>
   <data name="ViewPageLaunchGameEventCameraMoveHotSwitchHeader" xml:space="preserve">
     <value>元素爆発カットインを削除する</value>
@@ -2995,9 +2871,6 @@
   </data>
   <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipTitle" xml:space="preserve">
     <value>視野と霧</value>
-  </data>
-  <data name="ViewPageLaunchGameHideQuestBannerColdSwitchHeader" xml:space="preserve">
-    <value>地図バナーコールドスイッチ</value>
   </data>
   <data name="ViewPageLaunchGameHideQuestBannerHotSwitchDescription" xml:space="preserve">
     <value>マップ画面左上の任務ヒントを強制的に取り除きます</value>
@@ -3056,9 +2929,6 @@
   <data name="ViewPageLaunchGameOverlayDescription" xml:space="preserve">
     <value>設定で通知領域アイコンを有効にする必要があります。正しく表示するには ボーダーレス ウィンドウを有効にする必要がある場合があります</value>
   </data>
-  <data name="ViewPageLaunchGameOverlayDescriptionHint" xml:space="preserve">
-    <value>ゲームを起動した後、オーバーレイウィンドウで詳細な機能設定を調整できます。正しく表示するには ボーダーレス ウィンドウを有効にする必要がある場合があります</value>
-  </data>
   <data name="ViewPageLaunchGameOverlayHeader" xml:space="preserve">
     <value>オーバーレイ</value>
   </data>
@@ -3089,26 +2959,11 @@
   <data name="ViewPageLaunchGamePlayTimeHeader" xml:space="preserve">
     <value>プレイ時間</value>
   </data>
-  <data name="ViewPageLaunchGameRemoveOpenTeamProgressColdSwitchHeader" xml:space="preserve">
-    <value>チーム編成コールドスイッチ</value>
-  </data>
   <data name="ViewPageLaunchGameRemoveOpenTeamProgressDescription" xml:space="preserve">
     <value>チーム編成画面を開いたときに表示される進捗バーを取り除きます</value>
   </data>
   <data name="ViewPageLaunchGameRemoveOpenTeamProgressHeader" xml:space="preserve">
     <value>チーム編成の進捗バーを取り除く</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceDiffHeader" xml:space="preserve">
-    <value>差分パッケージ</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceHeader" xml:space="preserve">
-    <value>リソースダウンロード</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceLatestHeader" xml:space="preserve">
-    <value>完全パッケージ</value>
-  </data>
-  <data name="ViewPageLaunchGameResourcePreDownloadHeader" xml:space="preserve">
-    <value>事前ダウンロード</value>
   </data>
   <data name="ViewPageLaunchGameSelectGamePath" xml:space="preserve">
     <value>ゲームのパスを選択</value>
@@ -3143,9 +2998,6 @@
   <data name="ViewPageLaunchGameSwitchSchemeHeader" xml:space="preserve">
     <value>サーバー</value>
   </data>
-  <data name="ViewPageLaunchGameTargetFovColdSwitchHeader" xml:space="preserve">
-    <value>視野コールドスイッチ</value>
-  </data>
   <data name="ViewPageLaunchGameTargetFovDescription" xml:space="preserve">
     <value>カメラビューを45まで調整する</value>
   </data>
@@ -3166,9 +3018,6 @@
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipTitle" xml:space="preserve">
     <value>フレームレート上限を解除できませんか？</value>
-  </data>
-  <data name="ViewPageLaunchGameTooltipDescriptionHint" xml:space="preserve">
-    <value>マウスカーソルを機能スイッチ/テキストボックスに合わせると詳細が表示されます</value>
   </data>
   <data name="ViewPageLaunchGameUnlockFpsDescription" xml:space="preserve">
     <value>より高い FPS をサポートするために高性能な GPU を必要とします。ゲーム内の「垂直同期」を無効にし、無制限のフレームレートのために値を -1 に設定してください。</value>
@@ -3536,15 +3385,6 @@
   <data name="ViewPageSettingLaunchForceUsingTouchScreenHeader" xml:space="preserve">
     <value>タッチスクリーン入力検出</value>
   </data>
-  <data name="ViewPageSettingNotifyIconCustomTaskBarWaring" xml:space="preserve">
-    <value>美化のためカストマイズツールを使用して標準のタスクバーを置き換えた場合、通知領域アイコンを有効にすると：アイコンとの操作ができない/正常にアイコンを作成できない/エクスプローラーを再起動すると固まる/プログラムの起動後にクラッシュする等の問題が発生する可能性があります</value>
-  </data>
-  <data name="ViewPageSettingNotifyIconDescription" xml:space="preserve">
-    <value>通知領域にアイコンを表示し、再起動後に有効なバックグラウンドタスクの実行を許可します</value>
-  </data>
-  <data name="ViewPageSettingNotifyIconHeader" xml:space="preserve">
-    <value>通知領域アイコン</value>
-  </data>
   <data name="ViewPageSettingOfficialSiteNavigate" xml:space="preserve">
     <value>公式サイト</value>
   </data>
@@ -3553,9 +3393,6 @@
   </data>
   <data name="ViewPageSettingOpenBackgroundImageFolderHeader" xml:space="preserve">
     <value>カスタム背景フォルダーを開く</value>
-  </data>
-  <data name="ViewPageSettingPackageConverterTypeHeader" xml:space="preserve">
-    <value>サーバーモードの変換</value>
   </data>
   <data name="ViewPageSettingResetAction" xml:space="preserve">
     <value>リセット</value>
@@ -3658,9 +3495,6 @@
   </data>
   <data name="ViewPageWiKiAvatarConstellationNameTitle" xml:space="preserve">
     <value>命ノ星座</value>
-  </data>
-  <data name="ViewPageWiKiAvatarCostumeHeader" xml:space="preserve">
-    <value>コスチューム</value>
   </data>
   <data name="ViewPageWiKiAvatarDateofBirthTitle" xml:space="preserve">
     <value>誕生日</value>
@@ -3830,18 +3664,6 @@
   <data name="ViewTitileUpdatePackageAvailableContent" xml:space="preserve">
     <value>すぐに更新しますか？</value>
   </data>
-  <data name="ViewTitileUpdatePackageDownloadFailedMessage" xml:space="preserve">
-    <value>更新パッチのダウンロードに失敗しました</value>
-  </data>
-  <data name="ViewTitileUpdatePackageDownloadTitle" xml:space="preserve">
-    <value>胡桃バージョン {0} がリリースされました</value>
-  </data>
-  <data name="ViewTitileUpdatePackageReadyContent" xml:space="preserve">
-    <value>今すぐインストールしますか?</value>
-  </data>
-  <data name="ViewTitileUpdatePackageReadyTitle" xml:space="preserve">
-    <value>胡桃 ver {0} の準備が整いました</value>
-  </data>
   <data name="ViewTitleAutoClicking" xml:space="preserve">
     <value>自動クリック</value>
   </data>
@@ -3853,12 +3675,6 @@
   </data>
   <data name="ViewTitleUpdatePackageAvailableTitle" xml:space="preserve">
     <value>胡桃バージョン {0} が利用可能です</value>
-  </data>
-  <data name="ViewTitleUpdatePackageDownloadContent" xml:space="preserve">
-    <value>今すぐダウンロードしますか？</value>
-  </data>
-  <data name="ViewTitleUpdatePackageInstallingContent" xml:space="preserve">
-    <value>更新をインストール中</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>ツールボックス</value>
@@ -3889,9 +3705,6 @@
   </data>
   <data name="ViewUserCookieOperationRefreshCookieAction" xml:space="preserve">
     <value>Cookie 再取得</value>
-  </data>
-  <data name="ViewUserCookieOperationSignInRewardAction" xml:space="preserve">
-    <value>ログインボーナスを獲得</value>
   </data>
   <data name="ViewUserCopyCookieAction" xml:space="preserve">
     <value>Cookieをコピーする</value>
@@ -3937,9 +3750,6 @@
   </data>
   <data name="ViewWindowExceptionClose" xml:space="preserve">
     <value>閉じる</value>
-  </data>
-  <data name="ViewWindowExceptionDescription" xml:space="preserve">
-    <value>フィードバックの方法はフィードバックセンター内から、開発者に連絡をとってください。</value>
   </data>
   <data name="ViewWindowExceptionHeader" xml:space="preserve">
     <value>致命的なエラーが発生しました。</value>
@@ -4039,18 +3849,6 @@
   </data>
   <data name="WebDailyNoteHomeLocked" xml:space="preserve">
     <value>塵歌壺が未解放です</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay" xml:space="preserve">
-    <value>{0} 日</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay0" xml:space="preserve">
-    <value>今日</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay1" xml:space="preserve">
-    <value>明日</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay2" xml:space="preserve">
-    <value>明後日</value>
   </data>
   <data name="WebDailyNoteResinRecovery" xml:space="preserve">
     <value>{0} {1:HH:mm} 後にすべて回復</value>
