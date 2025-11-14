@@ -75,7 +75,7 @@ internal sealed partial class LaunchExecutionOverlayWindow : Microsoft.UI.Xaml.W
 
     public bool PreventClose { get; set; } = true;
 
-    public bool HideByHotKey { get => !LocalSetting.Get(SettingKeys.OverlayWindowIsVisible, true); }
+    public bool HideByHotKey { get => !LocalSetting.Get(SettingKeys.LaunchOverlayWindowIsVisible, true); }
 
     public bool HideByEvent { get; set; }
 
@@ -121,13 +121,13 @@ internal sealed partial class LaunchExecutionOverlayWindow : Microsoft.UI.Xaml.W
                 if (AppWindow.IsVisible)
                 {
                     AppWindow.Hide();
-                    LocalSetting.Set(SettingKeys.OverlayWindowIsVisible, false);
+                    LocalSetting.Set(SettingKeys.LaunchOverlayWindowIsVisible, false);
                 }
                 else
                 {
                     AppWindow.Show(false);
                     AppWindow.MoveInZOrderAtTop();
-                    LocalSetting.Set(SettingKeys.OverlayWindowIsVisible, true);
+                    LocalSetting.Set(SettingKeys.LaunchOverlayWindowIsVisible, true);
                 }
             });
         }

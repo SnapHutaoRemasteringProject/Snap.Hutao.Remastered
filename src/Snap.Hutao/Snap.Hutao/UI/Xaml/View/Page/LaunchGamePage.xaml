@@ -553,7 +553,7 @@
                 </ScrollViewer>
             </PivotItem>
 
-            <PivotItem Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandOptionsHeader}" IsEnabled="{shuxm:IsProcessElevated}">
+            <PivotItem Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandOptionsHeader}">
                 <Border
                     Margin="16"
                     Padding="0"
@@ -709,8 +709,8 @@
                                         Padding="10,8,6,6"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameTargetFpsHeader}"
                                         IsEnabled="{Binding LaunchOptions.IsSetTargetFrameRateEnabled.Value}"
-                                        Maximum="720"
-                                        Minimum="-1"
+                                        Maximum="120"
+                                        Minimum="1"
                                         SpinButtonPlacementMode="Inline"
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameUnlockFpsDescription}"
                                         Value="{Binding LaunchOptions.TargetFps.Value, Mode=TwoWay}"/>

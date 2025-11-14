@@ -215,13 +215,6 @@ internal sealed partial class LegacyMetadataService : IMetadataService
 
     private async ValueTask<bool> DownloadMetadataDescriptionFileAndValidateAsync(CancellationToken token)
     {
-#if DEBUG
-        if (Core.Setting.LocalSetting.Get(Core.Setting.SettingKeys.SuppressMetadataInitialization, false))
-        {
-            return true;
-        }
-#endif
-
         MetadataTemplate? template = await GetMetadataTemplateAsync().ConfigureAwait(false);
         if (await DownloadMetadataDescriptionFileAsync(template, token).ConfigureAwait(false) is not { } metadataFileHashes)
         {

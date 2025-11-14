@@ -134,7 +134,7 @@ internal sealed class LaunchExecutionGameResourceHandler : AbstractLaunchExecuti
 
     private static bool CheckDirectoryPermissions(string folder, [NotNullWhen(false)] out Exception? exception)
     {
-        if (!LocalSetting.Get(SettingKeys.OverridePackageConvertDirectoryPermissionsRequirement, false))
+        if (!LocalSetting.Get(SettingKeys.LaunchOverridePackageConvertDirectoryPermissions, false))
         {
             try
             {

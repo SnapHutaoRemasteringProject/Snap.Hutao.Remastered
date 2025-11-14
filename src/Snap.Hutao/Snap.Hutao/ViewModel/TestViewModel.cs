@@ -69,12 +69,6 @@ internal sealed partial class TestViewModel : Abstraction.ViewModel
 
     public RedeemCodeGenerateOptions RedeemCodeGenerateOption { get; set => SetProperty(ref field, value); } = new();
 
-    public bool SuppressMetadataInitialization
-    {
-        get => LocalSetting.Get(SettingKeys.SuppressMetadataInitialization, false);
-        set => LocalSetting.Set(SettingKeys.SuppressMetadataInitialization, value);
-    }
-
     public bool OverrideElevationRequirement
     {
         get => LocalSetting.Get(SettingKeys.OverrideElevationRequirement, false);
@@ -89,8 +83,8 @@ internal sealed partial class TestViewModel : Abstraction.ViewModel
 
     public bool OverridePackageConvertDirectoryPermissionsRequirement
     {
-        get => LocalSetting.Get(SettingKeys.OverridePackageConvertDirectoryPermissionsRequirement, false);
-        set => LocalSetting.Set(SettingKeys.OverridePackageConvertDirectoryPermissionsRequirement, value);
+        get => LocalSetting.Get(SettingKeys.LaunchOverridePackageConvertDirectoryPermissions, false);
+        set => LocalSetting.Set(SettingKeys.LaunchOverridePackageConvertDirectoryPermissions, value);
     }
 
     public bool OverrideHardDriveType

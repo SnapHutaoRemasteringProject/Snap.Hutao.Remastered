@@ -100,7 +100,7 @@ internal sealed class GameIslandInterop : IGameIslandInterop
 
         pIslandEnvironment->IsOversea = isOversea;
 
-        if (LocalSetting.Get(SettingKeys.LaunchForceUsingTouchScreenWhenIntegratedTouchPresent, false))
+        if (LocalSetting.Get(SettingKeys.LaunchForceUsingTouchScreen, false))
         {
             pIslandEnvironment->UsingTouchScreen = IsIntegratedTouchPresent();
         }

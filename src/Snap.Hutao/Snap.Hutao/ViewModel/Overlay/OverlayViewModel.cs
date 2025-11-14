@@ -35,7 +35,7 @@ internal sealed partial class OverlayViewModel : Abstraction.ViewModel
         {
             if (SetProperty(ref field, value))
             {
-                LocalSetting.Set(SettingKeys.OverlaySelectedCatalogId, field?.Id);
+                LocalSetting.Set(SettingKeys.LaunchOverlaySelectedCatalogId, field?.Id);
             }
         }
     }
@@ -68,7 +68,7 @@ internal sealed partial class OverlayViewModel : Abstraction.ViewModel
 
     protected override ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
-        string selectedId = LocalSetting.Get(SettingKeys.OverlaySelectedCatalogId, "HotKey");
+        string selectedId = LocalSetting.Get(SettingKeys.LaunchOverlaySelectedCatalogId, "HotKey");
         SelectedCatalog = Catalogs.SingleOrDefault(c => c.Id == selectedId);
         return ValueTask.FromResult(true);
     }

@@ -24,8 +24,8 @@ internal sealed partial class SettingGameViewModel : Abstraction.ViewModel
 
     public bool ForceUsingTouchScreenWhenIntegratedTouchPresent
     {
-        get => LocalSetting.Get(SettingKeys.LaunchForceUsingTouchScreenWhenIntegratedTouchPresent, false);
-        set => LocalSetting.Set(SettingKeys.LaunchForceUsingTouchScreenWhenIntegratedTouchPresent, value);
+        get => LocalSetting.Get(SettingKeys.LaunchForceUsingTouchScreen, false);
+        set => LocalSetting.Set(SettingKeys.LaunchForceUsingTouchScreen, value);
     }
 
     [Command("DeleteGameWebCacheCommand")]

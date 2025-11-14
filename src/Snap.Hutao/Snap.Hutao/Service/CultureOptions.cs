@@ -21,7 +21,7 @@ internal sealed partial class CultureOptions : DbStoreOptions
     public ImmutableArray<NameValue<DayOfWeek>> DayOfWeeks { get => !field.IsDefaultOrEmpty ? field : field = ImmutableCollectionsNameValue.FromEnum<DayOfWeek>(CurrentCulture.Value.DateTimeFormat.GetDayName); }
 
     [field: MaybeNull]
-    public IObservableProperty<CultureInfo> CurrentCulture { get => field ??= CreatePropertyForClassUsingCustom(SettingEntry.Culture, CultureInfo.CurrentCulture, CultureInfo.GetCultureInfo, static v => v.Name); }
+    public IObservableProperty<CultureInfo> CurrentCulture { get => field ??= CreatePropertyForClassUsingCustom(SettingEntry.PrimaryLanguage, CultureInfo.CurrentCulture, CultureInfo.GetCultureInfo, static v => v.Name); }
 
     public CultureInfo SystemCulture { get; set; } = default!;
 

@@ -30,10 +30,10 @@ internal sealed partial class LaunchOptions : DbStoreOptions, IRestrictedGamePat
     public AsyncReaderWriterLock GamePathLock { get; } = new();
 
     [field: MaybeNull]
-    public IObservableProperty<GamePathEntry?> GamePathEntry { get => field ??= CreateProperty(SettingEntry.GamePath, string.Empty).AsNullableSelection(GamePathEntries.Value, static entry => entry?.Path ?? string.Empty, StringComparer.OrdinalIgnoreCase).Debug("GamePathEntry"); }
+    public IObservableProperty<GamePathEntry?> GamePathEntry { get => field ??= CreateProperty(SettingEntry.LaunchGamePath, string.Empty).AsNullableSelection(GamePathEntries.Value, static entry => entry?.Path ?? string.Empty, StringComparer.OrdinalIgnoreCase).Debug("GamePathEntry"); }
 
     [field: MaybeNull]
-    public IObservableProperty<ImmutableArray<GamePathEntry>> GamePathEntries { get => field ??= CreatePropertyForStructUsingJson(SettingEntry.GamePathEntries, ImmutableArray<GamePathEntry>.Empty); }
+    public IObservableProperty<ImmutableArray<GamePathEntry>> GamePathEntries { get => field ??= CreatePropertyForStructUsingJson(SettingEntry.LaunchGamePathEntries, ImmutableArray<GamePathEntry>.Empty); }
 
     [field: MaybeNull]
     public IObservableProperty<bool> UsingHoyolabAccount { get => field ??= CreateProperty(SettingEntry.LaunchUsingHoyolabAccount, false); }
@@ -88,9 +88,6 @@ internal sealed partial class LaunchOptions : DbStoreOptions, IRestrictedGamePat
     public IObservableProperty<bool> UsingBetterGenshinImpactAutomation { get => field ??= CreateProperty(SettingEntry.LaunchUsingBetterGenshinImpactAutomation, false); }
 
     [field: MaybeNull]
-    public IObservableProperty<bool> SetDiscordActivityWhenPlaying { get => field ??= CreateProperty(SettingEntry.LaunchSetDiscordActivityWhenPlaying, false); }
-
-    [field: MaybeNull]
     public IObservableProperty<bool> IsIslandEnabled { get => field ??= CreateProperty(SettingEntry.LaunchIsIslandEnabled, false); }
 
     [field: MaybeNull]
@@ -103,7 +100,7 @@ internal sealed partial class LaunchOptions : DbStoreOptions, IRestrictedGamePat
     public IObservableProperty<bool> FixLowFovScene { get => field ??= CreateProperty(SettingEntry.LaunchFixLowFovScene, true); }
 
     [field: MaybeNull]
-    public IObservableProperty<bool> DisableFog { get => field ??= CreateProperty(SettingEntry.LaunchDisableFog, false); }
+    public IObservableProperty<bool> DisableFog { get => field ??= CreateProperty(SettingEntry.LaunchDisableFogRendering, false); }
 
     [field: MaybeNull]
     public IObservableProperty<bool> IsSetTargetFrameRateEnabled { get => field ??= CreateProperty(SettingEntry.LaunchIsSetTargetFrameRateEnabled, true); }
@@ -146,7 +143,7 @@ internal sealed partial class LaunchOptions : DbStoreOptions, IRestrictedGamePat
     public IObservableProperty<bool> ResinListItemId220007Allowed { get => field ??= CreateProperty(SettingEntry.LaunchResinListItemId220007Allowed, true); }
 
     [field: MaybeNull]
-    public IObservableProperty<ImmutableArray<AspectRatio>> AspectRatios { get => field ??= CreatePropertyForStructUsingJson(SettingEntry.AspectRatios, ImmutableArray<AspectRatio>.Empty); }
+    public IObservableProperty<ImmutableArray<AspectRatio>> AspectRatios { get => field ??= CreatePropertyForStructUsingJson(SettingEntry.LaunchAspectRatios, ImmutableArray<AspectRatio>.Empty); }
 
     public AspectRatio? SelectedAspectRatio
     {
