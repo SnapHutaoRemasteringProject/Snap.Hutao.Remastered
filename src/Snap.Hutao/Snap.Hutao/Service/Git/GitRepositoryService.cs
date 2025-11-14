@@ -6,7 +6,6 @@ using LibGit2Sharp;
 using Snap.Hutao.Core;
 using Snap.Hutao.Core.IO;
 using Snap.Hutao.Core.IO.Http.Proxy;
-using Snap.Hutao.Service.Notification;
 using Snap.Hutao.Web.Hutao;
 using Snap.Hutao.Web.Hutao.Response;
 using Snap.Hutao.Web.Response;
@@ -50,12 +49,11 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                 }
             }
 
-            GitRepository info = infos.Single();
             string directory = Path.GetFullPath(Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), name));
 
-            try
+            List<Exception> exceptions = [];
+            foreach (GitRepository info in RepositoryAffinity.Sort(infos))
             {
-                List<Exception> exceptions = [];
                 try
                 {
                     try
@@ -64,22 +62,19 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                     }
                     catch (Exception first)
                     {
-                        // Retry once
                         exceptions.Add(first);
+                        RepositoryAffinity.IncreaseFailure(info.Name, info.HttpsUrl.OriginalString);
                         return EnsureRepository(directory, info, true);
                     }
                 }
                 catch (Exception second)
                 {
+                    RepositoryAffinity.IncreaseFailure(info.Name, info.HttpsUrl.OriginalString);
                     exceptions.Add(second);
-                    throw new AggregateException(exceptions);
                 }
             }
-            catch (Exception ex)
-            {
-                messenger.Send(InfoBarMessage.Error(ex));
-                throw;
-            }
+
+            throw new GitRepositoryException("All repository sources failed.", exceptions);
         }
     }
 
@@ -111,11 +106,7 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                 Debug.WriteLine($"[Repo Progress] {progress.ReceivedObjects}/{progress.TotalObjects}, {Converters.ToFileSizeString(progress.ReceivedBytes)}");
                 return true;
             },
-            CertificateCheck = static (cert, valid, host) =>
-            {
-                Debug.WriteLine($"[Repo Certificate] Host: {host}, Valid: {valid}, CertHash: {cert.ToString()}");
-                return true;
-            },
+            CertificateCheck = static (cert, valid, host) => true,
         };
 
         if (forceInvalid || !Repository.IsValid(directory))
