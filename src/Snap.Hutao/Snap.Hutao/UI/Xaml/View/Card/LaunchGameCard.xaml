@@ -22,7 +22,6 @@
     BorderBrush="{x:Null}"
     BorderThickness="0"
     Command="{Binding NavigateCommand}"
-    IsEnabled="{Binding LaunchOptions.IsGameRunning.Value, Converter={StaticResource BoolNegationConverter}}"
     Style="{ThemeResource DefaultButtonStyle}"
     mc:Ignorable="d">
     <mxi:Interaction.Behaviors>
@@ -127,6 +126,7 @@
                 Grid.Row="2"
                 VerticalAlignment="Stretch"
                 Command="{Binding LaunchCommand}"
+                IsEnabled="{Binding LaunchOptions.IsGameRunning.Value, Converter={StaticResource BoolNegationConverter}}"
                 Style="{ThemeResource SettingButtonStyle}">
                 <StackPanel Spacing="3">
                     <TextBlock

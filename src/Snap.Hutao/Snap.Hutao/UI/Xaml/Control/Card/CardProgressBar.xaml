@@ -28,6 +28,7 @@
                             BorderThickness="0"
                             CornerRadius="{ThemeResource ControlCornerRadius}"
                             Foreground="{TemplateBinding ProgressForeground}"
+                            IsIndeterminate="{TemplateBinding IsIndeterminate}"
                             Maximum="{TemplateBinding Maximum}"
                             Opacity="{ThemeResource LargeBackgroundProgressBarOpacity}"
                             Value="{TemplateBinding Value}"/>
@@ -46,6 +47,48 @@
                             Foreground="{TemplateBinding TextForeground}"
                             Style="{ThemeResource CaptionTextBlockStyle}"
                             Text="{TemplateBinding Description}"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="TextForeground" Value="{ThemeResource TextFillColorPrimaryBrush}"/>
+    </Style>
+
+    <Style x:Key="CompactCardProgressBarStyle" TargetType="shuxcc:CardProgressBar">
+        <Setter Property="Background" Value="{ThemeResource ControlAltFillColorSecondaryBrush}"/>
+        <Setter Property="MinHeight" Value="40"/>
+        <Setter Property="ProgressForeground" Value="{ThemeResource ProgressBarForegroundThemeBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="shuxcc:CardProgressBar">
+                    <Grid
+                        MinHeight="{TemplateBinding MinHeight}"
+                        Background="{TemplateBinding Background}"
+                        Style="{ThemeResource GridShimmerStyle}">
+                        <ProgressBar
+                            Grid.RowSpan="2"
+                            MinHeight="{TemplateBinding MinHeight}"
+                            Margin="-1"
+                            Background="Transparent"
+                            BorderBrush="{x:Null}"
+                            BorderThickness="0"
+                            CornerRadius="{ThemeResource ControlCornerRadius}"
+                            Foreground="{TemplateBinding ProgressForeground}"
+                            IsIndeterminate="{TemplateBinding IsIndeterminate}"
+                            Maximum="{TemplateBinding Maximum}"
+                            Opacity="{ThemeResource LargeBackgroundProgressBarOpacity}"
+                            Value="{TemplateBinding Value}"/>
+                        <StackPanel Margin="8" Spacing="4">
+                            <TextBlock
+                                Foreground="{TemplateBinding TextForeground}"
+                                Style="{ThemeResource BaseTextBlockStyle}"
+                                Text="{TemplateBinding Header}"/>
+                            <TextBlock
+                                Foreground="{TemplateBinding TextForeground}"
+                                Style="{ThemeResource BodyTextBlockStyle}"
+                                Text="{TemplateBinding Description}"/>
+                        </StackPanel>
+
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

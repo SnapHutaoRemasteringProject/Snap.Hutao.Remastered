@@ -6,11 +6,11 @@ using LibGit2Sharp;
 using Snap.Hutao.Core;
 using Snap.Hutao.Core.IO;
 using Snap.Hutao.Core.IO.Http.Proxy;
+using Snap.Hutao.Service.BackgroundActivity;
 using Snap.Hutao.Web.Hutao;
 using Snap.Hutao.Web.Hutao.Response;
 using Snap.Hutao.Web.Response;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.IO;
 
 namespace Snap.Hutao.Service.Git;
@@ -19,8 +19,9 @@ namespace Snap.Hutao.Service.Git;
 internal sealed partial class GitRepositoryService : IGitRepositoryService
 {
     private readonly AsyncKeyedLock<string> repoLock = new();
+    private readonly BackgroundActivityOptions backgroundActivityOptions;
     private readonly IServiceProvider serviceProvider;
-    private readonly IMessenger messenger;
+    private readonly ITaskContext taskContext;
 
     [GeneratedConstructor]
     public partial GitRepositoryService(IServiceProvider serviceProvider);
@@ -50,35 +51,44 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
             }
 
             string directory = Path.GetFullPath(Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), name));
+            BackgroundActivity.BackgroundActivity activity = GetActivityByName(name);
 
             List<Exception> exceptions = [];
-            foreach (GitRepository info in RepositoryAffinity.Sort(infos))
+            try
             {
-                try
+                foreach (GitRepository info in RepositoryAffinity.Sort(infos))
                 {
                     try
                     {
-                        return EnsureRepository(directory, info, false);
+                        try
+                        {
+                            return EnsureRepository(activity, directory, info, false);
+                        }
+                        catch (Exception first)
+                        {
+                            exceptions.Add(first);
+                            RepositoryAffinity.IncreaseFailure(info);
+                            return EnsureRepository(activity, directory, info, true);
+                        }
                     }
-                    catch (Exception first)
+                    catch (Exception second)
                     {
-                        exceptions.Add(first);
-                        RepositoryAffinity.IncreaseFailure(info.Name, info.HttpsUrl.OriginalString);
-                        return EnsureRepository(directory, info, true);
+                        RepositoryAffinity.IncreaseFailure(info);
+                        exceptions.Add(second);
                     }
-                }
-                catch (Exception second)
-                {
-                    RepositoryAffinity.IncreaseFailure(info.Name, info.HttpsUrl.OriginalString);
-                    exceptions.Add(second);
                 }
             }
+            finally
+            {
+                await activity.UpdateAsync(taskContext, SH.ServiceGitRepositoryOperationCompleted, true, false, false, false).ConfigureAwait(false);
+            }
 
-            throw new GitRepositoryException("All repository sources failed.", exceptions);
+            await activity.UpdateAsync(taskContext, SH.ServiceGitRepositoryOperationFailed, false, true, false, false).ConfigureAwait(false);
+            throw new GitRepositoryException(SH.ServiceGitRepositoryOperationFailed, exceptions);
         }
     }
 
-    private static ValueResult<bool, ValueDirectory> EnsureRepository(string directory, GitRepository info, bool forceInvalid)
+    private ValueResult<bool, ValueDirectory> EnsureRepository(BackgroundActivity.BackgroundActivity activity, string directory, GitRepository info, bool forceInvalid)
     {
         FetchOptions fetchOptions = new()
         {
@@ -96,14 +106,16 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                     Username = info.Username,
                     Password = info.Token,
                 },
-            OnProgress = static output =>
+            OnProgress = output =>
             {
-                Debug.Write($"[Repo] {output}");
+                int idx = output.AsSpan().IndexOfAny("\r\n");
+                activity.Update(taskContext, idx > 0 ? output.Substring(0, idx) : output, false, false, false, false);
                 return true;
             },
-            OnTransferProgress = static progress =>
+            OnTransferProgress = progress =>
             {
-                Debug.WriteLine($"[Repo Progress] {progress.ReceivedObjects}/{progress.TotalObjects}, {Converters.ToFileSizeString(progress.ReceivedBytes)}");
+                double progressValue = progress.TotalObjects == 0 ? 0 : (double)progress.ReceivedObjects / progress.TotalObjects;
+                activity.Update(taskContext, $"{progress.ReceivedObjects}/{progress.TotalObjects}, {Converters.ToFileSizeString(progress.ReceivedBytes)}", false, false, true, false, progressValue);
                 return true;
             },
             CertificateCheck = static (cert, valid, host) => true,
@@ -142,6 +154,8 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                 }
 
                 repo.Network.Remotes.Update("origin", remote => remote.Url = info.HttpsUrl.OriginalString);
+                repo.RemoveUntrackedFiles();
+
                 fetchOptions.Depth = 0;
                 Commands.Fetch(repo, repo.Head.RemoteName, Array.Empty<string>(), fetchOptions, default);
 
@@ -149,9 +163,22 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                 Branch localBranch = repo.Branches["main"] ?? repo.CreateBranch("main", remoteBranch.Tip);
                 repo.Branches.Update(localBranch, b => b.TrackedBranch = remoteBranch.CanonicalName);
                 Commands.Checkout(repo, localBranch);
+
+                repo.Reset(ResetMode.Hard);
+                repo.RemoveUntrackedFiles();
             }
         }
 
         return new(true, directory);
+    }
+
+    private BackgroundActivity.BackgroundActivity GetActivityByName(string name)
+    {
+        return name switch
+        {
+            "Snap.Metadata" => backgroundActivityOptions.MetadataInitialization,
+            "Snap.ContentDelivery" => backgroundActivityOptions.FullTrustInitialization,
+            _ => backgroundActivityOptions.Default,
+        };
     }
 }

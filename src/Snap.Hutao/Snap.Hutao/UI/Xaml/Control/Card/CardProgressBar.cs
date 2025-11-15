@@ -9,6 +9,7 @@ namespace Snap.Hutao.UI.Xaml.Control.Card;
 [DependencyProperty<Brush>("TextForeground")]
 [DependencyProperty<double>("Maximum", NotNull = true)]
 [DependencyProperty<double>("Value", NotNull = true)]
+[DependencyProperty<bool>("IsIndeterminate", NotNull = true, DefaultValue = false)]
 [DependencyProperty<string>("Header")]
 [DependencyProperty<string>("Description")]
 internal sealed partial class CardProgressBar : Microsoft.UI.Xaml.Controls.Control

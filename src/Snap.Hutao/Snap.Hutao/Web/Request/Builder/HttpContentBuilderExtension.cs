@@ -43,7 +43,7 @@ internal static class HttpContentBuilderExtension
         }
 
         [DebuggerStepThrough]
-        public T SetStringContent(string content, Encoding? encoding = null, string mediaType = default!)
+        public T SetStringContent(string content, Encoding? encoding = null, string? mediaType = default)
         {
             ArgumentNullException.ThrowIfNull(content);
             return builder.SetContent(new StringContent(content, encoding, mediaType));

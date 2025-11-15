@@ -5,7 +5,6 @@ using Quartz;
 using Snap.Hutao.Core.Property;
 using Snap.Hutao.Core.Setting;
 using Snap.Hutao.Model;
-using Snap.Hutao.Model.Entity;
 using Snap.Hutao.Service.Abstraction;
 using Snap.Hutao.Service.Job;
 using System.Collections.Immutable;

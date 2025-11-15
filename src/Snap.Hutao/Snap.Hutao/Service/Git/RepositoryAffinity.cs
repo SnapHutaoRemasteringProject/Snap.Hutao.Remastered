@@ -33,6 +33,11 @@ internal static class RepositoryAffinity
         }
     }
 
+    public static void IncreaseFailure(GitRepository repository)
+    {
+        IncreaseFailure(repository.Name, repository.HttpsUrl.OriginalString);
+    }
+
     public static void IncreaseFailure(string name, string url)
     {
         lock (SyncRoot)
