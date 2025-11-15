@@ -85,7 +85,7 @@ internal sealed class GameIslandInterop : IGameIslandInterop
                         throw HutaoException.InvalidOperation(SH.ServiceGameIslandTargetVersionFileNotExists);
                     }
 
-                    fullTrustProcess.LoadLibrary(FullTrustLoadLibraryRequest.Create(islandPath));
+                    fullTrustProcess.LoadLibrary(FullTrustLoadLibraryRequest.Create("Island", islandPath));
                     fullTrustProcess.ResumeMainThread();
                 }
 
