@@ -2868,7 +2868,8 @@
     <value>自动化任务</value>
   </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
-    <value>注入功能非常危险且有可能会造成严重后果，请谨慎使用</value>
+    <value>注入功能及本软件属于米哈游用户协议第十条第二款规定的插件、外挂或非经合法授权的第三方工具/服务，继续使用表明您已知晓此行为非常危险且造成的后果由您自行承担。
+出于安全因素考虑，我们保留独立决定随时变更、终止、中止您对此功能的使用的权利，无须向您发出任何提前通知。</value>
   </data>
   <data name="ViewPageLaunchGameDisableFogDescription" xml:space="preserve">
     <value>移除光照渲染中的迷雾</value>
