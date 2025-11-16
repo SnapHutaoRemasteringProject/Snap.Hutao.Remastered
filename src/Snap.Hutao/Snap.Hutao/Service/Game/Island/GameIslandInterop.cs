@@ -203,7 +203,7 @@ internal sealed class GameIslandInterop : IGameIslandInterop
                 {
                     unsafe
                     {
-                        if (view.State is IslandState.Started && view.Size != sizeof(IslandEnvironment))
+                        if (view.State is IslandState.Started && view.Size < sizeof(IslandEnvironment))
                         {
                             HutaoException.Throw("IslandEnvironment size mismatch");
                         }
