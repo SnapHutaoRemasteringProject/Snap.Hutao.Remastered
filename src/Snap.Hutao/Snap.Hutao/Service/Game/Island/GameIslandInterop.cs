@@ -35,6 +35,11 @@ internal sealed class GameIslandInterop : IGameIslandInterop
 
     public ValueTask BeforeAsync(BeforeLaunchExecutionContext context)
     {
+        if (resume)
+        {
+            return ValueTask.CompletedTask;
+        }
+
         if (!context.FileSystem.TryGetGameVersion(out string? gameVersion))
         {
             throw HutaoException.NotSupported(SH.ServiceGameIslandFileSystemGetGameVersionFailed);

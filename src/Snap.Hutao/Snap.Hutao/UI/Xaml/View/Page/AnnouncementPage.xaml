@@ -85,9 +85,12 @@
                         </Border>
                         <!--  General Description  -->
                         <Border Grid.Row="1">
-                            <StackPanel Margin="4" VerticalAlignment="Bottom">
+                            <StackPanel
+                                Margin="4"
+                                Padding="4"
+                                VerticalAlignment="Bottom"
+                                Spacing="6">
                                 <TextBlock
-                                    Margin="4,6,0,0"
                                     HorizontalAlignment="Stretch"
                                     Style="{StaticResource SubtitleTextBlockStyle}"
                                     Text="{Binding Subtitle}"
@@ -95,36 +98,11 @@
                                     TextWrapping="NoWrap"/>
 
                                 <TextBlock
-                                    Margin="4,6,0,0"
                                     Opacity="0.6"
                                     Style="{StaticResource BodyTextBlockStyle}"
                                     Text="{Binding Title}"
                                     TextTrimming="WordEllipsis"
                                     TextWrapping="NoWrap"/>
-
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition Width="auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        Margin="4,4,0,4"
-                                        FontSize="10"
-                                        Opacity="0.4"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{Binding TimeFormatted}"
-                                        TextWrapping="NoWrap"/>
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        Margin="4,4,4,4"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Bottom"
-                                        FontSize="10"
-                                        Opacity="0.8"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{Binding TimeDescription}"
-                                        Visibility="{Binding ShouldShowTimeDescription, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                </Grid>
                             </StackPanel>
                         </Border>
                     </Grid>
