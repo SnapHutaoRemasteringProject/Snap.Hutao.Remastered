@@ -34,6 +34,9 @@ internal sealed partial class BackgroundActivity : ObservableObject
     [ObservableProperty]
     public partial double ProgressValue { get; private set; }
 
+    [ObservableProperty]
+    public partial int NotifyToken { get; private set; }
+
     public async ValueTask UpdateAsync(ITaskContext taskContext, string description, bool isCompletedSuccessfully, bool isFaulted, bool hasProgress, bool isIndeterminate)
     {
         await taskContext.SwitchToMainThreadAsync();
@@ -76,5 +79,11 @@ internal sealed partial class BackgroundActivity : ObservableObject
             IsIndeterminate = isIndeterminate;
             ProgressValue = progressValue;
         });
+    }
+
+    public async ValueTask NotifyAsync(ITaskContext taskContext)
+    {
+        await taskContext.SwitchToMainThreadAsync();
+        NotifyToken++;
     }
 }

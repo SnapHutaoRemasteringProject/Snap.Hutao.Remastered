@@ -6,6 +6,7 @@ using LibGit2Sharp;
 using Snap.Hutao.Core;
 using Snap.Hutao.Core.IO;
 using Snap.Hutao.Core.IO.Http.Proxy;
+using Snap.Hutao.Core.Setting;
 using Snap.Hutao.Service.BackgroundActivity;
 using Snap.Hutao.Web.Hutao;
 using Snap.Hutao.Web.Hutao.Response;
@@ -37,6 +38,11 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
 
     public async ValueTask<ValueResult<bool, ValueDirectory>> EnsureRepositoryAsync(string name)
     {
+        if (LocalSetting.Get("Snap::Hutao::Git::Repository::Override", false))
+        {
+            return new(true, Path.GetFullPath(Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), name)));
+        }
+
         using (await repoLock.LockAsync(name).ConfigureAwait(false))
         {
             ImmutableArray<GitRepository> infos;
@@ -53,9 +59,13 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
             string directory = Path.GetFullPath(Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), name));
             BackgroundActivity.BackgroundActivity activity = GetActivityByName(name);
 
+            bool failed = false;
             List<Exception> exceptions = [];
             try
             {
+                await activity.NotifyAsync(taskContext).ConfigureAwait(false);
+                await activity.UpdateAsync(taskContext, SH.ServiceBackgroundActivityDefaultDescription, false, false, false, false).ConfigureAwait(false);
+
                 foreach (GitRepository info in RepositoryAffinity.Sort(infos))
                 {
                     try
@@ -67,22 +77,30 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                         catch (Exception first)
                         {
                             exceptions.Add(first);
-                            RepositoryAffinity.IncreaseFailure(info);
                             return EnsureRepository(activity, directory, info, true);
                         }
                     }
                     catch (Exception second)
                     {
-                        RepositoryAffinity.IncreaseFailure(info);
                         exceptions.Add(second);
                     }
                 }
             }
+            catch (Exception)
+            {
+                failed = true;
+                throw;
+            }
             finally
             {
-                await activity.UpdateAsync(taskContext, SH.ServiceGitRepositoryOperationCompleted, true, false, false, false).ConfigureAwait(false);
+                if (!failed)
+                {
+                    await activity.NotifyAsync(taskContext).ConfigureAwait(false);
+                    await activity.UpdateAsync(taskContext, SH.ServiceGitRepositoryOperationCompleted, true, false, false, false).ConfigureAwait(false);
+                }
             }
 
+            await activity.NotifyAsync(taskContext).ConfigureAwait(false);
             await activity.UpdateAsync(taskContext, SH.ServiceGitRepositoryOperationFailed, false, true, false, false).ConfigureAwait(false);
             throw new GitRepositoryException(SH.ServiceGitRepositoryOperationFailed, exceptions);
         }
@@ -90,6 +108,8 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
 
     private ValueResult<bool, ValueDirectory> EnsureRepository(BackgroundActivity.BackgroundActivity activity, string directory, GitRepository info, bool forceInvalid)
     {
+        // Increase & decrease count in the same method, so that crash in the middle can correctly count as failure.
+        RepositoryAffinity.IncreaseFailure(info);
         FetchOptions fetchOptions = new()
         {
             Depth = 1,
@@ -169,6 +189,7 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
             }
         }
 
+        RepositoryAffinity.DecreaseFailure(info);
         return new(true, directory);
     }
 

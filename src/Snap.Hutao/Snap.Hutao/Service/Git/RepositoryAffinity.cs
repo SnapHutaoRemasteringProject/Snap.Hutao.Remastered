@@ -48,4 +48,20 @@ internal static class RepositoryAffinity
             container.Values[key] = box is int count ? unchecked(count + 1) : 1;
         }
     }
+
+    public static void DecreaseFailure(GitRepository repository)
+    {
+        DecreaseFailure(repository.Name, repository.HttpsUrl.OriginalString);
+    }
+
+    public static void DecreaseFailure(string name, string url)
+    {
+        lock (SyncRoot)
+        {
+            ApplicationDataContainer container = RepositoryContainer.CreateContainer(name, ApplicationDataCreateDisposition.Always);
+            string key = Hash.ToHexString(HashAlgorithmName.SHA256, url.ToUpperInvariant());
+            object box = container.Values[key];
+            container.Values[key] = box is int count ? unchecked(count - 1) : 0;
+        }
+    }
 }

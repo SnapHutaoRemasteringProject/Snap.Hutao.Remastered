@@ -69,20 +69,6 @@
                                 <Border Background="{ThemeResource DarkOnlyOverlayMaskColorBrush}" IsHitTestVisible="False"/>
                             </Grid>
                         </Border>
-                        <!--  Time Description  -->
-                        <Border
-                            Grid.Row="0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Bottom"
-                            Visibility="{Binding ShouldShowTimeDescription, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <ProgressBar
-                                MinHeight="2"
-                                VerticalAlignment="Bottom"
-                                Background="Transparent"
-                                CornerRadius="0"
-                                Maximum="1"
-                                Value="{Binding TimePercent, Mode=OneWay}"/>
-                        </Border>
                         <!--  General Description  -->
                         <Border Grid.Row="1">
                             <StackPanel

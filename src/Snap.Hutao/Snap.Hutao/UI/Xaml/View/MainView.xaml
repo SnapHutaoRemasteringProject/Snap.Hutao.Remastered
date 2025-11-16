@@ -83,7 +83,53 @@
                             Style="{ThemeResource SettingButtonStyle}"
                             Visibility="{Binding IsDebug}"/>
 
-                        <Button Content="{shuxm:ResourceString Name=UIViewMainTitleBarBackgroundActivityAction}">
+                        <Button
+                            Padding="0"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Style="{ThemeResource SettingButtonStyle}">
+                            <Button.Resources>
+                                <SineEase x:Key="EasingFunction" EasingMode="EaseInOut"/>
+                                <Storyboard x:Name="FocusStoryBoard">
+                                    <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)">
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:0"
+                                            Value="{ThemeResource ControlFillColorTransparent}"/>
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:0.5"
+                                            Value="{ThemeResource SystemFillColorCautionBackground}"/>
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:1"
+                                            Value="{ThemeResource ControlFillColorTransparent}"/>
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:1.5"
+                                            Value="{ThemeResource SystemFillColorCautionBackground}"/>
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:2"
+                                            Value="{ThemeResource ControlFillColorTransparent}"/>
+                                    </ColorAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </Button.Resources>
+                            <Button.Content>
+                                <Border Padding="16,6">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="{ThemeResource ControlFillColorTransparent}"/>
+                                    </Border.Background>
+                                    <mxi:Interaction.Behaviors>
+                                        <shuxb:FocusAnimationBehavior Storyboard="{StaticResource FocusStoryBoard}" Watch="{Binding BackgroundActivityOptions.MetadataInitialization.NotifyToken}"/>
+                                        <shuxb:FocusAnimationBehavior Storyboard="{StaticResource FocusStoryBoard}" Watch="{Binding BackgroundActivityOptions.FullTrustInitialization.NotifyToken}"/>
+                                    </mxi:Interaction.Behaviors>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="{shuxm:ResourceString Name=UIViewMainTitleBarBackgroundActivityAction}"/>
+                                </Border>
+                            </Button.Content>
                             <Button.Flyout>
                                 <Flyout
                                     FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding8Style}"
