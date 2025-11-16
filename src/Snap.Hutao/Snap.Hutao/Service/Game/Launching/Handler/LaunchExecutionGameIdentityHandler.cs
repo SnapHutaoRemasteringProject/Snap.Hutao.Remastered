@@ -37,7 +37,7 @@ internal sealed class LaunchExecutionGameIdentityHandler : AbstractLaunchExecuti
 
     private static async ValueTask HandleHoyolabAccountAsync(BeforeLaunchExecutionContext context)
     {
-        if (context.TargetScheme.GetSchemeType() is SchemeType.ChineseBilibili)
+        if (context.TargetScheme.SchemeType is SchemeType.ChineseBilibili)
         {
             return;
         }

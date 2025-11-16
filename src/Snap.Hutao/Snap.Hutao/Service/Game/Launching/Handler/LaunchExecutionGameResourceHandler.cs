@@ -51,7 +51,7 @@ internal sealed class LaunchExecutionGameResourceHandler : AbstractLaunchExecuti
             return true;
         }
 
-        if (context.TargetScheme.IsOversea ^ context.FileSystem.IsExecutableOversea())
+        if (context.TargetScheme.IsOversea ^ context.FileSystem.IsExecutableOversea)
         {
             return true;
         }
@@ -59,7 +59,7 @@ internal sealed class LaunchExecutionGameResourceHandler : AbstractLaunchExecuti
         if (!context.TargetScheme.IsOversea)
         {
             // [It's Bilibili channel xor PCGameSDK.dll exists] means we need to convert
-            if (context.TargetScheme.Channel is ChannelType.Bili ^ File.Exists(context.FileSystem.GetPCGameSDKFilePath()))
+            if (context.TargetScheme.Channel is ChannelType.Bili ^ File.Exists(context.FileSystem.PCGameSDKFilePath))
             {
                 return true;
             }
@@ -70,7 +70,7 @@ internal sealed class LaunchExecutionGameResourceHandler : AbstractLaunchExecuti
 
     private static async ValueTask EnsureGameResourceAsync(BeforeLaunchExecutionContext context, IProgress<PackageConvertStatus> progress)
     {
-        string gameFolder = context.FileSystem.GetGameDirectory();
+        string gameFolder = context.FileSystem.GameDirectory;
 
         if (!CheckDirectoryPermissions(gameFolder, out Exception? inner))
         {
@@ -113,7 +113,7 @@ internal sealed class LaunchExecutionGameResourceHandler : AbstractLaunchExecuti
             IPackageConverter packageConverter = context.ServiceProvider.GetRequiredService<IPackageConverter>();
 
             // Executable does not match the target scheme
-            if (context.TargetScheme.IsOversea ^ context.FileSystem.IsExecutableOversea())
+            if (context.TargetScheme.IsOversea ^ context.FileSystem.IsExecutableOversea)
             {
                 if (!await packageConverter.EnsureGameResourceAsync(converterContext).ConfigureAwait(false))
                 {
@@ -134,7 +134,7 @@ internal sealed class LaunchExecutionGameResourceHandler : AbstractLaunchExecuti
 
     private static bool CheckDirectoryPermissions(string folder, [NotNullWhen(false)] out Exception? exception)
     {
-        if (!LocalSetting.Get(SettingKeys.OverridePackageConvertDirectoryPermissionsRequirement, false))
+        if (!LocalSetting.Get(SettingKeys.LaunchOverridePackageConvertDirectoryPermissions, false))
         {
             try
             {

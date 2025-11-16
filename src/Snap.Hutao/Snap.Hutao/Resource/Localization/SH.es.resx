@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -722,15 +722,6 @@
   <data name="ServiceAchievementUserdataCorruptedAchievementIdNotUnique" xml:space="preserve">
     <value>Se encontraron varios ID de logro idénticos en un único archivo de logros</value>
   </data>
-  <data name="ServiceAnnouncementAdventurersBoosterBundlesDurationDescription" xml:space="preserve">
-    <value>[Fecha de lanzamiento]</value>
-  </data>
-  <data name="ServiceAnnouncementPermanentKeyword" xml:space="preserve">
-    <value>Disponible permanentemente</value>
-  </data>
-  <data name="ServiceAnnouncementVersionUpdateTimeDescription" xml:space="preserve">
-    <value>〓Hora de actualización〓</value>
-  </data>
   <data name="ServiceAppOptionsCalendarServerTimeZoneAmerica" xml:space="preserve">
     <value>Servidor de EE. UU. UTC-05</value>
   </data>
@@ -854,9 +845,6 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>Reducción de recarga</value>
   </data>
-  <data name="ServiceAvatarInfoSummaryNotRefreshed" xml:space="preserve">
-    <value>No actualizado</value>
-  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Fondo de pantalla diario de Bing</value>
   </data>
@@ -929,15 +917,6 @@
   <data name="ServiceDailyNoteNotifierTransformerHint" xml:space="preserve">
     <value>El transformador paramétrico está listo</value>
   </data>
-  <data name="ServiceDiscordActivityElevationRequiredHint" xml:space="preserve">
-    <value>Faltan permisos, no se puede establecer tu actividad de Discord.</value>
-  </data>
-  <data name="ServiceDiscordGameActivityDetails" xml:space="preserve">
-    <value>Explorando en Teyvat</value>
-  </data>
-  <data name="ServiceDiscordGameLaunchedBy" xml:space="preserve">
-    <value>Iniciado por {0}</value>
-  </data>
   <data name="ServiceGachaLogFactoryAvatarWishName" xml:space="preserve">
     <value>Gachapón de evento de personaje</value>
   </data>
@@ -1005,17 +984,8 @@
   <data name="ServiceGameEnsureGameResourceQueryResourceInformation" xml:space="preserve">
     <value>Descargar el índice de recursos del juego</value>
   </data>
-  <data name="ServiceGameIslandFeature404" xml:space="preserve">
-    <value>Error al obtener la información de configuración de inyección, la versión actual del juego aún no es compatible</value>
-  </data>
-  <data name="ServiceGameIslandFeatureRequiresHoyolabAccount" xml:space="preserve">
-    <value>Para prevenir el abuso de la función de inyección, es necesario iniciar sesión con una cuenta de miHoYo/HoYoLAB y seleccionar una cuenta y un personaje</value>
-  </data>
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>Error al obtener la versión local del juego, no se puede obtener la información de configuración de inyección</value>
-  </data>
-  <data name="ServiceGameLaunchExecutionArbitraryLibraryInjectionException" xml:space="preserve">
-    <value>Se produjo un error al inyectar la DLL: '{0}'</value>
   </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI ha iniciado</value>
@@ -1032,9 +1002,6 @@
   <data name="ServiceGameLaunchExecutionGameIsRunning" xml:space="preserve">
     <value>Juego en ejecución</value>
   </data>
-  <data name="ServiceGameLaunchExecutionGamePathNotValid" xml:space="preserve">
-    <value>Selecciona la ruta del juego</value>
-  </data>
   <data name="ServiceGameLaunchExecutionGameResourceQueryIndexFailed" xml:space="preserve">
     <value>Error al descargar el índice de recursos del juego: {0}</value>
   </data>
@@ -1044,14 +1011,8 @@
   <data name="ServiceGameLaunchPhaseProcessExited" xml:space="preserve">
     <value>El proceso del juego ha salido</value>
   </data>
-  <data name="ServiceGameLaunchPhaseProcessInitializing" xml:space="preserve">
-    <value>Inicializando el proceso del juego</value>
-  </data>
   <data name="ServiceGameLaunchPhaseProcessStarted" xml:space="preserve">
     <value>El proceso del juego ha comenzado</value>
-  </data>
-  <data name="ServiceGameLaunchPhaseUnlockingFps" xml:space="preserve">
-    <value>Obteniendo información de configuración de inyección</value>
   </data>
   <data name="ServiceGameLaunchPhaseWaitingProcessExit" xml:space="preserve">
     <value>Esperando a que salga el proceso del juego</value>
@@ -1133,20 +1094,8 @@ Espacio disponible: {2}</value>
   <data name="ServiceGamePackageConvertMoveFileRestore" xml:space="preserve">
     <value>Reemplazar: {0}</value>
   </data>
-  <data name="ServiceGamePackageReadLocalPackageVerionFailed" xml:space="preserve">
-    <value>Se ha encontrado un problema al leer la versión local del paquete, reparar el juego puede ayudar</value>
-  </data>
   <data name="ServiceGamePackageRenameDataFolderFailed" xml:space="preserve">
     <value>Error al cambiar el nombre de la carpeta de datos</value>
-  </data>
-  <data name="ServiceGamePackageRequestPackageVerion" xml:space="preserve">
-    <value>Solicitando la versión del paquete</value>
-  </data>
-  <data name="ServiceGamePackageRequestPackageVerionFailed" xml:space="preserve">
-    <value>Error al obtener la versión del paquete</value>
-  </data>
-  <data name="ServiceGamePackageRequestScatteredFileFailed" xml:space="preserve">
-    <value>Error al descargar el archivo del cliente: {0}</value>
   </data>
   <data name="ServiceGamePathLocateFailed" xml:space="preserve">
     <value>No se puede encontrar la ruta del juego, modifícala en la configuración</value>
@@ -1169,17 +1118,11 @@ Espacio disponible: {2}</value>
   <data name="ServiceMetadataFileNotFound" xml:space="preserve">
     <value>No se puede encontrar el archivo de metadatos en caché</value>
   </data>
-  <data name="ServiceMetadataHttpRequestFailed" xml:space="preserve">
-    <value>HTTP {0} | Error:{1}: Error al descargar el archivo de verificación de metadatos</value>
-  </data>
   <data name="ServiceMetadataNotInitialized" xml:space="preserve">
     <value>El servicio de metadatos no se ha inicializado, o ha fallado al inicializarse</value>
   </data>
   <data name="ServiceMetadataParseFailed" xml:space="preserve">
     <value>Error al analizar el archivo de validación de metadatos</value>
-  </data>
-  <data name="ServiceMetadataRequestFailed" xml:space="preserve">
-    <value>Error al descargar el archivo de validación de metadatos</value>
   </data>
   <data name="ServiceMetadataVersionNotSupported" xml:space="preserve">
     <value>Tu versión de Snap Hutao es demasiado antigua, actualiza lo antes posible</value>
@@ -1213,9 +1156,6 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ServiceUIGFImportInvalidItem" xml:space="preserve">
     <value>Artículo no compatible, Id: {0}</value>
-  </data>
-  <data name="ServiceUpdateStatusVersionDescription" xml:space="preserve">
-    <value>Nueva versión {0} disponible</value>
   </data>
   <data name="ServiceUserProcessCookieNoMid" xml:space="preserve">
     <value>La Cookie ingresada debe incluir Mid</value>
@@ -1466,9 +1406,6 @@ Espacio disponible: {2}</value>
   <data name="ViewDialogFeedbackEnableLoopbackContent" xml:space="preserve">
     <value>Después de levantar la restricción, necesitarás otras herramientas para restaurarla.</value>
   </data>
-  <data name="ViewDialogFeedbackEnableLoopbackDescription" xml:space="preserve">
-    <value>Se detectó que el agente del sistema está configurado, pero no se eliminó la restricción de Loopback, por lo que Snap Hutao no podrá conectarse a la red correctamente.</value>
-  </data>
   <data name="ViewDialogFeedbackEnableLoopbackTitle" xml:space="preserve">
     <value>¿Confirmar para configurar la exención de Loopback?</value>
   </data>
@@ -1642,15 +1579,6 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewDialogSpiralAbyssUploadRecordHomaNotLoginTitle" xml:space="preserve">
     <value>Cargar datos del Abismo</value>
-  </data>
-  <data name="ViewDialogUpdatePackageDownloadUpdateLogLinkContent" xml:space="preserve">
-    <value>Ver los registros de actualización</value>
-  </data>
-  <data name="ViewDialogUpdatePackageMirrorHeader" xml:space="preserve">
-    <value>Origen de descarga</value>
-  </data>
-  <data name="ViewDialogUpdatePackagePrimaryText" xml:space="preserve">
-    <value>Actualizar</value>
   </data>
   <data name="ViewDialogUserAccountPasswordAccountHint" xml:space="preserve">
     <value>Introduce la cuenta</value>
@@ -1868,14 +1796,8 @@ Espacio disponible: {2}</value>
   <data name="ViewModelAvatarPropertyCalculateWeaponNull" xml:space="preserve">
     <value>No se puede calcular el personaje actual, por favor sincroniza la información e inténtalo de nuevo</value>
   </data>
-  <data name="ViewModelAvatarPropertyEnkaApiUnavailable" xml:space="preserve">
-    <value>El servicio de información de personajes [Enka API] no está disponible actualmente</value>
-  </data>
   <data name="ViewModelAvatarPropertyFetch" xml:space="preserve">
     <value>Obteniendo datos</value>
-  </data>
-  <data name="ViewModelAvatarPropertyShowcaseNotOpen" xml:space="preserve">
-    <value>La exhibición de personajes no está habilitada, por favor actívala en el juego e inténtalo de nuevo</value>
   </data>
   <data name="ViewModelAvatarPropertySortDescriptionKindActivatedConstellationCount" xml:space="preserve">
     <value>Nivel de Constelación</value>
@@ -2092,9 +2014,6 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewModelGamePackageGetGameBranchFailed" xml:space="preserve">
     <value>Error al obtener la configuración de la versión del juego</value>
-  </data>
-  <data name="ViewModelGamePackageGetGameChannelSDKFailed" xml:space="preserve">
-    <value>Error al obtener el SDK del canal del juego</value>
   </data>
   <data name="ViewModelGamePackageLocalLaunchScheme" xml:space="preserve">
     <value>Configuración local del juego [{0}]</value>
@@ -2432,12 +2351,6 @@ Espacio disponible: {2}</value>
   <data name="ViewPageAchievementSortIncompletedItemsFirst" xml:space="preserve">
     <value>Priorizar incompletos</value>
   </data>
-  <data name="ViewPageAnnouncementActivity" xml:space="preserve">
-    <value>Avisos de eventos</value>
-  </data>
-  <data name="ViewPageAnnouncementGame" xml:space="preserve">
-    <value>Avisos del juego</value>
-  </data>
   <data name="ViewPageAnnouncementRedeemCodeCopySucceed" xml:space="preserve">
     <value>Código de canje copiado con éxito</value>
   </data>
@@ -2470,9 +2383,6 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewPageAvatarPropertyRefreshFromHoyolabGameRecord" xml:space="preserve">
     <value>Sincronizar desde la Crónica de batalla de MiHoYo BBS</value>
-  </data>
-  <data name="ViewPageAvatarPropertyRefreshTimeToggle" xml:space="preserve">
-    <value>Hora de actualización</value>
   </data>
   <data name="ViewPageCultivateCalculate" xml:space="preserve">
     <value>Cálculo de desarrollo</value>
@@ -2591,9 +2501,6 @@ Espacio disponible: {2}</value>
   <data name="ViewPageDailyNoteSettingRefreshHeader" xml:space="preserve">
     <value>Actualizar</value>
   </data>
-  <data name="ViewPageDailyNoteSettingRefreshNotifyIconDisabledHint" xml:space="preserve">
-    <value>El icono del área de notificación está deshabilitado, la actualización automática no se ejecutará después de cerrar Snap Hutao</value>
-  </data>
   <data name="ViewPageDailyNoteSettingRefreshNotifyIconFailedToCreateHint" xml:space="preserve">
     <value>Fallo al crear el icono del área de notificación, la actualización automática no se realizará después de cerrar la ventana</value>
   </data>
@@ -2611,12 +2518,6 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewPageDailyNoteVerify" xml:space="preserve">
     <value>Verificar usuario y rol actual</value>
-  </data>
-  <data name="ViewPageEmbeddedYaeLaunchGameAction" xml:space="preserve">
-    <value>Iniciar juego</value>
-  </data>
-  <data name="ViewPageEmbeddedYaeLaunchGameDescription" xml:space="preserve">
-    <value>Inyecta Embedded Yae en el juego para obtener datos precisos</value>
   </data>
   <data name="ViewPageFeedbackAutoSuggestBoxPlaceholder" xml:space="preserve">
     <value>Buscar preguntas y sugerencias</value>
@@ -2786,9 +2687,6 @@ Espacio disponible: {2}</value>
   <data name="ViewPageHomeGreetingTextEpic1" xml:space="preserve">
     <value>Oye, Viajero, este es tu día número {0} en Teyvat.</value>
   </data>
-  <data name="ViewPageHomeLaunchGameSettingAction" xml:space="preserve">
-    <value>Ajustes</value>
-  </data>
   <data name="ViewPageHutaoDatabaseOverview" xml:space="preserve">
     <value>Detalles</value>
   </data>
@@ -2912,9 +2810,6 @@ Espacio disponible: {2}</value>
   <data name="ViewPageLaunchGameAppearanceBorderlessDescription" xml:space="preserve">
     <value>Crear ventana como emergente, sin marco</value>
   </data>
-  <data name="ViewPageLaunchGameAppearanceCloudThirdPartyMobileDescription" xml:space="preserve">
-    <value>Habilitar diseño táctil integrado, el teclado y el ratón dejarán de funcionar</value>
-  </data>
   <data name="ViewPageLaunchGameAppearanceExclusiveDescription" xml:space="preserve">
     <value>Incompatible con navegadores integrados; operaciones como cambiar de ventana pueden provocar que el juego se cuelgue</value>
   </data>
@@ -2942,15 +2837,6 @@ Espacio disponible: {2}</value>
   <data name="ViewPageLaunchGameBetterGIHeader" xml:space="preserve">
     <value>Tareas automatizadas</value>
   </data>
-  <data name="ViewPageLaunchGameBypass31Dash4302Description" xml:space="preserve">
-    <value>Habilita esta opción cuando aparezca el código de error 31-4302</value>
-  </data>
-  <data name="ViewPageLaunchGameBypass31Dash4302Header" xml:space="preserve">
-    <value>¡Déjame entrar!</value>
-  </data>
-  <data name="ViewPageLaunchGameColdSwitchDescription" xml:space="preserve">
-    <value>No se puede volver a cambiar después de iniciar el juego</value>
-  </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
     <value>La inyección es muy peligrosa y puede tener consecuencias graves, úsala con precaución</value>
   </data>
@@ -2966,17 +2852,8 @@ Espacio disponible: {2}</value>
   <data name="ViewPageLaunchGameDisableFogOn" xml:space="preserve">
     <value>Eliminar</value>
   </data>
-  <data name="ViewPageLaunchGameDiscordActivityDescription" xml:space="preserve">
-    <value>Establecer el estado de actividad de Discord cuando estoy en el juego</value>
-  </data>
-  <data name="ViewPageLaunchGameDiscordActivityHeader" xml:space="preserve">
-    <value>Actividad de Discord</value>
-  </data>
   <data name="ViewPageLaunchGameElevationDescription" xml:space="preserve">
     <value>La gestión de archivos del juego, el cambio de servidor del juego y la función de inyección requieren permisos de administrador</value>
-  </data>
-  <data name="ViewPageLaunchGameEventCameraMoveColdSwitchHeader" xml:space="preserve">
-    <value>Alternar frío de primer plano de ráfaga elemental</value>
   </data>
   <data name="ViewPageLaunchGameEventCameraMoveHotSwitchHeader" xml:space="preserve">
     <value>Deshabilitar animación de ráfaga elemental</value>
@@ -2992,9 +2869,6 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipTitle" xml:space="preserve">
     <value>Visión y Niebla</value>
-  </data>
-  <data name="ViewPageLaunchGameHideQuestBannerColdSwitchHeader" xml:space="preserve">
-    <value>Interruptor de desactivación del banner del mapa</value>
   </data>
   <data name="ViewPageLaunchGameHideQuestBannerHotSwitchDescription" xml:space="preserve">
     <value>Forzar la eliminación de la notificación de misión en la esquina superior izquierda del mapa</value>
@@ -3053,9 +2927,6 @@ Espacio disponible: {2}</value>
   <data name="ViewPageLaunchGameOverlayDescription" xml:space="preserve">
     <value>Necesitas habilitar el icono del área de notificación en la configuración, puede requerir el modo ventana sin bordes para una visualización correcta</value>
   </data>
-  <data name="ViewPageLaunchGameOverlayDescriptionHint" xml:space="preserve">
-    <value>Ajusta la configuración específica de las funciones en la superposición después de iniciar el juego. Es posible que necesites habilitar el modo ventana sin bordes para que la superposición se muestre correctamente</value>
-  </data>
   <data name="ViewPageLaunchGameOverlayHeader" xml:space="preserve">
     <value>Superposición en el juego</value>
   </data>
@@ -3086,26 +2957,11 @@ Espacio disponible: {2}</value>
   <data name="ViewPageLaunchGamePlayTimeHeader" xml:space="preserve">
     <value>Registro de horas de juego</value>
   </data>
-  <data name="ViewPageLaunchGameRemoveOpenTeamProgressColdSwitchHeader" xml:space="preserve">
-    <value>Interruptor en frío de configuración de equipo</value>
-  </data>
   <data name="ViewPageLaunchGameRemoveOpenTeamProgressDescription" xml:space="preserve">
     <value>Elimina la barra de progreso al abrir la pantalla de configuración del equipo</value>
   </data>
   <data name="ViewPageLaunchGameRemoveOpenTeamProgressHeader" xml:space="preserve">
     <value>Eliminar barra de progreso de configuración de equipo</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceDiffHeader" xml:space="preserve">
-    <value>Paquete OTA</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceHeader" xml:space="preserve">
-    <value>Descarga de recursos</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceLatestHeader" xml:space="preserve">
-    <value>Paquete completo</value>
-  </data>
-  <data name="ViewPageLaunchGameResourcePreDownloadHeader" xml:space="preserve">
-    <value>Pre-descarga</value>
   </data>
   <data name="ViewPageLaunchGameSelectGamePath" xml:space="preserve">
     <value>Seleccionar ruta de juego</value>
@@ -3140,9 +2996,6 @@ Espacio disponible: {2}</value>
   <data name="ViewPageLaunchGameSwitchSchemeHeader" xml:space="preserve">
     <value>Servidor</value>
   </data>
-  <data name="ViewPageLaunchGameTargetFovColdSwitchHeader" xml:space="preserve">
-    <value>Interruptor en frío de campo de visión</value>
-  </data>
   <data name="ViewPageLaunchGameTargetFovDescription" xml:space="preserve">
     <value>Ajustar el campo de visión de la cámara, 45 por defecto</value>
   </data>
@@ -3163,9 +3016,6 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipTitle" xml:space="preserve">
     <value>¿No se puede desbloquear el límite de tasa de fotogramas?</value>
-  </data>
-  <data name="ViewPageLaunchGameTooltipDescriptionHint" xml:space="preserve">
-    <value>Coloca el ratón sobre el interruptor de función/cuadro de texto para ver los detalles</value>
   </data>
   <data name="ViewPageLaunchGameUnlockFpsDescription" xml:space="preserve">
     <value>Desactiva la opción "Sincronización vertical" dentro del juego, necesita una GPU de alto rendimiento para soportar una mayor velocidad de fotogramas, establece el valor en -1 para fotogramas ilimitados.</value>
@@ -3533,15 +3383,6 @@ Espacio disponible: {2}</value>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenHeader" xml:space="preserve">
     <value>Detección de Entrada Táctil</value>
   </data>
-  <data name="ViewPageSettingNotifyIconCustomTaskBarWaring" xml:space="preserve">
-    <value>Después de reemplazar la barra de tareas estándar con una herramienta de personalización del sistema, habilitar los iconos del área de notificación puede causar: incapacidad para interactuar con los iconos, fallo al crear iconos correctamente, fallos del Explorador después de reiniciar, o fallos de la aplicación al lanzarse</value>
-  </data>
-  <data name="ViewPageSettingNotifyIconDescription" xml:space="preserve">
-    <value>Mostrar icono en el área de notificación para permitir tareas en segundo plano, reinicia el programa para activar</value>
-  </data>
-  <data name="ViewPageSettingNotifyIconHeader" xml:space="preserve">
-    <value>Icono del área de notificación</value>
-  </data>
   <data name="ViewPageSettingOfficialSiteNavigate" xml:space="preserve">
     <value>Ir al sitio web oficial</value>
   </data>
@@ -3550,9 +3391,6 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewPageSettingOpenBackgroundImageFolderHeader" xml:space="preserve">
     <value>Abrir carpeta de imágenes de fondo</value>
-  </data>
-  <data name="ViewPageSettingPackageConverterTypeHeader" xml:space="preserve">
-    <value>Convertir modo de servidor</value>
   </data>
   <data name="ViewPageSettingResetAction" xml:space="preserve">
     <value>Restablecer</value>
@@ -3655,9 +3493,6 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewPageWiKiAvatarConstellationNameTitle" xml:space="preserve">
     <value>Constelación</value>
-  </data>
-  <data name="ViewPageWiKiAvatarCostumeHeader" xml:space="preserve">
-    <value>Atuendo</value>
   </data>
   <data name="ViewPageWiKiAvatarDateofBirthTitle" xml:space="preserve">
     <value>Cumpleaños</value>
@@ -3827,18 +3662,6 @@ Espacio disponible: {2}</value>
   <data name="ViewTitileUpdatePackageAvailableContent" xml:space="preserve">
     <value>¿Actualizar ahora?</value>
   </data>
-  <data name="ViewTitileUpdatePackageDownloadFailedMessage" xml:space="preserve">
-    <value>Error al descargar la actualización</value>
-  </data>
-  <data name="ViewTitileUpdatePackageDownloadTitle" xml:space="preserve">
-    <value>Se ha publicado la versión {0} de Snap Hutao</value>
-  </data>
-  <data name="ViewTitileUpdatePackageReadyContent" xml:space="preserve">
-    <value>¿Instalar ahora?</value>
-  </data>
-  <data name="ViewTitileUpdatePackageReadyTitle" xml:space="preserve">
-    <value>La versión {0} de Snap Hutao está lista</value>
-  </data>
   <data name="ViewTitleAutoClicking" xml:space="preserve">
     <value>Clic automático</value>
   </data>
@@ -3850,12 +3673,6 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewTitleUpdatePackageAvailableTitle" xml:space="preserve">
     <value>La versión {0} de Hutao ya está disponible</value>
-  </data>
-  <data name="ViewTitleUpdatePackageDownloadContent" xml:space="preserve">
-    <value>¿Descargar ahora?</value>
-  </data>
-  <data name="ViewTitleUpdatePackageInstallingContent" xml:space="preserve">
-    <value>Instalando la actualización</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>Herramientas</value>
@@ -3886,9 +3703,6 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewUserCookieOperationRefreshCookieAction" xml:space="preserve">
     <value>Actualizar Cookie</value>
-  </data>
-  <data name="ViewUserCookieOperationSignInRewardAction" xml:space="preserve">
-    <value>Reclamar recompensa de inicio de sesión</value>
   </data>
   <data name="ViewUserCopyCookieAction" xml:space="preserve">
     <value>Copiar Cookie</value>
@@ -3934,9 +3748,6 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewWindowExceptionClose" xml:space="preserve">
     <value>Cerrar</value>
-  </data>
-  <data name="ViewWindowExceptionDescription" xml:space="preserve">
-    <value>Por favor, toma una captura de pantalla de esta ventana, encuentra el canal de retroalimentación adecuado en el Centro de retroalimentación y envíala al equipo de desarrollo.</value>
   </data>
   <data name="ViewWindowExceptionHeader" xml:space="preserve">
     <value>Se ha producido un error fatal irrecuperable</value>
@@ -4036,18 +3847,6 @@ Espacio disponible: {2}</value>
   </data>
   <data name="WebDailyNoteHomeLocked" xml:space="preserve">
     <value>Relajatetera no desbloqueada</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay" xml:space="preserve">
-    <value>{0} días</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay0" xml:space="preserve">
-    <value>Hoy</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay1" xml:space="preserve">
-    <value>Mañana</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay2" xml:space="preserve">
-    <value>Pasado mañana</value>
   </data>
   <data name="WebDailyNoteResinRecovery" xml:space="preserve">
     <value>Se recuperará por completo en {0} a las {1:HH:mm}</value>

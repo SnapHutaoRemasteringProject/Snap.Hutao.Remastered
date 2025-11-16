@@ -3,21 +3,23 @@
 
 using Quartz;
 using Snap.Hutao.Core.Property;
+using Snap.Hutao.Core.Setting;
 using Snap.Hutao.Model;
-using Snap.Hutao.Model.Entity;
 using Snap.Hutao.Service.Abstraction;
 using Snap.Hutao.Service.Job;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Service.DailyNote;
 
-[ConstructorGenerated(CallBaseConstructor = true)]
 [Service(ServiceLifetime.Singleton)]
 internal sealed partial class DailyNoteOptions : DbStoreOptions
 {
     private const int OneMinute = 60;
 
     private readonly IQuartzService quartzService;
+
+    [GeneratedConstructor(CallBaseConstructor = true)]
+    public partial DailyNoteOptions(IServiceProvider serviceProvider);
 
     public ImmutableArray<NameValue<int>> RefreshTimes { get; } =
     [
@@ -29,19 +31,19 @@ internal sealed partial class DailyNoteOptions : DbStoreOptions
     ];
 
     [field: MaybeNull]
-    public IObservableProperty<bool> IsAutoRefreshEnabled { get => field ??= CreateProperty(SettingEntry.DailyNoteIsAutoRefreshEnabled, false).WithValueChangedCallback(OnIsAutoRefreshEnabledChanged, this); }
+    public IObservableProperty<bool> IsAutoRefreshEnabled { get => field ??= CreateProperty(SettingKeys.DailyNoteIsAutoRefreshEnabled, false).WithValueChangedCallback(OnIsAutoRefreshEnabledChanged, this); }
 
     [field: MaybeNull]
-    public IObservableProperty<NameValue<int>?> SelectedRefreshTime { get => field ??= CreateProperty(SettingEntry.DailyNoteRefreshSeconds, OneMinute * 30).WithValueChangedCallback(OnSelectedRefreshTimeChanged, this).AsNameValue(RefreshTimes); }
+    public IObservableProperty<NameValue<int>?> SelectedRefreshTime { get => field ??= CreateProperty(SettingKeys.DailyNoteRefreshSeconds, OneMinute * 30).WithValueChangedCallback(OnSelectedRefreshTimeChanged, this).AsNameValue(RefreshTimes); }
 
     [field: MaybeNull]
-    public IObservableProperty<bool> IsReminderNotification { get => field ??= CreateProperty(SettingEntry.DailyNoteReminderNotify, false); }
+    public IObservableProperty<bool> IsReminderNotification { get => field ??= CreateProperty(SettingKeys.DailyNoteReminderNotify, false); }
 
     [field: MaybeNull]
-    public IObservableProperty<bool> IsSilentWhenPlayingGame { get => field ??= CreateProperty(SettingEntry.DailyNoteSilentWhenPlayingGame, false); }
+    public IObservableProperty<bool> IsSilentWhenPlayingGame { get => field ??= CreateProperty(SettingKeys.DailyNoteSilentWhenPlayingGame, false); }
 
     [field: MaybeNull]
-    public IObservableProperty<string?> WebhookUrl { get => field ??= CreateProperty(SettingEntry.DailyNoteWebhookUrl); }
+    public IObservableProperty<string?> WebhookUrl { get => field ??= CreateProperty(SettingKeys.DailyNoteWebhookUrl); }
 
     private static void OnIsAutoRefreshEnabledChanged(bool value, DailyNoteOptions options)
     {

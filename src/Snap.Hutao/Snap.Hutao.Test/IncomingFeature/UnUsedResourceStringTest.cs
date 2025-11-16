@@ -30,7 +30,9 @@ public partial class UnUsedResourceStringTest
                 continue;
             }
 
-            if (file.Contains("Snap.Hutao.Test") || file.Contains("Snap.Hutao\\obj") || file.Contains("Snap.Hutao\\bin"))
+            if (file.Contains("Snap.Hutao.Test", StringComparison.OrdinalIgnoreCase) ||
+                file.Contains("Snap.Hutao\\obj", StringComparison.OrdinalIgnoreCase) ||
+                file.Contains("Snap.Hutao\\bin", StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }
@@ -47,6 +49,11 @@ public partial class UnUsedResourceStringTest
 
         foreach (string str in strings)
         {
+            if (str.StartsWith("Server", StringComparison.Ordinal))
+            {
+                continue;
+            }
+
             Console.WriteLine(str);
         }
     }

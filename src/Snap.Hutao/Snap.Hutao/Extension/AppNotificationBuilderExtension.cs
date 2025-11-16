@@ -8,13 +8,15 @@ namespace Snap.Hutao.Extension;
 
 internal static class AppNotificationBuilderExtension
 {
-    /// <summary>
-    /// Build and show the notification
-    /// </summary>
-    /// <param name="builder">this</param>
-    /// <param name="manager">Defaults to <see cref="AppNotificationManager.Default"/></param>
-    public static void Show(this AppNotificationBuilder builder, AppNotificationManager? manager = default)
+    extension(AppNotificationBuilder builder)
     {
-        (manager ?? AppNotificationManager.Default).Show(builder.BuildNotification());
+        /// <summary>
+        /// Build and show the notification
+        /// </summary>
+        /// <param name="manager">Defaults to <see cref="AppNotificationManager.Default"/></param>
+        public void Show(AppNotificationManager? manager = default)
+        {
+            (manager ?? AppNotificationManager.Default).Show(builder.BuildNotification());
+        }
     }
 }

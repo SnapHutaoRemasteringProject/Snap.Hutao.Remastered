@@ -3,7 +3,6 @@
 
 using Microsoft.Extensions.Caching.Memory;
 using Snap.Hutao.Core.DependencyInjection.Annotation.HttpClient;
-using Snap.Hutao.Service.Game.Island;
 using Snap.Hutao.Service.Yae.Achievement;
 using Snap.Hutao.Web.Endpoint.Hutao;
 using Snap.Hutao.Web.Request.Builder;
@@ -12,7 +11,6 @@ using System.Net.Http;
 
 namespace Snap.Hutao.Service.Feature;
 
-[ConstructorGenerated]
 [Service(ServiceLifetime.Singleton, typeof(IFeatureService))]
 [HttpClient(HttpClientConfiguration.Default)]
 internal sealed partial class FeatureService : IFeatureService
@@ -22,10 +20,8 @@ internal sealed partial class FeatureService : IFeatureService
     private readonly IHttpClientFactory httpClientFactory;
     private readonly IMemoryCache memoryCache;
 
-    public ValueTask<IslandFeature2?> GetIslandFeatureAsync(string tag)
-    {
-        return GetTaggedFeatureAsync<IslandFeature2>(tag, TimeSpan.FromMinutes(5));
-    }
+    [GeneratedConstructor]
+    public partial FeatureService(IServiceProvider serviceProvider);
 
     public ValueTask<AchievementFieldId?> GetAchievementFieldIdAsync(string tag)
     {

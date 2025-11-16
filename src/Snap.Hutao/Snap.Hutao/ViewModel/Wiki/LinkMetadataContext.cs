@@ -45,4 +45,56 @@ internal sealed class LinkMetadataContext
 
         return true;
     }
+
+    public bool TryGetParameter(MiHoYoSyntaxParameterKind kind, ReadOnlySpan<char> idSpan, out string value)
+    {
+        value = default!;
+
+        if (!idSpan.TrySplitIntoTwo('|', out ReadOnlySpan<char> idSpan2, out ReadOnlySpan<char> nextSpan))
+        {
+            return false;
+        }
+
+        if (!uint.TryParse(idSpan2[1..], out uint id))
+        {
+            return false;
+        }
+
+        if (!nextSpan.TrySplitIntoTwo('S', out ReadOnlySpan<char> oneBasedIndexSpan, out ReadOnlySpan<char> factorSpan))
+        {
+            return false;
+        }
+
+        if (!int.TryParse(oneBasedIndexSpan, out int oneBasedIndex))
+        {
+            return false;
+        }
+
+        if (!int.TryParse(factorSpan, out int factor))
+        {
+            return false;
+        }
+
+        switch (kind)
+        {
+            case MiHoYoSyntaxParameterKind.ProudSkill:
+                foreach (ProudSkill skill in Skills)
+                {
+                    foreach ((ProudSkillId skillId, ImmutableArray<float> parameters) in skill.Proud.Parameters.IdParameters)
+                    {
+                        if (skillId == id)
+                        {
+                            value = (parameters[oneBasedIndex - 1] * factor).ToString();
+                            return true;
+                        }
+                    }
+                }
+
+                break;
+            default:
+                return false;
+        }
+
+        return false;
+    }
 }

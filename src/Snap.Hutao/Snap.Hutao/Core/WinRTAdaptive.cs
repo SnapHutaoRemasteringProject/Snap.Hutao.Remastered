@@ -12,4 +12,9 @@ internal static class WinRTAdaptive
     {
         return source.ToFrozenDictionary();
     }
+
+    public static T[] Array<T>(T[] source)
+    {
+        return source;
+    }
 }

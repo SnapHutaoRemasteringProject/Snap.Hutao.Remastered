@@ -55,7 +55,7 @@ jobs:
         if: ${{ steps.merge.outputs.continue == 'true' }}
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: 9.0
+          dotnet-version: 10.0
 
       - name: Cache NuGet packages
         if: ${{ steps.merge.outputs.continue == 'true' }}

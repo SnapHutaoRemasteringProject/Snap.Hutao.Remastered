@@ -1,9 +1,12 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Core;
 using Snap.Hutao.Core.Diagnostics;
+using Snap.Hutao.Core.LifeCycle.InterProcess.FullTrust;
 using Snap.Hutao.Win32;
 using Snap.Hutao.Win32.Foundation;
+using System.IO;
 
 namespace Snap.Hutao.Factory.Process;
 
@@ -40,7 +43,7 @@ internal sealed class ProcessFactory
         global::System.Diagnostics.Process[] processes = global::System.Diagnostics.Process.GetProcesses();
 
         // GetProcesses once and manually loop is O(n)
-        foreach (ref readonly global::System.Diagnostics.Process process in processes.AsSpan())
+        foreach (global::System.Diagnostics.Process process in processes)
         {
             try
             {
@@ -138,6 +141,23 @@ internal sealed class ProcessFactory
                 }
             }
         }
+    }
+
+    public static IProcess CreateUsingFullTrustSuspended(string arguments, string fileName, string workingDirectory)
+    {
+        string repoDirectory = HutaoRuntime.GetDataRepositoryDirectory();
+        string fullTrustFilePath = Path.Combine(repoDirectory, "Snap.ContentDelivery", "Snap.Hutao.FullTrust.exe");
+        StartUsingShellExecuteRunAs(fullTrustFilePath);
+
+        FullTrustProcessStartInfoRequest request = new()
+        {
+            ApplicationName = fileName,
+            CommandLine = arguments,
+            CreationFlags = Win32.System.Threading.PROCESS_CREATION_FLAGS.CREATE_SUSPENDED,
+            CurrentDirectory = workingDirectory,
+        };
+
+        return new FullTrustProcess(request);
     }
 
     public static void StartUsingShellExecute(string arguments, string fileName)

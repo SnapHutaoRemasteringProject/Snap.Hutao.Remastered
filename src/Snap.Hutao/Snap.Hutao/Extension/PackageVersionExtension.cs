@@ -8,9 +8,12 @@ namespace Snap.Hutao.Extension;
 
 internal static class PackageVersionExtension
 {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Version ToVersion(this PackageVersion packageVersion)
+    extension(PackageVersion packageVersion)
     {
-        return new(packageVersion.Major, packageVersion.Minor, packageVersion.Build, packageVersion.Revision);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Version ToVersion()
+        {
+            return new(packageVersion.Major, packageVersion.Minor, packageVersion.Build, packageVersion.Revision);
+        }
     }
 }

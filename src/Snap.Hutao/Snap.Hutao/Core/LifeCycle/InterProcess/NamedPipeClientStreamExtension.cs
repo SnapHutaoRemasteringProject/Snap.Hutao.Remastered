@@ -7,16 +7,19 @@ namespace Snap.Hutao.Core.LifeCycle.InterProcess;
 
 internal static class NamedPipeClientStreamExtension
 {
-    public static bool TryConnectOnce(this NamedPipeClientStream clientStream)
+    extension(NamedPipeClientStream clientStream)
     {
-        try
+        public bool TryConnectOnce()
         {
-            clientStream.Connect(TimeSpan.Zero);
-            return true;
-        }
-        catch (TimeoutException)
-        {
-            return false;
+            try
+            {
+                clientStream.Connect(TimeSpan.Zero);
+                return true;
+            }
+            catch (TimeoutException)
+            {
+                return false;
+            }
         }
     }
 }

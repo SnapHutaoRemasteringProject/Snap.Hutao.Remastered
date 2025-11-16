@@ -12,6 +12,7 @@
     xmlns:shuxv="using:Snap.Hutao.UI.Xaml.View"
     xmlns:shuxvp="using:Snap.Hutao.UI.Xaml.View.Page"
     xmlns:shvm="using:Snap.Hutao.ViewModel"
+    xmlns:sshuxcc="using:Snap.Hutao.UI.Xaml.Control.Card"
     d:DataContext="{d:DesignInstance Type=shvm:MainViewModel}"
     mc:Ignorable="d">
 
@@ -56,6 +57,7 @@
             <TitleBar
                 x:Name="TitleBar"
                 Title="{Binding Title}"
+                Grid.Row="0"
                 x:FieldModifier="Public"
                 IsBackButtonVisible="{x:Bind ContentFrame.CanGoBack, Mode=OneWay}"
                 IsPaneToggleButtonVisible="True">
@@ -81,18 +83,84 @@
                             Style="{ThemeResource SettingButtonStyle}"
                             Visibility="{Binding IsDebug}"/>
 
-                        <Border
-                            Height="33"
-                            Padding="6"
-                            Visibility="{Binding IsMetadataInitialized, Converter={StaticResource BoolToVisibilityRevertConverter}, Mode=OneWay}">
-                            <StackPanel Orientation="Horizontal" Spacing="6">
-                                <ProgressRing Width="12" Height="12"/>
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Text="{shuxm:ResourceString Name=ViewTitleMetadataInitializing}"/>
-                            </StackPanel>
-                        </Border>
+                        <Button
+                            Padding="0"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Style="{ThemeResource SettingButtonStyle}">
+                            <Button.Resources>
+                                <SineEase x:Key="EasingFunction" EasingMode="EaseInOut"/>
+                                <Storyboard x:Name="FocusStoryBoard">
+                                    <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)">
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:0"
+                                            Value="{ThemeResource ControlFillColorTransparent}"/>
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:0.5"
+                                            Value="{ThemeResource SystemFillColorCautionBackground}"/>
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:1"
+                                            Value="{ThemeResource ControlFillColorTransparent}"/>
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:1.5"
+                                            Value="{ThemeResource SystemFillColorCautionBackground}"/>
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:2"
+                                            Value="{ThemeResource ControlFillColorTransparent}"/>
+                                    </ColorAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </Button.Resources>
+                            <Button.Content>
+                                <Border Padding="16,6">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="{ThemeResource ControlFillColorTransparent}"/>
+                                    </Border.Background>
+                                    <mxi:Interaction.Behaviors>
+                                        <shuxb:FocusAnimationBehavior Storyboard="{StaticResource FocusStoryBoard}" Watch="{Binding BackgroundActivityOptions.MetadataInitialization.NotifyToken}"/>
+                                        <shuxb:FocusAnimationBehavior Storyboard="{StaticResource FocusStoryBoard}" Watch="{Binding BackgroundActivityOptions.FullTrustInitialization.NotifyToken}"/>
+                                    </mxi:Interaction.Behaviors>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="{shuxm:ResourceString Name=UIViewMainTitleBarBackgroundActivityAction}"/>
+                                </Border>
+                            </Button.Content>
+                            <Button.Flyout>
+                                <Flyout
+                                    FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding8Style}"
+                                    Placement="Bottom"
+                                    ShouldConstrainToRootBounds="True">
+                                    <StackPanel
+                                        Width="320"
+                                        DataContext="{Binding BackgroundActivityOptions}"
+                                        Spacing="4">
+                                        <sshuxcc:CardProgressBar
+                                            MinHeight="58"
+                                            Description="{Binding MetadataInitialization.Description}"
+                                            Header="{Binding MetadataInitialization.Title}"
+                                            IsIndeterminate="{Binding MetadataInitialization.IsIndeterminate}"
+                                            Maximum="1"
+                                            ProgressForeground="{ThemeResource SystemControlForegroundAccentBrush}"
+                                            Style="{ThemeResource CompactCardProgressBarStyle}"
+                                            Value="{Binding MetadataInitialization.ProgressValue}"/>
+                                        <sshuxcc:CardProgressBar
+                                            MinHeight="58"
+                                            Description="{Binding FullTrustInitialization.Description}"
+                                            Header="{Binding FullTrustInitialization.Title}"
+                                            IsIndeterminate="{Binding FullTrustInitialization.IsIndeterminate}"
+                                            Maximum="1"
+                                            ProgressForeground="{ThemeResource SystemControlForegroundAccentBrush}"
+                                            Style="{ThemeResource CompactCardProgressBarStyle}"
+                                            Value="{Binding FullTrustInitialization.ProgressValue}"/>
+                                    </StackPanel>
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
                     </StackPanel>
                 </TitleBar.RightHeader>
             </TitleBar>

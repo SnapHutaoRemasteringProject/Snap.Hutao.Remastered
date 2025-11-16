@@ -13,6 +13,7 @@ internal sealed class HexNumberConverter<T> : JsonConverter<T>
     {
         if (reader.TokenType is JsonTokenType.String)
         {
+            // TODO: implement Utf8StringComparer
             if ((reader.ValueSpan.StartsWith("0x"u8) || reader.ValueSpan.StartsWith("0X"u8)) &&
                 T.TryParse(reader.ValueSpan[2..], NumberStyles.HexNumber, default, out T hex))
             {

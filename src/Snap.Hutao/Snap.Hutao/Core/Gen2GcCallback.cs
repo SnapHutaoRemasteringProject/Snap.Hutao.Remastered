@@ -12,11 +12,7 @@ internal sealed class Gen2GcCallback : CriticalFinalizerObject
 {
     private readonly Func<bool>? callback0;
     private readonly Func<object, bool>? callback1;
-
-#if NET10_0_OR_GREATER
-    [Obsolete("WeakGCHandle is available in .NET 10.0 and later.")]
-#endif
-    private GCHandle weakTargetObj;
+    private WeakGCHandle<object> weakTargetObj;
 
     private Gen2GcCallback(Func<bool> callback)
     {
@@ -26,7 +22,7 @@ internal sealed class Gen2GcCallback : CriticalFinalizerObject
     private Gen2GcCallback(Func<object, bool> callback, object targetObj)
     {
         callback1 = callback;
-        weakTargetObj = GCHandle.Alloc(targetObj, GCHandleType.Weak);
+        weakTargetObj = new(targetObj);
     }
 
     ~Gen2GcCallback()
@@ -34,11 +30,10 @@ internal sealed class Gen2GcCallback : CriticalFinalizerObject
         if (weakTargetObj.IsAllocated)
         {
             // Check to see if the target object is still alive.
-            object? targetObj = weakTargetObj.Target;
-            if (targetObj is null)
+            if (!weakTargetObj.TryGetTarget(out object? targetObj))
             {
                 // The target object is dead, so this callback object is no longer needed.
-                weakTargetObj.Free();
+                weakTargetObj.Dispose();
                 return;
             }
 
@@ -49,7 +44,7 @@ internal sealed class Gen2GcCallback : CriticalFinalizerObject
                 if (!callback1(targetObj))
                 {
                     // If the callback returns false, this callback object is no longer needed.
-                    weakTargetObj.Free();
+                    weakTargetObj.Dispose();
                     return;
                 }
             }

@@ -7,15 +7,17 @@ using Snap.Hutao.Service.Abstraction;
 
 namespace Snap.Hutao.Service.Game.Account;
 
-[ConstructorGenerated]
 [Service(ServiceLifetime.Singleton, typeof(IGameAccountRepository))]
 internal sealed partial class GameAccountRepository : IGameAccountRepository
 {
+    [GeneratedConstructor]
+    public partial GameAccountRepository(IServiceProvider serviceProvider);
+
     public partial IServiceProvider ServiceProvider { get; }
 
     public ObservableReorderableDbCollection<GameAccount> GetGameAccountCollection()
     {
-        return this.Query(query => query.AsObservableReorderableDbCollection(ServiceProvider));
+        return this.Query(query => query.ToObservableReorderableDbCollection(ServiceProvider));
     }
 
     public void AddGameAccount(GameAccount gameAccount)

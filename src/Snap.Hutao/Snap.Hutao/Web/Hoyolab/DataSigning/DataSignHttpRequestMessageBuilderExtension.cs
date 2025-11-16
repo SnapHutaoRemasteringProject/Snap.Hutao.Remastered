@@ -7,9 +7,12 @@ namespace Snap.Hutao.Web.Hoyolab.DataSigning;
 
 internal static class DataSignHttpRequestMessageBuilderExtension
 {
-    public static async ValueTask SignDataAsync(this HttpRequestMessageBuilder builder, DataSignAlgorithmVersion version, SaltType saltType, bool includeChars)
+    extension(HttpRequestMessageBuilder builder)
     {
-        DataSignOptions options = await DataSignOptions.CreateFromHttpRequestMessageBuilderAsync(builder, saltType, includeChars, version).ConfigureAwait(false);
-        builder.SetHeader("DS", DataSignAlgorithm.GetDataSign(options));
+        public async ValueTask SignDataAsync(DataSignAlgorithmVersion version, SaltType saltType, bool includeChars)
+        {
+            DataSignOptions options = await DataSignOptions.CreateFromHttpRequestMessageBuilderAsync(builder, saltType, includeChars, version).ConfigureAwait(false);
+            builder.SetHeader("DS", DataSignAlgorithm.GetDataSign(options));
+        }
     }
 }

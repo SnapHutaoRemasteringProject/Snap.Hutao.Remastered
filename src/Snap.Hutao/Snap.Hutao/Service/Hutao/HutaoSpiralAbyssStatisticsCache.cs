@@ -12,11 +12,13 @@ using AvatarView = Snap.Hutao.ViewModel.Complex.AvatarView;
 
 namespace Snap.Hutao.Service.Hutao;
 
-[ConstructorGenerated]
 [Service(ServiceLifetime.Singleton, typeof(IHutaoSpiralAbyssStatisticsCache))]
 internal sealed partial class HutaoSpiralAbyssStatisticsCache : StatisticsCache, IHutaoSpiralAbyssStatisticsCache
 {
     private readonly IServiceProvider serviceProvider;
+
+    [GeneratedConstructor]
+    public partial HutaoSpiralAbyssStatisticsCache(IServiceProvider serviceProvider);
 
     public ImmutableArray<AvatarRankView> AvatarUsageRanks { get; set; }
 
@@ -70,12 +72,12 @@ internal sealed partial class HutaoSpiralAbyssStatisticsCache : StatisticsCache,
             rawLast = await hutaoService.GetAvatarCollocationsAsync(true).ConfigureAwait(false);
         }
 
-        AvatarCollocations = CurrentLeftJoinLast(raw, rawLast, data => data.AvatarId, (raw, rawLast) => new AvatarCollocationView
+        AvatarCollocations = CurrentJoinLast(raw, rawLast, data => data.AvatarId, (raw, rawLast) => new AvatarCollocationView
         {
             AvatarId = raw.AvatarId,
-            Avatars = [.. CurrentLeftJoinLast(raw.Avatars, rawLast?.Avatars, data => data.Item, (avatar, avatarLast) => new AvatarView(context.GetAvatar(avatar.Item), avatar.Rate, avatarLast?.Rate))],
-            Weapons = [.. CurrentLeftJoinLast(raw.Weapons, rawLast?.Weapons, data => data.Item, (weapon, weaponLast) => new WeaponView(context.GetWeapon(weapon.Item), weapon.Rate, weaponLast?.Rate))],
-            ReliquarySets = [.. CurrentLeftJoinLast(raw.Reliquaries, rawLast?.Reliquaries, data => data.Item, (relic, relicLast) => new ReliquarySetView(context.ExtendedIdReliquarySetMap, relic, relicLast))],
+            Avatars = [.. CurrentJoinLast(raw.Avatars, rawLast?.Avatars, data => data.Item, (avatar, avatarLast) => new AvatarView(context.GetAvatar(avatar.Item), avatar.Rate, avatarLast?.Rate))],
+            Weapons = [.. CurrentJoinLast(raw.Weapons, rawLast?.Weapons, data => data.Item, (weapon, weaponLast) => new WeaponView(context.GetWeapon(weapon.Item), weapon.Rate, weaponLast?.Rate))],
+            ReliquarySets = [.. CurrentJoinLast(raw.Reliquaries, rawLast?.Reliquaries, data => data.Item, (relic, relicLast) => new ReliquarySetView(context.ExtendedIdReliquarySetMap, relic, relicLast))],
         }).ToImmutableDictionary(a => a.AvatarId);
     }
 
@@ -90,10 +92,10 @@ internal sealed partial class HutaoSpiralAbyssStatisticsCache : StatisticsCache,
             rawLast = await hutaoService.GetWeaponCollocationsAsync(true).ConfigureAwait(false);
         }
 
-        WeaponCollocations = CurrentLeftJoinLast(raw, rawLast, data => data.WeaponId, (raw, rawLast) => new WeaponCollocationView
+        WeaponCollocations = CurrentJoinLast(raw, rawLast, data => data.WeaponId, (raw, rawLast) => new WeaponCollocationView
         {
             WeaponId = raw.WeaponId,
-            Avatars = [.. CurrentLeftJoinLast(raw.Avatars, rawLast?.Avatars, data => data.Item, (avatar, avatarLast) => new AvatarView(context.GetAvatar(avatar.Item), avatar.Rate, avatarLast?.Rate))],
+            Avatars = [.. CurrentJoinLast(raw.Avatars, rawLast?.Avatars, data => data.Item, (avatar, avatarLast) => new AvatarView(context.GetAvatar(avatar.Item), avatar.Rate, avatarLast?.Rate))],
         }).ToImmutableDictionary(w => w.WeaponId);
     }
 
@@ -110,10 +112,10 @@ internal sealed partial class HutaoSpiralAbyssStatisticsCache : StatisticsCache,
 
         AvatarAppearanceRanks =
         [
-            .. CurrentLeftJoinLast(raw.OrderByDescending(r => r.Floor), rawLast, data => data.Floor, (raw, rawLast) => new AvatarRankView
+            .. CurrentJoinLast(raw.OrderByDescending(r => r.Floor), rawLast, data => data.Floor, (raw, rawLast) => new AvatarRankView
             {
                 Floor = SH.FormatModelBindingHutaoComplexRankFloor(raw.Floor),
-                Avatars = [..CurrentLeftJoinLast(raw.Ranks.SortByDescending(r => r.Rate), rawLast?.Ranks, data => data.Item, (rank, rankLast) => new AvatarView(context.GetAvatar(rank.Item), rank.Rate, rankLast?.Rate))],
+                Avatars = [..CurrentJoinLast(raw.Ranks.SortByDescending(r => r.Rate), rawLast?.Ranks, data => data.Item, (rank, rankLast) => new AvatarView(context.GetAvatar(rank.Item), rank.Rate, rankLast?.Rate))],
             })
         ];
     }
@@ -131,10 +133,10 @@ internal sealed partial class HutaoSpiralAbyssStatisticsCache : StatisticsCache,
 
         AvatarUsageRanks =
         [
-            .. CurrentLeftJoinLast(raw.OrderByDescending(r => r.Floor), rawLast, data => data.Floor, (raw, rawLast) => new AvatarRankView
+            .. CurrentJoinLast(raw.OrderByDescending(r => r.Floor), rawLast, data => data.Floor, (raw, rawLast) => new AvatarRankView
             {
                 Floor = SH.FormatModelBindingHutaoComplexRankFloor(raw.Floor),
-                Avatars = [.. CurrentLeftJoinLast(raw.Ranks.SortByDescending(r => r.Rate), rawLast?.Ranks, data => data.Item, (rank, rankLast) => new AvatarView(context.GetAvatar(rank.Item), rank.Rate, rankLast?.Rate))],
+                Avatars = [.. CurrentJoinLast(raw.Ranks.SortByDescending(r => r.Rate), rawLast?.Ranks, data => data.Item, (rank, rankLast) => new AvatarView(context.GetAvatar(rank.Item), rank.Rate, rankLast?.Rate))],
             })
         ];
     }
@@ -152,9 +154,9 @@ internal sealed partial class HutaoSpiralAbyssStatisticsCache : StatisticsCache,
 
         AvatarConstellationInfos =
         [
-            .. CurrentLeftJoinLast(raw.OrderBy(i => i.HoldingRate), rawLast, data => data.AvatarId, (raw, rawLast) => new AvatarConstellationInfoView(context.GetAvatar(raw.AvatarId), raw.HoldingRate, rawLast?.HoldingRate)
+            .. CurrentJoinLast(raw.OrderBy(i => i.HoldingRate), rawLast, data => data.AvatarId, (raw, rawLast) => new AvatarConstellationInfoView(context.GetAvatar(raw.AvatarId), raw.HoldingRate, rawLast?.HoldingRate)
             {
-                Rates = [.. CurrentLeftJoinLast(raw.Constellations, rawLast?.Constellations, data => data.Item, (rate, rateLast) => new RateAndDelta(rate.Rate, rateLast?.Rate))],
+                Rates = [.. CurrentJoinLast(raw.Constellations, rawLast?.Constellations, data => data.Item, (rate, rateLast) => new RateAndDelta(rate.Rate, rateLast?.Rate))],
             })
         ];
     }

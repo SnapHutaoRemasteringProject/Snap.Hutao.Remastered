@@ -8,34 +8,37 @@ namespace Snap.Hutao.Extension;
 
 internal static class CollectionExtension
 {
-    public static int RemoveWhere<T>(this Collection<T> collection, Func<T, bool> shouldRemovePredicate)
+    extension<T>(Collection<T> collection)
     {
-        int count = 0;
-        T[] array = GC.AllocateUninitializedArray<T>(collection.Count);
-        collection.CopyTo(array, 0);
-        foreach (ref readonly T item in array.AsSpan())
+        public int RemoveWhere(Func<T, bool> shouldRemovePredicate)
         {
-            if (shouldRemovePredicate(item))
+            int count = 0;
+            T[] array = GC.AllocateUninitializedArray<T>(collection.Count);
+            collection.CopyTo(array, 0);
+            foreach (T item in array)
             {
-                collection.Remove(item);
-                count++;
+                if (shouldRemovePredicate(item))
+                {
+                    collection.Remove(item);
+                    count++;
+                }
             }
+
+            return count;
         }
 
-        return count;
-    }
-
-    [Pure]
-    public static int FirstIndexOf<T>(this Collection<T> collection, Func<T, bool> predicate)
-    {
-        for (int index = 0; index < collection.Count; index++)
+        [Pure]
+        public int FirstIndexOf(Func<T, bool> predicate)
         {
-            if (predicate(collection[index]))
+            for (int index = 0; index < collection.Count; index++)
             {
-                return index;
+                if (predicate(collection[index]))
+                {
+                    return index;
+                }
             }
-        }
 
-        return -1;
+            return -1;
+        }
     }
 }

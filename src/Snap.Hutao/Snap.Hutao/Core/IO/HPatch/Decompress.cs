@@ -12,18 +12,18 @@ internal unsafe struct Decompress
 {
 #pragma warning disable CS0169
     private readonly delegate* unmanaged[Cdecl]<PCSTR, BOOL> isCanOpen;
-    private readonly delegate* unmanaged[Cdecl]<Decompress*, ulong, StreamInput*, ulong, ulong, nint> open;
-    private readonly delegate* unmanaged[Cdecl]<Decompress*, nint, BOOL> close;
-    private readonly delegate* unmanaged[Cdecl]<nint, byte*, byte*, BOOL> decompress;
+    private readonly delegate* unmanaged[Cdecl]<Decompress*, ulong, StreamInput*, ulong, ulong, GCHandle<ZstandardDecompressStream>> open;
+    private readonly delegate* unmanaged[Cdecl]<Decompress*, GCHandle<ZstandardDecompressStream>, BOOL> close;
+    private readonly delegate* unmanaged[Cdecl]<GCHandle<ZstandardDecompressStream>, byte*, byte*, BOOL> decompress;
     private readonly delegate* unmanaged[Cdecl]<nint, ulong, StreamInput*, ulong, ulong, BOOL> reset;
     private int error;
 #pragma warning restore CS0169
 
     public Decompress(
         delegate* unmanaged[Cdecl]<PCSTR, BOOL> isCanOpen,
-        delegate* unmanaged[Cdecl]<Decompress*, ulong, StreamInput*, ulong, ulong, nint> open,
-        delegate* unmanaged[Cdecl]<Decompress*, nint, BOOL> close,
-        delegate* unmanaged[Cdecl]<nint, byte*, byte*, BOOL> decompress,
+        delegate* unmanaged[Cdecl]<Decompress*, ulong, StreamInput*, ulong, ulong, GCHandle<ZstandardDecompressStream>> open,
+        delegate* unmanaged[Cdecl]<Decompress*, GCHandle<ZstandardDecompressStream>, BOOL> close,
+        delegate* unmanaged[Cdecl]<GCHandle<ZstandardDecompressStream>, byte*, byte*, BOOL> decompress,
         delegate* unmanaged[Cdecl]<nint, ulong, StreamInput*, ulong, ulong, BOOL> reset)
     {
         this.isCanOpen = isCanOpen;
@@ -45,31 +45,28 @@ internal unsafe struct Decompress
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    private static nint ZstandardOpen(Decompress* decompressor, ulong dataSize, StreamInput* codeStream, ulong codeBegin, ulong codeEnd)
+    private static GCHandle<ZstandardDecompressStream> ZstandardOpen(Decompress* decompressor, ulong dataSize, StreamInput* codeStream, ulong codeBegin, ulong codeEnd)
     {
-        ZstandardDecompressStream stream = new(new StreamInputStream(codeStream, codeBegin, codeEnd));
-        return GCHandle.ToIntPtr(GCHandle.Alloc(stream));
+        return new(new(new StreamInputStream(codeStream, codeBegin, codeEnd)));
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    private static BOOL ZstandardClose(Decompress* decompressor, nint handle)
+    private static BOOL ZstandardClose(Decompress* decompressor, GCHandle<ZstandardDecompressStream> handle)
     {
-        GCHandle gcHandle = GCHandle.FromIntPtr(handle);
-        if (gcHandle.Target is not ZstandardDecompressStream stream)
+        if (handle.Target is not { } stream)
         {
             return true;
         }
 
         stream.Dispose();
-        gcHandle.Free();
+        handle.Dispose();
         return true;
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
-    private static BOOL ZstandardDecompress(nint handle, byte* data, byte* dataEnd)
+    private static BOOL ZstandardDecompress(GCHandle<ZstandardDecompressStream> handle, byte* data, byte* dataEnd)
     {
-        GCHandle gcHandle = GCHandle.FromIntPtr(handle);
-        if (gcHandle.Target is not ZstandardDecompressStream stream)
+        if (handle.Target is not { } stream)
         {
             return false;
         }

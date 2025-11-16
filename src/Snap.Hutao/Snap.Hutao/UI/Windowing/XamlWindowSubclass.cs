@@ -20,7 +20,7 @@ internal sealed partial class XamlWindowSubclass : IDisposable
 {
     private readonly HutaoNativeWindowSubclass native;
     private readonly Window window;
-    private readonly nint handle;
+    private GCHandle<XamlWindowSubclass> handle;
 
     private readonly Lock syncRoot = new();
     private bool taskBarInitialized;
@@ -28,7 +28,7 @@ internal sealed partial class XamlWindowSubclass : IDisposable
     public unsafe XamlWindowSubclass(Window window)
     {
         this.window = window;
-        handle = GCHandle.ToIntPtr(GCHandle.Alloc(this));
+        handle = new(this);
         HutaoNativeWindowSubclassCallback callback = HutaoNativeWindowSubclassCallback.Create(&OnSubclassProcedure);
         native = HutaoNative.Instance.MakeWindowSubclass(window.GetWindowHandle(), callback, handle);
     }
@@ -49,7 +49,7 @@ internal sealed partial class XamlWindowSubclass : IDisposable
             // 0x80004005 E_FAIL
         }
 
-        GCHandle.FromIntPtr(handle).Free();
+        handle.Dispose();
     }
 
     public void SetTaskbarProgress(TBPFLAG state, ulong value, ulong maximum)
@@ -68,14 +68,14 @@ internal sealed partial class XamlWindowSubclass : IDisposable
 
     /// <returns>Whether to call DefSubclassProc</returns>
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
-    private static unsafe BOOL OnSubclassProcedure(HWND hwnd, uint uMsg, WPARAM wParam, LPARAM lParam, nint access, LRESULT* result)
+    private static unsafe BOOL OnSubclassProcedure(HWND hwnd, uint uMsg, WPARAM wParam, LPARAM lParam, GCHandle<XamlWindowSubclass> access, LRESULT* result)
     {
         if (XamlApplicationLifetime.Exiting)
         {
             return BOOL.FALSE;
         }
 
-        XamlWindowSubclass? state = GCHandle.FromIntPtr(access).Target as XamlWindowSubclass;
+        XamlWindowSubclass? state = access.Target;
         ArgumentNullException.ThrowIfNull(state);
 
         switch (uMsg)

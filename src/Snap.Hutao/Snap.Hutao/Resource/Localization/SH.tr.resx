@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -722,15 +722,6 @@
   <data name="ServiceAchievementUserdataCorruptedAchievementIdNotUnique" xml:space="preserve">
     <value>Tek bir başarım kaydında birden fazla aynı başarım kimliği bulundu</value>
   </data>
-  <data name="ServiceAnnouncementAdventurersBoosterBundlesDurationDescription" xml:space="preserve">
-    <value>[Yayınlanma Zamanı]</value>
-  </data>
-  <data name="ServiceAnnouncementPermanentKeyword" xml:space="preserve">
-    <value>Kalıcı Olarak Erişilebilir</value>
-  </data>
-  <data name="ServiceAnnouncementVersionUpdateTimeDescription" xml:space="preserve">
-    <value>〓Güncelleme Zamanı〓</value>
-  </data>
   <data name="ServiceAppOptionsCalendarServerTimeZoneAmerica" xml:space="preserve">
     <value>ABD Sunucusu UTC-05</value>
   </data>
@@ -854,9 +845,6 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>Bekleme Süresi Azaltma</value>
   </data>
-  <data name="ServiceAvatarInfoSummaryNotRefreshed" xml:space="preserve">
-    <value>Henüz yenilenmedi</value>
-  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing Günlük Duvar Kağıdı</value>
   </data>
@@ -929,15 +917,6 @@
   <data name="ServiceDailyNoteNotifierTransformerHint" xml:space="preserve">
     <value>Parametrik Dönüştürücü hazır</value>
   </data>
-  <data name="ServiceDiscordActivityElevationRequiredHint" xml:space="preserve">
-    <value>İzin eksik, Discord Aktivite durumunuzu ayarlanamıyor.</value>
-  </data>
-  <data name="ServiceDiscordGameActivityDetails" xml:space="preserve">
-    <value>Teyvat kıtasında keşif yapılıyor</value>
-  </data>
-  <data name="ServiceDiscordGameLaunchedBy" xml:space="preserve">
-    <value>{0} tarafından başlatıldı</value>
-  </data>
   <data name="ServiceGachaLogFactoryAvatarWishName" xml:space="preserve">
     <value>Karakter Etkinliği Dileği</value>
   </data>
@@ -1005,17 +984,8 @@
   <data name="ServiceGameEnsureGameResourceQueryResourceInformation" xml:space="preserve">
     <value>Oyun kaynak dizinini indir</value>
   </data>
-  <data name="ServiceGameIslandFeature404" xml:space="preserve">
-    <value>Enjeksiyon yapılandırma bilgileri alınamadı, mevcut oyun sürümü henüz desteklenmiyor</value>
-  </data>
-  <data name="ServiceGameIslandFeatureRequiresHoyolabAccount" xml:space="preserve">
-    <value>Enjeksiyon özelliğinin kötüye kullanımını önlemek için, bir miHoYo/HoYoLAB hesabı ile giriş yapmanız ve bir hesap ile bir karakter seçmeniz gerekmektedir</value>
-  </data>
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>Yerel oyun sürümü alınamadı, enjeksiyon yapılandırma bilgileri alınamıyor</value>
-  </data>
-  <data name="ServiceGameLaunchExecutionArbitraryLibraryInjectionException" xml:space="preserve">
-    <value>DLL enjekte edilirken hata oluştu: '{0}'</value>
   </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI başlatıldı</value>
@@ -1032,9 +1002,6 @@
   <data name="ServiceGameLaunchExecutionGameIsRunning" xml:space="preserve">
     <value>Oyun çalışıyor</value>
   </data>
-  <data name="ServiceGameLaunchExecutionGamePathNotValid" xml:space="preserve">
-    <value>Oyun yolunu seçin</value>
-  </data>
   <data name="ServiceGameLaunchExecutionGameResourceQueryIndexFailed" xml:space="preserve">
     <value>Oyun kaynak dizini indirilemedi: {0}</value>
   </data>
@@ -1044,14 +1011,8 @@
   <data name="ServiceGameLaunchPhaseProcessExited" xml:space="preserve">
     <value>Oyun süreci çıktı</value>
   </data>
-  <data name="ServiceGameLaunchPhaseProcessInitializing" xml:space="preserve">
-    <value>Oyun süreci başlatılıyor</value>
-  </data>
   <data name="ServiceGameLaunchPhaseProcessStarted" xml:space="preserve">
     <value>Oyun süreci başladı</value>
-  </data>
-  <data name="ServiceGameLaunchPhaseUnlockingFps" xml:space="preserve">
-    <value>Enjeksiyon yapılandırma bilgileri alınıyor</value>
   </data>
   <data name="ServiceGameLaunchPhaseWaitingProcessExit" xml:space="preserve">
     <value>Oyun sürecinin çıkması bekleniyor</value>
@@ -1128,25 +1089,13 @@ Kullanılabilir Alan: {2}</value>
     <value>Yedek: {0}</value>
   </data>
   <data name="ServiceGamePackageConvertMoveFileRename" xml:space="preserve">
-    <value>Yeniden adlandır: {0} -> {1}</value>
+    <value>Yeniden adlandır: {0} -&gt; {1}</value>
   </data>
   <data name="ServiceGamePackageConvertMoveFileRestore" xml:space="preserve">
     <value>Değiştir: {0}</value>
   </data>
-  <data name="ServiceGamePackageReadLocalPackageVerionFailed" xml:space="preserve">
-    <value>Yerel Paket Sürümü okunurken bir sorunla karşılaşıldı, oyunu onarmak yardımcı olabilir</value>
-  </data>
   <data name="ServiceGamePackageRenameDataFolderFailed" xml:space="preserve">
     <value>Veri klasörü adı yeniden adlandırılamadı</value>
-  </data>
-  <data name="ServiceGamePackageRequestPackageVerion" xml:space="preserve">
-    <value>Paket Sürümü İsteniyor</value>
-  </data>
-  <data name="ServiceGamePackageRequestPackageVerionFailed" xml:space="preserve">
-    <value>Paket Sürümü alma başarısız oldu</value>
-  </data>
-  <data name="ServiceGamePackageRequestScatteredFileFailed" xml:space="preserve">
-    <value>İstemci dosyası indirilemedi: {0}</value>
   </data>
   <data name="ServiceGamePathLocateFailed" xml:space="preserve">
     <value>Oyun yolu bulunamadı, lütfen ayarlardan değiştirin</value>
@@ -1169,17 +1118,11 @@ Kullanılabilir Alan: {2}</value>
   <data name="ServiceMetadataFileNotFound" xml:space="preserve">
     <value>Önbelleğe alınmış meta veri dosyası bulunamadı</value>
   </data>
-  <data name="ServiceMetadataHttpRequestFailed" xml:space="preserve">
-    <value>HTTP {0} | Hata:{1}：Meta veri doğrulama dosyası indirilemedi</value>
-  </data>
   <data name="ServiceMetadataNotInitialized" xml:space="preserve">
     <value>Meta veri hizmeti başlatılmadı veya başlatma başarısız oldu</value>
   </data>
   <data name="ServiceMetadataParseFailed" xml:space="preserve">
     <value>Meta veri doğrulama dosyası ayrıştırılamadı</value>
-  </data>
-  <data name="ServiceMetadataRequestFailed" xml:space="preserve">
-    <value>Meta veri doğrulama dosyası indirilemedi</value>
   </data>
   <data name="ServiceMetadataVersionNotSupported" xml:space="preserve">
     <value>Snap Hutao sürümünüz eski, lütfen en kısa sürede güncelleyin</value>
@@ -1213,9 +1156,6 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ServiceUIGFImportInvalidItem" xml:space="preserve">
     <value>Desteklenmeyen eşya, Id: {0}</value>
-  </data>
-  <data name="ServiceUpdateStatusVersionDescription" xml:space="preserve">
-    <value>Yeni bir {0} sürümü mevcut.</value>
   </data>
   <data name="ServiceUserProcessCookieNoMid" xml:space="preserve">
     <value>Girilen Cookie Mid içermelidir</value>
@@ -1466,9 +1406,6 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewDialogFeedbackEnableLoopbackContent" xml:space="preserve">
     <value>Sınırlama kaldırıldıktan sonra, sınırlamayı geri yüklemek için başka araçlar kullanmanız gerekir</value>
   </data>
-  <data name="ViewDialogFeedbackEnableLoopbackDescription" xml:space="preserve">
-    <value>Sistem aracısının yapılandırıldığı tespit edildi, ancak Loopback kısıtlaması kaldırılmadı ve Snap Hutao düzgün bir şekilde ağa bağlanamayacak.</value>
-  </data>
   <data name="ViewDialogFeedbackEnableLoopbackTitle" xml:space="preserve">
     <value>Loopback Sınırlamasını Kaldır</value>
   </data>
@@ -1536,7 +1473,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Örnek</value>
   </data>
   <data name="ViewDialogGeetestCustomUrlTitle" xml:space="preserve">
-    <value><span style="font-style: italic;">无感验证</span> API'sini yapılandır</value>
+    <value />
   </data>
   <data name="ViewDialogHutaoPassportLoginTitle" xml:space="preserve">
     <value>Snap Hutao Passport'a Giriş Yap</value>
@@ -1620,7 +1557,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Oyun İstemcisi Dönüştürülüyor</value>
   </data>
   <data name="ViewDialogQRCodeTitle" xml:space="preserve">
-    <value><span style="font-style: italic;">米游社</span> ile QR kodunu tara</value>
+    <value />
   </data>
   <data name="ViewDialogReconfirmHint" xml:space="preserve">
     <value>Fonksiyon kullanıcılarının bağımsız karar verme yeteneğine sahip olmasını sağlamak için, bu fonksiyonların etkinleştirme koşullarını düzensiz olarak güncelleyeceğiz. Eğer bir içerik üreticisiyseniz, Snap Hutao ile ilgili içerik oluştururken lütfen belirli etkinleştirme yöntemlerini izleyicilerinizle paylaşmayın.</value>
@@ -1642,15 +1579,6 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewDialogSpiralAbyssUploadRecordHomaNotLoginTitle" xml:space="preserve">
     <value>Abyss Kayıtlarını Yükle</value>
-  </data>
-  <data name="ViewDialogUpdatePackageDownloadUpdateLogLinkContent" xml:space="preserve">
-    <value>Güncelleme Kayıtlarını Görüntüle</value>
-  </data>
-  <data name="ViewDialogUpdatePackageMirrorHeader" xml:space="preserve">
-    <value>İndirme Kaynağı</value>
-  </data>
-  <data name="ViewDialogUpdatePackagePrimaryText" xml:space="preserve">
-    <value>Güncelle</value>
   </data>
   <data name="ViewDialogUserAccountPasswordAccountHint" xml:space="preserve">
     <value>Lütfen hesap girin</value>
@@ -1868,14 +1796,8 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewModelAvatarPropertyCalculateWeaponNull" xml:space="preserve">
     <value>Mevcut karakter hesaplanamıyor, lütfen bilgileri senkronize ettikten sonra tekrar deneyin</value>
   </data>
-  <data name="ViewModelAvatarPropertyEnkaApiUnavailable" xml:space="preserve">
-    <value>Karakter bilgi hizmeti [Enka API] şu anda kullanılamıyor</value>
-  </data>
   <data name="ViewModelAvatarPropertyFetch" xml:space="preserve">
     <value>Veri Alınıyor</value>
-  </data>
-  <data name="ViewModelAvatarPropertyShowcaseNotOpen" xml:space="preserve">
-    <value>Karakter vitrini henüz etkinleştirilmedi, lütfen oyunda işlem yaptıktan sonra tekrar deneyin</value>
   </data>
   <data name="ViewModelAvatarPropertySortDescriptionKindActivatedConstellationCount" xml:space="preserve">
     <value>Takımyıldız Seviyesi</value>
@@ -2092,9 +2014,6 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewModelGamePackageGetGameBranchFailed" xml:space="preserve">
     <value>Oyun sürüm yapılandırması alınamadı</value>
-  </data>
-  <data name="ViewModelGamePackageGetGameChannelSDKFailed" xml:space="preserve">
-    <value>Oyun kanalı SDK alınamadı</value>
   </data>
   <data name="ViewModelGamePackageLocalLaunchScheme" xml:space="preserve">
     <value>Yerel Oyun Yapılandırması [{0}]</value>
@@ -2432,12 +2351,6 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageAchievementSortIncompletedItemsFirst" xml:space="preserve">
     <value>Önce Tamamlanmamış Olanlar</value>
   </data>
-  <data name="ViewPageAnnouncementActivity" xml:space="preserve">
-    <value>Etkinlik Duyurusu</value>
-  </data>
-  <data name="ViewPageAnnouncementGame" xml:space="preserve">
-    <value>Oyun Duyurusu</value>
-  </data>
   <data name="ViewPageAnnouncementRedeemCodeCopySucceed" xml:space="preserve">
     <value>Kupon kodu kopyalandı</value>
   </data>
@@ -2470,9 +2383,6 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewPageAvatarPropertyRefreshFromHoyolabGameRecord" xml:space="preserve">
     <value>MiHoYo BBS Savaş Kaydından Senkronize Et</value>
-  </data>
-  <data name="ViewPageAvatarPropertyRefreshTimeToggle" xml:space="preserve">
-    <value>Yenileme Zamanı</value>
   </data>
   <data name="ViewPageCultivateCalculate" xml:space="preserve">
     <value>Geliştirme Planı</value>
@@ -2591,9 +2501,6 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageDailyNoteSettingRefreshHeader" xml:space="preserve">
     <value>Yenile</value>
   </data>
-  <data name="ViewPageDailyNoteSettingRefreshNotifyIconDisabledHint" xml:space="preserve">
-    <value>Bildirim alanı simgesi devre dışı, Snap Hutao kapatıldıktan sonra otomatik yenileme çalışmayacak</value>
-  </data>
   <data name="ViewPageDailyNoteSettingRefreshNotifyIconFailedToCreateHint" xml:space="preserve">
     <value>Bildirim alanı simgesi oluşturulamadı, pencere kapatıldıktan sonra otomatik yenileme yapılmayacak</value>
   </data>
@@ -2611,12 +2518,6 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewPageDailyNoteVerify" xml:space="preserve">
     <value>Geçerli Kullanıcıyı ve Rolü Doğrula</value>
-  </data>
-  <data name="ViewPageEmbeddedYaeLaunchGameAction" xml:space="preserve">
-    <value>Oyunu Başlat</value>
-  </data>
-  <data name="ViewPageEmbeddedYaeLaunchGameDescription" xml:space="preserve">
-    <value>Hassas veri elde etmek için Embedded Yae'yi oyuna enjekte et</value>
   </data>
   <data name="ViewPageFeedbackAutoSuggestBoxPlaceholder" xml:space="preserve">
     <value>Soruları ve önerileri arayın</value>
@@ -2786,9 +2687,6 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageHomeGreetingTextEpic1" xml:space="preserve">
     <value>Şey, Gezgin, Teyvat kıtasına geldiğin {0}. günün kutlu olsun</value>
   </data>
-  <data name="ViewPageHomeLaunchGameSettingAction" xml:space="preserve">
-    <value>Ayarlar</value>
-  </data>
   <data name="ViewPageHutaoDatabaseOverview" xml:space="preserve">
     <value>Detaylar</value>
   </data>
@@ -2912,9 +2810,6 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageLaunchGameAppearanceBorderlessDescription" xml:space="preserve">
     <value>Pencereyi çerçevesiz bir açılır pencere olarak oluştur</value>
   </data>
-  <data name="ViewPageLaunchGameAppearanceCloudThirdPartyMobileDescription" xml:space="preserve">
-    <value>Dahili dokunmatik düzenini etkinleştir, klavye ve fare girişi kullanılamaz</value>
-  </data>
   <data name="ViewPageLaunchGameAppearanceExclusiveDescription" xml:space="preserve">
     <value>Gömülü tarayıcılarla uyumsuz; pencere değiştirme gibi işlemler oyunun çökmesine neden olabilir</value>
   </data>
@@ -2942,15 +2837,6 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageLaunchGameBetterGIHeader" xml:space="preserve">
     <value>Otomatik Görevler</value>
   </data>
-  <data name="ViewPageLaunchGameBypass31Dash4302Description" xml:space="preserve">
-    <value>Hata kodu 31-4302 oluştuğunda bu seçeneği etkinleştirin</value>
-  </data>
-  <data name="ViewPageLaunchGameBypass31Dash4302Header" xml:space="preserve">
-    <value>Beni içeri al!</value>
-  </data>
-  <data name="ViewPageLaunchGameColdSwitchDescription" xml:space="preserve">
-    <value>Oyun başladıktan sonra tekrar geçiş yapılamaz</value>
-  </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
     <value>Enjeksiyon çok tehlikelidir ve ciddi sonuçlara yol açabilir, lütfen dikkatli kullanın</value>
   </data>
@@ -2966,17 +2852,8 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageLaunchGameDisableFogOn" xml:space="preserve">
     <value>Kaldır</value>
   </data>
-  <data name="ViewPageLaunchGameDiscordActivityDescription" xml:space="preserve">
-    <value>Oyundayken Discord Aktivite durumumu ayarla</value>
-  </data>
-  <data name="ViewPageLaunchGameDiscordActivityHeader" xml:space="preserve">
-    <value>Discord Aktivitesi</value>
-  </data>
   <data name="ViewPageLaunchGameElevationDescription" xml:space="preserve">
     <value>Oyun dosyası yönetimi/oyun sunucusunu değiştirme/enjeksiyon özelliği için yönetici izni gerekiyor</value>
-  </data>
-  <data name="ViewPageLaunchGameEventCameraMoveColdSwitchHeader" xml:space="preserve">
-    <value>Element Patlaması Yakın Çekim Soğuk Anahtar</value>
   </data>
   <data name="ViewPageLaunchGameEventCameraMoveHotSwitchHeader" xml:space="preserve">
     <value>Element Patlaması yakın çekimini kaldır</value>
@@ -2992,9 +2869,6 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipTitle" xml:space="preserve">
     <value>Görüş ve Sis</value>
-  </data>
-  <data name="ViewPageLaunchGameHideQuestBannerColdSwitchHeader" xml:space="preserve">
-    <value>Harita Başlığı Soğuk Anahtarı</value>
   </data>
   <data name="ViewPageLaunchGameHideQuestBannerHotSwitchDescription" xml:space="preserve">
     <value>Harita arayüzünün sol üst köşesindeki görev uyarısını zorla kaldır</value>
@@ -3053,14 +2927,11 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageLaunchGameOverlayDescription" xml:space="preserve">
     <value>Ayarlarda bildirim alanı simgesini etkinleştirmeniz gerekir, düzgün görüntüleme için kenarlıksız pencere seçeneğini etkinleştirmeniz gerekebilir</value>
   </data>
-  <data name="ViewPageLaunchGameOverlayDescriptionHint" xml:space="preserve">
-    <value>Oyunu başlattıktan sonra belirli işlev ayarlarını yer paylaşımında düzenleyin, yer paylaşımının düzgün görüntülenmesi için kenarlıksız pencere seçeneğini etkinleştirmeniz gerekebilir</value>
-  </data>
   <data name="ViewPageLaunchGameOverlayHeader" xml:space="preserve">
     <value>Oyun İçi Arayüz</value>
   </data>
   <data name="ViewPageLaunchGameOverlayHideDescription" xml:space="preserve">
-    <value>Oyun içi yer paylaşımını göstermek/gizlemek için kısayol tuşunu ayarla<b>（</b></value>
+    <value />
   </data>
   <data name="ViewPageLaunchGameOverlayHideHeader" xml:space="preserve">
     <value>Oyun İçi Yer Paylaşımını Göster/Gizle</value>
@@ -3086,26 +2957,11 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageLaunchGamePlayTimeHeader" xml:space="preserve">
     <value>Oyun Süresi Kaydı</value>
   </data>
-  <data name="ViewPageLaunchGameRemoveOpenTeamProgressColdSwitchHeader" xml:space="preserve">
-    <value>Takım Yapılandırması Soğuk Anahtarı</value>
-  </data>
   <data name="ViewPageLaunchGameRemoveOpenTeamProgressDescription" xml:space="preserve">
     <value>Takım yapılandırma ekranı açılırken görüntülenen ilerleme çubuğunu kaldırın</value>
   </data>
   <data name="ViewPageLaunchGameRemoveOpenTeamProgressHeader" xml:space="preserve">
     <value>Takım Yapılandırması İlerleme Çubuğunu Kaldır</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceDiffHeader" xml:space="preserve">
-    <value>OTA Paketi</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceHeader" xml:space="preserve">
-    <value>Kaynak İndirme</value>
-  </data>
-  <data name="ViewPageLaunchGameResourceLatestHeader" xml:space="preserve">
-    <value>Tam Paket</value>
-  </data>
-  <data name="ViewPageLaunchGameResourcePreDownloadHeader" xml:space="preserve">
-    <value>Ön İndirme</value>
   </data>
   <data name="ViewPageLaunchGameSelectGamePath" xml:space="preserve">
     <value>Oyun Yolunu Seç</value>
@@ -3140,9 +2996,6 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageLaunchGameSwitchSchemeHeader" xml:space="preserve">
     <value>Sunucu</value>
   </data>
-  <data name="ViewPageLaunchGameTargetFovColdSwitchHeader" xml:space="preserve">
-    <value>Görüş Alanı Soğuk Anahtarı</value>
-  </data>
   <data name="ViewPageLaunchGameTargetFovDescription" xml:space="preserve">
     <value>Kamera görüş alanını ayarla, varsayılan 45</value>
   </data>
@@ -3163,9 +3016,6 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipTitle" xml:space="preserve">
     <value>Kare Hızı Üst Sınırı Kaldırılamıyor?</value>
-  </data>
-  <data name="ViewPageLaunchGameTooltipDescriptionHint" xml:space="preserve">
-    <value>Ayrıntıları görmek için fareyi özellik anahtarının/metin kutusunun üzerine getirin</value>
   </data>
   <data name="ViewPageLaunchGameUnlockFpsDescription" xml:space="preserve">
     <value>Lütfen oyun içinde "Dikey Senkronizasyon" seçeneğini kapatın, daha yüksek kare hızını desteklemek için yüksek performanslı bir GPU gerekir ve sınırsız kare hızı için değeri -1 olarak ayarlayın</value>
@@ -3533,15 +3383,6 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenHeader" xml:space="preserve">
     <value>Dokunmatik Giriş Tespiti</value>
   </data>
-  <data name="ViewPageSettingNotifyIconCustomTaskBarWaring" xml:space="preserve">
-    <value>Sistem standart görev çubuğunu sistem özelleştirme aracıyla değiştirdikten sonra bildirim alanı simgelerini etkinleştirmek şunlara neden olabilir: simgelerle etkileşim kuramama, simgeleri düzgün oluşturamama, yeniden başlatıldıktan sonra Explorer'ın çökmesi veya uygulamanın başlatılması sırasında çökme</value>
-  </data>
-  <data name="ViewPageSettingNotifyIconDescription" xml:space="preserve">
-    <value>Arka plan görevlerine izin vermek için bildirim alanında simgeyi göster, etkinleştirmek için programı yeniden başlat</value>
-  </data>
-  <data name="ViewPageSettingNotifyIconHeader" xml:space="preserve">
-    <value>Bildirim Alanı Simgesi</value>
-  </data>
   <data name="ViewPageSettingOfficialSiteNavigate" xml:space="preserve">
     <value>Resmi Web Sitesine Git</value>
   </data>
@@ -3550,9 +3391,6 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewPageSettingOpenBackgroundImageFolderHeader" xml:space="preserve">
     <value>Arka Plan Klasörünü Aç</value>
-  </data>
-  <data name="ViewPageSettingPackageConverterTypeHeader" xml:space="preserve">
-    <value>Sunucu Modunu Dönüştür</value>
   </data>
   <data name="ViewPageSettingResetAction" xml:space="preserve">
     <value>Sıfırla</value>
@@ -3655,9 +3493,6 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewPageWiKiAvatarConstellationNameTitle" xml:space="preserve">
     <value>Burç</value>
-  </data>
-  <data name="ViewPageWiKiAvatarCostumeHeader" xml:space="preserve">
-    <value>Kostüm</value>
   </data>
   <data name="ViewPageWiKiAvatarDateofBirthTitle" xml:space="preserve">
     <value>Doğum Günü</value>
@@ -3827,18 +3662,6 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewTitileUpdatePackageAvailableContent" xml:space="preserve">
     <value>Şimdi güncellensin mi?</value>
   </data>
-  <data name="ViewTitileUpdatePackageDownloadFailedMessage" xml:space="preserve">
-    <value>Güncelleme İndirme Başarısız</value>
-  </data>
-  <data name="ViewTitileUpdatePackageDownloadTitle" xml:space="preserve">
-    <value>Snap Hutao {0} Sürümü Yayınlandı</value>
-  </data>
-  <data name="ViewTitileUpdatePackageReadyContent" xml:space="preserve">
-    <value>Şimdi kurulsun mu?</value>
-  </data>
-  <data name="ViewTitileUpdatePackageReadyTitle" xml:space="preserve">
-    <value>Snap Hutao {0} sürümü hazır</value>
-  </data>
   <data name="ViewTitleAutoClicking" xml:space="preserve">
     <value>Otomatik Tıklama</value>
   </data>
@@ -3850,12 +3673,6 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewTitleUpdatePackageAvailableTitle" xml:space="preserve">
     <value>Hu Tao {0} sürümü şu anda mevcut</value>
-  </data>
-  <data name="ViewTitleUpdatePackageDownloadContent" xml:space="preserve">
-    <value>Şimdi indirilsin mi?</value>
-  </data>
-  <data name="ViewTitleUpdatePackageInstallingContent" xml:space="preserve">
-    <value>Yeni Sürüm Yaması Yükleniyor</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>Araçlar</value>
@@ -3886,9 +3703,6 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewUserCookieOperationRefreshCookieAction" xml:space="preserve">
     <value>Çerezi Yenile</value>
-  </data>
-  <data name="ViewUserCookieOperationSignInRewardAction" xml:space="preserve">
-    <value>Günlük Giriş Ödülünü Al</value>
   </data>
   <data name="ViewUserCopyCookieAction" xml:space="preserve">
     <value>Çerezi Kopyala</value>
@@ -3934,9 +3748,6 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewWindowExceptionClose" xml:space="preserve">
     <value>Kapat</value>
-  </data>
-  <data name="ViewWindowExceptionDescription" xml:space="preserve">
-    <value>Lütfen bu pencerenin ekran görüntüsünü alın, geri bildirim merkezinde uygun geri bildirim kanalını bulun ve geliştirme ekibine gönderin</value>
   </data>
   <data name="ViewWindowExceptionHeader" xml:space="preserve">
     <value>Kurtarılamayan, kritik bir hata oluştu</value>
@@ -4036,18 +3847,6 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="WebDailyNoteHomeLocked" xml:space="preserve">
     <value>Açık Dünya Yerleşkesi henüz açılmadı</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay" xml:space="preserve">
-    <value>{0} gün</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay0" xml:space="preserve">
-    <value>Bugün</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay1" xml:space="preserve">
-    <value>Yarın</value>
-  </data>
-  <data name="WebDailyNoteRecoveryTimeDay2" xml:space="preserve">
-    <value>Yarından sonraki gün</value>
   </data>
   <data name="WebDailyNoteResinRecovery" xml:space="preserve">
     <value>{0} {1:HH:mm} sonra tamamen yenilenecek</value>

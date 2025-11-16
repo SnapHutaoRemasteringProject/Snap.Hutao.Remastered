@@ -5,10 +5,13 @@ namespace Snap.Hutao.Web.Response;
 
 internal static class ResponseValidationServiceCollectionExtension
 {
-    public static IServiceCollection AddResponseValidation(this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        return services
-            .AddTransient<ICommonResponseValidator<Response>, DefaultResponseValidator>()
-            .AddTransient(typeof(ITypedResponseValidator<>), typeof(TypedResponseValidator<>));
+        public IServiceCollection AddResponseValidation()
+        {
+            return services
+                .AddTransient<ICommonResponseValidator<Response>, DefaultResponseValidator>()
+                .AddTransient(typeof(ITypedResponseValidator<>), typeof(TypedResponseValidator<>));
+        }
     }
 }

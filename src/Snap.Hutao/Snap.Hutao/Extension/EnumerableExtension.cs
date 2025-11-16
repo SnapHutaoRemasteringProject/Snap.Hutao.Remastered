@@ -14,14 +14,17 @@ internal static class EnumerableExtension
         return source.SelectMany(map => map.Where(kv => predicate(kv.Value))).CountBy(kv => kv.Key);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ObservableCollection<T> ToObservableCollection<T>(this IEnumerable<T> source)
+    extension<T>(IEnumerable<T> source)
     {
-        return new(source);
-    }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ObservableCollection<T> ToObservableCollection()
+        {
+            return new(source);
+        }
 
-    public static string ToString<T>(this IEnumerable<T> collection, char separator)
-    {
-        return string.Join(separator, collection);
+        public string ToString(char separator)
+        {
+            return string.Join(separator, source);
+        }
     }
 }

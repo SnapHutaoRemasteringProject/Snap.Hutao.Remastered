@@ -43,6 +43,7 @@ internal ref struct MiHoYoSyntaxParser
             MiHoYoSyntaxTokenKind.ColorOpen => ParseColor(),
             MiHoYoSyntaxTokenKind.LinkOpen => ParseLink(),
             MiHoYoSyntaxTokenKind.SpritePreset => ParseSpritePreset(),
+            MiHoYoSyntaxTokenKind.Parameter => ParseParameter(),
             _ => throw HutaoException.Throw($"Unexpected token: {current.Kind}"),
         };
     }
@@ -122,6 +123,13 @@ internal ref struct MiHoYoSyntaxParser
     private MiHoYoSyntaxElement ParseSpritePreset()
     {
         MiHoYoSyntaxSpritePresetElement element = new(current.Position, new(current.Position.Start + 15, current.Position.End - 1), default);
+        NextToken();
+        return element;
+    }
+
+    private MiHoYoSyntaxElement ParseParameter()
+    {
+        MiHoYoSyntaxParameterElement element = new(current.Position, new(current.Position.Start + 7, current.Position.End - 1), default);
         NextToken();
         return element;
     }

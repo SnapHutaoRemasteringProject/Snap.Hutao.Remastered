@@ -133,7 +133,7 @@ internal partial class ScopedPage : Page
         scope?.Dispose();
         scope = default;
 
-        if (this.IsDisposed())
+        if (this.IsDisposed)
         {
             return;
         }

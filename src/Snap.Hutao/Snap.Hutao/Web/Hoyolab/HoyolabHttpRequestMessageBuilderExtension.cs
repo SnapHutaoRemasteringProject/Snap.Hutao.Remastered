@@ -9,65 +9,68 @@ namespace Snap.Hutao.Web.Hoyolab;
 
 internal static class HoyolabHttpRequestMessageBuilderExtension
 {
-    internal static HttpRequestMessageBuilder SetUserCookieAndFpHeader(this HttpRequestMessageBuilder builder, UserAndUid userAndUid, CookieType cookie)
+    extension(HttpRequestMessageBuilder builder)
     {
-        return builder.SetUserCookieAndFpHeader(userAndUid.User, cookie);
-    }
-
-    internal static HttpRequestMessageBuilder SetUserCookieAndFpHeader(this HttpRequestMessageBuilder builder, Model.Entity.User user, CookieType cookie)
-    {
-        builder.RemoveHeader("Cookie");
-        StringBuilder stringBuilder = new();
-
-        if (cookie.HasFlag(CookieType.CookieToken))
+        internal HttpRequestMessageBuilder SetUserCookieAndFpHeader(UserAndUid userAndUid, CookieType cookie)
         {
-            stringBuilder.Append(user.CookieToken).AppendIf(user.CookieToken is not null, ';');
+            return builder.SetUserCookieAndFpHeader(userAndUid.User, cookie);
         }
 
-        if (cookie.HasFlag(CookieType.LToken))
+        internal HttpRequestMessageBuilder SetUserCookieAndFpHeader(Model.Entity.User user, CookieType cookie)
         {
-            stringBuilder.Append(user.LToken).AppendIf(user.LToken is not null, ';');
+            builder.RemoveHeader("Cookie");
+            StringBuilder stringBuilder = new();
+
+            if (cookie.HasFlag(CookieType.CookieToken))
+            {
+                stringBuilder.Append(user.CookieToken).AppendIf(user.CookieToken is not null, ';');
+            }
+
+            if (cookie.HasFlag(CookieType.LToken))
+            {
+                stringBuilder.Append(user.LToken).AppendIf(user.LToken is not null, ';');
+            }
+
+            if (cookie.HasFlag(CookieType.SToken))
+            {
+                stringBuilder.Append(user.SToken).AppendIf(user.SToken is not null, ';');
+            }
+
+            string result = stringBuilder.ToString();
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                builder.AddHeader("Cookie", result);
+            }
+
+            if (!string.IsNullOrEmpty(user.Fingerprint))
+            {
+                builder.SetHeader("x-rpc-device_fp", user.Fingerprint);
+            }
+
+            return builder;
         }
 
-        if (cookie.HasFlag(CookieType.SToken))
+        internal HttpRequestMessageBuilder SetXrpcAigis(string aigis)
         {
-            stringBuilder.Append(user.SToken).AppendIf(user.SToken is not null, ';');
+            return builder.SetHeader("x-rpc-aigis", aigis);
         }
 
-        string result = stringBuilder.ToString();
-        if (!string.IsNullOrWhiteSpace(result))
+        internal HttpRequestMessageBuilder SetXrpcChallenge(string challenge)
         {
-            builder.AddHeader("Cookie", result);
+            return builder.SetHeader("x-rpc-challenge", challenge);
         }
 
-        if (!string.IsNullOrEmpty(user.Fingerprint))
+        internal HttpRequestMessageBuilder SetXrpcChallenge(string challenge, string validate)
         {
-            builder.SetHeader("x-rpc-device_fp", user.Fingerprint);
+            return builder
+                .SetHeader("x-rpc-challenge", challenge)
+                .SetHeader("x-rpc-validate", validate)
+                .SetHeader("x-rpc-seccode", $"{validate}|jordan");
         }
 
-        return builder;
-    }
-
-    internal static HttpRequestMessageBuilder SetXrpcAigis(this HttpRequestMessageBuilder builder, string aigis)
-    {
-        return builder.SetHeader("x-rpc-aigis", aigis);
-    }
-
-    internal static HttpRequestMessageBuilder SetXrpcChallenge(this HttpRequestMessageBuilder builder, string challenge)
-    {
-        return builder.SetHeader("x-rpc-challenge", challenge);
-    }
-
-    internal static HttpRequestMessageBuilder SetXrpcChallenge(this HttpRequestMessageBuilder builder, string challenge, string validate)
-    {
-        return builder
-            .SetHeader("x-rpc-challenge", challenge)
-            .SetHeader("x-rpc-validate", validate)
-            .SetHeader("x-rpc-seccode", $"{validate}|jordan");
-    }
-
-    internal static HttpRequestMessageBuilder SetXrpcVerify(this HttpRequestMessageBuilder builder, string verify)
-    {
-        return builder.SetHeader("x-rpc-verify", verify);
+        internal HttpRequestMessageBuilder SetXrpcVerify(string verify)
+        {
+            return builder.SetHeader("x-rpc-verify", verify);
+        }
     }
 }

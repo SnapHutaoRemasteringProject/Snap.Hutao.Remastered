@@ -5,7 +5,7 @@ namespace Snap.Hutao.Web.Endpoint.Hutao;
 
 internal interface IInfrastructureFeatureEndpoints : IInfrastructureRootAccess
 {
-    public string Feature(string name)
+    string Feature(string name)
     {
         return $"{Root}/client/{name}.json";
     }

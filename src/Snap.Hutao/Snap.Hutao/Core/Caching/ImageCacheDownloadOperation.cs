@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Core.DependencyInjection.Annotation.HttpClient;
+using Snap.Hutao.Core.IO;
 using Snap.Hutao.ViewModel.Guide;
 using Snap.Hutao.Web.Request.Builder;
 using Snap.Hutao.Web.Request.Builder.Abstraction;
@@ -12,7 +13,6 @@ using System.Net.Mime;
 
 namespace Snap.Hutao.Core.Caching;
 
-[ConstructorGenerated]
 [Service(ServiceLifetime.Singleton, typeof(IImageCacheDownloadOperation))]
 [HttpClient(HttpClientConfiguration.Default)]
 [PrimaryHttpMessageHandler(MaxConnectionsPerServer = 8)]
@@ -21,7 +21,10 @@ internal sealed partial class ImageCacheDownloadOperation : IImageCacheDownloadO
     private readonly IHttpRequestMessageBuilderFactory httpRequestMessageBuilderFactory;
     private readonly IHttpClientFactory httpClientFactory;
 
-    public async ValueTask DownloadFileAsync(Uri uri, string baseFile)
+    [GeneratedConstructor]
+    public partial ImageCacheDownloadOperation(IServiceProvider serviceProvider);
+
+    public async ValueTask DownloadFileAsync(Uri uri, ValueFile baseFile)
     {
         using (HttpClient httpClient = httpClientFactory.CreateClient(nameof(ImageCacheDownloadOperation)))
         {
@@ -41,7 +44,7 @@ internal sealed partial class ImageCacheDownloadOperation : IImageCacheDownloadO
         }
     }
 
-    private async ValueTask DownloadFileUsingHttpClientAsync(HttpClient httpClient, Uri uri, string baseFile)
+    private async ValueTask DownloadFileUsingHttpClientAsync(HttpClient httpClient, Uri uri, ValueFile baseFile)
     {
         HttpRequestMessageBuilder requestMessageBuilder = httpRequestMessageBuilderFactory
             .Create()
@@ -51,8 +54,7 @@ internal sealed partial class ImageCacheDownloadOperation : IImageCacheDownloadO
 
         using (HttpRequestMessage requestMessage = requestMessageBuilder.HttpRequestMessage)
         {
-            HttpResponseMessage responseMessage = await httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
-            using (responseMessage)
+            using (HttpResponseMessage responseMessage = await httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
             {
                 if (!responseMessage.IsSuccessStatusCode)
                 {
@@ -65,20 +67,21 @@ internal sealed partial class ImageCacheDownloadOperation : IImageCacheDownloadO
 
                 if (responseMessage.Content.Headers.ContentType?.MediaType is MediaTypeNames.Application.Json)
                 {
-                    InternalImageCacheException.Throw("Unexpected content type: application/json");
+                    InternalImageCacheException.Throw($"Unexpected content type: {MediaTypeNames.Application.Json}");
                 }
 
                 using (Stream httpStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
                 {
                     string? directoryName = Path.GetDirectoryName(baseFile);
                     ArgumentException.ThrowIfNullOrEmpty(directoryName);
+
                     try
                     {
                         Directory.CreateDirectory(directoryName);
                     }
-                    catch (DirectoryNotFoundException)
+                    catch (DirectoryNotFoundException dnfEx)
                     {
-                        throw InternalImageCacheException.Throw($"Unable to create folder at '{directoryName}'");
+                        throw InternalImageCacheException.Throw($"Unable to create folder at '{directoryName}'", dnfEx);
                     }
 
                     FileStream fileStream;

@@ -21,7 +21,7 @@ using TextBlockType = Microsoft.UI.Xaml.Controls.RichTextBlock;
 
 namespace Snap.Hutao.UI.Xaml.Control.TextBlock;
 
-[DependencyProperty<string>("Description", DefaultValue = "", PropertyChangedCallbackName = nameof(OnDescriptionChanged))]
+[DependencyProperty<string>("Description", PropertyChangedCallbackName = nameof(OnDescriptionChanged))]
 [DependencyProperty<LinkMetadataContext>("LinkContext")]
 [DependencyProperty<Style>("TextStyle", PropertyChangedCallbackName = nameof(OnTextStyleChanged))]
 internal sealed partial class DescriptionRichTextBlock : ContentControl
@@ -110,6 +110,7 @@ internal sealed partial class DescriptionRichTextBlock : ContentControl
             MiHoYoSyntaxItalicElement italicElement => AppendItalicText(textBlock, inlines, italicElement, source),
             MiHoYoSyntaxLinkElement linkElement => AppendLinkText(textBlock, inlines, linkElement, source),
             MiHoYoSyntaxSpritePresetElement spritePresetElement => AppendSpritePreset(textBlock, inlines, spritePresetElement, source),
+            MiHoYoSyntaxParameterElement parameterElement => AppendParameter(textBlock, inlines, parameterElement, source),
             _ => default,
         };
     }
@@ -234,6 +235,24 @@ internal sealed partial class DescriptionRichTextBlock : ContentControl
         return default;
     }
 
+    private Void AppendParameter(TextBlockType textBlock, InlineCollection inlines, MiHoYoSyntaxParameterElement syntaxParameter, ReadOnlySpan<char> source)
+    {
+        if (LinkContext is null)
+        {
+            return default;
+        }
+
+        ReadOnlySpan<char> idSpan = syntaxParameter.GetIdSpan(source);
+        if (!LinkContext.TryGetParameter(syntaxParameter.GetParameterKind(source), idSpan, out string value))
+        {
+            return default;
+        }
+
+        // Parameter doesn't have children
+        inlines.Add(new Run { Text = value });
+        return default;
+    }
+
     private void OnLinkClicked(Hyperlink sender, HyperlinkClickEventArgs args)
     {
         if (LinkContext is null)
@@ -258,6 +277,7 @@ internal sealed partial class DescriptionRichTextBlock : ContentControl
             {
                 LinkName = name,
                 LinkDescription = description,
+                LinkContext = LinkContext,
             },
         };
 

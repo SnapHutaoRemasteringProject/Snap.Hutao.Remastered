@@ -2,6 +2,8 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Core.ExceptionService;
+using Snap.Hutao.UI.Input.HotKey;
+using Snap.Hutao.UI.Windowing;
 using Snap.Hutao.Win32.Foundation;
 using System.Buffers;
 using System.Runtime.InteropServices;
@@ -143,7 +145,7 @@ internal sealed unsafe class HutaoNative
         }
     }
 
-    public HutaoNativeWindowSubclass MakeWindowSubclass(HWND hWnd, HutaoNativeWindowSubclassCallback callback, nint userData)
+    public HutaoNativeWindowSubclass MakeWindowSubclass(HWND hWnd, HutaoNativeWindowSubclassCallback callback, GCHandle<XamlWindowSubclass> userData)
     {
         nint pv = default;
         Marshal.ThrowExceptionForHR(objRef.Vftbl.MakeWindowSubclass(objRef.ThisPtr, hWnd, callback, userData, (HutaoNativeWindowSubclass.Vftbl**)&pv));
@@ -211,7 +213,7 @@ internal sealed unsafe class HutaoNative
         }
     }
 
-    public HutaoNativeHotKeyAction MakeHotKeyAction(HutaoNativeHotKeyActionKind kind, HutaoNativeHotKeyActionCallback callback, nint userData)
+    public HutaoNativeHotKeyAction MakeHotKeyAction(HutaoNativeHotKeyActionKind kind, HutaoNativeHotKeyActionCallback callback, GCHandle<HotKeyCombination> userData)
     {
         HutaoException.NotSupportedIf(objRef6 is null, "IHutaoNative6 is not supported");
         nint pv = default;
@@ -234,7 +236,7 @@ internal sealed unsafe class HutaoNative
         internal readonly IUnknownVftbl IUnknownVftbl;
         internal readonly delegate* unmanaged[Stdcall]<nint, HutaoNativeLoopbackSupport.Vftbl**, HRESULT> MakeLoopbackSupport;
         internal readonly delegate* unmanaged[Stdcall]<nint, PCWSTR, HutaoNativeRegistryNotification.Vftbl**, HRESULT> MakeRegistryNotification;
-        internal readonly delegate* unmanaged[Stdcall]<nint, HWND, HutaoNativeWindowSubclassCallback, nint, HutaoNativeWindowSubclass.Vftbl**, HRESULT> MakeWindowSubclass;
+        internal readonly delegate* unmanaged[Stdcall]<nint, HWND, HutaoNativeWindowSubclassCallback, GCHandle<XamlWindowSubclass>, HutaoNativeWindowSubclass.Vftbl**, HRESULT> MakeWindowSubclass;
         internal readonly delegate* unmanaged[Stdcall]<nint, HWND, HutaoNativeWindowNonRude.Vftbl**, HRESULT> MakeWindowNonRude;
     }
 
@@ -272,7 +274,7 @@ internal sealed unsafe class HutaoNative
     private readonly struct Vftbl6
     {
         internal readonly IUnknownVftbl IUnknownVftbl;
-        internal readonly delegate* unmanaged[Stdcall]<nint, HutaoNativeHotKeyActionKind, HutaoNativeHotKeyActionCallback, nint, HutaoNativeHotKeyAction.Vftbl**, HRESULT> MakeHotKeyAction;
+        internal readonly delegate* unmanaged[Stdcall]<nint, HutaoNativeHotKeyActionKind, HutaoNativeHotKeyActionCallback, GCHandle<HotKeyCombination>, HutaoNativeHotKeyAction.Vftbl**, HRESULT> MakeHotKeyAction;
     }
 
     [Guid(HutaoNativeMethods.IID_IHutaoNative7)]

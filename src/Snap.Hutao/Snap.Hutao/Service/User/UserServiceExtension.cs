@@ -12,80 +12,83 @@ namespace Snap.Hutao.Service.User;
 // For performance reason, extension method should avoid using LINQ
 internal static class UserServiceExtension
 {
-    public static ValueTask<bool> RefreshCookieTokenAsync(this IUserService userService, BindingUser user)
+    extension(IUserService userService)
     {
-        return userService.RefreshCookieTokenAsync(user.Entity);
-    }
-
-    public static async ValueTask<UserGameRole?> GetUserGameRoleByUidAsync(this IUserService userService, string uid)
-    {
-        AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
-        foreach (BindingUser bindingUser in users.Source)
+        public ValueTask<bool> RefreshCookieTokenAsync(BindingUser user)
         {
-            foreach (UserGameRole role in bindingUser.UserGameRoles.Source)
+            return userService.RefreshCookieTokenAsync(user.Entity);
+        }
+
+        public async ValueTask<UserGameRole?> GetUserGameRoleByUidAsync(string uid)
+        {
+            AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
+            foreach (BindingUser bindingUser in users.Source)
             {
-                if (role.GameUid == uid)
+                foreach (UserGameRole role in bindingUser.UserGameRoles.Source)
                 {
-                    return role;
+                    if (role.GameUid == uid)
+                    {
+                        return role;
+                    }
                 }
             }
+
+            return default;
         }
 
-        return default;
-    }
-
-    public static async ValueTask<BindingUser?> GetCurrentUserAsync(this IUserService userService)
-    {
-        AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
-        return users.CurrentItem;
-    }
-
-    public static async ValueTask<UserGameRole?> GetCurrentUserGameRoleAsync(this IUserService userService)
-    {
-        AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
-        return users.CurrentItem?.UserGameRoles.CurrentItem;
-    }
-
-    public static async ValueTask<string?> GetCurrentUidAsync(this IUserService userService)
-    {
-        AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
-        return users.CurrentItem?.UserGameRoles?.CurrentItem?.GameUid;
-    }
-
-    public static async ValueTask<UserAndUid?> GetCurrentUserAndUidAsync(this IUserService userService)
-    {
-        AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
-        UserAndUid.TryFromUser(users.CurrentItem, out UserAndUid? userAndUid);
-        return userAndUid;
-    }
-
-    public static async ValueTask<bool> SetCurrentUserByUidAsync(this IUserService userService, string uid)
-    {
-        AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
-        BindingUser? user = users.Source.SingleOrDefault(u => u.UserGameRoles.Source.Any(r => r.GameUid == uid));
-
-        if (user is null)
+        public async ValueTask<BindingUser?> GetCurrentUserAsync()
         {
-            return false;
+            AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
+            return users.CurrentItem;
         }
 
-        await userService.TaskContext.SwitchToMainThreadAsync();
-        users.MoveCurrentTo(user);
-
-        return true;
-    }
-
-    public static async ValueTask<BindingUser?> GetUserByMidAsync(this IUserService userService, string mid)
-    {
-        AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
-        foreach (BindingUser user in users.Source)
+        public async ValueTask<UserGameRole?> GetCurrentUserGameRoleAsync()
         {
-            if (user.Entity.Mid == mid)
+            AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
+            return users.CurrentItem?.UserGameRoles.CurrentItem;
+        }
+
+        public async ValueTask<string?> GetCurrentUidAsync()
+        {
+            AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
+            return users.CurrentItem?.UserGameRoles?.CurrentItem?.GameUid;
+        }
+
+        public async ValueTask<UserAndUid?> GetCurrentUserAndUidAsync()
+        {
+            AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
+            UserAndUid.TryFromUser(users.CurrentItem, out UserAndUid? userAndUid);
+            return userAndUid;
+        }
+
+        public async ValueTask<bool> SetCurrentUserByUidAsync(string uid)
+        {
+            AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
+            BindingUser? user = users.Source.SingleOrDefault(u => u.UserGameRoles.Source.Any(r => r.GameUid == uid));
+
+            if (user is null)
             {
-                return user;
+                return false;
             }
+
+            await userService.TaskContext.SwitchToMainThreadAsync();
+            users.MoveCurrentTo(user);
+
+            return true;
         }
 
-        return default;
+        public async ValueTask<BindingUser?> GetUserByMidAsync(string mid)
+        {
+            AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
+            foreach (BindingUser user in users.Source)
+            {
+                if (user.Entity.Mid == mid)
+                {
+                    return user;
+                }
+            }
+
+            return default;
+        }
     }
 }

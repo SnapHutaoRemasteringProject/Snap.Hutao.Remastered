@@ -15,32 +15,38 @@ internal static class GachaStatisticsExtension
 {
     private static readonly ConcurrentDictionary<string, Color> KnownColors = [];
 
-    public static void CompleteAdding(this List<SummaryItem> summaryItems, int guaranteeOrangeThreshold)
+    extension(List<SummaryItem> summaryItems)
     {
-        // We can't trust first item's prev state.
-        bool isPreviousUp = true;
-
-        // Mark the IsGuarantee
-        foreach (SummaryItem item in summaryItems)
+        public void CompleteAdding(int guaranteeOrangeThreshold)
         {
-            if (item.IsUp && !isPreviousUp)
+            // We can't trust first item's prev state.
+            bool isPreviousUp = true;
+
+            // Mark the IsGuarantee
+            foreach (SummaryItem item in summaryItems)
             {
-                item.IsGuarantee = true;
+                if (item.IsUp && !isPreviousUp)
+                {
+                    item.IsGuarantee = true;
+                }
+
+                isPreviousUp = item.IsUp;
+                item.Color = GetUniqueColorByName(item.Name);
+                item.GuaranteeOrangeThreshold = guaranteeOrangeThreshold;
             }
 
-            isPreviousUp = item.IsUp;
-            item.Color = GetUniqueColorByName(item.Name);
-            item.GuaranteeOrangeThreshold = guaranteeOrangeThreshold;
+            // Reverse items
+            summaryItems.Reverse();
         }
-
-        // Reverse items
-        summaryItems.Reverse();
     }
 
-    public static ImmutableArray<StatisticsItem> ToStatisticsImmutableArray<TItem>(this Dictionary<TItem, int> countDict)
+    extension<TItem>(Dictionary<TItem, int> countDict)
         where TItem : IStatisticsItemConvertible
     {
-        return [.. countDict.Select(kvp => kvp.Key.ToStatisticsItem(kvp.Value)).OrderByDescending(item => item.Count)];
+        public ImmutableArray<StatisticsItem> ToStatisticsImmutableArray()
+        {
+            return [.. countDict.Select(kvp => kvp.Key.ToStatisticsItem(kvp.Value)).OrderByDescending(item => item.Count)];
+        }
     }
 
     [SuppressMessage("", "IDE0057")]

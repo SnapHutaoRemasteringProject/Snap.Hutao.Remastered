@@ -7,23 +7,27 @@ namespace Snap.Hutao.Web.Hutao.Response;
 
 internal static class LocalizableResponseExtension
 {
-    public static string? GetLocalizationMessageOrDefault(this ILocalizableResponse localizableResponse)
+    extension(ILocalizableResponse localizableResponse)
     {
-        string? key = localizableResponse.LocalizationKey;
-        return string.IsNullOrEmpty(key) ? default : SH.ResourceManager.GetString(key, CultureInfo.CurrentCulture);
+        public string? GetLocalizationMessageOrDefault()
+        {
+            string? key = localizableResponse.LocalizationKey;
+            return string.IsNullOrEmpty(key) ? default : SH.ResourceManager.GetString(key, CultureInfo.CurrentCulture);
+        }
+
+        public string GetLocalizationMessage()
+        {
+            string? key = localizableResponse.LocalizationKey;
+            return string.IsNullOrEmpty(key) ? string.Empty : SH.ResourceManager.GetString(key, CultureInfo.CurrentCulture) ?? string.Empty;
+        }
     }
 
-    public static string GetLocalizationMessageOrMessage<TResponse>(this TResponse localizableResponse)
+    extension<TResponse>(TResponse localizableResponse)
         where TResponse : Web.Response.Response, ILocalizableResponse
     {
-        return localizableResponse.GetLocalizationMessageOrDefault() ?? localizableResponse.Message;
-    }
-
-    public static string GetLocalizationMessage(this ILocalizableResponse localizableResponse)
-    {
-        string? key = localizableResponse.LocalizationKey;
-        return string.IsNullOrEmpty(key)
-            ? string.Empty
-            : SH.ResourceManager.GetString(key, CultureInfo.CurrentCulture) ?? string.Empty;
+        public string GetLocalizationMessageOrMessage()
+        {
+            return localizableResponse.GetLocalizationMessageOrDefault() ?? localizableResponse.Message;
+        }
     }
 }

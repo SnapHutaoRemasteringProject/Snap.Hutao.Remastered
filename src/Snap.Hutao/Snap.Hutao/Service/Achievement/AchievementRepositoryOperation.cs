@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using Microsoft.EntityFrameworkCore;
-using Snap.Hutao.Core.Collection;
 using Snap.Hutao.Core.Database;
 using Snap.Hutao.Core.ExceptionService;
 using Snap.Hutao.Model.Entity.Database;
@@ -13,12 +12,14 @@ using EntityAchievement = Snap.Hutao.Model.Entity.Achievement;
 
 namespace Snap.Hutao.Service.Achievement;
 
-[ConstructorGenerated]
 [Service(ServiceLifetime.Singleton)]
 internal sealed partial class AchievementRepositoryOperation
 {
     private readonly IServiceProvider serviceProvider;
     private readonly ILogger<AchievementRepositoryOperation> logger;
+
+    [GeneratedConstructor]
+    public partial AchievementRepositoryOperation(IServiceProvider serviceProvider);
 
     public ImportResult Merge(Guid archiveId, IEnumerable<UIAFItem> items, bool aggressive)
     {
@@ -30,7 +31,7 @@ internal sealed partial class AchievementRepositoryOperation
 
             (int add, int update) = (0, 0);
 
-            using (TwoEnumerableEnumerator<EntityAchievement, UIAFItem> enumerator = new(oldData, items))
+            using (Core.Collection.Generic.TwoEnumerableEnumerator<EntityAchievement, UIAFItem> enumerator = new(oldData, items))
             {
                 (bool moveEntity, bool moveUIAF) = (true, true);
 
@@ -98,7 +99,7 @@ internal sealed partial class AchievementRepositoryOperation
 
             (int add, int update, int remove) = (0, 0, 0);
 
-            using (TwoEnumerableEnumerator<EntityAchievement, EntityAchievement> enumerator = new(oldData, items))
+            using (Core.Collection.Generic.TwoEnumerableEnumerator<EntityAchievement, EntityAchievement> enumerator = new(oldData, items))
             {
                 (bool moveOld, bool moveNew) = (true, true);
 

@@ -8,40 +8,43 @@ namespace Snap.Hutao.Core.Database;
 
 internal static class SelectableExtension
 {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static TSource? SelectedOrFirstOrDefault<TSource>(this IEnumerable<TSource> source)
+    extension<TSource>(IEnumerable<TSource> source)
         where TSource : ISelectable
     {
-        using (IEnumerator<TSource> e = source.GetEnumerator())
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TSource? SelectedOrFirstOrDefault()
         {
-            if (!e.MoveNext())
+            using (IEnumerator<TSource> e = source.GetEnumerator())
             {
-                return default;
-            }
-
-            TSource first = e.Current;
-
-            do
-            {
-                TSource result = e.Current;
-                if (!result.IsSelected)
+                if (!e.MoveNext())
                 {
-                    continue;
+                    return default;
                 }
 
-                while (e.MoveNext())
+                TSource first = e.Current;
+
+                do
                 {
-                    if (e.Current.IsSelected)
+                    TSource result = e.Current;
+                    if (!result.IsSelected)
                     {
-                        return default;
+                        continue;
                     }
+
+                    while (e.MoveNext())
+                    {
+                        if (e.Current.IsSelected)
+                        {
+                            return default;
+                        }
+                    }
+
+                    return result;
                 }
+                while (e.MoveNext());
 
-                return result;
+                return first;
             }
-            while (e.MoveNext());
-
-            return first;
         }
     }
 }

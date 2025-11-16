@@ -14,4 +14,5 @@ internal enum MiHoYoSyntaxTokenKind
     ItalicOpen,
     ItalicClose,
     SpritePreset,
+    Parameter,
 }

@@ -3,7 +3,6 @@
 
 using Microsoft.Win32.SafeHandles;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace Snap.Hutao.Core.IO.HPatch;
 
@@ -31,14 +30,11 @@ internal sealed partial class FileSegment : IDisposable
         this.fileHandle = fileHandle;
         this.ownsHandle = ownsHandle;
         this.offset = offset;
-        this.Length = length;
 
-        Handle = GCHandle.ToIntPtr(GCHandle.Alloc(this));
+        Length = length;
     }
 
     public long Length { get; }
-
-    public nint Handle { get; }
 
     public unsafe bool Read(ulong position, byte* start, byte* end)
     {
@@ -76,7 +72,5 @@ internal sealed partial class FileSegment : IDisposable
         {
             fileHandle.Dispose();
         }
-
-        GCHandle.FromIntPtr(Handle).Free();
     }
 }

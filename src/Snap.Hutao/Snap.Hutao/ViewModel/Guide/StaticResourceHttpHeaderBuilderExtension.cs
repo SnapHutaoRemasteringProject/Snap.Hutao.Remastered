@@ -11,19 +11,25 @@ namespace Snap.Hutao.ViewModel.Guide;
 
 internal static class StaticResourceHttpHeaderBuilderExtension
 {
-    public static TBuilder SetStaticResourceControlHeaders<TBuilder>(this TBuilder builder)
+    extension<TBuilder>(TBuilder builder)
         where TBuilder : class, IHttpHeadersBuilder<HttpHeaders>
     {
-        return builder
-            .SetHeader("x-hutao-quality", $"{UnsafeLocalSetting.Get(SettingKeys.StaticResourceImageQuality, StaticResourceQuality.Original)}")
-            .SetHeader("x-hutao-archive", $"{UnsafeLocalSetting.Get(SettingKeys.StaticResourceImageArchive, StaticResourceArchive.Full)}");
+        public TBuilder SetStaticResourceControlHeaders()
+        {
+            return builder
+                .SetHeader("x-hutao-quality", $"{UnsafeLocalSetting.Get(SettingKeys.StaticResourceImageQuality, StaticResourceQuality.Original)}")
+                .SetHeader("x-hutao-archive", $"{UnsafeLocalSetting.Get(SettingKeys.StaticResourceImageArchive, StaticResourceArchive.Full)}");
+        }
     }
 
-    public static TBuilder SetStaticResourceControlHeadersIfRequired<TBuilder>(this TBuilder builder)
+    extension<TBuilder>(TBuilder builder)
         where TBuilder : class, IHttpHeadersBuilder<HttpHeaders>, IRequestUriBuilder
     {
-        return builder.RequestUri?.GetLeftPart(UriPartial.Authority).Equals(StaticResourcesEndpoints.Root, StringComparison.OrdinalIgnoreCase) is true
-            ? builder.SetStaticResourceControlHeaders()
-            : builder;
+        public TBuilder SetStaticResourceControlHeadersIfRequired()
+        {
+            return builder.RequestUri?.GetLeftPart(UriPartial.Authority).Equals(StaticResourcesEndpoints.Root, StringComparison.OrdinalIgnoreCase) is true
+                ? builder.SetStaticResourceControlHeaders()
+                : builder;
+        }
     }
 }

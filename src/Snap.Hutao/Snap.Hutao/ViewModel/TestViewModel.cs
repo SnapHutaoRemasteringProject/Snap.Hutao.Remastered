@@ -38,7 +38,6 @@ using System.Text.RegularExpressions;
 // ReSharper disable LocalizableElement
 namespace Snap.Hutao.ViewModel;
 
-[ConstructorGenerated]
 [BindableCustomPropertyProvider]
 [Service(ServiceLifetime.Scoped)]
 internal sealed partial class TestViewModel : Abstraction.ViewModel
@@ -52,6 +51,9 @@ internal sealed partial class TestViewModel : Abstraction.ViewModel
     private readonly ILogger<TestViewModel> logger;
     private readonly ITaskContext taskContext;
     private readonly IMessenger messenger;
+
+    [GeneratedConstructor]
+    public partial TestViewModel(IServiceProvider serviceProvider);
 
     public UploadAnnouncement Announcement { get; set => SetProperty(ref field, value); } = new();
 
@@ -67,12 +69,6 @@ internal sealed partial class TestViewModel : Abstraction.ViewModel
 
     public RedeemCodeGenerateOptions RedeemCodeGenerateOption { get; set => SetProperty(ref field, value); } = new();
 
-    public bool SuppressMetadataInitialization
-    {
-        get => LocalSetting.Get(SettingKeys.SuppressMetadataInitialization, false);
-        set => LocalSetting.Set(SettingKeys.SuppressMetadataInitialization, value);
-    }
-
     public bool OverrideElevationRequirement
     {
         get => LocalSetting.Get(SettingKeys.OverrideElevationRequirement, false);
@@ -87,8 +83,8 @@ internal sealed partial class TestViewModel : Abstraction.ViewModel
 
     public bool OverridePackageConvertDirectoryPermissionsRequirement
     {
-        get => LocalSetting.Get(SettingKeys.OverridePackageConvertDirectoryPermissionsRequirement, false);
-        set => LocalSetting.Set(SettingKeys.OverridePackageConvertDirectoryPermissionsRequirement, value);
+        get => LocalSetting.Get(SettingKeys.LaunchOverridePackageConvertDirectoryPermissions, false);
+        set => LocalSetting.Set(SettingKeys.LaunchOverridePackageConvertDirectoryPermissions, value);
     }
 
     public bool OverrideHardDriveType
@@ -175,7 +171,7 @@ internal sealed partial class TestViewModel : Abstraction.ViewModel
 
         if (currentXamlWindowReference.Window is MainWindow mainWindow)
         {
-            double scale = mainWindow.GetRasterizationScale();
+            double scale = mainWindow.RasterizationScale;
             mainWindow.AppWindow.Resize(new Windows.Graphics.SizeInt32(1372, 772).Scale(scale));
         }
     }

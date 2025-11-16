@@ -18,7 +18,7 @@ internal sealed partial class DescriptionsParametersDescriptor : ValueConverter<
 
     public static LevelParameters<string, ParameterDescription> Convert(DescriptionsParameters from, uint level)
     {
-        return new(LevelFormat.Format(level), GetParameterDescription(from.Descriptions, from.Parameters[level]));
+        return new(LevelFormat.Format(level), GetParameterDescription(from.Descriptions, from.Parameters[(SkillLevel)level]));
     }
 
     public override IList<LevelParameters<string, ParameterDescription>> Convert(DescriptionsParameters from)

@@ -52,7 +52,7 @@ internal sealed class NotifyIconXamlHostWindow : Window, IWindowNeedEraseBackgro
             return;
         }
 
-        if (flyout.IsDisposed())
+        if (flyout.IsDisposed)
         {
             return;
         }

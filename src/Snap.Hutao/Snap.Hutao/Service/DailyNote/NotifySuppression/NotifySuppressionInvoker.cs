@@ -18,26 +18,29 @@ internal static class NotifySuppressionInvoker
         context.Invoke<ExpeditionNotifySuppressionChecker>();
     }
 
-    [SuppressMessage("", "CA1859")]
-    private static void Invoke<T>(this INotifySuppressionContext context)
-        where T : INotifySuppressionChecker, new()
+    extension(INotifySuppressionContext context)
     {
-        T checker = new();
+        [SuppressMessage("", "CA1859")]
+        private void Invoke<T>()
+            where T : INotifySuppressionChecker, new()
+        {
+            T checker = new();
 
-        // Reach the notify threshold
-        if (checker.ShouldNotify(context))
-        {
-            // If the suppression status is not set, we need to append notify info
-            if (!checker.GetIsSuppressed(context))
+            // Reach the notify threshold
+            if (checker.ShouldNotify(context))
             {
-                context.Add(checker.NotifyInfo(context));
-                checker.SetIsSuppressed(context, true);
+                // If the suppression status is not set, we need to append notify info
+                if (!checker.GetIsSuppressed(context))
+                {
+                    context.Add(checker.NotifyInfo(context));
+                    checker.SetIsSuppressed(context, true);
+                }
             }
-        }
-        else
-        {
-            // Reset suppression status
-            checker.SetIsSuppressed(context, false);
+            else
+            {
+                // Reset suppression status
+                checker.SetIsSuppressed(context, false);
+            }
         }
     }
 }

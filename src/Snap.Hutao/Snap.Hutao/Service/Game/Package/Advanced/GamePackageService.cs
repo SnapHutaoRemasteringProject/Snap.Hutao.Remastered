@@ -26,7 +26,6 @@ using System.Threading.RateLimiting;
 
 namespace Snap.Hutao.Service.Game.Package.Advanced;
 
-[ConstructorGenerated]
 [Service(ServiceLifetime.Singleton, typeof(IGamePackageService))]
 [SuppressMessage("", "CA1001")]
 [SuppressMessage("", "SA1201")]
@@ -42,6 +41,9 @@ internal sealed partial class GamePackageService : IGamePackageService
 
     private CancellationTokenSource? operationCts;
     private TaskCompletionSource? operationTcs;
+
+    [GeneratedConstructor]
+    public partial GamePackageService(IServiceProvider serviceProvider);
 
     public async ValueTask<bool> ExecuteOperationAsync(GamePackageOperationContext operationContext)
     {
@@ -150,7 +152,7 @@ internal sealed partial class GamePackageService : IGamePackageService
         {
             Response<SophonBuild> response = await scope.ServiceProvider
                 .GetRequiredService<IOverseaSupportFactory<ISophonClient>>()
-                .Create(gameFileSystem.IsExecutableOversea())
+                .Create(gameFileSystem.IsExecutableOversea)
                 .GetBuildAsync(branch, token)
                 .ConfigureAwait(false);
             if (!ResponseValidator.TryValidate(response, scope.ServiceProvider, out build))
@@ -262,7 +264,7 @@ internal sealed partial class GamePackageService : IGamePackageService
         {
             Response<SophonPatchBuild> response = await scope.ServiceProvider
                 .GetRequiredService<IOverseaSupportFactory<ISophonClient>>()
-                .Create(gameFileSystem.IsExecutableOversea())
+                .Create(gameFileSystem.IsExecutableOversea)
                 .GetPatchBuildAsync(branch, token)
                 .ConfigureAwait(false);
             if (!ResponseValidator.TryValidate(response, scope.ServiceProvider, out build))

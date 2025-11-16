@@ -10,101 +10,100 @@ namespace Snap.Hutao.Extension;
 
 internal static class ImmutableArrayExtension
 {
-    [Pure]
-    public static ImmutableArray<TElement> EmptyIfDefault<TElement>(this ImmutableArray<TElement> array)
+    extension<TElement>(ImmutableArray<TElement> array)
     {
-        return array.IsDefault ? [] : array;
-    }
-
-    [Pure]
-    public static ImmutableArray<TElement> Reverse<TElement>(this ImmutableArray<TElement> array)
-    {
-        if (array.IsEmpty)
+        [Pure]
+        public ImmutableArray<TElement> EmptyIfDefault()
         {
-            return array;
+            return array.IsDefault ? [] : array;
         }
 
-        TElement[] reversed = GC.AllocateUninitializedArray<TElement>(array.Length);
-        array.AsSpan().CopyTo(reversed);
-        Array.Reverse(reversed);
-        return ImmutableCollectionsMarshal.AsImmutableArray(reversed);
-    }
-
-    public static void ReverseInPlace<TElement>(this ImmutableArray<TElement> array)
-    {
-        if (array.IsEmpty)
+        [Pure]
+        public ImmutableArray<TElement> Reverse()
         {
-            return;
+            if (array.IsEmpty)
+            {
+                return array;
+            }
+
+            TElement[] reversed = GC.AllocateUninitializedArray<TElement>(array.Length);
+            array.AsSpan().CopyTo(reversed);
+            Array.Reverse(reversed);
+            return ImmutableCollectionsMarshal.AsImmutableArray(reversed);
         }
 
-        TElement[]? raw = ImmutableCollectionsMarshal.AsArray(array);
-        ArgumentNullException.ThrowIfNull(raw);
-        Array.Reverse(raw);
-    }
-
-    [Pure]
-    public static ImmutableArray<TResult> SelectAsArray<TSource, TResult>(this ImmutableArray<TSource> array, [RequireStaticDelegate] Func<TSource, TResult> selector)
-    {
-        return ImmutableArray.CreateRange(array, selector);
-    }
-
-    [Pure]
-    public static ImmutableArray<TResult> SelectAsArray<TSource, TResult, TState>(this ImmutableArray<TSource> array, [RequireStaticDelegate] Func<TSource, TState, TResult> selector, TState state)
-    {
-        return ImmutableArray.CreateRange(array, selector, state);
-    }
-
-    [Pure]
-    public static ImmutableArray<TResult> SelectAsArray<TSource, TResult>(this ImmutableArray<TSource> array, [RequireStaticDelegate] Func<TSource, int, TResult> selector)
-    {
-        int length = array.Length;
-        if (length == 0)
+        public void ReverseInPlace()
         {
-            return [];
+            if (array.IsEmpty)
+            {
+                return;
+            }
+
+            TElement[]? raw = ImmutableCollectionsMarshal.AsArray(array);
+            ArgumentNullException.ThrowIfNull(raw);
+            Array.Reverse(raw);
         }
 
-        ReadOnlySpan<TSource> sourceSpan = array.AsSpan();
-        TResult[] results = GC.AllocateUninitializedArray<TResult>(length);
-
-        Span<TResult> resultSpan = results.AsSpan();
-        for (int index = 0; index < sourceSpan.Length; index++)
+        [Pure]
+        public ImmutableArray<TResult> SelectAsArray<TResult>([RequireStaticDelegate] Func<TElement, TResult> selector)
         {
-            resultSpan[index] = selector(sourceSpan[index], index);
+            return ImmutableArray.CreateRange(array, selector);
         }
 
-        return ImmutableCollectionsMarshal.AsImmutableArray(results);
-    }
-
-    [Pure]
-    public static ImmutableArray<TResult> SelectAsArray<TSource, TState, TResult>(this ImmutableArray<TSource> array, [RequireStaticDelegate] Func<TSource, int, TState, TResult> selector, TState state)
-    {
-        int length = array.Length;
-        if (length == 0)
+        [Pure]
+        public ImmutableArray<TResult> SelectAsArray<TResult, TState>([RequireStaticDelegate] Func<TElement, TState, TResult> selector, TState state)
         {
-            return [];
+            return ImmutableArray.CreateRange(array, selector, state);
         }
 
-        ReadOnlySpan<TSource> sourceSpan = array.AsSpan();
-        TResult[] results = GC.AllocateUninitializedArray<TResult>(length);
-
-        Span<TResult> resultSpan = results.AsSpan();
-        for (int index = 0; index < sourceSpan.Length; index++)
+        [Pure]
+        public ImmutableArray<TResult> SelectAsArray<TResult>([RequireStaticDelegate] Func<TElement, int, TResult> selector)
         {
-            resultSpan[index] = selector(sourceSpan[index], index, state);
+            int length = array.Length;
+            if (length == 0)
+            {
+                return [];
+            }
+
+            TResult[] results = GC.AllocateUninitializedArray<TResult>(length);
+
+            for (int index = 0; index < array.Length; index++)
+            {
+                results[index] = selector(array[index], index);
+            }
+
+            return ImmutableCollectionsMarshal.AsImmutableArray(results);
         }
 
-        return ImmutableCollectionsMarshal.AsImmutableArray(results);
-    }
-
-    public static void SortInPlace<TElement>(this ImmutableArray<TElement> array, IComparer<TElement> comparer)
-    {
-        if (array.IsEmpty)
+        [Pure]
+        public ImmutableArray<TResult> SelectAsArray<TState, TResult>([RequireStaticDelegate] Func<TElement, int, TState, TResult> selector, TState state)
         {
-            return;
+            int length = array.Length;
+            if (length == 0)
+            {
+                return [];
+            }
+
+            TResult[] results = GC.AllocateUninitializedArray<TResult>(length);
+
+            for (int index = 0; index < array.Length; index++)
+            {
+                results[index] = selector(array[index], index, state);
+            }
+
+            return ImmutableCollectionsMarshal.AsImmutableArray(results);
         }
 
-        TElement[]? raw = ImmutableCollectionsMarshal.AsArray(array);
-        ArgumentNullException.ThrowIfNull(raw);
-        Array.Sort(raw, comparer);
+        public void SortInPlace(IComparer<TElement> comparer)
+        {
+            if (array.IsEmpty)
+            {
+                return;
+            }
+
+            TElement[]? raw = ImmutableCollectionsMarshal.AsArray(array);
+            ArgumentNullException.ThrowIfNull(raw);
+            Array.Sort(raw, comparer);
+        }
     }
 }

@@ -1,9 +1,9 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Core;
 using Snap.Hutao.Service.Game.Island;
 using Snap.Hutao.Service.Game.Launching.Context;
+using Snap.Hutao.Service.Git;
 using Snap.Hutao.Service.Notification;
 
 namespace Snap.Hutao.Service.Game.Launching.Handler;
@@ -18,27 +18,20 @@ internal sealed class LaunchExecutionGameIslandHandler : AbstractLaunchExecution
         this.resume = resume;
     }
 
-    public override async ValueTask BeforeAsync(BeforeLaunchExecutionContext context)
+    public override ValueTask BeforeAsync(BeforeLaunchExecutionContext context)
     {
-        if (!HutaoRuntime.IsProcessElevated || !context.LaunchOptions.IsIslandEnabled.Value)
+        if (context.LaunchOptions.IsIslandEnabled.Value)
         {
-            return;
+            interop = new(resume);
+            return interop.BeforeAsync(context);
         }
 
-        interop = new(resume);
-
-        if (!resume || await GameLifeCycle.IsGameRunningAsync(context.TaskContext).ConfigureAwait(false))
-        {
-            context.Progress.Report(new(SH.ServiceGameLaunchPhaseUnlockingFps));
-        }
-
-        await interop.BeforeAsync(context).ConfigureAwait(false);
-        context.Progress.Report(default);
+        return ValueTask.CompletedTask;
     }
 
     public override ValueTask ExecuteAsync(LaunchExecutionContext context)
     {
-        if (!HutaoRuntime.IsProcessElevated || !context.LaunchOptions.IsIslandEnabled.Value)
+        if (!context.LaunchOptions.IsIslandEnabled.Value)
         {
             return ValueTask.CompletedTask;
         }

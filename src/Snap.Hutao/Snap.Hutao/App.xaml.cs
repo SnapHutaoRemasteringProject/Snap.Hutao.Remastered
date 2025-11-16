@@ -16,7 +16,6 @@ using System.Diagnostics;
 
 namespace Snap.Hutao;
 
-[ConstructorGenerated(InitializeComponent = true)]
 [Service(ServiceLifetime.Singleton)]
 [SuppressMessage("", "SH001", Justification = "The App must be public")]
 public sealed partial class App : Application
@@ -41,6 +40,9 @@ public sealed partial class App : Application
     private readonly IAppActivation activation;
     private readonly ILogger<App> logger;
 
+    [GeneratedConstructor(InitializeComponent = true)]
+    public partial App(IServiceProvider serviceProvider);
+
     /// <summary>
     /// Shortcut to get the <see cref="AppOptions"/> instance.
     /// </summary>
@@ -48,7 +50,7 @@ public sealed partial class App : Application
 
     partial void PostConstruct(IServiceProvider serviceProvider)
     {
-        ExceptionHandlingSupport.Initialize(serviceProvider, this);
+        ExceptionHandling.Initialize(serviceProvider, this);
     }
 
     [SuppressMessage("", "SA1202")]
@@ -112,8 +114,14 @@ public sealed partial class App : Application
         // If no debugger is attached, do not patch. There will be no diagnostics LVT.
         if (Debugger.IsAttached)
         {
+            // 74 65            jz      short loc_8E219D
+            // 48 8D 55 F0      lea     root, [rbp+50h + p] ; p
+            // 48 8B CB         mov     this, rbx; this
+            // E8 58 DF FF FF   call    ??$As @UIVisualTreeServiceCallback3@@@?$ComPtr @UIVisualTreeServiceCallback@@@WRL @Microsoft@@QEBAJV ?$ComPtrRef @V?$ComPtr @UIVisualTreeServiceCallback3@@@WRL @Microsoft@@@Details@12@@Z; Microsoft::WRL::ComPtr < IVisualTreeServiceCallback >::As<IVisualTreeServiceCallback3>(Microsoft::WRL::Details::ComPtrRef<Microsoft::WRL::ComPtr<IVisualTreeServiceCallback3>>)
+            // 85 C0            test    eax, eax
+            // 78 55            js      short loc_8E219D
             // Should be 78 xx (js near)
-            Win32.MemoryUtilities.Patch("Microsoft.ui.xaml.dll", 0x008E2096, 2, static codes =>
+            Win32.MemoryUtilities.Patch("Microsoft.ui.xaml.dll", 0x008E2146, 2, static codes =>
             {
                 // Rewrite to jmp
                 codes[0] = 0xEB;

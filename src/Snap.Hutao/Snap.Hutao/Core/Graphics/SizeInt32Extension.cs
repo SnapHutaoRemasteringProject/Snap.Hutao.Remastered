@@ -7,20 +7,20 @@ namespace Snap.Hutao.Core.Graphics;
 
 internal static class SizeInt32Extension
 {
-    public static SizeInt32 Scale(this SizeInt32 sizeInt32, double scale)
+    extension(SizeInt32 sizeInt32)
     {
-        return new((int)(sizeInt32.Width * scale), (int)(sizeInt32.Height * scale));
-    }
+        public int Size { get => sizeInt32.Width * sizeInt32.Height; }
 
-    public static int Size(this SizeInt32 sizeInt32)
-    {
-        return sizeInt32.Width * sizeInt32.Height;
-    }
+        public SizeInt32 Scale(double scale)
+        {
+            return new((int)(sizeInt32.Width * scale), (int)(sizeInt32.Height * scale));
+        }
 
-    public static unsafe RectInt32 ToRectInt32(this SizeInt32 sizeInt32)
-    {
-        RectInt32View view = default;
-        view.Size = sizeInt32;
-        return *(RectInt32*)&view;
+        public unsafe RectInt32 ToRectInt32()
+        {
+            RectInt32View view = default;
+            view.Size = sizeInt32;
+            return *(RectInt32*)&view;
+        }
     }
 }

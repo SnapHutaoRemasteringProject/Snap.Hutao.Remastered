@@ -14,13 +14,15 @@ using GachaItem = Snap.Hutao.Model.Entity.GachaItem;
 
 namespace Snap.Hutao.Service.GachaLog.Factory;
 
-[ConstructorGenerated]
 [Service(ServiceLifetime.Singleton, typeof(IGachaStatisticsFactory))]
 internal sealed partial class GachaStatisticsFactory : IGachaStatisticsFactory
 {
     // We must use the root service provider, if not, PullPrediction will cause memory leak
     private readonly IServiceProvider serviceProvider;
     private readonly ITaskContext taskContext;
+
+    [GeneratedConstructor]
+    public partial GachaStatisticsFactory(IServiceProvider serviceProvider);
 
     /// <inheritdoc/>
     public async ValueTask<GachaStatistics> CreateAsync(GachaLogServiceMetadataContext metadata, ImmutableArray<GachaItem> items)
@@ -53,7 +55,7 @@ internal sealed partial class GachaStatisticsFactory : IGachaStatisticsFactory
                 ? historyWishBuilderMap[item.GachaType].BinarySearch(item, static (pinned, banner) => pinned.Time < banner.From ? -1 : pinned.Time > banner.To ? 1 : 0)
                 : default;
 
-            switch (item.ItemId.StringLength())
+            switch (item.ItemId.StringLength)
             {
                 case 8U:
                     {

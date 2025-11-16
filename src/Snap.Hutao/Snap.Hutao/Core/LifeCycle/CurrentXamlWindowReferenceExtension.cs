@@ -9,19 +9,19 @@ namespace Snap.Hutao.Core.LifeCycle;
 
 internal static class CurrentXamlWindowReferenceExtension
 {
-    public static XamlRoot? GetXamlRoot(this ICurrentXamlWindowReference reference)
+    extension(ICurrentXamlWindowReference reference)
     {
-        return reference.Window?.Content?.XamlRoot;
-    }
+        public XamlRoot? XamlRoot { get => reference.Window?.Content?.XamlRoot; }
 
-    public static HWND GetWindowHandle(this ICurrentXamlWindowReference reference)
-    {
-        return reference.Window.GetWindowHandle();
-    }
+        public HWND WindowHandle { get => reference.Window?.GetWindowHandle() ?? default; }
 
-    public static ElementTheme GetRequestedTheme(this ICurrentXamlWindowReference reference)
-    {
-        ArgumentNullException.ThrowIfNull(reference.Window);
-        return ((FrameworkElement)reference.Window.Content).RequestedTheme;
+        public ElementTheme RequestedTheme
+        {
+            get
+            {
+                ArgumentNullException.ThrowIfNull(reference.Window);
+                return ((FrameworkElement)reference.Window.Content).RequestedTheme;
+            }
+        }
     }
 }

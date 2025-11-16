@@ -7,10 +7,13 @@ namespace Snap.Hutao.Web.Endpoint.Hoyolab;
 
 internal static class ApiEndpointsExtension
 {
-    public static string SophonChunkGetBuildByBranch(this IApiEndpoints apiEndpoints, BranchWrapper wrapper)
+    extension(IApiEndpoints apiEndpoints)
     {
-        return string.Equals(wrapper.Branch, "PREDOWNLOAD", StringComparison.OrdinalIgnoreCase)
-            ? apiEndpoints.SophonChunkGetBuildNoTag(wrapper)
-            : apiEndpoints.SophonChunkGetBuild(wrapper);
+        public string SophonChunkGetBuildByBranch(BranchWrapper wrapper)
+        {
+            return string.Equals(wrapper.Branch, "PREDOWNLOAD", StringComparison.OrdinalIgnoreCase)
+                ? apiEndpoints.SophonChunkGetBuildNoTag(wrapper)
+                : apiEndpoints.SophonChunkGetBuild(wrapper);
+        }
     }
 }

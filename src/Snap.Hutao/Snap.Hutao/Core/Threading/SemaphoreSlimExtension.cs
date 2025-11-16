@@ -7,31 +7,34 @@ namespace Snap.Hutao.Core.Threading;
 
 internal static class SemaphoreSlimExtension
 {
-    public static async ValueTask<SemaphoreSlimToken> EnterAsync(this SemaphoreSlim semaphoreSlim, CancellationToken token = default)
+    extension(SemaphoreSlim semaphoreSlim)
     {
-        try
+        public async ValueTask<SemaphoreSlimToken> EnterAsync(CancellationToken token = default)
         {
-            await semaphoreSlim.WaitAsync(token).ConfigureAwait(false);
-        }
-        catch (ObjectDisposedException ex)
-        {
-            HutaoException.OperationCanceled(SH.CoreThreadingSemaphoreSlimDisposed, ex);
+            try
+            {
+                await semaphoreSlim.WaitAsync(token).ConfigureAwait(false);
+            }
+            catch (ObjectDisposedException ex)
+            {
+                HutaoException.OperationCanceled(SH.CoreThreadingSemaphoreSlimDisposed, ex);
+            }
+
+            return new(semaphoreSlim);
         }
 
-        return new(semaphoreSlim);
-    }
-
-    public static SemaphoreSlimToken Enter(this SemaphoreSlim semaphoreSlim)
-    {
-        try
+        public SemaphoreSlimToken Enter()
         {
-            semaphoreSlim.Wait();
-        }
-        catch (ObjectDisposedException ex)
-        {
-            HutaoException.OperationCanceled(SH.CoreThreadingSemaphoreSlimDisposed, ex);
-        }
+            try
+            {
+                semaphoreSlim.Wait();
+            }
+            catch (ObjectDisposedException ex)
+            {
+                HutaoException.OperationCanceled(SH.CoreThreadingSemaphoreSlimDisposed, ex);
+            }
 
-        return new(semaphoreSlim);
+            return new(semaphoreSlim);
+        }
     }
 }

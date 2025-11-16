@@ -7,15 +7,18 @@ namespace Snap.Hutao.UI.Xaml.Data;
 
 internal static class AdvancedCollectionViewExtension
 {
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static IAdvancedCollectionView<T> AsAdvancedCollectionView<T>(this IEnumerable<T> source)
+    extension<T>(IEnumerable<T> source)
         where T : class, IPropertyValuesProvider
     {
-        return source switch
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IAdvancedCollectionView<T> AsAdvancedCollectionView()
         {
-            IAdvancedCollectionView<T> advancedCollectionView => advancedCollectionView,
-            IList<T> list => new AdvancedCollectionView<T>(list),
-            _ => new AdvancedCollectionView<T>([.. source]),
-        };
+            return source switch
+            {
+                IAdvancedCollectionView<T> advancedCollectionView => advancedCollectionView,
+                IList<T> list => new AdvancedCollectionView<T>(list),
+                _ => new AdvancedCollectionView<T>([.. source]),
+            };
+        }
     }
 }

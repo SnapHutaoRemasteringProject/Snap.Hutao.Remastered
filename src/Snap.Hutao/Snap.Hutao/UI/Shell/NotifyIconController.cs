@@ -31,7 +31,7 @@ internal sealed partial class NotifyIconController : IDisposable
     private readonly NotifyIconXamlHostWindow xamlHostWindow;
     private readonly IServiceProvider serviceProvider;
     private readonly HutaoNativeNotifyIcon native;
-    private readonly nint handle;
+    private GCHandle<NotifyIconController> handle;
 
     private bool disposed;
 
@@ -56,7 +56,7 @@ internal sealed partial class NotifyIconController : IDisposable
         xamlHostWindow = new(serviceProvider);
         xamlHostWindow.MoveAndResize(default);
 
-        handle = GCHandle.ToIntPtr(GCHandle.Alloc(this));
+        handle = new(this);
     }
 
     public static Lock InitializationSyncRoot { get; } = new();
@@ -80,7 +80,7 @@ internal sealed partial class NotifyIconController : IDisposable
                 SentrySdk.CaptureException(ex);
             }
 
-            GCHandle.FromIntPtr(handle).Free();
+            handle.Dispose();
         }
     }
 
@@ -109,9 +109,9 @@ internal sealed partial class NotifyIconController : IDisposable
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
-    private static void OnNotifyIconCallback(HutaoNativeNotifyIconCallbackKind kind, RECT icon, POINT point, nint data)
+    private static void OnNotifyIconCallback(HutaoNativeNotifyIconCallbackKind kind, RECT icon, POINT point, GCHandle<NotifyIconController> data)
     {
-        if (GCHandle.FromIntPtr(data).Target is not NotifyIconController controller)
+        if (data.Target is not { } controller)
         {
             return;
         }

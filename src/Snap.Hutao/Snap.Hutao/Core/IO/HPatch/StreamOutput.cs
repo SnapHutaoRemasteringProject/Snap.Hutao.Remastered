@@ -7,31 +7,45 @@ using System.Runtime.InteropServices;
 
 namespace Snap.Hutao.Core.IO.HPatch;
 
-internal readonly unsafe struct StreamOutput
+internal unsafe struct StreamOutput : IDisposable
 {
 #pragma warning disable CS0169
 #pragma warning disable CS0649
-    public readonly nint Handle;
-    public readonly ulong Length;
-    public readonly delegate* unmanaged[Cdecl]<void*, ulong, byte*, byte*, BOOL> Read;
-    public readonly delegate* unmanaged[Cdecl]<void*, ulong, byte*, byte*, BOOL> Write;
+    private GCHandle handle;
+    private readonly ulong length;
+    private readonly delegate* unmanaged[Cdecl]<void*, ulong, byte*, byte*, BOOL> read;
+    private readonly delegate* unmanaged[Cdecl]<void*, ulong, byte*, byte*, BOOL> write;
 #pragma warning restore CS0649
 #pragma warning restore CS0169
 
     public StreamOutput(FileSegment file)
     {
-        Handle = file.Handle;
-        Length = (ulong)file.Length;
-        Read = &StreamIO.FileSegmentRead;
-        Write = &StreamIO.FileSegmentWrite;
+        handle = GCHandle.Alloc(file);
+        length = (ulong)file.Length;
+        read = &StreamIO.FileSegmentRead;
+        write = &StreamIO.FileSegmentWrite;
     }
 
     public StreamOutput(Stream stream)
     {
         Verify.Operation(stream.CanSeek, "Input stream must support seeking.");
-        Handle = GCHandle.ToIntPtr(GCHandle.Alloc(stream));
-        Length = (ulong)stream.Length;
-        Read = &StreamIO.StreamRead;
-        Write = &StreamIO.StreamWrite;
+        handle = GCHandle.Alloc(stream);
+        length = (ulong)stream.Length;
+        read = &StreamIO.StreamRead;
+        write = &StreamIO.StreamWrite;
+    }
+
+    public GCHandle<T> Handle<T>()
+        where T : class
+    {
+        return GCHandle<T>.FromIntPtr(GCHandle.ToIntPtr(handle));
+    }
+
+    public void Dispose()
+    {
+        if (handle.IsAllocated)
+        {
+            handle.Free();
+        }
     }
 }

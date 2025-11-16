@@ -19,41 +19,44 @@ namespace Snap.Hutao.Core.DependencyInjection;
 // ReSharper disable UnusedMember.Local
 internal static partial class ServiceCollectionExtension
 {
-    public static IServiceCollection AddConfiguredHttpClients(this IServiceCollection services)
-    {
-        services
-            .ConfigureHttpClientDefaults(clientBuilder =>
-            {
-                clientBuilder
-                    .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler())
-                    .ConfigurePrimaryHttpMessageHandler((handler, provider) =>
-                    {
-                        SocketsHttpHandler typedHandler = Unsafe.As<SocketsHttpHandler>(handler);
-                        typedHandler.UseProxy = true;
-                        typedHandler.Proxy = HttpProxyUsingSystemProxy.Instance;
-                    })
-                    .AddHttpMessageHandler<RetryHttpHandler>();
-            })
-            .AddHttpClients();
-
-        services
-            .AddHttpClient(GamePackageService.HttpClientName)
-            .ConfigureHttpClient(httpClient =>
-            {
-                httpClient.DefaultRequestVersion = HttpVersion.Version20;
-            })
-            .ConfigurePrimaryHttpMessageHandler((handler, provider) =>
-            {
-                SocketsHttpHandler typedHandler = Unsafe.As<SocketsHttpHandler>(handler);
-                typedHandler.ConnectTimeout = TimeSpan.FromSeconds(30);
-                typedHandler.MaxConnectionsPerServer = 8;
-            });
-
-        return services;
-    }
-
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static partial IServiceCollection AddHttpClients(this IServiceCollection services);
+
+    extension(IServiceCollection services)
+    {
+        public IServiceCollection AddConfiguredHttpClients()
+        {
+            services
+                .ConfigureHttpClientDefaults(clientBuilder =>
+                {
+                    clientBuilder
+                        .ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler())
+                        .ConfigurePrimaryHttpMessageHandler((handler, provider) =>
+                        {
+                            SocketsHttpHandler typedHandler = Unsafe.As<SocketsHttpHandler>(handler);
+                            typedHandler.UseProxy = true;
+                            typedHandler.Proxy = HttpProxyUsingSystemProxy.Instance;
+                        })
+                        .AddHttpMessageHandler<RetryHttpHandler>();
+                })
+                .AddHttpClients();
+
+            services
+                .AddHttpClient(GamePackageService.HttpClientName)
+                .ConfigureHttpClient(httpClient =>
+                {
+                    httpClient.DefaultRequestVersion = HttpVersion.Version20;
+                })
+                .ConfigurePrimaryHttpMessageHandler((handler, provider) =>
+                {
+                    SocketsHttpHandler typedHandler = Unsafe.As<SocketsHttpHandler>(handler);
+                    typedHandler.ConnectTimeout = TimeSpan.FromSeconds(30);
+                    typedHandler.MaxConnectionsPerServer = 8;
+                });
+
+            return services;
+        }
+    }
 
     [UsedImplicitly]
     private static void DefaultConfiguration(IServiceProvider serviceProvider, HttpClient client)

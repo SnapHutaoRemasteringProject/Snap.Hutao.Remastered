@@ -12,7 +12,6 @@ using Snap.Hutao.Web.WebView2;
 using Snap.Hutao.Win32.Foundation;
 using System.Collections.Immutable;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Snap.Hutao.UI.Xaml.View.Window.WebView2;
@@ -74,7 +73,7 @@ internal sealed partial class WebView2Window : Microsoft.UI.Xaml.Window,
         WindowUtilities.SetWindowIsEnabled(parentHwnd, false);
         base.Activate();
 
-        AppWindow.MoveThenResize(contentProvider.InitializePosition(AppWindow.GetFromWindowId(parentWindowId).GetRect(), this.GetRasterizationScale()));
+        AppWindow.MoveThenResize(contentProvider.InitializePosition(AppWindow.GetFromWindowId(parentWindowId).Rect, this.RasterizationScale));
     }
 
     public void OnWindowClosing(out bool cancel)
@@ -151,8 +150,12 @@ internal sealed partial class WebView2Window : Microsoft.UI.Xaml.Window,
             {
                 try
                 {
-                    RuntimeHelpers.EnsureSufficientExecutionStack();
-                    await WebView.EnsureCoreWebView2Async();
+                    CoreWebView2EnvironmentOptions options = new()
+                    {
+                        AdditionalBrowserArguments = "--do-not-de-elevate",
+                    };
+                    CoreWebView2Environment environment = await CoreWebView2Environment.CreateWithOptionsAsync(null, null, options);
+                    await WebView.EnsureCoreWebView2Async(environment);
                 }
                 catch (SEHException)
                 {

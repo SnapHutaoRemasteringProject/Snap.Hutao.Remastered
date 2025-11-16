@@ -12,7 +12,7 @@ internal sealed class LaunchExecutionBetterGenshinImpactAutomationHandler : Abst
 {
     public override async ValueTask ExecuteAsync(LaunchExecutionContext context)
     {
-        if (context.Process.IsRunning() && context.LaunchOptions.UsingBetterGenshinImpactAutomation.Value)
+        if (context.Process.IsRunning && context.LaunchOptions.UsingBetterGenshinImpactAutomation.Value)
         {
             await LaunchBetterGenshinImpactAsync(context).ConfigureAwait(false);
         }

@@ -43,10 +43,10 @@ internal sealed class GameProcessFactory
         }
 
         string gameFilePath = context.FileSystem.GameFilePath;
-        string gameDirectory = context.FileSystem.GetGameDirectory();
+        string gameDirectory = context.FileSystem.GameDirectory;
 
-        return HutaoRuntime.IsProcessElevated && launchOptions.IsIslandEnabled.Value
-            ? ProcessFactory.CreateSuspended(commandLine, gameFilePath, gameDirectory)
+        return launchOptions.IsIslandEnabled.Value
+            ? ProcessFactory.CreateUsingFullTrustSuspended(commandLine, gameFilePath, gameDirectory)
             : ProcessFactory.CreateUsingShellExecuteRunAs(commandLine, gameFilePath, gameDirectory);
     }
 
@@ -67,6 +67,6 @@ internal sealed class GameProcessFactory
             .AppendIf(useAuthTicket, "login_auth_ticket", authTicket, CommandLineArgumentPrefix.Equal)
             .ToString();
 
-        return ProcessFactory.CreateSuspended(commandLine, context.FileSystem.GameFilePath, context.FileSystem.GetGameDirectory());
+        return ProcessFactory.CreateSuspended(commandLine, context.FileSystem.GameFilePath, context.FileSystem.GameDirectory);
     }
 }

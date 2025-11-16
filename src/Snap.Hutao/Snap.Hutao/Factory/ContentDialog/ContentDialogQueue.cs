@@ -12,13 +12,15 @@ namespace Snap.Hutao.Factory.ContentDialog;
 [SuppressMessage("", "SH003")]
 [SuppressMessage("", "SH100")]
 [SuppressMessage("", "RS0030")]
-[ConstructorGenerated]
 internal sealed partial class ContentDialogQueue : IContentDialogQueue
 {
     private readonly AsyncLock dialogShowLock = new();
 
     private readonly ICurrentXamlWindowReference currentWindowReference;
     private readonly ITaskContext taskContext;
+
+    [GeneratedConstructor]
+    public partial ContentDialogQueue(IServiceProvider serviceProvider);
 
     public bool IsDialogShowing
     {
@@ -63,7 +65,7 @@ internal sealed partial class ContentDialogQueue : IContentDialogQueue
                 HutaoException.NotSupported("Dialog created without XamlRoot");
             }
 
-            if (contentDialog.XamlRoot != currentWindowReference.GetXamlRoot())
+            if (contentDialog.XamlRoot != currentWindowReference.XamlRoot)
             {
                 // User close the window on previous dialog, and this dialog still using old XamlRoot.
                 // And that's why we didn't use dialog's DispatcherQueue to switch thread either.

@@ -7,12 +7,14 @@ using Snap.Hutao.Core.LifeCycle;
 namespace Snap.Hutao.Factory.ContentDialog;
 
 // It's a view factory
-[ConstructorGenerated]
 [Service(ServiceLifetime.Singleton, typeof(IContentDialogFactory))]
 internal sealed partial class ContentDialogFactory : IContentDialogFactory
 {
     private readonly ICurrentXamlWindowReference currentWindowReference;
     private readonly IContentDialogQueue contentDialogQueue;
+
+    [GeneratedConstructor]
+    public partial ContentDialogFactory(IServiceProvider serviceProvider);
 
     public bool IsDialogShowing { get => contentDialogQueue.IsDialogShowing; }
 
@@ -24,12 +26,12 @@ internal sealed partial class ContentDialogFactory : IContentDialogFactory
 
         Microsoft.UI.Xaml.Controls.ContentDialog dialog = new()
         {
-            XamlRoot = currentWindowReference.GetXamlRoot(),
+            XamlRoot = currentWindowReference.XamlRoot,
             Title = title,
             Content = content,
             DefaultButton = ContentDialogButton.Primary,
             PrimaryButtonText = SH.ContentDialogConfirmPrimaryButtonText,
-            RequestedTheme = currentWindowReference.GetRequestedTheme(),
+            RequestedTheme = currentWindowReference.RequestedTheme,
         };
 
         return await EnqueueAndShowAsync(dialog).ShowTask.ConfigureAwait(false);
@@ -41,14 +43,14 @@ internal sealed partial class ContentDialogFactory : IContentDialogFactory
 
         Microsoft.UI.Xaml.Controls.ContentDialog dialog = new()
         {
-            XamlRoot = currentWindowReference.GetXamlRoot(),
+            XamlRoot = currentWindowReference.XamlRoot,
             Title = title,
             Content = content,
             DefaultButton = defaultButton,
             PrimaryButtonText = SH.ContentDialogConfirmPrimaryButtonText,
             CloseButtonText = SH.ContentDialogCancelCloseButtonText,
             IsPrimaryButtonEnabled = isPrimaryButtonEnabled,
-            RequestedTheme = currentWindowReference.GetRequestedTheme(),
+            RequestedTheme = currentWindowReference.RequestedTheme,
         };
 
         return await EnqueueAndShowAsync(dialog).ShowTask.ConfigureAwait(false);
@@ -60,10 +62,10 @@ internal sealed partial class ContentDialogFactory : IContentDialogFactory
 
         Microsoft.UI.Xaml.Controls.ContentDialog dialog = new()
         {
-            XamlRoot = currentWindowReference.GetXamlRoot(),
+            XamlRoot = currentWindowReference.XamlRoot,
             Title = title,
             Content = new ProgressBar { IsIndeterminate = true },
-            RequestedTheme = currentWindowReference.GetRequestedTheme(),
+            RequestedTheme = currentWindowReference.RequestedTheme,
         };
 
         return dialog;
@@ -75,8 +77,8 @@ internal sealed partial class ContentDialogFactory : IContentDialogFactory
         await TaskContext.SwitchToMainThreadAsync();
 
         TContentDialog contentDialog = ActivatorUtilities.CreateInstance<TContentDialog>(serviceProvider, parameters);
-        contentDialog.XamlRoot = currentWindowReference.GetXamlRoot();
-        contentDialog.RequestedTheme = currentWindowReference.GetRequestedTheme();
+        contentDialog.XamlRoot = currentWindowReference.XamlRoot;
+        contentDialog.RequestedTheme = currentWindowReference.RequestedTheme;
 
         return contentDialog;
     }

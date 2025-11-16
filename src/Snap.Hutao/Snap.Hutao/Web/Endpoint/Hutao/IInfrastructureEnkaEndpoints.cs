@@ -7,12 +7,12 @@ namespace Snap.Hutao.Web.Endpoint.Hutao;
 
 internal interface IInfrastructureEnkaEndpoints : IInfrastructureRootAccess
 {
-    public string Enka(PlayerUid uid)
+    string Enka(PlayerUid uid)
     {
         return $"{Root}/enka/{uid}";
     }
 
-    public string EnkaPlayerInfo(PlayerUid uid)
+    string EnkaPlayerInfo(PlayerUid uid)
     {
         return $"{Root}/enka/{uid}/info";
     }

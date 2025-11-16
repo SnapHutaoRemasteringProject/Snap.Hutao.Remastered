@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Test.BaseClassLibrary;
@@ -12,6 +13,8 @@ public class UnsafeAccessorTest
         TestClass test = new();
         int value = InternalGetInterfaceProperty(test);
         Assert.AreEqual(3, value);
+
+        IWebProxy proxy = ConstructSystemProxy(null);
     }
 
     [TestMethod]
@@ -27,10 +30,13 @@ public class UnsafeAccessorTest
 
     // private readonly int _offsetMinutes;
     [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_offsetMinutes")]
-    private static extern ref short RefValueGetFieldRef(ref DateTimeOffset dto);
+    private static extern ref int RefValueGetFieldRef(ref DateTimeOffset dto);
 
     [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_offsetMinutes")]
-    private static extern ref readonly short RefValueGetFieldRefReadonly(ref DateTimeOffset dto);
+    private static extern ref readonly int RefValueGetFieldRefReadonly(ref DateTimeOffset dto);
+
+    [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "ConstructSystemProxy")]
+    private extern static IWebProxy ConstructSystemProxy([UnsafeAccessorType("System.Net.Http.SystemProxyInfo, System.Net.Http")] object? c);
 
     internal interface ITestInterface
     {

@@ -28,7 +28,6 @@ using EntityUser = Snap.Hutao.Model.Entity.User;
 
 namespace Snap.Hutao.ViewModel.User;
 
-[ConstructorGenerated]
 [BindableCustomPropertyProvider]
 [Service(ServiceLifetime.Singleton)]
 internal sealed partial class UserViewModel : ObservableObject
@@ -40,6 +39,9 @@ internal sealed partial class UserViewModel : ObservableObject
     private readonly ITaskContext taskContext;
     private readonly IUserService userService;
     private readonly IMessenger messenger;
+
+    [GeneratedConstructor]
+    public partial UserViewModel(IServiceProvider serviceProvider);
 
     public partial RuntimeOptions RuntimeOptions { get; }
 
@@ -140,7 +142,7 @@ internal sealed partial class UserViewModel : ObservableObject
         SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Add oversea user", "UserViewModel.Command", [("source", "Third Party"), ("kind", kind.ToString())]));
 
         await taskContext.SwitchToMainThreadAsync();
-        if (currentXamlWindowReference.GetXamlRoot() is not { } xamlRoot)
+        if (currentXamlWindowReference.XamlRoot is not { } xamlRoot)
         {
             return;
         }

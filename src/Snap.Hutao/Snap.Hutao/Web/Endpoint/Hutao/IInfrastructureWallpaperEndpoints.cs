@@ -5,17 +5,17 @@ namespace Snap.Hutao.Web.Endpoint.Hutao;
 
 internal interface IInfrastructureWallpaperEndpoints : IInfrastructureRootAccess
 {
-    public string WallpaperBing()
+    string WallpaperBing()
     {
         return $"{Root}/wallpaper/bing";
     }
 
-    public string WallpaperGenshinLauncher()
+    string WallpaperGenshinLauncher()
     {
         return $"{Root}/wallpaper/hoyoplay";
     }
 
-    public string WallpaperToday()
+    string WallpaperToday()
     {
         return $"{Root}/wallpaper/today";
     }

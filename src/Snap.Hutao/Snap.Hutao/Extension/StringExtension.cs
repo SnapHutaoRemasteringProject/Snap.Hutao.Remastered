@@ -7,28 +7,31 @@ namespace Snap.Hutao.Extension;
 
 internal static class StringExtension
 {
-    public static bool EqualsAny(this string value, ReadOnlySpan<string> values, StringComparison stringComparison)
+    extension(string value)
     {
-        foreach (ref readonly string item in values)
+        public bool EqualsAny(ReadOnlySpan<string> values, StringComparison stringComparison)
         {
-            if (value.Equals(item, stringComparison))
+            foreach (ref readonly string item in values)
             {
-                return true;
+                if (value.Equals(item, stringComparison))
+                {
+                    return true;
+                }
             }
+
+            return false;
         }
 
-        return false;
-    }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Uri ToUri()
+        {
+            return new(value);
+        }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Uri ToUri(this string value)
-    {
-        return new(value);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string TrimEnd(this string source, string value)
-    {
-        return source.AsSpan().TrimEnd(value).ToString();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string TrimEnd(string value1)
+        {
+            return value.AsSpan().TrimEnd(value1).ToString();
+        }
     }
 }

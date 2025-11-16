@@ -9,68 +9,68 @@ namespace Snap.Hutao.Extension;
 
 internal static class ListExtension
 {
-    [Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public static double Average(this List<int> source)
+    extension(List<int> source)
     {
-        if (source.Count <= 0)
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+        public double Average()
         {
-            return 0;
-        }
+            if (source.Count <= 0)
+            {
+                return 0;
+            }
 
-        long sum = 0;
-        foreach (int item in source)
-        {
-            sum += item;
-        }
+            long sum = 0;
+            foreach (int item in source)
+            {
+                sum += item;
+            }
 
-        return (double)sum / source.Count;
+            return (double)sum / source.Count;
+        }
     }
 
-    [Pure]
-    public static T? BinarySearch<TItem, T>(this List<T> list, TItem item, Func<TItem, T, int> compare)
+    extension<TSource>(List<TSource> source)
+    {
+        [Pure]
+        public List<TSource> GetRange(in Range range)
+        {
+            (int start, int length) = range.GetOffsetAndLength(source.Count);
+            return source.GetRange(start, length);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public List<TSource> SortBy<TKey>(Func<TSource, TKey> keySelector)
+            where TKey : IComparable
+        {
+            source.Sort((left, right) => keySelector(left).CompareTo(keySelector(right)));
+            return source;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        public List<TSource> SortByDescending<TKey>(Func<TSource, TKey> keySelector)
+            where TKey : IComparable
+        {
+            source.Sort((left, right) => keySelector(right).CompareTo(keySelector(left)));
+            return source;
+        }
+    }
+
+    extension<T>(List<T> list)
         where T : class
     {
-#if NET10_0_OR_GREATER
-        return CollectionsMarshal.AsSpan(list).BinarySearch(item, compare);
-#error Remove this when .NET 10.0 is available
-#else
-        return SpanExtension.BinarySearch(CollectionsMarshal.AsSpan(list), item, compare);
-#endif
+        [Pure]
+        public T? BinarySearch<TItem>(TItem item, Func<TItem, T, int> compare)
+        {
+            return CollectionsMarshal.AsSpan(list).BinarySearch(item, compare);
+        }
     }
 
-    [Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static List<TSource> EmptyIfNull<TSource>(this List<TSource>? source)
+    extension<T>(IList<T> collection)
     {
-        return source ?? [];
-    }
-
-    [Pure]
-    public static List<T> GetRange<T>(this List<T> list, in Range range)
-    {
-        (int start, int length) = range.GetOffsetAndLength(list.Count);
-        return list.GetRange(start, length);
-    }
-
-    public static void RemoveLast<T>(this IList<T> collection)
-    {
-        collection.RemoveAt(collection.Count - 1);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static List<TSource> SortBy<TSource, TKey>(this List<TSource> list, Func<TSource, TKey> keySelector)
-        where TKey : IComparable
-    {
-        list.Sort((left, right) => keySelector(left).CompareTo(keySelector(right)));
-        return list;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-    public static List<TSource> SortByDescending<TSource, TKey>(this List<TSource> list, Func<TSource, TKey> keySelector)
-        where TKey : IComparable
-    {
-        list.Sort((left, right) => keySelector(right).CompareTo(keySelector(left)));
-        return list;
+        public void RemoveLast()
+        {
+            collection.RemoveAt(collection.Count - 1);
+        }
     }
 }

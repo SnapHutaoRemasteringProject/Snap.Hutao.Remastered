@@ -183,7 +183,7 @@ internal static class OfflineCalculator
             return;
         }
 
-        foreach (int upgradeIndex in Enumerable.Range((int)currentLevel, (int)(targetLevel - currentLevel)))
+        foreach (int upgradeIndex in Enumerable.Sequence((int)currentLevel, (int)(targetLevel - 1), 1))
         {
             // 添加摩拉消耗
             AddOrUpdateItem(itemCounts, MaterialIds.Mora, (uint)TalentMoraCosts[upgradeIndex]);

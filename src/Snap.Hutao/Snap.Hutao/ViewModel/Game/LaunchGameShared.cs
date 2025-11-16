@@ -20,7 +20,6 @@ using Snap.Hutao.ViewModel.User;
 namespace Snap.Hutao.ViewModel.Game;
 
 [Service(ServiceLifetime.Singleton)]
-[ConstructorGenerated]
 internal sealed partial class LaunchGameShared
 {
     private readonly IContentDialogFactory contentDialogFactory;
@@ -32,6 +31,9 @@ internal sealed partial class LaunchGameShared
     private readonly IMessenger messenger;
 
     private bool resuming;
+
+    [GeneratedConstructor]
+    public partial LaunchGameShared(IServiceProvider serviceProvoder);
 
     public LaunchScheme? GetCurrentLaunchSchemeFromConfigurationFile(bool showInfo = true)
     {
@@ -214,7 +216,7 @@ internal sealed partial class LaunchGameShared
                     .CreateInstanceAsync<LaunchGameConfigurationFixDialog>(scope.ServiceProvider)
                     .ConfigureAwait(false);
 
-                bool isOversea = gameFileSystem.IsExecutableOversea();
+                bool isOversea = gameFileSystem.IsExecutableOversea;
 
                 await taskContext.SwitchToMainThreadAsync();
 
@@ -226,7 +228,7 @@ internal sealed partial class LaunchGameShared
                     return;
                 }
 
-                _ = GameConfiguration.Patch(launchScheme, gameFileSystem.GetScriptVersionFilePath(), gameFileSystem.GetGameConfigurationFilePath())
+                _ = GameConfiguration.Patch(launchScheme, gameFileSystem.ScriptVersionFilePath, gameFileSystem.GameConfigurationFilePath)
                     ? messenger.Send(InfoBarMessage.Success(SH.ViewModelLaunchGameFixConfigurationFileSucceed))
                     : messenger.Send(InfoBarMessage.Error(SH.ViewModelLaunchGameFixConfigurationFileFailed));
             }

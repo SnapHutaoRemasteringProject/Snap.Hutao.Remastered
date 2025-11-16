@@ -130,6 +130,7 @@ internal class MiHoYoJSBridge
         }
 
         await taskContext.SwitchToMainThreadAsync();
+        ArgumentNullException.ThrowIfNull(coreWebView2);
         coreWebView2.SetCookie(userAndUid.User.CookieToken, userAndUid.User.LToken);
 
         ArgumentNullException.ThrowIfNull(userAndUid.User.CookieToken);
@@ -409,7 +410,7 @@ internal class MiHoYoJSBridge
         await taskContext.SwitchToMainThreadAsync();
 
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (coreWebView2 is null || coreWebView2.IsDisposed())
+        if (coreWebView2 is null || coreWebView2.IsDisposed)
         {
             return string.Empty;
         }
@@ -467,7 +468,7 @@ internal class MiHoYoJSBridge
 
     private async ValueTask<IJsBridgeResult?> TryGetJsResultFromJsParamAsync(JsParam param)
     {
-        if (coreWebView2.IsDisposed())
+        if (coreWebView2.IsDisposed)
         {
             return default;
         }

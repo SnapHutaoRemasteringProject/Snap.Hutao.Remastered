@@ -8,7 +8,6 @@ using Snap.Hutao.Core.Security.Principal;
 using Snap.Hutao.Win32;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using WinRT;
 
@@ -28,23 +27,6 @@ public static partial class Bootstrap
         Debug.Assert(mutex is not null);
         DisposableMarshal.DisposeAndClear(ref mutex);
     }
-
-    [ModuleInitializer]
-    internal static void InitializeModule()
-    {
-        // UndockedRegFreeWinRT
-        // Set base directory env var for PublishSingleFile support (referenced by SxS redirection)
-        Environment.SetEnvironmentVariable("MICROSOFT_WINDOWSAPPRUNTIME_BASE_DIRECTORY", AppContext.BaseDirectory);
-
-        // No error handling needed as the target function does nothing (just {return S_OK}).
-        // It's the act of calling the function causing the DllImport to load the DLL that
-        // matters. This provides the moral equivalent of a native DLL's Import Address
-        // Table (IAT) have an entry that's resolved when this module is loaded.
-        _ = WindowsAppRuntimeEnsureIsLoaded();
-    }
-
-    [LibraryImport("Microsoft.WindowsAppRuntime.dll", EntryPoint = "WindowsAppRuntime_EnsureIsLoaded")]
-    private static partial int WindowsAppRuntimeEnsureIsLoaded();
 
     [STAThread]
     private static void Main(string[] args)

@@ -18,7 +18,6 @@ internal sealed class DefaultLaunchExecutionInvoker : AbstractLaunchExecutionInv
             new LaunchExecutionWindowsHDRHandler(),
             new LaunchExecutionGameProcessStartHandler(),
             new LaunchExecutionGameIslandHandler(resume: false),
-            new LaunchExecutionArbitraryLibraryHandler(),
             new LaunchExecutionOverlayHandler(),
             new LaunchExecutionStarwardPlayTimeStatisticsHandler(),
             new LaunchExecutionBetterGenshinImpactAutomationHandler()

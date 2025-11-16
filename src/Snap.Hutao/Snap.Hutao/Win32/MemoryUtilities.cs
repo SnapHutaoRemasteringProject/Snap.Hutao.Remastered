@@ -13,24 +13,19 @@ internal static unsafe class MemoryUtilities
     {
         fixed (char* pModuleName = moduleName)
         {
-            GCHandle actionHandle = GCHandle.Alloc(action);
-            try
+            using (GCHandle<Action<Span<byte>>> actionHandle = new(action))
             {
-                MemoryUtilitiesPatch(pModuleName, offset, size, PatchCallback.Create(&MemoryUtilitiesPatchCallback), GCHandle.ToIntPtr(actionHandle));
-            }
-            finally
-            {
-                actionHandle.Free();
+                MemoryUtilitiesPatch(pModuleName, offset, size, PatchCallback.Create(&MemoryUtilitiesPatchCallback), actionHandle);
             }
         }
     }
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
-    private static HRESULT MemoryUtilitiesPatchCallback(byte* ptr, int size, nint state)
+    private static HRESULT MemoryUtilitiesPatchCallback(byte* ptr, int size, GCHandle<Action<Span<byte>>> state)
     {
         try
         {
-            Action<Span<byte>>? action = Unsafe.As<Action<Span<byte>>>(GCHandle.FromIntPtr(state).Target);
+            Action<Span<byte>>? action = state.Target;
             Span<byte> span = new(ptr, size);
             action?.Invoke(span);
             return 0; // S_OK
@@ -42,18 +37,18 @@ internal static unsafe class MemoryUtilities
     }
 
     [DllImport(HutaoNativeMethods.DllName, ExactSpelling = true)]
-    private static extern HRESULT MemoryUtilitiesPatch(PCWSTR moduleName, uint offset, int size, PatchCallback callback, nint state);
+    private static extern HRESULT MemoryUtilitiesPatch(PCWSTR moduleName, uint offset, int size, PatchCallback callback, GCHandle<Action<Span<byte>>> state);
 
     private readonly struct PatchCallback
     {
-        private readonly delegate* unmanaged[Stdcall]<byte*, int, nint, HRESULT> value;
+        private readonly delegate* unmanaged[Stdcall]<byte*, int, GCHandle<Action<Span<byte>>>, HRESULT> value;
 
-        private PatchCallback(delegate* unmanaged[Stdcall]<byte*, int, nint, HRESULT>  value)
+        private PatchCallback(delegate* unmanaged[Stdcall]<byte*, int, GCHandle<Action<Span<byte>>>, HRESULT>  value)
         {
             this.value = value;
         }
 
-        public static PatchCallback Create(delegate* unmanaged[Stdcall]<byte*, int, nint, HRESULT> value)
+        public static PatchCallback Create(delegate* unmanaged[Stdcall]<byte*, int, GCHandle<Action<Span<byte>>>, HRESULT> value)
         {
             return new(value);
         }

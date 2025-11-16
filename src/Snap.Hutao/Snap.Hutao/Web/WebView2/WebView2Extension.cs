@@ -9,47 +9,45 @@ namespace Snap.Hutao.Web.WebView2;
 
 internal static class WebView2Extension
 {
-    [Conditional("RELEASE")]
-    public static void DisableDevToolsForReleaseBuild(this CoreWebView2 webView)
+    extension(CoreWebView2 webView)
     {
-        CoreWebView2Settings settings = webView.Settings;
-        settings.AreDefaultContextMenusEnabled = false;
-        settings.AreDevToolsEnabled = false;
+        [Conditional("RELEASE")]
+        public void DisableDevToolsForReleaseBuild()
+        {
+            CoreWebView2Settings settings = webView.Settings;
+            settings.AreDefaultContextMenusEnabled = false;
+            settings.AreDevToolsEnabled = false;
 
-        try
-        {
-            settings.AreBrowserAcceleratorKeysEnabled = false; // ICoreWebView2Settings3
-        }
-        catch (Exception ex)
-        {
-            if (ex.HResult is HRESULT.E_NOINTERFACE)
+            try
             {
-                return;
+                settings.AreBrowserAcceleratorKeysEnabled = false; // ICoreWebView2Settings3
             }
+            catch (Exception ex)
+            {
+                if (ex.HResult is HRESULT.E_NOINTERFACE)
+                {
+                    return;
+                }
 
-            throw;
+                throw;
+            }
         }
-    }
 
-    public static void DisableAutoCompletion(this CoreWebView2 webView)
-    {
-        CoreWebView2Settings settings = webView.Settings;
-        settings.IsGeneralAutofillEnabled = false;
-        settings.IsPasswordAutosaveEnabled = false;
-    }
-
-    public static async ValueTask DeleteCookiesAsync(this CoreWebView2 webView, string url)
-    {
-        CoreWebView2CookieManager manager = webView.CookieManager;
-        IReadOnlyList<CoreWebView2Cookie> cookies = await manager.GetCookiesAsync(url);
-        foreach (CoreWebView2Cookie item in cookies)
+        public void DisableAutoCompletion()
         {
-            manager.DeleteCookie(item);
+            CoreWebView2Settings settings = webView.Settings;
+            settings.IsGeneralAutofillEnabled = false;
+            settings.IsPasswordAutosaveEnabled = false;
         }
-    }
 
-    public static bool IsDisposed(this Microsoft.UI.Xaml.Controls.WebView2 webView2)
-    {
-        return WinRTExtension.IsDisposed(webView2);
+        public async ValueTask DeleteCookiesAsync(string url)
+        {
+            CoreWebView2CookieManager manager = webView.CookieManager;
+            IReadOnlyList<CoreWebView2Cookie> cookies = await manager.GetCookiesAsync(url);
+            foreach (CoreWebView2Cookie item in cookies)
+            {
+                manager.DeleteCookie(item);
+            }
+        }
     }
 }

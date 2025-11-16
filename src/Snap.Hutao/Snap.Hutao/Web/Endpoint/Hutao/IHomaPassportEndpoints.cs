@@ -5,52 +5,52 @@ namespace Snap.Hutao.Web.Endpoint.Hutao;
 
 internal interface IHomaPassportEndpoints : IHomaRootAccess
 {
-    public string PassportVerify()
+    string PassportVerify()
     {
         return $"{Root}/Passport/v2/Verify";
     }
 
-    public string PassportRegister()
+    string PassportRegister()
     {
         return $"{Root}/Passport/v2/Register";
     }
 
-    public string PassportCancel()
+    string PassportCancel()
     {
         return $"{Root}/Passport/v2/Cancel";
     }
 
-    public string PassportResetUserName()
+    string PassportResetUserName()
     {
         return $"{Root}/Passport/v2/ResetUsername";
     }
 
-    public string PassportResetPassword()
+    string PassportResetPassword()
     {
         return $"{Root}/Passport/v2/ResetPassword";
     }
 
-    public string PassportLogin()
+    string PassportLogin()
     {
         return $"{Root}/Passport/v2/Login";
     }
 
-    public string PassportUserInfo()
+    string PassportUserInfo()
     {
         return $"{Root}/Passport/v2/UserInfo";
     }
 
-    public string PassportRefreshToken()
+    string PassportRefreshToken()
     {
         return $"{Root}/Passport/v2/RefreshToken";
     }
 
-    public string PassportRevokeToken()
+    string PassportRevokeToken()
     {
         return $"{Root}/Passport/v2/RevokeToken";
     }
 
-    public string PassportRevokeAllTokens()
+    string PassportRevokeAllTokens()
     {
         return $"{Root}/Passport/v2/RevokeAllTokens";
     }

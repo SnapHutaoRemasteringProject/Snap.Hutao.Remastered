@@ -7,69 +7,55 @@ namespace Snap.Hutao.Core.Abstraction;
 
 internal static class BuilderExtension
 {
-    [DebuggerStepThrough]
-    public static T Configure<T>(this T builder, Action<T> configure)
+    extension<T>(T builder)
         where T : class, IBuilder
     {
-        ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(configure);
-
-        configure(builder);
-        return builder;
-    }
-
-    [DebuggerStepThrough]
-    public static unsafe T Configure<T>(this T builder, delegate*<T, void> configure)
-        where T : class, IBuilder
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(configure);
-
-        configure(builder);
-        return builder;
-    }
-
-    [DebuggerStepThrough]
-    public static T If<T>(this T builder, bool condition, Action<T> action)
-        where T : class, IBuilder
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(action);
-
-        if (condition)
+        [DebuggerStepThrough]
+        public T Configure(Action<T> configure)
         {
-            action(builder);
+            ArgumentNullException.ThrowIfNull(builder);
+            ArgumentNullException.ThrowIfNull(configure);
+
+            configure(builder);
+            return builder;
         }
 
-        return builder;
-    }
-
-    [DebuggerStepThrough]
-    public static unsafe T If<T>(this T builder, bool condition, delegate*<T, void> action)
-        where T : class, IBuilder
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(action);
-
-        if (condition)
+        [DebuggerStepThrough]
+        public unsafe T Configure(delegate*<T, void> configure)
         {
-            action(builder);
+            ArgumentNullException.ThrowIfNull(builder);
+            ArgumentNullException.ThrowIfNull(configure);
+
+            configure(builder);
+            return builder;
         }
 
-        return builder;
-    }
+        [DebuggerStepThrough]
+        public T If(bool condition, Action<T> action)
+        {
+            ArgumentNullException.ThrowIfNull(builder);
+            ArgumentNullException.ThrowIfNull(action);
 
-    [DebuggerStepThrough]
-    public static T IfNot<T>(this T builder, bool condition, Action<T> action)
-        where T : class, IBuilder
-    {
-        return builder.If(!condition, action);
-    }
+            if (condition)
+            {
+                action(builder);
+            }
 
-    [DebuggerStepThrough]
-    public static unsafe T IfNot<T>(this T builder, bool condition, delegate*<T, void> action)
-        where T : class, IBuilder
-    {
-        return builder.If(!condition, action);
+            return builder;
+        }
+
+        [DebuggerStepThrough]
+        public unsafe T If(bool condition, delegate*<T, void> action)
+        {
+            ArgumentNullException.ThrowIfNull(builder);
+            ArgumentNullException.ThrowIfNull(action);
+
+            if (condition)
+            {
+                action(builder);
+            }
+
+            return builder;
+        }
     }
 }

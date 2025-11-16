@@ -9,11 +9,13 @@ using AvatarView = Snap.Hutao.ViewModel.Complex.AvatarView;
 
 namespace Snap.Hutao.Service.Hutao;
 
-[ConstructorGenerated]
 [Service(ServiceLifetime.Singleton, typeof(IHutaoRoleCombatStatisticsCache))]
 internal sealed partial class HutaoRoleCombatStatisticsCache : StatisticsCache, IHutaoRoleCombatStatisticsCache
 {
     private readonly IServiceProvider serviceProvider;
+
+    [GeneratedConstructor]
+    public partial HutaoRoleCombatStatisticsCache(IServiceProvider serviceProvider);
 
     public int RecordTotal { get; private set; }
 
@@ -35,6 +37,6 @@ internal sealed partial class HutaoRoleCombatStatisticsCache : StatisticsCache, 
         }
 
         RecordTotal = raw.RecordTotal;
-        AvatarAppearances = [.. CurrentLeftJoinLast(raw.BackupAvatarRates.EmptyIfDefault().OrderByDescending(ir => ir.Rate), default, data => data.Item, (data, dataLast) => new AvatarView(context.GetAvatar(data.Item), data.Rate, dataLast?.Rate))];
+        AvatarAppearances = [.. CurrentJoinLast(raw.BackupAvatarRates.EmptyIfDefault().OrderByDescending(ir => ir.Rate), default, data => data.Item, (data, dataLast) => new AvatarView(context.GetAvatar(data.Item), data.Rate, dataLast?.Rate))];
     }
 }

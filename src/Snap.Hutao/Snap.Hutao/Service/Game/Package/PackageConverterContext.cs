@@ -38,8 +38,8 @@ internal sealed class PackageConverterContext
             ? (YuanShenData, GenshinImpactData)
             : (GenshinImpactData, YuanShenData);
 
-        FromDataFolder = Path.Combine(fileSystem.GetGameDirectory(), FromDataFolderName);
-        ToDataFolder = Path.Combine(fileSystem.GetGameDirectory(), ToDataFolderName);
+        FromDataFolder = Path.Combine(fileSystem.GameDirectory, FromDataFolderName);
+        ToDataFolder = Path.Combine(fileSystem.GameDirectory, ToDataFolderName);
     }
 
     public ParallelOptions ParallelOptions { get; }
@@ -88,7 +88,7 @@ internal sealed class PackageConverterContext
 
     public string GetGameFolderFilePath(string filePath)
     {
-        return Path.Combine(GameFileSystem.GetGameDirectory(), filePath);
+        return Path.Combine(GameFileSystem.GameDirectory, filePath);
     }
 
     [SuppressMessage("", "SH003")]

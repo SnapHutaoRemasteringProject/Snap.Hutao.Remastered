@@ -19,13 +19,13 @@
                             Grid.Row="0"
                             Padding="8"
                             Style="{ThemeResource AcrylicBorderCardStyle}">
-                            <shuxct:DescriptionTextBlock Description="{TemplateBinding LinkName}"/>
+                            <shuxct:DescriptionTextBlock Description="{TemplateBinding LinkName}" LinkContext="{TemplateBinding LinkContext}"/>
                         </Border>
                         <Border
                             Grid.Row="1"
                             Padding="8"
                             Style="{ThemeResource AcrylicBorderCardStyle}">
-                            <shuxct:DescriptionTextBlock Description="{TemplateBinding LinkDescription}"/>
+                            <shuxct:DescriptionTextBlock Description="{TemplateBinding LinkDescription}" LinkContext="{TemplateBinding LinkContext}"/>
                         </Border>
                     </Grid>
                 </ControlTemplate>

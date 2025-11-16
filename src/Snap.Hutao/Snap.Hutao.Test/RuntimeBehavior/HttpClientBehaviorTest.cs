@@ -1,6 +1,10 @@
+using System;
 using System.Drawing;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Reflection;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +19,11 @@ public sealed class HttpClientBehaviorTest
     [TestMethod]
     public async Task RetrySendHttpRequestMessage()
     {
+        foreach (Type nestType in typeof(HttpContent).GetNestedTypes(BindingFlags.NonPublic))
+        {
+            Console.WriteLine(nestType.AssemblyQualifiedName);
+        }
+
         using (HttpClient httpClient = new())
         {
             HttpRequestMessage requestMessage = new(HttpMethod.Post, "https://jsonplaceholder.typicode.com/posts");

@@ -7,15 +7,18 @@ namespace Snap.Hutao.Extension;
 
 internal static class NameValueCollectionExtension
 {
-    public static bool TryGetSingleValue(this NameValueCollection collection, string name, [NotNullWhen(true)] out string? value)
+    extension(NameValueCollection collection)
     {
-        if (collection.GetValues(name) is [{ } single])
+        public bool TryGetSingleValue(string name, [NotNullWhen(true)] out string? value)
         {
-            value = single;
-            return true;
-        }
+            if (collection.GetValues(name) is [{ } single])
+            {
+                value = single;
+                return true;
+            }
 
-        value = string.Empty;
-        return false;
+            value = string.Empty;
+            return false;
+        }
     }
 }

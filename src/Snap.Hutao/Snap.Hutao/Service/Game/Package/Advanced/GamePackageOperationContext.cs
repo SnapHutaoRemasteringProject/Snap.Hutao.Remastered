@@ -18,11 +18,11 @@ internal sealed class GamePackageOperationContext
         Asset = serviceProvider.GetRequiredService<IDriverMediaTypeAwareFactory<IGameAssetOperation>>().Create(string.Empty);
         GameFileSystem = gameFileSystem;
 
-        EffectiveGameDirectory = extractDirectory ?? gameFileSystem.GetGameDirectory();
+        EffectiveGameDirectory = extractDirectory ?? gameFileSystem.GameDirectory;
 
         EffectiveChunksDirectory = kind is GamePackageOperationKind.Verify
-            ? Path.Combine(gameFileSystem.GetChunksDirectory(), "repair")
-            : gameFileSystem.GetChunksDirectory();
+            ? Path.Combine(gameFileSystem.ChunksDirectory, "repair")
+            : gameFileSystem.ChunksDirectory;
     }
 
     public GamePackageOperationKind Kind { get; }

@@ -5,12 +5,12 @@ namespace Snap.Hutao.Web.Endpoint.Hutao;
 
 internal interface IInfrastructurePatchEndpoints : IInfrastructureRootAccess
 {
-    public string PatchYaeAchievement()
+    string PatchYaeAchievement()
     {
         return $"{Root}/patch/yae";
     }
 
-    public string PatchSnapHutao()
+    string PatchSnapHutao()
     {
         return $"{Root}/patch/hutao";
     }

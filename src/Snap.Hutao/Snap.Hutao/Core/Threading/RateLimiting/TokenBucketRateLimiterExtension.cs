@@ -8,32 +8,35 @@ namespace Snap.Hutao.Core.Threading.RateLimiting;
 
 internal static class TokenBucketRateLimiterExtension
 {
-    // IMPORTANT: acquired can be none 0 values if false is returned
-    public static bool TryAcquire(this TokenBucketRateLimiter rateLimiter, int permits, out int acquired, out TimeSpan retryAfter)
+    extension(TokenBucketRateLimiter rateLimiter)
     {
-        lock (PrivateGetLock(rateLimiter))
+        // IMPORTANT: acquired can be none 0 values if false is returned
+        public bool TryAcquire(int permits, out int acquired, out TimeSpan retryAfter)
         {
-            acquired = (int)Math.Min(permits, PrivateGetTokenCount(rateLimiter));
-
-            using (RateLimitLease lease = rateLimiter.AttemptAcquire(acquired))
+            lock (PrivateGetLock(rateLimiter))
             {
-                lease.TryGetMetadata(MetadataName.RetryAfter, out retryAfter);
-                return lease.IsAcquired;
+                acquired = (int)Math.Min(permits, PrivateGetTokenCount(rateLimiter));
+
+                using (RateLimitLease lease = rateLimiter.AttemptAcquire(acquired))
+                {
+                    lease.TryGetMetadata(MetadataName.RetryAfter, out retryAfter);
+                    return lease.IsAcquired;
+                }
             }
         }
-    }
 
-    public static void Replenish(this TokenBucketRateLimiter rateLimiter, int permits)
-    {
-        if (permits <= 0)
+        public void Replenish(int permits)
         {
-            return;
-        }
+            if (permits <= 0)
+            {
+                return;
+            }
 
-        lock (PrivateGetLock(rateLimiter))
-        {
-            ref double tokenCount = ref PrivateGetTokenCount(rateLimiter);
-            tokenCount = Math.Min(PrivateGetOptions(rateLimiter).TokenLimit, tokenCount + permits);
+            lock (PrivateGetLock(rateLimiter))
+            {
+                ref double tokenCount = ref PrivateGetTokenCount(rateLimiter);
+                tokenCount = Math.Min(PrivateGetOptions(rateLimiter).TokenLimit, tokenCount + permits);
+            }
         }
     }
 

@@ -29,7 +29,7 @@ internal static class XamlWindowRegionRects
         {
             FrameworkElement element = xamlWindow.TitleBarCaptionAccess;
             Point position = element.TransformToVisual(window.Content).TransformPoint(default);
-            RectInt32 rect = RectInt32Convert.RectInt32(position, element.ActualSize).Scale(window.GetRasterizationScale());
+            RectInt32 rect = RectInt32Convert.RectInt32(position, element.ActualSize).Scale(window.RasterizationScale);
             inputNonClientPointerSource.SetRegionRects(NonClientRegionKind.Caption, [rect]);
         }
 
@@ -42,9 +42,9 @@ internal static class XamlWindowRegionRects
             }
 
             Point position = element.TransformToVisual(window.Content).TransformPoint(default);
-            RectInt32 rect = RectInt32Convert.RectInt32(position, element.ActualSize).Scale(window.GetRasterizationScale());
+            RectInt32 rect = RectInt32Convert.RectInt32(position, element.ActualSize).Scale(window.RasterizationScale);
 
-            if (rect.Size() > 0)
+            if (rect.Size > 0)
             {
                 passthrough.Add(rect);
             }

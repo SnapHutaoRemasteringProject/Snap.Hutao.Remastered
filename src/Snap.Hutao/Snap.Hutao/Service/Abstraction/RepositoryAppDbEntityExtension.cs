@@ -8,21 +8,26 @@ namespace Snap.Hutao.Service.Abstraction;
 
 internal static class RepositoryAppDbEntityExtension
 {
-    public static int DeleteByInnerId<TEntity>(this IRepository<TEntity> repository, TEntity entity)
+    extension<TEntity>(IRepository<TEntity> repository)
         where TEntity : class, IAppDbEntity
     {
-        return repository.DeleteByInnerId(entity.InnerId);
+        public int DeleteByInnerId(TEntity entity)
+        {
+            return repository.DeleteByInnerId(entity.InnerId);
+        }
+
+        public int DeleteByInnerId(Guid innerId)
+        {
+            return repository.Delete(e => e.InnerId == innerId);
+        }
     }
 
-    public static int DeleteByInnerId<TEntity>(this IRepository<TEntity> repository, Guid innerId)
-        where TEntity : class, IAppDbEntity
-    {
-        return repository.Delete(e => e.InnerId == innerId);
-    }
-
-    public static ImmutableArray<TEntity> ImmutableArrayByArchiveId<TEntity>(this IRepository<TEntity> repository, Guid archiveId)
+    extension<TEntity>(IRepository<TEntity> repository)
         where TEntity : class, IAppDbEntityHasArchive
     {
-        return repository.Query(query => query.Where(e => e.ArchiveId == archiveId).ToImmutableArray());
+        public ImmutableArray<TEntity> ImmutableArrayByArchiveId(Guid archiveId)
+        {
+            return repository.Query(query => query.Where(e => e.ArchiveId == archiveId).ToImmutableArray());
+        }
     }
 }

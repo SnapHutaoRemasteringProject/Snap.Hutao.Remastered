@@ -11,7 +11,7 @@ internal sealed class LaunchExecutionStarwardPlayTimeStatisticsHandler : Abstrac
 {
     public override async ValueTask ExecuteAsync(LaunchExecutionContext context)
     {
-        if (context.Process.IsRunning() && context.LaunchOptions.UsingStarwardPlayTimeStatistics.Value)
+        if (context.Process.IsRunning && context.LaunchOptions.UsingStarwardPlayTimeStatistics.Value)
         {
             await LaunchStarwardForPlayTimeStatisticsAsync(context).ConfigureAwait(false);
         }

@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Windows.Globalization;
 using Quartz;
 using Snap.Hutao.Core.Logging;
 using Snap.Hutao.Service;
@@ -10,7 +11,6 @@ using Snap.Hutao.Web.Response;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Windows.Globalization;
 
 namespace Snap.Hutao.Core.DependencyInjection;
 
@@ -55,39 +55,42 @@ internal static class DependencyInjection
         return serviceProvider;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void InitializeCulture(this IServiceProvider serviceProvider)
+    extension(IServiceProvider serviceProvider)
     {
-        CultureOptions cultureOptions = serviceProvider.GetRequiredService<CultureOptions>();
-        cultureOptions.SystemCulture = CultureInfo.CurrentCulture;
-
-        CultureInfo cultureInfo = cultureOptions.CurrentCulture.Value;
-
-        CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-        CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-        CultureInfo.CurrentCulture = cultureInfo;
-        CultureInfo.CurrentUICulture = cultureInfo;
-
-        try
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void InitializeCulture()
         {
-            ApplicationLanguages.PrimaryLanguageOverride = cultureInfo.Name;
+            CultureOptions cultureOptions = serviceProvider.GetRequiredService<CultureOptions>();
+            cultureOptions.SystemCulture = CultureInfo.CurrentCulture;
+
+            CultureInfo cultureInfo = cultureOptions.CurrentCulture.Value;
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+            CultureInfo.CurrentCulture = cultureInfo;
+            CultureInfo.CurrentUICulture = cultureInfo;
+
+            try
+            {
+                ApplicationLanguages.PrimaryLanguageOverride = cultureInfo.Name;
+            }
+            catch (COMException)
+            {
+                // 0x80070032 ERROR_NOT_SUPPORTED
+            }
+
+            SH.Culture = cultureInfo;
+            XamlApplicationLifetime.CultureInfoInitialized = true;
+
+            ILogger<CultureOptions> logger = serviceProvider.GetRequiredService<ILogger<CultureOptions>>();
+            logger.LogDebug("System Culture: {System}", cultureOptions.SystemCulture);
+            logger.LogDebug("Current Culture: {Current}", cultureInfo);
         }
-        catch (COMException)
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void InitializeNotification()
         {
-            // 0x80070032 ERROR_NOT_SUPPORTED
+            _ = serviceProvider.GetRequiredService<IAppNotificationLifeTime>();
         }
-
-        SH.Culture = cultureInfo;
-        XamlApplicationLifetime.CultureInfoInitialized = true;
-
-        ILogger<CultureOptions> logger = serviceProvider.GetRequiredService<ILogger<CultureOptions>>();
-        logger.LogDebug("System Culture: {System}", cultureOptions.SystemCulture);
-        logger.LogDebug("Current Culture: {Current}", cultureInfo);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void InitializeNotification(this IServiceProvider serviceProvider)
-    {
-        _ = serviceProvider.GetRequiredService<IAppNotificationLifeTime>();
     }
 }

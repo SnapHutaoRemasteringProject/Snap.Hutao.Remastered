@@ -10,7 +10,6 @@ using EntityUser = Snap.Hutao.Model.Entity.User;
 
 namespace Snap.Hutao.Service.User;
 
-[ConstructorGenerated]
 [Service(ServiceLifetime.Singleton, typeof(IUserCollectionService))]
 internal sealed partial class UserCollectionService : IUserCollectionService, IDisposable
 {
@@ -23,6 +22,9 @@ internal sealed partial class UserCollectionService : IUserCollectionService, ID
     private readonly AsyncLock collectionLocker = new();
 
     private AdvancedDbCollectionView<BindingUser, EntityUser>? users;
+
+    [GeneratedConstructor]
+    public partial UserCollectionService(IServiceProvider serviceProvider);
 
     public async ValueTask<AdvancedDbCollectionView<BindingUser, EntityUser>> GetUsersAsync()
     {
@@ -46,7 +48,7 @@ internal sealed partial class UserCollectionService : IUserCollectionService, ID
                     bindingUsers.Add(user);
                 }
 
-                users = bindingUsers.AsAdvancedDbCollectionViewWrappedObservableReorderableDbCollection<BindingUser, EntityUser>(serviceProvider);
+                users = bindingUsers.ToAdvancedDbCollectionViewWrappedObservableReorderableDbCollection<BindingUser, EntityUser>(serviceProvider);
 
                 // Since this service is singleton, we can safely subscribe to the event
                 users.CurrentChanged += OnCurrentUserChanged;

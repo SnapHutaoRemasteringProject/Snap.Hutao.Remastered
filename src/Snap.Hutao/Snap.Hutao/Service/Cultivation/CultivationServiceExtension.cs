@@ -10,22 +10,25 @@ namespace Snap.Hutao.Service.Cultivation;
 
 internal static class CultivationServiceExtension
 {
-    public static async ValueTask<CultivateProject?> GetCurrentProjectAsync(this ICultivationService cultivationService)
+    extension(ICultivationService cultivationService)
     {
-        IAdvancedDbCollectionView<CultivateProject> projects = await cultivationService.GetProjectCollectionAsync().ConfigureAwait(false);
-        await cultivationService.EnsureCurrentProjectAsync(projects).ConfigureAwait(false);
-        return projects.CurrentItem;
-    }
-
-    public static async ValueTask<ObservableCollection<CultivateEntryView>?> GetCultivateEntryCollectionForCurrentProjectAsync(this ICultivationService cultivationService, ICultivationMetadataContext context)
-    {
-        IAdvancedDbCollectionView<CultivateProject> projects = await cultivationService.GetProjectCollectionAsync().ConfigureAwait(false);
-        if (!await cultivationService.EnsureCurrentProjectAsync(projects).ConfigureAwait(false))
+        public async ValueTask<CultivateProject?> GetCurrentProjectAsync()
         {
-            return default;
+            IAdvancedDbCollectionView<CultivateProject> projects = await cultivationService.GetProjectCollectionAsync().ConfigureAwait(false);
+            await cultivationService.EnsureCurrentProjectAsync(projects).ConfigureAwait(false);
+            return projects.CurrentItem;
         }
 
-        ArgumentNullException.ThrowIfNull(projects.CurrentItem);
-        return await cultivationService.GetCultivateEntryCollectionAsync(projects.CurrentItem, context).ConfigureAwait(false);
+        public async ValueTask<ObservableCollection<CultivateEntryView>?> GetCultivateEntryCollectionForCurrentProjectAsync(ICultivationMetadataContext context)
+        {
+            IAdvancedDbCollectionView<CultivateProject> projects = await cultivationService.GetProjectCollectionAsync().ConfigureAwait(false);
+            if (!await cultivationService.EnsureCurrentProjectAsync(projects).ConfigureAwait(false))
+            {
+                return default;
+            }
+
+            ArgumentNullException.ThrowIfNull(projects.CurrentItem);
+            return await cultivationService.GetCultivateEntryCollectionAsync(projects.CurrentItem, context).ConfigureAwait(false);
+        }
     }
 }

@@ -8,11 +8,13 @@ using System.IO;
 
 namespace Snap.Hutao.Service.Game.Package.Advanced.PackageOperation;
 
-[ConstructorGenerated]
 [Service(ServiceLifetime.Transient, typeof(IGamePackageOperation), Key = GamePackageOperationKind.Predownload)]
 internal sealed partial class GamePackagePredownloadOperation : GamePackageOperation
 {
     private readonly JsonSerializerOptions jsonOptions;
+
+    [GeneratedConstructor]
+    public partial GamePackagePredownloadOperation(IServiceProvider serviceProvider);
 
     public override async ValueTask ExecuteAsync(GamePackageServiceContext context)
     {
@@ -22,16 +24,16 @@ internal sealed partial class GamePackagePredownloadOperation : GamePackageOpera
 
         context.Progress.Report(new GamePackageOperationReport.Reset(SH.ServiceGamePackageAdvancedPredownloading, downloadTotalChunks, 0, downloadTotalBytes));
 
-        if (!Directory.Exists(context.Operation.GameFileSystem.GetChunksDirectory()))
+        if (!Directory.Exists(context.Operation.GameFileSystem.ChunksDirectory))
         {
-            Directory.CreateDirectory(context.Operation.GameFileSystem.GetChunksDirectory());
+            Directory.CreateDirectory(context.Operation.GameFileSystem.ChunksDirectory);
         }
 
         SophonDecodedBuild? remoteBuild = context.Operation.RemoteBuild;
         ArgumentNullException.ThrowIfNull(remoteBuild);
 
         PredownloadStatus predownloadStatus = new(remoteBuild.Tag, false, uniqueTotalBlocks);
-        using (FileStream predownloadStatusStream = File.Create(context.Operation.GameFileSystem.GetPredownloadStatusFilePath()))
+        using (FileStream predownloadStatusStream = File.Create(context.Operation.GameFileSystem.PredownloadStatusFilePath))
         {
             await JsonSerializer.SerializeAsync(predownloadStatusStream, predownloadStatus, jsonOptions).ConfigureAwait(false);
         }
@@ -47,7 +49,7 @@ internal sealed partial class GamePackagePredownloadOperation : GamePackageOpera
 
         context.Progress.Report(new GamePackageOperationReport.Finish(context.Operation.Kind));
 
-        using (FileStream predownloadStatusStream = File.Create(context.Operation.GameFileSystem.GetPredownloadStatusFilePath()))
+        using (FileStream predownloadStatusStream = File.Create(context.Operation.GameFileSystem.PredownloadStatusFilePath))
         {
             predownloadStatus.Finished = true;
             await JsonSerializer.SerializeAsync(predownloadStatusStream, predownloadStatus, jsonOptions).ConfigureAwait(false);

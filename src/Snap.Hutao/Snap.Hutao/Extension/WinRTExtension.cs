@@ -9,14 +9,20 @@ namespace Snap.Hutao.Extension;
 // ReSharper disable once InconsistentNaming
 internal static class WinRTExtension
 {
-    public static bool IsDisposed(this IWinRTObject? obj)
+    extension(IWinRTObject? obj)
     {
-        return obj?.NativeObject is null || obj.NativeObject.IsDisposed();
+        public bool IsDisposed
+        {
+            get => obj?.NativeObject is null || obj.NativeObject.IsDisposed;
+        }
     }
 
-    public static bool IsDisposed(this IObjectReference objRef)
+    extension(IObjectReference objRef)
     {
-        return Volatile.Read(ref GetPrivateDisposedFlags(objRef)) is not 0;
+        public bool IsDisposed
+        {
+            get => Volatile.Read(ref GetPrivateDisposedFlags(objRef)) is not 0;
+        }
     }
 
     // private const int NOT_DISPOSED = 0;

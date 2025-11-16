@@ -7,10 +7,13 @@ namespace Snap.Hutao.Extension;
 
 internal static partial class MemoryPoolExtension
 {
-    public static IMemoryOwner<T> RentExactly<T>(this MemoryPool<T> memoryPool, int bufferSize)
+    extension<T>(MemoryPool<T> memoryPool)
     {
-        IMemoryOwner<T> memoryOwner = memoryPool.Rent(bufferSize);
-        return new ExactSizedMemoryOwner<T>(memoryOwner, bufferSize);
+        public IMemoryOwner<T> RentExactly(int bufferSize)
+        {
+            IMemoryOwner<T> memoryOwner = memoryPool.Rent(bufferSize);
+            return new ExactSizedMemoryOwner<T>(memoryOwner, bufferSize);
+        }
     }
 
     private sealed partial class ExactSizedMemoryOwner<T> : IMemoryOwner<T>

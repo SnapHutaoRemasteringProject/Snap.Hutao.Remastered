@@ -91,6 +91,13 @@ internal static class HutaoRuntime
         return string.Intern(directory);
     }
 
+    public static ValueDirectory GetDataRepositoryDirectory()
+    {
+        string directory = Path.Combine(DataDirectory, "Repository");
+        Directory.CreateDirectory(directory);
+        return string.Intern(directory);
+    }
+
     public static ValueDirectory GetLocalCacheImageCacheDirectory()
     {
         string directory = Path.Combine(LocalCacheDirectory, "ImageCache");

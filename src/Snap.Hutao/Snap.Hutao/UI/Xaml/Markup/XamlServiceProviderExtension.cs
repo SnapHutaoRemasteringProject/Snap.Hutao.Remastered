@@ -11,43 +11,42 @@ namespace Snap.Hutao.UI.Xaml.Markup;
 /// </summary>
 internal static class XamlServiceProviderExtension
 {
-    /// <summary>
-    /// Get IProvideValueTarget from serviceProvider
-    /// </summary>
-    /// <param name="provider">serviceProvider</param>
-    /// <returns>IProvideValueTarget</returns>
-    public static IProvideValueTarget GetProvideValueTarget(this IXamlServiceProvider provider)
+    extension(IXamlServiceProvider provider)
     {
-        return (IProvideValueTarget)provider.GetService(typeof(IProvideValueTarget));
-    }
+        /// <summary>
+        /// Get IProvideValueTarget from serviceProvider
+        /// </summary>
+        /// <returns>IProvideValueTarget</returns>
+        public IProvideValueTarget GetProvideValueTarget()
+        {
+            return (IProvideValueTarget)provider.GetService(typeof(IProvideValueTarget));
+        }
 
-    /// <summary>
-    /// Get IRootObjectProvider from serviceProvider
-    /// </summary>
-    /// <param name="provider">serviceProvider</param>
-    /// <returns>IRootObjectProvider</returns>
-    public static IRootObjectProvider GetRootObjectProvider(this IXamlServiceProvider provider)
-    {
-        return (IRootObjectProvider)provider.GetService(typeof(IRootObjectProvider));
-    }
+        /// <summary>
+        /// Get IRootObjectProvider from serviceProvider
+        /// </summary>
+        /// <returns>IRootObjectProvider</returns>
+        public IRootObjectProvider GetRootObjectProvider()
+        {
+            return (IRootObjectProvider)provider.GetService(typeof(IRootObjectProvider));
+        }
 
-    /// <summary>
-    /// Get IUriContext from serviceProvider
-    /// </summary>
-    /// <param name="provider">serviceProvider</param>
-    /// <returns>IUriContext</returns>
-    public static IUriContext GetUriContext(this IXamlServiceProvider provider)
-    {
-        return (IUriContext)provider.GetService(typeof(IUriContext));
-    }
+        /// <summary>
+        /// Get IUriContext from serviceProvider
+        /// </summary>
+        /// <returns>IUriContext</returns>
+        public IUriContext GetUriContext()
+        {
+            return (IUriContext)provider.GetService(typeof(IUriContext));
+        }
 
-    /// <summary>
-    /// Get IXamlTypeResolver from serviceProvider
-    /// </summary>
-    /// <param name="provider">serviceProvider</param>
-    /// <returns>IXamlTypeResolver</returns>
-    public static IXamlTypeResolver GetXamlTypeResolver(this IXamlServiceProvider provider)
-    {
-        return (IXamlTypeResolver)provider.GetService(typeof(IXamlTypeResolver));
+        /// <summary>
+        /// Get IXamlTypeResolver from serviceProvider
+        /// </summary>
+        /// <returns>IXamlTypeResolver</returns>
+        public IXamlTypeResolver GetXamlTypeResolver()
+        {
+            return (IXamlTypeResolver)provider.GetService(typeof(IXamlTypeResolver));
+        }
     }
 }

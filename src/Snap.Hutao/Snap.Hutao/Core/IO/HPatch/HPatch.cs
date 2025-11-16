@@ -11,7 +11,7 @@ internal static unsafe class HPatch
 {
     public static long GetNewDataSize(FileSegment diff)
     {
-        StreamInput diffAdapter = new(diff);
+        using StreamInput diffAdapter = new(diff);
         ulong size = 0;
         NewDataSize(&diffAdapter, &size);
         return (long)size;
@@ -19,18 +19,18 @@ internal static unsafe class HPatch
 
     public static bool Patch(FileSegment source, FileSegment diff, FileSegment target)
     {
-        StreamInput sourceAdapter = new(source);
-        StreamInput diffAdapter = new(diff);
-        StreamOutput targetAdapter = new(target);
+        using StreamInput sourceAdapter = new(source);
+        using StreamInput diffAdapter = new(diff);
+        using StreamOutput targetAdapter = new(target);
 
         return Patch(&sourceAdapter, &diffAdapter, &targetAdapter);
     }
 
     public static bool PatchZstandard(FileSegment source, FileSegment diff, FileSegment target)
     {
-        StreamInput sourceAdapter = new(source);
-        StreamInput diffAdapter = new(diff);
-        StreamOutput targetAdapter = new(target);
+        using StreamInput sourceAdapter = new(source);
+        using StreamInput diffAdapter = new(diff);
+        using StreamOutput targetAdapter = new(target);
         Decompress decompressor = Decompress.CreateZstandard();
 
         return PatchWithDecompressor(&sourceAdapter, &diffAdapter, &targetAdapter, &decompressor);
@@ -38,35 +38,21 @@ internal static unsafe class HPatch
 
     public static bool Patch(FileSegment source, FileSegment diff, Stream target)
     {
-        StreamInput sourceAdapter = new(source);
-        StreamInput diffAdapter = new(diff);
-        StreamOutput targetAdapter = new(target);
+        using StreamInput sourceAdapter = new(source);
+        using StreamInput diffAdapter = new(diff);
+        using StreamOutput targetAdapter = new(target);
 
-        try
-        {
-            return Patch(&sourceAdapter, &diffAdapter, &targetAdapter);
-        }
-        finally
-        {
-            GCHandle.FromIntPtr(targetAdapter.Handle).Free();
-        }
+        return Patch(&sourceAdapter, &diffAdapter, &targetAdapter);
     }
 
     public static bool PatchZstandard(FileSegment source, FileSegment diff, Stream target)
     {
-        StreamInput sourceAdapter = new(source);
-        StreamInput diffAdapter = new(diff);
-        StreamOutput targetAdapter = new(target);
+        using StreamInput sourceAdapter = new(source);
+        using StreamInput diffAdapter = new(diff);
+        using StreamOutput targetAdapter = new(target);
         Decompress decompressor = Decompress.CreateZstandard();
 
-        try
-        {
-            return PatchWithDecompressor(&sourceAdapter, &diffAdapter, &targetAdapter, &decompressor);
-        }
-        finally
-        {
-            GCHandle.FromIntPtr(targetAdapter.Handle).Free();
-        }
+        return PatchWithDecompressor(&sourceAdapter, &diffAdapter, &targetAdapter, &decompressor);
     }
 
     [SuppressMessage("", "SYSLIB1054")]

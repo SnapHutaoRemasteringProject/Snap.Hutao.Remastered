@@ -1,12 +1,12 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Core;
 using Snap.Hutao.Core.LifeCycle;
 using Snap.Hutao.Core.Logging;
 using Snap.Hutao.Core.Setting;
 using Snap.Hutao.Service;
+using Snap.Hutao.Service.BackgroundActivity;
 using Snap.Hutao.Service.Metadata;
 using Snap.Hutao.Service.Notification;
 using Snap.Hutao.Service.Update;
@@ -18,7 +18,6 @@ using System.IO;
 
 namespace Snap.Hutao.ViewModel;
 
-[ConstructorGenerated]
 [BindableCustomPropertyProvider]
 [Service(ServiceLifetime.Transient)]
 internal sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
@@ -29,6 +28,9 @@ internal sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
     private readonly ITaskContext taskContext;
     private readonly IMessenger messenger;
     private readonly App app;
+
+    [GeneratedConstructor]
+    public partial MainViewModel(IServiceProvider serviceProvider);
 
     public static string? Title { get => HutaoRuntime.GetDisplayName(); }
 
@@ -42,10 +44,9 @@ internal sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
 #endif
     }
 
-    [ObservableProperty]
-    public partial bool IsMetadataInitialized { get; set; }
-
     public partial AppOptions AppOptions { get; }
+
+    public partial BackgroundActivityOptions BackgroundActivityOptions { get; }
 
     public override void Dispose()
     {
@@ -61,7 +62,6 @@ internal sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
     {
         ShowUpdateLogWindowAfterUpdate();
         NotifyIfDataFolderHasReparsePoint();
-        WaitMetadataInitializationAsync().SafeForget();
         await CheckUpdateAsync().ConfigureAwait(false);
 
         return true;
@@ -79,7 +79,7 @@ internal sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
         if (LocalSetting.Get(SettingKeys.AlwaysIsFirstRunAfterUpdate, false) || XamlApplicationLifetime.IsFirstRunAfterUpdate)
         {
             // Check if the window showed, only set to false if it is shown
-            if (ShowWebView2WindowAction.TryShow<UpdateLogContentProvider>(currentXamlWindowReference.GetXamlRoot()) is not null)
+            if (ShowWebView2WindowAction.TryShow<UpdateLogContentProvider>(currentXamlWindowReference.XamlRoot) is not null)
             {
                 SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Show update log window", "MainViewModel.Command"));
                 XamlApplicationLifetime.IsFirstRunAfterUpdate = false;
@@ -101,20 +101,6 @@ internal sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
         {
             SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateDebug("Data folder has reparse point", "MainViewModel.Command"));
             messenger.Send(InfoBarMessage.Warning(SH.FormatViewModelTitleDataFolderHasReparsepoint(HutaoRuntime.DataDirectory)));
-        }
-    }
-
-    private async ValueTask WaitMetadataInitializationAsync()
-    {
-        try
-        {
-            await metadataService.InitializeAsync().ConfigureAwait(false);
-        }
-        finally
-        {
-            await taskContext.SwitchToMainThreadAsync();
-            IsMetadataInitialized = true;
-            SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Metadata initialized", "MainViewModel.Command"));
         }
     }
 }

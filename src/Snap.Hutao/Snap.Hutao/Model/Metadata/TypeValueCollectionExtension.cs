@@ -9,8 +9,11 @@ namespace Snap.Hutao.Model.Metadata;
 
 internal static class TypeValueCollectionExtension
 {
-    public static ImmutableArray<PropertyCurveValue> ToPropertyCurveValues(this TypeValueCollection<FightProperty, GrowCurveType> collection, BaseValue baseValue)
+    extension(TypeValueCollection<FightProperty, GrowCurveType> collection)
     {
-        return collection.Array.SelectAsArray(static (info, baseValue) => new PropertyCurveValue(info.Type, info.Value, baseValue), baseValue);
+        public ImmutableArray<PropertyCurveValue> ToPropertyCurveValues(BaseValue baseValue)
+        {
+            return collection.Array.SelectAsArray(static (info, baseValue) => new PropertyCurveValue(info.Type, info.Value, baseValue), baseValue);
+        }
     }
 }

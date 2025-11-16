@@ -5,7 +5,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Win32;
 using System.Diagnostics;
 using System.Net;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -16,7 +15,6 @@ internal sealed partial class HttpProxyUsingSystemProxy : ObservableObject, IWeb
 {
     private const string ProxySettingPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Connections";
 
-    private static readonly Lazy<MethodInfo> LazyConstructSystemProxyMethod = new(GetConstructSystemProxyMethod);
     private static readonly Uri ProxyTestDestination = "https://hut.ao".ToUri();
 
     // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
@@ -24,7 +22,7 @@ internal sealed partial class HttpProxyUsingSystemProxy : ObservableObject, IWeb
 
     private unsafe HttpProxyUsingSystemProxy()
     {
-        UpdateInnerProxy();
+        InnerProxy = ConstructSystemProxy(null);
 
         native = HutaoNative.Instance.MakeRegistryNotification(ProxySettingPath);
         native.Start(HutaoNativeRegistryNotificationCallback.Create(&OnSystemProxySettingsChanged), 0);
@@ -33,8 +31,9 @@ internal sealed partial class HttpProxyUsingSystemProxy : ObservableObject, IWeb
     [field: MaybeNull]
     public static HttpProxyUsingSystemProxy Instance { get => LazyInitializer.EnsureInitialized(ref field, () => new()); }
 
-    [SuppressMessage("", "SA1201")]
-    public string CurrentProxyUri { get => GetProxy(ProxyTestDestination)?.AbsoluteUri ?? SH.ViewPageFeedbackCurrentProxyNoProxyDescription; }
+    public string DisplayProxyUri { get => CurrentProxyUri ?? SH.ViewPageFeedbackCurrentProxyNoProxyDescription; }
+
+    public string? CurrentProxyUri { get => GetProxy(ProxyTestDestination)?.AbsoluteUri; }
 
     public IWebProxy InnerProxy
     {
@@ -68,19 +67,8 @@ internal sealed partial class HttpProxyUsingSystemProxy : ObservableObject, IWeb
         return InnerProxy.IsBypassed(host);
     }
 
-#if NET10_0_OR_GREATER
-    [Obsolete("Use UnsafeAccessor")]
-#endif
-    private static MethodInfo GetConstructSystemProxyMethod()
-    {
-        Type? systemProxyInfoType = typeof(System.Net.Http.SocketsHttpHandler).Assembly.GetType("System.Net.Http.SystemProxyInfo");
-        ArgumentNullException.ThrowIfNull(systemProxyInfoType);
-
-        MethodInfo? constructSystemProxyMethod = systemProxyInfoType.GetMethod("ConstructSystemProxy", BindingFlags.Static | BindingFlags.Public);
-        ArgumentNullException.ThrowIfNull(constructSystemProxyMethod);
-
-        return constructSystemProxyMethod;
-    }
+    [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "ConstructSystemProxy")]
+    private static extern IWebProxy ConstructSystemProxy([UnsafeAccessorType("System.Net.Http.SystemProxyInfo, System.Net.Http")] object? c);
 
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
     private static void OnSystemProxySettingsChanged(nint userData)
@@ -90,17 +78,9 @@ internal sealed partial class HttpProxyUsingSystemProxy : ObservableObject, IWeb
             return;
         }
 
-        Instance.UpdateInnerProxy();
+        Instance.InnerProxy = ConstructSystemProxy(null);
 
         Debug.Assert(XamlApplicationLifetime.DispatcherQueueInitialized, "DispatcherQueue not initialized");
-        SynchronizationContext.Current?.Post(static _ => Instance.OnPropertyChanged(nameof(CurrentProxyUri)), default);
-    }
-
-    [MemberNotNull(nameof(InnerProxy))]
-    private void UpdateInnerProxy()
-    {
-        IWebProxy? proxy = LazyConstructSystemProxyMethod.Value.Invoke(default, BindingFlags.DoNotWrapExceptions, default, default, default) as IWebProxy;
-        ArgumentNullException.ThrowIfNull(proxy);
-        InnerProxy = proxy;
+        SynchronizationContext.Current?.Post(static _ => Instance.OnPropertyChanged(nameof(DisplayProxyUri)), default);
     }
 }

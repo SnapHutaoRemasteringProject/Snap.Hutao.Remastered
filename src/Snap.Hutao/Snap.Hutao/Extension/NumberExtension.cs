@@ -1,8 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using System.Runtime.CompilerServices;
-
 namespace Snap.Hutao.Extension;
 
 internal static class NumberExtension
@@ -24,37 +22,41 @@ internal static class NumberExtension
         KeyValuePair.Create("I", 1),
     ];
 
-    public static string ToRoman(this int input)
+    extension(int input)
     {
-        const int MinValue = 1;
-        const int MaxValue = 3999;
-        const int MaxRomanNumeralLength = 15;
-
-        if (input is < MinValue or > MaxValue)
+        public string ToRoman()
         {
-            throw new ArgumentOutOfRangeException(nameof(input));
-        }
+            const int MinValue = 1;
+            const int MaxValue = 3999;
+            const int MaxRomanNumeralLength = 15;
 
-        Span<char> builder = stackalloc char[MaxRomanNumeralLength];
-        int pos = 0;
-
-        foreach (KeyValuePair<string, int> pair in RomanNumeralsSequence)
-        {
-            while (input >= pair.Value)
+            if (input is < MinValue or > MaxValue)
             {
-                pair.Key.AsSpan().CopyTo(builder[pos..]);
-                pos += pair.Key.Length;
-                input -= pair.Value;
+                throw new ArgumentOutOfRangeException(nameof(input));
             }
-        }
 
-        return builder[..pos].ToString();
+            Span<char> builder = stackalloc char[MaxRomanNumeralLength];
+            int pos = 0;
+
+            foreach (KeyValuePair<string, int> pair in RomanNumeralsSequence)
+            {
+                while (input >= pair.Value)
+                {
+                    pair.Key.AsSpan().CopyTo(builder[pos..]);
+                    pos += pair.Key.Length;
+                    input -= pair.Value;
+                }
+            }
+
+            return builder[..pos].ToString();
+        }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static uint StringLength(in this uint x)
+    extension(in uint x)
     {
-        // Benchmarked and compared as most optimized solution
-        return (uint)(MathF.Log10(x) + 1);
+        public uint StringLength
+        {
+            get => (uint)(MathF.Log10(x) + 1);
+        }
     }
 }

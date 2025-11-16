@@ -10,5 +10,5 @@ internal sealed class DescriptionsParameters
 {
     public required ImmutableArray<string> Descriptions { get; init; }
 
-    public required LevelParametersCollection<SkillLevel, float> Parameters { get; init; }
+    public required IdLevelParametersCollection<ProudSkillId, SkillLevel, float> Parameters { get; init; }
 }

@@ -23,7 +23,7 @@ using TextBlockType = Microsoft.UI.Xaml.Controls.TextBlock;
 namespace Snap.Hutao.UI.Xaml.Control.TextBlock;
 
 [DependencyProperty<string>("Description", PropertyChangedCallbackName = nameof(OnDescriptionChanged))]
-[DependencyProperty<LinkMetadataContext>("LinkContext")]
+[DependencyProperty<LinkMetadataContext>("LinkContext", PropertyChangedCallbackName = nameof(OnLinkContextChanged))]
 [DependencyProperty<Style>("TextStyle", PropertyChangedCallbackName = nameof(OnTextStyleChanged))]
 internal sealed partial class DescriptionTextBlock : ContentControl
 {
@@ -51,6 +51,13 @@ internal sealed partial class DescriptionTextBlock : ContentControl
         DescriptionTextBlock descriptionTextBlock = d.As<DescriptionTextBlock>();
         TextBlockType textBlock = descriptionTextBlock.Content.As<TextBlockType>();
         descriptionTextBlock.UpdateDescription(textBlock, Unsafe.As<string>(e.NewValue));
+    }
+
+    private static void OnLinkContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        DescriptionTextBlock descriptionTextBlock = d.As<DescriptionTextBlock>();
+        TextBlockType textBlock = descriptionTextBlock.Content.As<TextBlockType>();
+        descriptionTextBlock.UpdateDescription(textBlock, descriptionTextBlock.Description);
     }
 
     private static void OnTextStyleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -104,6 +111,7 @@ internal sealed partial class DescriptionTextBlock : ContentControl
             MiHoYoSyntaxItalicElement italicElement => AppendItalicText(textBlock, inlines, italicElement, source),
             MiHoYoSyntaxLinkElement linkElement => AppendLinkText(textBlock, inlines, linkElement, source),
             MiHoYoSyntaxSpritePresetElement spritePresetElement => AppendSpritePreset(textBlock, inlines, spritePresetElement, source),
+            MiHoYoSyntaxParameterElement parameterElement => AppendParameter(textBlock, inlines, parameterElement, source),
             _ => default,
         };
     }
@@ -228,6 +236,24 @@ internal sealed partial class DescriptionTextBlock : ContentControl
         return default;
     }
 
+    private Void AppendParameter(TextBlockType textBlock, InlineCollection inlines, MiHoYoSyntaxParameterElement syntaxParameter, ReadOnlySpan<char> source)
+    {
+        if (LinkContext is null)
+        {
+            return default;
+        }
+
+        ReadOnlySpan<char> idSpan = syntaxParameter.GetIdSpan(source);
+        if (!LinkContext.TryGetParameter(syntaxParameter.GetParameterKind(source), idSpan, out string value))
+        {
+            return default;
+        }
+
+        // Parameter doesn't have children
+        inlines.Add(new Run { Text = value });
+        return default;
+    }
+
     private void OnLinkClicked(Hyperlink sender, HyperlinkClickEventArgs args)
     {
         if (LinkContext is null)
@@ -251,6 +277,7 @@ internal sealed partial class DescriptionTextBlock : ContentControl
             {
                 LinkName = name,
                 LinkDescription = description,
+                LinkContext = LinkContext,
             },
         };
 

@@ -13,11 +13,13 @@ using System.Runtime.InteropServices;
 
 namespace Snap.Hutao.Service.GachaLog;
 
-[ConstructorGenerated]
 [Service(ServiceLifetime.Transient, typeof(IGachaLogWishCountdownService))]
 internal sealed partial class GachaLogWishCountdownService : IGachaLogWishCountdownService
 {
     private readonly ITaskContext taskContext;
+
+    [GeneratedConstructor]
+    public partial GachaLogWishCountdownService(IServiceProvider serviceProvider);
 
     public async ValueTask<WishCountdownBundle> GetWishCountdownBundleAsync(GachaLogWishCountdownServiceMetadataContext context)
     {
@@ -46,7 +48,7 @@ internal sealed partial class GachaLogWishCountdownService : IGachaLogWishCountd
 
             foreach (uint itemId in gachaEvent.UpOrangeList)
             {
-                switch (itemId.StringLength())
+                switch (itemId.StringLength)
                 {
                     case 8U:
                         if (!AvatarIds.IsStandardWish(itemId))
@@ -71,7 +73,7 @@ internal sealed partial class GachaLogWishCountdownService : IGachaLogWishCountd
 
             foreach (uint itemId in gachaEvent.UpPurpleList)
             {
-                switch (itemId.StringLength())
+                switch (itemId.StringLength)
                 {
                     case 8U:
                         if (!AvatarIds.IsStandardWish(itemId))

@@ -92,9 +92,6 @@
                 </cwc:SettingsCard>
 
                 <TextBlock Style="{ThemeResource SettingsSectionHeaderTextBlockStyle}" Text="Condition Override"/>
-                <cwc:SettingsCard Header="Suppress Metadata Initialization">
-                    <ToggleSwitch IsOn="{Binding SuppressMetadataInitialization, Mode=TwoWay}"/>
-                </cwc:SettingsCard>
 
                 <cwc:SettingsCard Header="Override Elevation Requirement">
                     <ToggleSwitch IsOn="{Binding OverrideElevationRequirement, Mode=TwoWay}"/>
