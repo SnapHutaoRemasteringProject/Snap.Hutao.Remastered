@@ -185,9 +185,7 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
                 Branch remoteBranch = repo.Branches["origin/main"];
                 Branch localBranch = repo.Branches["main"] ?? repo.CreateBranch("main", remoteBranch.Tip);
                 repo.Branches.Update(localBranch, b => b.TrackedBranch = remoteBranch.CanonicalName);
-                Commands.Checkout(repo, localBranch);
-
-                repo.Reset(ResetMode.Hard);
+                repo.Reset(ResetMode.Hard, remoteBranch.Tip);
                 repo.RemoveUntrackedFiles();
             }
         }
