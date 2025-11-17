@@ -2868,8 +2868,8 @@
     <value>自动化任务</value>
   </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
-    <value>注入功能及本软件属于米哈游用户协议第十条第二款规定的插件、外挂或非经合法授权的第三方工具/服务，继续使用表明您已知晓此行为非常危险且造成的后果由您自行承担。
-出于安全因素考虑，我们保留独立决定随时变更、终止、中止您对此功能的使用的权利，无须向您发出任何提前通知。</value>
+    <value>本软件及注入功能属于《米哈游用户协议》第十条第二款规定的“插件、外挂或非经合法授权的第三方工具/服务”，您需要自行承担因使用内容而引起的所有风险，本软件无法且不会对您因前述风险而导致的任何损失或损害承担责任。
+出于安全因素考虑，我们有权不经向您特别通知而对软件及相关功能进行更新，或者对软件的部分功能效果进行改变或限制。</value>
   </data>
   <data name="ViewPageLaunchGameDisableFogDescription" xml:space="preserve">
     <value>移除光照渲染中的迷雾</value>
@@ -3049,7 +3049,7 @@
     <value>无法解锁帧率上限？</value>
   </data>
   <data name="ViewPageLaunchGameUnlockFpsDescription" xml:space="preserve">
-    <value>请在游戏内关闭「垂直同步」选项，需要高性能的显卡以支持更高的帧率，将值设置为 -1 以表示无限制帧率</value>
+    <value>请在游戏内关闭「垂直同步」选项，需要高性能的显卡以支持更高的帧率</value>
   </data>
   <data name="ViewPageLaunchGameUseHoyolabAccountDescription" xml:space="preserve">
     <value>使用当前选中的 米游社 / HoYoLAB 用户登录，需要启用「启动参数」</value>

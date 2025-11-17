@@ -6,6 +6,7 @@ using Snap.Hutao.Core;
 using Snap.Hutao.Core.Setting;
 using Snap.Hutao.Factory.ContentDialog;
 using Snap.Hutao.Factory.Picker;
+using Snap.Hutao.Service.Git;
 using Snap.Hutao.Service.Notification;
 using System.IO;
 using Windows.Storage;
@@ -69,6 +70,7 @@ internal sealed class SettingStorageSetDataFolderOperation
 
         try
         {
+            Directory.SetReadOnly(oldFolderPath, false);
             StorageFolder oldFolder = await StorageFolder.GetFolderFromPathAsync(oldFolderPath);
             await oldFolder.CopyAsync(newFolderPath).ConfigureAwait(false);
         }

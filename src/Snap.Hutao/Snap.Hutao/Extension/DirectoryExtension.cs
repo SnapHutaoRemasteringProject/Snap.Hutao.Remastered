@@ -3,7 +3,7 @@
 
 using System.IO;
 
-namespace Snap.Hutao.Service.Git;
+namespace Snap.Hutao.Extension;
 
 internal static class DirectoryExtension
 {

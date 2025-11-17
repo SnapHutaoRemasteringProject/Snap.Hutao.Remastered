@@ -8,6 +8,7 @@ using Snap.Hutao.Core.ExceptionService;
 using Snap.Hutao.Core.IO;
 using Snap.Hutao.Core.IO.Hashing;
 using Snap.Hutao.Core.Setting;
+using Snap.Hutao.Service.Git;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
@@ -113,6 +114,7 @@ internal static class HutaoRuntime
             string previousDirectory = LocalSetting.Get(SettingKeys.PreviousDataDirectoryToDelete, string.Empty);
             if (!string.IsNullOrEmpty(previousDirectory) && Directory.Exists(previousDirectory))
             {
+                Directory.SetReadOnly(previousDirectory, false);
                 Directory.Delete(previousDirectory, true);
             }
         }
