@@ -209,8 +209,8 @@
                                                 Margin="12,0"
                                                 VerticalAlignment="Center"
                                                 LargeChange="10"
-                                                Maximum="720"
-                                                Minimum="-1"
+                                                Maximum="120"
+                                                Minimum="1"
                                                 SmallChange="1"
                                                 Value="{Binding LaunchOptions.TargetFps.Value, Mode=TwoWay}"/>
                                         </StackPanel>
