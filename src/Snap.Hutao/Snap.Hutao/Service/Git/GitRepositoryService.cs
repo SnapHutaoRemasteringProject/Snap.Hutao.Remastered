@@ -113,6 +113,7 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
         FetchOptions fetchOptions = new()
         {
             Depth = 1,
+            Prune = true,
             TagFetchMode = TagFetchMode.None,
             ProxyOptions =
             {
@@ -175,9 +176,11 @@ internal sealed partial class GitRepositoryService : IGitRepositoryService
 
                 repo.Network.Remotes.Update("origin", remote => remote.Url = info.HttpsUrl.OriginalString);
                 repo.RemoveUntrackedFiles();
-
-                fetchOptions.Depth = 0;
+                fetchOptions.UpdateFetchHead = false;
                 Commands.Fetch(repo, repo.Head.RemoteName, Array.Empty<string>(), fetchOptions, default);
+
+                // Manually patch .git/shallow file
+                File.WriteAllText(Path.Combine(directory, ".git//shallow"), string.Join("", repo.Branches.Where(static branch => branch.IsRemote).Select(static branch => $"{branch.Tip.Sha}\n")));
 
                 Branch remoteBranch = repo.Branches["origin/main"];
                 Branch localBranch = repo.Branches["main"] ?? repo.CreateBranch("main", remoteBranch.Tip);
