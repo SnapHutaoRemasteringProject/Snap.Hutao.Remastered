@@ -1,0 +1,13 @@
+// Copyright (c) DGP Studio. All rights reserved.
+// Licensed under the MIT license.
+
+using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
+
+namespace Snap.Hutao.Remastered.Web.Hoyolab.Downloader;
+
+[Service(ServiceLifetime.Transient, typeof(IOverseaSupportFactory<ISophonClient>))]
+internal sealed partial class SophonClientFactory : OverseaSupportFactory<ISophonClient, SophonClient, SophonClientOversea>
+{
+    [GeneratedConstructor(CallBaseConstructor = true)]
+    public partial SophonClientFactory(IServiceProvider serviceProvider);
+}

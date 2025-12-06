@@ -1,0 +1,19 @@
+// Copyright (c) DGP Studio. All rights reserved.
+// Licensed under the MIT license.
+
+using Snap.Hutao.Remastered.Model.Intrinsic;
+using Snap.Hutao.Remastered.ViewModel.Wiki;
+using System.Collections.Immutable;
+
+namespace Snap.Hutao.Remastered.Model.Metadata;
+
+internal static class TypeValueCollectionExtension
+{
+    extension(TypeValueCollection<FightProperty, GrowCurveType> collection)
+    {
+        public ImmutableArray<PropertyCurveValue> ToPropertyCurveValues(BaseValue baseValue)
+        {
+            return collection.Array.SelectAsArray(static (info, baseValue) => new PropertyCurveValue(info.Type, info.Value, baseValue), baseValue);
+        }
+    }
+}

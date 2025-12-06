@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9A95A964-04B1-477A-BDE7-505525B3CAD8}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		..\..\..\Blessing-Studio\WonderLab.Override\.gitignore = ..\..\..\Blessing-Studio\WonderLab.Override\.gitignore
+		.vsconfig = .vsconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snap.Hutao.Remastered", "Snap.Hutao.Remastered\Snap.Hutao.Remastered.csproj", "{A8C2765A-C91E-FB51-EC14-86E0F3039559}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snap.Hutao.Remastered.Test", "Snap.Hutao.Remastered.Test\Snap.Hutao.Remastered.Test.csproj", "{8C6DBEEB-AC8F-44A3-D6BE-C0C13C6DA430}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8C2765A-C91E-FB51-EC14-86E0F3039559}.Debug|x64.ActiveCfg = Debug|x64
+		{A8C2765A-C91E-FB51-EC14-86E0F3039559}.Debug|x64.Build.0 = Debug|x64
+		{A8C2765A-C91E-FB51-EC14-86E0F3039559}.Debug|x64.Deploy.0 = Debug|x64
+		{A8C2765A-C91E-FB51-EC14-86E0F3039559}.Release|x64.ActiveCfg = Release|x64
+		{A8C2765A-C91E-FB51-EC14-86E0F3039559}.Release|x64.Build.0 = Release|x64
+		{A8C2765A-C91E-FB51-EC14-86E0F3039559}.Release|x64.Deploy.0 = Release|x64
+		{8C6DBEEB-AC8F-44A3-D6BE-C0C13C6DA430}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8C6DBEEB-AC8F-44A3-D6BE-C0C13C6DA430}.Debug|x64.Build.0 = Debug|Any CPU
+		{8C6DBEEB-AC8F-44A3-D6BE-C0C13C6DA430}.Release|x64.ActiveCfg = Release|Any CPU
+		{8C6DBEEB-AC8F-44A3-D6BE-C0C13C6DA430}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		RESX_AutoApplyExistingTranslations = False
+		RESX_NeutralResourcesLanguage = zh-CN
+		SolutionGuid = {E4449B1C-0E6A-4D19-955E-1CA491656ABA}
+		RESX_SortFileContentOnSave = True
+		RESX_ShowErrorsInErrorList = False
+		RESX_Rules = {"EnabledRules":["StringFormat","WhiteSpaceLead","WhiteSpaceTail","PunctuationLead"]}
+	EndGlobalSection
+EndGlobal

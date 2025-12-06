@@ -1,0 +1,273 @@
+<shuxc:ScopedPage
+    x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.AnnouncementPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cw="using:CommunityToolkit.WinUI"
+    xmlns:cwa="using:CommunityToolkit.WinUI.Animations"
+    xmlns:cww="using:CommunityToolkit.WinUI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mxi="using:Microsoft.Xaml.Interactivity"
+    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
+    xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
+    xmlns:shuxba="using:Snap.Hutao.Remastered.UI.Xaml.Behavior.Action"
+    xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
+    xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
+    xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
+    xmlns:shuxcp="using:Snap.Hutao.Remastered.UI.Xaml.Control.Panel"
+    xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    xmlns:shuxma="using:Snap.Hutao.Remastered.UI.Xaml.Media.Animation"
+    xmlns:shuxvww="using:Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2"
+    xmlns:shvh="using:Snap.Hutao.Remastered.ViewModel.Home"
+    xmlns:shwhh="using:Snap.Hutao.Remastered.Web.Hutao.HutaoAsAService"
+    xmlns:shwhhca="using:Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Common.Announcement"
+    d:DataContext="{d:DesignInstance shvh:AnnouncementViewModel}"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <mxi:Interaction.Behaviors>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+    </mxi:Interaction.Behaviors>
+
+    <shuxc:ScopedPage.Resources>
+        <shux:BindingProxy x:Key="ViewModelBindingProxy" DataContext="{Binding}"/>
+
+        <DataTemplate x:Key="AnnouncementTemplate" x:DataType="shwhhca:Announcement">
+            <ItemContainer cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
+                <Border Background="{ThemeResource SystemControlAcrylicElementMediumHighBrush}" Style="{StaticResource AcrylicBorderCardStyle}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <!--  Image Layer  -->
+                        <Border cw:UIElementExtensions.ClipToBounds="True" CornerRadius="{ThemeResource ControlCornerRadiusTop}">
+                            <Grid>
+                                <Border
+                                    x:Name="ImageZoomBorder"
+                                    VerticalAlignment="Top"
+                                    cw:VisualExtensions.NormalizedCenterPoint="0.5">
+                                    <cww:ConstrainedBox
+                                        Margin="-4"
+                                        AspectRatio="1080:390"
+                                        CornerRadius="{ThemeResource ControlCornerRadiusTop}">
+                                        <shuxci:CachedImage
+                                            VerticalAlignment="Center"
+                                            PlaceholderSource="{StaticResource UI_EmotionIcon271}"
+                                            Source="{Binding Banner}"
+                                            Stretch="UniformToFill"/>
+                                    </cww:ConstrainedBox>
+                                    <cwa:Explicit.Animations>
+                                        <cwa:AnimationSet x:Name="ImageZoomInAnimation">
+                                            <shuxma:ImageZoomInAnimation/>
+                                        </cwa:AnimationSet>
+                                        <cwa:AnimationSet x:Name="ImageZoomOutAnimation">
+                                            <shuxma:ImageZoomOutAnimation/>
+                                        </cwa:AnimationSet>
+                                    </cwa:Explicit.Animations>
+                                </Border>
+                                <Border Background="{ThemeResource DarkOnlyOverlayMaskColorBrush}" IsHitTestVisible="False"/>
+                            </Grid>
+                        </Border>
+                        <!--  General Description  -->
+                        <Border Grid.Row="1">
+                            <StackPanel
+                                Margin="4"
+                                Padding="4"
+                                VerticalAlignment="Bottom"
+                                Spacing="6">
+                                <TextBlock
+                                    HorizontalAlignment="Stretch"
+                                    Style="{StaticResource SubtitleTextBlockStyle}"
+                                    Text="{Binding Subtitle}"
+                                    TextTrimming="WordEllipsis"
+                                    TextWrapping="NoWrap"/>
+
+                                <TextBlock
+                                    Opacity="0.6"
+                                    Style="{StaticResource BodyTextBlockStyle}"
+                                    Text="{Binding Title}"
+                                    TextTrimming="WordEllipsis"
+                                    TextWrapping="NoWrap"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <mxi:Interaction.Behaviors>
+                        <mxi:EventTriggerBehavior EventName="Tapped">
+                            <shuxba:ShowWebView2WindowAction>
+                                <shuxba:ShowWebView2WindowAction.ContentProvider>
+                                    <shuxvww:AnnouncementWebView2ContentProvider Announcement="{Binding}"/>
+                                </shuxba:ShowWebView2WindowAction.ContentProvider>
+                            </shuxba:ShowWebView2WindowAction>
+                        </mxi:EventTriggerBehavior>
+                        <mxi:EventTriggerBehavior EventName="PointerEntered">
+                            <shuxba:StartAnimationActionNoThrow Animation="{Binding ElementName=ImageZoomInAnimation}" TargetObject="{Binding ElementName=ImageZoomBorder}"/>
+                        </mxi:EventTriggerBehavior>
+                        <mxi:EventTriggerBehavior EventName="PointerExited">
+                            <shuxba:StartAnimationActionNoThrow Animation="{Binding ElementName=ImageZoomOutAnimation}" TargetObject="{Binding ElementName=ImageZoomBorder}"/>
+                        </mxi:EventTriggerBehavior>
+                    </mxi:Interaction.Behaviors>
+                </Border>
+            </ItemContainer>
+        </DataTemplate>
+
+        <DataTemplate x:Key="AnnouncementPivotItemContentTemplate" x:DataType="shwhhca:AnnouncementListWrapper">
+            <ItemsControl ItemTemplate="{StaticResource AnnouncementTemplate}" ItemsSource="{Binding List}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <shuxcp:UniformPanel
+                            Margin="16"
+                            ColumnSpacing="12"
+                            MinItemWidth="300"
+                            RowSpacing="12"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HutaoAnnouncementTemplate" x:DataType="shwhh:Announcement">
+            <InfoBar
+                Title="{Binding Title}"
+                Margin="0,0,0,0"
+                shuxc:InfoBarHelper.IsTextSelectionEnabled="True"
+                CloseButtonCommand="{Binding DismissCommand}"
+                CloseButtonCommandParameter="{Binding}"
+                IsClosable="{Binding CanDismiss}"
+                IsOpen="True"
+                Message="{Binding Content}"
+                Severity="{Binding Severity}">
+                <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
+                    <HyperlinkButton
+                        Content="{shuxm:ResourceString Name=ViewPageAnnouncementViewDetails}"
+                        NavigateUri="{Binding Link}"
+                        Visibility="{Binding Link, Converter={StaticResource EmptyStringToBoolConverter}}"/>
+                    <TextBlock
+                        Margin="8,0,0,2"
+                        VerticalAlignment="Center"
+                        Opacity="0.7"
+                        Text="{Binding UpdateTimeFormatted}"/>
+                </StackPanel>
+            </InfoBar>
+        </DataTemplate>
+
+        <DataTemplate x:Key="CardTemplate" x:DataType="shuxcc:CardReference">
+            <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
+                <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                    <ContentControl HorizontalContentAlignment="Stretch" Content="{Binding Card}"/>
+                </Border>
+            </Border>
+        </DataTemplate>
+    </shuxc:ScopedPage.Resources>
+
+    <Grid>
+        <ScrollViewer Padding="0" Style="{StaticResource DefaultScrollViewerStyle}">
+            <StackPanel Padding="16" Spacing="16">
+                <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
+                    <Grid Style="{ThemeResource AcrylicGridCardStyle}">
+                        <CommandBar DefaultLabelPosition="Right">
+                            <CommandBar.Content>
+                                <TextBlock
+                                    Margin="12,12,0,0"
+                                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                                    Text="{Binding GreetingText}"/>
+                            </CommandBar.Content>
+                            <AppBarButton
+                                Icon="{shuxm:FontIcon Glyph=&#xE728;}"
+                                Label="{shuxm:ResourceString Name=ViewPageAnnouncementRedeemCodeLabel}"
+                                Visibility="{Binding RedeemCodes, Converter={StaticResource EmptyCollectionToVisibilityConverter}}">
+                                <AppBarButton.Flyout>
+                                    <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding12Style}" Placement="BottomEdgeAlignedRight">
+                                        <ItemsControl ItemsPanel="{ThemeResource StackPanelSpacing8Template}" ItemsSource="{Binding RedeemCodes}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid
+                                                        Padding="8"
+                                                        ColumnSpacing="12"
+                                                        Style="{ThemeResource GridShimmerStyle}">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition/>
+                                                            <ColumnDefinition Width="auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel Grid.Column="0">
+                                                            <TextBlock
+                                                                IsTextSelectionEnabled="True"
+                                                                Style="{ThemeResource BaseTextBlockStyle}"
+                                                                Text="{Binding Code}"
+                                                                TextTrimming="CharacterEllipsis"
+                                                                TextWrapping="NoWrap"/>
+                                                            <TextBlock
+                                                                Opacity="0.7"
+                                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                                Text="{Binding Title}"
+                                                                TextTrimming="CharacterEllipsis"
+                                                                TextWrapping="NoWrap"/>
+                                                        </StackPanel>
+                                                        <Button
+                                                            Grid.Column="1"
+                                                            VerticalAlignment="Stretch"
+                                                            Background="Transparent"
+                                                            Command="{Binding DataContext.CopyCodeCommand, Source={StaticResource ViewModelBindingProxy}}"
+                                                            CommandParameter="{Binding Code}"
+                                                            Content="{StaticResource FontIconContentCopy}"
+                                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                            Style="{StaticResource ButtonRevealStyle}"/>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Flyout>
+                                </AppBarButton.Flyout>
+                            </AppBarButton>
+                        </CommandBar>
+                    </Grid>
+                </Border>
+
+                <ItemsControl
+                    x:Name="HutaoAnnouncementControl"
+                    x:Load="False"
+                    ItemTemplate="{StaticResource HutaoAnnouncementTemplate}"
+                    ItemsPanel="{ThemeResource StackPanelSpacing8Template}"
+                    ItemsSource="{Binding HutaoAnnouncements}"
+                    Transitions="{ThemeResource EntranceThemeTransitions}"
+                    Visibility="{Binding HutaoAnnouncements.Count, Converter={StaticResource Int32ToVisibilityConverter}}"/>
+
+                <ItemsControl
+                    ItemTemplate="{StaticResource CardTemplate}"
+                    ItemsSource="{Binding Cards, Mode=OneWay}"
+                    Visibility="{Binding Cards, Converter={StaticResource EmptyCollectionToVisibilityConverter}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <shuxcp:UniformPanel
+                                ColumnSpacing="12"
+                                MinItemWidth="300"
+                                RowSpacing="12"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+                <ScrollViewer>
+                    <Pivot
+                        x:Name="GameAnnouncementPivot"
+                        Margin="-16"
+                        x:Load="False"
+                        Style="{ThemeResource CardPivotStyle}"
+                        Transitions="{ThemeResource EntranceThemeTransitions}">
+                        <PivotItem
+                            Content="{Binding Announcement.List[1]}"
+                            ContentTemplate="{StaticResource AnnouncementPivotItemContentTemplate}"
+                            Header="{Binding Announcement.TypeList[1].MI18NName}"/>
+                        <PivotItem
+                            Content="{Binding Announcement.List[0]}"
+                            ContentTemplate="{StaticResource AnnouncementPivotItemContentTemplate}"
+                            Header="{Binding Announcement.TypeList[0].MI18NName}"/>
+                        <PivotItem
+                            Content="{Binding Announcement.List[2]}"
+                            ContentTemplate="{StaticResource AnnouncementPivotItemContentTemplate}"
+                            Header="{Binding Announcement.TypeList[2].MI18NName}"/>
+                    </Pivot>
+                </ScrollViewer>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</shuxc:ScopedPage>

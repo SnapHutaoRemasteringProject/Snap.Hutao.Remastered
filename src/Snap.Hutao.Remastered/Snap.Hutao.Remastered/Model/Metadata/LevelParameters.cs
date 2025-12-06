@@ -1,0 +1,19 @@
+// Copyright (c) DGP Studio. All rights reserved.
+// Licensed under the MIT license.
+
+using System.Collections.Immutable;
+
+namespace Snap.Hutao.Remastered.Model.Metadata;
+
+internal class LevelParameters<TLevel, TParam>
+{
+    public LevelParameters(TLevel level, ImmutableArray<TParam> parameters)
+    {
+        Level = level;
+        Parameters = parameters;
+    }
+
+    public TLevel Level { get; }
+
+    public ImmutableArray<TParam> Parameters { get; }
+}

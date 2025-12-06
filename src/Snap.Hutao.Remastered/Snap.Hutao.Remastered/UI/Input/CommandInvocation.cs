@@ -1,0 +1,21 @@
+// Copyright (c) DGP Studio. All rights reserved.
+// Licensed under the MIT license.
+
+namespace Snap.Hutao.Remastered.UI.Input;
+
+internal static class CommandInvocation
+{
+    extension(ICommand? command)
+    {
+        public bool TryExecute(object? parameter = null)
+        {
+            if (command is not null && command.CanExecute(parameter))
+            {
+                command.Execute(parameter);
+                return true;
+            }
+
+            return false;
+        }
+    }
+}

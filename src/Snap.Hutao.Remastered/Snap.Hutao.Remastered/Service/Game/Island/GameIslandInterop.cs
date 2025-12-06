@@ -1,0 +1,217 @@
+// Copyright (c) DGP Studio. All rights reserved.
+// Licensed under the MIT license.
+
+using Snap.Hutao.Remastered.Core;
+using Snap.Hutao.Remastered.Core.Diagnostics;
+using Snap.Hutao.Remastered.Core.ExceptionService;
+using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.FullTrust;
+using Snap.Hutao.Remastered.Core.Setting;
+using Snap.Hutao.Remastered.Factory.Process;
+using Snap.Hutao.Remastered.Service.Game.FileSystem;
+using Snap.Hutao.Remastered.Service.Game.Launching.Context;
+using Snap.Hutao.Remastered.Web.Hutao;
+using Snap.Hutao.Remastered.Web.Hutao.Response;
+using Snap.Hutao.Remastered.Web.Response;
+using System.IO;
+using System.IO.MemoryMappedFiles;
+using Windows.Devices.Input;
+
+namespace Snap.Hutao.Remastered.Service.Game.Island;
+
+internal sealed class GameIslandInterop : IGameIslandInterop
+{
+    private const string IslandEnvironmentName = "4F3E8543-40F7-4808-82DC-21E48A6037A7";
+
+    private readonly bool resume;
+
+    private string? islandPath;
+    private int accumulatedBadStateCount;
+    private uint previousUid;
+
+    public GameIslandInterop(bool resume)
+    {
+        this.resume = resume;
+    }
+
+    public ValueTask BeforeAsync(BeforeLaunchExecutionContext context)
+    {
+        if (resume)
+        {
+            return ValueTask.CompletedTask;
+        }
+
+        if (!context.FileSystem.TryGetGameVersion(out string? gameVersion))
+        {
+            throw HutaoException.NotSupported(SH.ServiceGameIslandFileSystemGetGameVersionFailed);
+        }
+
+        string repoPath = Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), "Snap.ContentDelivery");
+        islandPath = Path.Combine(repoPath, $"Snap.Hutao.Remastered.UnlockerIsland_{gameVersion}.dll");
+        return ValueTask.CompletedTask;
+    }
+
+    public async ValueTask WaitForExitAsync(LaunchExecutionContext context, CancellationToken token = default)
+    {
+        MemoryMappedFile file;
+        if (resume)
+        {
+            try
+            {
+                file = MemoryMappedFile.OpenExisting(IslandEnvironmentName);
+            }
+            catch (FileNotFoundException)
+            {
+                // https://github.com/DGP-Studio/Snap.Hutao.Remastered/issues/2540
+                // Simply return if the game is running without island injected previously
+                return;
+            }
+        }
+        else
+        {
+            file = MemoryMappedFile.CreateOrOpen(IslandEnvironmentName, 1024);
+        }
+
+        using (file)
+        {
+            using (MemoryMappedViewAccessor accessor = file.CreateViewAccessor())
+            {
+                nint handle = accessor.SafeMemoryMappedViewHandle.DangerousGetHandle();
+                InitializeIslandEnvironment(handle, context.LaunchOptions, context.IsOversea);
+                if (!resume)
+                {
+                    if (context.Process is not FullTrustProcess fullTrustProcess)
+                    {
+                        throw HutaoException.InvalidOperation("Process is not full trust");
+                    }
+
+                    ArgumentException.ThrowIfNullOrEmpty(islandPath);
+                    if (!File.Exists(islandPath))
+                    {
+                        throw HutaoException.InvalidOperation(SH.ServiceGameIslandTargetVersionFileNotExists);
+                    }
+
+                    fullTrustProcess.LoadLibrary(FullTrustLoadLibraryRequest.Create("Island", islandPath));
+                    fullTrustProcess.ResumeMainThread();
+                }
+
+                await PeriodicUpdateIslandEnvironmentAsync(context, handle, token).ConfigureAwait(false);
+            }
+        }
+    }
+
+    private static unsafe void InitializeIslandEnvironment(nint handle, LaunchOptions options, bool isOversea)
+    {
+        IslandEnvironment* pIslandEnvironment = (IslandEnvironment*)handle;
+
+        pIslandEnvironment->IsOversea = isOversea;
+
+        if (LocalSetting.Get(SettingKeys.LaunchForceUsingTouchScreen, false))
+        {
+            pIslandEnvironment->UsingTouchScreen = IsIntegratedTouchPresent();
+        }
+        else
+        {
+            pIslandEnvironment->UsingTouchScreen = options.UsingTouchScreen.Value;
+        }
+
+        UpdateIslandEnvironment(handle, options);
+    }
+
+    private static unsafe IslandEnvironmentView UpdateIslandEnvironment(nint handle, LaunchOptions options)
+    {
+        IslandEnvironment* pIslandEnvironment = (IslandEnvironment*)handle;
+
+        pIslandEnvironment->EnableSetFieldOfView = options.IsSetFieldOfViewEnabled.Value;
+        pIslandEnvironment->FieldOfView = options.TargetFov.Value;
+        pIslandEnvironment->FixLowFovScene = options.FixLowFovScene.Value;
+        pIslandEnvironment->DisableFog = options.DisableFog.Value;
+        pIslandEnvironment->EnableSetTargetFrameRate = options.IsSetTargetFrameRateEnabled.Value;
+        pIslandEnvironment->TargetFrameRate = options.TargetFps.Value;
+        pIslandEnvironment->RemoveOpenTeamProgress = options.RemoveOpenTeamProgress.Value;
+        pIslandEnvironment->HideQuestBanner = options.HideQuestBanner.Value;
+        pIslandEnvironment->DisableEventCameraMove = options.DisableEventCameraMove.Value;
+        pIslandEnvironment->DisableShowDamageText = options.DisableShowDamageText.Value;
+        pIslandEnvironment->RedirectCombineEntry = options.RedirectCombineEntry.Value;
+        pIslandEnvironment->ResinListItemId000106Allowed = options.ResinListItemId000106Allowed.Value;
+        pIslandEnvironment->ResinListItemId000201Allowed = options.ResinListItemId000201Allowed.Value;
+        pIslandEnvironment->ResinListItemId107009Allowed = options.ResinListItemId107009Allowed.Value;
+        pIslandEnvironment->ResinListItemId107012Allowed = options.ResinListItemId107012Allowed.Value;
+        pIslandEnvironment->ResinListItemId220007Allowed = options.ResinListItemId220007Allowed.Value;
+
+        return pIslandEnvironment->View;
+    }
+
+    private static bool IsIntegratedTouchPresent()
+    {
+        IReadOnlyList<PointerDevice> devices = PointerDevice.GetPointerDevices();
+
+        // ReSharper disable once ForCanBeConvertedToForeach
+        // https://github.com/microsoft/CsWinRT/issues/747
+        for (int i = 0; i < devices.Count; i++)
+        {
+            PointerDevice device = devices[i];
+            if (device is { PointerDeviceType: PointerDeviceType.Touch, IsIntegrated: true })
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static async ValueTask HandleUidChangedAsync(LaunchExecutionContext context, uint uid, CancellationToken token)
+    {
+        using (IServiceScope scope = context.ServiceProvider.CreateScope())
+        {
+            HutaoResponse response = await scope.ServiceProvider
+                .GetRequiredService<HutaoInfrastructureClient>()
+                .AmIBannedAsync($"{uid}", token)
+                .ConfigureAwait(false);
+
+            if (!ResponseValidator.TryValidate(response, context.ServiceProvider))
+            {
+                context.Process.Kill();
+            }
+        }
+    }
+
+    private async ValueTask PeriodicUpdateIslandEnvironmentAsync(LaunchExecutionContext context, nint handle, CancellationToken token)
+    {
+        using (PeriodicTimer timer = new(TimeSpan.FromMilliseconds(500)))
+        {
+            while (await timer.WaitForNextTickAsync(token).ConfigureAwait(false))
+            {
+                if (!context.Process.IsRunning)
+                {
+                    break;
+                }
+
+                IslandEnvironmentView view = UpdateIslandEnvironment(handle, context.LaunchOptions);
+                if (Interlocked.Exchange(ref previousUid, view.Uid) != view.Uid)
+                {
+                    await HandleUidChangedAsync(context, view.Uid, token).ConfigureAwait(false);
+                }
+
+                if (view.State is IslandState.None or IslandState.Stopped)
+                {
+                    if (Interlocked.Increment(ref accumulatedBadStateCount) >= 10)
+                    {
+                        HutaoException.Throw($"UnlockerIsland in bad state for too long, last state: {view.State}");
+                    }
+                }
+                else
+                {
+                    unsafe
+                    {
+                        if (view.State is IslandState.Started && view.Size < sizeof(IslandEnvironment))
+                        {
+                            HutaoException.Throw("IslandEnvironment size mismatch");
+                        }
+                    }
+
+                    Interlocked.Exchange(ref accumulatedBadStateCount, 0);
+                }
+            }
+        }
+    }
+}

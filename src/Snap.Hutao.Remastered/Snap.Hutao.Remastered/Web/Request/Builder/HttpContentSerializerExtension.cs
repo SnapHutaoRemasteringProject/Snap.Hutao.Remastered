@@ -1,0 +1,20 @@
+// Copyright (c) DGP Studio. All rights reserved.
+// Licensed under the MIT license.
+
+using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
+using System.Net.Http;
+using System.Text;
+
+namespace Snap.Hutao.Remastered.Web.Request.Builder;
+
+internal static class HttpContentSerializerExtension
+{
+    extension(IHttpContentSerializer serializer)
+    {
+        public HttpContent? Serialize<T>(T content, Encoding? encoding)
+        {
+            ArgumentNullException.ThrowIfNull(serializer);
+            return serializer.Serialize(content, typeof(T), encoding);
+        }
+    }
+}

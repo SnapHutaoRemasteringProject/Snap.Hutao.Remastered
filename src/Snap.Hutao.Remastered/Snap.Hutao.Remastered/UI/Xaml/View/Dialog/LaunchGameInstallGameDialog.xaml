@@ -1,0 +1,85 @@
+<ContentDialog
+    x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Dialog.LaunchGameInstallGameDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
+    xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    Title="{shuxm:ResourceString Name=ViewDialogGameInstallTitle}"
+    CloseButtonText="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"
+    PrimaryButtonText="{shuxm:ResourceString Name=ContentDialogConfirmPrimaryButtonText}"
+    Style="{StaticResource DefaultContentDialogStyle}"
+    mc:Ignorable="d">
+
+    <StackPanel Spacing="{ThemeResource SettingsCardContentControlSpacing}">
+        <InfoBar
+            Title="{shuxm:ResourceString Name=ViewDialogGameInstallPathHddHint}"
+            IsClosable="False"
+            IsOpen="True"
+            Severity="Warning"
+            Visibility="{x:Bind IsParallelSupported, Mode=OneWay, Converter={StaticResource BoolToVisibilityRevertConverter}}"/>
+
+        <cwc:SettingsCard
+            Width="480"
+            Command="{x:Bind PickGameDirectoryCommand}"
+            Description="{x:Bind GameDirectory, Mode=OneWay}"
+            Header="{shuxm:ResourceString Name=ViewDialogGameInstallPickGameDirectory}"
+            HeaderIcon="{shuxm:FontIcon Glyph=&#xED25;}"
+            IsClickEnabled="True"/>
+
+        <CheckBox
+            MinWidth="64"
+            VerticalAlignment="Center"
+            Content="Beta Game"
+            IsChecked="{x:Bind IsBetaGameInstall, Mode=TwoWay}"
+            Visibility="{x:Bind IsBetaGameInstallEnabled}"/>
+
+        <cwc:SettingsCard
+            Width="480"
+            Command="{x:Bind PickBetaBuildBodyFilePathCommand}"
+            Description="{x:Bind BetaBuildBodyFilePath, Mode=OneWay}"
+            Header="GetBuildWithStokenLogin Body JSON File, Raw Body, including retcode"
+            HeaderIcon="{shuxm:FontIcon Glyph=&#xED25;}"
+            IsClickEnabled="True"
+            Visibility="{x:Bind IsBetaGameInstall, Mode=OneWay}"/>
+
+        <shuxc:ComboBox2
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Center"
+            DisplayMemberPath="DisplayName"
+            EnableMemberPath="IsNotCompatOnly"
+            ItemsSource="{x:Bind KnownSchemes, Mode=OneWay}"
+            PlaceholderText="{shuxm:ResourceString Name=ViewDialogGameInstallLaunchScheme}"
+            SelectedItem="{x:Bind SelectedScheme, Mode=TwoWay}"
+            Style="{StaticResource DefaultComboBoxStyle}"/>
+
+        <cwc:UniformGrid
+            ColumnSpacing="16"
+            Columns="2"
+            Orientation="Horizontal"
+            RowSpacing="16">
+            <CheckBox
+                MinWidth="64"
+                VerticalAlignment="Center"
+                Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceChinese}"
+                IsChecked="{x:Bind Chinese, Mode=TwoWay}"/>
+            <CheckBox
+                MinWidth="64"
+                VerticalAlignment="Center"
+                Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceEnglish}"
+                IsChecked="{x:Bind English, Mode=TwoWay}"/>
+            <CheckBox
+                MinWidth="64"
+                VerticalAlignment="Center"
+                Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceJapanese}"
+                IsChecked="{x:Bind Japanese, Mode=TwoWay}"/>
+            <CheckBox
+                MinWidth="64"
+                VerticalAlignment="Center"
+                Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceKorean}"
+                IsChecked="{x:Bind Korean, Mode=TwoWay}"/>
+        </cwc:UniformGrid>
+    </StackPanel>
+</ContentDialog>

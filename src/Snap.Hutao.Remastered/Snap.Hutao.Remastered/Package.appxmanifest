@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  IgnorableNamespaces="com uap desktop desktop6 rescap mp">
+
+  <Identity
+    Name="60568DGPStudio.SnapHutao"
+    Publisher="CN=35C8E923-85DF-49A7-9172-B39DC6312C52"
+    Version="1.17.1.0" />
+
+  <Properties>
+    <DisplayName>Snap Hutao</DisplayName>
+    <PublisherDisplayName>DGP Studio</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+    <desktop6:RegistryWriteVirtualization>disabled</desktop6:RegistryWriteVirtualization>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19041.0" MaxVersionTested="10.0.22621.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-us"/>
+    <Resource Language="zh-cn"/>
+  </Resources>
+
+  <Applications>
+    <Application Id="App"
+      Executable="$targetnametoken$.exe"
+      EntryPoint="$targetentrypoint$">
+      <uap:VisualElements
+        DisplayName="Snap Hutao"
+        Description="A Snap Hutao Software"
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"  Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png"/>
+        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+      </uap:VisualElements>
+      <Extensions>
+        <desktop:Extension Category="windows.toastNotificationActivation">
+          <desktop:ToastNotificationActivation ToastActivatorCLSID="5760EC4D-F7E8-4666-A965-9886D7DFFE7D"/>
+        </desktop:Extension>
+        <com:Extension Category="windows.comServer">
+          <com:ComServer>
+            <com:ExeServer Executable="Snap.Hutao.Remastered.exe" Arguments="----AppNotificationActivated:" DisplayName="Snap Hutao Toast Activator">
+              <com:Class Id="5760EC4D-F7E8-4666-A965-9886D7DFFE7D" DisplayName="Snap Hutao Toast Activator"/>
+            </com:ExeServer>
+          </com:ComServer>
+        </com:Extension>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="hutao">
+            <uap:DisplayName>胡桃</uap:DisplayName>
+          </uap:Protocol>
+        </uap:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust"/>
+    <rescap:Capability Name="unvirtualizedResources"/>
+    <rescap:Capability Name="packageManagement"/>
+  </Capabilities>
+</Package>
