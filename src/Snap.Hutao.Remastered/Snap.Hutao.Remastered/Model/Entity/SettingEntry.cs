@@ -1,0 +1,22 @@
+// Copyright (c) DGP Studio. All rights reserved.
+// Licensed under the MIT license.
+
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Snap.Hutao.Remastered.Model.Entity;
+
+[Table("settings")]
+internal sealed class SettingEntry
+{
+    public SettingEntry(string key, string? value)
+    {
+        Key = key;
+        Value = value;
+    }
+
+    [Key]
+    public string Key { get; set; }
+
+    public string? Value { get; set; }
+}

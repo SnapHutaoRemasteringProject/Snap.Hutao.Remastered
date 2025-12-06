@@ -1,0 +1,26 @@
+// Copyright (c) DGP Studio. All rights reserved.
+// Licensed under the MIT license.
+
+using Snap.Hutao.Remastered.Service.Game.FileSystem;
+
+namespace Snap.Hutao.Remastered.Service.Game.Package.Advanced;
+
+internal sealed partial class PackageOperationGameFileSystem : IGameFileSystem
+{
+    public PackageOperationGameFileSystem(string gameFilePath, GameAudioInstallation? gameAudioSystem = default)
+    {
+        GameFilePath = gameFilePath;
+        Audio = gameAudioSystem ?? new(this.GameDirectory);
+    }
+
+    public string GameFilePath { get; }
+
+    public GameAudioInstallation Audio { get; }
+
+    public bool IsDisposed { get; private set; }
+
+    public void Dispose()
+    {
+        IsDisposed = true;
+    }
+}

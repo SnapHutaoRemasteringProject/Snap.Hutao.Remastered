@@ -1,0 +1,14 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".vsconfig" />
+  </Folder>
+  <Project Path="Snap.Hutao.Remastered.Test/Snap.Hutao.Remastered.Test.csproj" />
+  <Project Path="Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj">
+    <Platform Project="x64" />
+    <Deploy />
+  </Project>
+</Solution>

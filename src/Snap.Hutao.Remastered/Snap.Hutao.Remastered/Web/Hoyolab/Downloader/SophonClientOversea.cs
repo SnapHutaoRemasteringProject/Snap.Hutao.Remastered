@@ -1,0 +1,50 @@
+// Copyright (c) DGP Studio. All rights reserved.
+// Licensed under the MIT license.
+
+using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation.HttpClient;
+using Snap.Hutao.Remastered.Web.Endpoint.Hoyolab;
+using Snap.Hutao.Remastered.Web.Hoyolab.HoyoPlay.Connect.Branch;
+using Snap.Hutao.Remastered.Web.Request.Builder;
+using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
+using Snap.Hutao.Remastered.Web.Response;
+using System.Net.Http;
+
+namespace Snap.Hutao.Remastered.Web.Hoyolab.Downloader;
+
+[HttpClient(HttpClientConfiguration.Default)]
+internal sealed partial class SophonClientOversea : ISophonClient
+{
+    private readonly IHttpRequestMessageBuilderFactory httpRequestMessageBuilderFactory;
+    [FromKeyed(ApiEndpointsKind.Oversea)]
+    private readonly IApiEndpoints apiEndpoints;
+    private readonly HttpClient httpClient;
+
+    [GeneratedConstructor]
+    public partial SophonClientOversea(IServiceProvider serviceProvider, HttpClient httpClient);
+
+    public async ValueTask<Response<SophonBuild>> GetBuildAsync(BranchWrapper branch, CancellationToken token = default)
+    {
+        HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
+            .SetRequestUri(apiEndpoints.SophonChunkGetBuildByBranch(branch))
+            .Get();
+
+        Response<SophonBuild>? resp = await builder
+            .SendAsync<Response<SophonBuild>>(httpClient, token)
+            .ConfigureAwait(false);
+
+        return Response.Response.DefaultIfNull(resp);
+    }
+
+    public async ValueTask<Response<SophonPatchBuild>> GetPatchBuildAsync(BranchWrapper branch, CancellationToken token = default)
+    {
+        HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
+            .SetRequestUri(apiEndpoints.SophonChunkGetPatchBuild())
+            .PostJson(branch);
+
+        Response<SophonPatchBuild>? resp = await builder
+            .SendAsync<Response<SophonPatchBuild>>(httpClient, token)
+            .ConfigureAwait(false);
+
+        return Response.Response.DefaultIfNull(resp);
+    }
+}
