@@ -40,7 +40,7 @@ internal static unsafe class HutaoNativeMethods
     public const string IID_IHutaoPrivate2 = "4E5D37CF-5F38-4FF2-9059-DF39CA696365";
 
     // ReSharper restore InconsistentNaming
-    public const string DllName = "Snap.Hutao.Remastered.Native.dll";
+    public const string DllName = "Snap.Hutao.Native.dll";
 
     public static HutaoNative HutaoCreateInstance()
     {
