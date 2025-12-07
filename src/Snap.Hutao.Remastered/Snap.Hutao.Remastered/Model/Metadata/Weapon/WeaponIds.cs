@@ -23,7 +23,8 @@ internal static class WeaponIds
         12401U, 12402U, 12403U, 12405U,
         13401U, 13407U,
         14401U, 14402U, 14403U, 14409U,
-        15401U, 15402U, 15403U, 15405U
+        15401U, 15402U, 15403U, 15405U,
+        15434U
     ];
 
     public static readonly FrozenSet<WeaponId> OrangeStandardWishIds =
@@ -33,6 +34,7 @@ internal static class WeaponIds
         13502U, 13505U,
         14501U, 14502U,
         15501U, 15502U,
+        15515U, 15518U
     ];
 
     public static bool IsOrangeStandardWish(in WeaponId weaponId)
