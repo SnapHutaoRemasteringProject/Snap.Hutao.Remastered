@@ -11,13 +11,13 @@
   IgnorableNamespaces="com uap desktop desktop6 rescap mp">
 
   <Identity
-    Name="60568DGPStudio.SnapHutao"
+    Name="SnapHutaoRemasteringProject.SnapHutaoRemastered"
     Publisher="CN=35C8E923-85DF-49A7-9172-B39DC6312C52"
     Version="1.17.1.0" />
 
   <Properties>
-    <DisplayName>Snap Hutao</DisplayName>
-    <PublisherDisplayName>DGP Studio</PublisherDisplayName>
+    <DisplayName>Snap Hutao Remastered</DisplayName>
+    <PublisherDisplayName>SnapHutaoRemasteringProject</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
     <desktop6:RegistryWriteVirtualization>disabled</desktop6:RegistryWriteVirtualization>
   </Properties>
@@ -36,8 +36,8 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="Snap Hutao"
-        Description="A Snap Hutao Software"
+        DisplayName="Snap Hutao Remastered"
+        Description="A Snap Hutao Remastered Software"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">
@@ -50,14 +50,14 @@
         </desktop:Extension>
         <com:Extension Category="windows.comServer">
           <com:ComServer>
-            <com:ExeServer Executable="Snap.Hutao.Remastered.exe" Arguments="----AppNotificationActivated:" DisplayName="Snap Hutao Toast Activator">
+            <com:ExeServer Executable="Snap.Hutao.Remastered.exe" Arguments="----AppNotificationActivated:" DisplayName="Snap Hutao Remastered Toast Activator">
               <com:Class Id="5760EC4D-F7E8-4666-A965-9886D7DFFE7D" DisplayName="Snap Hutao Toast Activator"/>
             </com:ExeServer>
           </com:ComServer>
         </com:Extension>
         <uap:Extension Category="windows.protocol">
           <uap:Protocol Name="hutao">
-            <uap:DisplayName>胡桃</uap:DisplayName>
+            <uap:DisplayName>胡桃重制版</uap:DisplayName>
           </uap:Protocol>
         </uap:Extension>
       </Extensions>
