@@ -4020,4 +4020,10 @@
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>显示器编号</value>
   </data>
+  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
+    <value>自动签到</value>
+  </data>
+  <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
+    <value>启用在程序启动时自动签到</value>
+  </data>
 </root>

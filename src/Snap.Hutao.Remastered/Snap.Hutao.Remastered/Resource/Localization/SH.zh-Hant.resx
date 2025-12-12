@@ -3989,4 +3989,7 @@
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>顯示器編號</value>
   </data>
+  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
+    <value>自動簽到</value>
+  </data>
 </root>
