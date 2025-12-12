@@ -678,6 +678,13 @@
                                     </ListView.ItemTemplate>
                                 </ListView>
                                 <cwc:SettingsCard
+                                    Description="{shuxm:ResourceString Name=ViewCardSignInAutoSignInDescription}"
+                                    Header="{shuxm:ResourceString Name=ViewCardSignInAutoSignIn}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xEC8F;}">
+                                    <ToggleSwitch
+                                        IsOn="{Binding AutoSignInEnabled, Mode=TwoWay}"/>
+                                </cwc:SettingsCard>
+                                <cwc:SettingsCard
                                     Description="{shuxm:ResourceString Name=ViewPageSettingHomeCalendarServerTimeZoneOffsetDescription}"
                                     Header="{shuxm:ResourceString Name=ViewPageSettingHomeCalendarServerTimeZoneOffsetHeader}"
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xEC92;}">
