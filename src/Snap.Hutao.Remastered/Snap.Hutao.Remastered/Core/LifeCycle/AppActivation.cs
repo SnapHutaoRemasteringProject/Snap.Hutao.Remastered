@@ -13,6 +13,7 @@ using Snap.Hutao.Remastered.Service.Job;
 using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.Service.Notification;
+using Snap.Hutao.Remastered.Service.SignIn;
 using Snap.Hutao.Remastered.UI.Input.HotKey;
 using Snap.Hutao.Remastered.UI.Shell;
 using Snap.Hutao.Remastered.UI.Windowing;
@@ -209,6 +210,13 @@ internal sealed partial class AppActivation : IAppActivation, IAppActivationActi
             serviceProvider.GetRequiredService<HutaoUserOptions>().InitializeAsync().AsTask(),
             serviceProvider.GetRequiredService<IMetadataService>().InitializeInternalAsync().AsTask(),
             serviceProvider.GetRequiredService<IQuartzService>().StartAsync()
+        ]).ConfigureAwait(false);
+
+
+        // Initialize auto sign-in
+        await Task.WhenAll(
+        [
+            serviceProvider.GetRequiredService<IAutoSignInService>().InitializeAsync().AsTask()
         ]).ConfigureAwait(false);
 
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Initialization completed", "Application"));

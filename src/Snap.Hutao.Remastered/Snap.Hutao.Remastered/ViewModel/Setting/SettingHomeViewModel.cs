@@ -49,6 +49,12 @@ internal sealed partial class SettingHomeViewModel : Abstraction.ViewModel
 
     public ObservableCollection<SettingHomeCardViewModel>? HomeCards { get; private set; }
 
+    public bool AutoSignInEnabled
+    {
+        get => LocalSetting.Get(SettingKeys.AutoSignInEnabled, false);
+        set => LocalSetting.Set(SettingKeys.AutoSignInEnabled, value);
+    }
+
     partial void PostConstruct(IServiceProvider serviceProvider)
     {
         List<SettingHomeCardViewModel> viewModels =

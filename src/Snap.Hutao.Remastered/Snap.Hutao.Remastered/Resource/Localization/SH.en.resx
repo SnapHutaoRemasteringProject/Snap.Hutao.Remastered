@@ -3989,4 +3989,10 @@ Space Available: {2}</value>
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>Monitor ID</value>
   </data>
+  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
+    <value>Auto sign in</value>
+  </data>
+  <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
+    <value>Enable automatic sign-in at application start</value>
+  </data>
 </root>
