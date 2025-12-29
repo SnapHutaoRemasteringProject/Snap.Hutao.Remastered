@@ -5,10 +5,13 @@ using Microsoft.UI.Xaml;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Security.Principal;
+using Snap.Hutao.Remastered.Factory.Process;
+using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Win32;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Security.AccessControl;
+using System.Security.Principal;
 using WinRT;
 
 [assembly: DisableRuntimeMarshalling]
@@ -68,6 +71,13 @@ public static partial class Bootstrap
             {
                 Thread.CurrentThread.Name = "Snap Hutao Application Main Thread";
 
+                // Check if we should restart as administrator
+                if (ShouldRestartAsAdmin(serviceProvider))
+                {
+                    RestartAsAdministrator();
+                    return;
+                }
+
                 // If you hit a COMException REGDB_E_CLASSNOTREG (0x80040154) during debugging
                 // You can delete bin and obj folder and then rebuild.
                 // In a Desktop app this runs a message pump internally,
@@ -92,6 +102,46 @@ public static partial class Bootstrap
 
         _ = serviceProvider.GetRequiredService<ITaskContext>();
         _ = serviceProvider.GetRequiredService<App>();
+    }
+
+    private static bool IsRunningAsAdministrator()
+    {
+        using WindowsIdentity identity = WindowsIdentity.GetCurrent();
+        WindowsPrincipal principal = new(identity);
+        return principal.IsInRole(WindowsBuiltInRole.Administrator);
+    }
+
+    private static bool ShouldRestartAsAdmin(IServiceProvider serviceProvider)
+    {
+        try
+        {
+            AppOptions appOptions = serviceProvider.GetRequiredService<AppOptions>();
+            return !IsRunningAsAdministrator() && appOptions.AutoRestartAsAdmin.Value;
+        }
+        catch (Exception ex)
+        {
+            SentrySdk.CaptureException(ex);
+            return false;
+        }
+    }
+
+    private static void RestartAsAdministrator()
+    {
+        try
+        {
+            string currentProcessPath = Environment.ProcessPath ?? Process.GetCurrentProcess().MainModule?.FileName;
+            if (string.IsNullOrEmpty(currentProcessPath))
+            {
+                return;
+            }
+
+            ProcessFactory.StartUsingShellExecuteRunAs(currentProcessPath);
+            Environment.Exit(0);
+        }
+        catch (Exception ex)
+        {
+            SentrySdk.CaptureException(ex);
+        }
     }
 
     private static bool OSPlatformSupported()

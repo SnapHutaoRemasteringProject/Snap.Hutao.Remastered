@@ -89,19 +89,26 @@
                                 HeaderIcon="{shuxm:FontIcon Glyph=&#xE895;}"
                                 IsClickEnabled="True"/>
 
-                            <cwc:SettingsExpander
-                                Header="{shuxm:ResourceString Name=ViewPageSettingElevatedModeHeader}"
-                                HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}"
-                                IsExpanded="True">
-                                <cwc:SettingsExpander.Items>
-                                    <cwc:SettingsCard
-                                        ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutAction}"
-                                        Command="{Binding CreateDesktopShortcutCommand}"
-                                        Description="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutDescription}"
-                                        Header="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutHeader}"
-                                        IsClickEnabled="True"/>
-                                </cwc:SettingsExpander.Items>
-                            </cwc:SettingsExpander>
+                                <cwc:SettingsExpander
+                                    Header="{shuxm:ResourceString Name=ViewPageSettingElevatedModeHeader}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}"
+                                    IsExpanded="True">
+                                    <cwc:SettingsExpander.Items>
+                                        <cwc:SettingsCard
+                                            ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutAction}"
+                                            Command="{Binding CreateDesktopShortcutCommand}"
+                                            Description="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutDescription}"
+                                            Header="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutHeader}"
+                                            IsClickEnabled="True"/>
+                                        <cwc:SettingsCard
+                                            Description="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminDescription}"
+                                            Header="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminHeader}"
+                                            HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}">
+                                            <ToggleSwitch
+                                                IsOn="{Binding AppOptions.AutoRestartAsAdmin.Value, Mode=TwoWay}"/>
+                                        </cwc:SettingsCard>
+                                    </cwc:SettingsExpander.Items>
+                                </cwc:SettingsExpander>
 
                         </StackPanel>
                     </Grid>
@@ -187,6 +194,13 @@
                                             Description="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutDescription}"
                                             Header="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutHeader}"
                                             IsClickEnabled="True"/>
+                                        <cwc:SettingsCard
+                                            Description="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminDescription}"
+                                            Header="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminHeader}"
+                                            HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}">
+                                            <ToggleSwitch
+                                                IsOn="{Binding AppOptions.AutoRestartAsAdmin.Value, Mode=TwoWay}"/>
+                                        </cwc:SettingsCard>
                                     </cwc:SettingsExpander.Items>
                                 </cwc:SettingsExpander>
                             </StackPanel>
@@ -678,13 +692,6 @@
                                     </ListView.ItemTemplate>
                                 </ListView>
                                 <cwc:SettingsCard
-                                    Description="{shuxm:ResourceString Name=ViewCardSignInAutoSignInDescription}"
-                                    Header="{shuxm:ResourceString Name=ViewCardSignInAutoSignIn}"
-                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xEC8F;}">
-                                    <ToggleSwitch
-                                        IsOn="{Binding AutoSignInEnabled, Mode=TwoWay}"/>
-                                </cwc:SettingsCard>
-                                <cwc:SettingsCard
                                     Description="{shuxm:ResourceString Name=ViewPageSettingHomeCalendarServerTimeZoneOffsetDescription}"
                                     Header="{shuxm:ResourceString Name=ViewPageSettingHomeCalendarServerTimeZoneOffsetHeader}"
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xEC92;}">
@@ -729,25 +736,32 @@
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xEDA4;}">
                                     <ToggleSwitch IsOn="{Binding ForceUsingTouchScreenWhenIntegratedTouchPresent, Mode=TwoWay}"/>
                                 </cwc:SettingsCard>
-                                <cwc:SettingsCard
-                                    Description="{shuxm:ResourceString Name=ViewPageSettingSpeedLimitDescription}"
-                                    Header="{shuxm:ResourceString Name=ViewPageSettingSpeedLimitHeader}"
-                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xEBD3;}">
-                                    <StackPanel
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal"
-                                        Spacing="8">
-                                        <NumberBox
-                                            MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
-                                            VerticalAlignment="Center"
-                                            AcceptsExpression="False"
-                                            Value="{Binding AppOptions.DownloadSpeedLimitPerSecondInKiloByte.Value, Mode=TwoWay}"/>
-                                        <TextBlock VerticalAlignment="Center" Text="KB/s (1MB = 1024KB)"/>
-                                    </StackPanel>
-                                </cwc:SettingsCard>
-                            </StackPanel>
-                        </Border>
-                    </Border>
+            <cwc:SettingsCard
+                Description="{shuxm:ResourceString Name=ViewPageSettingSpeedLimitDescription}"
+                Header="{shuxm:ResourceString Name=ViewPageSettingSpeedLimitHeader}"
+                HeaderIcon="{shuxm:FontIcon Glyph=&#xEBD3;}">
+                <StackPanel
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal"
+                    Spacing="8">
+                    <NumberBox
+                        MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
+                        VerticalAlignment="Center"
+                        AcceptsExpression="False"
+                        Value="{Binding AppOptions.DownloadSpeedLimitPerSecondInKiloByte.Value, Mode=TwoWay}"/>
+                    <TextBlock VerticalAlignment="Center" Text="KB/s (1MB = 1024KB)"/>
+                </StackPanel>
+            </cwc:SettingsCard>
+            <cwc:SettingsCard
+                Description="{shuxm:ResourceString Name=ViewCardSignInAutoSignInDescription}"
+                Header="{shuxm:ResourceString Name=ViewCardSignInAutoSignIn}"
+                HeaderIcon="{shuxm:FontIcon Glyph=&#xEC8F;}">
+                <ToggleSwitch
+                    IsOn="{Binding AutoSignInEnabled, Mode=TwoWay}"/>
+            </cwc:SettingsCard>
+        </StackPanel>
+    </Border>
+</Border>
 
                     <!--  祈愿记录  -->
                     <Border

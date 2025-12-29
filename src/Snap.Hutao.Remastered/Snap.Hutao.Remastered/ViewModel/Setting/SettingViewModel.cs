@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Shell;
+using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.Update;
@@ -44,6 +45,8 @@ internal sealed partial class SettingViewModel : Abstraction.ViewModel, INavigat
     public partial SettingGachaLogViewModel GachaLog { get; }
 
     public partial SettingWebViewViewModel WebView { get; }
+
+    public partial AppOptions AppOptions { get; }
 
     [ObservableProperty]
     public partial string? UpdateInfo { get; set; }
