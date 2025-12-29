@@ -8,6 +8,7 @@ internal static class SettingKeys
     // Application
     public const string DataDirectory                   = "Snap::Hutao::Application::DataFolderPath";
     public const string OverrideElevationRequirement    = "Snap::Hutao::Application::Elevation::Override";
+    public const string AutoRestartAsAdmin              = "Snap::Hutao::Application::Elevation::AutoRestartAsAdmin";
     public const string LaunchTimes                     = "Snap::Hutao::Application::LaunchTimes";
     public const string PreviousDataDirectoryToDelete   = "Snap::Hutao::Application::PreviousDataFolderToDelete";
     public const string LastVersion                     = "Snap::Hutao::Application::Update::LastVersion";

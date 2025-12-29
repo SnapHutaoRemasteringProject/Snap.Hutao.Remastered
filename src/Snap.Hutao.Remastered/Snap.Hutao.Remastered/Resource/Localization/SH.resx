@@ -4026,4 +4026,10 @@
   <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
     <value>启用在程序启动时自动签到</value>
   </data>
+  <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
+    <value>启动时自动以管理员权限重启</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
+    <value>启用后，如果胡桃不是以管理员身份运行，将在启动时自动重启并请求管理员权限</value>
+  </data>
 </root>

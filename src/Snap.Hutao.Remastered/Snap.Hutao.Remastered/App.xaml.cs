@@ -64,7 +64,7 @@ public sealed partial class App : Application
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
-        DebugPatchXamlDiagnosticsRemoveRootObjectFromLVT();
+        //DebugPatchXamlDiagnosticsRemoveRootObjectFromLVT();
 
         try
         {
