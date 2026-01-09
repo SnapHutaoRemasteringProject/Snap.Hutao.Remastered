@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,10 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema id="root"
+    xmlns=""
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -146,6 +149,9 @@
   </data>
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>Không tìm thấy kết quả</value>
+  </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>Xóa</value>
   </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>Chọn tất cả</value>
@@ -405,7 +411,7 @@
     <value>4 Sao</value>
   </data>
   <data name="ModelIntrinsicItemQualityRed" xml:space="preserve">
-    <value />
+    <value>5 Sao giới hạn</value>
   </data>
   <data name="ModelIntrinsicItemQualityWhite" xml:space="preserve">
     <value>1 sao</value>
@@ -629,6 +635,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>Địa chỉ email hiện tại đã được đăng ký</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>Đăng ký không thành công, lỗi máy chủ, vui lòng liên hệ nhà phát triển để khắc phục</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>Mật khẩu sai, đăng xuất thất bại</value>
   </data>
@@ -677,6 +686,9 @@
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>Không lấy được dữ liệu, máy chủ đang tính toán dữ liệu thống kê</value>
   </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>Không tải lên được bản ghi la hoàn thâm cảnh, lỗi máy chủ, vui lòng liên hệ nhà phát triển để khắc phục</value>
+  </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>Không thể tải lên bản ghi la hoàn thâm cảnh, phát hiện thấy dữ liệu không hợp lệ</value>
   </data>
@@ -723,7 +735,7 @@
     <value>Máy chủ EU UTC+01</value>
   </data>
   <data name="ServiceAvatarInfoPropertyAtk" xml:space="preserve">
-    <value />
+    <value>Tấn công</value>
     <comment>Need EXACT same string in game</comment>
   </data>
   <data name="ServiceAvatarInfoPropertyBaseAtk" xml:space="preserve">
@@ -900,7 +912,8 @@
     <value>Nhắc nhở nhật ký thời gian thực</value>
   </data>
   <data name="ServiceDailyNoteNotifierTransformer" xml:space="preserve">
-    <value>参量质变仪</value>
+    <value />
+    <comment>TODO: translate</comment>
   </data>
   <data name="ServiceDailyNoteNotifierTransformerAdaptiveHint" xml:space="preserve">
     <value>Sẵn sàng</value>
@@ -2849,6 +2862,18 @@ Dung lượng còn trống: {2}</value>
   <data name="ViewPageLaunchGameEventCameraMoveHotSwitchHeader" xml:space="preserve">
     <value>Loại bỏ cảnh cận cảnh kỹ năng nguyên tố</value>
   </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneDescription" xml:space="preserve">
+    <value>Sửa lỗi tầm nhìn cho các giao diện đặc biệt như Nhân vật/Đội hình/Cầu nguyện/Nhật ký hành trình</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneHeader" xml:space="preserve">
+    <value>Sửa giao diện đặc biệt</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipSubtitle" xml:space="preserve">
+    <value>Sau khi bật "Điều chỉnh tầm nhìn", việc hiển thị sương mù trong tất cả cảnh sẽ tuân theo trạng thái của công tắc "Loại bỏ sương mù". Nếu đồng thời bật "Sửa lỗi giao diện đặc biệt", việc kết xuất sương mù sẽ bị buộc tắt khi tầm nhìn gốc nhỏ hơn hoặc bằng 30. Điều này sẽ cho phép bạn nhìn thấy giao diện Cầu Nguyện/Kỷ Hành/Nhân Vật bình thường, nhưng cũng sẽ buộc tắt sương mù khi vào một số đoạn cốt truyện. Đây không phải là lỗi phần mềm, đừng phản hồi với chúng tôi.</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipTitle" xml:space="preserve">
+    <value>Tầm nhìn và Sương mù</value>
+  </data>
   <data name="ViewPageLaunchGameHideQuestBannerHotSwitchDescription" xml:space="preserve">
     <value>Buộc loại bỏ gợi ý nhiệm vụ ở góc trên bên trái giao diện bản đồ</value>
   </data>
@@ -3162,7 +3187,7 @@ Dung lượng còn trống: {2}</value>
     <value>Tạo lối tắt trên màn hình nền với quyền quản trị viên</value>
   </data>
   <data name="ViewPageSettingCreateDesktopShortcutHeader" xml:space="preserve">
-    <value>Tạo lối tắt trên màn hình nền</value>
+    <value>Tạo phím tắt mới trên màn hình nền</value>
   </data>
   <data name="ViewPageSettingDataFolderHeader" xml:space="preserve">
     <value>Thư mục Dữ liệu</value>
@@ -3968,16 +3993,203 @@ Dung lượng còn trống: {2}</value>
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>ID Màn Hình</value>
   </data>
-  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
-    <value>Xóa</value>
+  <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
+    <value>Khởi chạy tùy chỉnh</value>
   </data>
-  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>Sửa giao diện đặc biệt</value>
+  <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
+    <value>Tùy chọn khởi chạy tùy chỉnh cho phép khởi chạy nhanh chương trình từ đường dẫn khác. Các tùy chọn trò chơi trong Hutao (ví dụ: tham số khởi chạy) sẽ không có hiệu lực.</value>
   </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>Đăng ký không thành công, lỗi máy chủ, vui lòng liên hệ nhà phát triển để khắc phục</value>
+  <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
+    <value>Khởi chạy chương trình tùy chỉnh do người dùng định nghĩa</value>
   </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>Không tải lên được bản ghi la hoàn thâm cảnh, lỗi máy chủ, vui lòng liên hệ nhà phát triển để khắc phục</value>
+  <data name="ViewPageLaunchGameAdvancedStartPickPathHeader" xml:space="preserve">
+    <value>Chọn chương trình để khởi chạy</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartPickPathDescription" xml:space="preserve">
+    <value>Chọn đường dẫn chương trình cần khởi chạy, phải kết thúc bằng '.exe'</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartOpenCommunityAction" xml:space="preserve">
+    <value>Đến cộng đồng để lấy chương trình được chia sẻ</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartGame" xml:space="preserve">
+    <value>Khởi chạy chương trình tùy chỉnh</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartLoading" xml:space="preserve">
+    <value>Đang tải danh sách khởi chạy tùy chỉnh</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartFeedMissing" xml:space="preserve">
+    <value>Chưa cấu hình nguồn danh sách khởi chạy tùy chỉnh</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPick" xml:space="preserve">
+    <value>Vui lòng chọn một chương trình khởi chạy tùy chỉnh</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartLoadFailed" xml:space="preserve">
+    <value>Không tải được danh sách khởi chạy tùy chỉnh</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPickWarning" xml:space="preserve">
+    <value>Vui lòng chọn chương trình khởi chạy tùy chỉnh trước</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartCompleted" xml:space="preserve">
+    <value>Hoàn thành, đường dẫn chương trình: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartFailed" xml:space="preserve">
+    <value>Tải xuống hoặc giải nén thất bại, vui lòng thử lại</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartExecutableMissing" xml:space="preserve">
+    <value>Không tìm thấy tệp thực thi</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloading" xml:space="preserve">
+    <value>Đang tải xuống {0}（{1}/{2}）</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartExtracting" xml:space="preserve">
+    <value>Đang giải nén {0}（{1}/{2}）</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartTitle" xml:space="preserve">
+    <value>Tải chương trình tùy chỉnh từ nguồn tùy chỉnh</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPrimary" xml:space="preserve">
+    <value>Tải xuống</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartEmpty" xml:space="preserve">
+    <value>Không có chương trình khởi chạy tùy chỉnh khả dụng</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartStatusHeader" xml:space="preserve">
+    <value>Trạng thái thực hiện hiện tại</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartOpenDownloaderAction" xml:space="preserve">
+    <value>Nhanh chóng lấy và tải chương trình trong danh sách</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownServer" xml:space="preserve">
+    <value>Máy chủ không xác định</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDnsFailed" xml:space="preserve">
+    <value>Không thể kết nối đến máy chủ '{0}': giải mã DNS thất bại. Nguyên nhân có thể:
+1. Tên miền không tồn tại hoặc đánh sai
+2. Máy chủ DNS bị lỗi
+3. Vấn đề kết nối mạng
+4. Firewall hoặc phần mềm bảo mật chặn truy vấn DNS. Vui lòng kiểm tra cài đặt mạng và thử lại.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartConnectionRefused" xml:space="preserve">
+    <value>Máy chủ từ chối kết nối, vui lòng thử lại sau.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartTimedOut" xml:space="preserve">
+    <value>Kết nối quá thời gian, vui lòng kiểm tra kết nối mạng.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkDown" xml:space="preserve">
+    <value>Kết nối mạng không khả dụng, vui lòng kiểm tra trạng thái mạng.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkUnreachable" xml:space="preserve">
+    <value>Mạng không thể truy cập, vui lòng kiểm tra kết nối.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDnsNoData" xml:space="preserve">
+    <value>Truy vấn DNS thành công nhưng không tìm thấy bản ghi máy chủ, vui lòng kiểm tra địa chỉ.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkError" xml:space="preserve">
+    <value>Lỗi kết nối mạng: {0} (Mã lỗi: {1})</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartHttpError" xml:space="preserve">
+    <value>Máy chủ trả về lỗi: {0} {1}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownServerResponse" xml:space="preserve">
+    <value>Máy chủ trả về lỗi không xác định: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSecurityFailed" xml:space="preserve">
+    <value>Kết nối an toàn thất bại: {0}, vui lòng kiểm tra thời gian hệ thống và cài đặt chứng chỉ.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkRequestFailed" xml:space="preserve">
+    <value>Yêu cầu mạng thất bại: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloadCanceled" xml:space="preserve">
+    <value>Tải xuống {0} đã bị hủy.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloadTimeout" xml:space="preserve">
+    <value>Tải xuống {0} bị timeout, vui lòng kiểm tra kết nối mạng và thử lại.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartOperationCanceled" xml:space="preserve">
+    <value>Hoạt động đã bị hủy: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartIOError" xml:space="preserve">
+    <value>Lỗi đọc/ghi tệp: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnsupportedContentType" xml:space="preserve">
+    <value>Loại nội dung phản hồi không được hỗ trợ: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartInvalidHeaders" xml:space="preserve">
+    <value>Cấu hình header HTTP không hợp lệ: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownError" xml:space="preserve">
+    <value>Đã xảy ra lỗi không xác định khi tải xuống {0}. Loại lỗi: {1}. Vui lòng thử lại hoặc liên hệ hỗ trợ.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStart7zEntryDataError" xml:space="preserve">
+    <value>Giải nén 7z thất bại (mục: {0}): lỗi dữ liệu. Kho lưu trữ có thể bị hỏng hoặc sử dụng định dạng 7z không được hỗ trợ. Vui lòng thử tải lại hoặc sử dụng gói ZIP.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStart7zDataError" xml:space="preserve">
+    <value>Giải nén 7z thất bại: dữ liệu lưu trữ bị hỏng hoặc sử dụng phương thức nén 7z không được hỗ trợ. Vui lòng thử lại hoặc sử dụng gói ZIP.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnsupportedArchiveFormat" xml:space="preserve">
+    <value>Định dạng lưu trữ không được hỗ trợ!</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramPathNotSet" xml:space="preserve">
+    <value>Chưa đặt đường dẫn chương trình khởi chạy tùy chỉnh</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramNotExists" xml:space="preserve">
+    <value>Chương trình khởi chạy tùy chỉnh không tồn tại</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramLaunched" xml:space="preserve">
+    <value>Đã khởi chạy chương trình tùy chỉnh</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
+    <value>Đã lưu đường dẫn chương trình tùy chỉnh</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
+    <value>Quản lý khởi chạy chương trình tùy chỉnh</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartListSetter" xml:space="preserve">
+    <value>Đặt nguồn danh sách chương trình</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartGameDelayedStart" xml:space="preserve">
+    <value>Khởi chạy chậm chương trình trong danh sách</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartList" xml:space="preserve">
+    <value>Danh sách chương trình khởi chạy trì hoãn</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceDescription" xml:space="preserve">
+    <value>Nhập liên kết HTTP định dạng JSON đích</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedDelayedStartTitle" xml:space="preserve">
+    <value>Danh sách chương trình khởi chạy trì hoãn</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterTitle" xml:space="preserve">
+    <value>Đặt nguồn lấy danh sách chương trình</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterBackToDefaultButton" xml:space="preserve">
+    <value>Khôi phục về mặc định</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterSaveSuccess" xml:space="preserve">
+    <value>Lưu thành công</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListDelayedTime" xml:space="preserve">
+    <value>Độ trễ (giây)</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListPath" xml:space="preserve">
+    <value>Đường dẫn ứng dụng</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListName" xml:space="preserve">
+    <value>Tên ứng dụng</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartInfoBarMessage" xml:space="preserve">
+    <value>Sẽ được tải xuống thư mục AdvancedStart trong thư mục dữ liệu đã thiết lập. Bạn có thể đi đến cài đặt để điều chỉnh hoặc tự quản lý.</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartHeader" xml:space="preserve">
+    <value>Khởi động cùng lúc</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartDescription" xml:space="preserve">
+    <value>Thiết lập xem việc khởi động ở các vị trí khác nhau có kích hoạt khởi động trễ hay không</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartAdvancedHeader" xml:space="preserve">
+    <value>Kích hoạt khởi động trễ khi khởi động chương trình tùy chỉnh</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartGameHeader" xml:space="preserve">
+    <value>Kích hoạt khởi động trễ khi khởi động trò chơi</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -146,6 +146,9 @@
   </data>
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>未找到结果</value>
+  </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>删除</value>
   </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>选择全部</value>
@@ -632,6 +635,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>当前邮箱已被注册</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>注册失败，服务器异常，请尽快联系开发者解决</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>密码错误，注销失败</value>
   </data>
@@ -679,6 +685,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>获取数据失败，正在计算统计数据</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>上传深渊记录失败，服务器异常，请尽快联系开发者解决</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>上传深渊记录失败，存在无效的数据</value>
@@ -852,7 +861,7 @@
     <value>元数据初始化</value>
   </data>
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
-    <value>准备中，若长时间无反应请尝试重启</value>
+    <value>准备中，若长时间无反应请尝试重启或检查网络与服务器状态</value>
   </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>必应每日一图</value>
@@ -2883,6 +2892,18 @@
   <data name="ViewPageLaunchGameEventCameraMoveHotSwitchHeader" xml:space="preserve">
     <value>移除元素爆发镜头特写</value>
   </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneDescription" xml:space="preserve">
+    <value>修正角色/队伍配置/祈愿/纪行等特殊界面的视野</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneHeader" xml:space="preserve">
+    <value>特殊界面修正</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipSubtitle" xml:space="preserve">
+    <value>启用「调整视野」后，所有场景下的迷雾显示将会遵循「移除迷雾」开关的状态。若同时启用了「特殊界面修正」，则会在原始视野小于等于 30 时，强制禁用迷雾渲染。这会让你看到正常的祈愿/纪行/角色等界面，但是在进入部分剧情时也会强制禁用迷雾。这不属于软件 BUG，不要向我们反馈。</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipTitle" xml:space="preserve">
+    <value>视野与迷雾</value>
+  </data>
   <data name="ViewPageLaunchGameHideQuestBannerHotSwitchDescription" xml:space="preserve">
     <value>强制移除地图界面左上角的任务提示</value>
   </data>
@@ -3196,7 +3217,7 @@
     <value>在桌面上创建快捷方式</value>
   </data>
   <data name="ViewPageSettingCreateDesktopShortcutHeader" xml:space="preserve">
-    <value>创建快捷方式</value>
+    <value>在桌面上创建新的快捷方式</value>
   </data>
   <data name="ViewPageSettingDataFolderHeader" xml:space="preserve">
     <value>数据 文件夹</value>
@@ -3757,7 +3778,10 @@
     <value>武器资料</value>
   </data>
   <data name="ViewWindowCompactWebViewTitle" xml:space="preserve">
-    <value>紧凑网页窗口（仅管理员）</value>
+    <value>紧凑网页窗口</value>
+  </data>
+  <data name="ViewWindowCompactWebView2HotKeyDisabledMessage" xml:space="preserve">
+    <value>以管理员身份运行以启用全局快捷键功能</value>
   </data>
   <data name="ViewWindowExceptionClose" xml:space="preserve">
     <value>关闭</value>
@@ -4010,10 +4034,14 @@
   </data>
   <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
     <value>启动时自动以管理员权限重启</value>
+  <data name="ViewPageSettingAlwaysRunAsAdminTextDes" xml:space="preserve">
+    <value>将在手动启动应用时生效，建议开启自启动和管理员自启动以免启动各种功能时可能的UAC弹窗打扰</value>
   </data>
   <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
     <value>启用后，如果胡桃不是以管理员身份运行，将在启动时自动重启并请求管理员权限</value>
   </data>
+  <data name="ViewPageSettingAutoStartDescription" xml:space="preserve">
+    <value>程序将在当前用户登录时启动，是否以管理员运行仅在修改时同步管理员模式选项（修改需以管理员身份运行）</value>
   <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
     <value>显示派蒙</value>
   </data>

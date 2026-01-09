@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,7 +59,10 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema id="root"
+    xmlns=""
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -146,6 +149,9 @@
   </data>
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>找不到結果</value>
+  </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>刪除</value>
   </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>選擇全部</value>
@@ -629,6 +635,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>目前電子郵件地址已被註冊</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>註冊失敗，伺服器異常，請盡快聯繫開發者解決</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>密碼錯誤，刪除失敗</value>
   </data>
@@ -676,6 +685,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>獲取資料失敗，正在計算統計資料</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>上傳深淵紀錄失敗，伺服器異常，請盡快聯繫開發者解決</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>上傳深淵紀錄失敗，存在無效的資料</value>
@@ -836,6 +848,21 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>冷卻縮減</value>
   </data>
+  <data name="ServiceBackgroundActivityDefaultDescription" xml:space="preserve">
+    <value>準備中...</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitialization" xml:space="preserve">
+    <value>注入組件初始化</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitializationDescription" xml:space="preserve">
+    <value>僅在必要時執行</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitialization" xml:space="preserve">
+    <value>中繼資料初始化</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
+    <value>準備中，若長時間無反應請嘗試重啓或檢查網絡和服務器狀態</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing每日一圖</value>
   </data>
@@ -978,6 +1005,9 @@
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>取得本機遊戲版本失敗，無法取得注入配置資訊</value>
   </data>
+  <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
+    <value>尚未支持當前遊戲版本</value>
+  </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI 已啟動</value>
   </data>
@@ -1019,6 +1049,9 @@
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>使用 Embedded Yae 前，需要您了解相關風險並在「啟動遊戲」頁面開啟注入功能</value>
+  </data>
+  <data name="ServiceGameLaunchingHandlerGameProcessStartRepositorySyncFailed" xml:space="preserve">
+    <value>在獲取必要的啟動遊戲組件時發生錯誤</value>
   </data>
   <data name="ServiceGameLocatorFileOpenPickerCommitText" xml:space="preserve">
     <value>請選擇遊戲本體</value>
@@ -1096,6 +1129,12 @@
   </data>
   <data name="ServiceGameSetMultiChannelUnauthorizedAccess" xml:space="preserve">
     <value>無法讀取或儲存設定檔案，請用系統管理員模式重試</value>
+  </data>
+  <data name="ServiceGitRepositoryOperationCompleted" xml:space="preserve">
+    <value>操作完成</value>
+  </data>
+  <data name="ServiceGitRepositoryOperationFailed" xml:space="preserve">
+    <value>操作失敗</value>
   </data>
   <data name="ServiceHutaoUserGachaLogExpiredAt" xml:space="preserve">
     <value>祈願記錄上傳服務有效期限至</value>
@@ -2849,6 +2888,18 @@
   <data name="ViewPageLaunchGameEventCameraMoveHotSwitchHeader" xml:space="preserve">
     <value>移除元素爆發鏡頭特寫</value>
   </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneDescription" xml:space="preserve">
+    <value>修正角色/隊伍設定/祈願/紀行等特殊介面的視野</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneHeader" xml:space="preserve">
+    <value>特殊介面修正</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipSubtitle" xml:space="preserve">
+    <value>啟用「調整視野」後，所有場景下的迷霧顯示將會遵循「移除迷霧」開關的狀態。若同時啟用了「特殊介面修正」，則會在原始視野小於等於 30 時，強制禁用迷霧渲染。這會讓你看到正常的祈願/紀行/角色等介面，但是在進入部分劇情時也會強制禁用迷霧。這不屬於軟體 BUG，不要向我們回報。</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipTitle" xml:space="preserve">
+    <value>視野與迷霧</value>
+  </data>
   <data name="ViewPageLaunchGameHideQuestBannerHotSwitchDescription" xml:space="preserve">
     <value>強制移除地圖介面左上角的任務提示</value>
   </data>
@@ -3162,7 +3213,7 @@
     <value>在桌面上建立預設以系統管理員身份啟動的捷徑</value>
   </data>
   <data name="ViewPageSettingCreateDesktopShortcutHeader" xml:space="preserve">
-    <value>建立捷徑</value>
+    <value>在桌面上建立新的捷徑</value>
   </data>
   <data name="ViewPageSettingDataFolderHeader" xml:space="preserve">
     <value>資料 資料夾</value>
@@ -3725,6 +3776,9 @@
   <data name="ViewWindowCompactWebViewTitle" xml:space="preserve">
     <value>緊湊網頁視窗（僅系統管理員）</value>
   </data>
+  <data name="ViewWindowCompactWebView2HotKeyDisabledMessage" xml:space="preserve">
+    <value>以管理員身份運行以啟用全域快速鍵功能</value>
+  </data>
   <data name="ViewWindowExceptionClose" xml:space="preserve">
     <value>關閉</value>
   </data>
@@ -3968,19 +4022,221 @@
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>顯示器編號</value>
   </data>
+  <data name="ViewPageSettingAlwaysRunAsAdminText" xml:space="preserve">
+    <value>始終以管理員身份運行</value>
+  </data>
+  <data name="ViewPageSettingAlwaysRunAsAdminTextDes" xml:space="preserve">
+    <value>設定將在應用以後的啟動時生效，建議開啟自啟動以免啟動時反復UAC彈窗打擾</value>
+  </data>
+  <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
+    <value>開機自啟動</value>
+  </data>
+  <data name="ViewPageSettingAutoStartDescription" xml:space="preserve">
+    <value>程式將在當前用戶登錄時啟動（修改需以管理員身份運行，且與始終以管理員身份運行一起勾選將始終保持管理員狀態）</value>
+  </data>
+  <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
+    <value>應用行為</value>
+  </data>
   <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
     <value>自動簽到</value>
   </data>
-  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
-    <value>刪除</value>
+  <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
+    <value>自訂啟動</value>
   </data>
-  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>特殊介面修正</value>
+  <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
+    <value>自訂啟動選項允許快速啟動其他路徑的程式，胡桃內的遊戲選項（例如啟動參數）將不會生效</value>
   </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>註冊失敗，伺服器異常，請盡快聯繫開發者解決</value>
+  <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
+    <value>使用者自訂程式啟動</value>
   </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>上傳深淵紀錄失敗，伺服器異常，請盡快聯繫開發者解決</value>
+  <data name="ViewPageLaunchGameAdvancedStartPickPathHeader" xml:space="preserve">
+    <value>選擇啟動程式</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartPickPathDescription" xml:space="preserve">
+    <value>選擇需要啟動的程式路徑，以 '.exe' 結尾</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartOpenCommunityAction" xml:space="preserve">
+    <value>前往社群取得分享的程式</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartGame" xml:space="preserve">
+    <value>啟動自訂程式</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartLoading" xml:space="preserve">
+    <value>正在載入自訂啟動列表</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartFeedMissing" xml:space="preserve">
+    <value>未配置自訂啟動來源位址</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPick" xml:space="preserve">
+    <value>請選擇一個自訂啟動程式</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartLoadFailed" xml:space="preserve">
+    <value>載入自訂啟動列表失敗</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPickWarning" xml:space="preserve">
+    <value>請先選擇自訂啟動程式</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartCompleted" xml:space="preserve">
+    <value>已完成，程式路徑：{0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartFailed" xml:space="preserve">
+    <value>下載或解壓失敗，請重試</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartExecutableMissing" xml:space="preserve">
+    <value>找不到可執行檔</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloading" xml:space="preserve">
+    <value>正在下載 {0}（{1}/{2}）</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartExtracting" xml:space="preserve">
+    <value>正在解壓 {0}（{1}/{2}）</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartTitle" xml:space="preserve">
+    <value>從自訂來源下載自訂程式</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPrimary" xml:space="preserve">
+    <value>下載</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartEmpty" xml:space="preserve">
+    <value>暫無可用的自訂啟動程式</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartStatusHeader" xml:space="preserve">
+    <value>當前執行狀態</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartOpenDownloaderAction" xml:space="preserve">
+    <value>快速獲取並下載清單中的程式</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownServer" xml:space="preserve">
+    <value>未知伺服器</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDnsFailed" xml:space="preserve">
+    <value>無法連接到伺服器 '{0}'：DNS 解析失敗。 可能原因：
+1. 網域不存在或拼寫錯誤
+2. DNS 伺服器故障
+3. 網路連線問題
+4. 防火牆或安全軟體阻止 DNS 查詢。請檢查網路設定後重試。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartConnectionRefused" xml:space="preserve">
+    <value>伺服器拒絕連線，請稍後重試。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartTimedOut" xml:space="preserve">
+    <value>連線逾時，請檢查網路連線。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkDown" xml:space="preserve">
+    <value>網路連線不可用，請檢查網路狀態。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkUnreachable" xml:space="preserve">
+    <value>網路不可達，請檢查網路連線。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDnsNoData" xml:space="preserve">
+    <value>DNS 查詢成功但未找到伺服器記錄，請確認位址正確性。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkError" xml:space="preserve">
+    <value>網路連線錯誤：{0} (錯誤碼: {1})</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartHttpError" xml:space="preserve">
+    <value>伺服器返回錯誤：{0} {1}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownServerResponse" xml:space="preserve">
+    <value>伺服器返回未知錯誤：{0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSecurityFailed" xml:space="preserve">
+    <value>安全連線失敗：{0}，請檢查系統時間與憑證設定。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkRequestFailed" xml:space="preserve">
+    <value>網路請求失敗：{0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloadCanceled" xml:space="preserve">
+    <value>下載 {0} 已被取消。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloadTimeout" xml:space="preserve">
+    <value>下載 {0} 超時，請檢查網路連線並重試。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartOperationCanceled" xml:space="preserve">
+    <value>操作已取消：{0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartIOError" xml:space="preserve">
+    <value>檔案讀寫錯誤：{0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnsupportedContentType" xml:space="preserve">
+    <value>不支援的回應內容類型：{0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartInvalidHeaders" xml:space="preserve">
+    <value>無效的 HTTP 標頭設定：{0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownError" xml:space="preserve">
+    <value>下載 {0} 時發生未知錯誤。 錯誤類型: {1} 請重試或聯絡支援。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStart7zEntryDataError" xml:space="preserve">
+    <value>7z 解壓失敗（項目: {0}）：資料錯誤，壓縮檔可能損壞或使用了不支援的 7z 格式。請重試下載或使用 ZIP 包。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStart7zDataError" xml:space="preserve">
+    <value>7z 解壓失敗：壓縮檔資料損壞或採用不支援的 7z 壓縮方式。請重試或提供 ZIP 格式包。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnsupportedArchiveFormat" xml:space="preserve">
+    <value>不支援的壓縮格式！</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramPathNotSet" xml:space="preserve">
+    <value>未設定自訂啟動程式路徑</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramNotExists" xml:space="preserve">
+    <value>自訂啟動程式不存在</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramLaunched" xml:space="preserve">
+    <value>已啟動自訂程式</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
+    <value>已儲存自訂啟動程式路徑</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
+    <value>管理自訂程式啟動</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartListSetter" xml:space="preserve">
+    <value>設定程式清單來源</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartGameDelayedStart" xml:space="preserve">
+    <value>延遲啟動清單中的程式</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartList" xml:space="preserve">
+    <value>延遲啟動程式列表</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceDescription" xml:space="preserve">
+    <value>填寫目標 json 格式的 http 連結</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedDelayedStartTitle" xml:space="preserve">
+    <value>延遲啟動程式清單</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterTitle" xml:space="preserve">
+    <value>程式清單取得來源設定</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterBackToDefaultButton" xml:space="preserve">
+    <value>恢復預設</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterSaveSuccess" xml:space="preserve">
+    <value>儲存成功</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListDelayedTime" xml:space="preserve">
+    <value>延遲（秒）</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListPath" xml:space="preserve">
+    <value>應用路徑</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListName" xml:space="preserve">
+    <value>應用名</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartInfoBarMessage" xml:space="preserve">
+    <value>將會下載到設置的資料目錄的 AdvancedStart 資料夾下，可前往設置調整或自行管理</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartHeader" xml:space="preserve">
+    <value>連帶啟動</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartDescription" xml:space="preserve">
+    <value>設定不同位置的啟動是否觸發延遲啟動</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartAdvancedHeader" xml:space="preserve">
+    <value>啟動自訂程式時觸發延遲啟動</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartGameHeader" xml:space="preserve">
+    <value>啟動遊戲時觸發延遲啟動</value>
   </data>
 </root>

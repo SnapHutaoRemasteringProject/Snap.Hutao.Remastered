@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -146,6 +146,9 @@
   </data>
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>No results found</value>
+  </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>Delete</value>
   </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>Select All</value>
@@ -629,6 +632,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>Current emaill address is registered</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>Register failed, server error, please contact developer to fix it</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>Incorrect password, logout failed</value>
   </data>
@@ -676,6 +682,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>Failed to fetch data, server is calculating statistical data</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>Failed to upload Sprial Abyss record, server error, please contact developer to fix it</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>Failed to upload Sprial Abyss record, invalid data detected</value>
@@ -836,6 +845,21 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>CD Reduction</value>
   </data>
+  <data name="ServiceBackgroundActivityDefaultDescription" xml:space="preserve">
+    <value>Preparing...</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitialization" xml:space="preserve">
+    <value>Inject component initialization</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitializationDescription" xml:space="preserve">
+    <value>Only execute when necessary</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitialization" xml:space="preserve">
+    <value>Metadata initialization</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
+    <value>Preparing, if there is no response for a long time, please try restarting or checking the server status and network</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing Daily Wallpaper</value>
   </data>
@@ -978,6 +1002,9 @@
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>Failed to get local game version, unable to obtain injection configuration information</value>
   </data>
+  <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
+    <value>The current game version is not yet supported</value>
+  </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI launched</value>
   </data>
@@ -1019,6 +1046,9 @@
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>You should know about the related risks and turn on the embedding function in Launch Game page before using Embedded Yae</value>
+  </data>
+  <data name="ServiceGameLaunchingHandlerGameProcessStartRepositorySyncFailed" xml:space="preserve">
+    <value>An error occurred while obtaining the necessary startup game components</value>
   </data>
   <data name="ServiceGameLocatorFileOpenPickerCommitText" xml:space="preserve">
     <value>Select game executable</value>
@@ -1097,6 +1127,12 @@ Space Available: {2}</value>
   <data name="ServiceGameSetMultiChannelUnauthorizedAccess" xml:space="preserve">
     <value>Unable to read or save profile, please try again in administrator mode</value>
   </data>
+  <data name="ServiceGitRepositoryOperationCompleted" xml:space="preserve">
+    <value>Operation Completed</value>
+  </data>
+  <data name="ServiceGitRepositoryOperationFailed" xml:space="preserve">
+    <value>Operation Failed</value>
+  </data>
   <data name="ServiceHutaoUserGachaLogExpiredAt" xml:space="preserve">
     <value>Wish record uploading service is valid until</value>
   </data>
@@ -1173,7 +1209,7 @@ Space Available: {2}</value>
     <value>Waiting for game data</value>
   </data>
   <data name="UIViewMainTitleBarBackgroundActivityAction" xml:space="preserve">
-    <value>Background Tasks</value>
+    <value>Background task</value>
   </data>
   <data name="UIViewPageAvatarPropertyRecommendedAppendProperties" xml:space="preserve">
     <value>Additional Property Recommendation</value>
@@ -2852,6 +2888,18 @@ Space Available: {2}</value>
   <data name="ViewPageLaunchGameEventCameraMoveHotSwitchHeader" xml:space="preserve">
     <value>Disable Elemental Burst Animation</value>
   </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneDescription" xml:space="preserve">
+    <value>Fix the view for special interfaces such as Character/Team Configuration/Wish/Battle Pass</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneHeader" xml:space="preserve">
+    <value>Special Interface Fix</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipSubtitle" xml:space="preserve">
+    <value>When "Adjust Field of View" is enabled, the fog display in all scenes will follow the state of the "Remove Fog" toggle. If "Special Interface Fix" is also enabled, fog rendering will be forcibly disabled when the original field of view is less than or equal to 30. This allows you to see normal interfaces such as Wishes/Battle Pass/Characters, but fog will also be forcibly disabled when entering certain story scenes. This is not a software BUG, do not report it to us.</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipTitle" xml:space="preserve">
+    <value>Vision and Fog</value>
+  </data>
   <data name="ViewPageLaunchGameHideQuestBannerHotSwitchDescription" xml:space="preserve">
     <value>Force remove the quest banner tip on the top left of the map interface</value>
   </data>
@@ -3162,10 +3210,10 @@ Space Available: {2}</value>
     <value>Create</value>
   </data>
   <data name="ViewPageSettingCreateDesktopShortcutDescription" xml:space="preserve">
-    <value>Create desktop shortcut</value>
+    <value>Create desktop shortcut (For administrator/UAC behavior, please change it in Administrator Mode settings)</value>
   </data>
   <data name="ViewPageSettingCreateDesktopShortcutHeader" xml:space="preserve">
-    <value>Create Desktop Shortcut</value>
+    <value>Create new shortcut on desktop</value>
   </data>
   <data name="ViewPageSettingDataFolderHeader" xml:space="preserve">
     <value>Data Folder</value>
@@ -3727,6 +3775,9 @@ Space Available: {2}</value>
   </data>
   <data name="ViewWindowCompactWebViewTitle" xml:space="preserve">
     <value>Compact web window (Admin only)</value>
+  </data>
+  <data name="ViewWindowCompactWebView2HotKeyDisabledMessage" xml:space="preserve">
+    <value>Run as administrator to enable global shortcut key</value>
   </data>
   <data name="ViewWindowExceptionClose" xml:space="preserve">
     <value>Close</value>

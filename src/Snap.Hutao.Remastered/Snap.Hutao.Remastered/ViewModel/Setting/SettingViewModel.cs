@@ -1,4 +1,4 @@
-// Copyright (c) DGP Studio. All rights reserved.
+﻿// Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -11,6 +11,8 @@ using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.Update;
 using Windows.Foundation;
+public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigationRecipient
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Snap.Hutao.Remastered.ViewModel.Setting;
 
