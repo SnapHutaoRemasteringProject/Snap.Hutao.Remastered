@@ -1,5 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Millennium-Science-Technology-R-D-Inst. All rights reserved.
+// Licensed under the MIT license.
 
 using Microsoft.UI.Xaml;
 using Snap.Hutao.Remastered.Core;
@@ -122,8 +124,10 @@ public sealed partial class NotifyIconController : IDisposable
                 controller.OnRecreateNotifyIconRequested();
                 break;
             case HutaoNativeNotifyIconCallbackKind.ContextMenu:
-            case HutaoNativeNotifyIconCallbackKind.LeftButtonDown:
                 controller.OnContextMenuRequested(icon, point);
+                break;
+            case HutaoNativeNotifyIconCallbackKind.LeftButtonDown:
+                controller.OnWindowRequested();
                 break;
             case HutaoNativeNotifyIconCallbackKind.LeftButtonDoubleClick:
                 controller.OnWindowRequested();
