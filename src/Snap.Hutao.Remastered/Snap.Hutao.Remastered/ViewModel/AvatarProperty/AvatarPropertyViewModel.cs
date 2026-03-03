@@ -230,6 +230,72 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
         }
     }
 
+    // ========== 新增单独添加角色/武器 Command Start ==========
+    [Command("AddAvatarToPlanCommand")]
+    private async Task AddAvatarToPlanAsync(AvatarView? avatar)
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("AddAvatarToPlan", "AvatarPropertyViewModel.Command"));
+
+        if (avatar is null)
+        {
+            return;
+        }
+
+        // 仅传入角色，武器传null
+        CalculableOptions options = new(avatar, null);
+        CultivatePromotionDeltaDialog dialog = await scopeContext.ContentDialogFactory
+            .CreateInstanceAsync<CultivatePromotionDeltaDialog>(scopeContext.ServiceProvider, options)
+            .ConfigureAwait(false);
+
+        if (await dialog.GetPromotionDeltaAsync().ConfigureAwait(false) is not (true, { } deltaOptions))
+        {
+            return;
+        }
+
+        ArgumentNullException.ThrowIfNull(metadataContext);
+        CalculatorBatchConsumption batchConsumption = OfflineCalculator.CalculateBatchConsumption(deltaOptions.Delta, metadataContext);
+
+        // 仅保存角色养成数据
+        if (!await SaveAvatarOnlyCultivationAsync(batchConsumption.Items.Single(), deltaOptions).ConfigureAwait(false))
+        {
+            scopeContext.Messenger.Send(InfoBarMessage.Warning(SH.ViewModelCultivationEntryAddWarning));
+        }
+    }
+
+    [Command("AddWeaponToPlanCommand")]
+    private async Task AddWeaponToPlanAsync(AvatarView? avatar)
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("AddWeaponToPlan", "AvatarPropertyViewModel.Command"));
+
+        if (avatar is null || avatar.Weapon is null)
+        {
+            if (avatar is null) return;
+            scopeContext.Messenger.Send(InfoBarMessage.Warning(SH.ViewModelAvatarPropertyCalculateWeaponNull));
+            return;
+        }
+
+        // 仅传入武器，角色传null
+        CalculableOptions options = new(null, avatar.Weapon);
+        CultivatePromotionDeltaDialog dialog = await scopeContext.ContentDialogFactory
+            .CreateInstanceAsync<CultivatePromotionDeltaDialog>(scopeContext.ServiceProvider, options)
+            .ConfigureAwait(false);
+
+        if (await dialog.GetPromotionDeltaAsync().ConfigureAwait(false) is not (true, { } deltaOptions))
+        {
+            return;
+        }
+
+        ArgumentNullException.ThrowIfNull(metadataContext);
+        CalculatorBatchConsumption batchConsumption = OfflineCalculator.CalculateBatchConsumption(deltaOptions.Delta, metadataContext);
+
+        // 仅保存武器养成数据
+        if (!await SaveWeaponOnlyCultivationAsync(batchConsumption.Items.Single(), deltaOptions).ConfigureAwait(false))
+        {
+            scopeContext.Messenger.Send(InfoBarMessage.Warning(SH.ViewModelCultivationEntryAddWarning));
+        }
+    }
+    // ========== 新增单独添加角色/武器 Command End ==========
+
     [Command("BatchCultivateCommand")]
     private async Task BatchCultivateAsync(bool full)
     {
@@ -320,6 +386,79 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
 
         scopeContext.Messenger.Send(message);
     }
+
+    // ========== 新增公共抽离方法 Start ==========
+    /// <summary>
+    /// 仅保存角色养成数据
+    /// </summary>
+    private async ValueTask<bool> SaveAvatarOnlyCultivationAsync(CalculatorConsumption consumption, CultivatePromotionDeltaOptions options, bool isBatch = false)
+    {
+        LevelInformation levelInformation = LevelInformation.From(options.Delta);
+
+        InputConsumption avatarInput = new()
+        {
+            Type = CultivateType.AvatarAndSkill,
+            ItemId = options.Delta.AvatarId,
+            Items = CalculatorItemHelper.Merge(consumption.AvatarConsume, consumption.AvatarSkillConsume),
+            LevelInformation = levelInformation,
+            Strategy = options.Strategy,
+        };
+
+        ConsumptionSaveResultKind avatarSaveKind = await scopeContext.CultivationService.SaveConsumptionAsync(avatarInput).ConfigureAwait(false);
+
+        InfoBarMessage? avatarMessage = avatarSaveKind switch
+        {
+            ConsumptionSaveResultKind.NoProject => InfoBarMessage.Warning(SH.ViewModelCultivationEntryAddWarning),
+            ConsumptionSaveResultKind.Skipped => isBatch ? default : InfoBarMessage.Information(SH.ViewModelCultivationConsumptionSaveSkippedHint),
+            ConsumptionSaveResultKind.NoItem => isBatch ? default : InfoBarMessage.Information(SH.ViewModelCultivationConsumptionSaveNoItemHint),
+            ConsumptionSaveResultKind.Added => isBatch ? default : InfoBarMessage.Success(SH.ViewModelCultivationEntryAddSuccess),
+            _ => default,
+        };
+
+        if (avatarMessage is not null)
+        {
+            scopeContext.Messenger.Send(avatarMessage);
+        }
+
+        return avatarSaveKind is not ConsumptionSaveResultKind.NoProject;
+    }
+
+    /// <summary>
+    /// 仅保存武器养成数据
+    /// </summary>
+    private async ValueTask<bool> SaveWeaponOnlyCultivationAsync(CalculatorConsumption consumption, CultivatePromotionDeltaOptions options, bool isBatch = false)
+    {
+        LevelInformation levelInformation = LevelInformation.From(options.Delta);
+
+        ArgumentNullException.ThrowIfNull(options.Delta.Weapon);
+
+        InputConsumption weaponInput = new()
+        {
+            Type = CultivateType.Weapon,
+            ItemId = options.Delta.Weapon.Id,
+            Items = consumption.WeaponConsume,
+            LevelInformation = levelInformation,
+            Strategy = options.Strategy,
+        };
+
+        ConsumptionSaveResultKind weaponSaveKind = await scopeContext.CultivationService.SaveConsumptionAsync(weaponInput).ConfigureAwait(false);
+        InfoBarMessage? weaponMessage = weaponSaveKind switch
+        {
+            ConsumptionSaveResultKind.NoProject => InfoBarMessage.Warning(SH.ViewModelCultivationEntryAddWarning),
+            ConsumptionSaveResultKind.Skipped => isBatch ? default : InfoBarMessage.Information(SH.ViewModelCultivationConsumptionSaveSkippedHint),
+            ConsumptionSaveResultKind.NoItem => isBatch ? default : InfoBarMessage.Information(SH.ViewModelCultivationConsumptionSaveNoItemHint),
+            ConsumptionSaveResultKind.Added => isBatch ? default : InfoBarMessage.Success(SH.ViewModelCultivationEntryAddSuccess),
+            _ => default,
+        };
+
+        if (weaponMessage is not null)
+        {
+            scopeContext.Messenger.Send(weaponMessage);
+        }
+
+        return weaponSaveKind is not ConsumptionSaveResultKind.NoProject;
+    }
+    // ========== 新增公共抽离方法 End ==========
 
     /// <returns><see langword="true"/> if we can continue saving consumptions, otherwise <see langword="false"/>.</returns>
     private async ValueTask<bool> SaveCultivationAsync(CalculatorConsumption consumption, CultivatePromotionDeltaOptions options, bool isBatch = false)

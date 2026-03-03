@@ -111,15 +111,15 @@
             </Grid>
         </DataTemplate>
 
+        <!--         列表模式的头像项模板，包含头像图标、名称以及右键菜单。 -->
         <DataTemplate x:Key="AvatarListTemplate" x:DataType="shmma:Avatar">
             <Grid>
                 <Grid.ContextFlyout>
                     <MenuFlyout>
                         <MenuFlyoutItem
-                            Command="{Binding Path=DataContext.CultivateCommand, ElementName=RootPage}"
+                            Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
                             CommandParameter="{Binding}"
-                            Icon="{shuxm:FontIcon Glyph=&#xE8EF;}"
-                            Text="{shuxm:ResourceString Name=ViewPageCultivateCalculate}"/>
+                            Text="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
                     </MenuFlyout>
                 </Grid.ContextFlyout>
                 <Grid.ColumnDefinitions>
@@ -296,16 +296,16 @@
                 </cwc:SettingsCard.Description>
             </cwc:SettingsCard>
         </DataTemplate>
-
+        
+        <!--         网格模式的头像项模板，包含头像图标、名称以及右键菜单。 -->
         <DataTemplate x:Key="AvatarGridTemplate" x:DataType="shmma:Avatar">
             <shuxcc:VerticalCard Width="82">
                 <shuxcc:VerticalCard.ContextFlyout>
                     <MenuFlyout>
                         <MenuFlyoutItem
-                            Command="{Binding Path=DataContext.CultivateCommand, ElementName=RootPage}"
+                            Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
                             CommandParameter="{Binding}"
-                            Icon="{shuxm:FontIcon Glyph=&#xE8EF;}"
-                            Text="{shuxm:ResourceString Name=ViewPageCultivateCalculate}"/>
+                            Text="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
                     </MenuFlyout>
                 </shuxcc:VerticalCard.ContextFlyout>
                 <shuxcc:VerticalCard.Top>

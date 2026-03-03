@@ -4242,4 +4242,13 @@
   <data name="ViewOverlayHideGrassToolTip" xml:space="preserve">
     <value>隐藏草地</value>
   </data>
+  <data name="ViewPageAvatarPropertyAddWeaponToPlan" xml:space="preserve">
+    <value>添加武器到养成计划</value>
+  </data>
+  <data name="ViewPageAvatarPropertyAddAvatarToPlan" xml:space="preserve">
+    <value>添加角色到养成计划</value>
+  </data>
+  <data name="ViewPageAvatarPropertyAddBothToPlan" xml:space="preserve">
+    <value>添加角色与武器到养成计划</value>
+  </data>
 </root>

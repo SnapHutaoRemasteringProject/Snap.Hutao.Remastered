@@ -81,15 +81,26 @@
                 </shuxcc:VerticalCard>
             </DataTemplate>
 
+            <!-- 网格模式的头像项模板，包含头像图标、名称以及右键菜单。 -->
             <DataTemplate x:Key="AvatarGridViewTemplate" x:DataType="shva:AvatarView">
                 <Grid Style="{ThemeResource GridShimmerStyle}">
                     <Grid.ContextFlyout>
                         <MenuFlyout>
+                            <!-- 添加角色到养成计划 -->
                             <MenuFlyoutItem
-                                Command="{Binding Path=DataContext.CultivateCommand, ElementName=RootPage}"
+                                Command="{Binding ElementName=RootPage, Path=DataContext.AddAvatarToPlanCommand}"
                                 CommandParameter="{Binding}"
-                                Icon="{shuxm:FontIcon Glyph=&#xE8EF;}"
-                                Text="{shuxm:ResourceString Name=ViewPageCultivateCalculate}"/>
+                                Text="{shuxm:ResourceString Name=ViewPageAvatarPropertyAddAvatarToPlan}"/>
+                            <!-- 添加武器到养成计划 -->
+                            <MenuFlyoutItem
+                                Command="{Binding ElementName=RootPage, Path=DataContext.AddWeaponToPlanCommand}"
+                                CommandParameter="{Binding}"
+                                Text="{shuxm:ResourceString Name=ViewPageAvatarPropertyAddWeaponToPlan}"/>
+                            <!-- 添加角色与武器到养成计划 -->
+                            <MenuFlyoutItem
+                                Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
+                                CommandParameter="{Binding}"
+                                Text="{shuxm:ResourceString Name=ViewPageAvatarPropertyAddBothToPlan}"/>
                         </MenuFlyout>
                     </Grid.ContextFlyout>
 
@@ -198,15 +209,23 @@
                 </Grid>
             </DataTemplate>
 
+            <!--         列表模式的头像项模板，包含头像图标、名称以及右键菜单。 -->
             <DataTemplate x:Key="AvatarListViewTemplate" x:DataType="shva:AvatarView">
-                <Grid>
+                <Grid Background="Transparent">
                     <Grid.ContextFlyout>
                         <MenuFlyout>
                             <MenuFlyoutItem
-                                Command="{Binding Path=DataContext.CultivateCommand, ElementName=RootPage}"
+                                Command="{Binding ElementName=RootPage, Path=DataContext.AddAvatarToPlanCommand}"
                                 CommandParameter="{Binding}"
-                                Icon="{shuxm:FontIcon Glyph=&#xE8EF;}"
-                                Text="{shuxm:ResourceString Name=ViewPageCultivateCalculate}"/>
+                                Text="{shuxm:ResourceString Name=ViewPageAvatarPropertyAddAvatarToPlan}"/>
+                            <MenuFlyoutItem
+                                Command="{Binding ElementName=RootPage, Path=DataContext.AddWeaponToPlanCommand}"
+                                CommandParameter="{Binding}"
+                                Text="{shuxm:ResourceString Name=ViewPageAvatarPropertyAddWeaponToPlan}"/>
+                            <MenuFlyoutItem
+                                Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
+                                CommandParameter="{Binding}"
+                                Text="{shuxm:ResourceString Name=ViewPageAvatarPropertyCultivate}"/>
                         </MenuFlyout>
                     </Grid.ContextFlyout>
                     <Grid.ColumnDefinitions>
