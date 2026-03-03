@@ -147,6 +147,9 @@
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>결과를 찾을 수 없음</value>
   </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>삭제</value>
+  </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>모두 선택</value>
   </data>
@@ -629,6 +632,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>현재 이메일은 이미 등록되었습니다</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>등록 실패, 서버 오류, 개발자에게 문의하여 해결하세요</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>비밀번호 오류, 로그아웃 실패</value>
   </data>
@@ -666,7 +672,7 @@
     <value>인증 요청 실패, 현재 이메일 주소가 등록되지 않았습니다</value>
   </data>
   <data name="ServerPassportVerifyTooFrequent" xml:space="preserve">
-    <value />
+    <value>확인 요청이 너무 빠릅니다. 1분 후에 다시 시도해 주세요.</value>
   </data>
   <data name="ServerRecordBannedUid" xml:space="preserve">
     <value>上传深渊记录失败，当前 Uid 已被胡桃数据库封禁</value>
@@ -676,6 +682,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>데이터 가져오기 실패, 통계 데이터 계산 중</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>심연 기록 업로드 실패, 서버 오류, 개발자에게 문의하여 해결해 주세요.</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>심연 기록 업로드 실패, 유효하지 않은 데이터가 있습니다.</value>
@@ -836,6 +845,21 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>재사용 대기시간 감소</value>
   </data>
+  <data name="ServiceBackgroundActivityDefaultDescription" xml:space="preserve">
+    <value>준비중...</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitialization" xml:space="preserve">
+    <value>구성 요소 초기화 삽입</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitializationDescription" xml:space="preserve">
+    <value>필요한 경우에만 실행</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitialization" xml:space="preserve">
+    <value>메타데이터 초기화</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
+    <value>준비 중입니다. 오랫동안 응답이 없으면 다시 시작해 보세요.</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing 일일 배경화면</value>
   </data>
@@ -911,6 +935,12 @@
   <data name="ServiceGachaLogFactoryAvatarWishName" xml:space="preserve">
     <value>캐릭터 이벤트</value>
   </data>
+  <data name="ServiceGachaLogFactoryBeyondEventWishName" xml:space="preserve">
+    <value>이벤트 및 소원</value>
+  </data>
+  <data name="ServiceGachaLogFactoryBeyondPermanentWishName" xml:space="preserve">
+    <value>모험의 메아리</value>
+  </data>
   <data name="ServiceGachaLogFactoryChronicledWishName" xml:space="preserve">
     <value>집록 기원</value>
   </data>
@@ -978,6 +1008,9 @@
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>로컬 게임 버전을 가져오지 못해 주입 설정 정보를 얻을 수 없음</value>
   </data>
+  <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
+    <value>현재 게임 버전은 아직 지원되지 않습니다.</value>
+  </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI가 시작됨</value>
   </data>
@@ -1019,6 +1052,9 @@
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>Embedded Yae를 사용하기 전에 관련 위험을 숙지하고 「게임 시작」 페이지에서 주입 기능을 켜야 합니다.</value>
+  </data>
+  <data name="ServiceGameLaunchingHandlerGameProcessStartRepositorySyncFailed" xml:space="preserve">
+    <value>게임을 실행하는 데 필요한 구성요소를 검색하는 중 오류가 발생했습니다.</value>
   </data>
   <data name="ServiceGameLocatorFileOpenPickerCommitText" xml:space="preserve">
     <value>게임 파일 선택</value>
@@ -1097,6 +1133,12 @@
   <data name="ServiceGameSetMultiChannelUnauthorizedAccess" xml:space="preserve">
     <value>설정 파일을 읽거나 쓸 수 없습니다. 관리자 모드로 실행하세요</value>
   </data>
+  <data name="ServiceGitRepositoryOperationCompleted" xml:space="preserve">
+    <value>작업 완료</value>
+  </data>
+  <data name="ServiceGitRepositoryOperationFailed" xml:space="preserve">
+    <value>작업 실패</value>
+  </data>
   <data name="ServiceHutaoUserGachaLogExpiredAt" xml:space="preserve">
     <value>기원 기록 업로드 서비스 유효 기간:</value>
   </data>
@@ -1123,6 +1165,78 @@
   </data>
   <data name="ServicePackageAdvancedExecuteOperationFailedTitle" xml:space="preserve">
     <value>게임 리소스 작업 실패</value>
+  </data>
+  <data name="ServicePluginDeleteFailed" xml:space="preserve">
+    <value>플러그인 '{0}'을(를) 제거하는 동안 오류가 발생했습니다.</value>
+  </data>
+  <data name="ServicePluginDeleteSuccess" xml:space="preserve">
+    <value>플러그인 '{0}'이(가) 성공적으로 제거되었습니다.</value>
+  </data>
+  <data name="ServicePluginDisableSuccess" xml:space="preserve">
+    <value>플러그인 '{0}'이(가) 비활성화되었습니다.</value>
+  </data>
+  <data name="ServicePluginDisablingPluginFailed" xml:space="preserve">
+    <value>플러그인을 비활성화하는 동안 예외가 발생했습니다.</value>
+  </data>
+  <data name="ServicePluginEnablingPluginFailed" xml:space="preserve">
+    <value>플러그인을 활성화하는 동안 예외가 발생했습니다.</value>
+  </data>
+  <data name="ServicePluginEnablingSuccess" xml:space="preserve">
+    <value>플러그인 '{0}'이(가) 성공적으로 활성화되었습니다.</value>
+  </data>
+  <data name="ServicePluginInstallAlreadyExists" xml:space="preserve">
+    <value>플러그인 '{0}'이(가) 이미 설치되었습니다.</value>
+  </data>
+  <data name="ServicePluginInstallFailed" xml:space="preserve">
+    <value>플러그인을 설치하지 못했습니다.</value>
+  </data>
+  <data name="ServicePluginInstallFileNotFound" xml:space="preserve">
+    <value>플러그인 파일을 찾을 수 없습니다</value>
+  </data>
+  <data name="ServicePluginInstallInvalidFileType" xml:space="preserve">
+    <value>잘못된 플러그인 파일 형식입니다. .hutao 또는 .hutaodidisabled 파일이 필요합니다.</value>
+  </data>
+  <data name="ServicePluginInstallInvalidManifest" xml:space="preserve">
+    <value>플러그인 매니페스트.json 파일이 잘못되었거나 ID가 누락되었습니다.</value>
+  </data>
+  <data name="ServicePluginInstallManifestNotFound" xml:space="preserve">
+    <value>플러그인 파일에서 Manifest.json 파일을 찾을 수 없습니다.</value>
+  </data>
+  <data name="ServicePluginInstallSuccess" xml:space="preserve">
+    <value>플러그인 '{0}'이(가) 성공적으로 설치되었습니다.</value>
+  </data>
+  <data name="ServicePluginLoadDirectoryNotFound" xml:space="preserve">
+    <value>플러그인 디렉터리 '{0}'을(를) 찾을 수 없습니다</value>
+  </data>
+  <data name="ServicePluginLoadDllNotFound" xml:space="preserve">
+    <value>플러그인 '{0}'에 대한 DLL 파일을 찾을 수 없습니다.</value>
+  </data>
+  <data name="ServicePluginLoadFailed" xml:space="preserve">
+    <value>플러그인 로딩 실패</value>
+  </data>
+  <data name="ServicePluginLoadInvalidManifest" xml:space="preserve">
+    <value>플러그인 '{0}'에 잘못된 매니페스트 파일이 있습니다.</value>
+  </data>
+  <data name="ServicePluginLoadMainTypeNotFound" xml:space="preserve">
+    <value>플러그인 '{0}'의 기본 클래스를 찾을 수 없습니다.</value>
+  </data>
+  <data name="ServicePluginLoadManifestNotFound" xml:space="preserve">
+    <value>플러그인 '{0}'에 대한 Manifest.json 파일을 찾을 수 없습니다.</value>
+  </data>
+  <data name="ServicePluginLoadSuccess" xml:space="preserve">
+    <value>플러그인 '{0}'이(가) 성공적으로 로드되었습니다.</value>
+  </data>
+  <data name="ServicePluginNotFound" xml:space="preserve">
+    <value>플러그인 '{0}'을(를) 찾을 수 없습니다</value>
+  </data>
+  <data name="ServicePluginPickFileTitle" xml:space="preserve">
+    <value>플러그인 파일 선택</value>
+  </data>
+  <data name="ServicePluginUninstallDescription" xml:space="preserve">
+    <value>플러그인 {0}을(를) 제거하시겠습니까? 이 작업은 되돌릴 수 없습니다.</value>
+  </data>
+  <data name="ServicePluginUninstallTitle" xml:space="preserve">
+    <value>플러그인 {0} 제거</value>
   </data>
   <data name="ServiceReSignInClaimRewardFailed" xml:space="preserve">
     <value>추가 출석 실패, {0}</value>
@@ -1172,6 +1286,9 @@
   <data name="ServiceYaeWaitForGameResponseMessage" xml:space="preserve">
     <value>게임 데이터를 기다리는 중</value>
   </data>
+  <data name="UIViewMainTitleBarBackgroundActivityAction" xml:space="preserve">
+    <value>백그라운드 작업</value>
+  </data>
   <data name="UIViewPageAvatarPropertyRecommendedAppendProperties" xml:space="preserve">
     <value>추가 속성 추천</value>
   </data>
@@ -1220,6 +1337,12 @@
   <data name="ViewCardLaunchGameSelectAccountPlaceholder" xml:space="preserve">
     <value>계정 선택 또는 바로 시작</value>
   </data>
+  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
+    <value>자동 체크인</value>
+  </data>
+  <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
+    <value>프로그램 시작 시 자동 체크인 활성화</value>
+  </data>
   <data name="ViewCardSignInClaimReSignInAction" xml:space="preserve">
     <value>추가 체크인</value>
   </data>
@@ -1252,6 +1375,9 @@
   </data>
   <data name="ViewControlStatisticsCardPullText" xml:space="preserve">
     <value>뽑음</value>
+  </data>
+  <data name="ViewControlStatisticsCardPurpleAveragePullText" xml:space="preserve">
+    <value>별 4개의 평균 무승부 수</value>
   </data>
   <data name="ViewControlStatisticsCardPurpleText" xml:space="preserve">
     <value>4성</value>
@@ -2306,6 +2432,12 @@
   <data name="ViewOverlayDisableShowDamageTextToolTip" xml:space="preserve">
     <value>전투 피해량 표시 제거</value>
   </data>
+  <data name="ViewOverlayDisplayPaimonToolTip" xml:space="preserve">
+    <value>파이몬 보기</value>
+  </data>
+  <data name="ViewOverlayHideGrassToolTip" xml:space="preserve">
+    <value>숨겨진 풀</value>
+  </data>
   <data name="ViewOverlayLaunchGameHideQuestBannerToolTip" xml:space="preserve">
     <value>지도 인터페이스에서 퀘스트 배너 팁 제거</value>
   </data>
@@ -2577,7 +2709,7 @@
     <value>이 UID 클라우드 아카이브 다운로드</value>
   </data>
   <data name="ViewPageGachaLogHutaoCloudSpiralAbyssActivityDescription" xml:space="preserve">
-    <value />
+    <value>Abyss의 각 호는 처음으로 3일 동안 무료로 업로드됩니다.</value>
   </data>
   <data name="ViewPageGachaLogHutaoCloudSpiralAbyssActivityHeader" xml:space="preserve">
     <value>나선 비경 기록 업로드</value>
@@ -2659,6 +2791,12 @@
   </data>
   <data name="ViewPageGachaLogRemoveArchiveAction" xml:space="preserve">
     <value>현재 아카이브 삭제</value>
+  </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeDescription" xml:space="preserve">
+    <value>Ode to Wishes(천 개의 별과 경이로운 왕국) 모드로 전환</value>
+  </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeHeader" xml:space="preserve">
+    <value>소망</value>
   </data>
   <data name="ViewPageHardChallengeTime" xml:space="preserve">
     <value>전투 소요 시간</value>
@@ -2843,6 +2981,9 @@
   <data name="ViewPageLaunchGameDisableFogOn" xml:space="preserve">
     <value>제거</value>
   </data>
+  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
+    <value>특수 인터페이스 수정</value>
+  </data>
   <data name="ViewPageLaunchGameElevationDescription" xml:space="preserve">
     <value>게임 파일 관리/게임 서버 전환/기능 주입에는 관리자 권한이 필요합니다.</value>
   </data>
@@ -2866,6 +3007,36 @@
   </data>
   <data name="ViewPageLaunchGameIslandConnected" xml:space="preserve">
     <value>게임에 연결됨, 설정 변경이 게임에 실시간 반영됨</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeDescription" xml:space="preserve">
+    <value>디버그 모드 활성화</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeHeader" xml:space="preserve">
+    <value>디버그 모드</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonDescription" xml:space="preserve">
+    <value>게임에서 파이몬 보여주기</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
+    <value>파이몬 보기</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription" xml:space="preserve">
+    <value>게임 중 언제든지 키보드, 마우스, 컨트롤러 입력 간 자동 전환</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
+    <value>핫 스위칭 처리</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassDescription" xml:space="preserve">
+    <value>게임 내 잔디 숨기기</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassHeader" xml:space="preserve">
+    <value>숨겨진 풀</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
+    <value>플레이어 정보 숨기기</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoHeader" xml:space="preserve">
+    <value>플레이어 정보 숨기기</value>
   </data>
   <data name="ViewPageLaunchGameIslandOptionsHeader" xml:space="preserve">
     <value>주입 옵션</value>
@@ -3014,6 +3185,81 @@
   <data name="ViewPageOpenScreenshotFolderAction" xml:space="preserve">
     <value>스크린샷 폴더 열기</value>
   </data>
+  <data name="ViewPagePluginCountText" xml:space="preserve">
+    <value>플러그인</value>
+  </data>
+  <data name="ViewPagePluginDisableButton" xml:space="preserve">
+    <value>장애를 입히다</value>
+  </data>
+  <data name="ViewPagePluginEmptyDescription" xml:space="preserve">
+    <value>첫 번째 플러그인을 추가하려면 "플러그인 설치" 버튼을 클릭하세요.</value>
+  </data>
+  <data name="ViewPagePluginEmptyTitle" xml:space="preserve">
+    <value>아직 플러그인이 없습니다</value>
+  </data>
+  <data name="ViewPagePluginEnableButton" xml:space="preserve">
+    <value>~할 수 있게 하다</value>
+  </data>
+  <data name="ViewPagePluginInstallButton" xml:space="preserve">
+    <value>플러그인 설치</value>
+  </data>
+  <data name="ViewPagePluginOpenDirectoryButton" xml:space="preserve">
+    <value>플러그인 디렉토리 열기</value>
+  </data>
+  <data name="ViewPagePluginRefreshButton" xml:space="preserve">
+    <value>새로 고치다</value>
+  </data>
+  <data name="ViewPagePluginSettingBackButton" xml:space="preserve">
+    <value>반품</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultPlaceholder" xml:space="preserve">
+    <value>값을 입력하세요.</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultValueText" xml:space="preserve">
+    <value>기본값:</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyDescription" xml:space="preserve">
+    <value>이 플러그인에는 구성 가능한 설정이 없습니다.</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyTitle" xml:space="preserve">
+    <value>아직 설정이 없습니다.</value>
+  </data>
+  <data name="ViewPagePluginSettingIntPlaceholder" xml:space="preserve">
+    <value>정수를 입력하세요.</value>
+  </data>
+  <data name="ViewPagePluginSettingResetButton" xml:space="preserve">
+    <value>다시 놓기</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveButton" xml:space="preserve">
+    <value>구하다</value>
+  </data>
+  <data name="ViewPagePluginSettingStringPlaceholder" xml:space="preserve">
+    <value>텍스트를 입력해주세요</value>
+  </data>
+  <data name="ViewPagePluginSettingTitle" xml:space="preserve">
+    <value>플러그인 설정</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOff" xml:space="preserve">
+    <value>닫다</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOn" xml:space="preserve">
+    <value>열려 있는</value>
+  </data>
+  <data name="ViewPagePluginSettingsButton" xml:space="preserve">
+    <value>설정</value>
+  </data>
+  <data name="ViewPagePluginStatusDisabled" xml:space="preserve">
+    <value>장애가 있는</value>
+  </data>
+  <data name="ViewPagePluginStatusEnabled" xml:space="preserve">
+    <value>활성화됨</value>
+  </data>
+  <data name="ViewPagePluginTotalText" xml:space="preserve">
+    <value>흔한</value>
+  </data>
+  <data name="ViewPagePluginUninstallButton" xml:space="preserve">
+    <value>제거</value>
+  </data>
   <data name="ViewPageResetGamePathAction" xml:space="preserve">
     <value>게임 경로 선택</value>
   </data>
@@ -3082,6 +3328,12 @@
   </data>
   <data name="ViewPageSettingApperanceLanguageHeader" xml:space="preserve">
     <value>언어</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
+    <value>활성화되면 Walnut이 관리자로 실행되지 않으면 자동으로 다시 시작되고 시작 시 관리자 권한을 요청합니다.</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
+    <value>시작 시 관리자 권한으로 자동으로 다시 시작</value>
   </data>
   <data name="ViewPageSettingBackdropMaterialDescription" xml:space="preserve">
     <value>배경 테마 변경</value>
@@ -3548,6 +3800,9 @@
   <data name="ViewPeriodHeader" xml:space="preserve">
     <value>주기</value>
   </data>
+  <data name="ViewPluginHeader" xml:space="preserve">
+    <value>플러그인 관리</value>
+  </data>
   <data name="ViewRoleCombatHeader" xml:space="preserve">
     <value>환상 진경 극시</value>
   </data>
@@ -3965,19 +4220,25 @@
   <data name="WebResponseSignInErrorHint" xml:space="preserve">
     <value>로그인 실패, HoYoLAB에서 계정을 초기화하세요. 원본 메시지: {0}</value>
   </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleOne" xml:space="preserve">
+    <value>활동칭찬-여성</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleTwo" xml:space="preserve">
+    <value>활동칭찬-여성</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleOne" xml:space="preserve">
+    <value>활동칭찬 - 남자</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleTwo" xml:space="preserve">
+    <value>활동칭찬 - 남자</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeAvatarEventWish" xml:space="preserve">
+    <value>이벤트 및 소원</value>
+  </data>
+  <data name="WebUGCGachaConfigTypePermanentWish" xml:space="preserve">
+    <value>끊임없는 기도</value>
+  </data>
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>모니터 ID</value>
-  </data>
-  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
-    <value>삭제</value>
-  </data>
-  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>특수 인터페이스 수정</value>
-  </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>등록 실패, 서버 오류, 개발자에게 문의하여 해결하세요</value>
-  </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>심연 기록 업로드 실패, 서버 오류, 개발자에게 문의하여 해결해 주세요.</value>
   </data>
 </root>

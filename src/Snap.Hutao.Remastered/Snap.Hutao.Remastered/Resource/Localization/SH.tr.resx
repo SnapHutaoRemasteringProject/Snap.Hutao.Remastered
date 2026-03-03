@@ -147,6 +147,9 @@
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>Sonuç bulunamadı</value>
   </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>Sil</value>
+  </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>Tümünü Seç</value>
   </data>
@@ -629,6 +632,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>Geçerli e-posta adresi zaten kayıtlı</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>Kayıt başarısız, sunucu hatası, lütfen sorunu çözmek için en kısa sürede geliştiriciyle iletişime geçin</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>Şifre hatalı, hesap silme başarısız</value>
   </data>
@@ -676,6 +682,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>Veri alınamadı, istatistiksel veriler hesaplanıyor</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>Spiral Abyss kaydı yüklenemedi, sunucu hatası, lütfen sorunu çözmek için en kısa sürede geliştiriciyle iletişime geçin</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>Spiral Abyss kaydı yüklenemedi, geçersiz veri tespit edildi</value>
@@ -836,6 +845,21 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>Bekleme Süresi Azaltma</value>
   </data>
+  <data name="ServiceBackgroundActivityDefaultDescription" xml:space="preserve">
+    <value>Hazırlık aşamasında...</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitialization" xml:space="preserve">
+    <value>Bileşen başlatmayı enjekte etme</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitializationDescription" xml:space="preserve">
+    <value>Yalnızca gerektiğinde yürütün</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitialization" xml:space="preserve">
+    <value>Meta veri başlatma</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
+    <value>Hazırlanıyor. Uzun süre yanıt gelmezse lütfen yeniden başlatmayı deneyin.</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing Günlük Duvar Kağıdı</value>
   </data>
@@ -911,6 +935,12 @@
   <data name="ServiceGachaLogFactoryAvatarWishName" xml:space="preserve">
     <value>Karakter Etkinliği Dileği</value>
   </data>
+  <data name="ServiceGachaLogFactoryBeyondEventWishName" xml:space="preserve">
+    <value>Olaylar ve dilekler</value>
+  </data>
+  <data name="ServiceGachaLogFactoryBeyondPermanentWishName" xml:space="preserve">
+    <value>Maceranın Yankıları</value>
+  </data>
   <data name="ServiceGachaLogFactoryChronicledWishName" xml:space="preserve">
     <value>Kaydedilen Dilek</value>
   </data>
@@ -978,6 +1008,9 @@
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>Yerel oyun sürümü alınamadı, enjeksiyon yapılandırma bilgileri alınamıyor</value>
   </data>
+  <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
+    <value>Mevcut oyun sürümü henüz desteklenmiyor</value>
+  </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI başlatıldı</value>
   </data>
@@ -1019,6 +1052,9 @@
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>Embedded Yae'yi kullanmadan önce, ilgili riskleri bilmeniz ve "Oyunu Başlat" sayfasında yerleştirme işlevini açmanız gerekir</value>
+  </data>
+  <data name="ServiceGameLaunchingHandlerGameProcessStartRepositorySyncFailed" xml:space="preserve">
+    <value>Oyunu başlatmak için gerekli bileşenler alınırken bir hata oluştu</value>
   </data>
   <data name="ServiceGameLocatorFileOpenPickerCommitText" xml:space="preserve">
     <value>Oyun yürütülebilir dosyasını seçin</value>
@@ -1097,6 +1133,12 @@ Kullanılabilir Alan: {2}</value>
   <data name="ServiceGameSetMultiChannelUnauthorizedAccess" xml:space="preserve">
     <value>Yapılandırma dosyası okunamıyor veya kaydedilemiyor, lütfen yönetici modunda tekrar deneyin</value>
   </data>
+  <data name="ServiceGitRepositoryOperationCompleted" xml:space="preserve">
+    <value>İşlem tamamlandı</value>
+  </data>
+  <data name="ServiceGitRepositoryOperationFailed" xml:space="preserve">
+    <value>İşlem başarısız oldu</value>
+  </data>
   <data name="ServiceHutaoUserGachaLogExpiredAt" xml:space="preserve">
     <value>Dilek kaydı yükleme hizmetinin geçerlilik süresi:</value>
   </data>
@@ -1123,6 +1165,78 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ServicePackageAdvancedExecuteOperationFailedTitle" xml:space="preserve">
     <value>Oyun kaynağı işlemi başarısız oldu</value>
+  </data>
+  <data name="ServicePluginDeleteFailed" xml:space="preserve">
+    <value>'{0}' eklentisi kaldırılırken bir hata oluştu</value>
+  </data>
+  <data name="ServicePluginDeleteSuccess" xml:space="preserve">
+    <value>'{0}' eklentisi başarıyla kaldırıldı</value>
+  </data>
+  <data name="ServicePluginDisableSuccess" xml:space="preserve">
+    <value>'{0}' eklentisi başarıyla devre dışı bırakıldı</value>
+  </data>
+  <data name="ServicePluginDisablingPluginFailed" xml:space="preserve">
+    <value>Eklenti devre dışı bırakılırken istisna oluştu</value>
+  </data>
+  <data name="ServicePluginEnablingPluginFailed" xml:space="preserve">
+    <value>Eklenti etkinleştirilirken istisna oluştu</value>
+  </data>
+  <data name="ServicePluginEnablingSuccess" xml:space="preserve">
+    <value>'{0}' eklentisi başarıyla etkinleştirildi</value>
+  </data>
+  <data name="ServicePluginInstallAlreadyExists" xml:space="preserve">
+    <value>'{0}' eklentisi zaten yüklü</value>
+  </data>
+  <data name="ServicePluginInstallFailed" xml:space="preserve">
+    <value>Eklenti yüklenemedi</value>
+  </data>
+  <data name="ServicePluginInstallFileNotFound" xml:space="preserve">
+    <value>Eklenti dosyası bulunamadı</value>
+  </data>
+  <data name="ServicePluginInstallInvalidFileType" xml:space="preserve">
+    <value>Geçersiz eklenti dosyası türü, .hutao veya .hutaodisabled dosyası bekleniyor</value>
+  </data>
+  <data name="ServicePluginInstallInvalidManifest" xml:space="preserve">
+    <value>Eklenti manifest.json dosyası geçersiz veya eksik kimlik</value>
+  </data>
+  <data name="ServicePluginInstallManifestNotFound" xml:space="preserve">
+    <value>Manifest.json dosyası eklenti dosyasında bulunamadı</value>
+  </data>
+  <data name="ServicePluginInstallSuccess" xml:space="preserve">
+    <value>'{0}' eklentisi başarıyla yüklendi</value>
+  </data>
+  <data name="ServicePluginLoadDirectoryNotFound" xml:space="preserve">
+    <value>'{0}' eklenti dizini bulunamadı</value>
+  </data>
+  <data name="ServicePluginLoadDllNotFound" xml:space="preserve">
+    <value>'{0}' eklentisinin DLL dosyası bulunamadı</value>
+  </data>
+  <data name="ServicePluginLoadFailed" xml:space="preserve">
+    <value>Eklenti yükleme başarısız oldu</value>
+  </data>
+  <data name="ServicePluginLoadInvalidManifest" xml:space="preserve">
+    <value>'{0}' eklentisinde geçersiz bir bildirim dosyası var</value>
+  </data>
+  <data name="ServicePluginLoadMainTypeNotFound" xml:space="preserve">
+    <value>'{0}' eklentisinin ana sınıfı bulunamadı</value>
+  </data>
+  <data name="ServicePluginLoadManifestNotFound" xml:space="preserve">
+    <value>'{0}' eklentisi için Manifest.json dosyası bulunamadı</value>
+  </data>
+  <data name="ServicePluginLoadSuccess" xml:space="preserve">
+    <value>'{0}' eklentisi başarıyla yüklendi</value>
+  </data>
+  <data name="ServicePluginNotFound" xml:space="preserve">
+    <value>'{0}' eklentisi bulunamadı</value>
+  </data>
+  <data name="ServicePluginPickFileTitle" xml:space="preserve">
+    <value>Eklenti dosyasını seçin</value>
+  </data>
+  <data name="ServicePluginUninstallDescription" xml:space="preserve">
+    <value>{0} eklentisini kaldırmak istediğinizden emin misiniz? Bu işlem geri döndürülemez.</value>
+  </data>
+  <data name="ServicePluginUninstallTitle" xml:space="preserve">
+    <value>{0} eklentisini kaldır</value>
   </data>
   <data name="ServiceReSignInClaimRewardFailed" xml:space="preserve">
     <value>Telafi imzalama başarısız, {0}</value>
@@ -1172,6 +1286,9 @@ Kullanılabilir Alan: {2}</value>
   <data name="ServiceYaeWaitForGameResponseMessage" xml:space="preserve">
     <value>Oyun verileri bekleniyor</value>
   </data>
+  <data name="UIViewMainTitleBarBackgroundActivityAction" xml:space="preserve">
+    <value>Arka plan görevleri</value>
+  </data>
   <data name="UIViewPageAvatarPropertyRecommendedAppendProperties" xml:space="preserve">
     <value>Ek Özellik Tavsiyesi</value>
   </data>
@@ -1220,6 +1337,12 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewCardLaunchGameSelectAccountPlaceholder" xml:space="preserve">
     <value>Hesap seçin veya doğrudan başlatın</value>
   </data>
+  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
+    <value>Otomatik giriş</value>
+  </data>
+  <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
+    <value>Program başlangıcında otomatik check-in'i etkinleştir</value>
+  </data>
   <data name="ViewCardSignInClaimReSignInAction" xml:space="preserve">
     <value>Telafi girişi</value>
   </data>
@@ -1252,6 +1375,9 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewControlStatisticsCardPullText" xml:space="preserve">
     <value>Çekiliş</value>
+  </data>
+  <data name="ViewControlStatisticsCardPurpleAveragePullText" xml:space="preserve">
+    <value>Dört yıldız için ortalama çekiliş sayısı</value>
   </data>
   <data name="ViewControlStatisticsCardPurpleText" xml:space="preserve">
     <value>Dört Yıldız</value>
@@ -1464,7 +1590,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Örnek</value>
   </data>
   <data name="ViewDialogGeetestCustomUrlTitle" xml:space="preserve">
-    <value />
+    <value>Sensörsüz doğrulama arayüzünü yapılandırın</value>
   </data>
   <data name="ViewDialogHutaoPassportLoginTitle" xml:space="preserve">
     <value>Snap Hutao Passport'a Giriş Yap</value>
@@ -1548,7 +1674,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Oyun İstemcisi Dönüştürülüyor</value>
   </data>
   <data name="ViewDialogQRCodeTitle" xml:space="preserve">
-    <value />
+    <value>QR kodunu taramak için Miyoushe'yi kullanın</value>
   </data>
   <data name="ViewDialogReconfirmHint" xml:space="preserve">
     <value>Fonksiyon kullanıcılarının bağımsız karar verme yeteneğine sahip olmasını sağlamak için, bu fonksiyonların etkinleştirme koşullarını düzensiz olarak güncelleyeceğiz. Eğer bir içerik üreticisiyseniz, Snap Hutao ile ilgili içerik oluştururken lütfen belirli etkinleştirme yöntemlerini izleyicilerinizle paylaşmayın.</value>
@@ -2306,6 +2432,12 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewOverlayDisableShowDamageTextToolTip" xml:space="preserve">
     <value>Savaş hasarı metnini kaldır</value>
   </data>
+  <data name="ViewOverlayDisplayPaimonToolTip" xml:space="preserve">
+    <value>Paimon'u göster</value>
+  </data>
+  <data name="ViewOverlayHideGrassToolTip" xml:space="preserve">
+    <value>gizli çim</value>
+  </data>
   <data name="ViewOverlayLaunchGameHideQuestBannerToolTip" xml:space="preserve">
     <value>Harita arayüzünden görev bildirimini kaldır</value>
   </data>
@@ -2660,6 +2792,12 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageGachaLogRemoveArchiveAction" xml:space="preserve">
     <value>Mevcut Arşivi Sil</value>
   </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeDescription" xml:space="preserve">
+    <value>Dileklere Övgü (Bin Yıldız ve Harika Diyar) moduna geç</value>
+  </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeHeader" xml:space="preserve">
+    <value>dilek</value>
+  </data>
   <data name="ViewPageHardChallengeTime" xml:space="preserve">
     <value>Savaş süresi</value>
   </data>
@@ -2843,6 +2981,9 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageLaunchGameDisableFogOn" xml:space="preserve">
     <value>Kaldır</value>
   </data>
+  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
+    <value>Özel Arayüz Düzeltmesi</value>
+  </data>
   <data name="ViewPageLaunchGameElevationDescription" xml:space="preserve">
     <value>Oyun dosyası yönetimi/oyun sunucusunu değiştirme/enjeksiyon özelliği için yönetici izni gerekiyor</value>
   </data>
@@ -2866,6 +3007,36 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewPageLaunchGameIslandConnected" xml:space="preserve">
     <value>Oyuna bağlandı, ayar değişiklikleri oyuna dinamik olarak yansıtılacak</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeDescription" xml:space="preserve">
+    <value>Hata ayıklama modunu etkinleştir</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeHeader" xml:space="preserve">
+    <value>hata ayıklama modu</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonDescription" xml:space="preserve">
+    <value>Paimon'u oyunda göster</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
+    <value>Paimon'u göster</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription" xml:space="preserve">
+    <value>Oyun sırasında istediğiniz zaman klavye, fare ve kontrol cihazı girişi arasında otomatik olarak geçiş yapın</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
+    <value>Sıcak geçişi yönetin</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassDescription" xml:space="preserve">
+    <value>Oyunda çimleri gizle</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassHeader" xml:space="preserve">
+    <value>gizli çim</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
+    <value>Oyuncu bilgilerini gizle</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoHeader" xml:space="preserve">
+    <value>Oyuncu bilgilerini gizle</value>
   </data>
   <data name="ViewPageLaunchGameIslandOptionsHeader" xml:space="preserve">
     <value>Enjeksiyon Seçenekleri</value>
@@ -2910,7 +3081,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Oyun İçi Arayüz</value>
   </data>
   <data name="ViewPageLaunchGameOverlayHideDescription" xml:space="preserve">
-    <value />
+    <value>Kayan pencere için göster/gizle kısayol tuşlarını ayarlayın (oyunla birlikte başlatılır)</value>
   </data>
   <data name="ViewPageLaunchGameOverlayHideHeader" xml:space="preserve">
     <value>Oyun İçi Yer Paylaşımını Göster/Gizle</value>
@@ -3013,6 +3184,69 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewPageOpenScreenshotFolderAction" xml:space="preserve">
     <value>Ekran Görüntüleri Klasörünü Aç</value>
+  </data>
+  <data name="ViewPagePluginCountText" xml:space="preserve">
+    <value>eklentiler</value>
+  </data>
+  <data name="ViewPagePluginDisableButton" xml:space="preserve">
+    <value>Devre dışı bırakmak</value>
+  </data>
+  <data name="ViewPagePluginEmptyDescription" xml:space="preserve">
+    <value>İlk eklentinizi eklemek için "Eklentiyi Yükle" düğmesini tıklayın</value>
+  </data>
+  <data name="ViewPagePluginEmptyTitle" xml:space="preserve">
+    <value>Henüz eklenti yok</value>
+  </data>
+  <data name="ViewPagePluginEnableButton" xml:space="preserve">
+    <value>olanak vermek</value>
+  </data>
+  <data name="ViewPagePluginInstallButton" xml:space="preserve">
+    <value>Eklentiyi yükle</value>
+  </data>
+  <data name="ViewPagePluginOpenDirectoryButton" xml:space="preserve">
+    <value>Eklenti dizinini açın</value>
+  </data>
+  <data name="ViewPagePluginRefreshButton" xml:space="preserve">
+    <value>yenileme</value>
+  </data>
+  <data name="ViewPagePluginSettingBackButton" xml:space="preserve">
+    <value>geri dönmek</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultPlaceholder" xml:space="preserve">
+    <value>Lütfen bir değer girin</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultValueText" xml:space="preserve">
+    <value>varsayılan değer:</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyDescription" xml:space="preserve">
+    <value>Bu eklentinin yapılandırılabilir ayarı yok</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyTitle" xml:space="preserve">
+    <value>Henüz ayar yok</value>
+  </data>
+  <data name="ViewPagePluginSettingIntPlaceholder" xml:space="preserve">
+    <value>Lütfen bir tamsayı girin</value>
+  </data>
+  <data name="ViewPagePluginSettingResetButton" xml:space="preserve">
+    <value>sıfırlama</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveButton" xml:space="preserve">
+    <value>kaydetmek</value>
+  </data>
+  <data name="ViewPagePluginSettingStringPlaceholder" xml:space="preserve">
+    <value>Lütfen metni girin</value>
+  </data>
+  <data name="ViewPagePluginSettingTitle" xml:space="preserve">
+    <value>Eklenti ayarları</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOff" xml:space="preserve">
+    <value>kapalı</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOn" xml:space="preserve">
+    <value>açık</value>
+  </data>
+  <data name="ViewPagePluginSettingsButton" xml:space="preserve">
+    <value>kurmak</value>
   </data>
   <data name="ViewPageResetGamePathAction" xml:space="preserve">
     <value>Oyun Yolunu Seç</value>
@@ -3967,17 +4201,5 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>Monitör Kimliği</value>
-  </data>
-  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
-    <value>Sil</value>
-  </data>
-  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>Özel Arayüz Düzeltmesi</value>
-  </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>Kayıt başarısız, sunucu hatası, lütfen sorunu çözmek için en kısa sürede geliştiriciyle iletişime geçin</value>
-  </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>Spiral Abyss kaydı yüklenemedi, sunucu hatası, lütfen sorunu çözmek için en kısa sürede geliştiriciyle iletişime geçin</value>
   </data>
 </root>

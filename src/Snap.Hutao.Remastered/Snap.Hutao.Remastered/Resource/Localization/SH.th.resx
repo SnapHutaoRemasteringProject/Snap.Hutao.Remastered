@@ -147,6 +147,9 @@
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>ไม่พบผลลัพธ์</value>
   </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>ลบ</value>
+  </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>เลือกทั้งหมด</value>
   </data>
@@ -629,6 +632,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>อีเมลนี้ถูกลงทะเบียนแล้ว</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>ลงทะเบียนล้มเหลว, เซิร์ฟเวอร์ผิดพลาด, โปรดติดต่อผู้พัฒนาเพื่อแก้ไขโดยเร็ว</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>รหัสผ่านผิดพลาด การยกเลิกการลงทะเบียนล้มเหลว</value>
   </data>
@@ -676,6 +682,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>ดึงข้อมูลล้มเหลว, กำลังคำนวณข้อมูลสถิติ</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>อัปโหลดบันทึก Spiral Abyss ล้มเหลว, เซิร์ฟเวอร์ผิดพลาด, โปรดติดต่อผู้พัฒนาเพื่อแก้ไขโดยเร็ว</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>อัปโหลดบันทึก Spiral Abyss ล้มเหลว, พบข้อมูลที่ไม่ถูกต้อง</value>
@@ -836,6 +845,21 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>ลดคูลดาวน์</value>
   </data>
+  <data name="ServiceBackgroundActivityDefaultDescription" xml:space="preserve">
+    <value>ในการเตรียมการ...</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitialization" xml:space="preserve">
+    <value>ฉีดการเริ่มต้นส่วนประกอบ</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitializationDescription" xml:space="preserve">
+    <value>ดำเนินการเมื่อจำเป็นเท่านั้น</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitialization" xml:space="preserve">
+    <value>การเริ่มต้นข้อมูลเมตา</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
+    <value>กำลังเตรียมตัว. หากไม่มีการตอบสนองเป็นเวลานาน โปรดลองรีสตาร์ท</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>ภาพพื้นหลัง Bing ประจำวัน</value>
   </data>
@@ -911,6 +935,12 @@
   <data name="ServiceGachaLogFactoryAvatarWishName" xml:space="preserve">
     <value>กิจกรรมอธิษฐานตัวละคร</value>
   </data>
+  <data name="ServiceGachaLogFactoryBeyondEventWishName" xml:space="preserve">
+    <value>เหตุการณ์และความปรารถนา</value>
+  </data>
+  <data name="ServiceGachaLogFactoryBeyondPermanentWishName" xml:space="preserve">
+    <value>เสียงสะท้อนแห่งการผจญภัย</value>
+  </data>
   <data name="ServiceGachaLogFactoryChronicledWishName" xml:space="preserve">
     <value>คำอธิษฐานบันทึก</value>
   </data>
@@ -978,6 +1008,9 @@
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>ไม่สามารถรับเวอร์ชันเกมในเครื่องได้ ไม่สามารถรับข้อมูลการกำหนดค่าการฉีด</value>
   </data>
+  <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
+    <value>เวอร์ชันเกมปัจจุบันยังไม่รองรับ</value>
+  </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI เปิดใช้งานแล้ว</value>
   </data>
@@ -1019,6 +1052,9 @@
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>คุณควรทราบถึงความเสี่ยงที่เกี่ยวข้องและเปิดฟังก์ชันการฝังในหน้าเปิดเกมก่อนที่จะใช้ Embedded Yae</value>
+  </data>
+  <data name="ServiceGameLaunchingHandlerGameProcessStartRepositorySyncFailed" xml:space="preserve">
+    <value>เกิดข้อผิดพลาดขณะเรียกข้อมูลส่วนประกอบที่จำเป็นในการเปิดเกม</value>
   </data>
   <data name="ServiceGameLocatorFileOpenPickerCommitText" xml:space="preserve">
     <value>เลือกไฟล์เกม</value>
@@ -1097,6 +1133,12 @@
   <data name="ServiceGameSetMultiChannelUnauthorizedAccess" xml:space="preserve">
     <value>ไม่สามารถอ่านหรือบันทึกไฟล์กำหนดค่า โปรดลองใหม่อีกครั้งในโหมดผู้ดูแลระบบ</value>
   </data>
+  <data name="ServiceGitRepositoryOperationCompleted" xml:space="preserve">
+    <value>การดำเนินการเสร็จสมบูรณ์</value>
+  </data>
+  <data name="ServiceGitRepositoryOperationFailed" xml:space="preserve">
+    <value>การดำเนินการล้มเหลว</value>
+  </data>
   <data name="ServiceHutaoUserGachaLogExpiredAt" xml:space="preserve">
     <value>บริการอัปโหลดบันทึกการอธิษฐานมีผลถึง</value>
   </data>
@@ -1123,6 +1165,78 @@
   </data>
   <data name="ServicePackageAdvancedExecuteOperationFailedTitle" xml:space="preserve">
     <value>การดำเนินการทรัพยากรเกมล้มเหลว</value>
+  </data>
+  <data name="ServicePluginDeleteFailed" xml:space="preserve">
+    <value>เกิดข้อผิดพลาดขณะถอนการติดตั้งปลั๊กอิน '{0}'</value>
+  </data>
+  <data name="ServicePluginDeleteSuccess" xml:space="preserve">
+    <value>ถอนการติดตั้งปลั๊กอิน '{0}' สำเร็จแล้ว</value>
+  </data>
+  <data name="ServicePluginDisableSuccess" xml:space="preserve">
+    <value>ปิดใช้งานปลั๊กอิน '{0}' เรียบร้อยแล้ว</value>
+  </data>
+  <data name="ServicePluginDisablingPluginFailed" xml:space="preserve">
+    <value>มีข้อยกเว้นเกิดขึ้นเมื่อปิดใช้งานปลั๊กอิน</value>
+  </data>
+  <data name="ServicePluginEnablingPluginFailed" xml:space="preserve">
+    <value>มีข้อยกเว้นเกิดขึ้นขณะเปิดใช้งานปลั๊กอิน</value>
+  </data>
+  <data name="ServicePluginEnablingSuccess" xml:space="preserve">
+    <value>เปิดใช้งานปลั๊กอิน '{0}' สำเร็จแล้ว</value>
+  </data>
+  <data name="ServicePluginInstallAlreadyExists" xml:space="preserve">
+    <value>ติดตั้งปลั๊กอิน '{0}' แล้ว</value>
+  </data>
+  <data name="ServicePluginInstallFailed" xml:space="preserve">
+    <value>ไม่สามารถติดตั้งปลั๊กอินได้</value>
+  </data>
+  <data name="ServicePluginInstallFileNotFound" xml:space="preserve">
+    <value>ไม่พบไฟล์ปลั๊กอิน</value>
+  </data>
+  <data name="ServicePluginInstallInvalidFileType" xml:space="preserve">
+    <value>ประเภทไฟล์ปลั๊กอินไม่ถูกต้อง ต้องเป็นไฟล์ .hutao หรือ .hutaodisabled</value>
+  </data>
+  <data name="ServicePluginInstallInvalidManifest" xml:space="preserve">
+    <value>ไฟล์ปลั๊กอิน manifest.json ไม่ถูกต้องหรือไม่มี ID</value>
+  </data>
+  <data name="ServicePluginInstallManifestNotFound" xml:space="preserve">
+    <value>ไม่พบไฟล์ Manifest.json ในไฟล์ปลั๊กอิน</value>
+  </data>
+  <data name="ServicePluginInstallSuccess" xml:space="preserve">
+    <value>ติดตั้งปลั๊กอิน '{0}' สำเร็จแล้ว</value>
+  </data>
+  <data name="ServicePluginLoadDirectoryNotFound" xml:space="preserve">
+    <value>ไม่พบไดเร็กทอรีปลั๊กอิน '{0}'</value>
+  </data>
+  <data name="ServicePluginLoadDllNotFound" xml:space="preserve">
+    <value>ไม่พบไฟล์ DLL สำหรับปลั๊กอิน '{0}'</value>
+  </data>
+  <data name="ServicePluginLoadFailed" xml:space="preserve">
+    <value>การโหลดปลั๊กอินล้มเหลว</value>
+  </data>
+  <data name="ServicePluginLoadInvalidManifest" xml:space="preserve">
+    <value>ปลั๊กอิน '{0}' มีไฟล์รายการไม่ถูกต้อง</value>
+  </data>
+  <data name="ServicePluginLoadMainTypeNotFound" xml:space="preserve">
+    <value>ไม่พบคลาสหลักของปลั๊กอิน '{0}'</value>
+  </data>
+  <data name="ServicePluginLoadManifestNotFound" xml:space="preserve">
+    <value>ไม่พบไฟล์ Manifest.json สำหรับปลั๊กอิน '{0}'</value>
+  </data>
+  <data name="ServicePluginLoadSuccess" xml:space="preserve">
+    <value>โหลดปลั๊กอิน '{0}' สำเร็จแล้ว</value>
+  </data>
+  <data name="ServicePluginNotFound" xml:space="preserve">
+    <value>ไม่พบปลั๊กอิน '{0}'</value>
+  </data>
+  <data name="ServicePluginPickFileTitle" xml:space="preserve">
+    <value>เลือกไฟล์ปลั๊กอิน</value>
+  </data>
+  <data name="ServicePluginUninstallDescription" xml:space="preserve">
+    <value>คุณแน่ใจหรือไม่ว่าต้องการถอนการติดตั้งปลั๊กอิน {0} การดำเนินการนี้ไม่สามารถย้อนกลับได้</value>
+  </data>
+  <data name="ServicePluginUninstallTitle" xml:space="preserve">
+    <value>ถอนการติดตั้งปลั๊กอิน {0}</value>
   </data>
   <data name="ServiceReSignInClaimRewardFailed" xml:space="preserve">
     <value>ลงชื่อชดเชยล้มเหลว, {0}</value>
@@ -1172,6 +1286,9 @@
   <data name="ServiceYaeWaitForGameResponseMessage" xml:space="preserve">
     <value>กำลังรอข้อมูลเกม</value>
   </data>
+  <data name="UIViewMainTitleBarBackgroundActivityAction" xml:space="preserve">
+    <value>งานเบื้องหลัง</value>
+  </data>
   <data name="UIViewPageAvatarPropertyRecommendedAppendProperties" xml:space="preserve">
     <value>คำแนะนำคุณสมบัติเพิ่มเติม</value>
   </data>
@@ -1220,6 +1337,12 @@
   <data name="ViewCardLaunchGameSelectAccountPlaceholder" xml:space="preserve">
     <value>เลือกบัญชีหรือเริ่มทันที</value>
   </data>
+  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
+    <value>เช็คอินอัตโนมัติ</value>
+  </data>
+  <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
+    <value>เปิดใช้งานการเช็คอินอัตโนมัติเมื่อเริ่มต้นโปรแกรม</value>
+  </data>
   <data name="ViewCardSignInClaimReSignInAction" xml:space="preserve">
     <value>ลงชื่อเข้าใช้ชดเชย</value>
   </data>
@@ -1252,6 +1375,9 @@
   </data>
   <data name="ViewControlStatisticsCardPullText" xml:space="preserve">
     <value>ครั้ง</value>
+  </data>
+  <data name="ViewControlStatisticsCardPurpleAveragePullText" xml:space="preserve">
+    <value>จำนวนการจับรางวัลโดยเฉลี่ยสำหรับสี่ดาว</value>
   </data>
   <data name="ViewControlStatisticsCardPurpleText" xml:space="preserve">
     <value>สี่ดาว</value>
@@ -2306,6 +2432,12 @@
   <data name="ViewOverlayDisableShowDamageTextToolTip" xml:space="preserve">
     <value>ซ่อนตัวเลขความเสียหายจากการต่อสู้</value>
   </data>
+  <data name="ViewOverlayDisplayPaimonToolTip" xml:space="preserve">
+    <value>โชว์ไพม่อน</value>
+  </data>
+  <data name="ViewOverlayHideGrassToolTip" xml:space="preserve">
+    <value>หญ้าที่ซ่อนอยู่</value>
+  </data>
   <data name="ViewOverlayLaunchGameHideQuestBannerToolTip" xml:space="preserve">
     <value>ลบคำแนะนำงานบนอินเทอร์เฟซแผนที่</value>
   </data>
@@ -2660,6 +2792,12 @@
   <data name="ViewPageGachaLogRemoveArchiveAction" xml:space="preserve">
     <value>ลบข้อมูลที่จัดเก็บปัจจุบัน</value>
   </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeDescription" xml:space="preserve">
+    <value>สลับไปที่โหมดบทกวีเป็นความปรารถนา (ดวงดาวนับพันและอาณาจักรมหัศจรรย์)</value>
+  </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeHeader" xml:space="preserve">
+    <value>ปรารถนา</value>
+  </data>
   <data name="ViewPageHardChallengeTime" xml:space="preserve">
     <value>เวลาในการต่อสู้</value>
   </data>
@@ -2843,6 +2981,9 @@
   <data name="ViewPageLaunchGameDisableFogOn" xml:space="preserve">
     <value>ลบ</value>
   </data>
+  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
+    <value>การแก้ไขอินเทอร์เฟซพิเศษ</value>
+  </data>
   <data name="ViewPageLaunchGameElevationDescription" xml:space="preserve">
     <value>การจัดการไฟล์เกม/การสลับเซิร์ฟเวอร์เกม/คุณสมบัติการแทรกต้องใช้สิทธิ์ผู้ดูแลระบบ</value>
   </data>
@@ -2866,6 +3007,36 @@
   </data>
   <data name="ViewPageLaunchGameIslandConnected" xml:space="preserve">
     <value>เชื่อมต่อกับเกมแล้ว การเปลี่ยนแปลงการตั้งค่าจะสะท้อนไปยังเกมแบบไดนามิก</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeDescription" xml:space="preserve">
+    <value>เปิดใช้งานโหมดแก้ไขข้อบกพร่อง</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeHeader" xml:space="preserve">
+    <value>โหมดแก้ไขข้อบกพร่อง</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonDescription" xml:space="preserve">
+    <value>แสดง Paimon ในเกม</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
+    <value>โชว์ไพม่อน</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription" xml:space="preserve">
+    <value>สลับระหว่างอินพุตคีย์บอร์ด เมาส์ และคอนโทรลเลอร์โดยอัตโนมัติได้ตลอดเวลาระหว่างเกม</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
+    <value>จัดการสวิตช์ร้อน</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassDescription" xml:space="preserve">
+    <value>ซ่อนหญ้าในเกม</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassHeader" xml:space="preserve">
+    <value>หญ้าที่ซ่อนอยู่</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
+    <value>ซ่อนข้อมูลผู้เล่น</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoHeader" xml:space="preserve">
+    <value>ซ่อนข้อมูลผู้เล่น</value>
   </data>
   <data name="ViewPageLaunchGameIslandOptionsHeader" xml:space="preserve">
     <value>ตัวเลือกการฉีด</value>
@@ -3014,6 +3185,81 @@
   <data name="ViewPageOpenScreenshotFolderAction" xml:space="preserve">
     <value>เปิดโฟลเดอร์ภาพหน้าจอ</value>
   </data>
+  <data name="ViewPagePluginCountText" xml:space="preserve">
+    <value>ปลั๊กอิน</value>
+  </data>
+  <data name="ViewPagePluginDisableButton" xml:space="preserve">
+    <value>ปิดการใช้งาน</value>
+  </data>
+  <data name="ViewPagePluginEmptyDescription" xml:space="preserve">
+    <value>คลิกปุ่ม "ติดตั้งปลั๊กอิน" เพื่อเพิ่มปลั๊กอินแรกของคุณ</value>
+  </data>
+  <data name="ViewPagePluginEmptyTitle" xml:space="preserve">
+    <value>ยังไม่มีปลั๊กอิน</value>
+  </data>
+  <data name="ViewPagePluginEnableButton" xml:space="preserve">
+    <value>เปิดใช้งาน</value>
+  </data>
+  <data name="ViewPagePluginInstallButton" xml:space="preserve">
+    <value>ติดตั้งปลั๊กอิน</value>
+  </data>
+  <data name="ViewPagePluginOpenDirectoryButton" xml:space="preserve">
+    <value>เปิดไดเร็กทอรีปลั๊กอิน</value>
+  </data>
+  <data name="ViewPagePluginRefreshButton" xml:space="preserve">
+    <value>รีเฟรช</value>
+  </data>
+  <data name="ViewPagePluginSettingBackButton" xml:space="preserve">
+    <value>กลับ</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultPlaceholder" xml:space="preserve">
+    <value>กรุณากรอกค่า</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultValueText" xml:space="preserve">
+    <value>ค่าเริ่มต้น:</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyDescription" xml:space="preserve">
+    <value>ปลั๊กอินนี้ไม่มีการตั้งค่าที่สามารถกำหนดได้</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyTitle" xml:space="preserve">
+    <value>ยังไม่มีการตั้งค่า</value>
+  </data>
+  <data name="ViewPagePluginSettingIntPlaceholder" xml:space="preserve">
+    <value>กรุณากรอกจำนวนเต็ม</value>
+  </data>
+  <data name="ViewPagePluginSettingResetButton" xml:space="preserve">
+    <value>รีเซ็ต</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveButton" xml:space="preserve">
+    <value>บันทึก</value>
+  </data>
+  <data name="ViewPagePluginSettingStringPlaceholder" xml:space="preserve">
+    <value>กรุณากรอกข้อความ</value>
+  </data>
+  <data name="ViewPagePluginSettingTitle" xml:space="preserve">
+    <value>การตั้งค่าปลั๊กอิน</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOff" xml:space="preserve">
+    <value>ปิด</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOn" xml:space="preserve">
+    <value>เปิด</value>
+  </data>
+  <data name="ViewPagePluginSettingsButton" xml:space="preserve">
+    <value>ตั้งค่า</value>
+  </data>
+  <data name="ViewPagePluginStatusDisabled" xml:space="preserve">
+    <value>พิการ</value>
+  </data>
+  <data name="ViewPagePluginStatusEnabled" xml:space="preserve">
+    <value>เปิดใช้งานแล้ว</value>
+  </data>
+  <data name="ViewPagePluginTotalText" xml:space="preserve">
+    <value>ทั่วไป</value>
+  </data>
+  <data name="ViewPagePluginUninstallButton" xml:space="preserve">
+    <value>ถอนการติดตั้ง</value>
+  </data>
   <data name="ViewPageResetGamePathAction" xml:space="preserve">
     <value>เลือกเส้นทางเกม</value>
   </data>
@@ -3082,6 +3328,12 @@
   </data>
   <data name="ViewPageSettingApperanceLanguageHeader" xml:space="preserve">
     <value>ภาษา</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
+    <value>เมื่อเปิดใช้งาน หากไม่ได้ทำงาน Walnut ในฐานะผู้ดูแลระบบ ระบบจะรีสตาร์ทโดยอัตโนมัติและขอสิทธิ์ผู้ดูแลระบบเมื่อเริ่มต้นระบบ</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
+    <value>รีสตาร์ทโดยอัตโนมัติด้วยสิทธิ์ของผู้ดูแลระบบเมื่อเริ่มต้นระบบ</value>
   </data>
   <data name="ViewPageSettingBackdropMaterialDescription" xml:space="preserve">
     <value>เปลี่ยนวัสดุพื้นหลังของหน้าต่าง</value>
@@ -3548,6 +3800,9 @@
   <data name="ViewPeriodHeader" xml:space="preserve">
     <value>ตาราง</value>
   </data>
+  <data name="ViewPluginHeader" xml:space="preserve">
+    <value>การจัดการปลั๊กอิน</value>
+  </data>
   <data name="ViewRoleCombatHeader" xml:space="preserve">
     <value>โรงละครมายา</value>
   </data>
@@ -3870,7 +4125,7 @@
     <value>{0} วินาที</value>
   </data>
   <data name="WebDailyNoteVerificationFailed" xml:space="preserve">
-    <value />
+    <value>การยืนยันล้มเหลว โปรดยืนยันด้วยตนเองหรือไปที่หน้า "Miyoushe-Travel Tools-Genshin Impact-Real-time Notes" เพื่อดู</value>
   </data>
   <data name="WebEnkaResponseStatusCode400" xml:space="preserve">
     <value>รูปแบบ UID ไม่ถูกต้อง</value>
@@ -3948,7 +4203,7 @@
     <value>Snap Hutao อยู่ระหว่างการบำรุงรักษาเซิร์ฟเวอร์</value>
   </data>
   <data name="WebIndexOrSpiralAbyssVerificationFailed" xml:space="preserve">
-    <value />
+    <value>การยืนยันล้มเหลว โปรดยืนยันด้วยตนเองหรือไปที่หน้า "Miyoushe-Travel Tools-Genshin Impact" เพื่อตรวจสอบ</value>
   </data>
   <data name="WebRequestBuilderExceptionDescription" xml:space="preserve">
     <value>พบปัญหาขณะร้องขอ {0}</value>
@@ -3965,19 +4220,25 @@
   <data name="WebResponseSignInErrorHint" xml:space="preserve">
     <value>การลงชื่อเข้าใช้ล้มเหลว โปรดไปที่ HoYoLAB เพื่อเริ่มต้นบัญชี ข้อความเดิม: {0}</value>
   </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleOne" xml:space="preserve">
+    <value>กิจกรรมสรรเสริญ-หญิง</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleTwo" xml:space="preserve">
+    <value>กิจกรรมสรรเสริญ-หญิง</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleOne" xml:space="preserve">
+    <value>กิจกรรมสรรเสริญ-ชาย</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleTwo" xml:space="preserve">
+    <value>กิจกรรมสรรเสริญ-ชาย</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeAvatarEventWish" xml:space="preserve">
+    <value>เหตุการณ์และความปรารถนา</value>
+  </data>
+  <data name="WebUGCGachaConfigTypePermanentWish" xml:space="preserve">
+    <value>คำอธิษฐานถาวร</value>
+  </data>
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>หมายเลขจอภาพ</value>
-  </data>
-  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
-    <value>ลบ</value>
-  </data>
-  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>การแก้ไขอินเทอร์เฟซพิเศษ</value>
-  </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>ลงทะเบียนล้มเหลว, เซิร์ฟเวอร์ผิดพลาด, โปรดติดต่อผู้พัฒนาเพื่อแก้ไขโดยเร็ว</value>
-  </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>อัปโหลดบันทึก Spiral Abyss ล้มเหลว, เซิร์ฟเวอร์ผิดพลาด, โปรดติดต่อผู้พัฒนาเพื่อแก้ไขโดยเร็ว</value>
   </data>
 </root>

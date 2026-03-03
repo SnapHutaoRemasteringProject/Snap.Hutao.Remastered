@@ -147,6 +147,9 @@
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>No se encontraron resultados</value>
   </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>Eliminar</value>
+  </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>Seleccionar todo</value>
   </data>
@@ -629,6 +632,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>El correo electrónico actual ya está registrado</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>Error al registrarse, error del servidor, por favor, contacta con el desarrollador para solucionarlo</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>Contraseña incorrecta, fallo al cerrar sesión</value>
   </data>
@@ -676,6 +682,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>Error al obtener datos, calculando datos estadísticos</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>Error al cargar el registro del Abismo Espiral, error del servidor, por favor, contacta con el desarrollador para solucionarlo</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>Error al cargar el registro del Abismo Espiral, se han detectado datos no válidos</value>
@@ -836,6 +845,21 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>Reducción de recarga</value>
   </data>
+  <data name="ServiceBackgroundActivityDefaultDescription" xml:space="preserve">
+    <value>En preparación...</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitialization" xml:space="preserve">
+    <value>Inicialización del componente de inyección</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitializationDescription" xml:space="preserve">
+    <value>Ejecutar solo cuando sea necesario</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitialization" xml:space="preserve">
+    <value>Inicialización de metadatos</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
+    <value>Preparante. Si no hay respuesta durante mucho tiempo, intente reiniciar.</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Fondo de pantalla diario de Bing</value>
   </data>
@@ -911,6 +935,12 @@
   <data name="ServiceGachaLogFactoryAvatarWishName" xml:space="preserve">
     <value>Gachapón de evento de personaje</value>
   </data>
+  <data name="ServiceGachaLogFactoryBeyondEventWishName" xml:space="preserve">
+    <value>Eventos y deseos</value>
+  </data>
+  <data name="ServiceGachaLogFactoryBeyondPermanentWishName" xml:space="preserve">
+    <value>Ecos de aventura</value>
+  </data>
   <data name="ServiceGachaLogFactoryChronicledWishName" xml:space="preserve">
     <value>Deseo Crónico</value>
   </data>
@@ -978,6 +1008,9 @@
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>Error al obtener la versión local del juego, no se puede obtener la información de configuración de inyección</value>
   </data>
+  <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
+    <value>La versión actual del juego aún no es compatible.</value>
+  </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI ha iniciado</value>
   </data>
@@ -1019,6 +1052,9 @@
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>Antes de usar Embedded Yae, debe conocer los riesgos relacionados y activar la función de inyección en la página "Iniciar juego"</value>
+  </data>
+  <data name="ServiceGameLaunchingHandlerGameProcessStartRepositorySyncFailed" xml:space="preserve">
+    <value>Se produjo un error al recuperar los componentes necesarios para iniciar el juego.</value>
   </data>
   <data name="ServiceGameLocatorFileOpenPickerCommitText" xml:space="preserve">
     <value>Seleccionar ejecutable del juego</value>
@@ -1097,6 +1133,12 @@ Espacio disponible: {2}</value>
   <data name="ServiceGameSetMultiChannelUnauthorizedAccess" xml:space="preserve">
     <value>No se puede leer o guardar el perfil, inténtalo de nuevo en modo administrador</value>
   </data>
+  <data name="ServiceGitRepositoryOperationCompleted" xml:space="preserve">
+    <value>Operación completada</value>
+  </data>
+  <data name="ServiceGitRepositoryOperationFailed" xml:space="preserve">
+    <value>Operación fallida</value>
+  </data>
   <data name="ServiceHutaoUserGachaLogExpiredAt" xml:space="preserve">
     <value>El servicio de carga del historial de deseos es válido hasta</value>
   </data>
@@ -1123,6 +1165,78 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ServicePackageAdvancedExecuteOperationFailedTitle" xml:space="preserve">
     <value>Operación de recursos del juego fallida</value>
+  </data>
+  <data name="ServicePluginDeleteFailed" xml:space="preserve">
+    <value>Se produjo un error al desinstalar el complemento '{0}'</value>
+  </data>
+  <data name="ServicePluginDeleteSuccess" xml:space="preserve">
+    <value>Complemento '{0}' desinstalado exitosamente</value>
+  </data>
+  <data name="ServicePluginDisableSuccess" xml:space="preserve">
+    <value>El complemento '{0}' se deshabilitó correctamente</value>
+  </data>
+  <data name="ServicePluginDisablingPluginFailed" xml:space="preserve">
+    <value>Se produjo una excepción al deshabilitar el complemento.</value>
+  </data>
+  <data name="ServicePluginEnablingPluginFailed" xml:space="preserve">
+    <value>Se produjo una excepción al habilitar el complemento</value>
+  </data>
+  <data name="ServicePluginEnablingSuccess" xml:space="preserve">
+    <value>El complemento '{0}' se activó correctamente</value>
+  </data>
+  <data name="ServicePluginInstallAlreadyExists" xml:space="preserve">
+    <value>El complemento '{0}' ya está instalado</value>
+  </data>
+  <data name="ServicePluginInstallFailed" xml:space="preserve">
+    <value>No se pudo instalar el complemento</value>
+  </data>
+  <data name="ServicePluginInstallFileNotFound" xml:space="preserve">
+    <value>Archivo de complemento no encontrado</value>
+  </data>
+  <data name="ServicePluginInstallInvalidFileType" xml:space="preserve">
+    <value>Tipo de archivo de complemento no válido, se esperaba un archivo .hutao o .hutaodisabled</value>
+  </data>
+  <data name="ServicePluginInstallInvalidManifest" xml:space="preserve">
+    <value>El archivo manifest.json del complemento no es válido o falta una ID</value>
+  </data>
+  <data name="ServicePluginInstallManifestNotFound" xml:space="preserve">
+    <value>El archivo Manifest.json no se encuentra en el archivo del complemento</value>
+  </data>
+  <data name="ServicePluginInstallSuccess" xml:space="preserve">
+    <value>El complemento '{0}' se instaló correctamente</value>
+  </data>
+  <data name="ServicePluginLoadDirectoryNotFound" xml:space="preserve">
+    <value>Directorio de complementos '{0}' no encontrado</value>
+  </data>
+  <data name="ServicePluginLoadDllNotFound" xml:space="preserve">
+    <value>No se encontró el archivo DLL para el complemento '{0}'</value>
+  </data>
+  <data name="ServicePluginLoadFailed" xml:space="preserve">
+    <value>Error al cargar el complemento</value>
+  </data>
+  <data name="ServicePluginLoadInvalidManifest" xml:space="preserve">
+    <value>El complemento '{0}' tiene un archivo de manifiesto no válido</value>
+  </data>
+  <data name="ServicePluginLoadMainTypeNotFound" xml:space="preserve">
+    <value>Clase principal del complemento '{0}' no encontrada</value>
+  </data>
+  <data name="ServicePluginLoadManifestNotFound" xml:space="preserve">
+    <value>No se encontró el archivo Manifest.json para el complemento '{0}'</value>
+  </data>
+  <data name="ServicePluginLoadSuccess" xml:space="preserve">
+    <value>El complemento '{0}' se cargó correctamente</value>
+  </data>
+  <data name="ServicePluginNotFound" xml:space="preserve">
+    <value>Complemento '{0}' no encontrado</value>
+  </data>
+  <data name="ServicePluginPickFileTitle" xml:space="preserve">
+    <value>Seleccionar archivo de complemento</value>
+  </data>
+  <data name="ServicePluginUninstallDescription" xml:space="preserve">
+    <value>¿Está seguro de que desea desinstalar el complemento {0}? Esta operación es irreversible.</value>
+  </data>
+  <data name="ServicePluginUninstallTitle" xml:space="preserve">
+    <value>Desinstalar el complemento {0}</value>
   </data>
   <data name="ServiceReSignInClaimRewardFailed" xml:space="preserve">
     <value>Firma de recuperación fallida, {0}</value>
@@ -1172,6 +1286,9 @@ Espacio disponible: {2}</value>
   <data name="ServiceYaeWaitForGameResponseMessage" xml:space="preserve">
     <value>Esperando datos del juego</value>
   </data>
+  <data name="UIViewMainTitleBarBackgroundActivityAction" xml:space="preserve">
+    <value>Tareas en segundo plano</value>
+  </data>
   <data name="UIViewPageAvatarPropertyRecommendedAppendProperties" xml:space="preserve">
     <value>Recomendación de atributo adicional</value>
   </data>
@@ -1220,6 +1337,12 @@ Espacio disponible: {2}</value>
   <data name="ViewCardLaunchGameSelectAccountPlaceholder" xml:space="preserve">
     <value>Seleccionar cuenta o iniciar ahora</value>
   </data>
+  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
+    <value>Registro automático</value>
+  </data>
+  <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
+    <value>Habilitar el registro automático al iniciar el programa</value>
+  </data>
   <data name="ViewCardSignInClaimReSignInAction" xml:space="preserve">
     <value>Compensar registro</value>
   </data>
@@ -1252,6 +1375,9 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewControlStatisticsCardPullText" xml:space="preserve">
     <value>Deseos</value>
+  </data>
+  <data name="ViewControlStatisticsCardPurpleAveragePullText" xml:space="preserve">
+    <value>Número medio de sorteos de cuatro estrellas</value>
   </data>
   <data name="ViewControlStatisticsCardPurpleText" xml:space="preserve">
     <value>Cuatro estrellas</value>
@@ -2306,6 +2432,12 @@ Espacio disponible: {2}</value>
   <data name="ViewOverlayDisableShowDamageTextToolTip" xml:space="preserve">
     <value>Eliminar texto de daño de combate flotante</value>
   </data>
+  <data name="ViewOverlayDisplayPaimonToolTip" xml:space="preserve">
+    <value>Mostrar Paimon</value>
+  </data>
+  <data name="ViewOverlayHideGrassToolTip" xml:space="preserve">
+    <value>hierba escondida</value>
+  </data>
   <data name="ViewOverlayLaunchGameHideQuestBannerToolTip" xml:space="preserve">
     <value>Eliminar sugerencia de misión en la interfaz del mapa</value>
   </data>
@@ -2660,6 +2792,12 @@ Espacio disponible: {2}</value>
   <data name="ViewPageGachaLogRemoveArchiveAction" xml:space="preserve">
     <value>Eliminar archivo actual</value>
   </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeDescription" xml:space="preserve">
+    <value>Cambia al modo Oda a los deseos (Mil estrellas y reino maravilloso)</value>
+  </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeHeader" xml:space="preserve">
+    <value>desear</value>
+  </data>
   <data name="ViewPageHardChallengeTime" xml:space="preserve">
     <value>Tiempo de combate</value>
   </data>
@@ -2843,6 +2981,9 @@ Espacio disponible: {2}</value>
   <data name="ViewPageLaunchGameDisableFogOn" xml:space="preserve">
     <value>Eliminar</value>
   </data>
+  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
+    <value>Corrección de interfaz especial</value>
+  </data>
   <data name="ViewPageLaunchGameElevationDescription" xml:space="preserve">
     <value>La gestión de archivos del juego, el cambio de servidor del juego y la función de inyección requieren permisos de administrador</value>
   </data>
@@ -2866,6 +3007,36 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewPageLaunchGameIslandConnected" xml:space="preserve">
     <value>Conectado al juego, los cambios de configuración se reflejarán dinámicamente en el juego</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeDescription" xml:space="preserve">
+    <value>Habilitar el modo de depuración</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeHeader" xml:space="preserve">
+    <value>modo de depuración</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonDescription" xml:space="preserve">
+    <value>Mostrar a Paimon en el juego</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
+    <value>Mostrar Paimon</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription" xml:space="preserve">
+    <value>Cambia automáticamente entre la entrada del teclado, el mouse y el controlador en cualquier momento durante el juego.</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
+    <value>Manejar el cambio en caliente</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassDescription" xml:space="preserve">
+    <value>Ocultar hierba en el juego</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassHeader" xml:space="preserve">
+    <value>hierba escondida</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
+    <value>Ocultar información del jugador</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoHeader" xml:space="preserve">
+    <value>Ocultar información del jugador</value>
   </data>
   <data name="ViewPageLaunchGameIslandOptionsHeader" xml:space="preserve">
     <value>Opciones de Inyección</value>
@@ -3014,6 +3185,81 @@ Espacio disponible: {2}</value>
   <data name="ViewPageOpenScreenshotFolderAction" xml:space="preserve">
     <value>Abrir carpeta de capturas de pantalla</value>
   </data>
+  <data name="ViewPagePluginCountText" xml:space="preserve">
+    <value>complementos</value>
+  </data>
+  <data name="ViewPagePluginDisableButton" xml:space="preserve">
+    <value>Desactivar</value>
+  </data>
+  <data name="ViewPagePluginEmptyDescription" xml:space="preserve">
+    <value>Haga clic en el botón "Instalar complemento" para agregar su primer complemento</value>
+  </data>
+  <data name="ViewPagePluginEmptyTitle" xml:space="preserve">
+    <value>Aún no hay complementos</value>
+  </data>
+  <data name="ViewPagePluginEnableButton" xml:space="preserve">
+    <value>permitir</value>
+  </data>
+  <data name="ViewPagePluginInstallButton" xml:space="preserve">
+    <value>Instalar complemento</value>
+  </data>
+  <data name="ViewPagePluginOpenDirectoryButton" xml:space="preserve">
+    <value>Abra el directorio de complementos</value>
+  </data>
+  <data name="ViewPagePluginRefreshButton" xml:space="preserve">
+    <value>refrescar</value>
+  </data>
+  <data name="ViewPagePluginSettingBackButton" xml:space="preserve">
+    <value>devolver</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultPlaceholder" xml:space="preserve">
+    <value>Por favor introduce un valor</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultValueText" xml:space="preserve">
+    <value>valor predeterminado:</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyDescription" xml:space="preserve">
+    <value>Este complemento no tiene ajustes configurables</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyTitle" xml:space="preserve">
+    <value>Aún no hay ajustes</value>
+  </data>
+  <data name="ViewPagePluginSettingIntPlaceholder" xml:space="preserve">
+    <value>Por favor ingresa un número entero</value>
+  </data>
+  <data name="ViewPagePluginSettingResetButton" xml:space="preserve">
+    <value>reiniciar</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveButton" xml:space="preserve">
+    <value>ahorrar</value>
+  </data>
+  <data name="ViewPagePluginSettingStringPlaceholder" xml:space="preserve">
+    <value>Por favor ingresa texto</value>
+  </data>
+  <data name="ViewPagePluginSettingTitle" xml:space="preserve">
+    <value>Configuración del complemento</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOff" xml:space="preserve">
+    <value>cerca</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOn" xml:space="preserve">
+    <value>abierto</value>
+  </data>
+  <data name="ViewPagePluginSettingsButton" xml:space="preserve">
+    <value>configuración</value>
+  </data>
+  <data name="ViewPagePluginStatusDisabled" xml:space="preserve">
+    <value>Desactivado</value>
+  </data>
+  <data name="ViewPagePluginStatusEnabled" xml:space="preserve">
+    <value>Activado</value>
+  </data>
+  <data name="ViewPagePluginTotalText" xml:space="preserve">
+    <value>común</value>
+  </data>
+  <data name="ViewPagePluginUninstallButton" xml:space="preserve">
+    <value>desinstalar</value>
+  </data>
   <data name="ViewPageResetGamePathAction" xml:space="preserve">
     <value>Seleccionar ruta del juego</value>
   </data>
@@ -3082,6 +3328,12 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewPageSettingApperanceLanguageHeader" xml:space="preserve">
     <value>Idioma</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
+    <value>Cuando está habilitado, si Walnut no se ejecuta como administrador, se reiniciará automáticamente y solicitará permisos de administrador al inicio.</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
+    <value>Reiniciar automáticamente con privilegios de administrador al inicio</value>
   </data>
   <data name="ViewPageSettingBackdropMaterialDescription" xml:space="preserve">
     <value>Cambiar el material de fondo de la ventana</value>
@@ -3548,6 +3800,9 @@ Espacio disponible: {2}</value>
   <data name="ViewPeriodHeader" xml:space="preserve">
     <value>Horario</value>
   </data>
+  <data name="ViewPluginHeader" xml:space="preserve">
+    <value>Gestión de complementos</value>
+  </data>
   <data name="ViewRoleCombatHeader" xml:space="preserve">
     <value>Teatro Imaginario</value>
   </data>
@@ -3965,19 +4220,25 @@ Espacio disponible: {2}</value>
   <data name="WebResponseSignInErrorHint" xml:space="preserve">
     <value>Error al iniciar sesión, visita HoYoLAB para inicializar tu cuenta, mensaje original: {0}</value>
   </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleOne" xml:space="preserve">
+    <value>Actividad Alabanza-Mujer</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleTwo" xml:space="preserve">
+    <value>Actividad Alabanza-Mujer</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleOne" xml:space="preserve">
+    <value>Actividad Alabanza-Masculino</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleTwo" xml:space="preserve">
+    <value>Actividad Alabanza-Masculino</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeAvatarEventWish" xml:space="preserve">
+    <value>Eventos y deseos</value>
+  </data>
+  <data name="WebUGCGachaConfigTypePermanentWish" xml:space="preserve">
+    <value>Oración permanente</value>
+  </data>
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>ID del monitor</value>
-  </data>
-  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
-    <value>Eliminar</value>
-  </data>
-  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>Corrección de interfaz especial</value>
-  </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>Error al registrarse, error del servidor, por favor, contacta con el desarrollador para solucionarlo</value>
-  </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>Error al cargar el registro del Abismo Espiral, error del servidor, por favor, contacta con el desarrollador para solucionarlo</value>
   </data>
 </root>

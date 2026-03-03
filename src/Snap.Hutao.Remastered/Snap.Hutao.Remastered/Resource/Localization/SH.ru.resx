@@ -147,6 +147,9 @@
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>Результаты не найдены</value>
   </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>Выбрать все</value>
   </data>
@@ -629,6 +632,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>Текущий адрес электронной почты уже зарегистрирован</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>Ошибка регистрации, проблемы с сервером. Пожалуйста, свяжитесь с разработчиком для решения проблемы</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>Неверный пароль, выход не выполнен</value>
   </data>
@@ -676,6 +682,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>Не удалось получить данные, выполняется подсчет статистики</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>Не удалось загрузить записи из Бездны, Сервер недоступен, пожалуйста, свяжитесь с разработчиком для решения проблемы</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>Не удалось загрузить записи из Бездны, обнаружены недопустимые данные</value>
@@ -836,6 +845,21 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>Сокращение перезарядки</value>
   </data>
+  <data name="ServiceBackgroundActivityDefaultDescription" xml:space="preserve">
+    <value>В подготовке...</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitialization" xml:space="preserve">
+    <value>Внедрить инициализацию компонента</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitializationDescription" xml:space="preserve">
+    <value>Выполнять только при необходимости</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitialization" xml:space="preserve">
+    <value>Инициализация метаданных</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
+    <value>Подготовка. Если ответа нет в течение длительного времени, попробуйте перезагрузить компьютер.</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Ежедневные обои Bing</value>
   </data>
@@ -911,6 +935,12 @@
   <data name="ServiceGachaLogFactoryAvatarWishName" xml:space="preserve">
     <value>Молитва события персонажа</value>
   </data>
+  <data name="ServiceGachaLogFactoryBeyondEventWishName" xml:space="preserve">
+    <value>События и пожелания</value>
+  </data>
+  <data name="ServiceGachaLogFactoryBeyondPermanentWishName" xml:space="preserve">
+    <value>Отголоски приключений</value>
+  </data>
   <data name="ServiceGachaLogFactoryChronicledWishName" xml:space="preserve">
     <value>Хроники желаний</value>
   </data>
@@ -978,6 +1008,9 @@
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>Не удалось получить локальную версию игры, невозможно получить информацию о конфигурации внедрения</value>
   </data>
+  <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
+    <value>Текущая версия игры еще не поддерживается.</value>
+  </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI запущен</value>
   </data>
@@ -1019,6 +1052,9 @@
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>Перед использованием Embedded Yae вы должны знать о связанных с этим рисках и включить функцию внедрения на странице "Запуск игры"</value>
+  </data>
+  <data name="ServiceGameLaunchingHandlerGameProcessStartRepositorySyncFailed" xml:space="preserve">
+    <value>Произошла ошибка при получении необходимых компонентов для запуска игры.</value>
   </data>
   <data name="ServiceGameLocatorFileOpenPickerCommitText" xml:space="preserve">
     <value>Выберите исполняемый файл игры</value>
@@ -1095,6 +1131,12 @@
   <data name="ServiceGameSetMultiChannelUnauthorizedAccess" xml:space="preserve">
     <value>Невозможно открыть или сохранить профиль без прав администратора</value>
   </data>
+  <data name="ServiceGitRepositoryOperationCompleted" xml:space="preserve">
+    <value>Операция завершена</value>
+  </data>
+  <data name="ServiceGitRepositoryOperationFailed" xml:space="preserve">
+    <value>Операция не удалась</value>
+  </data>
   <data name="ServiceHutaoUserGachaLogExpiredAt" xml:space="preserve">
     <value>Срок действия услуги загрузки истории молитв истекает</value>
   </data>
@@ -1121,6 +1163,78 @@
   </data>
   <data name="ServicePackageAdvancedExecuteOperationFailedTitle" xml:space="preserve">
     <value>Не удалось выполнить операцию с игровыми ресурсами</value>
+  </data>
+  <data name="ServicePluginDeleteFailed" xml:space="preserve">
+    <value>Произошла ошибка при удалении плагина «{0}».</value>
+  </data>
+  <data name="ServicePluginDeleteSuccess" xml:space="preserve">
+    <value>Плагин '{0}' успешно удален.</value>
+  </data>
+  <data name="ServicePluginDisableSuccess" xml:space="preserve">
+    <value>Плагин '{0}' успешно отключен</value>
+  </data>
+  <data name="ServicePluginDisablingPluginFailed" xml:space="preserve">
+    <value>Исключение произошло при отключении плагина</value>
+  </data>
+  <data name="ServicePluginEnablingPluginFailed" xml:space="preserve">
+    <value>Возникло исключение при включении плагина</value>
+  </data>
+  <data name="ServicePluginEnablingSuccess" xml:space="preserve">
+    <value>Плагин «{0}» успешно активирован.</value>
+  </data>
+  <data name="ServicePluginInstallAlreadyExists" xml:space="preserve">
+    <value>Плагин «{0}» уже установлен.</value>
+  </data>
+  <data name="ServicePluginInstallFailed" xml:space="preserve">
+    <value>Не удалось установить плагин</value>
+  </data>
+  <data name="ServicePluginInstallFileNotFound" xml:space="preserve">
+    <value>Файл плагина не найден</value>
+  </data>
+  <data name="ServicePluginInstallInvalidFileType" xml:space="preserve">
+    <value>Неверный тип файла плагина, ожидаемый файл .hutao или .hutaodisabled.</value>
+  </data>
+  <data name="ServicePluginInstallInvalidManifest" xml:space="preserve">
+    <value>Файл манифеста плагина.json недействителен или отсутствует идентификатор.</value>
+  </data>
+  <data name="ServicePluginInstallManifestNotFound" xml:space="preserve">
+    <value>Файл Manifest.json не найден в файле плагина</value>
+  </data>
+  <data name="ServicePluginInstallSuccess" xml:space="preserve">
+    <value>Плагин «{0}» успешно установлен.</value>
+  </data>
+  <data name="ServicePluginLoadDirectoryNotFound" xml:space="preserve">
+    <value>Каталог плагина '{0}' не найден.</value>
+  </data>
+  <data name="ServicePluginLoadDllNotFound" xml:space="preserve">
+    <value>Файл DLL для плагина «{0}» не найден.</value>
+  </data>
+  <data name="ServicePluginLoadFailed" xml:space="preserve">
+    <value>Загрузка плагина не удалась</value>
+  </data>
+  <data name="ServicePluginLoadInvalidManifest" xml:space="preserve">
+    <value>Плагин «{0}» имеет недопустимый файл манифеста.</value>
+  </data>
+  <data name="ServicePluginLoadMainTypeNotFound" xml:space="preserve">
+    <value>Основной класс плагина «{0}» не найден.</value>
+  </data>
+  <data name="ServicePluginLoadManifestNotFound" xml:space="preserve">
+    <value>Файл Manifest.json для плагина «{0}» не найден.</value>
+  </data>
+  <data name="ServicePluginLoadSuccess" xml:space="preserve">
+    <value>Плагин '{0}' успешно загружен</value>
+  </data>
+  <data name="ServicePluginNotFound" xml:space="preserve">
+    <value>Плагин '{0}' не найден</value>
+  </data>
+  <data name="ServicePluginPickFileTitle" xml:space="preserve">
+    <value>Выберите файл плагина</value>
+  </data>
+  <data name="ServicePluginUninstallDescription" xml:space="preserve">
+    <value>Вы уверены, что хотите удалить плагин {0}? Эта операция необратима.</value>
+  </data>
+  <data name="ServicePluginUninstallTitle" xml:space="preserve">
+    <value>Удалить плагин {0}</value>
   </data>
   <data name="ServiceReSignInClaimRewardFailed" xml:space="preserve">
     <value>Ошибка регистрации, {0}</value>
@@ -1170,6 +1284,9 @@
   <data name="ServiceYaeWaitForGameResponseMessage" xml:space="preserve">
     <value>Ожидание данных игры</value>
   </data>
+  <data name="UIViewMainTitleBarBackgroundActivityAction" xml:space="preserve">
+    <value>Фоновые задачи</value>
+  </data>
   <data name="UIViewPageAvatarPropertyRecommendedAppendProperties" xml:space="preserve">
     <value>Рекомендации по добавочным свойствам</value>
   </data>
@@ -1218,6 +1335,12 @@
   <data name="ViewCardLaunchGameSelectAccountPlaceholder" xml:space="preserve">
     <value>Выберите аккаунт для начала</value>
   </data>
+  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
+    <value>Автоматическая регистрация</value>
+  </data>
+  <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
+    <value>Включить автоматическую регистрацию при запуске программы</value>
+  </data>
   <data name="ViewCardSignInClaimReSignInAction" xml:space="preserve">
     <value>Повторная регистрация</value>
   </data>
@@ -1250,6 +1373,9 @@
   </data>
   <data name="ViewControlStatisticsCardPullText" xml:space="preserve">
     <value>Pulls</value>
+  </data>
+  <data name="ViewControlStatisticsCardPurpleAveragePullText" xml:space="preserve">
+    <value>Среднее количество розыгрышей четырех звезд</value>
   </data>
   <data name="ViewControlStatisticsCardPurpleText" xml:space="preserve">
     <value>4 зв.</value>
@@ -2188,7 +2314,7 @@
     <value>Использовано места на диске: {0}</value>
   </data>
   <data name="ViewModelSettingGeetestCustomUrlSucceed" xml:space="preserve">
-    <value />
+    <value>Конфигурация составного URL-адреса без распознавания проверена успешно.</value>
   </data>
   <data name="ViewModelSettingResetStaticResourceProgress" xml:space="preserve">
     <value>Выполняется сброс ресурсов изображений</value>
@@ -2303,6 +2429,12 @@
   </data>
   <data name="ViewOverlayDisableShowDamageTextToolTip" xml:space="preserve">
     <value>Отключить отображение цифр урона в бою</value>
+  </data>
+  <data name="ViewOverlayDisplayPaimonToolTip" xml:space="preserve">
+    <value>Показать Пеймон</value>
+  </data>
+  <data name="ViewOverlayHideGrassToolTip" xml:space="preserve">
+    <value>скрытая трава</value>
   </data>
   <data name="ViewOverlayLaunchGameHideQuestBannerToolTip" xml:space="preserve">
     <value>Удалить подсказку задания на карте</value>
@@ -2658,6 +2790,12 @@
   <data name="ViewPageGachaLogRemoveArchiveAction" xml:space="preserve">
     <value>Удалить текущую историю молитв</value>
   </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeDescription" xml:space="preserve">
+    <value>Переключитесь в режим «Ода желаниям» (Тысяча звезд и чудесное царство).</value>
+  </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeHeader" xml:space="preserve">
+    <value>желание</value>
+  </data>
   <data name="ViewPageHardChallengeTime" xml:space="preserve">
     <value>Время боя</value>
   </data>
@@ -2841,6 +2979,9 @@
   <data name="ViewPageLaunchGameDisableFogOn" xml:space="preserve">
     <value>Удалить</value>
   </data>
+  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
+    <value>Исправление особых интерфейсов</value>
+  </data>
   <data name="ViewPageLaunchGameElevationDescription" xml:space="preserve">
     <value>Для управления файлами игры, переключения игрового сервера или внедрения функций требуются права администратора</value>
   </data>
@@ -2864,6 +3005,36 @@
   </data>
   <data name="ViewPageLaunchGameIslandConnected" xml:space="preserve">
     <value>Подключено к игре, изменения настроек будут динамически отражаться в игре</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeDescription" xml:space="preserve">
+    <value>Включить режим отладки</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeHeader" xml:space="preserve">
+    <value>режим отладки</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonDescription" xml:space="preserve">
+    <value>Показать Пеймон в игре</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
+    <value>Показать Пеймон</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription" xml:space="preserve">
+    <value>Автоматическое переключение между клавиатурой, мышью и контроллером в любой момент игры.</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
+    <value>Обработка горячего переключения</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassDescription" xml:space="preserve">
+    <value>Скрыть траву в игре</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassHeader" xml:space="preserve">
+    <value>скрытая трава</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
+    <value>Скрыть информацию об игроке</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoHeader" xml:space="preserve">
+    <value>Скрыть информацию об игроке</value>
   </data>
   <data name="ViewPageLaunchGameIslandOptionsHeader" xml:space="preserve">
     <value>Опции внедрения</value>
@@ -3012,6 +3183,81 @@
   <data name="ViewPageOpenScreenshotFolderAction" xml:space="preserve">
     <value>Открыть папку скриншотов</value>
   </data>
+  <data name="ViewPagePluginCountText" xml:space="preserve">
+    <value>плагины</value>
+  </data>
+  <data name="ViewPagePluginDisableButton" xml:space="preserve">
+    <value>Запрещать</value>
+  </data>
+  <data name="ViewPagePluginEmptyDescription" xml:space="preserve">
+    <value>Нажмите кнопку «Установить плагин», чтобы добавить свой первый плагин.</value>
+  </data>
+  <data name="ViewPagePluginEmptyTitle" xml:space="preserve">
+    <value>Плагинов пока нет</value>
+  </data>
+  <data name="ViewPagePluginEnableButton" xml:space="preserve">
+    <value>давать возможность</value>
+  </data>
+  <data name="ViewPagePluginInstallButton" xml:space="preserve">
+    <value>Установить плагин</value>
+  </data>
+  <data name="ViewPagePluginOpenDirectoryButton" xml:space="preserve">
+    <value>Откройте каталог плагина</value>
+  </data>
+  <data name="ViewPagePluginRefreshButton" xml:space="preserve">
+    <value>обновить</value>
+  </data>
+  <data name="ViewPagePluginSettingBackButton" xml:space="preserve">
+    <value>возвращаться</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultPlaceholder" xml:space="preserve">
+    <value>Пожалуйста, введите значение</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultValueText" xml:space="preserve">
+    <value>значение по умолчанию:</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyDescription" xml:space="preserve">
+    <value>Этот плагин не имеет настраиваемых параметров.</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyTitle" xml:space="preserve">
+    <value>Пока нет настроек</value>
+  </data>
+  <data name="ViewPagePluginSettingIntPlaceholder" xml:space="preserve">
+    <value>Пожалуйста, введите целое число</value>
+  </data>
+  <data name="ViewPagePluginSettingResetButton" xml:space="preserve">
+    <value>перезагрузить</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveButton" xml:space="preserve">
+    <value>сохранять</value>
+  </data>
+  <data name="ViewPagePluginSettingStringPlaceholder" xml:space="preserve">
+    <value>Пожалуйста, введите текст</value>
+  </data>
+  <data name="ViewPagePluginSettingTitle" xml:space="preserve">
+    <value>Настройки плагина</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOff" xml:space="preserve">
+    <value>закрывать</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOn" xml:space="preserve">
+    <value>открыть</value>
+  </data>
+  <data name="ViewPagePluginSettingsButton" xml:space="preserve">
+    <value>настраивать</value>
+  </data>
+  <data name="ViewPagePluginStatusDisabled" xml:space="preserve">
+    <value>Неполноценный</value>
+  </data>
+  <data name="ViewPagePluginStatusEnabled" xml:space="preserve">
+    <value>Включено</value>
+  </data>
+  <data name="ViewPagePluginTotalText" xml:space="preserve">
+    <value>общий</value>
+  </data>
+  <data name="ViewPagePluginUninstallButton" xml:space="preserve">
+    <value>удалить</value>
+  </data>
   <data name="ViewPageResetGamePathAction" xml:space="preserve">
     <value>Выберите путь к игре</value>
   </data>
@@ -3080,6 +3326,12 @@
   </data>
   <data name="ViewPageSettingApperanceLanguageHeader" xml:space="preserve">
     <value>Язык</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
+    <value>Если этот параметр включен, если Walnut запускается не от имени администратора, он автоматически перезагружается и запрашивает права администратора при запуске.</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
+    <value>Автоматический перезапуск с правами администратора при запуске</value>
   </data>
   <data name="ViewPageSettingBackdropMaterialDescription" xml:space="preserve">
     <value>Изменение материала фона окна</value>
@@ -3546,6 +3798,9 @@
   <data name="ViewPeriodHeader" xml:space="preserve">
     <value>Расписание</value>
   </data>
+  <data name="ViewPluginHeader" xml:space="preserve">
+    <value>Управление плагинами</value>
+  </data>
   <data name="ViewRoleCombatHeader" xml:space="preserve">
     <value>Имаджинариум</value>
   </data>
@@ -3963,19 +4218,25 @@
   <data name="WebResponseSignInErrorHint" xml:space="preserve">
     <value>Не удалось войти в систему, пожалуйста, перейдите на HoYoLAB для инициализации аккаунта, исходное сообщение: {0}</value>
   </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleOne" xml:space="preserve">
+    <value>Активность Похвала-Женщина</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleTwo" xml:space="preserve">
+    <value>Активность Похвала-Женщина</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleOne" xml:space="preserve">
+    <value>Активность Похвала-Мужчина</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleTwo" xml:space="preserve">
+    <value>Активность Похвала-Мужчина</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeAvatarEventWish" xml:space="preserve">
+    <value>События и пожелания</value>
+  </data>
+  <data name="WebUGCGachaConfigTypePermanentWish" xml:space="preserve">
+    <value>Постоянная молитва</value>
+  </data>
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>ID Монитора</value>
-  </data>
-  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
-    <value>Удалить</value>
-  </data>
-  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>Исправление особых интерфейсов</value>
-  </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>Ошибка регистрации, проблемы с сервером. Пожалуйста, свяжитесь с разработчиком для решения проблемы</value>
-  </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>Не удалось загрузить записи из Бездны, Сервер недоступен, пожалуйста, свяжитесь с разработчиком для решения проблемы</value>
   </data>
 </root>

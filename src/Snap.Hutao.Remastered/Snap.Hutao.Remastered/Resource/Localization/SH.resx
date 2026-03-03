@@ -147,6 +147,9 @@
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>未找到结果</value>
   </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>删除</value>
+  </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>选择全部</value>
   </data>
@@ -629,6 +632,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>当前邮箱已被注册</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>注册失败，服务器异常，请尽快联系开发者解决</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>密码错误，注销失败</value>
   </data>
@@ -676,6 +682,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>获取数据失败，正在计算统计数据</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>上传深渊记录失败，服务器异常，请尽快联系开发者解决</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>上传深渊记录失败，存在无效的数据</value>
@@ -926,6 +935,12 @@
   <data name="ServiceGachaLogFactoryAvatarWishName" xml:space="preserve">
     <value>角色活动</value>
   </data>
+  <data name="ServiceGachaLogFactoryBeyondEventWishName" xml:space="preserve">
+    <value>活动颂愿</value>
+  </data>
+  <data name="ServiceGachaLogFactoryBeyondPermanentWishName" xml:space="preserve">
+    <value>奇遇回声</value>
+  </data>
   <data name="ServiceGachaLogFactoryChronicledWishName" xml:space="preserve">
     <value>集录祈愿</value>
   </data>
@@ -1151,6 +1166,78 @@
   <data name="ServicePackageAdvancedExecuteOperationFailedTitle" xml:space="preserve">
     <value>游戏资源操作失败</value>
   </data>
+  <data name="ServicePluginDeleteFailed" xml:space="preserve">
+    <value>在卸载插件'{0}'时发生错误</value>
+  </data>
+  <data name="ServicePluginDeleteSuccess" xml:space="preserve">
+    <value>成功卸载了插件'{0}'</value>
+  </data>
+  <data name="ServicePluginDisableSuccess" xml:space="preserve">
+    <value>插件'{0}'禁用成功</value>
+  </data>
+  <data name="ServicePluginDisablingPluginFailed" xml:space="preserve">
+    <value>在禁用插件时发生异常</value>
+  </data>
+  <data name="ServicePluginEnablingPluginFailed" xml:space="preserve">
+    <value>在启用插件时发生异常</value>
+  </data>
+  <data name="ServicePluginEnablingSuccess" xml:space="preserve">
+    <value>插件'{0}'启用成功</value>
+  </data>
+  <data name="ServicePluginInstallAlreadyExists" xml:space="preserve">
+    <value>插件'{0}'已经安装</value>
+  </data>
+  <data name="ServicePluginInstallFailed" xml:space="preserve">
+    <value>安装插件失败</value>
+  </data>
+  <data name="ServicePluginInstallFileNotFound" xml:space="preserve">
+    <value>插件文件未找到</value>
+  </data>
+  <data name="ServicePluginInstallInvalidFileType" xml:space="preserve">
+    <value>无效的插件文件类型，应为.hutao或.hutaodisabled文件</value>
+  </data>
+  <data name="ServicePluginInstallInvalidManifest" xml:space="preserve">
+    <value>插件manifest.json文件无效或缺少ID</value>
+  </data>
+  <data name="ServicePluginInstallManifestNotFound" xml:space="preserve">
+    <value>插件文件中未找到manifest.json文件</value>
+  </data>
+  <data name="ServicePluginInstallSuccess" xml:space="preserve">
+    <value>插件'{0}'安装成功</value>
+  </data>
+  <data name="ServicePluginLoadDirectoryNotFound" xml:space="preserve">
+    <value>插件目录'{0}'未找到</value>
+  </data>
+  <data name="ServicePluginLoadDllNotFound" xml:space="preserve">
+    <value>插件'{0}'的DLL文件未找到</value>
+  </data>
+  <data name="ServicePluginLoadFailed" xml:space="preserve">
+    <value>插件加载失败</value>
+  </data>
+  <data name="ServicePluginLoadInvalidManifest" xml:space="preserve">
+    <value>插件'{0}'具有无效的清单文件</value>
+  </data>
+  <data name="ServicePluginLoadMainTypeNotFound" xml:space="preserve">
+    <value>找不到插件'{0}'的主类</value>
+  </data>
+  <data name="ServicePluginLoadManifestNotFound" xml:space="preserve">
+    <value>插件'{0}'的manifest.json文件未找到</value>
+  </data>
+  <data name="ServicePluginLoadSuccess" xml:space="preserve">
+    <value>插件'{0}'加载成功</value>
+  </data>
+  <data name="ServicePluginNotFound" xml:space="preserve">
+    <value>找不到插件'{0}'</value>
+  </data>
+  <data name="ServicePluginPickFileTitle" xml:space="preserve">
+    <value>选择插件文件</value>
+  </data>
+  <data name="ServicePluginUninstallDescription" xml:space="preserve">
+    <value>确定要卸载插件 {0} 吗？此操作不可恢复。</value>
+  </data>
+  <data name="ServicePluginUninstallTitle" xml:space="preserve">
+    <value>卸载插件 {0}</value>
+  </data>
   <data name="ServiceReSignInClaimRewardFailed" xml:space="preserve">
     <value>补签失败，{0}</value>
   </data>
@@ -1250,6 +1337,12 @@
   <data name="ViewCardLaunchGameSelectAccountPlaceholder" xml:space="preserve">
     <value>选择账号或直接启动</value>
   </data>
+  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
+    <value>自动签到</value>
+  </data>
+  <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
+    <value>启用在程序启动时自动签到</value>
+  </data>
   <data name="ViewCardSignInClaimReSignInAction" xml:space="preserve">
     <value>补签</value>
   </data>
@@ -1282,6 +1375,9 @@
   </data>
   <data name="ViewControlStatisticsCardPullText" xml:space="preserve">
     <value>抽</value>
+  </data>
+  <data name="ViewControlStatisticsCardPurpleAveragePullText" xml:space="preserve">
+    <value>四星平均抽数</value>
   </data>
   <data name="ViewControlStatisticsCardPurpleText" xml:space="preserve">
     <value>四星</value>
@@ -2336,6 +2432,12 @@
   <data name="ViewOverlayDisableShowDamageTextToolTip" xml:space="preserve">
     <value>移除战斗伤害跳字</value>
   </data>
+  <data name="ViewOverlayDisplayPaimonToolTip" xml:space="preserve">
+    <value>显示派蒙</value>
+  </data>
+  <data name="ViewOverlayHideGrassToolTip" xml:space="preserve">
+    <value>隐藏草地</value>
+  </data>
   <data name="ViewOverlayLaunchGameHideQuestBannerToolTip" xml:space="preserve">
     <value>移除地图界面任务提示</value>
   </data>
@@ -2690,6 +2792,12 @@
   <data name="ViewPageGachaLogRemoveArchiveAction" xml:space="preserve">
     <value>删除当前存档</value>
   </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeDescription" xml:space="preserve">
+    <value>切换到颂愿(千星奇域)模式</value>
+  </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeHeader" xml:space="preserve">
+    <value>颂愿</value>
+  </data>
   <data name="ViewPageHardChallengeTime" xml:space="preserve">
     <value>战斗用时</value>
   </data>
@@ -2874,6 +2982,9 @@
   <data name="ViewPageLaunchGameDisableFogOn" xml:space="preserve">
     <value>移除</value>
   </data>
+  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
+    <value>反角色虚化</value>
+  </data>
   <data name="ViewPageLaunchGameElevationDescription" xml:space="preserve">
     <value>游戏文件管理/切换游戏服务器需要管理员权限</value>
   </data>
@@ -2897,6 +3008,36 @@
   </data>
   <data name="ViewPageLaunchGameIslandConnected" xml:space="preserve">
     <value>已连接到游戏，更改设置将会动态反映到游戏中</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeDescription" xml:space="preserve">
+    <value>启用调试模式</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeHeader" xml:space="preserve">
+    <value>调试模式</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonDescription" xml:space="preserve">
+    <value>在游戏中显示派蒙</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
+    <value>显示派蒙</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription" xml:space="preserve">
+    <value>在游戏中随时自动切换键鼠和手柄输入</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
+    <value>手柄热切换</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassDescription" xml:space="preserve">
+    <value>在游戏中隐藏草地</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassHeader" xml:space="preserve">
+    <value>隐藏草地</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
+    <value>隐藏玩家信息</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoHeader" xml:space="preserve">
+    <value>隐藏玩家信息</value>
   </data>
   <data name="ViewPageLaunchGameIslandOptionsHeader" xml:space="preserve">
     <value>注入选项</value>
@@ -3045,6 +3186,81 @@
   <data name="ViewPageOpenScreenshotFolderAction" xml:space="preserve">
     <value>打开截图文件夹</value>
   </data>
+  <data name="ViewPagePluginCountText" xml:space="preserve">
+    <value>个插件</value>
+  </data>
+  <data name="ViewPagePluginDisableButton" xml:space="preserve">
+    <value>禁用</value>
+  </data>
+  <data name="ViewPagePluginEmptyDescription" xml:space="preserve">
+    <value>点击"安装插件"按钮来添加你的第一个插件</value>
+  </data>
+  <data name="ViewPagePluginEmptyTitle" xml:space="preserve">
+    <value>暂无插件</value>
+  </data>
+  <data name="ViewPagePluginEnableButton" xml:space="preserve">
+    <value>启用</value>
+  </data>
+  <data name="ViewPagePluginInstallButton" xml:space="preserve">
+    <value>安装插件</value>
+  </data>
+  <data name="ViewPagePluginOpenDirectoryButton" xml:space="preserve">
+    <value>打开插件目录</value>
+  </data>
+  <data name="ViewPagePluginRefreshButton" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="ViewPagePluginSettingBackButton" xml:space="preserve">
+    <value>返回</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultPlaceholder" xml:space="preserve">
+    <value>请输入值</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultValueText" xml:space="preserve">
+    <value>默认值: </value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyDescription" xml:space="preserve">
+    <value>此插件没有可配置的设置</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyTitle" xml:space="preserve">
+    <value>暂无设置</value>
+  </data>
+  <data name="ViewPagePluginSettingIntPlaceholder" xml:space="preserve">
+    <value>请输入整数</value>
+  </data>
+  <data name="ViewPagePluginSettingResetButton" xml:space="preserve">
+    <value>重置</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveButton" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="ViewPagePluginSettingStringPlaceholder" xml:space="preserve">
+    <value>请输入文本</value>
+  </data>
+  <data name="ViewPagePluginSettingTitle" xml:space="preserve">
+    <value>插件设置</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOff" xml:space="preserve">
+    <value>关</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOn" xml:space="preserve">
+    <value>开</value>
+  </data>
+  <data name="ViewPagePluginSettingsButton" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="ViewPagePluginStatusDisabled" xml:space="preserve">
+    <value>已禁用</value>
+  </data>
+  <data name="ViewPagePluginStatusEnabled" xml:space="preserve">
+    <value>已启用</value>
+  </data>
+  <data name="ViewPagePluginTotalText" xml:space="preserve">
+    <value>共</value>
+  </data>
+  <data name="ViewPagePluginUninstallButton" xml:space="preserve">
+    <value>卸载</value>
+  </data>
   <data name="ViewPageResetGamePathAction" xml:space="preserve">
     <value>选择游戏路径</value>
   </data>
@@ -3113,6 +3329,12 @@
   </data>
   <data name="ViewPageSettingApperanceLanguageHeader" xml:space="preserve">
     <value>语言</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
+    <value>启用后，如果胡桃不是以管理员身份运行，将在启动时自动重启并请求管理员权限</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
+    <value>启动时自动以管理员权限重启</value>
   </data>
   <data name="ViewPageSettingBackdropMaterialDescription" xml:space="preserve">
     <value>更改窗体的背景材质</value>
@@ -3579,6 +3801,9 @@
   <data name="ViewPeriodHeader" xml:space="preserve">
     <value>周期</value>
   </data>
+  <data name="ViewPluginHeader" xml:space="preserve">
+    <value>插件管理</value>
+  </data>
   <data name="ViewRoleCombatHeader" xml:space="preserve">
     <value>幻想真境剧诗</value>
   </data>
@@ -3996,218 +4221,11 @@
   <data name="WebResponseSignInErrorHint" xml:space="preserve">
     <value>登录失败，请前往 HoYoLAB 初始化账号，原始消息：{0}</value>
   </data>
-  <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
-    <value>显示器编号</value>
-  </data>
-  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
-    <value>自动签到</value>
-  </data>
-  <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
-    <value>启用在程序启动时自动签到</value>
-  </data>
-  <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
-    <value>启动时自动以管理员权限重启</value>
-  </data>
-  <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
-    <value>启用后，如果胡桃不是以管理员身份运行，将在启动时自动重启并请求管理员权限</value>
-  </data>
-  <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
-    <value>显示派蒙</value>
-  </data>
-  <data name="ViewPageLaunchGameIslandDisplayPaimonDescription" xml:space="preserve">
-    <value>在游戏中显示派蒙</value>
-  </data>
-  <data name="ViewPageLaunchGameIslandHideGrassHeader" xml:space="preserve">
-    <value>隐藏草地</value>
-  </data>
-  <data name="ViewPageLaunchGameIslandHideGrassDescription" xml:space="preserve">
-    <value>在游戏中隐藏草地</value>
-  </data>
-  <data name="ViewPageLaunchGameIslandDebugModeHeader" xml:space="preserve">
-    <value>调试模式</value>
-  </data>
-  <data name="ViewPageLaunchGameIslandDebugModeDescription" xml:space="preserve">
-    <value>启用调试模式</value>
-  </data>
-  <data name="ViewPageLaunchGameIslandHidePlayerInfoHeader" xml:space="preserve">
-    <value>隐藏玩家信息</value>
-  </data>
-  <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
-    <value>隐藏玩家信息</value>
-  </data>
-  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
-    <value>删除</value>
-  </data>
-  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>反角色虚化</value>
-  </data>
-  <data name="ServicePluginEnablingPluginFailed" xml:space="preserve">
-    <value>在启用插件时发生异常</value>
-  </data>
-  <data name="ServicePluginDisablingPluginFailed" xml:space="preserve">
-    <value>在禁用插件时发生异常</value>
-  </data>
-  <data name="ServicePluginInstallFileNotFound" xml:space="preserve">
-    <value>插件文件未找到</value>
-  </data>
-  <data name="ServicePluginInstallInvalidFileType" xml:space="preserve">
-    <value>无效的插件文件类型，应为.hutao或.hutaodisabled文件</value>
-  </data>
-  <data name="ServicePluginInstallManifestNotFound" xml:space="preserve">
-    <value>插件文件中未找到manifest.json文件</value>
-  </data>
-  <data name="ServicePluginInstallInvalidManifest" xml:space="preserve">
-    <value>插件manifest.json文件无效或缺少ID</value>
-  </data>
-  <data name="ServicePluginInstallSuccess" xml:space="preserve">
-    <value>插件'{0}'安装成功</value>
-  </data>
-  <data name="ServicePluginInstallFailed" xml:space="preserve">
-    <value>安装插件失败</value>
-  </data>
-  <data name="ServicePluginLoadDirectoryNotFound" xml:space="preserve">
-    <value>插件目录'{0}'未找到</value>
-  </data>
-  <data name="ServicePluginLoadManifestNotFound" xml:space="preserve">
-    <value>插件'{0}'的manifest.json文件未找到</value>
-  </data>
-  <data name="ServicePluginLoadDllNotFound" xml:space="preserve">
-    <value>插件'{0}'的DLL文件未找到</value>
-  </data>
-  <data name="ServicePluginLoadSuccess" xml:space="preserve">
-    <value>插件'{0}'加载成功</value>
-  </data>
-  <data name="ServicePluginLoadFailed" xml:space="preserve">
-    <value>插件加载失败</value>
-  </data>
-  <data name="ServicePluginNotFound" xml:space="preserve">
-    <value>找不到插件'{0}'</value>
-  </data>
-  <data name="ServicePluginInstallAlreadyExists" xml:space="preserve">
-    <value>插件'{0}'已经安装</value>
-  </data>
-  <data name="ServicePluginLoadMainTypeNotFound" xml:space="preserve">
-    <value>找不到插件'{0}'的主类</value>
-  </data>
-  <data name="ServicePluginLoadInvalidManifest" xml:space="preserve">
-    <value>插件'{0}'具有无效的清单文件</value>
-  </data>
-  <data name="ServicePluginDisableSuccess" xml:space="preserve">
-    <value>插件'{0}'禁用成功</value>
-  </data>
-  <data name="ServicePluginDeleteSuccess" xml:space="preserve">
-    <value>成功卸载了插件'{0}'</value>
-  </data>
-  <data name="ServicePluginDeleteFailed" xml:space="preserve">
-    <value>在卸载插件'{0}'时发生错误</value>
-  </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>注册失败，服务器异常，请尽快联系开发者解决</value>
-  </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>上传深渊记录失败，服务器异常，请尽快联系开发者解决</value>
-  </data>
-  <data name="ServicePluginEnablingSuccess" xml:space="preserve">
-    <value>插件'{0}'启用成功</value>
-  </data>
-  <data name="ViewPluginHeader" xml:space="preserve">
-    <value>插件管理</value>
-  </data>
-  <data name="ViewPagePluginInstallButton" xml:space="preserve">
-    <value>安装插件</value>
-  </data>
-  <data name="ViewPagePluginRefreshButton" xml:space="preserve">
-    <value>刷新</value>
-  </data>
-  <data name="ViewPagePluginOpenDirectoryButton" xml:space="preserve">
-    <value>打开插件目录</value>
-  </data>
-  <data name="ViewPagePluginTotalText" xml:space="preserve">
-    <value>共</value>
-  </data>
-  <data name="ViewPagePluginCountText" xml:space="preserve">
-    <value>个插件</value>
-  </data>
-  <data name="ViewPagePluginEmptyTitle" xml:space="preserve">
-    <value>暂无插件</value>
-  </data>
-  <data name="ViewPagePluginEmptyDescription" xml:space="preserve">
-    <value>点击"安装插件"按钮来添加你的第一个插件</value>
-  </data>
-  <data name="ViewPagePluginEnableButton" xml:space="preserve">
-    <value>启用</value>
-  </data>
-  <data name="ViewPagePluginDisableButton" xml:space="preserve">
-    <value>禁用</value>
-  </data>
-  <data name="ViewPagePluginSettingsButton" xml:space="preserve">
-    <value>设置</value>
-  </data>
-  <data name="ViewPagePluginUninstallButton" xml:space="preserve">
-    <value>卸载</value>
-  </data>
-  <data name="ViewPagePluginStatusEnabled" xml:space="preserve">
-    <value>已启用</value>
-  </data>
-  <data name="ViewPagePluginStatusDisabled" xml:space="preserve">
-    <value>已禁用</value>
-  </data>
-  <data name="ViewPagePluginSettingBackButton" xml:space="preserve">
-    <value>返回</value>
-  </data>
-  <data name="ViewPagePluginSettingTitle" xml:space="preserve">
-    <value>插件设置</value>
-  </data>
-  <data name="ViewPagePluginSettingEmptyTitle" xml:space="preserve">
-    <value>暂无设置</value>
-  </data>
-  <data name="ViewPagePluginSettingEmptyDescription" xml:space="preserve">
-    <value>此插件没有可配置的设置</value>
-  </data>
-  <data name="ViewPagePluginSettingStringPlaceholder" xml:space="preserve">
-    <value>请输入文本</value>
-  </data>
-  <data name="ViewPagePluginSettingIntPlaceholder" xml:space="preserve">
-    <value>请输入整数</value>
-  </data>
-  <data name="ViewPagePluginSettingToggleOff" xml:space="preserve">
-    <value>关</value>
-  </data>
-  <data name="ViewPagePluginSettingToggleOn" xml:space="preserve">
-    <value>开</value>
-  </data>
-  <data name="ViewPagePluginSettingDefaultPlaceholder" xml:space="preserve">
-    <value>请输入值</value>
-  </data>
-  <data name="ViewPagePluginSettingSaveButton" xml:space="preserve">
-    <value>保存</value>
-  </data>
-  <data name="ViewPagePluginSettingResetButton" xml:space="preserve">
-    <value>重置</value>
-  </data>
-  <data name="ViewPagePluginSettingDefaultValueText" xml:space="preserve">
-    <value>默认值: </value>
-  </data>
-  <data name="ServicePluginPickFileTitle" xml:space="preserve">
-    <value>选择插件文件</value>
-  </data>
-  <data name="ServicePluginUninstallTitle" xml:space="preserve">
-    <value>卸载插件 {0}</value>
-  </data>
-  <data name="ServicePluginUninstallDescription" xml:space="preserve">
-    <value>确定要卸载插件 {0} 吗？此操作不可恢复。</value>
-  </data>
-  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
-    <value>手柄热切换</value>
-  </data>
-  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription" xml:space="preserve">
-    <value>在游戏中随时自动切换键鼠和手柄输入</value>
-  </data>
-  <data name="WebUGCGachaConfigTypePermanentWish" xml:space="preserve">
-    <value>常驻颂愿</value>
-  </data>
-  <data name="WebUGCGachaConfigTypeAvatarEventWish" xml:space="preserve">
-    <value>活动颂愿</value>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleOne" xml:space="preserve">
+    <value>活动颂愿-女</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleTwo" xml:space="preserve">
+    <value>活动颂愿-女</value>
   </data>
   <data name="WebUGCGachaConfigTypeActivityAvatarMaleOne" xml:space="preserve">
     <value>活动颂愿-男</value>
@@ -4215,31 +4233,13 @@
   <data name="WebUGCGachaConfigTypeActivityAvatarMaleTwo" xml:space="preserve">
     <value>活动颂愿-男</value>
   </data>
-  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleOne" xml:space="preserve">
-    <value>活动颂愿-女</value>
-  </data>
-  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleTwo" xml:space="preserve">
-    <value>活动颂愿-女</value>
-  </data>
-  <data name="ViewControlStatisticsCardPurpleAveragePullText" xml:space="preserve">
-    <value>四星平均抽数</value>
-  </data>
-  <data name="ViewPageGachaLogSwitchToBeyondGachaModeHeader" xml:space="preserve">
-    <value>颂愿</value>
-  </data>
-  <data name="ViewPageGachaLogSwitchToBeyondGachaModeDescription" xml:space="preserve">
-    <value>切换到颂愿(千星奇域)模式</value>
-  </data>
-  <data name="ServiceGachaLogFactoryBeyondEventWishName" xml:space="preserve">
+  <data name="WebUGCGachaConfigTypeAvatarEventWish" xml:space="preserve">
     <value>活动颂愿</value>
   </data>
-  <data name="ServiceGachaLogFactoryBeyondPermanentWishName" xml:space="preserve">
-    <value>奇遇回声</value>
+  <data name="WebUGCGachaConfigTypePermanentWish" xml:space="preserve">
+    <value>常驻颂愿</value>
   </data>
-  <data name="ViewOverlayDisplayPaimonToolTip" xml:space="preserve">
-    <value>显示派蒙</value>
-  </data>
-  <data name="ViewOverlayHideGrassToolTip" xml:space="preserve">
-    <value>隐藏草地</value>
+  <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
+    <value>显示器编号</value>
   </data>
 </root>

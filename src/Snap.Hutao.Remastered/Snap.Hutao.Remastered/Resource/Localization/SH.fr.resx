@@ -147,6 +147,9 @@
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>Aucun résultat trouvé</value>
   </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>Tout sélectionner</value>
   </data>
@@ -629,6 +632,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>L'adresse e-mail actuelle est enregistrée</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>L'inscription a échoué, erreur du serveur, veuillez contacter le développeur dès que possible pour résoudre ce problème</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>Mot de passe incorrect, échec de la déconnexion</value>
   </data>
@@ -676,6 +682,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>Échec de la récupération des données, calcul des statistiques en cours</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>Échec du chargement de l'enregistrement de l'Abîme, erreur du serveur, veuillez contacter le développeur dès que possible pour résoudre le problème</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>Échec du chargement de l'enregistrement de l'Abîme, données non valides détectées</value>
@@ -836,6 +845,21 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>Réduction du délai de récupération</value>
   </data>
+  <data name="ServiceBackgroundActivityDefaultDescription" xml:space="preserve">
+    <value>En préparation...</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitialization" xml:space="preserve">
+    <value>Injecter l'initialisation du composant</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitializationDescription" xml:space="preserve">
+    <value>Exécuter uniquement lorsque cela est nécessaire</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitialization" xml:space="preserve">
+    <value>Initialisation des métadonnées</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
+    <value>Préparation. S'il n'y a pas de réponse pendant une longue période, essayez de redémarrer.</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Image du jour de Bing</value>
   </data>
@@ -911,6 +935,12 @@
   <data name="ServiceGachaLogFactoryAvatarWishName" xml:space="preserve">
     <value>Vœu événement de personnage</value>
   </data>
+  <data name="ServiceGachaLogFactoryBeyondEventWishName" xml:space="preserve">
+    <value>Événements et souhaits</value>
+  </data>
+  <data name="ServiceGachaLogFactoryBeyondPermanentWishName" xml:space="preserve">
+    <value>Échos d'aventure</value>
+  </data>
   <data name="ServiceGachaLogFactoryChronicledWishName" xml:space="preserve">
     <value>Vœu Chronique</value>
   </data>
@@ -978,6 +1008,9 @@
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>Échec de l'obtention de la version locale du jeu, impossible d'obtenir les informations de configuration d'injection</value>
   </data>
+  <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
+    <value>La version actuelle du jeu n'est pas encore prise en charge</value>
+  </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI a démarré</value>
   </data>
@@ -1019,6 +1052,9 @@
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>Avant d'utiliser Embedded Yae, vous devez connaître les risques associés et activer la fonction d'intégration dans la page de lancement du jeu.</value>
+  </data>
+  <data name="ServiceGameLaunchingHandlerGameProcessStartRepositorySyncFailed" xml:space="preserve">
+    <value>Une erreur s'est produite lors de la récupération des composants nécessaires au lancement du jeu</value>
   </data>
   <data name="ServiceGameLocatorFileOpenPickerCommitText" xml:space="preserve">
     <value>Choisir l'exécutable du jeu</value>
@@ -1097,6 +1133,12 @@ Espace disponible : {2}</value>
   <data name="ServiceGameSetMultiChannelUnauthorizedAccess" xml:space="preserve">
     <value>Impossible de lire ou d'enregistrer le profil, veuillez réessayer en mode administrateur</value>
   </data>
+  <data name="ServiceGitRepositoryOperationCompleted" xml:space="preserve">
+    <value>Opération terminée</value>
+  </data>
+  <data name="ServiceGitRepositoryOperationFailed" xml:space="preserve">
+    <value>L'opération a échoué</value>
+  </data>
   <data name="ServiceHutaoUserGachaLogExpiredAt" xml:space="preserve">
     <value>Le service de téléchargement des enregistrements de vœux est valide jusqu'au</value>
   </data>
@@ -1123,6 +1165,78 @@ Espace disponible : {2}</value>
   </data>
   <data name="ServicePackageAdvancedExecuteOperationFailedTitle" xml:space="preserve">
     <value>Échec de l'opération sur les ressources du jeu</value>
+  </data>
+  <data name="ServicePluginDeleteFailed" xml:space="preserve">
+    <value>Une erreur s'est produite lors de la désinstallation du plugin '{0}'</value>
+  </data>
+  <data name="ServicePluginDeleteSuccess" xml:space="preserve">
+    <value>Plugin '{0}' désinstallé avec succès</value>
+  </data>
+  <data name="ServicePluginDisableSuccess" xml:space="preserve">
+    <value>Le plugin '{0}' a été désactivé avec succès</value>
+  </data>
+  <data name="ServicePluginDisablingPluginFailed" xml:space="preserve">
+    <value>Une exception s'est produite lors de la désactivation du plugin</value>
+  </data>
+  <data name="ServicePluginEnablingPluginFailed" xml:space="preserve">
+    <value>Une exception s'est produite lors de l'activation du plugin</value>
+  </data>
+  <data name="ServicePluginEnablingSuccess" xml:space="preserve">
+    <value>Le plug-in '{0}' a été activé avec succès</value>
+  </data>
+  <data name="ServicePluginInstallAlreadyExists" xml:space="preserve">
+    <value>Le plugin '{0}' est déjà installé</value>
+  </data>
+  <data name="ServicePluginInstallFailed" xml:space="preserve">
+    <value>Échec de l'installation du plugin</value>
+  </data>
+  <data name="ServicePluginInstallFileNotFound" xml:space="preserve">
+    <value>Fichier de plugin introuvable</value>
+  </data>
+  <data name="ServicePluginInstallInvalidFileType" xml:space="preserve">
+    <value>Type de fichier de plugin invalide, fichier .hutao ou .hutaodisabled attendu</value>
+  </data>
+  <data name="ServicePluginInstallInvalidManifest" xml:space="preserve">
+    <value>Le fichier manifest.json du plug-in est invalide ou son ID est manquant</value>
+  </data>
+  <data name="ServicePluginInstallManifestNotFound" xml:space="preserve">
+    <value>Fichier Manifest.json introuvable dans le fichier du plugin</value>
+  </data>
+  <data name="ServicePluginInstallSuccess" xml:space="preserve">
+    <value>Plug-in '{0}' installé avec succès</value>
+  </data>
+  <data name="ServicePluginLoadDirectoryNotFound" xml:space="preserve">
+    <value>Répertoire du plugin '{0}' introuvable</value>
+  </data>
+  <data name="ServicePluginLoadDllNotFound" xml:space="preserve">
+    <value>Le fichier DLL du plugin '{0}' n'a pas été trouvé</value>
+  </data>
+  <data name="ServicePluginLoadFailed" xml:space="preserve">
+    <value>Échec du chargement du plugin</value>
+  </data>
+  <data name="ServicePluginLoadInvalidManifest" xml:space="preserve">
+    <value>Le plugin '{0}' possède un fichier manifeste non valide</value>
+  </data>
+  <data name="ServicePluginLoadMainTypeNotFound" xml:space="preserve">
+    <value>Classe principale du plugin '{0}' introuvable</value>
+  </data>
+  <data name="ServicePluginLoadManifestNotFound" xml:space="preserve">
+    <value>Le fichier Manifest.json pour le plugin '{0}' est introuvable</value>
+  </data>
+  <data name="ServicePluginLoadSuccess" xml:space="preserve">
+    <value>Le plug-in '{0}' a été chargé avec succès</value>
+  </data>
+  <data name="ServicePluginNotFound" xml:space="preserve">
+    <value>Plugin '{0}' introuvable</value>
+  </data>
+  <data name="ServicePluginPickFileTitle" xml:space="preserve">
+    <value>Sélectionnez le fichier du plugin</value>
+  </data>
+  <data name="ServicePluginUninstallDescription" xml:space="preserve">
+    <value>Êtes-vous sûr de vouloir désinstaller le plug-in {0} ? Cette opération est irréversible.</value>
+  </data>
+  <data name="ServicePluginUninstallTitle" xml:space="preserve">
+    <value>Désinstaller le plug-in {0}</value>
   </data>
   <data name="ServiceReSignInClaimRewardFailed" xml:space="preserve">
     <value>Rattrapage échoué, {0}</value>
@@ -1172,6 +1286,9 @@ Espace disponible : {2}</value>
   <data name="ServiceYaeWaitForGameResponseMessage" xml:space="preserve">
     <value>En attente des données du jeu</value>
   </data>
+  <data name="UIViewMainTitleBarBackgroundActivityAction" xml:space="preserve">
+    <value>Tâches en arrière-plan</value>
+  </data>
   <data name="UIViewPageAvatarPropertyRecommendedAppendProperties" xml:space="preserve">
     <value>Recommandation de propriétés supplémentaires</value>
   </data>
@@ -1220,6 +1337,12 @@ Espace disponible : {2}</value>
   <data name="ViewCardLaunchGameSelectAccountPlaceholder" xml:space="preserve">
     <value>Choisir le compte à lancer ou démarrer directement</value>
   </data>
+  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
+    <value>Enregistrement automatique</value>
+  </data>
+  <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
+    <value>Activer l'enregistrement automatique au démarrage du programme</value>
+  </data>
   <data name="ViewCardSignInClaimReSignInAction" xml:space="preserve">
     <value>Reconnexion</value>
   </data>
@@ -1252,6 +1375,9 @@ Espace disponible : {2}</value>
   </data>
   <data name="ViewControlStatisticsCardPullText" xml:space="preserve">
     <value>Tirages</value>
+  </data>
+  <data name="ViewControlStatisticsCardPurpleAveragePullText" xml:space="preserve">
+    <value>Nombre moyen de tirages pour quatre étoiles</value>
   </data>
   <data name="ViewControlStatisticsCardPurpleText" xml:space="preserve">
     <value>4 Étoiles</value>
@@ -2306,6 +2432,12 @@ Espace disponible : {2}</value>
   <data name="ViewOverlayDisableShowDamageTextToolTip" xml:space="preserve">
     <value>Supprimer le texte de dégâts flottant</value>
   </data>
+  <data name="ViewOverlayDisplayPaimonToolTip" xml:space="preserve">
+    <value>Afficher Paimon</value>
+  </data>
+  <data name="ViewOverlayHideGrassToolTip" xml:space="preserve">
+    <value>herbe cachée</value>
+  </data>
   <data name="ViewOverlayLaunchGameHideQuestBannerToolTip" xml:space="preserve">
     <value>Supprimer l'indication de quête sur la carte</value>
   </data>
@@ -2660,6 +2792,12 @@ Espace disponible : {2}</value>
   <data name="ViewPageGachaLogRemoveArchiveAction" xml:space="preserve">
     <value>Supprimer l'archive actuelle</value>
   </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeDescription" xml:space="preserve">
+    <value>Passez en mode Ode to Wishes (Mille étoiles et Royaume merveilleux)</value>
+  </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeHeader" xml:space="preserve">
+    <value>souhait</value>
+  </data>
   <data name="ViewPageHardChallengeTime" xml:space="preserve">
     <value>Temps de combat</value>
   </data>
@@ -2843,6 +2981,9 @@ Espace disponible : {2}</value>
   <data name="ViewPageLaunchGameDisableFogOn" xml:space="preserve">
     <value>Supprimer</value>
   </data>
+  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
+    <value>Correction de l'interface spéciale</value>
+  </data>
   <data name="ViewPageLaunchGameElevationDescription" xml:space="preserve">
     <value>La gestion des fichiers du jeu, le changement de serveur ou les fonctions d'injection nécessitent les droits administrateur</value>
   </data>
@@ -2866,6 +3007,36 @@ Espace disponible : {2}</value>
   </data>
   <data name="ViewPageLaunchGameIslandConnected" xml:space="preserve">
     <value>Connecté au jeu, les modifications des paramètres seront reflétées dynamiquement dans le jeu</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeDescription" xml:space="preserve">
+    <value>Activer le mode débogage</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeHeader" xml:space="preserve">
+    <value>mode débogage</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonDescription" xml:space="preserve">
+    <value>Montrer Paimon dans le jeu</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
+    <value>Afficher Paimon</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription" xml:space="preserve">
+    <value>Basculez automatiquement entre les entrées du clavier, de la souris et du contrôleur à tout moment pendant le jeu</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
+    <value>Gérer la commutation à chaud</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassDescription" xml:space="preserve">
+    <value>Cacher l'herbe dans le jeu</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassHeader" xml:space="preserve">
+    <value>herbe cachée</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
+    <value>Masquer les informations du joueur</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoHeader" xml:space="preserve">
+    <value>Masquer les informations du joueur</value>
   </data>
   <data name="ViewPageLaunchGameIslandOptionsHeader" xml:space="preserve">
     <value>Options d'injection</value>
@@ -3014,6 +3185,81 @@ Espace disponible : {2}</value>
   <data name="ViewPageOpenScreenshotFolderAction" xml:space="preserve">
     <value>Ouvrir le dossier des captures d'écran</value>
   </data>
+  <data name="ViewPagePluginCountText" xml:space="preserve">
+    <value>plug-ins</value>
+  </data>
+  <data name="ViewPagePluginDisableButton" xml:space="preserve">
+    <value>Désactiver</value>
+  </data>
+  <data name="ViewPagePluginEmptyDescription" xml:space="preserve">
+    <value>Cliquez sur le bouton "Installer le plugin" pour ajouter votre premier plugin</value>
+  </data>
+  <data name="ViewPagePluginEmptyTitle" xml:space="preserve">
+    <value>Pas encore de plugin</value>
+  </data>
+  <data name="ViewPagePluginEnableButton" xml:space="preserve">
+    <value>activer</value>
+  </data>
+  <data name="ViewPagePluginInstallButton" xml:space="preserve">
+    <value>Installer le plug-in</value>
+  </data>
+  <data name="ViewPagePluginOpenDirectoryButton" xml:space="preserve">
+    <value>Ouvrez le répertoire du plugin</value>
+  </data>
+  <data name="ViewPagePluginRefreshButton" xml:space="preserve">
+    <value>rafraîchir</value>
+  </data>
+  <data name="ViewPagePluginSettingBackButton" xml:space="preserve">
+    <value>retour</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultPlaceholder" xml:space="preserve">
+    <value>Veuillez saisir une valeur</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultValueText" xml:space="preserve">
+    <value>valeur par défaut :</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyDescription" xml:space="preserve">
+    <value>Ce plugin n'a pas de paramètres configurables</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyTitle" xml:space="preserve">
+    <value>Aucun paramètre pour l'instant</value>
+  </data>
+  <data name="ViewPagePluginSettingIntPlaceholder" xml:space="preserve">
+    <value>Veuillez saisir un nombre entier</value>
+  </data>
+  <data name="ViewPagePluginSettingResetButton" xml:space="preserve">
+    <value>réinitialiser</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveButton" xml:space="preserve">
+    <value>sauvegarder</value>
+  </data>
+  <data name="ViewPagePluginSettingStringPlaceholder" xml:space="preserve">
+    <value>Veuillez saisir du texte</value>
+  </data>
+  <data name="ViewPagePluginSettingTitle" xml:space="preserve">
+    <value>Paramètres du plugin</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOff" xml:space="preserve">
+    <value>fermer</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOn" xml:space="preserve">
+    <value>ouvrir</value>
+  </data>
+  <data name="ViewPagePluginSettingsButton" xml:space="preserve">
+    <value>installation</value>
+  </data>
+  <data name="ViewPagePluginStatusDisabled" xml:space="preserve">
+    <value>Désactivé</value>
+  </data>
+  <data name="ViewPagePluginStatusEnabled" xml:space="preserve">
+    <value>Activé</value>
+  </data>
+  <data name="ViewPagePluginTotalText" xml:space="preserve">
+    <value>commun</value>
+  </data>
+  <data name="ViewPagePluginUninstallButton" xml:space="preserve">
+    <value>désinstaller</value>
+  </data>
   <data name="ViewPageResetGamePathAction" xml:space="preserve">
     <value>Sélectionner le chemin du jeu</value>
   </data>
@@ -3082,6 +3328,12 @@ Espace disponible : {2}</value>
   </data>
   <data name="ViewPageSettingApperanceLanguageHeader" xml:space="preserve">
     <value>Langues</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
+    <value>Lorsqu'il est activé, si Walnut n'est pas exécuté en tant qu'administrateur, il redémarrera automatiquement et demandera les autorisations d'administrateur au démarrage.</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
+    <value>Redémarrer automatiquement avec les privilèges d'administrateur au démarrage</value>
   </data>
   <data name="ViewPageSettingBackdropMaterialDescription" xml:space="preserve">
     <value>Changer le matériau d'arrière-plan de la fenêtre</value>
@@ -3548,6 +3800,9 @@ Espace disponible : {2}</value>
   <data name="ViewPeriodHeader" xml:space="preserve">
     <value>Calendrier</value>
   </data>
+  <data name="ViewPluginHeader" xml:space="preserve">
+    <value>Gestion des plug-ins</value>
+  </data>
   <data name="ViewRoleCombatHeader" xml:space="preserve">
     <value>Théâtre Imaginarium</value>
   </data>
@@ -3965,19 +4220,25 @@ Espace disponible : {2}</value>
   <data name="WebResponseSignInErrorHint" xml:space="preserve">
     <value>Échec de la connexion. Veuillez vous rendre sur HoYoLAB pour initialiser votre compte. Message d'origine : {0}</value>
   </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleOne" xml:space="preserve">
+    <value>Activité Louange-Femme</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleTwo" xml:space="preserve">
+    <value>Activité Louange-Femme</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleOne" xml:space="preserve">
+    <value>Activité Louange-Mâle</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleTwo" xml:space="preserve">
+    <value>Activité Louange-Mâle</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeAvatarEventWish" xml:space="preserve">
+    <value>Événements et souhaits</value>
+  </data>
+  <data name="WebUGCGachaConfigTypePermanentWish" xml:space="preserve">
+    <value>Prière permanente</value>
+  </data>
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>ID du moniteur</value>
-  </data>
-  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
-    <value>Supprimer</value>
-  </data>
-  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>Correction de l'interface spéciale</value>
-  </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>L'inscription a échoué, erreur du serveur, veuillez contacter le développeur dès que possible pour résoudre ce problème</value>
-  </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>Échec du chargement de l'enregistrement de l'Abîme, erreur du serveur, veuillez contacter le développeur dès que possible pour résoudre le problème</value>
   </data>
 </root>
