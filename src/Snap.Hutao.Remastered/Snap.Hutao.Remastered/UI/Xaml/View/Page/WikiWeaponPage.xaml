@@ -69,7 +69,6 @@
             </Grid>
         </DataTemplate>
 
-        <!--         列表模式的头像项模板，包含头像图标、名称以及右键菜单。 -->
         <DataTemplate x:Key="WeaponListTemplate" x:DataType="shmmw:Weapon">
             <Grid Background="Transparent">
                 <Grid.ContextFlyout>
@@ -154,7 +153,6 @@
             </shuxcc:HorizontalCard>
         </DataTemplate>
 
-        <!--         网格模式的头像项模板，包含头像图标、名称以及右键菜单。 -->
         <DataTemplate x:Key="WeaponGridTemplate" x:DataType="shmmw:Weapon">
             <shuxcc:VerticalCard Width="82">
                 <shuxcc:VerticalCard.ContextFlyout>

@@ -111,7 +111,6 @@
             </Grid>
         </DataTemplate>
 
-        <!--         列表模式的头像项模板，包含头像图标、名称以及右键菜单。 -->
         <DataTemplate x:Key="AvatarListTemplate" x:DataType="shmma:Avatar">
             <Grid>
                 <Grid.ContextFlyout>
@@ -296,8 +295,6 @@
                 </cwc:SettingsCard.Description>
             </cwc:SettingsCard>
         </DataTemplate>
-        
-        <!--         网格模式的头像项模板，包含头像图标、名称以及右键菜单。 -->
         <DataTemplate x:Key="AvatarGridTemplate" x:DataType="shmma:Avatar">
             <shuxcc:VerticalCard Width="82">
                 <shuxcc:VerticalCard.ContextFlyout>
