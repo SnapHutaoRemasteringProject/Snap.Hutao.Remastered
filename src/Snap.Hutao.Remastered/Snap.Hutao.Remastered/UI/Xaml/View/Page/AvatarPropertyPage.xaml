@@ -220,7 +220,7 @@
                             <MenuFlyoutItem
                                 Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
                                 CommandParameter="{Binding}"
-                                Text="{shuxm:ResourceString Name=ViewPageAvatarPropertyCultivate}"/>
+                                Text="{shuxm:ResourceString Name=ViewPageAvatarPropertyAddBothToPlan}"/>
                         </MenuFlyout>
                     </Grid.ContextFlyout>
                     <Grid.ColumnDefinitions>
