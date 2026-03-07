@@ -25,9 +25,13 @@ public sealed partial class TypedWishSummary : Wish, INotifyPropertyChanged
 
     public required int LastPurplePull { get; init; }
 
+    public required int LastBluePull { get; init; }
+
     public required int GuaranteeOrangeThreshold { get; init; }
 
     public required int GuaranteePurpleThreshold { get; init; }
+
+    public required int GuaranteeBlueThreshold { get; init; }
 
     public string FormattedTotalOrange
     {

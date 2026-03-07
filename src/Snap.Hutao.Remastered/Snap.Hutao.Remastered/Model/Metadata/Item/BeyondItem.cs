@@ -1,5 +1,6 @@
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Model.Metadata.Abstraction;
+using Snap.Hutao.Remastered.Model.Metadata.Avatar;
 using Snap.Hutao.Remastered.Model.Metadata.Converter;
 using Snap.Hutao.Remastered.Model.Primitive;
 using Snap.Hutao.Remastered.ViewModel.GachaLog;
@@ -9,15 +10,16 @@ namespace Snap.Hutao.Remastered.Model.Metadata.Item;
 public partial class BeyondItem : 
     IDefaultIdentity<BeyondItemId>,
     ISummaryItemConvertible,
-    IStatisticsItemConvertible
+    IStatisticsItemConvertible,
+    IItemConvertible
 {
     public required BeyondItemId Id { get; init; }
 
     public required QualityType RankLevel { get; init; }
 
-    public string? Icon { get; set; }
+    public string Icon { get; set; } = string.Empty;
 
-    public string? Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     public string? Description { get; set; }
 
@@ -53,6 +55,19 @@ public partial class BeyondItem :
             Badge = BeyondItemNameIconConverter.IconNameToUri(Icon),
             Quality = RankLevel,
             Count = count,
+        };
+    }
+
+    public TItem ToItem<TItem>()
+        where TItem : Model.Item, new()
+    {
+        return new()
+        {
+            Id = Id,
+            Name = Name,
+            Icon = BeyondItemNameIconConverter.IconNameToUri(Icon),
+            Badge = BeyondItemNameIconConverter.IconNameToUri(Icon),
+            Quality = Quality,
         };
     }
 }

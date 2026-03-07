@@ -1,5 +1,5 @@
 <UserControl
-    x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Specialized.StatisticsCard"
+    x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Specialized.BeyondStatisticsCard"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cw="using:CommunityToolkit.WinUI"
@@ -208,21 +208,21 @@
                         <shuxcc:CardProgressBar
                             Grid.Column="0"
                             MinHeight="32"
-                            Description="{Binding LastOrangePull}"
-                            Header="{shuxm:ResourceString Name=ViewControlStatisticsCardToLastOrangeText}"
-                            Maximum="{Binding GuaranteeOrangeThreshold}"
-                            ProgressForeground="{StaticResource OrangeColorBrush}"
-                            TextForeground="{StaticResource OrangeColorBrush}"
-                            Value="{Binding LastOrangePull}"/>
-                        <shuxcc:CardProgressBar
-                            Grid.Column="1"
-                            MinHeight="32"
                             Description="{Binding LastPurplePull}"
                             Header="{shuxm:ResourceString Name=ViewControlStatisticsCardToLastPurpleText}"
                             Maximum="{Binding GuaranteePurpleThreshold}"
                             ProgressForeground="{StaticResource PurpleColorBrush}"
                             TextForeground="{StaticResource PurpleColorBrush}"
                             Value="{Binding LastPurplePull}"/>
+                        <shuxcc:CardProgressBar
+                            Grid.Column="1"
+                            MinHeight="32"
+                            Description="{Binding LastBluePull}"
+                            Header="{shuxm:ResourceString Name=ViewControlStatisticsCardToLastBlueText}"
+                            Maximum="{Binding GuaranteeBlueThreshold}"
+                            ProgressForeground="{StaticResource BlueColorBrush}"
+                            TextForeground="{StaticResource BlueColorBrush}"
+                            Value="{Binding LastBluePull}"/>
                     </Grid>
                 </StackPanel>
                 <Grid Margin="-12,-2" ColumnSpacing="8">
@@ -267,8 +267,8 @@
                                         <TextBlock
                                             Opacity="0.8"
                                             Style="{StaticResource CaptionTextBlockStyle}"
-                                            Text="{shuxm:ResourceString Name=ViewControlStatisticsCardOrangeAveragePullText}"/>
-                                        <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding FormattedAverageOrangePull}"/>
+                                            Text="{shuxm:ResourceString Name=ViewControlStatisticsCardPurpleAveragePullText}"/>
+                                        <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding FormattedAveragePurplePull}"/>
                                     </StackPanel>
                                 </Viewbox>
                             </Border>

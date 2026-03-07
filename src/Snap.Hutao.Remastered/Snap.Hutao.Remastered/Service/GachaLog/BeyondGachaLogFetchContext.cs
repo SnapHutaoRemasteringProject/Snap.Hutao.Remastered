@@ -3,7 +3,9 @@
 
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Model.Entity;
+using Snap.Hutao.Remastered.Model.Metadata.Abstraction;
 using Snap.Hutao.Remastered.Service.GachaLog.QueryProvider;
+using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
 using Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Event.GachaInfo;
 using System.Collections.Immutable;
 
@@ -72,8 +74,7 @@ public sealed class BeyondGachaLogFetchContext
     {
         ArgumentNullException.ThrowIfNull(TargetArchive);
         ItemsToAdd.Add(BeyondGachaItem.From(TargetArchive.InnerId, item));
-        // For beyond gacha items, we don't have a direct way to get the item from serviceContext
-        // So we'll add a placeholder item or skip adding to status
+        Status.Items.Add(serviceContext.GetBeyondItem(uint.Parse(item.ItemId)).GetOrCreateItem());
         TypedQueryOptions.EndId = item.Id;
     }
 

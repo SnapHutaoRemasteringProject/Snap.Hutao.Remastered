@@ -317,5 +317,8 @@
     <None Update="Snap.Hutao.Remastered.Deployment.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Page Update="UI\Xaml\View\Specialized\BeyondStandardStatisticsCard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>

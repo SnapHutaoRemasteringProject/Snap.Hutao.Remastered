@@ -15,6 +15,7 @@ public readonly struct TypedWishSummaryBuilderContext
     public readonly string Name;
     public readonly int GuaranteeOrangeThreshold;
     public readonly int GuaranteePurpleThreshold;
+        public readonly int GuaranteeBlueThreshold;
     public readonly Func<GachaType, bool> TypeEvaluator;
     public readonly GachaDistributionType DistributionType;
     public readonly bool SummarizePurple;
@@ -32,6 +33,7 @@ public readonly struct TypedWishSummaryBuilderContext
         string name,
         int guaranteeOrangeThreshold,
         int guaranteePurpleThreshold,
+        int guaranteeBlueThreshold,
         Func<GachaType, bool> typeEvaluator,
         GachaDistributionType distributionType,
         bool summarizePurple = false,
@@ -42,6 +44,7 @@ public readonly struct TypedWishSummaryBuilderContext
         Name = name;
         GuaranteeOrangeThreshold = guaranteeOrangeThreshold;
         GuaranteePurpleThreshold = guaranteePurpleThreshold;
+        GuaranteeBlueThreshold = guaranteeBlueThreshold;
         TypeEvaluator = typeEvaluator;
         DistributionType = distributionType;
         SummarizePurple = summarizePurple;
@@ -50,32 +53,32 @@ public readonly struct TypedWishSummaryBuilderContext
 
     public static TypedWishSummaryBuilderContext StandardWish(GachaStatisticsFactoryContext context)
     {
-        return new(context.ServiceProvider, SH.ServiceGachaLogFactoryPermanentWishName, 90, 10, IsStandardWish, GachaDistributionType.Standard);
+        return new(context.ServiceProvider, SH.ServiceGachaLogFactoryPermanentWishName, 90, 10, 0, IsStandardWish, GachaDistributionType.Standard);
     }
 
     public static TypedWishSummaryBuilderContext AvatarEventWish(GachaStatisticsFactoryContext context)
     {
-        return new(context.ServiceProvider, SH.ServiceGachaLogFactoryAvatarWishName, 90, 10, IsAvatarEventWish, GachaDistributionType.AvatarEvent);
+        return new(context.ServiceProvider, SH.ServiceGachaLogFactoryAvatarWishName, 90, 10, 0, IsAvatarEventWish, GachaDistributionType.AvatarEvent);
     }
 
     public static TypedWishSummaryBuilderContext WeaponEventWish(GachaStatisticsFactoryContext context)
     {
-        return new(context.ServiceProvider, SH.ServiceGachaLogFactoryWeaponWishName, 80, 10, IsWeaponEventWish, GachaDistributionType.WeaponEvent);
+        return new(context.ServiceProvider, SH.ServiceGachaLogFactoryWeaponWishName, 80, 10, 0, IsWeaponEventWish, GachaDistributionType.WeaponEvent);
     }
 
     public static TypedWishSummaryBuilderContext ChronicledWish(GachaStatisticsFactoryContext context)
     {
-        return new(context.ServiceProvider, SH.ServiceGachaLogFactoryChronicledWishName, 90, 10, IsChronicledWish, GachaDistributionType.Chronicled);
+        return new(context.ServiceProvider, SH.ServiceGachaLogFactoryChronicledWishName, 90, 10, 0, IsChronicledWish, GachaDistributionType.Chronicled);
     }
 
     public static TypedWishSummaryBuilderContext BeyondStandardWish(GachaStatisticsFactoryContext context)
     {
-        return new(context.ServiceProvider, SH.ServiceGachaLogFactoryBeyondPermanentWishName, int.MaxValue, 70, IsBeyondStandardWish, GachaDistributionType.BeyondStandard, true, true);
+        return new(context.ServiceProvider, SH.ServiceGachaLogFactoryBeyondPermanentWishName, int.MaxValue, 90, 10, IsBeyondStandardWish, GachaDistributionType.BeyondStandard, true, true);
     }
 
     public static TypedWishSummaryBuilderContext BeyondEventWish(GachaStatisticsFactoryContext context)
     {
-        return new(context.ServiceProvider, SH.ServiceGachaLogFactoryBeyondEventWishName, 90, 10, IsBeyondEventWish, GachaDistributionType.BeyondEvent, true);
+        return new(context.ServiceProvider, SH.ServiceGachaLogFactoryBeyondEventWishName, 90, 10, 0, IsBeyondEventWish, GachaDistributionType.BeyondEvent, true);
     }
 
     public TypedWishSummaryBuilder CreateBuilder()

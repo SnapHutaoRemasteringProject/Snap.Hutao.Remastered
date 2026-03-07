@@ -444,10 +444,9 @@
                             DataContext="{Binding Statistics.ChronicledWish}" 
                             ShowUpPull="False"
                             Visibility="{Binding DataContext.IsBeyondMode, ElementName=RootPage, Converter={StaticResource BoolNegationToVisibilityConverter}}"/>
-                        <shuxvs:StatisticsCard 
+                        <shuxvs:BeyondStatisticsCard 
                             DataContext="{Binding Statistics.BeyondStandardWish}"
                             Visibility="{Binding DataContext.IsBeyondMode, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"
-                            ShowOrange="False"
                             ShowUpPull="False"/>
                         <shuxvs:StatisticsCard 
                             DataContext="{Binding Statistics.BeyondEventWish}"
