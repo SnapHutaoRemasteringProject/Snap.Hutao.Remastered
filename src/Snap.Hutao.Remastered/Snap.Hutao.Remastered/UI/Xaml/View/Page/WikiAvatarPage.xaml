@@ -116,10 +116,9 @@
                 <Grid.ContextFlyout>
                     <MenuFlyout>
                         <MenuFlyoutItem
-                            Command="{Binding Path=DataContext.CultivateCommand, ElementName=RootPage}"
+                            Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
                             CommandParameter="{Binding}"
-                            Icon="{shuxm:FontIcon Glyph=&#xE8EF;}"
-                            Text="{shuxm:ResourceString Name=ViewPageCultivateCalculate}"/>
+                            Text="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
                     </MenuFlyout>
                 </Grid.ContextFlyout>
                 <Grid.ColumnDefinitions>
@@ -296,16 +295,14 @@
                 </cwc:SettingsCard.Description>
             </cwc:SettingsCard>
         </DataTemplate>
-
         <DataTemplate x:Key="AvatarGridTemplate" x:DataType="shmma:Avatar">
             <shuxcc:VerticalCard Width="82">
                 <shuxcc:VerticalCard.ContextFlyout>
                     <MenuFlyout>
                         <MenuFlyoutItem
-                            Command="{Binding Path=DataContext.CultivateCommand, ElementName=RootPage}"
+                            Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
                             CommandParameter="{Binding}"
-                            Icon="{shuxm:FontIcon Glyph=&#xE8EF;}"
-                            Text="{shuxm:ResourceString Name=ViewPageCultivateCalculate}"/>
+                            Text="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
                     </MenuFlyout>
                 </shuxcc:VerticalCard.ContextFlyout>
                 <shuxcc:VerticalCard.Top>

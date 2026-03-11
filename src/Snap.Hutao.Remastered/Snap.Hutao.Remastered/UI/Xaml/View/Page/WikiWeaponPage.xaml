@@ -70,14 +70,13 @@
         </DataTemplate>
 
         <DataTemplate x:Key="WeaponListTemplate" x:DataType="shmmw:Weapon">
-            <Grid>
+            <Grid Background="Transparent">
                 <Grid.ContextFlyout>
                     <MenuFlyout>
                         <MenuFlyoutItem
-                            Command="{Binding Path=DataContext.CultivateCommand, ElementName=RootPage}"
+                            Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
                             CommandParameter="{Binding}"
-                            Icon="{shuxm:FontIcon Glyph=&#xE8EF;}"
-                            Text="{shuxm:ResourceString Name=ViewPageCultivateCalculate}"/>
+                            Text="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
                     </MenuFlyout>
                 </Grid.ContextFlyout>
                 <Grid.ColumnDefinitions>
@@ -159,10 +158,9 @@
                 <shuxcc:VerticalCard.ContextFlyout>
                     <MenuFlyout>
                         <MenuFlyoutItem
-                            Command="{Binding Path=DataContext.CultivateCommand, ElementName=RootPage}"
+                            Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
                             CommandParameter="{Binding}"
-                            Icon="{shuxm:FontIcon Glyph=&#xE8EF;}"
-                            Text="{shuxm:ResourceString Name=ViewPageCultivateCalculate}"/>
+                            Text="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
                     </MenuFlyout>
                 </shuxcc:VerticalCard.ContextFlyout>
                 <shuxcc:VerticalCard.Top>
