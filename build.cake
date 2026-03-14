@@ -258,11 +258,11 @@ Task("Inner Sign")
 
         if (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Alpha")
         {
-            arguments = $"sign /debug /v /as /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f {pfxPath} /p {pw} {System.IO.Path.Combine(binPath, $"*.exe")} {System.IO.Path.Combine(outputPath, $"*.dll")}";
+            arguments = $"sign /debug /v /as /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f {pfxPath} /p {pw} {System.IO.Path.Combine(binPath, $"*.exe")} {System.IO.Path.Combine(binPath, $"*.dll")}";
         }
         else if (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Canary")
         {
-            arguments = $"sign /debug /v /as /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f {pfxPath} /p {pw} {System.IO.Path.Combine(binPath, $"*.exe")} {System.IO.Path.Combine(outputPath, $"*.dll")}";
+            arguments = $"sign /debug /v /as /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f {pfxPath} /p {pw} {System.IO.Path.Combine(binPath, $"*.exe")} {System.IO.Path.Combine(binPath, $"*.dll")}";
         }
         else
         {
