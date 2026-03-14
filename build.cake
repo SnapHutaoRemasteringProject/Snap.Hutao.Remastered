@@ -142,8 +142,8 @@ Task("Generate AppxManifest")
             Information("Using Alpha configuration");
             content = content
                 .Replace("Snap Hutao Remastered", "Snap Hutao Remastered Alpha")
-                .Replace("胡桃重制版", "胡桃重制版 Alpha");
-                //.Replace("SnapHutaoRemasteringProject", "SnapHutaoRemasteringProject CI");
+                .Replace("胡桃重制版", "胡桃重制版 Alpha")
+                .Replace("SnapHutaoRemasteringProject", "SnapHutaoRemasteringProject CI");
             content = System.Text.RegularExpressions.Regex.Replace(content, "  Name=\"([^\"]*)\"", "  Name=\"7f0db578-026f-4e0b-a75b-d5d06bb0a74c\"");
         }
         else if (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Canary")
@@ -151,8 +151,8 @@ Task("Generate AppxManifest")
             Information("Using Canary configuration");
             content = content
                 .Replace("Snap Hutao Remastered", "Snap Hutao Remastered Canary")
-                .Replace("胡桃重制版", "胡桃重制版 Canary");
-                //.Replace("SnapHutaoRemasteringProject", "SnapHutaoRemasteringProject CI");
+                .Replace("胡桃重制版", "胡桃重制版 Canary")
+                .Replace("SnapHutaoRemasteringProject", "SnapHutaoRemasteringProject CI");
             content = System.Text.RegularExpressions.Regex.Replace(content, "  Name=\"([^\"]*)\"", "  Name=\"52127695-c6a7-406e-916a-693b905e8ba7\"");
         }
         else
@@ -160,7 +160,7 @@ Task("Generate AppxManifest")
             throw new Exception("Unsupported workflow.");
         }
 
-        content = System.Text.RegularExpressions.Regex.Replace(content, "  Publisher=\"([^\"]*)\"", "  Publisher=\"CN=SnapHutaoRemasteringProject\"");
+        content = System.Text.RegularExpressions.Regex.Replace(content, "  Publisher=\"([^\"]*)\"", "  Publisher=\"CN=SnapHutaoRemasteringProject CI\"");
         content = System.Text.RegularExpressions.Regex.Replace(content, "  Version=\"([0-9\\.]+)\"", $"  Version=\"{version}\"");
     }
     else if (AppVeyor.IsRunningOnAppVeyor)
@@ -173,10 +173,10 @@ Task("Generate AppxManifest")
         Information("Using Local configuration.");
         content = content
             .Replace("Snap Hutao Remastered", "Snap Hutao Remastered Local")
-            .Replace("胡桃重制版", "胡桃重制版 Local");
-            //.Replace("SnapHutaoRemasteringProject", "SnapHutaoRemasteringProject CI");
+            .Replace("胡桃重制版", "胡桃重制版 Local")
+            .Replace("SnapHutaoRemasteringProject", "SnapHutaoRemasteringProject CI");
         content = System.Text.RegularExpressions.Regex.Replace(content, "  Name=\"([^\"]*)\"", "  Name=\"E8B6E2B3-D2A0-4435-A81D-2A16AAF405C8\"");
-        content = System.Text.RegularExpressions.Regex.Replace(content, "  Publisher=\"([^\"]*)\"", "  Publisher=\"CN=SnapHutaoRemasteringProject\"");
+        content = System.Text.RegularExpressions.Regex.Replace(content, "  Publisher=\"([^\"]*)\"", "  Publisher=\"CN=SnapHutaoRemasteringProject CI\"");
         content = System.Text.RegularExpressions.Regex.Replace(content, "  Version=\"([0-9\\.]+)\"", $"  Version=\"{version}\"");
     }
 
@@ -241,10 +241,58 @@ Task("Remove unused files")
     System.IO.File.Delete(System.IO.Path.Combine(binPath, "Snap.Hutao.Remastered.build.appxrecipe"));
 });
 
+Task("Inner Sign")
+    .IsDependentOn("Build binary package")
+    .Does(() =>
+{
+    if (GitHubActions.IsRunningOnGitHubActions)
+    {
+        if (GitHubActions.Environment.PullRequest.IsPullRequest)
+        {
+            Information("Is Pull Request. Skip signing.");
+            return;
+        }
+
+        var signPath = System.IO.Path.Combine(winsdkBinPath, "signtool.exe");
+        var arguments = "arguments";
+
+        if (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Alpha")
+        {
+            arguments = $"sign /debug /v /a /fd SHA256 /t http://timestamp.digicert.com /f {pfxPath} /p {pw} {System.IO.Path.Combine(outputPath, $"*.exe")} {System.IO.Path.Combine(outputPath, $"*.dll")}";
+        }
+        else if (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Canary")
+        {
+            arguments = $"sign /debug /v /a /fd SHA256 /t http://timestamp.digicert.com /f {pfxPath} /p {pw} {System.IO.Path.Combine(outputPath, $"*.exe")} {System.IO.Path.Combine(outputPath, $"*.dll")}";
+        }
+        else
+        {
+            throw new Exception("Unsupported workflow.");
+        }
+
+        var p = StartProcess(
+            signPath,
+            new ProcessSettings
+            {
+                Arguments = arguments
+            }
+        );
+        if (p != 0)
+        {
+            throw new InvalidOperationException("Sign failed with exit code " + p);
+        }
+    }
+    else
+    {
+        Information("Local configuration. Skip signing.");
+        return;
+    }
+});
+
 Task("Build MSIX")
     .IsDependentOn("Build binary package")
     .IsDependentOn("Copy files")
     .IsDependentOn("Remove unused files")
+    .IsDependentOn("Inner Sign")
     .Does(() =>
 {
     var arguments = "arguments";

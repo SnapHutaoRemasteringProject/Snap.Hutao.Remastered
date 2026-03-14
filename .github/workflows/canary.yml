@@ -90,7 +90,7 @@ jobs:
           > 该版本是由 CI 程序自动打包生成的 `Canary` 测试版本，包含新功能原型及问题修复
 
           > [!IMPORTANT]
-          > 请先安装 **[SnapHutaoRemasteringProject CA.cer](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/raw/refs/heads/main/SnapHutaoRemasteringProject%20CA.cer)** 到 **受信任的根证书颁发机构** 以安装测试版安装包
+          > 请先安装 **[SnapHutaoRemasteringProjectRootCA.cer](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/raw/refs/heads/main/SnapHutaoRemasteringProjectRootCA.cer)** 到 **受信任的根证书颁发机构** 以安装测试版安装包
           "
 
           echo $summary >> $Env:GITHUB_STEP_SUMMARY

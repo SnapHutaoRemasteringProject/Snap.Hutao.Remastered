@@ -68,9 +68,9 @@ jobs:
           > 该版本是由 CI 程序自动打包生成的 `Alpha` 测试版本，包含已经基本完工的新功能及问题修复
 
           > [!IMPORTANT]
-          > 请先安装 **[SnapHutaoRemasteringProject CA.cer](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/raw/refs/heads/main/SnapHutaoRemasteringProject%20CA.cer)** 到 **受信任的根证书颁发机构** 以安装测试版安装包
+          > 请先安装 **[SnapHutaoRemasteringProjectRootCA.cer](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/raw/refs/heads/main/SnapHutaoRemasteringProjectRootCA.cer)** 到 **受信任的根证书颁发机构** 以安装测试版安装包
           "
-          echo $summary >> $Env:GITHUB_STEP_SUMMARY
+          echo $summary >> $Env:GITHUB_SSTEP_SUMMARY
 
       - name: Clean up
         shell: pwsh
