@@ -1,6 +1,5 @@
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Model.Metadata.Abstraction;
-using Snap.Hutao.Remastered.Model.Metadata.Avatar;
 using Snap.Hutao.Remastered.Model.Metadata.Converter;
 using Snap.Hutao.Remastered.Model.Primitive;
 using Snap.Hutao.Remastered.ViewModel.GachaLog;

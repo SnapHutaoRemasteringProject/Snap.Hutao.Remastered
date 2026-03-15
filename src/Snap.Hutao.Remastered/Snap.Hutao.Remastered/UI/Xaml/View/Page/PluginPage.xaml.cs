@@ -48,7 +48,7 @@ public partial class StringToVisibilityConverter : IValueConverter
     }
 }
 
-public class ListToStringConverter : IValueConverter
+public partial class ListToStringConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {
@@ -71,7 +71,7 @@ public class ListToStringConverter : IValueConverter
     }
 }
 
-public class BoolToStringConverter : IValueConverter
+public partial class BoolToStringConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {

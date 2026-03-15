@@ -6,7 +6,6 @@ using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Factory.Picker;
-using Snap.Hutao.Remastered.Service.Git;
 using Snap.Hutao.Remastered.Service.Notification;
 using System.IO;
 using Windows.Storage;

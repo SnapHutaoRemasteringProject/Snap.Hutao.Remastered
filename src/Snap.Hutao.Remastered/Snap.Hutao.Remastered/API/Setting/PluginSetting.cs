@@ -1,5 +1,4 @@
 using Snap.Hutao.Remastered.Service.Plugin;
-using System.IO;
 
 namespace Snap.Hutao.Remastered.API.Setting;
 

@@ -14,7 +14,6 @@ using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.Plugin;
-using Snap.Hutao.Remastered.Service.SignIn;
 using Snap.Hutao.Remastered.UI.Input.HotKey;
 using Snap.Hutao.Remastered.UI.Shell;
 using Snap.Hutao.Remastered.UI.Windowing;

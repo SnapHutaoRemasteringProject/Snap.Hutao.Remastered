@@ -6,7 +6,7 @@ using Snap.Hutao.Remastered.Service.UIGF;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Data.Converter;
 
-public sealed class UIGFVersionToStringConverter : IValueConverter
+public sealed partial class UIGFVersionToStringConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, string language)
     {

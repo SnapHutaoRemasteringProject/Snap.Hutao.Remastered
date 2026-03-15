@@ -7,16 +7,13 @@ using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Caching;
 using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Factory.Progress;
-using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
-using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
 using System.Collections.Frozen;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Net.Mime;
-using System.Text;
 
 namespace Snap.Hutao.Remastered.ViewModel.Guide;
 

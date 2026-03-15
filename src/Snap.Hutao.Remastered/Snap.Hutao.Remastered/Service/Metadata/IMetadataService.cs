@@ -2,8 +2,6 @@
 // Licensed under the MIT license.
 
 using Microsoft.Extensions.Caching.Memory;
-using Snap.Hutao.Remastered.Model.Metadata.Item;
-using Snap.Hutao.Remastered.Model.Primitive;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Service.Metadata;

@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.Yae;
 
-public sealed class YaeDataArrayReceiver : IDisposable
+public sealed partial class YaeDataArrayReceiver : IDisposable
 {
     public ImmutableArray<YaeData> Array { get; set; } = [];
 

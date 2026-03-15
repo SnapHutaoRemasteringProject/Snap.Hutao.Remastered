@@ -1,5 +1,3 @@
-using CommunityToolkit.WinUI.Converters;
-
 namespace Snap.Hutao.Remastered.API.Model;
 
 public abstract class HutaoPlugin

@@ -3,7 +3,6 @@
 
 using Snap.Hutao.Remastered.Core.IO;
 using System.IO;
-using Windows.ApplicationModel;
 
 namespace Snap.Hutao.Remastered.Core.Shell;
 

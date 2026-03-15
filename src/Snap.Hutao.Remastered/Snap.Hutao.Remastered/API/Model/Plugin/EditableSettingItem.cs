@@ -1,5 +1,3 @@
-using System;
-
 namespace Snap.Hutao.Remastered.API.Model.Plugin;
 
 public class EditableSettingItem

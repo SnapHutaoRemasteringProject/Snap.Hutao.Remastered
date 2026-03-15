@@ -3,7 +3,6 @@
 
 using Snap.Hutao.Remastered.Service.Game.Island;
 using Snap.Hutao.Remastered.Service.Game.Launching.Context;
-using Snap.Hutao.Remastered.Service.Git;
 using Snap.Hutao.Remastered.Service.Notification;
 
 namespace Snap.Hutao.Remastered.Service.Game.Launching.Handler;

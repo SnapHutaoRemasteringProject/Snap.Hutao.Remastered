@@ -6,7 +6,7 @@ using Snap.Hutao.Remastered.Factory.Progress;
 
 namespace Snap.Hutao.Remastered.Factory.ContentDialog;
 
-public sealed class BlockDeferral : IDisposable
+public sealed partial class BlockDeferral : IDisposable
 {
     private readonly Microsoft.UI.Xaml.Controls.ContentDialog contentDialog;
 
@@ -30,7 +30,7 @@ public sealed class BlockDeferral : IDisposable
 }
 
 [SuppressMessage("", "SA1402")]
-public sealed class BlockDeferral<T> : IDisposable
+public sealed partial class BlockDeferral<T> : IDisposable
 {
     private readonly IServiceScope serviceScope;
     private readonly BlockDeferral blockDeferral;

@@ -19,7 +19,7 @@ public static class NotifyPropertyChangedDeferral
 }
 
 [SuppressMessage("", "SA1402")]
-public sealed class NotifyPropertyChangedDeferral<T> : INotifyPropertyChangedDeferral
+public sealed partial class NotifyPropertyChangedDeferral<T> : INotifyPropertyChangedDeferral
     where T : INotifyPropertyChanged
 {
     private readonly T source;
@@ -38,7 +38,7 @@ public sealed class NotifyPropertyChangedDeferral<T> : INotifyPropertyChangedDef
 }
 
 [SuppressMessage("", "SA1402")]
-public sealed class NotifyPropertyChangedDeferral<T, TState> : INotifyPropertyChangedDeferral
+public sealed partial class NotifyPropertyChangedDeferral<T, TState> : INotifyPropertyChangedDeferral
     where T : INotifyPropertyChanged
 {
     private readonly T source;

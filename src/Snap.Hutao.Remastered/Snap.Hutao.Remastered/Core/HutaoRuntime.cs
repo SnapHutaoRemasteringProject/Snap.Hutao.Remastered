@@ -8,7 +8,6 @@ using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Core.IO.Hashing;
 using Snap.Hutao.Remastered.Core.Setting;
-using Snap.Hutao.Remastered.Service.Git;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;

@@ -1,5 +1,4 @@
 using Snap.Hutao.Remastered.Core.Setting;
-using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.ViewModel.User;
 
 namespace Snap.Hutao.Remastered.Service.SignIn;
