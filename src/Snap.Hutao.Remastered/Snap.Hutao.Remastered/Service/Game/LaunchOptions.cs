@@ -112,6 +112,9 @@ public sealed partial class LaunchOptions : DbStoreOptions, IRestrictedGamePathA
     public IObservableProperty<bool> RemoveOpenTeamProgress { get => field ??= CreateProperty(SettingKeys.LaunchRemoveOpenTeamProgress, false); }
 
     [field: MaybeNull]
+    public IObservableProperty<bool> EnableInLevelClockPageSpeedUp { get => field ??= CreateProperty(SettingKeys.LaunchEnableInLevelClockPageSpeedUp, false); }
+
+    [field: MaybeNull]
     public IObservableProperty<bool> HideQuestBanner { get => field ??= CreateProperty(SettingKeys.LaunchHideQuestBanner, false); }
 
     [field: MaybeNull]

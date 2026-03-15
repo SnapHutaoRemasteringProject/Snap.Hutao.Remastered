@@ -4254,4 +4254,10 @@
   <data name="ViewPageAvatarPropertyAddBothToPlan" xml:space="preserve">
     <value>添加角色与武器到养成计划</value>
   </data>
+  <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpHeader" xml:space="preserve">
+    <value>移除调整时间动画</value>
+  </data>
+  <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpDescription" xml:space="preserve">
+    <value>移除调整时间页面点击确定后时间缓慢变化的动画</value>
+  </data>
 </root>

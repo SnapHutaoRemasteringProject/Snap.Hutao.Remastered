@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.BbsSignReward;
 using Snap.Hutao.Remastered.Win32.Foundation;
 using System.Globalization;
 
@@ -38,6 +37,9 @@ public struct IslandEnvironment
     public BOOL HidePlayerInfo;
     public BOOL HideGrass;
     public BOOL GamepadHotSwitchEnabled;
+    public BOOL EnableInLevelClockPageSpeedUp;
+    public int Reversed1;
+    public int Reversed2;
 
 #pragma warning disable CS0649
     public HookFunctionOffsets Offsets;
@@ -92,12 +94,6 @@ public struct HookFunctionOffsets
     public uint SetupResinList;
     [JsonConverter(typeof(HexStringToNintConverter))]
     public uint ResinList;
-    [JsonConverter(typeof(HexStringToNintConverter))]
-    public uint ResinCount;
-    [JsonConverter(typeof(HexStringToNintConverter))]
-    public uint ResinItem;
-    [JsonConverter(typeof(HexStringToNintConverter))]
-    public uint ResinRemove;
 
     [JsonConverter(typeof(HexStringToNintConverter))]
     public uint FindString;
@@ -130,6 +126,10 @@ public struct HookFunctionOffsets
     public uint GetName;
     [JsonConverter(typeof(HexStringToNintConverter))]
     public uint CheckCanOpenMap;
+    [JsonConverter(typeof(HexStringToNintConverter))]
+    public uint InLevelClockPageOkButtonClicked;
+    [JsonConverter(typeof(HexStringToNintConverter))]
+    public uint InLevelClockPageCloseButtonClicked;
 #pragma warning restore CS0649
 }
 

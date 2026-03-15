@@ -163,6 +163,7 @@ public sealed class GameIslandInterop : IGameIslandInterop
         pIslandEnvironment->DebugMode = options.DebugMode.Value;
         pIslandEnvironment->HidePlayerInfo = options.HidePlayerInfo.Value;
         pIslandEnvironment->GamepadHotSwitchEnabled = options.GamepadHotSwitchEnabled.Value;
+        pIslandEnvironment->EnableInLevelClockPageSpeedUp = options.EnableInLevelClockPageSpeedUp.Value;
 
         return pIslandEnvironment->View;
     }

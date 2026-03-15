@@ -120,6 +120,7 @@ public static class SettingKeys
     public const string LaunchGamepadHotSwitchEnabled                    = "Snap::Hutao::Game::Island::InputDevice::GamepadHotSwitchEnabled";
     public const string LaunchForceUsingTouchScreen                      = "Snap::Hutao::Game::Island::InputDevice::TouchScreen::ForceWhenIntegratedTouchPresent";
     public const string LaunchRemoveOpenTeamProgress                     = "Snap::Hutao::Game::Island::OpenTeamProgress::Remove";
+    public const string LaunchEnableInLevelClockPageSpeedUp              = "Snap::Hutao::Game::Island::InLevelClockPage::SpeedUp";
     public const string LaunchHideQuestBanner                            = "Snap::Hutao::Game::Island::QuestBanner::Hide";
     public const string LaunchResinListItemId000106Allowed               = "Snap::Hutao::Game::Island::Reward::000106";
     public const string LaunchResinListItemId000201Allowed               = "Snap::Hutao::Game::Island::Reward::000201";
