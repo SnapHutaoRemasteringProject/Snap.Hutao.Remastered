@@ -1,31 +1,21 @@
-# Contribution Guide
-
 ## Contribute Your Code
 
-### Setup Snap.Hutao Project
+### Setup Snap.Hutao-Manjusaka Project
 
-1. Download and install [Visual Studio 2022 Community](https://visualstudio.microsoft.com/downloads/).
+1. Download and install [Visual Studio 2026 Community](https://visualstudio.microsoft.com/downloads/).
    - No need to select workloads; Visual Studio will handle it automatically.
    - Close Visual Studio Installer to ensure a smooth installation experience for workloads.
-   - If using Visual Studio 2022 17.9 preview, skip step 5, as automatic extension installation is supported in this version.
-2. Use git to clone the project `https://github.com/DGP-Studio/Snap.Hutao.git` to your local device.
-3. Switch to the`develop` branch using git.
-4. Open the project solution with your Visual Studio. Visual Studio will prompt you to install the necessary workloads, closing and reopening automatically.
-5. (For Visual Studio 2022 17.8) Install the [Single-project MSIX Packaging Tools for VS 2022](https://marketplace.visualstudio.com/items?itemName=ProjectReunion.MicrosoftSingleProjectMSIXPackagingToolsDev17) provided by Microsoft in Visual Studio marketplace.
-6. Open the project solution with your Visual Studio, and you are ready to go.
+2. Fork this repository and clone the project to your local device. Make sure with a good network. Or by this.<img width="400" alt="image" src="https://github.com/user-attachments/assets/6d861b6b-d3b7-48d0-8241-257c9b7ead54" />  
+3. Open the project solution with your Visual Studio, which is .slnx for VS2026 at `Snap.Hutao\src\Snap.Hutao\Snap.Hutao.slnx`. Visual Studio will prompt you to install the necessary workloads, closing and reopening automatically.
 
 ### Start Pull Request
 
-- All code-related changes from authors' own branches are only allowed be merged to `develop` branch
+- All code-related changes from authors' own branches are only allowed be merged to `dev-master` branch
 - Please use [keywords](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/using-keywords-in-issues-and-pull-requests) to link your PR or commits with issues, so issues can be automatically closed once commits are merged into `main` branch.
 
 ### Test Binary Package
 
-Once the code in updated in `develop` and `main` branches, an Azure Pipeline CI script will build the latest code to `Snap Hutao Alpha` package. Once the package is built, it will be released on [GitHub Release page](https://github.com/DGP-Studio/Snap.Hutao/releases) as a pre-released package. 
-
-You need to install [Snap.Hutao.CI.cer](https://github.com/DGP-Studio/Snap.Hutao/releases/download/2023.10.3.1/Snap.Hutao.CI.cer) certificate to your local machine, and then install the msix package in the release. 
-
-*If the latest release does not contains attached file, that means package is still in uploading process. 
+After push your own git to your github, the github action will be triggerd and you can check the final .msi build file and install it. It's a release build version by msbuild. You can also build it by yourself with change build cofigreation to release and build Snap.Hutao.Installer.
 
 ## Start New Issue
 
