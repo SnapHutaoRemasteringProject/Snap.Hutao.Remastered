@@ -125,7 +125,9 @@ public sealed partial class GachaLogRepository : IGachaLogRepository
 
     public void RemoveBeyondGachaItemRangeByArchiveIdAndGachaTypeNewerThanEndId(Guid archiveId, GachaType GachaType, long endId)
     {
-        this.Delete<BeyondGachaItem>(i => i.ArchiveId == archiveId && i.GachaType == GachaType && i.Id >= endId);
+        FrozenSet<GachaType> queryTypes = GetQueryTypes(GachaType);
+
+        this.Delete<BeyondGachaItem>(i => i.ArchiveId == archiveId && queryTypes.Contains(i.GachaType) && i.Id >= endId);
     }
 
     public ImmutableArray<BeyondGachaItem> GetBeyondGachaItemImmutableArrayByArchiveId(Guid archiveId)
