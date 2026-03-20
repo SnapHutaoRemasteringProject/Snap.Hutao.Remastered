@@ -1,6 +1,6 @@
 ## Contribute Your Code
 
-### Setup Snap.Hutao-Manjusaka Project
+### Snap.Hutao.Remastered Project
 
 1. Download and install [Visual Studio 2026 Community](https://visualstudio.microsoft.com/downloads/).
    - No need to select workloads; Visual Studio will handle it automatically.
