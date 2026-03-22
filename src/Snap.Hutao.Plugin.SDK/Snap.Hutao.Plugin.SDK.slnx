@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="../Snap.Hutao.Remastered/Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj">
+    <Platform Project="x64" />
+    <Deploy />
+  </Project>
+  <Project Path="Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.csproj" />
+  <Project Path="TestPlugin/TestPlugin.csproj">
+    <Platform Project="x64" />
+  </Project>
+</Solution>

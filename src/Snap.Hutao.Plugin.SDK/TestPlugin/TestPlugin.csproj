@@ -13,13 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Snap.Hutao.Remastered\Snap.Hutao.Remastered.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="TestPluginPage.hxaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Snap.Hutao.Remastered.csproj" />
   </ItemGroup>
 
   <ItemGroup>
