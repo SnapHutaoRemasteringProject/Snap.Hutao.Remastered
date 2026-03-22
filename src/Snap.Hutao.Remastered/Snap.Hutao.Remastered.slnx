@@ -6,8 +6,8 @@
     <File Path=".editorconfig" />
     <File Path=".vsconfig" />
   </Folder>
-  <Project Path="D:/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/src/Snap.Hutao.Remastered/Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.csproj" />
-  <Project Path="D:/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj">
+  <Project Path="Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.csproj" />
+  <Project Path="Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj">
     <Platform Project="x64" />
     <Deploy />
   </Project>

@@ -380,7 +380,6 @@ public sealed partial class GachaLogViewModel : Abstraction.ViewModel
             GachaStatistics statistics;
             if (IsBeyondMode)
             {
-                // 使用BeyondGacha统计方法
                 statistics = await gachaLogService.GetBeyondStatisticsAsync(metadataContext, archive).ConfigureAwait(false);
             }
             else

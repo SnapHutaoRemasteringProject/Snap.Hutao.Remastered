@@ -44,16 +44,7 @@
     <MvvmToolkitEnableINotifyPropertyChangingSupport>false</MvvmToolkitEnableINotifyPropertyChangingSupport>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
-    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-    <PackageCertificateThumbprint>DF238164333FF968767E226E4BA59FD6D27D7313</PackageCertificateThumbprint>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Resource\Icon\UI_BtnIcon_Beyond_GH.png" />
-    <None Remove="Resource\Icon\UI_Icon_Paimon.png" />
-    <None Remove="Resource\Icon\UI_Icon_UGC_Beyond.png" />
-    <None Remove="Resource\Navigation\Plugin.png" />
-  </ItemGroup>
 
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />
@@ -89,9 +80,7 @@
     <AdditionalFiles Include="Resource\Localization\SHRegex.tr.resx" />
     <AdditionalFiles Include="Resource\Localization\SHRegex.vi.resx" />
     <AdditionalFiles Include="Resource\Localization\SHRegex.zh-Hant.resx" />
-    <AdditionalFiles Include="Resource\Localization\SH.resx">
-      <Generator></Generator>
-    </AdditionalFiles>
+    <AdditionalFiles Include="Resource\Localization\SH.resx" />
     <AdditionalFiles Include="Resource\Localization\SH.de.resx" />
     <AdditionalFiles Include="Resource\Localization\SH.en.resx" />
     <AdditionalFiles Include="Resource\Localization\SH.es.resx" />
@@ -245,49 +234,49 @@
     <PackageReference Include="CommunityToolkit.Labs.WinUI.TokenView" Version="0.1.250828-build.2223" />
     <PackageReference Include="CommunityToolkit.Labs.WinUI.TransitionHelper" Version="0.1.251101-build.2372" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageReference Include="CommunityToolkit.WinUI.Behaviors" Version="8.2.251105-build.1544" />
-    <PackageReference Include="CommunityToolkit.WinUI.Collections" Version="8.2.251105-build.1544" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.HeaderedControls" Version="8.2.251105-build.1544" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251105-build.1544" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.251105-build.1544" />
-    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251105-build.1544" />
-    <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.2.251105-build.1544" />
-    <PackageReference Include="CommunityToolkit.WinUI.Media" Version="8.2.251105-build.1544" />
-    <PackageReference Include="Google.Protobuf" Version="3.33.0" />
-    <PackageReference Include="JetBrains.Annotations" Version="2025.2.2" />
+    <PackageReference Include="CommunityToolkit.WinUI.Behaviors" Version="8.2.251219" />
+    <PackageReference Include="CommunityToolkit.WinUI.Collections" Version="8.2.251219" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.HeaderedControls" Version="8.2.251219" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.251219" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
+    <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.2.251219" />
+    <PackageReference Include="CommunityToolkit.WinUI.Media" Version="8.2.251219" />
+    <PackageReference Include="Google.Protobuf" Version="3.34.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
     <PackageReference Include="Lib.Harmony" Version="2.4.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="4.14.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.14.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.14.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="5.3.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.3.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.3.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="10.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="10.0.5" />
     <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.3.2" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Validation" Version="17.13.22" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3595.46" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3856.49" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.3.0-prerelease.251015.2" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.6901" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.251106002" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7705" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260209005" />
     <PackageReference Include="QRCoder" Version="1.7.0" />
-    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.15.1" />
-    <PackageReference Include="Sentry.Extensions.Logging" Version="5.16.2" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.16.1" />
+    <PackageReference Include="Sentry.Extensions.Logging" Version="6.2.0" />
     <PackageReference Include="Snap.HPatch" Version="0.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-	<PackageReference Include="Snap.Hutao.Remastered.Native" Version="1.0.7">
+	<PackageReference Include="Snap.Hutao.Remastered.Native" Version="1.0.8">
 	 <PrivateAssets>all</PrivateAssets>
 	 <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
@@ -297,10 +286,10 @@
     </PackageReference>
     <PackageReference Include="Snap.LibGit2Sharp" Version="0.31.1-preview.0.4" />
     <PackageReference Include="Snap.ZStandard" Version="1.5.7" />
-    <PackageReference Include="System.Drawing.Common" Version="10.0.0" />
-    <PackageReference Include="System.Formats.Nrbf" Version="10.0.0" />
-    <PackageReference Include="System.IO.Hashing" Version="10.0.0" />
-    <PackageReference Include="System.Threading.RateLimiting" Version="10.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="10.0.5" />
+    <PackageReference Include="System.Formats.Nrbf" Version="10.0.5" />
+    <PackageReference Include="System.IO.Hashing" Version="10.0.5" />
+    <PackageReference Include="System.Threading.RateLimiting" Version="10.0.5" />
     <PackageReference Include="Yae.Lib" Version="5.4.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -312,13 +301,5 @@
        package has not yet been restored -->
   <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnablePreviewMsixTooling)'=='true'">
     <ProjectCapability Include="Msix" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Snap.Hutao.Remastered.Deployment.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <Page Update="UI\Xaml\View\Specialized\BeyondStandardStatisticsCard.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
 </Project>
