@@ -1,6 +1,8 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Microsoft.UI;
+using Microsoft.UI.Xaml.Media;
 using Snap.Hutao.Remastered.Core.Text.Json.Converter;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Common.Announcement;
@@ -12,6 +14,26 @@ public sealed class Announcement : AnnouncementContent
     public bool ShouldShowTimeDescription
     {
         get => Type == 1;
+    }
+
+    public Brush TimeDescriptionBrush
+    {
+        get
+        {
+            DateTimeOffset now = DateTimeOffset.UtcNow;
+            TimeSpan span = EndTime - now;
+
+            if (StartTime > now)
+            {
+                return new SolidColorBrush(Colors.Blue);
+            }
+            else if (span.TotalDays <= 10)
+            {
+                return new SolidColorBrush(Colors.Red);
+            }
+
+            return new SolidColorBrush(Colors.White);
+        }
     }
 
     public string TimeDescription

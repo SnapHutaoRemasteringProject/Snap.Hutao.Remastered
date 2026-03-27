@@ -5,6 +5,7 @@
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwa="using:CommunityToolkit.WinUI.Animations"
     xmlns:cww="using:CommunityToolkit.WinUI.Controls"
+    xmlns:cwconv="using:CommunityToolkit.WinUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
@@ -67,6 +68,13 @@
                                     </cwa:Explicit.Animations>
                                 </Border>
                                 <Border Background="{ThemeResource DarkOnlyOverlayMaskColorBrush}" IsHitTestVisible="False"/>
+                                <TextBlock Text="{Binding TimeDescription}"
+                                           FontWeight="SemiBold"
+                                           Foreground="{Binding TimeDescriptionBrush}"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Bottom"
+                                           Visibility="{Binding ShouldShowTimeDescription, Converter={StaticResource BoolToVisibilityConverter}}"
+                                           Margin="0,0,4,4"/>
                             </Grid>
                         </Border>
                         <!--  General Description  -->
