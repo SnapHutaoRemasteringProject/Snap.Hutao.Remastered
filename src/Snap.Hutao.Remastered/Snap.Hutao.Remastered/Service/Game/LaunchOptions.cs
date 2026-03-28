@@ -177,6 +177,15 @@ public sealed partial class LaunchOptions : DbStoreOptions, IRestrictedGamePathA
     [field: MaybeNull]
     public IObservableProperty<bool> UsingOverlay { get => field ??= CreateProperty(SettingKeys.LaunchUsingOverlay, false); }
 
+    [field: MaybeNull]
+    public IObservableProperty<string> AdvancedStartProgramPath { get => field ??= CreateProperty(SettingKeys.LaunchAdvancedStartProgramPath, string.Empty); }
+
+    [field: MaybeNull]
+    public IObservableProperty<bool> AdvancedStartDelayedOnAdvancedStart { get => field ??= CreateProperty(SettingKeys.LaunchAdvancedStartDelayedOnAdvancedStart, false); }
+
+    [field: MaybeNull]
+    public IObservableProperty<bool> AdvancedStartDelayedOnGameLaunch { get => field ??= CreateProperty(SettingKeys.LaunchAdvancedStartDelayedOnGameLaunch, false); }
+
     private static int InitializeTargetFpsWithScreenFps()
     {
         return HutaoNative.Instance.MakeDeviceCapabilities().GetPrimaryScreenVerticalRefreshRate();

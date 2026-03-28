@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option csharp_namespace = "Snap.Hutao.Remastered.Service.Game.AdvancedStart.Model";
+
+package snap.hutao.remastered.game.advanced_start;
+
+message AdvancedStartDelayedProgramEntryDto {
+  string name = 1;
+  string path = 2;
+  uint32 delay_seconds = 3;
+}
+
+message AdvancedStartDelayedProgramsConfiguration {
+  repeated AdvancedStartDelayedProgramEntryDto entries = 1;
+}
