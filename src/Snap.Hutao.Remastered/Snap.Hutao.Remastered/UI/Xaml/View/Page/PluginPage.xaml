@@ -44,9 +44,12 @@
 
         <cwconv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <cwconv:BoolNegationConverter x:Key="BoolNegationConverter"/>
+        <cwconv:BoolToObjectConverter
+                x:Key="BoolToPluginStatusConverter"
+                TrueValue="{shuxm:ResourceString Name=ViewPagePluginStatusEnabled}"
+                FalseValue="{shuxm:ResourceString Name=ViewPagePluginStatusDisabled}"/>
         <local:ListToStringConverter x:Key="ListToStringConverter"/>
-        <local:BoolToStringConverter x:Key="BoolToStringConverter"/>
-        
+
         <DataTemplate x:Key="PluginItemTemplate">
             <Border Style="{ThemeResource BorderCardStyle}" Padding="12">
                 <Grid>
@@ -104,7 +107,7 @@
                             <TextBlock
                                 Style="{StaticResource CaptionTextBlockStyle}"
                                 Foreground="{Binding IsEnabled, Converter={StaticResource BoolToColorConverter}}"
-                                Text="{Binding IsEnabled, Converter={StaticResource BoolToStringConverter}}"/>
+                                Text="{Binding IsEnabled, Converter={StaticResource BoolToPluginStatusConverter}}"/>
                         </StackPanel>
                     </StackPanel>
                     
