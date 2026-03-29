@@ -252,6 +252,16 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
         }
 
         ArgumentNullException.ThrowIfNull(metadataContext);
+        ArgumentNullException.ThrowIfNull(avatar.Weapon);
+
+        ICalculable weapon = avatar.Weapon.ToCalculable();
+        deltaOptions.Delta.Weapon = new()
+        {
+            Id = avatar.Weapon!.Id,
+            LevelCurrent = weapon.LevelCurrent,
+            LevelTarget = weapon.LevelCurrent,
+        };
+
         CalculatorBatchConsumption batchConsumption = OfflineCalculator.CalculateBatchConsumption(deltaOptions.Delta, metadataContext);
 
         if (!await SaveAvatarOnlyCultivationAsync(batchConsumption.Items.Single(), deltaOptions).ConfigureAwait(false))
@@ -283,6 +293,12 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
         }
 
         ArgumentNullException.ThrowIfNull(metadataContext);
+
+        deltaOptions.Delta.AvatarId = avatar.Id;
+        deltaOptions.Delta.AvatarLevelCurrent = avatar.LevelNumber;
+        deltaOptions.Delta.AvatarLevelTarget = avatar.LevelNumber;
+        deltaOptions.Delta.SkillList = [];
+
         CalculatorBatchConsumption batchConsumption = OfflineCalculator.CalculateBatchConsumption(deltaOptions.Delta, metadataContext);
 
         if (!await SaveWeaponOnlyCultivationAsync(batchConsumption.Items.Single(), deltaOptions).ConfigureAwait(false))
