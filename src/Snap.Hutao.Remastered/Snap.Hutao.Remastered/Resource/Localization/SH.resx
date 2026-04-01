@@ -4288,4 +4288,10 @@
   <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpDescription" xml:space="preserve">
     <value>移除调整时间页面点击确定后时间缓慢变化的动画</value>
   </data>
+  <data name="ViewPageAvatarPropertyExportToText" xml:space="preserve">
+    <value>导出当前角色</value>
+  </data>
+  <data name="ViewPageAvatarPropertyExportAllToText" xml:space="preserve">
+    <value>导出所有角色</value>
+  </data>
 </root>

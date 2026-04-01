@@ -70,24 +70,3 @@ public partial class ListToStringConverter : IValueConverter
         throw new NotImplementedException();
     }
 }
-
-public partial class BoolToStringConverter : IValueConverter
-{
-    public object Convert(object value, Type targetType, object parameter, string language)
-    {
-        if (value is bool boolValue)
-        {
-            // 使用 SH 类获取本地化字符串
-            return boolValue ? 
-                SH.ResourceManager.GetString("ViewPagePluginStatusEnabled", System.Globalization.CultureInfo.CurrentCulture) ?? "已启用" : 
-                SH.ResourceManager.GetString("ViewPagePluginStatusDisabled", System.Globalization.CultureInfo.CurrentCulture) ?? "已禁用";
-        }
-        
-        return SH.ResourceManager.GetString("ViewPagePluginStatusDisabled", System.Globalization.CultureInfo.CurrentCulture) ?? "已禁用";
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, string language)
-    {
-        throw new NotImplementedException();
-    }
-}
