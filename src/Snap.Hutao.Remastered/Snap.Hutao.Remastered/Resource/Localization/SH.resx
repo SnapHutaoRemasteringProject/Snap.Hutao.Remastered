@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -4034,6 +4034,7 @@
   </data>
   <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
     <value>启动时自动以管理员权限重启</value>
+  </data>
   <data name="ViewPageSettingAlwaysRunAsAdminTextDes" xml:space="preserve">
     <value>将在手动启动应用时生效，建议开启自启动和管理员自启动以免启动各种功能时可能的UAC弹窗打扰</value>
   </data>
@@ -4042,6 +4043,7 @@
   </data>
   <data name="ViewPageSettingAutoStartDescription" xml:space="preserve">
     <value>程序将在当前用户登录时启动，是否以管理员运行仅在修改时同步管理员模式选项（修改需以管理员身份运行）</value>
+  </data>
   <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
     <value>显示派蒙</value>
   </data>

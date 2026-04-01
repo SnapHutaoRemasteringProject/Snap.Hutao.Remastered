@@ -19,8 +19,8 @@ public sealed partial class SettingPage : ScopedPage
         this.DataContext<SettingViewModel>()?.AttachXamlElement(RootScrollViewer, GachaLogBorder);
     }
 
-    private void SettingsAdminTip_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
-    {
-        SettingsAdminTeachingTip.IsOpen = true;
-    }
+    //private void SettingsAdminTip_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    //{
+    //    SettingsAdminTeachingTip.IsOpen = true;
+    //}
 }

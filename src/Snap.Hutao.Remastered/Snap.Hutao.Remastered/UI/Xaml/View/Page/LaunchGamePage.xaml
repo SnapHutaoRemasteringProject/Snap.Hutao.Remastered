@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
+    xmlns:shas="using:Snap.Hutao.Remastered.Service.Game.AdvancedStart.Model"
     xmlns:shme="using:Snap.Hutao.Remastered.Model.Entity"
     xmlns:shsg="using:Snap.Hutao.Remastered.Service.Game"
     xmlns:shsgp="using:Snap.Hutao.Remastered.Service.Game.PathAbstraction"

@@ -48,6 +48,7 @@ internal sealed partial class LaunchGameViewModel : Abstraction.ViewModel, IView
     private readonly ITaskContext taskContext;
     private readonly IMessenger messenger;
     private readonly HutaoUserOptions hutaoUserOptions;
+    private readonly IFileSystemPickerInteraction fileSystemPickerInteraction;
     private readonly AdvancedStartDelayedProgramStore store;
 
     [GeneratedConstructor]
