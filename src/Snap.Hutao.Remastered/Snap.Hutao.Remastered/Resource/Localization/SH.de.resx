@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -4028,58 +4028,15 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>Monitor-ID</value>
   </data>
-  <data name="UIViewMainTitleBarInvertTheme" xml:space="preserve">
-    <value>Thema umschalten</value>
-    <comment>Translated by AI</comment>
-  </data>
-  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>Spezielle Oberflächenkorrektur</value>
-  </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>Registrierung fehlgeschlagen, Serverfehler, bitte kontaktiere den Entwickler, um dies zu beheben</value>
-  </data>
-  <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
-    <value>Autostart beim Booten</value>
-    <comment>Translated by AI</comment>
+  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
+    <value>Automatisch anmelden</value>
   </data>
   <data name="ViewPageSettingAutoStartDescription" xml:space="preserve">
     <value>Das Programm startet beim Anmelden des aktuellen Benutzers (Änderung erfordert Administratorrechte und wenn zusammen mit 'Immer als Administrator ausführen' aktiviert, bleibt der Administratorstatus immer erhalten)</value>
     <comment>Translated by AI</comment>
   </data>
-  <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
-    <value>Anwendungsverhalten</value>
-    <comment>Translated by AI</comment>
-  </data>
-  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
-    <value>Automatisch anmelden</value>
-  </data>
-  <data name="ServiceMetadataWeaponIdNotFound" xml:space="preserve">
-    <value>Waffen-Metadaten nicht gefunden</value>
-    <comment>Translated by AI</comment>
-  </data>
-  <data name="ServiceMetadataAvatarIdNotFound" xml:space="preserve">
-    <value>Avatar-Metadaten nicht gefunden</value>
-    <comment>Translated by AI</comment>
-  </data>
-  <data name="ServiceGachaLogIdPlacesUnsupported" xml:space="preserve">
-    <value>Nicht unterstützte Gacha-Log-ID-Quelle</value>
-    <comment>Translated by AI</comment>
-  </data>
-  <data name="ServiceGachaLogWeaponIdNotFound" xml:space="preserve">
-    <value>Waffen-ID nicht gefunden</value>
-    <comment>Translated by AI</comment>
-  </data>
-  <data name="ServiceGachaLogAvatarIdNotFound" xml:space="preserve">
-    <value>Avatar-ID nicht gefunden</value>
-    <comment>Translated by AI</comment>
-  </data>
-  <data name="ViewPageSettingCMThemeDescription" xml:space="preserve">
-    <value>Weihnachtsthema aktivieren, Neustart erforderlich, nur einmal im Dezember aktivieren</value>
-    <comment>Translated by AI</comment>
-  </data>
-  <data name="ViewPageSettingCMThemeHeader" xml:space="preserve">
-    <value>Weihnachtsthema</value>
-    <comment>Translated by AI</comment>
+  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
+    <value>Spezielle Oberflächenkorrektur</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Benutzerdefinierter Start</value>
@@ -4285,7 +4242,44 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewPageLaunchGameAdvancedStartCoStartGameHeader" xml:space="preserve">
     <value>Verzögerte Starts beim Spielstart auslösen</value>
   </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>Das Hochladen des Spiral Abyss-Protokolls ist fehlgeschlagen, Serverfehler, bitte kontaktiere den Entwickler, um dies zu beheben</value>
+  <data name="UIViewMainTitleBarInvertTheme" xml:space="preserve">
+    <value>Thema umschalten</value>
+    <comment>Translated by AI</comment>
+  </data>
+  <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
+    <value>Autostart beim Booten</value>
+    <comment>Translated by AI</comment>
+  </data>
+  <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
+    <value>Anwendungsverhalten</value>
+    <comment>Translated by AI</comment>
+  </data>
+  <data name="ServiceMetadataWeaponIdNotFound" xml:space="preserve">
+    <value>Waffen-Metadaten nicht gefunden</value>
+    <comment>Translated by AI</comment>
+  </data>
+  <data name="ServiceMetadataAvatarIdNotFound" xml:space="preserve">
+    <value>Avatar-Metadaten nicht gefunden</value>
+    <comment>Translated by AI</comment>
+  </data>
+  <data name="ServiceGachaLogIdPlacesUnsupported" xml:space="preserve">
+    <value>Nicht unterstützte Gacha-Log-ID-Quelle</value>
+    <comment>Translated by AI</comment>
+  </data>
+  <data name="ServiceGachaLogWeaponIdNotFound" xml:space="preserve">
+    <value>Waffen-ID nicht gefunden</value>
+    <comment>Translated by AI</comment>
+  </data>
+  <data name="ServiceGachaLogAvatarIdNotFound" xml:space="preserve">
+    <value>Avatar-ID nicht gefunden</value>
+    <comment>Translated by AI</comment>
+  </data>
+  <data name="ViewPageSettingCMThemeDescription" xml:space="preserve">
+    <value>Weihnachtsthema aktivieren, Neustart erforderlich, nur einmal im Dezember aktivieren</value>
+    <comment>Translated by AI</comment>
+  </data>
+  <data name="ViewPageSettingCMThemeHeader" xml:space="preserve">
+    <value>Weihnachtsthema</value>
+    <comment>Translated by AI</comment>
   </data>
 </root>

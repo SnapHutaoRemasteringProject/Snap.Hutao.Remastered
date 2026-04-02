@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,10 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root"
-    xmlns=""
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-    xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -4022,23 +4019,14 @@
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>顯示器編號</value>
   </data>
-  <data name="ViewPageSettingAlwaysRunAsAdminText" xml:space="preserve">
-    <value>始終以管理員身份運行</value>
+  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
+    <value>自動簽到</value>
   </data>
   <data name="ViewPageSettingAlwaysRunAsAdminTextDes" xml:space="preserve">
     <value>設定將在應用以後的啟動時生效，建議開啟自啟動以免啟動時反復UAC彈窗打擾</value>
   </data>
-  <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
-    <value>開機自啟動</value>
-  </data>
   <data name="ViewPageSettingAutoStartDescription" xml:space="preserve">
     <value>程式將在當前用戶登錄時啟動（修改需以管理員身份運行，且與始終以管理員身份運行一起勾選將始終保持管理員狀態）</value>
-  </data>
-  <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
-    <value>應用行為</value>
-  </data>
-  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
-    <value>自動簽到</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>自訂啟動</value>
@@ -4238,5 +4226,14 @@
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCoStartGameHeader" xml:space="preserve">
     <value>啟動遊戲時觸發延遲啟動</value>
+  </data>
+  <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
+    <value>開機自啟動</value>
+  </data>
+  <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
+    <value>應用行為</value>
+  </data>
+  <data name="ViewPageSettingAlwaysRunAsAdminText" xml:space="preserve">
+    <value>始終以管理員身份運行</value>
   </data>
 </root>
