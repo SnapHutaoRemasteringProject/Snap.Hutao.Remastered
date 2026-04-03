@@ -4,6 +4,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.UI.Xaml;
+using Microsoft.Win32;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.LifeCycle;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
@@ -17,6 +18,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using Windows.ApplicationModel;
 
 namespace Snap.Hutao.Remastered.UI.Shell;
 
@@ -89,6 +91,7 @@ public sealed partial class NotifyIconController : IDisposable
     public unsafe void Create()
     {
         native.Create(HutaoNativeNotifyIconCallback.Create(&OnNotifyIconCallback), handle, "Snap Hutao Remastered");
+        CleanupLegacyMsixNotifyIconRegistryEntries();
     }
 
     public bool IsPromoted()
@@ -207,6 +210,102 @@ public sealed partial class NotifyIconController : IDisposable
 
                     return;
                 }
+        }
+    }
+
+    // Need more tests and feedbacks
+    private static void CleanupLegacyMsixNotifyIconRegistryEntries()
+    {
+        try
+        {
+            string? processPath = Environment.ProcessPath;
+            if (string.IsNullOrEmpty(processPath))
+            {
+                return;
+            }
+
+            string executableName = Path.GetFileName(processPath);
+            PackageId packageId = Package.Current.Id;
+            string currentPackageFullName = packageId.FullName;
+            string packageName = packageId.Name;
+
+            string packageFamilyName = packageId.FamilyName;
+            int separatorIndex = packageFamilyName.LastIndexOf('_');
+            if (separatorIndex < 0)
+            {
+                return;
+            }
+
+            string publisherId = packageFamilyName[(separatorIndex + 1)..];
+
+            using RegistryKey? notifyIconSettings = Registry.CurrentUser.OpenSubKey(@"Control Panel\NotifyIconSettings", writable: true);
+            if (notifyIconSettings is null)
+            {
+                return;
+            }
+
+            List<string> legacySubKeys = [];
+            int? promoted = null;
+
+            foreach (string subKeyName in notifyIconSettings.GetSubKeyNames())
+            {
+                using RegistryKey? subKey = notifyIconSettings.OpenSubKey(subKeyName);
+                string? executablePath = subKey?.GetValue("ExecutablePath") as string;
+                if (string.IsNullOrEmpty(executablePath))
+                {
+                    continue;
+                }
+
+                if (!IsSameMsixApp(executablePath, executableName, packageName, publisherId))
+                {
+                    continue;
+                }
+
+                if (subKey.GetValue("IsPromoted") is int isPromoted)
+                {
+                    promoted = Math.Max(promoted ?? 0, isPromoted);
+                }
+
+                if (!executablePath.Contains($"\\{currentPackageFullName}\\", StringComparison.OrdinalIgnoreCase))
+                {
+                    legacySubKeys.Add(subKeyName);
+                }
+            }
+
+            foreach (string legacySubKey in legacySubKeys)
+            {
+                notifyIconSettings.DeleteSubKeyTree(legacySubKey, throwOnMissingSubKey: false);
+            }
+
+            if (promoted is not null)
+            {
+                foreach (string subKeyName in notifyIconSettings.GetSubKeyNames())
+                {
+                    using RegistryKey? subKey = notifyIconSettings.OpenSubKey(subKeyName, writable: true);
+                    string? executablePath = subKey?.GetValue("ExecutablePath") as string;
+                    if (string.IsNullOrEmpty(executablePath))
+                    {
+                        continue;
+                    }
+
+                    if (executablePath.Contains($"\\{currentPackageFullName}\\", StringComparison.OrdinalIgnoreCase)
+                        && IsSameMsixApp(executablePath, executableName, packageName, publisherId))
+                    {
+                        subKey.SetValue("IsPromoted", promoted.Value, RegistryValueKind.DWord);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            SentrySdk.CaptureException(ex);
+        }
+
+        static bool IsSameMsixApp(string executablePath, string executableName, string packageName, string publisherId)
+        {
+            return executablePath.EndsWith($"\\{executableName}", StringComparison.OrdinalIgnoreCase)
+                && executablePath.Contains($"\\WindowsApps\\{packageName}_", StringComparison.OrdinalIgnoreCase)
+                && executablePath.Contains($"__{publisherId}\\", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

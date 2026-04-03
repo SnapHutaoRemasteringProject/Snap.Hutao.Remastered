@@ -234,67 +234,22 @@
                         Grid.Column="1"
                         VerticalAlignment="Center"
                         Spacing="8">
-                        <!-- Copy section moved above the checkboxes -->
-                        <TextBlock
-                            Text="{shuxm:ResourceString Name=ViewGuideStepAgreementCopyInstruction}"
-                            Padding="0 16 0 0"/>
-                        <!-- Two modes: single-line languages (only second line, no wrap) and two-line languages -->
-                        <TextBlock
-                            Text="{shuxm:ResourceString Name=ViewGuideAgreementCopyTextLine1}"
-                            TextWrapping="Wrap"
-                            Margin="0,0,0,2"
-                            Foreground="Red"
-                            FontSize="16"
-                            FontWeight="ExtraBold"
-                            Visibility="{Binding AgreementIsSingleLine, Converter={StaticResource BoolToVisibilityRevertConverter}}"/>
-
-                        <!-- Second line shown as single-line (no wrap) for languages that require one-line display -->
-                        <TextBlock
-                            Text="{shuxm:ResourceString Name=ViewGuideAgreementCopyTextLine2}"
-                            TextWrapping="NoWrap"
-                            TextTrimming="CharacterEllipsis"
-                            Margin="0,0,0,2"
-                            Foreground="Red"
-                            FontSize="16"
-                            FontWeight="ExtraBold"
-                            Visibility="{Binding AgreementIsSingleLine, Converter={StaticResource BoolToVisibilityConverter}}"
-                            ToolTipService.ToolTip="{Binding AgreementCopyTarget}"/>
-
-                        <!-- Second line shown as wrapped text when there is a first line -->
-                        <TextBlock
-                            Text="{shuxm:ResourceString Name=ViewGuideAgreementCopyTextLine2}"
-                            TextWrapping="Wrap"
-                            Margin="0,0,0,2"
-                            Foreground="Red"
-                            FontSize="16"
-                            FontWeight="ExtraBold"
-                            Visibility="{Binding AgreementIsSingleLine, Converter={StaticResource BoolToVisibilityRevertConverter}}"/>
-                        <Grid ColumnSpacing="8" Margin="0,4,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
-
-                            <TextBox
-                                Grid.Column="0"
-                                MinWidth="280"
-                                MinHeight="60"
-                                AcceptsReturn="True"
-                                TextWrapping="Wrap"
-                                Text="{Binding ConfirmCopyText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                PlaceholderText="{shuxm:ResourceString Name=ViewGuideAgreementCopyPlaceholder}"/>
-
-                            <TextBlock
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Margin="8,0,0,0"
-                                Text="{Binding ConfirmCopyProgressText, TargetNullValue=0%, FallbackValue=0%}"
-                                Opacity="0.7"
-                                Style="{StaticResource CaptionTextBlockStyle}"/>
-                        </Grid>
-
-                        <!-- Agreement checkboxes: grid for Chinese locales (zh*), vertical stack for others -->
-                        <Grid Margin="0,8,0,0" ColumnSpacing="12" Visibility="{Binding AgreementUseGrid, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <StackPanel.Resources>
+                            <Style BasedOn="{StaticResource DefaultCheckBoxStyle}" TargetType="CheckBox">
+                                <Setter Property="FontSize" Value="16"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="16"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        <!--  Agreement checkboxes: grid for Chinese locales (zh*), vertical stack for others  -->
+                        <Grid
+                            Margin="0,8,0,0"
+                            ColumnSpacing="12"
+                            RowSpacing="4"
+                            Visibility="{Binding AgreementUseGrid, Converter={StaticResource BoolToVisibilityConverter}}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
@@ -302,9 +257,13 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
                                 <RowDefinition/>
+                                <RowDefinition/>
                             </Grid.RowDefinitions>
 
-                            <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding IsTermOfServiceAgreed, Mode=TwoWay}">
+                            <CheckBox
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                IsChecked="{Binding IsTermOfServiceAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -315,7 +274,10 @@
                                 </TextBlock>
                             </CheckBox>
 
-                            <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding IsPrivacyPolicyAgreed, Mode=TwoWay}">
+                            <CheckBox
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                IsChecked="{Binding IsPrivacyPolicyAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -326,7 +288,10 @@
                                 </TextBlock>
                             </CheckBox>
 
-                            <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding IsIssueReportAgreed, Mode=TwoWay}">
+                            <CheckBox
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                IsChecked="{Binding IsIssueReportAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -337,7 +302,10 @@
                                 </TextBlock>
                             </CheckBox>
 
-                            <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsOpenSourceLicenseAgreed, Mode=TwoWay}">
+                            <CheckBox
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                IsChecked="{Binding IsOpenSourceLicenseAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -346,12 +314,20 @@
                                         </Hyperlink>
                                     </TextBlock.Inlines>
                                 </TextBlock>
+                            </CheckBox>
+
+                            <CheckBox
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                IsChecked="{Binding IsAgreementCopyAgreed, Mode=TwoWay}">
+                                <TextBlock Text="{Binding AgreementCopyTarget}" TextWrapping="Wrap"/>
                             </CheckBox>
                         </Grid>
 
-                        <!-- Vertical layout for non-Chinese locales -->
+                        <!--  Vertical layout for non-Chinese locales  -->
                         <StackPanel Margin="0,8,0,0" Visibility="{Binding AgreementUseGrid, Converter={StaticResource BoolToVisibilityRevertConverter}}">
-                            <CheckBox IsChecked="{Binding IsTermOfServiceAgreed, Mode=TwoWay}" Margin="0,4,0,0">
+                            <CheckBox Margin="0,4,0,0" IsChecked="{Binding IsTermOfServiceAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -362,7 +338,7 @@
                                 </TextBlock>
                             </CheckBox>
 
-                            <CheckBox IsChecked="{Binding IsPrivacyPolicyAgreed, Mode=TwoWay}" Margin="0,4,0,0">
+                            <CheckBox Margin="0,4,0,0" IsChecked="{Binding IsPrivacyPolicyAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -373,7 +349,7 @@
                                 </TextBlock>
                             </CheckBox>
 
-                            <CheckBox IsChecked="{Binding IsIssueReportAgreed, Mode=TwoWay}" Margin="0,4,0,0">
+                            <CheckBox Margin="0,4,0,0" IsChecked="{Binding IsIssueReportAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -384,7 +360,7 @@
                                 </TextBlock>
                             </CheckBox>
 
-                            <CheckBox IsChecked="{Binding IsOpenSourceLicenseAgreed, Mode=TwoWay}" Margin="0,4,0,0">
+                            <CheckBox Margin="0,4,0,0" IsChecked="{Binding IsOpenSourceLicenseAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -393,6 +369,10 @@
                                         </Hyperlink>
                                     </TextBlock.Inlines>
                                 </TextBlock>
+                            </CheckBox>
+
+                            <CheckBox Margin="0,4,0,0" IsChecked="{Binding IsAgreementCopyAgreed, Mode=TwoWay}">
+                                <TextBlock Text="{Binding AgreementCopyTarget}" TextWrapping="Wrap"/>
                             </CheckBox>
                         </StackPanel>
                     </StackPanel>
