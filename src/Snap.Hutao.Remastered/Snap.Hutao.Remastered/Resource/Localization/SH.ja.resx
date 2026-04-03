@@ -147,6 +147,9 @@
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>検索結果なし</value>
   </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>削除</value>
+  </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>すべて選択</value>
   </data>
@@ -641,6 +644,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>このメールアドレスは登録済みです。</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>登録に失敗しました。サーバーエラーです。解決しない場合は開発者に連絡してください。</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>パスワードが間違っているため、削除できません</value>
   </data>
@@ -688,6 +694,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>データの取得に失敗しました。サーバーが統計データを計算しています。</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>深境螺旋のデータをアップロードに失敗しました。サーバーエラーです。解決しない場合は開発者に連絡してください。</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>深境螺旋のデータをアップロードに失敗しました。異常なデータを検知しました。</value>
@@ -848,6 +857,21 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>クールダウン短縮</value>
   </data>
+  <data name="ServiceBackgroundActivityDefaultDescription" xml:space="preserve">
+    <value>準備中..</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitialization" xml:space="preserve">
+    <value>注入アセンブリの初期化</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitializationDescription" xml:space="preserve">
+    <value>必要に応じてのみ実行</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitialization" xml:space="preserve">
+    <value>メタデータの初期化</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
+    <value>準備中、長時間反応しない場合はネットワークとサーバの状態を再起動または確認してみてください</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing 日替わり画像</value>
   </data>
@@ -990,12 +1014,15 @@
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>ローカルゲームバージョンの取得に失敗しました。注入配置情報を取得できません</value>
   </data>
+  <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
+    <value>現在のゲームバージョンはサポートされていません</value>
+  </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>Better GI が起動しました</value>
   </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactUrlProtocolNotRegistered" xml:space="preserve">
     <value>起動プロトコルがまだ登録されていません。BetterGI がインストールされ、少なくとも一度は実行されていることを確認してください
-</value>
+    </value>
   </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactWaitGameMainWindowException" xml:space="preserve">
     <value>BetterGI の起動時に問題が発生しました：ゲームのメインウィンドウが見つかりません</value>
@@ -1032,6 +1059,9 @@
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>Embedded Yae を使う前に、関連するリスクを理解し「ゲームランチャー」ページで注入機能を有効にする必要があります</value>
+  </data>
+  <data name="ServiceGameLaunchingHandlerGameProcessStartRepositorySyncFailed" xml:space="preserve">
+    <value>必要な起動ゲームコンポーネントの取得中にエラーが発生しました</value>
   </data>
   <data name="ServiceGameLocatorFileOpenPickerCommitText" xml:space="preserve">
     <value>ゲーム本体を選択する</value>
@@ -1110,6 +1140,12 @@
   <data name="ServiceGameSetMultiChannelUnauthorizedAccess" xml:space="preserve">
     <value>設定ファイルの読み込み又は保存ができません。管理者モードで再試行してください。</value>
   </data>
+  <data name="ServiceGitRepositoryOperationCompleted" xml:space="preserve">
+    <value>操作完了</value>
+  </data>
+  <data name="ServiceGitRepositoryOperationFailed" xml:space="preserve">
+    <value>操作に失敗しました</value>
+  </data>
   <data name="ServiceHutaoUserGachaLogExpiredAt" xml:space="preserve">
     <value>祈願履歴のアップロードサービス期限は</value>
   </data>
@@ -1184,6 +1220,9 @@
   </data>
   <data name="ServiceYaeWaitForGameResponseMessage" xml:space="preserve">
     <value>ゲームデータを待機中</value>
+  </data>
+  <data name="UIViewMainTitleBarBackgroundActivityAction" xml:space="preserve">
+    <value>バックグラウンドタスク</value>
   </data>
   <data name="UIViewPageAvatarPropertyRecommendedAppendProperties" xml:space="preserve">
     <value>追加ステータス推奨</value>
@@ -2663,7 +2702,7 @@
   </data>
   <data name="ViewPageGachaLogRefreshBySTokenDescription" xml:space="preserve">
     <value>現在のユーザーの Cookie で祈願履歴を更新します
-</value>
+    </value>
   </data>
   <data name="ViewPageGachaLogRefreshByWebCache" xml:space="preserve">
     <value>ウェブキャッシュで更新</value>
@@ -2862,6 +2901,18 @@
   </data>
   <data name="ViewPageLaunchGameEventCameraMoveHotSwitchHeader" xml:space="preserve">
     <value>元素爆発カットインを削除する</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneDescription" xml:space="preserve">
+    <value>キャラクター/チーム編成/祈願/紀行などの特殊シーンを補正します</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneHeader" xml:space="preserve">
+    <value>特殊シーンの補正</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipSubtitle" xml:space="preserve">
+    <value>「視野調整」を有効にすると、全てのシーンで霧の表示は「霧を取り除く」スイッチの状態に従います。「特殊シーンの補正」も同時有効にした場合、元の視野が 30 以下のとき霧のレンダリングが強制的に無効化されます。これにより祈願/紀行/キャラクターなどの画面は正常に表示されますが、一部のストーリー進行時にも強制的に霧が無効化されます。これはアプリのバグではないため、報告しないでください。</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipTitle" xml:space="preserve">
+    <value>視野と霧</value>
   </data>
   <data name="ViewPageLaunchGameHideQuestBannerHotSwitchDescription" xml:space="preserve">
     <value>マップ画面左上の任務ヒントを強制的に取り除きます</value>
@@ -3176,7 +3227,7 @@
     <value>管理者権限でデスクトップショートカットを作成します</value>
   </data>
   <data name="ViewPageSettingCreateDesktopShortcutHeader" xml:space="preserve">
-    <value>ショートカットを作成する</value>
+    <value>デスクトップに新しいショートカットを作成</value>
   </data>
   <data name="ViewPageSettingDataFolderHeader" xml:space="preserve">
     <value>データ フォルダー</value>
@@ -3739,6 +3790,9 @@
   <data name="ViewWindowCompactWebViewTitle" xml:space="preserve">
     <value>コンパクトウェブ (管理者のみ)</value>
   </data>
+  <data name="ViewWindowCompactWebView2HotKeyDisabledMessage" xml:space="preserve">
+    <value>管理者として実行してグローバルショートカット機能を有効にする</value>
+  </data>
   <data name="ViewWindowExceptionClose" xml:space="preserve">
     <value>閉じる</value>
   </data>
@@ -3982,16 +4036,245 @@
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>モニターID</value>
   </data>
-  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
-    <value>削除</value>
+  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
+    <value>自動チェックイン</value>
   </data>
-  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>特殊シーンの補正</value>
+  <data name="ViewPageSettingAlwaysRunAsAdminTextDes" xml:space="preserve">
+    <value>設定は適用後の起動時に有効になります。起動時にUACポップアップを繰り返し邪魔しないように自己起動をオンにすることをお勧めします</value>
   </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>登録に失敗しました。サーバーエラーです。解決しない場合は開発者に連絡してください。</value>
+  <data name="ViewPageSettingAutoStartDescription" xml:space="preserve">
+    <value>プログラムは現在のユーザーログイン時に起動します（変更は管理者として実行し、常に管理者として実行する場合とチェックすると常に管理者の状態が維持されます）</value>
   </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>深境螺旋のデータをアップロードに失敗しました。サーバーエラーです。解決しない場合は開発者に連絡してください。</value>
+  <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
+    <value>カスタム起動</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
+    <value>カスタム起動オプションは別のパスにあるプログラムの素早い起動を可能にします。胡桃内のゲームオプション（起動パラメータなど）は適用されません。</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
+    <value>ユーザー定義プログラムの起動</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartPickPathHeader" xml:space="preserve">
+    <value>起動するプログラムを選択</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartPickPathDescription" xml:space="preserve">
+    <value>起動したいプログラムのパスを指定してください（'.exe'で終わる必要があります）</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartOpenCommunityAction" xml:space="preserve">
+    <value>コミュニティで共有されたプログラムを取得する</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartGame" xml:space="preserve">
+    <value>カスタムプログラムを起動</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartLoading" xml:space="preserve">
+    <value>カスタム起動リストを読み込んでいます</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartFeedMissing" xml:space="preserve">
+    <value>カスタム起動のソースURLが設定されていません</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPick" xml:space="preserve">
+    <value>カスタム起動プログラムを選択してください</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartLoadFailed" xml:space="preserve">
+    <value>カスタム起動リストの読み込みに失敗しました</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPickWarning" xml:space="preserve">
+    <value>まずカスタム起動プログラムを選択してください</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartCompleted" xml:space="preserve">
+    <value>完了しました。プログラムパス: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartFailed" xml:space="preserve">
+    <value>ダウンロードまたは解凍に失敗しました。再試行してください</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartExecutableMissing" xml:space="preserve">
+    <value>実行可能ファイルが見つかりません</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloading" xml:space="preserve">
+    <value>{0} をダウンロードしています（{1}/{2}）</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartExtracting" xml:space="preserve">
+    <value>{0} を解凍しています（{1}/{2}）</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartTitle" xml:space="preserve">
+    <value>カスタムソースからカスタムプログラムをダウンロード</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPrimary" xml:space="preserve">
+    <value>ダウンロード</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartEmpty" xml:space="preserve">
+    <value>利用可能なカスタム起動プログラムはありません</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartStatusHeader" xml:space="preserve">
+    <value>現在の実行状況</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartOpenDownloaderAction" xml:space="preserve">
+    <value>リスト内のプログラムを素早く取得してダウンロード</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownServer" xml:space="preserve">
+    <value>未知のサーバー</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDnsFailed" xml:space="preserve">
+    <value>サーバー '{0}' に接続できません：DNS解決に失敗しました。可能な原因：
+1. ドメインが存在しないかスペルミス
+2. DNSサーバーの障害
+3. ネットワーク接続の問題
+4. ファイアウォールやセキュリティソフトがDNS問い合わせをブロックしています。ネットワーク設定を確認してください。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartConnectionRefused" xml:space="preserve">
+    <value>サーバーが接続を拒否しました。時間をおいて再試行してください。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartTimedOut" xml:space="preserve">
+    <value>接続がタイムアウトしました。ネットワーク接続を確認してください。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkDown" xml:space="preserve">
+    <value>ネットワーク接続が利用できません。ネットワーク状態を確認してください。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkUnreachable" xml:space="preserve">
+    <value>ネットワークに到達できません。接続を確認してください。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDnsNoData" xml:space="preserve">
+    <value>DNSクエリは成功しましたが、サーバーレコードが見つかりません。アドレスが正しいか確認してください。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkError" xml:space="preserve">
+    <value>ネットワーク接続エラー: {0} (エラーコード: {1})</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartHttpError" xml:space="preserve">
+    <value>サーバーエラーが返されました: {0} {1}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownServerResponse" xml:space="preserve">
+    <value>サーバーが不明なエラーを返しました: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSecurityFailed" xml:space="preserve">
+    <value>セキュア接続に失敗しました: {0}。システム時間と証明書設定を確認してください。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkRequestFailed" xml:space="preserve">
+    <value>ネットワークリクエストが失敗しました: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloadCanceled" xml:space="preserve">
+    <value>{0} のダウンロードがキャンセルされました。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloadTimeout" xml:space="preserve">
+    <value>{0} のダウンロードがタイムアウトしました。ネットワーク接続を確認して再試行してください。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartOperationCanceled" xml:space="preserve">
+    <value>操作がキャンセルされました: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartIOError" xml:space="preserve">
+    <value>ファイルの読み書きエラー: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnsupportedContentType" xml:space="preserve">
+    <value>サポートされていないレスポンスのコンテンツタイプ: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartInvalidHeaders" xml:space="preserve">
+    <value>無効なHTTPヘッダー設定: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownError" xml:space="preserve">
+    <value>{0} のダウンロード中に不明なエラーが発生しました。エラータイプ: {1}。再試行するかサポートに連絡してください。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStart7zEntryDataError" xml:space="preserve">
+    <value>7zの解凍に失敗しました（エントリ: {0}）：データエラーです。アーカイブが破損しているか、サポートされていない7z形式が使用されています。ダウンロードを再試行するか、ZIP形式のパッケージを提供してください。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStart7zDataError" xml:space="preserve">
+    <value>7zの解凍に失敗しました：アーカイブデータが破損しているか、サポートされていない7z圧縮方式が使用されています。再試行するかZIP形式のパッケージを使用してください。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnsupportedArchiveFormat" xml:space="preserve">
+    <value>サポートされていないアーカイブ形式です！</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramPathNotSet" xml:space="preserve">
+    <value>カスタム起動プログラムのパスが設定されていません</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramNotExists" xml:space="preserve">
+    <value>カスタム起動プログラムが存在しません</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramLaunched" xml:space="preserve">
+    <value>カスタムプログラムを起動しました</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
+    <value>カスタム起動プログラムのパスを保存しました</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
+    <value>カスタムプログラム起動の管理</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartListSetter" xml:space="preserve">
+    <value>プログラムリストソースの設定</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartGameDelayedStart" xml:space="preserve">
+    <value>リスト内のプログラムを遅延起動</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartList" xml:space="preserve">
+    <value>遅延起動プログラムの一覧</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceDescription" xml:space="preserve">
+    <value>対象のJSON形式のHTTPリンクを入力してください</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedDelayedStartTitle" xml:space="preserve">
+    <value>遅延起動プログラムのリスト</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterTitle" xml:space="preserve">
+    <value>プログラムリスト取得ソースの設定</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterBackToDefaultButton" xml:space="preserve">
+    <value>デフォルトに戻す</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterSaveSuccess" xml:space="preserve">
+    <value>保存しました</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListDelayedTime" xml:space="preserve">
+    <value>遅延（秒）</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListPath" xml:space="preserve">
+    <value>応用経路</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListName" xml:space="preserve">
+    <value>アプリ名</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartInfoBarMessage" xml:space="preserve">
+    <value>設定されたデータディレクトリの AdvancedStart フォルダにダウンロードされます。設定で調整するか、自分で管理してください。</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartHeader" xml:space="preserve">
+    <value>連動起動</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartDescription" xml:space="preserve">
+    <value>異なる場所での起動が遅延起動をトリガーするかどうかを設定</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartAdvancedHeader" xml:space="preserve">
+    <value>カスタムプログラムの起動時に遅延起動をトリガー</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartGameHeader" xml:space="preserve">
+    <value>ゲームの起動時に遅延起動をトリガー</value>
+  </data>
+  <data name="UIViewMainTitleBarInvertTheme" xml:space="preserve">
+    <value>テーマ切り替え</value>
+  </data>
+  <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
+    <value>ブートセルフスタート</value>
+  </data>
+  <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
+    <value>動作の適用</value>
+  </data>
+  <data name="ServiceMetadataWeaponIdNotFound" xml:space="preserve">
+    <value>武器メタデータが見つかりません</value>
+  </data>
+  <data name="ServiceMetadataAvatarIdNotFound" xml:space="preserve">
+    <value>キャラクターのメタデータが見つかりません</value>
+  </data>
+  <data name="ServiceGachaLogIdPlacesUnsupported" xml:space="preserve">
+    <value>サポートされていない祈願記録 ID のソース</value>
+  </data>
+  <data name="ServiceGachaLogWeaponIdNotFound" xml:space="preserve">
+    <value>武器 ID が見つかりません</value>
+  </data>
+  <data name="ServiceGachaLogAvatarIdNotFound" xml:space="preserve">
+    <value>キャラクター ID が見つかりません</value>
+  </data>
+  <data name="ViewPageSettingCMThemeDescription" xml:space="preserve">
+    <value>クリスマステーマを有効にし、再起動して有効化、12月に一度だけオン</value>
+  </data>
+  <data name="ViewPageSettingCMThemeHeader" xml:space="preserve">
+    <value>クリスマステーマ</value>
+  </data>
+  <data name="ViewPageSettingAlwaysRunAsAdminText" xml:space="preserve">
+    <value>常に管理者として実行</value>
   </data>
 </root>

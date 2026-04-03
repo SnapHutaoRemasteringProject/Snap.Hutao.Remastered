@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -146,6 +146,9 @@
   </data>
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>결과를 찾을 수 없음</value>
+  </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>삭제</value>
   </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>모두 선택</value>
@@ -641,6 +644,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>현재 이메일은 이미 등록되었습니다</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>등록 실패, 서버 오류, 개발자에게 문의하여 해결하세요</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>비밀번호 오류, 로그아웃 실패</value>
   </data>
@@ -678,7 +684,7 @@
     <value>인증 요청 실패, 현재 이메일 주소가 등록되지 않았습니다</value>
   </data>
   <data name="ServerPassportVerifyTooFrequent" xml:space="preserve">
-    <value />
+    <value>인증 요청이 너무 빠릅니다. 1분 후에 다시 시도하세요.</value>
   </data>
   <data name="ServerRecordBannedUid" xml:space="preserve">
     <value>上传深渊记录失败，当前 Uid 已被胡桃数据库封禁</value>
@@ -688,6 +694,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>데이터 가져오기 실패, 통계 데이터 계산 중</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>심연 기록 업로드 실패, 서버 오류, 개발자에게 문의하여 해결해 주세요.</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>심연 기록 업로드 실패, 유효하지 않은 데이터가 있습니다.</value>
@@ -847,6 +856,21 @@
   </data>
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>재사용 대기시간 감소</value>
+  </data>
+  <data name="ServiceBackgroundActivityDefaultDescription" xml:space="preserve">
+    <value>준비 중...</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitialization" xml:space="preserve">
+    <value>주입 어셈블리 초기화</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitializationDescription" xml:space="preserve">
+    <value>필요한 경우에만 실행</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitialization" xml:space="preserve">
+    <value>메타데이터 초기화</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
+    <value>준비 중, 장시간 반응이 없으면 네트워크 및 서버 상태를 재부팅하거나 확인하십시오.</value>
   </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing 일일 배경화면</value>
@@ -2589,7 +2613,7 @@
     <value>이 UID 클라우드 아카이브 다운로드</value>
   </data>
   <data name="ViewPageGachaLogHutaoCloudSpiralAbyssActivityDescription" xml:space="preserve">
-    <value />
+    <value>각 기수 나선 비경을 처음 업로드하면 3일 이용 시간을 무료로 받을 수 있습니다.</value>
   </data>
   <data name="ViewPageGachaLogHutaoCloudSpiralAbyssActivityHeader" xml:space="preserve">
     <value>나선 비경 기록 업로드</value>
@@ -2860,6 +2884,18 @@
   </data>
   <data name="ViewPageLaunchGameEventCameraMoveHotSwitchHeader" xml:space="preserve">
     <value>원소 폭발 클로즈업 제거</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneDescription" xml:space="preserve">
+    <value>캐릭터/파티 구성/기원/기행과 같은 특수 인터페이스의 시야를 수정합니다.</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneHeader" xml:space="preserve">
+    <value>특수 인터페이스 수정</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipSubtitle" xml:space="preserve">
+    <value>'시야 조정'을 활성화하면 모든 장면의 안개 표시는 '안개 제거' 스위치의 상태를 따릅니다. '특수 인터페이스 수정'도 동시에 활성화된 경우, 원래 시야가 30 이하일 때 안개 렌더링을 강제로 비활성화합니다. 이렇게 하면 정상적인 기원/기행/캐릭터 등 인터페이스를 볼 수 있지만, 일부 스토리에 진입할 때도 안개가 강제로 비활성화됩니다. 이는 소프트웨어 버그가 아니므로 저희에게 보고하지 마세요.</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipTitle" xml:space="preserve">
+    <value>시야와 안개</value>
   </data>
   <data name="ViewPageLaunchGameHideQuestBannerHotSwitchDescription" xml:space="preserve">
     <value>지도 인터페이스 왼쪽 상단의 퀘스트 알림 강제 제거</value>
@@ -3171,10 +3207,10 @@
     <value>생성</value>
   </data>
   <data name="ViewPageSettingCreateDesktopShortcutDescription" xml:space="preserve">
-    <value>在桌面上创建默认以管理员方式启动的快捷方式</value>
+    <value>바탕화면에 바로가기 만들기 (관리자/UAC 동작은 관리자 모드 설정에서 변경하세요)</value>
   </data>
   <data name="ViewPageSettingCreateDesktopShortcutHeader" xml:space="preserve">
-    <value>바로 가기 생성</value>
+    <value>바탕화면에 새 바로가기 만들기</value>
   </data>
   <data name="ViewPageSettingDataFolderHeader" xml:space="preserve">
     <value>데이터 폴더</value>
@@ -3980,16 +4016,187 @@
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>모니터 ID</value>
   </data>
-  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
-    <value>삭제</value>
+  <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
+    <value>사용자 정의 시작</value>
   </data>
-  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>특수 인터페이스 수정</value>
+  <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
+    <value>사용자 정의 시작 옵션은 다른 경로의 프로그램을 빠르게 실행할 수 있게 합니다. Hutao 내의 게임 옵션(예: 시작 매개변수)은 적용되지 않습니다.</value>
   </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>등록 실패, 서버 오류, 개발자에게 문의하여 해결하세요</value>
+  <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
+    <value>사용자 정의 프로그램 시작</value>
   </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>심연 기록 업로드 실패, 서버 오류, 개발자에게 문의하여 해결해 주세요.</value>
+  <data name="ViewPageLaunchGameAdvancedStartPickPathHeader" xml:space="preserve">
+    <value>실행할 프로그램 선택</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartPickPathDescription" xml:space="preserve">
+    <value>실행할 프로그램 경로를 선택하세요; '.exe'로 끝나야 합니다</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartOpenCommunityAction" xml:space="preserve">
+    <value>커뮤니티에서 공유된 프로그램 가져오기</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartGame" xml:space="preserve">
+    <value>사용자 정의 프로그램 실행</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartLoading" xml:space="preserve">
+    <value>사용자 지정 실행기 목록 로드 중</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartFeedMissing" xml:space="preserve">
+    <value>사용자 지정 실행기 소스가 구성되지 않았습니다</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPick" xml:space="preserve">
+    <value>사용자 지정 실행기를 선택하세요</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartLoadFailed" xml:space="preserve">
+    <value>사용자 지정 실행기 목록을 로드하지 못했습니다</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPickWarning" xml:space="preserve">
+    <value>먼저 사용자 지정 실행기를 선택하세요</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartCompleted" xml:space="preserve">
+    <value>완료됨, 프로그램 경로: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartFailed" xml:space="preserve">
+    <value>다운로드 또는 추출에 실패했습니다. 다시 시도하세요</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartExecutableMissing" xml:space="preserve">
+    <value>실행 파일을 찾을 수 없습니다</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloading" xml:space="preserve">
+    <value>{0} 다운로드 중 ({1}/{2})</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartExtracting" xml:space="preserve">
+    <value>{0} 추출 중 ({1}/{2})</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartTitle" xml:space="preserve">
+    <value>사용자 지정 소스에서 사용자 지정 프로그램 다운로드</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPrimary" xml:space="preserve">
+    <value>다운로드</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartEmpty" xml:space="preserve">
+    <value>사용 가능한 사용자 지정 실행기가 없습니다</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartStatusHeader" xml:space="preserve">
+    <value>현재 실행 상태</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartOpenDownloaderAction" xml:space="preserve">
+    <value>목록에서 프로그램을 빠르게 가져와 다운로드</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownServer" xml:space="preserve">
+    <value>알 수 없는 서버</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDnsFailed" xml:space="preserve">
+    <value>서버 '{0}'에 연결할 수 없습니다: DNS 확인 실패. 가능한 원인: 1) 도메인 없음 또는 오타 2) DNS 서버 장애 3) 네트워크 문제 4) 방화벽/보안 소프트웨어가 DNS를 차단. 네트워크 설정을 확인하세요.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartConnectionRefused" xml:space="preserve">
+    <value>서버가 연결을 거부했습니다. 나중에 다시 시도하세요.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartTimedOut" xml:space="preserve">
+    <value>연결 시간이 초과되었습니다, 네트워크를 확인하세요.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkDown" xml:space="preserve">
+    <value>네트워크 연결 불가, 네트워크 상태를 확인하세요.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkUnreachable" xml:space="preserve">
+    <value>네트워크에 연결할 수 없습니다. 연결을 확인하세요.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDnsNoData" xml:space="preserve">
+    <value>DNS 조회는 성공했지만 서버 레코드를 찾을 수 없습니다; 주소를 확인하세요.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkError" xml:space="preserve">
+    <value>네트워크 오류: {0} (코드: {1})</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartHttpError" xml:space="preserve">
+    <value>서버가 오류를 반환했습니다: {0} {1}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownServerResponse" xml:space="preserve">
+    <value>서버가 알 수 없는 오류를 반환했습니다: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSecurityFailed" xml:space="preserve">
+    <value>보안 연결 실패: {0}, 시스템 시간 및 인증서 설정을 확인하세요.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkRequestFailed" xml:space="preserve">
+    <value>네트워크 요청 실패: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloadCanceled" xml:space="preserve">
+    <value>{0} 다운로드가 취소되었습니다.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloadTimeout" xml:space="preserve">
+    <value>{0} 다운로드가 시간 초과되었습니다. 네트워크를 확인하고 다시 시도하세요.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartOperationCanceled" xml:space="preserve">
+    <value>작업이 취소되었습니다: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartIOError" xml:space="preserve">
+    <value>파일 입출력 오류: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnsupportedContentType" xml:space="preserve">
+    <value>지원되지 않는 응답 콘텐츠 유형: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartInvalidHeaders" xml:space="preserve">
+    <value>잘못된 HTTP 헤더 설정: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownError" xml:space="preserve">
+    <value>{0} 다운로드 중 알 수 없는 오류가 발생했습니다. 오류 유형: {1}. 다시 시도하거나 지원에 문의하세요.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStart7zEntryDataError" xml:space="preserve">
+    <value>7z 압축 해제 실패(항목: {0}): 데이터 오류, 아카이브가 손상되었거나 지원되지 않는 7z 형식을 사용할 수 있습니다. 다시 시도하거나 ZIP을 사용하세요.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStart7zDataError" xml:space="preserve">
+    <value>7z 압축 해제 실패: 아카이브 데이터가 손상되었거나 지원되지 않는 7z 압축을 사용합니다. 다운로드를 다시 시도하거나 ZIP 패키지를 제공하세요.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnsupportedArchiveFormat" xml:space="preserve">
+    <value>지원되지 않는 아카이브 형식!</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
+    <value>사용자 정의 프로그램 시작 관리</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartListSetter" xml:space="preserve">
+    <value>프로그램 목록 소스 설정</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartGameDelayedStart" xml:space="preserve">
+    <value>목록의 프로그램 지연 시작</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartList" xml:space="preserve">
+    <value>지연 시작 프로그램 목록</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceDescription" xml:space="preserve">
+    <value>대상 JSON 형식의 HTTP 링크를 입력하세요</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedDelayedStartTitle" xml:space="preserve">
+    <value>지연 시작 프로그램 목록</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterTitle" xml:space="preserve">
+    <value>프로그램 목록 가져오기 소스 설정</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterBackToDefaultButton" xml:space="preserve">
+    <value>기본값으로 복원</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterSaveSuccess" xml:space="preserve">
+    <value>저장 성공</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListDelayedTime" xml:space="preserve">
+    <value>지연 (초)</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListPath" xml:space="preserve">
+    <value>응용 프로그램 경로</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListName" xml:space="preserve">
+    <value>응용 프로그램 이름</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartInfoBarMessage" xml:space="preserve">
+    <value>설정된 데이터 디렉터리의 AdvancedStart 폴더에 다운로드됩니다. 설정으로 이동하여 조정하거나 직접 관리하세요.</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartHeader" xml:space="preserve">
+    <value>연동 시작</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartDescription" xml:space="preserve">
+    <value>다른 위치에서의 시작이 지연 시작을 트리거하는지 설정</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartAdvancedHeader" xml:space="preserve">
+    <value>사용자 정의 프로그램 시작 시 지연 시작 트리거</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartGameHeader" xml:space="preserve">
+    <value>게임 시작 시 지연 시작 트리거</value>
   </data>
 </root>

@@ -147,6 +147,9 @@
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>未找到结果</value>
   </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>删除</value>
+  </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>选择全部</value>
   </data>
@@ -644,6 +647,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>当前邮箱已被注册</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>注册失败，服务器异常，请尽快联系开发者解决</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>密码错误，注销失败</value>
   </data>
@@ -691,6 +697,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>获取数据失败，正在计算统计数据</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>上传深渊记录失败，服务器异常，请尽快联系开发者解决</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>上传深渊记录失败，存在无效的数据</value>
@@ -864,7 +873,7 @@
     <value>元数据初始化</value>
   </data>
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
-    <value>准备中，若长时间无反应请尝试重启</value>
+    <value>准备中，若长时间无反应请尝试重启或检查网络与服务器状态</value>
   </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>必应每日一图</value>
@@ -2895,6 +2904,18 @@
   <data name="ViewPageLaunchGameEventCameraMoveHotSwitchHeader" xml:space="preserve">
     <value>移除元素爆发镜头特写</value>
   </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneDescription" xml:space="preserve">
+    <value>修正角色/队伍配置/祈愿/纪行等特殊界面的视野</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneHeader" xml:space="preserve">
+    <value>特殊界面修正</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipSubtitle" xml:space="preserve">
+    <value>启用「调整视野」后，所有场景下的迷雾显示将会遵循「移除迷雾」开关的状态。若同时启用了「特殊界面修正」，则会在原始视野小于等于 30 时，强制禁用迷雾渲染。这会让你看到正常的祈愿/纪行/角色等界面，但是在进入部分剧情时也会强制禁用迷雾。这不属于软件 BUG，不要向我们反馈。</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipTitle" xml:space="preserve">
+    <value>视野与迷雾</value>
+  </data>
   <data name="ViewPageLaunchGameHideQuestBannerHotSwitchDescription" xml:space="preserve">
     <value>强制移除地图界面左上角的任务提示</value>
   </data>
@@ -3208,7 +3229,7 @@
     <value>在桌面上创建快捷方式</value>
   </data>
   <data name="ViewPageSettingCreateDesktopShortcutHeader" xml:space="preserve">
-    <value>创建快捷方式</value>
+    <value>在桌面上创建新的快捷方式</value>
   </data>
   <data name="ViewPageSettingDataFolderHeader" xml:space="preserve">
     <value>数据 文件夹</value>
@@ -3769,7 +3790,10 @@
     <value>武器资料</value>
   </data>
   <data name="ViewWindowCompactWebViewTitle" xml:space="preserve">
-    <value>紧凑网页窗口（仅管理员）</value>
+    <value>紧凑网页窗口</value>
+  </data>
+  <data name="ViewWindowCompactWebView2HotKeyDisabledMessage" xml:space="preserve">
+    <value>以管理员身份运行以启用全局快捷键功能</value>
   </data>
   <data name="ViewWindowExceptionClose" xml:space="preserve">
     <value>关闭</value>
@@ -4023,8 +4047,14 @@
   <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
     <value>启动时自动以管理员权限重启</value>
   </data>
+  <data name="ViewPageSettingAlwaysRunAsAdminTextDes" xml:space="preserve">
+    <value>将在手动启动应用时生效，建议开启自启动和管理员自启动以免启动各种功能时可能的UAC弹窗打扰</value>
+  </data>
   <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
     <value>启用后，如果胡桃不是以管理员身份运行，将在启动时自动重启并请求管理员权限</value>
+  </data>
+  <data name="ViewPageSettingAutoStartDescription" xml:space="preserve">
+    <value>程序将在当前用户登录时启动，是否以管理员运行仅在修改时同步管理员模式选项（修改需以管理员身份运行）</value>
   </data>
   <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
     <value>显示派蒙</value>
@@ -4049,9 +4079,6 @@
   </data>
   <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
     <value>隐藏玩家信息</value>
-  </data>
-  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
-    <value>删除</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>反角色虚化</value>
@@ -4115,12 +4142,6 @@
   </data>
   <data name="ServicePluginDeleteFailed" xml:space="preserve">
     <value>在卸载插件'{0}'时发生错误</value>
-  </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>注册失败，服务器异常，请尽快联系开发者解决</value>
-  </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>上传深渊记录失败，服务器异常，请尽快联系开发者解决</value>
   </data>
   <data name="ServicePluginEnablingSuccess" xml:space="preserve">
     <value>插件'{0}'启用成功</value>
@@ -4271,5 +4292,213 @@
   </data>
   <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpDescription" xml:space="preserve">
     <value>移除调整时间页面点击确定后时间缓慢变化的动画</value>
+  </data>
+  <data name="ViewPageAvatarPropertyExportToText" xml:space="preserve">
+    <value>导出当前角色</value>
+  </data>
+  <data name="ViewPageAvatarPropertyExportAllToText" xml:space="preserve">
+    <value>导出所有角色</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
+    <value>自定义启动</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
+    <value>自定义启动选项允许快速启动其他路径的程序，胡桃内的游戏选项包括启动参数将不会生效</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
+    <value>用户自定义程序启动</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartPickPathHeader" xml:space="preserve">
+    <value>选择启动程序</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartPickPathDescription" xml:space="preserve">
+    <value>选择需要启动的程序路径，以 '.exe' 结尾</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartOpenCommunityAction" xml:space="preserve">
+    <value>前往社区获取分享的程序</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartGame" xml:space="preserve">
+    <value>启动自定义程序</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartLoading" xml:space="preserve">
+    <value>正在加载自定义启动列表</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartFeedMissing" xml:space="preserve">
+    <value>未配置自定义启动源地址</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPick" xml:space="preserve">
+    <value>请选择一个自定义启动程序</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartLoadFailed" xml:space="preserve">
+    <value>加载自定义启动列表失败</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPickWarning" xml:space="preserve">
+    <value>请先选择自定义启动程序</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartCompleted" xml:space="preserve">
+    <value>已完成，程序路径：{0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartFailed" xml:space="preserve">
+    <value>下载或解压失败，请重试</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartExecutableMissing" xml:space="preserve">
+    <value>未找到可执行文件</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloading" xml:space="preserve">
+    <value>正在下载 {0}（{1}/{2}）</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartExtracting" xml:space="preserve">
+    <value>正在解压 {0}（{1}/{2}）</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartTitle" xml:space="preserve">
+    <value>下载来自自定义源的自定义程序</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPrimary" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartEmpty" xml:space="preserve">
+    <value>暂无可用的自定义启动程序</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartStatusHeader" xml:space="preserve">
+    <value>当前执行状态</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartOpenDownloaderAction" xml:space="preserve">
+    <value>快速获取并下载清单列表中的程序</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownServer" xml:space="preserve">
+    <value>未知服务器</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDnsFailed" xml:space="preserve">
+    <value>无法连接到服务器 '{0}'：DNS 解析失败。 可能原因：
+1.	域名不存在或拼写错误
+2.	DNS 服务器故障
+3.	网络连接问题
+4.	防火墙或安全软件阻止了 DNS 查询 请检查网络设置后重试。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartConnectionRefused" xml:space="preserve">
+    <value>服务器拒绝连接，请稍后重试。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartTimedOut" xml:space="preserve">
+    <value>连接超时，请检查网络连接。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkDown" xml:space="preserve">
+    <value>网络连接不可用，请检查网络状态。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkUnreachable" xml:space="preserve">
+    <value>网络不可达，请检查网络连接。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDnsNoData" xml:space="preserve">
+    <value>DNS 查询成功但未找到服务器记录，请确认地址正确性。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkError" xml:space="preserve">
+    <value>网络连接错误：{0} (错误代码: {1})</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartHttpError" xml:space="preserve">
+    <value>服务器返回错误：{0} {1}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownServerResponse" xml:space="preserve">
+    <value>服务器返回未知错误：{0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSecurityFailed" xml:space="preserve">
+    <value>安全连接失败：{0}，请检查系统时间和证书设置。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkRequestFailed" xml:space="preserve">
+    <value>网络请求失败：{0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloadCanceled" xml:space="preserve">
+    <value>下载 {0} 已被取消。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloadTimeout" xml:space="preserve">
+    <value>下载 {0} 超时，请检查网络连接并重试。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartOperationCanceled" xml:space="preserve">
+    <value>操作已取消：{0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartIOError" xml:space="preserve">
+    <value>文件读写错误：{0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnsupportedContentType" xml:space="preserve">
+    <value>不支持的响应内容类型：{0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartInvalidHeaders" xml:space="preserve">
+    <value>无效的 HTTP 头设置：{0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownError" xml:space="preserve">
+    <value>下载 {0} 时发生未知错误。 错误类型: {1} 请重试或联系支持。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStart7zEntryDataError" xml:space="preserve">
+    <value>7z 解压失败（条目: {0}）：数据错误，归档可能损坏或使用了不受支持的 7z 压缩格式。请重试下载或使用 ZIP 包。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStart7zDataError" xml:space="preserve">
+    <value>7z 解压失败：归档数据损坏或采用了不受支持的 7z 压缩方式。请重试下载或提供 ZIP 格式包。</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnsupportedArchiveFormat" xml:space="preserve">
+    <value>不支持的归档格式！</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramPathNotSet" xml:space="preserve">
+    <value>未设置自定义启动程序路径</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramNotExists" xml:space="preserve">
+    <value>自定义启动程序不存在</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramLaunched" xml:space="preserve">
+    <value>已启动自定义程序</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
+    <value>已保存自定义启动程序路径</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
+    <value>管理自定义程序启动</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartListSetter" xml:space="preserve">
+    <value>设置程序清单源</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartGameDelayedStart" xml:space="preserve">
+    <value>启动延迟启动清单中程序</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartList" xml:space="preserve">
+    <value>延时启动程序列表</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceDescription" xml:space="preserve">
+    <value>填写目标 json 格式的 http 链接</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedDelayedStartTitle" xml:space="preserve">
+    <value>延迟启动程序清单表</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterTitle" xml:space="preserve">
+    <value>程序列表获取源设置</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterBackToDefaultButton" xml:space="preserve">
+    <value>恢复默认</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterSaveSuccess" xml:space="preserve">
+    <value>保存成功</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListDelayedTime" xml:space="preserve">
+    <value>延迟（秒）</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListPath" xml:space="preserve">
+    <value>应用路径</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListName" xml:space="preserve">
+    <value>应用名</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartInfoBarMessage" xml:space="preserve">
+    <value>将会下载到设置的数据目录的 AdvancedStart 文件夹下，可前往设置调整或自行管理</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartHeader" xml:space="preserve">
+    <value>连带启动</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartDescription" xml:space="preserve">
+    <value>设置不同位置的启动是否触发延迟启动</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartAdvancedHeader" xml:space="preserve">
+    <value>启动自定义程序时触发延迟启动</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartGameHeader" xml:space="preserve">
+    <value>启动游戏时触发延迟启动</value>
+  </data>
+  <data name="ViewPageSettingOpenSourceSupportHeader" xml:space="preserve">
+    <value>开源支持</value>
   </data>
 </root>

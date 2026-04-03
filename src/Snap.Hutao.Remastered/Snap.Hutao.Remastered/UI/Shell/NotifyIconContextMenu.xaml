@@ -190,10 +190,23 @@
             Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
             BorderThickness="0,0,0,1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
             <TextBlock
+                Grid.Column="0"
                 Margin="8"
                 Style="{StaticResource BodyTextBlockStyle}"
                 Text="{Binding Title}"/>
+            <Button
+                Grid.Column="1"
+                Margin="8"
+                HorizontalAlignment="Right"
+                Command="{Binding CloseNotifyIconContextMenuWindowCommand}"
+                Style="{StaticResource SubtleButtonStyle}">
+                <FontIcon Glyph="&#xE711;"/>
+            </Button>
         </Grid>
 
         <StackPanel Grid.Row="1" Padding="0,2">

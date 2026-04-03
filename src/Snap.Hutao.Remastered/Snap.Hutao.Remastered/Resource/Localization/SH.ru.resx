@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -146,6 +146,9 @@
   </data>
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>Результаты не найдены</value>
+  </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>Удалить</value>
   </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>Выбрать все</value>
@@ -641,6 +644,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>Текущий адрес электронной почты уже зарегистрирован</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>Ошибка регистрации, проблемы с сервером. Пожалуйста, свяжитесь с разработчиком для решения проблемы</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>Неверный пароль, выход не выполнен</value>
   </data>
@@ -688,6 +694,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>Не удалось получить данные, выполняется подсчет статистики</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>Не удалось загрузить записи из Бездны, Сервер недоступен, пожалуйста, свяжитесь с разработчиком для решения проблемы</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>Не удалось загрузить записи из Бездны, обнаружены недопустимые данные</value>
@@ -2200,7 +2209,7 @@
     <value>Использовано места на диске: {0}</value>
   </data>
   <data name="ViewModelSettingGeetestCustomUrlSucceed" xml:space="preserve">
-    <value />
+    <value>Составной URL бесшовной проверки настроен успешно</value>
   </data>
   <data name="ViewModelSettingResetStaticResourceProgress" xml:space="preserve">
     <value>Выполняется сброс ресурсов изображений</value>
@@ -2859,6 +2868,24 @@
   <data name="ViewPageLaunchGameEventCameraMoveHotSwitchHeader" xml:space="preserve">
     <value>Отключить анимацию элементального взрыва</value>
   </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneDescription" xml:space="preserve">
+    <value>Исправление обзора для особых интерфейсов, таких как персонаж/состав отряда/молитва/боевой пропуск</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneHeader" xml:space="preserve">
+    <value>Исправление особых интерфейсов</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipSubtitle" xml:space="preserve">
+    <value>После включения функции «Регулировка обзора» отображение тумана во всех сценах будет соответствовать состоянию переключателя «Удалить туман».
+
+⚠️ Если одновременно включена опция «Исправление специальных интерфейсов», то при исходном обзоре ≤ 30 рендеринг тумана будет принудительно отключен.
+
+Это позволит видеть нормально интерфейсы, такие как желания/путешествия/персонажи, но при входе в некоторые сюжетные сцены туман также будет принудительно отключен.
+
+❗ Это не является ошибкой программы, поэтому не отправляйте нам отчёты об ошибках.</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipTitle" xml:space="preserve">
+    <value>Обзор и туман</value>
+  </data>
   <data name="ViewPageLaunchGameHideQuestBannerHotSwitchDescription" xml:space="preserve">
     <value>Принудительно удалить подсказку задания в верхнем левом углу карты</value>
   </data>
@@ -3169,10 +3196,10 @@
     <value>Создать</value>
   </data>
   <data name="ViewPageSettingCreateDesktopShortcutDescription" xml:space="preserve">
-    <value>在桌面上创建默认以管理员方式启动的快捷方式</value>
+    <value>Создать ярлык на рабочем столе (Для поведения администратора/UAC измените это в настройках режима администратора)</value>
   </data>
   <data name="ViewPageSettingCreateDesktopShortcutHeader" xml:space="preserve">
-    <value>Создать ярлык на рабочем столе</value>
+    <value>Создать новую ярлык на рабочем столе</value>
   </data>
   <data name="ViewPageSettingDataFolderHeader" xml:space="preserve">
     <value>Папка с данными</value>
@@ -3978,16 +4005,187 @@
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>ID Монитора</value>
   </data>
-  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
-    <value>Удалить</value>
+  <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
+    <value>Автоматическая подпись.</value>
   </data>
-  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>Исправление особых интерфейсов</value>
+  <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
+    <value>Пользовательский запуск</value>
   </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>Ошибка регистрации, проблемы с сервером. Пожалуйста, свяжитесь с разработчиком для решения проблемы</value>
+  <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
+    <value>Параметры пользовательского запуска позволяют быстро запускать программы из других путей. Параметры игры в Hutao (например, параметры запуска) применены не будут.</value>
   </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>Не удалось загрузить записи из Бездны, Сервер недоступен, пожалуйста, свяжитесь с разработчиком для решения проблемы</value>
+  <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
+    <value>Пользовательский запуск программы</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartPickPathHeader" xml:space="preserve">
+    <value>Выберите программу для запуска</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartPickPathDescription" xml:space="preserve">
+    <value>Выберите путь к программе, который нужно запустить, он должен заканчиваться на '.exe'</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartOpenCommunityAction" xml:space="preserve">
+    <value>Перейти в сообщество за программами, которыми поделились</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartGame" xml:space="preserve">
+    <value>Запустить пользовательскую программу</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartLoading" xml:space="preserve">
+    <value>Загрузка списка пользовательских программ</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartFeedMissing" xml:space="preserve">
+    <value>Источник пользовательских программ не настроен</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPick" xml:space="preserve">
+    <value>Пожалуйста, выберите пользовательский загрузчик</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartLoadFailed" xml:space="preserve">
+    <value>Не удалось загрузить список пользовательских программ</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPickWarning" xml:space="preserve">
+    <value>Пожалуйста, сначала выберите пользовательский загрузчик</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartCompleted" xml:space="preserve">
+    <value>Завершено, путь программы: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartFailed" xml:space="preserve">
+    <value>Загрузка или распаковка не удалась, повторите попытку</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartExecutableMissing" xml:space="preserve">
+    <value>Исполняемый файл не найден</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloading" xml:space="preserve">
+    <value>Загрузка {0} ({1}/{2})</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartExtracting" xml:space="preserve">
+    <value>Распаковка {0} ({1}/{2})</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartTitle" xml:space="preserve">
+    <value>Скачать пользовательскую программу из пользовательского источника</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPrimary" xml:space="preserve">
+    <value>Скачать</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartEmpty" xml:space="preserve">
+    <value>Нет доступных пользовательских загрузчиков</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartStatusHeader" xml:space="preserve">
+    <value>Текущий статус выполнения</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartOpenDownloaderAction" xml:space="preserve">
+    <value>Быстро получить и скачать программу из списка</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownServer" xml:space="preserve">
+    <value>Неизвестный сервер</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDnsFailed" xml:space="preserve">
+    <value>Не удалось подключиться к серверу '{0}': ошибка DNS. Возможные причины: 1) домен не существует или опечатка 2) сбой DNS-сервера 3) проблемы сети 4) брандмауэр блокирует DNS. Проверьте настройки сети и повторите попытку.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartConnectionRefused" xml:space="preserve">
+    <value>Соединение отклонено сервером, попробуйте позже.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartTimedOut" xml:space="preserve">
+    <value>Соединение превысило время ожидания, проверьте сеть.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkDown" xml:space="preserve">
+    <value>Сетевое соединение недоступно, проверьте сеть.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkUnreachable" xml:space="preserve">
+    <value>Сеть недоступна, проверьте соединение.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDnsNoData" xml:space="preserve">
+    <value>Запрос DNS успешен, но запись сервера не найдена; проверьте адрес.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkError" xml:space="preserve">
+    <value>Сетевая ошибка: {0} (код: {1})</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartHttpError" xml:space="preserve">
+    <value>Сервер вернул ошибку: {0} {1}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownServerResponse" xml:space="preserve">
+    <value>Сервер вернул неизвестную ошибку: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSecurityFailed" xml:space="preserve">
+    <value>Безопасное соединение не удалось: {0}, проверьте системное время и настройки сертификатов.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkRequestFailed" xml:space="preserve">
+    <value>Сетевой запрос не удался: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloadCanceled" xml:space="preserve">
+    <value>Загрузка {0} отменена.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloadTimeout" xml:space="preserve">
+    <value>Загрузка {0} превысила время ожидания, проверьте сеть и повторите попытку.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartOperationCanceled" xml:space="preserve">
+    <value>Операция отменена: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartIOError" xml:space="preserve">
+    <value>Ошибка ввода/вывода файла: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnsupportedContentType" xml:space="preserve">
+    <value>Неподдерживаемый тип содержимого ответа: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartInvalidHeaders" xml:space="preserve">
+    <value>Недопустимые HTTP заголовки: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownError" xml:space="preserve">
+    <value>При загрузке {0} произошла неизвестная ошибка. Тип ошибки: {1}. Пожалуйста, повторите попытку или обратитесь в поддержку.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStart7zEntryDataError" xml:space="preserve">
+    <value>Ошибка распаковки 7z (запись: {0}): ошибка данных, архив может быть повреждён или использовать неподдерживаемый формат 7z. Пожалуйста, повторите попытку или используйте ZIP.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStart7zDataError" xml:space="preserve">
+    <value>Ошибка распаковки 7z: архив повреждён или использован неподдерживаемый метод сжатия 7z. Пожалуйста, повторите загрузку или предоставьте ZIP-пакет.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnsupportedArchiveFormat" xml:space="preserve">
+    <value>Неподдерживаемый формат архива!</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
+    <value>Управление пользовательскими запусками программ</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartListSetter" xml:space="preserve">
+    <value>Настроить источник списка программ</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartGameDelayedStart" xml:space="preserve">
+    <value>Отложенный запуск программ из списка</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartList" xml:space="preserve">
+    <value>Список отложенных запусков</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceDescription" xml:space="preserve">
+    <value>Введите HTTP-ссылку в формате JSON</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedDelayedStartTitle" xml:space="preserve">
+    <value>Таблица отложенных запусков</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterTitle" xml:space="preserve">
+    <value>Настройка источника получения списка программ</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterBackToDefaultButton" xml:space="preserve">
+    <value>Вернуть по умолчанию</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterSaveSuccess" xml:space="preserve">
+    <value>Сохранено</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListDelayedTime" xml:space="preserve">
+    <value>Задержка (секунды)</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListPath" xml:space="preserve">
+    <value>Путь применения</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListName" xml:space="preserve">
+    <value>Название приложения</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartHeader" xml:space="preserve">
+    <value>Совместный запуск</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartDescription" xml:space="preserve">
+    <value>Установите, активируют ли запуски в разных местах отложенные запуски</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartAdvancedHeader" xml:space="preserve">
+    <value>Активировать отложенные запуски при запуске пользовательских программ</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartGameHeader" xml:space="preserve">
+    <value>Активировать отложенные запуски при запуске игры</value>
   </data>
 </root>

@@ -617,9 +617,21 @@
                                 TokenItemTemplate="{StaticResource TokenTemplate}"/>
                         </AppBarElementContainer>
                         <AppBarButton
-                            Command="{Binding ExportToTextCommand}"
                             Icon="{shuxm:FontIcon Glyph=&#xEDE1;}"
-                            Label="{shuxm:ResourceString Name=ViewPageAvatarPropertyExportToTextLabel}"/>
+                            Label="{shuxm:ResourceString Name=ViewPageAvatarPropertyExportToTextLabel}">
+                            <AppBarButton.Flyout>
+                                <MenuFlyout Placement="Bottom">
+                                    <MenuFlyoutItem
+                                        Command="{Binding ExportToTextCommand}"
+                                        Icon="{shuxm:FontIcon Glyph=&#xE1CE;}"
+                                        Text="{shuxm:ResourceString Name=ViewPageAvatarPropertyExportToText}"/>
+                                    <MenuFlyoutItem
+                                        Command="{Binding ExportAllToTextCommand}"
+                                        Icon="{shuxm:FontIcon Glyph=&#xE81E;}"
+                                        Text="{shuxm:ResourceString Name=ViewPageAvatarPropertyExportAllToText}"/>
+                                </MenuFlyout>
+                            </AppBarButton.Flyout>
+                        </AppBarButton>
                         <AppBarButton Icon="{shuxm:FontIcon Glyph=&#xE8EF;}" Label="{shuxm:ResourceString Name=ViewPageCultivateCalculate}">
                             <AppBarButton.Flyout>
                                 <MenuFlyout>

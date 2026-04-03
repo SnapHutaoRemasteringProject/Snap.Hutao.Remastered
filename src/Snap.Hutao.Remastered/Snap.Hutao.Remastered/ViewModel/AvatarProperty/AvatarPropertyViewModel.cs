@@ -26,6 +26,7 @@ using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Text;
 using CalculatorAvatarPromotionDelta = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate.AvatarPromotionDelta;
 using CalculatorBatchConsumption = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate.BatchConsumption;
 using CalculatorConsumption = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate.Consumption;
@@ -251,6 +252,16 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
         }
 
         ArgumentNullException.ThrowIfNull(metadataContext);
+        ArgumentNullException.ThrowIfNull(avatar.Weapon);
+
+        ICalculable weapon = avatar.Weapon.ToCalculable();
+        deltaOptions.Delta.Weapon = new()
+        {
+            Id = avatar.Weapon!.Id,
+            LevelCurrent = weapon.LevelCurrent,
+            LevelTarget = weapon.LevelCurrent,
+        };
+
         CalculatorBatchConsumption batchConsumption = OfflineCalculator.CalculateBatchConsumption(deltaOptions.Delta, metadataContext);
 
         if (!await SaveAvatarOnlyCultivationAsync(batchConsumption.Items.Single(), deltaOptions).ConfigureAwait(false))
@@ -282,6 +293,12 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
         }
 
         ArgumentNullException.ThrowIfNull(metadataContext);
+
+        deltaOptions.Delta.AvatarId = avatar.Id;
+        deltaOptions.Delta.AvatarLevelCurrent = avatar.LevelNumber;
+        deltaOptions.Delta.AvatarLevelTarget = avatar.LevelNumber;
+        deltaOptions.Delta.SkillList = [];
+
         CalculatorBatchConsumption batchConsumption = OfflineCalculator.CalculateBatchConsumption(deltaOptions.Delta, metadataContext);
 
         if (!await SaveWeaponOnlyCultivationAsync(batchConsumption.Items.Single(), deltaOptions).ConfigureAwait(false))
@@ -519,6 +536,30 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
         }
 
         InfoBarMessage message = await scopeContext.ClipboardProvider.SetTextAsync(AvatarViewTextTemplating.GetTemplatedText(avatar)).ConfigureAwait(false)
+            ? InfoBarMessage.Success(SH.ViewModelAvatatPropertyExportTextSuccess)
+            : InfoBarMessage.Warning(SH.ViewModelAvatatPropertyExportTextError);
+
+        scopeContext.Messenger.Send(message);
+    }
+
+    [Command("ExportAllToTextCommand")]
+    private async Task ExportAllToTextAsync()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Export all as text to ClipBoard", "AvatarPropertyViewModel.Command"));
+
+        if (Summary is not { Avatars: { } avatars })
+        {
+            return;
+        }
+
+        StringBuilder stringBuilder = new();
+
+        foreach (AvatarView avatar in avatars)
+        {
+            stringBuilder.AppendLine(AvatarViewTextTemplating.GetTemplatedText(avatar));
+        }
+
+        InfoBarMessage message = await scopeContext.ClipboardProvider.SetTextAsync(stringBuilder.ToString()).ConfigureAwait(false)
             ? InfoBarMessage.Success(SH.ViewModelAvatatPropertyExportTextSuccess)
             : InfoBarMessage.Warning(SH.ViewModelAvatatPropertyExportTextError);
 

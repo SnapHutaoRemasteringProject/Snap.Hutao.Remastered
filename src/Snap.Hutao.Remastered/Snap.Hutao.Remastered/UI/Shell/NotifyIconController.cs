@@ -1,5 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Millennium-Science-Technology-R-D-Inst. All rights reserved.
+// Licensed under the MIT license.
 
 using Microsoft.UI.Xaml;
 using Snap.Hutao.Remastered.Core;
@@ -86,7 +88,7 @@ public sealed partial class NotifyIconController : IDisposable
 
     public unsafe void Create()
     {
-        native.Create(HutaoNativeNotifyIconCallback.Create(&OnNotifyIconCallback), handle, "Snap Hutao");
+        native.Create(HutaoNativeNotifyIconCallback.Create(&OnNotifyIconCallback), handle, "Snap Hutao Remastered");
     }
 
     public bool IsPromoted()
@@ -122,6 +124,8 @@ public sealed partial class NotifyIconController : IDisposable
                 controller.OnRecreateNotifyIconRequested();
                 break;
             case HutaoNativeNotifyIconCallbackKind.ContextMenu:
+                controller.OnContextMenuRequested(icon, point);
+                break;
             case HutaoNativeNotifyIconCallbackKind.LeftButtonDown:
                 controller.OnContextMenuRequested(icon, point);
                 break;
@@ -138,7 +142,7 @@ public sealed partial class NotifyIconController : IDisposable
             return;
         }
 
-        native.Recreate("Snap Hutao");
+        native.Recreate("Snap Hutao Remastered");
     }
 
     private void OnContextMenuRequested(RECT icon, POINT point)

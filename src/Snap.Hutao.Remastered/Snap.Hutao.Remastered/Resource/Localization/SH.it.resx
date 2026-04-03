@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -146,6 +146,9 @@
   </data>
   <data name="ControlAutoSuggestBoxNotFoundValue" xml:space="preserve">
     <value>Nessun risultato trovato</value>
+  </data>
+  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
+    <value>Elimina</value>
   </data>
   <data name="ControlAutoSuggestTokenBoxSelectAllMenuItem" xml:space="preserve">
     <value>Seleziona tutto</value>
@@ -540,16 +543,16 @@
     <value>Gruppo C, ondata 3: Gruppi diversi coesistono e hanno ondate indipendenti.</value>
   </data>
   <data name="ModelMetadataTowerWaveTypeGroupD" xml:space="preserve">
-    <value />
+    <value>Gruppo D: Gruppi diversi coesistono e hanno ondate indipendenti.</value>
   </data>
   <data name="ModelMetadataTowerWaveTypeGroupDWave1" xml:space="preserve">
-    <value />
+    <value>Gruppo D, ondata 1: Gruppi diversi coesistono e hanno ondate indipendenti.</value>
   </data>
   <data name="ModelMetadataTowerWaveTypeGroupDWave2" xml:space="preserve">
-    <value />
+    <value>Gruppo D, ondata 2: Gruppi diversi coesistono e hanno ondate indipendenti.</value>
   </data>
   <data name="ModelMetadataTowerWaveTypeGroupDWave3" xml:space="preserve">
-    <value />
+    <value>Gruppo D, ondata 3: Gruppi diversi coesistono e hanno ondate indipendenti.</value>
   </data>
   <data name="ModelMetadataTowerWaveTypeIndependent" xml:space="preserve">
     <value>Indipendente dagli altri mostri</value>
@@ -558,7 +561,7 @@
     <value>Nessuna informazione sull'ondata</value>
   </data>
   <data name="ModelMetadataTowerWaveTypeWave1" xml:space="preserve">
-    <value />
+    <value>Ondata 1: Sconfiggi tutti i mostri per far apparire l'ondata successiva</value>
   </data>
   <data name="ModelMetadataTowerWaveTypeWave1Additional" xml:space="preserve">
     <value>Aggiunta ondata: rinforzi della prima ondata di mostri</value>
@@ -641,6 +644,9 @@
   <data name="ServerPassportServiceEmailHasRegistered" xml:space="preserve">
     <value>L'indirizzo email corrente è già registrato</value>
   </data>
+  <data name="ServerPassportServiceInternalException" xml:space="preserve">
+    <value>Registrazione non riuscita, errore del server. Si prega di contattare al più presto lo sviluppatore per risolvere il problema</value>
+  </data>
   <data name="ServerPassportServiceUnregisterPasswordIncorrect" xml:space="preserve">
     <value>Password errata, cancellazione fallita</value>
   </data>
@@ -688,6 +694,9 @@
   </data>
   <data name="ServerRecordComputingStatistics2" xml:space="preserve">
     <value>Recupero dei dati non riuscito, calcolo dei dati statistici in corso</value>
+  </data>
+  <data name="ServerRecordInternalException" xml:space="preserve">
+    <value>Caricamento dei dati dell'Abisso a Spirale non riuscito, errore del server. Si prega di contattare al più presto lo sviluppatore per risolvere il problema</value>
   </data>
   <data name="ServerRecordInvalidData" xml:space="preserve">
     <value>Caricamento dei dati dell'Abisso a Spirale non riuscito, rilevati dati non validi</value>
@@ -2861,6 +2870,18 @@ Spazio disponibile: {2}</value>
   <data name="ViewPageLaunchGameEventCameraMoveHotSwitchHeader" xml:space="preserve">
     <value>Rimuovi il primo piano della telecamera per l'abilità elementale</value>
   </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneDescription" xml:space="preserve">
+    <value>Correzione della visuale per interfacce speciali come Configurazione personaggio/squadra, Desiderio e Pass battaglia</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneHeader" xml:space="preserve">
+    <value>Correzione interfaccia speciale</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipSubtitle" xml:space="preserve">
+    <value>Dopo aver attivato "Regola campo visivo", la visualizzazione della nebbia in tutte le scene seguirà lo stato dell'interruttore "Rimuovi nebbia". Se "Correzione interfaccia speciale" è attivata, il rendering della nebbia verrà forzatamente disabilitato quando il campo visivo originale è inferiore o uguale a 30. Questo ti permetterà di vedere le interfacce normali come Desiderio/Pass battaglia/Personaggio, ma disabiliterà forzatamente la nebbia durante alcune trame. Questo non è un BUG del software, non segnalarcelo.</value>
+  </data>
+  <data name="ViewPageLaunchGameFixLowFovSceneTeachingTipTitle" xml:space="preserve">
+    <value>Visione e Nebbia</value>
+  </data>
   <data name="ViewPageLaunchGameHideQuestBannerHotSwitchDescription" xml:space="preserve">
     <value>Rimuovi forzatamente il promemoria della missione nell'angolo in alto a sinistra della mappa</value>
   </data>
@@ -2922,7 +2943,7 @@ Spazio disponibile: {2}</value>
     <value>Overlay di Gioco</value>
   </data>
   <data name="ViewPageLaunchGameOverlayHideDescription" xml:space="preserve">
-    <value />
+    <value>Imposta i tasti di scelta rapida per mostrare/nascondere l'overlay (avviato insieme al gioco)</value>
   </data>
   <data name="ViewPageLaunchGameOverlayHideHeader" xml:space="preserve">
     <value>Mostra/Nascondi Overlay di gioco</value>
@@ -3174,7 +3195,7 @@ Spazio disponibile: {2}</value>
     <value>Crea un collegamento sul desktop con privilegi di amministratore</value>
   </data>
   <data name="ViewPageSettingCreateDesktopShortcutHeader" xml:space="preserve">
-    <value>Crea collegamento sul desktop</value>
+    <value>Crea nuovo collegamento sul desktop</value>
   </data>
   <data name="ViewPageSettingDataFolderHeader" xml:space="preserve">
     <value>Cartella dati</value>
@@ -3980,16 +4001,172 @@ Spazio disponibile: {2}</value>
   <data name="WindowIdentifyMonitorHeader" xml:space="preserve">
     <value>ID monitor</value>
   </data>
-  <data name="ControlAutoSuggestTokenBoxRemoveMenuItem" xml:space="preserve">
-    <value>Elimina</value>
+  <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
+    <value>Avvio personalizzato</value>
   </data>
-  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>Correzione interfaccia speciale</value>
+  <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
+    <value>Le opzioni di avvio personalizzato consentono di avviare rapidamente programmi in percorsi diversi; le opzioni di gioco in Hutao, inclusi i parametri di avvio, potrebbero non avere effetto.</value>
   </data>
-  <data name="ServerPassportServiceInternalException" xml:space="preserve">
-    <value>Registrazione non riuscita, errore del server. Si prega di contattare al più presto lo sviluppatore per risolvere il problema</value>
+  <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
+    <value>Avvio programma personalizzato</value>
   </data>
-  <data name="ServerRecordInternalException" xml:space="preserve">
-    <value>Caricamento dei dati dell'Abisso a Spirale non riuscito, errore del server. Si prega di contattare al più presto lo sviluppatore per risolvere il problema</value>
+  <data name="ViewPageLaunchGameAdvancedStartPickPathHeader" xml:space="preserve">
+    <value>Seleziona il programma da avviare</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartPickPathDescription" xml:space="preserve">
+    <value>Seleziona il percorso del programma da avviare, terminato con '.exe'</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartOpenCommunityAction" xml:space="preserve">
+    <value>Vai alla community per ottenere programmi condivisi</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartGame" xml:space="preserve">
+    <value>Avvia programma personalizzato</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartLoading" xml:space="preserve">
+    <value>Caricamento lista launcher personalizzati</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartFeedMissing" xml:space="preserve">
+    <value>Feed launcher personalizzato non configurato</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPick" xml:space="preserve">
+    <value>Seleziona un launcher personalizzato</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartLoadFailed" xml:space="preserve">
+    <value>Caricamento lista launcher personalizzati fallito</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPickWarning" xml:space="preserve">
+    <value>Seleziona prima un launcher personalizzato</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartCompleted" xml:space="preserve">
+    <value>Completato, percorso programma: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartFailed" xml:space="preserve">
+    <value>Download o estrazione falliti, riprova</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartExecutableMissing" xml:space="preserve">
+    <value>Eseguibile non trovato</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloading" xml:space="preserve">
+    <value>Scaricando {0} ({1}/{2})</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartExtracting" xml:space="preserve">
+    <value>Estraendo {0} ({1}/{2})</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartTitle" xml:space="preserve">
+    <value>Scarica programma personalizzato da sorgente personalizzata</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartPrimary" xml:space="preserve">
+    <value>Scarica</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartEmpty" xml:space="preserve">
+    <value>Nessun launcher personalizzato disponibile</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartStatusHeader" xml:space="preserve">
+    <value>Stato di esecuzione corrente</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownServer" xml:space="preserve">
+    <value>Server sconosciuto</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDnsFailed" xml:space="preserve">
+    <value>Impossibile connettersi al server '{0}': risoluzione DNS fallita. Controlla le impostazioni di rete e riprova.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartConnectionRefused" xml:space="preserve">
+    <value>Connessione rifiutata dal server, riprova più tardi.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartTimedOut" xml:space="preserve">
+    <value>Connessione scaduta, controlla la rete.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkDown" xml:space="preserve">
+    <value>Connessione di rete non disponibile, controlla la rete.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkUnreachable" xml:space="preserve">
+    <value>Rete irraggiungibile, controlla la connessione.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDnsNoData" xml:space="preserve">
+    <value>Query DNS riuscita ma record server non trovato; verifica l'indirizzo.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkError" xml:space="preserve">
+    <value>Errore di rete: {0} (codice: {1})</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartHttpError" xml:space="preserve">
+    <value>Server ha restituito errore: {0} {1}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownServerResponse" xml:space="preserve">
+    <value>Server ha restituito errore sconosciuto: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSecurityFailed" xml:space="preserve">
+    <value>Connessione sicura fallita: {0}, controlla orario sistema e certificati.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartNetworkRequestFailed" xml:space="preserve">
+    <value>Richiesta rete fallita: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloadCanceled" xml:space="preserve">
+    <value>Download {0} annullato.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartDownloadTimeout" xml:space="preserve">
+    <value>Download {0} scaduto, controlla la rete e riprova.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartOperationCanceled" xml:space="preserve">
+    <value>Operazione annullata: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartIOError" xml:space="preserve">
+    <value>Errore I/O file: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnsupportedContentType" xml:space="preserve">
+    <value>Tipo di contenuto della risposta non supportato: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartInvalidHeaders" xml:space="preserve">
+    <value>Header HTTP non validi: {0}</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnknownError" xml:space="preserve">
+    <value>Errore sconosciuto durante il download di {0}. Tipo di errore: {1}. Riprova o contatta il supporto.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStart7zEntryDataError" xml:space="preserve">
+    <value>Estrazione 7z fallita (voce: {0}): errore dati, l'archivio potrebbe essere corrotto o usare 7z non supportato. Riprova o usa ZIP.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStart7zDataError" xml:space="preserve">
+    <value>Estrazione 7z fallita: archivio corrotto o compressione 7z non supportata. Riprova il download o fornisci un pacchetto ZIP.</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartUnsupportedArchiveFormat" xml:space="preserve">
+    <value>Formato archivio non supportato!</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceDescription" xml:space="preserve">
+    <value>Inserisci link HTTP che punta al JSON target</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedDelayedStartTitle" xml:space="preserve">
+    <value>Elenco programmi avvio ritardato</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterTitle" xml:space="preserve">
+    <value>Impostazioni sorgente lista programmi</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterBackToDefaultButton" xml:space="preserve">
+    <value>Ripristina predefinito</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartSourceSetterSaveSuccess" xml:space="preserve">
+    <value>Salvataggio riuscito</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListDelayedTime" xml:space="preserve">
+    <value>Ritardo (secondi)</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListPath" xml:space="preserve">
+    <value>Percorso applicazione</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartDelayedStartListName" xml:space="preserve">
+    <value>Nome applicazione</value>
+  </data>
+  <data name="ViewDialogLaunchGameAdvancedStartInfoBarMessage" xml:space="preserve">
+    <value>Verrà scaricato nella cartella AdvancedStart della directory dati configurata. Puoi andare nelle impostazioni per regolarlo o gestirlo autonomamente.</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartHeader" xml:space="preserve">
+    <value>Avvio congiunto</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartDescription" xml:space="preserve">
+    <value>Imposta se gli avvii in posizioni diverse attivano avvii ritardati</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartAdvancedHeader" xml:space="preserve">
+    <value>Attiva avvii ritardati all'avvio di programmi personalizzati</value>
+  </data>
+  <data name="ViewPageLaunchGameAdvancedStartCoStartGameHeader" xml:space="preserve">
+    <value>Attiva avvii ritardati all'avvio del gioco</value>
   </data>
 </root>

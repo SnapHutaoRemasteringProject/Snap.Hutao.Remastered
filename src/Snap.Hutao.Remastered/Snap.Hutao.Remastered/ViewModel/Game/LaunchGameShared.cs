@@ -1,10 +1,15 @@
-// Copyright (c) DGP Studio. All rights reserved.
+﻿// Copyright (c) DGP Studio. All rights reserved.
+// Licensed under the MIT license.
+// Copyright (c) Millennium-Science-Technology-R-D-Inst. All rights reserved.
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
+using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Service.Game;
+using Snap.Hutao.Remastered.Service.Game.AdvancedStart;
+using Snap.Hutao.Remastered.Service.Game.AdvancedStart.Model;
 using Snap.Hutao.Remastered.Service.Game.Configuration;
 using Snap.Hutao.Remastered.Service.Game.FileSystem;
 using Snap.Hutao.Remastered.Service.Game.Launching;
@@ -16,6 +21,7 @@ using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.UI.Xaml.View.Page;
 using Snap.Hutao.Remastered.ViewModel.User;
+using System.IO;
 
 namespace Snap.Hutao.Remastered.ViewModel.Game;
 
@@ -185,6 +191,62 @@ public sealed partial class LaunchGameShared
         catch (Exception ex)
         {
             messenger.Send(InfoBarMessage.Error(ex));
+        }
+    }
+    public async Task LaunchAdvancedDelayedAsync(CancellationToken token = default)
+    {
+        // Load delayed program entries from store (no UI dependencies)
+        List<AdvancedStartDelayedProgramEntry> snapshot;
+        using (IServiceScope scope = serviceProvider.CreateScope())
+        {
+            AdvancedStartDelayedProgramStore store = scope.ServiceProvider.GetRequiredService<AdvancedStartDelayedProgramStore>();
+            snapshot = store.Load().ToList();
+        }
+
+        List<Task> tasks = new(snapshot.Count);
+        foreach (AdvancedStartDelayedProgramEntry entry in snapshot)
+        {
+            tasks.Add(Task.Run(async () =>
+            {
+                token.ThrowIfCancellationRequested();
+
+                int delaySeconds = Math.Max(0, entry.DelaySeconds);
+                if (delaySeconds > 0)
+                {
+                    try
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(delaySeconds), token).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return;
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(entry.Path) || !File.Exists(entry.Path))
+                {
+                    messenger.Send(InfoBarMessage.Error(SH.ViewModelLaunchGameAdvancedStartProgramNotExists, entry.Path));
+                    return;
+                }
+
+                try
+                {
+                    ProcessFactory.StartUsingShellExecute(string.Empty, entry.Path);
+                }
+                catch (Exception ex)
+                {
+                    messenger.Send(InfoBarMessage.Error(ex));
+                }
+            }, token));
+        }
+
+        try
+        {
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            // Swallow cancellation; caller expects cancellation to stop launching.
         }
     }
 

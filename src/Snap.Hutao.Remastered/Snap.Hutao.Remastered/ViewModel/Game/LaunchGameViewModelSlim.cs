@@ -1,5 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Millennium-Science-Technology-R-D-Inst. All rights reserved.
+// Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Core.Logging;
@@ -105,6 +107,10 @@ public sealed partial class LaunchGameViewModelSlim : Abstraction.ViewModelSlim<
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Launch game", "LaunchGameViewModelSlim.Command"));
 
         UserAndUid? userAndUid = await userService.GetCurrentUserAndUidAsync().ConfigureAwait(false);
+        if (LaunchOptions.AdvancedStartDelayedOnGameLaunch.Value)
+        {
+            Shared.LaunchAdvancedDelayedAsync().SafeForget();
+        }
         await Shared.DefaultLaunchExecutionAsync(this, userAndUid).ConfigureAwait(false);
     }
 }
