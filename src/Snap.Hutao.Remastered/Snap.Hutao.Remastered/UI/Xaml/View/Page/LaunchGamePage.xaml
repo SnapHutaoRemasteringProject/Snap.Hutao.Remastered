@@ -661,7 +661,7 @@
                                     </cwc:SettingsExpander>-->
 
                                     <!--  延迟的启动程序列表管理  -->
-                                    <shuxcc:TitleCard Title="{shuxm:ResourceString Name=ViewPageLaunchGameAdvancedStartDelayedStartList}" Grid.Row="3">
+                                    <shuxcc:TitleCard Title="{shuxm:ResourceString Name=ViewPageLaunchGameAdvancedStartDelayedStartList}" Grid.Row="2">
                                         <shuxcc:TitleCard.TitleContent>
                                             <StackPanel
                                                 Margin="0,0,16,0"
@@ -757,7 +757,7 @@
                                         </shuxcc:TitleCard.Content>
                                     </shuxcc:TitleCard>
                                     <cwc:SettingsExpander
-                                        Grid.Row="4"
+                                        Grid.Row="3"
                                         Description="{shuxm:ResourceString Name=ViewPageLaunchGameAdvancedStartCoStartDescription}"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameAdvancedStartCoStartHeader}"
                                         HeaderIcon="{shuxm:FontIcon Glyph=&#xE723;}"
@@ -766,13 +766,13 @@
                                             <cwc:SettingsCard
                                                 Header="{shuxm:ResourceString Name=ViewPageLaunchGameAdvancedStartCoStartAdvancedHeader}"
                                                 IsActionIconVisible="False"
-                                                IsClickEnabled="True">
+                                                IsClickEnabled="False">
                                                 <ToggleSwitch IsOn="{Binding LaunchOptions.AdvancedStartDelayedOnAdvancedStart.Value, Mode=TwoWay}"/>
                                             </cwc:SettingsCard>
                                             <cwc:SettingsCard
                                                 Header="{shuxm:ResourceString Name=ViewPageLaunchGameAdvancedStartCoStartGameHeader}"
                                                 IsActionIconVisible="False"
-                                                IsClickEnabled="True">
+                                                IsClickEnabled="False">
                                                 <ToggleSwitch IsOn="{Binding LaunchOptions.AdvancedStartDelayedOnGameLaunch.Value, Mode=TwoWay}"/>
                                             </cwc:SettingsCard>
 
