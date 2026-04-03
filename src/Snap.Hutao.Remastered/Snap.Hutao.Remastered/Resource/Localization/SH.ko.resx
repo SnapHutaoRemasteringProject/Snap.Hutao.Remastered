@@ -195,6 +195,18 @@
   <data name="GuideWindowTitle" xml:space="preserve">
     <value>호두에 오신 것을 환영합니다</value>
   </data>
+  <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
+    <value>저는 Snap Hutao Remastered가 Hutao의 파생 포크임을 확인합니다</value>
+  </data>
+  <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
+    <value>DGP Studio 또는 원 저자와 관련이 없습니다</value>
+  </data>
+  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
+    <value>아래 텍스트를 그대로 입력하세요</value>
+  </data>
+  <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
+    <value>계속하려면 위의 텍스트를 여기에 복사해 주세요</value>
+  </data>
   <data name="MetadataSpecialNameMetaAvatarSexProInfoPronounBoyGirlD" xml:space="preserve">
     <value>&lt;color=#1E90FF&gt;왕자&lt;/color&gt;/&lt;color=#FFB6C1&gt;공주&lt;/color&gt;</value>
   </data>

@@ -195,6 +195,18 @@
   <data name="GuideWindowTitle" xml:space="preserve">
     <value>Benvenuto in Snap Hutao</value>
   </data>
+  <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
+    <value>Riconosco che Snap Hutao Remastered è un fork derivato di Hutao</value>
+  </data>
+  <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
+    <value>e non è affiliato a DGP Studio né all'autore originale</value>
+  </data>
+  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
+    <value>Trascrivi il testo sottostante</value>
+  </data>
+  <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
+    <value>Per favore trascrivi il testo sopra qui per continuare</value>
+  </data>
   <data name="MetadataSpecialNameMetaAvatarSexProInfoPronounBoyGirlD" xml:space="preserve">
     <value>&lt;color=#1E90FF&gt;Principe&lt;/color&gt;/&lt;color=#FFB6C1&gt;Principessa&lt;/color&gt;</value>
   </data>

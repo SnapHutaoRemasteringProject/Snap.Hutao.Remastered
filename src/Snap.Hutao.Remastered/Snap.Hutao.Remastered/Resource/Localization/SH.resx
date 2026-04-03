@@ -198,7 +198,10 @@
   <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
     <value>抄写下面的文本</value>
   </data>
-  <data name="ViewGuideAgreementCopyTextLine" xml:space="preserve">
+  <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
+    <value></value>
+  </data>
+  <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
     <value>我已知晓胡桃重制版是胡桃的下游分支 与DGP Studio和原作者无关</value>
   </data>
   <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">

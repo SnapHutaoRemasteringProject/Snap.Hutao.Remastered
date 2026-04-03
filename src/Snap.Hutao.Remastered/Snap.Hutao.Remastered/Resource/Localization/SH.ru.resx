@@ -195,6 +195,18 @@
   <data name="GuideWindowTitle" xml:space="preserve">
     <value>Добро пожаловать в Snap Hutao, путешественник ~</value>
   </data>
+  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
+    <value>Скопируйте текст ниже</value>
+  </data>
+  <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
+    <value>Я подтверждаю, что Snap Hutao Remastered является форком проекта Hutao</value>
+  </data>
+  <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
+    <value>и не связан с DGP Studio или оригинальным автором</value>
+  </data>
+  <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
+    <value>Пожалуйста, скопируйте приведённый выше текст сюда, чтобы продолжить</value>
+  </data>
   <data name="MetadataSpecialNameMetaAvatarSexProInfoPronounBoyGirlD" xml:space="preserve">
     <value>&lt;color=#1E90FF&gt;Принц&lt;/color&gt;/&lt;color=#FFB6C1&gt;Принцесса&lt;/color&gt;</value>
   </data>

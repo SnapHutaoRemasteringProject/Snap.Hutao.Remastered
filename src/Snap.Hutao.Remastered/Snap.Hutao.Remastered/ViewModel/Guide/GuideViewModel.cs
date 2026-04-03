@@ -193,9 +193,29 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
     /// </summary>
     public string? ConfirmCopyProgressText { get => field; set => SetProperty(ref field, value); }
 
+    public string AgreementCopyTarget
+    {
+        get
+        {
+            string line1 = SH.ViewGuideAgreementCopyTextLine1;
+            string line2 = SH.ViewGuideAgreementCopyTextLine2;
+
+            if (string.IsNullOrEmpty(line1))
+            {
+                return line2 ?? string.Empty;
+            }
+
+            return (line1 ?? string.Empty) + Environment.NewLine + (line2 ?? string.Empty);
+        }
+    }
+
+    public bool AgreementIsSingleLine => string.IsNullOrEmpty(SH.ViewGuideAgreementCopyTextLine1);
+
+    public bool AgreementUseGrid => CultureOptions.LocaleName.StartsWith("zh", StringComparison.OrdinalIgnoreCase);
+
     private void UpdateConfirmCopyState()
     {
-        string target = SH.ViewGuideAgreementCopyTextLine;
+        string target = AgreementCopyTarget;
         string input = ConfirmCopyText ?? string.Empty;
 
         double accuracy = 0;
