@@ -234,46 +234,96 @@
                         Grid.Column="1"
                         VerticalAlignment="Center"
                         Spacing="8">
-                        <CheckBox IsChecked="{Binding IsTermOfServiceAgreed, Mode=TwoWay}">
-                            <TextBlock>
-                                <TextBlock.Inlines>
-                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                    <Hyperlink NavigateUri="https://snaphutaorp.org/statements/tos.html">
-                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementTermOfService}"/>
-                                    </Hyperlink>
-                                </TextBlock.Inlines>
-                            </TextBlock>
-                        </CheckBox>
-                        <CheckBox IsChecked="{Binding IsPrivacyPolicyAgreed, Mode=TwoWay}">
-                            <TextBlock>
-                                <TextBlock.Inlines>
-                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                    <Hyperlink NavigateUri="https://snaphutaorp.org/statements/privacy-notice.html">
-                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementPrivacyPolicy}"/>
-                                    </Hyperlink>
-                                </TextBlock.Inlines>
-                            </TextBlock>
-                        </CheckBox>
-                        <CheckBox IsChecked="{Binding IsIssueReportAgreed, Mode=TwoWay}">
-                            <TextBlock>
-                                <TextBlock.Inlines>
-                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                    <Hyperlink NavigateUri="https://snaphutaorp.org/statements/bug-report.html">
-                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIssueReport}"/>
-                                    </Hyperlink>
-                                </TextBlock.Inlines>
-                            </TextBlock>
-                        </CheckBox>
-                        <CheckBox IsChecked="{Binding IsOpenSourceLicenseAgreed, Mode=TwoWay}">
-                            <TextBlock>
-                                <TextBlock.Inlines>
-                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                    <Hyperlink NavigateUri="https://github.com/DGP-Studio/Snap.Hutao.Remastered/blob/main/LICENSE">
-                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementOpenSourceLicense}"/>
-                                    </Hyperlink>
-                                </TextBlock.Inlines>
-                            </TextBlock>
-                        </CheckBox>
+                        <!-- Copy section moved above the checkboxes -->
+                        <TextBlock
+                            Text="{shuxm:ResourceString Name=ViewGuideStepAgreementCopyInstruction}"
+                            Padding="0 16 0 0"/>
+                        <TextBlock
+                            Text="{shuxm:ResourceString Name=ViewGuideAgreementCopyTextLine}"
+                            TextWrapping="Wrap"
+                            Margin="0,0,0,2"
+                            Foreground="Red"
+                            FontSize="16"
+                            FontWeight="ExtraBold"/>
+                        <Grid ColumnSpacing="8" Margin="0,4,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox
+                                Grid.Column="0"
+                                MinWidth="280"
+                                MinHeight="60"
+                                AcceptsReturn="True"
+                                TextWrapping="Wrap"
+                                Text="{Binding ConfirmCopyText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="{shuxm:ResourceString Name=ViewGuideAgreementCopyPlaceholder}"/>
+
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Margin="8,0,0,0"
+                                Text="{Binding ConfirmCopyProgressText, TargetNullValue=0%, FallbackValue=0%}"
+                                Opacity="0.7"
+                                Style="{StaticResource CaptionTextBlockStyle}"/>
+                        </Grid>
+
+                        <!-- 4 checkboxes arranged in a 2x2 grid -->
+                        <Grid Margin="0,8,0,0" ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <CheckBox Grid.Row="0" Grid.Column="0" IsChecked="{Binding IsTermOfServiceAgreed, Mode=TwoWay}">
+                                <TextBlock>
+                                    <TextBlock.Inlines>
+                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
+                                        <Hyperlink NavigateUri="https://snaphutaorp.org/statements/tos.html">
+                                            <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementTermOfService}"/>
+                                        </Hyperlink>
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+                            </CheckBox>
+
+                            <CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding IsPrivacyPolicyAgreed, Mode=TwoWay}">
+                                <TextBlock>
+                                    <TextBlock.Inlines>
+                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
+                                        <Hyperlink NavigateUri="https://snaphutaorp.org/statements/privacy-notice.html">
+                                            <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementPrivacyPolicy}"/>
+                                        </Hyperlink>
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+                            </CheckBox>
+
+                            <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding IsIssueReportAgreed, Mode=TwoWay}">
+                                <TextBlock>
+                                    <TextBlock.Inlines>
+                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
+                                        <Hyperlink NavigateUri="https://snaphutaorp.org/statements/bug-report.html">
+                                            <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIssueReport}"/>
+                                        </Hyperlink>
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+                            </CheckBox>
+
+                            <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IsOpenSourceLicenseAgreed, Mode=TwoWay}">
+                                <TextBlock>
+                                    <TextBlock.Inlines>
+                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
+                                        <Hyperlink NavigateUri="https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/main/LICENSE">
+                                            <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementOpenSourceLicense}"/>
+                                        </Hyperlink>
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+                            </CheckBox>
+                        </Grid>
                     </StackPanel>
                 </Grid>
             </cwc:Case>

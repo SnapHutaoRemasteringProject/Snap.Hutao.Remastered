@@ -195,6 +195,15 @@
   <data name="GuideWindowTitle" xml:space="preserve">
     <value>欢迎使用胡桃</value>
   </data>
+  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
+    <value>抄写下面的文本</value>
+  </data>
+  <data name="ViewGuideAgreementCopyTextLine" xml:space="preserve">
+    <value>我已知晓胡桃重制版是胡桃的下游分支 与DGP Studio和原作者无关</value>
+  </data>
+  <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
+    <value>请在此处抄写上方文本以继续</value>
+  </data>
   <data name="MetadataSpecialNameMetaAvatarSexProInfoPronounBoyGirlD" xml:space="preserve">
     <value>&lt;color=#1E90FF&gt;王子&lt;/color&gt;/&lt;color=#FFB6C1&gt;公主&lt;/color&gt;</value>
   </data>
@@ -1674,7 +1683,7 @@
     <value>问题报告方式与流程</value>
   </data>
   <data name="ViewGuideStepAgreementOpenSourceLicense" xml:space="preserve">
-    <value>Snap Hutao 开源许可</value>
+    <value>Snap Hutao Remastered 开源许可</value>
   </data>
   <data name="ViewGuideStepAgreementPrivacyPolicy" xml:space="preserve">
     <value>用户数据与隐私权益</value>

@@ -167,6 +167,87 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
 
     #endregion
 
+    // 抄写校验相关
+    /// <summary>
+    /// 用户输入的抄写文本
+    /// </summary>
+    public string? ConfirmCopyText
+    {
+        get => field;
+        set
+        {
+            if (SetProperty(ref field, value))
+            {
+                UpdateConfirmCopyState();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 抄写相似度，0.0 - 1.0
+    /// </summary>
+    public double ConfirmCopyAccuracy { get => field; set => SetProperty(ref field, value); }
+
+    /// <summary>
+    /// 抄写进度文本（百分比）用于 XAML 显示
+    /// </summary>
+    public string? ConfirmCopyProgressText { get => field; set => SetProperty(ref field, value); }
+
+    private void UpdateConfirmCopyState()
+    {
+        string target = SH.ViewGuideAgreementCopyTextLine;
+        string input = ConfirmCopyText ?? string.Empty;
+
+        double accuracy = 0;
+        if (target.Length == 0 && input.Length == 0)
+        {
+            accuracy = 1;
+        }
+        else
+        {
+            int dist = LevenshteinDistance(target, input);
+            int max = Math.Max(target.Length, input.Length);
+            accuracy = max == 0 ? 1 : 1.0 - (double)dist / max;
+            accuracy = Math.Clamp(accuracy, 0, 1);
+        }
+
+        ConfirmCopyAccuracy = accuracy;
+        ConfirmCopyProgressText = $"{(int)(accuracy * 100)}%";
+
+        OnAgreementStateChanged();
+    }
+
+    private static int LevenshteinDistance(string? a, string? b)
+    {
+        if (string.IsNullOrEmpty(a))
+        {
+            return string.IsNullOrEmpty(b) ? 0 : b!.Length;
+        }
+
+        if (string.IsNullOrEmpty(b))
+        {
+            return a!.Length;
+        }
+
+        int n = a!.Length;
+        int m = b!.Length;
+        int[,] d = new int[n + 1, m + 1];
+
+        for (int i = 0; i <= n; i++) d[i, 0] = i;
+        for (int j = 0; j <= m; j++) d[0, j] = j;
+
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= m; j++)
+            {
+                int cost = a[i - 1] == b[j - 1] ? 0 : 1;
+                d[i, j] = Math.Min(Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1), d[i - 1, j - 1] + cost);
+            }
+        }
+
+        return d[n, m];
+    }
+
     public ObservableCollection<DownloadSummary>? DownloadSummaries { get; set => SetProperty(ref field, value); }
 
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
@@ -228,7 +309,17 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
 
     private void OnAgreementStateChanged()
     {
-        IsNextOrCompleteButtonEnabled = IsTermOfServiceAgreed && IsPrivacyPolicyAgreed && IsIssueReportAgreed && IsOpenSourceLicenseAgreed;
+        // 在文档步骤中，需要额外验证抄写相似度达到 80%
+        // 使用底层存储获取状态，避免访问 State getter 导致的副作用（State getter 会重置同意项）
+        GuideState current = UnsafeLocalSetting.Get(SettingKeys.GuideState, GuideState.Language);
+        if (current == GuideState.Document)
+        {
+            IsNextOrCompleteButtonEnabled = IsTermOfServiceAgreed && IsPrivacyPolicyAgreed && IsIssueReportAgreed && IsOpenSourceLicenseAgreed && ConfirmCopyAccuracy >= 0.8;
+        }
+        else
+        {
+            IsNextOrCompleteButtonEnabled = IsTermOfServiceAgreed && IsPrivacyPolicyAgreed && IsIssueReportAgreed && IsOpenSourceLicenseAgreed;
+        }
     }
 
     [SuppressMessage("", "SH003")]
