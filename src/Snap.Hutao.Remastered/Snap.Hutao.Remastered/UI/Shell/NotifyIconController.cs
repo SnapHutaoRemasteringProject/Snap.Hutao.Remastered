@@ -88,7 +88,7 @@ public sealed partial class NotifyIconController : IDisposable
 
     public unsafe void Create()
     {
-        native.Create(HutaoNativeNotifyIconCallback.Create(&OnNotifyIconCallback), handle, "Snap Hutao");
+        native.Create(HutaoNativeNotifyIconCallback.Create(&OnNotifyIconCallback), handle, "Snap Hutao Remastered");
     }
 
     public bool IsPromoted()
@@ -127,7 +127,7 @@ public sealed partial class NotifyIconController : IDisposable
                 controller.OnContextMenuRequested(icon, point);
                 break;
             case HutaoNativeNotifyIconCallbackKind.LeftButtonDown:
-                controller.OnWindowRequested();
+                controller.OnContextMenuRequested(icon, point);
                 break;
             case HutaoNativeNotifyIconCallbackKind.LeftButtonDoubleClick:
                 controller.OnWindowRequested();
@@ -142,7 +142,7 @@ public sealed partial class NotifyIconController : IDisposable
             return;
         }
 
-        native.Recreate("Snap Hutao");
+        native.Recreate("Snap Hutao Remastered");
     }
 
     private void OnContextMenuRequested(RECT icon, POINT point)

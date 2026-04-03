@@ -590,8 +590,6 @@
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="auto"/>
                                     </Grid.RowDefinitions>
                                     <!--  启动自定义程序  -->
                                     <StackPanel

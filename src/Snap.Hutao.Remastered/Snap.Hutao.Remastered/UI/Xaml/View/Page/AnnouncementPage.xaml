@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwa="using:CommunityToolkit.WinUI.Animations"
-    xmlns:cww="using:CommunityToolkit.WinUI.Controls"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:cwconv="using:CommunityToolkit.WinUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -48,7 +48,7 @@
                                     x:Name="ImageZoomBorder"
                                     VerticalAlignment="Top"
                                     cw:VisualExtensions.NormalizedCenterPoint="0.5">
-                                    <cww:ConstrainedBox
+                                    <cwc:ConstrainedBox
                                         Margin="-4"
                                         AspectRatio="1080:390"
                                         CornerRadius="{ThemeResource ControlCornerRadiusTop}">
@@ -57,7 +57,7 @@
                                             PlaceholderSource="{StaticResource UI_EmotionIcon271}"
                                             Source="{Binding Banner}"
                                             Stretch="UniformToFill"/>
-                                    </cww:ConstrainedBox>
+                                    </cwc:ConstrainedBox>
                                     <cwa:Explicit.Animations>
                                         <cwa:AnimationSet x:Name="ImageZoomInAnimation">
                                             <shuxma:ImageZoomInAnimation/>
@@ -68,13 +68,19 @@
                                     </cwa:Explicit.Animations>
                                 </Border>
                                 <Border Background="{ThemeResource DarkOnlyOverlayMaskColorBrush}" IsHitTestVisible="False"/>
-                                <TextBlock Text="{Binding TimeDescription}"
-                                           FontWeight="SemiBold"
-                                           Foreground="{Binding TimeDescriptionBrush}"
-                                           HorizontalAlignment="Right"
-                                           VerticalAlignment="Bottom"
-                                           Visibility="{Binding ShouldShowTimeDescription, Converter={StaticResource BoolToVisibilityConverter}}"
-                                           Margin="0,0,4,4"/>
+                                <Border
+                                    Margin="0,0,4,4"
+                                    Padding="4"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                                    CornerRadius="{StaticResource ControlCornerRadius}"
+                                    IsHitTestVisible="False">
+                                    <TextBlock
+                                        FontWeight="SemiBold"
+                                        Text="{Binding TimeDescription}"
+                                        Visibility="{Binding ShouldShowTimeDescription, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                </Border>
                             </Grid>
                         </Border>
                         <!--  General Description  -->

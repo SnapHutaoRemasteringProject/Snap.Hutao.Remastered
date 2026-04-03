@@ -202,6 +202,7 @@
             <Button
                 Grid.Column="1"
                 Margin="8"
+                HorizontalAlignment="Right"
                 Command="{Binding CloseNotifyIconContextMenuWindowCommand}"
                 Style="{StaticResource SubtleButtonStyle}">
                 <FontIcon Glyph="&#xE711;"/>
