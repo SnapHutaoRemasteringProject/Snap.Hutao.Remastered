@@ -4452,4 +4452,7 @@ Space Available: {2}</value>
   <data name="ViewPageSettingOpenSourceSupportHeader" xml:space="preserve">
     <value>Support for Open Source</value>
   </data>
+  <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
+    <value>App behavior</value>
+  </data>
 </root>

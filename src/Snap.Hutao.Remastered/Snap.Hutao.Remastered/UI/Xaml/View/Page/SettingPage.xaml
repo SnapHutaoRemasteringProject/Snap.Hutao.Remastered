@@ -5,6 +5,7 @@
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwb="using:CommunityToolkit.WinUI.Behaviors"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
+    xmlns:cwcvt="using:CommunityToolkit.WinUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
@@ -23,6 +24,7 @@
 
     <Page.Resources>
         <shuxdc:UIGFVersionToStringConverter x:Key="UIGFVersionToStringConverter"/>
+        <cwcvt:BoolNegationConverter x:Key="BoolNegationConverter"/>
     </Page.Resources>
 
     <Grid x:Name="SettingPageGrid">
@@ -87,8 +89,12 @@
                                     HorizontalAlignment="Center"
                                     Opacity="0.7"
                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="Copyright © 2026 SnapHutaoRemasteringProject. All Rights Reserved."/>
+                                    Text="Copyright © 2026 SnapHutaoRemasteringProject. All Rights Reserved."
+                                    TextWrapping="NoWrap"/>
                             </Grid>
+
+                            <!--  应用行为 - 宽屏  -->
+                            <TextBlock Style="{StaticResource SettingsCardHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageSettingAppBehaviorHeader}"/>
 
                             <cwc:SettingsCard
                                 Command="{Binding CheckUpdateCommand}"
@@ -97,25 +103,57 @@
                                 HeaderIcon="{shuxm:FontIcon Glyph=&#xE895;}"
                                 IsClickEnabled="True"/>
 
-                            <cwc:SettingsExpander
-                                Header="{shuxm:ResourceString Name=ViewPageSettingElevatedModeHeader}"
-                                HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}"
-                                IsExpanded="True">
+                            <!--  Administor  -->
+                            <cwc:SettingsExpander HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}" IsExpanded="True">
+                                <cwc:SettingsExpander.Header>
+                                    <TextBlock Text="{shuxm:ResourceString Name=ViewPageSettingElevatedModeHeader}"/>
+                                </cwc:SettingsExpander.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding RestartAsElevatedCommand}"
+                                        Content="{shuxm:ResourceString Name=ViewPageSettingElevatedModeRestartAction}"
+                                        IsEnabled="{shuxm:IsProcessNotElevated}"/>
+                                </StackPanel>
                                 <cwc:SettingsExpander.Items>
-                                    <cwc:SettingsCard
-                                        ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutAction}"
-                                        Command="{Binding CreateDesktopShortcutCommand}"
-                                        Description="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutDescription}"
-                                        Header="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutHeader}"
-                                        IsClickEnabled="True"/>
-                                    <cwc:SettingsCard
-                                        Description="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminDescription}"
-                                        Header="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminHeader}"
-                                        HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}">
+                                    <cwc:SettingsCard Description="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminDescription}" Header="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminHeader}">
                                         <ToggleSwitch IsOn="{Binding AppOptions.AutoRestartAsAdmin.Value, Mode=TwoWay}"/>
                                     </cwc:SettingsCard>
                                 </cwc:SettingsExpander.Items>
                             </cwc:SettingsExpander>
+
+                            <!--  Auto start  -->
+                            <cwc:SettingsExpander
+                                Description="{shuxm:ResourceString Name=ViewPageSettingAutoStartDescription}"
+                                Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartHeader}"
+                                HeaderIcon="{shuxm:FontIcon Glyph=&#xE7E8;}"
+                                IsEnabled="{shuxm:IsProcessElevated}">
+                                <cwc:SettingsExpander.Items>
+                                    <cwc:SettingsCard
+                                        Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartEnableCardHeader}"
+                                        HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EE;}"
+                                        IsClickEnabled="False">
+                                        <ToggleSwitch IsOn="{Binding IsStartupEnabled, Mode=TwoWay}"/>
+                                    </cwc:SettingsCard>
+
+                                    <!--  Will keep enable if AutoRestartAsAdmin is enabled, because it will start as admin when startup and avoid UAC prompt and keep consistent with the behavior  -->
+                                    <cwc:SettingsCard
+                                        Description="{shuxm:ResourceString Name=ViewPageSettingAutoStartAdminActionCardDescription}"
+                                        Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartAdminActionCardHeader}"
+                                        HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}"
+                                        IsClickEnabled="False"
+                                        IsEnabled="{Binding AppOptions.AutoRestartAsAdmin.Value, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}">
+                                        <ToggleSwitch IsOn="{Binding IsStartupAsAdminEnabled, Mode=TwoWay}"/>
+                                    </cwc:SettingsCard>
+                                </cwc:SettingsExpander.Items>
+                            </cwc:SettingsExpander>
+
+                            <cwc:SettingsCard
+                                ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutAction}"
+                                Command="{Binding CreateDesktopShortcutCommand}"
+                                Header="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutHeader}"
+                                HeaderIcon="{shuxm:FontIcon Glyph=&#xE72D;}"
+                                IsClickEnabled="True"/>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -181,6 +219,9 @@
                                     </Grid>
                                 </Grid>
 
+                                <!--  应用行为 - 窄屏  -->
+                                <TextBlock Style="{StaticResource SettingsCardHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageSettingAppBehaviorHeader}"/>
+
                                 <cwc:SettingsCard
                                     Command="{Binding CheckUpdateCommand}"
                                     Description="{Binding UpdateInfo}"
@@ -188,27 +229,57 @@
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE895;}"
                                     IsClickEnabled="True"/>
 
-                                <cwc:SettingsCard
-                                    ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutAction}"
-                                    Command="{Binding CreateDesktopShortcutCommand}"
-                                    Description="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutDescription}"
-                                    Header="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutHeader}"
-                                    IsClickEnabled="True"/>
-
-                                <cwc:SettingsExpander
-                                    Header="{shuxm:ResourceString Name=ViewPageSettingElevatedModeHeader}"
-                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}"
-                                    IsExpanded="True">
+                                <!--  Administor  -->
+                                <cwc:SettingsExpander HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}" IsExpanded="True">
+                                    <cwc:SettingsExpander.Header>
+                                        <TextBlock Text="{shuxm:ResourceString Name=ViewPageSettingElevatedModeHeader}"/>
+                                    </cwc:SettingsExpander.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button
+                                            HorizontalAlignment="Right"
+                                            Command="{Binding RestartAsElevatedCommand}"
+                                            Content="{shuxm:ResourceString Name=ViewPageSettingElevatedModeRestartAction}"
+                                            IsEnabled="{shuxm:IsProcessNotElevated}"/>
+                                    </StackPanel>
                                     <cwc:SettingsExpander.Items>
-                                        <cwc:SettingsCard
-                                            Description="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminDescription}"
-                                            Header="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminHeader}"
-                                            HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}">
+                                        <cwc:SettingsCard Description="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminDescription}" Header="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminHeader}">
                                             <ToggleSwitch IsOn="{Binding AppOptions.AutoRestartAsAdmin.Value, Mode=TwoWay}"/>
                                         </cwc:SettingsCard>
                                     </cwc:SettingsExpander.Items>
                                 </cwc:SettingsExpander>
 
+                                <!--  Auto start  -->
+                                <cwc:SettingsExpander
+                                    Description="{shuxm:ResourceString Name=ViewPageSettingAutoStartDescription}"
+                                    Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartHeader}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE7E8;}"
+                                    IsEnabled="{shuxm:IsProcessElevated}"
+                                    IsExpanded="True">
+                                    <cwc:SettingsExpander.Items>
+                                        <cwc:SettingsCard
+                                            Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartEnableCardHeader}"
+                                            HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EE;}"
+                                            IsClickEnabled="False">
+                                            <ToggleSwitch IsOn="{Binding IsStartupEnabled, Mode=TwoWay}"/>
+                                        </cwc:SettingsCard>
+
+                                        <!--  Will keep enable if AutoRestartAsAdmin is enabled, because it will start as admin when startup and avoid UAC prompt and keep consistent with the behavior  -->
+                                        <cwc:SettingsCard
+                                            Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartAdminActionCardHeader}"
+                                            HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}"
+                                            IsClickEnabled="False"
+                                            IsEnabled="{Binding AppOptions.AutoRestartAsAdmin.Value, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}">
+                                            <ToggleSwitch IsOn="{Binding IsStartupAsAdminEnabled, Mode=TwoWay}"/>
+                                        </cwc:SettingsCard>
+                                    </cwc:SettingsExpander.Items>
+                                </cwc:SettingsExpander>
+
+                                <cwc:SettingsCard
+                                    ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutAction}"
+                                    Command="{Binding CreateDesktopShortcutCommand}"
+                                    Header="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutHeader}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE72D;}"
+                                    IsClickEnabled="True"/>
                             </StackPanel>
                         </Border>
                     </Border>

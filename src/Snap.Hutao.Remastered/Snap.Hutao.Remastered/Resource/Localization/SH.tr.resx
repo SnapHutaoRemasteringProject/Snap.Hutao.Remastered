@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -198,14 +198,14 @@
   <data name="GuideWindowTitle" xml:space="preserve">
     <value>Snap Hutao'ya Hoş Geldiniz</value>
   </data>
+  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
+    <value>Aşağıdaki metni kopyalayın</value>
+  </data>
   <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
     <value>Snap Hutao Remastered'in Hutao'nun türetilmiş bir fork'u olduğunu kabul ediyorum</value>
   </data>
   <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
     <value>ve DGP Studio veya orijinal yazarla ilişkili değildir</value>
-  </data>
-  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
-    <value>Aşağıdaki metni kopyalayın</value>
   </data>
   <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
     <value>Lütfen devam etmek için yukarıdaki metni buraya kopyalayın</value>

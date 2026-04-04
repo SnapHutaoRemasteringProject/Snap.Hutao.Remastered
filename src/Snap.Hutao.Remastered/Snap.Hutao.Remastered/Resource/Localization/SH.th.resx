@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -198,14 +198,14 @@
   <data name="GuideWindowTitle" xml:space="preserve">
     <value>ยินดีต้อนรับสู่ Snap Hutao</value>
   </data>
+  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
+    <value>คัดลอกข้อความด้านล่าง</value>
+  </data>
   <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
     <value>ฉันรับทราบว่า Snap Hutao Remastered เป็นฟอร์กที่แยกมาจาก Hutao</value>
   </data>
   <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
     <value>และไม่ได้เกี่ยวข้องกับ DGP Studio หรือผู้แต่งเดิม</value>
-  </data>
-  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
-    <value>คัดลอกข้อความด้านล่าง</value>
   </data>
   <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
     <value>โปรดคัดลอกข้อความด้านบนมาที่นี่เพื่อดำเนินการต่อ</value>

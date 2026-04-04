@@ -1,11 +1,14 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Millennium-Science-Technology-R-D-Inst. All rights reserved.
+// Licensed under the MIT license.
 
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.Web.WebView2.Core;
+using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.UI.Input.LowLevel;
@@ -26,7 +29,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
 
 [SuppressMessage("", "CA1001")]
 [Service(ServiceLifetime.Transient)]
-public sealed partial class CompactWebView2Window : Microsoft.UI.Xaml.Window,
+internal sealed partial class CompactWebView2Window : Microsoft.UI.Xaml.Window,
     INotifyPropertyChanged,
     IXamlWindowExtendContentIntoTitleBar,
     IXamlWindowHasInitSize,
@@ -60,6 +63,7 @@ public sealed partial class CompactWebView2Window : Microsoft.UI.Xaml.Window,
     private readonly SemaphoreSlim webview2LoadLock = new(1, 1);
     private readonly Lock layeredWindowLock = new();
     private readonly byte opacity;
+    private readonly bool isLowLevelKeyboardEnabled;
 
     private readonly LowLevelKeyOptions lowLevelKeyOptions;
     private readonly ITaskContext taskContext;
@@ -69,6 +73,7 @@ public sealed partial class CompactWebView2Window : Microsoft.UI.Xaml.Window,
     public CompactWebView2Window(IServiceProvider serviceProvider)
     {
         opacity = (byte)(LocalSetting.Get(SettingKeys.CompactWebView2WindowInactiveOpacity, 50D) * 255 / 100);
+        isLowLevelKeyboardEnabled = HutaoRuntime.IsProcessElevated;
 
         if (AppWindow.Presenter is OverlappedPresenter presenter)
         {
@@ -94,8 +99,12 @@ public sealed partial class CompactWebView2Window : Microsoft.UI.Xaml.Window,
 
         InputActivationListener.GetForWindowId(AppWindow.Id).InputActivationChanged += OnInputActivationChanged;
 
-        InputLowLevelKeyboardSource.KeyDown += OnLowLevelKeyDown;
-        InputLowLevelKeyboardSource.Initialize();
+        // Only enable low-level keyboard hooks when running elevated
+        if (isLowLevelKeyboardEnabled)
+        {
+            InputLowLevelKeyboardSource.KeyDown += OnLowLevelKeyDown;
+            InputLowLevelKeyboardSource.Initialize();
+        }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -149,8 +158,12 @@ public sealed partial class CompactWebView2Window : Microsoft.UI.Xaml.Window,
 
         LocalSetting.Set(SettingKeys.CompactWebView2WindowPreviousSourceUrl, Source);
 
-        InputLowLevelKeyboardSource.KeyDown -= OnLowLevelKeyDown;
-        InputLowLevelKeyboardSource.Uninitialize();
+        // Only uninitialize low-level keyboard hooks if they were enabled
+        if (isLowLevelKeyboardEnabled)
+        {
+            InputLowLevelKeyboardSource.KeyDown -= OnLowLevelKeyDown;
+            InputLowLevelKeyboardSource.Uninitialize();
+        }
 
         InputActivationListener.GetForWindowId(AppWindow.Id).InputActivationChanged -= OnInputActivationChanged;
         webview2LoadLock.Release();

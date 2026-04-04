@@ -202,7 +202,7 @@
     <value>抄写下面的文本</value>
   </data>
   <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
     <value>我已知晓胡桃重制版是胡桃的下游分支 与DGP Studio和原作者无关</value>
@@ -4500,5 +4500,20 @@
   </data>
   <data name="ViewPageSettingOpenSourceSupportHeader" xml:space="preserve">
     <value>开源支持</value>
+  </data>
+  <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
+    <value>开机自启动</value>
+  </data>
+  <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
+    <value>应用行为</value>
+  </data>
+  <data name="ViewPageSettingAutoStartEnableCardHeader" xml:space="preserve">
+    <value>当前用户自启动</value>
+  </data>
+  <data name="ViewPageSettingAutoStartAdminActionCardHeader" xml:space="preserve">
+    <value>以管理员身份自启动</value>
+  </data>
+  <data name="ViewPageSettingAutoStartAdminActionCardDescription" xml:space="preserve">
+    <value>注意一些功能可能在不同权限下无法使用</value>
   </data>
 </root>

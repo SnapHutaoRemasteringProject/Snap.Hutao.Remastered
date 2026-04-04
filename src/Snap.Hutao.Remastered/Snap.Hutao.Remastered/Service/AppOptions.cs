@@ -1,5 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Millennium-Science-Technology-R-D-Inst. All rights reserved.
+// Licensed under the MIT license.
 
 using Microsoft.UI.Xaml;
 using Snap.Hutao.Remastered.Core.Property;
@@ -85,5 +87,22 @@ public sealed partial class AppOptions : DbStoreOptions
     public IObservableProperty<LastWindowCloseBehavior> LastWindowCloseBehavior { get => field ??= CreateProperty(SettingKeys.LastWindowCloseBehavior, Service.LastWindowCloseBehavior.EnsureNotifyIconCreated); }
 
     [field: MaybeNull]
-    public IObservableProperty<bool> AutoRestartAsAdmin { get => field ??= CreateProperty(SettingKeys.AutoRestartAsAdmin, false); }
+    public IObservableProperty<bool> AutoRestartAsAdmin { get => field ??= CreateProperty(SettingKeys.AutoRestartAsAdmin, false).WithValueChangedCallback(OnAutoRestartAsAdminChanged, this); }
+
+    [field: MaybeNull]
+    public IObservableProperty<bool> IsStartupEnabled { get => field ??= CreateProperty(SettingKeys.StartupEnabled, false); }
+
+    [field: MaybeNull]
+    public IObservableProperty<bool> IsStartupAsAdminEnabled { get => field ??= CreateProperty(SettingKeys.StartupAsAdminEnabled, false); }
+
+    private static void OnAutoRestartAsAdminChanged(bool isAdminRestart, AppOptions appOptions)
+    {
+        // When AutoRestartAsAdmin is set to True, automatically set IsStartupAsAdminEnabled to True
+        if (isAdminRestart && !appOptions.IsStartupAsAdminEnabled.Value)
+        {
+            appOptions.IsStartupAsAdminEnabled.Value = true;
+        }
+        // When AutoRestartAsAdmin is set to False, do NOT automatically change IsStartupAsAdminEnabled
+    }
+
 }

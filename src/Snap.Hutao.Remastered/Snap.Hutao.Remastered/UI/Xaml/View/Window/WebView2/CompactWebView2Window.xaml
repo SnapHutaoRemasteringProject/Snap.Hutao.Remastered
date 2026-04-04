@@ -11,6 +11,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition x:Name="TitleBarRowDefinition" Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid>
@@ -81,16 +82,24 @@
                         Style="{StaticResource NavigationBackButtonSmallStyle}"/>
                 </StackPanel>
             </Grid>
+            <InfoBar
+                x:Name="HotKeyDisabledInfoBar"
+                Grid.Row="1"
+                IsClosable="True"
+                IsOpen="True"
+                Message="{shuxm:ResourceString Name=ViewWindowCompactWebView2HotKeyDisabledMessage}"
+                Severity="Warning"
+                Visibility="{shuxm:CollapsedWhenProcessElevated}"/>
             <TextBlock
                 x:Name="WebView2LoadFailedHintText"
-                Grid.Row="1"
+                Grid.Row="2"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="{shuxm:ResourceString Name=ViewWebView2WindowLoadFailedHint}"
                 Visibility="Collapsed"/>
             <WebView2
                 x:Name="WebView"
-                Grid.Row="1"
+                Grid.Row="2"
                 Margin="0"
                 DefaultBackgroundColor="Transparent"/>
         </Grid>

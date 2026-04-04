@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -198,14 +198,14 @@
   <data name="GuideWindowTitle" xml:space="preserve">
     <value>Selamat Datang di Snap Hutao, Traveler ~</value>
   </data>
+  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
+    <value>Salin teks di bawah ini</value>
+  </data>
   <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
     <value>Saya mengakui bahwa Snap Hutao Remastered adalah fork turunan dari Hutao</value>
   </data>
   <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
     <value>dan tidak berafiliasi dengan DGP Studio atau penulis asli</value>
-  </data>
-  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
-    <value>Salin teks di bawah ini</value>
   </data>
   <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
     <value>Silakan salin teks di atas ke sini untuk melanjutkan</value>

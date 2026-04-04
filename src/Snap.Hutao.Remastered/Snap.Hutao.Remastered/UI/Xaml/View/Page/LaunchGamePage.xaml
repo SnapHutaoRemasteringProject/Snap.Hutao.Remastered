@@ -586,10 +586,11 @@
                                     RowSpacing="{ThemeResource SettingsCardSpacing}"
                                     Style="{ThemeResource AcrylicGridCardStyle}">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="auto"/>
-                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
                                     <!--  启动自定义程序  -->
                                     <StackPanel
@@ -659,7 +660,7 @@
                                     </cwc:SettingsExpander>-->
 
                                     <!--  延迟的启动程序列表管理  -->
-                                    <shuxcc:TitleCard Title="{shuxm:ResourceString Name=ViewPageLaunchGameAdvancedStartDelayedStartList}" Grid.Row="2">
+                                    <shuxcc:TitleCard Title="TestTitle" Grid.Row="2">
                                         <shuxcc:TitleCard.TitleContent>
                                             <StackPanel
                                                 Margin="0,0,16,0"
@@ -776,11 +777,10 @@
 
                                         </cwc:SettingsExpander.Items>
                                     </cwc:SettingsExpander>
+                                    <shuxcc:TitleCard Title="TestTitle" Grid.Row="4"/>
                                 </Grid>
                             </ContentControl>
-
                         </Border>
-
                     </StackPanel>
                 </ScrollViewer>
             </PivotItem>

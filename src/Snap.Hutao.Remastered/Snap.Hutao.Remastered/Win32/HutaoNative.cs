@@ -1,5 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Millennium-Science-Technology-R-D-Inst. All rights reserved.
+// Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.UI.Input.HotKey;
@@ -17,6 +19,7 @@ public sealed unsafe class HutaoNative
     private readonly ObjectReference<Vftbl> objRef;
     private readonly ObjectReference<VftblPrivate>? objRefPrivate;
     private readonly ObjectReference<VftblPrivate2>? objRefPrivate2;
+    private readonly ObjectReference<VftblPrivate3>? objRefPrivate3;
     private readonly ObjectReference<Vftbl2>? objRef2;
     private readonly ObjectReference<Vftbl3>? objRef3;
     private readonly ObjectReference<Vftbl4>? objRef4;
@@ -29,6 +32,7 @@ public sealed unsafe class HutaoNative
         this.objRef = objRef;
         objRef.TryAs(typeof(VftblPrivate).GUID, out objRefPrivate);
         objRef.TryAs(typeof(VftblPrivate2).GUID, out objRefPrivate2);
+        objRef.TryAs(typeof(VftblPrivate3).GUID, out objRefPrivate3);
         objRef.TryAs(typeof(Vftbl2).GUID, out objRef2);
         objRef.TryAs(typeof(Vftbl3).GUID, out objRef3);
         objRef.TryAs(typeof(Vftbl4).GUID, out objRef4);
@@ -125,6 +129,50 @@ public sealed unsafe class HutaoNative
             {
                 ArrayPool<byte>.Shared.Return(data);
             }
+        }
+    }
+
+    public BOOL IsAutoStartTaskActiveForThisUser()
+    {
+        HutaoException.NotSupportedIf(objRefPrivate3 is null, "IHutaoPrivate3 is not supported");
+
+        BOOL isActive = default;
+        Marshal.ThrowExceptionForHR(objRefPrivate3.Vftbl.IsAutoStartTaskActiveForThisUser(objRefPrivate3.ThisPtr, &isActive));
+        return isActive;
+    }
+
+    public void CreateAutoStartTaskForThisUser(BOOL runElevated)
+    {
+        HutaoException.NotSupportedIf(objRefPrivate3 is null, "IHutaoPrivate3 is not supported");
+
+        Marshal.ThrowExceptionForHR(objRefPrivate3.Vftbl.CreateAutoStartTaskForThisUser(objRefPrivate3.ThisPtr, runElevated));
+    }
+
+    public void DeleteAutoStartTaskForThisUser()
+    {
+        HutaoException.NotSupportedIf(objRefPrivate3 is null, "IHutaoPrivate3 is not supported");
+
+        Marshal.ThrowExceptionForHR(objRefPrivate3.Vftbl.DeleteAutoStartTaskForThisUser(objRefPrivate3.ThisPtr));
+    }
+
+    public BOOL IsAutoStartTaskRunElevatedForThisUser()
+    {
+        HutaoException.NotSupportedIf(objRefPrivate3 is null, "IHutaoPrivate3 is not supported");
+
+        BOOL isRunElevated = default;
+        Marshal.ThrowExceptionForHR(objRefPrivate3.Vftbl.IsAutoStartTaskRunElevatedForThisUser(objRefPrivate3.ThisPtr, &isRunElevated));
+        return isRunElevated;
+    }
+
+    public string GetAutoStartTaskExecutablePathForThisUser()
+    {
+        HutaoException.NotSupportedIf(objRefPrivate3 is null, "IHutaoPrivate3 is not supported");
+
+        Span<char> buffer = stackalloc char[260];
+        fixed (char* pBuffer = buffer)
+        {
+            Marshal.ThrowExceptionForHR(objRefPrivate3.Vftbl.GetAutoStartTaskExecutablePathForThisUser(objRefPrivate3.ThisPtr, pBuffer, (uint)buffer.Length));
+            return new string(pBuffer);
         }
     }
 
@@ -298,6 +346,17 @@ public sealed unsafe class HutaoNative
     {
         public readonly IUnknownVftbl IUnknownVftbl;
         public readonly delegate* unmanaged[Stdcall]<nint, PCWSTR, byte*, HRESULT> ExchangeGameUidForIdentifier1820;
+    }
+
+    [Guid(HutaoNativeMethods.IID_IHutaoPrivate3)]
+    private readonly struct VftblPrivate3
+    {
+        public readonly IUnknownVftbl IUnknownVftbl;
+        public readonly delegate* unmanaged[Stdcall]<nint, BOOL*, HRESULT> IsAutoStartTaskActiveForThisUser;
+        public readonly delegate* unmanaged[Stdcall]<nint, BOOL, HRESULT> CreateAutoStartTaskForThisUser;
+        public readonly delegate* unmanaged[Stdcall]<nint, HRESULT> DeleteAutoStartTaskForThisUser;
+        public readonly delegate* unmanaged[Stdcall]<nint, BOOL*, HRESULT> IsAutoStartTaskRunElevatedForThisUser;
+        public readonly delegate* unmanaged[Stdcall]<nint, PWSTR, uint, HRESULT> GetAutoStartTaskExecutablePathForThisUser;
     }
 #pragma warning restore CS0649
 }

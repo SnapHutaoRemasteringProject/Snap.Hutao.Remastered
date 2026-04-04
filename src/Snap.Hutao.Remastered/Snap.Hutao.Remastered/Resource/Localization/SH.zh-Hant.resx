@@ -202,7 +202,7 @@
     <value>抄寫下面的文字</value>
   </data>
   <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
-    <value></value>
+    <value />
   </data>
   <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
     <value>我已知悉 Snap Hutao Remastered 是 Hutao 的下游分支，與 DGP Studio 及原作者無關</value>

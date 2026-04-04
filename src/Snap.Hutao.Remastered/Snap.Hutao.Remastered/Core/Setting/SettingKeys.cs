@@ -1,5 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Millennium-Science-Technology-R-D-Inst. All rights reserved.
+// Licensed under the MIT license.
 
 namespace Snap.Hutao.Remastered.Core.Setting;
 
@@ -9,6 +11,8 @@ public static class SettingKeys
     public const string DataDirectory                   = "Snap::Hutao::Application::DataFolderPath";
     public const string OverrideElevationRequirement    = "Snap::Hutao::Application::Elevation::Override";
     public const string AutoRestartAsAdmin              = "Snap::Hutao::Application::Elevation::AutoRestartAsAdmin";
+    public const string StartupEnabled                  = "Snap::Hutao::Application::Startup::Enabled";
+    public const string StartupAsAdminEnabled           = "Snap::Hutao::Application::Startup::AsAdmin::Enabled";
     public const string LaunchTimes                     = "Snap::Hutao::Application::LaunchTimes";
     public const string PreviousDataDirectoryToDelete   = "Snap::Hutao::Application::PreviousDataFolderToDelete";
     public const string LastVersion                     = "Snap::Hutao::Application::Update::LastVersion";
@@ -130,7 +134,7 @@ public static class SettingKeys
     public const string LaunchDisplayPaimon                              = "Snap::Hutao::Game::Island::DisplayPaimon";
     public const string LaunchDebugMode                                  = "Snap::Hutao::Game::Island::DebugMode";
     public const string LaunchHidePlayerInfo                             = "Snap::Hutao::Game::Island::HidePlayerInfo";
-    public const string LaunchHideGrass                               = "Snap::Hutao::Game::Island::HideGrass";
+    public const string LaunchHideGrass                                  = "Snap::Hutao::Game::Island::HideGrass";
     public const string LaunchRedirectCombineEntry                       = "Snap::Hutao::Game::Island::Synthesis::Redirect";
     public const string LaunchUsingOverlay                               = "Snap::Hutao::Game::Overlay";
     public const string LaunchOverlaySelectedCatalogId                   = "Snap::Hutao::Game::Overlay::CatalogId";

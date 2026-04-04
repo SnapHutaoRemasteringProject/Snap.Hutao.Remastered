@@ -198,14 +198,14 @@
   <data name="GuideWindowTitle" xml:space="preserve">
     <value>Chào mừng bạn đến với Snap Hutao</value>
   </data>
+  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
+    <value>Hãy chép lại văn bản bên dưới</value>
+  </data>
   <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
     <value>Tôi xác nhận rằng Snap Hutao Remastered là một nhánh (fork) phát sinh từ Hutao</value>
   </data>
   <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
     <value>và không liên kết với DGP Studio hoặc tác giả gốc</value>
-  </data>
-  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
-    <value>Hãy chép lại văn bản bên dưới</value>
   </data>
   <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
     <value>Vui lòng chép văn bản ở trên vào đây để tiếp tục</value>
