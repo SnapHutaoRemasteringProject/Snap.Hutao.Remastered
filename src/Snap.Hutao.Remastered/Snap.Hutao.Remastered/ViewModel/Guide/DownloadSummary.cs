@@ -7,13 +7,16 @@ using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Caching;
 using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Factory.Progress;
+using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
+using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
 using System.Collections.Frozen;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Net.Mime;
+using System.Text;
 
 namespace Snap.Hutao.Remastered.ViewModel.Guide;
 
@@ -62,11 +65,83 @@ public sealed partial class DownloadSummary : ObservableObject
 
     public async ValueTask<bool> DownloadAndExtractAsync()
     {
-        await taskContext.SwitchToMainThreadAsync();
-        ProgressValue = 1;
-        Description = SH.ViewModelWelcomeDownloadSummaryComplete;
-        StaticResource.Fulfill(FileName);
-        return true;
+        HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory
+            .Create()
+            .SetRequestUri(fileUrl)
+            .SetStaticResourceControlHeaders()
+            .Get();
+
+        try
+        {
+            int retryTimes = 0;
+            while (retryTimes++ < 3)
+            {
+                builder.Resurrect();
+
+                TimeSpan delay = default;
+                using (HttpRequestMessage message = builder.HttpRequestMessage)
+                {
+                    using (HttpResponseMessage response = await httpClient.SendAsync(message, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        if (!AllowedMediaTypes.Contains(response.Content.Headers.ContentType?.MediaType))
+                        {
+                            await taskContext.SwitchToMainThreadAsync();
+                            Description = SH.ViewModelWelcomeDownloadSummaryContentTypeNotMatch;
+                        }
+                        else
+                        {
+                            long contentLength = response.Content.Headers.ContentLength ?? 0;
+                            using (Stream content = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                            {
+                                using (TempFileStream tempStream = new(FileMode.OpenOrCreate, FileAccess.ReadWrite))
+                                {
+                                    using (StreamCopyWorker worker = new(content, tempStream, contentLength))
+                                    {
+                                        await worker.CopyAsync(progress).ConfigureAwait(false);
+                                    }
+
+                                    await ExtractFilesAsync(tempStream).ConfigureAwait(false);
+
+                                    await taskContext.SwitchToMainThreadAsync();
+                                    ProgressValue = 1;
+                                    Description = SH.ViewModelWelcomeDownloadSummaryComplete;
+                                    StaticResource.Fulfill(FileName);
+                                    return true;
+                                }
+                            }
+                        }
+
+                        if (response.Headers.RetryAfter?.Delta is { } retryAfter)
+                        {
+                            delay = retryAfter;
+                        }
+                    }
+                }
+
+                await Task.Delay(delay).ConfigureAwait(false);
+            }
+
+            return false;
+        }
+        catch (Exception ex)
+        {
+            if (ex is not (IOException or OperationCanceledException or UnauthorizedAccessException) &&
+                HttpRequestExceptionHandling.TryHandle(builder, ex, out StringBuilder message))
+            {
+                messenger.Send(InfoBarMessage.Error(SH.ViewModelWelcomeDownloadSummaryException, message.ToString()));
+            }
+            else
+            {
+                // SSL certificate not trusted: The decryption operation failed, see inner exception. -> 无法解密指定的数据。
+                messenger.Send(InfoBarMessage.Error(SH.ViewModelWelcomeDownloadSummaryException, ex));
+            }
+
+            await taskContext.SwitchToMainThreadAsync();
+            Description = SH.ViewModelWelcomeDownloadSummaryException;
+            return false;
+        }
     }
 
     private void UpdateProgressStatus(StreamCopyStatus status)
