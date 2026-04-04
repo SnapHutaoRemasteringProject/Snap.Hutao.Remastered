@@ -86,4 +86,10 @@ public sealed partial class BackgroundActivity : ObservableObject
         await taskContext.SwitchToMainThreadAsync();
         NotifyToken++;
     }
+
+    public void ResetCompletionStatus()
+    {
+        IsCompletedSuccessfully = false;
+        IsFaulted = false;
+    }
 }

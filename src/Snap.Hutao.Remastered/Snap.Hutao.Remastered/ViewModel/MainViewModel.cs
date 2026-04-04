@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.LifeCycle;
 using Snap.Hutao.Remastered.Core.Logging;
@@ -15,6 +16,7 @@ using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
 using System.IO;
+using Microsoft.UI.Xaml;
 
 namespace Snap.Hutao.Remastered.ViewModel;
 
@@ -28,6 +30,7 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
     private readonly ITaskContext taskContext;
     private readonly IMessenger messenger;
     private readonly App app;
+    private DispatcherTimer? successHideTimer;
 
     [GeneratedConstructor]
     public partial MainViewModel(IServiceProvider serviceProvider);
@@ -48,10 +51,15 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
 
     public partial BackgroundActivityOptions BackgroundActivityOptions { get; }
 
+    [ObservableProperty]
+    public partial bool IsFlyoutOpen { get; set; }
+
     public override void Dispose()
     {
         using (CriticalSection.Enter())
         {
+            successHideTimer?.Stop();
+            BackgroundActivityOptions.MetadataInitialization.PropertyChanged -= OnMetadataInitializationPropertyChanged;
             Uninitialize();
         }
 
@@ -60,6 +68,8 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
 
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
+        BackgroundActivityOptions.MetadataInitialization.PropertyChanged += OnMetadataInitializationPropertyChanged;
+        
         ShowUpdateLogWindowAfterUpdate();
         NotifyIfDataFolderHasReparsePoint();
         await CheckUpdateAsync().ConfigureAwait(false);
@@ -102,5 +112,32 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
             SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateDebug("Data folder has reparse point", "MainViewModel.Command"));
             messenger.Send(InfoBarMessage.Warning(SH.FormatViewModelTitleDataFolderHasReparsepoint(HutaoRuntime.DataDirectory)));
         }
+    }
+
+    private void OnMetadataInitializationPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(BackgroundActivity.IsCompletedSuccessfully))
+        {
+            BackgroundActivity? backgroundActivity = sender as BackgroundActivity;
+            if (backgroundActivity?.IsCompletedSuccessfully == true)
+            {
+                StartSuccessHideTimer();
+            }
+        }
+    }
+
+    private void StartSuccessHideTimer()
+    {
+        successHideTimer?.Stop();
+        successHideTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(3)
+        };
+        successHideTimer.Tick += (s, e) =>
+        {
+            BackgroundActivityOptions.MetadataInitialization.ResetCompletionStatus();
+            successHideTimer?.Stop();
+        };
+        successHideTimer.Start();
     }
 }

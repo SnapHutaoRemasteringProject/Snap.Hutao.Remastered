@@ -57,6 +57,38 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
     [ObservableProperty]
     public partial string? UpdateInfo { get; set; }
 
+    public bool AutoRestartAsAdminEnabled
+    {
+        get => AppOptions?.AutoRestartAsAdmin?.Value ?? false;
+        set
+        {
+            if (AppOptions is null)
+            {
+                return;
+            }
+
+            if (AppOptions.AutoRestartAsAdmin.Value == value)
+            {
+                return;
+            }
+
+            if (value && !IsStartupAsAdminEnabled)
+            {
+                IsStartupAsAdminEnabled = true;
+            }
+
+            AppOptions.AutoRestartAsAdmin.Value = value;
+            OnPropertyChanged(nameof(AutoRestartAsAdminEnabled));
+            OnPropertyChanged(nameof(IsStartupAsAdminCardEnabled));
+            OnPropertyChanged(nameof(IsStartupAsAdminEnabled));
+        }
+    }
+
+    public bool IsStartupAsAdminCardEnabled
+    {
+        get => IsStartupEnabled && !AutoRestartAsAdminEnabled;
+    }
+
     public bool IsStartupEnabled
     {
         get => AppOptions?.IsStartupEnabled?.Value ?? false;
@@ -75,6 +107,8 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
             AppOptions.IsStartupEnabled.Value = value;
             OnStartupEnabledChanged(value);
             OnPropertyChanged(nameof(IsStartupEnabled));
+            OnPropertyChanged(nameof(IsStartupAsAdminCardEnabled));
+            OnPropertyChanged(nameof(IsStartupAsAdminEnabled));
         }
     }
 
@@ -137,6 +171,11 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
         Storage.DataFolderView = new(taskContext, HutaoRuntime.DataDirectory);
 
         UpdateInfo = updateService.UpdateInfo;
+
+        if (AutoRestartAsAdminEnabled && !IsStartupAsAdminEnabled)
+        {
+            IsStartupAsAdminEnabled = true;
+        }
 
         return ValueTask.FromResult(true);
     }
@@ -203,18 +242,12 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
 
     private void OnStartupEnabledChanged(bool isEnabled)
     {
-        // Only manage task scheduler when process is elevated
-        if (!Environment.IsPrivilegedProcess)
-        {
-            return;
-        }
-
+        // Only manage task scheduler when process is elevated (the UI has checked) 
         try
         {
             if (isEnabled)
             {
-                // Determine if task should be created with elevated privileges
-                BOOL runElevated = AppOptions?.AutoRestartAsAdmin.Value ?? false;
+                BOOL runElevated = IsStartupAsAdminEnabled;
                 HutaoNative.Instance.CreateAutoStartTaskForThisUser(runElevated);
             }
             else

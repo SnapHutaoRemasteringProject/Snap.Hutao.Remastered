@@ -24,7 +24,6 @@
 
     <Page.Resources>
         <shuxdc:UIGFVersionToStringConverter x:Key="UIGFVersionToStringConverter"/>
-        <cwcvt:BoolNegationConverter x:Key="BoolNegationConverter"/>
     </Page.Resources>
 
     <Grid x:Name="SettingPageGrid">
@@ -117,7 +116,7 @@
                                 </StackPanel>
                                 <cwc:SettingsExpander.Items>
                                     <cwc:SettingsCard Description="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminDescription}" Header="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminHeader}">
-                                        <ToggleSwitch IsOn="{Binding AppOptions.AutoRestartAsAdmin.Value, Mode=TwoWay}"/>
+                                        <ToggleSwitch IsOn="{Binding AutoRestartAsAdminEnabled, Mode=TwoWay}"/>
                                     </cwc:SettingsCard>
                                 </cwc:SettingsExpander.Items>
                             </cwc:SettingsExpander>
@@ -142,7 +141,7 @@
                                         Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartAdminActionCardHeader}"
                                         HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}"
                                         IsClickEnabled="False"
-                                        IsEnabled="{Binding AppOptions.AutoRestartAsAdmin.Value, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}">
+                                        IsEnabled="{Binding IsStartupAsAdminCardEnabled, Mode=OneWay}">
                                         <ToggleSwitch IsOn="{Binding IsStartupAsAdminEnabled, Mode=TwoWay}"/>
                                     </cwc:SettingsCard>
                                 </cwc:SettingsExpander.Items>
@@ -243,7 +242,7 @@
                                     </StackPanel>
                                     <cwc:SettingsExpander.Items>
                                         <cwc:SettingsCard Description="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminDescription}" Header="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminHeader}">
-                                            <ToggleSwitch IsOn="{Binding AppOptions.AutoRestartAsAdmin.Value, Mode=TwoWay}"/>
+                                            <ToggleSwitch IsOn="{Binding AutoRestartAsAdminEnabled, Mode=TwoWay}"/>
                                         </cwc:SettingsCard>
                                     </cwc:SettingsExpander.Items>
                                 </cwc:SettingsExpander>
@@ -256,6 +255,7 @@
                                     IsEnabled="{shuxm:IsProcessElevated}"
                                     IsExpanded="True">
                                     <cwc:SettingsExpander.Items>
+                                        <!--  当前用户自启动  -->
                                         <cwc:SettingsCard
                                             Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartEnableCardHeader}"
                                             HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EE;}"
@@ -264,11 +264,12 @@
                                         </cwc:SettingsCard>
 
                                         <!--  Will keep enable if AutoRestartAsAdmin is enabled, because it will start as admin when startup and avoid UAC prompt and keep consistent with the behavior  -->
+                                        <!--  自启动行为权限设置：管理员权限  -->
                                         <cwc:SettingsCard
                                             Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartAdminActionCardHeader}"
                                             HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}"
                                             IsClickEnabled="False"
-                                            IsEnabled="{Binding AppOptions.AutoRestartAsAdmin.Value, Mode=OneWay, Converter={StaticResource BoolNegationConverter}}">
+                                            IsEnabled="{Binding IsStartupAsAdminCardEnabled, Mode=OneWay}">
                                             <ToggleSwitch IsOn="{Binding IsStartupAsAdminEnabled, Mode=TwoWay}"/>
                                         </cwc:SettingsCard>
                                     </cwc:SettingsExpander.Items>

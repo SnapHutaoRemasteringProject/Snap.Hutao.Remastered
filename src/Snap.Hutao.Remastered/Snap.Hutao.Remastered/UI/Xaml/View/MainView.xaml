@@ -2,17 +2,20 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.MainView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
+    xmlns:shuxdc="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter"
     xmlns:shuxdcs="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shuxv="using:Snap.Hutao.Remastered.UI.Xaml.View"
     xmlns:shuxvp="using:Snap.Hutao.Remastered.UI.Xaml.View.Page"
     xmlns:shvm="using:Snap.Hutao.Remastered.ViewModel"
     xmlns:sshuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
+    xmlns:tControls="using:CommunityToolkit.WinUI.Controls"
     d:DataContext="{d:DesignInstance Type=shvm:MainViewModel}"
     mc:Ignorable="d">
 
@@ -87,6 +90,8 @@
                             Padding="0"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
+                            PointerEntered="OnBackgroundActivityButtonPointerEntered"
+                            PointerExited="OnBackgroundActivityButtonPointerExited"
                             Style="{ThemeResource SettingButtonStyle}">
                             <Button.Resources>
                                 <SineEase x:Key="EasingFunction" EasingMode="EaseInOut"/>
@@ -124,14 +129,80 @@
                                         <shuxb:FocusAnimationBehavior Storyboard="{StaticResource FocusStoryBoard}" Watch="{Binding BackgroundActivityOptions.MetadataInitialization.NotifyToken}"/>
                                         <shuxb:FocusAnimationBehavior Storyboard="{StaticResource FocusStoryBoard}" Watch="{Binding BackgroundActivityOptions.FullTrustInitialization.NotifyToken}"/>
                                     </mxi:Interaction.Behaviors>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Text="{shuxm:ResourceString Name=UIViewMainTitleBarBackgroundActivityAction}"/>
+                                    <Grid ColumnSpacing="4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+                                            <ProgressRing
+                                                Width="16"
+                                                Height="16"
+                                                IsIndeterminate="{Binding BackgroundActivityOptions.MetadataInitialization.IsIndeterminate, Mode=OneWay}"
+                                                Visibility="{Binding BackgroundActivityOptions.MetadataInitialization.HasProgress, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                Value="{Binding BackgroundActivityOptions.MetadataInitialization.ProgressValue, Mode=OneWay}"/>
+                                            <InfoBadge
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Background="#C42B1C"
+                                                Visibility="{Binding BackgroundActivityOptions.MetadataInitialization.IsFaulted, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                <InfoBadge.IconSource>
+                                                    <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xF13C;"/>
+                                                </InfoBadge.IconSource>
+                                            </InfoBadge>
+                                            <InfoBadge
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Style="{StaticResource SuccessIconInfoBadgeStyle}"
+                                                Visibility="{Binding BackgroundActivityOptions.MetadataInitialization.IsCompletedSuccessfully, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                        </Grid>
+
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{shuxm:ResourceString Name=UIViewMainTitleBarBackgroundActivityAction}"/>
+
+                                        <tControls:SwitchPresenter
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            TargetType="x:Boolean"
+                                            Value="{Binding IsFlyoutOpen, Mode=OneWay}">
+                                            <tControls:Case Value="True">
+                                                <AnimatedIcon x:Name="OpenedChevronAnimatedIcon" Width="16" Height="16">
+                                                    <AnimatedIcon.Source>
+                                                        <animatedvisuals:AnimatedChevronUpDownSmallVisualSource/>
+                                                    </AnimatedIcon.Source>
+                                                    <AnimatedIcon.FallbackIconSource>
+                                                        <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE70D;"/>
+                                                    </AnimatedIcon.FallbackIconSource>
+                                                </AnimatedIcon>
+                                            </tControls:Case>
+                                            <tControls:Case Value="False">
+                                                <AnimatedIcon x:Name="ClosedChevronAnimatedIcon" Width="16" Height="16">
+                                                    <AnimatedIcon.Source>
+                                                        <animatedvisuals:AnimatedChevronDownSmallVisualSource/>
+                                                    </AnimatedIcon.Source>
+                                                    <AnimatedIcon.FallbackIconSource>
+                                                        <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE70E;"/>
+                                                    </AnimatedIcon.FallbackIconSource>
+                                                </AnimatedIcon>
+                                            </tControls:Case>
+                                        </tControls:SwitchPresenter>
+                                    </Grid>
                                 </Border>
                             </Button.Content>
                             <Button.Flyout>
                                 <Flyout
+                                    shuxb:FlyoutOpenStateBinding.IsOpen="{Binding IsFlyoutOpen, Mode=TwoWay}"
+                                    shuxb:FlyoutOpenStateBinding.IsTrackingEnabled="True"
+                                    shuxb:FlyoutOpenStateBinding.SwitchDelayMilliseconds="120"
                                     FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding8Style}"
                                     Placement="Bottom"
                                     ShouldConstrainToRootBounds="True">
