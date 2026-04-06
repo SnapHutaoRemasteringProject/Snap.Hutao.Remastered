@@ -53,9 +53,8 @@ public sealed partial class NotifyIconController : IDisposable
         this.serviceProvider = serviceProvider;
         lazyMenu = new(() => new(serviceProvider));
 
-        string iconPath = InstalledLocation.GetAbsolutePath("Assets/Logo.ico");
-        Guid id = MemoryMarshal.AsRef<Guid>(MD5.HashData(Encoding.UTF8.GetBytes(iconPath)).AsSpan());
-        native = HutaoNative.Instance.MakeNotifyIcon(iconPath, in id);
+        Guid id = MemoryMarshal.AsRef<Guid>(MD5.HashData(Encoding.UTF8.GetBytes(HutaoRuntime.GetDisplayNameForNotifyIcon() ?? "Snap Hutao")).AsSpan());
+        native = HutaoNative.Instance.MakeNotifyIcon(InstalledLocation.GetAbsolutePath("Assets/Logo.ico"), in id);
 
         xamlHostWindow = new(serviceProvider);
         xamlHostWindow.MoveAndResize(default);
@@ -90,8 +89,11 @@ public sealed partial class NotifyIconController : IDisposable
 
     public unsafe void Create()
     {
-        native.Create(HutaoNativeNotifyIconCallback.Create(&OnNotifyIconCallback), handle, "Snap Hutao Remastered");
-        CleanupLegacyMsixNotifyIconRegistryEntries();
+        native.Create(HutaoNativeNotifyIconCallback.Create(&OnNotifyIconCallback), handle, HutaoRuntime.GetDisplayNameForNotifyIcon() ??"Snap Hutao Remastered");
+        if (XamlApplicationLifetime.IsFirstRunAfterUpdate)
+        {
+            CleanupLegacyMsixNotifyIconRegistryEntries();
+        }
     }
 
     public bool IsPromoted()

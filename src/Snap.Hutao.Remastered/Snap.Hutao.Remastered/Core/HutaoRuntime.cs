@@ -58,6 +58,23 @@ public static class HutaoRuntime
         return displayName is null ? null : string.Intern(displayName);
     }
 
+    public static string? GetDisplayNameForNotifyIcon()
+    {
+        // AppName
+        // AppDevName
+        string name = new StringBuilder()
+            .Append("App")
+#if DEBUG
+            .Append("Dev")
+#endif
+            .Append("Name")
+            .ToString();
+
+        Debug.Assert(XamlApplicationLifetime.CultureInfoInitialized);
+        string? displayName = SH.GetString(name);
+        return displayName is null ? null : string.Intern(displayName);
+    }
+
     public static ValueFile GetDataDirectoryFile(string fileName)
     {
         return string.Intern(Path.Combine(DataDirectory, fileName));
