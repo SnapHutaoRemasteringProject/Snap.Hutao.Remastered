@@ -4,6 +4,7 @@
 using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
 using Snap.Hutao.Remastered.Core.IO.Compression.Zstandard;
 using Snap.Hutao.Remastered.Core.IO.Hashing;
+using Snap.Hutao.Remastered.Core.Threading;
 using Snap.Hutao.Remastered.Core.Threading.RateLimiting;
 using Snap.Hutao.Remastered.Factory.IO;
 using Snap.Hutao.Remastered.Factory.Progress;
@@ -38,23 +39,37 @@ public sealed partial class GamePackageService : IGamePackageService
     private readonly IMemoryStreamFactory memoryStreamFactory;
     private readonly IHttpClientFactory httpClientFactory;
     private readonly IServiceProvider serviceProvider;
+    private readonly object operationStateLock = new();
 
     private CancellationTokenSource? operationCts;
     private TaskCompletionSource? operationTcs;
+    private TaskCompletionSource? continueTcs;
+    private AsyncManualResetEvent? operationResumeEvent;
 
     [GeneratedConstructor]
     public partial GamePackageService(IServiceProvider serviceProvider);
 
     public async ValueTask<bool> ExecuteOperationAsync(GamePackageOperationContext operationContext)
     {
-        await CancelOperationAsync().ConfigureAwait(false);
+        await StopOperationAsync().ConfigureAwait(false);
 
-        operationCts = new();
-        operationTcs = new();
+        CancellationTokenSource operationCtsLocal = new();
+        TaskCompletionSource operationTcsLocal = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        TaskCompletionSource continueTcsLocal = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        AsyncManualResetEvent operationResumeEventLocal = new();
+        operationResumeEventLocal.Set();
+
+        lock (operationStateLock)
+        {
+            operationCts = operationCtsLocal;
+            operationTcs = operationTcsLocal;
+            continueTcs = continueTcsLocal;
+            operationResumeEvent = operationResumeEventLocal;
+        }
 
         ParallelOptions options = new()
         {
-            CancellationToken = operationCts.Token,
+            CancellationToken = operationCtsLocal.Token,
             MaxDegreeOfParallelism = Environment.ProcessorCount,
         };
 
@@ -71,52 +86,113 @@ public sealed partial class GamePackageService : IGamePackageService
 
             // TODO: Move window creation out of this service.
             GamePackageOperationWindow window = scope.ServiceProvider.GetRequiredService<GamePackageOperationWindow>();
+            window.SetOperationContext(operationContext);
             IProgress<GamePackageOperationReport> progress = scope.ServiceProvider
                 .GetRequiredService<IProgressFactory>()
                 .CreateForMainThread<GamePackageOperationReport>(window.HandleProgressUpdate);
 
             await taskContext.SwitchToBackgroundAsync();
 
-            bool result;
-            using (HttpClient httpClient = httpClientFactory.CreateClient(HttpClientName))
+            _ = window.CloseTask.ContinueWith(static (_, state) =>
             {
-                using (TokenBucketRateLimiter? limiter = StreamCopyRateLimiter.Create(serviceProvider))
+                (CancellationTokenSource cts, AsyncManualResetEvent resumeEvent) tuple = ((CancellationTokenSource cts, AsyncManualResetEvent resumeEvent))state!;
+                tuple.resumeEvent.Set();
+                try
                 {
-                    IGamePackageOperation operation = scope.ServiceProvider.GetRequiredKeyedService<IGamePackageOperation>(operationContext.Kind);
+                    tuple.cts.Cancel();
+                }
+                catch (ObjectDisposedException)
+                {
+                }
+            }, (operationCtsLocal, operationResumeEventLocal), TaskScheduler.Default);
 
-                    try
+            bool result = false;
+            using (HttpClient httpClient = httpClientFactory.CreateClient(HttpClientName))
+            using (TokenBucketRateLimiter? limiter = StreamCopyRateLimiter.Create(serviceProvider))
+            {
+                IGamePackageOperation operation = scope.ServiceProvider.GetRequiredKeyedService<IGamePackageOperation>(operationContext.Kind);
+                GamePackageServiceContext serviceContext = new(operationContext, info, progress, options, httpClient, limiter, operationResumeEventLocal);
+
+                try
+                {
+                    while (true)
                     {
-                        GamePackageServiceContext serviceContext = new(operationContext, info, progress, options, httpClient, limiter);
-                        await operation.ExecuteAsync(serviceContext).ConfigureAwait(false);
-                        result = true;
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        if (operationCts is { IsCancellationRequested: true })
+                        try
                         {
-                            serviceProvider.GetRequiredService<IMessenger>().Send(InfoBarMessage.Warning(SH.ServicePackageAdvancedExecuteOperationCanceledTitle));
-                            await window.CloseTask.ConfigureAwait(false);
-                            return false;
+                            await operation.ExecuteAsync(serviceContext).ConfigureAwait(false);
+                            result = true;
+                            break;
                         }
-
-                        throw;
-                    }
-                    catch (Exception ex)
-                    {
-                        if (ex is HttpRequestException httpRequestException)
+                        catch (OperationCanceledException)
                         {
-                            if (HttpRequestExceptionHandling.HttpRequestExceptionToNetworkError(httpRequestException) is Web.NetworkError.NULL)
+                            if (operationCtsLocal.IsCancellationRequested)
+                            {
+                                serviceProvider.GetRequiredService<IMessenger>().Send(InfoBarMessage.Warning(SH.ServicePackageAdvancedExecuteOperationCanceledTitle));
+                                await window.CloseTask.ConfigureAwait(false);
+                                return false;
+                            }
+
+                            throw;
+                        }
+                        catch (Exception ex)
+                        {
+                            if (ex is HttpRequestException httpRequestException && HttpRequestExceptionHandling.HttpRequestExceptionToNetworkError(httpRequestException) is Web.NetworkError.NULL)
                             {
                                 SentrySdk.CaptureException(ex);
                             }
+
+                            StringBuilder messageBuilder = new();
+                            if (!HttpRequestExceptionHandling.FormatException(messageBuilder, ex, null))
+                            {
+                                messageBuilder.AppendLine(ex.Message);
+                            }
+
+                            progress.Report(new GamePackageOperationReport.RetryableFailure(messageBuilder.ToString().Trim()));
+
+                            Task retryTask = continueTcsLocal.Task;
+                            Task closeTask = window.CloseTask;
+                            Task cancelTask = Task.Delay(Timeout.Infinite, operationCtsLocal.Token);
+                            Task completedTask = await Task.WhenAny(retryTask, closeTask, cancelTask).ConfigureAwait(false);
+                            if (completedTask != retryTask)
+                            {
+                                result = false;
+                                break;
+                            }
+
+                            continueTcsLocal = new(TaskCreationOptions.RunContinuationsAsynchronously);
+                            lock (operationStateLock)
+                            {
+                                continueTcs = continueTcsLocal;
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    operationTcsLocal.TrySetResult();
+                    operationCtsLocal.Dispose();
+
+                    lock (operationStateLock)
+                    {
+                        if (ReferenceEquals(operationCts, operationCtsLocal))
+                        {
+                            operationCts = null;
                         }
 
-                        serviceProvider.GetRequiredService<IMessenger>().Send(InfoBarMessage.Error(SH.ServicePackageAdvancedExecuteOperationFailedTitle, ex));
-                        result = false;
-                    }
-                    finally
-                    {
-                        operationTcs.TrySetResult();
+                        if (ReferenceEquals(operationTcs, operationTcsLocal))
+                        {
+                            operationTcs = null;
+                        }
+
+                        if (ReferenceEquals(continueTcs, continueTcsLocal))
+                        {
+                            continueTcs = null;
+                        }
+
+                        if (ReferenceEquals(operationResumeEvent, operationResumeEventLocal))
+                        {
+                            operationResumeEvent = null;
+                        }
                     }
                 }
             }
@@ -126,18 +202,46 @@ public sealed partial class GamePackageService : IGamePackageService
         }
     }
 
-    public async ValueTask CancelOperationAsync()
+    public ValueTask CancelOperationAsync()
     {
-        if (operationCts is null || operationTcs is null)
+        lock (operationStateLock)
+        {
+            operationResumeEvent?.Reset();
+        }
+
+        return ValueTask.CompletedTask;
+    }
+
+    public ValueTask ContinueOperationAsync()
+    {
+        lock (operationStateLock)
+        {
+            operationResumeEvent?.Set();
+            continueTcs?.TrySetResult();
+        }
+
+        return ValueTask.CompletedTask;
+    }
+
+    private async ValueTask StopOperationAsync()
+    {
+        CancellationTokenSource? operationCtsLocal;
+        TaskCompletionSource? operationTcsLocal;
+
+        lock (operationStateLock)
+        {
+            operationCtsLocal = operationCts;
+            operationTcsLocal = operationTcs;
+            operationResumeEvent?.Set();
+        }
+
+        if (operationCtsLocal is null || operationTcsLocal is null)
         {
             return;
         }
 
-        await operationCts.CancelAsync().ConfigureAwait(false);
-        await operationTcs.Task.ConfigureAwait(false);
-        operationCts.Dispose();
-        operationCts = null;
-        operationTcs = null;
+        await operationCtsLocal.CancelAsync().ConfigureAwait(false);
+        await operationTcsLocal.Task.ConfigureAwait(false);
     }
 
     public async ValueTask<SophonDecodedBuild?> DecodeManifestsAsync(IGameFileSystemView gameFileSystem, BranchWrapper? branch, CancellationToken token = default)

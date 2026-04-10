@@ -4254,7 +4254,7 @@ Space Available: {2}</value>
     <value>Custom startup</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
-    <value>Custom launch options allow quick launch of programs from other paths, and game options within Hu Tao, including launch parameters, will not take effect</value>
+    <value>Custom launch options allow quick launch of programs from other paths,</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
     <value>User-defined program starts</value>
@@ -4454,5 +4454,8 @@ Space Available: {2}</value>
   </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>App behavior</value>
+  </data>
+  <data name="ContentDialogPauseButtonText" xml:space="preserve">
+    <value>Pause</value>
   </data>
 </root>

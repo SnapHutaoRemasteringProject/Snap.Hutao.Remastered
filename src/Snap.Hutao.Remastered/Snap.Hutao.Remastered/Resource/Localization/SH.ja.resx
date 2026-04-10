@@ -4049,7 +4049,7 @@
     <value>カスタム起動</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
-    <value>カスタム起動オプションは別のパスにあるプログラムの素早い起動を可能にします。胡桃内のゲームオプション（起動パラメータなど）は適用されません。</value>
+    <value>カスタム起動オプションは別のパスにあるプログラムの素早い起動を可能にします。</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
     <value>ユーザー定義プログラムの起動</value>

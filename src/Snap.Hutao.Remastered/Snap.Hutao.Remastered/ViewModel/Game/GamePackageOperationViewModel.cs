@@ -32,6 +32,7 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
     private readonly IGamePackageService gamePackageService;
     private readonly ITaskContext taskContext;
 
+    private GamePackageOperationContext? operationContext;
     private long bytesDownloadedSinceLastUpdate;
     private long totalBytesDownloaded;
     private long bytesDownloadedLastRefreshTime;
@@ -40,6 +41,7 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
     private long bytesInstalledLastRefreshTime;
     private long downloadTotalBytes;
     private long installTotalBytes;
+    private string? titleBeforeCancel;
 
     [GeneratedConstructor]
     public partial GamePackageOperationViewModel(IServiceProvider serviceProvider);
@@ -50,7 +52,25 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
     public partial string Title { get; private set; } = SH.UIXamlViewSpecializedSophonProgressDefault;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanCancel), nameof(CanClose), nameof(CanContinue))]
     public partial bool IsFinished { get; private set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanCancel), nameof(CanClose), nameof(CanContinue))]
+    public partial bool IsRetryableFailure { get; private set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanCancel), nameof(CanClose), nameof(CanContinue))]
+    public partial bool IsCanceling { get; private set; }
+
+    [ObservableProperty]
+    public partial long DownloadedBytes { get; private set; }
+
+    [ObservableProperty]
+    public partial long DownloadTotalBytes { get; private set; }
+
+    [ObservableProperty]
+    public partial long DownloadSpeedBytesPerSecond { get; private set; }
 
     public int DownloadedChunks { get; private set; }
 
@@ -65,6 +85,15 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
     [ObservableProperty]
     public partial string DownloadRemainingTime { get; private set; } = UnknownRemainingTime;
 
+    [ObservableProperty]
+    public partial long InstalledBytes { get; private set; }
+
+    [ObservableProperty]
+    public partial long InstallTotalBytes { get; private set; }
+
+    [ObservableProperty]
+    public partial long InstallSpeedBytesPerSecond { get; private set; }
+
     public int InstalledChunks { get; private set; }
 
     [ObservableProperty]
@@ -77,6 +106,17 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
 
     [ObservableProperty]
     public partial string InstallRemainingTime { get; private set; } = UnknownRemainingTime;
+
+    public bool CanCancel { get => !IsFinished && !IsRetryableFailure && !IsCanceling; }
+
+    public bool CanClose { get => IsFinished || IsRetryableFailure || IsCanceling; }
+
+    public bool CanContinue { get => IsCanceling || IsRetryableFailure; }
+
+    public void SetOperationContext(GamePackageOperationContext context)
+    {
+        operationContext = context;
+    }
 
     public void HandleProgressUpdate(GamePackageOperationReport status)
     {
@@ -93,6 +133,9 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
                 break;
             case GamePackageOperationReport.Abort abort:
                 AbortProgress(abort);
+                break;
+            case GamePackageOperationReport.RetryableFailure failure:
+                RetryableFailureProgress(failure);
                 break;
         }
     }
@@ -115,6 +158,7 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
 
                         bytesDownloadedLastRefreshTime = current;
                         long bytesDownloadedPerSecond = (long)(bytesDownloadedSinceLastUpdate / elapsedTime.TotalSeconds);
+                        DownloadSpeedBytesPerSecond = bytesDownloadedPerSecond;
                         DownloadSpeed = $"{Converters.ToFileSizeString(bytesDownloadedPerSecond),8}/s";
                         logger.LogInformation("Download Info: [{Bytes}KB|{Duration}|{Speed}]", bytesDownloadedSinceLastUpdate / 1024D, elapsedTime, DownloadSpeed);
                         DownloadRemainingTime = bytesDownloadedPerSecond is 0
@@ -136,6 +180,7 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
 
                         bytesInstalledLastRefreshTime = current;
                         long bytesInstalledPerSecond = (long)(bytesInstalledSinceLastUpdate / elapsedTime.TotalSeconds);
+                        InstallSpeedBytesPerSecond = bytesInstalledPerSecond;
                         InstallSpeed = $"{Converters.ToFileSizeString(bytesInstalledPerSecond),8}/s";
                         InstallRemainingTime = bytesInstalledPerSecond is 0
                             ? UnknownRemainingTime
@@ -157,6 +202,7 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
     private void UpdateDownloadProgress(GamePackageOperationReport.Download download)
     {
         totalBytesDownloaded += download.BytesRead;
+        DownloadedBytes = totalBytesDownloaded;
         bytesDownloadedSinceLastUpdate += download.BytesRead;
         DownloadedChunks += download.Chunks;
         DownloadFileName = download.FileName;
@@ -165,6 +211,7 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
     private void UpdateInstallProgress(GamePackageOperationReport.Install install)
     {
         totalBytesInstalled += install.BytesRead;
+        InstalledBytes = totalBytesInstalled;
         bytesInstalledSinceLastUpdate += install.BytesRead;
         InstalledChunks += install.Chunks;
         InstallFileName = install.FileName;
@@ -175,17 +222,28 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
         DownloadedChunks = 0;
         InstalledChunks = 0;
         totalBytesDownloaded = 0;
+        DownloadedBytes = 0;
         bytesDownloadedSinceLastUpdate = 0;
         bytesDownloadedLastRefreshTime = Stopwatch.GetTimestamp();
         totalBytesInstalled = 0;
+        InstalledBytes = 0;
         bytesInstalledSinceLastUpdate = 0;
         bytesInstalledLastRefreshTime = Stopwatch.GetTimestamp();
         downloadTotalBytes = reset.DownloadTotalBytes;
+        DownloadTotalBytes = reset.DownloadTotalBytes;
         installTotalBytes = reset.InstallTotalBytes;
+        InstallTotalBytes = reset.InstallTotalBytes;
         DownloadTotalChunks = reset.DownloadTotalChunks;
         DownloadFileName = default!;
         InstallTotalChunks = reset.InstallTotalChunks;
         InstallFileName = default!;
+        DownloadSpeedBytesPerSecond = 0;
+        DownloadSpeed = ZeroBytesPerSecondSpeed;
+        DownloadRemainingTime = UnknownRemainingTime;
+        InstallSpeedBytesPerSecond = 0;
+        InstallSpeed = ZeroBytesPerSecondSpeed;
+        InstallRemainingTime = UnknownRemainingTime;
+        IsRetryableFailure = false;
         Title = reset.Title;
         RefreshUI();
     }
@@ -203,6 +261,8 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
         };
 
         IsFinished = true;
+        IsRetryableFailure = false;
+        IsCanceling = false;
         RefreshUI();
     }
 
@@ -210,6 +270,23 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
     {
         Title = SH.FormatViewModelGamePackageOperationAborted(abort.Reason);
         IsFinished = true;
+        IsRetryableFailure = false;
+        IsCanceling = false;
+        RefreshUI();
+    }
+
+    private void RetryableFailureProgress(GamePackageOperationReport.RetryableFailure failure)
+    {
+        Title = failure.Reason;
+        IsRetryableFailure = true;
+        IsCanceling = false;
+        DownloadSpeedBytesPerSecond = 0;
+        DownloadSpeed = ZeroBytesPerSecondSpeed;
+        DownloadRemainingTime = UnknownRemainingTime;
+        InstallSpeedBytesPerSecond = 0;
+        InstallSpeed = ZeroBytesPerSecondSpeed;
+        InstallRemainingTime = UnknownRemainingTime;
+        RefreshUI();
     }
 
     private void RefreshUI()
@@ -242,6 +319,7 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
             {
                 taskContext.InvokeOnMainThread(() =>
                 {
+                    DownloadSpeedBytesPerSecond = 0;
                     DownloadSpeed = ZeroBytesPerSecondSpeed;
                     DownloadRemainingTime = UnknownRemainingTime;
                 });
@@ -251,6 +329,7 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
             {
                 taskContext.InvokeOnMainThread(() =>
                 {
+                    InstallSpeedBytesPerSecond = 0;
                     InstallSpeed = ZeroBytesPerSecondSpeed;
                     InstallRemainingTime = UnknownRemainingTime;
                 });
@@ -261,11 +340,31 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
     [Command("CancelCommand")]
     private async Task CancelAsync()
     {
+        if (IsFinished || IsRetryableFailure || IsCanceling)
+        {
+            return;
+        }
+
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Cancel", "GamePackageOperationViewModel.Command"));
 
-        Title = SH.ViewModelGamePackageOperationCancelling;
+        titleBeforeCancel = Title;
+        IsCanceling = true;
         await gamePackageService.CancelOperationAsync().ConfigureAwait(true);
-        IsFinished = true;
-        Title = SH.ViewModelGamePackageOperationCanceled;
+    }
+
+    [Command("ContinueCommand")]
+    private async Task ContinueAsync()
+    {
+        if (operationContext is null)
+        {
+            return;
+        }
+
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Continue", "GamePackageOperationViewModel.Command"));
+
+        IsCanceling = false;
+        IsRetryableFailure = false;
+        Title = titleBeforeCancel ?? Title;
+        await gamePackageService.ContinueOperationAsync().ConfigureAwait(true);
     }
 }

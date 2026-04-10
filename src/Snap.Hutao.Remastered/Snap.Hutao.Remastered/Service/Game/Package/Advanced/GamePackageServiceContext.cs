@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Threading;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Net.Http;
@@ -20,8 +21,9 @@ public readonly struct GamePackageServiceContext
     public readonly ConcurrentDictionary<string, Void> DownloadedPatches = [];
 
     private readonly AsyncKeyedLock<string> chunkLocks = new();
+    private readonly AsyncManualResetEvent operationResumeEvent;
 
-    public GamePackageServiceContext(GamePackageOperationContext operation, GamePackageOperationInfo information, IProgress<GamePackageOperationReport> progress, ParallelOptions parallelOptions, HttpClient httpClient, TokenBucketRateLimiter? rateLimiter)
+    public GamePackageServiceContext(GamePackageOperationContext operation, GamePackageOperationInfo information, IProgress<GamePackageOperationReport> progress, ParallelOptions parallelOptions, HttpClient httpClient, TokenBucketRateLimiter? rateLimiter, AsyncManualResetEvent operationResumeEvent)
     {
         Operation = operation;
         Information = information;
@@ -29,9 +31,17 @@ public readonly struct GamePackageServiceContext
         ParallelOptions = parallelOptions;
         HttpClient = httpClient;
         StreamCopyRateLimiter = rateLimiter;
+        this.operationResumeEvent = operationResumeEvent;
     }
 
     public CancellationToken CancellationToken { get => ParallelOptions.CancellationToken; }
+
+    public async ValueTask WaitForExecutionAsync()
+    {
+        CancellationToken token = CancellationToken;
+        token.ThrowIfCancellationRequested();
+        await operationResumeEvent.WaitAsync().WaitAsync(token).ConfigureAwait(false);
+    }
 
     public string EnsureAssetTargetDirectoryExists(string assetName)
     {

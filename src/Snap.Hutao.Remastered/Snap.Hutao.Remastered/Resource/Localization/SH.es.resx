@@ -4008,7 +4008,7 @@ Espacio disponible: {2}</value>
     <value>Inicio personalizado</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
-    <value>Las opciones de inicio personalizado permiten iniciar rápidamente programas en otras rutas; las opciones del juego en Hutao, incluidos los parámetros de inicio, pueden no surtir efecto.</value>
+    <value>Las opciones de inicio personalizado permiten iniciar rápidamente programas en otras rutas</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
     <value>Inicio de programa personalizado</value>

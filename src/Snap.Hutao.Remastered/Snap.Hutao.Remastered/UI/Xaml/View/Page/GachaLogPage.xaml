@@ -1,6 +1,5 @@
 <shuxc:ScopedPage
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.GachaLogPage"
-    x:Name="RootPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cw="using:CommunityToolkit.WinUI"
@@ -18,6 +17,7 @@
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shuxvs="using:Snap.Hutao.Remastered.UI.Xaml.View.Specialized"
     xmlns:shvg="using:Snap.Hutao.Remastered.ViewModel.GachaLog"
+    x:Name="RootPage"
     d:DataContext="{d:DesignInstance shvg:GachaLogViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
@@ -31,8 +31,8 @@
         <cwconv:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <cwconv:BoolToObjectConverter
             x:Key="BoolNegationToVisibilityConverter"
-            TrueValue="Collapsed"
-            FalseValue="Visible"/>
+            FalseValue="Visible"
+            TrueValue="Collapsed"/>
         <cwconv:DoubleToObjectConverter
             x:Key="DoubleToOpacityConverter"
             FalseValue="0.4"
@@ -348,8 +348,7 @@
                 </Border>
             </Border>
         </shuxc:StandardView.EmptyContent>
-        <Pivot Style="{ThemeResource CardPivotStyle}"
-               x:Name="Pivot">
+        <Pivot x:Name="Pivot" Style="{ThemeResource CardPivotStyle}">
             <Pivot.LeftHeader>
                 <shuxc:SizeRestrictedContentControl Margin="6,6,0,6">
                     <ComboBox
@@ -417,9 +416,7 @@
                     </CommandBar.SecondaryCommands>
                 </CommandBar>
             </Pivot.RightHeader>
-            <PivotItem
-                Header="{shuxm:ResourceString Name=ViewPageGachaLogPivotOverview}"
-                x:Name="PivotOverview">
+            <PivotItem x:Name="PivotOverview" Header="{shuxm:ResourceString Name=ViewPageGachaLogPivotOverview}">
                 <ScrollViewer
                     Margin="16,0"
                     cw:ScrollViewerExtensions.HorizontalScrollBarMargin="0,0,-16,0"
@@ -430,34 +427,28 @@
                         Margin="0,16"
                         MinItemWidth="302"
                         Spacing="16">
-                        <shuxvs:StatisticsCard 
-                            DataContext="{Binding Statistics.AvatarWish}"
-                            Visibility="{Binding DataContext.IsBeyondMode, ElementName=RootPage, Converter={StaticResource BoolNegationToVisibilityConverter}}"/>
-                        <shuxvs:StatisticsCard 
-                            DataContext="{Binding Statistics.WeaponWish}"
-                            Visibility="{Binding DataContext.IsBeyondMode, ElementName=RootPage, Converter={StaticResource BoolNegationToVisibilityConverter}}"/>
-                        <shuxvs:StatisticsCard 
-                            DataContext="{Binding Statistics.StandardWish}" 
+                        <shuxvs:StatisticsCard DataContext="{Binding Statistics.AvatarWish}" Visibility="{Binding DataContext.IsBeyondMode, ElementName=RootPage, Converter={StaticResource BoolNegationToVisibilityConverter}}"/>
+                        <shuxvs:StatisticsCard DataContext="{Binding Statistics.WeaponWish}" Visibility="{Binding DataContext.IsBeyondMode, ElementName=RootPage, Converter={StaticResource BoolNegationToVisibilityConverter}}"/>
+                        <shuxvs:StatisticsCard
+                            DataContext="{Binding Statistics.StandardWish}"
                             ShowUpPull="False"
                             Visibility="{Binding DataContext.IsBeyondMode, ElementName=RootPage, Converter={StaticResource BoolNegationToVisibilityConverter}}"/>
-                        <shuxvs:StatisticsCard 
-                            DataContext="{Binding Statistics.ChronicledWish}" 
+                        <shuxvs:StatisticsCard
+                            DataContext="{Binding Statistics.ChronicledWish}"
                             ShowUpPull="False"
                             Visibility="{Binding DataContext.IsBeyondMode, ElementName=RootPage, Converter={StaticResource BoolNegationToVisibilityConverter}}"/>
-                        <shuxvs:BeyondStatisticsCard 
+                        <shuxvs:BeyondStatisticsCard
                             DataContext="{Binding Statistics.BeyondStandardWish}"
-                            Visibility="{Binding DataContext.IsBeyondMode, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"
-                            ShowUpPull="False"/>
-                        <shuxvs:StatisticsCard 
+                            ShowUpPull="False"
+                            Visibility="{Binding DataContext.IsBeyondMode, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <shuxvs:StatisticsCard
                             DataContext="{Binding Statistics.BeyondEventWish}"
-                            Visibility="{Binding DataContext.IsBeyondMode, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"
-                            ShowUpPull="True"/>
+                            ShowUpPull="True"
+                            Visibility="{Binding DataContext.IsBeyondMode, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
                     </shuxcp:HorizontalEqualPanel>
                 </ScrollViewer>
             </PivotItem>
-            <PivotItem 
-                Header="{shuxm:ResourceString Name=ViewPageGachaLogPivotCountdown}"
-                x:Name="PivotCountdown">
+            <PivotItem x:Name="PivotCountdown" Header="{shuxm:ResourceString Name=ViewPageGachaLogPivotCountdown}">
                 <Grid>
                     <shuxc:Loading
                         Margin="16"
@@ -487,9 +478,7 @@
                 </Grid>
 
             </PivotItem>
-            <PivotItem 
-                Header="{shuxm:ResourceString Name=ViewPageGachaLogPivotHistory}"
-                x:Name="PivotHistory">
+            <PivotItem x:Name="PivotHistory" Header="{shuxm:ResourceString Name=ViewPageGachaLogPivotHistory}">
                 <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                     <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                         <SplitView
@@ -566,9 +555,7 @@
                     </Border>
                 </Border>
             </PivotItem>
-            <PivotItem 
-                Header="{shuxm:ResourceString Name=ViewPageGachaLogPivotAvatar}"
-                x:Name="PivotAvatar">
+            <PivotItem x:Name="PivotAvatar" Header="{shuxm:ResourceString Name=ViewPageGachaLogPivotAvatar}">
                 <ScrollViewer>
                     <StackPanel Margin="16,0,16,16">
                         <Border Margin="0,16,0,0" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
@@ -603,9 +590,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </PivotItem>
-            <PivotItem 
-                Header="{shuxm:ResourceString Name=ViewPageGachaLogPivotWeapon}"
-                x:Name="PivotWeapon">
+            <PivotItem x:Name="PivotWeapon" Header="{shuxm:ResourceString Name=ViewPageGachaLogPivotWeapon}">
                 <ScrollViewer>
                     <StackPanel Margin="16,0,16,16">
                         <Border Margin="0,16,0,0" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
@@ -653,9 +638,7 @@
                     </StackPanel>
                 </ScrollViewer>
             </PivotItem>
-            <PivotItem 
-                Header="{shuxm:ResourceString Name=ViewPageGachaLogPivotStatistics}"
-                x:Name="PivotStatistics">
+            <PivotItem x:Name="PivotStatistics" Header="{shuxm:ResourceString Name=ViewPageGachaLogPivotStatistics}">
                 <Grid>
                     <shuxc:Loading
                         Margin="16"

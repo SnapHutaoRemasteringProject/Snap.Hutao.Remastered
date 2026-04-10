@@ -571,7 +571,7 @@
                                 <StackPanel VerticalAlignment="Center">
                                     <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageLaunchGameAdvancedStartCustomizeHeader}"/>
                                     <TextBlock
-                                        Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                                        Foreground="{ThemeResource AccentAAFillColorDefaultBrush}"
                                         Style="{StaticResource CaptionTextBlockStyle}"
                                         Text="{shuxm:ResourceString Name=ViewPageLaunchGameAdvancedStartDescription}"/>
                                 </StackPanel>
@@ -660,7 +660,10 @@
                                     </cwc:SettingsExpander>-->
 
                                     <!--  延迟的启动程序列表管理  -->
-                                    <shuxcc:TitleCard Title="{shuxm:ResourceString Name=ViewPageLaunchGameAdvancedStartDelayedStartList}" Grid.Row="2">
+                                    <shuxcc:TitleCard
+                                        Title="{shuxm:ResourceString Name=ViewPageLaunchGameAdvancedStartDelayedStartList}"
+                                        Grid.Row="2"
+                                        CornerRadius="4">
                                         <shuxcc:TitleCard.TitleContent>
                                             <StackPanel
                                                 Margin="0,0,16,0"

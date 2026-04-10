@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -4005,7 +4005,7 @@ Espaço disponível: {2}</value>
     <value>Inicialização personalizada</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
-    <value>As opções de inicialização personalizada permitem iniciar rapidamente programas em outros caminhos. As opções do jogo dentro do Hutao (por exemplo parâmetros de inicialização) não terão efeito.</value>
+    <value>As opções de inicialização personalizada permitem iniciar rapidamente programas em outros caminhos.</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
     <value>Inicialização de programa personalizada pelo usuário</value>

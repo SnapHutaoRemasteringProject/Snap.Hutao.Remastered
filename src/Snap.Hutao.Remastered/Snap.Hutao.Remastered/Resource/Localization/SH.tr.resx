@@ -4005,7 +4005,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Özel Başlatma</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
-    <value>Özel başlatma seçenekleri, farklı bir yoldaki programları hızlıca başlatmanıza olanak tanır. Hutao içindeki oyun seçenekleri (ör. başlatma parametreleri) uygulanmayacaktır.</value>
+    <value>Özel başlatma seçenekleri, farklı bir yoldaki programları hızlıca başlatmanıza olanak tanır.</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
     <value>Kullanıcı tanımlı program başlatma</value>

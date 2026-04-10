@@ -23,9 +23,11 @@ public sealed partial class GameAssetOperationSSD : GameAssetOperation
 
     public override async ValueTask InstallAssetsAsync(GamePackageServiceContext context, SophonDecodedBuild remoteBuild)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         await Parallel.ForEachAsync(remoteBuild.Manifests, context.ParallelOptions, async (manifest, token) =>
         {
-            token.ThrowIfCancellationRequested();
+            await context.WaitForExecutionAsync().ConfigureAwait(false);
+             token.ThrowIfCancellationRequested();
             IEnumerable<SophonAssetOperation> assets = manifest.Data.Assets.Select(asset => SophonAssetOperation.AddOrRepair(manifest.UrlPrefix, manifest.UrlSuffix, asset));
             await Parallel.ForEachAsync(assets, context.ParallelOptions, (asset, token) => EnsureAssetAsync(context, asset)).ConfigureAwait(true);
         }).ConfigureAwait(false);
@@ -33,6 +35,7 @@ public sealed partial class GameAssetOperationSSD : GameAssetOperation
 
     public override async ValueTask UpdateDiffAssetsAsync(GamePackageServiceContext context, ImmutableArray<SophonAssetOperation> diffAssets)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         await Parallel.ForEachAsync(diffAssets, context.ParallelOptions, (asset, token) => asset.Kind switch
         {
             SophonAssetOperationKind.AddOrRepair or SophonAssetOperationKind.Modify => EnsureAssetAsync(context, asset),
@@ -43,22 +46,25 @@ public sealed partial class GameAssetOperationSSD : GameAssetOperation
 
     public override async ValueTask PredownloadDiffAssetsAsync(GamePackageServiceContext context, ImmutableArray<SophonAssetOperation> diffAssets)
     {
-        await Parallel.ForEachAsync(diffAssets, context.ParallelOptions, (asset, token) =>
-        {
-            token.ThrowIfCancellationRequested();
-            IReadOnlyList<SophonChunk> chunks = asset.Kind switch
-            {
-                SophonAssetOperationKind.AddOrRepair => [.. asset.NewAsset.AssetChunks.Select(c => new SophonChunk(asset.UrlPrefix, asset.UrlSuffix, c))],
-                SophonAssetOperationKind.Modify => asset.DiffChunks,
-                _ => [],
-            };
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
+        await Parallel.ForEachAsync(diffAssets, context.ParallelOptions, async (asset, token) =>
+         {
+            await context.WaitForExecutionAsync().ConfigureAwait(false);
+             token.ThrowIfCancellationRequested();
+             IReadOnlyList<SophonChunk> chunks = asset.Kind switch
+             {
+                 SophonAssetOperationKind.AddOrRepair => [.. asset.NewAsset.AssetChunks.Select(c => new SophonChunk(asset.UrlPrefix, asset.UrlSuffix, c))],
+                 SophonAssetOperationKind.Modify => asset.DiffChunks,
+                 _ => [],
+             };
 
-            return DownloadChunksAsync(context, chunks);
-        }).ConfigureAwait(false);
+            await DownloadChunksAsync(context, chunks).ConfigureAwait(false);
+         }).ConfigureAwait(false);
     }
 
     protected override async ValueTask VerifyManifestsAsync(GamePackageServiceContext context, SophonDecodedBuild build, Action<SophonAssetOperation> conflictHandler)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         await Parallel.ForEachAsync(build.Manifests, context.ParallelOptions, (manifest, token) => VerifyManifestAsync(context, manifest, conflictHandler)).ConfigureAwait(false);
     }
 
@@ -70,16 +76,19 @@ public sealed partial class GameAssetOperationSSD : GameAssetOperation
 
     protected override async ValueTask RepairAssetsAsync(GamePackageServiceContext context, GamePackageIntegrityInfo info)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         await Parallel.ForEachAsync(info.ConflictedAssets, context.ParallelOptions, (asset, token) => EnsureAssetAsync(context, asset)).ConfigureAwait(false);
     }
 
     protected override async ValueTask DownloadChunksAsync(GamePackageServiceContext context, IReadOnlyList<SophonChunk> sophonChunks)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         await Parallel.ForEachAsync(sophonChunks, context.ParallelOptions, (chunk, token) => DownloadChunkAsync(context, chunk)).ConfigureAwait(false);
     }
 
     protected override async ValueTask MergeNewAssetAsync(GamePackageServiceContext context, AssetProperty assetProperty)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         string path = context.EnsureAssetTargetDirectoryExists(assetProperty.AssetName);
         using (SafeFileHandle fileHandle = File.OpenHandle(path, FileMode.Create, FileAccess.Write, FileShare.None, preallocationSize: assetProperty.AssetSize))
         {
@@ -90,6 +99,7 @@ public sealed partial class GameAssetOperationSSD : GameAssetOperation
 
     private static async ValueTask MergeChunkIntoAssetAsync(GamePackageServiceContext context, SafeFileHandle fileHandle, AssetChunk chunk)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         CancellationToken token = context.CancellationToken;
         token.ThrowIfCancellationRequested();
         using (IMemoryOwner<byte> memoryOwner = MemoryPool<byte>.Shared.Rent(ChunkBufferSize))
@@ -111,7 +121,8 @@ public sealed partial class GameAssetOperationSSD : GameAssetOperation
                         long offset = chunk.ChunkOnFileOffset;
                         do
                         {
-                            int bytesRead = await decompressStream.ReadAsync(buffer, token).ConfigureAwait(true);
+                            await context.WaitForExecutionAsync().ConfigureAwait(true);
+                             int bytesRead = await decompressStream.ReadAsync(buffer, token).ConfigureAwait(true);
                             if (bytesRead <= 0)
                             {
                                 break;

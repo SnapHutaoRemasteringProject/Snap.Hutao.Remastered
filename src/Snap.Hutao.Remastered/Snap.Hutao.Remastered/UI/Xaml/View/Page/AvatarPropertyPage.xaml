@@ -18,10 +18,10 @@
     xmlns:shuxdcs="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shva="using:Snap.Hutao.Remastered.ViewModel.AvatarProperty"
+    x:Name="RootPage"
     d:DataContext="{d:DesignInstance shva:AvatarPropertyViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    mc:Ignorable="d"
-    x:Name="RootPage">
+    mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
         <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
@@ -616,9 +616,7 @@
                                 Text="{Binding SearchData.FilterToken, Mode=TwoWay}"
                                 TokenItemTemplate="{StaticResource TokenTemplate}"/>
                         </AppBarElementContainer>
-                        <AppBarButton
-                            Icon="{shuxm:FontIcon Glyph=&#xEDE1;}"
-                            Label="{shuxm:ResourceString Name=ViewPageAvatarPropertyExportToTextLabel}">
+                        <AppBarButton Icon="{shuxm:FontIcon Glyph=&#xEDE1;}" Label="{shuxm:ResourceString Name=ViewPageAvatarPropertyExportToTextLabel}">
                             <AppBarButton.Flyout>
                                 <MenuFlyout Placement="Bottom">
                                     <MenuFlyoutItem

@@ -1,7 +1,10 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Millennium-Science-Technology-R-D-Inst. All rights reserved.
+// Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Xaml;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.LifeCycle;
 using Snap.Hutao.Remastered.Core.Logging;
@@ -15,8 +18,9 @@ using Snap.Hutao.Remastered.UI.Xaml;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
+using Snap.Hutao.Remastered.Win32;
+using Snap.Hutao.Remastered.Win32.Foundation;
 using System.IO;
-using Microsoft.UI.Xaml;
 
 namespace Snap.Hutao.Remastered.ViewModel;
 
@@ -69,7 +73,8 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
         BackgroundActivityOptions.MetadataInitialization.PropertyChanged += OnMetadataInitializationPropertyChanged;
-        
+
+        RefreshAutoStartTaskAfterUpdateIfNeeded();
         ShowUpdateLogWindowAfterUpdate();
         NotifyIfDataFolderHasReparsePoint();
         await CheckUpdateAsync().ConfigureAwait(false);
@@ -94,6 +99,44 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
                 SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Show update log window", "MainViewModel.Command"));
                 XamlApplicationLifetime.IsFirstRunAfterUpdate = false;
             }
+        }
+    }
+
+    private void RefreshAutoStartTaskAfterUpdateIfNeeded()
+    {
+        bool isFirstRunRelated = XamlApplicationLifetime.IsFirstRunAfterUpdate || LocalSetting.Get(SettingKeys.AlwaysIsFirstRunAfterUpdate, false);
+        bool pendingRefresh = LocalSetting.Get(SettingKeys.PendingRefreshAutoStartTaskAfterUpdate, false);
+
+        if (!isFirstRunRelated && !pendingRefresh)
+        {
+            return;
+        }
+
+        if (!AppOptions.IsStartupEnabled.Value)
+        {
+            LocalSetting.Set(SettingKeys.PendingRefreshAutoStartTaskAfterUpdate, false);
+            return;
+        }
+
+        if (!Environment.IsPrivilegedProcess)
+        {
+            LocalSetting.Set(SettingKeys.PendingRefreshAutoStartTaskAfterUpdate, true);
+            messenger.Send(InfoBarMessage.Warning(SH.ViewModelMainAutoStartRefreshRequireElevatedRestart));
+            return;
+        }
+
+        // Current env: First run after update or pending refresh, startup enabled, privileged process
+        try
+        {
+            BOOL runElevated = AppOptions.IsStartupAsAdminEnabled.Value;
+            HutaoNative.Instance.CreateAutoStartTaskForThisUser(runElevated);
+            LocalSetting.Set(SettingKeys.PendingRefreshAutoStartTaskAfterUpdate, false);
+            SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Refresh auto start task after update", "MainViewModel"));
+        }
+        catch (Exception ex)
+        {
+            LocalSetting.Set(SettingKeys.PendingRefreshAutoStartTaskAfterUpdate, true);
+            SentrySdk.CaptureException(ex);
         }
     }
 

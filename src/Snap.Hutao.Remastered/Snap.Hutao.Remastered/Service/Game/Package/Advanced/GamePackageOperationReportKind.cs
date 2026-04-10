@@ -10,4 +10,5 @@ public enum GamePackageOperationReportKind
     Reset,
     Finish,
     Abort,
+    RetryableFailure,
 }

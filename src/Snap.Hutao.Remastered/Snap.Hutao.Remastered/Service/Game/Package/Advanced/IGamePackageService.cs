@@ -14,6 +14,8 @@ public interface IGamePackageService
 
     ValueTask CancelOperationAsync();
 
+    ValueTask ContinueOperationAsync();
+
     ValueTask<SophonDecodedBuild?> DecodeManifestsAsync(IGameFileSystemView gameFileSystem, BranchWrapper? branch, CancellationToken token = default);
 
     ValueTask<SophonDecodedBuild?> DecodeManifestsAsync(IGameFileSystemView gameFileSystem, SophonBuild? build, CancellationToken token = default);

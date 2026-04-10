@@ -6,9 +6,26 @@
     <File Path=".editorconfig" />
     <File Path=".vsconfig" />
   </Folder>
+  <Folder Name="/Solution Items/.github/" />
+  <Folder Name="/Solution Items/.github/ISSUE_TEMPLATE/">
+    <File Path="../../.github/ISSUE_TEMPLATE/CHS-bug-report.yml" />
+    <File Path="../../.github/ISSUE_TEMPLATE/CHS-feature-request.yml" />
+    <File Path="../../.github/ISSUE_TEMPLATE/CHS-network-issue.yml" />
+    <File Path="../../.github/ISSUE_TEMPLATE/ENG-bug-report.yml" />
+    <File Path="../../.github/ISSUE_TEMPLATE/ENG-feature-request.yml" />
+    <File Path="../../.github/ISSUE_TEMPLATE/ENG-network-issue.yml" />
+    <File Path="../../.github/ISSUE_TEMPLATE/MGMT-publish.yml" />
+    <File Path="../../.github/ISSUE_TEMPLATE/task.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/.github/workflows/">
+    <File Path="../../.github/workflows/alpha.yml" />
+    <File Path="../../.github/workflows/canary.yml" />
+    <File Path="../../.github/workflows/close_stale.yml" />
+    <File Path="../../.github/workflows/issue_similarity.yml" />
+  </Folder>
+  <Project Path="Snap.Hutao.Remastered.Test/Snap.Hutao.Remastered.Test.csproj" />
   <Project Path="Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj">
     <Platform Project="x64" />
     <Deploy />
   </Project>
-  <Project Path="Snap.Hutao.Remastered.Test/Snap.Hutao.Remastered.Test.csproj" />
 </Solution>

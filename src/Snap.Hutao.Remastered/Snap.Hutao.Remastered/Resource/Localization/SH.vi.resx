@@ -4006,7 +4006,7 @@ Dung lượng còn trống: {2}</value>
     <value>Khởi chạy tùy chỉnh</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
-    <value>Tùy chọn khởi chạy tùy chỉnh cho phép khởi chạy nhanh chương trình từ đường dẫn khác. Các tùy chọn trò chơi trong Hutao (ví dụ: tham số khởi chạy) sẽ không có hiệu lực.</value>
+    <value>Tùy chọn khởi chạy tùy chỉnh cho phép khởi chạy nhanh chương trình từ đường dẫn khác.</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
     <value>Khởi chạy chương trình tùy chỉnh do người dùng định nghĩa</value>

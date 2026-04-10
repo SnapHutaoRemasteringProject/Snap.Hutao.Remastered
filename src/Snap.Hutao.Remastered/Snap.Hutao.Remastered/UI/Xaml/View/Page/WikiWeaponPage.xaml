@@ -19,10 +19,10 @@
     xmlns:shuxvs="using:Snap.Hutao.Remastered.UI.Xaml.View.Specialized"
     xmlns:shvc="using:Snap.Hutao.Remastered.ViewModel.Complex"
     xmlns:shvw="using:Snap.Hutao.Remastered.ViewModel.Wiki"
+    x:Name="RootPage"
     d:DataContext="{d:DesignInstance Type=shvw:WikiWeaponViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    mc:Ignorable="d"
-    x:Name="RootPage">
+    mc:Ignorable="d">
     <mxi:Interaction.Behaviors>
         <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
     </mxi:Interaction.Behaviors>

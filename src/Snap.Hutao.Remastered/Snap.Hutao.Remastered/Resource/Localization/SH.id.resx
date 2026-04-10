@@ -4005,7 +4005,7 @@ Ruang Tersedia: {2}</value>
     <value>Peluncuran kustom</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
-    <value>Opsi peluncuran kustom memungkinkan menjalankan program dari jalur lain dengan cepat. Opsi game di Hutao (mis. parameter peluncuran) tidak akan berlaku.</value>
+    <value>Opsi peluncuran kustom memungkinkan menjalankan program dari jalur lain dengan cepat.</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
     <value>Peluncuran program kustom pengguna</value>

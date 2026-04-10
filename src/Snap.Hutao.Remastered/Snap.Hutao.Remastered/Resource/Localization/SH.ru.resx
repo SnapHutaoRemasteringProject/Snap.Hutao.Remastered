@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -4012,7 +4012,7 @@
     <value>Пользовательский запуск</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
-    <value>Параметры пользовательского запуска позволяют быстро запускать программы из других путей. Параметры игры в Hutao (например, параметры запуска) применены не будут.</value>
+    <value>Параметры пользовательского запуска позволяют быстро запускать программы из других путей.</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
     <value>Пользовательский запуск программы</value>

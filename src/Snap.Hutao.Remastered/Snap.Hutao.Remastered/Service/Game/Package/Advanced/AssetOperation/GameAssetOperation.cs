@@ -40,6 +40,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
 
     public async ValueTask<GamePackageIntegrityInfo> VerifyGamePackageIntegrityAsync(GamePackageServiceContext context, SophonDecodedBuild build)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         CancellationToken token = context.CancellationToken;
 
         ImmutableArray<SophonAssetOperation>.Builder conflictedAssetsBuilder = ImmutableArray.CreateBuilder<SophonAssetOperation>();
@@ -90,6 +91,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
 
     public async ValueTask RepairGamePackageAsync(GamePackageServiceContext context, GamePackageIntegrityInfo info)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         await RepairAssetsAsync(context, info).ConfigureAwait(false);
 
         if (info.ChannelSdkConflicted)
@@ -104,6 +106,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
 
     public async ValueTask EnsureChannelSdkAsync(GamePackageServiceContext context)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         CancellationToken token = context.CancellationToken;
 
         if (context.Operation.GameChannelSDK is null)
@@ -119,6 +122,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
 
     protected static async ValueTask VerifyAssetAsync(GamePackageServiceContext context, SophonAsset asset, Action<SophonAssetOperation> conflictHandler)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         CancellationToken token = context.CancellationToken;
         token.ThrowIfCancellationRequested();
         string assetPath = Path.Combine(context.Operation.GameFileSystem.GameDirectory, asset.AssetProperty.AssetName);
@@ -164,7 +168,8 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
             // Reading same file can't be done in parallel
             for (int i = 0; i < chunks.Count; i++)
             {
-                AssetChunk chunk = chunks[i];
+                await context.WaitForExecutionAsync().ConfigureAwait(false);
+                 AssetChunk chunk = chunks[i];
                 using (IMemoryOwner<byte> memoryOwner = MemoryPool<byte>.Shared.RentExactly((int)chunk.ChunkSizeDecompressed))
                 {
                     Memory<byte> buffer = memoryOwner.Memory;
@@ -206,6 +211,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
 
     protected static async ValueTask DownloadChunkAsync(GamePackageServiceContext context, SophonChunk sophonChunk)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         CancellationToken token = context.CancellationToken;
         token.ThrowIfCancellationRequested();
         Directory.CreateDirectory(context.Operation.EffectiveChunksDirectory);
@@ -259,6 +265,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
 
     protected async ValueTask EnsureAssetAsync(GamePackageServiceContext context, SophonAssetOperation asset)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         CancellationToken token = context.CancellationToken;
         token.ThrowIfCancellationRequested();
         string assetPath = Path.Combine(context.Operation.GameFileSystem.GameDirectory, asset.NewAsset.AssetName);
@@ -301,6 +308,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
 
     private async ValueTask MergeDiffAssetAsync(GamePackageServiceContext context, SophonAssetOperation asset)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         CancellationToken token = context.CancellationToken;
 
         string oldAssetPath = Path.Combine(context.Operation.GameFileSystem.GameDirectory, asset.OldAsset.AssetName);
@@ -316,7 +324,8 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
             {
                 foreach (AssetChunk chunk in asset.NewAsset.AssetChunks)
                 {
-                    newAssetStream.Position = chunk.ChunkOnFileOffset;
+                    await context.WaitForExecutionAsync().ConfigureAwait(false);
+                     newAssetStream.Position = chunk.ChunkOnFileOffset;
 
                     if (asset.OldAsset.AssetChunks.FirstOrDefault(c => c.ChunkDecompressedHashMd5 == chunk.ChunkDecompressedHashMd5) is not { } oldChunk)
                     {
@@ -353,7 +362,8 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
                             long bytesToCopy = oldChunk.ChunkSizeDecompressed;
                             while (bytesToCopy > 0)
                             {
-                                int bytesRead = await RandomAccess.ReadAsync(oldAssetHandle, buffer[..(int)Math.Min(buffer.Length, bytesToCopy)], offset, token).ConfigureAwait(false);
+                                await context.WaitForExecutionAsync().ConfigureAwait(false);
+                                 int bytesRead = await RandomAccess.ReadAsync(oldAssetHandle, buffer[..(int)Math.Min(buffer.Length, bytesToCopy)], offset, token).ConfigureAwait(false);
                                 if (bytesRead <= 0)
                                 {
                                     break;
@@ -445,6 +455,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
 
     protected async ValueTask InstallOrPatchAssetAsync(GamePackageServiceContext context, SophonPatchAsset asset)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         CancellationToken token = context.CancellationToken;
 
         FileData fileData = asset.FileData;
@@ -484,7 +495,8 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
                         Memory<byte> buffer = memoryOwner.Memory;
                         while (patchLength > 0)
                         {
-                            int bytesRead = await RandomAccess.ReadAsync(patchFileHandle, buffer[..(int)Math.Min(buffer.Length, patchLength)], patchStartOffset, token).ConfigureAwait(false);
+                            await context.WaitForExecutionAsync().ConfigureAwait(false);
+                             int bytesRead = await RandomAccess.ReadAsync(patchFileHandle, buffer[..(int)Math.Min(buffer.Length, patchLength)], patchStartOffset, token).ConfigureAwait(false);
                             if (bytesRead <= 0)
                             {
                                 break;

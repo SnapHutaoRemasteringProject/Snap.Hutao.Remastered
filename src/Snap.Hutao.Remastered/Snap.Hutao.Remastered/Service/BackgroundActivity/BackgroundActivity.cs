@@ -20,7 +20,7 @@ public sealed partial class BackgroundActivity : ObservableObject
     public partial string Description { get; private set; }
 
     [ObservableProperty]
-    public partial bool IsCompletedSuccessfully { get; private set; } = true;
+    public partial bool IsCompletedSuccessfully { get; private set; }
 
     [ObservableProperty]
     public partial bool IsFaulted { get; private set; }
@@ -43,6 +43,7 @@ public sealed partial class BackgroundActivity : ObservableObject
 
         Description = description;
         IsCompletedSuccessfully = isCompletedSuccessfully;
+        IsFaulted = isFaulted;
         HasProgress = hasProgress;
         IsIndeterminate = isIndeterminate;
     }
@@ -53,6 +54,7 @@ public sealed partial class BackgroundActivity : ObservableObject
 
         Description = description;
         IsCompletedSuccessfully = isCompletedSuccessfully;
+        IsFaulted = isFaulted;
         HasProgress = hasProgress;
         IsIndeterminate = isIndeterminate;
         ProgressValue = progressValue;
@@ -64,6 +66,7 @@ public sealed partial class BackgroundActivity : ObservableObject
         {
             Description = description;
             IsCompletedSuccessfully = isCompletedSuccessfully;
+            IsFaulted = isFaulted;
             HasProgress = hasProgress;
             IsIndeterminate = isIndeterminate;
         });
@@ -75,6 +78,7 @@ public sealed partial class BackgroundActivity : ObservableObject
         {
             Description = description;
             IsCompletedSuccessfully = isCompletedSuccessfully;
+            IsFaulted = isFaulted;
             HasProgress = hasProgress;
             IsIndeterminate = isIndeterminate;
             ProgressValue = progressValue;

@@ -4044,7 +4044,7 @@
     <value>自訂啟動</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
-    <value>自訂啟動選項允許快速啟動其他路徑的程式，胡桃內的遊戲選項（例如啟動參數）將不會生效</value>
+    <value>自訂啟動選項允許快速啟動其他路徑的程式。</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
     <value>使用者自訂程式啟動</value>
@@ -4247,5 +4247,8 @@
   </data>
   <data name="ViewPageSettingAlwaysRunAsAdminText" xml:space="preserve">
     <value>始終以管理員身份運行</value>
+  </data>
+  <data name="ContentDialogPauseButtonText" xml:space="preserve">
+    <value>暂停</value>
   </data>
 </root>

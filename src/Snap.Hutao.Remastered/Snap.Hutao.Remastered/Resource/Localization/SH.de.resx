@@ -4054,7 +4054,7 @@ Verfügbarer Speicherplatz: {2}</value>
     <value>Benutzerdefinierter Start</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
-    <value>Mit den benutzerdefinierten Startoptionen können Programme von anderen Pfaden schnell gestartet werden；Hutao-internen Spieloptionen, einschließlich Startparametern, sind möglicherweise nicht wirksam.</value>
+    <value>Mit den benutzerdefinierten Startoptionen können Programme von anderen Pfaden schnell gestartet werden</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
     <value>Benutzerdefiniertes Programm starten</value>

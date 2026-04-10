@@ -4020,7 +4020,7 @@
     <value>사용자 정의 시작</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
-    <value>사용자 정의 시작 옵션은 다른 경로의 프로그램을 빠르게 실행할 수 있게 합니다. Hutao 내의 게임 옵션(예: 시작 매개변수)은 적용되지 않습니다.</value>
+    <value>사용자 정의 시작 옵션은 다른 경로의 프로그램을 빠르게 실행할 수 있게 합니다.</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
     <value>사용자 정의 프로그램 시작</value>

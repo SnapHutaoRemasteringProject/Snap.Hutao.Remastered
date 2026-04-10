@@ -120,4 +120,15 @@ public abstract class GamePackageOperationReport
 
         public string Reason { get; }
     }
+
+    public sealed class RetryableFailure : GamePackageOperationReport
+    {
+        public RetryableFailure(string reason)
+        {
+            Kind = GamePackageOperationReportKind.RetryableFailure;
+            Reason = reason;
+        }
+
+        public string Reason { get; }
+    }
 }

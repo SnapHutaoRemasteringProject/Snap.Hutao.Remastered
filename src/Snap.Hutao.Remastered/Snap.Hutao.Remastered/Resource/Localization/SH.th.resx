@@ -4006,7 +4006,7 @@
     <value>การเริ่มต้นแบบกำหนดเอง</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
-    <value>ตัวเลือกการเริ่มต้นแบบกำหนดเองอนุญาตให้เริ่มโปรแกรมจากเส้นทางอื่นได้อย่างรวดเร็ว ส่วนตัวเลือกเกมใน Hutao (เช่น พารามิเตอร์การเริ่มต้น) จะไม่ถูกนำมาใช้</value>
+    <value>ตัวเลือกการเริ่มต้นแบบกำหนดเองอนุญาตให้เริ่มโปรแกรมจากเส้นทางอื่นได้อย่างรวดเร็ว ส่วนตัวเลือกเกมใน </value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
     <value>การเริ่มต้นโปรแกรมที่ผู้ใช้กำหนดเอง</value>

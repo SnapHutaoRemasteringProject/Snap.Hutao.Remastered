@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -4008,7 +4008,7 @@ Espace disponible : {2}</value>
     <value>Lancement personnalisé</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
-    <value>Les options de lancement personnalisées permettent de lancer rapidement des programmes situés dans d'autres emplacements ; les options de jeu dans Hutao, y compris les paramètres de lancement, peuvent ne pas fonctionner.</value>
+    <value>Les options de lancement personnalisées permettent de lancer rapidement des programmes situés dans d'autres emplacements</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
     <value>Démarrage de programme personnalisé</value>

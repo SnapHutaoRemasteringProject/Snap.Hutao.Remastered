@@ -3,15 +3,16 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cw="using:CommunityToolkit.WinUI"
+    xmlns:cw1="using:CommunityToolkit.WinUI.Converters"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
-    xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shuxd="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter"
-    xmlns:shvp="using:Snap.Hutao.Remastered.ViewModel.Plugin" xmlns:cw1="using:CommunityToolkit.WinUI.Converters"
+    xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    xmlns:shvp="using:Snap.Hutao.Remastered.ViewModel.Plugin"
     d:DataContext="{d:DesignInstance shvp:PluginSettingViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
@@ -23,7 +24,7 @@
     <Page.Resources>
         <cw1:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <cw1:BoolNegationConverter x:Key="BoolNegationConverter"/>
-        
+
         <shuxd:ValueTypeVisibilityConverter x:Key="StringTypeConverter" TargetType="System.String"/>
         <shuxd:ValueTypeVisibilityConverter x:Key="Int32TypeConverter" TargetType="System.Int32"/>
         <shuxd:ValueTypeVisibilityConverter x:Key="BooleanTypeConverter" TargetType="System.Boolean"/>
@@ -34,7 +35,10 @@
         <shuxc:StandardView ShowCondition="{Binding IsInitialized, Mode=OneWay}">
             <shuxc:StandardView.EmptyContent>
                 <Grid>
-                    <ProgressRing IsActive="True" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ProgressRing
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        IsActive="True"/>
                 </Grid>
             </shuxc:StandardView.EmptyContent>
 
@@ -44,13 +48,16 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- 标题栏 -->
+                <!--  标题栏  -->
                 <Border
                     Grid.Row="0"
                     Margin="0,0,0,16"
                     cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                     <Border Style="{ThemeResource AcrylicBorderCardStyle}">
-                        <StackPanel Orientation="Horizontal" Padding="16" Spacing="12">
+                        <StackPanel
+                            Padding="16"
+                            Orientation="Horizontal"
+                            Spacing="12">
                             <Button
                                 Command="{Binding GoBackCommand}"
                                 Content="{shuxm:ResourceString Name=ViewPagePluginSettingBackButton}"
@@ -78,41 +85,39 @@
                     </Border>
                 </Border>
 
-                <!-- 设置列表 -->
-                <Border
-                    Grid.Row="1"
-                    cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
+                <!--  设置列表  -->
+                <Border Grid.Row="1" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                     <Grid Style="{ThemeResource AcrylicGridCardStyle}">
                         <shuxc:StandardView ShowCondition="{Binding Settings.Count, Converter={StaticResource Int32ToBoolConverter}}">
                             <shuxc:StandardView.EmptyContent>
                                 <StackPanel
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Spacing="16">
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="16">
                                     <FontIcon
-                                    FontSize="48"
-                                    Glyph="&#xE713;"
-                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                                        FontSize="48"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Glyph="&#xE713;"/>
                                     <TextBlock
-                                    HorizontalAlignment="Center"
-                                    Style="{StaticResource SubtitleTextBlockStyle}"
-                                    Text="{shuxm:ResourceString Name=ViewPagePluginSettingEmptyTitle}"/>
+                                        HorizontalAlignment="Center"
+                                        Style="{StaticResource SubtitleTextBlockStyle}"
+                                        Text="{shuxm:ResourceString Name=ViewPagePluginSettingEmptyTitle}"/>
                                     <TextBlock
-                                    HorizontalAlignment="Center"
-                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                    Text="{shuxm:ResourceString Name=ViewPagePluginSettingEmptyDescription}"/>
+                                        HorizontalAlignment="Center"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{shuxm:ResourceString Name=ViewPagePluginSettingEmptyDescription}"/>
                                 </StackPanel>
                             </shuxc:StandardView.EmptyContent>
 
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <ItemsControl
-                                ItemContainerTransitions="{ThemeResource ListViewLikeThemeTransitions}"
-                                ItemsPanel="{ThemeResource StackPanelSpacing8Template}"
-                                ItemsSource="{Binding Settings}"
-                                Margin="16">
+                                    Margin="16"
+                                    ItemContainerTransitions="{ThemeResource ListViewLikeThemeTransitions}"
+                                    ItemsPanel="{ThemeResource StackPanelSpacing8Template}"
+                                    ItemsSource="{Binding Settings}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Border Style="{ThemeResource BorderCardStyle}" Padding="12">
+                                            <Border Padding="12" Style="{ThemeResource BorderCardStyle}">
                                                 <Grid>
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto"/>
@@ -120,17 +125,15 @@
                                                         <RowDefinition Height="Auto"/>
                                                     </Grid.RowDefinitions>
 
-                                                    <!-- 设置名称和描述 -->
+                                                    <!--  设置名称和描述  -->
                                                     <StackPanel Grid.Row="0">
+                                                        <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{Binding Name}"/>
+
                                                         <TextBlock
-                                                        Style="{StaticResource BodyStrongTextBlockStyle}"
-                                                        Text="{Binding Name}"/>
-                                                        
-                                                        <TextBlock
-                                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                        Text="{Binding Description}"
-                                                        TextWrapping="Wrap"/>
+                                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                                            Text="{Binding Description}"
+                                                            TextWrapping="Wrap"/>
                                                     </StackPanel>
 
                                                     <Grid Grid.Row="1" Margin="0,8,0,0">
@@ -140,55 +143,59 @@
                                                         </Grid.ColumnDefinitions>
 
                                                         <StackPanel Grid.Column="0">
-                                                            <!-- 字符串类型 -->
+                                                            <!--  字符串类型  -->
                                                             <TextBox
-                                                            Text="{Binding CurrentValue, Mode=TwoWay}"
-                                                            PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingStringPlaceholder}"
-                                                            Visibility="{Binding Converter={StaticResource StringTypeConverter}}"/>
-                                                            
-                                                            <!-- 整数类型 -->
+                                                                PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingStringPlaceholder}"
+                                                                Text="{Binding CurrentValue, Mode=TwoWay}"
+                                                                Visibility="{Binding Converter={StaticResource StringTypeConverter}}"/>
+
+                                                            <!--  整数类型  -->
                                                             <NumberBox
-                                                            Value="{Binding CurrentValue, Mode=TwoWay}"
-                                                            PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingIntPlaceholder}"
-                                                            Visibility="{Binding Converter={StaticResource Int32TypeConverter}}"/>
-                                                            
-                                                            <!-- 布尔类型 -->
+                                                                PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingIntPlaceholder}"
+                                                                Visibility="{Binding Converter={StaticResource Int32TypeConverter}}"
+                                                                Value="{Binding CurrentValue, Mode=TwoWay}"/>
+
+                                                            <!--  布尔类型  -->
                                                             <ToggleSwitch
-                                                            IsOn="{Binding CurrentValue, Mode=TwoWay}"
-                                                            OffContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOff}"
-                                                            OnContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOn}"
-                                                            Visibility="{Binding Converter={StaticResource BooleanTypeConverter}}"/>
-                                                            
-                                                            <!-- 默认类型 -->
+                                                                IsOn="{Binding CurrentValue, Mode=TwoWay}"
+                                                                OffContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOff}"
+                                                                OnContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOn}"
+                                                                Visibility="{Binding Converter={StaticResource BooleanTypeConverter}}"/>
+
+                                                            <!--  默认类型  -->
                                                             <TextBox
-                                                            Text="{Binding CurrentValue, Mode=TwoWay}"
-                                                            PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingDefaultPlaceholder}"
-                                                            Visibility="{Binding Converter={StaticResource DefaultTypeConverter}}"/>
+                                                                PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingDefaultPlaceholder}"
+                                                                Text="{Binding CurrentValue, Mode=TwoWay}"
+                                                                Visibility="{Binding Converter={StaticResource DefaultTypeConverter}}"/>
                                                         </StackPanel>
-                                                        <!-- 操作按钮 -->
-                                                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="12,0,0,0">
+                                                        <!--  操作按钮  -->
+                                                        <StackPanel
+                                                            Grid.Column="1"
+                                                            Margin="12,0,0,0"
+                                                            Orientation="Horizontal"
+                                                            Spacing="8">
                                                             <Button
-                                                            Command="{Binding ElementName=Root, Path=DataContext.SaveSettingCommand}"
-                                                            CommandParameter="{Binding}"
-                                                            Content="{shuxm:ResourceString Name=ViewPagePluginSettingSaveButton}"
-                                                            Style="{StaticResource AccentButtonStyle}"/>
-                                                            
+                                                                Command="{Binding ElementName=Root, Path=DataContext.SaveSettingCommand}"
+                                                                CommandParameter="{Binding}"
+                                                                Content="{shuxm:ResourceString Name=ViewPagePluginSettingSaveButton}"
+                                                                Style="{StaticResource AccentButtonStyle}"/>
+
                                                             <Button
-                                                            Command="{Binding ElementName=Root, Path=DataContext.ResetSettingCommand}"
-                                                            CommandParameter="{Binding}"
-                                                            Content="{shuxm:ResourceString Name=ViewPagePluginSettingResetButton}"
-                                                            Style="{StaticResource DefaultButtonStyle}"/>
+                                                                Command="{Binding ElementName=Root, Path=DataContext.ResetSettingCommand}"
+                                                                CommandParameter="{Binding}"
+                                                                Content="{shuxm:ResourceString Name=ViewPagePluginSettingResetButton}"
+                                                                Style="{StaticResource DefaultButtonStyle}"/>
                                                         </StackPanel>
                                                     </Grid>
 
-                                                    <!-- 默认值提示 -->
+                                                    <!--  默认值提示  -->
                                                     <TextBlock
-                                                    Grid.Row="2"
-                                                    Margin="0,4,0,0"
-                                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewPagePluginSettingDefaultValueText}"/>
-                                                    <Run Text="{Binding DefaultValue}"/>
+                                                        Grid.Row="2"
+                                                        Margin="0,4,0,0"
+                                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                        Style="{StaticResource CaptionTextBlockStyle}">
+                                                        <Run Text="{shuxm:ResourceString Name=ViewPagePluginSettingDefaultValueText}"/>
+                                                        <Run Text="{Binding DefaultValue}"/>
                                                     </TextBlock>
                                                 </Grid>
                                             </Border>

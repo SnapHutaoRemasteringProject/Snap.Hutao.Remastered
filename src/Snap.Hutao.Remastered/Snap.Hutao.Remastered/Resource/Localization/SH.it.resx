@@ -4005,7 +4005,7 @@ Spazio disponibile: {2}</value>
     <value>Avvio personalizzato</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDescription" xml:space="preserve">
-    <value>Le opzioni di avvio personalizzato consentono di avviare rapidamente programmi in percorsi diversi; le opzioni di gioco in Hutao, inclusi i parametri di avvio, potrebbero non avere effetto.</value>
+    <value>Le opzioni di avvio personalizzato consentono di avviare rapidamente programmi in percorsi diversi</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartCustomizeHeader" xml:space="preserve">
     <value>Avvio programma personalizzato</value>

@@ -60,6 +60,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             BackgroundActivity.BackgroundActivity activity = GetActivityByName(name);
 
             bool failed = false;
+            bool succeeded = false;
             List<Exception> exceptions = [];
             try
             {
@@ -72,12 +73,16 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
                     {
                         try
                         {
-                            return EnsureRepository(activity, directory, info, false);
+                            ValueResult<bool, ValueDirectory> result = EnsureRepository(activity, directory, info, false);
+                            succeeded = true;
+                            return result;
                         }
                         catch (Exception first)
                         {
                             exceptions.Add(first);
-                            return EnsureRepository(activity, directory, info, true);
+                            ValueResult<bool, ValueDirectory> result = EnsureRepository(activity, directory, info, true);
+                            succeeded = true;
+                            return result;
                         }
                     }
                     catch (Exception second)
@@ -93,7 +98,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             }
             finally
             {
-                if (!failed)
+                if (!failed && succeeded)
                 {
                     await activity.NotifyAsync(taskContext).ConfigureAwait(false);
                     await activity.UpdateAsync(taskContext, SH.ServiceGitRepositoryOperationCompleted, true, false, false, false).ConfigureAwait(false);

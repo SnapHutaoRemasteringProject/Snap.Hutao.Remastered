@@ -8,6 +8,7 @@
                 <XamlControlsResources/>
                 <ResourceDictionary Source="ms-appx:///CommunityToolkit.WinUI.Controls.SettingsControls/SettingsCard/SettingsCard.xaml"/>
                 <ResourceDictionary Source="ms-appx:///CommunityToolkit.Labs.WinUI.TokenView/TokenItem/TokenItem.xaml"/>
+                <ResourceDictionary Source="ms-appx:///DevWinUI.Controls/Themes/Generic.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Elevation.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/ItemIcon.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Loading.xaml"/>
