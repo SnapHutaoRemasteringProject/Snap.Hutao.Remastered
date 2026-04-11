@@ -4525,4 +4525,16 @@
   <data name="ContentDialogPauseButtonText" xml:space="preserve">
     <value>暂停</value>
   </data>
+  <data name="ViewModelMainNetworkUnavailableWillAutoRetry" xml:space="preserve">
+    <value>当前网络不可用，将在网络恢复后自动重试。</value>
+  </data>
+  <data name="ViewModelMainNetworkConnectionFailedWillAutoRetry" xml:space="preserve">
+    <value>网络连接失败，将在网络恢复后自动重试。</value>
+  </data>
+  <data name="ViewModelMainNetworkDisconnected" xml:space="preserve">
+    <value>检测到网络已断开。</value>
+  </data>
+  <data name="ViewModelMainNetworkRecoveredRetrying" xml:space="preserve">
+    <value>网络已恢复，正在自动重试。</value>
+  </data>
 </root>

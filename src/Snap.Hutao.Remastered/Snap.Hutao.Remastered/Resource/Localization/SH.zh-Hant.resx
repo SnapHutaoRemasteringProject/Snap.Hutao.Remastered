@@ -4245,10 +4245,10 @@
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>應用行為</value>
   </data>
-  <data name="ViewPageSettingAlwaysRunAsAdminText" xml:space="preserve">
-    <value>始終以管理員身份運行</value>
-  </data>
   <data name="ContentDialogPauseButtonText" xml:space="preserve">
     <value>暂停</value>
+  </data>
+  <data name="ViewPageSettingAlwaysRunAsAdminText" xml:space="preserve">
+    <value>始終以管理員身份運行</value>
   </data>
 </root>

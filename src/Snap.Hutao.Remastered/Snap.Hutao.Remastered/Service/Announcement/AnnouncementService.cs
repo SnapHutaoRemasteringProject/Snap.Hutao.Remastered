@@ -24,12 +24,21 @@ public sealed partial class AnnouncementService : IAnnouncementService
     [SuppressMessage("", "SH003")]
     public async ValueTask<AnnouncementWrapper?> GetAnnouncementWrapperAsync(string languageCode, Region region, CancellationToken token = default)
     {
-        AnnouncementWrapper? wrapper = await memoryCache.GetOrCreateAsync($"{nameof(AnnouncementService)}.{nameof(AnnouncementWrapper)}.{languageCode}.{region}", entry =>
-        {
-            entry.SetSlidingExpiration(TimeSpan.FromMinutes(30L));
-            return PrivateGetAnnouncementWrapperAsync(languageCode, region, token);
-        }).ConfigureAwait(false);
+        string cacheKey = $"{nameof(AnnouncementService)}.{nameof(AnnouncementWrapper)}.{languageCode}.{region}";
 
+        if (memoryCache.TryGetValue(cacheKey, out AnnouncementWrapper? cachedWrapper))
+        {
+            return cachedWrapper;
+        }
+
+        AnnouncementWrapper? wrapper = await PrivateGetAnnouncementWrapperAsync(languageCode, region, token).ConfigureAwait(false);
+        if (wrapper is null)
+        {
+            memoryCache.Remove(cacheKey);
+            return default;
+        }
+
+        memoryCache.Set(cacheKey, wrapper, TimeSpan.FromMinutes(30L));
         return wrapper;
     }
 

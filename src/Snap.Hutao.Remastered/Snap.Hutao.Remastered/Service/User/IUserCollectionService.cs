@@ -14,4 +14,6 @@ public interface IUserCollectionService
     ValueTask RemoveUserAsync(BindingUser user);
 
     ValueTask<ValueResult<UserOptionResultKind, string?>> TryCreateAndAddUserFromInputCookieAsync(InputCookie inputCookie);
+
+    ValueTask<bool> RetryResumeUninitializedUsersAsync(CancellationToken token = default);
 }

@@ -15,8 +15,9 @@ public sealed partial class HutaoPassportLoginDialog : ContentDialog
     [GeneratedConstructor(InitializeComponent = true)]
     public partial HutaoPassportLoginDialog(IServiceProvider serviceProvider);
 
-    public async ValueTask<ValueResult<bool, (string? UserName, string? Passport)>> GetInputAsync()
+    public async ValueTask<ValueResult<bool, (string? UserName, string? Passport)>> GetInputAsync(string? userName = default)
     {
+        UserName = userName;
         ContentDialogResult result = await contentDialogFactory.EnqueueAndShowAsync(this).ShowTask.ConfigureAwait(false);
         await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
         return new(result is ContentDialogResult.Primary, (UserName, Password));

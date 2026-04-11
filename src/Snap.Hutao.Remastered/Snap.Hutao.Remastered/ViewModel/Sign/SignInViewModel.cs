@@ -72,7 +72,10 @@ public sealed partial class SignInViewModel : Abstraction.ViewModelSlim, IRecipi
         }
         else
         {
-            messenger.Send(InfoBarMessage.Warning(SH.MustSelectUserAndUid));
+            Awards = default;
+            CurrentUid = default;
+            TotalSignInDaysHint = default;
+            IsTodaySigned = false;
         }
     }
 
@@ -89,7 +92,10 @@ public sealed partial class SignInViewModel : Abstraction.ViewModelSlim, IRecipi
         }
         else
         {
-            messenger.Send(InfoBarMessage.Warning(SH.MustSelectUserAndUid));
+            Awards = default;
+            CurrentUid = default;
+            TotalSignInDaysHint = default;
+            IsTodaySigned = false;
         }
     }
 

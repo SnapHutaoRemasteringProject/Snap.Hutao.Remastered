@@ -10,7 +10,7 @@ using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.Announcement;
 using Snap.Hutao.Remastered.Service.Hutao;
-using Snap.Hutao.Remastered.Service.Notification;
+using Snap.Hutao.Remastered.Service.Network;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.Control.Card;
 using Snap.Hutao.Remastered.UI.Xaml.View.Card;
@@ -21,6 +21,9 @@ using Snap.Hutao.Remastered.Web.Response;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Snap.Hutao.Remastered.Web;
+using Snap.Hutao.Remastered.Web.Request.Builder;
+using System.Net.Http;
 
 namespace Snap.Hutao.Remastered.ViewModel.Home;
 
@@ -34,6 +37,9 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
     private readonly CultureOptions cultureOptions;
     private readonly ITaskContext taskContext;
     private readonly AppOptions appOptions;
+    private readonly INetworkRetryCoordinator networkRetryCoordinator;
+
+    private IDisposable? homeRetryRegistration;
 
     [GeneratedConstructor]
     public partial AnnouncementViewModel(IServiceProvider serviceProvider);
@@ -56,125 +62,193 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
     [GeneratedRegex("act_id=(.*?)&")]
     private static partial Regex ActIdExtractor { get; }
 
-    protected override ValueTask<bool> LoadOverrideAsync(CancellationToken token)
+    protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
-        InitializeDashboard();
-        InitializeInGameAnnouncementAsync(token).SafeForget();
-        InitializeHutaoAnnouncementAsync(token).SafeForget();
-        InitializeMiyoliveCodeAsync(token).SafeForget();
+        homeRetryRegistration ??= networkRetryCoordinator.Register("AnnouncementViewModel.LoadHome", RetryHomeAsync);
+        await taskContext.SwitchToMainThreadAsync();
+        RefreshDashboard();
         UpdateGreetingText();
-        return ValueTask.FromResult(true);
+
+        RetryHomeAsync(token).AsTask().SafeForget();
+        return true;
+    }
+
+    protected override void UninitializeOverride()
+    {
+        homeRetryRegistration?.Dispose();
+        homeRetryRegistration = default;
     }
 
     [SuppressMessage("", "SH003")]
-    private async Task InitializeInGameAnnouncementAsync(CancellationToken token)
+    private async ValueTask<bool> InitializeInGameAnnouncementAsync(CancellationToken token)
     {
         try
         {
             AnnouncementWrapper? announcementWrapper = await announcementService.GetAnnouncementWrapperAsync(cultureOptions.LanguageCode, appOptions.Region.Value, token).ConfigureAwait(false);
+            if (announcementWrapper is null)
+            {
+                networkRetryCoordinator.MarkPending("AnnouncementViewModel.LoadHome", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+                return false;
+            }
+
             await taskContext.SwitchToMainThreadAsync();
             Announcement = announcementWrapper;
             DeferContentLoader?.Load("GameAnnouncementPivot");
+            return true;
         }
         catch (OperationCanceledException)
         {
+            throw;
         }
+        catch (Exception ex) when (IsNetworkRelatedException(ex))
+        {
+            networkRetryCoordinator.MarkPending("AnnouncementViewModel.LoadHome", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+            return false;
+        }
+
+        return false;
     }
 
     [SuppressMessage("", "SH003")]
-    private async Task InitializeHutaoAnnouncementAsync(CancellationToken token)
+    private async ValueTask<bool> InitializeHutaoAnnouncementAsync(CancellationToken token)
     {
         try
         {
-            ObservableCollection<Web.Hutao.HutaoAsAService.Announcement> hutaoAnnouncements = await hutaoAsAService.GetHutaoAnnouncementCollectionAsync(token).ConfigureAwait(false);
+            ObservableCollection<Web.Hutao.HutaoAsAService.Announcement>? hutaoAnnouncements = await hutaoAsAService.GetHutaoAnnouncementCollectionAsync(token).ConfigureAwait(false);
+            if (hutaoAnnouncements is null)
+            {
+                networkRetryCoordinator.MarkPending("AnnouncementViewModel.LoadHome", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+                return false;
+            }
+
             await taskContext.SwitchToMainThreadAsync();
             HutaoAnnouncements = hutaoAnnouncements;
             DeferContentLoader?.Load("HutaoAnnouncementControl");
+            return true;
         }
         catch (OperationCanceledException)
         {
+            throw;
         }
+        catch (Exception ex) when (IsNetworkRelatedException(ex))
+        {
+            networkRetryCoordinator.MarkPending("AnnouncementViewModel.LoadHome", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+            return false;
+        }
+
+        return false;
     }
 
     [SuppressMessage("", "SH003")]
-    private async Task InitializeMiyoliveCodeAsync(CancellationToken token)
+    private async ValueTask<bool> InitializeMiyoliveCodeAsync(CancellationToken token)
     {
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             IUserService userService = scope.ServiceProvider.GetRequiredService<IUserService>();
             if (await userService.GetCurrentUserAndUidAsync().ConfigureAwait(false) is not { IsOversea: false } userAndUid)
             {
-                // The oversea user can direct use their code on the official website.
-                return;
+                return true;
             }
 
             IHomeClient homeClient = scope.ServiceProvider
                 .GetRequiredService<IOverseaSupportFactory<IHomeClient>>()
                 .CreateFor(userAndUid);
 
-            Response<NewHomeNewInfo> newHomeInfoResponse = await homeClient.GetNewHomeInfoAsync(2, token).ConfigureAwait(false);
-
-            if (!ResponseValidator.TryValidateWithoutUINotification(newHomeInfoResponse, out NewHomeNewInfo? newHomeInfo))
+            try
             {
-                return;
-            }
+                Response<NewHomeNewInfo> newHomeInfoResponse = await homeClient.GetNewHomeInfoAsync(2, token).ConfigureAwait(false);
 
-            Uri url;
-            if (newHomeInfo.Lives is [{ Data.LiveUrl: { } url1 }, ..])
-            {
-                url = url1;
-            }
-            else if (newHomeInfo.Navigator.SingleOrDefault(nav => nav.Name.EqualsAny(["直播兑换码", "前瞻直播"], StringComparison.OrdinalIgnoreCase)) is { AppPath: { } url2 })
-            {
-                url = url2;
-            }
-            else
-            {
-                return;
-            }
+                if (!ResponseValidator.TryValidateWithoutUINotification(newHomeInfoResponse, out NewHomeNewInfo? newHomeInfo))
+                {
+                    return true;
+                }
 
-            if (ActIdExtractor.Match(url.OriginalString) is not { Success: true, Groups: [_, { Value: { } actId }, ..] })
-            {
-                return;
+                Uri url;
+                if (newHomeInfo.Lives is [{ Data.LiveUrl: { } url1 }, ..])
+                {
+                    url = url1;
+                }
+                else if (newHomeInfo.Navigator.SingleOrDefault(nav => nav.Name.EqualsAny(["直播兑换码", "前瞻直播"], StringComparison.OrdinalIgnoreCase)) is { AppPath: { } url2 })
+                {
+                    url = url2;
+                }
+                else
+                {
+                    return true;
+                }
+
+                if (ActIdExtractor.Match(url.OriginalString) is not { Success: true, Groups: [_, { Value: { } actId }, ..] })
+                {
+                    return true;
+                }
+
+                IMiyoliveClient miyoliveClient = scope.ServiceProvider
+                    .GetRequiredService<IOverseaSupportFactory<IMiyoliveClient>>()
+                    .CreateFor(userAndUid);
+
+                Response<CodeListWrapper> codeListResponse = await miyoliveClient.RefreshCodeAsync(actId, token).ConfigureAwait(false);
+                if (!ResponseValidator.TryValidateWithoutUINotification(codeListResponse, out CodeListWrapper? wrapper))
+                {
+                    return true;
+                }
+
+                ImmutableArray<CodeWrapper> wrappers = wrapper.CodeList.SelectAsArray(static wrapper => wrapper.WithTitle(wrapper.Title.DecodeHtml()));
+                wrappers = [.. wrappers.Where(static wrapper => !string.IsNullOrEmpty(wrapper.Code))];
+                if (wrappers.IsEmpty)
+                {
+                    return true;
+                }
+
+                await taskContext.SwitchToMainThreadAsync();
+                RedeemCodes = wrappers;
+                return true;
             }
-
-            IMiyoliveClient miyoliveClient = scope.ServiceProvider
-                .GetRequiredService<IOverseaSupportFactory<IMiyoliveClient>>()
-                .CreateFor(userAndUid);
-
-            Response<CodeListWrapper> codeListResponse = await miyoliveClient.RefreshCodeAsync(actId, token).ConfigureAwait(false);
-            if (!ResponseValidator.TryValidateWithoutUINotification(codeListResponse, out CodeListWrapper? wrapper))
+            catch (OperationCanceledException)
             {
-                return;
+                throw;
             }
-
-            ImmutableArray<CodeWrapper> wrappers = wrapper.CodeList.SelectAsArray(static wrapper => wrapper.WithTitle(wrapper.Title.DecodeHtml()));
-            wrappers = [.. wrappers.Where(static wrapper => !string.IsNullOrEmpty(wrapper.Code))];
-            if (wrappers.IsEmpty)
+            catch (Exception ex) when (IsNetworkRelatedException(ex))
             {
-                return;
+                networkRetryCoordinator.MarkPending("AnnouncementViewModel.LoadHome", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+                return false;
             }
-
-            await taskContext.SwitchToMainThreadAsync();
-            RedeemCodes = wrappers;
         }
+
+        return false;
     }
 
-    [Command("CopyCodeCommand")]
-    private async Task CopyCodeToClipboardAsync(string? code)
+    private async ValueTask<bool> RetryHomeAsync(CancellationToken token)
     {
-        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Copy redeem code to ClipBoard", "AnnouncementPage.Command"));
+        bool inGameSuccess = await InitializeInGameAnnouncementAsync(token).ConfigureAwait(false);
+        bool hutaoSuccess = await InitializeHutaoAnnouncementAsync(token).ConfigureAwait(false);
+        bool miHoYoSuccess = await InitializeMiyoliveCodeAsync(token).ConfigureAwait(false);
 
-        if (string.IsNullOrEmpty(code))
+        bool success = inGameSuccess && hutaoSuccess && miHoYoSuccess;
+        if (success)
         {
-            return;
+            networkRetryCoordinator.ClearPending("AnnouncementViewModel.LoadHome");
         }
 
-        await serviceProvider.GetRequiredService<IClipboardProvider>().SetTextAsync(code).ConfigureAwait(false);
-        serviceProvider.GetRequiredService<IMessenger>().Send(InfoBarMessage.Success(SH.ViewPageAnnouncementRedeemCodeCopySucceed));
+        return success;
+    }
+
+    private static bool IsNetworkRelatedException(Exception ex)
+    {
+        return ex switch
+        {
+            HttpRequestException httpRequestException => HttpRequestExceptionHandling.HttpRequestExceptionToNetworkError(httpRequestException) is not NetworkError.NULL,
+            TimeoutException => true,
+            TaskCanceledException => true,
+            _ => false,
+        };
     }
 
     private void UpdateGreetingText()
+    {
+        taskContext.InvokeOnMainThread(UpdateGreetingTextCore);
+    }
+
+    private void UpdateGreetingTextCore()
     {
         // TODO avatar birthday override.
         int rand = Random.Shared.Next(0, 1000);
@@ -201,6 +275,11 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
                 GreetingText = SH.FormatViewPageHomeGreetingTextCommon2(LocalSetting.Get(SettingKeys.LaunchTimes, 0));
             }
         }
+    }
+
+    private void RefreshDashboard()
+    {
+        taskContext.InvokeOnMainThread(InitializeDashboard);
     }
 
     private void InitializeDashboard()

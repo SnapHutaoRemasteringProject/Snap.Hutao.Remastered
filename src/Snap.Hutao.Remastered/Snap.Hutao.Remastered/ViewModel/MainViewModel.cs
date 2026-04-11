@@ -13,14 +13,20 @@ using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.BackgroundActivity;
 using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Notification;
+using Snap.Hutao.Remastered.Service.Network;
 using Snap.Hutao.Remastered.Service.Update;
+using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
 using Snap.Hutao.Remastered.Win32;
 using Snap.Hutao.Remastered.Win32.Foundation;
+using Snap.Hutao.Remastered.Web;
+using Snap.Hutao.Remastered.Web.Request.Builder;
+using System.Net.Http;
 using System.IO;
+using Windows.Networking.Connectivity;
 
 namespace Snap.Hutao.Remastered.ViewModel;
 
@@ -31,10 +37,12 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
     private readonly ICurrentXamlWindowReference currentXamlWindowReference;
     private readonly IMetadataService metadataService;
     private readonly IUpdateService updateService;
-    private readonly ITaskContext taskContext;
+    private readonly IUserService userService;
+    private readonly INetworkRetryCoordinator networkRetryCoordinator;
     private readonly IMessenger messenger;
     private readonly App app;
     private DispatcherTimer? successHideTimer;
+    private IDisposable? startupRetryRegistration;
 
     [GeneratedConstructor]
     public partial MainViewModel(IServiceProvider serviceProvider);
@@ -64,6 +72,7 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
         {
             successHideTimer?.Stop();
             BackgroundActivityOptions.MetadataInitialization.PropertyChanged -= OnMetadataInitializationPropertyChanged;
+            startupRetryRegistration?.Dispose();
             Uninitialize();
         }
 
@@ -73,11 +82,12 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
         BackgroundActivityOptions.MetadataInitialization.PropertyChanged += OnMetadataInitializationPropertyChanged;
+        startupRetryRegistration ??= networkRetryCoordinator.Register("MainViewModel.Startup", RetryStartupAsync);
 
         RefreshAutoStartTaskAfterUpdateIfNeeded();
         ShowUpdateLogWindowAfterUpdate();
         NotifyIfDataFolderHasReparsePoint();
-        await CheckUpdateAsync().ConfigureAwait(false);
+        await RetryStartupAsync(token).ConfigureAwait(false);
 
         return true;
     }
@@ -182,5 +192,50 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
             successHideTimer?.Stop();
         };
         successHideTimer.Start();
+    }
+
+    private async ValueTask<bool> RetryStartupAsync(CancellationToken token)
+    {
+        if (!HasInternetAccess())
+        {
+            networkRetryCoordinator.MarkPending("MainViewModel.Startup", SH.ViewModelMainNetworkUnavailableWillAutoRetry);
+            return false;
+        }
+
+        try
+        {
+            await metadataService.InitializepublicAsync(token).ConfigureAwait(false);
+            await userService.RetryResumeUninitializedUsersAsync(token).ConfigureAwait(false);
+            await CheckUpdateAsync().ConfigureAwait(false);
+            networkRetryCoordinator.ClearPending("MainViewModel.Startup");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            if (IsNetworkRelatedException(ex))
+            {
+                networkRetryCoordinator.MarkPending("MainViewModel.Startup", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+                return false;
+            }
+
+            SentrySdk.CaptureException(ex);
+            throw;
+        }
+    }
+
+    private static bool IsNetworkRelatedException(Exception ex)
+    {
+        return ex switch
+        {
+            HttpRequestException httpRequestException => HttpRequestExceptionHandling.HttpRequestExceptionToNetworkError(httpRequestException) is not NetworkError.NULL,
+            TimeoutException => true,
+            TaskCanceledException => true,
+            _ => false,
+        };
+    }
+
+    private static bool HasInternetAccess()
+    {
+        return NetworkInformation.GetInternetConnectionProfile()?.GetNetworkConnectivityLevel() is NetworkConnectivityLevel.InternetAccess;
     }
 }

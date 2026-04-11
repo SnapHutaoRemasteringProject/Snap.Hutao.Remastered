@@ -39,25 +39,25 @@ public static class UserServiceExtension
         public async ValueTask<BindingUser?> GetCurrentUserAsync()
         {
             AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
-            return users.CurrentItem;
+            return ResolveCurrentUser(users);
         }
 
         public async ValueTask<UserGameRole?> GetCurrentUserGameRoleAsync()
         {
             AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
-            return users.CurrentItem?.UserGameRoles.CurrentItem;
+            return ResolveCurrentUser(users)?.UserGameRoles.CurrentItem;
         }
 
         public async ValueTask<string?> GetCurrentUidAsync()
         {
             AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
-            return users.CurrentItem?.UserGameRoles?.CurrentItem?.GameUid;
+            return ResolveCurrentUser(users)?.UserGameRoles.CurrentItem?.GameUid;
         }
 
         public async ValueTask<UserAndUid?> GetCurrentUserAndUidAsync()
         {
             AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
-            UserAndUid.TryFromUser(users.CurrentItem, out UserAndUid? userAndUid);
+            UserAndUid.TryFromUser(ResolveCurrentUser(users), out UserAndUid? userAndUid);
             return userAndUid;
         }
 
@@ -89,6 +89,28 @@ public static class UserServiceExtension
             }
 
             return default;
+        }
+
+        private static BindingUser? ResolveCurrentUser(AdvancedDbCollectionView<BindingUser, EntityUser> users)
+        {
+            if (users.CurrentItem is { } currentUser)
+            {
+                return currentUser;
+            }
+
+            BindingUser? selectedUser = null;
+            int count = 0;
+            foreach (BindingUser user in users.Source)
+            {
+                count++;
+                if (user.IsSelected)
+                {
+                    selectedUser = user;
+                    break;
+                }
+            }
+
+            return selectedUser ?? (count is 1 ? users.Source.FirstOrDefault() : null);
         }
     }
 }

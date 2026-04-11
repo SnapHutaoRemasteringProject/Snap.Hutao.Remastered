@@ -37,6 +37,11 @@ public sealed partial class AdvancedDbCollectionView<TEntity> : AdvancedCollecti
 
         TEntity? currentItem = CurrentItem;
 
+        if (currentItem is null)
+        {
+            return;
+        }
+
         foreach (TEntity item in Source)
         {
             item.IsSelected = ReferenceEquals(item, currentItem);
@@ -68,7 +73,11 @@ public sealed partial class AdvancedDbCollectionView<TEntity> : AdvancedCollecti
 
         public void Dispose()
         {
-            view.MoveCurrentTo(currentItem);
+            if (currentItem is not null)
+            {
+                view.MoveCurrentTo(currentItem);
+            }
+
             view.savingToDatabase = true;
         }
     }
@@ -104,6 +113,11 @@ public sealed partial class AdvancedDbCollectionView<TEntityAccess, TEntity> : A
 
         TEntityAccess? currentItem = CurrentItem;
 
+        if (currentItem is null)
+        {
+            return;
+        }
+
         foreach (TEntityAccess item in Source)
         {
             item.Entity.IsSelected = ReferenceEquals(item, currentItem);
@@ -135,7 +149,11 @@ public sealed partial class AdvancedDbCollectionView<TEntityAccess, TEntity> : A
 
         public void Dispose()
         {
-            view.MoveCurrentTo(currentItem);
+            if (currentItem is not null)
+            {
+                view.MoveCurrentTo(currentItem);
+            }
+
             view.savingToDatabase = true;
         }
     }

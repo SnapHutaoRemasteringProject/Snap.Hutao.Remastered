@@ -25,7 +25,7 @@ public sealed partial class HutaoAsAService : IHutaoAsAService
     [GeneratedConstructor]
     public partial HutaoAsAService(IServiceProvider serviceProvider);
 
-    public async ValueTask<ObservableCollection<HutaoAnnouncement>> GetHutaoAnnouncementCollectionAsync(CancellationToken token = default)
+    public async ValueTask<ObservableCollection<HutaoAnnouncement>?> GetHutaoAnnouncementCollectionAsync(CancellationToken token = default)
     {
         if (announcements is null)
         {
@@ -43,7 +43,7 @@ public sealed partial class HutaoAsAService : IHutaoAsAService
 
                 if (!ResponseValidator.TryValidate(response, scope.ServiceProvider, out array))
                 {
-                    return [];
+                    return default;
                 }
             }
 

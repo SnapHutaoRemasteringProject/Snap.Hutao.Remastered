@@ -14,14 +14,18 @@ using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.Notification;
+using Snap.Hutao.Remastered.Service.Network;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 using Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
+using Snap.Hutao.Remastered.Web;
 using Snap.Hutao.Remastered.Web.Hoyolab;
 using Snap.Hutao.Remastered.Web.Hoyolab.Passport;
+using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Response;
+using System.Net.Http;
 using System.Collections.Immutable;
 using System.Text;
 using EntityUser = Snap.Hutao.Remastered.Model.Entity.User;
@@ -38,7 +42,10 @@ public sealed partial class UserViewModel : ObservableObject
     private readonly CultureOptions cultureOptions;
     private readonly ITaskContext taskContext;
     private readonly IUserService userService;
+    private readonly INetworkRetryCoordinator networkRetryCoordinator;
     private readonly IMessenger messenger;
+
+    private IDisposable? usersRetryRegistration;
 
     [GeneratedConstructor]
     public partial UserViewModel(IServiceProvider serviceProvider);
@@ -91,12 +98,58 @@ public sealed partial class UserViewModel : ObservableObject
 
         try
         {
-            Users = await userService.GetUsersAsync().ConfigureAwait(true);
+            usersRetryRegistration ??= networkRetryCoordinator.Register("UserViewModel.LoadUsers", RetryLoadUsersAsync);
+            await RetryLoadUsersAsync(CancellationToken.None).ConfigureAwait(true);
+        }
+        catch (Exception ex) when (IsNetworkRelatedException(ex))
+        {
+            networkRetryCoordinator.MarkPending("UserViewModel.LoadUsers", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
         }
         catch (HutaoException ex)
         {
             messenger.Send(InfoBarMessage.Error(ex));
         }
+    }
+
+    private async ValueTask<bool> RetryLoadUsersAsync(CancellationToken token)
+    {
+        bool needsRetry = false;
+
+        try
+        {
+            await userService.RetryResumeUninitializedUsersAsync(token).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (IsNetworkRelatedException(ex))
+        {
+            needsRetry = true;
+        }
+
+        AdvancedDbCollectionView<User, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(true);
+        await taskContext.SwitchToMainThreadAsync();
+        Users = default;
+        Users = users;
+        Users.Refresh();
+
+        bool hasUninitializedUsers = Users.Source.Any(static user => !user.IsInitialized);
+        if (needsRetry || hasUninitializedUsers)
+        {
+            networkRetryCoordinator.MarkPending("UserViewModel.LoadUsers", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+            return false;
+        }
+
+        networkRetryCoordinator.ClearPending("UserViewModel.LoadUsers");
+        return true;
+    }
+
+    private static bool IsNetworkRelatedException(Exception ex)
+    {
+        return ex switch
+        {
+            HttpRequestException httpRequestException => HttpRequestExceptionHandling.HttpRequestExceptionToNetworkError(httpRequestException) is not NetworkError.NULL,
+            TimeoutException => true,
+            TaskCanceledException => true,
+            _ => false,
+        };
     }
 
     [Command("AddUserCommand")]

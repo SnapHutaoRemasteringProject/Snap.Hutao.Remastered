@@ -121,4 +121,9 @@ public sealed partial class UserService : IUserService
     {
         await profilePictureService.RefreshUserGameRoleAsync(userGameRole).ConfigureAwait(false);
     }
+
+    public ValueTask<bool> RetryResumeUninitializedUsersAsync(CancellationToken token = default)
+    {
+        return userCollectionService.RetryResumeUninitializedUsersAsync(token);
+    }
 }

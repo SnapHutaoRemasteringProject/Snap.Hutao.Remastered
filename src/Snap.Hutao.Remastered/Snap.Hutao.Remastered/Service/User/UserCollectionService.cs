@@ -56,6 +56,17 @@ public sealed partial class UserCollectionService : IUserCollectionService, IDis
                 await taskContext.SwitchToMainThreadAsync();
                 users.MoveCurrentTo(users.Source.SelectedOrFirstOrDefault());
             }
+            else if (users.CurrentItem is null)
+            {
+                await taskContext.SwitchToMainThreadAsync();
+                users.MoveCurrentTo(users.Source.SelectedOrFirstOrDefault());
+            }
+
+            if (users.CurrentItem is null && TryGetSelectedOrOnlyUser(users.Source) is { } currentUser)
+            {
+                await taskContext.SwitchToMainThreadAsync();
+                users.MoveCurrentTo(currentUser);
+            }
 
             return users;
         }
@@ -102,6 +113,40 @@ public sealed partial class UserCollectionService : IUserCollectionService, IDis
         return new(UserOptionResultKind.Added, newUser.UserInfo.Uid);
     }
 
+    public async ValueTask<bool> RetryResumeUninitializedUsersAsync(CancellationToken token = default)
+    {
+        AdvancedDbCollectionView<BindingUser, EntityUser> users = await GetUsersAsync().ConfigureAwait(false);
+
+        bool recovered = false;
+        foreach (BindingUser user in users.Source)
+        {
+            if (user.IsInitialized)
+            {
+                continue;
+            }
+
+            await userInitializationService.ResumeUserAsync(user, token).ConfigureAwait(false);
+            if (user.IsInitialized)
+            {
+                recovered = true;
+
+                if (user.NeedDbUpdateAfterResume)
+                {
+                    userRepository.UpdateUser(user.Entity);
+                    user.NeedDbUpdateAfterResume = false;
+                }
+            }
+        }
+
+        if (recovered)
+        {
+            await taskContext.SwitchToMainThreadAsync();
+            OnCurrentUserChanged(this, default);
+        }
+
+        return recovered;
+    }
+
     public void Dispose()
     {
         if (users is not null)
@@ -112,39 +157,85 @@ public sealed partial class UserCollectionService : IUserCollectionService, IDis
 
     private void OnCurrentUserChanged(object? sender, object? args)
     {
-        if (users?.CurrentItem is null)
+        if (users is null)
         {
-            messenger.Send(UserAndUidChangedMessage.Empty);
             return;
         }
 
+        if (users.CurrentItem is null)
+        {
+            if (TryGetSelectedOrOnlyUser(users.Source) is { } fallbackUser)
+            {
+                users.MoveCurrentTo(fallbackUser);
+            }
+
+            if (users.CurrentItem is null)
+            {
+                if (users.Source.Count is 0)
+                {
+                    messenger.Send(UserAndUidChangedMessage.Empty);
+                }
+
+                return;
+            }
+        }
+
+        EnsureCurrentUserGameRoleSelection(users.CurrentItem);
+
+        messenger.Send(new UserAndUidChangedMessage(users.CurrentItem));
+    }
+
+    private void EnsureCurrentUserGameRoleSelection(BindingUser currentUser)
+    {
         // Suppress the BindingUser itself to raise the message
         // This is to avoid the message being raised in the
         // BindingUser.OnCurrentUserGameRoleChanged.
-        using (users.CurrentItem.SuppressCurrentUserGameRoleChangedMessage())
+        using (currentUser.SuppressCurrentUserGameRoleChangedMessage())
         {
-            foreach (UserGameRole role in users.CurrentItem.UserGameRoles)
+            foreach (UserGameRole role in currentUser.UserGameRoles)
             {
-                if (role.GameUid == users.CurrentItem.PreferredUid)
+                if (role.GameUid == currentUser.PreferredUid)
                 {
-                    users.CurrentItem.UserGameRoles.MoveCurrentTo(role);
+                    currentUser.UserGameRoles.MoveCurrentTo(role);
                     break;
                 }
             }
 
-            if (users.CurrentItem.UserGameRoles.CurrentItem is null)
+            if (currentUser.UserGameRoles.CurrentItem is null)
             {
-                if (users.CurrentItem.UserGameRoles.Source.SingleOrDefault(role => role.IsChosen) is { } chosenRole)
+                if (currentUser.UserGameRoles.Source.SingleOrDefault(role => role.IsChosen) is { } chosenRole)
                 {
-                    users.CurrentItem.UserGameRoles.MoveCurrentTo(chosenRole);
+                    currentUser.UserGameRoles.MoveCurrentTo(chosenRole);
                 }
                 else
                 {
-                    users.CurrentItem.UserGameRoles.MoveCurrentToFirst();
+                    currentUser.UserGameRoles.MoveCurrentToFirst();
                 }
             }
         }
+    }
 
-        messenger.Send(new UserAndUidChangedMessage(users.CurrentItem));
+    private static BindingUser? TryGetSelectedOrOnlyUser(IEnumerable<BindingUser> source)
+    {
+        BindingUser? selectedUser = null;
+        int count = 0;
+
+        foreach (BindingUser user in source)
+        {
+            count++;
+
+            if (user.IsSelected)
+            {
+                selectedUser = user;
+                break;
+            }
+        }
+
+        if (selectedUser is not null)
+        {
+            return selectedUser;
+        }
+
+        return count is 1 ? source.First() : null;
     }
 }

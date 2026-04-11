@@ -93,23 +93,17 @@ public sealed partial class HutaoUserOptions : ObservableObject
         {
             await loginEvent.WaitAsync().ConfigureAwait(false);
 
-            if (!IsLoggedIn)
+            if (authTokenExpiration.AccessToken is null || authTokenExpiration.ExpireAt < DateTimeOffset.UtcNow)
             {
-                return default;
+                if (HasPersistedPassportCredentials())
+                {
+                    await InitializeAsync(token).ConfigureAwait(false);
+                }
             }
 
-            if (authTokenExpiration.ExpireAt < DateTimeOffset.UtcNow)
-            {
-                // Re-initialize to refresh the token
-                await InitializeAsync(token).ConfigureAwait(false);
-            }
-
-            if (!IsLoggedIn)
-            {
-                return default;
-            }
-
-            return authTokenExpiration.AccessToken;
+            return authTokenExpiration.AccessToken is null || authTokenExpiration.ExpireAt < DateTimeOffset.UtcNow
+                ? default
+                : authTokenExpiration.AccessToken;
         }
     }
 
@@ -121,6 +115,12 @@ public sealed partial class HutaoUserOptions : ObservableObject
             string username = LocalSetting.Get(SettingKeys.PassportUserName, string.Empty);
             string refreshToken = LocalSetting.Get(SettingKeys.PassportRefreshToken, string.Empty);
 
+            if (!string.IsNullOrEmpty(username))
+            {
+                await taskContext.SwitchToMainThreadAsync();
+                UserName = username;
+            }
+
             if (string.IsNullOrEmpty(username))
             {
                 loginEvent.Set();
@@ -130,6 +130,10 @@ public sealed partial class HutaoUserOptions : ObservableObject
 
             if (!string.IsNullOrEmpty(refreshToken))
             {
+                await taskContext.SwitchToMainThreadAsync();
+                IsLoggedIn = true;
+                authTokenExpiration = default;
+
                 loginEvent.Reset();
                 infoEvent.Reset();
                 await RefreshTokenAsync(username, refreshToken, token).ConfigureAwait(false);
@@ -162,7 +166,7 @@ public sealed partial class HutaoUserOptions : ObservableObject
                 if (!ResponseValidator.TryValidate(response, scope.ServiceProvider, out TokenSet? tokenSet))
                 {
                     await taskContext.SwitchToMainThreadAsync();
-                    UserName = SH.ViewServiceHutaoUserLoginFailHint;
+                    UserName = response.ReturnCode == Response.publicFailure ? username : SH.ViewServiceHutaoUserLoginFailHint;
                     loginEvent.Set();
                     infoEvent.Set();
                     return;
@@ -191,7 +195,7 @@ public sealed partial class HutaoUserOptions : ObservableObject
                 if (!ResponseValidator.TryValidate(response, scope.ServiceProvider, out TokenSet? tokenSet))
                 {
                     await taskContext.SwitchToMainThreadAsync();
-                    UserName = SH.ViewServiceHutaoUserLoginFailHint;
+                    UserName = response.ReturnCode == Response.publicFailure ? username : SH.ViewServiceHutaoUserLoginFailHint;
                     loginEvent.Set();
                     infoEvent.Set();
                     return;
@@ -257,9 +261,21 @@ public sealed partial class HutaoUserOptions : ObservableObject
 
                 if (!ResponseValidator.TryValidate(response, scope.ServiceProvider, out TokenSet? tokenSet))
                 {
-                    LocalSetting.Set(SettingKeys.PassportRefreshToken, string.Empty);
-                    await taskContext.SwitchToMainThreadAsync();
-                    UserName = SH.ViewServiceHutaoUserLoginFailHint;
+                    switch ((KnownReturnCode)response.ReturnCode)
+                    {
+                        case KnownReturnCode.PleaseLogin:
+                        case KnownReturnCode.RET_TOKEN_INVALID:
+                        case KnownReturnCode.LoginStateInvalid:
+                            await LogoutOrUnregisterAsync().ConfigureAwait(false);
+                            break;
+                        default:
+                            await taskContext.SwitchToMainThreadAsync();
+                            authTokenExpiration = default;
+                            UserName = username;
+                            IsLoggedIn = true;
+                            break;
+                    }
+
                     loginEvent.Set();
                     infoEvent.Set();
                     return;
@@ -449,6 +465,11 @@ public sealed partial class HutaoUserOptions : ObservableObject
             IsHutaoCdnAllowed = false;
             CdnExpireAt = default;
         }
+    }
+
+    private bool HasPersistedPassportCredentials()
+    {
+        return !string.IsNullOrEmpty(LocalSetting.Get(SettingKeys.PassportUserName, string.Empty)) && !string.IsNullOrEmpty(LocalSetting.Get(SettingKeys.PassportRefreshToken, string.Empty));
     }
 
     private readonly struct AuthTokenExpiration

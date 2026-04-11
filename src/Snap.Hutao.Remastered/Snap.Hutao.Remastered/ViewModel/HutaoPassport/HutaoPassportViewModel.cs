@@ -24,6 +24,12 @@ public sealed partial class HutaoPassportViewModel : Abstraction.ViewModel
 
     public partial HutaoUserOptions HutaoUserOptions { get; }
 
+    protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
+    {
+        await HutaoUserOptions.WaitUserInfoInitializationAsync().ConfigureAwait(false);
+        return true;
+    }
+
     [Command("OpenTestPageCommand")]
     private async Task OpenTestPageAsync()
     {
@@ -88,7 +94,7 @@ public sealed partial class HutaoPassportViewModel : Abstraction.ViewModel
 
         HutaoPassportLoginDialog dialog = await contentDialogFactory.CreateInstanceAsync<HutaoPassportLoginDialog>(serviceProvider).ConfigureAwait(false);
 
-        if (await dialog.GetInputAsync().ConfigureAwait(false) is not (true, var result))
+        if (await dialog.GetInputAsync(HutaoUserOptions.UserName).ConfigureAwait(false) is not (true, var result))
         {
             return;
         }

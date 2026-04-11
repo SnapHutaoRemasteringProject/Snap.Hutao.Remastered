@@ -21,4 +21,6 @@ public interface IUserService
     ValueTask RemoveUserAsync(BindingUser user);
 
     ValueTask RefreshProfilePictureAsync(UserGameRole userGameRole);
+
+    ValueTask<bool> RetryResumeUninitializedUsersAsync(CancellationToken token = default);
 }

@@ -7,5 +7,5 @@ namespace Snap.Hutao.Remastered.Service.Hutao;
 
 public interface IHutaoAsAService
 {
-    ValueTask<ObservableCollection<Web.Hutao.HutaoAsAService.Announcement>> GetHutaoAnnouncementCollectionAsync(CancellationToken token = default);
+    ValueTask<ObservableCollection<Web.Hutao.HutaoAsAService.Announcement>?> GetHutaoAnnouncementCollectionAsync(CancellationToken token = default);
 }
