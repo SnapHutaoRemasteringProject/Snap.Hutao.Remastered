@@ -278,7 +278,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-	<PackageReference Include="Snap.Hutao.Remastered.Native" Version="1.0.8">
+	<PackageReference Include="Snap.Hutao.Remastered.Native" Version="1.1.0">
 	 <PrivateAssets>all</PrivateAssets>
 	 <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
@@ -286,6 +286,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+	<PackageReference Include="Snap.Hutao.Remastered.Deployment.Runtime" Version="1.5.0">
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
     <PackageReference Include="Snap.LibGit2Sharp" Version="0.31.1-preview.0.4" />
     <PackageReference Include="Snap.ZStandard" Version="1.5.7" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.5" />
