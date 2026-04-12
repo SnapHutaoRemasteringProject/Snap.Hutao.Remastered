@@ -93,13 +93,13 @@
                                     <cwcont:SettingsExpander.Items>
                                         <cwcont:SettingsCard
                                             Command="{Binding NavigateToUriCommand}"
-                                            CommandParameter="https://github.com/DGP-Studio/Snap.Hutao.Remastered/issues/new/choose"
+                                            CommandParameter="https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/issues/new/choose"
                                             Description="{shuxm:ResourceString Name=ViewPageFeedbackGithubIssuesDescription}"
                                             Header="GitHub Issues"
                                             IsClickEnabled="True"/>
                                         <cwcont:SettingsCard
                                             Command="{Binding NavigateToUriCommand}"
-                                            CommandParameter="https://status.snapgenshin.cn/status"
+                                            CommandParameter="https://snaphutaoremasteringproject.github.io/Upptime/"
                                             Description="{shuxm:ResourceString Name=ViewPageFeedbackServerStatusDescription}"
                                             Header="{shuxm:ResourceString Name=ViewPageFeedbackServerStatusHeader}"
                                             IsClickEnabled="True"/>
