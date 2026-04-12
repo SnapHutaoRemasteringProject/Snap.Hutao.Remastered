@@ -40,6 +40,7 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
     private readonly INetworkRetryCoordinator networkRetryCoordinator;
 
     private IDisposable? homeRetryRegistration;
+    private int shouldRefreshDashboardOnSuccess;
 
     [GeneratedConstructor]
     public partial AnnouncementViewModel(IServiceProvider serviceProvider);
@@ -87,7 +88,7 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
             AnnouncementWrapper? announcementWrapper = await announcementService.GetAnnouncementWrapperAsync(cultureOptions.LanguageCode, appOptions.Region.Value, token).ConfigureAwait(false);
             if (announcementWrapper is null)
             {
-                networkRetryCoordinator.MarkPending("AnnouncementViewModel.LoadHome", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+                MarkHomePendingForRetry();
                 return false;
             }
 
@@ -102,7 +103,7 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
         }
         catch (Exception ex) when (IsNetworkRelatedException(ex))
         {
-            networkRetryCoordinator.MarkPending("AnnouncementViewModel.LoadHome", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+            MarkHomePendingForRetry();
             return false;
         }
 
@@ -117,7 +118,7 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
             ObservableCollection<Web.Hutao.HutaoAsAService.Announcement>? hutaoAnnouncements = await hutaoAsAService.GetHutaoAnnouncementCollectionAsync(token).ConfigureAwait(false);
             if (hutaoAnnouncements is null)
             {
-                networkRetryCoordinator.MarkPending("AnnouncementViewModel.LoadHome", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+                MarkHomePendingForRetry();
                 return false;
             }
 
@@ -132,7 +133,7 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
         }
         catch (Exception ex) when (IsNetworkRelatedException(ex))
         {
-            networkRetryCoordinator.MarkPending("AnnouncementViewModel.LoadHome", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+            MarkHomePendingForRetry();
             return false;
         }
 
@@ -209,7 +210,7 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
             }
             catch (Exception ex) when (IsNetworkRelatedException(ex))
             {
-                networkRetryCoordinator.MarkPending("AnnouncementViewModel.LoadHome", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+                MarkHomePendingForRetry();
                 return false;
             }
         }
@@ -226,6 +227,11 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
         bool success = inGameSuccess && hutaoSuccess && miHoYoSuccess;
         if (success)
         {
+            if (Interlocked.Exchange(ref shouldRefreshDashboardOnSuccess, 0) is not 0)
+            {
+                RefreshDashboard();
+            }
+
             networkRetryCoordinator.ClearPending("AnnouncementViewModel.LoadHome");
         }
 
@@ -280,6 +286,12 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
     private void RefreshDashboard()
     {
         taskContext.InvokeOnMainThread(InitializeDashboard);
+    }
+
+    private void MarkHomePendingForRetry()
+    {
+        Interlocked.Exchange(ref shouldRefreshDashboardOnSuccess, 1);
+        networkRetryCoordinator.MarkPending("AnnouncementViewModel.LoadHome", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
     }
 
     private void InitializeDashboard()

@@ -166,7 +166,7 @@ public sealed partial class HutaoUserOptions : ObservableObject
                 if (!ResponseValidator.TryValidate(response, scope.ServiceProvider, out TokenSet? tokenSet))
                 {
                     await taskContext.SwitchToMainThreadAsync();
-                    UserName = response.ReturnCode == Response.publicFailure ? username : SH.ViewServiceHutaoUserLoginFailHint;
+                    UserName = username;
                     loginEvent.Set();
                     infoEvent.Set();
                     return;
@@ -195,7 +195,7 @@ public sealed partial class HutaoUserOptions : ObservableObject
                 if (!ResponseValidator.TryValidate(response, scope.ServiceProvider, out TokenSet? tokenSet))
                 {
                     await taskContext.SwitchToMainThreadAsync();
-                    UserName = response.ReturnCode == Response.publicFailure ? username : SH.ViewServiceHutaoUserLoginFailHint;
+                    UserName = username;
                     loginEvent.Set();
                     infoEvent.Set();
                     return;
