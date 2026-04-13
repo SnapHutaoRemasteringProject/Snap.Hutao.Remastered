@@ -34,6 +34,31 @@
     <shuxc:ScopedPage.Resources>
         <shux:BindingProxy x:Key="ViewModelBindingProxy" DataContext="{Binding}"/>
 
+        <DataTemplate x:Key="HutaoAnnouncementTemplate" x:DataType="shwhh:Announcement">
+            <InfoBar
+                Title="{Binding Title}"
+                Margin="0,0,0,0"
+                shuxc:InfoBarHelper.IsTextSelectionEnabled="True"
+                CloseButtonCommand="{Binding DismissCommand}"
+                CloseButtonCommandParameter="{Binding}"
+                IsClosable="{Binding CanDismiss}"
+                IsOpen="True"
+                Message="{Binding Content}"
+                Severity="{Binding Severity}">
+                <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
+                    <HyperlinkButton
+                        Content="{shuxm:ResourceString Name=ViewPageAnnouncementViewDetails}"
+                        NavigateUri="{Binding Link}"
+                        Visibility="{Binding Link, Converter={StaticResource EmptyStringToBoolConverter}}"/>
+                    <TextBlock
+                        Margin="8,0,0,2"
+                        VerticalAlignment="Center"
+                        Opacity="0.7"
+                        Text="{Binding UpdateTimeFormatted}"/>
+                </StackPanel>
+            </InfoBar>
+        </DataTemplate>
+
         <DataTemplate x:Key="AnnouncementTemplate" x:DataType="shwhhca:Announcement">
             <ItemContainer cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                 <Border Background="{ThemeResource SystemControlAcrylicElementMediumHighBrush}" Style="{StaticResource AcrylicBorderCardStyle}">
@@ -986,6 +1011,15 @@
                         </CommandBar>
                     </Grid>
                 </Border>
+
+                <ItemsControl
+                    x:Name="HutaoAnnouncementControl"
+                    x:Load="False"
+                    ItemTemplate="{StaticResource HutaoAnnouncementTemplate}"
+                    ItemsPanel="{ThemeResource StackPanelSpacing8Template}"
+                    ItemsSource="{Binding HutaoAnnouncements}"
+                    Transitions="{ThemeResource EntranceThemeTransitions}"
+                    Visibility="{Binding HutaoAnnouncements.Count, Converter={StaticResource Int32ToVisibilityConverter}}"/>
 
                 <Grid
                     x:Name="ActivityCalendarGrid"

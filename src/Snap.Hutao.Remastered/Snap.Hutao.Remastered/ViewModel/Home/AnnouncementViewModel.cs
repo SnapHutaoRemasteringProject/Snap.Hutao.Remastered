@@ -69,11 +69,6 @@ internal sealed partial class AnnouncementViewModel : Abstraction.ViewModel
     [GeneratedRegex("act_id=(.*?)&")]
     private static partial Regex ActIdExtractor { get; }
 
-    partial void OnActivityCalendarChanged(ActCalendar? oldValue, ActCalendar? newValue)
-    {
-        UpdateDisplayedActivityCards();
-    }
-
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
         homeRetryRegistration ??= networkRetryCoordinator.Register("AnnouncementViewModel.LoadHome", RetryHomeAsync);
@@ -233,12 +228,6 @@ internal sealed partial class AnnouncementViewModel : Abstraction.ViewModel
     {
         try
         {
-            // Check if activity calendar preview is enabled
-            if (!LocalSetting.Get(SettingKeys.HomeAnnouncementActPreviewEnabled, true))
-            {
-                return true;
-            }
-
             using (IServiceScope scope = serviceProvider.CreateScope())
             {
                 IUserService userService = scope.ServiceProvider.GetRequiredService<IUserService>();
@@ -257,6 +246,7 @@ internal sealed partial class AnnouncementViewModel : Abstraction.ViewModel
                 {
                     await taskContext.SwitchToMainThreadAsync();
                     ActivityCalendar = calendar;
+                    UpdateDisplayedActivityCards();
                     DeferContentLoader?.Load(nameof(UI.Xaml.View.Page.AnnouncementPage.ActivityCalendarGrid));
                 }
             }
@@ -367,11 +357,11 @@ internal sealed partial class AnnouncementViewModel : Abstraction.ViewModel
             return;
         }
 
-        bool showUnscheduledActs = LocalSetting.Get(SettingKeys.HomeAnnouncementActPreviewEnabled, true);
+        bool includeUnscheduledActs = LocalSetting.Get(SettingKeys.HomeAnnouncementActPreviewEnabled, false);
 
-        ImmutableArray<Act> filtered = showUnscheduledActs
+        ImmutableArray<Act> filtered = includeUnscheduledActs
             ? ActivityCalendar.CompositeActs
-            : ActivityCalendar.CompositeActs.Where(act => act.StartTime?.ValueKind != System.Text.Json.JsonValueKind.Null).ToImmutableArray();
+            : ActivityCalendar.CompositeActs.Where(act => act.StartTime is not null && act.StartTime.Value.ValueKind != System.Text.Json.JsonValueKind.Null).ToImmutableArray();
 
         DisplayedActivityCards = filtered;
     }
