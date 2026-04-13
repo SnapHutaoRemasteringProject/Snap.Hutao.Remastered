@@ -49,7 +49,7 @@ public sealed partial class SettingHomeViewModel : Abstraction.ViewModel
 
     public bool IsHomeAnnouncementActPreviewEnabled
     {
-        get => LocalSetting.Get(SettingKeys.HomeAnnouncementActPreviewEnabled, true);
+        get => LocalSetting.Get(SettingKeys.HomeAnnouncementActPreviewEnabled, false);
         set
         {
             if (IsHomeAnnouncementActPreviewEnabled == value)

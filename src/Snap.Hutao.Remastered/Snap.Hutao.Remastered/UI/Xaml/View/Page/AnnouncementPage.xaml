@@ -1111,7 +1111,7 @@
                                 Margin="8"
                                 VerticalAlignment="Top"
                                 ItemTemplateSelector="{StaticResource ActivityTemplateSelector}"
-                                ItemsSource="{Binding DisplayedActivityCards}">
+                                ItemsSource="{Binding DataContext.DisplayedActivityCards, Source={StaticResource ViewModelBindingProxy}}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <shuxcp:UniformPanel

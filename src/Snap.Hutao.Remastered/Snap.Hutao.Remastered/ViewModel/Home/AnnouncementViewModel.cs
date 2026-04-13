@@ -361,7 +361,7 @@ internal sealed partial class AnnouncementViewModel : Abstraction.ViewModel
 
         ImmutableArray<Act> filtered = includeUnscheduledActs
             ? ActivityCalendar.CompositeActs
-            : ActivityCalendar.CompositeActs.Where(act => act.StartTime is not null && act.StartTime.Value.ValueKind != System.Text.Json.JsonValueKind.Null).ToImmutableArray();
+            : ActivityCalendar.CompositeActs.Where(static act => act.StartTimestamp > 0 && act.EndTimestamp > 0).ToImmutableArray();
 
         DisplayedActivityCards = filtered;
     }
