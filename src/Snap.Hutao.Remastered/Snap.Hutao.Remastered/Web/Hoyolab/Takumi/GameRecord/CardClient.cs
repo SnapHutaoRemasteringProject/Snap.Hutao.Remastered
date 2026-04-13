@@ -25,7 +25,7 @@ public sealed partial class CardClient
     [GeneratedConstructor]
     public partial CardClient(IServiceProvider serviceProvider, HttpClient httpClient);
 
-    public async ValueTask<Response<GeetestVerification>> CreateVerificationAsync(User user, CardVerifiationHeaders headers, CancellationToken token)
+    public async ValueTask<Response<GeetestVerification>> CreateVerificationAsync(User user, CardVerificationHeaders headers, CancellationToken token)
     {
         HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
             .SetRequestUri(apiEndpoints.CardCreateVerification(true))
@@ -43,7 +43,7 @@ public sealed partial class CardClient
         return Response.Response.DefaultIfNull(resp);
     }
 
-    public async ValueTask<Response<VerificationResult>> VerifyVerificationAsync(User user, CardVerifiationHeaders headers, string challenge, string validate, CancellationToken token)
+    public async ValueTask<Response<VerificationResult>> VerifyVerificationAsync(User user, CardVerificationHeaders headers, string challenge, string validate, CancellationToken token)
     {
         HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
             .SetRequestUri(apiEndpoints.CardVerifyVerification())

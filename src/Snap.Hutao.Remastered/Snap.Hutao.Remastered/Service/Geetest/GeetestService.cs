@@ -51,7 +51,7 @@ public sealed partial class GeetestService : IGeetestService
         };
     }
 
-    public async ValueTask<string?> TryVerifyXrpcChallengeAsync(Model.Entity.User user, CardVerifiationHeaders headers, CancellationToken token = default)
+    public async ValueTask<string?> TryVerifyXrpcChallengeAsync(Model.Entity.User user, CardVerificationHeaders headers, CancellationToken token = default)
     {
         Response<GeetestVerification> registrationResponse = await cardClient.CreateVerificationAsync(user, headers, token).ConfigureAwait(false);
         if (!ResponseValidator.TryValidate(registrationResponse, messenger, out GeetestVerification? registration))

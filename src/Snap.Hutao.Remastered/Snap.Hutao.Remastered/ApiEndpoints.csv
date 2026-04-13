@@ -44,6 +44,7 @@ Extra:{ "Namespace": "Snap.Hutao.Remastered.Web.Endpoint.Hoyolab" }
 "string DeviceFpGetFp()",https://public-data-api.mihoyo.com/device-fp/api/getFp,
 "string GachaInfoGetGachaLog(string query)",https://public-operation-hk4e.mihoyo.com/gacha_info/api/getGachaLog?{query},https://public-operation-hk4e-sg.hoyoverse.com/gacha_info/api/getGachaLog?{query}
 "string GachaInfoGetBeyondGachaLog(string query)",https://public-operation-hk4e.mihoyo.com/gacha_info/api/getBeyondGachaLog?{query},https://public-operation-hk4e-sg.hoyoverse.com/gacha_info/api/getBeyondGachaLog?{query}
+"string GameRecordActCalendar()",https://api-takumi-record.mihoyo.com/game_record/app/genshin/api/act_calendar,https://bbs-api-os.hoyolab.com/game_record/app/genshin/api/act_calendar
 "string GameRecordCharacterList()",https://api-takumi-record.mihoyo.com/game_record/app/genshin/api/character/list,https://bbs-api-os.hoyolab.com/game_record/app/genshin/api/character/list
 "string GameRecordCharacterDetail()",https://api-takumi-record.mihoyo.com/game_record/app/genshin/api/character/detail,https://bbs-api-os.hoyolab.com/game_record/app/genshin/api/character/detail
 "string GameRecordDailyNote(Snap.Hutao.Remastered.Web.Hoyolab.PlayerUid uid)",https://api-takumi-record.mihoyo.com/game_record/app/genshin/api/dailyNote?{Snap.Hutao.Remastered.Web.Hoyolab.PlayerUidExtension.ToRoleIdServerQueryString(uid)},https://bbs-api-os.hoyolab.com/game_record/app/genshin/api/dailyNote?{Snap.Hutao.Remastered.Web.Hoyolab.PlayerUidExtension.ToRoleIdServerQueryString(uid)}

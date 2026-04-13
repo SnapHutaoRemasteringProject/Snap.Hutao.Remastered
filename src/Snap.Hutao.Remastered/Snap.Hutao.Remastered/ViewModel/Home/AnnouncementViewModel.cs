@@ -3,9 +3,7 @@
 
 using CommunityToolkit.Common;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Snap.Hutao.Remastered.Core.DataTransfer;
 using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
-using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.Announcement;
@@ -14,22 +12,24 @@ using Snap.Hutao.Remastered.Service.Network;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.Control.Card;
 using Snap.Hutao.Remastered.UI.Xaml.View.Card;
+using Snap.Hutao.Remastered.Web;
 using Snap.Hutao.Remastered.Web.Hoyolab.Bbs.Home;
 using Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Common.Announcement;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Miyolive;
+using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord;
+using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar;
+using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Response;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
-using Snap.Hutao.Remastered.Web;
-using Snap.Hutao.Remastered.Web.Request.Builder;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 
 namespace Snap.Hutao.Remastered.ViewModel.Home;
 
 [BindableCustomPropertyProvider]
 [Service(ServiceLifetime.Scoped)]
-public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
+internal sealed partial class AnnouncementViewModel : Abstraction.ViewModel
 {
     private readonly IAnnouncementService announcementService;
     private readonly IServiceProvider serviceProvider;
@@ -60,8 +60,19 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
     [ObservableProperty]
     public partial List<CardReference>? Cards { get; set; }
 
+    [ObservableProperty]
+    public partial ActCalendar ActivityCalendar { get; set; }
+
+    [ObservableProperty]
+    public partial ImmutableArray<Act> DisplayedActivityCards { get; set; } = [];
+
     [GeneratedRegex("act_id=(.*?)&")]
     private static partial Regex ActIdExtractor { get; }
+
+    partial void OnActivityCalendarChanged(ActCalendar? oldValue, ActCalendar? newValue)
+    {
+        UpdateDisplayedActivityCards();
+    }
 
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
@@ -218,13 +229,67 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
         return false;
     }
 
+    private async ValueTask<bool> InitializeActivityCalendarAsync(CancellationToken token)
+    {
+        try
+        {
+            // Check if activity calendar preview is enabled
+            if (!LocalSetting.Get(SettingKeys.HomeAnnouncementActPreviewEnabled, true))
+            {
+                return true;
+            }
+
+            using (IServiceScope scope = serviceProvider.CreateScope())
+            {
+                IUserService userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+                if (await userService.GetCurrentUserAndUidAsync().ConfigureAwait(false) is not { IsOversea: false } userAndUid)
+                {
+                    return true;
+                }
+
+                IGameRecordClient gameRecordClient = scope.ServiceProvider
+                    .GetRequiredService<IOverseaSupportFactory<IGameRecordClient>>()
+                    .CreateFor(userAndUid);
+
+                Response<ActCalendar> response = await gameRecordClient.GetActCalendarAsync(userAndUid, token).ConfigureAwait(false);
+
+                if (ResponseValidator.TryValidateWithoutUINotification(response, out ActCalendar? calendar))
+                {
+                    await taskContext.SwitchToMainThreadAsync();
+                    ActivityCalendar = calendar;
+                    DeferContentLoader?.Load(nameof(UI.Xaml.View.Page.AnnouncementPage.ActivityCalendarGrid));
+                }
+            }
+
+            return true;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex) when (IsNetworkRelatedException(ex))
+        {
+            MarkHomePendingForRetry();
+            return false;
+        }
+
+        return false;
+    }
+
     private async ValueTask<bool> RetryHomeAsync(CancellationToken token)
     {
-        bool inGameSuccess = await InitializeInGameAnnouncementAsync(token).ConfigureAwait(false);
-        bool hutaoSuccess = await InitializeHutaoAnnouncementAsync(token).ConfigureAwait(false);
-        bool miHoYoSuccess = await InitializeMiyoliveCodeAsync(token).ConfigureAwait(false);
+        Task<bool> inGameTask = InitializeInGameAnnouncementAsync(token).AsTask();
+        Task<bool> hutaoTask = InitializeHutaoAnnouncementAsync(token).AsTask();
+        Task<bool> miHoYoTask = InitializeMiyoliveCodeAsync(token).AsTask();
+        Task<bool> calendarTask = InitializeActivityCalendarAsync(token).AsTask();
 
-        bool success = inGameSuccess && hutaoSuccess && miHoYoSuccess;
+        bool[] results = await Task.WhenAll(inGameTask, hutaoTask, miHoYoTask, calendarTask).ConfigureAwait(false);
+        bool inGameSuccess = results[0];
+        bool hutaoSuccess = results[1];
+        bool miHoYoSuccess = results[2];
+        bool calendarSuccess = results[3];
+
+        bool success = inGameSuccess && hutaoSuccess && miHoYoSuccess && calendarSuccess;
         if (success)
         {
             if (Interlocked.Exchange(ref shouldRefreshDashboardOnSuccess, 0) is not 0)
@@ -292,6 +357,23 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel
     {
         Interlocked.Exchange(ref shouldRefreshDashboardOnSuccess, 1);
         networkRetryCoordinator.MarkPending("AnnouncementViewModel.LoadHome", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+    }
+
+    private void UpdateDisplayedActivityCards()
+    {
+        if (ActivityCalendar is null)
+        {
+            DisplayedActivityCards = [];
+            return;
+        }
+
+        bool showUnscheduledActs = LocalSetting.Get(SettingKeys.HomeAnnouncementActPreviewEnabled, true);
+
+        ImmutableArray<Act> filtered = showUnscheduledActs
+            ? ActivityCalendar.CompositeActs
+            : ActivityCalendar.CompositeActs.Where(act => act.StartTime?.ValueKind != System.Text.Json.JsonValueKind.Null).ToImmutableArray();
+
+        DisplayedActivityCards = filtered;
     }
 
     private void InitializeDashboard()

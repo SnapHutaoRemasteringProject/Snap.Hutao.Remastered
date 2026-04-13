@@ -5,7 +5,7 @@ using Snap.Hutao.Remastered.Web.Endpoint.Hoyolab;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord;
 
-public sealed class CardVerifiationHeaders
+public sealed class CardVerificationHeaders
 {
     public int ChallengeGame { get; private set; }
 
@@ -13,42 +13,47 @@ public sealed class CardVerifiationHeaders
 
     public string Page { get; private set; } = string.Empty;
 
-    public static CardVerifiationHeaders CreateForDailyNote(IApiEndpoints apiEndpoints)
+    public static CardVerificationHeaders CreateForActCalendar(IApiEndpoints apiEndpoints)
+    {
+        return Create(apiEndpoints.GameRecordHardChallengePath(), $"{HoyolabOptions.ToolVersion}_#/ys/calendar");
+    }
+
+    public static CardVerificationHeaders CreateForDailyNote(IApiEndpoints apiEndpoints)
     {
         return Create(apiEndpoints.GameRecordDailyNotePath());
     }
 
-    public static CardVerifiationHeaders CreateForIndex(IApiEndpoints apiEndpoints)
+    public static CardVerificationHeaders CreateForIndex(IApiEndpoints apiEndpoints)
     {
         return Create(apiEndpoints.GameRecordIndexPath());
     }
 
-    public static CardVerifiationHeaders CreateForSpiralAbyss(IApiEndpoints apiEndpoints)
+    public static CardVerificationHeaders CreateForSpiralAbyss(IApiEndpoints apiEndpoints)
     {
         return Create(apiEndpoints.GameRecordSpiralAbyssPath());
     }
 
-    public static CardVerifiationHeaders CreateForCharacterAll(IApiEndpoints apiEndpoints)
+    public static CardVerificationHeaders CreateForCharacterAll(IApiEndpoints apiEndpoints)
     {
         return Create(apiEndpoints.GameRecordCharacterList(), $"{HoyolabOptions.ToolVersion}_#/ys/role/all");
     }
 
-    public static CardVerifiationHeaders CreateForCharacterDetail(IApiEndpoints apiEndpoints)
+    public static CardVerificationHeaders CreateForCharacterDetail(IApiEndpoints apiEndpoints)
     {
         return Create(apiEndpoints.GameRecordCharacterList(), $"{HoyolabOptions.ToolVersion}_#/ys/role/detail");
     }
 
-    public static CardVerifiationHeaders CreateForRoleCombat(IApiEndpoints apiEndpoints)
+    public static CardVerificationHeaders CreateForRoleCombat(IApiEndpoints apiEndpoints)
     {
         return Create(apiEndpoints.GameRecordRoleCombatPath());
     }
 
-    public static CardVerifiationHeaders CreateForHardChallenge(IApiEndpoints apiEndpoints)
+    public static CardVerificationHeaders CreateForHardChallenge(IApiEndpoints apiEndpoints)
     {
         return Create(apiEndpoints.GameRecordHardChallengePath());
     }
 
-    private static CardVerifiationHeaders Create(string path, string page = $"{HoyolabOptions.ToolVersion}_#/ys")
+    private static CardVerificationHeaders Create(string path, string page = $"{HoyolabOptions.ToolVersion}_#/ys")
     {
         return new()
         {

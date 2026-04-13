@@ -18,7 +18,7 @@ namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord;
 
 [HttpClient(HttpClientConfiguration.XRpc3)]
 [PrimaryHttpMessageHandler(UseCookies = false)]
-public sealed partial class GameRecordClientOversea : IGameRecordClient
+internal sealed partial class GameRecordClientOversea : IGameRecordClient
 {
     private readonly IHttpRequestMessageBuilderFactory httpRequestMessageBuilderFactory;
     [FromKeyed(ApiEndpointsKind.Oversea)]
@@ -103,6 +103,21 @@ public sealed partial class GameRecordClientOversea : IGameRecordClient
 
         Response<ListWrapper<DetailedCharacter>>? resp = await builder
             .SendAsync<Response<ListWrapper<DetailedCharacter>>>(httpClient, token)
+            .ConfigureAwait(false);
+
+        return Response.Response.DefaultIfNull(resp);
+    }
+    public async ValueTask<Response<ActCalendar.ActCalendar>> GetActCalendarAsync(UserAndUid userAndUid, CancellationToken token = default)
+    {
+        HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
+            .SetRequestUri(apiEndpoints.GameRecordActCalendar())
+            .SetUserCookieAndFpHeader(userAndUid, CookieType.Cookie)
+            .PostJson(new RoleIdServer(userAndUid.Uid));
+
+        await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.OSX4, false).ConfigureAwait(false);
+
+        Response<ActCalendar.ActCalendar>? resp = await builder
+            .SendAsync<Response<ActCalendar.ActCalendar>>(httpClient, token)
             .ConfigureAwait(false);
 
         return Response.Response.DefaultIfNull(resp);

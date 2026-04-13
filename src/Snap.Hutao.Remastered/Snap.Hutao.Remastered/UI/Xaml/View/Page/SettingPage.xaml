@@ -791,6 +791,17 @@
                                             SelectedItem="{Binding SelectedRegion, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
+                                <cwc:SettingsCard
+                                    Description="{shuxm:ResourceString Name=ViewPageSettingHomeAnnouncementActPreviewDescription}"
+                                    Header="{shuxm:ResourceString Name=ViewPageSettingHomeAnnouncementActPreviewHeader}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE8A1;}">
+                                    <shuxc:SizeRestrictedContentControl>
+                                        <ToggleSwitch
+                                            IsOn="{Binding IsHomeAnnouncementActPreviewEnabled, Mode=TwoWay}"
+                                            OffContent="{shuxm:ResourceString Name=ViewPageSettingHomeCardOff}"
+                                            OnContent="{shuxm:ResourceString Name=ViewPageSettingHomeCardOn}"/>
+                                    </shuxc:SizeRestrictedContentControl>
+                                </cwc:SettingsCard>
                             </StackPanel>
                         </Border>
                     </Border>

@@ -9,7 +9,7 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord;
 
-public interface IGameRecordClient
+internal interface IGameRecordClient
 {
     ValueTask<Response<ListWrapper<Character>>> GetCharacterListAsync(UserAndUid userAndUid, CancellationToken token = default);
 
@@ -26,4 +26,6 @@ public interface IGameRecordClient
     ValueTask<Response<HardChallenge.HardChallengePopularity>> GetHardChallengePopularityAsync(UserAndUid userAndUid, CancellationToken token = default);
 
     ValueTask<Response<ListWrapper<DetailedCharacter>>> GetCharacterDetailAsync(UserAndUid userAndUid, ImmutableArray<AvatarId> characterIds, CancellationToken token = default);
+
+    ValueTask<Response<ActCalendar.ActCalendar>> GetActCalendarAsync(UserAndUid userAndUid, CancellationToken token = default);
 }

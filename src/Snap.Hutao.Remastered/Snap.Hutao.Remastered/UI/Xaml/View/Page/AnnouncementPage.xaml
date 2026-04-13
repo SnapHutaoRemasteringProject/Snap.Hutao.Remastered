@@ -22,6 +22,7 @@
     xmlns:shvh="using:Snap.Hutao.Remastered.ViewModel.Home"
     xmlns:shwhh="using:Snap.Hutao.Remastered.Web.Hutao.HutaoAsAService"
     xmlns:shwhhca="using:Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Common.Announcement"
+    xmlns:shwhtga="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar"
     d:DataContext="{d:DesignInstance shvh:AnnouncementViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
@@ -140,31 +141,6 @@
             </ItemsControl>
         </DataTemplate>
 
-        <DataTemplate x:Key="HutaoAnnouncementTemplate" x:DataType="shwhh:Announcement">
-            <InfoBar
-                Title="{Binding Title}"
-                Margin="0,0,0,0"
-                shuxc:InfoBarHelper.IsTextSelectionEnabled="True"
-                CloseButtonCommand="{Binding DismissCommand}"
-                CloseButtonCommandParameter="{Binding}"
-                IsClosable="{Binding CanDismiss}"
-                IsOpen="True"
-                Message="{Binding Content}"
-                Severity="{Binding Severity}">
-                <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
-                    <HyperlinkButton
-                        Content="{shuxm:ResourceString Name=ViewPageAnnouncementViewDetails}"
-                        NavigateUri="{Binding Link}"
-                        Visibility="{Binding Link, Converter={StaticResource EmptyStringToBoolConverter}}"/>
-                    <TextBlock
-                        Margin="8,0,0,2"
-                        VerticalAlignment="Center"
-                        Opacity="0.7"
-                        Text="{Binding UpdateTimeFormatted}"/>
-                </StackPanel>
-            </InfoBar>
-        </DataTemplate>
-
         <DataTemplate x:Key="CardTemplate" x:DataType="shuxcc:CardReference">
             <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                 <Border Style="{ThemeResource AcrylicBorderCardStyle}">
@@ -172,6 +148,780 @@
                 </Border>
             </Border>
         </DataTemplate>
+
+        <shvh:ActivityTemplateSelector x:Key="ActivityTemplateSelector">
+            <shvh:ActivityTemplateSelector.SignInTemplate>
+                <DataTemplate x:DataType="shwhtga:ActSignIn">
+                    <Grid ColumnSpacing="6" Style="{ThemeResource GridShimmerStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="6,6,0,6">
+                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Name}"/>
+                            <TextBlock Opacity="0.8" Text="{Binding FormattedCountdown}"/>
+                        </StackPanel>
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,6">
+                            <Button Padding="0">
+                                <Button.Flyout>
+                                    <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{Binding RewardList}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <shuxc:ItemIcon
+                                                            Width="48"
+                                                            Height="48"
+                                                            Icon="{Binding Icon}"
+                                                            Quality="{Binding Rarity}"/>
+                                                        <Border
+                                                            HorizontalAlignment="Stretch"
+                                                            VerticalAlignment="Bottom"
+                                                            Background="#80000000"
+                                                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                                            <TextBlock
+                                                                MaxWidth="48"
+                                                                HorizontalAlignment="Center"
+                                                                Foreground="#FFFFFFFF"
+                                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                                Text="{Binding Number}"/>
+                                                        </Border>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Flyout>
+                                </Button.Flyout>
+                                <Grid DataContext="{Binding RewardList[0]}">
+                                    <shuxc:ItemIcon
+                                        Width="36"
+                                        Height="36"
+                                        Icon="{Binding Icon}"
+                                        Quality="{Binding Rarity}"/>
+                                    <Border
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Bottom"
+                                        Background="#80000000"
+                                        CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Foreground="#FFFFFFFF"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="{Binding Number}"/>
+                                    </Border>
+                                </Grid>
+                            </Button>
+                        </Grid>
+                        <Border
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Margin="0,6,6,6"
+                            VerticalAlignment="Center">
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding FormattedStatus}"/>
+                        </Border>
+                        <Border
+                            Grid.Row="1"
+                            Grid.ColumnSpan="3"
+                            Padding="6"
+                            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="0,1,0,0"
+                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Opacity="0.7"
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                Text="{Binding FormattedDuration}"/>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </shvh:ActivityTemplateSelector.SignInTemplate>
+            <shvh:ActivityTemplateSelector.DoubleTemplate>
+                <DataTemplate x:DataType="shwhtga:ActDouble">
+                    <Grid ColumnSpacing="6" Style="{ThemeResource GridShimmerStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="6,6,0,6">
+                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Name}"/>
+                            <TextBlock Opacity="0.8" Text="{Binding FormattedCountdown}"/>
+                        </StackPanel>
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,6">
+                            <Button Padding="0">
+                                <Button.Flyout>
+                                    <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{Binding RewardList}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <shuxc:ItemIcon
+                                                            Width="48"
+                                                            Height="48"
+                                                            Icon="{Binding Icon}"
+                                                            Quality="{Binding Rarity}"/>
+                                                        <Border
+                                                            HorizontalAlignment="Stretch"
+                                                            VerticalAlignment="Bottom"
+                                                            Background="#80000000"
+                                                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                                            <TextBlock
+                                                                MaxWidth="48"
+                                                                HorizontalAlignment="Center"
+                                                                Foreground="#FFFFFFFF"
+                                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                                Text="{Binding Number}"/>
+                                                        </Border>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Flyout>
+                                </Button.Flyout>
+                                <Grid DataContext="{Binding RewardList[0]}">
+                                    <shuxc:ItemIcon
+                                        Width="36"
+                                        Height="36"
+                                        Icon="{Binding Icon}"
+                                        Quality="{Binding Rarity}"/>
+                                    <Border
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Bottom"
+                                        Background="#80000000"
+                                        CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Foreground="#FFFFFFFF"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="{Binding Number}"/>
+                                    </Border>
+                                </Grid>
+                            </Button>
+                        </Grid>
+                        <Border
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Margin="0,6,6,6"
+                            VerticalAlignment="Center">
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding FormattedStatus}"/>
+                        </Border>
+                        <Border
+                            Grid.Row="1"
+                            Grid.ColumnSpan="3"
+                            Padding="6"
+                            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="0,1,0,0"
+                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Opacity="0.7"
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                Text="{Binding FormattedDuration}"/>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </shvh:ActivityTemplateSelector.DoubleTemplate>
+            <shvh:ActivityTemplateSelector.ExploreTemplate>
+                <DataTemplate x:DataType="shwhtga:ActExplore">
+                    <Grid ColumnSpacing="6" Style="{ThemeResource GridShimmerStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="6,6,0,6">
+                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Name}"/>
+                            <TextBlock Opacity="0.8" Text="{Binding FormattedCountdown}"/>
+                        </StackPanel>
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,6">
+                            <Button Padding="0">
+                                <Button.Flyout>
+                                    <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{Binding RewardList}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <shuxc:ItemIcon
+                                                            Width="48"
+                                                            Height="48"
+                                                            Icon="{Binding Icon}"
+                                                            Quality="{Binding Rarity}"/>
+                                                        <Border
+                                                            HorizontalAlignment="Stretch"
+                                                            VerticalAlignment="Bottom"
+                                                            Background="#80000000"
+                                                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                                            <TextBlock
+                                                                MaxWidth="48"
+                                                                HorizontalAlignment="Center"
+                                                                Foreground="#FFFFFFFF"
+                                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                                Text="{Binding Number}"/>
+                                                        </Border>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Flyout>
+                                </Button.Flyout>
+                                <Grid DataContext="{Binding RewardList[0]}">
+                                    <shuxc:ItemIcon
+                                        Width="36"
+                                        Height="36"
+                                        Icon="{Binding Icon}"
+                                        Quality="{Binding Rarity}"/>
+                                    <Border
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Bottom"
+                                        Background="#80000000"
+                                        CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Foreground="#FFFFFFFF"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="{Binding Number}"/>
+                                    </Border>
+                                </Grid>
+                            </Button>
+                        </Grid>
+                        <Border
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Margin="0,6,6,6"
+                            VerticalAlignment="Center">
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding ExploreDetail.FormattedExplorePercent}"/>
+                        </Border>
+                        <Border
+                            Grid.Row="1"
+                            Grid.ColumnSpan="3"
+                            Padding="6"
+                            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="0,1,0,0"
+                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Opacity="0.7"
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                Text="{Binding FormattedDuration}"/>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </shvh:ActivityTemplateSelector.ExploreTemplate>
+            <shvh:ActivityTemplateSelector.LiBenTemplate>
+                <DataTemplate x:DataType="shwhtga:ActLiBen">
+                    <Grid ColumnSpacing="6" Style="{ThemeResource GridShimmerStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="6,6,0,6">
+                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Name}"/>
+                            <TextBlock Opacity="0.8" Text="{Binding FormattedCountdown}"/>
+                        </StackPanel>
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,6">
+                            <Button Padding="0">
+                                <Button.Flyout>
+                                    <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{Binding RewardList}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <shuxc:ItemIcon
+                                                            Width="48"
+                                                            Height="48"
+                                                            Icon="{Binding Icon}"
+                                                            Quality="{Binding Rarity}"/>
+                                                        <Border
+                                                            HorizontalAlignment="Stretch"
+                                                            VerticalAlignment="Bottom"
+                                                            Background="#80000000"
+                                                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                                            <TextBlock
+                                                                MaxWidth="48"
+                                                                HorizontalAlignment="Center"
+                                                                Foreground="#FFFFFFFF"
+                                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                                Text="{Binding Number}"/>
+                                                        </Border>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Flyout>
+                                </Button.Flyout>
+                                <Grid DataContext="{Binding RewardList[0]}">
+                                    <shuxc:ItemIcon
+                                        Width="36"
+                                        Height="36"
+                                        Icon="{Binding Icon}"
+                                        Quality="{Binding Rarity}"/>
+                                    <Border
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Bottom"
+                                        Background="#80000000"
+                                        CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Foreground="#FFFFFFFF"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="{Binding Number}"/>
+                                    </Border>
+                                </Grid>
+                            </Button>
+                        </Grid>
+                        <Border
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Margin="0,6,6,6"
+                            VerticalAlignment="Center">
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding FormattedStatus}"/>
+                        </Border>
+                        <Border
+                            Grid.Row="1"
+                            Grid.ColumnSpan="3"
+                            Padding="6"
+                            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="0,1,0,0"
+                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Opacity="0.7"
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                Text="{Binding FormattedDuration}"/>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </shvh:ActivityTemplateSelector.LiBenTemplate>
+            <shvh:ActivityTemplateSelector.TowerTemplate>
+                <DataTemplate x:DataType="shwhtga:ActTower">
+                    <Grid ColumnSpacing="6" Style="{ThemeResource GridShimmerStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="6,6,0,6">
+                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Name}"/>
+                            <TextBlock Opacity="0.8" Text="{Binding FormattedCountdown}"/>
+                        </StackPanel>
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,6">
+                            <Button Padding="0">
+                                <Button.Flyout>
+                                    <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{Binding RewardList}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <shuxc:ItemIcon
+                                                            Width="48"
+                                                            Height="48"
+                                                            Icon="{Binding Icon}"
+                                                            Quality="{Binding Rarity}"/>
+                                                        <Border
+                                                            HorizontalAlignment="Stretch"
+                                                            VerticalAlignment="Bottom"
+                                                            Background="#80000000"
+                                                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                                            <TextBlock
+                                                                MaxWidth="48"
+                                                                HorizontalAlignment="Center"
+                                                                Foreground="#FFFFFFFF"
+                                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                                Text="{Binding Number}"/>
+                                                        </Border>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Flyout>
+                                </Button.Flyout>
+                                <Grid DataContext="{Binding RewardList[0]}">
+                                    <shuxc:ItemIcon
+                                        Width="36"
+                                        Height="36"
+                                        Icon="{Binding Icon}"
+                                        Quality="{Binding Rarity}"/>
+                                    <Border
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Bottom"
+                                        Background="#80000000"
+                                        CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Foreground="#FFFFFFFF"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="{Binding Number}"/>
+                                    </Border>
+                                </Grid>
+                            </Button>
+
+                        </Grid>
+                        <Border
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Margin="0,6,6,6"
+                            VerticalAlignment="Center">
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding TowerDetail.FormattedStar}"/>
+                        </Border>
+                        <Border
+                            Grid.Row="1"
+                            Grid.ColumnSpan="3"
+                            Padding="6"
+                            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="0,1,0,0"
+                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Opacity="0.7"
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                Text="{Binding FormattedDuration}"/>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </shvh:ActivityTemplateSelector.TowerTemplate>
+            <shvh:ActivityTemplateSelector.RoleCombatTemplate>
+                <DataTemplate x:DataType="shwhtga:ActRoleCombat">
+                    <Grid ColumnSpacing="6" Style="{ThemeResource GridShimmerStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="6,6,0,6">
+                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Name}"/>
+                            <TextBlock Opacity="0.8" Text="{Binding FormattedCountdown}"/>
+                        </StackPanel>
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,6">
+                            <Button Padding="0">
+                                <Button.Flyout>
+                                    <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{Binding RewardList}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <shuxc:ItemIcon
+                                                            Width="48"
+                                                            Height="48"
+                                                            Icon="{Binding Icon}"
+                                                            Quality="{Binding Rarity}"/>
+                                                        <Border
+                                                            HorizontalAlignment="Stretch"
+                                                            VerticalAlignment="Bottom"
+                                                            Background="#80000000"
+                                                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                                            <TextBlock
+                                                                MaxWidth="48"
+                                                                HorizontalAlignment="Center"
+                                                                Foreground="#FFFFFFFF"
+                                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                                Text="{Binding Number}"/>
+                                                        </Border>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Flyout>
+                                </Button.Flyout>
+                                <Grid DataContext="{Binding RewardList[0]}">
+                                    <shuxc:ItemIcon
+                                        Width="36"
+                                        Height="36"
+                                        Icon="{Binding Icon}"
+                                        Quality="{Binding Rarity}"/>
+                                    <Border
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Bottom"
+                                        Background="#80000000"
+                                        CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Foreground="#FFFFFFFF"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="{Binding Number}"/>
+                                    </Border>
+                                </Grid>
+                            </Button>
+
+                        </Grid>
+                        <Border
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Margin="0,6,6,6"
+                            VerticalAlignment="Center">
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding RoleCombatDetail.FormattedMaxRound}"/>
+                        </Border>
+                        <Border
+                            Grid.Row="1"
+                            Grid.ColumnSpan="3"
+                            Padding="6"
+                            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="0,1,0,0"
+                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Opacity="0.7"
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                Text="{Binding FormattedDuration}"/>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </shvh:ActivityTemplateSelector.RoleCombatTemplate>
+            <shvh:ActivityTemplateSelector.HardChallengeTemplate>
+                <DataTemplate x:DataType="shwhtga:ActHardChallenge">
+                    <Grid ColumnSpacing="6" Style="{ThemeResource GridShimmerStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="6,6,0,6">
+                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Name}"/>
+                            <TextBlock Opacity="0.8" Text="{Binding FormattedCountdown}"/>
+                        </StackPanel>
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,6">
+                            <Button Padding="0">
+                                <Button.Flyout>
+                                    <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{Binding RewardList}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <shuxc:ItemIcon
+                                                            Width="48"
+                                                            Height="48"
+                                                            Icon="{Binding Icon}"
+                                                            Quality="{Binding Rarity}"/>
+                                                        <Border
+                                                            HorizontalAlignment="Stretch"
+                                                            VerticalAlignment="Bottom"
+                                                            Background="#80000000"
+                                                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                                            <TextBlock
+                                                                MaxWidth="48"
+                                                                HorizontalAlignment="Center"
+                                                                Foreground="#FFFFFFFF"
+                                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                                Text="{Binding Number}"/>
+                                                        </Border>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Flyout>
+                                </Button.Flyout>
+                                <Grid DataContext="{Binding RewardList[0]}">
+                                    <shuxc:ItemIcon
+                                        Width="36"
+                                        Height="36"
+                                        Icon="{Binding Icon}"
+                                        Quality="{Binding Rarity}"/>
+                                    <Border
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Bottom"
+                                        Background="#80000000"
+                                        CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Foreground="#FFFFFFFF"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="{Binding Number}"/>
+                                    </Border>
+                                </Grid>
+                            </Button>
+
+                        </Grid>
+                        <Border
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Margin="0,6,6,6"
+                            VerticalAlignment="Center">
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding HardChallengeDetail.FormattedProgress}"/>
+                        </Border>
+                        <Border
+                            Grid.Row="1"
+                            Grid.ColumnSpan="3"
+                            Padding="6"
+                            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="0,1,0,0"
+                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Opacity="0.7"
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                Text="{Binding FormattedDuration}"/>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </shvh:ActivityTemplateSelector.HardChallengeTemplate>
+            <shvh:ActivityTemplateSelector.OtherTemplate>
+                <DataTemplate x:DataType="shwhtga:ActOther">
+                    <Grid ColumnSpacing="6" Style="{ThemeResource GridShimmerStyle}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="6,6,0,6">
+                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Name}"/>
+                            <TextBlock Opacity="0.8" Text="{Binding FormattedCountdown}"/>
+                        </StackPanel>
+                        <Grid
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,6">
+                            <Button Padding="0">
+                                <Button.Flyout>
+                                    <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{Binding RewardList}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <shuxc:ItemIcon
+                                                            Width="48"
+                                                            Height="48"
+                                                            Icon="{Binding Icon}"
+                                                            Quality="{Binding Rarity}"/>
+                                                        <Border
+                                                            HorizontalAlignment="Stretch"
+                                                            VerticalAlignment="Bottom"
+                                                            Background="#80000000"
+                                                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                                            <TextBlock
+                                                                MaxWidth="48"
+                                                                HorizontalAlignment="Center"
+                                                                Foreground="#FFFFFFFF"
+                                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                                Text="{Binding Number}"/>
+                                                        </Border>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Flyout>
+                                </Button.Flyout>
+                                <Grid DataContext="{Binding RewardList[0]}">
+                                    <shuxc:ItemIcon
+                                        Width="36"
+                                        Height="36"
+                                        Icon="{Binding Icon}"
+                                        Quality="{Binding Rarity}"/>
+                                    <Border
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Bottom"
+                                        Background="#80000000"
+                                        CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Foreground="#FFFFFFFF"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="{Binding Number}"/>
+                                    </Border>
+                                </Grid>
+                            </Button>
+                        </Grid>
+                        <Border
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Margin="0,6,6,6"
+                            VerticalAlignment="Center">
+                            <TextBlock HorizontalAlignment="Center" Text="{Binding FormattedStatus}"/>
+                        </Border>
+                        <Border
+                            Grid.Row="1"
+                            Grid.ColumnSpan="3"
+                            Padding="6"
+                            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="0,1,0,0"
+                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                Opacity="0.7"
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                Text="{Binding FormattedDuration}"/>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </shvh:ActivityTemplateSelector.OtherTemplate>
+        </shvh:ActivityTemplateSelector>
     </shuxc:ScopedPage.Resources>
 
     <Grid>
@@ -237,14 +987,109 @@
                     </Grid>
                 </Border>
 
-                <ItemsControl
-                    x:Name="HutaoAnnouncementControl"
+                <Grid
+                    x:Name="ActivityCalendarGrid"
+                    MaxHeight="354.6"
+                    Padding="8"
+                    x:FieldModifier="internal"
                     x:Load="False"
-                    ItemTemplate="{StaticResource HutaoAnnouncementTemplate}"
-                    ItemsPanel="{ThemeResource StackPanelSpacing8Template}"
-                    ItemsSource="{Binding HutaoAnnouncements}"
-                    Transitions="{ThemeResource EntranceThemeTransitions}"
-                    Visibility="{Binding HutaoAnnouncements.Count, Converter={StaticResource Int32ToVisibilityConverter}}"/>
+                    ColumnSpacing="8"
+                    DataContext="{Binding ActivityCalendar}"
+                    Style="{ThemeResource AcrylicGridCardStyle}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <ItemsControl ItemsPanel="{ThemeResource StackPanelSpacing8Template}" ItemsSource="{Binding CompositeCardPools}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid RowSpacing="6" Style="{ThemeResource GridShimmerStyle}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel
+                                        Grid.Row="0"
+                                        Margin="6,6,0,0"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal"
+                                        Spacing="6">
+                                        <Border
+                                            Padding="4,1"
+                                            VerticalAlignment="Center"
+                                            CornerRadius="2">
+                                            <Border.Background>
+                                                <SolidColorBrush Opacity="0.3" Color="{ThemeResource SystemAccentColor}"/>
+                                            </Border.Background>
+                                            <TextBlock
+                                                FontSize="10"
+                                                IsTextSelectionEnabled="True"
+                                                Style="{StaticResource CaptionTextBlockStyle}"
+                                                Text="{Binding VersionName}"
+                                                TextTrimming="None"
+                                                TextWrapping="NoWrap"/>
+                                        </Border>
+                                        <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding PoolName}"/>
+                                    </StackPanel>
+                                    <TextBlock
+                                        Grid.Row="0"
+                                        Margin="0,6,6,0"
+                                        HorizontalAlignment="Right"
+                                        Style="{ThemeResource BodyTextBlockStyle}"
+                                        Text="{Binding FormattedCountdown}"/>
+                                    <ItemsControl
+                                        Grid.Row="1"
+                                        Margin="6,0"
+                                        ItemsPanel="{ThemeResource HorizontalStackPanelSpacing6Template}"
+                                        ItemsSource="{Binding CompositeItems}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <shuxc:ItemIcon
+                                                    Width="40"
+                                                    Height="40"
+                                                    Icon="{Binding Icon}"
+                                                    Quality="{Binding Rarity}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <Border
+                                        Grid.Row="2"
+                                        Padding="6"
+                                        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                        BorderThickness="0,1,0,0"
+                                        CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Opacity="0.7"
+                                            Style="{ThemeResource CaptionTextBlockStyle}"
+                                            Text="{Binding FormattedDuration}"/>
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Grid Grid.Column="1" Style="{ThemeResource GridShimmerStyle}">
+                        <ScrollViewer>
+                            <ItemsControl
+                                Margin="8"
+                                VerticalAlignment="Top"
+                                ItemTemplateSelector="{StaticResource ActivityTemplateSelector}"
+                                ItemsSource="{Binding DisplayedActivityCards}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <shuxcp:UniformPanel
+                                            ColumnSpacing="8"
+                                            MinItemWidth="360"
+                                            RowSpacing="8"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
 
                 <ItemsControl
                     ItemTemplate="{StaticResource CardTemplate}"
@@ -264,6 +1109,7 @@
                     <Pivot
                         x:Name="GameAnnouncementPivot"
                         Margin="-16"
+                        x:FieldModifier="internal"
                         x:Load="False"
                         Style="{ThemeResource CardPivotStyle}"
                         Transitions="{ThemeResource EntranceThemeTransitions}">

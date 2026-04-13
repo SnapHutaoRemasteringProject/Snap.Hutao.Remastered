@@ -11,6 +11,7 @@ public static class JsonOptions
 {
     public static readonly JsonSerializerOptions Default = new()
     {
+        AllowOutOfOrderMetadataProperties = true,
         AllowTrailingCommas = true,
         Converters =
         {

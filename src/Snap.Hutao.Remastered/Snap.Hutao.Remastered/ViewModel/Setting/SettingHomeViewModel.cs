@@ -47,6 +47,21 @@ public sealed partial class SettingHomeViewModel : Abstraction.ViewModel
         }
     }
 
+    public bool IsHomeAnnouncementActPreviewEnabled
+    {
+        get => LocalSetting.Get(SettingKeys.HomeAnnouncementActPreviewEnabled, true);
+        set
+        {
+            if (IsHomeAnnouncementActPreviewEnabled == value)
+            {
+                return;
+            }
+
+            LocalSetting.Set(SettingKeys.HomeAnnouncementActPreviewEnabled, value);
+            OnPropertyChanged(nameof(IsHomeAnnouncementActPreviewEnabled));
+        }
+    }
+
     public ObservableCollection<SettingHomeCardViewModel>? HomeCards { get; private set; }
 
     partial void PostConstruct(IServiceProvider serviceProvider)

@@ -19,7 +19,7 @@ namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord;
 
 [HttpClient(HttpClientConfiguration.XRpc)]
 [PrimaryHttpMessageHandler(UseCookies = false)]
-public sealed partial class GameRecordClient : IGameRecordClient
+internal sealed partial class GameRecordClient : IGameRecordClient
 {
     private readonly IHttpRequestMessageBuilderFactory httpRequestMessageBuilderFactory;
     private readonly IServiceProvider serviceProvider;
@@ -45,7 +45,7 @@ public sealed partial class GameRecordClient : IGameRecordClient
             .SendAsync<Response<DailyNote.DailyNote>>(httpClient, token)
             .ConfigureAwait(false);
 
-        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebDailyNoteVerificationFailed, CardVerifiationHeaders.CreateForDailyNote, token).ConfigureAwait(false);
+        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebDailyNoteVerificationFailed, CardVerificationHeaders.CreateForDailyNote, token).ConfigureAwait(false);
     }
 
     public async ValueTask<Response<PlayerInfo>> GetPlayerInfoAsync(UserAndUid userAndUid, CancellationToken token = default)
@@ -62,7 +62,7 @@ public sealed partial class GameRecordClient : IGameRecordClient
             .SendAsync<Response<PlayerInfo>>(httpClient, token)
             .ConfigureAwait(false);
 
-        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerifiationHeaders.CreateForIndex, token).ConfigureAwait(false);
+        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerificationHeaders.CreateForIndex, token).ConfigureAwait(false);
     }
 
     public async ValueTask<Response<SpiralAbyss.SpiralAbyss>> GetSpiralAbyssAsync(UserAndUid userAndUid, ScheduleType schedule, CancellationToken token = default)
@@ -79,7 +79,7 @@ public sealed partial class GameRecordClient : IGameRecordClient
             .SendAsync<Response<SpiralAbyss.SpiralAbyss>>(httpClient, token)
             .ConfigureAwait(false);
 
-        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerifiationHeaders.CreateForSpiralAbyss, token).ConfigureAwait(false);
+        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerificationHeaders.CreateForSpiralAbyss, token).ConfigureAwait(false);
     }
 
     public async ValueTask<Response<BasicRoleInfo>> GetRoleBasicInfoAsync(UserAndUid userAndUid, CancellationToken token = default)
@@ -113,7 +113,7 @@ public sealed partial class GameRecordClient : IGameRecordClient
             .SendAsync<Response<ListWrapper<Character>>>(httpClient, token)
             .ConfigureAwait(false);
 
-        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerifiationHeaders.CreateForCharacterAll, token).ConfigureAwait(false);
+        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerificationHeaders.CreateForCharacterAll, token).ConfigureAwait(false);
     }
 
     public async ValueTask<Response<ListWrapper<DetailedCharacter>>> GetCharacterDetailAsync(UserAndUid userAndUid, ImmutableArray<AvatarId> characterIds, CancellationToken token = default)
@@ -130,7 +130,7 @@ public sealed partial class GameRecordClient : IGameRecordClient
             .SendAsync<Response<ListWrapper<DetailedCharacter>>>(httpClient, token)
             .ConfigureAwait(false);
 
-        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerifiationHeaders.CreateForCharacterDetail, token).ConfigureAwait(false);
+        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerificationHeaders.CreateForCharacterDetail, token).ConfigureAwait(false);
     }
 
     public async ValueTask<Response<RoleCombat.RoleCombat>> GetRoleCombatAsync(UserAndUid userAndUid, CancellationToken token = default)
@@ -147,7 +147,7 @@ public sealed partial class GameRecordClient : IGameRecordClient
             .SendAsync<Response<RoleCombat.RoleCombat>>(httpClient, token)
             .ConfigureAwait(false);
 
-        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerifiationHeaders.CreateForRoleCombat, token).ConfigureAwait(false);
+        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerificationHeaders.CreateForRoleCombat, token).ConfigureAwait(false);
     }
 
     public async ValueTask<Response<HardChallenge.HardChallenge>> GetHardChallengeAsync(UserAndUid userAndUid, CancellationToken token = default)
@@ -164,7 +164,7 @@ public sealed partial class GameRecordClient : IGameRecordClient
             .SendAsync<Response<HardChallenge.HardChallenge>>(httpClient, token)
             .ConfigureAwait(false);
 
-        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerifiationHeaders.CreateForHardChallenge, token).ConfigureAwait(false);
+        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerificationHeaders.CreateForHardChallenge, token).ConfigureAwait(false);
     }
 
     public async ValueTask<Response<HardChallengePopularity>> GetHardChallengePopularityAsync(UserAndUid userAndUid, CancellationToken token = default)
@@ -181,10 +181,27 @@ public sealed partial class GameRecordClient : IGameRecordClient
             .SendAsync<Response<HardChallengePopularity>>(httpClient, token)
             .ConfigureAwait(false);
 
-        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerifiationHeaders.CreateForHardChallenge, token).ConfigureAwait(false);
+        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerificationHeaders.CreateForHardChallenge, token).ConfigureAwait(false);
     }
 
-    private async ValueTask<TResponse> RetryIf1034Async<TResponse>(HttpRequestMessageBuilder builder, UserAndUid userAndUid, TResponse? response, string message, Func<IApiEndpoints, CardVerifiationHeaders> headersFactory, CancellationToken token = default)
+    public async ValueTask<Response<ActCalendar.ActCalendar>> GetActCalendarAsync(UserAndUid userAndUid, CancellationToken token = default)
+    {
+        HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
+            .SetRequestUri(apiEndpoints.GameRecordActCalendar())
+            .SetUserCookieAndFpHeader(userAndUid, CookieType.Cookie)
+            .SetReferer(apiEndpoints.WebStaticReferer())
+            .PostJson(new RoleIdServer(userAndUid.Uid));
+
+        await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.X4, false).ConfigureAwait(false);
+
+        Response<ActCalendar.ActCalendar>? resp = await builder
+            .SendAsync<Response<ActCalendar.ActCalendar>>(httpClient, token)
+            .ConfigureAwait(false);
+
+        return await RetryIf1034Async(builder, userAndUid, resp, SH.WebIndexOrSpiralAbyssVerificationFailed, CardVerificationHeaders.CreateForActCalendar, token).ConfigureAwait(false);
+    }
+
+    private async ValueTask<TResponse> RetryIf1034Async<TResponse>(HttpRequestMessageBuilder builder, UserAndUid userAndUid, TResponse? response, string message, Func<IApiEndpoints, CardVerificationHeaders> headersFactory, CancellationToken token = default)
         where TResponse : class, ICommonResponse<TResponse>
     {
         // We have a verification procedure to handle
@@ -194,7 +211,7 @@ public sealed partial class GameRecordClient : IGameRecordClient
             response.Message = message;
 
             IGeetestService geetestService = serviceProvider.GetRequiredService<IGeetestService>();
-            CardVerifiationHeaders headers = headersFactory(apiEndpoints);
+            CardVerificationHeaders headers = headersFactory(apiEndpoints);
 
             if (await geetestService.TryVerifyXrpcChallengeAsync(userAndUid.User, headers, token).ConfigureAwait(false) is { } challenge)
             {

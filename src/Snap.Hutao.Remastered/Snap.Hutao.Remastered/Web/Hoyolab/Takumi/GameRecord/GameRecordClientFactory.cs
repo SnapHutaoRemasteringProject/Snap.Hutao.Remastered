@@ -6,7 +6,7 @@ using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord;
 
 [Service(ServiceLifetime.Transient, typeof(IOverseaSupportFactory<IGameRecordClient>))]
-public sealed partial class GameRecordClientFactory : OverseaSupportFactory<IGameRecordClient, GameRecordClient, GameRecordClientOversea>
+internal sealed partial class GameRecordClientFactory : OverseaSupportFactory<IGameRecordClient, GameRecordClient, GameRecordClientOversea>
 {
     [GeneratedConstructor(CallBaseConstructor = true)]
     public partial GameRecordClientFactory(IServiceProvider serviceProvider);
