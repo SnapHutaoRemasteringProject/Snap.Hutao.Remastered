@@ -20,6 +20,9 @@ public sealed partial class HutaoPassportLoginDialog : ContentDialog
         UserName = userName;
         ContentDialogResult result = await contentDialogFactory.EnqueueAndShowAsync(this).ShowTask.ConfigureAwait(false);
         await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
-        return new(result is ContentDialogResult.Primary, (UserName, Password));
+        (string? resultUserName, string? resultPassword) = (UserName, Password);
+        UserName = string.Empty;
+        Password = string.Empty;
+        return new(result is ContentDialogResult.Primary, (resultUserName, resultPassword));
     }
 }

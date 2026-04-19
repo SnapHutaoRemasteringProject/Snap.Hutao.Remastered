@@ -128,6 +128,12 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
             return;
         }
 
+        if (!AppOptions.IsStartupAsAdminEnabled.Value)
+        {
+            LocalSetting.Set(SettingKeys.PendingRefreshAutoStartTaskAfterUpdate, false);
+            return;
+        }
+
         if (!Environment.IsPrivilegedProcess)
         {
             LocalSetting.Set(SettingKeys.PendingRefreshAutoStartTaskAfterUpdate, true);
@@ -135,11 +141,10 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
             return;
         }
 
-        // Current env: First run after update or pending refresh, startup enabled, privileged process
+        // Current env: First run after update or pending refresh, startup and startup-as-admin enabled, privileged process
         try
         {
-            BOOL runElevated = AppOptions.IsStartupAsAdminEnabled.Value;
-            HutaoNative.Instance.CreateAutoStartTaskForThisUser(runElevated);
+            HutaoNative.Instance.CreateAutoStartTaskForThisUser(true);
             LocalSetting.Set(SettingKeys.PendingRefreshAutoStartTaskAfterUpdate, false);
             SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Refresh auto start task after update", "MainViewModel"));
         }
