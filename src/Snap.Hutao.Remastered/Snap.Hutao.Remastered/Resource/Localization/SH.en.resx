@@ -4455,7 +4455,31 @@ Space Available: {2}</value>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>App behavior</value>
   </data>
+  <data name="ViewModelGamePackageOperationContinueDownloadButtonText" xml:space="preserve">
+    <value>Continue downloading</value>
+  </data>
+  <data name="ViewModelMainAutoStartRefreshRequireElevatedRestart" xml:space="preserve">
+    <value>The application version has been updated. Since the program path used for automatic startup as an administrator has been changed and requires refreshing, please restart the Walnut Toolbox as an administrator to automatically trigger the update of the automatic startup settings.</value>
+  </data>
   <data name="ContentDialogPauseButtonText" xml:space="preserve">
     <value>Pause</value>
+  </data>
+  <data name="ViewModelMainNetworkUnavailableWillAutoRetry" xml:space="preserve">
+    <value>The network is currently unavailable. It will automatically retry after the network is restored.</value>
+  </data>
+  <data name="ViewModelMainNetworkConnectionFailedWillAutoRetry" xml:space="preserve">
+    <value>Network connection failed. It will automatically retry after the network is restored.</value>
+  </data>
+  <data name="ViewModelMainNetworkDisconnected" xml:space="preserve">
+    <value>The network has been detected as disconnected.</value>
+  </data>
+  <data name="ViewModelMainNetworkRecoveredRetrying" xml:space="preserve">
+    <value>The network has been restored and is automatically retrying.</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActPreviewDescription" xml:space="preserve">
+    <value>Disabled by default, some content such as event dates that are not in progress will not be displayed correctly</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActPreviewHeader" xml:space="preserve">
+    <value>Whether to display in-game version event activities that are not currently in progress</value>
   </data>
 </root>

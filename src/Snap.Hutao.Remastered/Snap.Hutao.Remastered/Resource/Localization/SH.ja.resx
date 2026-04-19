@@ -4274,7 +4274,4 @@
   <data name="ViewPageSettingCMThemeHeader" xml:space="preserve">
     <value>クリスマステーマ</value>
   </data>
-  <data name="ViewPageSettingAlwaysRunAsAdminText" xml:space="preserve">
-    <value>常に管理者として実行</value>
-  </data>
 </root>

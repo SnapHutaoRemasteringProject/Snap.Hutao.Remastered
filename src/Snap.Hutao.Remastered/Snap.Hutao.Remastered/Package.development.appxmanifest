@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -13,7 +13,7 @@
   <Identity
     Name="E8B6E2B3-D2A0-4435-A81D-2A16AAF405C7"
     Publisher="CN=SnapHutaoRemasteringProject"
-    Version="1.19.1.0" />
+    Version="1.19.2.0" />
 
   <Properties>
     <DisplayName>Snap Hutao Remastered Dev</DisplayName>

@@ -4245,10 +4245,31 @@
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>應用行為</value>
   </data>
+  <data name="ViewModelGamePackageOperationContinueDownloadButtonText" xml:space="preserve">
+    <value>繼續下載</value>
+  </data>
+  <data name="ViewModelMainAutoStartRefreshRequireElevatedRestart" xml:space="preserve">
+    <value>檢測到應用版本已更新。由於以管理員自啟動使用的程序路徑已更改需要刷新，請以管理員身份重啟一次胡桃工具箱以自動觸發更新自啟動設置。</value>
+  </data>
   <data name="ContentDialogPauseButtonText" xml:space="preserve">
     <value>暂停</value>
   </data>
-  <data name="ViewPageSettingAlwaysRunAsAdminText" xml:space="preserve">
-    <value>始終以管理員身份運行</value>
+  <data name="ViewModelMainNetworkUnavailableWillAutoRetry" xml:space="preserve">
+    <value>當前網絡不可用，將在網絡恢復後自動重試</value>
+  </data>
+  <data name="ViewModelMainNetworkConnectionFailedWillAutoRetry" xml:space="preserve">
+    <value>網絡連接失敗，將在網絡恢復後自動重試。</value>
+  </data>
+  <data name="ViewModelMainNetworkDisconnected" xml:space="preserve">
+    <value>偵測到網絡已斷開</value>
+  </data>
+  <data name="ViewModelMainNetworkRecoveredRetrying" xml:space="preserve">
+    <value>網絡已恢復，正在自動重試</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActPreviewDescription" xml:space="preserve">
+    <value>默認關閉，不在進行中的事件日期等部分內容將不會正確顯示</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActPreviewHeader" xml:space="preserve">
+    <value>是否顯示未在進行中的遊戲內版本活動事件</value>
   </data>
 </root>
