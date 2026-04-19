@@ -122,7 +122,7 @@ public sealed partial class App : Application
             // 85 C0            test    eax, eax
             // 78 55            js      short loc_8E219D
             // Should be 78 xx (js near)
-            Win32.MemoryUtilities.Patch("Microsoft.ui.xaml.dll", 0x008E2146, 2, static codes =>
+            Win32.MemoryUtilities.Patch("Microsoft.ui.xaml.dll", 0x008E2196, 2, static codes =>
             {
                 // Rewrite to jmp
                 codes[0] = 0xEB;

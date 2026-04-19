@@ -1146,7 +1146,7 @@
     <value>操作完成</value>
   </data>
   <data name="ServiceGitRepositoryOperationFailed" xml:space="preserve">
-    <value>操作失败 网络异常</value>
+    <value>操作失败 一般故障</value>
   </data>
   <data name="ServiceHutaoUserGachaLogExpiredAt" xml:space="preserve">
     <value>祈愿记录上传服务有效期至</value>
