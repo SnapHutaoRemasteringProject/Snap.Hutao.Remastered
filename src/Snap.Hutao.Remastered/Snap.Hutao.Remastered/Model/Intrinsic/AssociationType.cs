@@ -41,4 +41,5 @@ public enum AssociationType
 
     [LocalizationKey(nameof(SH.ModelIntrinsicAssociationTypeNodkrai))]
     ASSOC_TYPE_NODKRAI,
+    ASSOC_TYPE_NODKRAI_ZIBAI,
 }
