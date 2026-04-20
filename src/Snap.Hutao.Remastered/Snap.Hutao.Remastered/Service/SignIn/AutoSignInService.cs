@@ -13,7 +13,7 @@ public sealed partial class AutoSignInService : IAutoSignInService
 
     public bool IsEnabled
     {
-        get => LocalSetting.Get(SettingKeys.AutoSignInEnabled, false);
+        get => LocalSetting.Get(SettingKeys.AutoSignInEnabled, true);
         set => LocalSetting.Set(SettingKeys.AutoSignInEnabled, value);
     }
 

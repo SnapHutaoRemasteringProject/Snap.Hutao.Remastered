@@ -92,7 +92,7 @@ public sealed partial class NotifyIconController : IDisposable
         native.Create(HutaoNativeNotifyIconCallback.Create(&OnNotifyIconCallback), handle, HutaoRuntime.GetDisplayNameForNotifyIcon() ??"Snap Hutao Remastered");
         if (XamlApplicationLifetime.IsFirstRunAfterUpdate)
         {
-            CleanupLegacyMsixNotifyIconRegistryEntries();
+            UpdateMsixNotifyIconRegistryEntries();
         }
     }
 
@@ -216,7 +216,7 @@ public sealed partial class NotifyIconController : IDisposable
     }
 
     // Need more tests and feedbacks
-    private static void CleanupLegacyMsixNotifyIconRegistryEntries()
+    private static void UpdateMsixNotifyIconRegistryEntries()
     {
         try
         {
@@ -246,12 +246,9 @@ public sealed partial class NotifyIconController : IDisposable
                 return;
             }
 
-            List<string> legacySubKeys = [];
-            int? promoted = null;
-
             foreach (string subKeyName in notifyIconSettings.GetSubKeyNames())
             {
-                using RegistryKey? subKey = notifyIconSettings.OpenSubKey(subKeyName);
+                using RegistryKey? subKey = notifyIconSettings.OpenSubKey(subKeyName, writable: true);
                 string? executablePath = subKey?.GetValue("ExecutablePath") as string;
                 if (string.IsNullOrEmpty(executablePath))
                 {
@@ -263,38 +260,14 @@ public sealed partial class NotifyIconController : IDisposable
                     continue;
                 }
 
-                if (subKey.GetValue("IsPromoted") is int isPromoted)
+                if (!TryNormalizeExecutablePath(executablePath, currentPackageFullName, out string normalizedExecutablePath))
                 {
-                    promoted = Math.Max(promoted ?? 0, isPromoted);
+                    continue;
                 }
 
-                if (!executablePath.Contains($"\\{currentPackageFullName}\\", StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(executablePath, normalizedExecutablePath, StringComparison.OrdinalIgnoreCase))
                 {
-                    legacySubKeys.Add(subKeyName);
-                }
-            }
-
-            foreach (string legacySubKey in legacySubKeys)
-            {
-                notifyIconSettings.DeleteSubKeyTree(legacySubKey, throwOnMissingSubKey: false);
-            }
-
-            if (promoted is not null)
-            {
-                foreach (string subKeyName in notifyIconSettings.GetSubKeyNames())
-                {
-                    using RegistryKey? subKey = notifyIconSettings.OpenSubKey(subKeyName, writable: true);
-                    string? executablePath = subKey?.GetValue("ExecutablePath") as string;
-                    if (string.IsNullOrEmpty(executablePath))
-                    {
-                        continue;
-                    }
-
-                    if (executablePath.Contains($"\\{currentPackageFullName}\\", StringComparison.OrdinalIgnoreCase)
-                        && IsSameMsixApp(executablePath, executableName, packageName, publisherId))
-                    {
-                        subKey.SetValue("IsPromoted", promoted.Value, RegistryValueKind.DWord);
-                    }
+                    subKey?.SetValue("ExecutablePath", normalizedExecutablePath, RegistryValueKind.String);
                 }
             }
         }
@@ -308,6 +281,40 @@ public sealed partial class NotifyIconController : IDisposable
             return executablePath.EndsWith($"\\{executableName}", StringComparison.OrdinalIgnoreCase)
                 && executablePath.Contains($"\\WindowsApps\\{packageName}_", StringComparison.OrdinalIgnoreCase)
                 && executablePath.Contains($"__{publisherId}\\", StringComparison.OrdinalIgnoreCase);
+        }
+
+        static bool TryNormalizeExecutablePath(string executablePath, string currentPackageFullName, out string normalizedExecutablePath)
+        {
+            string? packageFullName = ExtractPackageFullName(executablePath);
+            if (string.IsNullOrEmpty(packageFullName) || string.Equals(packageFullName, currentPackageFullName, StringComparison.OrdinalIgnoreCase))
+            {
+                normalizedExecutablePath = executablePath;
+                return false;
+            }
+
+            string oldSegment = $@"\\WindowsApps\\{packageFullName}\\";
+            string newSegment = $@"\\WindowsApps\\{currentPackageFullName}\\";
+            normalizedExecutablePath = executablePath.Replace(oldSegment, newSegment, StringComparison.OrdinalIgnoreCase);
+            return !string.Equals(executablePath, normalizedExecutablePath, StringComparison.OrdinalIgnoreCase);
+        }
+
+        static string? ExtractPackageFullName(string executablePath)
+        {
+            const string windowsAppsSegment = @"\\WindowsApps\\";
+            int startIndex = executablePath.IndexOf(windowsAppsSegment, StringComparison.OrdinalIgnoreCase);
+            if (startIndex < 0)
+            {
+                return null;
+            }
+
+            startIndex += windowsAppsSegment.Length;
+            int endIndex = executablePath.IndexOf('\\', startIndex);
+            if (endIndex < 0)
+            {
+                return null;
+            }
+
+            return executablePath[startIndex..endIndex];
         }
     }
 }
