@@ -2,6 +2,8 @@
 // Licensed under the MIT license.
 // Copyright (c) Millennium-Science-Technology-R-D-Inst. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Snap Hutao RP. All rights reserved.
+// Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
@@ -21,7 +23,6 @@ using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
 using Snap.Hutao.Remastered.Win32;
-using Snap.Hutao.Remastered.Win32.Foundation;
 using Snap.Hutao.Remastered.Web;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using System.Net.Http;

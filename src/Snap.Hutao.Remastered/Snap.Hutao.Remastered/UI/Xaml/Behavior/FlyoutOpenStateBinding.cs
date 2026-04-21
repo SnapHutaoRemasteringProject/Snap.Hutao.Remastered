@@ -1,11 +1,8 @@
-// Copyright (c) DGP Studio. All rights reserved.
+// Copyright (c) Snap Hutao RP. All rights reserved.
 // Licensed under the MIT license.
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Behavior;
 

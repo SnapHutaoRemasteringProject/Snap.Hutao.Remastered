@@ -1,5 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Snap Hutao RP. All rights reserved.
+// Licensed under the MIT license.
 
 using CommunityToolkit.Common;
 using CommunityToolkit.Mvvm.ComponentModel;
