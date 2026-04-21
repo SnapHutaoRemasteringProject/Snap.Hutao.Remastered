@@ -215,6 +215,8 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
 
     private static bool HasInternetAccess()
     {
+        // This approach is not 100% accurate, but it's good enough for our scenario.
+        // https://learn.microsoft.com/uwp/api/windows.networking.connectivity.networkconnectivitylevel
         return NetworkInformation.GetInternetConnectionProfile()?.GetNetworkConnectivityLevel() is NetworkConnectivityLevel.InternetAccess;
     }
 

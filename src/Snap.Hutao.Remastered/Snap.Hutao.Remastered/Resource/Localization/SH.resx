@@ -3382,7 +3382,7 @@
     <value>注册</value>
   </data>
   <data name="ViewPageSettingHutaoPassportResetPasswordAction" xml:space="preserve">
-    <value>修改密码</value>
+    <value>修改密码/忘记密码</value>
   </data>
   <data name="ViewPageSettingHutaoPassportResetUserNameAction" xml:space="preserve">
     <value>修改邮箱</value>
@@ -4042,7 +4042,7 @@
     <value>自动签到</value>
   </data>
   <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
-    <value>启用在程序启动时自动签到</value>
+    <value>账号所在时区日期更新和启动时自动签到</value>
   </data>
   <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
     <value>启动时自动以管理员权限重启</value>

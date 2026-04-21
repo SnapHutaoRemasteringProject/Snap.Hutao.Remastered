@@ -81,6 +81,8 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
 
     public bool IsNextOrCompleteButtonEnabled { get; set => SetProperty(ref field, value); } = true;
 
+    public bool IsSetDataFolderEnabled { get; set => SetProperty(ref field, value); } = true;
+
     public partial CultureOptions CultureOptions { get; }
 
     public partial RuntimeOptions RuntimeOptions { get; }
@@ -229,25 +231,39 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
     [Command("SetDataFolderCommand")]
     private async Task SetDataFolderAsync()
     {
-        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Set data folder path", "GuideViewModel.Command"));
-
-        SettingStorageSetDataFolderOperation operation = new()
+        // prevent reentrancy
+        if (!IsSetDataFolderEnabled)
         {
-            FileSystemPickerInteraction = fileSystemPickerInteraction,
-            ContentDialogFactory = contentDialogFactory,
-            Messenger = messenger,
-        };
+            return;
+        }
 
-        if (await operation.TryExecuteAsync().ConfigureAwait(false))
+        IsSetDataFolderEnabled = false;
+        try
         {
-            try
+            SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Set data folder path", "GuideViewModel.Command"));
+
+            SettingStorageSetDataFolderOperation operation = new()
             {
-                AppInstance.Restart(string.Empty);
-            }
-            catch (COMException ex)
+                FileSystemPickerInteraction = fileSystemPickerInteraction,
+                ContentDialogFactory = contentDialogFactory,
+                Messenger = messenger,
+            };
+
+            if (await operation.TryExecuteAsync().ConfigureAwait(false))
             {
-                messenger.Send(InfoBarMessage.Error(ex));
+                try
+                {
+                    AppInstance.Restart(string.Empty);
+                }
+                catch (COMException ex)
+                {
+                    messenger.Send(InfoBarMessage.Error(ex));
+                }
             }
+        }
+        finally
+        {
+            IsSetDataFolderEnabled = true;
         }
     }
 

@@ -4,7 +4,6 @@
 using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
 using Snap.Hutao.Remastered.Core.IO.Compression.Zstandard;
 using Snap.Hutao.Remastered.Core.IO.Hashing;
-using Snap.Hutao.Remastered.Core.Threading;
 using Snap.Hutao.Remastered.Core.Threading.RateLimiting;
 using Snap.Hutao.Remastered.Factory.IO;
 using Snap.Hutao.Remastered.Factory.Progress;

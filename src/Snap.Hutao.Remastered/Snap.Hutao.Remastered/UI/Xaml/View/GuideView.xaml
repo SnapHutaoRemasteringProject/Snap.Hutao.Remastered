@@ -454,7 +454,7 @@
                             Command="{Binding SetDataFolderCommand}"
                             Description="{Binding RuntimeOptions.DataFolder}"
                             Header="{shuxm:ResourceString Name=ViewPageSettingSetDataFolderHeader}"
-                            IsClickEnabled="True"/>
+                            IsClickEnabled="{Binding IsSetDataFolderEnabled}"/>
                     </StackPanel>
 
                     <TextBlock

@@ -3375,7 +3375,7 @@
     <value>註冊</value>
   </data>
   <data name="ViewPageSettingHutaoPassportResetPasswordAction" xml:space="preserve">
-    <value>重設密碼</value>
+    <value>重設密碼/忘記密碼</value>
   </data>
   <data name="ViewPageSettingHutaoPassportResetUserNameAction" xml:space="preserve">
     <value>修改電子郵件地址</value>
@@ -4033,6 +4033,9 @@
   </data>
   <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
     <value>自動簽到</value>
+  </data>
+  <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
+    <value>帳號所在時區日期更新和啟動時自動簽到</value>
   </data>
   <data name="ViewPageSettingAlwaysRunAsAdminTextDes" xml:space="preserve">
     <value>設定將在應用以後的啟動時生效，建議開啟自啟動以免啟動時反復UAC彈窗打擾</value>

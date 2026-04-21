@@ -3378,7 +3378,7 @@ Space Available: {2}</value>
     <value>Register</value>
   </data>
   <data name="ViewPageSettingHutaoPassportResetPasswordAction" xml:space="preserve">
-    <value>Change Password</value>
+    <value>Change Password/Forget Password</value>
   </data>
   <data name="ViewPageSettingHutaoPassportResetUserNameAction" xml:space="preserve">
     <value>Change email</value>
@@ -4038,7 +4038,7 @@ Space Available: {2}</value>
     <value>Auto sign in</value>
   </data>
   <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
-    <value>Enable automatic sign-in at application start</value>
+    <value>The account automatically checks in when the date in its time zone is updated and when it starts.</value>
   </data>
   <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
     <value>Auto Restart as Admin</value>
