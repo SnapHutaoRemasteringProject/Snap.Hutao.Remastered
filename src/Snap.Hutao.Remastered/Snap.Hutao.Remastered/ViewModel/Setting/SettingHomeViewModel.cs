@@ -80,4 +80,20 @@ public sealed partial class SettingHomeViewModel : Abstraction.ViewModel
 
         HomeCards = new SettingHomeCardObservableCollection(viewModels);
     }
+
+    public bool IsHomeAnnouncementActivityCalendarPresented
+    {
+        get => LocalSetting.Get(SettingKeys.IsHomeAnnouncementActivityCalendarPresented, true);
+        set
+        {
+            if (IsHomeAnnouncementActivityCalendarPresented == value)
+            {
+                return;
+            }
+
+            LocalSetting.Set(SettingKeys.IsHomeAnnouncementActivityCalendarPresented, value);
+            OnPropertyChanged(nameof(IsHomeAnnouncementActivityCalendarPresented));
+        }
+    }
+
 }

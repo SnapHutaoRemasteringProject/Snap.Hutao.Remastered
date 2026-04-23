@@ -68,6 +68,11 @@ internal sealed partial class AnnouncementViewModel : Abstraction.ViewModel
     [ObservableProperty]
     public partial ImmutableArray<Act> DisplayedActivityCards { get; set; } = [];
 
+    public bool IsHomeAnnouncementActivityCalendarPresented
+    {
+        get => LocalSetting.Get(SettingKeys.IsHomeAnnouncementActivityCalendarPresented, true);
+    }
+
     [GeneratedRegex("act_id=(.*?)&")]
     private static partial Regex ActIdExtractor { get; }
 
@@ -228,6 +233,11 @@ internal sealed partial class AnnouncementViewModel : Abstraction.ViewModel
 
     private async ValueTask<bool> InitializeActivityCalendarAsync(CancellationToken token)
     {
+        if (!LocalSetting.Get(SettingKeys.IsHomeAnnouncementActivityCalendarPresented, true))
+        {
+            return true;
+        }
+
         try
         {
             using (IServiceScope scope = serviceProvider.CreateScope())

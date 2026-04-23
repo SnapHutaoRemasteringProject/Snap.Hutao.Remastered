@@ -791,17 +791,29 @@
                                             SelectedItem="{Binding SelectedRegion, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
-                                <cwc:SettingsCard
-                                    Description="{shuxm:ResourceString Name=ViewPageSettingHomeAnnouncementActPreviewDescription}"
-                                    Header="{shuxm:ResourceString Name=ViewPageSettingHomeAnnouncementActPreviewHeader}"
-                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE8A1;}">
-                                    <shuxc:SizeRestrictedContentControl>
-                                        <ToggleSwitch
-                                            IsOn="{Binding IsHomeAnnouncementActPreviewEnabled, Mode=TwoWay}"
-                                            OffContent="{shuxm:ResourceString Name=ViewPageSettingHomeCardOff}"
-                                            OnContent="{shuxm:ResourceString Name=ViewPageSettingHomeCardOn}"/>
-                                    </shuxc:SizeRestrictedContentControl>
-                                </cwc:SettingsCard>
+                                <cwc:SettingsExpander
+                                    Header="{shuxm:ResourceString Name=ViewPageSettingHomeAnnouncementActHeader}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE8A1;}"
+                                    IsExpanded="True">
+                                    <cwc:SettingsExpander.Items>
+                                        <cwc:SettingsCard Description="{shuxm:ResourceString Name=ViewPageSettingHomeAnnouncementActIsEnableDescription}" Header="{shuxm:ResourceString Name=ViewPageSettingHomeAnnouncementActIsEnableHeader}">
+                                            <shuxc:SizeRestrictedContentControl>
+                                                <ToggleSwitch
+                                                    IsOn="{Binding IsHomeAnnouncementActivityCalendarPresented, Mode=TwoWay}"
+                                                    OffContent="{shuxm:ResourceString Name=ViewPageSettingHomeCardOff}"
+                                                    OnContent="{shuxm:ResourceString Name=ViewPageSettingHomeCardOn}"/>
+                                            </shuxc:SizeRestrictedContentControl>
+                                        </cwc:SettingsCard>
+                                        <cwc:SettingsCard Description="{shuxm:ResourceString Name=ViewPageSettingHomeAnnouncementActPreviewDescription}" Header="{shuxm:ResourceString Name=ViewPageSettingHomeAnnouncementActPreviewHeader}">
+                                            <shuxc:SizeRestrictedContentControl>
+                                                <ToggleSwitch
+                                                    IsOn="{Binding IsHomeAnnouncementActPreviewEnabled, Mode=TwoWay}"
+                                                    OffContent="{shuxm:ResourceString Name=ViewPageSettingHomeCardOff}"
+                                                    OnContent="{shuxm:ResourceString Name=ViewPageSettingHomeCardOn}"/>
+                                            </shuxc:SizeRestrictedContentControl>
+                                        </cwc:SettingsCard>
+                                    </cwc:SettingsExpander.Items>
+                                </cwc:SettingsExpander>
                             </StackPanel>
                         </Border>
                     </Border>

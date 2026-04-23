@@ -1029,7 +1029,8 @@
                     x:Load="False"
                     ColumnSpacing="8"
                     DataContext="{Binding ActivityCalendar}"
-                    Style="{ThemeResource AcrylicGridCardStyle}">
+                    Style="{ThemeResource AcrylicGridCardStyle}"
+                    Visibility="{Binding DataContext.IsHomeAnnouncementActivityCalendarPresented, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>

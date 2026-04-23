@@ -49,6 +49,7 @@ public static class SettingKeys
     public const string HomeCardSignInOrder                = "Snap::Hutao::UI::Home::Card::SignIn::Order";
     public const string IsHomeCardSignInPresented          = "Snap::Hutao::UI::Home::Card::SignIn::Presented";
     public const string HomeAnnouncementActPreviewEnabled  = "Snap::Hutao::UI::Home::Announcement::ActPreviewEnabled";
+    public const string IsHomeAnnouncementActivityCalendarPresented = "Snap::Hutao::UI::Home::Announcement::ActivityCalendar::Presented";
 
     // HotKey
     public const string HotKeyRepeatForeverInGameOnly            = "Snap::Hutao::HotKey::RepeatForever::InGameOnly";

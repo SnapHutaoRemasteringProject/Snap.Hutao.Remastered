@@ -4576,4 +4576,13 @@
   <data name="ViewPageSettingHomeAnnouncementActPreviewHeader" xml:space="preserve">
     <value>是否显示未在进行中的游戏内版本活动事件</value>
   </data>
+  <data name="ViewPageSettingHomeAnnouncementActHeader" xml:space="preserve">
+    <value>主页游戏活动区域设置</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActIsEnableHeader" xml:space="preserve">
+    <value>是否开启游戏活动日历显示</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActIsEnableDescription" xml:space="preserve">
+    <value>立即生效，关闭后将不再显示</value>
+  </data>
 </root>
