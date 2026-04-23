@@ -1,4 +1,4 @@
-<p align="center">
+﻿<p align="center">
   <img src="https://snaphutaorp.org/assets/logo.png" alt="Snap Hutao Remastered Banner" width="600"/>
 </p>
 
@@ -90,7 +90,7 @@ https://api.snaphutaorp.org/
 
 卸载当前版本请前往*设置->应用->安装的应用*->找到 Snap.Hutao Remastered，选择卸载即可。（快捷操作：Win+X 打开安装的应用）
 
-注意，应用缓存数据在卸载后不会自动删除，卸载前请确认你的数据保存目录，未上传云服务的本地用户数据仅一份请注意保存或处理删除。不同的目录下包含了图片、元数据、用户设置等数据。
+注意，如果应用用户数据文件夹调整为非默认位置目录，则在卸载后不会自动删除，卸载前请确认你的数据保存目录，未上传云服务的本地用户数据仅一份请注意保存或处理删除。不同的目录下包含了图片、元数据、用户设置等数据。缓存的图片等数据则会随卸载自动删除。
 
 ---
 
@@ -111,6 +111,7 @@ https://api.snaphutaorp.org/
 - [CommunityToolkit/Windows](https://github.com/CommunityToolkit/Windows)  
 - [dotnet/efcore](https://github.com/dotnet/efcore)  
 - [dotnet/runtime](https://github.com/dotnet/runtime)  
+- [ghost1372/DevWinUI](https://github.com/ghost1372/DevWinUI)  
 - [microsoft/vs-validation](https://github.com/microsoft/vs-validation)  
 - [microsoft/WindowsAppSDK](https://github.com/microsoft/WindowsAppSDK)  
 - [microsoft/microsoft-ui-xaml](https://github.com/microsoft/microsoft-ui-xaml)  
