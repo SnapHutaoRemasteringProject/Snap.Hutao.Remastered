@@ -119,8 +119,6 @@ internal sealed partial class AnnouncementViewModel : Abstraction.ViewModel
             MarkHomePendingForRetry();
             return false;
         }
-
-        return false;
     }
 
     [SuppressMessage("", "SH003")]
@@ -149,8 +147,6 @@ internal sealed partial class AnnouncementViewModel : Abstraction.ViewModel
             MarkHomePendingForRetry();
             return false;
         }
-
-        return false;
     }
 
     [SuppressMessage("", "SH003")]
@@ -227,8 +223,6 @@ internal sealed partial class AnnouncementViewModel : Abstraction.ViewModel
                 return false;
             }
         }
-
-        return false;
     }
 
     private async ValueTask<bool> InitializeActivityCalendarAsync(CancellationToken token)
@@ -274,8 +268,6 @@ internal sealed partial class AnnouncementViewModel : Abstraction.ViewModel
             MarkHomePendingForRetry();
             return false;
         }
-
-        return false;
     }
 
     private async ValueTask<bool> RetryHomeAsync(CancellationToken token)

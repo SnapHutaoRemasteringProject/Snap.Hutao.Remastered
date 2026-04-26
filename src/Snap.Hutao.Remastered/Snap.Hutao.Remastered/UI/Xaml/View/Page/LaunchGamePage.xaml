@@ -19,6 +19,7 @@
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shvg="using:Snap.Hutao.Remastered.ViewModel.Game"
+    xmlns:shuxdcs="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized"
     d:DataContext="{d:DesignInstance shvg:LaunchGameViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
@@ -129,6 +130,8 @@
                 </DataTemplate>
             </shvg:AspectRatioComboBoxTemplateSelector.ListTemplate>
         </shvg:AspectRatioComboBoxTemplateSelector>
+
+        <shuxdcs:IntToNameValueVirtualKeyConverter x:Key="IntToNameValueVirtualKeyConverter"/>
     </Page.Resources>
 
     <shuxc:StandardView ShowCondition="{Binding GamePathEntryValid.Value, Mode=OneWay}" Style="{ThemeResource DefaultStandardViewStyle}">
@@ -871,6 +874,7 @@
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
                                     </Grid.RowDefinitions>
 
                                     <ToggleSwitch
@@ -1077,68 +1081,84 @@
                                             <Image Source="ms-appx:///Resource/TeachingTip/LaunchGameIslandRedirectCombineEntry.gif"/>
                                         </TeachingTip.HeroContent>
                                     </TeachingTip>
+                                    <ComboBox
+                                        Grid.Row="4"
+                                        Grid.Column="0"
+                                        Padding="10,8,6,6"
+                                        VerticalAlignment="Center"
+                                        Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandCombineMenuHotkeyHeader}"
+                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandCombineMenuHotkeyDescription}"
+                                        DisplayMemberPath="Name"
+                                        ItemsSource="{Binding LaunchOptions.VirtualKeys}"
+                                        SelectedValue="{Binding LaunchOptions.CombineMenuHotkey.Value, Mode=TwoWay, Converter={StaticResource IntToNameValueVirtualKeyConverter}}"/>
 
                                     <ToggleSwitch
                                         Grid.Row="4"
-                                        Grid.Column="0"
+                                        Grid.Column="1"
+                                        Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandWeakMapCheckHeader}"
+                                        IsOn="{Binding LaunchOptions.WeakMapCheck.Value, Mode=TwoWay}"/>
+
+                                    <ToggleSwitch
+                                        Grid.Row="4"
+                                        Grid.Column="2"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandDisplayPaimonHeader}"
                                         IsOn="{Binding LaunchOptions.DisplayPaimon.Value, Mode=TwoWay}"
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandDisplayPaimonDescription}"/>
                                     <ToggleSwitch
-                                        Grid.Row="4"
-                                        Grid.Column="1"
+                                        Grid.Row="5"
+                                        Grid.Column="0"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandUsingTouchScreenHeader}"
                                         IsEnabled="{Binding LaunchOptions.IsGameRunning.Value, Converter={StaticResource BoolNegationConverter}}"
                                         IsOn="{Binding LaunchOptions.UsingTouchScreen.Value, Mode=TwoWay}"/>
                                     <ToggleSwitch
-                                        Grid.Row="4"
-                                        Grid.Column="2"
+                                        Grid.Row="5"
+                                        Grid.Column="1"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader}"
                                         IsOn="{Binding LaunchOptions.GamepadHotSwitchEnabled.Value, Mode=TwoWay}"
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription}"/>
                                     <ToggleSwitch
                                         Grid.Row="5"
-                                        Grid.Column="0"
+                                        Grid.Column="2"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandHideGrassHeader}"
                                         IsOn="{Binding LaunchOptions.HideGrass.Value, Mode=TwoWay}"
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandHideGrassDescription}"/>
 
                                     <ToggleSwitch
-                                        Grid.Row="5"
-                                        Grid.Column="1"
+                                        Grid.Row="6"
+                                        Grid.Column="0"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowOriginalResinHeader}"
                                         IsOn="{Binding LaunchOptions.ResinListItemId000106Allowed.Value, Mode=TwoWay}"/>
                                     <ToggleSwitch
-                                        Grid.Row="5"
-                                        Grid.Column="2"
+                                        Grid.Row="6"
+                                        Grid.Column="1"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowPrimogemHeader}"
                                         IsOn="{Binding LaunchOptions.ResinListItemId000201Allowed.Value, Mode=TwoWay}"/>
                                     <ToggleSwitch
                                         Grid.Row="6"
-                                        Grid.Column="0"
+                                        Grid.Column="2"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowFragileResinHeader}"
                                         IsOn="{Binding LaunchOptions.ResinListItemId107009Allowed.Value, Mode=TwoWay}"/>
                                     <ToggleSwitch
-                                        Grid.Row="6"
-                                        Grid.Column="1"
+                                        Grid.Row="7"
+                                        Grid.Column="0"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowTransientResinHeader}"
                                         IsOn="{Binding LaunchOptions.ResinListItemId107012Allowed.Value, Mode=TwoWay}"/>
                                     <ToggleSwitch
-                                        Grid.Row="6"
-                                        Grid.Column="2"
+                                        Grid.Row="7"
+                                        Grid.Column="1"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowCondensedResinHeader}"
                                         IsOn="{Binding LaunchOptions.ResinListItemId220007Allowed.Value, Mode=TwoWay}"/>
                                     <ToggleSwitch
                                         Grid.Row="7"
-                                        Grid.Column="0"
+                                        Grid.Column="2"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandDebugModeHeader}"
                                         IsOn="{Binding LaunchOptions.DebugMode.Value, Mode=TwoWay}"
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandDebugModeDescription}"/>
 
                                     <!--  Hidden items should be at the end  -->
                                     <ToggleSwitch
-                                        Grid.Row="7"
-                                        Grid.Column="1"
+                                        Grid.Row="8"
+                                        Grid.Column="0"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandHidePlayerInfoHeader}"
                                         IsOn="{Binding LaunchOptions.HidePlayerInfo.Value, Mode=TwoWay}"
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandHidePlayerInfoDescription}"

@@ -4482,4 +4482,13 @@ Space Available: {2}</value>
   <data name="ViewPageSettingHomeAnnouncementActPreviewHeader" xml:space="preserve">
     <value>Whether to display in-game version event activities that are not currently in progress</value>
   </data>
+  <data name="ViewPageLaunchGameIslandCombineMenuHotkeyHeader" xml:space="preserve">
+    <value>Synthesis Bench shortcut</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandWeakMapCheckHeader" xml:space="preserve">
+    <value>Allow opening the map in domains</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandCombineMenuHotkeyDescription" xml:space="preserve">
+    <value>Press the designated shortcut key to open the Synthesis Bench. Cannot be used in Stygian Onslaught.</value>
+  </data>
 </root>

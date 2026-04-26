@@ -5,12 +5,14 @@ using Microsoft.UI.Windowing;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Property;
 using Snap.Hutao.Remastered.Core.Setting;
+using Snap.Hutao.Remastered.Migrations;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Service.Abstraction;
 using Snap.Hutao.Remastered.Service.Game.FileSystem;
 using Snap.Hutao.Remastered.Service.Game.PathAbstraction;
 using Snap.Hutao.Remastered.Win32;
+using Snap.Hutao.Remastered.Win32.UI.Input.KeyboardAndMouse;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Service.Game;
@@ -20,6 +22,8 @@ public sealed partial class LaunchOptions : DbStoreOptions, IRestrictedGamePathA
 {
     [GeneratedConstructor(CallBaseConstructor = true)]
     public partial LaunchOptions(IServiceProvider serviceProvider);
+
+    public static ImmutableArray<NameValue<VIRTUAL_KEY>> VirtualKeys { get => UI.Input.VirtualKeys.HotKeyValues; }
 
     [field: MaybeNull]
     public static IObservableProperty<bool> IsGameRunning { get => field ??= GameLifeCycle.IsGameRunningProperty; }
@@ -130,6 +134,10 @@ public sealed partial class LaunchOptions : DbStoreOptions, IRestrictedGamePathA
 
     [field: MaybeNull]
     public IObservableProperty<bool> RedirectCombineEntry { get => field ??= CreateProperty(SettingKeys.LaunchRedirectCombineEntry, false); }
+    [field: MaybeNull]
+    public IObservableProperty<int> CombineMenuHotkey { get => field ??= CreateProperty(SettingKeys.LaunchCombineMenuHotkey, (int)VIRTUAL_KEY.VK__none_); }
+    [field: MaybeNull]
+    public IObservableProperty<bool> WeakMapCheck { get => field ??= CreateProperty(SettingKeys.LaunchWeakMapCheck, false); }
 
     [field: MaybeNull]
     public IObservableProperty<bool> ResinListItemId000106Allowed { get => field ??= CreateProperty(SettingKeys.LaunchResinListItemId000106Allowed, true); }

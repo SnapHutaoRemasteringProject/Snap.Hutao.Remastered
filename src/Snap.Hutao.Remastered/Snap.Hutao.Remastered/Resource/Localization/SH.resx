@@ -4585,4 +4585,13 @@
   <data name="ViewPageSettingHomeAnnouncementActIsEnableDescription" xml:space="preserve">
     <value>立即生效，关闭后将不再显示</value>
   </data>
+  <data name="ViewPageLaunchGameIslandCombineMenuHotkeyHeader" xml:space="preserve">
+    <value>合成台快捷键</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandWeakMapCheckHeader" xml:space="preserve">
+    <value>允许在秘境中打开地图</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandCombineMenuHotkeyDescription" xml:space="preserve">
+    <value>按下指定的快捷键即可打开合成台，无法在幽境危战使用</value>
+  </data>
 </root>

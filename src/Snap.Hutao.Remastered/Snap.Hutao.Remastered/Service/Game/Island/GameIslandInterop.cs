@@ -96,19 +96,19 @@ public sealed class GameIslandInterop : IGameIslandInterop
 
                     IPluginService pluginService = context.PluginService;
 
-					// Load dll in inject of plugins
-					foreach (HutaoPlugin plugin in pluginService.GetAllPlugins())
+                    // Load dll in inject of plugins
+                    foreach (HutaoPlugin plugin in pluginService.GetAllPlugins())
                     {
                         if (!plugin.IsEnabled) continue;
                         if (!Directory.Exists(Path.Combine(pluginService.GetPluginPath(plugin), "inject"))) continue;
 
-						string injectPath = Path.Combine(pluginService.GetPluginPath(plugin), "inject");
+                        string injectPath = Path.Combine(pluginService.GetPluginPath(plugin), "inject");
 
                         foreach (FileInfo inject in new DirectoryInfo(injectPath).GetFiles("*.dll", SearchOption.TopDirectoryOnly))
                         {
                             fullTrustProcess.LoadLibrary(FullTrustLoadLibraryRequest.Create($"{plugin.Manifest.Name}::{inject.Name}", inject.FullName));
-						}
-					}
+                        }
+                    }
 
                     fullTrustProcess.ResumeMainThread();
                 }
@@ -164,6 +164,8 @@ public sealed class GameIslandInterop : IGameIslandInterop
         pIslandEnvironment->HidePlayerInfo = options.HidePlayerInfo.Value;
         pIslandEnvironment->GamepadHotSwitchEnabled = options.GamepadHotSwitchEnabled.Value;
         pIslandEnvironment->EnableInLevelClockPageSpeedUp = options.EnableInLevelClockPageSpeedUp.Value;
+        pIslandEnvironment->CombineHotkey = options.CombineMenuHotkey.Value;
+        pIslandEnvironment->WeakMapCheck = options.WeakMapCheck.Value;
 
         return pIslandEnvironment->View;
     }
