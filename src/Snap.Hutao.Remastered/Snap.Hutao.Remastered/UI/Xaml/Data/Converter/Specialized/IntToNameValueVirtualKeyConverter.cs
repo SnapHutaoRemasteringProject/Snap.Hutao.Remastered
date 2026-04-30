@@ -3,10 +3,7 @@
 
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Service.Game;
-using Snap.Hutao.Remastered.UI.Input;
-using Snap.Hutao.Remastered.UI.Input.HotKey;
 using Snap.Hutao.Remastered.Win32.UI.Input.KeyboardAndMouse;
-using System.Linq;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized;
 
