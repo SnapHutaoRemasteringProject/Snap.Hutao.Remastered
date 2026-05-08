@@ -129,6 +129,9 @@
   <data name="AppName" xml:space="preserve">
     <value>Snap Hutao</value>
   </data>
+  <data name="AppDevName" xml:space="preserve">
+    <value>Snap Hutao Dev</value>
+  </data>
   <data name="AppNameAndVersion" xml:space="preserve">
     <value>Snap Hutao {0}</value>
   </data>

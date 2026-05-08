@@ -7,8 +7,9 @@
   xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
-  IgnorableNamespaces="com uap desktop desktop6 rescap mp">
+  IgnorableNamespaces="com uap uap3 desktop desktop6 rescap mp">
 
   <Identity
     Name="E8B6E2B3-D2A0-4435-A81D-2A16AAF405C7"
@@ -60,6 +61,13 @@
             <uap:DisplayName>胡桃重制版 Dev</uap:DisplayName>
           </uap:Protocol>
         </uap:Extension>
+		<uap3:Extension Category="windows.appExecutionAlias"
+		  Executable="Snap.Hutao.Remastered.exe"
+		  EntryPoint="Windows.FullTrustApplication">
+		  <uap3:AppExecutionAlias>
+		    <desktop:ExecutionAlias Alias="shdev.exe" />
+		  </uap3:AppExecutionAlias>
+		</uap3:Extension>
       </Extensions>
     </Application>
   </Applications>

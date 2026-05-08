@@ -129,6 +129,9 @@
   <data name="AppName" xml:space="preserve">
     <value>胡桃</value>
   </data>
+  <data name="AppDevName" xml:space="preserve">
+    <value>胡桃 Dev</value>
+  </data>
   <data name="AppNameAndVersion" xml:space="preserve">
     <value>胡桃 {0}</value>
   </data>
@@ -4518,9 +4521,6 @@
   </data>
   <data name="ViewModelGamePackageOperationContinueDownloadButtonText" xml:space="preserve">
     <value>继续下载</value>
-  </data>
-  <data name="ViewModelMainAutoStartRefreshRequireElevatedRestart" xml:space="preserve">
-    <value>检测到应用版本已更新。由于程序路径更改需要刷新，请以管理员身份重启一次胡桃工具箱以更新自启动设置。</value>
   </data>
   <data name="ContentDialogPauseButtonText" xml:space="preserve">
     <value>暂停</value>

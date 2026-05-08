@@ -53,7 +53,8 @@ public sealed partial class NotifyIconController : IDisposable
         this.serviceProvider = serviceProvider;
         lazyMenu = new(() => new(serviceProvider));
 
-        Guid id = MemoryMarshal.AsRef<Guid>(MD5.HashData(Encoding.UTF8.GetBytes(HutaoRuntime.GetDisplayNameForNotifyIcon() ?? "Snap Hutao")).AsSpan());
+        // GUID keep same across application runs, so that the notify icon can be correctly identified by the system and keep its settings (e.g. whether to show text, whether to show notifications) after application updates.
+        Guid id = MemoryMarshal.AsRef<Guid>(MD5.HashData(Encoding.UTF8.GetBytes("Snap Hutao")).AsSpan());
         native = HutaoNative.Instance.MakeNotifyIcon(InstalledLocation.GetAbsolutePath("Assets/Logo.ico"), in id);
 
         xamlHostWindow = new(serviceProvider);

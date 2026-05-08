@@ -129,6 +129,9 @@
   <data name="AppName" xml:space="preserve">
     <value>Ху Тао</value>
   </data>
+  <data name="AppDevName" xml:space="preserve">
+    <value>Ху Тао Dev</value>
+  </data>
   <data name="AppNameAndVersion" xml:space="preserve">
     <value>Ху Тао {0}</value>
   </data>
@@ -4190,9 +4193,6 @@
   </data>
   <data name="ViewModelGamePackageOperationContinueDownloadButtonText" xml:space="preserve">
     <value>Продолжить загрузку</value>
-  </data>
-  <data name="ViewModelMainAutoStartRefreshRequireElevatedRestart" xml:space="preserve">
-    <value>Обнаружено обновление версии приложения. Поскольку путь к программе, используемой для автозапуска от имени администратора, изменился, требуется обновление. Перезапустите инструмент Hutool от имени администратора, чтобы автоматически обновить настройки автозапуска.</value>
   </data>
   <data name="ViewModelMainNetworkUnavailableWillAutoRetry" xml:space="preserve">
     <value>В настоящее время сеть недоступна, повторная попытка будет автоматически предпринята после восстановления сети.</value>

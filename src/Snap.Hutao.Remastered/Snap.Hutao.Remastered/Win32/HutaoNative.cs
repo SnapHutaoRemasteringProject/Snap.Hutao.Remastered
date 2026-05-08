@@ -132,6 +132,7 @@ public sealed unsafe class HutaoNative
         }
     }
 
+    // TODO: replace getLocalSettings to IS these APIs instead.
     public BOOL IsAutoStartTaskActiveForThisUser()
     {
         HutaoException.NotSupportedIf(objRefPrivate3 is null, "IHutaoPrivate3 is not supported");
@@ -144,8 +145,11 @@ public sealed unsafe class HutaoNative
     public void CreateAutoStartTaskForThisUser(BOOL runElevated)
     {
         HutaoException.NotSupportedIf(objRefPrivate3 is null, "IHutaoPrivate3 is not supported");
-
-        Marshal.ThrowExceptionForHR(objRefPrivate3.Vftbl.CreateAutoStartTaskForThisUser(objRefPrivate3.ThisPtr, runElevated));
+#if DEBUG
+        Marshal.ThrowExceptionForHR(objRefPrivate3.Vftbl.CreateAutoStartTaskForThisUser(objRefPrivate3.ThisPtr, runElevated, true));
+#else
+        Marshal.ThrowExceptionForHR(objRefPrivate3.Vftbl.CreateAutoStartTaskForThisUser(objRefPrivate3.ThisPtr, runElevated, false));
+#endif
     }
 
     public void DeleteAutoStartTaskForThisUser()
@@ -353,7 +357,7 @@ public sealed unsafe class HutaoNative
     {
         public readonly IUnknownVftbl IUnknownVftbl;
         public readonly delegate* unmanaged[Stdcall]<nint, BOOL*, HRESULT> IsAutoStartTaskActiveForThisUser;
-        public readonly delegate* unmanaged[Stdcall]<nint, BOOL, HRESULT> CreateAutoStartTaskForThisUser;
+        public readonly delegate* unmanaged[Stdcall]<nint, BOOL, BOOL, HRESULT> CreateAutoStartTaskForThisUser;
         public readonly delegate* unmanaged[Stdcall]<nint, HRESULT> DeleteAutoStartTaskForThisUser;
         public readonly delegate* unmanaged[Stdcall]<nint, BOOL*, HRESULT> IsAutoStartTaskRunElevatedForThisUser;
         public readonly delegate* unmanaged[Stdcall]<nint, PWSTR, uint, HRESULT> GetAutoStartTaskExecutablePathForThisUser;

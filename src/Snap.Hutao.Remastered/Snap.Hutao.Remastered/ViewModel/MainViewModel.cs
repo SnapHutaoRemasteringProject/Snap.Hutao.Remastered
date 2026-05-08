@@ -85,7 +85,6 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
         BackgroundActivityOptions.MetadataInitialization.PropertyChanged += OnMetadataInitializationPropertyChanged;
         startupRetryRegistration ??= networkRetryCoordinator.Register("MainViewModel.Startup", RetryStartupAsync);
 
-        RefreshAutoStartTaskAfterUpdateIfNeeded();
         ShowUpdateLogWindowAfterUpdate();
         NotifyIfDataFolderHasReparsePoint();
         await RetryStartupAsync(token).ConfigureAwait(false);
@@ -110,49 +109,6 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
                 SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Show update log window", "MainViewModel.Command"));
                 XamlApplicationLifetime.IsFirstRunAfterUpdate = false;
             }
-        }
-    }
-
-    private void RefreshAutoStartTaskAfterUpdateIfNeeded()
-    {
-        bool isFirstRunRelated = XamlApplicationLifetime.IsFirstRunAfterUpdate || LocalSetting.Get(SettingKeys.AlwaysIsFirstRunAfterUpdate, false);
-        bool pendingRefresh = LocalSetting.Get(SettingKeys.PendingRefreshAutoStartTaskAfterUpdate, false);
-
-        if (!isFirstRunRelated && !pendingRefresh)
-        {
-            return;
-        }
-
-        if (!AppOptions.IsStartupEnabled.Value)
-        {
-            LocalSetting.Set(SettingKeys.PendingRefreshAutoStartTaskAfterUpdate, false);
-            return;
-        }
-
-        if (!AppOptions.IsStartupAsAdminEnabled.Value)
-        {
-            LocalSetting.Set(SettingKeys.PendingRefreshAutoStartTaskAfterUpdate, false);
-            return;
-        }
-
-        if (!Environment.IsPrivilegedProcess)
-        {
-            LocalSetting.Set(SettingKeys.PendingRefreshAutoStartTaskAfterUpdate, true);
-            messenger.Send(InfoBarMessage.Warning(SH.ViewModelMainAutoStartRefreshRequireElevatedRestart));
-            return;
-        }
-
-        // Current env: First run after update or pending refresh, startup and startup-as-admin enabled, privileged process
-        try
-        {
-            HutaoNative.Instance.CreateAutoStartTaskForThisUser(true);
-            LocalSetting.Set(SettingKeys.PendingRefreshAutoStartTaskAfterUpdate, false);
-            SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Refresh auto start task after update", "MainViewModel"));
-        }
-        catch (Exception ex)
-        {
-            LocalSetting.Set(SettingKeys.PendingRefreshAutoStartTaskAfterUpdate, true);
-            SentrySdk.CaptureException(ex);
         }
     }
 
