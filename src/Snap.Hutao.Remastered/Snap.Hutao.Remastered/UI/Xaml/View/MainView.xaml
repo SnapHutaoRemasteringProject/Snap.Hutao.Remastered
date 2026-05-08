@@ -175,7 +175,10 @@
                                             TargetType="x:Boolean"
                                             Value="{Binding IsFlyoutOpen, Mode=OneWay}">
                                             <tControls:Case Value="True">
-                                                <AnimatedIcon x:Name="OpenedChevronAnimatedIcon" Width="16" Height="16">
+                                                <AnimatedIcon
+                                                    x:Name="OpenedChevronAnimatedIcon"
+                                                    Width="16"
+                                                    Height="16">
                                                     <AnimatedIcon.Source>
                                                         <animatedvisuals:AnimatedChevronUpDownSmallVisualSource/>
                                                     </AnimatedIcon.Source>
@@ -185,7 +188,10 @@
                                                 </AnimatedIcon>
                                             </tControls:Case>
                                             <tControls:Case Value="False">
-                                                <AnimatedIcon x:Name="ClosedChevronAnimatedIcon" Width="16" Height="16">
+                                                <AnimatedIcon
+                                                    x:Name="ClosedChevronAnimatedIcon"
+                                                    Width="16"
+                                                    Height="16">
                                                     <AnimatedIcon.Source>
                                                         <animatedvisuals:AnimatedChevronDownSmallVisualSource/>
                                                     </AnimatedIcon.Source>

@@ -5,12 +5,15 @@
 
 using CommunityToolkit.Common;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Snap.Hutao.Remastered.Core.DataTransfer;
 using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
+using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.Announcement;
 using Snap.Hutao.Remastered.Service.Hutao;
 using Snap.Hutao.Remastered.Service.Network;
+using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.Control.Card;
 using Snap.Hutao.Remastered.UI.Xaml.View.Card;
@@ -306,6 +309,20 @@ internal sealed partial class AnnouncementViewModel : Abstraction.ViewModel
             TaskCanceledException => true,
             _ => false,
         };
+    }
+
+    [Command("CopyCodeCommand")]
+    private async Task CopyCodeToClipboardAsync(string? code)
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Copy redeem code to ClipBoard", "AnnouncementPage.Command"));
+
+        if (string.IsNullOrEmpty(code))
+        {
+            return;
+        }
+
+        await serviceProvider.GetRequiredService<IClipboardProvider>().SetTextAsync(code).ConfigureAwait(false);
+        serviceProvider.GetRequiredService<IMessenger>().Send(InfoBarMessage.Success(SH.ViewPageAnnouncementRedeemCodeCopySucceed));
     }
 
     private void UpdateGreetingText()
