@@ -60,12 +60,18 @@ public sealed partial class UIGF42ExportService : AbstractUIGF40ExportService
 
             // Export beyond gacha (UGC) items
             ImmutableArray<BeyondGachaItem> beyondDbItems = gachaLogRepository.GetBeyondGachaItemImmutableArrayByArchiveId(archive.InnerId);
+            int timezone = 0;
+            if (beyondDbItems.Length > 0)
+            {
+                timezone = beyondDbItems[0].Time.Offset.Hours;
+            }
+
             if (beyondDbItems.Length > 0)
             {
                 UIGFEntry<Hk4eUGCItem> hk4eUgcEntry = new()
                 {
                     Uid = uid,
-                    TimeZone = 0,
+                    TimeZone = timezone,
                     List = beyondDbItems.SelectAsArray(item => item.ToHk4eUGCItem()),
                 };
                 hk4eUgcResults.Add(hk4eUgcEntry);

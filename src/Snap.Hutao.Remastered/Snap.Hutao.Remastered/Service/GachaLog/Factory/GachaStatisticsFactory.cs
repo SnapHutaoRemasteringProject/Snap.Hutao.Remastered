@@ -126,13 +126,6 @@ public sealed partial class GachaStatisticsFactory : IGachaStatisticsFactory
 
         foreach (ref readonly BeyondGachaItem item in context.BeyondItems.AsSpan())
         {
-            // Find target history wish to operate. // banner.From <= item.Time <= banner.To
-            HistoryWishBuilder? targetHistoryWishBuilder = default;
-            if (item.GachaType is not (GachaType.Standard or GachaType.NewBie) && historyWishBuilderMap.TryGetValue(item.GachaType, out List<HistoryWishBuilder>? builders))
-            {
-                targetHistoryWishBuilder = builders.BinarySearch(item, static (pinned, banner) => pinned.Time < banner.From ? -1 : pinned.Time > banner.To ? 1 : 0);
-            }
-
             switch (item.ItemId.StringLength)
             {
                 case 6u:
@@ -146,11 +139,10 @@ public sealed partial class GachaStatisticsFactory : IGachaStatisticsFactory
                         {
                             case QualityType.QUALITY_ORANGE:
                                 itemCounter.OrangeBeyondItem.IncreaseByOne(beyondItem);
-                                isUp = targetHistoryWishBuilder?.IncreaseOrange(beyondItem) ?? false;
+                                isUp = true;
                                 break;
                             case QualityType.QUALITY_PURPLE:
                                 itemCounter.PurpleBeyondItem.IncreaseByOne(beyondItem);
-                                targetHistoryWishBuilder?.IncreasePurple(beyondItem);
                                 break;
                         }
 

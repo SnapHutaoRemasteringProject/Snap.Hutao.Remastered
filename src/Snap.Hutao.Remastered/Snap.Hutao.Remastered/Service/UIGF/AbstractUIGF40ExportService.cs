@@ -65,7 +65,7 @@ public abstract partial class AbstractUIGF40ExportService : IUIGFExportService
             int timezone = 0;
             if (dbItems.Length > 0)
             {
-                timezone = (int)dbItems[0].Time.Offset.Hours;
+                timezone = dbItems[0].Time.Offset.Hours;
             }
 
             UIGFEntry<Hk4eItem> hk4eEntry = new()
