@@ -62,6 +62,12 @@ public abstract partial class AbstractUIGF40ExportService : IUIGFExportService
             
             // Export standard gacha items
             ImmutableArray<GachaItem> dbItems = gachaLogRepository.GetGachaItemImmutableArrayByArchiveId(archive.InnerId);
+            int timezone = 0;
+            if (dbItems.Length > 0)
+            {
+                timezone = (int)dbItems[0].Time.Offset.Hours;
+            }
+
             UIGFEntry<Hk4eItem> hk4eEntry = new()
             {
                 Uid = uid,
