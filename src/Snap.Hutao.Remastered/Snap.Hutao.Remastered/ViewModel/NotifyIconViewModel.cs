@@ -146,17 +146,6 @@ internal sealed partial class NotifyIconViewModel : ObservableObject
         finally
         {
             notifyIconContextMenu.Hide();
-
-            // Reset for next show.
-            if (notifyIconContextMenuRoot is not null)
-            {
-                notifyIconContextMenuRoot.Opacity = 1;
-                if (notifyIconContextMenuRoot.RenderTransform is ScaleTransform st)
-                {
-                    st.ScaleX = 1;
-                    st.ScaleY = 1;
-                }
-            }
         }
     }
 

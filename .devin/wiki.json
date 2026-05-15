@@ -1,0 +1,263 @@
+{
+  "repo_notes": [
+    {
+      "content": "",
+      "author": null
+    }
+  ],
+  "pages": [
+    {
+      "title": "Overview",
+      "purpose": "High-level introduction to Snap.Hutao, a comprehensive Genshin Impact desktop toolkit for Windows. Covers the application's primary purpose, major subsystems, and architectural approach.",
+      "parent": null,
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Application Bootstrap and Lifecycle",
+      "purpose": "Details the application startup sequence, activation handling (launch, protocol, notifications), window management, system tray integration, and lifecycle state management.",
+      "parent": "Overview",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Game Integration",
+      "purpose": "Overview of Snap.Hutao's integration with Genshin Impact, including game launching, modification capabilities, package management, and configuration handling.",
+      "parent": null,
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Game Launch System",
+      "purpose": "Comprehensive documentation of the game launcher, including LaunchGameViewModel, execution strategies (default, resume, convert), launch options, and game path detection.",
+      "parent": "Game Integration",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Island Interop and Game Modifications",
+      "purpose": "Deep dive into the GameIslandInterop system, DLL injection mechanism, shared memory architecture, FOV/FPS modifications, and runtime game enhancement features.",
+      "parent": "Game Integration",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Game Package Management",
+      "purpose": "Explains the game package verification, update, and predownload systems, including interaction with HoyoPlay APIs, manifest decoding, and asset extraction.",
+      "parent": "Game Integration",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Game Account and Settings Management",
+      "purpose": "Documents the game account system (registry-based storage, MAC address encryption), launch scheme detection, and config.ini parsing.",
+      "parent": "Game Integration",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "User Interface Architecture",
+      "purpose": "Overview of the WinUI 3 XAML-based UI architecture, MVVM pattern implementation, resource management, and user-facing features.",
+      "parent": null,
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "XAML Resources and Theming",
+      "purpose": "Details the App.xaml resource dictionary structure, merged dictionaries (37 total), theme system, custom controls, and styling architecture.",
+      "parent": "User Interface Architecture",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "ViewModel Architecture and MVVM Patterns",
+      "purpose": "Explains the ViewModel base class, lifecycle management (LoadAsync, Uninitialize, Resurrect), IAdvancedCollectionView usage, command patterns, and message-driven coordination.",
+      "parent": "User Interface Architecture",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Game Data Features",
+      "purpose": "Overview of user-facing game data management features including avatar tracking, achievements, and cultivation planning.",
+      "parent": "User Interface Architecture",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Avatar and Character Management",
+      "purpose": "Documents AvatarPropertyViewModel, summary factory, Hoyolab sync, wiki avatar data, filtering system, and export functionality.",
+      "parent": "User Interface Architecture",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Achievement System",
+      "purpose": "Covers AchievementViewModel, UIAF import/export, achievement archive management, search/filter capabilities, and embedded Yae integration.",
+      "parent": "User Interface Architecture",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Cultivation Planning System",
+      "purpose": "Explains CultivationViewModel, material calculation, resin statistics, inventory management, and offline calculator architecture.",
+      "parent": "User Interface Architecture",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Development and Testing Tools",
+      "purpose": "Documents TestViewModel, setting overrides, debug utilities, asset extraction tools, and Hutao Cloud service testing interfaces.",
+      "parent": "User Interface Architecture",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Service Layer Architecture",
+      "purpose": "Overview of the service-oriented architecture, dependency injection patterns, and core service abstractions.",
+      "parent": null,
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Metadata Service and Caching",
+      "purpose": "Deep dive into MetadataService initialization, three-tier caching strategy (memory/file/remote), metadata contexts, image caching with theme support, and background image management.",
+      "parent": "Service Layer Architecture",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Game Data Services",
+      "purpose": "Documents services for avatar info, achievements, cultivation data, and their interaction with database layer and external APIs.",
+      "parent": "Service Layer Architecture",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Cloud Services Integration",
+      "purpose": "Covers Hutao Cloud backend integration (Passport authentication, GachaLog service, record upload, announcements), Hoyolab API integration, and HTTP exception handling.",
+      "parent": "Service Layer Architecture",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Infrastructure and Foundation",
+      "purpose": "Overview of foundational systems including localization, packaging, and build infrastructure.",
+      "parent": null,
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Localization System",
+      "purpose": "Documents the 14-language localization system, resource file architecture, Crowdin integration, developer workflow, and runtime resolution.",
+      "parent": "Infrastructure and Foundation",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Application Packaging and Windows Integration",
+      "purpose": "Explains MSIX/MSI package variants (Release/Dev), application identity, toast notification COM activation, protocol activation, capabilities, and elevated launch system.",
+      "parent": "Infrastructure and Foundation",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    },
+    {
+      "title": "Build System and CI/CD Pipeline",
+      "purpose": "Details the three-tier build pipeline (Alpha/Canary/Release), build.cake orchestration, version management strategies, AppxManifest mutation, and SignPath integration.",
+      "parent": "Infrastructure and Foundation",
+      "page_notes": [
+        {
+          "content": "",
+          "author": null
+        }
+      ]
+    }
+  ]
+}

@@ -26,7 +26,7 @@ public sealed partial class NotifyIconContextMenu : Flyout
         Closed += OnClosed;
     }
 
-    private void OnClosed(object sender, object args)
+    private void OnClosed(object? sender, object args)
     {
         if (Root.DataContext is NotifyIconViewModel viewModel)
         {
