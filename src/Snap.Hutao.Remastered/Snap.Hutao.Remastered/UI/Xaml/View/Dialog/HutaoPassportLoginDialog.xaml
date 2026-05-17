@@ -16,7 +16,7 @@
         <TextBox
             InputScope="EmailSmtpAddress"
             IsSpellCheckEnabled="False"
-            PlaceholderText="{shuxm:ResourceString Name=ViewPageHutaoPassportUserNameHint}"
+            PlaceholderText="{x:Bind PassportUserNameHint}"
             Text="{x:Bind UserName, Mode=TwoWay}"/>
         <PasswordBox
             Password="{x:Bind Password, Mode=TwoWay}"

@@ -8,6 +8,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 
 [DependencyProperty<string>("UserName")]
 [DependencyProperty<string>("Password")]
+[DependencyProperty<string>("PassportUserNameHint")]
 public sealed partial class HutaoPassportLoginDialog : ContentDialog
 {
     private readonly IContentDialogFactory contentDialogFactory;
@@ -15,9 +16,10 @@ public sealed partial class HutaoPassportLoginDialog : ContentDialog
     [GeneratedConstructor(InitializeComponent = true)]
     public partial HutaoPassportLoginDialog(IServiceProvider serviceProvider);
 
-    public async ValueTask<ValueResult<bool, (string? UserName, string? Passport)>> GetInputAsync(string? userName = default)
+    public async ValueTask<ValueResult<bool, (string? UserName, string? Passport)>> GetInputAsync(string passportUserNameHint, string? userName = default)
     {
         UserName = userName;
+        PassportUserNameHint = passportUserNameHint;
         ContentDialogResult result = await contentDialogFactory.EnqueueAndShowAsync(this).ShowTask.ConfigureAwait(false);
         await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
         (string? resultUserName, string? resultPassword) = (UserName, Password);

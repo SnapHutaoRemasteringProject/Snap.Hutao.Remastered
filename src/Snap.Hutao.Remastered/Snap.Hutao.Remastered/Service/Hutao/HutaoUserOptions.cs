@@ -50,7 +50,7 @@ public sealed partial class HutaoUserOptions : ObservableObject
                     value);
             }
         }
-    } = SH.ViewServiceHutaoUserLoginOrRegisterHint;
+    }
 
     [ObservableProperty]
     public partial bool IsHutaoCloudAllowed { get; set; }

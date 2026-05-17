@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Service.Hutao;
@@ -23,6 +24,9 @@ public sealed partial class HutaoPassportViewModel : Abstraction.ViewModel
     public partial HutaoPassportViewModel(IServiceProvider serviceProvider);
 
     public partial HutaoUserOptions HutaoUserOptions { get; }
+
+    [ObservableProperty]
+    public partial string PassportUserNameHint { get; set; } = SH.ViewServiceHutaoUserLoginOrRegisterHint;
 
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
@@ -94,7 +98,7 @@ public sealed partial class HutaoPassportViewModel : Abstraction.ViewModel
 
         HutaoPassportLoginDialog dialog = await contentDialogFactory.CreateInstanceAsync<HutaoPassportLoginDialog>(serviceProvider).ConfigureAwait(false);
 
-        if (await dialog.GetInputAsync(HutaoUserOptions.UserName).ConfigureAwait(false) is not (true, var result))
+        if (await dialog.GetInputAsync(PassportUserNameHint, HutaoUserOptions.UserName).ConfigureAwait(false) is not (true, var result))
         {
             return;
         }
@@ -113,6 +117,7 @@ public sealed partial class HutaoPassportViewModel : Abstraction.ViewModel
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Logout", "HutaoPassportViewModel.Command"));
         await HutaoUserOptions.LogoutAsync().ConfigureAwait(false);
+        PassportUserNameHint = SH.ViewPageHutaoPassportUserNameHint;
     }
 
     [Command("ResetUsernameCommand")]
