@@ -240,6 +240,16 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
             : messenger.Send(InfoBarMessage.Warning(SH.ViewModelSettingCreateDesktopShortcutFailed));
     }
 
+    [Command("CreateGameLaunchShortcutCommand")]
+    private void CreateGameLaunchShortcut()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Create game launch shortcut", "SettingViewModel.Command"));
+
+        _ = shellLinkInterop.TryCreateGameLaunchShortcut()
+            ? messenger.Send(InfoBarMessage.Success(SH.ViewModelSettingActionComplete))
+            : messenger.Send(InfoBarMessage.Warning(SH.ViewModelSettingCreateDesktopShortcutFailed));
+    }
+
     private void OnStartupEnabledChanged(bool isEnabled)
     {
         // Only manage task scheduler when process is elevated (the UI has checked) 

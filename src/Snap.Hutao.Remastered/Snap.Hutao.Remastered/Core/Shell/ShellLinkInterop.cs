@@ -29,4 +29,42 @@ public sealed class ShellLinkInterop : IShellLinkInterop
             return false;
         }
     }
+
+    public bool TryCreateGameLaunchShortcut()
+    {
+        string targetLogoPath = HutaoRuntime.GetDataDirectoryFile("ShellLinkLogo.ico");
+
+        try
+        {
+            InstalledLocation.CopyFileFromApplicationUri("ms-appx:///Assets/Logo.ico", targetLogoPath);
+
+            string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            string shortcutFileName = $"{SH.AppName} - {SH.ViewPageLaunchGameAction}.lnk";
+            string target = Path.Combine(desktop, shortcutFileName);
+
+            // Try creating a .lnk via the native COM CreateLink with hutao://launch URI as target
+            try
+            {
+                FileSystem.CreateLink("hutao://launch", "", targetLogoPath, target);
+                return true;
+            }
+            catch
+            {
+                // Fallback: create a .url file (Internet Shortcut) which natively supports protocol URIs
+                string urlTarget = target.Replace(".lnk", ".url");
+                string urlContent = $$"""
+                    [InternetShortcut]
+                    URL=hutao://launch
+                    IconFile={{targetLogoPath}}
+                    IconIndex=0
+                    """;
+                File.WriteAllText(urlTarget, urlContent);
+                return true;
+            }
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

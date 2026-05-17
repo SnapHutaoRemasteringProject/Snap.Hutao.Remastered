@@ -6,6 +6,7 @@
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Core.Logging;
+using Snap.Hutao.Remastered.Core.Shell;
 using Snap.Hutao.Remastered.Core.Property;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
@@ -50,6 +51,7 @@ internal sealed partial class LaunchGameViewModel : Abstraction.ViewModel, IView
     private readonly HutaoUserOptions hutaoUserOptions;
     private readonly IFileSystemPickerInteraction fileSystemPickerInteraction;
     private readonly AdvancedStartDelayedProgramStore store;
+    private readonly IShellLinkInterop shellLinkInterop;
 
     [GeneratedConstructor]
     public partial LaunchGameViewModel(IServiceProvider serviceProvider);
@@ -115,6 +117,22 @@ internal sealed partial class LaunchGameViewModel : Abstraction.ViewModel, IView
             return await userService.SetCurrentUserByUidAsync(uid).ConfigureAwait(false);
         }
 
+        if (data is LaunchGameAutoLaunchData { TypedData: { } uidData })
+        {
+            if (uidData.Length > 0)
+            {
+                bool result = await userService.SetCurrentUserByUidAsync(uidData).ConfigureAwait(false);
+                if (!result)
+                {
+                    return false;
+                }
+            }
+
+            // Initialization is complete; fire-and-forget the auto-launch
+            LaunchAsync().SafeForget();
+            return true;
+        }
+
         return false;
     }
 
@@ -170,6 +188,7 @@ internal sealed partial class LaunchGameViewModel : Abstraction.ViewModel, IView
 
         await HandleGamePathEntryChangeAsync().ConfigureAwait(false);
         Shared.ResumeLaunchExecutionAsync(this).SafeForget();
+
         return true;
     }
 
@@ -311,6 +330,16 @@ internal sealed partial class LaunchGameViewModel : Abstraction.ViewModel, IView
 
         UserAndUid? userAndUid = await userService.GetCurrentUserAndUidAsync().ConfigureAwait(false);
         await Shared.DefaultLaunchExecutionAsync(this, userAndUid).ConfigureAwait(false);
+    }
+
+    [Command("CreateGameLaunchShortcutCommand")]
+    private void CreateGameLaunchShortcut()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Create game launch shortcut", "LaunchGameViewModel.Command"));
+
+        _ = shellLinkInterop.TryCreateGameLaunchShortcut()
+            ? messenger.Send(InfoBarMessage.Success(SH.ViewModelSettingActionComplete))
+            : messenger.Send(InfoBarMessage.Warning(SH.ViewModelSettingCreateDesktopShortcutFailed));
     }
 
     [Command("ConvertCommand")]

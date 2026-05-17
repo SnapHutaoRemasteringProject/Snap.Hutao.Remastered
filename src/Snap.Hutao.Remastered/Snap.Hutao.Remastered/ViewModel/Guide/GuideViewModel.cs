@@ -5,6 +5,7 @@ using Microsoft.Windows.AppLifecycle;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
+using Snap.Hutao.Remastered.Core.Shell;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Factory.Picker;
 using Snap.Hutao.Remastered.Model;
@@ -29,6 +30,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
     private readonly IServiceProvider serviceProvider;
     private readonly ITaskContext taskContext;
     private readonly IMessenger messenger;
+    private readonly IShellLinkInterop shellLinkInterop;
 
     [GeneratedConstructor]
     public partial GuideViewModel(IServiceProvider serviceProvider);
@@ -226,6 +228,16 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Increase guide state", "GuideViewModel.Command"));
 
         ++State;
+    }
+
+    [Command("CreateGameLaunchShortcutCommand")]
+    private void CreateGameLaunchShortcut()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Create game launch shortcut", "GuideViewModel.Command"));
+
+        _ = shellLinkInterop.TryCreateGameLaunchShortcut()
+            ? messenger.Send(InfoBarMessage.Success(SH.ViewModelSettingActionComplete))
+            : messenger.Send(InfoBarMessage.Warning(SH.ViewModelSettingCreateDesktopShortcutFailed));
     }
 
     [Command("SetDataFolderCommand")]

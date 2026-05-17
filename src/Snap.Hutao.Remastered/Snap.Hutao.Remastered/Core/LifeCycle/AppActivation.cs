@@ -36,6 +36,7 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
     public const string LaunchGame = nameof(LaunchGame);
 
     private const string CategoryAchievement = "ACHIEVEMENT";
+    private const string CategoryLaunch = "LAUNCH";
     private const string UrlActionImport = "/IMPORT";
 
     private readonly ICurrentXamlWindowReference currentXamlWindowReference;
@@ -126,6 +127,46 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
                 ProcessFactory.KillCurrent();
                 return;
         }
+    }
+
+    public async ValueTask HandleLaunchGameActionAutoLaunchAsync(string? uid, bool isRedirectTo)
+    {
+        await taskContext.SwitchToMainThreadAsync();
+
+        switch (currentXamlWindowReference.Window)
+        {
+            case null:
+            case MainWindow:
+                if (await WaitWindowAsync<MainWindow>().ConfigureAwait(true) is not null)
+                {
+                    if (isRedirectTo)
+                    {
+                        await LaunchGameAsync(uid);
+                    }
+                    else
+                    {
+
+                        _ = Task.Run(async () =>
+                        {
+                            await Task.Delay(2000);
+                            await LaunchGameAsync(uid);
+                        }).ConfigureAwait(false);
+                    }
+                }
+
+                return;
+
+            default:
+                Debugger.Break(); // Should never happen
+                ProcessFactory.KillCurrent();
+                return;
+        }
+    }
+
+    public async Task LaunchGameAsync(string? uid)
+    {
+        INavigationService navigationService = serviceProvider.GetRequiredService<INavigationService>();
+        await navigationService.NavigateAsync<LaunchGamePage>(LaunchGameAutoLaunchData.CreateForLaunch(uid), true).ConfigureAwait(false);
     }
 
     private async ValueTask UnsynchronizedHandleActivationAsync(HutaoActivationArguments args)
@@ -254,12 +295,58 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
                     break;
                 }
 
+            case CategoryLaunch:
+                {
+                    string? uid = ParseQueryString(builder.Query).GetValueOrDefault("uid");
+                    await HandleLaunchGameActionAutoLaunchAsync(uid, isRedirectTo).ConfigureAwait(false);
+                    break;
+                }
+
             default:
                 {
                     await HandleLaunchActivationAsync(isRedirectTo).ConfigureAwait(false);
                     break;
                 }
         }
+    }
+
+    private static Dictionary<string, string?> ParseQueryString(string query)
+    {
+        Dictionary<string, string?> parameters = new(StringComparer.OrdinalIgnoreCase);
+
+        if (string.IsNullOrEmpty(query) || query.Length <= 1)
+        {
+            return parameters;
+        }
+
+        // Skip the leading '?' or '#'
+        ReadOnlySpan<char> span = query.AsSpan();
+        if (span[0] is '?' or '#')
+        {
+            span = span[1..];
+        }
+
+        while (!span.IsEmpty)
+        {
+            int ampIndex = span.IndexOf('&');
+            ReadOnlySpan<char> pair = ampIndex >= 0 ? span[..ampIndex] : span;
+
+            int eqIndex = pair.IndexOf('=');
+            if (eqIndex > 0)
+            {
+                string key = pair[..eqIndex].ToString();
+                string value = eqIndex < pair.Length - 1 ? pair[(eqIndex + 1)..].ToString() : string.Empty;
+                parameters[key] = Uri.UnescapeDataString(value);
+            }
+            else if (eqIndex < 0 && pair.Length > 0)
+            {
+                parameters[pair.ToString()] = string.Empty;
+            }
+
+            span = ampIndex >= 0 ? span[(ampIndex + 1)..] : [];
+        }
+
+        return parameters;
     }
 
     private async ValueTask HandleLaunchActivationAsync(bool isRedirectTo)

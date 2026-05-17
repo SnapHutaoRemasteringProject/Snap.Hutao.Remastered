@@ -654,6 +654,18 @@
                     Content="{Binding NextOrCompleteButtonText}"
                     IsEnabled="{Binding IsNextOrCompleteButtonEnabled}"
                     Style="{ThemeResource AccentButtonStyle}"/>
+
+                <!--  Separator  -->
+                <Border
+                    Width="1"
+                    Height="24"
+                    Margin="8,0"
+                    VerticalAlignment="Center"
+                    Background="{ThemeResource TextFillColorDisabledBrush}"/>
+
+                <Button
+                    Command="{Binding CreateGameLaunchShortcutCommand}"
+                    Content="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"/>
             </StackPanel>
         </Grid>
     </Grid>

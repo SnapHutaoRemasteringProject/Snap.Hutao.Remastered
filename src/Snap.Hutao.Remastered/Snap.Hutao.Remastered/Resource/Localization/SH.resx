@@ -4594,4 +4594,7 @@
   <data name="ViewPageLaunchGameIslandCombineMenuHotkeyDescription" xml:space="preserve">
     <value>按下指定的快捷键即可打开合成台，无法在幽境危战使用</value>
   </data>
+  <data name="ViewPageLaunchGameCreateGameLaunchShortcut" xml:space="preserve">
+    <value>创建游戏启动快捷方式</value>
+  </data>
 </root>

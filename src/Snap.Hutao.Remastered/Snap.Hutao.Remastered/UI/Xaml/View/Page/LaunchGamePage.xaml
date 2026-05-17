@@ -855,6 +855,8 @@
                             <ContentControl
                                 HorizontalAlignment="Stretch"
                                 HorizontalContentAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
                                 IsEnabled="{Binding LaunchOptions.IsIslandEnabled.Value}">
                                 <Grid
                                     Padding="16"
@@ -866,6 +868,7 @@
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"/>
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition Height="auto"/>
                                         <RowDefinition Height="auto"/>
@@ -1163,6 +1166,13 @@
                                         IsOn="{Binding LaunchOptions.HidePlayerInfo.Value, Mode=TwoWay}"
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandHidePlayerInfoDescription}"
                                         Visibility="{Binding IsDeveloperAndLoggedIn, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                    <Button
+                                        Grid.Row="9"
+                                        Grid.ColumnSpan="3"
+                                        Margin="0,16,0,0"
+                                        HorizontalAlignment="Stretch"
+                                        Command="{Binding CreateGameLaunchShortcutCommand}"
+                                        Content="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"/>
                                 </Grid>
                             </ContentControl>
                         </ScrollViewer>

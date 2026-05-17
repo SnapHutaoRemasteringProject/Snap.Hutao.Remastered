@@ -37,7 +37,8 @@
                     cw:Effects.Shadow="{ThemeResource CompatCardShadow}"
                     Visibility="Collapsed">
                     <Grid Style="{ThemeResource AcrylicGridCardStyle}">
-                        <StackPanel Padding="16" Spacing="{ThemeResource SettingsCardSpacing}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel Padding="16" Spacing="{ThemeResource SettingsCardSpacing}">
 
                             <Grid Style="{ThemeResource GridCardStyle}">
                                 <Grid.RowDefinitions>
@@ -153,7 +154,14 @@
                                 Header="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutHeader}"
                                 HeaderIcon="{shuxm:FontIcon Glyph=&#xE72D;}"
                                 IsClickEnabled="True"/>
+                            <cwc:SettingsCard
+                                ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutAction}"
+                                Command="{Binding CreateGameLaunchShortcutCommand}"
+                                Header="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"
+                                HeaderIcon="{shuxm:FontIcon Glyph=&#xE72D;}"
+                                IsClickEnabled="True"/>
                         </StackPanel>
+                        </ScrollViewer>
                     </Grid>
                 </Border>
             </shuxc:ScrollViewerHelper.RightPanel>
@@ -279,6 +287,12 @@
                                     ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutAction}"
                                     Command="{Binding CreateDesktopShortcutCommand}"
                                     Header="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutHeader}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE72D;}"
+                                    IsClickEnabled="True"/>
+                                <cwc:SettingsCard
+                                    ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutAction}"
+                                    Command="{Binding CreateGameLaunchShortcutCommand}"
+                                    Header="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE72D;}"
                                     IsClickEnabled="True"/>
                             </StackPanel>

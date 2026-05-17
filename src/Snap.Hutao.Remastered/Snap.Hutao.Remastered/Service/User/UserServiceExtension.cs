@@ -61,6 +61,21 @@ public static class UserServiceExtension
             return userAndUid;
         }
 
+        public async ValueTask<UserAndUid?> GetUserByUidAsync(string uid)
+        {
+            AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
+            BindingUser? user = users.Source.SingleOrDefault(u => u.UserGameRoles.Source.Any(r => r.GameUid == uid));
+
+            if (user is null)
+            {
+                return null;
+            }
+
+            UserAndUid.TryFromUser(user, out UserAndUid? userAndUid);
+
+            return userAndUid;
+        }
+
         public async ValueTask<bool> SetCurrentUserByUidAsync(string uid)
         {
             AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);

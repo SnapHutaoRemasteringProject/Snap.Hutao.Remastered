@@ -6,4 +6,6 @@ namespace Snap.Hutao.Remastered.Core.Shell;
 public interface IShellLinkInterop
 {
     bool TryCreateDesktopShortcut();
+
+    bool TryCreateGameLaunchShortcut();
 }
