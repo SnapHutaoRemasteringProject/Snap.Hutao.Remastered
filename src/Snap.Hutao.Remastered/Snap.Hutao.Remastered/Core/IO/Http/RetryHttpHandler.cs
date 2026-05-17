@@ -24,12 +24,22 @@ public sealed partial class RetryHttpHandler : DelegatingHandler
         int requestCount = 0;
         while (requestCount < 3)
         {
+            HttpResponseMessage? response = null;
             try
             {
-                return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+                response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+                // Retry on server error status codes (5xx) such as 502 Bad Gateway
+                if ((int)response.StatusCode >= 500)
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+
+                return response;
             }
             catch (HttpRequestException ex)
             {
+                response?.Dispose();
                 dispatch = ExceptionDispatchInfo.Capture(ex);
                 request.Resurrect();
             }

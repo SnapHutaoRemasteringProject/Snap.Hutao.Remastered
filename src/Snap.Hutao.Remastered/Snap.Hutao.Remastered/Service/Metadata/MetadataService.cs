@@ -16,7 +16,7 @@ namespace Snap.Hutao.Remastered.Service.Metadata;
 [HttpClient(HttpClientConfiguration.Default)]
 public sealed partial class MetadataService : IMetadataService
 {
-    private readonly TaskCompletionSource initializeCompletionSource = new();
+    private TaskCompletionSource initializeCompletionSource = new();
 
     private readonly IGitRepositoryService gitRepositoryService;
     private readonly ILogger<MetadataService> logger;
@@ -36,17 +36,30 @@ public sealed partial class MetadataService : IMetadataService
         return isInitialized;
     }
 
-    public async ValueTask InitializepublicAsync(CancellationToken token = default)
+    public async ValueTask<bool> InitializepublicAsync(CancellationToken token = default)
     {
         if (isInitialized)
         {
-            return;
+            return true;
         }
 
         using (ValueStopwatch.MeasureExecution(logger))
         {
+            // If a previous attempt completed the TCS (with failure), create a new one
+            // so callers of InitializeAsync() can properly wait for this retry.
+            if (initializeCompletionSource.Task.IsCompleted)
+            {
+                initializeCompletionSource = new();
+            }
+
             (isInitialized, _) = await gitRepositoryService.EnsureRepositoryAsync("Snap.Metadata").ConfigureAwait(false);
-            initializeCompletionSource.TrySetResult();
+
+            if (isInitialized)
+            {
+                initializeCompletionSource.TrySetResult();
+            }
+
+            return isInitialized;
         }
     }
 

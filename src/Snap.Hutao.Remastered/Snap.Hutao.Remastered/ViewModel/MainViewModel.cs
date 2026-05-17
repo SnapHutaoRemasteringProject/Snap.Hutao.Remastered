@@ -166,7 +166,12 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
 
         try
         {
-            await metadataService.InitializepublicAsync(token).ConfigureAwait(false);
+            if (!await metadataService.InitializepublicAsync(token).ConfigureAwait(false))
+            {
+                networkRetryCoordinator.MarkPending("MainViewModel.Startup", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+                return false;
+            }
+
             await userService.RetryResumeUninitializedUsersAsync(token).ConfigureAwait(false);
             await CheckUpdateAsync().ConfigureAwait(false);
             networkRetryCoordinator.ClearPending("MainViewModel.Startup");

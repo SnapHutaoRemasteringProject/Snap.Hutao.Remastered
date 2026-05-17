@@ -27,7 +27,7 @@ public sealed partial class LegacyMetadataService : IMetadataService
 {
     private const string MetaFileName = "Meta.json";
 
-    private readonly TaskCompletionSource initializeCompletionSource = new();
+    private TaskCompletionSource initializeCompletionSource = new();
 
     private readonly IHttpRequestMessageBuilderFactory requestBuilderFactory;
     private readonly IGitRepositoryService gitRepositoryService;
@@ -51,18 +51,31 @@ public sealed partial class LegacyMetadataService : IMetadataService
         return isInitialized;
     }
 
-    public async ValueTask InitializepublicAsync(CancellationToken token = default)
+    public async ValueTask<bool> InitializepublicAsync(CancellationToken token = default)
     {
         if (isInitialized)
         {
-            return;
+            return true;
         }
 
         using (ValueStopwatch.MeasureExecution(logger))
         {
+            // If a previous attempt completed the TCS (with failure), create a new one
+            // so callers of InitializeAsync() can properly wait for this retry.
+            if (initializeCompletionSource.Task.IsCompleted)
+            {
+                initializeCompletionSource = new();
+            }
+
             await gitRepositoryService.EnsureRepositoryAsync("Snap.Metadata").ConfigureAwait(false);
             isInitialized = await DownloadMetadataDescriptionFileAndValidateAsync(token).ConfigureAwait(false);
-            initializeCompletionSource.TrySetResult();
+
+            if (isInitialized)
+            {
+                initializeCompletionSource.TrySetResult();
+            }
+
+            return isInitialized;
         }
     }
 
