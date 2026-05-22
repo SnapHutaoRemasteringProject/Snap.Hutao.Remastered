@@ -4597,4 +4597,7 @@
   <data name="ViewPageLaunchGameCreateGameLaunchShortcut" xml:space="preserve">
     <value>创建游戏启动快捷方式</value>
   </data>
+  <data name="ModelIntrinsicAssociationTypeHVision" xml:space="preserve">
+    <value>魔女会</value>
+  </data>
 </root>
