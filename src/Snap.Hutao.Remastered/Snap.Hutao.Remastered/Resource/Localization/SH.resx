@@ -3465,6 +3465,15 @@
   <data name="ViewPageSettingSetGamePathHint" xml:space="preserve">
     <value>设置游戏路径时，请选择游戏本体（YuanShen.exe 或 GenshinImpact.exe）而不是启动器（launcher.exe）</value>
   </data>
+  <data name="ViewPageSettingGitRepositoryDomainLockDescription" xml:space="preserve">
+    <value>推荐自动，若实际速度不佳可自行测试覆盖设置，当设置节点故障将自动回退</value>
+  </data>
+  <data name="ViewPageSettingGitRepositoryDomainLockHeader" xml:space="preserve">
+    <value>节点</value>
+  </data>
+  <data name="ViewPageSettingGitRepositoryDomainLockModeAuto" xml:space="preserve">
+    <value>自动</value>
+  </data>
   <data name="ViewPageSettingShareSaveTypeDescription" xml:space="preserve">
     <value>选择点击分享按钮后保存图片的模式</value>
   </data>
@@ -4595,6 +4604,42 @@
     <value>按下指定的快捷键即可打开合成台，无法在幽境危战使用</value>
   </data>
   <data name="ViewPageLaunchGameCreateGameLaunchShortcut" xml:space="preserve">
-    <value>创建游戏启动快捷方式</value>
+    <value>在桌面上创建游戏启动快捷方式</value>
+  </data>
+  <data name="ViewPageSettingNetworkHeader" xml:space="preserve">
+    <value>网络</value>
+  </data>
+  <data name="ViewPageSettingNetworkSpeedTestHeader" xml:space="preserve">
+    <value>手动测速指定使用源</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogTitle" xml:space="preserve">
+    <value>Git 源速度测试</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogInitialStatusMessage" xml:space="preserve">
+    <value>准备中</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogFetchingMirrorListStatusMessage" xml:space="preserve">
+    <value>正在获取源列表</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogFailedToFetchMirrorListStatusMessage" xml:space="preserve">
+    <value>获取源失败</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogTestingMirrorsStatusMessage" xml:space="preserve">
+    <value>测试中</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogCompletedStatusMessage" xml:space="preserve">
+    <value>此项完成</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogAllCompletedStatusMessage" xml:space="preserve">
+    <value>测试完成</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogErrorStatusMessage" xml:space="preserve">
+    <value>错误：</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogPendingStatusMessage" xml:space="preserve">
+    <value>准备中</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogRunButton" xml:space="preserve">
+    <value>重新测试</value>
   </data>
 </root>

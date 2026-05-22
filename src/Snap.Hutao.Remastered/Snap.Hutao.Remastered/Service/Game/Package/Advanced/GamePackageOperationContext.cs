@@ -15,10 +15,10 @@ public sealed class GamePackageOperationContext
     public GamePackageOperationContext(IServiceProvider serviceProvider, GamePackageOperationKind kind, IGameFileSystem gameFileSystem, string? extractDirectory = default)
     {
         Kind = kind;
-        Asset = serviceProvider.GetRequiredService<IDriverMediaTypeAwareFactory<IGameAssetOperation>>().Create(string.Empty);
         GameFileSystem = gameFileSystem;
 
         EffectiveGameDirectory = extractDirectory ?? gameFileSystem.GameDirectory;
+        Asset = serviceProvider.GetRequiredService<IDriverMediaTypeAwareFactory<IGameAssetOperation>>().Create(EffectiveGameDirectory);
 
         EffectiveChunksDirectory = kind is GamePackageOperationKind.Verify
             ? Path.Combine(gameFileSystem.ChunksDirectory, "repair")

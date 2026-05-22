@@ -240,6 +240,16 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
             : messenger.Send(InfoBarMessage.Warning(SH.ViewModelSettingCreateDesktopShortcutFailed));
     }
 
+    [Command("CreateDesktopShortcutCommand")]
+    private void CreateDesktopShortcutForElevatedLaunchAsync()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Create desktop shortcut for elevated launch", "SettingViewModel.Command"));
+
+        _ = shellLinkInterop.TryCreateDesktopShortcut()
+            ? messenger.Send(InfoBarMessage.Success(SH.ViewModelSettingActionComplete))
+            : messenger.Send(InfoBarMessage.Warning(SH.ViewModelSettingCreateDesktopShortcutFailed));
+    }
+
     [Command("SetDataFolderCommand")]
     private async Task SetDataFolderAsync()
     {

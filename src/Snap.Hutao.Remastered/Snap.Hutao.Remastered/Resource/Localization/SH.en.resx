@@ -3461,6 +3461,9 @@ Space Available: {2}</value>
   <data name="ViewPageSettingSetGamePathHint" xml:space="preserve">
     <value>When setting the game path, please select the game program (Yuanshen.exe or GenshinImpact.exe) instead of the game launcher (launcher.exe)</value>
   </data>
+  <data name="ViewPageSettingGitRepositoryDomainLockDescription" xml:space="preserve">
+    <value>Recommend automatic mode. If the actual speed is unsatisfactory, you can test the coverage settings yourself. When a set node fails, it will automatically fallback</value>
+  </data>
   <data name="ViewPageSettingShareSaveTypeDescription" xml:space="preserve">
     <value>Select the mode in which to save the image after clicking the share button</value>
   </data>
@@ -4490,5 +4493,35 @@ Space Available: {2}</value>
   </data>
   <data name="ViewPageLaunchGameIslandCombineMenuHotkeyDescription" xml:space="preserve">
     <value>Press the designated shortcut key to open the Synthesis Bench. Cannot be used in Stygian Onslaught.</value>
+  </data>
+  <data name="ViewPageLaunchGameCreateGameLaunchShortcut" xml:space="preserve">
+    <value>Create game start shortcut on desktop</value>
+  </data>
+  <data name="ViewPageSettingNetworkHeader" xml:space="preserve">
+    <value>Network</value>
+  </data>
+  <data name="ViewPageSettingNetworkSpeedTestHeader" xml:space="preserve">
+    <value>Manually test and set use source</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogTitle" xml:space="preserve">
+    <value>Git Sources Speed Test</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogInitialStatusMessage" xml:space="preserve">
+    <value>Preparing</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogFetchingMirrorListStatusMessage" xml:space="preserve">
+    <value>Fetching Mirrors List</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogFailedToFetchMirrorListStatusMessage" xml:space="preserve">
+    <value>Failed To Fetch Mirrors List</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogTestingMirrorsStatusMessage" xml:space="preserve">
+    <value>Testing</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogPendingStatusMessage" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogRunButton" xml:space="preserve">
+    <value>Retest</value>
   </data>
 </root>
