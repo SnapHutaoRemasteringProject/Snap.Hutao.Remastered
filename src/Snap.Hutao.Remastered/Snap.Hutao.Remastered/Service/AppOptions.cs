@@ -9,6 +9,7 @@ using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Service.Abstraction;
 using Snap.Hutao.Remastered.Service.BackgroundImage;
+using Snap.Hutao.Remastered.Service.Git;
 using Snap.Hutao.Remastered.UI.Xaml.Media.Backdrop;
 using Snap.Hutao.Remastered.Web.Bridge;
 using Snap.Hutao.Remastered.Web.Hoyolab;
@@ -79,6 +80,9 @@ public sealed partial class AppOptions : DbStoreOptions
 
     [field: MaybeNull]
     public IObservableProperty<BridgeShareSaveType> BridgeShareSaveType { get => field ??= CreateProperty(SettingKeys.BridgeShareSaveType, Web.Bridge.BridgeShareSaveType.CopyToClipboard); }
+
+    [field: MaybeNull]
+    public IObservableProperty<string> GitRepositoryDomainOverride { get => field ??= CreateProperty(SettingKeys.GitRepositoryDomainOverride, GitRepositoryDomainSetting.Auto); }
 
     [field: MaybeNull]
     public IObservableProperty<TimeSpan> CalendarServerTimeZoneOffset { get => field ??= CreatePropertyForStructUsingCustom(SettingKeys.CalendarServerTimeZoneOffset, ServerRegionTimeZone.CommonOffset, TimeSpan.Parse, static v => v.ToString()); }

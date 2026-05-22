@@ -475,23 +475,62 @@
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
                     <StackPanel
                         Grid.Row="0"
-                        Margin="16"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageSettingHomeAnnouncementRegionHeader}"/>
-                        <ListView
-                            MinWidth="320"
-                            Margin="0,8,0,0"
-                            DisplayMemberPath="Name"
-                            ItemsSource="{Binding AppOptions.LazyRegions.Value}"
-                            SelectedItem="{Binding SelectedRegion, Mode=TwoWay}"/>
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <StackPanel
+                            Margin="16"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Vertical">
+                            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageSettingHomeAnnouncementRegionHeader}"/>
+                            <ListView
+                                MinWidth="320"
+                                Margin="0,8,0,0"
+                                DisplayMemberPath="Name"
+                                ItemsSource="{Binding AppOptions.LazyRegions.Value}"
+                                SelectedItem="{Binding SelectedRegion, Mode=TwoWay}"/>
+                            <!--  TODO: Add more common settings here in the future, such as theme and accent color.  -->
+                            <!--  Separator  -->
+                            <!--<Border
+                            Width="1"
+                            Height="24"
+                            Margin="8,0"
+                            VerticalAlignment="Center"
+                            Background="{ThemeResource TextFillColorDisabledBrush}"/>-->
+
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel
+                        Grid.Row="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Button
+                            Command="{Binding CreateGameLaunchShortcutCommand}"
+                            Content="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"
+                            Style="{ThemeResource AccentButtonStyle}"/>
+
+                        <!--  Separator  -->
+                        <Border
+                            Width="1"
+                            Height="24"
+                            Margin="8,0"
+                            VerticalAlignment="Center"
+                            Background="{ThemeResource TextFillColorDisabledBrush}"/>
+
+                        <Button
+                            Command="{Binding CreateDesktopShortcutCommand}"
+                            Content="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutDescription}"
+                            Style="{ThemeResource AccentButtonStyle}"/>
                     </StackPanel>
 
                     <TextBlock
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Margin="16"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
@@ -654,18 +693,6 @@
                     Content="{Binding NextOrCompleteButtonText}"
                     IsEnabled="{Binding IsNextOrCompleteButtonEnabled}"
                     Style="{ThemeResource AccentButtonStyle}"/>
-
-                <!--  Separator  -->
-                <Border
-                    Width="1"
-                    Height="24"
-                    Margin="8,0"
-                    VerticalAlignment="Center"
-                    Background="{ThemeResource TextFillColorDisabledBrush}"/>
-
-                <Button
-                    Command="{Binding CreateGameLaunchShortcutCommand}"
-                    Content="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"/>
             </StackPanel>
         </Grid>
     </Grid>

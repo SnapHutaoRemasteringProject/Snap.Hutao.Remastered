@@ -172,6 +172,11 @@ public static class SettingKeys
     public const string CompactWebView2WindowPreviousSourceUrl  = "Snap::Hutao::Web::WebView::Compact::PreviousSourceUrl";
     public const string WebView2VideoFastForwardOrRewindSeconds = "Snap::Hutao::Web::WebView::Video::FastForwardOrRewind::Seconds";
 
+    // Git mirrors
+    public const string GitRepositoryDomainOverride             = "Snap::Hutao::Web::Git::Repository::Domain::Override";
+    public const string GitMirrorSpeedTestLastRun               = "Snap::Hutao::Web::Git::MirrorSpeedTest::LastRun";
+    public const string GitMirrorSpeedTestIntervalDays          = "Snap::Hutao::Web::Git::MirrorSpeedTest::IntervalDays";
+
     // Auto Sign-In
     public const string AutoSignInEnabled                       = "Snap::Hutao::SignIn::AutoSignIn::Enabled";
 }

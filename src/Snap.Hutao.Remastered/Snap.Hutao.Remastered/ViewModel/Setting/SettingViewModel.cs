@@ -44,6 +44,8 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
 
     public partial SettingHotKeyViewModel HotKey { get; }
 
+    public partial SettingNetViewModel Net { get; }
+
     public partial SettingHomeViewModel Home { get; }
 
     public partial SettingGameViewModel Game { get; }
@@ -163,12 +165,14 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
         return false;
     }
 
-    protected override ValueTask<bool> LoadOverrideAsync(CancellationToken token)
+    protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
-        MakeSubViewModel([Geetest, Appearance, Storage, HotKey, Home, Game, GachaLog, WebView]);
+        MakeSubViewModel([Geetest, Appearance, Storage, HotKey, Net, Home, Game, GachaLog, WebView]);
 
         Storage.CacheFolderView = new(taskContext, HutaoRuntime.LocalCacheDirectory);
         Storage.DataFolderView = new(taskContext, HutaoRuntime.DataDirectory);
+
+        await Net.InitializeGitRepositoryDomainOptionsAsync(token).ConfigureAwait(true);
 
         UpdateInfo = updateService.UpdateInfo;
 
@@ -177,7 +181,7 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
             IsStartupAsAdminEnabled = true;
         }
 
-        return ValueTask.FromResult(true);
+        return true;
     }
 
     [Command("CheckUpdateCommand")]

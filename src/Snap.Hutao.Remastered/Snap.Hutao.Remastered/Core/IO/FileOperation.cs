@@ -84,8 +84,19 @@ public static class FileOperation
             return false;
         }
 
-        File.Delete(file);
-        return true;
+        try
+        {
+            File.Delete(file);
+            return true;
+        }
+        catch (IOException)
+        {
+            return false;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return false;
+        }
     }
 
     public static void UnsafeDelete(ValueFile file)

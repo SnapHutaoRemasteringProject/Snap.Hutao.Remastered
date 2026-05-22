@@ -40,127 +40,127 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel Padding="16" Spacing="{ThemeResource SettingsCardSpacing}">
 
-                            <Grid Style="{ThemeResource GridCardStyle}">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                </Grid.RowDefinitions>
-                                <Image
-                                    Grid.Row="0"
-                                    MaxWidth="120"
-                                    MaxHeight="120"
-                                    Margin="48,48"
-                                    Source="ms-appx:///Assets/InAppLogo.png"/>
-                                <cwc:UniformGrid
-                                    Grid.Row="1"
-                                    Margin="16"
-                                    VerticalAlignment="Bottom"
-                                    ColumnSpacing="8"
-                                    Columns="2"
-                                    RowSpacing="8">
-                                    <HyperlinkButton
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Left"
-                                        Content="{shuxm:ResourceString Name=ViewPageSettingOfficialSiteNavigate}"
-                                        NavigateUri="{StaticResource DocumentLink_Home}"/>
-                                    <HyperlinkButton
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Left"
-                                        Content="{shuxm:ResourceString Name=ViewPageSettingFeedbackNavigate}"
-                                        NavigateUri="{StaticResource DocumentLink_BugReport}"/>
-                                    <HyperlinkButton
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Left"
-                                        Content="{shuxm:ResourceString Name=ViewPageSettingSponsorNavigate}"
-                                        NavigateUri="{StaticResource DocumentLink_Sponsor}"/>
-                                </cwc:UniformGrid>
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Margin="8"
-                                    HorizontalAlignment="Center"
-                                    Opacity="0.7"
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="Copyright © 2022 - 2025 DGP Studio. All Rights Reserved."/>
-                                <TextBlock
-                                    Grid.Row="3"
-                                    Margin="8"
-                                    HorizontalAlignment="Center"
-                                    Opacity="0.7"
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="Copyright © 2026 SnapHutaoRemasteringProject. All Rights Reserved."
-                                    TextWrapping="NoWrap"/>
-                            </Grid>
+                                <Grid Style="{ThemeResource GridCardStyle}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                        <RowDefinition Height="auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Image
+                                        Grid.Row="0"
+                                        MaxWidth="120"
+                                        MaxHeight="120"
+                                        Margin="48,48"
+                                        Source="ms-appx:///Assets/InAppLogo.png"/>
+                                    <cwc:UniformGrid
+                                        Grid.Row="1"
+                                        Margin="16"
+                                        VerticalAlignment="Bottom"
+                                        ColumnSpacing="8"
+                                        Columns="2"
+                                        RowSpacing="8">
+                                        <HyperlinkButton
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Left"
+                                            Content="{shuxm:ResourceString Name=ViewPageSettingOfficialSiteNavigate}"
+                                            NavigateUri="{StaticResource DocumentLink_Home}"/>
+                                        <HyperlinkButton
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Left"
+                                            Content="{shuxm:ResourceString Name=ViewPageSettingFeedbackNavigate}"
+                                            NavigateUri="{StaticResource DocumentLink_BugReport}"/>
+                                        <HyperlinkButton
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Left"
+                                            Content="{shuxm:ResourceString Name=ViewPageSettingSponsorNavigate}"
+                                            NavigateUri="{StaticResource DocumentLink_Sponsor}"/>
+                                    </cwc:UniformGrid>
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        Margin="8"
+                                        HorizontalAlignment="Center"
+                                        Opacity="0.7"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="Copyright © 2022 - 2025 DGP Studio. All Rights Reserved."/>
+                                    <TextBlock
+                                        Grid.Row="3"
+                                        Margin="8"
+                                        HorizontalAlignment="Center"
+                                        Opacity="0.7"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="Copyright © 2026 SnapHutaoRemasteringProject. All Rights Reserved."
+                                        TextWrapping="NoWrap"/>
+                                </Grid>
 
-                            <!--  应用行为 - 宽屏  -->
-                            <TextBlock Style="{StaticResource SettingsCardHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageSettingAppBehaviorHeader}"/>
+                                <!--  应用行为 - 宽屏  -->
+                                <TextBlock Style="{StaticResource SettingsCardHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageSettingAppBehaviorHeader}"/>
 
-                            <cwc:SettingsCard
-                                Command="{Binding CheckUpdateCommand}"
-                                Description="{Binding UpdateInfo}"
-                                Header="{shuxm:ResourceString Name=ViewPageSettingCheckUpdateHeader}"
-                                HeaderIcon="{shuxm:FontIcon Glyph=&#xE895;}"
-                                IsClickEnabled="True"/>
+                                <cwc:SettingsCard
+                                    Command="{Binding CheckUpdateCommand}"
+                                    Description="{Binding UpdateInfo}"
+                                    Header="{shuxm:ResourceString Name=ViewPageSettingCheckUpdateHeader}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE895;}"
+                                    IsClickEnabled="True"/>
 
-                            <!--  Administor  -->
-                            <cwc:SettingsExpander HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}" IsExpanded="True">
-                                <cwc:SettingsExpander.Header>
-                                    <TextBlock Text="{shuxm:ResourceString Name=ViewPageSettingElevatedModeHeader}"/>
-                                </cwc:SettingsExpander.Header>
-                                <StackPanel Orientation="Horizontal">
-                                    <Button
-                                        HorizontalAlignment="Right"
-                                        Command="{Binding RestartAsElevatedCommand}"
-                                        Content="{shuxm:ResourceString Name=ViewPageSettingElevatedModeRestartAction}"
-                                        IsEnabled="{shuxm:IsProcessNotElevated}"/>
-                                </StackPanel>
-                                <cwc:SettingsExpander.Items>
-                                    <cwc:SettingsCard Description="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminDescription}" Header="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminHeader}">
-                                        <ToggleSwitch IsOn="{Binding AutoRestartAsAdminEnabled, Mode=TwoWay}"/>
-                                    </cwc:SettingsCard>
-                                </cwc:SettingsExpander.Items>
-                            </cwc:SettingsExpander>
+                                <!--  Administor  -->
+                                <cwc:SettingsExpander HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}" IsExpanded="True">
+                                    <cwc:SettingsExpander.Header>
+                                        <TextBlock Text="{shuxm:ResourceString Name=ViewPageSettingElevatedModeHeader}"/>
+                                    </cwc:SettingsExpander.Header>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button
+                                            HorizontalAlignment="Right"
+                                            Command="{Binding RestartAsElevatedCommand}"
+                                            Content="{shuxm:ResourceString Name=ViewPageSettingElevatedModeRestartAction}"
+                                            IsEnabled="{shuxm:IsProcessNotElevated}"/>
+                                    </StackPanel>
+                                    <cwc:SettingsExpander.Items>
+                                        <cwc:SettingsCard Description="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminDescription}" Header="{shuxm:ResourceString Name=ViewPageSettingAutoRestartAsAdminHeader}">
+                                            <ToggleSwitch IsOn="{Binding AutoRestartAsAdminEnabled, Mode=TwoWay}"/>
+                                        </cwc:SettingsCard>
+                                    </cwc:SettingsExpander.Items>
+                                </cwc:SettingsExpander>
 
-                            <!--  Auto start  -->
-                            <cwc:SettingsExpander
-                                Description="{shuxm:ResourceString Name=ViewPageSettingAutoStartDescription}"
-                                Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartHeader}"
-                                HeaderIcon="{shuxm:FontIcon Glyph=&#xE7E8;}"
-                                IsEnabled="{shuxm:IsProcessElevated}">
-                                <cwc:SettingsExpander.Items>
-                                    <cwc:SettingsCard
-                                        Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartEnableCardHeader}"
-                                        HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EE;}"
-                                        IsClickEnabled="False">
-                                        <ToggleSwitch IsOn="{Binding IsStartupEnabled, Mode=TwoWay}"/>
-                                    </cwc:SettingsCard>
+                                <!--  Auto start  -->
+                                <cwc:SettingsExpander
+                                    Description="{shuxm:ResourceString Name=ViewPageSettingAutoStartDescription}"
+                                    Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartHeader}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE7E8;}"
+                                    IsEnabled="{shuxm:IsProcessElevated}">
+                                    <cwc:SettingsExpander.Items>
+                                        <cwc:SettingsCard
+                                            Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartEnableCardHeader}"
+                                            HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EE;}"
+                                            IsClickEnabled="False">
+                                            <ToggleSwitch IsOn="{Binding IsStartupEnabled, Mode=TwoWay}"/>
+                                        </cwc:SettingsCard>
 
-                                    <!--  Will keep enable if AutoRestartAsAdmin is enabled, because it will start as admin when startup and avoid UAC prompt and keep consistent with the behavior  -->
-                                    <cwc:SettingsCard
-                                        Description="{shuxm:ResourceString Name=ViewPageSettingAutoStartAdminActionCardDescription}"
-                                        Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartAdminActionCardHeader}"
-                                        HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}"
-                                        IsClickEnabled="False"
-                                        IsEnabled="{Binding IsStartupAsAdminCardEnabled, Mode=OneWay}">
-                                        <ToggleSwitch IsOn="{Binding IsStartupAsAdminEnabled, Mode=TwoWay}"/>
-                                    </cwc:SettingsCard>
-                                </cwc:SettingsExpander.Items>
-                            </cwc:SettingsExpander>
+                                        <!--  Will keep enable if AutoRestartAsAdmin is enabled, because it will start as admin when startup and avoid UAC prompt and keep consistent with the behavior  -->
+                                        <cwc:SettingsCard
+                                            Description="{shuxm:ResourceString Name=ViewPageSettingAutoStartAdminActionCardDescription}"
+                                            Header="{shuxm:ResourceString Name=ViewPageSettingAutoStartAdminActionCardHeader}"
+                                            HeaderIcon="{shuxm:FontIcon Glyph=&#xE7EF;}"
+                                            IsClickEnabled="False"
+                                            IsEnabled="{Binding IsStartupAsAdminCardEnabled, Mode=OneWay}">
+                                            <ToggleSwitch IsOn="{Binding IsStartupAsAdminEnabled, Mode=TwoWay}"/>
+                                        </cwc:SettingsCard>
+                                    </cwc:SettingsExpander.Items>
+                                </cwc:SettingsExpander>
 
-                            <cwc:SettingsCard
-                                ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutAction}"
-                                Command="{Binding CreateDesktopShortcutCommand}"
-                                Header="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutHeader}"
-                                HeaderIcon="{shuxm:FontIcon Glyph=&#xE72D;}"
-                                IsClickEnabled="True"/>
-                            <cwc:SettingsCard
-                                ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutAction}"
-                                Command="{Binding CreateGameLaunchShortcutCommand}"
-                                Header="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"
-                                HeaderIcon="{shuxm:FontIcon Glyph=&#xE72D;}"
-                                IsClickEnabled="True"/>
-                        </StackPanel>
+                                <cwc:SettingsCard
+                                    ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutAction}"
+                                    Command="{Binding CreateDesktopShortcutCommand}"
+                                    Header="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutHeader}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE72D;}"
+                                    IsClickEnabled="True"/>
+                                <cwc:SettingsCard
+                                    ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutAction}"
+                                    Command="{Binding CreateGameLaunchShortcutCommand}"
+                                    Header="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE72D;}"
+                                    IsClickEnabled="True"/>
+                            </StackPanel>
                         </ScrollViewer>
                     </Grid>
                 </Border>
@@ -410,6 +410,37 @@
                                             SelectedItem="{Binding SelectedLastWindowCloseBehavior, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
+                            </StackPanel>
+                        </Border>
+                    </Border>
+
+                    <!--  网络  -->
+                    <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}" DataContext="{Binding Net}">
+                        <Border Padding="16" Style="{ThemeResource AcrylicBorderCardStyle}">
+                            <StackPanel Spacing="{ThemeResource SettingsCardSpacing}">
+                                <TextBlock Style="{StaticResource SettingsCardHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageSettingNetworkHeader}"/>
+                                <cwc:SettingsExpander
+                                    Description="{shuxm:ResourceString Name=ViewPageSettingGitRepositoryDomainLockDescription}"
+                                    Header="{shuxm:ResourceString Name=ViewPageSettingGitRepositoryDomainLockHeader}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE753;}"
+                                    IsExpanded="True">
+                                    <shuxc:SizeRestrictedContentControl VerticalAlignment="Center">
+                                        <ComboBox
+                                            MinWidth="150"
+                                            DisplayMemberPath="Name"
+                                            ItemsSource="{Binding GitRepositoryDomainOptions}"
+                                            SelectedItem="{Binding SelectedGitRepositoryDomainOption, Mode=TwoWay}"/>
+                                    </shuxc:SizeRestrictedContentControl>
+                                    <cwc:SettingsExpander.Items>
+                                        <!--  SettingsExpander uses ItemsRepeater, where first item will behave abnormally in binding  -->
+                                        <!--  Open speedtest dialog  -->
+                                        <cwc:SettingsCard
+                                            Command="{Binding OpenGitSpeedTestDialogCommand}"
+                                            Header="{shuxm:ResourceString Name=ViewPageSettingNetworkSpeedTestHeader}"
+                                            IsClickEnabled="True"
+                                            Visibility="Visible"/>
+                                    </cwc:SettingsExpander.Items>
+                                </cwc:SettingsExpander>
                             </StackPanel>
                         </Border>
                     </Border>
@@ -870,7 +901,7 @@
                                 <cwc:SettingsCard
                                     Description="{shuxm:ResourceString Name=ViewCardSignInAutoSignInDescription}"
                                     Header="{shuxm:ResourceString Name=ViewCardSignInAutoSignIn}"
-                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xEC8F;}">
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE787;}">
                                     <ToggleSwitch IsOn="{Binding AutoSignInEnabled, Mode=TwoWay}"/>
                                 </cwc:SettingsCard>
                             </StackPanel>

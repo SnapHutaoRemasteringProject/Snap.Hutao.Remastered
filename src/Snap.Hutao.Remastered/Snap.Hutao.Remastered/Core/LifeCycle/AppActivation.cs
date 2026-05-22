@@ -141,16 +141,14 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
                 {
                     if (isRedirectTo)
                     {
-                        await LaunchGameAsync(uid);
+                        await LaunchGameAsync(uid).ConfigureAwait(false);
                     }
                     else
                     {
-
-                        _ = Task.Run(async () =>
-                        {
-                            await Task.Delay(2000);
-                            await LaunchGameAsync(uid);
-                        }).ConfigureAwait(false);
+                        // 初次启动唤醒，必须使用分离的任务（不被当前步骤 await）
+                        // 因为我们在等待 UnsynchronizedHandleInitializationAsync() 执行完成
+                        // 但它在这个方法完全返回后才会被执行，所以不要 await 这个方法，否则会死锁，并且使用 Task 以使用 SafeForget
+                        WaitInitializationAndLaunchAsync(uid).SafeForget();
                     }
                 }
 
@@ -163,7 +161,20 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
         }
     }
 
-    public async Task LaunchGameAsync(string? uid)
+    [SuppressMessage("Quality", "SH003:Use ValueTask instead of Task whenever possible", Justification = "<Pending>")]
+    private async Task WaitInitializationAndLaunchAsync(string? uid)
+    {
+        // 轮询检查初始化，直到完成为止，避免死锁
+        while (!XamlApplicationLifetime.ActivationAndInitializationCompleted)
+        {
+            await Task.Delay(100).ConfigureAwait(false);
+        }
+
+        await taskContext.SwitchToMainThreadAsync();
+        await LaunchGameAsync(uid).ConfigureAwait(false);
+    }
+
+    public async ValueTask LaunchGameAsync(string? uid)
     {
         INavigationService navigationService = serviceProvider.GetRequiredService<INavigationService>();
         await navigationService.NavigateAsync<LaunchGamePage>(LaunchGameAutoLaunchData.CreateForLaunch(uid), true).ConfigureAwait(false);

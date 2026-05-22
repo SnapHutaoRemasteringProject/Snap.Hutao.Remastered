@@ -3458,6 +3458,9 @@
   <data name="ViewPageSettingSetGamePathHint" xml:space="preserve">
     <value>設定遊戲路徑時，請選擇遊戲本體（YuanShen.exe 或 GenshinImpact.exe） 而不是啟動器（launcher.exe）</value>
   </data>
+  <data name="ViewPageSettingGitRepositoryDomainLockDescription" xml:space="preserve">
+    <value>推薦自動，若實際速度不佳可自行測試覆蓋設置，當設置節點故障將自動回退</value>
+  </data>
   <data name="ViewPageSettingShareSaveTypeDescription" xml:space="preserve">
     <value>選擇點擊分享按鈕後儲存圖片的模式</value>
   </data>
