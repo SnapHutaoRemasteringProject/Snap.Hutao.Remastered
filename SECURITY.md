@@ -9,4 +9,4 @@
 
 ## Reporting a Vulnerability
 
-Please [open an issue](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/issues)
+Please [open an issue](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/issues/new/choose)
