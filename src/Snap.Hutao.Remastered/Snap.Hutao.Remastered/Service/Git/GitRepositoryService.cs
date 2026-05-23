@@ -9,6 +9,7 @@ using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Core.IO.Http.Proxy;
 using Snap.Hutao.Remastered.Core.Setting;
+using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.BackgroundActivity;
 using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
@@ -32,6 +33,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
     private readonly IMirrorScheduler mirrorScheduler;
     private readonly IServiceProvider serviceProvider;
     private readonly ITaskContext taskContext;
+    private readonly AppOptions appOptions;
 
     [GeneratedConstructor]
     public partial GitRepositoryService(IServiceProvider serviceProvider);
@@ -65,11 +67,11 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
                 }
             }
 
-            infos = FilterMirrorsByDomainOverride(infos);
+            infos = await EnsureOptimalMirrorAsync(infos).ConfigureAwait(false);
 
             // Use cached probe/speed-test results unless expired. If expired, schedule a background speed test but do not block.
-            DateTimeOffset lastRun = LocalSetting.Get(SettingKeys.GitMirrorSpeedTestLastRun, DateTimeOffset.MinValue);
-            int intervalDays = LocalSetting.Get(SettingKeys.GitMirrorSpeedTestIntervalDays, 30);
+            DateTimeOffset lastRun = ParseDateTimeOffset(appOptions.GitMirrorSpeedTestLastRun.Value, DateTimeOffset.MinValue);
+            int intervalDays = appOptions.GitMirrorSpeedTestIntervalDays.Value;
             if (DateTimeOffset.UtcNow - lastRun > TimeSpan.FromDays(intervalDays))
             {
                 try
@@ -85,7 +87,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
                     {
                         // ignore
                     }
-                    LocalSetting.Set(SettingKeys.GitMirrorSpeedTestLastRun, DateTimeOffset.UtcNow);
+                    appOptions.GitMirrorSpeedTestLastRun.Value = DateTimeOffset.UtcNow.ToString("O");
                 }
                 catch (Exception)
                 {
@@ -445,16 +447,16 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
         }
     }
 
-    private static ImmutableArray<GitRepository> FilterMirrorsByDomainOverride(ImmutableArray<GitRepository> infos)
+    private ImmutableArray<GitRepository> FilterMirrorsByDomainOverride(ImmutableArray<GitRepository> infos)
     {
-        string domainOverride = LocalSetting.Get(SettingKeys.GitRepositoryDomainOverride, GitRepositoryDomainSetting.Auto);
+        string domainOverride = appOptions.GitRepositoryDomainOverride.Value;
         if (GitRepositoryDomainSetting.IsAuto(domainOverride))
         {
             return infos;
         }
 
         ImmutableArray<GitRepository> filtered = infos
-            .Where(info => string.Equals(info.HttpsUrl.Host, domainOverride, StringComparison.OrdinalIgnoreCase))
+            .Where(info => string.Equals(GetMirrorKey(info), domainOverride, StringComparison.OrdinalIgnoreCase))
             .ToImmutableArray();
 
         if (!filtered.IsDefaultOrEmpty)
@@ -462,8 +464,36 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             return filtered;
         }
 
-        LocalSetting.Set(SettingKeys.GitRepositoryDomainOverride, GitRepositoryDomainSetting.Auto);
+        appOptions.GitRepositoryDomainOverride.Value = GitRepositoryDomainSetting.Auto;
         return infos;
+    }
+
+    private static string GetMirrorKey(GitRepository repository)
+    {
+        return !string.IsNullOrWhiteSpace(repository.FriendlyName)
+            ? repository.FriendlyName
+            : repository.HttpsUrl.Host;
+    }
+
+    private static DateTimeOffset ParseDateTimeOffset(string? value, DateTimeOffset fallback)
+    {
+        return DateTimeOffset.TryParse(value, out DateTimeOffset parsed) ? parsed : fallback;
+    }
+
+    private async ValueTask<ImmutableArray<GitRepository>> EnsureOptimalMirrorAsync(ImmutableArray<GitRepository> infos)
+    {
+        if (!GitRepositoryDomainSetting.IsAuto(appOptions.GitRepositoryDomainOverride.Value))
+        {
+            return FilterMirrorsByDomainOverride(infos);
+        }
+
+        using (IServiceScope scope = serviceProvider.CreateScope())
+        {
+            GitMirrorSelectionService mirrorSelectionService = scope.ServiceProvider.GetRequiredService<GitMirrorSelectionService>();
+            _ = await mirrorSelectionService.GetOptimalMirrorAsync(CancellationToken.None).ConfigureAwait(false);
+        }
+
+        return FilterMirrorsByDomainOverride(infos);
     }
 
     private BackgroundActivity.BackgroundActivity GetActivityByName(string name)

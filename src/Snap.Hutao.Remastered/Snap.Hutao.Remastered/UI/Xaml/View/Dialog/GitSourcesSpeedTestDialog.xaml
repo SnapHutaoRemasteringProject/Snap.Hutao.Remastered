@@ -37,9 +37,10 @@
             AllowDrop="False"
             BorderThickness="1"
             CanDragItems="False"
+            SelectedItem="{Binding SelectedTestResult, Mode=TwoWay}"
             SelectionMode="Single">
             <ListView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="shvg:MirrorTestResult">
                     <Grid Padding="8" ColumnSpacing="8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -50,16 +51,44 @@
                             Grid.Column="0"
                             VerticalAlignment="Center"
                             Spacing="2">
+                            <!--  显示名称（本地化或友好名称）  -->
                             <TextBlock
                                 FontSize="12"
                                 FontWeight="SemiBold"
-                                Text="{Binding Url}"
+                                Text="{x:Bind DisplayName, Mode=OneWay}"
                                 TextTrimming="CharacterEllipsis"/>
+                            <!--  显示延迟时间和状态  -->
                             <TextBlock
                                 FontSize="11"
                                 Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
-                                Text="{Binding Status}"/>
+                                Text="{x:Bind Status, Mode=OneWay}"/>
+                            <TextBlock
+                                FontSize="10"
+                                Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                                Text="{x:Bind ConnectDisplay, Mode=OneWay}"/>
+                            <TextBlock
+                                FontSize="10"
+                                Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                                Text="{x:Bind FirstPacketDisplay, Mode=OneWay}"/>
+                            <TextBlock
+                                FontSize="10"
+                                Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                                Text="{x:Bind TtfbDisplay, Mode=OneWay}"/>
+                            <TextBlock
+                                FontSize="10"
+                                Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                                Text="{x:Bind LsRemoteDisplay, Mode=OneWay}"/>
                         </StackPanel>
+
+                        <!--  吞吐量显示（右侧）  -->
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            FontSize="11"
+                            FontWeight="SemiBold"
+                            Foreground="{ThemeResource SystemControlForegroundAccentBrush}"
+                            Text="{x:Bind ThroughputDisplay, Mode=OneWay}"
+                            Visibility="{x:Bind IsCompleted, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -70,7 +99,16 @@
                 x:Name="RunButton"
                 Padding="16,8"
                 Command="{Binding RunCommand}"
-                Content="{shuxm:ResourceString Name=ViewDialogGitSourcesSpeedTestDialogRunButton}"/>
+                Content="{shuxm:ResourceString Name=ViewDialogGitSourcesSpeedTestDialogRunButton}"
+                Style="{StaticResource AccentButtonStyle}"/>
+
+            <!--  设置选中源按钮  -->
+            <Button
+                x:Name="SetButton"
+                Padding="16,8"
+                Command="{Binding SetSelectedMirrorCommand}"
+                Content="{shuxm:ResourceString Name=ViewDialogGitSourcesSpeedTestDialogSettingButton}"
+                Style="{StaticResource AccentButtonStyle}"/>
         </StackPanel>
     </StackPanel>
 </ContentDialog>

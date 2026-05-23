@@ -3611,6 +3611,9 @@ Espacio disponible: {2}</value>
   <data name="ViewSettingHeader" xml:space="preserve">
     <value>Ajustes</value>
   </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogSettingButton" xml:space="preserve">
+    <value>Ajustes</value>
+  </data>
   <data name="ViewSpiralAbyssAvatarAppearanceRankDescription" xml:space="preserve">
     <value>Tasa de aparición del personaje = Veces que el personaje ha aparecido en este piso (solo se cuenta una vez si se repite dentro del piso) / Número total de registros del Abismo</value>
   </data>

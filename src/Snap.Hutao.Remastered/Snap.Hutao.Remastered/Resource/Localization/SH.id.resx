@@ -3608,6 +3608,9 @@ Ruang Tersedia: {2}</value>
   <data name="ViewSettingHeader" xml:space="preserve">
     <value>Pengaturan</value>
   </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogSettingButton" xml:space="preserve">
+    <value>Pengaturan</value>
+  </data>
   <data name="ViewSpiralAbyssAvatarAppearanceRankDescription" xml:space="preserve">
     <value>Rasio Penampilan Karakter = Penampilan Karakter di Lantai Ini (hanya dihitung sekali jika berulang) / Total Jumlah Rekor Abyss di Lantai Ini</value>
   </data>

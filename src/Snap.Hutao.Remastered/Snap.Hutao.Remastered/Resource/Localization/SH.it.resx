@@ -3611,6 +3611,9 @@ Spazio disponibile: {2}</value>
   <data name="ViewSettingHeader" xml:space="preserve">
     <value>Impostazioni</value>
   </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogSettingButton" xml:space="preserve">
+    <value>Impostazioni</value>
+  </data>
   <data name="ViewSpiralAbyssAvatarAppearanceRankDescription" xml:space="preserve">
     <value>Tasso di apparizione del personaggio = Numero di volte che il personaggio è stato schierato in questo piano (conta una sola volta in caso di apparizioni ripetute nello stesso piano) / Numero totale di record dell'Abisso</value>
   </data>

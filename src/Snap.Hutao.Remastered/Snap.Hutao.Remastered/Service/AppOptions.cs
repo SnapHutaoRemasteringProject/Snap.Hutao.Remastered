@@ -81,8 +81,39 @@ public sealed partial class AppOptions : DbStoreOptions
     [field: MaybeNull]
     public IObservableProperty<BridgeShareSaveType> BridgeShareSaveType { get => field ??= CreateProperty(SettingKeys.BridgeShareSaveType, Web.Bridge.BridgeShareSaveType.CopyToClipboard); }
 
+    /// <summary>
+    /// 是否手动设置覆盖了自动测试选择仓库的逻辑
+    /// Whether the logic of automatically selecting the repository based on testing is overridden by manual setting
+    /// </summary>
     [field: MaybeNull]
     public IObservableProperty<string> GitRepositoryDomainOverride { get => field ??= CreateProperty(SettingKeys.GitRepositoryDomainOverride, GitRepositoryDomainSetting.Auto); }
+
+    /// <summary>
+    /// 最后一次成功测试镜像源的时间（UTC）
+    /// Last time when mirror sources were successfully tested (UTC)
+    /// </summary>
+    [field: MaybeNull]
+    public IObservableProperty<string> GitMirrorLastTestTimeUtc { get => field ??= CreateProperty(SettingKeys.GitMirrorLastTestTimeUtc, string.Empty); }
+
+    /// <summary>
+    /// 最后一次获取的镜像源哈希值，用于检测源列表是否改变
+    /// Hash of last fetched mirror sources to detect if the list has changed
+    /// </summary>
+    [field: MaybeNull]
+    public IObservableProperty<string> GitMirrorSourcesHash { get => field ??= CreateProperty(SettingKeys.GitMirrorSourcesHash, string.Empty); }
+
+    /// <summary>
+    /// 上次测速时间（UTC），用于判断是否需要重新测速
+    /// </summary>
+    [field: MaybeNull]
+    public IObservableProperty<string> GitMirrorSpeedTestLastRun { get => field ??= CreateProperty(SettingKeys.GitMirrorSpeedTestLastRun, string.Empty); }
+
+    /// <summary>
+    /// 距上次仓库测速相隔的日期（日）
+    /// The interval days between the last repos speed test.
+    /// </summary>
+    [field: MaybeNull]
+    public IObservableProperty<int> GitMirrorSpeedTestIntervalDays { get => field ??= CreateProperty(SettingKeys.GitMirrorSpeedTestIntervalDays, 30); }
 
     [field: MaybeNull]
     public IObservableProperty<TimeSpan> CalendarServerTimeZoneOffset { get => field ??= CreatePropertyForStructUsingCustom(SettingKeys.CalendarServerTimeZoneOffset, ServerRegionTimeZone.CommonOffset, TimeSpan.Parse, static v => v.ToString()); }

@@ -3461,6 +3461,9 @@
   <data name="ViewPageSettingGitRepositoryDomainLockDescription" xml:space="preserve">
     <value>推薦自動，若實際速度不佳可自行測試覆蓋設置，當設置節點故障將自動回退</value>
   </data>
+  <data name="ViewPageSettingGitRepositoryDomainLockModeAuto" xml:space="preserve">
+    <value>自動</value>
+  </data>
   <data name="ViewPageSettingShareSaveTypeDescription" xml:space="preserve">
     <value>選擇點擊分享按鈕後儲存圖片的模式</value>
   </data>
@@ -3640,6 +3643,9 @@
   </data>
   <data name="ViewSettingHeader" xml:space="preserve">
     <value>設定</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogSettingButton" xml:space="preserve">
+    <value>設定為選擇的源節點</value>
   </data>
   <data name="ViewSpiralAbyssAvatarAppearanceRankDescription" xml:space="preserve">
     <value>角色出場率 = 本層上陣該角色次數（層內重複出現只記一次）/ 深淵記錄總數</value>
@@ -4277,5 +4283,11 @@
   </data>
   <data name="ViewPageSettingHomeAnnouncementActPreviewHeader" xml:space="preserve">
     <value>是否顯示未在進行中的遊戲內版本活動事件</value>
+  </data>
+  <data name="ViewModelSettingNetGitFriendlyNameCNCC" xml:space="preserve">
+    <value>中國大陸 - 華中</value>
+  </data>
+  <data name="ViewModelSettingNetGitFriendlyNameCNSW" xml:space="preserve">
+    <value>中國大陸 西北</value>
   </data>
 </root>

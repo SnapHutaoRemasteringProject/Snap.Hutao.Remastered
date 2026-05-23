@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -3653,6 +3653,9 @@
   </data>
   <data name="ViewSettingHeader" xml:space="preserve">
     <value>设置</value>
+  </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogSettingButton" xml:space="preserve">
+    <value>设置为选中的节点</value>
   </data>
   <data name="ViewSpiralAbyssAvatarAppearanceRankDescription" xml:space="preserve">
     <value>角色出场率 = 本层上阵该角色次数（层内重复出现只记一次）/ 深渊记录总数</value>

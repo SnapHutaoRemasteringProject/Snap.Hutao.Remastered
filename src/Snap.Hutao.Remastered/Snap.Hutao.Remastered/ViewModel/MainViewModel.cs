@@ -22,7 +22,6 @@ using Snap.Hutao.Remastered.UI.Xaml;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
-using Snap.Hutao.Remastered.Win32;
 using Snap.Hutao.Remastered.Web;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using System.Net.Http;

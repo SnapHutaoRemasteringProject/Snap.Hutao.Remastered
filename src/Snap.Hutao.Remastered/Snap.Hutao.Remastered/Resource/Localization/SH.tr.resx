@@ -3611,6 +3611,9 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewSettingHeader" xml:space="preserve">
     <value>Ayarlar</value>
   </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogSettingButton" xml:space="preserve">
+    <value>Ayarlar</value>
+  </data>
   <data name="ViewSpiralAbyssAvatarAppearanceRankDescription" xml:space="preserve">
     <value>Karakter Görünme Oranı = Bu Katta Karakterin Görünme Sayısı (kat içinde tekrar ederse yalnızca 1 kez sayılır) / Toplam Abyss Kayıt Sayısı</value>
   </data>

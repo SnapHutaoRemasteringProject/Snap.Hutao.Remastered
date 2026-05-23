@@ -36,6 +36,11 @@ public sealed partial class MirrorScheduler : IMirrorScheduler
         return scoredMirrors.OrderByDescending(x => x.Score).Select(x => x.Repo).ToList();
     }
 
+    public MirrorRuntimeStats? GetRuntimeStats(string url)
+    {
+        return statsMap.TryGetValue(url, out MirrorRuntimeStats? stats) ? stats : null;
+    }
+
     public void ReportThroughput(string url, double mbps)
     {
         MirrorRuntimeStats stats = GetOrAddStats(url);

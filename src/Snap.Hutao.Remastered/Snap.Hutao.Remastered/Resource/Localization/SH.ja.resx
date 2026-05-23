@@ -3643,6 +3643,9 @@
   <data name="ViewSettingHeader" xml:space="preserve">
     <value>設定</value>
   </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogSettingButton" xml:space="preserve">
+    <value>設定</value>
+  </data>
   <data name="ViewSpiralAbyssAvatarAppearanceRankDescription" xml:space="preserve">
     <value>キャラクター出場率 = 本層にこのキャラの登場回数（繰り返しの場合は1回のみ数える）/ この層の深淵の記録総数</value>
   </data>

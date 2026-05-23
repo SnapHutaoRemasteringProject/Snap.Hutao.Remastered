@@ -3612,6 +3612,9 @@
   <data name="ViewSettingHeader" xml:space="preserve">
     <value>การตั้งค่า</value>
   </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogSettingButton" xml:space="preserve">
+    <value>การตั้งค่า</value>
+  </data>
   <data name="ViewSpiralAbyssAvatarAppearanceRankDescription" xml:space="preserve">
     <value>อัตราการปรากฏตัวของตัวละคร = จำนวนครั้งที่ตัวละครปรากฏในชั้นนี้ (นับครั้งเดียวหากปรากฏซ้ำในชั้น) / จำนวนบันทึกใน Abyss ทั้งหมด</value>
   </data>

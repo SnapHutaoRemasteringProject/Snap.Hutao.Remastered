@@ -3612,6 +3612,9 @@ Dung lượng còn trống: {2}</value>
   <data name="ViewSettingHeader" xml:space="preserve">
     <value>Cài đặt</value>
   </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogSettingButton" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
   <data name="ViewSpiralAbyssAvatarAppearanceRankDescription" xml:space="preserve">
     <value>Tỷ lệ xuất hiện của nhân vật = Số lần nhân vật này xuất hiện trong tầng này (chỉ tính một lần nếu lặp lại trong tầng) / Tổng số bản ghi của vực thẳm</value>
   </data>

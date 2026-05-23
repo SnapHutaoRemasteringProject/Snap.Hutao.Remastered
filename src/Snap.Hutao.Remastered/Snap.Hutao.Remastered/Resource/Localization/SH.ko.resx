@@ -3626,6 +3626,9 @@
   <data name="ViewSettingHeader" xml:space="preserve">
     <value>설정</value>
   </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogSettingButton" xml:space="preserve">
+    <value>설정</value>
+  </data>
   <data name="ViewSpiralAbyssAvatarAppearanceRankDescription" xml:space="preserve">
     <value>캐릭터 등장률 = 해당 층에 해당 캐릭터가 등장한 횟수(층 내 중복 등장 시 1회만 계산) / 심연 기록 총수</value>
   </data>

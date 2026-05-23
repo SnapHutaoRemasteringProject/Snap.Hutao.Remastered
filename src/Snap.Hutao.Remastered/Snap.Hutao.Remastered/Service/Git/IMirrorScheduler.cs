@@ -10,6 +10,8 @@ public interface IMirrorScheduler
 {
     IReadOnlyList<GitRepository> GetSortedMirrors(ImmutableArray<GitRepository> mirrors);
 
+    MirrorRuntimeStats? GetRuntimeStats(string url);
+
     void ReportThroughput(string url, double mbps);
 
     void ReportFirstPacketLatency(string url, long latencyMs);

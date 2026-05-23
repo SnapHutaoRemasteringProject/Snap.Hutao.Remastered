@@ -32,8 +32,11 @@ public sealed partial class GitSourcesSpeedTestDialog : ContentDialog
                 Progress.Visibility = viewModel.IsRunning ? Visibility.Visible : Visibility.Collapsed;
                 RunButton.IsEnabled = !viewModel.IsRunning;
             }
+            else if (e.PropertyName == nameof(GitSourcesSpeedTestDialogViewModel.SelectedTestResult))
+            {
+                SetButton.IsEnabled = viewModel.SelectedTestResult is not null;
+            }
         };
-
     }
 
     //public async ValueTask<ValueResult<bool, string?>> GetInputUrlAsync()

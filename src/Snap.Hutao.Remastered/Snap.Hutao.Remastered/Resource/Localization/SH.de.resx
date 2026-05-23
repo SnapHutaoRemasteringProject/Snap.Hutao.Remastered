@@ -3646,6 +3646,9 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewSettingHeader" xml:space="preserve">
     <value>Einstellungen</value>
   </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogSettingButton" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
   <data name="ViewSpiralAbyssAvatarAppearanceRankDescription" xml:space="preserve">
     <value>Charakter-Einsatzquote = Anzahl der Einsätze dieses Charakters in dieser Ebene (wird nur einmal gezählt, wenn wiederholt) / Gesamtzahl der Datensätze der Ebene</value>
   </data>

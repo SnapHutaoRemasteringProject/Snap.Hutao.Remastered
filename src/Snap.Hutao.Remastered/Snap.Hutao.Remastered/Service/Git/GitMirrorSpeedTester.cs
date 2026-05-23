@@ -24,7 +24,7 @@ internal sealed class GitMirrorSpeedTester
     private const int MaxConcurrency = 4;
 
     // Path to test file relative to mirror root
-    private const string TestFileRelativePath = "Snap.Metadata/Genshin/EN/Material.json";
+    private const string TestFileRelativePath = "Snap.Metadata/Genshin/ES/Material.json";
 
     public GitMirrorSpeedTester(ILogger<GitMirrorSpeedTester> logger, IServiceProvider serviceProvider, ITaskContext taskContext, IMirrorScheduler mirrorScheduler)
     {

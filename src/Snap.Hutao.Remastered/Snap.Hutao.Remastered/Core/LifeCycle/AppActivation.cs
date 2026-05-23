@@ -265,7 +265,6 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
             serviceProvider.GetRequiredService<IPluginService>().LoadAllPluginsAsync()
         ]).ConfigureAwait(false);
 
-
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Initialization completed", "Application"));
     }
 

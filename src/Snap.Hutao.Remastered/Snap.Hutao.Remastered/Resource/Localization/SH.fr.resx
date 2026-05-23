@@ -3611,6 +3611,9 @@ Espace disponible : {2}</value>
   <data name="ViewSettingHeader" xml:space="preserve">
     <value>Paramètres</value>
   </data>
+  <data name="ViewDialogGitSourcesSpeedTestDialogSettingButton" xml:space="preserve">
+    <value>Paramètres</value>
+  </data>
   <data name="ViewSpiralAbyssAvatarAppearanceRankDescription" xml:space="preserve">
     <value>Taux d'apparition du personnage = Nombre d'apparitions du personnage à cet étage (compté une seule fois en cas de répétition) / Nombre total d'enregistrements de l'abîme</value>
   </data>
