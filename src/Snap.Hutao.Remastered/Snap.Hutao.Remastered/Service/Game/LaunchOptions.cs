@@ -1,11 +1,12 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Snap Hutao RP. All rights reserved.
+// Licensed under the MIT license.
 
 using Microsoft.UI.Windowing;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Property;
 using Snap.Hutao.Remastered.Core.Setting;
-using Snap.Hutao.Remastered.Migrations;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Service.Abstraction;

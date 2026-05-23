@@ -428,7 +428,7 @@
                                         <ComboBox
                                             MinWidth="150"
                                             DisplayMemberPath="Name"
-                                            ItemsSource="{Binding GitRepositoryDomainOptions}"
+                                            ItemsSource="{Binding GitRepositoryDomainOptions, Mode=TwoWay}"
                                             SelectedItem="{Binding SelectedGitRepositoryDomainOption, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                     <cwc:SettingsExpander.Items>

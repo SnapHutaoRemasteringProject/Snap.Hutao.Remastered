@@ -3464,6 +3464,9 @@ Space Available: {2}</value>
   <data name="ViewPageSettingGitRepositoryDomainLockDescription" xml:space="preserve">
     <value>Recommend automatic mode. If the actual speed is unsatisfactory, you can test the coverage settings yourself. When a set node fails, it will automatically fallback</value>
   </data>
+  <data name="ViewPageSettingGitRepositoryDomainLockModeAuto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
   <data name="ViewPageSettingShareSaveTypeDescription" xml:space="preserve">
     <value>Select the mode in which to save the image after clicking the share button</value>
   </data>
@@ -4523,5 +4526,11 @@ Space Available: {2}</value>
   </data>
   <data name="ViewDialogGitSourcesSpeedTestDialogRunButton" xml:space="preserve">
     <value>Retest</value>
+  </data>
+  <data name="ViewModelSettingNetGitFriendlyNameCNCC" xml:space="preserve">
+    <value>China (Main Land) - CentralChina</value>
+  </data>
+  <data name="ViewModelSettingNetGitFriendlyNameCNSW" xml:space="preserve">
+    <value>China (Main Land) - SouthWest</value>
   </data>
 </root>

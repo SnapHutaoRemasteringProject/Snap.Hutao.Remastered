@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Microsoft.Extensions.Logging;
 using Snap.Hutao.Remastered.Core.IO.Http.Proxy;
 using Snap.Hutao.Remastered.Web.Hutao;
 using System.Collections.Immutable;
@@ -10,10 +9,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Net.Http;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
 
 namespace Snap.Hutao.Remastered.Service.Git;
 

@@ -34,7 +34,10 @@
         <ListView
             x:Name="ResultList"
             Height="300"
-            BorderThickness="1">
+            AllowDrop="False"
+            BorderThickness="1"
+            CanDragItems="False"
+            SelectionMode="Single">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="8" ColumnSpacing="8">

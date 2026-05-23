@@ -2,6 +2,8 @@
 // Licensed under the MIT license.
 // Copyright (c) Millennium-Science-Technology-R-D-Inst. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Snap Hutao RP. All rights reserved.
+// Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
@@ -172,7 +174,8 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
         Storage.CacheFolderView = new(taskContext, HutaoRuntime.LocalCacheDirectory);
         Storage.DataFolderView = new(taskContext, HutaoRuntime.DataDirectory);
 
-        await Net.InitializeGitRepositoryDomainOptionsAsync(token).ConfigureAwait(true);
+        await Net.InitializeGitRepositoryDomainOptionsAsync(token).ConfigureAwait(false);
+        await taskContext.SwitchToMainThreadAsync();
 
         UpdateInfo = updateService.UpdateInfo;
 

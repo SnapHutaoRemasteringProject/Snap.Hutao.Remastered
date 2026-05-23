@@ -1,4 +1,6 @@
-using CommunityToolkit.Mvvm.Input;
+// Copyright (c) Snap Hutao RP. All rights reserved.
+// Licensed under the MIT license.
+
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Service;
@@ -18,6 +20,7 @@ public sealed partial class SettingNetViewModel : Abstraction.ViewModel
     private readonly HutaoInfrastructureClient hutaoInfrastructureClient;
     private readonly IServiceProvider serviceProvider;
     private readonly IContentDialogFactory contentDialogFactory;
+    private readonly ITaskContext taskContext;
 
     public AppOptions AppOptions { get; }
 
@@ -26,6 +29,7 @@ public sealed partial class SettingNetViewModel : Abstraction.ViewModel
         this.serviceProvider = serviceProvider;
         hutaoInfrastructureClient = serviceProvider.GetRequiredService<HutaoInfrastructureClient>();
         contentDialogFactory = serviceProvider.GetRequiredService<IContentDialogFactory>();
+        taskContext = serviceProvider.GetRequiredService<ITaskContext>();
         AppOptions = serviceProvider.GetRequiredService<AppOptions>();
     }
 
@@ -54,7 +58,9 @@ public sealed partial class SettingNetViewModel : Abstraction.ViewModel
 
     public async ValueTask InitializeGitRepositoryDomainOptionsAsync(CancellationToken token)
     {
-        ImmutableArray<NameValue<string>> options = [AutoDomainOption, .. await GetDomainOptionsFromApiAsync(token).ConfigureAwait(true)];
+        ImmutableArray<NameValue<string>> options = [AutoDomainOption, .. await GetDomainOptionsFromApiAsync(token).ConfigureAwait(false)];
+        await taskContext.SwitchToMainThreadAsync();
+
         string configuredDomain = AppOptions.GitRepositoryDomainOverride.Value;
 
         NameValue<string>? selected = FindDomainOption(options, configuredDomain);
@@ -72,22 +78,22 @@ public sealed partial class SettingNetViewModel : Abstraction.ViewModel
     [Command("OpenGitSpeedTestDialogCommand")]
     private async Task OpenGitSpeedTestDialogAsync()
     {
-        GitSourcesSpeedTestDialog dialog = await contentDialogFactory.CreateInstanceAsync<GitSourcesSpeedTestDialog>(serviceProvider);
+        GitSourcesSpeedTestDialog dialog = await contentDialogFactory.CreateInstanceAsync<GitSourcesSpeedTestDialog>(serviceProvider).ConfigureAwait(false);
         await dialog.ShowAsync();
     }
 
     private async ValueTask<ImmutableArray<NameValue<string>>> GetDomainOptionsFromApiAsync(CancellationToken token)
     {
         ImmutableHashSet<string>.Builder hosts = ImmutableHashSet.CreateBuilder<string>(StringComparer.OrdinalIgnoreCase);
-        await AddDomainFromRepositoryNameAsync("Snap.Metadata", hosts, token).ConfigureAwait(false);
-        await AddDomainFromRepositoryNameAsync("Snap.ContentDelivery", hosts, token).ConfigureAwait(false);
+        await AddFriendlyNameFromRepositoryNameAsync("Snap.Metadata", hosts, token).ConfigureAwait(false);
+        await AddFriendlyNameFromRepositoryNameAsync("Snap.ContentDelivery", hosts, token).ConfigureAwait(false);
 
         return [.. hosts
             .OrderBy(static host => host, StringComparer.OrdinalIgnoreCase)
             .Select(static host => new NameValue<string>(host, host))];
     }
 
-    private async ValueTask AddDomainFromRepositoryNameAsync(string repositoryName, ImmutableHashSet<string>.Builder hosts, CancellationToken token)
+    private async ValueTask AddFriendlyNameFromRepositoryNameAsync(string repositoryName, ImmutableHashSet<string>.Builder hosts, CancellationToken token)
     {
         Web.Hutao.Response.HutaoResponse<ImmutableArray<GitRepository>> response = await hutaoInfrastructureClient.GetGitRepositoryAsync(repositoryName, token).ConfigureAwait(false);
         ImmutableArray<GitRepository> repositories = response.Data;
@@ -98,8 +104,13 @@ public sealed partial class SettingNetViewModel : Abstraction.ViewModel
 
         foreach (GitRepository repository in repositories)
         {
-            if (!string.IsNullOrWhiteSpace(repository.HttpsUrl.Host))
+            if (!string.IsNullOrWhiteSpace(repository.FriendlyName))
             {
+                hosts.Add(SH.GetString("ViewModelSettingNetGitFriendlyName" + repository.FriendlyName));
+            }
+            else
+            {
+                // default to host if friendly name is not available
                 hosts.Add(repository.HttpsUrl.Host);
             }
         }

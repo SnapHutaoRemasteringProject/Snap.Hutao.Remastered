@@ -3,6 +3,7 @@
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.ViewModel.Git;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
@@ -10,6 +11,8 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 public sealed partial class GitSourcesSpeedTestDialog : ContentDialog
 {
     private readonly GitSourcesSpeedTestDialogViewModel viewModel;
+
+    private readonly IContentDialogFactory contentDialogFactory;
 
     public GitSourcesSpeedTestDialog(IServiceProvider serviceProvider)
     {
@@ -32,4 +35,11 @@ public sealed partial class GitSourcesSpeedTestDialog : ContentDialog
         };
 
     }
+
+    //public async ValueTask<ValueResult<bool, string?>> GetInputUrlAsync()
+    //{
+    //    ContentDialogResult result = await contentDialogFactory.EnqueueAndShowAsync(this).ShowTask.ConfigureAwait(false);
+    //    await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
+    //    return new(result is ContentDialogResult.Primary, Text);
+    //}
 }

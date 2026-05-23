@@ -23,6 +23,7 @@ using System.Text;
 
 namespace Snap.Hutao.Remastered.Service.Git;
 
+[SuppressMessage("", "SH003")]
 [Service(ServiceLifetime.Singleton, typeof(IGitRepositoryService))]
 public sealed partial class GitRepositoryService : IGitRepositoryService
 {
@@ -77,7 +78,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
                     try
                     {
                         using IServiceScope testerScope = serviceProvider.CreateScope();
-                        var maybeTester = testerScope.ServiceProvider.GetService(typeof(object));
+                        object? maybeTester = testerScope.ServiceProvider.GetService(typeof(object));
                         // We don't have direct compile reference here; safely ignore if not registered
                     }
                     catch
@@ -321,8 +322,8 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
         using TcpClient tcp = new();
         try
         {
-            var tcpSw = Stopwatch.StartNew();
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            Stopwatch tcpSw = Stopwatch.StartNew();
+            using CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
             await tcp.ConnectAsync(ip, port, cts.Token).ConfigureAwait(false);
             tcpSw.Stop();
             tcpMs = tcpSw.ElapsedMilliseconds;
@@ -334,14 +335,14 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
         }
 
         Stream stream = tcp.GetStream();
-        SslStream ssl = null;
+        SslStream? ssl = null;
         if (probeUri.Scheme == "https")
         {
             try
             {
                 ssl = new SslStream(stream, false, (sender, cert, chain, errors) => true);
-                var tlsSw = Stopwatch.StartNew();
-                using var tlsCts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                Stopwatch tlsSw = Stopwatch.StartNew();
+                using CancellationTokenSource tlsCts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
                 await ssl.AuthenticateAsClientAsync(host).ConfigureAwait(false);
                 tlsSw.Stop();
                 tlsMs = tlsSw.ElapsedMilliseconds;
@@ -362,7 +363,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             await stream.WriteAsync(requestBytes, 0, requestBytes.Length).ConfigureAwait(false);
             await stream.FlushAsync().ConfigureAwait(false);
 
-            var ttfbSw = Stopwatch.StartNew();
+            Stopwatch ttfbSw = Stopwatch.StartNew();
             byte[] buffer = new byte[8192];
             int read = await stream.ReadAsync(buffer, 0, 1).ConfigureAwait(false);
             ttfbSw.Stop();
@@ -400,7 +401,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             }
 
             // ls-remote: try to find refs/heads/main in response payload
-            var lsSw = Stopwatch.StartNew();
+            Stopwatch lsSw = Stopwatch.StartNew();
             string payload = Encoding.ASCII.GetString(ms.ToArray());
             if (payload.Contains("refs/heads/main"))
             {
