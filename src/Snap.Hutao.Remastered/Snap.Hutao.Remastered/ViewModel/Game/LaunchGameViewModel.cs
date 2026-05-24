@@ -105,6 +105,8 @@ internal sealed partial class LaunchGameViewModel : Abstraction.ViewModel, IView
         set => SetProperty(ref selectedDelayedProgramEntry, value);
     }
 
+    public bool IsDeveloperAndLoggedIn => hutaoUserOptions.IsLoggedIn && hutaoUserOptions.IsDeveloper;
+
     public async ValueTask<bool> ReceiveAsync(INavigationExtraData data, CancellationToken token)
     {
         if (!await Initialization.Task.ConfigureAwait(false))
