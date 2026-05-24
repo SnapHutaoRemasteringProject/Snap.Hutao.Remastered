@@ -18,7 +18,7 @@ public sealed class HttpClientTest
         {
             using (HttpClient httpClient = new(handler))
             {
-                using (HttpRequestMessage request = new(HttpMethod.Get, "https://api.snapgenshin.com/patch/hutao/download"))
+                using (HttpRequestMessage request = new(HttpMethod.Get, "https://api.snaphutaorp.org/patch/hutao/download"))
                 {
                     using (HttpResponseMessage response = httpClient.Send(request))
                     {

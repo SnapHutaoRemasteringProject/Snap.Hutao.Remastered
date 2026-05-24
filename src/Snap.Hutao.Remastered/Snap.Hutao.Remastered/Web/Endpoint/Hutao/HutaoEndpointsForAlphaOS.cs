@@ -6,7 +6,7 @@ namespace Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 [Service(ServiceLifetime.Singleton, typeof(IHutaoEndpoints), Key = HutaoEndpointsKind.AlphaOS)]
 public sealed class HutaoEndpointsForAlphaOS : IHutaoEndpoints
 {
-    string IHomaRootAccess.Root { get => "https://homa.snapgenshin.com"; }
+    string IHomaRootAccess.Root { get => "https://homa.snaphutaorp.org"; }
 
     string IInfrastructureRootAccess.Root { get => "https://alpha.snapgenshin.cn/global"; }
 
