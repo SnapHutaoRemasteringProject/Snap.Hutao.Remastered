@@ -551,6 +551,12 @@
                                         HeaderIcon="{shuxm:FontIcon Glyph=&#xEC92;}">
                                         <ToggleSwitch MinWidth="{ThemeResource SettingsCardContentControlMinWidth}" IsOn="{Binding LaunchOptions.UsingStarwardPlayTimeStatistics.Value, Mode=TwoWay}"/>
                                     </cwc:SettingsCard>
+                                    <cwc:SettingsCard
+                                        ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutAction}"
+                                        Command="{Binding CreateGameLaunchShortcutCommand}"
+                                        Header="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"
+                                        HeaderIcon="{shuxm:FontIcon Glyph=&#xE72D;}"
+                                        IsClickEnabled="True"/>
                                 </StackPanel>
                             </Border>
                         </Border>
@@ -1166,13 +1172,7 @@
                                         IsOn="{Binding LaunchOptions.HidePlayerInfo.Value, Mode=TwoWay}"
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandHidePlayerInfoDescription}"
                                         Visibility="{Binding IsDeveloperAndLoggedIn, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                    <Button
-                                        Grid.Row="9"
-                                        Grid.ColumnSpan="3"
-                                        Margin="0,16,0,0"
-                                        HorizontalAlignment="Stretch"
-                                        Command="{Binding CreateGameLaunchShortcutCommand}"
-                                        Content="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"/>
+                                    
                                 </Grid>
                             </ContentControl>
                         </ScrollViewer>
