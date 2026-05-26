@@ -4212,10 +4212,10 @@
   <data name="ViewModelMainNetworkRecoveredRetrying" xml:space="preserve">
     <value>Сеть восстановлена, автоматически повторная попытка.</value>
   </data>
-  <data name="ViewModelSettingNetGitFriendlyNameCNCC" xml:space="preserve">
+  <data name="ViewModelSettingNetGitFriendlyNameCTCC" xml:space="preserve">
     <value>Материковый Китай - Центральный Китай</value>
   </data>
-  <data name="ViewModelSettingNetGitFriendlyNameCNSW" xml:space="preserve">
+  <data name="ViewModelSettingNetGitFriendlyNameCTSW" xml:space="preserve">
     <value>Материковый Китай - Северо-запад</value>
   </data>
 </root>

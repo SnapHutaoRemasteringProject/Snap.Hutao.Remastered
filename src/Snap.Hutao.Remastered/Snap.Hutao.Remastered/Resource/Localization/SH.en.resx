@@ -4530,10 +4530,10 @@ Space Available: {2}</value>
   <data name="ViewDialogGitSourcesSpeedTestDialogRunButton" xml:space="preserve">
     <value>Retest</value>
   </data>
-  <data name="ViewModelSettingNetGitFriendlyNameCNCC" xml:space="preserve">
+  <data name="ViewModelSettingNetGitFriendlyNameCTCC" xml:space="preserve">
     <value>China (Mainland) - CentralChina</value>
   </data>
-  <data name="ViewModelSettingNetGitFriendlyNameCNSW" xml:space="preserve">
+  <data name="ViewModelSettingNetGitFriendlyNameCTSW" xml:space="preserve">
     <value>China (Mainland) - SouthWest</value>
   </data>
 </root>

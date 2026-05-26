@@ -4645,11 +4645,11 @@
   <data name="ViewDialogGitSourcesSpeedTestDialogRunButton" xml:space="preserve">
     <value>重新测试</value>
   </data>
-  <data name="ViewModelSettingNetGitFriendlyNameCNCC" xml:space="preserve">
-    <value>中国 - 华中</value>
+  <data name="ViewModelSettingNetGitFriendlyNameCTCC" xml:space="preserve">
+    <value>中国电信 - 华中</value>
   </data>
-  <data name="ViewModelSettingNetGitFriendlyNameCNSW" xml:space="preserve">
-    <value>中国 - 西北</value>
+  <data name="ViewModelSettingNetGitFriendlyNameCTSW" xml:space="preserve">
+    <value>中国电信 - 西北</value>
   </data>
   <data name="ModelIntrinsicAssociationTypeHVision" xml:space="preserve">
     <value>魔女会</value>

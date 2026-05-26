@@ -4284,10 +4284,10 @@
   <data name="ViewPageSettingHomeAnnouncementActPreviewHeader" xml:space="preserve">
     <value>是否顯示未在進行中的遊戲內版本活動事件</value>
   </data>
-  <data name="ViewModelSettingNetGitFriendlyNameCNCC" xml:space="preserve">
+  <data name="ViewModelSettingNetGitFriendlyNameCTCC" xml:space="preserve">
     <value>中國大陸 - 華中</value>
   </data>
-  <data name="ViewModelSettingNetGitFriendlyNameCNSW" xml:space="preserve">
-    <value>中國大陸 西北</value>
+  <data name="ViewModelSettingNetGitFriendlyNameCTSW" xml:space="preserve">
+    <value>中國大陸 - 西北</value>
   </data>
 </root>

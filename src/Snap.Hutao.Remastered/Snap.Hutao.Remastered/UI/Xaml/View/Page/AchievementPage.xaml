@@ -12,6 +12,7 @@
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
     xmlns:shuxcp="using:Snap.Hutao.Remastered.UI.Xaml.Control.Panel"
+    xmlns:shuxd="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shva="using:Snap.Hutao.Remastered.ViewModel.Achievement"
     d:DataContext="{d:DesignInstance shva:AchievementViewModel}"
@@ -20,6 +21,7 @@
 
     <Page.Resources>
         <shux:BindingProxy x:Key="BindingProxy" DataContext="{Binding}"/>
+        <shuxd:ProgressToColorConverter x:Key="ProgressToColorConverter"/>
 
         <DataTemplate x:Key="AchievementGoalListTemplate" x:DataType="shva:AchievementGoalView">
             <Grid Margin="0,6">
@@ -39,7 +41,10 @@
                 </Border>
 
                 <StackPanel Grid.Column="1" Margin="12,0,0,2">
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}"/>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Text="{Binding Name}"
+                        TextWrapping="Wrap"/>
                     <TextBlock
                         Margin="0,2,0,0"
                         VerticalAlignment="Center"
@@ -48,6 +53,7 @@
                         Text="{Binding FinishDescription}"/>
                     <ProgressBar
                         Margin="0,4,0,0"
+                        Foreground="{Binding FinishPercent, Converter={StaticResource ProgressToColorConverter}}"
                         Maximum="1"
                         Value="{Binding FinishPercent}"/>
                 </StackPanel>
@@ -70,9 +76,10 @@
                     <StackPanel Grid.Row="1" Margin="8,0">
                         <TextBlock
                             HorizontalAlignment="Center"
+                            FontSize="{StaticResource BodyTextBlockFontSize}"
                             Text="{Binding Name}"
                             TextTrimming="CharacterEllipsis"
-                            TextWrapping="NoWrap"/>
+                            TextWrapping="WrapWholeWords"/>
                         <TextBlock
                             Margin="0,2,0,0"
                             HorizontalAlignment="Center"
@@ -81,6 +88,7 @@
                             Text="{Binding FinishDescription}"/>
                         <ProgressBar
                             Margin="0,8"
+                            Foreground="{Binding FinishPercent, Converter={StaticResource ProgressToColorConverter}}"
                             Maximum="1"
                             Value="{Binding FinishPercent}"/>
                     </StackPanel>
