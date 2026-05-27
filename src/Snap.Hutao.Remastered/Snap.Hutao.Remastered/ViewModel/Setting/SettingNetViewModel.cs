@@ -309,16 +309,9 @@ public sealed partial class SettingNetViewModel : Abstraction.ViewModel
             // Read the currently configured source
             string configuredDomain = AppOptions.GitRepositoryDomainOverride.Value;
 
-            // 如果用户选择的不是 Auto，则不需要显示实际源
-            // If the user didn't select Auto, no need to show actual source
-            if (!GitRepositoryDomainSetting.IsAuto(configuredDomain))
-            {
-                return null;
-            }
-
-            // 尝试获取系统确定的最优源
+            // 尝试获取系统确定的最优源，此时不进行源测试
             // Try to get the system-determined optimal source
-            string? optimalMirror = await mirrorSelectionService.GetOptimalMirrorAsync(token).ConfigureAwait(false);
+            string? optimalMirror = await mirrorSelectionService.GetOptimalMirrorAsync(false, token).ConfigureAwait(false);
 
             // 如果获取到最优源，尝试在 displayMap 中查找其显示名称
             // If got optimal mirror, try to find its display name

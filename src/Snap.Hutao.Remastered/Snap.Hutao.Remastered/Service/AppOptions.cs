@@ -89,6 +89,13 @@ public sealed partial class AppOptions : DbStoreOptions
     public IObservableProperty<string> GitRepositoryDomainOverride { get => field ??= CreateProperty(SettingKeys.GitRepositoryDomainOverride, GitRepositoryDomainSetting.Auto); }
 
     /// <summary>
+    /// 缓存的自动选择最优源（由速度测试写入）
+    /// Cached optimal source selected by speed test
+    /// </summary>
+    [field: MaybeNull]
+    public IObservableProperty<string> GitRepositoryDomainCachedOptimal { get => field ??= CreateProperty(SettingKeys.GitRepositoryDomainCachedOptimal, string.Empty); }
+
+    /// <summary>
     /// 最后一次成功测试镜像源的时间（UTC）
     /// Last time when mirror sources were successfully tested (UTC)
     /// </summary>

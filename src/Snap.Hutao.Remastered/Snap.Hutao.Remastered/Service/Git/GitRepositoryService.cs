@@ -69,33 +69,8 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
 
             infos = await EnsureOptimalMirrorAsync(infos).ConfigureAwait(false);
 
-            // Use cached probe/speed-test results unless expired. If expired, schedule a background speed test but do not block.
-            DateTimeOffset lastRun = ParseDateTimeOffset(appOptions.GitMirrorSpeedTestLastRun.Value, DateTimeOffset.MinValue);
-            int intervalDays = appOptions.GitMirrorSpeedTestIntervalDays.Value;
-            if (DateTimeOffset.UtcNow - lastRun > TimeSpan.FromDays(intervalDays))
-            {
-                try
-                {
-                    // Resolve tester from scoped service provider to avoid referencing the type in this file directly
-                    try
-                    {
-                        using IServiceScope testerScope = serviceProvider.CreateScope();
-                        object? maybeTester = testerScope.ServiceProvider.GetService(typeof(object));
-                        // We don't have direct compile reference here; safely ignore if not registered
-                    }
-                    catch
-                    {
-                        // ignore
-                    }
-                    appOptions.GitMirrorSpeedTestLastRun.Value = DateTimeOffset.UtcNow.ToString("O");
-                }
-                catch (Exception)
-                {
-                    // ignore
-                }
-            }
-
-            // Probe mirrors to collect latency/TTFB/ls-remote metrics before scheduling
+            // Probe mirrors concurrently to collect latency/TTFB/ls-remote metrics for scheduler scoring.
+            // Uses a global timeout to avoid blocking initialization.
             await ProbeAllMirrorsAsync(infos).ConfigureAwait(false);
 
             string directory = Path.GetFullPath(Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), name));
@@ -282,29 +257,45 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
 
     private async Task ProbeAllMirrorsAsync(ImmutableArray<GitRepository> infos)
     {
-        foreach (GitRepository info in infos)
+        // Run probes concurrently with a global timeout to avoid blocking initialization
+        using CancellationTokenSource cts = new(TimeSpan.FromSeconds(8));
+        CancellationToken token = cts.Token;
+
+        Task[] probeTasks = infos.Select(async info =>
         {
             try
             {
-                await ProbeMirrorAsync(info).ConfigureAwait(false);
+                await ProbeMirrorAsync(info, token).ConfigureAwait(false);
             }
             catch
             {
                 // Mark probe failure but do not throw; scheduler will penalize
                 mirrorScheduler.ReportFailure(info.HttpsUrl.OriginalString);
             }
+        }).ToArray();
+
+        try
+        {
+            await Task.WhenAll(probeTasks).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            // Global timeout reached; partial results are still reported to scheduler
         }
     }
 
-    private async Task ProbeMirrorAsync(GitRepository info)
+    private async Task ProbeMirrorAsync(GitRepository info, CancellationToken cancellationToken = default)
     {
         Uri probeUri = new Uri(info.HttpsUrl, "info/refs?service=git-upload-pack");
         string host = probeUri.Host;
         int port = probeUri.IsDefaultPort ? (probeUri.Scheme == "https" ? 443 : 80) : probeUri.Port;
         string url = info.HttpsUrl.OriginalString;
 
-        // DNS
+        // DNS resolution with timing
+        Stopwatch dnsSw = Stopwatch.StartNew();
         IPAddress[] addresses = await Dns.GetHostAddressesAsync(host).ConfigureAwait(false);
+        dnsSw.Stop();
+
         if (addresses == null || addresses.Length == 0)
         {
             mirrorScheduler.ReportFailure(url);
@@ -312,21 +303,19 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
         }
 
         IPAddress ip = addresses[0];
-        long dnsMs = 0;
+        long dnsMs = dnsSw.ElapsedMilliseconds;
         long tcpMs = 0;
         long tlsMs = 0;
         long ttfbMs = 0;
         long lsRemoteMs = 0;
 
-        // measure DNS time approximately by timing the above call
-        // (Dns.GetHostAddressesAsync is already awaited above; we can approximate minimal DNS cost by no-op here)
-
         using TcpClient tcp = new();
         try
         {
             Stopwatch tcpSw = Stopwatch.StartNew();
-            using CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-            await tcp.ConnectAsync(ip, port, cts.Token).ConfigureAwait(false);
+            using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            linkedCts.CancelAfter(TimeSpan.FromSeconds(5));
+            await tcp.ConnectAsync(ip, port, linkedCts.Token).ConfigureAwait(false);
             tcpSw.Stop();
             tcpMs = tcpSw.ElapsedMilliseconds;
         }
@@ -344,8 +333,9 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             {
                 ssl = new SslStream(stream, false, (sender, cert, chain, errors) => true);
                 Stopwatch tlsSw = Stopwatch.StartNew();
-                using CancellationTokenSource tlsCts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-                await ssl.AuthenticateAsClientAsync(host).ConfigureAwait(false);
+                using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+                linkedCts.CancelAfter(TimeSpan.FromSeconds(5));
+                await ssl.AuthenticateAsClientAsync(new SslClientAuthenticationOptions { TargetHost = host }, linkedCts.Token).ConfigureAwait(false);
                 tlsSw.Stop();
                 tlsMs = tlsSw.ElapsedMilliseconds;
                 stream = ssl;
@@ -362,12 +352,12 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
         byte[] requestBytes = Encoding.ASCII.GetBytes($"GET {probeUri.PathAndQuery} HTTP/1.1\r\nHost: {host}\r\nUser-Agent: SnapHutaoProbe/1.0\r\nConnection: close\r\n\r\n");
         try
         {
-            await stream.WriteAsync(requestBytes, 0, requestBytes.Length).ConfigureAwait(false);
-            await stream.FlushAsync().ConfigureAwait(false);
+            await stream.WriteAsync(requestBytes, 0, requestBytes.Length, cancellationToken).ConfigureAwait(false);
+            await stream.FlushAsync(cancellationToken).ConfigureAwait(false);
 
             Stopwatch ttfbSw = Stopwatch.StartNew();
             byte[] buffer = new byte[8192];
-            int read = await stream.ReadAsync(buffer, 0, 1).ConfigureAwait(false);
+            int read = await stream.ReadAsync(buffer, 0, 1, cancellationToken).ConfigureAwait(false);
             ttfbSw.Stop();
             if (read == 0)
             {
@@ -383,7 +373,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             string headers = string.Empty;
             while (true)
             {
-                int n = await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                int n = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
                 if (n <= 0)
                 {
                     break;
@@ -415,7 +405,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
                 // read a bit more to try to locate the ref
                 for (int i = 0; i < 4; i++)
                 {
-                    int n = await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                    int n = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false);
                     if (n <= 0) break;
                     payload += Encoding.ASCII.GetString(buffer, 0, n);
                     if (payload.Contains("refs/heads/main"))
@@ -427,7 +417,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
                 }
             }
 
-            // report metrics
+            // report metrics (DNS + TCP + TLS = total connection setup time)
             mirrorScheduler.ReportConnectLatency(url, dnsMs + tcpMs + tlsMs);
             mirrorScheduler.ReportTTFB(url, ttfbMs);
             if (lsRemoteMs > 0)
@@ -447,9 +437,8 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
         }
     }
 
-    private ImmutableArray<GitRepository> FilterMirrorsByDomainOverride(ImmutableArray<GitRepository> infos)
+    private ImmutableArray<GitRepository> FilterMirrorsByDomainOverride(ImmutableArray<GitRepository> infos, string domainOverride)
     {
-        string domainOverride = appOptions.GitRepositoryDomainOverride.Value;
         if (GitRepositoryDomainSetting.IsAuto(domainOverride))
         {
             return infos;
@@ -464,6 +453,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             return filtered;
         }
 
+        // 找不到匹配的源，重置为 Auto
         appOptions.GitRepositoryDomainOverride.Value = GitRepositoryDomainSetting.Auto;
         return infos;
     }
@@ -475,25 +465,33 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             : repository.HttpsUrl.Host;
     }
 
-    private static DateTimeOffset ParseDateTimeOffset(string? value, DateTimeOffset fallback)
-    {
-        return DateTimeOffset.TryParse(value, out DateTimeOffset parsed) ? parsed : fallback;
-    }
-
     private async ValueTask<ImmutableArray<GitRepository>> EnsureOptimalMirrorAsync(ImmutableArray<GitRepository> infos)
     {
-        if (!GitRepositoryDomainSetting.IsAuto(appOptions.GitRepositoryDomainOverride.Value))
+        string domainOverride = appOptions.GitRepositoryDomainOverride.Value;
+
+        // 如果用户手动指定了具体的源，直接过滤返回
+        if (!GitRepositoryDomainSetting.IsAuto(domainOverride))
         {
-            return FilterMirrorsByDomainOverride(infos);
+            return FilterMirrorsByDomainOverride(infos, domainOverride);
         }
 
+        // Auto 模式：尝试获取缓存的最优源
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             GitMirrorSelectionService mirrorSelectionService = scope.ServiceProvider.GetRequiredService<GitMirrorSelectionService>();
-            _ = await mirrorSelectionService.GetOptimalMirrorAsync(CancellationToken.None).ConfigureAwait(false);
+            // Use allowTest: false to avoid blocking initialization with a full speed test.
+            // Speed tests are triggered by the user or by periodic background checks.
+            string? optimalMirror = await mirrorSelectionService.GetOptimalMirrorAsync(false, CancellationToken.None).ConfigureAwait(false);
+
+            // 如果获取到缓存的最优源，使用它来过滤
+            if (!string.IsNullOrWhiteSpace(optimalMirror))
+            {
+                return FilterMirrorsByDomainOverride(infos, optimalMirror);
+            }
         }
 
-        return FilterMirrorsByDomainOverride(infos);
+        // 没有缓存的最优源，返回所有源（让 MirrorScheduler 排序）
+        return infos;
     }
 
     private BackgroundActivity.BackgroundActivity GetActivityByName(string name)

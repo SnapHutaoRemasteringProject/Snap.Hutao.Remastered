@@ -1,13 +1,11 @@
 // Copyright (c) Snap Hutao RP. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
 using System.Collections.Immutable;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 
 namespace Snap.Hutao.Remastered.Service.Git;
 
@@ -59,7 +57,7 @@ public sealed class GitMirrorSelectionService
     /// 2. 如果需要，则执行测试并选择最优源
     /// 3. 返回最优源的 URL
     /// </summary>
-    public async ValueTask<string?> GetOptimalMirrorAsync(CancellationToken token)
+    public async ValueTask<string?> GetOptimalMirrorAsync(bool allowTest, CancellationToken token)
     {
         if (Interlocked.CompareExchange(ref isInitializing, 1, 0) is not 0)
         {
@@ -68,7 +66,7 @@ public sealed class GitMirrorSelectionService
 
         try
         {
-            return await GetOptimalMirrorFromRepositoryFlowAsync(token).ConfigureAwait(false);
+            return await GetOptimalMirrorFromRepositoryFlowAsync(allowTest, token).ConfigureAwait(false);
         }
         finally
         {
@@ -76,24 +74,36 @@ public sealed class GitMirrorSelectionService
         }
     }
 
-    private async ValueTask<string?> GetOptimalMirrorFromRepositoryFlowAsync(CancellationToken token)
+    private async ValueTask<string?> GetOptimalMirrorFromRepositoryFlowAsync(bool allowTest, CancellationToken token)
     {
         // 检查是否需要重新测试
         if (await ShouldRefreshMirrorAsync(token).ConfigureAwait(false))
         {
             // 需要重新测试
-            return await TestAndSelectBestMirrorAsync(token).ConfigureAwait(false);
+            if (allowTest)
+            {
+                return await TestAndSelectBestMirrorAsync(token).ConfigureAwait(false);
+            }
+            // 如果不允许测试（例如为了防止阻塞UI），跳过测试，继续往下尝试从缓存中读取
         }
 
         // 返回当前配置的域名（可能是 Auto 或之前选择的最优源）
         string domainOverride = appOptions.GitRepositoryDomainOverride.Value;
-        if (domainOverride != GitRepositoryDomainSetting.Auto)
+
+        // 如果用户手动指定了具体的源，直接返回
+        if (!GitRepositoryDomainSetting.IsAuto(domainOverride))
         {
             return domainOverride;
         }
 
-        // 如果是 Auto，尝试从缓存中获取最优源
-        // 在这里可能需要额外的逻辑来获取缓存的最优源
+        // 如果是 Auto 模式，尝试从缓存中获取上次测试的最优源
+        string cachedOptimal = appOptions.GitRepositoryDomainCachedOptimal.Value;
+        if (!string.IsNullOrWhiteSpace(cachedOptimal))
+        {
+            return cachedOptimal;
+        }
+
+        // 没有缓存的最优源，返回 null
         return null;
     }
 
@@ -137,15 +147,17 @@ public sealed class GitMirrorSelectionService
 
                 // 选择最快的镜像源
                 GitRepository bestMirror = sortedMirrors[0];
-                string bestMirrorUrl = bestMirror.HttpsUrl.OriginalString;
+                string bestMirrorKey = !string.IsNullOrWhiteSpace(bestMirror.FriendlyName)
+                    ? bestMirror.FriendlyName
+                    : bestMirror.HttpsUrl.Host;
 
-                // 保存选择结果
+                // 保存测试结果到缓存（不影响用户的手动选择）
                 await taskContext.SwitchToMainThreadAsync();
-                appOptions.GitRepositoryDomainOverride.Value = bestMirrorUrl;
+                appOptions.GitRepositoryDomainCachedOptimal.Value = bestMirrorKey;
                 appOptions.GitMirrorLastTestTimeUtc.Value = DateTime.UtcNow.ToString("O");
                 appOptions.GitMirrorSourcesHash.Value = GetSourcesHash(repositories);
 
-                return bestMirrorUrl;
+                return bestMirrorKey;
             }
         }
         catch (Exception ex)

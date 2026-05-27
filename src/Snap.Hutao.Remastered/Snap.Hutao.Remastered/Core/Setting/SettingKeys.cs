@@ -174,6 +174,7 @@ public static class SettingKeys
 
     // Git mirrors
     public const string GitRepositoryDomainOverride             = "Snap::Hutao::Web::Git::Repository::Domain::Override";
+    public const string GitRepositoryDomainCachedOptimal        = "Snap::Hutao::Web::Git::Repository::Domain::CachedOptimal";
     public const string GitMirrorSpeedTestLastRun               = "Snap::Hutao::Web::Git::MirrorSpeedTest::LastRun";
     public const string GitMirrorSpeedTestIntervalDays          = "Snap::Hutao::Web::Git::MirrorSpeedTest::IntervalDays";
     public const string GitMirrorLastTestTimeUtc                = "Snap::Hutao::Web::Git::Mirror::LastTestTimeUtc";
