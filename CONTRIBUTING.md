@@ -7,7 +7,7 @@
    - Close Visual Studio Installer to ensure a smooth installation experience for workloads.
 2. Fork this repository and clone the project to your local device. Make sure with a good network. Or by this.<img width="400" alt="image" src="https://github.com/user-attachments/assets/6d861b6b-d3b7-48d0-8241-257c9b7ead54" />
 
-3.Open the slnx file with your VS2026 `Snap.Hutao.Remastered\src\Snap.Hutao.Remastered\Snap.Hutao.Remastered.slnx` Visual Studio will prompt you to install the necessary workloads, closing and reopening automatically.
+3.Open the slnx file with your `Snap.Hutao.Remastered\src\Snap.Hutao.Remastered\Snap.Hutao.Remastered.slnx` Visual Studio will prompt you to install the necessary workloads, closing and reopening automatically.
 
 ### Start Pull Request
 
