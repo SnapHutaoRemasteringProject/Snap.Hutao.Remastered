@@ -6,7 +6,7 @@
    - No need to select workloads; Visual Studio will handle it automatically.
    - Close Visual Studio Installer to ensure a smooth installation experience for workloads.
 2. Fork this repository and clone the project to your local device. Make sure with a good network. Or by this.<img width="400" alt="image" src="https://github.com/user-attachments/assets/6d861b6b-d3b7-48d0-8241-257c9b7ead54" />  
-3. Open the project solution with your Visual Studio, which is .slnx for VS2026 at `Snap.Hutao\src\Snap.Hutao\Snap.Hutao.slnx`. Visual Studio will prompt you to install the necessary workloads, closing and reopening automatically.
+3. Open the project solution with your Visual Studio, which is .slnx for VS2026 at `Snap.Hutao.Remastered\src\Snap.Hutao.Remastered\Snap.Hutao.Remastered.slnx`. Visual Studio will prompt you to install the necessary workloads, closing and reopening automatically.
 
 ### Start Pull Request
 
@@ -15,7 +15,8 @@
 
 ### Test Binary Package
 
-After push your own git to your github, the github action will be triggerd and you can check the final .msi build file and install it. It's a release build version by msbuild. You can also build it by yourself with change build cofigreation to release and build Snap.Hutao.Installer.
+After push your own git to your github, the github action will be triggerd and you can check the final .msi build file and install it. It's a release build version by msbuild. You can also build it by yourself with change build cofigreation to release and build 
+Snap.Hutao.Remastered.Installer.
 
 ## Start New Issue
 
@@ -23,9 +24,9 @@ To help users solve problems faster and increase developers' efficiency in solvi
 
 Before submitting a new issue, you should check the following pages:
 
-- [FAQ](https://hut.ao/advanced/FAQ.html) Document
-- [Common Program Exceptions ](https://hut.ao/en/advanced/exceptions.html)Document
-- [Current Opened BUG Report Issues](https://github.com/DGP-Studio/Snap.Hutao/issues?q=is%3Aissue+is%3Aopen+label%3ABUG)
+- [Other common questions](https://snaphutaorp.org/zh/advanced/FAQ)
+- [Common program exceptions](https://snaphutaorp.org/zh/advanced/exceptions)
+- [Current Opened BUG Report Issues](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/issues?q=is%3Aissue+is%3Aopen+label%3ABUG)
 
 When starting a new issue, please use the issue templates:
 
@@ -37,18 +38,20 @@ When starting a new issue, please use the issue templates:
 
 ## Document Modification
 
-Snap Hutao Document site is stored in repository [DGP-Studio/Snap.Hutao.Docs](https://github.com/DGP-Studio/Snap.Hutao.Docs), you can process the following steps to test the site in your local device:
+Snap.Hutao.Remastered
+ Document site is stored in repository[SnapHutaoRemasteringProject/Snap.Hutao.Remastered.Docs](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered.Docs), you can process the following steps to test the site in your local device:
 
-1. Download and install [NodeJS 18](https://nodejs.org/en/download/)
+1. Download and install [NodeJS 24](https://nodejs.org/en/download/)
 2. Clone the repository
 3. Run `npm install` in the root directory of the document project
-4. Run `npm run docs:dev` to start test on 8080 port
+4. Run `npm run docs:dev` to start test on 5173 port
 
 ### Localization
 
-Snap.Hutao.Docs project structure is designed as multiple languages site. Each language has its independent folder under `docs` directory.
+Snap.Hutao.Remastered.Docs
+ project structure is designed as multiple languages site. Each language has its independent folder under `docs` directory.
 
-**If you wish to add another language document, you can [start an issue in document repository](https://github.com/DGP-Studio/Snap.Hutao.Docs/issues) to ask developer to setup an environment for you, or you can process the following steps by yourself:** 
+**If you wish to add another language document, you can [start an issue in document repository](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered.Docs/issues/new/choose) to ask developer to setup an environment for you, or you can process the following steps by yourself:** 
 
 1. make a copy of `zh` folder, rename the new folder as the new language's code
 2. Start your translation work in the new language folder
