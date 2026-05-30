@@ -3461,6 +3461,9 @@
   <data name="ViewPageSettingGitRepositoryDomainLockDescription" xml:space="preserve">
     <value>推薦自動，若實際速度不佳可自行測試覆蓋設置，當設置節點故障將自動回退</value>
   </data>
+  <data name="ViewPageSettingGitRepositoryDomainLockHeader" xml:space="preserve">
+    <value>倉庫分發節點</value>
+  </data>
   <data name="ViewPageSettingGitRepositoryDomainLockModeAuto" xml:space="preserve">
     <value>自動</value>
   </data>
@@ -4283,6 +4286,9 @@
   </data>
   <data name="ViewPageSettingHomeAnnouncementActPreviewHeader" xml:space="preserve">
     <value>是否顯示未在進行中的遊戲內版本活動事件</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActIsEnableDescription" xml:space="preserve">
+    <value>立即生效，關閉後將不再顯示</value>
   </data>
   <data name="ViewModelSettingNetGitFriendlyNameCTCC" xml:space="preserve">
     <value>中國大陸 - 華中</value>

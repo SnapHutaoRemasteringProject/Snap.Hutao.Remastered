@@ -3469,7 +3469,7 @@
     <value>推荐自动，若实际速度不佳可自行测试覆盖设置，当设置节点故障将自动回退</value>
   </data>
   <data name="ViewPageSettingGitRepositoryDomainLockHeader" xml:space="preserve">
-    <value>节点</value>
+    <value>仓库分发节点</value>
   </data>
   <data name="ViewPageSettingGitRepositoryDomainLockModeAuto" xml:space="preserve">
     <value>自动</value>
