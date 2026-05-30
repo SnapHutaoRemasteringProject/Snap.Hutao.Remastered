@@ -23,8 +23,11 @@ internal sealed class GitMirrorSpeedTester
     // Limit concurrency to avoid too many parallel downloads
     private const int MaxConcurrency = 10;
 
-    // Path to test file relative to mirror root
-    private const string TestFileRelativePath = "Snap.GitTest/st.png";
+    // Repository name for speed testing
+    private const string TestRepositoryName = "Snap.GitTest";
+
+    // Path to test file in the test repository (using raw content path)
+    private const string TestFilePath = "st.png";
 
     public GitMirrorSpeedTester(ILogger<GitMirrorSpeedTester> logger, IServiceProvider serviceProvider, ITaskContext taskContext, IMirrorScheduler mirrorScheduler)
     {
@@ -34,6 +37,12 @@ internal sealed class GitMirrorSpeedTester
         this.mirrorScheduler = mirrorScheduler;
     }
 
+    /// <summary>
+    /// Run a single round of speed tests for the given mirrors. This method can be called periodically by the scheduler.
+    /// </summary>
+    /// <param name="mirrors">需要测试的镜像源列表</param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public async Task RunOnceAsync(ImmutableArray<GitRepository> mirrors, CancellationToken token)
     {
         using SemaphoreSlim sem = new(MaxConcurrency);
@@ -63,9 +72,28 @@ internal sealed class GitMirrorSpeedTester
         await Task.WhenAll(tasks).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Test the speed of a single mirror by downloading the test file and measuring the time taken. Report the result to the scheduler.
+    /// </summary>
+    /// <param name="mirror">要测试的镜像源</param>
+    /// <param name="token">取消令牌</param>
+    /// <returns></returns>
     private async Task TestMirrorAsync(GitRepository mirror, CancellationToken token)
     {
-        string url = mirror.HttpsUrl.OriginalString.TrimEnd('/') + "/" + TestFileRelativePath;
+        // Extract the organization/user from the mirror URL and construct the test repository URL
+        Uri mirrorUri = mirror.HttpsUrl;
+        string scheme = mirrorUri.Scheme; // http / https
+        string host = mirrorUri.Host;
+
+        // Handle non-standard ports (Port returns -1 for standard ports)
+        string hostWithPort = mirrorUri.Port != -1 ? $"{host}:{mirrorUri.Port}" : host;
+
+        // Construct URL to Snap.GitTest repository, preserving the original scheme and port
+        // Example: https://github.com/SnapHutaoRemasteringProject/Snap.GitTest/raw/main/st.png
+        // Or: http://cnswgit.snaphutaorp.org:12345/SnapHutaoRemasteringProject/Snap.GitTest/raw/main/st.png
+        string organization = GetOrganizationFromUri(mirrorUri);
+        string url = $"{scheme}://{hostWithPort}/{organization}/{TestRepositoryName}/raw/main/{TestFilePath}";
+
         logger.LogInformation("[SpeedTest] Testing mirror: {Url}", url);
 
         using SocketsHttpHandler handler = new()
@@ -125,5 +153,25 @@ internal sealed class GitMirrorSpeedTester
             logger.LogWarning(ex, "[SpeedTest] Mirror test failed for {Url}", url);
             mirrorScheduler.ReportFailure(mirror.HttpsUrl.OriginalString);
         }
+    }
+
+    /// <summary>
+    /// Extract the organization or user name from a Git repository URI.
+    /// For GitHub URLs like https://github.com/SnapHutaoRemasteringProject/Snap.Metadata.git,
+    /// </summary>
+    /// <returns>
+    /// "SnapHutaoRemasteringProject".
+    /// </returns>
+    private static string GetOrganizationFromUri(Uri repositoryUri)
+    {
+        string path = repositoryUri.AbsolutePath.Trim('/');
+        string[] segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+        if (segments.Length > 0)
+        {
+            return segments[0];
+        }
+
+        throw new InvalidOperationException($"Unable to extract organization from repository URI: {repositoryUri}");
     }
 }

@@ -475,13 +475,12 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             return FilterMirrorsByDomainOverride(infos, domainOverride);
         }
 
-        // Auto 模式：尝试获取缓存的最优源
+        // Auto 模式下，执行 GitMirrorSelectio 获取设置的最优源
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             GitMirrorSelectionService mirrorSelectionService = scope.ServiceProvider.GetRequiredService<GitMirrorSelectionService>();
-            // Use allowTest: false to avoid blocking initialization with a full speed test.
-            // Speed tests are triggered by the user or by periodic background checks.
-            string? optimalMirror = await mirrorSelectionService.GetOptimalMirrorAsync(false, CancellationToken.None).ConfigureAwait(false);
+            // 这里保证允许运行测试，方法内有判断缓存机制
+            string? optimalMirror = await mirrorSelectionService.GetOptimalMirrorAsync(true, CancellationToken.None).ConfigureAwait(false);
 
             // 如果获取到缓存的最优源，使用它来过滤
             if (!string.IsNullOrWhiteSpace(optimalMirror))

@@ -76,7 +76,7 @@ public sealed class GitMirrorSelectionService
 
     private async ValueTask<string?> GetOptimalMirrorFromRepositoryFlowAsync(bool allowTest, CancellationToken token)
     {
-        // 检查是否需要重新测试
+        // 根据我们设置的标准来检查是否需要重新测试
         if (await ShouldRefreshMirrorAsync(token).ConfigureAwait(false))
         {
             // 需要重新测试
@@ -86,6 +86,7 @@ public sealed class GitMirrorSelectionService
             }
             // 如果不允许测试（例如为了防止阻塞UI），跳过测试，继续往下尝试从缓存中读取
         }
+        // 理论上下面这部分代码应该删除，这属于必须测试的逻辑范围
 
         // 返回当前配置的域名（可能是 Auto 或之前选择的最优源）
         string domainOverride = appOptions.GitRepositoryDomainOverride.Value;
@@ -133,7 +134,7 @@ public sealed class GitMirrorSelectionService
 
             using (IServiceScope scope = serviceProvider.CreateScope())
             {
-                // 执行速度测试
+                // 执行速度测试核心逻辑
                 GitMirrorSpeedTester? tester = scope.ServiceProvider.GetService<GitMirrorSpeedTester>();
                 if (tester is not null)
                 {
