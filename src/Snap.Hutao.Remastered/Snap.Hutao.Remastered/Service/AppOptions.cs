@@ -110,12 +110,6 @@ public sealed partial class AppOptions : DbStoreOptions
     public IObservableProperty<string> GitMirrorSourcesHash { get => field ??= CreateProperty(SettingKeys.GitMirrorSourcesHash, string.Empty); }
 
     /// <summary>
-    /// 上次测速时间（UTC），用于判断是否需要重新测速
-    /// </summary>
-    [field: MaybeNull]
-    public IObservableProperty<string> GitMirrorSpeedTestLastRun { get => field ??= CreateProperty(SettingKeys.GitMirrorSpeedTestLastRun, string.Empty); }
-
-    /// <summary>
     /// 距上次仓库测速相隔的日期（日）
     /// The interval days between the last repos speed test.
     /// </summary>

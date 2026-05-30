@@ -117,6 +117,9 @@ public sealed class GitMirrorSelectionService
     /// 3. 从测试结果中选择最优源
     /// 4. 保存选择结果和测试时间
     /// </summary>
+    /// <returns>
+    /// The URL of the optimal mirror source, or null if none is found.
+    /// </returns>
     public async ValueTask<string?> TestAndSelectBestMirrorAsync(CancellationToken token)
     {
         try
@@ -181,7 +184,7 @@ public sealed class GitMirrorSelectionService
     /// </returns>
     public async ValueTask<bool> ShouldRefreshMirrorAsync(CancellationToken token)
     {
-        // 如果已经手动指定了源，则不需要自动测试
+        // 如果已经手动指定了源，则不需要自动测试（该选项非auto）
         if (!GitRepositoryDomainSetting.IsAuto(appOptions.GitRepositoryDomainOverride.Value))
         {
             return false;

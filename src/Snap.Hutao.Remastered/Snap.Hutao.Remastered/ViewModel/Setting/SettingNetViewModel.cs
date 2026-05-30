@@ -204,10 +204,6 @@ public sealed partial class SettingNetViewModel : Abstraction.ViewModel
     /// - hosts: 主机名集合 / Host names collection
     /// - token: 取消令牌 / Cancellation token
     /// 
-    /// 返回 / Returns:
-    /// 该仓库中第一个有效的主机名（用于 Auto 选项显示）
-    /// First valid host name from this repository (for Auto option display)
-    /// 
     /// 逻辑 / Logic:
     /// 1. 调用 API 获取仓库列表
     ///    Call API to fetch repository list
@@ -222,6 +218,11 @@ public sealed partial class SettingNetViewModel : Abstraction.ViewModel
     /// 4. 返回第一个有效的主机名
     ///    Return first valid host name
     /// </summary>
+    /// 
+    /// <returns>
+    /// 该仓库中第一个有效的主机名（用于 Auto 选项显示）
+    /// First valid host name from this repository (for Auto option display)
+    /// </returns>
     private async ValueTask<string?> AddFriendlyNameFromRepositoryNameAsync(
         string repositoryName,
         ImmutableHashSet<string>.Builder optionValues,
