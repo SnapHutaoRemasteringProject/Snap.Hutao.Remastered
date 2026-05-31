@@ -59,8 +59,9 @@ internal sealed class GitMirrorSpeedTester
                 }
                 catch (Exception ex)
                 {
-                    logger.LogWarning(ex, "Git mirror speed test failed: {Url}", mirror.HttpsUrl.OriginalString);
-                    mirrorScheduler.ReportFailure(mirror.HttpsUrl.OriginalString);
+                    string mirrorIdentifier = GetMirrorIdentifier(mirror);
+                    logger.LogWarning(ex, "Git mirror speed test failed: {Identifier}", mirrorIdentifier);
+                    mirrorScheduler.ReportFailure(mirrorIdentifier);
                 }
                 finally
                 {
@@ -80,6 +81,8 @@ internal sealed class GitMirrorSpeedTester
     /// <returns></returns>
     private async Task TestMirrorAsync(GitRepository mirror, CancellationToken token)
     {
+        string mirrorIdentifier = GetMirrorIdentifier(mirror);
+
         // Extract the organization/user from the mirror URL and construct the test repository URL
         Uri mirrorUri = mirror.HttpsUrl;
         string scheme = mirrorUri.Scheme; // http / https
@@ -94,7 +97,7 @@ internal sealed class GitMirrorSpeedTester
         string organization = GetOrganizationFromUri(mirrorUri);
         string url = $"{scheme}://{hostWithPort}/{organization}/{TestRepositoryName}/raw/main/{TestFilePath}";
 
-        logger.LogInformation("[SpeedTest] Testing mirror: {Url}", url);
+        logger.LogInformation("[SpeedTest] Testing mirror: {Identifier} - {Url}", mirrorIdentifier, url);
 
         using SocketsHttpHandler handler = new()
         {
@@ -123,8 +126,8 @@ internal sealed class GitMirrorSpeedTester
 
             if (!response.IsSuccessStatusCode)
             {
-                logger.LogWarning("[SpeedTest] Mirror returned non-success status: {Status} for {Url}", response.StatusCode, url);
-                mirrorScheduler.ReportFailure(mirror.HttpsUrl.OriginalString);
+                logger.LogWarning("[SpeedTest] Mirror returned non-success status: {Status} for {Identifier}", response.StatusCode, mirrorIdentifier);
+                mirrorScheduler.ReportFailure(mirrorIdentifier);
                 return;
             }
 
@@ -143,16 +146,26 @@ internal sealed class GitMirrorSpeedTester
             double seconds = Math.Max(0.001, readSw.Elapsed.TotalSeconds);
             double mbps = (total / 1024d / 1024d) / seconds;
 
-            logger.LogInformation("[SpeedTest] Mirror {Url} downloaded {Bytes} bytes in {Seconds}s -> {Mbps} MB/s", url, total, seconds, mbps);
+            logger.LogInformation("[SpeedTest] Mirror {Identifier} downloaded {Bytes} bytes in {Seconds}s -> {Mbps} MB/s", mirrorIdentifier, total, seconds, mbps);
 
-            mirrorScheduler.ReportThroughput(mirror.HttpsUrl.OriginalString, mbps);
-            mirrorScheduler.ReportSuccess(mirror.HttpsUrl.OriginalString);
+            mirrorScheduler.ReportThroughput(mirrorIdentifier, mbps);
+            mirrorScheduler.ReportSuccess(mirrorIdentifier);
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "[SpeedTest] Mirror test failed for {Url}", url);
-            mirrorScheduler.ReportFailure(mirror.HttpsUrl.OriginalString);
+            logger.LogWarning(ex, "[SpeedTest] Mirror test failed for {Identifier}", mirrorIdentifier);
+            mirrorScheduler.ReportFailure(mirrorIdentifier);
         }
+    }
+
+    /// <summary>
+    /// 获取镜像源标识符（FriendlyName 或域名）。
+    /// </summary>
+    private static string GetMirrorIdentifier(GitRepository mirror)
+    {
+        return !string.IsNullOrWhiteSpace(mirror.FriendlyName)
+            ? mirror.FriendlyName
+            : mirror.HttpsUrl.Host;
     }
 
     /// <summary>

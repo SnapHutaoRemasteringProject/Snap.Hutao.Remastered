@@ -84,16 +84,37 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
                 await activity.NotifyAsync(taskContext).ConfigureAwait(false);
                 await activity.UpdateAsync(taskContext, SH.ServiceBackgroundActivityDefaultDescription, false, false, false, false).ConfigureAwait(false);
 
-                foreach (GitRepository info in mirrorScheduler.GetSortedMirrors(infos))
+                // 提取唯一的镜像标识符
+                List<string> uniqueMirrorIdentifiers = infos
+                    .Select(GetMirrorKey)
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+
+                // 按优先级排序镜像标识符
+                IReadOnlyList<string> sortedMirrorIdentifiers = mirrorScheduler.GetSortedMirrors(uniqueMirrorIdentifiers);
+
+                foreach (string mirrorIdentifier in sortedMirrorIdentifiers)
                 {
-                    string url = info.HttpsUrl.OriginalString;
+                    // 获取该标识符对应的所有仓库（可能有多个，如 Metadata 和 ContentDelivery）
+                    List<GitRepository> matchingRepos = infos
+                        .Where(repo => string.Equals(GetMirrorKey(repo), mirrorIdentifier, StringComparison.OrdinalIgnoreCase))
+                        .ToList();
+
+                    if (matchingRepos.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    // 对于每个镜像标识符，尝试使用第一个匹配的仓库
+                    GitRepository info = matchingRepos[0];
+
                     try
                     {
                         try
                         {
                             ValueResult<bool, ValueDirectory> result = EnsureRepository(activity, directory, info, false);
                             succeeded = true;
-                            mirrorScheduler.ReportSuccess(url);
+                            mirrorScheduler.ReportSuccess(mirrorIdentifier);
                             return result;
                         }
                         catch (Exception first)
@@ -101,13 +122,13 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
                             exceptions.Add(first);
                             ValueResult<bool, ValueDirectory> result = EnsureRepository(activity, directory, info, true);
                             succeeded = true;
-                            mirrorScheduler.ReportSuccess(url);
+                            mirrorScheduler.ReportSuccess(mirrorIdentifier);
                             return result;
                         }
                     }
                     catch (Exception second)
                     {
-                        mirrorScheduler.ReportFailure(url);
+                        mirrorScheduler.ReportFailure(mirrorIdentifier);
                         exceptions.Add(second);
                     }
                 }
@@ -134,6 +155,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
 
     private ValueResult<bool, ValueDirectory> EnsureRepository(BackgroundActivity.BackgroundActivity activity, string directory, GitRepository info, bool forceInvalid)
     {
+        string mirrorIdentifier = GetMirrorKey(info);
         string url = info.HttpsUrl.OriginalString;
         Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
 
@@ -174,7 +196,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
                 if (!firstPacketReceived && progress.ReceivedBytes > 0)
                 {
                     firstPacketReceived = true;
-                    mirrorScheduler.ReportFirstPacketLatency(url, now);
+                    mirrorScheduler.ReportFirstPacketLatency(mirrorIdentifier, now);
                 }
 
                 if (now - lastTick >= 1000)
@@ -188,7 +210,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
                     if (recentSpeeds.Count > maxRecent) recentSpeeds.Dequeue();
                     double avgMbps = recentSpeeds.Average();
 
-                    mirrorScheduler.ReportThroughput(url, avgMbps);
+                    mirrorScheduler.ReportThroughput(mirrorIdentifier, avgMbps);
 
                     lastBytes = progress.ReceivedBytes;
                     lastTick = now;
@@ -270,7 +292,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             catch
             {
                 // Mark probe failure but do not throw; scheduler will penalize
-                mirrorScheduler.ReportFailure(info.HttpsUrl.OriginalString);
+                mirrorScheduler.ReportFailure(GetMirrorKey(info));
             }
         }).ToArray();
 
@@ -289,6 +311,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
         Uri probeUri = new Uri(info.HttpsUrl, "info/refs?service=git-upload-pack");
         string host = probeUri.Host;
         int port = probeUri.IsDefaultPort ? (probeUri.Scheme == "https" ? 443 : 80) : probeUri.Port;
+        string mirrorIdentifier = GetMirrorKey(info);
         string url = info.HttpsUrl.OriginalString;
 
         // DNS resolution with timing
@@ -298,7 +321,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
 
         if (addresses == null || addresses.Length == 0)
         {
-            mirrorScheduler.ReportFailure(url);
+            mirrorScheduler.ReportFailure(mirrorIdentifier);
             return;
         }
 
@@ -321,7 +344,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
         }
         catch
         {
-            mirrorScheduler.ReportFailure(url);
+            mirrorScheduler.ReportFailure(mirrorIdentifier);
             return;
         }
 
@@ -343,7 +366,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             catch
             {
                 ssl?.Dispose();
-                mirrorScheduler.ReportFailure(url);
+                mirrorScheduler.ReportFailure(mirrorIdentifier);
                 return;
             }
         }
@@ -361,7 +384,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             ttfbSw.Stop();
             if (read == 0)
             {
-                mirrorScheduler.ReportFailure(url);
+                mirrorScheduler.ReportFailure(mirrorIdentifier);
                 return;
             }
 
@@ -418,18 +441,18 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             }
 
             // report metrics (DNS + TCP + TLS = total connection setup time)
-            mirrorScheduler.ReportConnectLatency(url, dnsMs + tcpMs + tlsMs);
-            mirrorScheduler.ReportTTFB(url, ttfbMs);
+            mirrorScheduler.ReportConnectLatency(mirrorIdentifier, dnsMs + tcpMs + tlsMs);
+            mirrorScheduler.ReportTTFB(mirrorIdentifier, ttfbMs);
             if (lsRemoteMs > 0)
             {
-                mirrorScheduler.ReportLsRemoteLatency(url, lsRemoteMs);
+                mirrorScheduler.ReportLsRemoteLatency(mirrorIdentifier, lsRemoteMs);
             }
 
-            mirrorScheduler.ReportSuccess(url);
+            mirrorScheduler.ReportSuccess(mirrorIdentifier);
         }
         catch
         {
-            mirrorScheduler.ReportFailure(url);
+            mirrorScheduler.ReportFailure(mirrorIdentifier);
         }
         finally
         {

@@ -10,47 +10,52 @@ namespace Snap.Hutao.Remastered.Service.Git;
 [Service(ServiceLifetime.Singleton, typeof(IMirrorScheduler))]
 public sealed partial class MirrorScheduler : IMirrorScheduler
 {
+    /// <summary>
+    /// 基于 mirrorIdentifier 的运行时统计数据存储。
+    /// mirrorIdentifier 为 FriendlyName 或域名，避免重复存储相同镜像源。
+    /// </summary>
     private readonly ConcurrentDictionary<string, MirrorRuntimeStats> statsMap = new(StringComparer.OrdinalIgnoreCase);
 
-    public IReadOnlyList<GitRepository> GetSortedMirrors(ImmutableArray<GitRepository> mirrors)
+    /// <summary>
+    /// 根据镜像源标识符列表返回排序后的镜像源列表。
+    /// 排序基于多维评分算法，考虑吞吐量、延迟、故障率和熔断状态。
+    /// </summary>
+    /// <param name="mirrorIdentifiers">待排序的镜像源标识符列表</param>
+    /// <returns>按评分从高到低排序的镜像源标识符列表</returns>
+    public IReadOnlyList<string> GetSortedMirrors(IEnumerable<string> mirrorIdentifiers)
     {
-        DateTimeOffset now = DateTimeOffset.UtcNow;
-        List<(GitRepository Repo, double Score)> scoredMirrors = new();
+        List<(string Identifier, double Score)> scoredMirrors = new();
 
-        foreach (GitRepository mirror in mirrors)
+        foreach (string identifier in mirrorIdentifiers)
         {
-            string url = mirror.HttpsUrl.OriginalString;
-            MirrorRuntimeStats stats = GetOrAddStats(url);
+            MirrorRuntimeStats stats = GetOrAddStats(identifier);
 
-            // Half-open check for Circuit Breaker
-            if (stats.IsCircuitBroken && now >= stats.CircuitBrokenUntilUtc)
-            {
-                stats.IsCircuitBroken = false;
-                stats.ConsecutiveFailures = 0; // reset
-            }
-
-            double score = CalculateScore(stats);
-            scoredMirrors.Add((mirror, score));
+            (string Identifier, double Score) scoredMirror = CreateScoredMirror(identifier, stats);
+            scoredMirrors.Add(scoredMirror);
         }
 
-        return scoredMirrors.OrderByDescending(x => x.Score).Select(x => x.Repo).ToList();
+        // 按评分从高到低排序，返回排序后的标识符列表
+        return scoredMirrors
+            .OrderByDescending(x => x.Score)
+            .Select(x => x.Identifier)
+            .ToList();
     }
 
-    public MirrorRuntimeStats? GetRuntimeStats(string url)
+    public MirrorRuntimeStats? GetRuntimeStats(string mirrorIdentifier)
     {
-        return statsMap.TryGetValue(url, out MirrorRuntimeStats? stats) ? stats : null;
+        return statsMap.TryGetValue(mirrorIdentifier, out MirrorRuntimeStats? stats) ? stats : null;
     }
 
-    public void ReportThroughput(string url, double mbps)
+    public void ReportThroughput(string mirrorIdentifier, double mbps)
     {
-        MirrorRuntimeStats stats = GetOrAddStats(url);
+        MirrorRuntimeStats stats = GetOrAddStats(mirrorIdentifier);
         // Exponential Moving Average
         stats.AvgThroughputMbps = (stats.AvgThroughputMbps * 0.7) + (mbps * 0.3);
     }
 
-    public void ReportFirstPacketLatency(string url, long latencyMs)
+    public void ReportFirstPacketLatency(string mirrorIdentifier, long latencyMs)
     {
-        MirrorRuntimeStats stats = GetOrAddStats(url);
+        MirrorRuntimeStats stats = GetOrAddStats(mirrorIdentifier);
         if (stats.AvgFirstPacketMs <= 0)
         {
             stats.AvgFirstPacketMs = latencyMs;
@@ -61,9 +66,9 @@ public sealed partial class MirrorScheduler : IMirrorScheduler
         }
     }
 
-    public void ReportConnectLatency(string url, long latencyMs)
+    public void ReportConnectLatency(string mirrorIdentifier, long latencyMs)
     {
-        MirrorRuntimeStats stats = GetOrAddStats(url);
+        MirrorRuntimeStats stats = GetOrAddStats(mirrorIdentifier);
         if (stats.AvgConnectMs <= 0)
         {
             stats.AvgConnectMs = latencyMs;
@@ -74,9 +79,9 @@ public sealed partial class MirrorScheduler : IMirrorScheduler
         }
     }
 
-    public void ReportTTFB(string url, long latencyMs)
+    public void ReportTTFB(string mirrorIdentifier, long latencyMs)
     {
-        MirrorRuntimeStats stats = GetOrAddStats(url);
+        MirrorRuntimeStats stats = GetOrAddStats(mirrorIdentifier);
         if (stats.AvgTTFBMs <= 0)
         {
             stats.AvgTTFBMs = latencyMs;
@@ -87,9 +92,9 @@ public sealed partial class MirrorScheduler : IMirrorScheduler
         }
     }
 
-    public void ReportLsRemoteLatency(string url, long latencyMs)
+    public void ReportLsRemoteLatency(string mirrorIdentifier, long latencyMs)
     {
-        MirrorRuntimeStats stats = GetOrAddStats(url);
+        MirrorRuntimeStats stats = GetOrAddStats(mirrorIdentifier);
         if (stats.AvgLsRemoteMs <= 0)
         {
             stats.AvgLsRemoteMs = latencyMs;
@@ -100,9 +105,9 @@ public sealed partial class MirrorScheduler : IMirrorScheduler
         }
     }
 
-    public void ReportSuccess(string url)
+    public void ReportSuccess(string mirrorIdentifier)
     {
-        MirrorRuntimeStats stats = GetOrAddStats(url);
+        MirrorRuntimeStats stats = GetOrAddStats(mirrorIdentifier);
         stats.ConsecutiveFailures = 0;
         stats.IsCircuitBroken = false;
 
@@ -110,9 +115,9 @@ public sealed partial class MirrorScheduler : IMirrorScheduler
         stats.FailureRate = stats.FailureRate * 0.8;
     }
 
-    public void ReportFailure(string url)
+    public void ReportFailure(string mirrorIdentifier)
     {
-        MirrorRuntimeStats stats = GetOrAddStats(url);
+        MirrorRuntimeStats stats = GetOrAddStats(mirrorIdentifier);
         stats.ConsecutiveFailures++;
         stats.FailureRate = (stats.FailureRate * 0.8) + 0.2; // Increase failure rate softly
 
@@ -123,9 +128,37 @@ public sealed partial class MirrorScheduler : IMirrorScheduler
         }
     }
 
-    private MirrorRuntimeStats GetOrAddStats(string url)
+    private MirrorRuntimeStats GetOrAddStats(string mirrorIdentifier)
     {
-        return statsMap.GetOrAdd(url, u => new MirrorRuntimeStats(u));
+        return statsMap.GetOrAdd(mirrorIdentifier, identifier => new MirrorRuntimeStats(identifier));
+    }
+
+    /// <summary>
+    /// 检查并刷新 Circuit Breaker 状态。
+    /// 如果熔断状态已过期，则恢复镜像源。
+    /// </summary>
+    private void RefreshCircuitBreakerState(MirrorRuntimeStats stats)
+    {
+        if (stats.IsCircuitBroken)
+        {
+            DateTimeOffset now = DateTimeOffset.UtcNow;
+            if (now >= stats.CircuitBrokenUntilUtc)
+            {
+                stats.IsCircuitBroken = false;
+                stats.ConsecutiveFailures = 0;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 为镜像源创建评分条目。
+    /// 包含 Circuit Breaker 状态检查和评分计算。
+    /// </summary>
+    private (string Identifier, double Score) CreateScoredMirror(string identifier, MirrorRuntimeStats stats)
+    {
+        RefreshCircuitBreakerState(stats);
+        double score = CalculateScore(stats);
+        return (identifier, score);
     }
 
     private double CalculateScore(MirrorRuntimeStats stats)

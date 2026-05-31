@@ -173,7 +173,7 @@ public sealed partial class SettingNetViewModel : Abstraction.ViewModel
         ImmutableHashSet<string>.Builder optionValues = ImmutableHashSet.CreateBuilder<string>(StringComparer.OrdinalIgnoreCase);
         Dictionary<string, string> displayMap = new(StringComparer.OrdinalIgnoreCase);
 
-        // 从两个仓库获取主机名
+        // 从两个仓库获取主机名 - 这完全不对啊，api返回是完全的
         // Get host names from both repositories
         await AddFriendlyNameFromRepositoryNameAsync("Snap.Metadata", optionValues, displayMap, token).ConfigureAwait(false);
         await AddFriendlyNameFromRepositoryNameAsync("Snap.ContentDelivery", optionValues, displayMap, token).ConfigureAwait(false);

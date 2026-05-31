@@ -71,16 +71,20 @@ internal sealed partial class GitSourcesSpeedTestDialogViewModel : Abstraction.V
 
             dispatcherQueue.TryEnqueue(() => StatusMessage = string.Format(SH.ViewDialogGitSourcesSpeedTestDialogTestingMirrorsStatusMessage, infos.Length));
 
-            // Initialize result items for each mirror
+            // Initialize result items for each mirror identifier
             dispatcherQueue.TryEnqueue(() =>
             {
-                foreach (GitRepository repo in infos)
+                // 提取唯一的镜像标识符
+                HashSet<string> uniqueMirrorIdentifiers = new HashSet<string>(
+                    infos.Select(GetFriendlyName),
+                    StringComparer.OrdinalIgnoreCase);
+
+                foreach (string mirrorIdentifier in uniqueMirrorIdentifiers)
                 {
-                    string displayName = GetFriendlyName(repo);
                     TestResults.Add(new MirrorTestResult
                     {
-                        Url = repo.HttpsUrl.OriginalString,
-                        DisplayName = displayName
+                        DisplayName = mirrorIdentifier,
+                        MirrorKey = mirrorIdentifier
                     });
                 }
             });
@@ -92,25 +96,34 @@ internal sealed partial class GitSourcesSpeedTestDialogViewModel : Abstraction.V
 
             // Fetch results from scheduler
             IMirrorScheduler scheduler = scope.ServiceProvider.GetRequiredService<IMirrorScheduler>();
-            IReadOnlyList<GitRepository> sorted = scheduler.GetSortedMirrors(infos);
+
+            // 提取唯一的镜像标识符并排序
+            List<string> mirrorIdentifiers = new HashSet<string>(
+                infos.Select(GetFriendlyName),
+                StringComparer.OrdinalIgnoreCase).ToList();
+            IReadOnlyList<string> sortedMirrorIdentifiers = scheduler.GetSortedMirrors(mirrorIdentifiers);
 
             // Update results list on UI thread
             dispatcherQueue.TryEnqueue(() =>
             {
                 TestResults.Clear();
-                foreach (GitRepository repo in sorted)
+                foreach (string mirrorIdentifier in sortedMirrorIdentifiers)
                 {
-                    string displayName = GetFriendlyName(repo);
-                    string url = repo.HttpsUrl.OriginalString;
-                    MirrorRuntimeStats? stats = scheduler.GetRuntimeStats(url);
+                    MirrorRuntimeStats? stats = scheduler.GetRuntimeStats(mirrorIdentifier);
+
+                    // 找到第一个匹配该标识符的仓库用于显示URL
+                    GitRepository? matchingRepo = infos.FirstOrDefault(repo => 
+                        string.Equals(GetFriendlyName(repo), mirrorIdentifier, StringComparison.OrdinalIgnoreCase));
+
+                    string displayUrl = matchingRepo?.HttpsUrl.OriginalString ?? string.Empty;
 
                     TestResults.Add(new MirrorTestResult
                     {
-                        Url = url,
-                        DisplayName = displayName,
+                        Url = displayUrl,
+                        DisplayName = mirrorIdentifier,
+                        MirrorKey = mirrorIdentifier,
                         Status = SH.ViewDialogGitSourcesSpeedTestDialogCompletedStatusMessage,
                         IsCompleted = true,
-                        MirrorKey = GetMirrorKey(repo),
                         AverageThroughputMbps = stats?.AvgThroughputMbps ?? 0,
                         AverageConnectMilliseconds = stats?.AvgConnectMs ?? 0,
                         AverageFirstPacketMilliseconds = stats?.AvgFirstPacketMs ?? 0,
@@ -150,13 +163,6 @@ internal sealed partial class GitSourcesSpeedTestDialogViewModel : Abstraction.V
         }
 
         return repository.HttpsUrl.Host;
-    }
-
-    private static string GetMirrorKey(GitRepository repository)
-    {
-        return !string.IsNullOrWhiteSpace(repository.FriendlyName)
-            ? repository.FriendlyName
-            : repository.HttpsUrl.Host;
     }
 
     [Command("SetSelectedMirrorCommand")]

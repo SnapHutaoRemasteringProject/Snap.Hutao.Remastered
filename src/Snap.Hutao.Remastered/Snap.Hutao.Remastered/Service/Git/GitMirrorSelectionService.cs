@@ -29,23 +29,26 @@ public sealed class GitMirrorSelectionService
     /// 镜像源测试间隔（天数）
     /// Interval in days to retest mirror sources
     /// </summary>
-    private const int TestIntervalDays = 30;
+    private const int TestIntervalDays = 45;
 
     private readonly HutaoInfrastructureClient hutaoInfrastructureClient;
     private readonly AppOptions appOptions;
     private readonly ITaskContext taskContext;
     private readonly IServiceProvider serviceProvider;
+    private readonly ILogger<GitMirrorSelectionService> logger;
 
     public GitMirrorSelectionService(
         HutaoInfrastructureClient hutaoInfrastructureClient,
         AppOptions appOptions,
         ITaskContext taskContext,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        ILogger<GitMirrorSelectionService> logger)
     {
         this.hutaoInfrastructureClient = hutaoInfrastructureClient;
         this.appOptions = appOptions;
         this.taskContext = taskContext;
         this.serviceProvider = serviceProvider;
+        this.logger = logger;
     }
 
     /// <summary>
@@ -141,19 +144,22 @@ public sealed class GitMirrorSelectionService
                     await tester.RunOnceAsync(repositories, token).ConfigureAwait(false);
                 }
 
-                // 获取排序后的镜像源（按速度从快到慢）
+                // 提取唯一的镜像标识符（FriendlyName 或域名）
+                // 这样避免重复存储 Snap.Metadata 和 Snap.ContentDelivery 的相同镜像源
+                HashSet<string> uniqueMirrorIdentifiers = new HashSet<string>(
+                    repositories.AsEnumerable().Select(repo => GetMirrorKey(repo)),
+                    StringComparer.OrdinalIgnoreCase);
+
+                // 获取排序后的镜像源标识符列表
                 IMirrorScheduler scheduler = scope.ServiceProvider.GetRequiredService<IMirrorScheduler>();
-                IReadOnlyList<GitRepository> sortedMirrors = scheduler.GetSortedMirrors(repositories);
-                if (sortedMirrors.Count == 0)
+                IReadOnlyList<string> sortedMirrorIdentifiers = scheduler.GetSortedMirrors(uniqueMirrorIdentifiers);
+                if (sortedMirrorIdentifiers.Count == 0)
                 {
                     return null;
                 }
 
-                // 选择最快的镜像源
-                GitRepository bestMirror = sortedMirrors[0];
-                string bestMirrorKey = !string.IsNullOrWhiteSpace(bestMirror.FriendlyName)
-                    ? bestMirror.FriendlyName
-                    : bestMirror.HttpsUrl.Host;
+                // 选择评分最高的镜像源标识符
+                string bestMirrorKey = sortedMirrorIdentifiers[0];
 
                 // 保存测试结果到缓存（不影响用户的手动选择）
                 await taskContext.SwitchToMainThreadAsync();
@@ -166,7 +172,7 @@ public sealed class GitMirrorSelectionService
         }
         catch (Exception ex)
         {
-            // 日志记录（如果有日志系统）
+            logger.LogError(ex, "Failed to test and select best Git mirror");
             return null;
         }
     }
@@ -283,5 +289,15 @@ public sealed class GitMirrorSelectionService
             byte[] hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(sb.ToString()));
             return Convert.ToBase64String(hash);
         }
+    }
+
+    /// <summary>
+    /// 获取镜像源的唯一标识符（FriendlyName 或域名）。
+    /// </summary>
+    private static string GetMirrorKey(GitRepository repository)
+    {
+        return !string.IsNullOrWhiteSpace(repository.FriendlyName)
+            ? repository.FriendlyName
+            : repository.HttpsUrl.Host;
     }
 }
