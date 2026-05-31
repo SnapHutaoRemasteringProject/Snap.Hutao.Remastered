@@ -175,8 +175,7 @@ public sealed partial class SettingNetViewModel : Abstraction.ViewModel
 
         // 从两个仓库获取主机名 - 这完全不对啊，api返回是完全的
         // Get host names from both repositories
-        await AddFriendlyNameFromRepositoryNameAsync("Snap.Metadata", optionValues, displayMap, token).ConfigureAwait(false);
-        await AddFriendlyNameFromRepositoryNameAsync("Snap.ContentDelivery", optionValues, displayMap, token).ConfigureAwait(false);
+        await AddFriendlyNameFromRepositoryNameAsync(optionValues, displayMap, token).ConfigureAwait(false);
 
         // 获取系统当前实际选择的 Auto 源
         // Get the actual Auto source that the system currently determined
@@ -224,14 +223,13 @@ public sealed partial class SettingNetViewModel : Abstraction.ViewModel
     /// First valid host name from this repository (for Auto option display)
     /// </returns>
     private async ValueTask<string?> AddFriendlyNameFromRepositoryNameAsync(
-        string repositoryName,
         ImmutableHashSet<string>.Builder optionValues,
         Dictionary<string, string> displayMap,
         CancellationToken token)
     {
         // 调用 API 获取该仓库的配置列表
         // Call API to get the repository configuration list
-        Web.Hutao.Response.HutaoResponse<ImmutableArray<GitRepository>> response = await hutaoInfrastructureClient.GetGitRepositoryAsync(repositoryName, token).ConfigureAwait(false);
+        Web.Hutao.Response.HutaoResponse<ImmutableArray<GitRepository>> response = await hutaoInfrastructureClient.GetGitRepositoryAsync(token).ConfigureAwait(false);
         ImmutableArray<GitRepository> repositories = response.Data;
 
         // 如果 API 调用失败或返回空列表，则返回 null

@@ -72,4 +72,14 @@ public sealed partial class HutaoInfrastructureClient
         HutaoResponse<ImmutableArray<GitRepository>>? resp = await builder.SendAsync<HutaoResponse<ImmutableArray<GitRepository>>>(httpClient, token).ConfigureAwait(false);
         return Web.Response.Response.DefaultIfNull(resp);
     }
+
+    public async ValueTask<HutaoResponse<ImmutableArray<GitRepository>>> GetGitRepositoryAsync(CancellationToken token = default)
+    {
+        HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
+            .SetRequestUri(hutaoEndpointsFactory.Create().GitRepositoryAll())
+            .Get();
+
+        HutaoResponse<ImmutableArray<GitRepository>>? resp = await builder.SendAsync<HutaoResponse<ImmutableArray<GitRepository>>>(httpClient, token).ConfigureAwait(false);
+        return Web.Response.Response.DefaultIfNull(resp);
+    }
 }
