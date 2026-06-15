@@ -173,8 +173,8 @@ public sealed partial class SettingNetViewModel : Abstraction.ViewModel
         ImmutableHashSet<string>.Builder optionValues = ImmutableHashSet.CreateBuilder<string>(StringComparer.OrdinalIgnoreCase);
         Dictionary<string, string> displayMap = new(StringComparer.OrdinalIgnoreCase);
 
-        // 从两个仓库获取主机名 - 这完全不对啊，api返回是完全的
-        // Get host names from both repositories
+        // 获得 api 返回的主机列表，并添加到 optionValues 和 displayMap 中
+        // https://api.snaphutaorp.org/git-repository/all
         await AddFriendlyNameFromRepositoryNameAsync(optionValues, displayMap, token).ConfigureAwait(false);
 
         // 获取系统当前实际选择的 Auto 源
@@ -254,7 +254,20 @@ public sealed partial class SettingNetViewModel : Abstraction.ViewModel
             // Prefer localized friendly name
             if (!string.IsNullOrWhiteSpace(repository.FriendlyName))
             {
+                // 尝试获取本地化字符串，格式为 "ViewModelSettingNetGitFriendlyName{FriendlyName}"
+                // Try to get the localized string with format "ViewModelSettingNetGitFriendlyName{FriendlyName}"
                 displayName = SH.GetString("ViewModelSettingNetGitFriendlyName" + repository.FriendlyName);
+                if (!string.IsNullOrWhiteSpace(displayName))
+                {
+                    // 如果获取到了本地化字符串，则使用它
+                    // If got the localized string, use it
+                }
+                else
+                {
+                    // 如果为空default（例如缺少对应的本地化资源），则回退到使用主机名显示
+                    // If failed to get (e.g., missing localization resource), fallback to using host for display
+                    displayName = repository.HttpsUrl.Host;
+                }
                 optionValue = repository.FriendlyName;
             }
             else

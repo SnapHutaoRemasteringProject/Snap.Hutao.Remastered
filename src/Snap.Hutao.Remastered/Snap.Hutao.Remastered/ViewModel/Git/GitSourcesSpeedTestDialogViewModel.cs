@@ -112,7 +112,7 @@ internal sealed partial class GitSourcesSpeedTestDialogViewModel : Abstraction.V
                     MirrorRuntimeStats? stats = scheduler.GetRuntimeStats(mirrorIdentifier);
 
                     // 找到第一个匹配该标识符的仓库用于显示URL
-                    GitRepository? matchingRepo = infos.FirstOrDefault(repo => 
+                    GitRepository? matchingRepo = infos.FirstOrDefault(repo =>
                         string.Equals(GetFriendlyName(repo), mirrorIdentifier, StringComparison.OrdinalIgnoreCase));
 
                     string displayUrl = matchingRepo?.HttpsUrl.OriginalString ?? string.Empty;
@@ -159,9 +159,23 @@ internal sealed partial class GitSourcesSpeedTestDialogViewModel : Abstraction.V
     {
         if (!string.IsNullOrWhiteSpace(repository.FriendlyName))
         {
-            return SH.GetString("ViewModelSettingNetGitFriendlyName" + repository.FriendlyName);
-        }
 
+            // 尝试获取本地化字符串，格式为 "ViewModelSettingNetGitFriendlyName{FriendlyName}"
+            // Try to get the localized string with format "ViewModelSettingNetGitFriendlyName{FriendlyName}"
+            string? displayName = SH.GetString("ViewModelSettingNetGitFriendlyName" + repository.FriendlyName);
+            if (string.IsNullOrWhiteSpace(displayName))
+            {
+                // 如果获取到了本地化字符串，则使用它
+                // If got the localized string, use it
+                return displayName;
+            }
+            else
+            {
+                // 如果为空default（例如缺少对应的本地化资源），则回退到使用主机名显示
+                // If failed to get (e.g., missing localization resource), fallback to using host for display
+                return repository.HttpsUrl.Host;
+            }
+        }
         return repository.HttpsUrl.Host;
     }
 

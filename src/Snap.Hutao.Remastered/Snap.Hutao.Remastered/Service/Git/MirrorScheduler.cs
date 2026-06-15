@@ -1,9 +1,7 @@
 // Copyright (c) Snap Hutao RP. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Web.Hutao;
 using System.Collections.Concurrent;
-using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Service.Git;
 

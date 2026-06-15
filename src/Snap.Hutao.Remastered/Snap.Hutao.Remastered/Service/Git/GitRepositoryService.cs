@@ -9,7 +9,6 @@ using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Core.IO.Http.Proxy;
 using Snap.Hutao.Remastered.Core.Setting;
-using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.BackgroundActivity;
 using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
