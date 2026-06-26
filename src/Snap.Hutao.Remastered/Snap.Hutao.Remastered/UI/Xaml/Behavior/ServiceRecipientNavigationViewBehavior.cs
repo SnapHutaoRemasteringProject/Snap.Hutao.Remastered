@@ -3,6 +3,7 @@
 
 using CommunityToolkit.WinUI.Behaviors;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
@@ -21,6 +22,7 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
     IRecipient<NavigationPaneToggleMessage>
 {
     private IMessenger? messenger;
+    private Frame? contentFrame;
 
     public void Receive(NavigationNavigateMessage message)
     {
@@ -74,15 +76,29 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
         AssociatedObject.PaneOpened += OnPaneStateChanged;
         AssociatedObject.PaneClosed += OnPaneStateChanged;
 
+        contentFrame = AssociatedObject.Content.As<Frame>();
+            contentFrame.Navigated += OnFrameNavigated;
+
         Navigate(AssociatedObject, typeof(AnnouncementPage), NavigationExtraData.Default, true);
     }
 
     protected override bool Uninitialize()
     {
+        if (contentFrame is not null)
+        {
+            contentFrame.Navigated -= OnFrameNavigated;
+            contentFrame = null;
+        }
+
         messenger?.UnregisterAll(this);
         AssociatedObject.PaneOpened -= OnPaneStateChanged;
         AssociatedObject.PaneClosed -= OnPaneStateChanged;
         return base.Uninitialize();
+    }
+
+    private void OnFrameNavigated(object sender, NavigationEventArgs e)
+    {
+        SyncSelectedNavigationViewItem(AssociatedObject, e.Content?.GetType());
     }
 
     private static IEnumerable<NavigationViewItem> EnumerateMenuItems(IList<object> items)
