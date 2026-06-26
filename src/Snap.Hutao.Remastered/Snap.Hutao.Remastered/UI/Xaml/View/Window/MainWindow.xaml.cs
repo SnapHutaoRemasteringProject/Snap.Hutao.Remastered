@@ -61,17 +61,17 @@ public sealed partial class MainWindow : Microsoft.UI.Xaml.Window,
 
         if (props.IsXButton1Pressed)
         {
-            if (rootFrame.CanGoBack)
+            if (MainView.ContentFrame.CanGoBack)
             {
-                rootFrame.GoBack();
+                MainView.ContentFrame.GoBack();
                 e.Handled = true;
             }
         }
         else if (props.IsXButton2Pressed)
         {
-            if (rootFrame.CanGoForward)
+            if (MainView.ContentFrame.CanGoForward)
             {
-                rootFrame.GoForward();
+                MainView.ContentFrame.GoForward();
                 e.Handled = true;
             }
         }

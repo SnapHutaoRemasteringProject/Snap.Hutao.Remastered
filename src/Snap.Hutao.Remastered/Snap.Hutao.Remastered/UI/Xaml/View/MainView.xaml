@@ -347,7 +347,10 @@
                     <shuxv:UserView x:Name="UserView"/>
                 </NavigationView.PaneFooter>
 
-                <Frame x:Name="ContentFrame" ContentTransitions="{StaticResource NavigationThemeTransitions}"/>
+                <Frame
+                    x:Name="ContentFrame"
+                    x:FieldModifier="Public"
+                    ContentTransitions="{StaticResource NavigationThemeTransitions}"/>
             </NavigationView>
         </Grid>
 
