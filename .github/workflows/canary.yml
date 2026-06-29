@@ -58,7 +58,7 @@ jobs:
 
       - name: Cache NuGet packages
         if: ${{ steps.merge.outputs.continue == 'true' }}
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/Snap.Hutao.Remastered.csproj') }}
