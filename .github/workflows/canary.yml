@@ -85,14 +85,14 @@ jobs:
 
       - name: Upload signed msix
         if: ${{ success() && steps.merge.outputs.continue == 'true' }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: Snap.Hutao.Remastered.Canary-${{ steps.cake.outputs.version }}
           path: ${{ github.workspace }}/src/output/Snap.Hutao.Remastered.Canary-${{ steps.cake.outputs.version }}.msix
 
       - name: Upload installer
         if: ${{ success() && steps.merge.outputs.continue == 'true' }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: Snap.Hutao.Remastered.Canary-Setup-${{ steps.cake.outputs.version }}
           path: ${{ github.workspace }}/publish/Snap.Hutao.Remastered-*.exe
