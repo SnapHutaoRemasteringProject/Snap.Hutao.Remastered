@@ -105,22 +105,10 @@ public sealed partial class GamePackageOperationWindow : Microsoft.UI.Xaml.Windo
         }
     }
 
-    private void UpdateDownloadSpeedGraph(long totalBytes, long progressBytes, long speedBytesPerSecond)
-    {
-        UpdateSpeedGraph(DownloadSpeedGraph, ref downloadMaxSpeed, ref downloadSpeedGraphLastUpdateTimestamp, totalBytes, progressBytes, speedBytesPerSecond);
-    }
-
-    private void UpdateInstallSpeedGraph(long totalBytes, long progressBytes, long speedBytesPerSecond)
-    {
-        UpdateSpeedGraph(InstallSpeedGraph, ref installMaxSpeed, ref installSpeedGraphLastUpdateTimestamp, totalBytes, progressBytes, speedBytesPerSecond);
-    }
-
     private static void ResetSpeedGraph(SpeedGraph speedGraph, ref ulong maxSpeed, ref long lastUpdateTimestamp, long totalBytes)
     {
-        speedGraph.Normal();
         speedGraph.ResetGraph();
-        speedGraph.Total = totalBytes > 0 ? (ulong)totalBytes : 1UL;
-        speedGraph.MaxSpeed = 1UL;
+        speedGraph.NormalGraph();
         speedGraph.SetSpeed(0, 0);
         maxSpeed = 1;
         lastUpdateTimestamp = 0;
@@ -141,14 +129,12 @@ public sealed partial class GamePackageOperationWindow : Microsoft.UI.Xaml.Windo
         }
 
         lastUpdateTimestamp = current;
-        speedGraph.Total = (ulong)totalBytes;
         ulong currentSpeed = speedBytesPerSecond < 0 ? 0UL : (ulong)speedBytesPerSecond;
         if (currentSpeed > maxSpeed)
         {
             maxSpeed = currentSpeed;
         }
 
-        speedGraph.MaxSpeed = maxSpeed;
         double percent = Math.Clamp((double)progressBytes / totalBytes * 100D, 0D, 100D);
         speedGraph.SetSpeed(percent, currentSpeed);
     }
