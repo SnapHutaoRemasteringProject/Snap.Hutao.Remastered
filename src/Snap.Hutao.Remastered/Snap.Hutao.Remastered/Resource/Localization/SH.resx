@@ -4678,4 +4678,7 @@
   <data name="WebServerDomainModeBackup" xml:space="preserve">
     <value>备用域名 (hutaorp.org)</value>
   </data>
+  <data name="ModelIntrinsicAssociationTypeSnezhnayaStar" xml:space="preserve">
+    <value>愚人众</value>
+  </data>
 </root>

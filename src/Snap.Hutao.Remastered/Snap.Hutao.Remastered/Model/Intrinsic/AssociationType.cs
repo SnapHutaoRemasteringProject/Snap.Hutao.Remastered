@@ -44,5 +44,8 @@ public enum AssociationType
     ASSOC_TYPE_NODKRAI_ZIBAI,
     
     [LocalizationKey(nameof(SH.ModelIntrinsicAssociationTypeHVision))]
-    ASSOC_TYPE_HVISION
+    ASSOC_TYPE_HVISION,
+
+    [LocalizationKey(nameof(SH.ModelIntrinsicAssociationTypeSnezhnayaStar))]
+    ASSOC_TYPE_SNEZHNAYA_STAR
 }

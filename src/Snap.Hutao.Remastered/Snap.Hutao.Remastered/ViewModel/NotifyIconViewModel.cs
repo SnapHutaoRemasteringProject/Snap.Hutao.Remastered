@@ -163,7 +163,7 @@ internal sealed partial class NotifyIconViewModel : ObservableObject
 
         try
         {
-            string? path = RuntimeEnvironment.IsUnpackaged
+            string? path = Core.RuntimeEnvironment.IsUnpackaged
                 ? Environment.ProcessPath ?? Process.GetCurrentProcess().MainModule?.FileName
                 : $"shell:AppsFolder\\{HutaoRuntime.FamilyName}!App";
 
@@ -222,6 +222,7 @@ internal sealed partial class NotifyIconViewModel : ObservableObject
                         // MainWindow is activated, bring to foreground
                         mainWindow.SwitchTo();
                         mainWindow.AppWindow.MoveInZOrderAtTop();
+                        mainWindow.Activate();
                     }
 
                     return;
@@ -234,6 +235,7 @@ internal sealed partial class NotifyIconViewModel : ObservableObject
                     currentXamlWindowReference.Window = mainWindow;
                     mainWindow.SwitchTo();
                     mainWindow.AppWindow.MoveInZOrderAtTop();
+                    mainWindow.Activate();
                     return;
                 }
 
@@ -242,6 +244,7 @@ internal sealed partial class NotifyIconViewModel : ObservableObject
                     Window otherWindow = currentXamlWindowReference.Window;
                     otherWindow.SwitchTo();
                     otherWindow.AppWindow.MoveInZOrderAtTop();
+                    otherWindow.Activate();
                     return;
                 }
         }
