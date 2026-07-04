@@ -1,5 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Snap Hutao RP. All rights reserved.
+// Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
@@ -342,6 +344,22 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
         {
             logger.LogCritical(ex, "Compilation Error");
         }
+    }
+
+    [Command("OpenSpeedGraphTestWindowCommand")]
+    private void OpenSpeedGraphTestWindow()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Open speed graph test window", "TestViewModel.Command"));
+        SpeedGraphTestWindow window = new(serviceProvider);
+        window.Activate();
+    }
+
+    [Command("OpenGamePackageWindowCommand")]
+    private void OpenGamePackageWindow()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Open game package window", "TestViewModel.Command"));
+        GamePackageOperationWindow window = new(serviceProvider);
+        window.Activate();
     }
 
     [Command("ExtractGameBlocksCommand")]

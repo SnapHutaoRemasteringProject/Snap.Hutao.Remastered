@@ -40,7 +40,7 @@
             Grid.Row="0"
             Height="32"/>
 
-        <ScrollViewer Grid.Row="1">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <Grid
                 Padding="16"
                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"

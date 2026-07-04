@@ -1,5 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Snap Hutao RP. All rights reserved.
+// Licensed under the MIT license.
 
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -9,7 +11,6 @@ using Snap.Hutao.Remastered.Service.Game.Package.Advanced;
 using Snap.Hutao.Remastered.UI.Windowing;
 using Snap.Hutao.Remastered.UI.Windowing.Abstraction;
 using Snap.Hutao.Remastered.ViewModel.Game;
-using DevWinUI;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using Windows.Graphics;
@@ -39,7 +40,11 @@ public sealed partial class GamePackageOperationWindow : Microsoft.UI.Xaml.Windo
 
         if (AppWindow.Presenter is OverlappedPresenter presenter)
         {
+#if DEBUG
+            presenter.IsResizable = true;
+#else
             presenter.IsResizable = false;
+#endif
             presenter.IsMaximizable = false;
         }
 
@@ -93,49 +98,15 @@ public sealed partial class GamePackageOperationWindow : Microsoft.UI.Xaml.Windo
         switch (status)
         {
             case GamePackageOperationReport.Reset:
-                ResetSpeedGraph(DownloadSpeedGraph, ref downloadMaxSpeed, ref downloadSpeedGraphLastUpdateTimestamp, viewModel.DownloadTotalBytes);
-                ResetSpeedGraph(InstallSpeedGraph, ref installMaxSpeed, ref installSpeedGraphLastUpdateTimestamp, viewModel.InstallTotalBytes);
+                GamePackageOperationSpeedGraphHelper.ResetSpeedGraph(new SpeedGraphAdapter(DownloadSpeedGraph), ref downloadMaxSpeed, ref downloadSpeedGraphLastUpdateTimestamp);
+                GamePackageOperationSpeedGraphHelper.ResetSpeedGraph(new SpeedGraphAdapter(InstallSpeedGraph), ref installMaxSpeed, ref installSpeedGraphLastUpdateTimestamp);
                 return;
             case GamePackageOperationReport.Download:
-                UpdateSpeedGraph(DownloadSpeedGraph, ref downloadMaxSpeed, ref downloadSpeedGraphLastUpdateTimestamp, viewModel.DownloadTotalBytes, viewModel.DownloadedBytes, viewModel.DownloadSpeedBytesPerSecond);
+                GamePackageOperationSpeedGraphHelper.UpdateSpeedGraph(new SpeedGraphAdapter(DownloadSpeedGraph), ref downloadMaxSpeed, ref downloadSpeedGraphLastUpdateTimestamp, viewModel.DownloadTotalBytes, viewModel.DownloadedBytes, viewModel.DownloadSpeedBytesPerSecond, Stopwatch.GetTimestamp(), SpeedGraphUpdateInterval);
                 return;
             case GamePackageOperationReport.Install:
-                UpdateSpeedGraph(InstallSpeedGraph, ref installMaxSpeed, ref installSpeedGraphLastUpdateTimestamp, viewModel.InstallTotalBytes, viewModel.InstalledBytes, viewModel.InstallSpeedBytesPerSecond);
+                GamePackageOperationSpeedGraphHelper.UpdateSpeedGraph(new SpeedGraphAdapter(InstallSpeedGraph), ref installMaxSpeed, ref installSpeedGraphLastUpdateTimestamp, viewModel.InstallTotalBytes, viewModel.InstalledBytes, viewModel.InstallSpeedBytesPerSecond, Stopwatch.GetTimestamp(), SpeedGraphUpdateInterval);
                 return;
         }
-    }
-
-    private static void ResetSpeedGraph(SpeedGraph speedGraph, ref ulong maxSpeed, ref long lastUpdateTimestamp, long totalBytes)
-    {
-        speedGraph.ResetGraph();
-        speedGraph.NormalGraph();
-        speedGraph.SetSpeed(0, 0);
-        maxSpeed = 1;
-        lastUpdateTimestamp = 0;
-    }
-
-    private static void UpdateSpeedGraph(SpeedGraph speedGraph, ref ulong maxSpeed, ref long lastUpdateTimestamp, long totalBytes, long progressBytes, long speedBytesPerSecond)
-    {
-        if (totalBytes <= 0)
-        {
-            ResetSpeedGraph(speedGraph, ref maxSpeed, ref lastUpdateTimestamp, totalBytes);
-            return;
-        }
-
-        long current = Stopwatch.GetTimestamp();
-        if (lastUpdateTimestamp is not 0 && Stopwatch.GetElapsedTime(lastUpdateTimestamp, current) < SpeedGraphUpdateInterval)
-        {
-            return;
-        }
-
-        lastUpdateTimestamp = current;
-        ulong currentSpeed = speedBytesPerSecond < 0 ? 0UL : (ulong)speedBytesPerSecond;
-        if (currentSpeed > maxSpeed)
-        {
-            maxSpeed = currentSpeed;
-        }
-
-        double percent = Math.Clamp((double)progressBytes / totalBytes * 100D, 0D, 100D);
-        speedGraph.SetSpeed(percent, currentSpeed);
     }
 }

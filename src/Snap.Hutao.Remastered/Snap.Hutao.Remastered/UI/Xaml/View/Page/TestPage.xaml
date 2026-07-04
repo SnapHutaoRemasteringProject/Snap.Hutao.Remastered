@@ -10,6 +10,7 @@
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxba="using:Snap.Hutao.Remastered.UI.Xaml.Behavior.Action"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
+    xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shuxvww="using:Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2"
     xmlns:shv="using:Snap.Hutao.Remastered.ViewModel"
     xmlns:shwhr="using:Snap.Hutao.Remastered.Web.Hutao.Redeem"
@@ -282,6 +283,19 @@
                     Command="{Binding RunCodeCommand}"
                     Header="Run Script Code"
                     IsClickEnabled="True"/>
+
+                <cwc:SettingsCard Header="SpeedGraphTest" IsClickEnabled="False">
+                    <StackPanel Orientation="Horizontal">
+                        <Button
+                            Command="{Binding OpenSpeedGraphTestWindowCommand}"
+                            Content="{shuxm:ResourceString Name=ViewPageTestSpeedGraphWindowHeader}"
+                            Style="{ThemeResource SettingButtonStyle}"/>
+                        <Button
+                            Command="{Binding OpenGamePackageWindowCommand}"
+                            Content="Open The Game Package Window"
+                            Style="{ThemeResource SettingButtonStyle}"/>
+                    </StackPanel>
+                </cwc:SettingsCard>
 
                 <TextBlock Style="{ThemeResource SettingsSectionHeaderTextBlockStyle}" Text="Game Package"/>
                 <cwc:SettingsCard Header="Treat Predownload As Main">
