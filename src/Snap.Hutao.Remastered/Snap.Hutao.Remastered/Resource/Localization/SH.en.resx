@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -201,17 +201,8 @@
   <data name="GuideWindowTitle" xml:space="preserve">
     <value>Welcome to Snap Hutao, Traveler ~</value>
   </data>
-  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
-    <value>Copy the text below</value>
-  </data>
-  <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
-    <value>I acknowledge that Snap Hutao Remastered is a downstream fork of Hutao</value>
-  </data>
   <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
     <value>and is not affiliated with DGP Studio or the original author</value>
-  </data>
-  <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
-    <value>Please copy the text above here to continue</value>
   </data>
   <data name="MetadataSpecialNameMetaAvatarSexProInfoPronounBoyGirlD" xml:space="preserve">
     <value>&lt;color=#1E90FF&gt;Prince&lt;/color&gt;/&lt;color=#FFB6C1&gt;Princess&lt;/color&gt;</value>
@@ -245,6 +236,9 @@
   </data>
   <data name="ModelBindingGachaTypedWishSummaryAveragePull" xml:space="preserve">
     <value>{0:f2} Pulls</value>
+  </data>
+  <data name="ViewControlStatisticsCardToLastBlueText" xml:space="preserve">
+    <value>Since last 3-star</value>
   </data>
   <data name="ModelBindingGachaTypedWishSummaryMaxOrangePull" xml:space="preserve">
     <value>Unluckiest {0} Pulls</value>
@@ -1324,6 +1318,9 @@ Space Available: {2}</value>
   </data>
   <data name="ViewControlStatisticsCardUpText" xml:space="preserve">
     <value>UP</value>
+  </data>
+  <data name="ViewControlStatisticsCardCombinedModeTooltip" xml:space="preserve">
+    <value>Combine display of total limited gold wishes</value>
   </data>
   <data name="ViewControlStatisticsSegmentedItemContentPrediction" xml:space="preserve">
     <value>Prediction</value>
@@ -3845,8 +3842,38 @@ Space Available: {2}</value>
   <data name="ViewWindowScriptingExecute" xml:space="preserve">
     <value>Execute</value>
   </data>
+  <data name="ViewPageTestSpeedGraphWindowHeader" xml:space="preserve">
+    <value>SpeedGraph Test Window</value>
+  </data>
   <data name="ViewWindowScriptingTitle" xml:space="preserve">
     <value>Execute Debug Script</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestCompleted" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestCanceled" xml:space="preserve">
+    <value>Cancelled</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestDescription" xml:space="preserve">
+    <value>Run test flow and watch chart changes in real time</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestReady" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestReplay" xml:space="preserve">
+    <value>Replay</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestRunning" xml:space="preserve">
+    <value>Running</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestTitle" xml:space="preserve">
+    <value>SpeedGraph Test Demo</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestWaiting" xml:space="preserve">
+    <value>Waiting to start</value>
   </data>
   <data name="WebAnnouncementTimeDaysBegin" xml:space="preserve">
     <value>Start in {0} days</value>
@@ -4085,8 +4112,14 @@ Space Available: {2}</value>
   <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
     <value>Auto Restart as Admin</value>
   </data>
+  <data name="ViewPageSettingAlwaysRunAsAdminTextDes" xml:space="preserve">
+    <value>will take effect when the app is manually launched, it is recommended to enable auto-start and admin auto-start to avoid possible UAC pop-ups when starting various features</value>
+  </data>
   <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
     <value>Auto Restart as Admin when Launch</value>
+  </data>
+  <data name="ViewPageSettingAutoStartDescription" xml:space="preserve">
+    <value>the program will start when the current user logs in, whether to run as administrator only syncs the admin mode option when modified (modification requires running as administrator)</value>
   </data>
   <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
     <value>Display Paimon in Game</value>
@@ -4274,6 +4307,24 @@ Space Available: {2}</value>
   <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription" xml:space="preserve">
     <value>Instant auto-swap between keyboard/mouse and gamepad</value>
   </data>
+  <data name="WebUGCGachaConfigTypePermanentWish" xml:space="preserve">
+    <value>Standard Wish</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeAvatarEventWish" xml:space="preserve">
+    <value>Event Ode</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleOne" xml:space="preserve">
+    <value>Event Ode - Male</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleTwo" xml:space="preserve">
+    <value>Event Ode - Male</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleOne" xml:space="preserve">
+    <value>Event Ode - Female</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleTwo" xml:space="preserve">
+    <value>Event Ode - Female</value>
+  </data>
   <data name="ViewControlStatisticsCardPurpleAveragePullText" xml:space="preserve">
     <value>Avg 4 Stars wish</value>
   </data>
@@ -4294,6 +4345,27 @@ Space Available: {2}</value>
   </data>
   <data name="ViewOverlayHideGrassToolTip" xml:space="preserve">
     <value>Hide Grass</value>
+  </data>
+  <data name="ViewPageAvatarPropertyAddWeaponToPlan" xml:space="preserve">
+    <value>Add weapon to Development Plan</value>
+  </data>
+  <data name="ViewPageAvatarPropertyAddAvatarToPlan" xml:space="preserve">
+    <value>Add character to Development Plan</value>
+  </data>
+  <data name="ViewPageAvatarPropertyAddBothToPlan" xml:space="preserve">
+    <value>Add character and weapon to Development Plan</value>
+  </data>
+  <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpHeader" xml:space="preserve">
+    <value>Remove time adjustment animation</value>
+  </data>
+  <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpDescription" xml:space="preserve">
+    <value>remove the animation where time slowly changes after clicking confirm on the time adjustment page</value>
+  </data>
+  <data name="ViewPageAvatarPropertyExportToText" xml:space="preserve">
+    <value>Export current character</value>
+  </data>
+  <data name="ViewPageAvatarPropertyExportAllToText" xml:space="preserve">
+    <value>Export all characters</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Custom startup</value>
@@ -4497,8 +4569,20 @@ Space Available: {2}</value>
   <data name="ViewPageSettingOpenSourceSupportHeader" xml:space="preserve">
     <value>Support for Open Source</value>
   </data>
+  <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
+    <value>Start on boot</value>
+  </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>App behavior</value>
+  </data>
+  <data name="ViewPageSettingAutoStartEnableCardHeader" xml:space="preserve">
+    <value>Current user auto-start</value>
+  </data>
+  <data name="ViewPageSettingAutoStartAdminActionCardHeader" xml:space="preserve">
+    <value>Auto-start behavior permission settings: Administrator privileges</value>
+  </data>
+  <data name="ViewPageSettingAutoStartAdminActionCardDescription" xml:space="preserve">
+    <value>note that some features may not work under different permissions</value>
   </data>
   <data name="ViewModelGamePackageOperationContinueDownloadButtonText" xml:space="preserve">
     <value>Continue downloading</value>
@@ -4518,11 +4602,71 @@ Space Available: {2}</value>
   <data name="ViewModelMainNetworkRecoveredRetrying" xml:space="preserve">
     <value>The network has been restored and is automatically retrying.</value>
   </data>
+  <data name="WebHoyolabGameRecordActCalendarActStatusOngoing" xml:space="preserve">
+    <value>In Progress</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarActStatusUpcoming" xml:space="preserve">
+    <value>Upcoming</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarCountdownDaysAndHours" xml:space="preserve">
+    <value>Remaining time: {0} day {1} hour</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarCountdownHours" xml:space="preserve">
+    <value>Remaining time: {0} hour</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarHardChallengeLocked" xml:space="preserve">
+    <value>Locked</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarHardChallengeSubCountdownDaysAndHours" xml:space="preserve">
+    <value>Turmoil outbreak period remaining time: {0} day {1} hour</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarHardChallengeSubCountdownHours" xml:space="preserve">
+    <value>Turmoil outbreak period remaining time: {0} hour</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarRoleCombatLocked" xml:space="preserve">
+    <value>Locked</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarRoleCombatMaxRoundZero" xml:space="preserve">
+    <value>Not challenged yet</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarTowerLocked" xml:space="preserve">
+    <value>Locked</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarCardPoolStatusOngoing" xml:space="preserve">
+    <value>In Progress</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarCardPoolStatusUpcoming" xml:space="preserve">
+    <value>Upcoming</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarDuration" xml:space="preserve">
+    <value>{0} to {1}</value>
+  </data>
+  <data name="ViewPageSettingBackgroundMediaNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="ViewPageSettingBackgroundMediaLocalFolder" xml:space="preserve">
+    <value>Local Random Video</value>
+  </data>
+  <data name="ViewPageSettingBackgroundMediaOfficialLauncherVideo" xml:space="preserve">
+    <value>Official Launcher Background</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarTowerStar" xml:space="preserve">
+    <value>{0}/{1}</value>
+  </data>
   <data name="ViewPageSettingHomeAnnouncementActPreviewDescription" xml:space="preserve">
     <value>Disabled by default, some content such as event dates that are not in progress will not be displayed correctly</value>
   </data>
   <data name="ViewPageSettingHomeAnnouncementActPreviewHeader" xml:space="preserve">
     <value>Whether to display in-game version event activities that are not currently in progress</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActHeader" xml:space="preserve">
+    <value>Home page game activity area settings</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActIsEnableHeader" xml:space="preserve">
+    <value>Enable game activity calendar display</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActIsEnableDescription" xml:space="preserve">
+    <value>takes effect immediately, will not show when disabled</value>
   </data>
   <data name="ViewPageLaunchGameIslandCombineMenuHotkeyHeader" xml:space="preserve">
     <value>Synthesis Bench shortcut</value>
@@ -4539,6 +4683,9 @@ Space Available: {2}</value>
   <data name="ViewPageSettingNetworkHeader" xml:space="preserve">
     <value>Network</value>
   </data>
+  <data name="ModelIntrinsicAssociationTypeHVision" xml:space="preserve">
+    <value>Hexenzirkel</value>
+  </data>
   <data name="ViewPageSettingServerDomainModeHeader" xml:space="preserve">
     <value>Server Domain</value>
   </data>
@@ -4551,20 +4698,14 @@ Space Available: {2}</value>
   <data name="WebServerDomainModeBackup" xml:space="preserve">
     <value>Backup (snap.hutaorp.org)</value>
   </data>
+  <data name="ModelIntrinsicAssociationTypeSnezhnayaStar" xml:space="preserve">
+    <value>Fatui</value>
+  </data>
   <data name="ViewPageSettingBackgroundVideoHeader" xml:space="preserve">
     <value>Wallpaper Video</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoDescription" xml:space="preserve">
     <value>Change the background video source, takes priority over background image</value>
-  </data>
-  <data name="ViewPageSettingBackgroundMediaNone" xml:space="preserve">
-    <value>None</value>
-  </data>
-  <data name="ViewPageSettingBackgroundMediaLocalFolder" xml:space="preserve">
-    <value>Local Random Video</value>
-  </data>
-  <data name="ViewPageSettingBackgroundMediaOfficialLauncherVideo" xml:space="preserve">
-    <value>Official Launcher Background</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoIsLoopingHeader" xml:space="preserve">
     <value>Loop Playback</value>
