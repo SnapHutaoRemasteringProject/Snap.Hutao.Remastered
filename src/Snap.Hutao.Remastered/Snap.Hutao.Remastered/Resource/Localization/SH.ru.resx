@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -201,17 +201,8 @@
   <data name="GuideWindowTitle" xml:space="preserve">
     <value>Добро пожаловать в Snap Hutao, путешественник ~</value>
   </data>
-  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
-    <value>Скопируйте текст ниже</value>
-  </data>
-  <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
-    <value>Я подтверждаю, что Snap Hutao Remastered является форком проекта Hutao</value>
-  </data>
   <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
     <value>и не связан с DGP Studio или оригинальным автором</value>
-  </data>
-  <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
-    <value>Пожалуйста, скопируйте приведённый выше текст сюда, чтобы продолжить</value>
   </data>
   <data name="MetadataSpecialNameMetaAvatarSexProInfoPronounBoyGirlD" xml:space="preserve">
     <value>&lt;color=#1E90FF&gt;Принц&lt;/color&gt;/&lt;color=#FFB6C1&gt;Принцесса&lt;/color&gt;</value>
@@ -245,6 +236,9 @@
   </data>
   <data name="ModelBindingGachaTypedWishSummaryAveragePull" xml:space="preserve">
     <value>{0:f2} Pulls</value>
+  </data>
+  <data name="ViewControlStatisticsCardToLastBlueText" xml:space="preserve">
+    <value>С последнего 3★</value>
   </data>
   <data name="ModelBindingGachaTypedWishSummaryMaxOrangePull" xml:space="preserve">
     <value>Unluckiest {0} Pulls</value>
@@ -738,10 +732,10 @@
     <value>В одном архиве достижений обнаружено несколько одинаковых идентификаторов достижений</value>
   </data>
   <data name="ServiceAppOptionsCalendarServerTimeZoneAmerica" xml:space="preserve">
-    <value>美服 UTC-05</value>
+    <value>Американский сервер UTC-05</value>
   </data>
   <data name="ServiceAppOptionsCalendarServerTimeZoneCommon" xml:space="preserve">
-    <value>其他 UTC+08</value>
+    <value>Другой сервер UTC+08</value>
   </data>
   <data name="ServiceAppOptionsCalendarServerTimeZoneEurope" xml:space="preserve">
     <value>Европейский сервер UTC+01</value>
@@ -860,6 +854,21 @@
   <data name="ServiceAvatarInfoPropertySkillCDReduce" xml:space="preserve">
     <value>Сокращение перезарядки</value>
   </data>
+  <data name="ServiceBackgroundActivityDefaultDescription" xml:space="preserve">
+    <value>Подготовка...</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitialization" xml:space="preserve">
+    <value>Инициализация компонентов внедрения</value>
+  </data>
+  <data name="ServiceBackgroundActivityFullTrustInitializationDescription" xml:space="preserve">
+    <value>Выполнять только при необходимости</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitialization" xml:space="preserve">
+    <value>Инициализация метаданных</value>
+  </data>
+  <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
+    <value>Подготовка. Если долго нет ответа, перезапустите или проверьте сеть и сервер</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Ежедневные обои Bing</value>
   </data>
@@ -938,6 +947,9 @@
   <data name="ServiceGachaLogFactoryChronicledWishName" xml:space="preserve">
     <value>Хроники желаний</value>
   </data>
+  <data name="ServiceGachaLogFactoryNoviceWishName" xml:space="preserve">
+    <value>Молитва новичка</value>
+  </data>
   <data name="ServiceGachaLogFactoryPermanentWishName" xml:space="preserve">
     <value>Жажда странствий</value>
   </data>
@@ -1002,6 +1014,9 @@
   <data name="ServiceGameIslandFileSystemGetGameVersionFailed" xml:space="preserve">
     <value>Не удалось получить локальную версию игры, невозможно получить информацию о конфигурации внедрения</value>
   </data>
+  <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
+    <value>Текущая версия игры не поддерживается</value>
+  </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI запущен</value>
   </data>
@@ -1043,6 +1058,9 @@
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>Перед использованием Embedded Yae вы должны знать о связанных с этим рисках и включить функцию внедрения на странице "Запуск игры"</value>
+  </data>
+  <data name="ServiceGameLaunchingHandlerGameProcessStartRepositorySyncFailed" xml:space="preserve">
+    <value>Ошибка при получении необходимых компонентов для запуска игры</value>
   </data>
   <data name="ServiceGameLocatorFileOpenPickerCommitText" xml:space="preserve">
     <value>Выберите исполняемый файл игры</value>
@@ -1119,6 +1137,12 @@
   <data name="ServiceGameSetMultiChannelUnauthorizedAccess" xml:space="preserve">
     <value>Невозможно открыть или сохранить профиль без прав администратора</value>
   </data>
+  <data name="ServiceGitRepositoryOperationCompleted" xml:space="preserve">
+    <value>Действие завершено</value>
+  </data>
+  <data name="ServiceGitRepositoryOperationFailed" xml:space="preserve">
+    <value>Ошибка операции: общий сбой</value>
+  </data>
   <data name="ServiceHutaoUserGachaLogExpiredAt" xml:space="preserve">
     <value>Срок действия услуги загрузки истории молитв истекает</value>
   </data>
@@ -1193,6 +1217,9 @@
   </data>
   <data name="ServiceYaeWaitForGameResponseMessage" xml:space="preserve">
     <value>Ожидание данных игры</value>
+  </data>
+  <data name="UIViewMainTitleBarBackgroundActivityAction" xml:space="preserve">
+    <value>Фоновая задача</value>
   </data>
   <data name="UIViewPageAvatarPropertyRecommendedAppendProperties" xml:space="preserve">
     <value>Рекомендации по добавочным свойствам</value>
@@ -1289,6 +1316,9 @@
   </data>
   <data name="ViewControlStatisticsCardUpText" xml:space="preserve">
     <value>UP</value>
+  </data>
+  <data name="ViewControlStatisticsCardCombinedModeTooltip" xml:space="preserve">
+    <value>Суммарные молитвы на ограниченные золотые</value>
   </data>
   <data name="ViewControlStatisticsSegmentedItemContentPrediction" xml:space="preserve">
     <value>Prediction</value>
@@ -2070,6 +2100,9 @@
   <data name="ViewModelGuideActionNext" xml:space="preserve">
     <value>Далее</value>
   </data>
+  <data name="ViewModelGuideActionSkipDownload" xml:space="preserve">
+    <value>Пропустить</value>
+  </data>
   <data name="ViewModelGuideActionStaticResourceBegin" xml:space="preserve">
     <value>Загрузка файлов ресурсов, пожалуйста, подождите</value>
   </data>
@@ -2316,6 +2349,15 @@
   <data name="ViewModelWelcomeDownloadSummaryException" xml:space="preserve">
     <value>Исключение при загрузке файла</value>
   </data>
+  <data name="ViewModelWelcomeDownloadSummarySpeed" xml:space="preserve">
+    <value>{0}/с</value>
+  </data>
+  <data name="ViewModelWelcomeDownloadSummarySkipped" xml:space="preserve">
+    <value>Пропущено</value>
+  </data>
+  <data name="ViewModelWelcomeDownloadSummaryStalled" xml:space="preserve">
+    <value>Тайм-аут загрузки</value>
+  </data>
   <data name="ViewModelWikiAvatarStrategyNotFound" xml:space="preserve">
     <value>Нет информации о стратегиях для этого персонажа</value>
   </data>
@@ -2384,6 +2426,12 @@
   </data>
   <data name="ViewPageAvatarPropertyDefaultDescription" xml:space="preserve">
     <value>Нет данных о персонаже</value>
+  </data>
+  <data name="ViewPageAvatarPropertySpecialDescriptionOff" xml:space="preserve">
+    <value>До улучшения</value>
+  </data>
+  <data name="ViewPageAvatarPropertySpecialDescriptionOn" xml:space="preserve">
+    <value>После улучшения</value>
   </data>
   <data name="ViewPageAvatarPropertyExportToTextLabel" xml:space="preserve">
     <value>Экспорт текста в буфер обмена</value>
@@ -3141,6 +3189,15 @@
   <data name="ViewPageSettingBackgroundImageLocalFolderCopyrightHeader" xml:space="preserve">
     <value>Текущий фон — это локальное изображение, пользователь несет личную ответственность в случае проблем с авторскими правами.</value>
   </data>
+  <data name="ViewPageSettingBackgroundImageCustomFolderHeader" xml:space="preserve">
+    <value>Папка с пользовательскими фоновыми изображениями</value>
+  </data>
+  <data name="ViewPageSettingBackgroundImagePickFolderTitle" xml:space="preserve">
+    <value>Выберите папку с фоновыми изображениями</value>
+  </data>
+  <data name="ViewPageSettingBackgroundImageSetFolderAction" xml:space="preserve">
+    <value>Выберите папку</value>
+  </data>
   <data name="ViewPageSettingCacheFolderHeader" xml:space="preserve">
     <value>Папка кэша</value>
   </data>
@@ -3242,6 +3299,12 @@
   </data>
   <data name="ViewPageSettingEmptyHistoryVisibleOn" xml:space="preserve">
     <value>Показать</value>
+  </data>
+  <data name="ViewPageSettingEmptyOverviewWishVisibleDescription" xml:space="preserve">
+    <value>Показывать карточки событий молитв без записей на странице «Обзор»</value>
+  </data>
+  <data name="ViewPageSettingEmptyOverviewWishVisibleHeader" xml:space="preserve">
+    <value>Обзор молитв без записей</value>
   </data>
   <data name="ViewPageSettingFeedbackNavigate" xml:space="preserve">
     <value>Обратная связь</value>
@@ -3585,6 +3648,9 @@
   <data name="ViewPageWikiMonsterDropItems" xml:space="preserve">
     <value>Выпадающие предметы</value>
   </data>
+  <data name="ViewPageWiKiMonsterAutoSuggestBoxPlaceHolder" xml:space="preserve">
+    <value>Фильтр монстров</value>
+  </data>
   <data name="ViewPeriodHeader" xml:space="preserve">
     <value>Расписание</value>
   </data>
@@ -3765,6 +3831,9 @@
   <data name="ViewWindowCompactWebViewTitle" xml:space="preserve">
     <value>Компактное веб-окно (только для администратора)</value>
   </data>
+  <data name="ViewWindowCompactWebView2HotKeyDisabledMessage" xml:space="preserve">
+    <value>Запустите от имени администратора, чтобы включить глобальные горячие клавиши</value>
+  </data>
   <data name="ViewWindowExceptionClose" xml:space="preserve">
     <value>Закрыть</value>
   </data>
@@ -3777,8 +3846,38 @@
   <data name="ViewWindowScriptingExecute" xml:space="preserve">
     <value>Выполнить</value>
   </data>
+  <data name="ViewPageTestSpeedGraphWindowHeader" xml:space="preserve">
+    <value>Окно теста SpeedGraph</value>
+  </data>
   <data name="ViewWindowScriptingTitle" xml:space="preserve">
     <value>Выполнить отладочный скрипт</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestClose" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestCompleted" xml:space="preserve">
+    <value>Завершено</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestCanceled" xml:space="preserve">
+    <value>Отменено</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestDescription" xml:space="preserve">
+    <value>Запустить тестовый поток и наблюдать за изменениями графика в реальном времени</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestReady" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestReplay" xml:space="preserve">
+    <value>Повторить воспроизведение</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestRunning" xml:space="preserve">
+    <value>Выполняется</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestTitle" xml:space="preserve">
+    <value>Демонстрация теста SpeedGraph</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestWaiting" xml:space="preserve">
+    <value>Ожидание начала</value>
   </data>
   <data name="WebAnnouncementTimeDaysBegin" xml:space="preserve">
     <value>Начало через {0} дней</value>
@@ -4011,6 +4110,267 @@
   <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
     <value>Автоматическая подпись.</value>
   </data>
+  <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
+    <value>Обновление даты в часовом поясе учетной записи и автоматическая отметка при запуске</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
+    <value>Автоматически перезапускать с правами администратора при запуске</value>
+  </data>
+  <data name="ViewPageSettingAlwaysRunAsAdminTextDes" xml:space="preserve">
+    <value>Будет действовать при ручном запуске приложения. Рекомендуется включить автозапуск и автозапуск от имени администратора, чтобы избежать возможных запросов UAC при запуске различных функций</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
+    <value>После включения, если Snap Hutao не запущен от имени администратора, он автоматически перезапустится и запросит права администратора при запуске</value>
+  </data>
+  <data name="ViewPageSettingAutoStartDescription" xml:space="preserve">
+    <value>Программа будет запускаться при входе текущего пользователя. Запуск от имени администратора синхронизируется с опцией режима администратора только при изменении (изменение требуется запускать от имени администратора)</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
+    <value>Показать Паймон</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonDescription" xml:space="preserve">
+    <value>Показывать Паймон в игре</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassHeader" xml:space="preserve">
+    <value>Скрыть траву</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassDescription" xml:space="preserve">
+    <value>Скрывать траву в игре</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeHeader" xml:space="preserve">
+    <value>Режим отладки</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeDescription" xml:space="preserve">
+    <value>Включить режим отладки</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoHeader" xml:space="preserve">
+    <value>Скрыть информацию о игроке</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
+    <value>Скрыть информацию о игроке</value>
+  </data>
+  <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
+    <value>Отключить размытие персонажа</value>
+  </data>
+  <data name="ViewPageLaunchGameDisablePlayerDiveMosaicHeader" xml:space="preserve">
+    <value>移除水下马赛克</value>
+  </data>
+  <data name="ServicePluginEnablingPluginFailed" xml:space="preserve">
+    <value>Исключение при включении плагина</value>
+  </data>
+  <data name="ServicePluginDisablingPluginFailed" xml:space="preserve">
+    <value>Исключение при отключении плагина</value>
+  </data>
+  <data name="ServicePluginInstallFileNotFound" xml:space="preserve">
+    <value>Файл плагина не найден</value>
+  </data>
+  <data name="ServicePluginInstallInvalidFileType" xml:space="preserve">
+    <value>Неверный тип файла плагина, должен иметь расширение .hutao или .hutaodisabled</value>
+  </data>
+  <data name="ServicePluginInstallManifestNotFound" xml:space="preserve">
+    <value>В файле плагина не найден файл manifest.json</value>
+  </data>
+  <data name="ServicePluginInstallInvalidManifest" xml:space="preserve">
+    <value>Файл manifest.json плагина недействителен или отсутствует ID</value>
+  </data>
+  <data name="ServicePluginInstallSuccess" xml:space="preserve">
+    <value>Плагин '{0}' успешно установлен</value>
+  </data>
+  <data name="ServicePluginInstallFailed" xml:space="preserve">
+    <value>Не удалось установить плагин</value>
+  </data>
+  <data name="ServicePluginLoadDirectoryNotFound" xml:space="preserve">
+    <value>Каталог плагина '{0}' не найден</value>
+  </data>
+  <data name="ServicePluginLoadManifestNotFound" xml:space="preserve">
+    <value>Файл manifest.json плагина '{0}' не найден</value>
+  </data>
+  <data name="ServicePluginLoadDllNotFound" xml:space="preserve">
+    <value>DLL-файл плагина '{0}' не найден</value>
+  </data>
+  <data name="ServicePluginLoadSuccess" xml:space="preserve">
+    <value>Плагин '{0}' успешно загружен</value>
+  </data>
+  <data name="ServicePluginLoadFailed" xml:space="preserve">
+    <value>Не удалось загрузить плагин</value>
+  </data>
+  <data name="ServicePluginNotFound" xml:space="preserve">
+    <value>Плагин '{0}' не найден</value>
+  </data>
+  <data name="ServicePluginInstallAlreadyExists" xml:space="preserve">
+    <value>Плагин '{0}' уже установлен</value>
+  </data>
+  <data name="ServicePluginLoadMainTypeNotFound" xml:space="preserve">
+    <value>Не найден главный класс плагина '{0}'</value>
+  </data>
+  <data name="ServicePluginLoadInvalidManifest" xml:space="preserve">
+    <value>Плагин '{0}' имеет недействительный файл манифеста</value>
+  </data>
+  <data name="ServicePluginDisableSuccess" xml:space="preserve">
+    <value>Плагин '{0}' успешно отключен</value>
+  </data>
+  <data name="ServicePluginDeleteSuccess" xml:space="preserve">
+    <value>Плагин '{0}' успешно удален</value>
+  </data>
+  <data name="ServicePluginDeleteFailed" xml:space="preserve">
+    <value>Ошибка при удалении плагина '{0}'</value>
+  </data>
+  <data name="ServicePluginEnablingSuccess" xml:space="preserve">
+    <value>Плагин '{0}' успешно включен</value>
+  </data>
+  <data name="ViewPluginHeader" xml:space="preserve">
+    <value>Управление плагинами</value>
+  </data>
+  <data name="ViewPagePluginInstallButton" xml:space="preserve">
+    <value>Установить плагин</value>
+  </data>
+  <data name="ViewPagePluginRefreshButton" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="ViewPagePluginOpenDirectoryButton" xml:space="preserve">
+    <value>Открыть каталог плагинов</value>
+  </data>
+  <data name="ViewPagePluginTotalText" xml:space="preserve">
+    <value>Всего</value>
+  </data>
+  <data name="ViewPagePluginCountText" xml:space="preserve">
+    <value>плагинов</value>
+  </data>
+  <data name="ViewPagePluginEmptyTitle" xml:space="preserve">
+    <value>Нет плагинов</value>
+  </data>
+  <data name="ViewPagePluginEmptyDescription" xml:space="preserve">
+    <value>Нажмите кнопку «Установить плагин», чтобы добавить свой первый плагин</value>
+  </data>
+  <data name="ViewPagePluginEnableButton" xml:space="preserve">
+    <value>Включить</value>
+  </data>
+  <data name="ViewPagePluginDisableButton" xml:space="preserve">
+    <value>Отключить</value>
+  </data>
+  <data name="ViewPagePluginSettingsButton" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="ViewPagePluginUninstallButton" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="ViewPagePluginStatusEnabled" xml:space="preserve">
+    <value>Включено</value>
+  </data>
+  <data name="ViewPagePluginStatusDisabled" xml:space="preserve">
+    <value>Отключено</value>
+  </data>
+  <data name="ViewPagePluginSettingBackButton" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="ViewPagePluginSettingTitle" xml:space="preserve">
+    <value>Настройки плагина</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyTitle" xml:space="preserve">
+    <value>Нет настроек</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyDescription" xml:space="preserve">
+    <value>Этот плагин не имеет настраиваемых параметров</value>
+  </data>
+  <data name="ViewPagePluginSettingStringPlaceholder" xml:space="preserve">
+    <value>Введите текст</value>
+  </data>
+  <data name="ViewPagePluginSettingIntPlaceholder" xml:space="preserve">
+    <value>Введите целое число</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOff" xml:space="preserve">
+    <value>Выкл</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOn" xml:space="preserve">
+    <value>Вкл</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultPlaceholder" xml:space="preserve">
+    <value>Введите значение</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveButton" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="ViewPagePluginSettingResetButton" xml:space="preserve">
+    <value>Сбросить</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultValueText" xml:space="preserve">
+    <value>По умолчанию: </value>
+  </data>
+  <data name="ServicePluginPickFileTitle" xml:space="preserve">
+    <value>Выберите файл плагина</value>
+  </data>
+  <data name="ServicePluginUninstallTitle" xml:space="preserve">
+    <value>Удалить плагин {0}</value>
+  </data>
+  <data name="ServicePluginUninstallDescription" xml:space="preserve">
+    <value>Вы уверены, что хотите удалить плагин {0}? Это действие необратимо.</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
+    <value>Горячее переключение геймпада</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription" xml:space="preserve">
+    <value>Автоматическое переключение между клавиатурой/мышью и геймпадом в игре</value>
+  </data>
+  <data name="WebUGCGachaConfigTypePermanentWish" xml:space="preserve">
+    <value>Стандартное моление</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeAvatarEventWish" xml:space="preserve">
+    <value>Событийное моление</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleOne" xml:space="preserve">
+    <value>Событийное моление - мужской</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleTwo" xml:space="preserve">
+    <value>Событийное моление - мужской</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleOne" xml:space="preserve">
+    <value>Событийное моление - женский</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleTwo" xml:space="preserve">
+    <value>Событийное моление - женский</value>
+  </data>
+  <data name="ViewControlStatisticsCardPurpleAveragePullText" xml:space="preserve">
+    <value>Среднее количество четырёхзвёздочных попыток</value>
+  </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeHeader" xml:space="preserve">
+    <value>Моление</value>
+  </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeDescription" xml:space="preserve">
+    <value>Переключиться в режим «Моление (Тысяча звезд)»</value>
+  </data>
+  <data name="ServiceGachaLogFactoryBeyondEventWishName" xml:space="preserve">
+    <value>Событийное моление</value>
+  </data>
+  <data name="ServiceGachaLogFactoryBeyondPermanentWishName" xml:space="preserve">
+    <value>Эхо чудес</value>
+  </data>
+  <data name="ViewOverlayDisplayPaimonToolTip" xml:space="preserve">
+    <value>Показать Паймон</value>
+  </data>
+  <data name="ViewOverlayHideGrassToolTip" xml:space="preserve">
+    <value>Скрыть траву</value>
+  </data>
+  <data name="ViewPageAvatarPropertyAddWeaponToPlan" xml:space="preserve">
+    <value>Добавить оружие в план развития</value>
+  </data>
+  <data name="ViewPageAvatarPropertyAddAvatarToPlan" xml:space="preserve">
+    <value>Добавить персонажа в план развития</value>
+  </data>
+  <data name="ViewPageAvatarPropertyAddBothToPlan" xml:space="preserve">
+    <value>Добавить персонажа и оружие в план развития</value>
+  </data>
+  <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpHeader" xml:space="preserve">
+    <value>Убрать анимацию изменения времени</value>
+  </data>
+  <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpDescription" xml:space="preserve">
+    <value>Убрать анимацию медленного изменения времени после нажатия «ОК» на странице настройки времени</value>
+  </data>
+  <data name="ViewPageAvatarPropertyExportToText" xml:space="preserve">
+    <value>Экспорт текущего персонажа</value>
+  </data>
+  <data name="ViewPageAvatarPropertyExportAllToText" xml:space="preserve">
+    <value>Экспорт всех персонажей</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Пользовательский запуск</value>
   </data>
@@ -4143,6 +4503,18 @@
   <data name="ViewDialogLaunchGameAdvancedStartUnsupportedArchiveFormat" xml:space="preserve">
     <value>Неподдерживаемый формат архива!</value>
   </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramPathNotSet" xml:space="preserve">
+    <value>Путь к пользовательской программе запуска не указан</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramNotExists" xml:space="preserve">
+    <value>Пользовательская программа запуска не существует</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramLaunched" xml:space="preserve">
+    <value>Пользовательская программа запущена</value>
+  </data>
+  <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
+    <value>Путь к пользовательской программе запуска сохранён</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
     <value>Управление пользовательскими запусками программ</value>
   </data>
@@ -4179,6 +4551,9 @@
   <data name="ViewPageLaunchGameAdvancedStartDelayedStartListName" xml:space="preserve">
     <value>Название приложения</value>
   </data>
+  <data name="ViewDialogLaunchGameAdvancedStartInfoBarMessage" xml:space="preserve">
+    <value>Будет загружено в папку AdvancedStart в каталоге данных, указанном в настройках. Можно изменить или управлять самостоятельно в настройках</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartCoStartHeader" xml:space="preserve">
     <value>Совместный запуск</value>
   </data>
@@ -4191,8 +4566,29 @@
   <data name="ViewPageLaunchGameAdvancedStartCoStartGameHeader" xml:space="preserve">
     <value>Активировать отложенные запуски при запуске игры</value>
   </data>
+  <data name="ViewPageSettingOpenSourceSupportHeader" xml:space="preserve">
+    <value>Поддержка открытого исходного кода</value>
+  </data>
+  <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
+    <value>Автозапуск при включении</value>
+  </data>
+  <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
+    <value>Поведение приложения</value>
+  </data>
+  <data name="ViewPageSettingAutoStartEnableCardHeader" xml:space="preserve">
+    <value>Автозапуск для текущего пользователя</value>
+  </data>
+  <data name="ViewPageSettingAutoStartAdminActionCardHeader" xml:space="preserve">
+    <value>Настройки прав для автозапуска: права администратора</value>
+  </data>
+  <data name="ViewPageSettingAutoStartAdminActionCardDescription" xml:space="preserve">
+    <value>Обратите внимание, что некоторые функции могут быть недоступны с разными правами</value>
+  </data>
   <data name="ViewModelGamePackageOperationContinueDownloadButtonText" xml:space="preserve">
     <value>Продолжить загрузку</value>
+  </data>
+  <data name="ContentDialogPauseButtonText" xml:space="preserve">
+    <value>Пауза</value>
   </data>
   <data name="ViewModelMainNetworkUnavailableWillAutoRetry" xml:space="preserve">
     <value>В настоящее время сеть недоступна, повторная попытка будет автоматически предпринята после восстановления сети.</value>
@@ -4205,5 +4601,143 @@
   </data>
   <data name="ViewModelMainNetworkRecoveredRetrying" xml:space="preserve">
     <value>Сеть восстановлена, автоматически повторная попытка.</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarActStatusOngoing" xml:space="preserve">
+    <value>В процессе</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarActStatusUpcoming" xml:space="preserve">
+    <value>Не начато</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarCountdownDaysAndHours" xml:space="preserve">
+    <value>Осталось времени: {0} д. {1} ч</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarCountdownHours" xml:space="preserve">
+    <value>Осталось времени: {0} ч</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarHardChallengeLocked" xml:space="preserve">
+    <value>Ещё не разблокировано</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarHardChallengeSubCountdownDaysAndHours" xml:space="preserve">
+    <value>Осталось времени фазы нестабильности: {0} д. {1} ч</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarHardChallengeSubCountdownHours" xml:space="preserve">
+    <value>Осталось времени фазы нестабильности: {0} ч</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarRoleCombatLocked" xml:space="preserve">
+    <value>Ещё не разблокировано</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarRoleCombatMaxRoundZero" xml:space="preserve">
+    <value>Ещё не пройдено</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarTowerLocked" xml:space="preserve">
+    <value>Ещё не разблокировано</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarCardPoolStatusOngoing" xml:space="preserve">
+    <value>В процессе</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarCardPoolStatusUpcoming" xml:space="preserve">
+    <value>Ожидается</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarDuration" xml:space="preserve">
+    <value>с {0} по {1}</value>
+  </data>
+  <data name="ViewPageSettingBackgroundMediaNone" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="ViewPageSettingBackgroundMediaLocalFolder" xml:space="preserve">
+    <value>Случайное локальное видео</value>
+  </data>
+  <data name="ViewPageSettingBackgroundMediaOfficialLauncherVideo" xml:space="preserve">
+    <value>Фон официального лаунчера</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarTowerStar" xml:space="preserve">
+    <value>{0}/{1}</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActPreviewDescription" xml:space="preserve">
+    <value>По умолчанию выключено: части контента, такие как даты неактивных событий, не будут отображаться корректно</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActPreviewHeader" xml:space="preserve">
+    <value>Показывать неактивные внутриигровые события версии</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActHeader" xml:space="preserve">
+    <value>Настройки области игровых событий на главной странице</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActIsEnableHeader" xml:space="preserve">
+    <value>Включить отображение календаря игровых событий</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActIsEnableDescription" xml:space="preserve">
+    <value>Вступает в силу немедленно. После выключения больше не будет отображаться</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandCombineMenuHotkeyHeader" xml:space="preserve">
+    <value>Горячая клавиша алхимического стола</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandWeakMapCheckHeader" xml:space="preserve">
+    <value>Разрешить открытие карты в подземельях</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandCombineMenuHotkeyDescription" xml:space="preserve">
+    <value>Нажмите назначенную горячую клавишу, чтобы открыть алхимический стол. Не работает в Витой Бездне</value>
+  </data>
+  <data name="ViewPageLaunchGameCreateGameLaunchShortcut" xml:space="preserve">
+    <value>Создать ярлык запуска игры на рабочем столе</value>
+  </data>
+  <data name="ViewPageSettingNetworkHeader" xml:space="preserve">
+    <value>Сеть</value>
+  </data>
+  <data name="ModelIntrinsicAssociationTypeHVision" xml:space="preserve">
+    <value>Ковен ведьм</value>
+  </data>
+  <data name="ViewPageSettingServerDomainModeHeader" xml:space="preserve">
+    <value>Доменное имя сервера</value>
+  </data>
+  <data name="ViewPageSettingServerDomainModeDescription" xml:space="preserve">
+    <value>Выберите основной или запасной домен. При сбое основного домена из-за проблем с SSL-соединением будет автоматически выполнен переход на запасной</value>
+  </data>
+  <data name="WebServerDomainModePrimary" xml:space="preserve">
+    <value>Основной домен (snaphutaorp.org)</value>
+  </data>
+  <data name="WebServerDomainModeBackup" xml:space="preserve">
+    <value>Запасной домен (hutaorp.org)</value>
+  </data>
+  <data name="ModelIntrinsicAssociationTypeSnezhnayaStar" xml:space="preserve">
+    <value>Фатуи</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoHeader" xml:space="preserve">
+    <value>Фоновое видео</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoDescription" xml:space="preserve">
+    <value>Изменить источник фонового видео. Приоритет выше, чем у фонового изображения</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoIsLoopingHeader" xml:space="preserve">
+    <value>Зациклить воспроизведение</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoIsMutedHeader" xml:space="preserve">
+    <value>Воспроизводить без звука</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoLocalFolderPathHeader" xml:space="preserve">
+    <value>Путь к локальной папке</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoLocalFolderPathPlaceholder" xml:space="preserve">
+    <value>Оставьте пустым для использования каталога по умолчанию</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoBrowseButton" xml:space="preserve">
+    <value>Обзор...</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoPickFolderTitle" xml:space="preserve">
+    <value>Выберите папку с фоновым видео</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoCustomFolderHeader" xml:space="preserve">
+    <value>Пользовательская папка фонового видео</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoSetFolderAction" xml:space="preserve">
+    <value>Установить папку фонового видео</value>
+  </data>
+  <data name="ViewPageSettingOpenBackgroundVideoFolderHeader" xml:space="preserve">
+    <value>Открыть папку с фоновым видео</value>
+  </data>
+  <data name="ViewPageSettingOpenBackgroundVideoFolderDescription" xml:space="preserve">
+    <value>Пользовательское фоновое видео, поддерживаются форматы mp4 / mkv / webm</value>
+  </data>
+  <data name="ViewPageSettingStorageBackgroundVideoHint" xml:space="preserve">
+    <value>Приоритет настройки фонового видео выше, чем у фонового изображения</value>
   </data>
 </root>
