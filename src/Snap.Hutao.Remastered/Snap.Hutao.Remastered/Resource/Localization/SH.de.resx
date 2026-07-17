@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -205,7 +205,7 @@
     <value>Kopieren Sie den folgenden Text</value>
   </data>
   <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
-    <value>Ich bestätige, dass Snap Hutao Remastered ein abgeleitetes Fork von Hutao ist</value>
+    <value></value>
   </data>
   <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
     <value>und nicht mit DGP Studio oder dem ursprünglichen Autor verbunden ist</value>
@@ -245,6 +245,9 @@
   </data>
   <data name="ModelBindingGachaTypedWishSummaryAveragePull" xml:space="preserve">
     <value>{0:f2} Züge</value>
+  </data>
+  <data name="ViewControlStatisticsCardToLastBlueText" xml:space="preserve">
+    <value>Seit letztem 3-Stern</value>
   </data>
   <data name="ModelBindingGachaTypedWishSummaryMaxOrangePull" xml:space="preserve">
     <value>Unglücklichste {0} Züge</value>
@@ -953,6 +956,9 @@
   <data name="ServiceGachaLogFactoryChronicledWishName" xml:space="preserve">
     <value>Chronik-Gebet</value>
   </data>
+  <data name="ServiceGachaLogFactoryNoviceWishName" xml:space="preserve">
+    <value>Anfängergebet</value>
+  </data>
   <data name="ServiceGachaLogFactoryPermanentWishName" xml:space="preserve">
     <value>Verwegen in den Landen</value>
   </data>
@@ -1019,7 +1025,6 @@
   </data>
   <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
     <value>Die aktuelle Spielversion wird noch nicht unterstützt</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI gestartet</value>
@@ -1065,7 +1070,6 @@
   </data>
   <data name="ServiceGameLaunchingHandlerGameProcessStartRepositorySyncFailed" xml:space="preserve">
     <value>Fehler beim Abrufen der erforderlichen Spielstartkomponenten</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ServiceGameLocatorFileOpenPickerCommitText" xml:space="preserve">
     <value>Spieldatei auswählen</value>
@@ -1146,11 +1150,9 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ServiceGitRepositoryOperationCompleted" xml:space="preserve">
     <value>Operation abgeschlossen</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ServiceGitRepositoryOperationFailed" xml:space="preserve">
     <value>Operation fehlgeschlagen</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ServiceHutaoUserGachaLogExpiredAt" xml:space="preserve">
     <value>Die Gültigkeit des Hochladens von Wunschaufzeichnungen endet am</value>
@@ -1229,7 +1231,6 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="UIViewMainTitleBarBackgroundActivityAction" xml:space="preserve">
     <value>Hintergrundaufgaben</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="UIViewPageAvatarPropertyRecommendedAppendProperties" xml:space="preserve">
     <value>Empfohlene Zusatzeigenschaften</value>
@@ -1326,6 +1327,9 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ViewControlStatisticsCardUpText" xml:space="preserve">
     <value>UP</value>
+  </data>
+  <data name="ViewControlStatisticsCardCombinedModeTooltip" xml:space="preserve">
+    <value>Limitierte 5-Sterne Gesamtzahl anzeigen</value>
   </data>
   <data name="ViewControlStatisticsSegmentedItemContentPrediction" xml:space="preserve">
     <value>Vorhersage</value>
@@ -2107,6 +2111,9 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewModelGuideActionNext" xml:space="preserve">
     <value>Weiter</value>
   </data>
+  <data name="ViewModelGuideActionSkipDownload" xml:space="preserve">
+    <value>Überspringen</value>
+  </data>
   <data name="ViewModelGuideActionStaticResourceBegin" xml:space="preserve">
     <value>Ressourcendateien werden heruntergeladen, bitte warten Sie</value>
   </data>
@@ -2353,6 +2360,15 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewModelWelcomeDownloadSummaryException" xml:space="preserve">
     <value>Fehler beim Dateidownload</value>
   </data>
+  <data name="ViewModelWelcomeDownloadSummarySpeed" xml:space="preserve">
+    <value>{0}/s</value>
+  </data>
+  <data name="ViewModelWelcomeDownloadSummarySkipped" xml:space="preserve">
+    <value>Übersprungen</value>
+  </data>
+  <data name="ViewModelWelcomeDownloadSummaryStalled" xml:space="preserve">
+    <value>Download-Zeitüberschreitung</value>
+  </data>
   <data name="ViewModelWikiAvatarStrategyNotFound" xml:space="preserve">
     <value>Für diesen Charakter sind keine Strategieinformationen vorhanden</value>
   </data>
@@ -2421,6 +2437,12 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ViewPageAvatarPropertyDefaultDescription" xml:space="preserve">
     <value>Noch keine Charakterdaten abgerufen</value>
+  </data>
+  <data name="ViewPageAvatarPropertySpecialDescriptionOff" xml:space="preserve">
+    <value>Vor Verstärkung</value>
+  </data>
+  <data name="ViewPageAvatarPropertySpecialDescriptionOn" xml:space="preserve">
+    <value>Nach Verstärkung</value>
   </data>
   <data name="ViewPageAvatarPropertyExportToTextLabel" xml:space="preserve">
     <value>Text in die Zwischenablage exportieren</value>
@@ -3172,6 +3194,15 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewPageSettingBackgroundImageLocalFolderCopyrightHeader" xml:space="preserve">
     <value>Das aktuelle Hintergrundbild ist ein lokales Bild. Bei Urheberrechtsproblemen ist der Benutzer persönlich verantwortlich.</value>
   </data>
+  <data name="ViewPageSettingBackgroundImageCustomFolderHeader" xml:space="preserve">
+    <value>Benutzerdefinierter Hintergrundbild-Ordner</value>
+  </data>
+  <data name="ViewPageSettingBackgroundImagePickFolderTitle" xml:space="preserve">
+    <value>Hintergrundbild-Ordner auswählen</value>
+  </data>
+  <data name="ViewPageSettingBackgroundImageSetFolderAction" xml:space="preserve">
+    <value>Ordner auswählen</value>
+  </data>
   <data name="ViewPageSettingCacheFolderHeader" xml:space="preserve">
     <value>Cache-Ordner</value>
   </data>
@@ -3273,6 +3304,12 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ViewPageSettingEmptyHistoryVisibleOn" xml:space="preserve">
     <value>Anzeigen</value>
+  </data>
+  <data name="ViewPageSettingEmptyOverviewWishVisibleDescription" xml:space="preserve">
+    <value>Im Übersichtsbereich Karten für Wunschaktionen ohne Aufzeichnungen anzeigen</value>
+  </data>
+  <data name="ViewPageSettingEmptyOverviewWishVisibleHeader" xml:space="preserve">
+    <value>Wunschübersicht ohne Aufzeichnungen</value>
   </data>
   <data name="ViewPageSettingFeedbackNavigate" xml:space="preserve">
     <value>Feedback geben</value>
@@ -3616,6 +3653,9 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewPageWikiMonsterDropItems" xml:space="preserve">
     <value>Beutegegenstände</value>
   </data>
+  <data name="ViewPageWiKiMonsterAutoSuggestBoxPlaceHolder" xml:space="preserve">
+    <value>Monster filtern</value>
+  </data>
   <data name="ViewPeriodHeader" xml:space="preserve">
     <value>Zeitplan</value>
   </data>
@@ -3728,7 +3768,7 @@ Verfügbarer Speicherplatz: {2}</value>
     <value>Werkzeuge</value>
   </data>
   <data name="ViewUserCookieOperation" xml:space="preserve">
-    <value>米游社</value>
+    <value>HoYoLAB</value>
   </data>
   <data name="ViewUserCookieOperation2" xml:space="preserve">
     <value>HoYoLAB</value>
@@ -3798,7 +3838,6 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ViewWindowCompactWebView2HotKeyDisabledMessage" xml:space="preserve">
     <value>Als Administrator ausführen, um globale Hotkey-Funktionen zu aktivieren</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ViewWindowExceptionClose" xml:space="preserve">
     <value>Schließen</value>
@@ -3812,8 +3851,38 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewWindowScriptingExecute" xml:space="preserve">
     <value>Ausführen</value>
   </data>
+  <data name="ViewPageTestSpeedGraphWindowHeader" xml:space="preserve">
+    <value>SpeedGraph-Testfenster</value>
+  </data>
   <data name="ViewWindowScriptingTitle" xml:space="preserve">
     <value>Debug-Skript ausführen</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestClose" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestCompleted" xml:space="preserve">
+    <value>Abgeschlossen</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestCanceled" xml:space="preserve">
+    <value>Abgebrochen</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestDescription" xml:space="preserve">
+    <value>Testlauf ausführen und Diagrammänderungen in Echtzeit beobachten</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestReady" xml:space="preserve">
+    <value>Bereit</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestReplay" xml:space="preserve">
+    <value>Erneut abspielen</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestRunning" xml:space="preserve">
+    <value>Läuft</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestTitle" xml:space="preserve">
+    <value>SpeedGraph-Testdemo</value>
+  </data>
+  <data name="ViewWindowSpeedGraphTestWaiting" xml:space="preserve">
+    <value>Warten auf Start</value>
   </data>
   <data name="WebAnnouncementTimeDaysBegin" xml:space="preserve">
     <value>Beginnt in {0} Tagen</value>
@@ -4046,12 +4115,266 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
     <value>Automatisch anmelden</value>
   </data>
+  <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
+    <value>Datum nach Zeitzone des Kontos aktualisieren und automatisch beim Start einchecken</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
+    <value>Beim Start automatisch mit Administratorrechten neu starten</value>
+  </data>
+  <data name="ViewPageSettingAlwaysRunAsAdminTextDes" xml:space="preserve">
+    <value>Wird beim manuellen Start der App wirksam. Es wird empfohlen, den automatischen Start und den automatischen Start als Administrator zu aktivieren, um mögliche UAC-Popups beim Starten verschiedener Funktionen zu vermeiden</value>
+  </data>
+  <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
+    <value>Wenn aktiviert, wird Hutao beim Start automatisch neu gestartet und um Administratorrechte gebeten, falls es nicht als Administrator ausgeführt wird</value>
+  </data>
   <data name="ViewPageSettingAutoStartDescription" xml:space="preserve">
     <value>Das Programm startet beim Anmelden des aktuellen Benutzers (Änderung erfordert Administratorrechte und wenn zusammen mit 'Immer als Administrator ausführen' aktiviert, bleibt der Administratorstatus immer erhalten)</value>
-    <comment>Translated by AI</comment>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
+    <value>Paimon anzeigen</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDisplayPaimonDescription" xml:space="preserve">
+    <value>Paimon im Spiel anzeigen</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassHeader" xml:space="preserve">
+    <value>Gras verbergen</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHideGrassDescription" xml:space="preserve">
+    <value>Gras im Spiel verbergen</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeHeader" xml:space="preserve">
+    <value>Debug-Modus</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandDebugModeDescription" xml:space="preserve">
+    <value>Debug-Modus aktivieren</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoHeader" xml:space="preserve">
+    <value>Spielerinfo verbergen</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
+    <value>Spielerinfo verbergen</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>Spezielle Oberflächenkorrektur</value>
+  </data>
+  <data name="ViewPageLaunchGameDisablePlayerDiveMosaicHeader" xml:space="preserve">
+    <value>移除水下马赛克</value>
+  </data>
+  <data name="ServicePluginEnablingPluginFailed" xml:space="preserve">
+    <value>Fehler beim Aktivieren des Plugins</value>
+  </data>
+  <data name="ServicePluginDisablingPluginFailed" xml:space="preserve">
+    <value>Fehler beim Deaktivieren des Plugins</value>
+  </data>
+  <data name="ServicePluginInstallFileNotFound" xml:space="preserve">
+    <value>Plugin-Datei nicht gefunden</value>
+  </data>
+  <data name="ServicePluginInstallInvalidFileType" xml:space="preserve">
+    <value>Ungültiger Plugin-Dateityp, erwartet werden .hutao- oder .hutaodisabled-Dateien</value>
+  </data>
+  <data name="ServicePluginInstallManifestNotFound" xml:space="preserve">
+    <value>manifest.json in der Plugin-Datei nicht gefunden</value>
+  </data>
+  <data name="ServicePluginInstallInvalidManifest" xml:space="preserve">
+    <value>Plugin-manifest.json ungültig oder fehlende ID</value>
+  </data>
+  <data name="ServicePluginInstallSuccess" xml:space="preserve">
+    <value>Plugin '{0}' erfolgreich installiert</value>
+  </data>
+  <data name="ServicePluginInstallFailed" xml:space="preserve">
+    <value>Plugin-Installation fehlgeschlagen</value>
+  </data>
+  <data name="ServicePluginLoadDirectoryNotFound" xml:space="preserve">
+    <value>Plugin-Verzeichnis '{0}' nicht gefunden</value>
+  </data>
+  <data name="ServicePluginLoadManifestNotFound" xml:space="preserve">
+    <value>manifest.json für Plugin '{0}' nicht gefunden</value>
+  </data>
+  <data name="ServicePluginLoadDllNotFound" xml:space="preserve">
+    <value>DLL-Datei für Plugin '{0}' nicht gefunden</value>
+  </data>
+  <data name="ServicePluginLoadSuccess" xml:space="preserve">
+    <value>Plugin '{0}' erfolgreich geladen</value>
+  </data>
+  <data name="ServicePluginLoadFailed" xml:space="preserve">
+    <value>Plugin-Laden fehlgeschlagen</value>
+  </data>
+  <data name="ServicePluginNotFound" xml:space="preserve">
+    <value>Plugin '{0}' nicht gefunden</value>
+  </data>
+  <data name="ServicePluginInstallAlreadyExists" xml:space="preserve">
+    <value>Plugin '{0}' ist bereits installiert</value>
+  </data>
+  <data name="ServicePluginLoadMainTypeNotFound" xml:space="preserve">
+    <value>Hauptklasse für Plugin '{0}' nicht gefunden</value>
+  </data>
+  <data name="ServicePluginLoadInvalidManifest" xml:space="preserve">
+    <value>Plugin '{0}' hat eine ungültige Manifestdatei</value>
+  </data>
+  <data name="ServicePluginDisableSuccess" xml:space="preserve">
+    <value>Plugin '{0}' erfolgreich deaktiviert</value>
+  </data>
+  <data name="ServicePluginDeleteSuccess" xml:space="preserve">
+    <value>Plugin '{0}' erfolgreich deinstalliert</value>
+  </data>
+  <data name="ServicePluginDeleteFailed" xml:space="preserve">
+    <value>Fehler beim Deinstallieren von Plugin '{0}'</value>
+  </data>
+  <data name="ServicePluginEnablingSuccess" xml:space="preserve">
+    <value>Plugin '{0}' erfolgreich aktiviert</value>
+  </data>
+  <data name="ViewPluginHeader" xml:space="preserve">
+    <value>Plugin-Verwaltung</value>
+  </data>
+  <data name="ViewPagePluginInstallButton" xml:space="preserve">
+    <value>Plugin installieren</value>
+  </data>
+  <data name="ViewPagePluginRefreshButton" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="ViewPagePluginOpenDirectoryButton" xml:space="preserve">
+    <value>Plugin-Verzeichnis öffnen</value>
+  </data>
+  <data name="ViewPagePluginTotalText" xml:space="preserve">
+    <value>Insgesamt</value>
+  </data>
+  <data name="ViewPagePluginCountText" xml:space="preserve">
+    <value>Plugins</value>
+  </data>
+  <data name="ViewPagePluginEmptyTitle" xml:space="preserve">
+    <value>Keine Plugins</value>
+  </data>
+  <data name="ViewPagePluginEmptyDescription" xml:space="preserve">
+    <value>Klicken Sie auf die Schaltfläche "Plugin installieren", um Ihr erstes Plugin hinzuzufügen</value>
+  </data>
+  <data name="ViewPagePluginEnableButton" xml:space="preserve">
+    <value>Aktivieren</value>
+  </data>
+  <data name="ViewPagePluginDisableButton" xml:space="preserve">
+    <value>Deaktivieren</value>
+  </data>
+  <data name="ViewPagePluginSettingsButton" xml:space="preserve">
+    <value>Einstellungen</value>
+  </data>
+  <data name="ViewPagePluginUninstallButton" xml:space="preserve">
+    <value>Deinstallieren</value>
+  </data>
+  <data name="ViewPagePluginStatusEnabled" xml:space="preserve">
+    <value>Aktiviert</value>
+  </data>
+  <data name="ViewPagePluginStatusDisabled" xml:space="preserve">
+    <value>Deaktiviert</value>
+  </data>
+  <data name="ViewPagePluginSettingBackButton" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="ViewPagePluginSettingTitle" xml:space="preserve">
+    <value>Plugin-Einstellungen</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyTitle" xml:space="preserve">
+    <value>Keine Einstellungen</value>
+  </data>
+  <data name="ViewPagePluginSettingEmptyDescription" xml:space="preserve">
+    <value>Dieses Plugin hat keine konfigurierbaren Einstellungen</value>
+  </data>
+  <data name="ViewPagePluginSettingStringPlaceholder" xml:space="preserve">
+    <value>Text eingeben</value>
+  </data>
+  <data name="ViewPagePluginSettingIntPlaceholder" xml:space="preserve">
+    <value>Ganze Zahl eingeben</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOff" xml:space="preserve">
+    <value>Aus</value>
+  </data>
+  <data name="ViewPagePluginSettingToggleOn" xml:space="preserve">
+    <value>Ein</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultPlaceholder" xml:space="preserve">
+    <value>Wert eingeben</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveButton" xml:space="preserve">
+    <value>Speichern</value>
+  </data>
+  <data name="ViewPagePluginSettingResetButton" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
+  <data name="ViewPagePluginSettingDefaultValueText" xml:space="preserve">
+    <value>Standardwert: </value>
+  </data>
+  <data name="ServicePluginPickFileTitle" xml:space="preserve">
+    <value>Plugin-Datei auswählen</value>
+  </data>
+  <data name="ServicePluginUninstallTitle" xml:space="preserve">
+    <value>Plugin {0} deinstallieren</value>
+  </data>
+  <data name="ServicePluginUninstallDescription" xml:space="preserve">
+    <value>Möchten Sie Plugin {0} wirklich deinstallieren? Dieser Vorgang kann nicht rückgängig gemacht werden.</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
+    <value>Gamepad-Hot-Switching</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription" xml:space="preserve">
+    <value>Automatisches Umschalten zwischen Tastatur/Maus und Gamepad im Spiel jederzeit</value>
+  </data>
+  <data name="WebUGCGachaConfigTypePermanentWish" xml:space="preserve">
+    <value>Standardgebet</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeAvatarEventWish" xml:space="preserve">
+    <value>Aktivitätsgebet</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleOne" xml:space="preserve">
+    <value>Aktivitätsgebet - Männlich</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarMaleTwo" xml:space="preserve">
+    <value>Aktivitätsgebet - Männlich</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleOne" xml:space="preserve">
+    <value>Aktivitätsgebet - Weiblich</value>
+  </data>
+  <data name="WebUGCGachaConfigTypeActivityAvatarFemaleTwo" xml:space="preserve">
+    <value>Aktivitätsgebet - Weiblich</value>
+  </data>
+  <data name="ViewControlStatisticsCardPurpleAveragePullText" xml:space="preserve">
+    <value>Durchschn. Ziehungen für 4-Sterne</value>
+  </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeHeader" xml:space="preserve">
+    <value>Gebet</value>
+  </data>
+  <data name="ViewPageGachaLogSwitchToBeyondGachaModeDescription" xml:space="preserve">
+    <value>In den Gebet-Modus (Tausend-Sterne-Wunderreich) wechseln</value>
+  </data>
+  <data name="ServiceGachaLogFactoryBeyondEventWishName" xml:space="preserve">
+    <value>Aktivitätsgebet</value>
+  </data>
+  <data name="ServiceGachaLogFactoryBeyondPermanentWishName" xml:space="preserve">
+    <value>Echo der Abenteuer</value>
+  </data>
+  <data name="ViewOverlayDisplayPaimonToolTip" xml:space="preserve">
+    <value>Paimon anzeigen</value>
+  </data>
+  <data name="ViewOverlayHideGrassToolTip" xml:space="preserve">
+    <value>Gras verbergen</value>
+  </data>
+  <data name="ViewPageAvatarPropertyAddWeaponToPlan" xml:space="preserve">
+    <value>Waffe zum Entwicklungsplan hinzufügen</value>
+  </data>
+  <data name="ViewPageAvatarPropertyAddAvatarToPlan" xml:space="preserve">
+    <value>Charakter zum Entwicklungsplan hinzufügen</value>
+  </data>
+  <data name="ViewPageAvatarPropertyAddBothToPlan" xml:space="preserve">
+    <value>Charakter und Waffe zum Entwicklungsplan hinzufügen</value>
+  </data>
+  <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpHeader" xml:space="preserve">
+    <value>Zeitumstellungsanimation entfernen</value>
+  </data>
+  <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpDescription" xml:space="preserve">
+    <value>Entfernt die langsame Zeitänderungsanimation, nachdem auf der Seite zum Einstellen der Zeit auf 'Bestätigen' geklickt wurde</value>
+  </data>
+  <data name="ViewPageAvatarPropertyExportToText" xml:space="preserve">
+    <value>Aktuellen Charakter exportieren</value>
+  </data>
+  <data name="ViewPageAvatarPropertyExportAllToText" xml:space="preserve">
+    <value>Alle Charaktere exportieren</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Benutzerdefinierter Start</value>
@@ -4118,7 +4441,6 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOpenDownloaderAction" xml:space="preserve">
     <value>Schnell Programme aus der Liste abrufen und herunterladen</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ViewDialogLaunchGameAdvancedStartUnknownServer" xml:space="preserve">
     <value>Unbekannter Server</value>
@@ -4188,35 +4510,27 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ViewModelLaunchGameAdvancedStartProgramPathNotSet" xml:space="preserve">
     <value>Benutzerdefinierter Startprogrammpfad nicht festgelegt</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ViewModelLaunchGameAdvancedStartProgramNotExists" xml:space="preserve">
     <value>Benutzerdefiniertes Startprogramm existiert nicht</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ViewModelLaunchGameAdvancedStartProgramLaunched" xml:space="preserve">
     <value>Benutzerdefiniertes Programm gestartet</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
     <value>Benutzerdefinierter Startprogrammpfad gespeichert</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
     <value>Benutzerdefinierte Programmstarts verwalten</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartListSetter" xml:space="preserve">
     <value>Programmlistenquelle festlegen</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartGameDelayedStart" xml:space="preserve">
     <value>Programme aus der verzögerten Startliste starten</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartDelayedStartList" xml:space="preserve">
     <value>Verzögerte Startprogrammliste</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ViewDialogLaunchGameAdvancedStartSourceDescription" xml:space="preserve">
     <value>Geben Sie einen HTTP-Link ein, der auf das Ziel-JSON zeigt</value>
@@ -4257,44 +4571,178 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewPageLaunchGameAdvancedStartCoStartGameHeader" xml:space="preserve">
     <value>Verzögerte Starts beim Spielstart auslösen</value>
   </data>
+  <data name="ViewPageSettingOpenSourceSupportHeader" xml:space="preserve">
+    <value>Open-Source-Unterstützung</value>
+  </data>
   <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
     <value>Autostart beim Booten</value>
-    <comment>Translated by AI</comment>
   </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>Anwendungsverhalten</value>
-    <comment>Translated by AI</comment>
   </data>
-  <data name="UIViewMainTitleBarInvertTheme" xml:space="preserve">
-    <value>Thema umschalten</value>
-    <comment>Translated by AI</comment>
+  <data name="ViewPageSettingAutoStartEnableCardHeader" xml:space="preserve">
+    <value>Autostart für aktuellen Benutzer</value>
   </data>
-  <data name="ServiceMetadataWeaponIdNotFound" xml:space="preserve">
-    <value>Waffen-Metadaten nicht gefunden</value>
-    <comment>Translated by AI</comment>
+  <data name="ViewPageSettingAutoStartAdminActionCardHeader" xml:space="preserve">
+    <value>Autostart-Verhaltensberechtigung: Administratorrechte</value>
   </data>
-  <data name="ServiceMetadataAvatarIdNotFound" xml:space="preserve">
-    <value>Avatar-Metadaten nicht gefunden</value>
-    <comment>Translated by AI</comment>
+  <data name="ViewPageSettingAutoStartAdminActionCardDescription" xml:space="preserve">
+    <value>Beachten Sie, dass einige Funktionen unter unterschiedlichen Berechtigungen möglicherweise nicht verfügbar sind</value>
   </data>
-  <data name="ServiceGachaLogIdPlacesUnsupported" xml:space="preserve">
-    <value>Nicht unterstützte Gacha-Log-ID-Quelle</value>
-    <comment>Translated by AI</comment>
+  <data name="ViewModelGamePackageOperationContinueDownloadButtonText" xml:space="preserve">
+    <value>Download fortsetzen</value>
   </data>
-  <data name="ServiceGachaLogWeaponIdNotFound" xml:space="preserve">
-    <value>Waffen-ID nicht gefunden</value>
-    <comment>Translated by AI</comment>
+  <data name="ContentDialogPauseButtonText" xml:space="preserve">
+    <value>Pause</value>
   </data>
-  <data name="ServiceGachaLogAvatarIdNotFound" xml:space="preserve">
-    <value>Avatar-ID nicht gefunden</value>
-    <comment>Translated by AI</comment>
+  <data name="ViewModelMainNetworkUnavailableWillAutoRetry" xml:space="preserve">
+    <value>Aktuelles Netzwerk nicht verfügbar. Automatischer Wiederholungsversuch nach Wiederherstellung der Netzwerkverbindung.</value>
   </data>
-  <data name="ViewPageSettingCMThemeDescription" xml:space="preserve">
-    <value>Weihnachtsthema aktivieren, Neustart erforderlich, nur einmal im Dezember aktivieren</value>
-    <comment>Translated by AI</comment>
+  <data name="ViewModelMainNetworkConnectionFailedWillAutoRetry" xml:space="preserve">
+    <value>Netzwerkverbindung fehlgeschlagen. Automatischer Wiederholungsversuch nach Wiederherstellung der Netzwerkverbindung.</value>
   </data>
-  <data name="ViewPageSettingCMThemeHeader" xml:space="preserve">
-    <value>Weihnachtsthema</value>
-    <comment>Translated by AI</comment>
+  <data name="ViewModelMainNetworkDisconnected" xml:space="preserve">
+    <value>Netzwerkverbindung getrennt erkannt.</value>
+  </data>
+  <data name="ViewModelMainNetworkRecoveredRetrying" xml:space="preserve">
+    <value>Netzwerk wiederhergestellt, automatischer Wiederholungsversuch.</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarActStatusOngoing" xml:space="preserve">
+    <value>Aktiv</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarActStatusUpcoming" xml:space="preserve">
+    <value>Bevorstehend</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarCountdownDaysAndHours" xml:space="preserve">
+    <value>Verbleibende Zeit: {0} Tage {1} Stunden</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarCountdownHours" xml:space="preserve">
+    <value>Verbleibende Zeit: {0} Stunden</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarHardChallengeLocked" xml:space="preserve">
+    <value>Noch nicht freigeschaltet</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarHardChallengeSubCountdownDaysAndHours" xml:space="preserve">
+    <value>Verbleibende Zeit der Anomalie-Ausbruchsphase: {0} Tage {1} Stunden</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarHardChallengeSubCountdownHours" xml:space="preserve">
+    <value>Verbleibende Zeit der Anomalie-Ausbruchsphase: {0} Stunden</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarRoleCombatLocked" xml:space="preserve">
+    <value>Noch nicht freigeschaltet</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarRoleCombatMaxRoundZero" xml:space="preserve">
+    <value>Noch nicht bestritten</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarTowerLocked" xml:space="preserve">
+    <value>Noch nicht freigeschaltet</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarCardPoolStatusOngoing" xml:space="preserve">
+    <value>Aktiv</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarCardPoolStatusUpcoming" xml:space="preserve">
+    <value>Bevorstehend</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarDuration" xml:space="preserve">
+  <value>Von {0} bis {1}</value>
+  </data>
+  <data name="ViewPageSettingBackgroundMediaNone" xml:space="preserve">
+    <value>Keine</value>
+  </data>
+  <data name="ViewPageSettingBackgroundMediaLocalFolder" xml:space="preserve">
+    <value>Lokales Zufallsvideo</value>
+  </data>
+  <data name="ViewPageSettingBackgroundMediaOfficialLauncherVideo" xml:space="preserve">
+    <value>Offizielles Launcher-Hintergrundvideo</value>
+  </data>
+  <data name="WebHoyolabGameRecordActCalendarTowerStar" xml:space="preserve">
+    <value>{0}/{1}</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActPreviewDescription" xml:space="preserve">
+    <value>Standardmäßig deaktiviert, Inhalte wie Daten von nicht laufenden Ereignissen werden nicht korrekt angezeigt</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActPreviewHeader" xml:space="preserve">
+    <value>Ob nicht laufende In-Game-Versionsaktivitäten angezeigt werden sollen</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActHeader" xml:space="preserve">
+    <value>Einstellungen für den Bereich der Spielaktivitäten auf der Startseite</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActIsEnableHeader" xml:space="preserve">
+    <value>Ob die Anzeige des Spielaktivitätskalenders aktiviert werden soll</value>
+  </data>
+  <data name="ViewPageSettingHomeAnnouncementActIsEnableDescription" xml:space="preserve">
+    <value>Wirkt sofort, nach dem Deaktivieren wird es nicht mehr angezeigt</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandCombineMenuHotkeyHeader" xml:space="preserve">
+    <value>Tastenkombination für den Alchemietisch</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandWeakMapCheckHeader" xml:space="preserve">
+    <value>Erlaube das Öffnen der Karte in Domänen</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandCombineMenuHotkeyDescription" xml:space="preserve">
+    <value>Drücken Sie die angegebene Tastenkombination, um den Alchemietisch zu öffnen, nicht in der Gegend der gefährlichen Schlucht verwendbar</value>
+  </data>
+  <data name="ViewPageLaunchGameCreateGameLaunchShortcut" xml:space="preserve">
+    <value>Desktop-Verknüpfung zum Starten des Spiels erstellen</value>
+  </data>
+  <data name="ViewPageSettingNetworkHeader" xml:space="preserve">
+    <value>Netzwerk</value>
+  </data>
+  <data name="ModelIntrinsicAssociationTypeHVision" xml:space="preserve">
+    <value>Hexenzirkel</value>
+  </data>
+  <data name="ViewPageSettingServerDomainModeHeader" xml:space="preserve">
+    <value>Server-Domain</value>
+  </data>
+  <data name="ViewPageSettingServerDomainModeDescription" xml:space="preserve">
+    <value>Wählen Sie die primäre oder alternative Domain. Wenn die primäre Domain aufgrund von SSL-Verbindungsproblemen fehlschlägt, wird automatisch zur alternativen Domain gewechselt.</value>
+  </data>
+  <data name="WebServerDomainModePrimary" xml:space="preserve">
+    <value>Primäre Domain (snaphutaorp.org)</value>
+  </data>
+  <data name="WebServerDomainModeBackup" xml:space="preserve">
+    <value>Alternative Domain (hutaorp.org)</value>
+  </data>
+  <data name="ModelIntrinsicAssociationTypeSnezhnayaStar" xml:space="preserve">
+    <value>Fatui</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoHeader" xml:space="preserve">
+    <value>Video-Hintergrund</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoDescription" xml:space="preserve">
+    <value>Ändert die Video-Hintergrundquelle des Fensters, Priorität höher als Hintergrundbild</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoIsLoopingHeader" xml:space="preserve">
+    <value>Ob in Schleife abgespielt werden soll</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoIsMutedHeader" xml:space="preserve">
+    <value>Ob stummgeschaltet abgespielt werden soll</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoLocalFolderPathHeader" xml:space="preserve">
+    <value>Lokaler Ordnerpfad</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoLocalFolderPathPlaceholder" xml:space="preserve">
+    <value>Leer lassen, um das Standardverzeichnis zu verwenden</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoBrowseButton" xml:space="preserve">
+    <value>Durchsuchen...</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoPickFolderTitle" xml:space="preserve">
+    <value>Hintergrundvideo-Ordner auswählen</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoCustomFolderHeader" xml:space="preserve">
+    <value>Benutzerdefinierter Hintergrundvideo-Ordner</value>
+  </data>
+  <data name="ViewPageSettingBackgroundVideoSetFolderAction" xml:space="preserve">
+    <value>Hintergrundvideo-Ordner festlegen</value>
+  </data>
+  <data name="ViewPageSettingOpenBackgroundVideoFolderHeader" xml:space="preserve">
+    <value>Hintergrundvideo-Ordner öffnen</value>
+  </data>
+  <data name="ViewPageSettingOpenBackgroundVideoFolderDescription" xml:space="preserve">
+    <value>Benutzerdefinierte Hintergrundvideos, unterstützt Formate mp4 / mkv / webm</value>
+  </data>
+  <data name="ViewPageSettingStorageBackgroundVideoHint" xml:space="preserve">
+    <value>Die Priorität der Video-Hintergrundeinstellung ist höher als die des Hintergrundbilds</value>
   </data>
 </root>
