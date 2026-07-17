@@ -247,7 +247,7 @@
     <value>{0:f2} lần rút</value>
   </data>
   <data name="ViewControlStatisticsCardToLastBlueText" xml:space="preserve">
-    <value>距上个三星</value>
+    <value>Cách lần 3 Sao trước</value>
   </data>
   <data name="ModelBindingGachaTypedWishSummaryMaxOrangePull" xml:space="preserve">
     <value>Kém may mắn nhất {0} lần rút</value>
@@ -864,19 +864,19 @@
     <value>Giảm thời gian hồi chiêu</value>
   </data>
   <data name="ServiceBackgroundActivityDefaultDescription" xml:space="preserve">
-    <value>准备中...</value>
+    <value>Đang chuẩn bị...</value>
   </data>
   <data name="ServiceBackgroundActivityFullTrustInitialization" xml:space="preserve">
-    <value>注入组件初始化</value>
+    <value>Khởi tạo thành phần tiêm</value>
   </data>
   <data name="ServiceBackgroundActivityFullTrustInitializationDescription" xml:space="preserve">
-    <value>仅在必要时执行</value>
+    <value>Chỉ thực thi khi cần thiết</value>
   </data>
   <data name="ServiceBackgroundActivityMetadataInitialization" xml:space="preserve">
-    <value>元数据初始化</value>
+    <value>Khởi tạo siêu dữ liệu</value>
   </data>
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
-    <value>准备中，若长时间无反应请尝试重启或检查网络与服务器状态</value>
+    <value>Đang chuẩn bị, nếu không phản hồi trong thời gian dài, hãy thử khởi động lại hoặc kiểm tra mạng và trạng thái máy chủ</value>
   </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Hình nền hằng ngày của Bing</value>
@@ -942,7 +942,7 @@
     <value>Nhắc nhở nhật ký thời gian thực</value>
   </data>
   <data name="ServiceDailyNoteNotifierTransformer" xml:space="preserve">
-    <value>参量质变仪</value>
+    <value>Bộ Biến Đổi Tham Số</value>
   </data>
   <data name="ServiceDailyNoteNotifierTransformerAdaptiveHint" xml:space="preserve">
     <value>Sẵn sàng</value>
@@ -957,7 +957,7 @@
     <value>Ước Nguyện Tuyển Chọn</value>
   </data>
   <data name="ServiceGachaLogFactoryNoviceWishName" xml:space="preserve">
-    <value>新手祈愿</value>
+    <value>Cầu nguyện tân thủ</value>
   </data>
   <data name="ServiceGachaLogFactoryPermanentWishName" xml:space="preserve">
     <value>Lang thang thế gian</value>
@@ -994,7 +994,7 @@
     <value>Ngôn ngữ của URL: {0} không khớp với ngôn ngữ của Snap Hutao: {1}, vui lòng thử lại sau khi chuyển ngôn ngữ của ứng dụng trùng với ngôn ngữ URL</value>
   </data>
   <data name="ServiceGachaStatisticsFactoryItemIdInvalid" xml:space="preserve">
-    <value>不支持的 Item Id：{0}</value>
+    <value>Item Id không được hỗ trợ: {0}</value>
   </data>
   <data name="ServiceGameAccountBilibiliNotSupported" xml:space="preserve">
     <value>Máy chủ Bilibili không hỗ trợ tính năng tài khoản</value>
@@ -1024,7 +1024,7 @@
     <value>Không thể lấy phiên bản trò chơi cục bộ, không thể lấy thông tin cấu hình tiêm</value>
   </data>
   <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
-    <value>尚未支持当前游戏版本</value>
+    <value>Chưa hỗ trợ phiên bản trò chơi hiện tại</value>
   </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI đã khởi động</value>
@@ -1069,7 +1069,7 @@
     <value>Trước khi sử dụng Embedded Yae, bạn cần biết về các rủi ro liên quan và bật chức năng nhúng trong trang Khởi động Trò chơi</value>
   </data>
   <data name="ServiceGameLaunchingHandlerGameProcessStartRepositorySyncFailed" xml:space="preserve">
-    <value>在获取必要的启动游戏组件时发生错误</value>
+    <value>Đã xảy ra lỗi khi lấy các thành phần khởi động trò chơi cần thiết</value>
   </data>
   <data name="ServiceGameLocatorFileOpenPickerCommitText" xml:space="preserve">
     <value>Lựa chọn game</value>
@@ -1149,10 +1149,10 @@ Dung lượng còn trống: {2}</value>
     <value>Không thể đọc hoặc lưu cấu hình, hãy thử lại ở chế độ quản trị viên</value>
   </data>
   <data name="ServiceGitRepositoryOperationCompleted" xml:space="preserve">
-    <value>操作完成</value>
+    <value>Thao tác hoàn thành</value>
   </data>
   <data name="ServiceGitRepositoryOperationFailed" xml:space="preserve">
-    <value>操作失败 一般故障</value>
+    <value>Thao tác thất bại - Lỗi chung</value>
   </data>
   <data name="ServiceHutaoUserGachaLogExpiredAt" xml:space="preserve">
     <value>Dịch vụ tải lên lịch sử cầu nguyện có hiệu lực đến</value>
@@ -1230,7 +1230,7 @@ Dung lượng còn trống: {2}</value>
     <value>Đang chờ dữ liệu trò chơi</value>
   </data>
   <data name="UIViewMainTitleBarBackgroundActivityAction" xml:space="preserve">
-    <value>后台任务</value>
+    <value>Tác vụ nền</value>
   </data>
   <data name="UIViewPageAvatarPropertyRecommendedAppendProperties" xml:space="preserve">
     <value>Đề xuất thuộc tính bổ sung</value>
@@ -1329,7 +1329,7 @@ Dung lượng còn trống: {2}</value>
     <value>UP</value>
   </data>
   <data name="ViewControlStatisticsCardCombinedModeTooltip" xml:space="preserve">
-    <value>合并显示限定金总抽数</value>
+    <value>Hiển thị gộp tổng số lần rút vàng giới hạn</value>
   </data>
   <data name="ViewControlStatisticsSegmentedItemContentPrediction" xml:space="preserve">
     <value>Dự đoán</value>
@@ -2112,7 +2112,7 @@ Dung lượng còn trống: {2}</value>
     <value>Tiếp theo</value>
   </data>
   <data name="ViewModelGuideActionSkipDownload" xml:space="preserve">
-    <value>跳过</value>
+    <value>Bỏ qua</value>
   </data>
   <data name="ViewModelGuideActionStaticResourceBegin" xml:space="preserve">
     <value>Đang tải xuống tệp tài nguyên, vui lòng chờ</value>
@@ -2364,10 +2364,10 @@ Dung lượng còn trống: {2}</value>
     <value>{0}/s</value>
   </data>
   <data name="ViewModelWelcomeDownloadSummarySkipped" xml:space="preserve">
-    <value>已跳过</value>
+    <value>Đã bỏ qua</value>
   </data>
   <data name="ViewModelWelcomeDownloadSummaryStalled" xml:space="preserve">
-    <value>下载超时</value>
+    <value>Tải xuống quá thời gian</value>
   </data>
   <data name="ViewModelWikiAvatarStrategyNotFound" xml:space="preserve">
     <value>Chưa có thông tin hướng dẫn cho nhân vật này</value>
@@ -2439,10 +2439,10 @@ Dung lượng còn trống: {2}</value>
     <value>Chưa có thông tin nhân vật nào được tải</value>
   </data>
   <data name="ViewPageAvatarPropertySpecialDescriptionOff" xml:space="preserve">
-    <value>强化前</value>
+    <value>Trước khi cường hóa</value>
   </data>
   <data name="ViewPageAvatarPropertySpecialDescriptionOn" xml:space="preserve">
-    <value>强化后</value>
+    <value>Sau khi cường hóa</value>
   </data>
   <data name="ViewPageAvatarPropertyExportToTextLabel" xml:space="preserve">
     <value>Xuất văn bản vào clipboard</value>
@@ -3195,13 +3195,13 @@ Dung lượng còn trống: {2}</value>
     <value>Ảnh nền hiện tại là ảnh cục bộ, người dùng tự chịu trách nhiệm nếu có vấn đề về bản quyền</value>
   </data>
   <data name="ViewPageSettingBackgroundImageCustomFolderHeader" xml:space="preserve">
-    <value>自定义背景图片文件夹</value>
+    <value>Thư mục ảnh nền tùy chỉnh</value>
   </data>
   <data name="ViewPageSettingBackgroundImagePickFolderTitle" xml:space="preserve">
-    <value>选择背景图片文件夹</value>
+    <value>Chọn thư mục ảnh nền</value>
   </data>
   <data name="ViewPageSettingBackgroundImageSetFolderAction" xml:space="preserve">
-    <value>选择文件夹</value>
+    <value>Chọn thư mục</value>
   </data>
   <data name="ViewPageSettingCacheFolderHeader" xml:space="preserve">
     <value>Thư mục bộ nhớ đệm</value>
@@ -3306,10 +3306,10 @@ Dung lượng còn trống: {2}</value>
     <value>Hiển thị</value>
   </data>
   <data name="ViewPageSettingEmptyOverviewWishVisibleDescription" xml:space="preserve">
-    <value>在「总览」页面中显示无记录的祈愿活动卡片</value>
+    <value>Hiển thị thẻ sự kiện cầu nguyện không có lịch sử trong trang Tổng quan</value>
   </data>
   <data name="ViewPageSettingEmptyOverviewWishVisibleHeader" xml:space="preserve">
-    <value>无记录的祈愿总览</value>
+    <value>Tổng quan cầu nguyện không có lịch sử</value>
   </data>
   <data name="ViewPageSettingFeedbackNavigate" xml:space="preserve">
     <value>Phản hồi</value>
@@ -3654,7 +3654,7 @@ Dung lượng còn trống: {2}</value>
     <value>Vật phẩm rơi</value>
   </data>
   <data name="ViewPageWiKiMonsterAutoSuggestBoxPlaceHolder" xml:space="preserve">
-    <value>筛选怪物</value>
+    <value>Lọc quái vật</value>
   </data>
   <data name="ViewPeriodHeader" xml:space="preserve">
     <value>Kỳ</value>
@@ -3768,7 +3768,7 @@ Dung lượng còn trống: {2}</value>
     <value>Công cụ</value>
   </data>
   <data name="ViewUserCookieOperation" xml:space="preserve">
-    <value>米游社</value>
+    <value>HoYoLAB</value>
   </data>
   <data name="ViewUserCookieOperation2" xml:space="preserve">
     <value>HoYoLAB</value>
@@ -3837,7 +3837,7 @@ Dung lượng còn trống: {2}</value>
     <value>Cửa sổ web thu gọn (chỉ dành cho Quản trị viên)</value>
   </data>
   <data name="ViewWindowCompactWebView2HotKeyDisabledMessage" xml:space="preserve">
-    <value>以管理员身份运行以启用全局快捷键功能</value>
+    <value>Chạy với quyền quản trị viên để bật chức năng phím tắt toàn cục</value>
   </data>
   <data name="ViewWindowExceptionClose" xml:space="preserve">
     <value>Đóng</value>
@@ -3858,31 +3858,31 @@ Dung lượng còn trống: {2}</value>
     <value>Thực thi tập lệnh gỡ lỗi</value>
   </data>
   <data name="ViewWindowSpeedGraphTestClose" xml:space="preserve">
-    <value>关闭</value>
+    <value>Đóng</value>
   </data>
   <data name="ViewWindowSpeedGraphTestCompleted" xml:space="preserve">
-    <value>完成</value>
+    <value>Hoàn thành</value>
   </data>
   <data name="ViewWindowSpeedGraphTestCanceled" xml:space="preserve">
-    <value>已取消</value>
+    <value>Đã hủy</value>
   </data>
   <data name="ViewWindowSpeedGraphTestDescription" xml:space="preserve">
-    <value>运行测试流并实时观察图表变化</value>
+    <value>Chạy luồng thử nghiệm và quan sát biểu đồ thay đổi theo thời gian thực</value>
   </data>
   <data name="ViewWindowSpeedGraphTestReady" xml:space="preserve">
-    <value>就绪</value>
+    <value>Sẵn sàng</value>
   </data>
   <data name="ViewWindowSpeedGraphTestReplay" xml:space="preserve">
-    <value>重新播放</value>
+    <value>Phát lại</value>
   </data>
   <data name="ViewWindowSpeedGraphTestRunning" xml:space="preserve">
-    <value>运行中</value>
+    <value>Đang chạy</value>
   </data>
   <data name="ViewWindowSpeedGraphTestTitle" xml:space="preserve">
-    <value>SpeedGraph 测试演示</value>
+    <value>SpeedGraph Demo thử nghiệm</value>
   </data>
   <data name="ViewWindowSpeedGraphTestWaiting" xml:space="preserve">
-    <value>等待开始</value>
+    <value>Chờ bắt đầu</value>
   </data>
   <data name="WebAnnouncementTimeDaysBegin" xml:space="preserve">
     <value>Bắt đầu sau {0} ngày</value>
@@ -4113,265 +4113,265 @@ Dung lượng còn trống: {2}</value>
     <value>ID Màn Hình</value>
   </data>
   <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
-    <value>自动签到</value>
+    <value>Điểm danh tự động</value>
   </data>
   <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
-    <value>账号所在时区日期更新和启动时自动签到</value>
+    <value>Điểm danh tự động khi cập nhật ngày theo múi giờ tài khoản và khi khởi động</value>
   </data>
   <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
-    <value>启动时自动以管理员权限重启</value>
+    <value>Tự động khởi động lại với quyền quản trị viên khi khởi động</value>
   </data>
   <data name="ViewPageSettingAlwaysRunAsAdminTextDes" xml:space="preserve">
-    <value>将在手动启动应用时生效，建议开启自启动和管理员自启动以免启动各种功能时可能的UAC弹窗打扰</value>
+    <value>Sẽ có hiệu lực khi khởi động thủ công, nên bật tự động khởi động và tự động chạy quản trị viên để tránh cửa sổ UAC có thể làm phiền khi khởi động các tính năng</value>
   </data>
   <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
-    <value>启用后，如果胡桃不是以管理员身份运行，将在启动时自动重启并请求管理员权限</value>
+    <value>Khi bật, nếu Hutao không chạy với quyền quản trị viên, sẽ tự động khởi động lại và yêu cầu quyền quản trị viên khi khởi động</value>
   </data>
   <data name="ViewPageSettingAutoStartDescription" xml:space="preserve">
-    <value>程序将在当前用户登录时启动，是否以管理员运行仅在修改时同步管理员模式选项（修改需以管理员身份运行）</value>
+    <value>Chương trình sẽ khởi động khi người dùng hiện tại đăng nhập, việc chạy với quyền quản trị viên chỉ đồng bộ tùy chọn chế độ quản trị viên khi sửa đổi (cần chạy với quyền quản trị viên để sửa đổi)</value>
   </data>
   <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
-    <value>显示派蒙</value>
+    <value>Hiển thị Paimon</value>
   </data>
   <data name="ViewPageLaunchGameIslandDisplayPaimonDescription" xml:space="preserve">
-    <value>在游戏中显示派蒙</value>
+    <value>Hiển thị Paimon trong trò chơi</value>
   </data>
   <data name="ViewPageLaunchGameIslandHideGrassHeader" xml:space="preserve">
-    <value>隐藏草地</value>
+    <value>Ẩn cỏ</value>
   </data>
   <data name="ViewPageLaunchGameIslandHideGrassDescription" xml:space="preserve">
-    <value>在游戏中隐藏草地</value>
+    <value>Ẩn cỏ trong trò chơi</value>
   </data>
   <data name="ViewPageLaunchGameIslandDebugModeHeader" xml:space="preserve">
-    <value>调试模式</value>
+    <value>Chế độ gỡ lỗi</value>
   </data>
   <data name="ViewPageLaunchGameIslandDebugModeDescription" xml:space="preserve">
-    <value>启用调试模式</value>
+    <value>Bật chế độ gỡ lỗi</value>
   </data>
   <data name="ViewPageLaunchGameIslandHidePlayerInfoHeader" xml:space="preserve">
-    <value>隐藏玩家信息</value>
+    <value>Ẩn thông tin người chơi</value>
   </data>
   <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
-    <value>隐藏玩家信息</value>
+    <value>Ẩn thông tin người chơi</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>反角色虚化</value>
+    <value>Chống làm mờ nhân vật</value>
   </data>
   <data name="ServicePluginEnablingPluginFailed" xml:space="preserve">
-    <value>在启用插件时发生异常</value>
+    <value>Đã xảy ra ngoại lệ khi bật plugin</value>
   </data>
   <data name="ServicePluginDisablingPluginFailed" xml:space="preserve">
-    <value>在禁用插件时发生异常</value>
+    <value>Đã xảy ra lỗi khi vô hiệu hóa plugin</value>
   </data>
   <data name="ServicePluginInstallFileNotFound" xml:space="preserve">
-    <value>插件文件未找到</value>
+    <value>Không tìm thấy tệp plugin</value>
   </data>
   <data name="ServicePluginInstallInvalidFileType" xml:space="preserve">
-    <value>无效的插件文件类型，应为.hutao或.hutaodisabled文件</value>
+    <value>Loại tệp plugin không hợp lệ, phải là tệp .hutao hoặc .hutaodisabled</value>
   </data>
   <data name="ServicePluginInstallManifestNotFound" xml:space="preserve">
-    <value>插件文件中未找到manifest.json文件</value>
+    <value>Không tìm thấy tệp manifest.json trong tệp plugin</value>
   </data>
   <data name="ServicePluginInstallInvalidManifest" xml:space="preserve">
-    <value>插件manifest.json文件无效或缺少ID</value>
+    <value>Tệp manifest.json của plugin không hợp lệ hoặc thiếu ID</value>
   </data>
   <data name="ServicePluginInstallSuccess" xml:space="preserve">
-    <value>插件'{0}'安装成功</value>
+    <value>Plugin '{0}' được cài đặt thành công</value>
   </data>
   <data name="ServicePluginInstallFailed" xml:space="preserve">
-    <value>安装插件失败</value>
+    <value>Cài đặt plugin thất bại</value>
   </data>
   <data name="ServicePluginLoadDirectoryNotFound" xml:space="preserve">
-    <value>插件目录'{0}'未找到</value>
+    <value>Không tìm thấy thư mục plugin '{0}'</value>
   </data>
   <data name="ServicePluginLoadManifestNotFound" xml:space="preserve">
-    <value>插件'{0}'的manifest.json文件未找到</value>
+    <value>Không tìm thấy tệp manifest.json của plugin '{0}'</value>
   </data>
   <data name="ServicePluginLoadDllNotFound" xml:space="preserve">
-    <value>插件'{0}'的DLL文件未找到</value>
+    <value>Không tìm thấy tệp DLL của plugin '{0}'</value>
   </data>
   <data name="ServicePluginLoadSuccess" xml:space="preserve">
-    <value>插件'{0}'加载成功</value>
+    <value>Tải plugin '{0}' thành công</value>
   </data>
   <data name="ServicePluginLoadFailed" xml:space="preserve">
-    <value>插件加载失败</value>
+    <value>Tải plugin thất bại</value>
   </data>
   <data name="ServicePluginNotFound" xml:space="preserve">
-    <value>找不到插件'{0}'</value>
+    <value>Không tìm thấy plugin '{0}'</value>
   </data>
   <data name="ServicePluginInstallAlreadyExists" xml:space="preserve">
-    <value>插件'{0}'已经安装</value>
+    <value>Plugin '{0}' đã được cài đặt</value>
   </data>
   <data name="ServicePluginLoadMainTypeNotFound" xml:space="preserve">
-    <value>找不到插件'{0}'的主类</value>
+    <value>Không tìm thấy lớp chính của plugin '{0}'</value>
   </data>
   <data name="ServicePluginLoadInvalidManifest" xml:space="preserve">
-    <value>插件'{0}'具有无效的清单文件</value>
+    <value>Plugin '{0}' có tệp kê khai không hợp lệ</value>
   </data>
   <data name="ServicePluginDisableSuccess" xml:space="preserve">
-    <value>插件'{0}'禁用成功</value>
+    <value>Vô hiệu hóa plugin '{0}' thành công</value>
   </data>
   <data name="ServicePluginDeleteSuccess" xml:space="preserve">
-    <value>成功卸载了插件'{0}'</value>
+    <value>Đã gỡ cài đặt plugin '{0}' thành công</value>
   </data>
   <data name="ServicePluginDeleteFailed" xml:space="preserve">
-    <value>在卸载插件'{0}'时发生错误</value>
+    <value>Đã xảy ra lỗi khi gỡ cài đặt plugin '{0}'</value>
   </data>
   <data name="ServicePluginEnablingSuccess" xml:space="preserve">
-    <value>插件'{0}'启用成功</value>
+    <value>Kích hoạt plugin '{0}' thành công</value>
   </data>
   <data name="ViewPluginHeader" xml:space="preserve">
-    <value>插件管理</value>
+    <value>Quản lý plugin</value>
   </data>
   <data name="ViewPagePluginInstallButton" xml:space="preserve">
-    <value>安装插件</value>
+    <value>Cài đặt plugin</value>
   </data>
   <data name="ViewPagePluginRefreshButton" xml:space="preserve">
-    <value>刷新</value>
+    <value>Làm mới</value>
   </data>
   <data name="ViewPagePluginOpenDirectoryButton" xml:space="preserve">
-    <value>打开插件目录</value>
+    <value>Mở thư mục plugin</value>
   </data>
   <data name="ViewPagePluginTotalText" xml:space="preserve">
-    <value>共</value>
+    <value>Tổng cộng</value>
   </data>
   <data name="ViewPagePluginCountText" xml:space="preserve">
-    <value>个插件</value>
+    <value>plugin</value>
   </data>
   <data name="ViewPagePluginEmptyTitle" xml:space="preserve">
-    <value>暂无插件</value>
+    <value>Chưa có plugin</value>
   </data>
   <data name="ViewPagePluginEmptyDescription" xml:space="preserve">
-    <value>点击"安装插件"按钮来添加你的第一个插件</value>
+    <value>Nhấn nút "Cài đặt plugin" để thêm plugin đầu tiên của bạn.</value>
   </data>
   <data name="ViewPagePluginEnableButton" xml:space="preserve">
-    <value>启用</value>
+    <value>Bật</value>
   </data>
   <data name="ViewPagePluginDisableButton" xml:space="preserve">
-    <value>禁用</value>
+    <value>Tắt</value>
   </data>
   <data name="ViewPagePluginSettingsButton" xml:space="preserve">
-    <value>设置</value>
+    <value>Cài đặt</value>
   </data>
   <data name="ViewPagePluginUninstallButton" xml:space="preserve">
-    <value>卸载</value>
+    <value>Gỡ cài đặt</value>
   </data>
   <data name="ViewPagePluginStatusEnabled" xml:space="preserve">
-    <value>已启用</value>
+    <value>Đã bật</value>
   </data>
   <data name="ViewPagePluginStatusDisabled" xml:space="preserve">
-    <value>已禁用</value>
+    <value>Đã tắt</value>
   </data>
   <data name="ViewPagePluginSettingBackButton" xml:space="preserve">
-    <value>返回</value>
+    <value>Quay lại</value>
   </data>
   <data name="ViewPagePluginSettingTitle" xml:space="preserve">
-    <value>插件设置</value>
+    <value>Cài đặt plugin</value>
   </data>
   <data name="ViewPagePluginSettingEmptyTitle" xml:space="preserve">
-    <value>暂无设置</value>
+    <value>Chưa có cài đặt</value>
   </data>
   <data name="ViewPagePluginSettingEmptyDescription" xml:space="preserve">
-    <value>此插件没有可配置的设置</value>
+    <value>Plugin này không có cài đặt nào có thể cấu hình</value>
   </data>
   <data name="ViewPagePluginSettingStringPlaceholder" xml:space="preserve">
-    <value>请输入文本</value>
+    <value>Vui lòng nhập văn bản</value>
   </data>
   <data name="ViewPagePluginSettingIntPlaceholder" xml:space="preserve">
-    <value>请输入整数</value>
+    <value>Vui lòng nhập số nguyên</value>
   </data>
   <data name="ViewPagePluginSettingToggleOff" xml:space="preserve">
-    <value>关</value>
+    <value>Tắt</value>
   </data>
   <data name="ViewPagePluginSettingToggleOn" xml:space="preserve">
-    <value>开</value>
+    <value>Bật</value>
   </data>
   <data name="ViewPagePluginSettingDefaultPlaceholder" xml:space="preserve">
-    <value>请输入值</value>
+    <value>Vui lòng nhập giá trị</value>
   </data>
   <data name="ViewPagePluginSettingSaveButton" xml:space="preserve">
-    <value>保存</value>
+    <value>Lưu</value>
   </data>
   <data name="ViewPagePluginSettingResetButton" xml:space="preserve">
-    <value>重置</value>
+    <value>Đặt lại</value>
   </data>
   <data name="ViewPagePluginSettingDefaultValueText" xml:space="preserve">
-    <value>默认值: </value>
+    <value>Giá trị mặc định: </value>
   </data>
   <data name="ServicePluginPickFileTitle" xml:space="preserve">
-    <value>选择插件文件</value>
+    <value>Chọn tệp plugin</value>
   </data>
   <data name="ServicePluginUninstallTitle" xml:space="preserve">
-    <value>卸载插件 {0}</value>
+    <value>Gỡ cài đặt plugin {0}</value>
   </data>
   <data name="ServicePluginUninstallDescription" xml:space="preserve">
-    <value>确定要卸载插件 {0} 吗？此操作不可恢复。</value>
+    <value>Bạn có chắc muốn gỡ cài đặt plugin {0} không? Thao tác này không thể hoàn tác.</value>
   </data>
   <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
-    <value>手柄热切换</value>
+    <value>Chuyển đổi nóng tay cầm</value>
   </data>
   <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription" xml:space="preserve">
-    <value>在游戏中随时自动切换键鼠和手柄输入</value>
+    <value>Tự động chuyển đổi giữa bàn phím/chuột và tay cầm trong game bất cứ lúc nào</value>
   </data>
   <data name="WebUGCGachaConfigTypePermanentWish" xml:space="preserve">
-    <value>常驻颂愿</value>
+    <value>Ước Nguyện Thường Trú</value>
   </data>
   <data name="WebUGCGachaConfigTypeAvatarEventWish" xml:space="preserve">
-    <value>活动颂愿</value>
+    <value>Ước Nguyện Sự Kiện</value>
   </data>
   <data name="WebUGCGachaConfigTypeActivityAvatarMaleOne" xml:space="preserve">
-    <value>活动颂愿-男</value>
+    <value>Ước Nguyện Sự Kiện - Nam</value>
   </data>
   <data name="WebUGCGachaConfigTypeActivityAvatarMaleTwo" xml:space="preserve">
-    <value>活动颂愿-男</value>
+    <value>Ước Nguyện Sự Kiện - Nam</value>
   </data>
   <data name="WebUGCGachaConfigTypeActivityAvatarFemaleOne" xml:space="preserve">
-    <value>活动颂愿-女</value>
+    <value>Ước Nguyện Sự Kiện - Nữ</value>
   </data>
   <data name="WebUGCGachaConfigTypeActivityAvatarFemaleTwo" xml:space="preserve">
-    <value>活动颂愿-女</value>
+    <value>Ước Nguyện Sự Kiện - Nữ</value>
   </data>
   <data name="ViewControlStatisticsCardPurpleAveragePullText" xml:space="preserve">
-    <value>四星平均抽数</value>
+    <value>Số lần quay trung bình 4 Sao</value>
   </data>
   <data name="ViewPageGachaLogSwitchToBeyondGachaModeHeader" xml:space="preserve">
-    <value>颂愿</value>
+    <value>Ước Nguyện</value>
   </data>
   <data name="ViewPageGachaLogSwitchToBeyondGachaModeDescription" xml:space="preserve">
-    <value>切换到颂愿(千星奇域)模式</value>
+    <value>Chuyển sang chế độ Ước Nguyện (Thiên Kỳ Vực)</value>
   </data>
   <data name="ServiceGachaLogFactoryBeyondEventWishName" xml:space="preserve">
-    <value>活动颂愿</value>
+    <value>Ước Nguyện Sự Kiện</value>
   </data>
   <data name="ServiceGachaLogFactoryBeyondPermanentWishName" xml:space="preserve">
-    <value>奇遇回声</value>
+    <value>Kỳ Ngộ Hồi Âm</value>
   </data>
   <data name="ViewOverlayDisplayPaimonToolTip" xml:space="preserve">
-    <value>显示派蒙</value>
+    <value>Hiển thị Paimon</value>
   </data>
   <data name="ViewOverlayHideGrassToolTip" xml:space="preserve">
-    <value>隐藏草地</value>
+    <value>Ẩn cỏ</value>
   </data>
   <data name="ViewPageAvatarPropertyAddWeaponToPlan" xml:space="preserve">
-    <value>添加武器到养成计划</value>
+    <value>Thêm vũ khí vào kế hoạch bồi dưỡng</value>
   </data>
   <data name="ViewPageAvatarPropertyAddAvatarToPlan" xml:space="preserve">
-    <value>添加角色到养成计划</value>
+    <value>Thêm nhân vật vào kế hoạch bồi dưỡng</value>
   </data>
   <data name="ViewPageAvatarPropertyAddBothToPlan" xml:space="preserve">
-    <value>添加角色与武器到养成计划</value>
+    <value>Thêm nhân vật và vũ khí vào kế hoạch bồi dưỡng</value>
   </data>
   <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpHeader" xml:space="preserve">
-    <value>移除调整时间动画</value>
+    <value>Loại bỏ hiệu ứng điều chỉnh thời gian</value>
   </data>
   <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpDescription" xml:space="preserve">
-    <value>移除调整时间页面点击确定后时间缓慢变化的动画</value>
+    <value>Loại bỏ hiệu ứng thời gian thay đổi chậm sau khi nhấn xác nhận trên trang điều chỉnh thời gian</value>
   </data>
   <data name="ViewPageAvatarPropertyExportToText" xml:space="preserve">
-    <value>导出当前角色</value>
+    <value>Xuất nhân vật hiện tại</value>
   </data>
   <data name="ViewPageAvatarPropertyExportAllToText" xml:space="preserve">
-    <value>导出所有角色</value>
+    <value>Xuất tất cả nhân vật</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Khởi chạy tùy chỉnh</value>
@@ -4573,177 +4573,177 @@ Dung lượng còn trống: {2}</value>
     <value>Kích hoạt khởi động trễ khi khởi động trò chơi</value>
   </data>
   <data name="ViewPageSettingOpenSourceSupportHeader" xml:space="preserve">
-    <value>开源支持</value>
+    <value>Hỗ trợ mã nguồn mở</value>
   </data>
   <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
-    <value>开机自启动</value>
+    <value>Tự động khởi động cùng Windows</value>
   </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
-    <value>应用行为</value>
+    <value>Hành vi ứng dụng</value>
   </data>
   <data name="ViewPageSettingAutoStartEnableCardHeader" xml:space="preserve">
-    <value>当前用户自启动</value>
+    <value>Tự động khởi động cho người dùng hiện tại</value>
   </data>
   <data name="ViewPageSettingAutoStartAdminActionCardHeader" xml:space="preserve">
-    <value>自启动行为权限设置：管理员权限</value>
+    <value>Cài đặt quyền hành vi tự khởi động: Quyền quản trị viên</value>
   </data>
   <data name="ViewPageSettingAutoStartAdminActionCardDescription" xml:space="preserve">
-    <value>注意一些功能可能在不同权限下无法使用</value>
+    <value>Lưu ý: một số chức năng có thể không hoạt động dưới các quyền khác nhau</value>
   </data>
   <data name="ViewModelGamePackageOperationContinueDownloadButtonText" xml:space="preserve">
-    <value>继续下载</value>
+    <value>Tiếp tục tải xuống</value>
   </data>
   <data name="ContentDialogPauseButtonText" xml:space="preserve">
-    <value>暂停</value>
+    <value>Tạm dừng</value>
   </data>
   <data name="ViewModelMainNetworkUnavailableWillAutoRetry" xml:space="preserve">
-    <value>当前网络不可用，将在网络恢复后自动重试。</value>
+    <value>Mạng hiện không khả dụng, sẽ tự động thử lại sau khi mạng được khôi phục.</value>
   </data>
   <data name="ViewModelMainNetworkConnectionFailedWillAutoRetry" xml:space="preserve">
-    <value>网络连接失败，将在网络恢复后自动重试。</value>
+    <value>Kết nối mạng thất bại, sẽ tự động thử lại sau khi mạng được khôi phục.</value>
   </data>
   <data name="ViewModelMainNetworkDisconnected" xml:space="preserve">
-    <value>检测到网络已断开。</value>
+    <value>Phát hiện mạng đã ngắt kết nối.</value>
   </data>
   <data name="ViewModelMainNetworkRecoveredRetrying" xml:space="preserve">
-    <value>网络已恢复，正在自动重试。</value>
+    <value>Mạng đã được khôi phục, đang tự động thử lại.</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarActStatusOngoing" xml:space="preserve">
-    <value>进行中</value>
+    <value>Đang tiến hành</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarActStatusUpcoming" xml:space="preserve">
-    <value>未开启</value>
+    <value>Sắp diễn ra</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarCountdownDaysAndHours" xml:space="preserve">
-    <value>剩余时间：{0} 天 {1} 小时</value>
+    <value>Thời gian còn lại: {0} ngày {1} giờ</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarCountdownHours" xml:space="preserve">
-    <value>剩余时间：{0} 小时</value>
+    <value>Thời gian còn lại: {0} giờ</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarHardChallengeLocked" xml:space="preserve">
-    <value>尚未解锁</value>
+    <value>Chưa mở khóa</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarHardChallengeSubCountdownDaysAndHours" xml:space="preserve">
-    <value>紊乱爆发期剩余时间：{0} 天 {1} 小时</value>
+    <value>Thời gian còn lại của kỳ bùng nổ hỗn loạn: {0} ngày {1} giờ</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarHardChallengeSubCountdownHours" xml:space="preserve">
-    <value>紊乱爆发期剩余时间：{0} 小时</value>
+    <value>Thời gian còn lại của kỳ bùng nổ hỗn loạn: {0} giờ</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarRoleCombatLocked" xml:space="preserve">
-    <value>尚未解锁</value>
+    <value>Chưa mở khóa</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarRoleCombatMaxRoundZero" xml:space="preserve">
-    <value>尚未挑战</value>
+    <value>Chưa thách thức</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarTowerLocked" xml:space="preserve">
-    <value>尚未解锁</value>
+    <value>Chưa mở khóa</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarCardPoolStatusOngoing" xml:space="preserve">
-    <value>进行中</value>
+    <value>Đang tiến hành</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarCardPoolStatusUpcoming" xml:space="preserve">
-    <value>待开启</value>
+    <value>Chờ mở</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarDuration" xml:space="preserve">
-  <value>{0} 至 {1}</value>
+  <value>{0} đến {1}</value>
   </data>
   <data name="ViewPageSettingBackgroundMediaNone" xml:space="preserve">
-    <value>无</value>
+    <value>Không</value>
   </data>
   <data name="ViewPageSettingBackgroundMediaLocalFolder" xml:space="preserve">
-    <value>本地随机视频</value>
+    <value>Video ngẫu nhiên trong máy</value>
   </data>
   <data name="ViewPageSettingBackgroundMediaOfficialLauncherVideo" xml:space="preserve">
-    <value>官方启动器背景</value>
+    <value>Nền video launcher chính thức</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarTowerStar" xml:space="preserve">
     <value>{0}/{1}</value>
   </data>
   <data name="ViewPageSettingHomeAnnouncementActPreviewDescription" xml:space="preserve">
-    <value>默认关闭，不在进行中的事件日期等部分内容将不会正确显示</value>
+    <value>Mặc định tắt, một số nội dung như ngày sự kiện không đang diễn ra sẽ không hiển thị đúng</value>
   </data>
   <data name="ViewPageSettingHomeAnnouncementActPreviewHeader" xml:space="preserve">
-    <value>是否显示未在进行中的游戏内版本活动事件</value>
+    <value>Có hiển thị các sự kiện hoạt động trong game không đang diễn ra không?</value>
   </data>
   <data name="ViewPageSettingHomeAnnouncementActHeader" xml:space="preserve">
-    <value>主页游戏活动区域设置</value>
+    <value>Cài đặt khu vực sự kiện trò chơi trên trang chủ</value>
   </data>
   <data name="ViewPageSettingHomeAnnouncementActIsEnableHeader" xml:space="preserve">
-    <value>是否开启游戏活动日历显示</value>
+    <value>Có bật hiển thị lịch hoạt động trò chơi không?</value>
   </data>
   <data name="ViewPageSettingHomeAnnouncementActIsEnableDescription" xml:space="preserve">
-    <value>立即生效，关闭后将不再显示</value>
+    <value>Hiệu lực ngay, sau khi tắt sẽ không hiển thị nữa</value>
   </data>
   <data name="ViewPageLaunchGameIslandCombineMenuHotkeyHeader" xml:space="preserve">
-    <value>合成台快捷键</value>
+    <value>Phím tắt bàn chế tạo</value>
   </data>
   <data name="ViewPageLaunchGameIslandWeakMapCheckHeader" xml:space="preserve">
-    <value>允许在秘境中打开地图</value>
+    <value>Cho phép mở bản đồ trong bí cảnh</value>
   </data>
   <data name="ViewPageLaunchGameIslandCombineMenuHotkeyDescription" xml:space="preserve">
-    <value>按下指定的快捷键即可打开合成台，无法在幽境危战使用</value>
+    <value>Nhấn phím tắt đã chỉ định để mở bàn chế tạo, không thể sử dụng trong Chiến trường Nguy hiểm</value>
   </data>
   <data name="ViewPageLaunchGameCreateGameLaunchShortcut" xml:space="preserve">
-    <value>在桌面上创建游戏启动快捷方式</value>
+    <value>Tạo lối tắt khởi động trò chơi trên màn hình nền</value>
   </data>
   <data name="ViewPageSettingNetworkHeader" xml:space="preserve">
-    <value>网络</value>
+    <value>Mạng</value>
   </data>
   <data name="ModelIntrinsicAssociationTypeHVision" xml:space="preserve">
-    <value>魔女会</value>
+    <value>Hội Phù Thủy</value>
   </data>
   <data name="ViewPageSettingServerDomainModeHeader" xml:space="preserve">
-    <value>服务器域名</value>
+    <value>Tên miền máy chủ</value>
   </data>
   <data name="ViewPageSettingServerDomainModeDescription" xml:space="preserve">
-    <value>选择主域名或备用域名。主域名因 SSL 连接问题失败时将自动切换到备用域名</value>
+    <value>Chọn tên miền chính hoặc tên miền dự phòng. Khi tên miền chính thất bại do vấn đề kết nối SSL, sẽ tự động chuyển sang tên miền dự phòng.</value>
   </data>
   <data name="WebServerDomainModePrimary" xml:space="preserve">
-    <value>主域名 (snaphutaorp.org)</value>
+    <value>Tên miền chính (snaphutaorp.org)</value>
   </data>
   <data name="WebServerDomainModeBackup" xml:space="preserve">
-    <value>备用域名 (hutaorp.org)</value>
+    <value>Tên miền dự phòng (hutaorp.org)</value>
   </data>
   <data name="ModelIntrinsicAssociationTypeSnezhnayaStar" xml:space="preserve">
-    <value>愚人众</value>
+    <value>Fatui</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoHeader" xml:space="preserve">
-    <value>视频背景</value>
+    <value>Nền video</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoDescription" xml:space="preserve">
-    <value>更改窗体的背景视频来源，优先级大于背景图片</value>
+    <value>Thay đổi nguồn video nền của cửa sổ, ưu tiên hơn hình nền</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoIsLoopingHeader" xml:space="preserve">
-    <value>是否循环播放</value>
+    <value>Có phát lặp lại không?</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoIsMutedHeader" xml:space="preserve">
-    <value>是否静音播放</value>
+    <value>Có phát tắt tiếng không?</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoLocalFolderPathHeader" xml:space="preserve">
-    <value>本地文件夹路径</value>
+    <value>Đường dẫn thư mục cục bộ</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoLocalFolderPathPlaceholder" xml:space="preserve">
-    <value>留空则使用默认目录</value>
+    <value>Để trống sẽ sử dụng thư mục mặc định</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoBrowseButton" xml:space="preserve">
-    <value>浏览...</value>
+    <value>Duyệt...</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoPickFolderTitle" xml:space="preserve">
-    <value>选择背景视频文件夹</value>
+    <value>Chọn thư mục video nền</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoCustomFolderHeader" xml:space="preserve">
-    <value>自定义背景视频文件夹</value>
+    <value>Thư mục video nền tùy chỉnh</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoSetFolderAction" xml:space="preserve">
-    <value>设置背景视频文件夹</value>
+    <value>Đặt thư mục video nền</value>
   </data>
   <data name="ViewPageSettingOpenBackgroundVideoFolderHeader" xml:space="preserve">
-    <value>打开背景视频文件夹</value>
+    <value>Mở thư mục video nền</value>
   </data>
   <data name="ViewPageSettingOpenBackgroundVideoFolderDescription" xml:space="preserve">
-    <value>自定义背景视频，支持 mp4 / mkv / webm 格式</value>
+    <value>Video nền tùy chỉnh, hỗ trợ định dạng mp4 / mkv / webm</value>
   </data>
   <data name="ViewPageSettingStorageBackgroundVideoHint" xml:space="preserve">
-    <value>视频背景的设置优先级大于背景图片</value>
+    <value>Cài đặt nền video có ưu tiên cao hơn hình nền</value>
   </data>
 </root>
