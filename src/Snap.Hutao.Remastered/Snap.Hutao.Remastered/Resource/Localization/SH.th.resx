@@ -247,7 +247,7 @@
     <value>{0:f2} ครั้ง</value>
   </data>
   <data name="ViewControlStatisticsCardToLastBlueText" xml:space="preserve">
-    <value>距上个三星</value>
+    <value>ห่างจากสามดาวล่าสุด</value>
   </data>
   <data name="ModelBindingGachaTypedWishSummaryMaxOrangePull" xml:space="preserve">
     <value>โชคร้ายที่สุด {0} ครั้ง</value>
@@ -333,11 +333,11 @@
     <comment>Need EXACT same string in game</comment>
   </data>
   <data name="ModelIntrinsicAssociationTypeNodkrai" xml:space="preserve">
-    <value>挪德卡莱</value>
+    <value>นอดไคร</value>
     <comment>Need EXACT same string in game</comment>
   </data>
   <data name="ModelIntrinsicAssociationTypeOmniScourge" xml:space="preserve">
-    <value>寰宇劫灭</value>
+    <value>ภัยพิบัติแห่งจักรวาล</value>
     <comment>Need EXACT same string in game</comment>
   </data>
   <data name="ModelIntrinsicAssociationTypeRanger" xml:space="preserve">
@@ -864,19 +864,19 @@
     <value>ลดคูลดาวน์</value>
   </data>
   <data name="ServiceBackgroundActivityDefaultDescription" xml:space="preserve">
-    <value>准备中...</value>
+    <value>กำลังเตรียม...</value>
   </data>
   <data name="ServiceBackgroundActivityFullTrustInitialization" xml:space="preserve">
-    <value>注入组件初始化</value>
+    <value>เริ่มต้นส่วนประกอบอินเจกต์</value>
   </data>
   <data name="ServiceBackgroundActivityFullTrustInitializationDescription" xml:space="preserve">
-    <value>仅在必要时执行</value>
+    <value>ดำเนินการเมื่อจำเป็นเท่านั้น</value>
   </data>
   <data name="ServiceBackgroundActivityMetadataInitialization" xml:space="preserve">
-    <value>元数据初始化</value>
+    <value>เริ่มต้นข้อมูลเมตา</value>
   </data>
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
-    <value>准备中，若长时间无反应请尝试重启或检查网络与服务器状态</value>
+    <value>กำลังเตรียม หากไม่มีการตอบสนองเป็นเวลานาน โปรดลองรีสตาร์ทหรือตรวจสอบสถานะเครือข่ายและเซิร์ฟเวอร์</value>
   </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>ภาพพื้นหลัง Bing ประจำวัน</value>
@@ -957,7 +957,7 @@
     <value>คำอธิษฐานบันทึก</value>
   </data>
   <data name="ServiceGachaLogFactoryNoviceWishName" xml:space="preserve">
-    <value>新手祈愿</value>
+    <value>คำอธิษฐานสำหรับผู้เริ่มต้น</value>
   </data>
   <data name="ServiceGachaLogFactoryPermanentWishName" xml:space="preserve">
     <value>คำอธิษฐานถาวร</value>
@@ -1024,7 +1024,7 @@
     <value>ไม่สามารถรับเวอร์ชันเกมในเครื่องได้ ไม่สามารถรับข้อมูลการกำหนดค่าการฉีด</value>
   </data>
   <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
-    <value>尚未支持当前游戏版本</value>
+    <value>ยังไม่รองรับเวอร์ชันเกมปัจจุบัน</value>
   </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI เปิดใช้งานแล้ว</value>
@@ -1069,7 +1069,7 @@
     <value>คุณควรทราบถึงความเสี่ยงที่เกี่ยวข้องและเปิดฟังก์ชันการฝังในหน้าเปิดเกมก่อนที่จะใช้ Embedded Yae</value>
   </data>
   <data name="ServiceGameLaunchingHandlerGameProcessStartRepositorySyncFailed" xml:space="preserve">
-    <value>在获取必要的启动游戏组件时发生错误</value>
+    <value>เกิดข้อผิดพลาดในการรับคอมโพเนนต์ที่จำเป็นสำหรับการเริ่มเกม</value>
   </data>
   <data name="ServiceGameLocatorFileOpenPickerCommitText" xml:space="preserve">
     <value>เลือกไฟล์เกม</value>
@@ -1149,10 +1149,10 @@
     <value>ไม่สามารถอ่านหรือบันทึกไฟล์กำหนดค่า โปรดลองใหม่อีกครั้งในโหมดผู้ดูแลระบบ</value>
   </data>
   <data name="ServiceGitRepositoryOperationCompleted" xml:space="preserve">
-    <value>操作完成</value>
+    <value>ดำเนินการเสร็จสิ้น</value>
   </data>
   <data name="ServiceGitRepositoryOperationFailed" xml:space="preserve">
-    <value>操作失败 一般故障</value>
+    <value>การดำเนินการล้มเหลว ข้อผิดพลาดทั่วไป</value>
   </data>
   <data name="ServiceHutaoUserGachaLogExpiredAt" xml:space="preserve">
     <value>บริการอัปโหลดบันทึกการอธิษฐานมีผลถึง</value>
@@ -1230,7 +1230,7 @@
     <value>กำลังรอข้อมูลเกม</value>
   </data>
   <data name="UIViewMainTitleBarBackgroundActivityAction" xml:space="preserve">
-    <value>后台任务</value>
+    <value>งานเบื้องหลัง</value>
   </data>
   <data name="UIViewPageAvatarPropertyRecommendedAppendProperties" xml:space="preserve">
     <value>คำแนะนำคุณสมบัติเพิ่มเติม</value>
@@ -1326,10 +1326,10 @@
     <value>เฉลี่ยการออก UP</value>
   </data>
   <data name="ViewControlStatisticsCardUpText" xml:space="preserve">
-    <value>UP</value>
+    <value>อัพ</value>
   </data>
   <data name="ViewControlStatisticsCardCombinedModeTooltip" xml:space="preserve">
-    <value>合并显示限定金总抽数</value>
+    <value>รวมแสดงจำนวนรวมของการดึงห้าดาวจำกัด</value>
   </data>
   <data name="ViewControlStatisticsSegmentedItemContentPrediction" xml:space="preserve">
     <value>การคาดการณ์</value>
@@ -2112,7 +2112,7 @@
     <value>ต่อไป</value>
   </data>
   <data name="ViewModelGuideActionSkipDownload" xml:space="preserve">
-    <value>跳过</value>
+    <value>ข้าม</value>
   </data>
   <data name="ViewModelGuideActionStaticResourceBegin" xml:space="preserve">
     <value>กำลังดาวน์โหลดไฟล์ทรัพยากร โปรดรอสักครู่</value>
@@ -2364,10 +2364,10 @@
     <value>{0}/s</value>
   </data>
   <data name="ViewModelWelcomeDownloadSummarySkipped" xml:space="preserve">
-    <value>已跳过</value>
+    <value>ข้ามแล้ว</value>
   </data>
   <data name="ViewModelWelcomeDownloadSummaryStalled" xml:space="preserve">
-    <value>下载超时</value>
+    <value>ดาวน์โหลดหมดเวลา</value>
   </data>
   <data name="ViewModelWikiAvatarStrategyNotFound" xml:space="preserve">
     <value>ไม่มีข้อมูลกลยุทธ์สำหรับตัวละครนี้</value>
@@ -2439,10 +2439,10 @@
     <value>ยังไม่ได้ดึงข้อมูลตัวละคร</value>
   </data>
   <data name="ViewPageAvatarPropertySpecialDescriptionOff" xml:space="preserve">
-    <value>强化前</value>
+    <value>ก่อนเสริมพลัง</value>
   </data>
   <data name="ViewPageAvatarPropertySpecialDescriptionOn" xml:space="preserve">
-    <value>强化后</value>
+    <value>หลังเสริมพลัง</value>
   </data>
   <data name="ViewPageAvatarPropertyExportToTextLabel" xml:space="preserve">
     <value>ส่งออกข้อความไปยังคลิปบอร์ด</value>
@@ -3195,13 +3195,13 @@
     <value>พื้นหลังปัจจุบันเป็นภาพจากเครื่อง หากมีปัญหาด้านลิขสิทธิ์ ผู้ใช้ต้องรับผิดชอบเอง</value>
   </data>
   <data name="ViewPageSettingBackgroundImageCustomFolderHeader" xml:space="preserve">
-    <value>自定义背景图片文件夹</value>
+    <value>โฟลเดอร์รูปพื้นหลังที่กำหนดเอง</value>
   </data>
   <data name="ViewPageSettingBackgroundImagePickFolderTitle" xml:space="preserve">
-    <value>选择背景图片文件夹</value>
+    <value>เลือกโฟลเดอร์รูปพื้นหลัง</value>
   </data>
   <data name="ViewPageSettingBackgroundImageSetFolderAction" xml:space="preserve">
-    <value>选择文件夹</value>
+    <value>เลือกโฟลเดอร์</value>
   </data>
   <data name="ViewPageSettingCacheFolderHeader" xml:space="preserve">
     <value>โฟลเดอร์แคช</value>
@@ -3306,10 +3306,10 @@
     <value>แสดง</value>
   </data>
   <data name="ViewPageSettingEmptyOverviewWishVisibleDescription" xml:space="preserve">
-    <value>在「总览」页面中显示无记录的祈愿活动卡片</value>
+    <value>แสดงการ์ดกิจกรรมอธิษฐานที่ไม่มีบันทึกในหน้า 'ภาพรวม'</value>
   </data>
   <data name="ViewPageSettingEmptyOverviewWishVisibleHeader" xml:space="preserve">
-    <value>无记录的祈愿总览</value>
+    <value>ภาพรวมอธิษฐานที่ไม่มีบันทึก</value>
   </data>
   <data name="ViewPageSettingFeedbackNavigate" xml:space="preserve">
     <value>ไปยังคำติชม</value>
@@ -3630,7 +3630,7 @@
     <value>ทีมที่เข้ากันได้</value>
   </data>
   <data name="ViewPageWiKiAvatarTraceEffectHeader" xml:space="preserve">
-    <value>游迹</value>
+    <value>ร่องรอย</value>
   </data>
   <data name="ViewPageWiKiAvatarVisionTitle" xml:space="preserve">
     <value>ดวงตาเทพ</value>
@@ -3654,7 +3654,7 @@
     <value>ไอเทมดรอป</value>
   </data>
   <data name="ViewPageWiKiMonsterAutoSuggestBoxPlaceHolder" xml:space="preserve">
-    <value>筛选怪物</value>
+    <value>กรองมอนสเตอร์</value>
   </data>
   <data name="ViewPeriodHeader" xml:space="preserve">
     <value>ตาราง</value>
@@ -3837,7 +3837,7 @@
     <value>หน้าต่างเว็บแบบย่อ (สำหรับผู้ดูแลระบบเท่านั้น)</value>
   </data>
   <data name="ViewWindowCompactWebView2HotKeyDisabledMessage" xml:space="preserve">
-    <value>以管理员身份运行以启用全局快捷键功能</value>
+    <value>เรียกใช้ในฐานะผู้ดูแลระบบเพื่อเปิดใช้งานฟังก์ชันปุ่มลัดส่วนกลาง</value>
   </data>
   <data name="ViewWindowExceptionClose" xml:space="preserve">
     <value>ปิด</value>
@@ -3852,37 +3852,37 @@
     <value>ดำเนินการ</value>
   </data>
   <data name="ViewPageTestSpeedGraphWindowHeader" xml:space="preserve">
-    <value>SpeedGraph Test Window</value>
+    <value>หน้าต่างทดสอบ SpeedGraph</value>
   </data>
   <data name="ViewWindowScriptingTitle" xml:space="preserve">
     <value>เรียกใช้สคริปต์แก้ไขข้อบกพร่อง</value>
   </data>
   <data name="ViewWindowSpeedGraphTestClose" xml:space="preserve">
-    <value>关闭</value>
+    <value>ปิด</value>
   </data>
   <data name="ViewWindowSpeedGraphTestCompleted" xml:space="preserve">
-    <value>完成</value>
+    <value>เสร็จสมบูรณ์</value>
   </data>
   <data name="ViewWindowSpeedGraphTestCanceled" xml:space="preserve">
-    <value>已取消</value>
+    <value>ยกเลิกแล้ว</value>
   </data>
   <data name="ViewWindowSpeedGraphTestDescription" xml:space="preserve">
-    <value>运行测试流并实时观察图表变化</value>
+    <value>เรียกใช้สตรีมทดสอบและสังเกตการเปลี่ยนแปลงของกราฟแบบเรียลไทม์</value>
   </data>
   <data name="ViewWindowSpeedGraphTestReady" xml:space="preserve">
-    <value>就绪</value>
+    <value>พร้อม</value>
   </data>
   <data name="ViewWindowSpeedGraphTestReplay" xml:space="preserve">
-    <value>重新播放</value>
+    <value>เล่นซ้ำ</value>
   </data>
   <data name="ViewWindowSpeedGraphTestRunning" xml:space="preserve">
-    <value>运行中</value>
+    <value>กำลังทำงาน</value>
   </data>
   <data name="ViewWindowSpeedGraphTestTitle" xml:space="preserve">
-    <value>SpeedGraph 测试演示</value>
+    <value>สาธิตการทดสอบ SpeedGraph</value>
   </data>
   <data name="ViewWindowSpeedGraphTestWaiting" xml:space="preserve">
-    <value>等待开始</value>
+    <value>รอเริ่ม</value>
   </data>
   <data name="WebAnnouncementTimeDaysBegin" xml:space="preserve">
     <value>เริ่มในอีก {0} วัน</value>
@@ -4113,265 +4113,265 @@
     <value>หมายเลขจอภาพ</value>
   </data>
   <data name="ViewCardSignInAutoSignIn" xml:space="preserve">
-    <value>自动签到</value>
+    <value>เช็คอินอัตโนมัติ</value>
   </data>
   <data name="ViewCardSignInAutoSignInDescription" xml:space="preserve">
-    <value>账号所在时区日期更新和启动时自动签到</value>
+    <value>อัปเดตวันที่ตามเขตเวลาของบัญชีและเช็คอินอัตโนมัติเมื่อเริ่มต้น</value>
   </data>
   <data name="ViewPageSettingAutoRestartAsAdminHeader" xml:space="preserve">
-    <value>启动时自动以管理员权限重启</value>
+    <value>รีสตาร์ทอัตโนมัติด้วยสิทธิ์ผู้ดูแลระบบเมื่อเริ่มต้น</value>
   </data>
   <data name="ViewPageSettingAlwaysRunAsAdminTextDes" xml:space="preserve">
-    <value>将在手动启动应用时生效，建议开启自启动和管理员自启动以免启动各种功能时可能的UAC弹窗打扰</value>
+    <value>จะมีผลเมื่อเปิดแอปพลิเคชันด้วยตนเอง แนะนำให้เปิดใช้งานการเริ่มต้นอัตโนมัติและการเริ่มต้นในฐานะผู้ดูแลระบบเพื่อหลีกเลี่ยงการรบกวนจากหน้าต่าง UAC เมื่อเริ่มต้นฟังก์ชันต่างๆ</value>
   </data>
   <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
-    <value>启用后，如果胡桃不是以管理员身份运行，将在启动时自动重启并请求管理员权限</value>
+    <value>เมื่อเปิดใช้งาน หาก Hutao ไม่ได้ทำงานในฐานะผู้ดูแลระบบ จะรีสตาร์ทอัตโนมัติและขอสิทธิ์ผู้ดูแลระบบเมื่อเริ่มต้น</value>
   </data>
   <data name="ViewPageSettingAutoStartDescription" xml:space="preserve">
-    <value>程序将在当前用户登录时启动，是否以管理员运行仅在修改时同步管理员模式选项（修改需以管理员身份运行）</value>
+    <value>โปรแกรมจะเริ่มต้นเมื่อผู้ใช้ปัจจุบันเข้าสู่ระบบ การทำงานในฐานะผู้ดูแลระบบจะซิงค์ตัวเลือกโหมดผู้ดูแลระบบเมื่อแก้ไขเท่านั้น (การแก้ไขต้องทำงานในฐานะผู้ดูแลระบบ)</value>
   </data>
   <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
-    <value>显示派蒙</value>
+    <value>แสดง Paimon</value>
   </data>
   <data name="ViewPageLaunchGameIslandDisplayPaimonDescription" xml:space="preserve">
-    <value>在游戏中显示派蒙</value>
+    <value>แสดง Paimon ในเกม</value>
   </data>
   <data name="ViewPageLaunchGameIslandHideGrassHeader" xml:space="preserve">
-    <value>隐藏草地</value>
+    <value>ซ่อนหญ้า</value>
   </data>
   <data name="ViewPageLaunchGameIslandHideGrassDescription" xml:space="preserve">
-    <value>在游戏中隐藏草地</value>
+    <value>ซ่อนหญ้าในเกม</value>
   </data>
   <data name="ViewPageLaunchGameIslandDebugModeHeader" xml:space="preserve">
-    <value>调试模式</value>
+    <value>โหมดดีบัก</value>
   </data>
   <data name="ViewPageLaunchGameIslandDebugModeDescription" xml:space="preserve">
-    <value>启用调试模式</value>
+    <value>เปิดใช้งานโหมดดีบัก</value>
   </data>
   <data name="ViewPageLaunchGameIslandHidePlayerInfoHeader" xml:space="preserve">
-    <value>隐藏玩家信息</value>
+    <value>ซ่อนข้อมูลผู้เล่น</value>
   </data>
   <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
-    <value>隐藏玩家信息</value>
+    <value>ซ่อนข้อมูลผู้เล่น</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
-    <value>反角色虚化</value>
+    <value>ยกเลิกการเบลอตัวละคร</value>
   </data>
   <data name="ServicePluginEnablingPluginFailed" xml:space="preserve">
-    <value>在启用插件时发生异常</value>
+    <value>เกิดข้อผิดพลาดขณะเปิดใช้งานปลั๊กอิน</value>
   </data>
   <data name="ServicePluginDisablingPluginFailed" xml:space="preserve">
-    <value>在禁用插件时发生异常</value>
+    <value>เกิดข้อผิดพลาดขณะปิดใช้งานปลั๊กอิน</value>
   </data>
   <data name="ServicePluginInstallFileNotFound" xml:space="preserve">
-    <value>插件文件未找到</value>
+    <value>ไม่พบไฟล์ปลั๊กอิน</value>
   </data>
   <data name="ServicePluginInstallInvalidFileType" xml:space="preserve">
-    <value>无效的插件文件类型，应为.hutao或.hutaodisabled文件</value>
+    <value>ประเภทไฟล์ปลั๊กอินไม่ถูกต้อง ควรเป็นไฟล์ .hutao หรือ .hutaodisabled</value>
   </data>
   <data name="ServicePluginInstallManifestNotFound" xml:space="preserve">
-    <value>插件文件中未找到manifest.json文件</value>
+    <value>ไม่พบไฟล์ manifest.json ในไฟล์ปลั๊กอิน</value>
   </data>
   <data name="ServicePluginInstallInvalidManifest" xml:space="preserve">
-    <value>插件manifest.json文件无效或缺少ID</value>
+    <value>ไฟล์ manifest.json ของปลั๊กอินไม่ถูกต้องหรือไม่มี ID</value>
   </data>
   <data name="ServicePluginInstallSuccess" xml:space="preserve">
-    <value>插件'{0}'安装成功</value>
+    <value>ติดตั้งปลั๊กอิน '{0}' สำเร็จ</value>
   </data>
   <data name="ServicePluginInstallFailed" xml:space="preserve">
-    <value>安装插件失败</value>
+    <value>การติดตั้งปลั๊กอินล้มเหลว</value>
   </data>
   <data name="ServicePluginLoadDirectoryNotFound" xml:space="preserve">
-    <value>插件目录'{0}'未找到</value>
+    <value>ไม่พบไดเรกทอรีปลั๊กอิน '{0}'</value>
   </data>
   <data name="ServicePluginLoadManifestNotFound" xml:space="preserve">
-    <value>插件'{0}'的manifest.json文件未找到</value>
+    <value>ไม่พบไฟล์ manifest.json ของปลั๊กอิน '{0}'</value>
   </data>
   <data name="ServicePluginLoadDllNotFound" xml:space="preserve">
-    <value>插件'{0}'的DLL文件未找到</value>
+    <value>ไม่พบไฟล์ DLL ของปลั๊กอิน '{0}'</value>
   </data>
   <data name="ServicePluginLoadSuccess" xml:space="preserve">
-    <value>插件'{0}'加载成功</value>
+    <value>โหลดปลั๊กอิน '{0}' สำเร็จ</value>
   </data>
   <data name="ServicePluginLoadFailed" xml:space="preserve">
-    <value>插件加载失败</value>
+    <value>การโหลดปลั๊กอินล้มเหลว</value>
   </data>
   <data name="ServicePluginNotFound" xml:space="preserve">
-    <value>找不到插件'{0}'</value>
+    <value>ไม่พบปลั๊กอิน '{0}'</value>
   </data>
   <data name="ServicePluginInstallAlreadyExists" xml:space="preserve">
-    <value>插件'{0}'已经安装</value>
+    <value>ปลั๊กอิน '{0}' ติดตั้งแล้ว</value>
   </data>
   <data name="ServicePluginLoadMainTypeNotFound" xml:space="preserve">
-    <value>找不到插件'{0}'的主类</value>
+    <value>ไม่พบคลาสหลักของปลั๊กอิน '{0}'</value>
   </data>
   <data name="ServicePluginLoadInvalidManifest" xml:space="preserve">
-    <value>插件'{0}'具有无效的清单文件</value>
+    <value>ปลั๊กอิน '{0}' มีไฟล์รายการไม่ถูกต้อง</value>
   </data>
   <data name="ServicePluginDisableSuccess" xml:space="preserve">
-    <value>插件'{0}'禁用成功</value>
+    <value>ปลั๊กอิน '{0}' ปิดใช้งานสำเร็จ</value>
   </data>
   <data name="ServicePluginDeleteSuccess" xml:space="preserve">
-    <value>成功卸载了插件'{0}'</value>
+    <value>ถอนการติดตั้งปลั๊กอิน '{0}' สำเร็จ</value>
   </data>
   <data name="ServicePluginDeleteFailed" xml:space="preserve">
-    <value>在卸载插件'{0}'时发生错误</value>
+    <value>เกิดข้อผิดพลาดขณะถอนการติดตั้งปลั๊กอิน '{0}'</value>
   </data>
   <data name="ServicePluginEnablingSuccess" xml:space="preserve">
-    <value>插件'{0}'启用成功</value>
+    <value>ปลั๊กอิน '{0}' เปิดใช้งานสำเร็จ</value>
   </data>
   <data name="ViewPluginHeader" xml:space="preserve">
-    <value>插件管理</value>
+    <value>จัดการปลั๊กอิน</value>
   </data>
   <data name="ViewPagePluginInstallButton" xml:space="preserve">
-    <value>安装插件</value>
+    <value>ติดตั้งปลั๊กอิน</value>
   </data>
   <data name="ViewPagePluginRefreshButton" xml:space="preserve">
-    <value>刷新</value>
+    <value>รีเฟรช</value>
   </data>
   <data name="ViewPagePluginOpenDirectoryButton" xml:space="preserve">
-    <value>打开插件目录</value>
+    <value>เปิดไดเรกทอรีปลั๊กอิน</value>
   </data>
   <data name="ViewPagePluginTotalText" xml:space="preserve">
-    <value>共</value>
+    <value>รวม</value>
   </data>
   <data name="ViewPagePluginCountText" xml:space="preserve">
-    <value>个插件</value>
+    <value>ปลั๊กอิน</value>
   </data>
   <data name="ViewPagePluginEmptyTitle" xml:space="preserve">
-    <value>暂无插件</value>
+    <value>ไม่มีปลั๊กอิน</value>
   </data>
   <data name="ViewPagePluginEmptyDescription" xml:space="preserve">
-    <value>点击"安装插件"按钮来添加你的第一个插件</value>
+    <value>คลิกปุ่ม "ติดตั้งปลั๊กอิน" เพื่อเพิ่มปลั๊กอินแรกของคุณ</value>
   </data>
   <data name="ViewPagePluginEnableButton" xml:space="preserve">
-    <value>启用</value>
+    <value>เปิดใช้งาน</value>
   </data>
   <data name="ViewPagePluginDisableButton" xml:space="preserve">
-    <value>禁用</value>
+    <value>ปิดใช้งาน</value>
   </data>
   <data name="ViewPagePluginSettingsButton" xml:space="preserve">
-    <value>设置</value>
+    <value>การตั้งค่า</value>
   </data>
   <data name="ViewPagePluginUninstallButton" xml:space="preserve">
-    <value>卸载</value>
+    <value>ถอนการติดตั้ง</value>
   </data>
   <data name="ViewPagePluginStatusEnabled" xml:space="preserve">
-    <value>已启用</value>
+    <value>เปิดใช้งานแล้ว</value>
   </data>
   <data name="ViewPagePluginStatusDisabled" xml:space="preserve">
-    <value>已禁用</value>
+    <value>ปิดใช้งานแล้ว</value>
   </data>
   <data name="ViewPagePluginSettingBackButton" xml:space="preserve">
-    <value>返回</value>
+    <value>กลับ</value>
   </data>
   <data name="ViewPagePluginSettingTitle" xml:space="preserve">
-    <value>插件设置</value>
+    <value>การตั้งค่าปลั๊กอิน</value>
   </data>
   <data name="ViewPagePluginSettingEmptyTitle" xml:space="preserve">
-    <value>暂无设置</value>
+    <value>ไม่มีการตั้งค่า</value>
   </data>
   <data name="ViewPagePluginSettingEmptyDescription" xml:space="preserve">
-    <value>此插件没有可配置的设置</value>
+    <value>ปลั๊กอินนี้ไม่มีการตั้งค่าที่กำหนดค่าได้</value>
   </data>
   <data name="ViewPagePluginSettingStringPlaceholder" xml:space="preserve">
-    <value>请输入文本</value>
+    <value>โปรดป้อนข้อความ</value>
   </data>
   <data name="ViewPagePluginSettingIntPlaceholder" xml:space="preserve">
-    <value>请输入整数</value>
+    <value>โปรดป้อนจำนวนเต็ม</value>
   </data>
   <data name="ViewPagePluginSettingToggleOff" xml:space="preserve">
-    <value>关</value>
+    <value>ปิด</value>
   </data>
   <data name="ViewPagePluginSettingToggleOn" xml:space="preserve">
-    <value>开</value>
+    <value>เปิด</value>
   </data>
   <data name="ViewPagePluginSettingDefaultPlaceholder" xml:space="preserve">
-    <value>请输入值</value>
+    <value>โปรดป้อนค่า</value>
   </data>
   <data name="ViewPagePluginSettingSaveButton" xml:space="preserve">
-    <value>保存</value>
+    <value>บันทึก</value>
   </data>
   <data name="ViewPagePluginSettingResetButton" xml:space="preserve">
-    <value>重置</value>
+    <value>รีเซ็ต</value>
   </data>
   <data name="ViewPagePluginSettingDefaultValueText" xml:space="preserve">
-    <value>默认值: </value>
+    <value>ค่าเริ่มต้น: </value>
   </data>
   <data name="ServicePluginPickFileTitle" xml:space="preserve">
-    <value>选择插件文件</value>
+    <value>เลือกไฟล์ปลั๊กอิน</value>
   </data>
   <data name="ServicePluginUninstallTitle" xml:space="preserve">
-    <value>卸载插件 {0}</value>
+    <value>ถอนการติดตั้งปลั๊กอิน {0}</value>
   </data>
   <data name="ServicePluginUninstallDescription" xml:space="preserve">
-    <value>确定要卸载插件 {0} 吗？此操作不可恢复。</value>
+    <value>แน่ใจหรือไม่ว่าต้องการถอนการติดตั้งปลั๊กอิน {0}? การดำเนินการนี้ไม่สามารถกู้คืนได้</value>
   </data>
   <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
-    <value>手柄热切换</value>
+    <value>สลับร้อนจอยเกม</value>
   </data>
   <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription" xml:space="preserve">
-    <value>在游戏中随时自动切换键鼠和手柄输入</value>
+    <value>สลับอินพุตคีย์บอร์ดเมาส์และจอยเกมโดยอัตโนมัติในเกมได้ตลอดเวลา</value>
   </data>
   <data name="WebUGCGachaConfigTypePermanentWish" xml:space="preserve">
-    <value>常驻颂愿</value>
+    <value>คำอธิษฐานถาวร</value>
   </data>
   <data name="WebUGCGachaConfigTypeAvatarEventWish" xml:space="preserve">
-    <value>活动颂愿</value>
+    <value>คำอธิษฐานกิจกรรม</value>
   </data>
   <data name="WebUGCGachaConfigTypeActivityAvatarMaleOne" xml:space="preserve">
-    <value>活动颂愿-男</value>
+    <value>คำอธิษฐานกิจกรรม-ชาย</value>
   </data>
   <data name="WebUGCGachaConfigTypeActivityAvatarMaleTwo" xml:space="preserve">
-    <value>活动颂愿-男</value>
+    <value>คำอธิษฐานกิจกรรม-ชาย</value>
   </data>
   <data name="WebUGCGachaConfigTypeActivityAvatarFemaleOne" xml:space="preserve">
-    <value>活动颂愿-女</value>
+    <value>คำอธิษฐานกิจกรรม-หญิง</value>
   </data>
   <data name="WebUGCGachaConfigTypeActivityAvatarFemaleTwo" xml:space="preserve">
-    <value>活动颂愿-女</value>
+    <value>คำอธิษฐานกิจกรรม-หญิง</value>
   </data>
   <data name="ViewControlStatisticsCardPurpleAveragePullText" xml:space="preserve">
-    <value>四星平均抽数</value>
+    <value>จำนวนการอัญเชิญเฉลี่ยสี่ดาว</value>
   </data>
   <data name="ViewPageGachaLogSwitchToBeyondGachaModeHeader" xml:space="preserve">
-    <value>颂愿</value>
+    <value>คำอธิษฐาน</value>
   </data>
   <data name="ViewPageGachaLogSwitchToBeyondGachaModeDescription" xml:space="preserve">
-    <value>切换到颂愿(千星奇域)模式</value>
+    <value>สลับเป็นโหมดคำอธิษฐาน (Beyond Gacha)</value>
   </data>
   <data name="ServiceGachaLogFactoryBeyondEventWishName" xml:space="preserve">
-    <value>活动颂愿</value>
+    <value>คำอธิษฐานกิจกรรม</value>
   </data>
   <data name="ServiceGachaLogFactoryBeyondPermanentWishName" xml:space="preserve">
-    <value>奇遇回声</value>
+    <value>ฉียวี่หุยเซิง</value>
   </data>
   <data name="ViewOverlayDisplayPaimonToolTip" xml:space="preserve">
-    <value>显示派蒙</value>
+    <value>แสดงไพมอน</value>
   </data>
   <data name="ViewOverlayHideGrassToolTip" xml:space="preserve">
-    <value>隐藏草地</value>
+    <value>ซ่อนหญ้า</value>
   </data>
   <data name="ViewPageAvatarPropertyAddWeaponToPlan" xml:space="preserve">
-    <value>添加武器到养成计划</value>
+    <value>เพิ่มอาวุธไปยังแผนการบ่มเพาะ</value>
   </data>
   <data name="ViewPageAvatarPropertyAddAvatarToPlan" xml:space="preserve">
-    <value>添加角色到养成计划</value>
+    <value>เพิ่มตัวละครไปยังแผนการบ่มเพาะ</value>
   </data>
   <data name="ViewPageAvatarPropertyAddBothToPlan" xml:space="preserve">
-    <value>添加角色与武器到养成计划</value>
+    <value>เพิ่มตัวละครและอาวุธไปยังแผนการบ่มเพาะ</value>
   </data>
   <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpHeader" xml:space="preserve">
-    <value>移除调整时间动画</value>
+    <value>ลบแอนิเมชันการปรับเวลา</value>
   </data>
   <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpDescription" xml:space="preserve">
-    <value>移除调整时间页面点击确定后时间缓慢变化的动画</value>
+    <value>ลบแอนิเมชันที่เวลาเปลี่ยนแปลงช้าๆ หลังจากคลิกยืนยันในหน้าปรับเวลา</value>
   </data>
   <data name="ViewPageAvatarPropertyExportToText" xml:space="preserve">
-    <value>导出当前角色</value>
+    <value>ส่งออกตัวละครปัจจุบัน</value>
   </data>
   <data name="ViewPageAvatarPropertyExportAllToText" xml:space="preserve">
-    <value>导出所有角色</value>
+    <value>ส่งออกตัวละครทั้งหมด</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>การเริ่มต้นแบบกำหนดเอง</value>
@@ -4506,16 +4506,16 @@
     <value>รูปแบบอาร์ไคฟ์ที่ไม่รองรับ!</value>
   </data>
   <data name="ViewModelLaunchGameAdvancedStartProgramPathNotSet" xml:space="preserve">
-    <value>未设置自定义启动程序路径</value>
+    <value>ไม่ได้ตั้งค่าเส้นทางโปรแกรมเริ่มต้นที่กำหนดเอง</value>
   </data>
   <data name="ViewModelLaunchGameAdvancedStartProgramNotExists" xml:space="preserve">
-    <value>自定义启动程序不存在</value>
+    <value>ไม่มีโปรแกรมเริ่มต้นที่กำหนดเอง</value>
   </data>
   <data name="ViewModelLaunchGameAdvancedStartProgramLaunched" xml:space="preserve">
-    <value>已启动自定义程序</value>
+    <value>เปิดโปรแกรมที่กำหนดเองแล้ว</value>
   </data>
   <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
-    <value>已保存自定义启动程序路径</value>
+    <value>บันทึกเส้นทางโปรแกรมเริ่มต้นที่กำหนดเองแล้ว</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
     <value>จัดการการเริ่มโปรแกรมแบบกำหนดเอง</value>
@@ -4569,177 +4569,177 @@
     <value>ทริกเกอร์การเริ่มต้นล่าช้าเมื่อเริ่มเกม</value>
   </data>
   <data name="ViewPageSettingOpenSourceSupportHeader" xml:space="preserve">
-    <value>开源支持</value>
+    <value>สนับสนุนโอเพนซอร์ส</value>
   </data>
   <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
-    <value>开机自启动</value>
+    <value>เริ่มอัตโนมัติเมื่อเปิดเครื่อง</value>
   </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
-    <value>应用行为</value>
+    <value>พฤติกรรมแอป</value>
   </data>
   <data name="ViewPageSettingAutoStartEnableCardHeader" xml:space="preserve">
-    <value>当前用户自启动</value>
+    <value>เริ่มอัตโนมัติสำหรับผู้ใช้ปัจจุบัน</value>
   </data>
   <data name="ViewPageSettingAutoStartAdminActionCardHeader" xml:space="preserve">
-    <value>自启动行为权限设置：管理员权限</value>
+    <value>การตั้งค่าสิทธิ์พฤติกรรมเริ่มอัตโนมัติ: สิทธิ์ผู้ดูแลระบบ</value>
   </data>
   <data name="ViewPageSettingAutoStartAdminActionCardDescription" xml:space="preserve">
-    <value>注意一些功能可能在不同权限下无法使用</value>
+    <value>โปรดทราบว่าฟังก์ชันบางอย่างอาจไม่สามารถใช้งานได้ภายใต้สิทธิ์ที่แตกต่างกัน</value>
   </data>
   <data name="ViewModelGamePackageOperationContinueDownloadButtonText" xml:space="preserve">
-    <value>继续下载</value>
+    <value>ดาวน์โหลดต่อ</value>
   </data>
   <data name="ContentDialogPauseButtonText" xml:space="preserve">
-    <value>暂停</value>
+    <value>หยุดชั่วคราว</value>
   </data>
   <data name="ViewModelMainNetworkUnavailableWillAutoRetry" xml:space="preserve">
-    <value>当前网络不可用，将在网络恢复后自动重试。</value>
+    <value>เครือข่ายปัจจุบันไม่พร้อมใช้งาน จะลองอีกครั้งโดยอัตโนมัติเมื่อเครือข่ายกลับมา</value>
   </data>
   <data name="ViewModelMainNetworkConnectionFailedWillAutoRetry" xml:space="preserve">
-    <value>网络连接失败，将在网络恢复后自动重试。</value>
+    <value>การเชื่อมต่อเครือข่ายล้มเหลว จะลองอีกครั้งโดยอัตโนมัติเมื่อเครือข่ายกลับมา</value>
   </data>
   <data name="ViewModelMainNetworkDisconnected" xml:space="preserve">
-    <value>检测到网络已断开。</value>
+    <value>ตรวจพบว่าเครือข่ายถูกตัดการเชื่อมต่อ</value>
   </data>
   <data name="ViewModelMainNetworkRecoveredRetrying" xml:space="preserve">
-    <value>网络已恢复，正在自动重试。</value>
+    <value>เครือข่ายกลับมาแล้ว กำลังลองอีกครั้งโดยอัตโนมัติ</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarActStatusOngoing" xml:space="preserve">
-    <value>进行中</value>
+    <value>กำลังดำเนินการ</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarActStatusUpcoming" xml:space="preserve">
-    <value>未开启</value>
+    <value>ยังไม่เปิด</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarCountdownDaysAndHours" xml:space="preserve">
-    <value>剩余时间：{0} 天 {1} 小时</value>
+    <value>เวลาที่เหลือ: {0} วัน {1} ชั่วโมง</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarCountdownHours" xml:space="preserve">
-    <value>剩余时间：{0} 小时</value>
+    <value>เวลาที่เหลือ: {0} ชั่วโมง</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarHardChallengeLocked" xml:space="preserve">
-    <value>尚未解锁</value>
+    <value>ยังไม่ได้ปลดล็อก</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarHardChallengeSubCountdownDaysAndHours" xml:space="preserve">
-    <value>紊乱爆发期剩余时间：{0} 天 {1} 小时</value>
+    <value>เวลาเหลือของช่วงระเบิดความผิดปกติ: {0} วัน {1} ชั่วโมง</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarHardChallengeSubCountdownHours" xml:space="preserve">
-    <value>紊乱爆发期剩余时间：{0} 小时</value>
+    <value>เวลาเหลือของช่วงระเบิดความผิดปกติ: {0} ชั่วโมง</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarRoleCombatLocked" xml:space="preserve">
-    <value>尚未解锁</value>
+    <value>ยังไม่ได้ปลดล็อก</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarRoleCombatMaxRoundZero" xml:space="preserve">
-    <value>尚未挑战</value>
+    <value>ยังไม่ได้ท้าทาย</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarTowerLocked" xml:space="preserve">
-    <value>尚未解锁</value>
+    <value>ยังไม่ได้ปลดล็อก</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarCardPoolStatusOngoing" xml:space="preserve">
-    <value>进行中</value>
+    <value>กำลังดำเนินการ</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarCardPoolStatusUpcoming" xml:space="preserve">
-    <value>待开启</value>
+    <value>รอเปิด</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarDuration" xml:space="preserve">
-  <value>{0} 至 {1}</value>
+  <value>{0} ถึง {1}</value>
   </data>
   <data name="ViewPageSettingBackgroundMediaNone" xml:space="preserve">
-    <value>无</value>
+    <value>ไม่มี</value>
   </data>
   <data name="ViewPageSettingBackgroundMediaLocalFolder" xml:space="preserve">
-    <value>本地随机视频</value>
+    <value>วิดีโอสุ่มจากโฟลเดอร์ในเครื่อง</value>
   </data>
   <data name="ViewPageSettingBackgroundMediaOfficialLauncherVideo" xml:space="preserve">
-    <value>官方启动器背景</value>
+    <value>พื้นหลังตัวเปิดเกมอย่างเป็นทางการ</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarTowerStar" xml:space="preserve">
     <value>{0}/{1}</value>
   </data>
   <data name="ViewPageSettingHomeAnnouncementActPreviewDescription" xml:space="preserve">
-    <value>默认关闭，不在进行中的事件日期等部分内容将不会正确显示</value>
+    <value>ปิดโดยค่าเริ่มต้น เนื้อหาบางส่วนเช่นวันที่ของเหตุการณ์ที่ไม่ได้กำลังดำเนินการจะไม่แสดงอย่างถูกต้อง</value>
   </data>
   <data name="ViewPageSettingHomeAnnouncementActPreviewHeader" xml:space="preserve">
-    <value>是否显示未在进行中的游戏内版本活动事件</value>
+    <value>แสดงกิจกรรมเวอร์ชันในเกมที่ไม่ได้กำลังดำเนินการหรือไม่</value>
   </data>
   <data name="ViewPageSettingHomeAnnouncementActHeader" xml:space="preserve">
-    <value>主页游戏活动区域设置</value>
+    <value>การตั้งค่าพื้นที่กิจกรรมเกมในหน้าแรก</value>
   </data>
   <data name="ViewPageSettingHomeAnnouncementActIsEnableHeader" xml:space="preserve">
-    <value>是否开启游戏活动日历显示</value>
+    <value>เปิดการแสดงปฏิทินกิจกรรมเกมหรือไม่</value>
   </data>
   <data name="ViewPageSettingHomeAnnouncementActIsEnableDescription" xml:space="preserve">
-    <value>立即生效，关闭后将不再显示</value>
+    <value>มีผลทันที เมื่อปิดแล้วจะไม่แสดงอีก</value>
   </data>
   <data name="ViewPageLaunchGameIslandCombineMenuHotkeyHeader" xml:space="preserve">
-    <value>合成台快捷键</value>
+    <value>ปุ่มลัดโต๊ะผสม</value>
   </data>
   <data name="ViewPageLaunchGameIslandWeakMapCheckHeader" xml:space="preserve">
-    <value>允许在秘境中打开地图</value>
+    <value>อนุญาตให้เปิดแผนที่ในดันเจี้ยน</value>
   </data>
   <data name="ViewPageLaunchGameIslandCombineMenuHotkeyDescription" xml:space="preserve">
-    <value>按下指定的快捷键即可打开合成台，无法在幽境危战使用</value>
+    <value>กดปุ่มลัดที่กำหนดเพื่อเปิดโต๊ะผสม ไม่สามารถใช้ในโหมดวิกฤตเงา</value>
   </data>
   <data name="ViewPageLaunchGameCreateGameLaunchShortcut" xml:space="preserve">
-    <value>在桌面上创建游戏启动快捷方式</value>
+    <value>สร้างทางลัดเริ่มเกมบนเดสก์ท็อป</value>
   </data>
   <data name="ViewPageSettingNetworkHeader" xml:space="preserve">
-    <value>网络</value>
+    <value>เครือข่าย</value>
   </data>
   <data name="ModelIntrinsicAssociationTypeHVision" xml:space="preserve">
-    <value>魔女会</value>
+    <value>สมาคมแม่มด</value>
   </data>
   <data name="ViewPageSettingServerDomainModeHeader" xml:space="preserve">
-    <value>服务器域名</value>
+    <value>โดเมนเซิร์ฟเวอร์</value>
   </data>
   <data name="ViewPageSettingServerDomainModeDescription" xml:space="preserve">
-    <value>选择主域名或备用域名。主域名因 SSL 连接问题失败时将自动切换到备用域名</value>
+    <value>เลือกโดเมนหลักหรือโดเมนสำรอง หากโดเมนหลักล้มเหลวเนื่องจากปัญหา SSL จะสลับไปใช้โดเมนสำรองโดยอัตโนมัติ</value>
   </data>
   <data name="WebServerDomainModePrimary" xml:space="preserve">
-    <value>主域名 (snaphutaorp.org)</value>
+    <value>โดเมนหลัก (snaphutaorp.org)</value>
   </data>
   <data name="WebServerDomainModeBackup" xml:space="preserve">
-    <value>备用域名 (hutaorp.org)</value>
+    <value>โดเมนสำรอง (hutaorp.org)</value>
   </data>
   <data name="ModelIntrinsicAssociationTypeSnezhnayaStar" xml:space="preserve">
-    <value>愚人众</value>
+    <value>Fatui</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoHeader" xml:space="preserve">
-    <value>视频背景</value>
+    <value>พื้นหลังวิดีโอ</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoDescription" xml:space="preserve">
-    <value>更改窗体的背景视频来源，优先级大于背景图片</value>
+    <value>เปลี่ยนแหล่งที่มาของวิดีโอพื้นหลังของหน้าต่าง ลำดับความสำคัญสูงกว่ารูปภาพพื้นหลัง</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoIsLoopingHeader" xml:space="preserve">
-    <value>是否循环播放</value>
+    <value>เล่นวนซ้ำหรือไม่</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoIsMutedHeader" xml:space="preserve">
-    <value>是否静音播放</value>
+    <value>เล่นแบบปิดเสียงหรือไม่</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoLocalFolderPathHeader" xml:space="preserve">
-    <value>本地文件夹路径</value>
+    <value>เส้นทางโฟลเดอร์ในเครื่อง</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoLocalFolderPathPlaceholder" xml:space="preserve">
-    <value>留空则使用默认目录</value>
+    <value>เว้นว่างไว้จะใช้ไดเรกทอรีเริ่มต้น</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoBrowseButton" xml:space="preserve">
-    <value>浏览...</value>
+    <value>เรียกดู...</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoPickFolderTitle" xml:space="preserve">
-    <value>选择背景视频文件夹</value>
+    <value>เลือกโฟลเดอร์วิดีโอพื้นหลัง</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoCustomFolderHeader" xml:space="preserve">
-    <value>自定义背景视频文件夹</value>
+    <value>โฟลเดอร์วิดีโอพื้นหลังที่กำหนดเอง</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoSetFolderAction" xml:space="preserve">
-    <value>设置背景视频文件夹</value>
+    <value>ตั้งค่าโฟลเดอร์วิดีโอพื้นหลัง</value>
   </data>
   <data name="ViewPageSettingOpenBackgroundVideoFolderHeader" xml:space="preserve">
-    <value>打开背景视频文件夹</value>
+    <value>เปิดโฟลเดอร์วิดีโอพื้นหลัง</value>
   </data>
   <data name="ViewPageSettingOpenBackgroundVideoFolderDescription" xml:space="preserve">
-    <value>自定义背景视频，支持 mp4 / mkv / webm 格式</value>
+    <value>วิดีโอพื้นหลังที่กำหนดเอง รองรับรูปแบบ mp4 / mkv / webm</value>
   </data>
   <data name="ViewPageSettingStorageBackgroundVideoHint" xml:space="preserve">
-    <value>视频背景的设置优先级大于背景图片</value>
+    <value>การตั้งค่าวิดีโอพื้นหลังมีลำดับความสำคัญสูงกว่ารูปภาพพื้นหลัง</value>
   </data>
 </root>
