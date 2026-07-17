@@ -247,7 +247,7 @@
     <value>{0:f2} Pulls</value>
   </data>
   <data name="ViewControlStatisticsCardToLastBlueText" xml:space="preserve">
-    <value>距上个三星</value>
+    <value>Since last 3-star</value>
   </data>
   <data name="ModelBindingGachaTypedWishSummaryMaxOrangePull" xml:space="preserve">
     <value>Unluckiest {0} Pulls</value>
@@ -1329,7 +1329,7 @@ Space Available: {2}</value>
     <value>UP</value>
   </data>
   <data name="ViewControlStatisticsCardCombinedModeTooltip" xml:space="preserve">
-    <value>合并显示限定金总抽数</value>
+    <value>Combine display of total limited gold wishes</value>
   </data>
   <data name="ViewControlStatisticsSegmentedItemContentPrediction" xml:space="preserve">
     <value>Prediction</value>
@@ -3858,31 +3858,31 @@ Space Available: {2}</value>
     <value>Execute Debug Script</value>
   </data>
   <data name="ViewWindowSpeedGraphTestClose" xml:space="preserve">
-    <value>关闭</value>
+    <value>Close</value>
   </data>
   <data name="ViewWindowSpeedGraphTestCompleted" xml:space="preserve">
-    <value>完成</value>
+    <value>Completed</value>
   </data>
   <data name="ViewWindowSpeedGraphTestCanceled" xml:space="preserve">
-    <value>已取消</value>
+    <value>Cancelled</value>
   </data>
   <data name="ViewWindowSpeedGraphTestDescription" xml:space="preserve">
-    <value>运行测试流并实时观察图表变化</value>
+    <value>Run test flow and watch chart changes in real time</value>
   </data>
   <data name="ViewWindowSpeedGraphTestReady" xml:space="preserve">
-    <value>就绪</value>
+    <value>Ready</value>
   </data>
   <data name="ViewWindowSpeedGraphTestReplay" xml:space="preserve">
-    <value>重新播放</value>
+    <value>Replay</value>
   </data>
   <data name="ViewWindowSpeedGraphTestRunning" xml:space="preserve">
-    <value>运行中</value>
+    <value>Running</value>
   </data>
   <data name="ViewWindowSpeedGraphTestTitle" xml:space="preserve">
-    <value>SpeedGraph 测试演示</value>
+    <value>SpeedGraph Test Demo</value>
   </data>
   <data name="ViewWindowSpeedGraphTestWaiting" xml:space="preserve">
-    <value>等待开始</value>
+    <value>Waiting to start</value>
   </data>
   <data name="WebAnnouncementTimeDaysBegin" xml:space="preserve">
     <value>Start in {0} days</value>
@@ -4122,13 +4122,13 @@ Space Available: {2}</value>
     <value>Auto Restart as Admin</value>
   </data>
   <data name="ViewPageSettingAlwaysRunAsAdminTextDes" xml:space="preserve">
-    <value>将在手动启动应用时生效，建议开启自启动和管理员自启动以免启动各种功能时可能的UAC弹窗打扰</value>
+    <value>will take effect when the app is manually launched, it is recommended to enable auto-start and admin auto-start to avoid possible UAC pop-ups when starting various features</value>
   </data>
   <data name="ViewPageSettingAutoRestartAsAdminDescription" xml:space="preserve">
     <value>Auto Restart as Admin when Launch</value>
   </data>
   <data name="ViewPageSettingAutoStartDescription" xml:space="preserve">
-    <value>程序将在当前用户登录时启动，是否以管理员运行仅在修改时同步管理员模式选项（修改需以管理员身份运行）</value>
+    <value>the program will start when the current user logs in, whether to run as administrator only syncs the admin mode option when modified (modification requires running as administrator)</value>
   </data>
   <data name="ViewPageLaunchGameIslandDisplayPaimonHeader" xml:space="preserve">
     <value>Display Paimon in Game</value>
@@ -4314,22 +4314,22 @@ Space Available: {2}</value>
     <value>Instant auto-swap between keyboard/mouse and gamepad</value>
   </data>
   <data name="WebUGCGachaConfigTypePermanentWish" xml:space="preserve">
-    <value>常驻颂愿</value>
+    <value>Standard Wish</value>
   </data>
   <data name="WebUGCGachaConfigTypeAvatarEventWish" xml:space="preserve">
-    <value>活动颂愿</value>
+    <value>Event Ode</value>
   </data>
   <data name="WebUGCGachaConfigTypeActivityAvatarMaleOne" xml:space="preserve">
-    <value>活动颂愿-男</value>
+    <value>Event Ode - Male</value>
   </data>
   <data name="WebUGCGachaConfigTypeActivityAvatarMaleTwo" xml:space="preserve">
-    <value>活动颂愿-男</value>
+    <value>Event Ode - Male</value>
   </data>
   <data name="WebUGCGachaConfigTypeActivityAvatarFemaleOne" xml:space="preserve">
-    <value>活动颂愿-女</value>
+    <value>Event Ode - Female</value>
   </data>
   <data name="WebUGCGachaConfigTypeActivityAvatarFemaleTwo" xml:space="preserve">
-    <value>活动颂愿-女</value>
+    <value>Event Ode - Female</value>
   </data>
   <data name="ViewControlStatisticsCardPurpleAveragePullText" xml:space="preserve">
     <value>Avg 4 Stars wish</value>
@@ -4353,25 +4353,25 @@ Space Available: {2}</value>
     <value>Hide Grass</value>
   </data>
   <data name="ViewPageAvatarPropertyAddWeaponToPlan" xml:space="preserve">
-    <value>添加武器到养成计划</value>
+    <value>Add weapon to Development Plan</value>
   </data>
   <data name="ViewPageAvatarPropertyAddAvatarToPlan" xml:space="preserve">
-    <value>添加角色到养成计划</value>
+    <value>Add character to Development Plan</value>
   </data>
   <data name="ViewPageAvatarPropertyAddBothToPlan" xml:space="preserve">
-    <value>添加角色与武器到养成计划</value>
+    <value>Add character and weapon to Development Plan</value>
   </data>
   <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpHeader" xml:space="preserve">
-    <value>移除调整时间动画</value>
+    <value>Remove time adjustment animation</value>
   </data>
   <data name="ViewPageLaunchGameEnableInLevelClockPageSpeedUpDescription" xml:space="preserve">
-    <value>移除调整时间页面点击确定后时间缓慢变化的动画</value>
+    <value>remove the animation where time slowly changes after clicking confirm on the time adjustment page</value>
   </data>
   <data name="ViewPageAvatarPropertyExportToText" xml:space="preserve">
-    <value>导出当前角色</value>
+    <value>Export current character</value>
   </data>
   <data name="ViewPageAvatarPropertyExportAllToText" xml:space="preserve">
-    <value>导出所有角色</value>
+    <value>Export all characters</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Custom startup</value>
@@ -4576,19 +4576,19 @@ Space Available: {2}</value>
     <value>Support for Open Source</value>
   </data>
   <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
-    <value>开机自启动</value>
+    <value>Start on boot</value>
   </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>App behavior</value>
   </data>
   <data name="ViewPageSettingAutoStartEnableCardHeader" xml:space="preserve">
-    <value>当前用户自启动</value>
+    <value>Current user auto-start</value>
   </data>
   <data name="ViewPageSettingAutoStartAdminActionCardHeader" xml:space="preserve">
-    <value>自启动行为权限设置：管理员权限</value>
+    <value>Auto-start behavior permission settings: Administrator privileges</value>
   </data>
   <data name="ViewPageSettingAutoStartAdminActionCardDescription" xml:space="preserve">
-    <value>注意一些功能可能在不同权限下无法使用</value>
+    <value>note that some features may not work under different permissions</value>
   </data>
   <data name="ViewModelGamePackageOperationContinueDownloadButtonText" xml:space="preserve">
     <value>Continue downloading</value>
@@ -4609,43 +4609,43 @@ Space Available: {2}</value>
     <value>The network has been restored and is automatically retrying.</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarActStatusOngoing" xml:space="preserve">
-    <value>进行中</value>
+    <value>In Progress</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarActStatusUpcoming" xml:space="preserve">
-    <value>未开启</value>
+    <value>Upcoming</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarCountdownDaysAndHours" xml:space="preserve">
-    <value>剩余时间：{0} 天 {1} 小时</value>
+    <value>Remaining time: {0} day {1} hour</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarCountdownHours" xml:space="preserve">
-    <value>剩余时间：{0} 小时</value>
+    <value>Remaining time: {0} hour</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarHardChallengeLocked" xml:space="preserve">
-    <value>尚未解锁</value>
+    <value>Locked</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarHardChallengeSubCountdownDaysAndHours" xml:space="preserve">
-    <value>紊乱爆发期剩余时间：{0} 天 {1} 小时</value>
+    <value>Turmoil outbreak period remaining time: {0} day {1} hour</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarHardChallengeSubCountdownHours" xml:space="preserve">
-    <value>紊乱爆发期剩余时间：{0} 小时</value>
+    <value>Turmoil outbreak period remaining time: {0} hour</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarRoleCombatLocked" xml:space="preserve">
-    <value>尚未解锁</value>
+    <value>Locked</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarRoleCombatMaxRoundZero" xml:space="preserve">
-    <value>尚未挑战</value>
+    <value>Not challenged yet</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarTowerLocked" xml:space="preserve">
-    <value>尚未解锁</value>
+    <value>Locked</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarCardPoolStatusOngoing" xml:space="preserve">
-    <value>进行中</value>
+    <value>In Progress</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarCardPoolStatusUpcoming" xml:space="preserve">
-    <value>待开启</value>
+    <value>Upcoming</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarDuration" xml:space="preserve">
-  <value>{0} 至 {1}</value>
+  <value>{0} to {1}</value>
   </data>
   <data name="ViewPageSettingBackgroundMediaNone" xml:space="preserve">
     <value>None</value>
@@ -4666,13 +4666,13 @@ Space Available: {2}</value>
     <value>Whether to display in-game version event activities that are not currently in progress</value>
   </data>
   <data name="ViewPageSettingHomeAnnouncementActHeader" xml:space="preserve">
-    <value>主页游戏活动区域设置</value>
+    <value>Home page game activity area settings</value>
   </data>
   <data name="ViewPageSettingHomeAnnouncementActIsEnableHeader" xml:space="preserve">
-    <value>是否开启游戏活动日历显示</value>
+    <value>Enable game activity calendar display</value>
   </data>
   <data name="ViewPageSettingHomeAnnouncementActIsEnableDescription" xml:space="preserve">
-    <value>立即生效，关闭后将不再显示</value>
+    <value>takes effect immediately, will not show when disabled</value>
   </data>
   <data name="ViewPageLaunchGameIslandCombineMenuHotkeyHeader" xml:space="preserve">
     <value>Synthesis Bench shortcut</value>
@@ -4690,7 +4690,7 @@ Space Available: {2}</value>
     <value>Network</value>
   </data>
   <data name="ModelIntrinsicAssociationTypeHVision" xml:space="preserve">
-    <value>魔女会</value>
+    <value>Hexenzirkel</value>
   </data>
   <data name="ViewPageSettingServerDomainModeHeader" xml:space="preserve">
     <value>Server Domain</value>
@@ -4705,7 +4705,7 @@ Space Available: {2}</value>
     <value>Backup (snap.hutaorp.org)</value>
   </data>
   <data name="ModelIntrinsicAssociationTypeSnezhnayaStar" xml:space="preserve">
-    <value>愚人众</value>
+    <value>Fatui</value>
   </data>
   <data name="ViewPageSettingBackgroundVideoHeader" xml:space="preserve">
     <value>Wallpaper Video</value>
