@@ -201,8 +201,17 @@
   <data name="GuideWindowTitle" xml:space="preserve">
     <value>Boas-vindas ao Snap Hutao, Viajante ~</value>
   </data>
+  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
+    <value>抄写下面的文本</value>
+  </data>
+  <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
+    <value></value>
+  </data>
   <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
     <value>e não é afiliado à DGP Studio nem ao autor original</value>
+  </data>
+  <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
+    <value>请在此处抄写上方文本以继续</value>
   </data>
   <data name="MetadataSpecialNameMetaAvatarSexProInfoPronounBoyGirlD" xml:space="preserve">
     <value>&lt;color=#1E90FF&gt;Príncipe&lt;/color&gt;/&lt;color=#FFB6C1&gt;Princesa&lt;/color&gt;</value>
@@ -1030,7 +1039,7 @@
     <value>Ficheiro de configuração local do jogo corrompido. Repare e tente novamente</value>
   </data>
   <data name="ServiceGameLaunchExecutionGameIsRunning" xml:space="preserve">
-    <value>Jogo em andamento</value>
+    <value>游戏进程运行中，不允许同时运行多个游戏进程！请尝试关闭当前运行中的游戏进程</value>
   </data>
   <data name="ServiceGameLaunchExecutionGameResourceQueryIndexFailed" xml:space="preserve">
     <value>Falha ao fazer o download do índice de recursos do jogo: {0}</value>
@@ -4635,7 +4644,7 @@ Espaço disponível: {2}</value>
     <value>A iniciar</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarDuration" xml:space="preserve">
-    <value>{0} a {1}</value>
+  <value>{0} a {1}</value>
   </data>
   <data name="ViewPageSettingBackgroundMediaNone" xml:space="preserve">
     <value>Nenhum</value>
