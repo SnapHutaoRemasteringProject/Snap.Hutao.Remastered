@@ -201,8 +201,17 @@
   <data name="GuideWindowTitle" xml:space="preserve">
     <value>Chào mừng bạn đến với Snap Hutao</value>
   </data>
+  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
+    <value>抄写下面的文本</value>
+  </data>
+  <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
+    <value></value>
+  </data>
   <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
     <value>và không liên kết với DGP Studio hoặc tác giả gốc</value>
+  </data>
+  <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
+    <value>请在此处抄写上方文本以继续</value>
   </data>
   <data name="MetadataSpecialNameMetaAvatarSexProInfoPronounBoyGirlD" xml:space="preserve">
     <value>&lt;color=#1E90FF&gt;Hoàng tử&lt;/color&gt;/&lt;color=#FFB6C1&gt;Công chúa&lt;/color&gt;</value>
@@ -1030,7 +1039,7 @@
     <value>Tệp cấu hình trò chơi cục bộ bị hỏng, vui lòng sửa chữa và thử lại</value>
   </data>
   <data name="ServiceGameLaunchExecutionGameIsRunning" xml:space="preserve">
-    <value>Trò chơi đang chạy</value>
+    <value>游戏进程运行中，不允许同时运行多个游戏进程！请尝试关闭当前运行中的游戏进程</value>
   </data>
   <data name="ServiceGameLaunchExecutionGameResourceQueryIndexFailed" xml:space="preserve">
     <value>Tải xuống chỉ mục tài nguyên trò chơi thất bại: {0}</value>
@@ -4639,7 +4648,7 @@ Dung lượng còn trống: {2}</value>
     <value>Chờ mở</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarDuration" xml:space="preserve">
-    <value>{0} đến {1}</value>
+  <value>{0} đến {1}</value>
   </data>
   <data name="ViewPageSettingBackgroundMediaNone" xml:space="preserve">
     <value>Không</value>
