@@ -201,8 +201,17 @@
   <data name="GuideWindowTitle" xml:space="preserve">
     <value>Snap Hutao'ya Hoş Geldiniz</value>
   </data>
+  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
+    <value>抄写下面的文本</value>
+  </data>
+  <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
+    <value></value>
+  </data>
   <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
     <value>ve DGP Studio veya orijinal yazarla ilişkili değildir</value>
+  </data>
+  <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
+    <value>请在此处抄写上方文本以继续</value>
   </data>
   <data name="MetadataSpecialNameMetaAvatarSexProInfoPronounBoyGirlD" xml:space="preserve">
     <value>&lt;color=#1E90FF&gt;Prens&lt;/color&gt;/&lt;color=#FFB6C1&gt;Prenses&lt;/color&gt;</value>
@@ -1030,7 +1039,7 @@
     <value>Yerel oyun yapılandırma dosyası bozuk, lütfen onardıktan sonra tekrar deneyin</value>
   </data>
   <data name="ServiceGameLaunchExecutionGameIsRunning" xml:space="preserve">
-    <value>Oyun çalışıyor</value>
+    <value>游戏进程运行中，不允许同时运行多个游戏进程！请尝试关闭当前运行中的游戏进程</value>
   </data>
   <data name="ServiceGameLaunchExecutionGameResourceQueryIndexFailed" xml:space="preserve">
     <value>Oyun kaynak dizini indirilemedi: {0}</value>
@@ -4639,7 +4648,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Açılmayı Bekliyor</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarDuration" xml:space="preserve">
-    <value>{0} - {1}</value>
+  <value>{0} - {1}</value>
   </data>
   <data name="ViewPageSettingBackgroundMediaNone" xml:space="preserve">
     <value>Yok</value>
