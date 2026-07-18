@@ -227,6 +227,7 @@ public sealed partial class NotifyIconController : IDisposable
                     currentXamlWindowReference.Window = mainWindow;
                     mainWindow.SwitchTo();
                     mainWindow.AppWindow.MoveInZOrderAtTop();
+                    mainWindow.Activate();
                     return;
                 }
 

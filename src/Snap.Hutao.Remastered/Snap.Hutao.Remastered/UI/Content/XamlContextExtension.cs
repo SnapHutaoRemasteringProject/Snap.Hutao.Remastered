@@ -16,11 +16,11 @@ public static class XamlContextExtension
         }
     }
 
-    extension(XamlRoot xamlRoot)
+    extension(XamlRoot? xamlRoot)
     {
         public XamlContext? XamlContext()
         {
-            return xamlRoot.ContentIsland?.AppData as XamlContext;
+            return xamlRoot?.ContentIsland?.AppData as XamlContext;
         }
     }
 }
