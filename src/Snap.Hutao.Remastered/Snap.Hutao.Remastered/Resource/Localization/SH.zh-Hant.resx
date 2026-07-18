@@ -201,8 +201,17 @@
   <data name="GuideWindowTitle" xml:space="preserve">
     <value>歡迎使用胡桃</value>
   </data>
+  <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
+    <value>抄写下面的文本</value>
+  </data>
+  <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
+    <value></value>
+  </data>
   <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
     <value>我已知悉 Snap Hutao Remastered 是 Hutao 的下游分支，與 DGP Studio 及原作者無關</value>
+  </data>
+  <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
+    <value>请在此处抄写上方文本以继续</value>
   </data>
   <data name="MetadataSpecialNameMetaAvatarSexProInfoPronounBoyGirlD" xml:space="preserve">
     <value>&lt;color=#1E90FF&gt;王子&lt;/color&gt;/&lt;color=#FFB6C1&gt;公主&lt;/color&gt;</value>
@@ -1030,7 +1039,7 @@
     <value>本機遊戲設定檔損壞，請修復後重試</value>
   </data>
   <data name="ServiceGameLaunchExecutionGameIsRunning" xml:space="preserve">
-    <value>遊戲程序執行中</value>
+    <value>游戏进程运行中，不允许同时运行多个游戏进程！请尝试关闭当前运行中的游戏进程</value>
   </data>
   <data name="ServiceGameLaunchExecutionGameResourceQueryIndexFailed" xml:space="preserve">
     <value>下載遊戲資源索引失敗: {0}</value>
@@ -4639,7 +4648,7 @@
     <value>待開啟</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarDuration" xml:space="preserve">
-    <value>{0} 至 {1}</value>
+  <value>{0} 至 {1}</value>
   </data>
   <data name="ViewPageSettingBackgroundMediaNone" xml:space="preserve">
     <value>無</value>
