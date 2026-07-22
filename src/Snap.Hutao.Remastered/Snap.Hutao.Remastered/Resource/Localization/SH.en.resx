@@ -2054,6 +2054,12 @@ Space Available: {2}</value>
   <data name="ViewModelGachaLogUploadToHutaoCloudProgress" xml:space="preserve">
     <value>Uploading to Snap Hutao Cloud Service</value>
   </data>
+  <data name="ViewModelGachaLogDeleteHutaoCloudTitle" xml:space="preserve">
+    <value>删除胡桃云存档</value>
+  </data>
+  <data name="ViewModelGachaLogDeleteHutaoCloudMessage" xml:space="preserve">
+    <value>确定要删除 UID {0} 的云端存档吗？此操作是不可逆的，所有祈愿数据会被永久删除。</value>
+  </data>
   <data name="ViewModelGachaUIGFImportPickerTitile" xml:space="preserve">
     <value>Import UIGF JSON file</value>
   </data>
