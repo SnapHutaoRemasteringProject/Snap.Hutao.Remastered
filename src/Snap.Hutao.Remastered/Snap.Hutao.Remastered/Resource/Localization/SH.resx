@@ -204,14 +204,8 @@
   <data name="ViewGuideStepAgreementCopyInstruction" xml:space="preserve">
     <value>抄写下面的文本</value>
   </data>
-  <data name="ViewGuideAgreementCopyTextLine1" xml:space="preserve">
-    <value />
-  </data>
-  <data name="ViewGuideAgreementCopyTextLine2" xml:space="preserve">
+  <data name="ViewGuideStepAgreementDownStream" xml:space="preserve">
     <value>我已知晓胡桃重制版是胡桃的下游分支 与DGP Studio和原作者无关</value>
-  </data>
-  <data name="ViewGuideAgreementCopyPlaceholder" xml:space="preserve">
-    <value>请在此处抄写上方文本以继续</value>
   </data>
   <data name="MetadataSpecialNameMetaAvatarSexProInfoPronounBoyGirlD" xml:space="preserve">
     <value>&lt;color=#1E90FF&gt;王子&lt;/color&gt;/&lt;color=#FFB6C1&gt;公主&lt;/color&gt;</value>
@@ -2053,6 +2047,12 @@
   </data>
   <data name="ViewModelGachaLogUploadToHutaoCloudProgress" xml:space="preserve">
     <value>正在上传到胡桃云服务</value>
+  </data>
+  <data name="ViewModelGachaLogDeleteHutaoCloudTitle" xml:space="preserve">
+    <value>删除胡桃云存档</value>
+  </data>
+  <data name="ViewModelGachaLogDeleteHutaoCloudMessage" xml:space="preserve">
+    <value>确定要删除 UID {0} 的云端存档吗？此操作是不可逆的，所有祈愿数据会被永久删除。</value>
   </data>
   <data name="ViewModelGachaUIGFImportPickerTitile" xml:space="preserve">
     <value>导入 UIGF JSON 文件</value>
@@ -4649,7 +4649,7 @@
     <value>待开启</value>
   </data>
   <data name="WebHoyolabGameRecordActCalendarDuration" xml:space="preserve">
-  <value>{0} 至 {1}</value>
+    <value>{0} 至 {1}</value>
   </data>
   <data name="ViewPageSettingBackgroundMediaNone" xml:space="preserve">
     <value>无</value>

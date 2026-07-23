@@ -12,6 +12,9 @@ var repoDir = "repoDir";
 
 var pfxPath = "pfxPath";
 var pw = "pw";
+string codeSigningCertificateThumbprint = "";
+const string CodeSigningCertificatePathArgumentName = "CodeSigningCertificatePath";
+const string CodeSigningCertificateThumbprintArgumentName = "CodeSigningCertificateThumbprint";
 
 // Properties
 
@@ -39,15 +42,18 @@ string issFile
 {
     get => System.IO.Path.Combine(repoDir, "Installer", "installer.iss");
 }
+string codeSigningCertificatePath
+{
+    get => System.IO.Path.Combine(repoDir, "temp-code-signing.cer");
+}
+
+var isPullRequest =
+    GitHubActions.IsRunningOnGitHubActions &&
+    GitHubActions.Environment.PullRequest.IsPullRequest;
 
 if (GitHubActions.IsRunningOnGitHubActions)
 {
     repoDir = GitHubActions.Environment.Workflow.Workspace.FullPath;
-
-    var certificateBase64 = HasEnvironmentVariable("CERTIFICATE") ? EnvironmentVariable("CERTIFICATE") : throw new Exception("Cannot find CERTIFICATE");
-    pw = HasEnvironmentVariable("PW") ? EnvironmentVariable("PW") : throw new Exception("Cannot find PW");
-    pfxPath = System.IO.Path.Combine(repoDir, "temp.pfx");
-    System.IO.File.WriteAllBytes(pfxPath, System.Convert.FromBase64String(certificateBase64));
 
     // Use date-based version same as build.cake
     version = System.DateTime.Now.ToString("yyyy.M.d.") + ((int)((System.DateTime.Now - System.DateTime.Today).TotalSeconds / 86400 * 65535)).ToString();
@@ -72,6 +78,14 @@ else // Local
     }
 
     Information($"Version: {version}");
+}
+
+if (GitHubActions.IsRunningOnGitHubActions && !isPullRequest)
+{
+    var certificateBase64 = HasEnvironmentVariable("CERTIFICATE") ? EnvironmentVariable("CERTIFICATE") : throw new Exception("Cannot find CERTIFICATE");
+    pw = HasEnvironmentVariable("PW") ? EnvironmentVariable("PW") : throw new Exception("Cannot find PW");
+    pfxPath = System.IO.Path.Combine(repoDir, "temp.pfx");
+    System.IO.File.WriteAllBytes(pfxPath, System.Convert.FromBase64String(certificateBase64));
 }
 
 // Windows SDK (for signtool.exe)
@@ -214,9 +228,50 @@ Task("VC Redist")
     }
 });
 
+Task("Export code signing certificate")
+    .Does(() =>
+{
+    if (!GitHubActions.IsRunningOnGitHubActions || isPullRequest)
+    {
+        Information("Local or pull-request configuration. Skip code-signing certificate export.");
+        return;
+    }
+
+    using (var certificate = System.Security.Cryptography.X509Certificates.X509CertificateLoader.LoadPkcs12FromFile(
+        pfxPath,
+        pw,
+        System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.EphemeralKeySet))
+    {
+        bool isCertificateAuthority = certificate.Extensions
+            .OfType<System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension>()
+            .Any(extension => extension.CertificateAuthority);
+        if (isCertificateAuthority)
+        {
+            throw new InvalidOperationException("The installer trust certificate must not be a CA certificate.");
+        }
+
+        bool supportsCodeSigning = certificate.Extensions
+            .OfType<System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension>()
+            .SelectMany(extension => extension.EnhancedKeyUsages.Cast<System.Security.Cryptography.Oid>())
+            .Any(oid => string.Equals(oid.Value, "1.3.6.1.5.5.7.3.3", System.StringComparison.Ordinal));
+        if (!supportsCodeSigning)
+        {
+            throw new InvalidOperationException("The installer trust certificate must have the code-signing EKU.");
+        }
+
+        codeSigningCertificateThumbprint = certificate.Thumbprint.Replace(" ", string.Empty).ToUpperInvariant();
+
+        System.IO.File.WriteAllBytes(
+            codeSigningCertificatePath,
+            certificate.Export(System.Security.Cryptography.X509Certificates.X509ContentType.Cert));
+        Information($"Exported code-signing certificate: {codeSigningCertificatePath} (thumbprint: {codeSigningCertificateThumbprint})");
+    }
+});
+
 Task("Compile installer")
     .IsDependentOn("Prepare installer output")
     .IsDependentOn("VC Redist")
+    .IsDependentOn("Export code signing certificate")
     .Does(() =>
 {
     Information("Compiling installer with Inno Setup...");
@@ -250,11 +305,17 @@ Task("Compile installer")
 
     Information($"Using iscc: {isccPath}");
 
+    var codeSigningCertificatePathArgument = System.IO.File.Exists(codeSigningCertificatePath)
+        ? $"/d{CodeSigningCertificatePathArgumentName}=\"{codeSigningCertificatePath}\" "
+        : string.Empty;
+    var codeSigningCertificateThumbprintArgument = !string.IsNullOrEmpty(codeSigningCertificateThumbprint)
+        ? $"/d{CodeSigningCertificateThumbprintArgumentName}=\"{codeSigningCertificateThumbprint}\" "
+        : string.Empty;
     var p = StartProcess(
         isccPath,
         new ProcessSettings
         {
-            Arguments = $"/dMyAppVersion=\"{version}\" \"{issFile}\"",
+            Arguments = $"/dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{issFile}\"",
             WorkingDirectory = repoDir
         }
     );

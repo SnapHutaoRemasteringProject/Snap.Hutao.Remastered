@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation.HttpClient;
-
+using Snap.Hutao.Remastered.Web.Endpoint.Hoyolab;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
 using System.Net.Http;
@@ -12,10 +12,9 @@ namespace Snap.Hutao.Remastered.Web.Hoyolab.HoyoPlay;
 [HttpClient(HttpClientConfiguration.Default)]
 public sealed partial class OfficialLauncherClient
 {
-    private const string LauncherApiUrl = "https://hyp-api.mihoyo.com/hyp/hyp-connect/api/getAllGameBasicInfo?launcher_id=jGHBHlcOq1&language=zh-cn&game_id=1Z8W5NHUQb";
-
     private readonly IHttpRequestMessageBuilderFactory httpRequestMessageBuilderFactory;
     private readonly ILogger<OfficialLauncherClient> logger;
+    private readonly IApiEndpoints apiEndpoints;
     private readonly HttpClient httpClient;
 
     [GeneratedConstructor]
@@ -24,7 +23,7 @@ public sealed partial class OfficialLauncherClient
     public async ValueTask<string?> GetBackgroundVideoUrlAsync(CancellationToken token = default)
     {
         HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
-            .SetRequestUri(LauncherApiUrl)
+            .SetRequestUri(apiEndpoints.HoyoPlayAllGameBasicInfo())
             .Get();
 
         OfficialLauncherBackground? resp = await builder.SendAsync<OfficialLauncherBackground>(httpClient, token).ConfigureAwait(false);

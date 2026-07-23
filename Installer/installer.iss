@@ -19,6 +19,7 @@
 #define MyAppAssocName "Hutao Protocol"
 #define MyAppAssocExt ".hutao"
 #define MyAppAssocKey "hutao"
+#define CodeSigningCertificateFileName "SnapHutaoRemasteringProjectCodeSigning.cer"
 
 #define PublishDir "Publish"
 #define OutputDir "..\publish"
@@ -65,7 +66,9 @@ Name: "startmenuicon"; Description: "{cm:CreateStartMenuIcon}"; GroupDescription
 [Files]
 Source: "{#PublishDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "VC_redist.x64.exe"; DestDir: "{tmp}"; Flags: ignoreversion deleteafterinstall; Check: not IsVCInstalled
-Source: "..\SnapHutaoRemasteringProjectRootCA.cer"; DestDir: "{tmp}"; Flags: ignoreversion deleteafterinstall
+#ifdef CodeSigningCertificatePath
+Source: "{#CodeSigningCertificatePath}"; DestDir: "{tmp}"; DestName: "{#CodeSigningCertificateFileName}"; Flags: ignoreversion deleteafterinstall
+#endif
 
 [Registry]
 ; hutao:// protocol registration
@@ -85,6 +88,12 @@ Name: "{autodesktop}\{#MyAppShortName}"; Filename: "{app}\{#MyAppExeName}"; Task
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#MyAppShortName}}"; Flags: nowait postinstall skipifsilent
 
 [Code]
+const
+  CodeSigningCertificateThumbprint = '{#CodeSigningCertificateThumbprint}';
+  CodeSigningCertificateFileName = '{#CodeSigningCertificateFileName}';
+  CertificateTrustMarkerKey = 'Software\SnapHutaoRemasteringProject\Snap.Hutao.Remastered';
+  CertificateTrustMarkerValue = 'InstallerCreatedTrustedPeopleThumbprint';
+
 function IsVCInstalled: Boolean;
 var
   Key: string;
@@ -106,34 +115,123 @@ begin
   end;
 end;
 
-procedure CurStepChanged(CurStep: TSetupStep);
+#ifdef CodeSigningCertificatePath
+function CertificateExistsInTrustedPeople: Boolean;
+begin
+  Result := RegKeyExists(
+    HKEY_LOCAL_MACHINE,
+    'SOFTWARE\Microsoft\SystemCertificates\TrustedPeople\Certificates\' + CodeSigningCertificateThumbprint);
+end;
+
+procedure InstallCodeSigningCertificate;
 var
   CertPath: string;
   ResultCode: Integer;
 begin
+  ResultCode := -1;
+  CertPath := ExpandConstant('{tmp}\' + CodeSigningCertificateFileName);
+  if not FileExists(CertPath) then
+  begin
+    Log('Code-signing certificate was not extracted. Skipping leaf trust installation.');
+    Exit;
+  end;
+
+  if CertificateExistsInTrustedPeople then
+  begin
+    Log('Code-signing certificate already exists in TrustedPeople. Preserving its ownership state.');
+    Exit;
+  end;
+
+  if Exec(
+    'certutil.exe',
+    '-addstore TrustedPeople "' + CertPath + '"',
+    '',
+    SW_HIDE,
+    ewWaitUntilTerminated,
+    ResultCode) and (ResultCode = 0) and CertificateExistsInTrustedPeople then
+  begin
+    RegWriteStringValue(
+      HKEY_LOCAL_MACHINE,
+      CertificateTrustMarkerKey,
+      CertificateTrustMarkerValue,
+      CodeSigningCertificateThumbprint);
+    Log('Installed the code-signing certificate in TrustedPeople.');
+  end
+    else
+  begin
+    Log('Failed to install the code-signing certificate in TrustedPeople. Exit code: ' + IntToStr(ResultCode));
+  end;
+end;
+
+procedure RemoveInstallerOwnedCodeSigningCertificate;
+var
+  InstalledThumbprint: string;
+  ResultCode: Integer;
+begin
+  ResultCode := -1;
+  if not RegQueryStringValue(
+    HKEY_LOCAL_MACHINE,
+    CertificateTrustMarkerKey,
+    CertificateTrustMarkerValue,
+    InstalledThumbprint) then
+  begin
+    Log('No installer-owned leaf trust marker found. Leaving TrustedPeople unchanged.');
+    Exit;
+  end;
+
+  if CompareText(InstalledThumbprint, CodeSigningCertificateThumbprint) <> 0 then
+  begin
+    Log('Leaf trust marker does not match this installer. Leaving TrustedPeople unchanged.');
+    Exit;
+  end;
+
+  if not CertificateExistsInTrustedPeople then
+  begin
+    RegDeleteValue(HKEY_LOCAL_MACHINE, CertificateTrustMarkerKey, CertificateTrustMarkerValue);
+    Log('Installer-owned leaf trust was already absent. Removed its marker.');
+    Exit;
+  end;
+
+  if Exec(
+    'certutil.exe',
+    '-delstore TrustedPeople ' + CodeSigningCertificateThumbprint,
+    '',
+    SW_HIDE,
+    ewWaitUntilTerminated,
+    ResultCode) and (ResultCode = 0) and not CertificateExistsInTrustedPeople then
+  begin
+    RegDeleteValue(HKEY_LOCAL_MACHINE, CertificateTrustMarkerKey, CertificateTrustMarkerValue);
+    Log('Removed installer-owned code-signing certificate from TrustedPeople.');
+  end
+    else
+  begin
+    Log('Failed to remove installer-owned code-signing certificate from TrustedPeople. Exit code: ' + IntToStr(ResultCode));
+  end;
+end;
+#endif
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+#ifdef CodeSigningCertificatePath
   if CurStep = ssPostInstall then
   begin
-    CertPath := ExpandConstant('{tmp}\SnapHutaoRemasteringProjectRootCA.cer');
-    if FileExists(CertPath) then
-    begin
-      if not Exec('certutil', '-addstore Root "' + CertPath + '"', '', SW_HIDE,
-        ewWaitUntilTerminated, ResultCode) then
-      begin
-        Log('Failed to install root certificate.');
-      end
-        else
-      begin
-        Log('Root certificate installed successfully.');
-      end;
-    end;
+    InstallCodeSigningCertificate;
   end;
+#endif
 end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
   DataDir: string;
 begin
-  if CurUninstallStep = usPostUninstall then
+#ifdef CodeSigningCertificatePath
+  if CurUninstallStep = usUninstall then
+  begin
+    RemoveInstallerOwnedCodeSigningCertificate;
+  end;
+#endif
+
+  if (CurUninstallStep = usPostUninstall) and not UninstallSilent then
   begin
     if MsgBox(
       '是否同时删除用户数据和缓存？' + #13#10 +

@@ -56,7 +56,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
                     IsPrivacyPolicyAgreed = false;
                     IsIssueReportAgreed = false;
                     IsOpenSourceLicenseAgreed = false;
-                    IsAgreementCopyAgreed = false;
+                    IsDownStreamAgreed = false;
                     (NextOrCompleteButtonText, IsNextOrCompleteButtonEnabled) = (SH.ViewModelGuideActionNext, false);
                     break;
                 case GuideState.StaticResourceBegin:
@@ -173,7 +173,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         }
     }
 
-    public bool IsAgreementCopyAgreed
+    public bool IsDownStreamAgreed
     {
         get;
         set
@@ -186,22 +186,6 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
     }
 
     #endregion
-
-    public string AgreementCopyTarget
-    {
-        get
-        {
-            string line1 = SH.ViewGuideAgreementCopyTextLine1;
-            string line2 = SH.ViewGuideAgreementCopyTextLine2;
-
-            if (string.IsNullOrEmpty(line1))
-            {
-                return line2 ?? string.Empty;
-            }
-
-            return (line1 ?? string.Empty) + Environment.NewLine + (line2 ?? string.Empty);
-        }
-    }
 
     public bool AgreementUseGrid => CultureOptions.LocaleName.StartsWith("zh", StringComparison.OrdinalIgnoreCase);
 
@@ -222,7 +206,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
                 && IsPrivacyPolicyAgreed
                 && IsIssueReportAgreed
                 && IsOpenSourceLicenseAgreed
-                && IsAgreementCopyAgreed;
+                && IsDownStreamAgreed;
         }
         else
         {

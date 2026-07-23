@@ -125,6 +125,7 @@
                         <ScrollViewer
                             Grid.Row="1"
                             Margin="16,0"
+                            VerticalScrollBarVisibility="Auto"
                             Visibility="{Binding HutaoCloudViewModel.UidOperations.Count, Converter={StaticResource Int32ToVisibilityConverter}}">
                             <ScrollViewer.Resources>
                                 <DataTemplate x:Key="UidOperationTemplate" x:DataType="shvg:HutaoCloudEntryOperationViewModel">
@@ -162,10 +163,14 @@
                                                 Background="Transparent"
                                                 Command="{Binding DeleteCommand}"
                                                 CommandParameter="{Binding Uid}"
-                                                Content="&#xE74D;"
-                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
                                                 Style="{StaticResource ButtonRevealStyle}"
-                                                ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudDelete}"/>
+                                                ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudDelete}">
+                                                <TextBlock
+                                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                    FontWeight="Bold"
+                                                    Foreground="Red"
+                                                    Text="&#xE74D;"/>
+                                            </Button>
                                         </StackPanel>
                                     </Grid>
                                 </DataTemplate>
@@ -186,8 +191,15 @@
                             <Button
                                 HorizontalAlignment="Stretch"
                                 Command="{Binding HutaoCloudViewModel.UploadCommand}"
-                                CommandParameter="{Binding Archives.CurrentItem}"
-                                Content="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudUpload}"/>
+                                CommandParameter="{Binding Archives.CurrentItem}">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <FontIcon
+                                        VerticalAlignment="Center"
+                                        FontSize="15"
+                                        Glyph="&#xE898;"/>
+                                    <TextBlock VerticalAlignment="Center" Text="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudUpload}"/>
+                                </StackPanel>
+                            </Button>
                         </Border>
                     </Grid>
                 </shuxc:StandardView>
@@ -430,37 +442,35 @@
                         Margin="0,16"
                         MinItemWidth="302"
                         Spacing="16">
-                        <shuxvs:StatisticsCard
-                            DataContext="{Binding Statistics.AvatarWish}"
-                            Visibility="{Binding DataContext.IsAvatarWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <shuxvs:StatisticsCard DataContext="{Binding Statistics.AvatarWish}" Visibility="{Binding DataContext.IsAvatarWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <shuxvs:StatisticsCard
                             DataContext="{Binding Statistics.WeaponWish}"
                             ShowCombinedModeToggle="False"
                             Visibility="{Binding DataContext.IsWeaponWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <shuxvs:StatisticsCard
                             DataContext="{Binding Statistics.StandardWish}"
-                            ShowUpPull="False"
                             ShowCombinedModeToggle="False"
+                            ShowUpPull="False"
                             Visibility="{Binding DataContext.IsStandardWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <shuxvs:StatisticsCard
                             DataContext="{Binding Statistics.ChronicledWish}"
-                            ShowUpPull="False"
                             ShowCombinedModeToggle="False"
+                            ShowUpPull="False"
                             Visibility="{Binding DataContext.IsChronicledWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <shuxvs:StatisticsCard
                             DataContext="{Binding Statistics.NoviceWish}"
-                            ShowUpPull="False"
                             ShowCombinedModeToggle="False"
+                            ShowUpPull="False"
                             Visibility="{Binding DataContext.IsNoviceWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <shuxvs:BeyondStatisticsCard
                             DataContext="{Binding Statistics.BeyondStandardWish}"
-                            ShowUpPull="False"
                             ShowCombinedModeToggle="False"
+                            ShowUpPull="False"
                             Visibility="{Binding DataContext.IsBeyondStandardWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <shuxvs:StatisticsCard
                             DataContext="{Binding Statistics.BeyondEventWish}"
-                            ShowUpPull="True"
                             ShowCombinedModeToggle="False"
+                            ShowUpPull="True"
                             Visibility="{Binding DataContext.IsBeyondEventWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
                     </shuxcp:HorizontalEqualPanel>
                 </ScrollViewer>

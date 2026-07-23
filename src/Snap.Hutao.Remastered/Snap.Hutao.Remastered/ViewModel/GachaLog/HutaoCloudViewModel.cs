@@ -102,6 +102,17 @@ public sealed partial class HutaoCloudViewModel : Abstraction.ViewModel
 
         if (uid is not null)
         {
+            ContentDialogResult result = await contentDialogFactory
+                .CreateForConfirmCancelAsync(
+                    SH.ViewModelGachaLogDeleteHutaoCloudTitle,
+                    SH.FormatViewModelGachaLogDeleteHutaoCloudMessage(uid))
+                .ConfigureAwait(false);
+
+            if (result is not ContentDialogResult.Primary)
+            {
+                return;
+            }
+
             (bool isOk, string message) = await hutaoCloudService.DeleteGachaItemsAsync(uid).ConfigureAwait(false);
 
             if (isOk)

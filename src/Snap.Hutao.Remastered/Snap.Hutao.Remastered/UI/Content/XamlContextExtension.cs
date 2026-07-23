@@ -20,7 +20,7 @@ public static class XamlContextExtension
     {
         public XamlContext? XamlContext()
         {
-            return xamlRoot.ContentIsland?.AppData as XamlContext;
+            return xamlRoot?.ContentIsland?.AppData as XamlContext;
         }
     }
 }

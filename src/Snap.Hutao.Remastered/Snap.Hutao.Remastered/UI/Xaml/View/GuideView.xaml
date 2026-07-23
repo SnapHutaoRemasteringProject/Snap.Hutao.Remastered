@@ -86,7 +86,7 @@
 
             <DataTemplate x:Key="DownloadSummaryTemplate" x:DataType="shvg:DownloadSummary">
                 <Border
-                    Width="240"
+                    Width="220"
                     Margin="0,0,4,4"
                     Style="{StaticResource BorderCardStyle}">
                     <StackPanel Margin="8">
@@ -374,8 +374,12 @@
                                 </TextBlock>
                             </CheckBox>
 
-                            <CheckBox Margin="0,4,0,0" IsChecked="{Binding IsAgreementCopyAgreed, Mode=TwoWay}">
-                                <TextBlock Text="{Binding AgreementCopyTarget}" TextWrapping="Wrap"/>
+                            <CheckBox Margin="0,4,0,0" IsChecked="{Binding IsDownStreamAgreed, Mode=TwoWay}">
+                                <TextBlock>
+                                    <TextBlock.Inlines>
+                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementDownStream}"/>
+                                    </TextBlock.Inlines>
+                                </TextBlock>
                             </CheckBox>
                         </StackPanel>
                     </StackPanel>
@@ -423,7 +427,7 @@
                             Margin="1,32,0,5"
                             Style="{StaticResource TitleTextBlockStyle}"
                             Text="{shuxm:ResourceString Name=ViewPageSettingWebview2Header}"/>
-                        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{Binding RuntimeOptions.WebView2Version}"/>
+                        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{Binding WebView2VersionText}"/>
                         <TextBlock>
                             <Run Text="{shuxm:ResourceString Name=ViewGuideStepEnvironmentWebView2Description1}"/>
                             <Hyperlink NavigateUri="https://go.microsoft.com/fwlink/p/?LinkId=2124703">

@@ -97,6 +97,13 @@ jobs:
           name: Snap.Hutao.Remastered.Canary-Setup-${{ steps.cake.outputs.version }}
           path: ${{ github.workspace }}/publish/Snap.Hutao.Remastered-*.exe
 
+      - name: Upload code-signing certificate
+        if: ${{ success() && steps.merge.outputs.continue == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: Snap.Hutao.Remastered.Canary-SnapHutaoRemasteringProject-${{ steps.installer.outputs.version }}
+          path: ${{ github.workspace }}/temp-code-signing.cer
+
       - name: Add summary
         if: ${{ success() && steps.merge.outputs.continue == 'true' }}
         shell: pwsh
@@ -106,7 +113,7 @@ jobs:
           > 该版本是由 CI 程序自动打包生成的 \`Canary\` 测试版本，包含新功能原型及问题修复
 
           > [!IMPORTANT]
-          > 请先安装 **[SnapHutaoRemasteringProjectRootCA.cer](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/raw/refs/heads/main/SnapHutaoRemasteringProjectRootCA.cer)** 到 **受信任的根证书颁发机构** 以安装测试版安装包
+          > 直接旁加载 MSIX 时，请将 SnapHutaoRemasteringProject 工件中的证书安装到 **受信任的人员（TrustedPeople）** 存储
           "
 
           echo $summary >> $Env:GITHUB_STEP_SUMMARY
