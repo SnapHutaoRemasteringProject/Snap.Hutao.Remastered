@@ -98,19 +98,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ModelMetadataMaterialLocalSpecialtyRegex" xml:space="preserve">
-    <value>^[\u4e00-\u9fa5]{2}区域特产$</value>
+    <value>^[\u4e00-\u9fa5]{2}區域特產$</value>
     <comment>If you don't know what is regex, DO NOT TRANSLATE THIS!</comment>
   </data>
   <data name="ServiceAnnouncementMatchValidDescriptions" xml:space="preserve">
-    <value>〓活动时间〓|〓任务开放时间〓|〓祈愿介绍〓|〓折扣时间〓|〓获取奖励时限〓|【上架时间】</value>
+    <value>〓活動時間〓|〓任務開放時間〓|〓祈願介紹〓|〓折扣時間〓|〓獲取獎勵時限〓|【上架時間】</value>
   </data>
   <data name="ServiceAnnouncementMatchVersionUpdatePreviewTime" xml:space="preserve">
-    <value>将于&amp;lt;t class=\"t_(?:gl|lc)\".*?&amp;gt;(.*?)&amp;lt;/t&amp;gt;进行版本更新维护</value>
+    <value>將於&amp;lt;t class=\"t_(?:gl|lc)\".*?&amp;gt;(.*?)&amp;lt;/t&amp;gt;進行版本更新維護</value>
   </data>
   <data name="ServiceAnnouncementMatchVersionUpdatePreviewTitle" xml:space="preserve">
-    <value>\d\.\d版本更新维护预告</value>
+    <value>\d\.\d版本更新維護預告</value>
   </data>
   <data name="ServiceAnnouncementMatchVersionUpdateTitle" xml:space="preserve">
-    <value>\d\.\d版本更新说明</value>
+    <value>\d\.\d版本更新說明</value>
   </data>
 </root>
