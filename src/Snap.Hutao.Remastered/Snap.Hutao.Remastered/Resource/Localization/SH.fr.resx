@@ -3464,6 +3464,12 @@ Espace disponible : {2}</value>
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>Définir le même raccourci clavier pour différentes fonctions peut entraîner des résultats inattendus, et des opérations supplémentaires ou un redémarrage de l'application sont nécessaires pour rétablir un fonctionnement normal.</value>
   </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>启动游戏后自动关闭胡桃窗口，节省内存占用</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>启动游戏后关闭窗口</value>
+  </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>Lorsqu'un dispositif tactile intégré est détecté et que la fonction d'injection est activée, force l'activation du mode d'interaction tactile lors du lancement du jeu ; lorsqu'aucun n'est détecté, force la désactivation.</value>
   </data>
