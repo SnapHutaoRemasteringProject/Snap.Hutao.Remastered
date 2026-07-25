@@ -3464,6 +3464,12 @@ Espacio disponible: {2}</value>
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>Establecer la misma tecla de acceso rápido para diferentes funciones puede causar resultados inesperados, y se requieren operaciones adicionales o reiniciar la aplicación para restaurar la función normal.</value>
   </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>启动游戏后自动关闭胡桃窗口，节省内存占用</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>启动游戏后关闭窗口</value>
+  </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>Cuando se detecta un dispositivo táctil integrado y la funcionalidad de inyección está habilitada, fuerza el modo de interacción de pantalla táctil al iniciar el juego; cuando no se detecta, fuerza la deshabilitación.</value>
   </data>
