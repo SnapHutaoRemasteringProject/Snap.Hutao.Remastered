@@ -3464,6 +3464,12 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>Farklı işlevler için aynı kısayol tuşunu ayarlamak beklenmedik sonuçlara yol açabilir ve normal işlevi geri yüklemek için ek işlemler veya uygulamanın yeniden başlatılması gerekebilir.</value>
   </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>启动游戏后自动关闭胡桃窗口，节省内存占用</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>启动游戏后关闭窗口</value>
+  </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>Entegre dokunmatik cihaz tespit edildiğinde ve enjeksiyon işlevi etkinleştirildiğinde, oyun başlatılırken dokunmatik ekran etkileşim modunu zorunlu olarak etkinleştir; tespit edilmediğinde zorunlu olarak devre dışı bırak</value>
   </data>
