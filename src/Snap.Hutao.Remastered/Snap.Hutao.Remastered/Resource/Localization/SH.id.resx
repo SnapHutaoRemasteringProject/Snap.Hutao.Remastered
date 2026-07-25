@@ -3464,6 +3464,12 @@ Ruang Tersedia: {2}</value>
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>Menyetel pintasan yang sama untuk fungsi yang berbeda dapat menyebabkan hasil yang tidak terduga, dan diperlukan tindakan tambahan atau memulai ulang aplikasi untuk memulihkan fungsi normal.</value>
   </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>启动游戏后自动关闭胡桃窗口，节省内存占用</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>启动游戏后关闭窗口</value>
+  </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>Ketika perangkat sentuh terintegrasi terdeteksi dan fungsionalitas suntikan diaktifkan, paksa aktifkan mode interaksi layar sentuh saat meluncurkan game; ketika tidak terdeteksi, paksa nonaktifkan.</value>
   </data>
