@@ -3464,6 +3464,12 @@ Spazio disponibile: {2}</value>
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>L'impostazione della stessa scorciatoia da tastiera per funzioni diverse potrebbe causare risultati imprevisti e richiedere operazioni aggiuntive o il riavvio dell'applicazione per ripristinare il normale funzionamento.</value>
   </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>启动游戏后自动关闭胡桃窗口，节省内存占用</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>启动游戏后关闭窗口</value>
+  </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>Quando viene rilevato un dispositivo touch integrato e la funzionalità di iniezione è abilitata, forza l'abilitazione della modalità di interazione touch screen all'avvio del gioco; quando non viene rilevato, forza la disabilitazione</value>
   </data>
