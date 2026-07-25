@@ -3464,6 +3464,12 @@
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>การตั้งค่าปุ่มลัดเดียวกันสำหรับฟังก์ชันต่างๆ อาจทำให้เกิดผลลัพธ์ที่ไม่คาดคิด และจำเป็นต้องดำเนินการเพิ่มเติมหรือรีสตาร์ทแอปพลิเคชันเพื่อให้กลับมาทำงานได้ตามปกติ</value>
   </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>启动游戏后自动关闭胡桃窗口，节省内存占用</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>启动游戏后关闭窗口</value>
+  </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>เมื่อตรวจพบอุปกรณ์สัมผัสแบบบูรณาการและเปิดใช้งานฟังก์ชันการฉีดแล้ว จะบังคับเปิดใช้งานโหมดการโต้ตอบด้วยหน้าจอสัมผัสเมื่อเปิดเกม เมื่อไม่ตรวจพบ จะบังคับปิดใช้งาน</value>
   </data>
