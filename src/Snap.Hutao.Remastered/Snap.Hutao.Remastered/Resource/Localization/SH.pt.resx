@@ -3464,6 +3464,12 @@ Espaço disponível: {2}</value>
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>Definir o mesmo atalho para funções diferentes pode causar resultados inesperados, e operações adicionais ou reiniciar o aplicativo são necessárias para restaurar a função normal.</value>
   </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>启动游戏后自动关闭胡桃窗口，节省内存占用</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>启动游戏后关闭窗口</value>
+  </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>Quando um dispositivo de toque integrado é detetado e a funcionalidade de injeção está ativada, força a ativação do modo de interação de ecrã tátil ao iniciar o jogo; quando não é detetado, força a desativação.</value>
   </data>
