@@ -3464,6 +3464,12 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>Das Festlegen derselben Tastenkombination für verschiedene Funktionen kann zu unerwarteten Ergebnissen führen und zusätzliche Operationen oder einen Neustart der Anwendung erfordern, um die normale Funktion wiederherzustellen.</value>
   </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>启动游戏后自动关闭胡桃窗口，节省内存占用</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>启动游戏后关闭窗口</value>
+  </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>Wenn ein integriertes Touch-Gerät erkannt wird und die Injektionsfunktion aktiviert ist, wird beim Starten des Spiels der Touchscreen-Interaktionsmodus erzwungen; wenn nicht erkannt, wird er deaktiviert.</value>
   </data>
