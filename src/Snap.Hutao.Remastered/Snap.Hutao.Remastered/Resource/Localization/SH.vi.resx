@@ -3464,6 +3464,12 @@ Dung lượng còn trống: {2}</value>
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>Đặt cùng một phím tắt cho các chức năng khác nhau có thể gây ra kết quả không mong muốn và cần thêm thao tác hoặc khởi động lại ứng dụng để khôi phục chức năng bình thường.</value>
   </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>启动游戏后自动关闭胡桃窗口，节省内存占用</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>启动游戏后关闭窗口</value>
+  </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>Khi phát hiện thiết bị cảm ứng tích hợp và tính năng tiêm được bật, buộc bật chế độ tương tác màn hình cảm ứng khi khởi động trò chơi; khi không phát hiện, buộc tắt</value>
   </data>
