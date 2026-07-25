@@ -3464,6 +3464,12 @@
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>同じショートカットキーに複数の機能を設定すると予期せぬ動作が発生し、正常状態に戻すために追加の操作やアプリの再起動が必要になる可能性があります</value>
   </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>启动游戏后自动关闭胡桃窗口，节省内存占用</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>启动游戏后关闭窗口</value>
+  </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>統合型タッチデバイスが検出され、インジェクション機能が有効になっている場合、ゲーム起動時にタッチスクリーン操作モードを強制的に有効にします。検出されない場合、強制的に無効にします。</value>
   </data>
