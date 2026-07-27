@@ -4791,4 +4791,7 @@
   <data name="ModelIntrinsicQuestShowTypeHidden" xml:space="preserve">
     <value>隐藏</value>
   </data>
+  <data name="ViewPageHutaoPassportRegisterAgreement" xml:space="preserve">
+    <value>我已知晓本服务和旧胡桃工具箱数据不互通</value>
+  </data>
 </root>
