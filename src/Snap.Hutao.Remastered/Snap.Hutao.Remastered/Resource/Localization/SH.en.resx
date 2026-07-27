@@ -4791,4 +4791,7 @@ Space Available: {2}</value>
   <data name="ModelIntrinsicQuestShowTypeHidden" xml:space="preserve">
     <value>Hidden</value>
   </data>
+  <data name="ViewPageHutaoPassportRegisterAgreement" xml:space="preserve">
+    <value>I acknowledge that data is not shared between this service and Snap Hutao.</value>
+  </data>
 </root>
