@@ -1057,7 +1057,7 @@
     <value>Для использования Embedded Yae требуется запуск Snap Hutao с правами администратора</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeErrorSystemIntegrityPolicyViolation" xml:space="preserve">
-    <value>Внедрение не удалось, возможно, из-за политики Windows Defender «Управление приложениями и браузером» > «Защита на основе репутации». Попробуйте отключить её.</value>
+    <value>Внедрение не удалось, возможно, из-за политики Windows Defender «Управление приложениями и браузером» &gt; «Защита на основе репутации». Попробуйте отключить её.</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>Перед использованием Embedded Yae ознакомьтесь с рисками и включите функцию внедрения на странице «Запуск игры»</value>
@@ -4792,5 +4792,8 @@
   </data>
   <data name="ModelIntrinsicQuestShowTypeHidden" xml:space="preserve">
     <value>隐藏</value>
+  </data>
+  <data name="ViewPageHutaoPassportRegisterAgreement" xml:space="preserve">
+    <value>我已知晓本服务和旧胡桃工具箱数据不互通</value>
   </data>
 </root>
