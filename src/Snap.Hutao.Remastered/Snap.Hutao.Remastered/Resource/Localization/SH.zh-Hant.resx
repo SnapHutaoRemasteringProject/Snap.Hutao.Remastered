@@ -1057,7 +1057,7 @@
     <value>使用 Embedded Yae 前，需要胡桃以系統管理員權限執行</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeErrorSystemIntegrityPolicyViolation" xml:space="preserve">
-    <value>注入失敗，可能是由於 Windows Defender 應用程式和瀏覽器控制 > 智慧型應用程式控制原則阻止了操作，請嘗試關閉。</value>
+    <value>注入失敗，可能是由於 Windows Defender 應用程式和瀏覽器控制 &gt; 智慧型應用程式控制原則阻止了操作，請嘗試關閉。</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>使用 Embedded Yae 前，需要您了解相關風險並在「啟動遊戲」頁面開啟注入功能</value>
@@ -4791,5 +4791,8 @@
   </data>
   <data name="ModelIntrinsicQuestShowTypeHidden" xml:space="preserve">
     <value>隐藏</value>
+  </data>
+  <data name="ViewPageHutaoPassportRegisterAgreement" xml:space="preserve">
+    <value>我已知晓本服务和旧胡桃工具箱数据不互通</value>
   </data>
 </root>
