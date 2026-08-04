@@ -461,19 +461,19 @@
     <comment>Need EXACT same string in game</comment>
   </data>
   <data name="ModelIntrinsicEquipBracer" xml:space="preserve">
-    <value>生之花</value>
+    <value>Can Çiçeği</value>
   </data>
   <data name="ModelIntrinsicEquipNecklace" xml:space="preserve">
-    <value>死之羽</value>
+    <value>Ölüm Tüyü</value>
   </data>
   <data name="ModelIntrinsicEquipShoes" xml:space="preserve">
-    <value>时之沙</value>
+    <value>Zaman Kumu</value>
   </data>
   <data name="ModelIntrinsicEquipRing" xml:space="preserve">
-    <value>空之杯</value>
+    <value>Boşluk Kadehi</value>
   </data>
   <data name="ModelIntrinsicEquipDress" xml:space="preserve">
-    <value>理之冠</value>
+    <value>Logos Tacı</value>
   </data>
   <data name="ModelMetadataAvatarPlayerName" xml:space="preserve">
     <value>Gezgin</value>
@@ -1275,7 +1275,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Karakter Bilgilerini Senkronize Et</value>
   </data>
   <data name="ViewBackpackHeader" xml:space="preserve">
-    <value>背包物品</value>
+    <value>Envanter Öğeleri</value>
   </data>
   <data name="ViewCardAchievementStatisticsTitle" xml:space="preserve">
     <value>Başarım İstatistikleri</value>
@@ -1371,13 +1371,13 @@ Kullanılabilir Alan: {2}</value>
     <value>Başarım arşivinin adını belirleyin</value>
   </data>
   <data name="ViewDialogBackpackArchiveCreateInputPlaceholder" xml:space="preserve">
-    <value>请输入背包存档的名称</value>
+    <value>Lütfen envanter arşivinin adını girin</value>
   </data>
   <data name="ViewDialogBackpackArchiveCreateTitle" xml:space="preserve">
-    <value>设置背包存档的名称</value>
+    <value>Envanter arşivinin adını ayarlayın</value>
   </data>
   <data name="ViewDialogBackpackArchivePickerTitle" xml:space="preserve">
-    <value>选择背包物品存档</value>
+    <value>Envanter öğesi arşivini seçin</value>
   </data>
   <data name="ViewDialogAchievementArchiveImportStrategy" xml:space="preserve">
     <value>İçe aktarma modu</value>
@@ -2445,76 +2445,76 @@ Kullanılabilir Alan: {2}</value>
     <value>Önce Tamamlanmamış Olanlar</value>
   </data>
   <data name="ViewPageBackpackAddArchive" xml:space="preserve">
-    <value>创建存档</value>
+    <value>Arşiv Oluştur</value>
   </data>
   <data name="ViewPageBackpackAddArchiveHint" xml:space="preserve">
-    <value>请先创建背包存档以管理物品</value>
+    <value>Öğeleri yönetmek için lütfen önce bir envanter arşivi oluşturun</value>
   </data>
   <data name="ViewPageBackpackAddArchiveContent" xml:space="preserve">
-    <value>将为当前 UID 创建新的背包存档，确认继续？</value>
+    <value>Bu UID için yeni bir envanter arşivi oluşturulacak, devam etmek istiyor musunuz?</value>
   </data>
   <data name="ViewPageBackpackAddArchiveTitle" xml:space="preserve">
-    <value>创建背包存档</value>
+    <value>Envanter Arşivi Oluştur</value>
   </data>
   <data name="ViewPageBackpackArchiveAdded" xml:space="preserve">
-    <value>背包存档 {0} 已创建</value>
+    <value>Envanter arşivi {0} oluşturuldu</value>
   </data>
   <data name="ViewPageBackpackCategoryAll" xml:space="preserve">
-    <value>全部</value>
+    <value>Tümü</value>
   </data>
   <data name="ViewPageBackpackCategoryWeapon" xml:space="preserve">
-    <value>武器</value>
+    <value>Silah</value>
   </data>
   <data name="ViewPageBackpackCategoryReliquary" xml:space="preserve">
-    <value>圣遗物</value>
+    <value>Eserler</value>
   </data>
   <data name="ViewPageBackpackCategoryUpgradeItem" xml:space="preserve">
-    <value>养成道具</value>
+    <value>Yükseltme Eşyası</value>
   </data>
   <data name="ViewPageBackpackCategoryFood" xml:space="preserve">
-    <value>食物</value>
+    <value>Yemek</value>
   </data>
   <data name="ViewPageBackpackCategoryMaterial" xml:space="preserve">
-    <value>材料</value>
+    <value>Malzemeler</value>
   </data>
   <data name="ViewPageBackpackCategoryGadget" xml:space="preserve">
-    <value>小道具</value>
+    <value>Aletler</value>
   </data>
   <data name="ViewPageBackpackCategoryQuest" xml:space="preserve">
-    <value>任务</value>
+    <value>Görevler</value>
   </data>
   <data name="ViewPageBackpackCategoryPreciousItem" xml:space="preserve">
-    <value>贵重道具</value>
+    <value>Değerli Eşya</value>
   </data>
   <data name="ViewPageBackpackCategoryFurniture" xml:space="preserve">
-    <value>摆设</value>
+    <value>Mobilya</value>
   </data>
   <data name="ViewPageBackpackCount" xml:space="preserve">
-    <value>数量：</value>
+    <value>Miktar:</value>
   </data>
   <data name="ViewPageBackpackRefreshByEmbeddedYae" xml:space="preserve">
-    <value>通过 Embedded Yae 同步</value>
+    <value>Gömülü Yae ile Senkronize Et</value>
   </data>
   <data name="ViewPageBackpackRefreshSuccess" xml:space="preserve">
-    <value>背包物品同步成功</value>
+    <value>Envanter öğeleri başarıyla senkronize edildi</value>
   </data>
   <data name="ViewPageBackpackRefreshWarning" xml:space="preserve">
-    <value>背包物品同步失败</value>
+    <value>Envanter öğeleri senkronizasyonu başarısız</value>
   </data>
   <data name="ViewPageBackpackRefreshing" xml:space="preserve">
-    <value>正在同步背包物品...</value>
+    <value>Envanter öğeleri senkronize ediliyor...</value>
   </data>
   <data name="ViewPageBackpackRemoveArchive" xml:space="preserve">
-    <value>删除存档</value>
+    <value>Arşivi Sil</value>
   </data>
   <data name="ViewPageBackpackRemoveArchiveContent" xml:space="preserve">
-    <value>确定要移除此背包存档吗？此操作不可逆。</value>
+    <value>Bu envanter arşivini kaldırmak istediğinizden emin misiniz? Bu işlem geri alınamaz.</value>
   </data>
   <data name="ViewPageBackpackRemoveArchiveTitle" xml:space="preserve">
-    <value>移除存档 {0}</value>
+    <value>Arşiv {0} Kaldırılıyor</value>
   </data>
   <data name="ViewPageBackpackWeaponInfo" xml:space="preserve">
-    <value>Lv.{0} | 精炼{1}</value>
+    <value>Sv.{0} | İncelik {1}</value>
   </data>
   <data name="ViewPageAnnouncementRedeemCodeCopySucceed" xml:space="preserve">
     <value>Kupon kodu kopyalandı</value>
@@ -2610,7 +2610,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Gömülü Yae ile Senkronize Et</value>
   </data>
   <data name="ViewPageCultivationRefreshInventoryByBackpackArchive" xml:space="preserve">
-    <value>通过背包物品存档同步</value>
+    <value>Envanter öğesi arşivi ile senkronize et</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Listeyi Sil</value>
@@ -3567,10 +3567,10 @@ Kullanılabilir Alan: {2}</value>
     <value>Farklı işlevler için aynı kısayol tuşunu ayarlamak beklenmedik sonuçlara yol açabilir ve normal işlevi geri yüklemek için ek işlemler veya uygulamanın yeniden başlatılması gerekebilir.</value>
   </data>
   <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
-    <value>启动游戏后自动关闭胡桃窗口，节省内存占用</value>
+    <value>Oyuna başladıktan sonra bellek kullanımını azaltmak için Hutao penceresini otomatik olarak kapatır</value>
   </data>
   <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
-    <value>启动游戏后关闭窗口</value>
+    <value>Oyun Başlatıldıktan Sonra Pencereyi Kapat</value>
   </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>Entegre dokunmatik cihaz tespit edildiğinde ve enjeksiyon işlevi etkinleştirildiğinde, oyun başlatılırken dokunmatik ekran etkileşim modunu zorunlu olarak etkinleştir; tespit edilmediğinde zorunlu olarak devre dışı bırak</value>
@@ -4485,10 +4485,10 @@ Kullanılabilir Alan: {2}</value>
     <value>Tüm Karakterleri Dışa Aktar</value>
   </data>
   <data name="ViewPageAvatarPropertyReliquaryScore" xml:space="preserve">
-    <value>评分</value>
+    <value>Puan</value>
   </data>
   <data name="ViewPageAvatarPropertyReliquaryScoreValue" xml:space="preserve">
-    <value>{0:F1} 分</value>
+    <value>{0:F1} Puan</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Özel Başlatma</value>
@@ -4900,48 +4900,48 @@ Kullanılabilir Alan: {2}</value>
     <value>隐藏</value>
   </data>
   <data name="ViewPageHutaoPassportRegisterAgreement" xml:space="preserve">
-    <value>我已知晓本服务和旧胡桃工具箱数据不互通</value>
+    <value>Bu hizmetin eski Hutao araç kutusu verileriyle uyumlu olmadığını biliyorum</value>
   </data>
   <data name="ViewPageBackpackFilterLocked" xml:space="preserve">
-    <value>已锁定</value>
+    <value>Kilitli</value>
   </data>
   <data name="ViewPageBackpackFilterUnlocked" xml:space="preserve">
-    <value>未锁定</value>
+    <value>Kilitli Değil</value>
   </data>
   <data name="ViewPageBackpackFilterMarked" xml:space="preserve">
-    <value>已标记</value>
+    <value>İşaretli</value>
   </data>
   <data name="ViewPageBackpackFilterUnmarked" xml:space="preserve">
-    <value>未标记</value>
+    <value>İşaretsiz</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
-    <value>奇怪的</value>
+    <value>Tuhaf</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualityNormal" xml:space="preserve">
-    <value>普通的</value>
+    <value>Normal</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualityDelicious" xml:space="preserve">
-    <value>美味的</value>
+    <value>Leziz</value>
   </data>
   <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
-    <value>名称/类型/品质...</value>
+    <value>Ad/Tür/Kalite...</value>
   </data>
   <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
-    <value>等级</value>
+    <value>Seviye</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeHeal" xml:space="preserve">
-    <value>回复类料理</value>
+    <value>İyileştirici Yemekler</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeAttack" xml:space="preserve">
-    <value>攻击类料理</value>
+    <value>Saldırı Yemekleri</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeFunction" xml:space="preserve">
-    <value>功能类料理</value>
+    <value>Fayda Yemekleri</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeDefense" xml:space="preserve">
-    <value>防御类料理</value>
+    <value>Savunma Yemekleri</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeRecipe" xml:space="preserve">
-    <value>食谱类料理</value>
+    <value>Tarif Yemekleri</value>
   </data>
 </root>
