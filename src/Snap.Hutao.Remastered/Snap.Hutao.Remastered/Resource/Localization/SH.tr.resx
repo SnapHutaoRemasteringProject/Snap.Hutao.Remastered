@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -459,6 +459,21 @@
   <data name="ModelIntrinsicWeaponTypeSwordOneHand" xml:space="preserve">
     <value>Tek El Kılıcı</value>
     <comment>Need EXACT same string in game</comment>
+  </data>
+  <data name="ModelIntrinsicEquipBracer" xml:space="preserve">
+    <value>生之花</value>
+  </data>
+  <data name="ModelIntrinsicEquipNecklace" xml:space="preserve">
+    <value>死之羽</value>
+  </data>
+  <data name="ModelIntrinsicEquipShoes" xml:space="preserve">
+    <value>时之沙</value>
+  </data>
+  <data name="ModelIntrinsicEquipRing" xml:space="preserve">
+    <value>空之杯</value>
+  </data>
+  <data name="ModelIntrinsicEquipDress" xml:space="preserve">
+    <value>理之冠</value>
   </data>
   <data name="ModelMetadataAvatarPlayerName" xml:space="preserve">
     <value>Gezgin</value>
@@ -1057,7 +1072,7 @@
     <value>Embedded Yae'yi kullanmadan önce, Snap Hutao'nun yönetici ayrıcalıklarıyla çalıştırılması gerekir</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeErrorSystemIntegrityPolicyViolation" xml:space="preserve">
-    <value>Enjeksiyon başarısız oldu, Windows Defender uygulama ve tarayıcı kontrolü &gt; akıllı uygulama kontrol politikası işlemi engellemiş olabilir, kapatmayı deneyin.</value>
+    <value>Enjeksiyon başarısız oldu, Windows Defender uygulama ve tarayıcı kontrolü > akıllı uygulama kontrol politikası işlemi engellemiş olabilir, kapatmayı deneyin.</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>Embedded Yae'yi kullanmadan önce, ilgili riskleri bilmeniz ve "Oyunu Başlat" sayfasında yerleştirme işlevini açmanız gerekir</value>
@@ -1125,7 +1140,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Yedek: {0}</value>
   </data>
   <data name="ServiceGamePackageConvertMoveFileRename" xml:space="preserve">
-    <value>Yeniden adlandır: {0} -&gt; {1}</value>
+    <value>Yeniden adlandır: {0} -> {1}</value>
   </data>
   <data name="ServiceGamePackageConvertMoveFileRestore" xml:space="preserve">
     <value>Değiştir: {0}</value>
@@ -1259,6 +1274,9 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewAvatarPropertySyncDataButtonLabel" xml:space="preserve">
     <value>Karakter Bilgilerini Senkronize Et</value>
   </data>
+  <data name="ViewBackpackHeader" xml:space="preserve">
+    <value>背包物品</value>
+  </data>
   <data name="ViewCardAchievementStatisticsTitle" xml:space="preserve">
     <value>Başarım İstatistikleri</value>
   </data>
@@ -1351,6 +1369,15 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewDialogAchievementArchiveCreateTitle" xml:space="preserve">
     <value>Başarım arşivinin adını belirleyin</value>
+  </data>
+  <data name="ViewDialogBackpackArchiveCreateInputPlaceholder" xml:space="preserve">
+    <value>请输入背包存档的名称</value>
+  </data>
+  <data name="ViewDialogBackpackArchiveCreateTitle" xml:space="preserve">
+    <value>设置背包存档的名称</value>
+  </data>
+  <data name="ViewDialogBackpackArchivePickerTitle" xml:space="preserve">
+    <value>选择背包物品存档</value>
   </data>
   <data name="ViewDialogAchievementArchiveImportStrategy" xml:space="preserve">
     <value>İçe aktarma modu</value>
@@ -1611,7 +1638,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Bu özellikleri etkinleştirenlerin bağımsız karar vermesini sağlamak için etkinleştirme koşullarını düzensiz güncelleyeceğiz. Eğer bir içerik üreticisiyseniz, Snap Hutao ile ilgili içeriklerde belirli etkinleştirme yöntemlerini paylaşmayın.</value>
   </data>
   <data name="ViewDialogReconfirmTextHeader" xml:space="preserve">
-    <value />
+    <value>Yanlışlıkla etkinleştirmenizi önlemek için lütfen etkinleştirdiğiniz özellik anahtarının <b>başlık adını</b> girin</value>
   </data>
   <data name="ViewDialogReconfirmTitle" xml:space="preserve">
     <value>Tehlikeli bir özelliği etkinleştiriyorsunuz</value>
@@ -2417,6 +2444,78 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageAchievementSortIncompletedItemsFirst" xml:space="preserve">
     <value>Önce Tamamlanmamış Olanlar</value>
   </data>
+  <data name="ViewPageBackpackAddArchive" xml:space="preserve">
+    <value>创建存档</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveHint" xml:space="preserve">
+    <value>请先创建背包存档以管理物品</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveContent" xml:space="preserve">
+    <value>将为当前 UID 创建新的背包存档，确认继续？</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveTitle" xml:space="preserve">
+    <value>创建背包存档</value>
+  </data>
+  <data name="ViewPageBackpackArchiveAdded" xml:space="preserve">
+    <value>背包存档 {0} 已创建</value>
+  </data>
+  <data name="ViewPageBackpackCategoryAll" xml:space="preserve">
+    <value>全部</value>
+  </data>
+  <data name="ViewPageBackpackCategoryWeapon" xml:space="preserve">
+    <value>武器</value>
+  </data>
+  <data name="ViewPageBackpackCategoryReliquary" xml:space="preserve">
+    <value>圣遗物</value>
+  </data>
+  <data name="ViewPageBackpackCategoryUpgradeItem" xml:space="preserve">
+    <value>养成道具</value>
+  </data>
+  <data name="ViewPageBackpackCategoryFood" xml:space="preserve">
+    <value>食物</value>
+  </data>
+  <data name="ViewPageBackpackCategoryMaterial" xml:space="preserve">
+    <value>材料</value>
+  </data>
+  <data name="ViewPageBackpackCategoryGadget" xml:space="preserve">
+    <value>小道具</value>
+  </data>
+  <data name="ViewPageBackpackCategoryQuest" xml:space="preserve">
+    <value>任务</value>
+  </data>
+  <data name="ViewPageBackpackCategoryPreciousItem" xml:space="preserve">
+    <value>贵重道具</value>
+  </data>
+  <data name="ViewPageBackpackCategoryFurniture" xml:space="preserve">
+    <value>摆设</value>
+  </data>
+  <data name="ViewPageBackpackCount" xml:space="preserve">
+    <value>数量：</value>
+  </data>
+  <data name="ViewPageBackpackRefreshByEmbeddedYae" xml:space="preserve">
+    <value>通过 Embedded Yae 同步</value>
+  </data>
+  <data name="ViewPageBackpackRefreshSuccess" xml:space="preserve">
+    <value>背包物品同步成功</value>
+  </data>
+  <data name="ViewPageBackpackRefreshWarning" xml:space="preserve">
+    <value>背包物品同步失败</value>
+  </data>
+  <data name="ViewPageBackpackRefreshing" xml:space="preserve">
+    <value>正在同步背包物品...</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchive" xml:space="preserve">
+    <value>删除存档</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchiveContent" xml:space="preserve">
+    <value>确定要移除此背包存档吗？此操作不可逆。</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchiveTitle" xml:space="preserve">
+    <value>移除存档 {0}</value>
+  </data>
+  <data name="ViewPageBackpackWeaponInfo" xml:space="preserve">
+    <value>Lv.{0} | 精炼{1}</value>
+  </data>
   <data name="ViewPageAnnouncementRedeemCodeCopySucceed" xml:space="preserve">
     <value>Kupon kodu kopyalandı</value>
   </data>
@@ -2509,6 +2608,9 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewPageCultivationRefreshInventoryByEmbeddedYae" xml:space="preserve">
     <value>Gömülü Yae ile Senkronize Et</value>
+  </data>
+  <data name="ViewPageCultivationRefreshInventoryByBackpackArchive" xml:space="preserve">
+    <value>通过背包物品存档同步</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Listeyi Sil</value>
@@ -3464,6 +3566,12 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>Farklı işlevler için aynı kısayol tuşunu ayarlamak beklenmedik sonuçlara yol açabilir ve normal işlevi geri yüklemek için ek işlemler veya uygulamanın yeniden başlatılması gerekebilir.</value>
   </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>启动游戏后自动关闭胡桃窗口，节省内存占用</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>启动游戏后关闭窗口</value>
+  </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>Entegre dokunmatik cihaz tespit edildiğinde ve enjeksiyon işlevi etkinleştirildiğinde, oyun başlatılırken dokunmatik ekran etkileşim modunu zorunlu olarak etkinleştir; tespit edilmediğinde zorunlu olarak devre dışı bırak</value>
   </data>
@@ -4376,6 +4484,12 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageAvatarPropertyExportAllToText" xml:space="preserve">
     <value>Tüm Karakterleri Dışa Aktar</value>
   </data>
+  <data name="ViewPageAvatarPropertyReliquaryScore" xml:space="preserve">
+    <value>评分</value>
+  </data>
+  <data name="ViewPageAvatarPropertyReliquaryScoreValue" xml:space="preserve">
+    <value>{0:F1} 分</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Özel Başlatma</value>
   </data>
@@ -4784,5 +4898,50 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ModelIntrinsicQuestShowTypeHidden" xml:space="preserve">
     <value>隐藏</value>
+  </data>
+  <data name="ViewPageHutaoPassportRegisterAgreement" xml:space="preserve">
+    <value>我已知晓本服务和旧胡桃工具箱数据不互通</value>
+  </data>
+  <data name="ViewPageBackpackFilterLocked" xml:space="preserve">
+    <value>已锁定</value>
+  </data>
+  <data name="ViewPageBackpackFilterUnlocked" xml:space="preserve">
+    <value>未锁定</value>
+  </data>
+  <data name="ViewPageBackpackFilterMarked" xml:space="preserve">
+    <value>已标记</value>
+  </data>
+  <data name="ViewPageBackpackFilterUnmarked" xml:space="preserve">
+    <value>未标记</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
+    <value>奇怪的</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualityNormal" xml:space="preserve">
+    <value>普通的</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualityDelicious" xml:space="preserve">
+    <value>美味的</value>
+  </data>
+  <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
+    <value>名称/类型/品质...</value>
+  </data>
+  <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
+    <value>等级</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeHeal" xml:space="preserve">
+    <value>回复类料理</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeAttack" xml:space="preserve">
+    <value>攻击类料理</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeFunction" xml:space="preserve">
+    <value>功能类料理</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeDefense" xml:space="preserve">
+    <value>防御类料理</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeRecipe" xml:space="preserve">
+    <value>食谱类料理</value>
   </data>
 </root>
