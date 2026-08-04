@@ -461,19 +461,19 @@
     <comment>Need EXACT same string in game</comment>
   </data>
   <data name="ModelIntrinsicEquipBracer" xml:space="preserve">
-    <value>生之花</value>
+    <value>Fiore della vita</value>
   </data>
   <data name="ModelIntrinsicEquipNecklace" xml:space="preserve">
-    <value>死之羽</value>
+    <value>Piuma della morte</value>
   </data>
   <data name="ModelIntrinsicEquipShoes" xml:space="preserve">
-    <value>时之沙</value>
+    <value>Sabbie del tempo</value>
   </data>
   <data name="ModelIntrinsicEquipRing" xml:space="preserve">
-    <value>空之杯</value>
+    <value>Calice dell'etere</value>
   </data>
   <data name="ModelIntrinsicEquipDress" xml:space="preserve">
-    <value>理之冠</value>
+    <value>Corona della ragione</value>
   </data>
   <data name="ModelMetadataAvatarPlayerName" xml:space="preserve">
     <value>Viaggiatore</value>
@@ -1275,7 +1275,7 @@ Spazio disponibile: {2}</value>
     <value>Sincronizza dati personaggi</value>
   </data>
   <data name="ViewBackpackHeader" xml:space="preserve">
-    <value>背包物品</value>
+    <value>Oggetti inventario</value>
   </data>
   <data name="ViewCardAchievementStatisticsTitle" xml:space="preserve">
     <value>Statistiche obiettivi</value>
@@ -1371,13 +1371,13 @@ Spazio disponibile: {2}</value>
     <value>Imposta il nome dell'archivio degli achievement</value>
   </data>
   <data name="ViewDialogBackpackArchiveCreateInputPlaceholder" xml:space="preserve">
-    <value>请输入背包存档的名称</value>
+    <value>Inserisci il nome dell'archivio dell'inventario</value>
   </data>
   <data name="ViewDialogBackpackArchiveCreateTitle" xml:space="preserve">
-    <value>设置背包存档的名称</value>
+    <value>Imposta il nome dell'archivio dell'inventario</value>
   </data>
   <data name="ViewDialogBackpackArchivePickerTitle" xml:space="preserve">
-    <value>选择背包物品存档</value>
+    <value>Seleziona archivio oggetti inventario</value>
   </data>
   <data name="ViewDialogAchievementArchiveImportStrategy" xml:space="preserve">
     <value>Modalità di importazione</value>
@@ -2445,76 +2445,76 @@ Spazio disponibile: {2}</value>
     <value>Priorità ai non completati</value>
   </data>
   <data name="ViewPageBackpackAddArchive" xml:space="preserve">
-    <value>创建存档</value>
+    <value>Crea archivio</value>
   </data>
   <data name="ViewPageBackpackAddArchiveHint" xml:space="preserve">
-    <value>请先创建背包存档以管理物品</value>
+    <value>Crea prima un archivio dell'inventario per gestire gli oggetti</value>
   </data>
   <data name="ViewPageBackpackAddArchiveContent" xml:space="preserve">
-    <value>将为当前 UID 创建新的背包存档，确认继续？</value>
+    <value>Verrà creato un nuovo archivio dell'inventario per questo UID. Continuare?</value>
   </data>
   <data name="ViewPageBackpackAddArchiveTitle" xml:space="preserve">
-    <value>创建背包存档</value>
+    <value>Crea archivio dell'inventario</value>
   </data>
   <data name="ViewPageBackpackArchiveAdded" xml:space="preserve">
-    <value>背包存档 {0} 已创建</value>
+    <value>Archivio dell'inventario {0} creato</value>
   </data>
   <data name="ViewPageBackpackCategoryAll" xml:space="preserve">
-    <value>全部</value>
+    <value>Tutti</value>
   </data>
   <data name="ViewPageBackpackCategoryWeapon" xml:space="preserve">
-    <value>武器</value>
+    <value>Armi</value>
   </data>
   <data name="ViewPageBackpackCategoryReliquary" xml:space="preserve">
-    <value>圣遗物</value>
+    <value>Manufatti</value>
   </data>
   <data name="ViewPageBackpackCategoryUpgradeItem" xml:space="preserve">
-    <value>养成道具</value>
+    <value>Oggetti di sviluppo</value>
   </data>
   <data name="ViewPageBackpackCategoryFood" xml:space="preserve">
-    <value>食物</value>
+    <value>Cibo</value>
   </data>
   <data name="ViewPageBackpackCategoryMaterial" xml:space="preserve">
-    <value>材料</value>
+    <value>Materiali</value>
   </data>
   <data name="ViewPageBackpackCategoryGadget" xml:space="preserve">
-    <value>小道具</value>
+    <value>Gadget</value>
   </data>
   <data name="ViewPageBackpackCategoryQuest" xml:space="preserve">
-    <value>任务</value>
+    <value>Missioni</value>
   </data>
   <data name="ViewPageBackpackCategoryPreciousItem" xml:space="preserve">
-    <value>贵重道具</value>
+    <value>Oggetti preziosi</value>
   </data>
   <data name="ViewPageBackpackCategoryFurniture" xml:space="preserve">
-    <value>摆设</value>
+    <value>Arredamento</value>
   </data>
   <data name="ViewPageBackpackCount" xml:space="preserve">
-    <value>数量：</value>
+    <value>Quantità:</value>
   </data>
   <data name="ViewPageBackpackRefreshByEmbeddedYae" xml:space="preserve">
-    <value>通过 Embedded Yae 同步</value>
+    <value>Sincronizza tramite Embedded Yae</value>
   </data>
   <data name="ViewPageBackpackRefreshSuccess" xml:space="preserve">
-    <value>背包物品同步成功</value>
+    <value>Sincronizzazione oggetti inventario riuscita</value>
   </data>
   <data name="ViewPageBackpackRefreshWarning" xml:space="preserve">
-    <value>背包物品同步失败</value>
+    <value>Sincronizzazione oggetti inventario fallita</value>
   </data>
   <data name="ViewPageBackpackRefreshing" xml:space="preserve">
-    <value>正在同步背包物品...</value>
+    <value>Sincronizzazione oggetti inventario in corso...</value>
   </data>
   <data name="ViewPageBackpackRemoveArchive" xml:space="preserve">
-    <value>删除存档</value>
+    <value>Elimina archivio</value>
   </data>
   <data name="ViewPageBackpackRemoveArchiveContent" xml:space="preserve">
-    <value>确定要移除此背包存档吗？此操作不可逆。</value>
+    <value>Sei sicuro di voler eliminare questo archivio dell'inventario? L'operazione è irreversibile.</value>
   </data>
   <data name="ViewPageBackpackRemoveArchiveTitle" xml:space="preserve">
-    <value>移除存档 {0}</value>
+    <value>Rimuovi archivio {0}</value>
   </data>
   <data name="ViewPageBackpackWeaponInfo" xml:space="preserve">
-    <value>Lv.{0} | 精炼{1}</value>
+    <value>Lv.{0} | Affinamento {1}</value>
   </data>
   <data name="ViewPageAnnouncementRedeemCodeCopySucceed" xml:space="preserve">
     <value>Codice di riscatto copiato con successo</value>
@@ -2610,7 +2610,7 @@ Spazio disponibile: {2}</value>
     <value>Sincronizza tramite Embedded Yae</value>
   </data>
   <data name="ViewPageCultivationRefreshInventoryByBackpackArchive" xml:space="preserve">
-    <value>通过背包物品存档同步</value>
+    <value>Sincronizza tramite archivio oggetti inventario</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Elimina lista</value>
@@ -3567,10 +3567,10 @@ Spazio disponibile: {2}</value>
     <value>L'impostazione della stessa scorciatoia da tastiera per funzioni diverse potrebbe causare risultati imprevisti e richiedere operazioni aggiuntive o il riavvio dell'applicazione per ripristinare il normale funzionamento.</value>
   </data>
   <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
-    <value>启动游戏后自动关闭胡桃窗口，节省内存占用</value>
+    <value>Chiudi automaticamente la finestra di Snap Hutao dopo l'avvio del gioco per risparmiare memoria</value>
   </data>
   <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
-    <value>启动游戏后关闭窗口</value>
+    <value>Chiudi la finestra dopo l'avvio del gioco</value>
   </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>Quando viene rilevato un dispositivo touch integrato e la funzionalità di iniezione è abilitata, forza l'abilitazione della modalità di interazione touch screen all'avvio del gioco; quando non viene rilevato, forza la disabilitazione</value>
@@ -4485,10 +4485,10 @@ Spazio disponibile: {2}</value>
     <value>Esporta tutti i personaggi</value>
   </data>
   <data name="ViewPageAvatarPropertyReliquaryScore" xml:space="preserve">
-    <value>评分</value>
+    <value>Punteggio</value>
   </data>
   <data name="ViewPageAvatarPropertyReliquaryScoreValue" xml:space="preserve">
-    <value>{0:F1} 分</value>
+    <value>{0:F1} punti</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Avvio personalizzato</value>
@@ -4896,48 +4896,48 @@ Spazio disponibile: {2}</value>
     <value>隐藏</value>
   </data>
   <data name="ViewPageHutaoPassportRegisterAgreement" xml:space="preserve">
-    <value>我已知晓本服务和旧胡桃工具箱数据不互通</value>
+    <value>Sono consapevole che i dati di questo servizio e del vecchio Snap Hutao non sono interoperabili</value>
   </data>
   <data name="ViewPageBackpackFilterLocked" xml:space="preserve">
-    <value>已锁定</value>
+    <value>Bloccato</value>
   </data>
   <data name="ViewPageBackpackFilterUnlocked" xml:space="preserve">
-    <value>未锁定</value>
+    <value>Sbloccato</value>
   </data>
   <data name="ViewPageBackpackFilterMarked" xml:space="preserve">
-    <value>已标记</value>
+    <value>Contrassegnato</value>
   </data>
   <data name="ViewPageBackpackFilterUnmarked" xml:space="preserve">
-    <value>未标记</value>
+    <value>Non contrassegnato</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
-    <value>奇怪的</value>
+    <value>Sospetto</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualityNormal" xml:space="preserve">
-    <value>普通的</value>
+    <value>Normale</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualityDelicious" xml:space="preserve">
-    <value>美味的</value>
+    <value>Delizioso</value>
   </data>
   <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
-    <value>名称/类型/品质...</value>
+    <value>Nome/Tipo/Qualità...</value>
   </data>
   <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
-    <value>等级</value>
+    <value>Livello</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeHeal" xml:space="preserve">
-    <value>回复类料理</value>
+    <value>Cucina curativa</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeAttack" xml:space="preserve">
-    <value>攻击类料理</value>
+    <value>Cucina d'attacco</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeFunction" xml:space="preserve">
-    <value>功能类料理</value>
+    <value>Cucina funzionale</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeDefense" xml:space="preserve">
-    <value>防御类料理</value>
+    <value>Cucina difensiva</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeRecipe" xml:space="preserve">
-    <value>食谱类料理</value>
+    <value>Ricette</value>
   </data>
 </root>
