@@ -461,19 +461,19 @@
     <comment>Need EXACT same string in game</comment>
   </data>
   <data name="ModelIntrinsicEquipBracer" xml:space="preserve">
-    <value>生之花</value>
+    <value>生の花</value>
   </data>
   <data name="ModelIntrinsicEquipNecklace" xml:space="preserve">
-    <value>死之羽</value>
+    <value>死の羽</value>
   </data>
   <data name="ModelIntrinsicEquipShoes" xml:space="preserve">
-    <value>时之沙</value>
+    <value>時の砂</value>
   </data>
   <data name="ModelIntrinsicEquipRing" xml:space="preserve">
-    <value>空之杯</value>
+    <value>空の杯</value>
   </data>
   <data name="ModelIntrinsicEquipDress" xml:space="preserve">
-    <value>理之冠</value>
+    <value>理の冠</value>
   </data>
   <data name="ModelMetadataAvatarPlayerName" xml:space="preserve">
     <value>旅人</value>
@@ -1275,7 +1275,7 @@
     <value>キャラクター情報を同期する</value>
   </data>
   <data name="ViewBackpackHeader" xml:space="preserve">
-    <value>背包物品</value>
+    <value>バッグのアイテム</value>
   </data>
   <data name="ViewCardAchievementStatisticsTitle" xml:space="preserve">
     <value>アチーブメント集計</value>
@@ -1371,13 +1371,13 @@
     <value>アーカイブの名前を設定する</value>
   </data>
   <data name="ViewDialogBackpackArchiveCreateInputPlaceholder" xml:space="preserve">
-    <value>请输入背包存档的名称</value>
+    <value>バックパックアーカイブの名前を入力してください</value>
   </data>
   <data name="ViewDialogBackpackArchiveCreateTitle" xml:space="preserve">
-    <value>设置背包存档的名称</value>
+    <value>バックパックアーカイブの名前を設定する</value>
   </data>
   <data name="ViewDialogBackpackArchivePickerTitle" xml:space="preserve">
-    <value>选择背包物品存档</value>
+    <value>バックパックアイテムアーカイブを選択</value>
   </data>
   <data name="ViewDialogAchievementArchiveImportStrategy" xml:space="preserve">
     <value>インポートモード</value>
@@ -2445,76 +2445,76 @@
     <value>未達成に優先</value>
   </data>
   <data name="ViewPageBackpackAddArchive" xml:space="preserve">
-    <value>创建存档</value>
+    <value>アーカイブを作成</value>
   </data>
   <data name="ViewPageBackpackAddArchiveHint" xml:space="preserve">
-    <value>请先创建背包存档以管理物品</value>
+    <value>アイテムを管理するには先にバックパックアーカイブを作成してください</value>
   </data>
   <data name="ViewPageBackpackAddArchiveContent" xml:space="preserve">
-    <value>将为当前 UID 创建新的背包存档，确认继续？</value>
+    <value>現在のUID用に新しいバックパックアーカイブを作成します。続行しますか？</value>
   </data>
   <data name="ViewPageBackpackAddArchiveTitle" xml:space="preserve">
-    <value>创建背包存档</value>
+    <value>バックパックアーカイブの作成</value>
   </data>
   <data name="ViewPageBackpackArchiveAdded" xml:space="preserve">
-    <value>背包存档 {0} 已创建</value>
+    <value>バックパックアーカイブ {0} が作成されました</value>
   </data>
   <data name="ViewPageBackpackCategoryAll" xml:space="preserve">
-    <value>全部</value>
+    <value>すべて</value>
   </data>
   <data name="ViewPageBackpackCategoryWeapon" xml:space="preserve">
     <value>武器</value>
   </data>
   <data name="ViewPageBackpackCategoryReliquary" xml:space="preserve">
-    <value>圣遗物</value>
+    <value>聖遺物</value>
   </data>
   <data name="ViewPageBackpackCategoryUpgradeItem" xml:space="preserve">
-    <value>养成道具</value>
+    <value>育成アイテム</value>
   </data>
   <data name="ViewPageBackpackCategoryFood" xml:space="preserve">
-    <value>食物</value>
+    <value>食べ物</value>
   </data>
   <data name="ViewPageBackpackCategoryMaterial" xml:space="preserve">
-    <value>材料</value>
+    <value>素材</value>
   </data>
   <data name="ViewPageBackpackCategoryGadget" xml:space="preserve">
     <value>小道具</value>
   </data>
   <data name="ViewPageBackpackCategoryQuest" xml:space="preserve">
-    <value>任务</value>
+    <value>任務</value>
   </data>
   <data name="ViewPageBackpackCategoryPreciousItem" xml:space="preserve">
-    <value>贵重道具</value>
+    <value>貴重品</value>
   </data>
   <data name="ViewPageBackpackCategoryFurniture" xml:space="preserve">
-    <value>摆设</value>
+    <value>調度品</value>
   </data>
   <data name="ViewPageBackpackCount" xml:space="preserve">
     <value>数量：</value>
   </data>
   <data name="ViewPageBackpackRefreshByEmbeddedYae" xml:space="preserve">
-    <value>通过 Embedded Yae 同步</value>
+    <value>Embedded Yae で同期</value>
   </data>
   <data name="ViewPageBackpackRefreshSuccess" xml:space="preserve">
-    <value>背包物品同步成功</value>
+    <value>バッグアイテムの同期に成功しました</value>
   </data>
   <data name="ViewPageBackpackRefreshWarning" xml:space="preserve">
-    <value>背包物品同步失败</value>
+    <value>バッグアイテムの同期に失敗しました</value>
   </data>
   <data name="ViewPageBackpackRefreshing" xml:space="preserve">
-    <value>正在同步背包物品...</value>
+    <value>バッグのアイテムを同期中...</value>
   </data>
   <data name="ViewPageBackpackRemoveArchive" xml:space="preserve">
-    <value>删除存档</value>
+    <value>アーカイブを削除</value>
   </data>
   <data name="ViewPageBackpackRemoveArchiveContent" xml:space="preserve">
-    <value>确定要移除此背包存档吗？此操作不可逆。</value>
+    <value>このバックパックアーカイブを削除しますか？この操作は元に戻せません。</value>
   </data>
   <data name="ViewPageBackpackRemoveArchiveTitle" xml:space="preserve">
-    <value>移除存档 {0}</value>
+    <value>アーカイブ {0} を削除</value>
   </data>
   <data name="ViewPageBackpackWeaponInfo" xml:space="preserve">
-    <value>Lv.{0} | 精炼{1}</value>
+    <value>Lv.{0} | 精錬{1}</value>
   </data>
   <data name="ViewPageAnnouncementRedeemCodeCopySucceed" xml:space="preserve">
     <value>交換コードがコピーされました</value>
@@ -2610,7 +2610,7 @@
     <value>Embedded Yae で同期</value>
   </data>
   <data name="ViewPageCultivationRefreshInventoryByBackpackArchive" xml:space="preserve">
-    <value>通过背包物品存档同步</value>
+    <value>バックパックアイテムアーカイブで同期</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>リストを削除</value>
@@ -3567,10 +3567,10 @@
     <value>同じショートカットキーに複数の機能を設定すると予期せぬ動作が発生し、正常状態に戻すために追加の操作やアプリの再起動が必要になる可能性があります</value>
   </data>
   <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
-    <value>启动游戏后自动关闭胡桃窗口，节省内存占用</value>
+    <value>ゲーム起動後に自動的にSnap Hutaoウィンドウを閉じてメモリ使用量を節約します</value>
   </data>
   <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
-    <value>启动游戏后关闭窗口</value>
+    <value>ゲーム起動後にウィンドウを閉じる</value>
   </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>統合型タッチデバイスが検出され、インジェクション機能が有効になっている場合、ゲーム起動時にタッチスクリーン操作モードを強制的に有効にします。検出されない場合、強制的に無効にします。</value>
@@ -4485,10 +4485,10 @@
     <value>すべてのキャラクターをエクスポート</value>
   </data>
   <data name="ViewPageAvatarPropertyReliquaryScore" xml:space="preserve">
-    <value>评分</value>
+    <value>スコア</value>
   </data>
   <data name="ViewPageAvatarPropertyReliquaryScoreValue" xml:space="preserve">
-    <value>{0:F1} 分</value>
+    <value>{0:F1} 点</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>カスタム起動</value>
@@ -4900,48 +4900,48 @@
     <value>隐藏</value>
   </data>
   <data name="ViewPageHutaoPassportRegisterAgreement" xml:space="preserve">
-    <value>我已知晓本服务和旧胡桃工具箱数据不互通</value>
+    <value>本サービスと旧Snap Hutaoツールボックスのデータが互換性がないことを了承しました</value>
   </data>
   <data name="ViewPageBackpackFilterLocked" xml:space="preserve">
-    <value>已锁定</value>
+    <value>ロック済み</value>
   </data>
   <data name="ViewPageBackpackFilterUnlocked" xml:space="preserve">
-    <value>未锁定</value>
+    <value>ロック解除</value>
   </data>
   <data name="ViewPageBackpackFilterMarked" xml:space="preserve">
-    <value>已标记</value>
+    <value>マーク済み</value>
   </data>
   <data name="ViewPageBackpackFilterUnmarked" xml:space="preserve">
-    <value>未标记</value>
+    <value>マークなし</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
-    <value>奇怪的</value>
+    <value>微妙な</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualityNormal" xml:space="preserve">
-    <value>普通的</value>
+    <value>普通の</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualityDelicious" xml:space="preserve">
-    <value>美味的</value>
+    <value>美味しい</value>
   </data>
   <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
-    <value>名称/类型/品质...</value>
+    <value>名前/タイプ/品質...</value>
   </data>
   <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
-    <value>等级</value>
+    <value>レベル</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeHeal" xml:space="preserve">
-    <value>回复类料理</value>
+    <value>回復系料理</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeAttack" xml:space="preserve">
-    <value>攻击类料理</value>
+    <value>攻撃系料理</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeFunction" xml:space="preserve">
-    <value>功能类料理</value>
+    <value>機能系料理</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeDefense" xml:space="preserve">
-    <value>防御类料理</value>
+    <value>防御系料理</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeRecipe" xml:space="preserve">
-    <value>食谱类料理</value>
+    <value>レシピ系料理</value>
   </data>
 </root>
