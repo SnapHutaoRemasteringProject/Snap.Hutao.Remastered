@@ -539,12 +539,32 @@
                         <Border Padding="0" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                             <Border Padding="16" Style="{ThemeResource AcrylicBorderCardStyle}">
                                 <StackPanel Spacing="{ThemeResource SettingsCardSpacing}">
-                                    <cwc:SettingsCard
+                                    <cwc:SettingsExpander
+                                        shuxc:SettingsExpanderHelper.IsItemsEnabled="{Binding LaunchOptions.UsingBetterGenshinImpactAutomation.Value}"
                                         Description="{shuxm:ResourceString Name=ViewPageLaunchGameBetterGIDescription}"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameBetterGIHeader}"
                                         HeaderIcon="{shuxm:FontIcon Glyph=&#xE961;}">
                                         <ToggleSwitch MinWidth="{ThemeResource SettingsCardContentControlMinWidth}" IsOn="{Binding LaunchOptions.UsingBetterGenshinImpactAutomation.Value, Mode=TwoWay}"/>
-                                    </cwc:SettingsCard>
+                                        <cwc:SettingsExpander.Items>
+                                            <cwc:SettingsCard
+                                                Padding="{ThemeResource SettingsCardAlignSettingsExpanderPadding}"
+                                                Description="{shuxm:ResourceString Name=ViewPageLaunchGameBetterGIPickPathDescription}"
+                                                Header="{shuxm:ResourceString Name=ViewPageLaunchGameBetterGIPickPathHeader}"
+                                                HeaderIcon="{shuxm:FontIcon Glyph=&#xE8AC;}">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <TextBox
+                                                        Width="320"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding LaunchOptions.BetterGenshinImpactPath.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                    <Button
+                                                        Height="34"
+                                                        Width="50"
+                                                        Command="{Binding PickBetterGenshinImpactPathCommand}"
+                                                        Content="{shuxm:FontIcon Glyph=&#xE8DA;}"/>
+                                                </StackPanel>
+                                            </cwc:SettingsCard>
+                                        </cwc:SettingsExpander.Items>
+                                    </cwc:SettingsExpander>
                                     <cwc:SettingsCard
                                         Description="{shuxm:ResourceString Name=ViewPageLaunchGamePlayTimeDescription}"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGamePlayTimeHeader}"

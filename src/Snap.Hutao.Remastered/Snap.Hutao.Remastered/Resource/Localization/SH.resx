@@ -3011,6 +3011,12 @@
   <data name="ViewPageLaunchGameBetterGIHeader" xml:space="preserve">
     <value>自动化任务</value>
   </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathDescription" xml:space="preserve">
+    <value>手动指定 BetterGI 可执行文件路径，留空则使用默认 URI 协议启动</value>
+  </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathHeader" xml:space="preserve">
+    <value>BetterGI 路径</value>
+  </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
     <value>本软件及注入功能属于《米哈游用户协议》第十条第二款规定的“插件、外挂或非经合法授权的第三方工具/服务”，您需要自行承担因使用内容而引起的所有风险，本软件无法且不会对您因前述风险而导致的任何损失或损害承担责任。
 出于安全因素考虑，我们有权不经向您特别通知而对软件及相关功能进行更新，或者对软件的部分功能效果进行改变或限制。</value>
@@ -4638,6 +4644,9 @@
   </data>
   <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
     <value>已保存自定义启动程序路径</value>
+  </data>
+  <data name="ViewModelLaunchGameBetterGenshinImpactPathSaved" xml:space="preserve">
+    <value>BetterGI 路径已保存</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
     <value>管理自定义程序启动</value>
