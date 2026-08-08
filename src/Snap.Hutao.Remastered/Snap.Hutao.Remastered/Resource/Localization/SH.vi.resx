@@ -3011,6 +3011,12 @@ Dung lượng còn trống: {2}</value>
   <data name="ViewPageLaunchGameBetterGIHeader" xml:space="preserve">
     <value>Tác vụ tự động</value>
   </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathDescription" xml:space="preserve">
+    <value>手动指定 BetterGI 可执行文件路径，留空则使用默认 URI 协议启动</value>
+  </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathHeader" xml:space="preserve">
+    <value>BetterGI 路径</value>
+  </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
     <value>Chức năng tiêm rất nguy hiểm và có thể gây ra hậu quả nghiêm trọng, vui lòng sử dụng thận trọng</value>
   </data>
@@ -4637,6 +4643,9 @@ Dung lượng còn trống: {2}</value>
   </data>
   <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
     <value>Đã lưu đường dẫn chương trình tùy chỉnh</value>
+  </data>
+  <data name="ViewModelLaunchGameBetterGenshinImpactPathSaved" xml:space="preserve">
+    <value>BetterGI 路径已保存</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
     <value>Quản lý khởi chạy chương trình tùy chỉnh</value>
