@@ -5061,4 +5061,31 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageBackpackSortSetName" xml:space="preserve">
     <value>套装</value>
   </data>
+  <data name="ViewPageSettingMirrorChyanLinkHeader" xml:space="preserve">
+    <value>Mirror酱</value>
+  </data>
+  <data name="ViewDialogDownloadSourceTitle" xml:space="preserve">
+    <value>选择下载源</value>
+  </data>
+  <data name="ViewDialogDownloadSourceHint" xml:space="preserve">
+    <value>请选择更新包的下载来源。Mirror酱源在中国大陆拥有 6000+ CDN 节点，连通性更佳。</value>
+  </data>
+  <data name="ViewDialogDownloadSourceOfficial" xml:space="preserve">
+    <value>官方源</value>
+  </data>
+  <data name="ViewDialogDownloadSourceOfficialDescription" xml:space="preserve">
+    <value>通过 Snap Hutao Remastered 官方服务器下载，支持多线程加速</value>
+  </data>
+  <data name="ViewDialogDownloadSourceMirrorChyan" xml:space="preserve">
+    <value>Mirror酱源</value>
+  </data>
+  <data name="ViewDialogDownloadSourceMirrorChyanDescription" xml:space="preserve">
+    <value>通过 Mirror酱 CDN 下载，中国大陆连通性极佳（需填入 CDK）</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkTitle" xml:space="preserve">
+    <value>Mirror酱 CDK</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
+    <value>请输入 Mirror酱 激活密钥（CDK），留空则跳过。可从 mirrorchyan.com 获取。</value>
+  </data>
 </root>
