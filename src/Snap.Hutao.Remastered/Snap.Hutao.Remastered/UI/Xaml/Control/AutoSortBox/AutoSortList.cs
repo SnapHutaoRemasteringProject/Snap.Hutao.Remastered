@@ -77,16 +77,10 @@ public sealed partial class AutoSortList : WinUIControl
         if (d is AutoSortList list && e.NewValue is IReadOnlyList<AutoSortToken> tokens)
         {
             // Detach ItemsSource first so existing containers recycle and unhook button events
-            if (list.tokenListView is not null)
-            {
-                list.tokenListView.ItemsSource = null;
-            }
+            list.tokenListView?.ItemsSource = null;
 
-            list.innerItems = new ObservableCollection<AutoSortToken>(tokens);
-            if (list.tokenListView is not null)
-            {
-                list.tokenListView.ItemsSource = list.innerItems;
-            }
+            list.innerItems = [.. tokens];
+            list.tokenListView?.ItemsSource = list.innerItems;
         }
     }
 

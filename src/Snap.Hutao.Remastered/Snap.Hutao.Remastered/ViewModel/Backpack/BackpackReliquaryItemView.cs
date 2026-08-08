@@ -41,6 +41,8 @@ public sealed class BackpackReliquaryItemView : BackpackItemView
 
     public ImmutableArray<BackpackReliquarySubStatView> SubStats { get; private set; } = [];
 
+    public ImmutableArray<string> SetDescriptions { get; private set; } = [];
+
     /// <summary>
     /// Always returns at least 4 entries, padding with empty placeholders.
     /// </summary>
@@ -72,12 +74,29 @@ public sealed class BackpackReliquaryItemView : BackpackItemView
             Entity = entity,
             Category = BackpackItemCategory.Reliquary,
             Reliquary = reliquary,
+            Name = reliquary.Name,
+            Description = reliquary.Description,
+            TypeDescription = reliquary.EquipType.GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture)!,
+            IconUri = ItemIconConverter.IconNameToUri(reliquary.Icon),
+            Quality = reliquary.RankLevel,
         };
 
         if (context.IdReliquarySetMap.TryGetValue(reliquary.SetId, out ReliquarySet? set))
         {
             view.SetName = set.Name;
             view.SetIconUri = RelicIconConverter.IconNameToUri(set.Icon);
+
+            ImmutableArray<int> needNumbers = set.NeedNumber;
+            ImmutableArray<string>.Builder builder = ImmutableArray.CreateBuilder<string>(set.Descriptions.Length);
+            for (int i = 0; i < set.Descriptions.Length; i++)
+            {
+                string label = i < needNumbers.Length
+                    ? SH.FormatViewPageBackpackSetEffectLabel(needNumbers[i])
+                    : string.Empty;
+                builder.Add($"{label}{set.Descriptions[i]}");
+            }
+
+            view.SetDescriptions = builder.MoveToImmutable();
         }
 
         FightProperty? mainFightProp = null;

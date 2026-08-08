@@ -4932,6 +4932,9 @@ Space Available: {2}</value>
   <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} pts</value>
   </data>
+  <data name="ViewPageBackpackSetEffectLabel" xml:space="preserve">
+    <value>{0}-Piece Set Effect: </value>
+  </data>
   <data name="ViewPageBackpackConfigureScore" xml:space="preserve">
     <value>Score Config</value>
   </data>

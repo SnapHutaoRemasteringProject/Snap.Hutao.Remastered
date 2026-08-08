@@ -2,6 +2,8 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Model.Entity;
+using Snap.Hutao.Remastered.Model.Intrinsic;
+using Snap.Hutao.Remastered.Model.Metadata.Converter;
 using Snap.Hutao.Remastered.Model.Metadata.Item;
 using Snap.Hutao.Remastered.Model.Metadata.Reliquary;
 using Snap.Hutao.Remastered.Model.Metadata.Weapon;
@@ -17,14 +19,17 @@ public class BackpackItemView
 
     public Material? Material { get; protected set; }
 
-    public string Name => this switch
-    {
-        BackpackWeaponItemView w => w.Weapon.Name,
-        BackpackReliquaryItemView r => r.Reliquary.Name,
-        _ => Material?.Name ?? string.Empty,
-    };
+    public string Name { get; protected set; } = string.Empty;
 
     public string DisplayCount => Entity.Count > 1 ? $"x{Entity.Count}" : string.Empty;
+
+    public string Description { get; protected set; } = string.Empty;
+
+    public string TypeDescription { get; protected set; } = string.Empty;
+
+    public Uri IconUri { get; protected set; } = default!;
+
+    public QualityType Quality { get; protected set; }
 
     public static BackpackItemView Create(BackpackItem entity, BackpackServiceMetadataContext context)
     {
@@ -47,6 +52,11 @@ public class BackpackItemView
             Entity = entity,
             Material = material,
             Category = material.GetCategory(entity.ItemId),
+            Name = material?.Name ?? string.Empty,
+            Description = material?.Description ?? string.Empty,
+            TypeDescription = material?.TypeDescription ?? string.Empty,
+            IconUri = material is not null ? ItemIconConverter.IconNameToUri(material.Icon) : default!,
+            Quality = material?.RankLevel ?? QualityType.QUALITY_NONE,
         };
 
         return view;

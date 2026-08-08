@@ -7,10 +7,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
+    xmlns:shuxba="using:Snap.Hutao.Remastered.UI.Xaml.Behavior.Action"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxca="using:Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox"
     xmlns:shuxcas="using:Snap.Hutao.Remastered.UI.Xaml.Control.AutoSortBox"
     xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
+
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
     xmlns:shuxdcs="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
@@ -50,9 +52,26 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 
+            <Flyout x:Key="ItemDetailFlyout">
+                <Flyout.FlyoutPresenterStyle>
+                    <Style TargetType="FlyoutPresenter">
+                        <Setter Property="Padding" Value="0"/>
+                    </Style>
+                </Flyout.FlyoutPresenterStyle>
+                <shuxc:ItemFlyoutContent Item="{Binding}"/>
+            </Flyout>
+
             <!-- Weapon card -->
             <DataTemplate x:Key="WeaponCardTemplate" x:DataType="shv:BackpackWeaponItemView">
                 <shuxcc:HorizontalCard Width="270">
+                    <mxi:Interaction.Behaviors>
+                        <mxi:EventTriggerBehavior EventName="Tapped">
+                            <shuxba:ShowAttachedFlyoutAction/>
+                        </mxi:EventTriggerBehavior>
+                    </mxi:Interaction.Behaviors>
+                    <FlyoutBase.AttachedFlyout>
+                        <StaticResource ResourceKey="ItemDetailFlyout"/>
+                    </FlyoutBase.AttachedFlyout>
                     <shuxcc:HorizontalCard.Left>
                         <shuxc:ItemIcon
                             Margin="4,0"
@@ -90,6 +109,14 @@
 
             <DataTemplate x:Key="ReliquaryCardTemplate" x:DataType="shv:BackpackReliquaryItemView">
                 <Border Width="320" Style="{StaticResource BorderShimmerStyle}">
+                    <mxi:Interaction.Behaviors>
+                        <mxi:EventTriggerBehavior EventName="Tapped">
+                            <shuxba:ShowAttachedFlyoutAction/>
+                        </mxi:EventTriggerBehavior>
+                    </mxi:Interaction.Behaviors>
+                    <FlyoutBase.AttachedFlyout>
+                        <StaticResource ResourceKey="ItemDetailFlyout"/>
+                    </FlyoutBase.AttachedFlyout>
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
@@ -247,6 +274,14 @@
             <!-- Default card -->
             <DataTemplate x:Key="DefaultCardTemplate" x:DataType="shv:BackpackItemView">
                 <shuxcc:HorizontalCard Width="270">
+                    <mxi:Interaction.Behaviors>
+                        <mxi:EventTriggerBehavior EventName="Tapped">
+                            <shuxba:ShowAttachedFlyoutAction/>
+                        </mxi:EventTriggerBehavior>
+                    </mxi:Interaction.Behaviors>
+                    <FlyoutBase.AttachedFlyout>
+                        <StaticResource ResourceKey="ItemDetailFlyout"/>
+                    </FlyoutBase.AttachedFlyout>
                     <shuxcc:HorizontalCard.Left>
                         <shuxc:ItemIcon
                             Width="40"

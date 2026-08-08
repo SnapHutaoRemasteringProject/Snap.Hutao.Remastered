@@ -4924,6 +4924,9 @@
   <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} 分</value>
   </data>
+  <data name="ViewPageBackpackSetEffectLabel" xml:space="preserve">
+    <value>{0}件套效果: </value>
+  </data>
   <data name="ViewPageBackpackConfigureScore" xml:space="preserve">
     <value>評分配置</value>
   </data>
