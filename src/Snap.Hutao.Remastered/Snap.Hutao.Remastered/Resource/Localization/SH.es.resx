@@ -3011,6 +3011,12 @@ Espacio disponible: {2}</value>
   <data name="ViewPageLaunchGameBetterGIHeader" xml:space="preserve">
     <value>Tareas automatizadas</value>
   </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathDescription" xml:space="preserve">
+    <value>手动指定 BetterGI 可执行文件路径，留空则使用默认 URI 协议启动</value>
+  </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathHeader" xml:space="preserve">
+    <value>BetterGI 路径</value>
+  </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
     <value>La inyección es muy peligrosa y puede tener consecuencias graves, úsala con precaución</value>
   </data>
@@ -4633,6 +4639,9 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
     <value>Ruta del programa de inicio personalizado guardada</value>
+  </data>
+  <data name="ViewModelLaunchGameBetterGenshinImpactPathSaved" xml:space="preserve">
+    <value>BetterGI 路径已保存</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
     <value>Gestionar inicio de programa personalizado</value>
