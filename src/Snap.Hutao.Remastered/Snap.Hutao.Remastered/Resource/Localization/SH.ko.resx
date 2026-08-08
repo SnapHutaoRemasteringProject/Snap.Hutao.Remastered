@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -459,6 +459,21 @@
   <data name="ModelIntrinsicWeaponTypeSwordOneHand" xml:space="preserve">
     <value>한손검</value>
     <comment>Need EXACT same string in game</comment>
+  </data>
+  <data name="ModelIntrinsicEquipBracer" xml:space="preserve">
+    <value>생명의 꽃</value>
+  </data>
+  <data name="ModelIntrinsicEquipNecklace" xml:space="preserve">
+    <value>죽음의 깃털</value>
+  </data>
+  <data name="ModelIntrinsicEquipShoes" xml:space="preserve">
+    <value>시간의 모래</value>
+  </data>
+  <data name="ModelIntrinsicEquipRing" xml:space="preserve">
+    <value>공간의 잔</value>
+  </data>
+  <data name="ModelIntrinsicEquipDress" xml:space="preserve">
+    <value>이성의 관</value>
   </data>
   <data name="ModelMetadataAvatarPlayerName" xml:space="preserve">
     <value>여행자</value>
@@ -1259,6 +1274,9 @@
   <data name="ViewAvatarPropertySyncDataButtonLabel" xml:space="preserve">
     <value>캐릭터 정보 동기화</value>
   </data>
+  <data name="ViewBackpackHeader" xml:space="preserve">
+    <value>배낭 아이템</value>
+  </data>
   <data name="ViewCardAchievementStatisticsTitle" xml:space="preserve">
     <value>업적 통계</value>
   </data>
@@ -1351,6 +1369,15 @@
   </data>
   <data name="ViewDialogAchievementArchiveCreateTitle" xml:space="preserve">
     <value>업적 아카이브 이름 설정</value>
+  </data>
+  <data name="ViewDialogBackpackArchiveCreateInputPlaceholder" xml:space="preserve">
+    <value>배낭 아카이브 이름을 입력하세요</value>
+  </data>
+  <data name="ViewDialogBackpackArchiveCreateTitle" xml:space="preserve">
+    <value>배낭 아카이브 이름 설정</value>
+  </data>
+  <data name="ViewDialogBackpackArchivePickerTitle" xml:space="preserve">
+    <value>배낭 아이템 아카이브 선택</value>
   </data>
   <data name="ViewDialogAchievementArchiveImportStrategy" xml:space="preserve">
     <value>가져오기 모드</value>
@@ -2417,6 +2444,78 @@
   <data name="ViewPageAchievementSortIncompletedItemsFirst" xml:space="preserve">
     <value>미완성 우선</value>
   </data>
+  <data name="ViewPageBackpackAddArchive" xml:space="preserve">
+    <value>아카이브 생성</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveHint" xml:space="preserve">
+    <value>아이템 관리를 위해 배낭 아카이브를 먼저 생성하세요</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveContent" xml:space="preserve">
+    <value>현재 UID에 새 배낭 아카이브를 생성합니다. 계속하시겠습니까?</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveTitle" xml:space="preserve">
+    <value>배낭 아카이브 생성</value>
+  </data>
+  <data name="ViewPageBackpackArchiveAdded" xml:space="preserve">
+    <value>배낭 아카이브 {0} 생성됨</value>
+  </data>
+  <data name="ViewPageBackpackCategoryAll" xml:space="preserve">
+    <value>전체</value>
+  </data>
+  <data name="ViewPageBackpackCategoryWeapon" xml:space="preserve">
+    <value>무기</value>
+  </data>
+  <data name="ViewPageBackpackCategoryReliquary" xml:space="preserve">
+    <value>성유물</value>
+  </data>
+  <data name="ViewPageBackpackCategoryUpgradeItem" xml:space="preserve">
+    <value>육성 재료</value>
+  </data>
+  <data name="ViewPageBackpackCategoryFood" xml:space="preserve">
+    <value>음식</value>
+  </data>
+  <data name="ViewPageBackpackCategoryMaterial" xml:space="preserve">
+    <value>재료</value>
+  </data>
+  <data name="ViewPageBackpackCategoryGadget" xml:space="preserve">
+    <value>소도구</value>
+  </data>
+  <data name="ViewPageBackpackCategoryQuest" xml:space="preserve">
+    <value>임무</value>
+  </data>
+  <data name="ViewPageBackpackCategoryPreciousItem" xml:space="preserve">
+    <value>귀중한 아이템</value>
+  </data>
+  <data name="ViewPageBackpackCategoryFurniture" xml:space="preserve">
+    <value>장식</value>
+  </data>
+  <data name="ViewPageBackpackCount" xml:space="preserve">
+    <value>수량：</value>
+  </data>
+  <data name="ViewPageBackpackRefreshByEmbeddedYae" xml:space="preserve">
+    <value>Embedded Yae를 통해 동기화</value>
+  </data>
+  <data name="ViewPageBackpackRefreshSuccess" xml:space="preserve">
+    <value>배낭 아이템 동기화 성공</value>
+  </data>
+  <data name="ViewPageBackpackRefreshWarning" xml:space="preserve">
+    <value>배낭 아이템 동기화 실패</value>
+  </data>
+  <data name="ViewPageBackpackRefreshing" xml:space="preserve">
+    <value>배낭 아이템 동기화 중...</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchive" xml:space="preserve">
+    <value>아카이브 삭제</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchiveContent" xml:space="preserve">
+    <value>이 배낭 아카이브를 제거하시겠습니까? 이 작업은 되돌릴 수 없습니다.</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchiveTitle" xml:space="preserve">
+    <value>아카이브 {0} 제거</value>
+  </data>
+  <data name="ViewPageBackpackWeaponInfo" xml:space="preserve">
+    <value>Lv.{0} | 정제 {1}</value>
+  </data>
   <data name="ViewPageAnnouncementRedeemCodeCopySucceed" xml:space="preserve">
     <value>교환 코드 복사 성공</value>
   </data>
@@ -2509,6 +2608,9 @@
   </data>
   <data name="ViewPageCultivationRefreshInventoryByEmbeddedYae" xml:space="preserve">
     <value>Embedded Yae를 통해 동기화</value>
+  </data>
+  <data name="ViewPageCultivationRefreshInventoryByBackpackArchive" xml:space="preserve">
+    <value>배낭 아이템 아카이브를 통해 동기화</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>목록 삭제</value>
@@ -3464,6 +3566,12 @@
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>다른 기능에 동일한 바로 가기 키를 설정하면 예기치 않은 결과가 발생할 수 있으며, 정상 기능을 복원하려면 추가 작업이나 응용 프로그램 재시작이 필요합니다.</value>
   </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>게임 실행 후 자동으로 Hutao 창 닫아 메모리 절약</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>게임 실행 후 창 닫기</value>
+  </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>통합 터치 장치가 감지되고 주입 기능이 활성화된 경우, 게임 실행 시 터치 스크린 상호 작용 모드를 강제로 활성화합니다. 감지되지 않은 경우 강제로 비활성화합니다.</value>
   </data>
@@ -4376,6 +4484,12 @@
   <data name="ViewPageAvatarPropertyExportAllToText" xml:space="preserve">
     <value>모든 캐릭터 내보내기</value>
   </data>
+  <data name="ViewPageAvatarPropertyReliquaryScore" xml:space="preserve">
+    <value>평점</value>
+  </data>
+  <data name="ViewPageAvatarPropertyReliquaryScoreValue" xml:space="preserve">
+    <value>{0:F1} 점</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>사용자 정의 시작</value>
   </data>
@@ -4780,5 +4894,158 @@
   </data>
   <data name="ModelIntrinsicQuestShowTypeHidden" xml:space="preserve">
     <value>隐藏</value>
+  </data>
+  <data name="ViewPageHutaoPassportRegisterAgreement" xml:space="preserve">
+    <value>본 서비스와 구 버전 Hutao 도구함 데이터가 연동되지 않음을 알고 있습니다</value>
+  </data>
+  <data name="ViewPageBackpackFilterLocked" xml:space="preserve">
+    <value>잠김</value>
+  </data>
+  <data name="ViewPageBackpackFilterUnlocked" xml:space="preserve">
+    <value>잠기지 않음</value>
+  </data>
+  <data name="ViewPageBackpackFilterMarked" xml:space="preserve">
+    <value>표시됨</value>
+  </data>
+  <data name="ViewPageBackpackFilterUnmarked" xml:space="preserve">
+    <value>표시되지 않음</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
+    <value>이상한</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualityNormal" xml:space="preserve">
+    <value>평범한</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualityDelicious" xml:space="preserve">
+    <value>맛있는</value>
+  </data>
+  <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
+    <value>이름/유형/품질...</value>
+  </data>
+  <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
+    <value>레벨</value>
+  </data>
+  <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
+    <value>{0:F1} 점</value>
+  </data>
+  <data name="ViewPageBackpackSetEffectLabel" xml:space="preserve">
+    <value>{0}件套效果: </value>
+  </data>
+  <data name="ViewPageBackpackConfigureScore" xml:space="preserve">
+    <value>점수 설정</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigTitle" xml:space="preserve">
+    <value>성유물 점수 가중치 설정</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigPresetHeader" xml:space="preserve">
+    <value>프리셋</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigNameHeader" xml:space="preserve">
+    <value>설정 이름</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetDefault" xml:space="preserve">
+    <value>일반</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetATKScaler" xml:space="preserve">
+    <value>공치치</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetHPScaler" xml:space="preserve">
+    <value>체치치</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetDEFScaler" xml:space="preserve">
+    <value>방치치</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetEM" xml:space="preserve">
+    <value>원마 특화</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigCrit" xml:space="preserve">
+    <value>치명타 확률</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigCritHurt" xml:space="preserve">
+    <value>치명타 피해</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigAttackPercent" xml:space="preserve">
+    <value>공격력%</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigChargeEfficiency" xml:space="preserve">
+    <value>원소 충전 효율</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigElementalMastery" xml:space="preserve">
+    <value>원소 마스터리</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigHpPercent" xml:space="preserve">
+    <value>HP%</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigDefensePercent" xml:space="preserve">
+    <value>방어력%</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetCustom" xml:space="preserve">
+    <value>사용자 정의</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigApply" xml:space="preserve">
+    <value>적용</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigNewConfig" xml:space="preserve">
+    <value>새 설정</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigDeleteConfig" xml:space="preserve">
+    <value>삭제</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigWeightsHeader" xml:space="preserve">
+    <value>가중치</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigFlatHint" xml:space="preserve">
+    <value>소공격/소생명/소방어는 점수에 반영되지 않습니다</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeHeal" xml:space="preserve">
+    <value>회복류 요리</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeAttack" xml:space="preserve">
+    <value>공격류 요리</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeFunction" xml:space="preserve">
+    <value>기능류 요리</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeDefense" xml:space="preserve">
+    <value>방어류 요리</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeRecipe" xml:space="preserve">
+    <value>레시피류 요리</value>
+  </data>
+  <data name="ViewPageBackpackSortHeader" xml:space="preserve">
+    <value>排序方式</value>
+  </data>
+  <data name="ViewPageBackpackSortQuality" xml:space="preserve">
+    <value>品质</value>
+  </data>
+  <data name="ViewPageBackpackSortLevel" xml:space="preserve">
+    <value>等级</value>
+  </data>
+  <data name="ViewPageBackpackSortName" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="ViewPageBackpackSortRefinement" xml:space="preserve">
+    <value>精炼</value>
+  </data>
+  <data name="ViewPageBackpackSortWeaponType" xml:space="preserve">
+    <value>武器类型</value>
+  </data>
+  <data name="ViewPageBackpackSortEquipType" xml:space="preserve">
+    <value>部位</value>
+  </data>
+  <data name="ViewPageBackpackSortScore" xml:space="preserve">
+    <value>评分</value>
+  </data>
+  <data name="ViewPageBackpackSortCount" xml:space="preserve">
+    <value>数量</value>
+  </data>
+  <data name="ViewPageBackpackSortLock" xml:space="preserve">
+    <value>锁定</value>
+  </data>
+  <data name="ViewPageBackpackSortMark" xml:space="preserve">
+    <value>标记</value>
+  </data>
+  <data name="ViewPageBackpackSortSetName" xml:space="preserve">
+    <value>套装</value>
   </data>
 </root>
