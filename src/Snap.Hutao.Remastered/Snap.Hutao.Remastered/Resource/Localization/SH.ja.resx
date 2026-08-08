@@ -3011,6 +3011,12 @@
   <data name="ViewPageLaunchGameBetterGIHeader" xml:space="preserve">
     <value>任務自動化</value>
   </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathDescription" xml:space="preserve">
+    <value>手动指定 BetterGI 可执行文件路径，留空则使用默认 URI 协议启动</value>
+  </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathHeader" xml:space="preserve">
+    <value>BetterGI 路径</value>
+  </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
     <value>注入機能は非常に危険で、重大な結果をもたらす可能性があるため、慎重に使用してください！</value>
   </data>
@@ -4637,6 +4643,9 @@
   </data>
   <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
     <value>カスタム起動プログラムのパスを保存しました</value>
+  </data>
+  <data name="ViewModelLaunchGameBetterGenshinImpactPathSaved" xml:space="preserve">
+    <value>BetterGI 路径已保存</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
     <value>カスタムプログラム起動の管理</value>
