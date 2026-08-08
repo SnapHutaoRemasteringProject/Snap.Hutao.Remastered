@@ -31,6 +31,7 @@ using Snap.Hutao.Remastered.Web.Hoyolab.HoyoPlay.Connect;
 using Snap.Hutao.Remastered.Web.Hoyolab.HoyoPlay.Connect.Branch;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Downloader.Proto;
 using Snap.Hutao.Remastered.Web.Hutao.HutaoAsAService;
+using Snap.Hutao.Remastered.Service.Update;
 using Snap.Hutao.Remastered.Web.Hutao.Redeem;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
 using Snap.Hutao.Remastered.Web.Response;
@@ -343,6 +344,23 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
         catch (CompilationErrorException ex)
         {
             logger.LogCritical(ex, "Compilation Error");
+        }
+    }
+
+    [Command("ForceUpdateDialogCommand")]
+    private async Task ForceUpdateDialogAsync()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Force update dialog", "TestViewModel.Command"));
+
+        using (IServiceScope scope = serviceProvider.CreateScope())
+        {
+            IUpdateService updateService = scope.ServiceProvider.GetRequiredService<IUpdateService>();
+            CheckUpdateResult result = new()
+            {
+                Kind = CheckUpdateResultKind.UpdateAvailable,
+                PackageInformation = null,
+            };
+            await updateService.TriggerUpdateAsync(result).ConfigureAwait(false);
         }
     }
 

@@ -5053,4 +5053,31 @@
   <data name="ViewPageBackpackSortSetName" xml:space="preserve">
     <value>套裝</value>
   </data>
+  <data name="ViewPageSettingMirrorChyanLinkHeader" xml:space="preserve">
+    <value>Mirror醬</value>
+  </data>
+  <data name="ViewDialogDownloadSourceTitle" xml:space="preserve">
+    <value>選擇下載來源</value>
+  </data>
+  <data name="ViewDialogDownloadSourceHint" xml:space="preserve">
+    <value>請選擇更新套件的下載來源。Mirror醬在中國大陸擁有 6000+ CDN 節點，連線性更佳。</value>
+  </data>
+  <data name="ViewDialogDownloadSourceOfficial" xml:space="preserve">
+    <value>官方來源</value>
+  </data>
+  <data name="ViewDialogDownloadSourceOfficialDescription" xml:space="preserve">
+    <value>透過 Snap Hutao Remastered 官方伺服器下載，支援多執行緒加速</value>
+  </data>
+  <data name="ViewDialogDownloadSourceMirrorChyan" xml:space="preserve">
+    <value>Mirror醬來源</value>
+  </data>
+  <data name="ViewDialogDownloadSourceMirrorChyanDescription" xml:space="preserve">
+    <value>透過 Mirror醬 CDN 下載，中國大陸連線性極佳（需填入 CDK）</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkTitle" xml:space="preserve">
+    <value>Mirror醬 CDK</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
+    <value>請輸入 Mirror醬 啟用金鑰（CDK），留空則跳過。可從 mirrorchyan.com 取得。</value>
+  </data>
 </root>

@@ -9,6 +9,7 @@ using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Service.Hutao;
 using Snap.Hutao.Remastered.Service.Notification;
+using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
 using Snap.Hutao.Remastered.Web.Response;
@@ -112,13 +113,40 @@ public sealed partial class UpdateService : IUpdateService
                     return;
                 }
 
+                DownloadSourceDialog sourceDialog = await contentDialogFactory
+                    .CreateInstanceAsync<DownloadSourceDialog>(scope.ServiceProvider)
+                    .ConfigureAwait(false);
+
+                (bool isOk, DownloadSourceKind downloadSource) = await sourceDialog.GetDownloadSourceAsync().ConfigureAwait(false);
+
+                if (!isOk)
+                {
+                    return;
+                }
+
+                if (downloadSource is DownloadSourceKind.MirrorChyan)
+                {
+                    MirrorChyanCdkDialog cdkDialog = await contentDialogFactory
+                        .CreateInstanceAsync<MirrorChyanCdkDialog>(scope.ServiceProvider)
+                        .ConfigureAwait(false);
+
+                    (bool cdkOk, string cdk) = await cdkDialog.GetCdkAsync().ConfigureAwait(false);
+
+                    if (!cdkOk)
+                    {
+                        return;
+                    }
+
+                    LocalSetting.Set(SettingKeys.MirrorChyanCdk, cdk);
+                }
+
 #if IS_ALPHA_BUILD
                 if (result.PackageInformation?.Mirrors.SingleOrDefault() is { MirrorType: Web.Hutao.HutaoPackageMirrorType.Browser } mirror)
                 {
                     await Windows.System.Launcher.LaunchUriAsync(mirror.Url.ToUri());
                 }
 #else
-                await LaunchUpdaterAsync().ConfigureAwait(false);
+                await LaunchUpdaterAsync(downloadSource).ConfigureAwait(false);
 #endif
             }
             catch (Exception ex)
@@ -132,7 +160,7 @@ public sealed partial class UpdateService : IUpdateService
         }
     }
 
-    private async ValueTask LaunchUpdaterAsync()
+    private async ValueTask LaunchUpdaterAsync(DownloadSourceKind downloadSource = DownloadSourceKind.Official)
     {
         string updaterTargetPath = HutaoRuntime.GetDataUpdateCacheDirectoryFile(UpdaterFilename);
         InstalledLocation.CopyFileFromApplicationUri($"ms-appx:///{UpdaterFilename}", updaterTargetPath);
@@ -147,6 +175,20 @@ public sealed partial class UpdateService : IUpdateService
             if (hutaoUserOptions.IsLoggedIn)
             {
                 commandLineBuilder.Append("--api-key", await hutaoUserOptions.GetAccessTokenAsync().ConfigureAwait(false));
+            }
+
+            commandLineBuilder.Append("--source", downloadSource.ToString());
+
+            if (downloadSource is DownloadSourceKind.MirrorChyan)
+            {
+                string cdk = LocalSetting.Get(SettingKeys.MirrorChyanCdk, string.Empty);
+                if (!string.IsNullOrEmpty(cdk))
+                {
+                    commandLineBuilder.Append("--cdk", cdk);
+                }
+
+                string resId = RuntimeEnvironment.IsUnpackaged ? "SnapHutaoRemastered" : "SnapHutaoRemastered_msix";
+                commandLineBuilder.Append("--res-id", resId);
             }
 
             // The updater will request UAC permissions itself

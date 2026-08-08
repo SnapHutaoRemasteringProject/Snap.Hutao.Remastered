@@ -102,6 +102,12 @@
                     <ToggleSwitch IsOn="{Binding OverrideUpdateVersionComparison, Mode=TwoWay}"/>
                 </cwc:SettingsCard>
 
+                <cwc:SettingsCard
+                    Command="{Binding ForceUpdateDialogCommand}"
+                    Description="Show the update dialog without requiring an actual new version"
+                    Header="Force Show Update Dialog"
+                    IsClickEnabled="True"/>
+
                 <cwc:SettingsCard Header="Override Package Convert Directory Permission Requirement">
                     <ToggleSwitch IsOn="{Binding OverridePackageConvertDirectoryPermissionsRequirement, Mode=TwoWay}"/>
                 </cwc:SettingsCard>
