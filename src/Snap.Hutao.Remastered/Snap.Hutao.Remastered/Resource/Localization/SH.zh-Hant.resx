@@ -5005,4 +5005,40 @@
   <data name="ModelIntrinsicCookFoodTypeRecipe" xml:space="preserve">
     <value>食譜類料理</value>
   </data>
+  <data name="ViewPageBackpackSortHeader" xml:space="preserve">
+    <value>排序方式</value>
+  </data>
+  <data name="ViewPageBackpackSortQuality" xml:space="preserve">
+    <value>品質</value>
+  </data>
+  <data name="ViewPageBackpackSortLevel" xml:space="preserve">
+    <value>等級</value>
+  </data>
+  <data name="ViewPageBackpackSortName" xml:space="preserve">
+    <value>名稱</value>
+  </data>
+  <data name="ViewPageBackpackSortRefinement" xml:space="preserve">
+    <value>精煉</value>
+  </data>
+  <data name="ViewPageBackpackSortWeaponType" xml:space="preserve">
+    <value>武器類型</value>
+  </data>
+  <data name="ViewPageBackpackSortEquipType" xml:space="preserve">
+    <value>部位</value>
+  </data>
+  <data name="ViewPageBackpackSortScore" xml:space="preserve">
+    <value>評分</value>
+  </data>
+  <data name="ViewPageBackpackSortCount" xml:space="preserve">
+    <value>數量</value>
+  </data>
+  <data name="ViewPageBackpackSortLock" xml:space="preserve">
+    <value>鎖定</value>
+  </data>
+  <data name="ViewPageBackpackSortMark" xml:space="preserve">
+    <value>標記</value>
+  </data>
+  <data name="ViewPageBackpackSortSetName" xml:space="preserve">
+    <value>套裝</value>
+  </data>
 </root>

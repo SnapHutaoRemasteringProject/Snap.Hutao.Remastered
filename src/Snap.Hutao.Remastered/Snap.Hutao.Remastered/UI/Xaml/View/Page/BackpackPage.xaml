@@ -9,6 +9,7 @@
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxca="using:Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox"
+    xmlns:shuxcas="using:Snap.Hutao.Remastered.UI.Xaml.Control.AutoSortBox"
     xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
     xmlns:shuxdcs="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized"
@@ -416,6 +417,21 @@
                                 PlaceholderText="0"
                                 SpinButtonPlacementMode="Hidden"
                                 Value="{Binding FilterLevel, Mode=TwoWay}"/>
+                            <Button
+                                VerticalAlignment="Center">
+                                <Button.Flyout>
+                                    <Flyout>
+                                        <shuxcas:AutoSortList
+                                            Width="260"
+                                            AvailableTokens="{Binding AvailableSortTokens}"
+                                            SortCommand="{Binding ApplySortCommand}"/>
+                                    </Flyout>
+                                </Button.Flyout>
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <FontIcon FontSize="12" Glyph="&#xE8CB;"/>
+                                    <TextBlock Text="{shuxm:ResourceString Name=ViewPageBackpackSortHeader}"/>
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </Border>

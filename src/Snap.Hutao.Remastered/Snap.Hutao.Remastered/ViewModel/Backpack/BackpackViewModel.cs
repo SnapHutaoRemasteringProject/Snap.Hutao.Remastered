@@ -8,14 +8,13 @@ using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Intrinsic;
-using Snap.Hutao.Remastered.Model.Intrinsic.Frozen;
 using Snap.Hutao.Remastered.Model.Metadata;
-using Snap.Hutao.Remastered.Model.Metadata.Converter;
 using Snap.Hutao.Remastered.Service.AvatarInfo.Factory;
 using Snap.Hutao.Remastered.Service.Backpack;
 using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.Yae.PlayerStore;
+using Snap.Hutao.Remastered.UI.Xaml.Control.AutoSortBox;
 using Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
@@ -23,7 +22,7 @@ using Snap.Hutao.Remastered.ViewModel.Game;
 
 using System.Collections.Frozen;
 using System.Collections.Immutable;
-using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.ViewModel.Backpack;
 
@@ -36,14 +35,19 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
     private FrozenDictionary<uint, int> foodQualityMap = FrozenDictionary<uint, int>.Empty;
     private FrozenDictionary<uint, CookFoodType> foodTypeMap = FrozenDictionary<uint, CookFoodType>.Empty;
     private ImmutableDictionary<BackpackItemCategory, FrozenDictionary<string, SearchToken>> categoryTokens = [];
+    private ImmutableDictionary<BackpackItemCategory, ImmutableArray<AutoSortToken>> categorySortTokens = [];
 
-    private static readonly Uri LockedIconUri = new("ms-appx:///Resource/Icon/UI_Icon_Locked.png");
-    private static readonly Uri UnlockedIconUri = new("ms-appx:///Resource/Icon/UI_Icon_Unlock.png");
-    private static readonly Uri MarkIconUri = new("ms-appx:///Resource/Icon/UI_Icon_UGC_Collect.png");
-
-    private static readonly Uri SuspiciousFoodIconUri = new("ms-appx:///Resource/Icon/Icon_Common_Cook.png");
-    private static readonly Uri NormalFoodIconUri = new("ms-appx:///Resource/Icon/Icon_Good_Cook.png");
-    private static readonly Uri DeliciousFoodIconUri = new("ms-appx:///Resource/Icon/Icon_Perfect_Cook.png");
+    private static readonly ImmutableArray<BackpackItemCategory> CategoryIndexMap = [
+        BackpackItemCategory.Weapon,
+        BackpackItemCategory.Reliquary,
+        BackpackItemCategory.UpgradeItem,
+        BackpackItemCategory.Food,
+        BackpackItemCategory.Material,
+        BackpackItemCategory.Gadget,
+        BackpackItemCategory.Quest,
+        BackpackItemCategory.PreciousItem,
+        BackpackItemCategory.Furniture,
+    ];
 
     [GeneratedConstructor]
     public partial BackpackViewModel(IServiceProvider serviceProvider);
@@ -70,6 +74,9 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
 
     [ObservableProperty]
     public partial double? FilterLevel { get; set; }
+
+    [ObservableProperty]
+    public partial ImmutableArray<AutoSortToken> AvailableSortTokens { get; set; } = [];
 
     public BackpackReliquaryScoreConfig? ScoreConfig { get; private set; }
 
@@ -119,11 +126,22 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
 
     partial void OnSelectedCategoryIndexChanged(int value)
     {
-        BuildSearchData();
-        UpdateItemsFilter();
+        BackpackItemCategory category = GetSelectedCategory();
+        BuildSearchData(category);
+        BuildSortTokens(category);
+        UpdateItemsFilter(category);
     }
 
-    partial void OnFilterLevelChanged(double? value) => UpdateItemsFilter();
+    partial void OnFilterLevelChanged(double? value)
+    {
+        UpdateItemsFilter(GetSelectedCategory());
+    }
+
+    [Command("ApplySortCommand")]
+    private void ApplySort()
+    {
+        UpdateItemsFilter(GetSelectedCategory());
+    }
 
     [Command("AddArchiveCommand")]
     private async Task AddArchiveAsync()
@@ -321,141 +339,101 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
         foreach (BackpackItemCategory cat in Enum.GetValues<BackpackItemCategory>())
         {
             ImmutableArray<BackpackItemView> catItems = categoryItems.GetValueOrDefault(cat, []);
-            tokenBuilder.Add(cat, BuildTokenDictionary(cat, catItems));
+            tokenBuilder.Add(cat, BackpackFilterTokenBuilder.Build(cat, catItems));
         }
 
         categoryTokens = tokenBuilder.ToImmutable();
+        categorySortTokens = BackpackSortTokenBuilder.Build();
 
         await scopeContext.TaskContext.SwitchToMainThreadAsync();
         token.ThrowIfCancellationRequested();
 
-        BuildSearchData();
-        UpdateItemsFilter();
+        BackpackItemCategory category = GetSelectedCategory();
+        BuildSearchData(category);
+        BuildSortTokens(category);
+        UpdateItemsFilter(category);
     }
 
     [Command("FilterCommand")]
     private void ApplyFilter()
     {
-        UpdateItemsFilter();
+        UpdateItemsFilter(GetSelectedCategory());
     }
-
-    private static readonly ImmutableArray<BackpackItemCategory> CategoryIndexMap = [
-        BackpackItemCategory.Weapon,
-        BackpackItemCategory.Reliquary,
-        BackpackItemCategory.UpgradeItem,
-        BackpackItemCategory.Food,
-        BackpackItemCategory.Material,
-        BackpackItemCategory.Gadget,
-        BackpackItemCategory.Quest,
-        BackpackItemCategory.PreciousItem,
-        BackpackItemCategory.Furniture,
-    ];
 
     private BackpackItemCategory GetSelectedCategory()
     {
-        uint index = (uint)SelectedCategoryIndex;
-        return index < (uint)CategoryIndexMap.Length
-            ? CategoryIndexMap[(int)index]
+        int index = SelectedCategoryIndex;
+        return index >= 0 && index < CategoryIndexMap.Length
+            ? CategoryIndexMap[index]
             : BackpackItemCategory.Weapon;
     }
 
-    private void BuildSearchData()
+    private void BuildSearchData(BackpackItemCategory category)
     {
-        SearchData = SearchData.Create(categoryTokens.GetValueOrDefault(GetSelectedCategory(), FrozenDictionary<string, SearchToken>.Empty));
+        SearchData = SearchData.Create(categoryTokens.GetValueOrDefault(category, FrozenDictionary<string, SearchToken>.Empty));
     }
 
-    private FrozenDictionary<string, SearchToken> BuildTokenDictionary(BackpackItemCategory category, ImmutableArray<BackpackItemView> items)
+    private void BuildSortTokens(BackpackItemCategory category)
     {
-        List<KeyValuePair<string, SearchToken>> tokens = [];
-
-        switch (category)
+        if (categorySortTokens.TryGetValue(category, out ImmutableArray<AutoSortToken> tokens))
         {
-            case BackpackItemCategory.Weapon:
-                // Weapon type tokens
-                tokens.AddRange(IntrinsicFrozen.WeaponTypeNameValues
-                    .Where(nv => nv.Value is not WeaponType.WEAPON_NONE)
-                    .Select(nv => KeyValuePair.Create(nv.Name, new SearchToken(SearchTokenKind.WeaponType, nv.Name, (int)nv.Value, iconUri: WeaponTypeIconConverter.WeaponTypeToIconUri(nv.Value)))));
+            // Reset selection state on all tokens
+            foreach (AutoSortToken token in tokens)
+            {
+                token.IsSelected = false;
+                token.SortOrder = 0;
+                token.IsDescending = true;
+            }
 
-                // Lock state tokens
-                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterLocked, new SearchToken(SearchTokenKind.BackpackLockState, SH.ViewPageBackpackFilterLocked, 0, iconUri: LockedIconUri)));
-                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterUnlocked, new SearchToken(SearchTokenKind.BackpackLockState, SH.ViewPageBackpackFilterUnlocked, 1, iconUri: UnlockedIconUri)));
-                break;
-
-            case BackpackItemCategory.Reliquary:
-                foreach (EquipType equipType in Enum.GetValues<EquipType>())
-                {
-                    if (equipType is EquipType.EQUIP_NONE or EquipType.EQUIP_WEAPON)
-                    {
-                        continue;
-                    }
-
-                    string name = equipType.GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture) ?? equipType.ToString();
-                    tokens.Add(KeyValuePair.Create(name, new SearchToken(SearchTokenKind.BackpackEquipType, name, (int)equipType, sideIconUri: EquipTypeIconConverter.EquipTypeToIconUri(equipType))));
-                }
-
-                // Reliquary set tokens (use sideIconUri for colored version)
-                HashSet<string> seen = [];
-                foreach (BackpackReliquaryItemView reliquary in items.OfType<BackpackReliquaryItemView>())
-                {
-                    if (reliquary.SetName is { } name && reliquary.SetIconUri is { } uri && seen.Add(name))
-                    {
-                        tokens.Add(KeyValuePair.Create(name, new SearchToken(SearchTokenKind.BackpackReliquarySet, name, 0, sideIconUri: uri)));
-                    }
-                }
-
-                // Lock state tokens
-                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterLocked, new SearchToken(SearchTokenKind.BackpackLockState, SH.ViewPageBackpackFilterLocked, 0, iconUri: LockedIconUri)));
-                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterUnlocked, new SearchToken(SearchTokenKind.BackpackLockState, SH.ViewPageBackpackFilterUnlocked, 1, iconUri: UnlockedIconUri)));
-
-                // Mark state tokens
-                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterMarked, new SearchToken(SearchTokenKind.BackpackMarkState, SH.ViewPageBackpackFilterMarked, 0, iconUri: MarkIconUri)));
-                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterUnmarked, new SearchToken(SearchTokenKind.BackpackMarkState, SH.ViewPageBackpackFilterUnmarked, 1, iconUri: MarkIconUri)));
-                break;
-
-            case BackpackItemCategory.Food:
-                // Cook food type tokens
-                foreach (CookFoodType foodType in Enum.GetValues<CookFoodType>())
-                {
-                    if (foodType is CookFoodType.COOK_FOOD_NONE or CookFoodType.COOK_RECIPE)
-                    {
-                        continue;
-                    }
-
-                    string name = foodType.GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture)!;
-                    Uri iconUri = CookFoodTypeIconConverter.CookFoodTypeToIconUri(foodType);
-                    tokens.Add(KeyValuePair.Create(name, new SearchToken(SearchTokenKind.BackpackCookFoodType, name, (int)foodType, sideIconUri: iconUri)));
-                }
-
-                // Food quality tokens
-                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterFoodQualitySuspicious, new SearchToken(SearchTokenKind.BackpackFoodQuality, SH.ViewPageBackpackFilterFoodQualitySuspicious, 0, sideIconUri: SuspiciousFoodIconUri)));
-                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterFoodQualityNormal, new SearchToken(SearchTokenKind.BackpackFoodQuality, SH.ViewPageBackpackFilterFoodQualityNormal, 1, sideIconUri: NormalFoodIconUri)));
-                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterFoodQualityDelicious, new SearchToken(SearchTokenKind.BackpackFoodQuality, SH.ViewPageBackpackFilterFoodQualityDelicious, 2, sideIconUri: DeliciousFoodIconUri)));
-                break;
+            AvailableSortTokens = tokens;
         }
-
-        // Item quality tokens (after category-specific tokens)
-        tokens.AddRange(IntrinsicFrozen.ItemQualityNameValues
-            .Select(nv => KeyValuePair.Create(nv.Name, new SearchToken(SearchTokenKind.BackpackQuality, nv.Name, (int)nv.Value, quality: QualityColorConverter.QualityToColor(nv.Value)))));
-
-        return tokens.ToFrozenDictionary();
     }
 
-    private void UpdateItemsFilter()
+    private void UpdateItemsFilter(BackpackItemCategory category)
     {
-        BackpackItemCategory category = GetSelectedCategory();
         ImmutableArray<BackpackItemView> items = categoryItems.GetValueOrDefault(category, []);
         Predicate<BackpackItemView>? predicate = BackpackFilter.Compile(SearchData, FilterLevel, foodQualityMap, foodTypeMap);
-        Items = predicate is null ? items : [.. items.Where(item => predicate(item))];
+        ImmutableArray<BackpackItemView> filtered = predicate is null ? items : [.. items.Where(item => predicate(item))];
+
+        // Items in categoryItems are already sorted with default sort; only re-sort when custom sort is active
+        IComparer<BackpackItemView>? comparer = new AutoSortData<BackpackItemView>(AvailableSortTokens, BackpackSortComparer.CompareByKind).Compile();
+        Items = comparer is null ? filtered : [.. filtered.OrderBy(x => x, comparer)];
+    }
+
+    private static ImmutableArray<BackpackItemView> ApplyDefaultSort(ImmutableArray<BackpackItemView> items, BackpackItemCategory category)
+    {
+        return category switch
+        {
+            BackpackItemCategory.Weapon => [.. items
+                .Cast<BackpackWeaponItemView>()
+                .OrderByDescending(w => w.Weapon.RankLevel)
+                .ThenByDescending(w => w.Level)
+                .ThenBy(w => w.Entity.ItemId)],
+            BackpackItemCategory.Reliquary => [.. items
+                .Cast<BackpackReliquaryItemView>()
+                .OrderByDescending(r => r.Level)
+                .ThenBy(r => r.Entity.ItemId)],
+            _ => [.. items
+                .OrderByDescending(GetRank)
+                .ThenBy(item => item.Entity.ItemId)],
+        };
     }
 
     private static uint GetRank(BackpackItemView item)
     {
-        return item switch
+        if (item is BackpackWeaponItemView w)
         {
-            BackpackWeaponItemView w => (uint)w.Weapon.RankLevel,
-            _ when item.Material is not null => (uint)item.Material.RankLevel,
-            _ => 1,
-        };
+            QualityType rank = w.Weapon.RankLevel;
+            return Unsafe.As<QualityType, uint>(ref rank);
+        }
+
+        if (item.Material is not null)
+        {
+            QualityType rank = item.Material.RankLevel;
+            return Unsafe.As<QualityType, uint>(ref rank);
+        }
+
+        return 1;
     }
 
     private static ImmutableDictionary<BackpackItemCategory, ImmutableArray<BackpackItemView>> BuildCategoryViews(ImmutableArray<BackpackItemView> all)
@@ -465,26 +443,10 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
 
         foreach (BackpackItemCategory cat in Enum.GetValues<BackpackItemCategory>())
         {
-            IEnumerable<BackpackItemView> filtered = all
-                .Where(item => item.Category == cat && IsCorrectType(item, cat));
+            ImmutableArray<BackpackItemView> items = [.. all
+                .Where(item => item.Category == cat && IsCorrectType(item, cat))];
 
-            ImmutableArray<BackpackItemView> sorted = cat switch
-            {
-                BackpackItemCategory.Weapon => [.. filtered
-                    .Cast<BackpackWeaponItemView>()
-                    .OrderByDescending(w => w.Weapon.RankLevel)
-                    .ThenByDescending(w => w.Level)
-                    .ThenBy(w => w.Entity.ItemId)],
-                BackpackItemCategory.Reliquary => [.. filtered
-                    .Cast<BackpackReliquaryItemView>()
-                    .OrderByDescending(r => r.Level)
-                    .ThenBy(r => r.Entity.ItemId)],
-                _ => [.. filtered
-                    .OrderByDescending(GetRank)
-                    .ThenBy(item => item.Entity.ItemId)],
-            };
-
-            builder.Add(cat, sorted);
+            builder.Add(cat, ApplyDefaultSort(items, cat));
         }
 
         return builder.ToImmutable();

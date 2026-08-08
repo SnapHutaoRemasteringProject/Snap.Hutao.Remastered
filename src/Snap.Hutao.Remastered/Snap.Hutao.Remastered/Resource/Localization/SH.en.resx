@@ -5013,4 +5013,40 @@ Space Available: {2}</value>
   <data name="ModelIntrinsicCookFoodTypeRecipe" xml:space="preserve">
     <value>Recipe</value>
   </data>
+  <data name="ViewPageBackpackSortHeader" xml:space="preserve">
+    <value>Sort Method</value>
+  </data>
+  <data name="ViewPageBackpackSortQuality" xml:space="preserve">
+    <value>Quality</value>
+  </data>
+  <data name="ViewPageBackpackSortLevel" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="ViewPageBackpackSortName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ViewPageBackpackSortRefinement" xml:space="preserve">
+    <value>Refinement</value>
+  </data>
+  <data name="ViewPageBackpackSortWeaponType" xml:space="preserve">
+    <value>Weapon Type</value>
+  </data>
+  <data name="ViewPageBackpackSortEquipType" xml:space="preserve">
+    <value>Slot</value>
+  </data>
+  <data name="ViewPageBackpackSortScore" xml:space="preserve">
+    <value>Score</value>
+  </data>
+  <data name="ViewPageBackpackSortCount" xml:space="preserve">
+    <value>Count</value>
+  </data>
+  <data name="ViewPageBackpackSortLock" xml:space="preserve">
+    <value>Lock</value>
+  </data>
+  <data name="ViewPageBackpackSortMark" xml:space="preserve">
+    <value>Mark</value>
+  </data>
+  <data name="ViewPageBackpackSortSetName" xml:space="preserve">
+    <value>Set</value>
+  </data>
 </root>

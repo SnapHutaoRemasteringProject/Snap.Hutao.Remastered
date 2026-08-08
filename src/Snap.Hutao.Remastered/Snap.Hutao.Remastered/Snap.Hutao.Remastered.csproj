@@ -315,7 +315,7 @@
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
     <PackageReference Include="Snap.LibGit2Sharp" Version="0.31.1-preview.0.4" />
-    <PackageReference Include="Snap.Hutao.FileUnlocker" Version="1.1.0" />
+    <PackageReference Include="Snap.Hutao.FileUnlocker" Version="1.2.0" />
     <PackageReference Include="Snap.ZStandard" Version="1.5.7" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.10" />
     <PackageReference Include="System.Formats.Nrbf" Version="10.0.10" />

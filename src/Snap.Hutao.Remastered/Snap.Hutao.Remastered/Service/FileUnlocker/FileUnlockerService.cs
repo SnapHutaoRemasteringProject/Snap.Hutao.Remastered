@@ -19,7 +19,7 @@ public sealed partial class FileUnlockerService : IFileUnlockerService
         return ValueTask.FromResult(result);
     }
 
-    private static LockUnlockResponse? UnlockCore(string path)
+    private static unsafe LockUnlockResponse? UnlockCore(string path)
     {
         char* pResult = null;
         try
