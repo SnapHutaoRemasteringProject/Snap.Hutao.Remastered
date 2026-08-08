@@ -5061,4 +5061,31 @@ Space Available: {2}</value>
   <data name="ViewPageBackpackSortSetName" xml:space="preserve">
     <value>Set</value>
   </data>
+  <data name="ViewPageSettingMirrorChyanLinkHeader" xml:space="preserve">
+    <value>Mirror酱</value>
+  </data>
+  <data name="ViewDialogDownloadSourceTitle" xml:space="preserve">
+    <value>Select Download Source</value>
+  </data>
+  <data name="ViewDialogDownloadSourceHint" xml:space="preserve">
+    <value>Choose the download source. Mirror酱 has 6000+ CDN nodes in China for better connectivity.</value>
+  </data>
+  <data name="ViewDialogDownloadSourceOfficial" xml:space="preserve">
+    <value>Official</value>
+  </data>
+  <data name="ViewDialogDownloadSourceOfficialDescription" xml:space="preserve">
+    <value>Download via Snap Hutao Remastered official servers with multi-threaded acceleration</value>
+  </data>
+  <data name="ViewDialogDownloadSourceMirrorChyan" xml:space="preserve">
+    <value>Mirror酱</value>
+  </data>
+  <data name="ViewDialogDownloadSourceMirrorChyanDescription" xml:space="preserve">
+    <value>Download via Mirror酱 CDN with excellent connectivity in China (CDK required)</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkTitle" xml:space="preserve">
+    <value>Mirror酱 CDK</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
+    <value>Enter your Mirror酱 activation key (CDK), or leave blank to skip. Get one at mirrorchyan.com.</value>
+  </data>
 </root>
