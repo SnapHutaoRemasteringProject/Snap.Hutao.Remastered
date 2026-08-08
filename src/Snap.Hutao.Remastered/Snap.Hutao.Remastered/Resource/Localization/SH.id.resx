@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -459,6 +459,21 @@
   <data name="ModelIntrinsicWeaponTypeSwordOneHand" xml:space="preserve">
     <value>Sword</value>
     <comment>Need EXACT same string in game</comment>
+  </data>
+  <data name="ModelIntrinsicEquipBracer" xml:space="preserve">
+    <value>Bunga Kehidupan</value>
+  </data>
+  <data name="ModelIntrinsicEquipNecklace" xml:space="preserve">
+    <value>Bulu Kematian</value>
+  </data>
+  <data name="ModelIntrinsicEquipShoes" xml:space="preserve">
+    <value>Pasir Eon</value>
+  </data>
+  <data name="ModelIntrinsicEquipRing" xml:space="preserve">
+    <value>Piala Eonothem</value>
+  </data>
+  <data name="ModelIntrinsicEquipDress" xml:space="preserve">
+    <value>Mahkota Logos</value>
   </data>
   <data name="ModelMetadataAvatarPlayerName" xml:space="preserve">
     <value>Pengembara</value>
@@ -1259,6 +1274,9 @@ Ruang Tersedia: {2}</value>
   <data name="ViewAvatarPropertySyncDataButtonLabel" xml:space="preserve">
     <value>Sinkronisasi Data Karakter</value>
   </data>
+  <data name="ViewBackpackHeader" xml:space="preserve">
+    <value>Item Inventori</value>
+  </data>
   <data name="ViewCardAchievementStatisticsTitle" xml:space="preserve">
     <value>Statistik Achievements</value>
   </data>
@@ -1351,6 +1369,15 @@ Ruang Tersedia: {2}</value>
   </data>
   <data name="ViewDialogAchievementArchiveCreateTitle" xml:space="preserve">
     <value>Atur nama arsip Achievement</value>
+  </data>
+  <data name="ViewDialogBackpackArchiveCreateInputPlaceholder" xml:space="preserve">
+    <value>Masukkan nama arsip inventori</value>
+  </data>
+  <data name="ViewDialogBackpackArchiveCreateTitle" xml:space="preserve">
+    <value>Atur nama arsip inventori</value>
+  </data>
+  <data name="ViewDialogBackpackArchivePickerTitle" xml:space="preserve">
+    <value>Pilih arsip item inventori</value>
   </data>
   <data name="ViewDialogAchievementArchiveImportStrategy" xml:space="preserve">
     <value>Import mode</value>
@@ -2417,6 +2444,78 @@ Ruang Tersedia: {2}</value>
   <data name="ViewPageAchievementSortIncompletedItemsFirst" xml:space="preserve">
     <value>Lebih memilih yang tidak lengkap</value>
   </data>
+  <data name="ViewPageBackpackAddArchive" xml:space="preserve">
+    <value>Buat Arsip</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveHint" xml:space="preserve">
+    <value>Silakan buat arsip inventori terlebih dahulu untuk mengelola item</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveContent" xml:space="preserve">
+    <value>Buat arsip inventori baru untuk UID saat ini? Lanjutkan?</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveTitle" xml:space="preserve">
+    <value>Buat Arsip Inventori</value>
+  </data>
+  <data name="ViewPageBackpackArchiveAdded" xml:space="preserve">
+    <value>Arsip inventori {0} telah dibuat</value>
+  </data>
+  <data name="ViewPageBackpackCategoryAll" xml:space="preserve">
+    <value>Semua</value>
+  </data>
+  <data name="ViewPageBackpackCategoryWeapon" xml:space="preserve">
+    <value>Senjata</value>
+  </data>
+  <data name="ViewPageBackpackCategoryReliquary" xml:space="preserve">
+    <value>Artefak</value>
+  </data>
+  <data name="ViewPageBackpackCategoryUpgradeItem" xml:space="preserve">
+    <value>Item Peningkatan</value>
+  </data>
+  <data name="ViewPageBackpackCategoryFood" xml:space="preserve">
+    <value>Makanan</value>
+  </data>
+  <data name="ViewPageBackpackCategoryMaterial" xml:space="preserve">
+    <value>Material</value>
+  </data>
+  <data name="ViewPageBackpackCategoryGadget" xml:space="preserve">
+    <value>Alat</value>
+  </data>
+  <data name="ViewPageBackpackCategoryQuest" xml:space="preserve">
+    <value>Misi</value>
+  </data>
+  <data name="ViewPageBackpackCategoryPreciousItem" xml:space="preserve">
+    <value>Item Berharga</value>
+  </data>
+  <data name="ViewPageBackpackCategoryFurniture" xml:space="preserve">
+    <value>Perabotan</value>
+  </data>
+  <data name="ViewPageBackpackCount" xml:space="preserve">
+    <value>Jumlah:</value>
+  </data>
+  <data name="ViewPageBackpackRefreshByEmbeddedYae" xml:space="preserve">
+    <value>Sinkronkan melalui Embedded Yae</value>
+  </data>
+  <data name="ViewPageBackpackRefreshSuccess" xml:space="preserve">
+    <value>Sinkronisasi item inventori berhasil</value>
+  </data>
+  <data name="ViewPageBackpackRefreshWarning" xml:space="preserve">
+    <value>Sinkronisasi item inventori gagal</value>
+  </data>
+  <data name="ViewPageBackpackRefreshing" xml:space="preserve">
+    <value>Sedang menyinkronkan item inventori...</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchive" xml:space="preserve">
+    <value>Hapus Arsip</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchiveContent" xml:space="preserve">
+    <value>Yakin ingin menghapus arsip inventori ini? Tindakan ini tidak dapat dikembalikan.</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchiveTitle" xml:space="preserve">
+    <value>Hapus arsip {0}</value>
+  </data>
+  <data name="ViewPageBackpackWeaponInfo" xml:space="preserve">
+    <value>Lv.{0} | Pemurnian{1}</value>
+  </data>
   <data name="ViewPageAnnouncementRedeemCodeCopySucceed" xml:space="preserve">
     <value>Berhasil menyalin kode penukaran</value>
   </data>
@@ -2509,6 +2608,9 @@ Ruang Tersedia: {2}</value>
   </data>
   <data name="ViewPageCultivationRefreshInventoryByEmbeddedYae" xml:space="preserve">
     <value>Sinkronkan melalui Embedded Yae</value>
+  </data>
+  <data name="ViewPageCultivationRefreshInventoryByBackpackArchive" xml:space="preserve">
+    <value>Sinkronkan melalui arsip item inventori</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Hapus daftar</value>
@@ -2908,6 +3010,12 @@ Ruang Tersedia: {2}</value>
   </data>
   <data name="ViewPageLaunchGameBetterGIHeader" xml:space="preserve">
     <value>Tugas Otomatis</value>
+  </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathDescription" xml:space="preserve">
+    <value>Tentukan jalur file eksekutabel BetterGI secara manual, kosongkan untuk menggunakan protokol URI default untuk memulai</value>
+  </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathHeader" xml:space="preserve">
+    <value>Jalur BetterGI</value>
   </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
     <value>Injeksi sangat berbahaya dan dapat menyebabkan konsekuensi serius, harap gunakan dengan hati-hati</value>
@@ -3463,6 +3571,12 @@ Ruang Tersedia: {2}</value>
   </data>
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>Menyetel pintasan yang sama untuk fungsi yang berbeda dapat menyebabkan hasil yang tidak terduga, dan diperlukan tindakan tambahan atau memulai ulang aplikasi untuk memulihkan fungsi normal.</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>Tutup jendela Hutao otomatis setelah game dimulai untuk menghemat memori</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>Tutup jendela setelah game dimulai</value>
   </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>Ketika perangkat sentuh terintegrasi terdeteksi dan fungsionalitas suntikan diaktifkan, paksa aktifkan mode interaksi layar sentuh saat meluncurkan game; ketika tidak terdeteksi, paksa nonaktifkan.</value>
@@ -4376,6 +4490,12 @@ Ruang Tersedia: {2}</value>
   <data name="ViewPageAvatarPropertyExportAllToText" xml:space="preserve">
     <value>Ekspor semua karakter</value>
   </data>
+  <data name="ViewPageAvatarPropertyReliquaryScore" xml:space="preserve">
+    <value>Skor</value>
+  </data>
+  <data name="ViewPageAvatarPropertyReliquaryScoreValue" xml:space="preserve">
+    <value>{0:F1} poin</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Peluncuran kustom</value>
   </data>
@@ -4523,6 +4643,9 @@ Ruang Tersedia: {2}</value>
   </data>
   <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
     <value>Jalur program kustom disimpan</value>
+  </data>
+  <data name="ViewModelLaunchGameBetterGenshinImpactPathSaved" xml:space="preserve">
+    <value>Jalur BetterGI telah disimpan</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
     <value>Kelola peluncuran program kustom</value>
@@ -4784,5 +4907,185 @@ Ruang Tersedia: {2}</value>
   </data>
   <data name="ModelIntrinsicQuestShowTypeHidden" xml:space="preserve">
     <value>隐藏</value>
+  </data>
+  <data name="ViewPageHutaoPassportRegisterAgreement" xml:space="preserve">
+    <value>Saya mengerti bahwa layanan ini tidak berbagi data dengan Snap Hutao versi lama</value>
+  </data>
+  <data name="ViewPageBackpackFilterLocked" xml:space="preserve">
+    <value>Terkunci</value>
+  </data>
+  <data name="ViewPageBackpackFilterUnlocked" xml:space="preserve">
+    <value>Tidak Terkunci</value>
+  </data>
+  <data name="ViewPageBackpackFilterMarked" xml:space="preserve">
+    <value>Ditandai</value>
+  </data>
+  <data name="ViewPageBackpackFilterUnmarked" xml:space="preserve">
+    <value>Tidak Ditandai</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
+    <value>Aneh</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualityNormal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualityDelicious" xml:space="preserve">
+    <value>Lezat</value>
+  </data>
+  <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
+    <value>Nama/Tipe/Kualitas...</value>
+  </data>
+  <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
+    <value>{0:F1} Poin</value>
+  </data>
+  <data name="ViewPageBackpackSetEffectLabel" xml:space="preserve">
+    <value>Efek Set {0} Bagian: </value>
+  </data>
+  <data name="ViewPageBackpackConfigureScore" xml:space="preserve">
+    <value>Konfigurasi Skor</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigTitle" xml:space="preserve">
+    <value>Konfigurasi Bobot Skor Artefak</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigPresetHeader" xml:space="preserve">
+    <value>Preset</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigNameHeader" xml:space="preserve">
+    <value>Nama Konfigurasi</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetDefault" xml:space="preserve">
+    <value>Umum</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetATKScaler" xml:space="preserve">
+    <value>ATK &amp; Crit Ganda</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetHPScaler" xml:space="preserve">
+    <value>HP &amp; Crit Ganda</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetDEFScaler" xml:space="preserve">
+    <value>DEF &amp; Crit Ganda</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetEM" xml:space="preserve">
+    <value>Penguasaan Elemen</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigCrit" xml:space="preserve">
+    <value>CRIT Rate</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigCritHurt" xml:space="preserve">
+    <value>CRIT DMG</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigAttackPercent" xml:space="preserve">
+    <value>ATK%</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigChargeEfficiency" xml:space="preserve">
+    <value>Energy Recharge</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigElementalMastery" xml:space="preserve">
+    <value>Penguasaan Elemen</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigHpPercent" xml:space="preserve">
+    <value>HP%</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigDefensePercent" xml:space="preserve">
+    <value>DEF%</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetCustom" xml:space="preserve">
+    <value>Kustom</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigApply" xml:space="preserve">
+    <value>Terapkan</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigNewConfig" xml:space="preserve">
+    <value>Konfigurasi Baru</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigDeleteConfig" xml:space="preserve">
+    <value>Hapus</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigWeightsHeader" xml:space="preserve">
+    <value>Bobot</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigFlatHint" xml:space="preserve">
+    <value>ATK/HP/DEF Datar tidak termasuk skor</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeHeal" xml:space="preserve">
+    <value>Masakan Pemulihan</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeAttack" xml:space="preserve">
+    <value>Masakan Serangan</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeFunction" xml:space="preserve">
+    <value>Masakan Utilitas</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeDefense" xml:space="preserve">
+    <value>Masakan Pertahanan</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeRecipe" xml:space="preserve">
+    <value>Masakan Resep</value>
+  </data>
+  <data name="ViewPageBackpackSortHeader" xml:space="preserve">
+    <value>Urut Berdasarkan</value>
+  </data>
+  <data name="ViewPageBackpackSortQuality" xml:space="preserve">
+    <value>Kualitas</value>
+  </data>
+  <data name="ViewPageBackpackSortLevel" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="ViewPageBackpackSortName" xml:space="preserve">
+    <value>Nama</value>
+  </data>
+  <data name="ViewPageBackpackSortRefinement" xml:space="preserve">
+    <value>Refinement</value>
+  </data>
+  <data name="ViewPageBackpackSortWeaponType" xml:space="preserve">
+    <value>Tipe Senjata</value>
+  </data>
+  <data name="ViewPageBackpackSortEquipType" xml:space="preserve">
+    <value>Slot Peralatan</value>
+  </data>
+  <data name="ViewPageBackpackSortScore" xml:space="preserve">
+    <value>Skor</value>
+  </data>
+  <data name="ViewPageBackpackSortCount" xml:space="preserve">
+    <value>Jumlah</value>
+  </data>
+  <data name="ViewPageBackpackSortLock" xml:space="preserve">
+    <value>Kunci</value>
+  </data>
+  <data name="ViewPageBackpackSortMark" xml:space="preserve">
+    <value>Tandai</value>
+  </data>
+  <data name="ViewPageBackpackSortSetName" xml:space="preserve">
+    <value>Set</value>
+  </data>
+  <data name="ViewPageSettingMirrorChyanLinkHeader" xml:space="preserve">
+    <value>Mirror</value>
+  </data>
+  <data name="ViewDialogDownloadSourceTitle" xml:space="preserve">
+    <value>Pilih Sumber Unduhan</value>
+  </data>
+  <data name="ViewDialogDownloadSourceHint" xml:space="preserve">
+    <value>Silakan pilih sumber unduhan untuk paket pembaruan. Sumber Mirror酱 memiliki lebih dari 6000 node CDN di daratan Tiongkok, dengan konektivitas yang lebih baik.</value>
+  </data>
+  <data name="ViewDialogDownloadSourceOfficial" xml:space="preserve">
+    <value>Sumber Resmi</value>
+  </data>
+  <data name="ViewDialogDownloadSourceOfficialDescription" xml:space="preserve">
+    <value>Unduh melalui server resmi Snap Hutao Remastered, mendukung akselerasi multi-utas</value>
+  </data>
+  <data name="ViewDialogDownloadSourceMirrorChyan" xml:space="preserve">
+    <value>Sumber Mirror酱</value>
+  </data>
+  <data name="ViewDialogDownloadSourceMirrorChyanDescription" xml:space="preserve">
+    <value>Unduh melalui CDN Mirror, konektivitas sangat baik di daratan Tiongkok (CDK diperlukan)</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkTitle" xml:space="preserve">
+    <value>Mirror CDK</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
+    <value>Silakan masukkan kunci aktivasi Mirror酱 (CDK), kosongkan untuk melewati. Dapat diperoleh dari mirrorchyan.com.</value>
   </data>
 </root>
