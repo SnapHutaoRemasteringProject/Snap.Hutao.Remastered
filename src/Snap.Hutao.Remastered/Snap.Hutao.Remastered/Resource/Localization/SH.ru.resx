@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -459,6 +459,21 @@
   <data name="ModelIntrinsicWeaponTypeSwordOneHand" xml:space="preserve">
     <value>Одноручный меч</value>
     <comment>Need EXACT same string in game</comment>
+  </data>
+  <data name="ModelIntrinsicEquipBracer" xml:space="preserve">
+    <value>Цветок жизни</value>
+  </data>
+  <data name="ModelIntrinsicEquipNecklace" xml:space="preserve">
+    <value>Перо смерти</value>
+  </data>
+  <data name="ModelIntrinsicEquipShoes" xml:space="preserve">
+    <value>Пески времени</value>
+  </data>
+  <data name="ModelIntrinsicEquipRing" xml:space="preserve">
+    <value>Кубок пространства</value>
+  </data>
+  <data name="ModelIntrinsicEquipDress" xml:space="preserve">
+    <value>Корона разума</value>
   </data>
   <data name="ModelMetadataAvatarPlayerName" xml:space="preserve">
     <value>Путешественник</value>
@@ -1259,6 +1274,9 @@
   <data name="ViewAvatarPropertySyncDataButtonLabel" xml:space="preserve">
     <value>Синхронизировать данные персонажей</value>
   </data>
+  <data name="ViewBackpackHeader" xml:space="preserve">
+    <value>Предметы инвентаря</value>
+  </data>
   <data name="ViewCardAchievementStatisticsTitle" xml:space="preserve">
     <value>Статистика достижений</value>
   </data>
@@ -1351,6 +1369,15 @@
   </data>
   <data name="ViewDialogAchievementArchiveCreateTitle" xml:space="preserve">
     <value>Укажите имя архива достижений</value>
+  </data>
+  <data name="ViewDialogBackpackArchiveCreateInputPlaceholder" xml:space="preserve">
+    <value>Введите название архива инвентаря</value>
+  </data>
+  <data name="ViewDialogBackpackArchiveCreateTitle" xml:space="preserve">
+    <value>Установите название архива инвентаря</value>
+  </data>
+  <data name="ViewDialogBackpackArchivePickerTitle" xml:space="preserve">
+    <value>Выберите архив предметов инвентаря</value>
   </data>
   <data name="ViewDialogAchievementArchiveImportStrategy" xml:space="preserve">
     <value>Режим импорта</value>
@@ -1611,7 +1638,7 @@
     <value>Для обеспечения независимого суждения пользователей мы будем время от времени обновлять условия включения этих функций. Если вы создатель контента, пожалуйста, не раскрывайте конкретные методы активации в своих материалах о Snap Hutao.</value>
   </data>
   <data name="ViewDialogReconfirmTextHeader" xml:space="preserve">
-    <value />
+    <value>Чтобы избежать случайного включения, введите <b>название</b> включаемой функции</value>
   </data>
   <data name="ViewDialogReconfirmTitle" xml:space="preserve">
     <value>Вы включаете опасную функцию</value>
@@ -2417,6 +2444,78 @@
   <data name="ViewPageAchievementSortIncompletedItemsFirst" xml:space="preserve">
     <value>Приоритет незавершенным</value>
   </data>
+  <data name="ViewPageBackpackAddArchive" xml:space="preserve">
+    <value>Создать архив</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveHint" xml:space="preserve">
+    <value>Сначала создайте архив инвентаря для управления предметами</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveContent" xml:space="preserve">
+    <value>Будет создан новый архив инвентаря для текущего UID. Продолжить?</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveTitle" xml:space="preserve">
+    <value>Создать архив инвентаря</value>
+  </data>
+  <data name="ViewPageBackpackArchiveAdded" xml:space="preserve">
+    <value>Архив инвентаря {0} создан</value>
+  </data>
+  <data name="ViewPageBackpackCategoryAll" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="ViewPageBackpackCategoryWeapon" xml:space="preserve">
+    <value>Оружие</value>
+  </data>
+  <data name="ViewPageBackpackCategoryReliquary" xml:space="preserve">
+    <value>Артефакты</value>
+  </data>
+  <data name="ViewPageBackpackCategoryUpgradeItem" xml:space="preserve">
+    <value>Предметы развития</value>
+  </data>
+  <data name="ViewPageBackpackCategoryFood" xml:space="preserve">
+    <value>Еда</value>
+  </data>
+  <data name="ViewPageBackpackCategoryMaterial" xml:space="preserve">
+    <value>Материалы</value>
+  </data>
+  <data name="ViewPageBackpackCategoryGadget" xml:space="preserve">
+    <value>Гаджеты</value>
+  </data>
+  <data name="ViewPageBackpackCategoryQuest" xml:space="preserve">
+    <value>Задания</value>
+  </data>
+  <data name="ViewPageBackpackCategoryPreciousItem" xml:space="preserve">
+    <value>Ценные предметы</value>
+  </data>
+  <data name="ViewPageBackpackCategoryFurniture" xml:space="preserve">
+    <value>Декорации</value>
+  </data>
+  <data name="ViewPageBackpackCount" xml:space="preserve">
+    <value>Количество:</value>
+  </data>
+  <data name="ViewPageBackpackRefreshByEmbeddedYae" xml:space="preserve">
+    <value>Синхронизировать через Embedded Yae</value>
+  </data>
+  <data name="ViewPageBackpackRefreshSuccess" xml:space="preserve">
+    <value>Синхронизация предметов инвентаря успешна</value>
+  </data>
+  <data name="ViewPageBackpackRefreshWarning" xml:space="preserve">
+    <value>Синхронизация предметов инвентаря не удалась</value>
+  </data>
+  <data name="ViewPageBackpackRefreshing" xml:space="preserve">
+    <value>Синхронизация предметов инвентаря...</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchive" xml:space="preserve">
+    <value>Удалить архив</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchiveContent" xml:space="preserve">
+    <value>Вы уверены, что хотите удалить этот архив инвентаря? Это действие нельзя отменить.</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchiveTitle" xml:space="preserve">
+    <value>Удалить архив {0}</value>
+  </data>
+  <data name="ViewPageBackpackWeaponInfo" xml:space="preserve">
+    <value>Ур.{0} | Пробуждение {1}</value>
+  </data>
   <data name="ViewPageAnnouncementRedeemCodeCopySucceed" xml:space="preserve">
     <value>Код успешно скопирован</value>
   </data>
@@ -2509,6 +2608,9 @@
   </data>
   <data name="ViewPageCultivationRefreshInventoryByEmbeddedYae" xml:space="preserve">
     <value>Синхронизировать через Embedded Yae</value>
+  </data>
+  <data name="ViewPageCultivationRefreshInventoryByBackpackArchive" xml:space="preserve">
+    <value>Синхронизировать через архив предметов инвентаря</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Удалить список</value>
@@ -3470,6 +3572,12 @@
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>Назначение одного и того же сочетания клавиш для разных функций может привести к неожиданным результатам, и для восстановления нормальной работы потребуется выполнить дополнительные действия или перезапустить приложение.</value>
   </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>Автоматически закрывать окно Snap Hutao после запуска игры, экономя память</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>Закрывать окно после запуска игры</value>
+  </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>При обнаружении интегрированного сенсорного устройства и включённой функции внедрения принудительно включать режим сенсорного взаимодействия при запуске игры; при отсутствии обнаружения принудительно отключать.</value>
   </data>
@@ -4382,6 +4490,12 @@
   <data name="ViewPageAvatarPropertyExportAllToText" xml:space="preserve">
     <value>Экспортировать всех персонажей</value>
   </data>
+  <data name="ViewPageAvatarPropertyReliquaryScore" xml:space="preserve">
+    <value>Оценка</value>
+  </data>
+  <data name="ViewPageAvatarPropertyReliquaryScoreValue" xml:space="preserve">
+    <value>{0:F1} балла</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Пользовательский запуск</value>
   </data>
@@ -4786,5 +4900,155 @@
   </data>
   <data name="ModelIntrinsicQuestShowTypeHidden" xml:space="preserve">
     <value>隐藏</value>
+  </data>
+  <data name="ViewPageHutaoPassportRegisterAgreement" xml:space="preserve">
+    <value>Я осознаю, что данные этого сервиса и старого инструментария Snap Hutao не совместимы</value>
+  </data>
+  <data name="ViewPageBackpackFilterLocked" xml:space="preserve">
+    <value>Заблокировано</value>
+  </data>
+  <data name="ViewPageBackpackFilterUnlocked" xml:space="preserve">
+    <value>Не заблокировано</value>
+  </data>
+  <data name="ViewPageBackpackFilterMarked" xml:space="preserve">
+    <value>Помечено</value>
+  </data>
+  <data name="ViewPageBackpackFilterUnmarked" xml:space="preserve">
+    <value>Не помечено</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
+    <value>Странное</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualityNormal" xml:space="preserve">
+    <value>Обычное</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualityDelicious" xml:space="preserve">
+    <value>Вкусное</value>
+  </data>
+  <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
+    <value>Название/тип/качество...</value>
+  </data>
+  <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
+    <value>Уровень</value>
+  </data>
+  <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
+    <value>{0:F1} баллов</value>
+  </data>
+  <data name="ViewPageBackpackConfigureScore" xml:space="preserve">
+    <value>Параметры оценки</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigTitle" xml:space="preserve">
+    <value>Настройка весов оценки артефактов</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigPresetHeader" xml:space="preserve">
+    <value>Предустановки</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigNameHeader" xml:space="preserve">
+    <value>Название конфигурации</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetDefault" xml:space="preserve">
+    <value>Универсальный</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetATKScaler" xml:space="preserve">
+    <value>АТК и двойной крит</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetHPScaler" xml:space="preserve">
+    <value>HP и двойной крит</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetDEFScaler" xml:space="preserve">
+    <value>DEF и двойной крит</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetEM" xml:space="preserve">
+    <value>Мастерство стихий</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigCrit" xml:space="preserve">
+    <value>Шанс крит. попадания</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigCritHurt" xml:space="preserve">
+    <value>Урон при критическом ударе</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigAttackPercent" xml:space="preserve">
+    <value>Сила атаки%</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigChargeEfficiency" xml:space="preserve">
+    <value>Эффективность заряда элемента</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigElementalMastery" xml:space="preserve">
+    <value>Мастерство стихий</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigHpPercent" xml:space="preserve">
+    <value>HP%</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigDefensePercent" xml:space="preserve">
+    <value>Защита%</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetCustom" xml:space="preserve">
+    <value>Пользовательский</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigApply" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigNewConfig" xml:space="preserve">
+    <value>Создать конфигурацию</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigDeleteConfig" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigWeightsHeader" xml:space="preserve">
+    <value>Веса</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigFlatHint" xml:space="preserve">
+    <value>Фиксированные атака, HP, защита не учитываются</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeHeal" xml:space="preserve">
+    <value>Восстанавливающие</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeAttack" xml:space="preserve">
+    <value>Атакующие</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeFunction" xml:space="preserve">
+    <value>Функциональные</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeDefense" xml:space="preserve">
+    <value>Защитные</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeRecipe" xml:space="preserve">
+    <value>Рецепты</value>
+  </data>
+  <data name="ViewPageBackpackSortHeader" xml:space="preserve">
+    <value>排序方式</value>
+  </data>
+  <data name="ViewPageBackpackSortQuality" xml:space="preserve">
+    <value>品质</value>
+  </data>
+  <data name="ViewPageBackpackSortLevel" xml:space="preserve">
+    <value>等级</value>
+  </data>
+  <data name="ViewPageBackpackSortName" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="ViewPageBackpackSortRefinement" xml:space="preserve">
+    <value>精炼</value>
+  </data>
+  <data name="ViewPageBackpackSortWeaponType" xml:space="preserve">
+    <value>武器类型</value>
+  </data>
+  <data name="ViewPageBackpackSortEquipType" xml:space="preserve">
+    <value>部位</value>
+  </data>
+  <data name="ViewPageBackpackSortScore" xml:space="preserve">
+    <value>评分</value>
+  </data>
+  <data name="ViewPageBackpackSortCount" xml:space="preserve">
+    <value>数量</value>
+  </data>
+  <data name="ViewPageBackpackSortLock" xml:space="preserve">
+    <value>锁定</value>
+  </data>
+  <data name="ViewPageBackpackSortMark" xml:space="preserve">
+    <value>标记</value>
+  </data>
+  <data name="ViewPageBackpackSortSetName" xml:space="preserve">
+    <value>套装</value>
   </data>
 </root>
