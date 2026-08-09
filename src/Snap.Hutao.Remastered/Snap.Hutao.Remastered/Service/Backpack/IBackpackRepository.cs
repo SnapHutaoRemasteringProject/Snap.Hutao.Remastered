@@ -25,4 +25,12 @@ public interface IBackpackRepository : IRepository<BackpackArchive>, IRepository
     void RemoveBackpackItemRangeByArchiveId(Guid archiveId);
 
     ImmutableArray<BackpackItem> GetBackpackItemImmutableArrayByArchiveId(Guid archiveId);
+
+    BackpackReliquaryScoreConfig? GetActiveReliquaryScoreConfig();
+
+    ImmutableArray<BackpackReliquaryScoreConfig> GetAllReliquaryScoreConfigs();
+
+    void SaveReliquaryScoreConfig(BackpackReliquaryScoreConfig config);
+
+    void DeleteReliquaryScoreConfigById(Guid configId);
 }

@@ -3011,6 +3011,12 @@
   <data name="ViewPageLaunchGameBetterGIHeader" xml:space="preserve">
     <value>自动化任务</value>
   </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathDescription" xml:space="preserve">
+    <value>手动指定 BetterGI 可执行文件路径，留空则使用默认 URI 协议启动</value>
+  </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathHeader" xml:space="preserve">
+    <value>BetterGI 路径</value>
+  </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
     <value>本软件及注入功能属于《米哈游用户协议》第十条第二款规定的“插件、外挂或非经合法授权的第三方工具/服务”，您需要自行承担因使用内容而引起的所有风险，本软件无法且不会对您因前述风险而导致的任何损失或损害承担责任。
 出于安全因素考虑，我们有权不经向您特别通知而对软件及相关功能进行更新，或者对软件的部分功能效果进行改变或限制。</value>
@@ -4639,6 +4645,9 @@
   <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
     <value>已保存自定义启动程序路径</value>
   </data>
+  <data name="ViewModelLaunchGameBetterGenshinImpactPathSaved" xml:space="preserve">
+    <value>BetterGI 路径已保存</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
     <value>管理自定义程序启动</value>
   </data>
@@ -4930,6 +4939,78 @@
   <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
     <value>等级</value>
   </data>
+  <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
+    <value>{0:F1} 分</value>
+  </data>
+  <data name="ViewPageBackpackSetEffectLabel" xml:space="preserve">
+    <value>{0}件套效果: </value>
+  </data>
+  <data name="ViewPageBackpackConfigureScore" xml:space="preserve">
+    <value>评分配置</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigTitle" xml:space="preserve">
+    <value>圣遗物评分权重配置</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigPresetHeader" xml:space="preserve">
+    <value>预设</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigNameHeader" xml:space="preserve">
+    <value>配置名称</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetDefault" xml:space="preserve">
+    <value>通用</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetATKScaler" xml:space="preserve">
+    <value>攻双暴</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetHPScaler" xml:space="preserve">
+    <value>生双暴</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetDEFScaler" xml:space="preserve">
+    <value>防双暴</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetEM" xml:space="preserve">
+    <value>精通流</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigCrit" xml:space="preserve">
+    <value>暴击率</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigCritHurt" xml:space="preserve">
+    <value>暴击伤害</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigAttackPercent" xml:space="preserve">
+    <value>攻击力%</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigChargeEfficiency" xml:space="preserve">
+    <value>元素充能效率</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigElementalMastery" xml:space="preserve">
+    <value>元素精通</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigHpPercent" xml:space="preserve">
+    <value>生命值%</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigDefensePercent" xml:space="preserve">
+    <value>防御力%</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetCustom" xml:space="preserve">
+    <value>自定义</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigApply" xml:space="preserve">
+    <value>应用</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigNewConfig" xml:space="preserve">
+    <value>新建配置</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigDeleteConfig" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigWeightsHeader" xml:space="preserve">
+    <value>权重</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigFlatHint" xml:space="preserve">
+    <value>小攻击/小生命/小防御不计入评分</value>
+  </data>
   <data name="ModelIntrinsicCookFoodTypeHeal" xml:space="preserve">
     <value>回复类料理</value>
   </data>
@@ -4944,5 +5025,68 @@
   </data>
   <data name="ModelIntrinsicCookFoodTypeRecipe" xml:space="preserve">
     <value>食谱类料理</value>
+  </data>
+  <data name="ViewPageBackpackSortHeader" xml:space="preserve">
+    <value>排序方式</value>
+  </data>
+  <data name="ViewPageBackpackSortQuality" xml:space="preserve">
+    <value>品质</value>
+  </data>
+  <data name="ViewPageBackpackSortLevel" xml:space="preserve">
+    <value>等级</value>
+  </data>
+  <data name="ViewPageBackpackSortName" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="ViewPageBackpackSortRefinement" xml:space="preserve">
+    <value>精炼</value>
+  </data>
+  <data name="ViewPageBackpackSortWeaponType" xml:space="preserve">
+    <value>武器类型</value>
+  </data>
+  <data name="ViewPageBackpackSortEquipType" xml:space="preserve">
+    <value>部位</value>
+  </data>
+  <data name="ViewPageBackpackSortScore" xml:space="preserve">
+    <value>评分</value>
+  </data>
+  <data name="ViewPageBackpackSortCount" xml:space="preserve">
+    <value>数量</value>
+  </data>
+  <data name="ViewPageBackpackSortLock" xml:space="preserve">
+    <value>锁定</value>
+  </data>
+  <data name="ViewPageBackpackSortMark" xml:space="preserve">
+    <value>标记</value>
+  </data>
+  <data name="ViewPageBackpackSortSetName" xml:space="preserve">
+    <value>套装</value>
+  </data>
+  <data name="ViewPageSettingMirrorChyanLinkHeader" xml:space="preserve">
+    <value>Mirror酱</value>
+  </data>
+  <data name="ViewDialogDownloadSourceTitle" xml:space="preserve">
+    <value>选择下载源</value>
+  </data>
+  <data name="ViewDialogDownloadSourceHint" xml:space="preserve">
+    <value>请选择更新包的下载来源。Mirror酱源在中国大陆拥有 6000+ CDN 节点，连通性更佳。</value>
+  </data>
+  <data name="ViewDialogDownloadSourceOfficial" xml:space="preserve">
+    <value>官方源</value>
+  </data>
+  <data name="ViewDialogDownloadSourceOfficialDescription" xml:space="preserve">
+    <value>通过 Snap Hutao Remastered 官方服务器下载，支持多线程加速</value>
+  </data>
+  <data name="ViewDialogDownloadSourceMirrorChyan" xml:space="preserve">
+    <value>Mirror酱源</value>
+  </data>
+  <data name="ViewDialogDownloadSourceMirrorChyanDescription" xml:space="preserve">
+    <value>通过 Mirror酱 CDN 下载，中国大陆连通性极佳（需填入 CDK）</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkTitle" xml:space="preserve">
+    <value>Mirror酱 CDK</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
+    <value>请输入 Mirror酱 激活密钥（CDK），留空则跳过。可从 mirrorchyan.com 获取。</value>
   </data>
 </root>

@@ -160,6 +160,14 @@
                                     Header="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE72D;}"
                                     IsClickEnabled="True"/>
+
+                                <cwc:SettingsCard
+                                    Header="{shuxm:ResourceString Name=ViewPageSettingMirrorChyanLinkHeader}"
+                                    IsClickEnabled="False">
+                                    <HyperlinkButton
+                                        Content="{shuxm:ResourceString Name=ViewPageSettingMirrorChyanLinkHeader}"
+                                        NavigateUri="https://mirrorchyan.com?source=snap_hutao_app_settings"/>
+                                </cwc:SettingsCard>
                             </StackPanel>
                         </ScrollViewer>
                     </Grid>

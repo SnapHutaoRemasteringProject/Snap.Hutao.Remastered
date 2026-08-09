@@ -529,6 +529,29 @@ public sealed partial class LaunchGameViewModel : Abstraction.ViewModel, IViewMo
         messenger.Send(InfoBarMessage.Success(SH.ViewModelLaunchGameAdvancedStartProgramPathSaved));
     }
 
+    [Command("PickBetterGenshinImpactPathCommand")]
+    private async Task PickBetterGenshinImpactPathAsync()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Pick BetterGI program", "LaunchGameViewModel.Command"));
+
+        await taskContext.SwitchToBackgroundAsync();
+        (bool picked, ValueFile file) = fileSystemPickerInteraction.PickFile(
+            "Picker",
+            "program",
+            "*.exe");
+
+        if (!picked)
+        {
+            return;
+        }
+
+        string path = file;
+
+        await taskContext.SwitchToMainThreadAsync();
+        LaunchOptions.BetterGenshinImpactPath.Value = path;
+        messenger.Send(InfoBarMessage.Success(SH.ViewModelLaunchGameBetterGenshinImpactPathSaved));
+    }
+
     // Delayed Programs Commands
     [Command("AddDelayedProgramCommand")]
     private async Task AddDelayedProgramAsync()

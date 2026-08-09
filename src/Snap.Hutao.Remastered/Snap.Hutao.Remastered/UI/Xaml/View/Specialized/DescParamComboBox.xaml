@@ -54,7 +54,7 @@
             IsExpanded="True"
             ItemTemplate="{StaticResource ParameterDescriptionTemplate}"
             ItemsSource="{x:Bind SelectedItem.Parameters, Mode=OneWay}">
-            <shuxc:SizeRestrictedContentControl Margin="0,-8">
+            <shuxc:SizeRestrictedContentControl Margin="0,-8" IsHeightRestricted="False">
                 <ComboBox
                     x:Name="LevelComboBox"
                     DisplayMemberPath="Level"

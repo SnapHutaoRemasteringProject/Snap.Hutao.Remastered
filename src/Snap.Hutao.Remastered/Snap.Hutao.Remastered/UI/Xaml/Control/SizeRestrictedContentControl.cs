@@ -25,6 +25,16 @@ public sealed partial class SizeRestrictedContentControl : ContentControl
                 Math.Clamp(element.ActualWidth, contentDesiredSize.Width, availableSize.Width),
                 Math.Clamp(element.ActualHeight, contentDesiredSize.Height, availableSize.Height));
 
+            if (minContentWidth > availableSize.Width)
+            {
+                minContentWidth = 0;
+            }
+
+            if (minContentHeight > availableSize.Height)
+            {
+                minContentHeight = 0;
+            }
+
             if (IsWidthRestricted)
             {
                 if (contentActualOrDesiredSize.Width > minContentWidth)
@@ -47,26 +57,5 @@ public sealed partial class SizeRestrictedContentControl : ContentControl
         }
 
         return base.MeasureOverride(availableSize);
-    }
-
-    protected override Size ArrangeOverride(Size finalSize)
-    {
-        if (Content is FrameworkElement element)
-        {
-            if (IsWidthRestricted)
-            {
-                element.MinWidth = 0;
-            }
-
-            if (IsHeightRestricted)
-            {
-                element.MinHeight = 0;
-            }
-
-            minContentWidth = 0;
-            minContentHeight = 0;
-        }
-
-        return base.ArrangeOverride(finalSize);
     }
 }

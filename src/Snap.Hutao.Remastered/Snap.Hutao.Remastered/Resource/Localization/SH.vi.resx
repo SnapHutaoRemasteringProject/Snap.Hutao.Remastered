@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -459,6 +459,21 @@
   <data name="ModelIntrinsicWeaponTypeSwordOneHand" xml:space="preserve">
     <value>Kiếm Đơn</value>
     <comment>Need EXACT same string in game</comment>
+  </data>
+  <data name="ModelIntrinsicEquipBracer" xml:space="preserve">
+    <value>Hoa Sự Sống</value>
+  </data>
+  <data name="ModelIntrinsicEquipNecklace" xml:space="preserve">
+    <value>Lông Vũ Tử Thần</value>
+  </data>
+  <data name="ModelIntrinsicEquipShoes" xml:space="preserve">
+    <value>Cát Thời Gian</value>
+  </data>
+  <data name="ModelIntrinsicEquipRing" xml:space="preserve">
+    <value>Ly Không Gian</value>
+  </data>
+  <data name="ModelIntrinsicEquipDress" xml:space="preserve">
+    <value>Nón Lý Trí</value>
   </data>
   <data name="ModelMetadataAvatarPlayerName" xml:space="preserve">
     <value>Nhà Lữ Hành</value>
@@ -1259,6 +1274,9 @@ Dung lượng còn trống: {2}</value>
   <data name="ViewAvatarPropertySyncDataButtonLabel" xml:space="preserve">
     <value>Đồng bộ hóa dữ liệu nhân vật</value>
   </data>
+  <data name="ViewBackpackHeader" xml:space="preserve">
+    <value>Vật phẩm trong túi</value>
+  </data>
   <data name="ViewCardAchievementStatisticsTitle" xml:space="preserve">
     <value>Thống kê thành tựu</value>
   </data>
@@ -1351,6 +1369,15 @@ Dung lượng còn trống: {2}</value>
   </data>
   <data name="ViewDialogAchievementArchiveCreateTitle" xml:space="preserve">
     <value>Đặt tên cho kho lưu trữ thành tựu</value>
+  </data>
+  <data name="ViewDialogBackpackArchiveCreateInputPlaceholder" xml:space="preserve">
+    <value>Vui lòng nhập tên cho kho lưu trữ túi</value>
+  </data>
+  <data name="ViewDialogBackpackArchiveCreateTitle" xml:space="preserve">
+    <value>Đặt tên cho kho lưu trữ túi</value>
+  </data>
+  <data name="ViewDialogBackpackArchivePickerTitle" xml:space="preserve">
+    <value>Chọn kho lưu trữ vật phẩm trong túi</value>
   </data>
   <data name="ViewDialogAchievementArchiveImportStrategy" xml:space="preserve">
     <value>Chế độ nhập</value>
@@ -2417,6 +2444,78 @@ Dung lượng còn trống: {2}</value>
   <data name="ViewPageAchievementSortIncompletedItemsFirst" xml:space="preserve">
     <value>Ưu tiên chưa hoàn thành</value>
   </data>
+  <data name="ViewPageBackpackAddArchive" xml:space="preserve">
+    <value>Tạo kho lưu trữ</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveHint" xml:space="preserve">
+    <value>Vui lòng tạo kho lưu trữ túi trước để quản lý vật phẩm</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveContent" xml:space="preserve">
+    <value>Sẽ tạo kho lưu trữ túi mới cho UID hiện tại, xác nhận tiếp tục?</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveTitle" xml:space="preserve">
+    <value>Tạo kho lưu trữ túi</value>
+  </data>
+  <data name="ViewPageBackpackArchiveAdded" xml:space="preserve">
+    <value>Kho lưu trữ túi {0} đã được tạo</value>
+  </data>
+  <data name="ViewPageBackpackCategoryAll" xml:space="preserve">
+    <value>Tất cả</value>
+  </data>
+  <data name="ViewPageBackpackCategoryWeapon" xml:space="preserve">
+    <value>Vũ khí</value>
+  </data>
+  <data name="ViewPageBackpackCategoryReliquary" xml:space="preserve">
+    <value>Thánh Di Vật</value>
+  </data>
+  <data name="ViewPageBackpackCategoryUpgradeItem" xml:space="preserve">
+    <value>Đạo cụ tăng cường</value>
+  </data>
+  <data name="ViewPageBackpackCategoryFood" xml:space="preserve">
+    <value>Thực phẩm</value>
+  </data>
+  <data name="ViewPageBackpackCategoryMaterial" xml:space="preserve">
+    <value>Nguyên liệu</value>
+  </data>
+  <data name="ViewPageBackpackCategoryGadget" xml:space="preserve">
+    <value>Tiểu đạo cụ</value>
+  </data>
+  <data name="ViewPageBackpackCategoryQuest" xml:space="preserve">
+    <value>Nhiệm vụ</value>
+  </data>
+  <data name="ViewPageBackpackCategoryPreciousItem" xml:space="preserve">
+    <value>Đạo cụ quý giá</value>
+  </data>
+  <data name="ViewPageBackpackCategoryFurniture" xml:space="preserve">
+    <value>Đồ trang trí</value>
+  </data>
+  <data name="ViewPageBackpackCount" xml:space="preserve">
+    <value>Số lượng:</value>
+  </data>
+  <data name="ViewPageBackpackRefreshByEmbeddedYae" xml:space="preserve">
+    <value>Đồng bộ qua Embedded Yae</value>
+  </data>
+  <data name="ViewPageBackpackRefreshSuccess" xml:space="preserve">
+    <value>Đồng bộ vật phẩm trong túi thành công</value>
+  </data>
+  <data name="ViewPageBackpackRefreshWarning" xml:space="preserve">
+    <value>Đồng bộ vật phẩm trong túi thất bại</value>
+  </data>
+  <data name="ViewPageBackpackRefreshing" xml:space="preserve">
+    <value>Đang đồng bộ vật phẩm trong túi…</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchive" xml:space="preserve">
+    <value>Xóa kho lưu trữ</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchiveContent" xml:space="preserve">
+    <value>Bạn có chắc chắn muốn xóa kho lưu trữ túi này không? Hành động này không thể hoàn tác.</value>
+  </data>
+  <data name="ViewPageBackpackRemoveArchiveTitle" xml:space="preserve">
+    <value>Xóa kho lưu trữ {0}</value>
+  </data>
+  <data name="ViewPageBackpackWeaponInfo" xml:space="preserve">
+    <value>Lv.{0} | Tinh luyện{1}</value>
+  </data>
   <data name="ViewPageAnnouncementRedeemCodeCopySucceed" xml:space="preserve">
     <value>Sao chép mã đổi thành công</value>
   </data>
@@ -2509,6 +2608,9 @@ Dung lượng còn trống: {2}</value>
   </data>
   <data name="ViewPageCultivationRefreshInventoryByEmbeddedYae" xml:space="preserve">
     <value>Đồng bộ bằng Embedded Yae</value>
+  </data>
+  <data name="ViewPageCultivationRefreshInventoryByBackpackArchive" xml:space="preserve">
+    <value>Đồng bộ qua kho lưu trữ vật phẩm trong túi</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Xóa danh sách</value>
@@ -2908,6 +3010,12 @@ Dung lượng còn trống: {2}</value>
   </data>
   <data name="ViewPageLaunchGameBetterGIHeader" xml:space="preserve">
     <value>Tác vụ tự động</value>
+  </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathDescription" xml:space="preserve">
+    <value>Chỉ định đường dẫn tệp thực thi BetterGI theo cách thủ công, để trống sẽ sử dụng giao thức URI mặc định để khởi chạy</value>
+  </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathHeader" xml:space="preserve">
+    <value>Đường dẫn BetterGI</value>
   </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
     <value>Chức năng tiêm rất nguy hiểm và có thể gây ra hậu quả nghiêm trọng, vui lòng sử dụng thận trọng</value>
@@ -3463,6 +3571,12 @@ Dung lượng còn trống: {2}</value>
   </data>
   <data name="ViewPageSettingKeyShortcutWarningDescription" xml:space="preserve">
     <value>Đặt cùng một phím tắt cho các chức năng khác nhau có thể gây ra kết quả không mong muốn và cần thêm thao tác hoặc khởi động lại ứng dụng để khôi phục chức năng bình thường.</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedDescription" xml:space="preserve">
+    <value>Tự động đóng cửa sổ Snap Hutao sau khi khởi động game để tiết kiệm bộ nhớ sử dụng</value>
+  </data>
+  <data name="ViewPageSettingLaunchCloseWhenGameStartedHeader" xml:space="preserve">
+    <value>Đóng cửa sổ sau khi khởi động game</value>
   </data>
   <data name="ViewPageSettingLaunchForceUsingTouchScreenDescription" xml:space="preserve">
     <value>Khi phát hiện thiết bị cảm ứng tích hợp và tính năng tiêm được bật, buộc bật chế độ tương tác màn hình cảm ứng khi khởi động trò chơi; khi không phát hiện, buộc tắt</value>
@@ -4376,6 +4490,12 @@ Dung lượng còn trống: {2}</value>
   <data name="ViewPageAvatarPropertyExportAllToText" xml:space="preserve">
     <value>Xuất tất cả nhân vật</value>
   </data>
+  <data name="ViewPageAvatarPropertyReliquaryScore" xml:space="preserve">
+    <value>Đánh giá</value>
+  </data>
+  <data name="ViewPageAvatarPropertyReliquaryScoreValue" xml:space="preserve">
+    <value>{0:F1} điểm</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Khởi chạy tùy chỉnh</value>
   </data>
@@ -4523,6 +4643,9 @@ Dung lượng còn trống: {2}</value>
   </data>
   <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
     <value>Đã lưu đường dẫn chương trình tùy chỉnh</value>
+  </data>
+  <data name="ViewModelLaunchGameBetterGenshinImpactPathSaved" xml:space="preserve">
+    <value>Đã lưu đường dẫn BetterGI</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
     <value>Quản lý khởi chạy chương trình tùy chỉnh</value>
@@ -4784,5 +4907,185 @@ Dung lượng còn trống: {2}</value>
   </data>
   <data name="ModelIntrinsicQuestShowTypeHidden" xml:space="preserve">
     <value>隐藏</value>
+  </data>
+  <data name="ViewPageHutaoPassportRegisterAgreement" xml:space="preserve">
+    <value>Tôi đã hiểu rằng dịch vụ này không tương thích dữ liệu với phiên bản Snap Hutao cũ</value>
+  </data>
+  <data name="ViewPageBackpackFilterLocked" xml:space="preserve">
+    <value>Đã khóa</value>
+  </data>
+  <data name="ViewPageBackpackFilterUnlocked" xml:space="preserve">
+    <value>Chưa khóa</value>
+  </data>
+  <data name="ViewPageBackpackFilterMarked" xml:space="preserve">
+    <value>Đã đánh dấu</value>
+  </data>
+  <data name="ViewPageBackpackFilterUnmarked" xml:space="preserve">
+    <value>Chưa đánh dấu</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
+    <value>Kỳ lạ</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualityNormal" xml:space="preserve">
+    <value>Bình thường</value>
+  </data>
+  <data name="ViewPageBackpackFilterFoodQualityDelicious" xml:space="preserve">
+    <value>Ngon</value>
+  </data>
+  <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
+    <value>Tên/Loại/Chất lượng…</value>
+  </data>
+  <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
+    <value>Cấp độ</value>
+  </data>
+  <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
+    <value>{0:F1} điểm</value>
+  </data>
+  <data name="ViewPageBackpackSetEffectLabel" xml:space="preserve">
+    <value>Hiệu ứng {0} món: </value>
+  </data>
+  <data name="ViewPageBackpackConfigureScore" xml:space="preserve">
+    <value>Cấu hình điểm số</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigTitle" xml:space="preserve">
+    <value>Cấu hình trọng số điểm Thánh Di Vật</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigPresetHeader" xml:space="preserve">
+    <value>Cài đặt sẵn</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigNameHeader" xml:space="preserve">
+    <value>Tên cấu hình</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetDefault" xml:space="preserve">
+    <value>Chung</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetATKScaler" xml:space="preserve">
+    <value>Công và Bạo</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetHPScaler" xml:space="preserve">
+    <value>HP và Bạo</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetDEFScaler" xml:space="preserve">
+    <value>Phòng và Bạo</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetEM" xml:space="preserve">
+    <value>Tinh Thông</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigCrit" xml:space="preserve">
+    <value>Tỉ lệ bạo kích</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigCritHurt" xml:space="preserve">
+    <value>Sát thương bạo kích</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigAttackPercent" xml:space="preserve">
+    <value>Tấn công%</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigChargeEfficiency" xml:space="preserve">
+    <value>Hiệu Quả Nạp Nguyên Tố</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigElementalMastery" xml:space="preserve">
+    <value>Tinh thông nguyên tố</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigHpPercent" xml:space="preserve">
+    <value>HP%</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigDefensePercent" xml:space="preserve">
+    <value>Phòng ngự%</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetCustom" xml:space="preserve">
+    <value>Tùy chỉnh</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigApply" xml:space="preserve">
+    <value>Áp dụng</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigNewConfig" xml:space="preserve">
+    <value>Tạo cấu hình mới</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigDeleteConfig" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigWeightsHeader" xml:space="preserve">
+    <value>Trọng số</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigFlatHint" xml:space="preserve">
+    <value>Tấn công cố định/HP cố định/Phòng ngự cố định không được tính điểm</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeHeal" xml:space="preserve">
+    <value>Món hồi phục</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeAttack" xml:space="preserve">
+    <value>Món tấn công</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeFunction" xml:space="preserve">
+    <value>Món chức năng</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeDefense" xml:space="preserve">
+    <value>Món phòng ngự</value>
+  </data>
+  <data name="ModelIntrinsicCookFoodTypeRecipe" xml:space="preserve">
+    <value>Món công thức</value>
+  </data>
+  <data name="ViewPageBackpackSortHeader" xml:space="preserve">
+    <value>Sắp xếp</value>
+  </data>
+  <data name="ViewPageBackpackSortQuality" xml:space="preserve">
+    <value>Chất lượng</value>
+  </data>
+  <data name="ViewPageBackpackSortLevel" xml:space="preserve">
+    <value>Cấp độ</value>
+  </data>
+  <data name="ViewPageBackpackSortName" xml:space="preserve">
+    <value>Tên</value>
+  </data>
+  <data name="ViewPageBackpackSortRefinement" xml:space="preserve">
+    <value>Tinh luyện</value>
+  </data>
+  <data name="ViewPageBackpackSortWeaponType" xml:space="preserve">
+    <value>Loại vũ khí</value>
+  </data>
+  <data name="ViewPageBackpackSortEquipType" xml:space="preserve">
+    <value>Vị trí</value>
+  </data>
+  <data name="ViewPageBackpackSortScore" xml:space="preserve">
+    <value>Điểm số</value>
+  </data>
+  <data name="ViewPageBackpackSortCount" xml:space="preserve">
+    <value>Số lượng</value>
+  </data>
+  <data name="ViewPageBackpackSortLock" xml:space="preserve">
+    <value>Khóa</value>
+  </data>
+  <data name="ViewPageBackpackSortMark" xml:space="preserve">
+    <value>Đánh dấu</value>
+  </data>
+  <data name="ViewPageBackpackSortSetName" xml:space="preserve">
+    <value>Bộ</value>
+  </data>
+  <data name="ViewPageSettingMirrorChyanLinkHeader" xml:space="preserve">
+    <value>Mirror</value>
+  </data>
+  <data name="ViewDialogDownloadSourceTitle" xml:space="preserve">
+    <value>Chọn nguồn tải xuống</value>
+  </data>
+  <data name="ViewDialogDownloadSourceHint" xml:space="preserve">
+    <value>Vui lòng chọn nguồn tải gói cập nhật. Nguồn Mirror酱 có hơn 6000 nút CDN tại Trung Quốc đại lục, kết nối tốt hơn.</value>
+  </data>
+  <data name="ViewDialogDownloadSourceOfficial" xml:space="preserve">
+    <value>Nguồn chính thức</value>
+  </data>
+  <data name="ViewDialogDownloadSourceOfficialDescription" xml:space="preserve">
+    <value>Tải xuống qua máy chủ chính thức của Snap Hutao Remastered, hỗ trợ tăng tốc đa luồng</value>
+  </data>
+  <data name="ViewDialogDownloadSourceMirrorChyan" xml:space="preserve">
+    <value>Nguồn Mirror酱</value>
+  </data>
+  <data name="ViewDialogDownloadSourceMirrorChyanDescription" xml:space="preserve">
+    <value>Tải xuống qua CDN Mirror酱, kết nối cực tốt tại Trung Quốc đại lục (cần nhập CDK)</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkTitle" xml:space="preserve">
+    <value>CDK Mirror酱</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
+    <value>Vui lòng nhập khóa kích hoạt Mirror酱 (CDK), để trống sẽ bỏ qua. Có thể lấy từ mirrorchyan.com.</value>
   </data>
 </root>

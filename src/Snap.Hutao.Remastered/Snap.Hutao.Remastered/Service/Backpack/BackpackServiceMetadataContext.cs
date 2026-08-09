@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Model.Metadata;
 using Snap.Hutao.Remastered.Model.Metadata.Item;
@@ -45,4 +46,6 @@ public sealed class BackpackServiceMetadataContext : IMetadataContext,
     public ImmutableArray<CookRecipe> CookRecipes { get; set; }
 
     public ImmutableDictionary<CookRecipeId, CookRecipe> IdCookRecipeMap { get; set; } = default!;
+
+    public BackpackReliquaryScoreConfig ReliquaryScoreConfig { get; set; } = default!;
 }

@@ -82,10 +82,7 @@ public static partial class Bootstrap
 
         using (instanceHandle)
         {
-            if (!OSPlatformSupported())
-            {
-                return;
-            }
+            ShowLowWindowsVersionWarningOnce();
 
             Environment.SetEnvironmentVariable("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "00000000");
             Environment.SetEnvironmentVariable("DOTNET_SYSTEM_BUFFERS_SHAREDARRAYPOOL_MAXARRAYSPERPARTITION", "128");
@@ -213,18 +210,21 @@ public static partial class Bootstrap
         return true;
     }
 
-    private static bool OSPlatformSupported()
+    private static void ShowLowWindowsVersionWarningOnce()
     {
-        if (!HutaoNative.Instance.IsCurrentWindowsVersionSupported())
+        if (HutaoNative.Instance.IsCurrentWindowsVersionSupported())
         {
-            const string Message = """
-                Snap Hutao 无法在版本低于 10.0.19045.5371 的 Windows 上运行，请更新系统。
-                Snap Hutao cannot run on Windows versions earlier than 10.0.19045.5371. Please update your system.
-                """;
-            HutaoNative.Instance.ShowErrorMessage("Warning | 警告", Message);
-            return false;
+            return;
         }
 
-        return true;
+        if (!LocalSetting.Get(SettingKeys.LowWindowsVersionWarningShown, false))
+        {
+            const string Message = """
+                Snap Hutao Remastered 无法在版本低于 10.0.19045.5371 的 Windows 上运行，请更新系统。
+                Snap Hutao Remastered cannot run on Windows versions earlier than 10.0.19045.5371. Please update your system.
+                """;
+            HutaoNative.Instance.ShowErrorMessage("Warning | 警告", Message);
+            LocalSetting.Set(SettingKeys.LowWindowsVersionWarningShown, true);
+        }
     }
 }

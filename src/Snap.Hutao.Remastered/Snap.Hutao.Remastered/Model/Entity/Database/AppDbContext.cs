@@ -77,6 +77,8 @@ public sealed partial class AppDbContext : DbContext
 
     public DbSet<HardChallengeEntry> HardChallenges { get; set; } = default!;
 
+    public DbSet<BackpackReliquaryScoreConfig> BackpackReliquaryScoreConfigs { get; set; } = default!;
+
     public static AppDbContext Create(IServiceProvider serviceProvider, string sqlConnectionString)
     {
         DbContextOptions<AppDbContext> options = new DbContextOptionsBuilder<AppDbContext>()

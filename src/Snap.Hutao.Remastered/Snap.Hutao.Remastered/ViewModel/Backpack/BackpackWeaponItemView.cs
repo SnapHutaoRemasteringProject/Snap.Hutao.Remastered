@@ -2,6 +2,8 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Model.Entity;
+using Snap.Hutao.Remastered.Model.Intrinsic;
+using Snap.Hutao.Remastered.Model.Metadata.Converter;
 using Snap.Hutao.Remastered.Model.Metadata.Weapon;
 using Snap.Hutao.Remastered.Service.Backpack;
 using System.Globalization;
@@ -29,6 +31,11 @@ public sealed class BackpackWeaponItemView : BackpackItemView
             Entity = entity,
             Category = BackpackItemCategory.Weapon,
             Weapon = weapon,
+            Name = weapon.Name,
+            Description = weapon.Description,
+            TypeDescription = weapon.WeaponType.GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture)!,
+            IconUri = EquipIconConverter.IconNameToUri(weapon.Icon),
+            Quality = weapon.RankLevel,
         };
     }
 }

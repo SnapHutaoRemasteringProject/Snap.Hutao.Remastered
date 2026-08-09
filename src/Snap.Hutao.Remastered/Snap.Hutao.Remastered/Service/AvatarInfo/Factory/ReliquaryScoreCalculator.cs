@@ -29,25 +29,48 @@ public static class ReliquaryScoreCalculator
             }
 
             double value = ParseValue(subProperty.PropertyType, subProperty.Value);
-            double score = subProperty.PropertyType switch
-            {
-                FightProperty.FIGHT_PROP_CRITICAL => value * 2.0 * weight,
-                FightProperty.FIGHT_PROP_CRITICAL_HURT => value * 1.0 * weight,
-                FightProperty.FIGHT_PROP_ELEMENT_MASTERY => value * 0.33 * weight,
-                FightProperty.FIGHT_PROP_CHARGE_EFFICIENCY => value * 1.1979 * weight,
-                FightProperty.FIGHT_PROP_HP_PERCENT => value * 1.33 * weight,
-                FightProperty.FIGHT_PROP_ATTACK_PERCENT => value * 1.33 * weight,
-                FightProperty.FIGHT_PROP_DEFENSE_PERCENT => value * 1.06 * weight,
-                FightProperty.FIGHT_PROP_ATTACK => value * 0.398 * 0.5 * weight,
-                FightProperty.FIGHT_PROP_HP => value * 0.026 * 0.66 * weight,
-                FightProperty.FIGHT_PROP_DEFENSE => value * 0.335 * 0.66 * weight,
-                _ => 0,
-            };
-
-            totalScore += score;
+            totalScore += ScoreStat(subProperty.PropertyType, value, weight);
         }
 
         return totalScore;
+    }
+
+    public static double CalculateWithWeights(IEnumerable<(FightProperty Prop, float Value)> subStats, Func<FightProperty, double> getWeight)
+    {
+        double totalScore = 0;
+
+        foreach ((FightProperty prop, float value) in subStats)
+        {
+            double weight = getWeight(prop);
+            if (weight <= 0)
+            {
+                continue;
+            }
+
+            // Backpack stores percentage values as decimals (0.031 = 3.1%), but ScoreStat expects percentage numbers (3.1)
+            double scaledValue = prop.IsFightPropPercent() ? value * 100.0 : value;
+            totalScore += ScoreStat(prop, scaledValue, weight);
+        }
+
+        return totalScore;
+    }
+
+    private static double ScoreStat(FightProperty prop, double value, double weight)
+    {
+        return prop switch
+        {
+            FightProperty.FIGHT_PROP_CRITICAL => value * 2.0 * weight,
+            FightProperty.FIGHT_PROP_CRITICAL_HURT => value * 1.0 * weight,
+            FightProperty.FIGHT_PROP_ELEMENT_MASTERY => value * 0.33 * weight,
+            FightProperty.FIGHT_PROP_CHARGE_EFFICIENCY => value * 1.1979 * weight,
+            FightProperty.FIGHT_PROP_HP_PERCENT => value * 1.33 * weight,
+            FightProperty.FIGHT_PROP_ATTACK_PERCENT => value * 1.33 * weight,
+            FightProperty.FIGHT_PROP_DEFENSE_PERCENT => value * 1.06 * weight,
+            FightProperty.FIGHT_PROP_ATTACK => value * 0.398 * 0.5 * weight,
+            FightProperty.FIGHT_PROP_HP => value * 0.026 * 0.66 * weight,
+            FightProperty.FIGHT_PROP_DEFENSE => value * 0.335 * 0.66 * weight,
+            _ => 0,
+        };
     }
 
     private static double GetWeight(
@@ -58,7 +81,6 @@ public static class ReliquaryScoreCalculator
     {
         bool isRecommended = recommendedSubProperties.Contains(propertyType);
 
-        // Special handling for Energy Recharge when not in recommended list
         if (propertyType is FightProperty.FIGHT_PROP_CHARGE_EFFICIENCY && !isRecommended)
         {
             return GetChargeEfficiencyWeight(hasCritHurt, energyType);
@@ -69,10 +91,8 @@ public static class ReliquaryScoreCalculator
             return 0;
         }
 
-        // Base weight: 100%
         double weight = 1.0;
 
-        // Small/flat substats get 50% weight reduction when effective
         if (propertyType is FightProperty.FIGHT_PROP_HP or FightProperty.FIGHT_PROP_ATTACK or FightProperty.FIGHT_PROP_DEFENSE)
         {
             weight *= 0.5;
@@ -83,28 +103,12 @@ public static class ReliquaryScoreCalculator
 
     private static double GetChargeEfficiencyWeight(bool hasCritHurt, EnergyType energyType)
     {
-        bool isSpecialEnergy = energyType is not EnergyType.SPECIAL_ENERGY_NONE;
-
-        // Special energy type (Mavuika/Skirk) + no crit hurt recommended -> 100%
-        if (isSpecialEnergy && !hasCritHurt)
+        if (energyType is not EnergyType.SPECIAL_ENERGY_NONE)
         {
-            return 1.0;
+            return hasCritHurt ? 0 : 1.0;
         }
 
-        // Special energy type + crit hurt recommended -> 0%
-        if (isSpecialEnergy)
-        {
-            return 0;
-        }
-
-        // Normal energy + crit hurt recommended -> 20%
-        if (hasCritHurt)
-        {
-            return 0.2;
-        }
-
-        // Normal energy + no crit hurt recommended -> 100%
-        return 1.0;
+        return hasCritHurt ? 0.2 : 1.0;
     }
 
     private static double ParseValue(FightProperty propertyType, string value)

@@ -4,6 +4,7 @@
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.Yae;
 using Snap.Hutao.Remastered.Model.Entity;
+using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Service.Yae.PlayerStore;
 using System.Collections.Immutable;
 
@@ -97,5 +98,76 @@ public sealed partial class BackpackService : IBackpackService
                 });
             }
         }
+    }
+
+    public BackpackReliquaryScoreConfig CreatePreset(ReliquaryScoreConfigPreset preset)
+    {
+        return preset switch
+        {
+            ReliquaryScoreConfigPreset.ATKScaler => new()
+            {
+                PresetKey = preset,
+                AttackPercentWeight = 1.0,
+                ElementalMasteryWeight = 0,
+                ChargeEfficiencyWeight = 0,
+            },
+            ReliquaryScoreConfigPreset.HPScaler => new()
+            {
+                PresetKey = preset,
+                HpPercentWeight = 1.0,
+                AttackPercentWeight = 0,
+                ElementalMasteryWeight = 0,
+                ChargeEfficiencyWeight = 0,
+            },
+            ReliquaryScoreConfigPreset.DEFScaler => new()
+            {
+                PresetKey = preset,
+                DefensePercentWeight = 1.0,
+                AttackPercentWeight = 0,
+                ElementalMasteryWeight = 0,
+                ChargeEfficiencyWeight = 0,
+            },
+            ReliquaryScoreConfigPreset.EM => new()
+            {
+                PresetKey = preset,
+                ElementalMasteryWeight = 1.0,
+                AttackPercentWeight = 0,
+                ChargeEfficiencyWeight = 0,
+            },
+            _ => new() { PresetKey = preset },
+        };
+    }
+
+    public BackpackReliquaryScoreConfig GetActiveReliquaryScoreConfig()
+    {
+        BackpackReliquaryScoreConfig? config = backpackRepository.GetActiveReliquaryScoreConfig();
+        if (config is not null)
+        {
+            return config;
+        }
+
+        return CreatePreset(ReliquaryScoreConfigPreset.Default);
+    }
+
+    public ImmutableArray<BackpackReliquaryScoreConfig> GetAllReliquaryScoreConfigs()
+    {
+        return backpackRepository.GetAllReliquaryScoreConfigs();
+    }
+
+    public BackpackReliquaryScoreConfig SaveReliquaryScoreConfig(BackpackReliquaryScoreConfig config)
+    {
+        if (config.InnerId == Guid.Empty)
+        {
+            config.InnerId = Guid.NewGuid();
+        }
+
+        config.IsActive = true;
+        backpackRepository.SaveReliquaryScoreConfig(config);
+        return config;
+    }
+
+    public void DeleteReliquaryScoreConfig(Guid configId)
+    {
+        backpackRepository.DeleteReliquaryScoreConfigById(configId);
     }
 }

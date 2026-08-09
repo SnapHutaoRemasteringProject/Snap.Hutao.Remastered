@@ -10,6 +10,7 @@ using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Service.BackgroundActivity;
 using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
+using Snap.Hutao.Remastered.Service.FileUnlocker;
 using Snap.Hutao.Remastered.Web.Response;
 using System.Collections.Immutable;
 using System.IO;
@@ -21,6 +22,7 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
 {
     private readonly AsyncKeyedLock<string> repoLock = new();
     private readonly BackgroundActivityOptions backgroundActivityOptions;
+    private readonly IFileUnlockerService fileUnlockerService;
     private readonly IServiceProvider serviceProvider;
     private readonly ITaskContext taskContext;
 
@@ -57,6 +59,11 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             }
 
             string directory = Path.GetFullPath(Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), name));
+
+            // Unlock files in the target directory before git operations to prevent
+            // file-in-use errors during delete/overwrite.
+            await fileUnlockerService.UnlockAsync(directory).ConfigureAwait(false);
+
             BackgroundActivity.BackgroundActivity activity = GetActivityByName(name);
 
             bool failed = false;

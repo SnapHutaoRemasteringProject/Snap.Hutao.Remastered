@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -1072,7 +1072,7 @@
     <value>Snap Hutao should be run in administrator privilege before using Embedded Yae</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeErrorSystemIntegrityPolicyViolation" xml:space="preserve">
-    <value>Injection failed, possibly due to Windows Defender App &amp; Browser Control &gt; Smart App Control policy blocking the operation. Please try turning it off.</value>
+    <value>Injection failed, possibly due to Windows Defender App &amp; Browser Control > Smart App Control policy blocking the operation. Please try turning it off.</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>You should know about the related risks and turn on the embedding function in Launch Game page before using Embedded Yae</value>
@@ -1638,7 +1638,7 @@ Space Available: {2}</value>
     <value>In order to ensure that functionaries have independent judgement capability, we will irregularly update the enabling conditions for these features. If you are a content creator, do not share specific activation methods with your audience.</value>
   </data>
   <data name="ViewDialogReconfirmTextHeader" xml:space="preserve">
-    <value />
+    <value>To avoid enabling unintentionally, please input the <b>title name</b> of feature you are enabling</value>
   </data>
   <data name="ViewDialogReconfirmTitle" xml:space="preserve">
     <value>You are Enabling a Dangerous Feature</value>
@@ -2447,11 +2447,11 @@ Space Available: {2}</value>
   <data name="ViewPageBackpackAddArchive" xml:space="preserve">
     <value>Create Archive</value>
   </data>
-  <data name="ViewPageBackpackAddArchiveContent" xml:space="preserve">
-    <value>A new backpack archive will be created. Continue?</value>
-  </data>
   <data name="ViewPageBackpackAddArchiveHint" xml:space="preserve">
     <value>Create an archive to manage backpack items</value>
+  </data>
+  <data name="ViewPageBackpackAddArchiveContent" xml:space="preserve">
+    <value>A new backpack archive will be created. Continue?</value>
   </data>
   <data name="ViewPageBackpackAddArchiveTitle" xml:space="preserve">
     <value>Create Backpack Archive</value>
@@ -2462,23 +2462,8 @@ Space Available: {2}</value>
   <data name="ViewPageBackpackCategoryAll" xml:space="preserve">
     <value>All</value>
   </data>
-  <data name="ViewPageBackpackCategoryFood" xml:space="preserve">
-    <value>Food</value>
-  </data>
-  <data name="ViewPageBackpackCategoryFurniture" xml:space="preserve">
-    <value>Furnishings</value>
-  </data>
-  <data name="ViewPageBackpackCategoryGadget" xml:space="preserve">
-    <value>Gadgets</value>
-  </data>
-  <data name="ViewPageBackpackCategoryMaterial" xml:space="preserve">
-    <value>Materials</value>
-  </data>
-  <data name="ViewPageBackpackCategoryPreciousItem" xml:space="preserve">
-    <value>Precious Items</value>
-  </data>
-  <data name="ViewPageBackpackCategoryQuest" xml:space="preserve">
-    <value>Quest</value>
+  <data name="ViewPageBackpackCategoryWeapon" xml:space="preserve">
+    <value>Weapons</value>
   </data>
   <data name="ViewPageBackpackCategoryReliquary" xml:space="preserve">
     <value>Artifacts</value>
@@ -2486,8 +2471,23 @@ Space Available: {2}</value>
   <data name="ViewPageBackpackCategoryUpgradeItem" xml:space="preserve">
     <value>Upgrade Items</value>
   </data>
-  <data name="ViewPageBackpackCategoryWeapon" xml:space="preserve">
-    <value>Weapons</value>
+  <data name="ViewPageBackpackCategoryFood" xml:space="preserve">
+    <value>Food</value>
+  </data>
+  <data name="ViewPageBackpackCategoryMaterial" xml:space="preserve">
+    <value>Materials</value>
+  </data>
+  <data name="ViewPageBackpackCategoryGadget" xml:space="preserve">
+    <value>Gadgets</value>
+  </data>
+  <data name="ViewPageBackpackCategoryQuest" xml:space="preserve">
+    <value>Quest</value>
+  </data>
+  <data name="ViewPageBackpackCategoryPreciousItem" xml:space="preserve">
+    <value>Precious Items</value>
+  </data>
+  <data name="ViewPageBackpackCategoryFurniture" xml:space="preserve">
+    <value>Furnishings</value>
   </data>
   <data name="ViewPageBackpackCount" xml:space="preserve">
     <value>Count: </value>
@@ -3010,6 +3010,12 @@ Space Available: {2}</value>
   </data>
   <data name="ViewPageLaunchGameBetterGIHeader" xml:space="preserve">
     <value>Automated Tasks</value>
+  </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathDescription" xml:space="preserve">
+    <value>Specify the BetterGI executable path, or leave blank to use default URI protocol</value>
+  </data>
+  <data name="ViewPageLaunchGameBetterGIPickPathHeader" xml:space="preserve">
+    <value>BetterGI Path</value>
   </data>
   <data name="ViewPageLaunchGameDangerousDescriptionHint" xml:space="preserve">
     <value>Injection is very dangerous and can have serious consequences, please use cautiously</value>
@@ -4638,6 +4644,9 @@ Space Available: {2}</value>
   <data name="ViewModelLaunchGameAdvancedStartProgramPathSaved" xml:space="preserve">
     <value>The custom startup program path has been saved</value>
   </data>
+  <data name="ViewModelLaunchGameBetterGenshinImpactPathSaved" xml:space="preserve">
+    <value>BetterGI path has been saved</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartManager" xml:space="preserve">
     <value>Manage custom launch programs</value>
   </data>
@@ -4929,6 +4938,78 @@ Space Available: {2}</value>
   <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
     <value>Level</value>
   </data>
+  <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
+    <value>{0:F1} pts</value>
+  </data>
+  <data name="ViewPageBackpackSetEffectLabel" xml:space="preserve">
+    <value>{0}-Piece Set Effect: </value>
+  </data>
+  <data name="ViewPageBackpackConfigureScore" xml:space="preserve">
+    <value>Score Config</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigTitle" xml:space="preserve">
+    <value>Artifact Score Weight Configuration</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigPresetHeader" xml:space="preserve">
+    <value>Preset</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigNameHeader" xml:space="preserve">
+    <value>Config Name</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetDefault" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetATKScaler" xml:space="preserve">
+    <value>ATK-Dual Crit</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetHPScaler" xml:space="preserve">
+    <value>HP-Dual Crit</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetDEFScaler" xml:space="preserve">
+    <value>DEF-Dual Crit</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetEM" xml:space="preserve">
+    <value>EM Build</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigCrit" xml:space="preserve">
+    <value>CRIT Rate</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigCritHurt" xml:space="preserve">
+    <value>CRIT DMG</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigAttackPercent" xml:space="preserve">
+    <value>ATK%</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigChargeEfficiency" xml:space="preserve">
+    <value>Energy Recharge</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigElementalMastery" xml:space="preserve">
+    <value>Elemental Mastery</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigHpPercent" xml:space="preserve">
+    <value>HP%</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigDefensePercent" xml:space="preserve">
+    <value>DEF%</value>
+  </data>
+  <data name="ModelIntrinsicReliquaryScoreConfigPresetCustom" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigApply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigNewConfig" xml:space="preserve">
+    <value>New Config</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigDeleteConfig" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigWeightsHeader" xml:space="preserve">
+    <value>Weights</value>
+  </data>
+  <data name="ViewDialogBackpackReliquaryScoreConfigFlatHint" xml:space="preserve">
+    <value>Flat ATK/HP/DEF are not included in scoring</value>
+  </data>
   <data name="ModelIntrinsicCookFoodTypeHeal" xml:space="preserve">
     <value>Recovery Food</value>
   </data>
@@ -4943,5 +5024,68 @@ Space Available: {2}</value>
   </data>
   <data name="ModelIntrinsicCookFoodTypeRecipe" xml:space="preserve">
     <value>Recipe</value>
+  </data>
+  <data name="ViewPageBackpackSortHeader" xml:space="preserve">
+    <value>Sort Method</value>
+  </data>
+  <data name="ViewPageBackpackSortQuality" xml:space="preserve">
+    <value>Quality</value>
+  </data>
+  <data name="ViewPageBackpackSortLevel" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="ViewPageBackpackSortName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ViewPageBackpackSortRefinement" xml:space="preserve">
+    <value>Refinement</value>
+  </data>
+  <data name="ViewPageBackpackSortWeaponType" xml:space="preserve">
+    <value>Weapon Type</value>
+  </data>
+  <data name="ViewPageBackpackSortEquipType" xml:space="preserve">
+    <value>Slot</value>
+  </data>
+  <data name="ViewPageBackpackSortScore" xml:space="preserve">
+    <value>Score</value>
+  </data>
+  <data name="ViewPageBackpackSortCount" xml:space="preserve">
+    <value>Count</value>
+  </data>
+  <data name="ViewPageBackpackSortLock" xml:space="preserve">
+    <value>Lock</value>
+  </data>
+  <data name="ViewPageBackpackSortMark" xml:space="preserve">
+    <value>Mark</value>
+  </data>
+  <data name="ViewPageBackpackSortSetName" xml:space="preserve">
+    <value>Set</value>
+  </data>
+  <data name="ViewPageSettingMirrorChyanLinkHeader" xml:space="preserve">
+    <value>MirrorChyan</value>
+  </data>
+  <data name="ViewDialogDownloadSourceTitle" xml:space="preserve">
+    <value>Select Download Source</value>
+  </data>
+  <data name="ViewDialogDownloadSourceHint" xml:space="preserve">
+    <value>Choose the download source. Mirror酱 has 6000+ CDN nodes in China for better connectivity.</value>
+  </data>
+  <data name="ViewDialogDownloadSourceOfficial" xml:space="preserve">
+    <value>Official</value>
+  </data>
+  <data name="ViewDialogDownloadSourceOfficialDescription" xml:space="preserve">
+    <value>Download via Snap Hutao Remastered official servers with multi-threaded acceleration</value>
+  </data>
+  <data name="ViewDialogDownloadSourceMirrorChyan" xml:space="preserve">
+    <value>Mirror酱</value>
+  </data>
+  <data name="ViewDialogDownloadSourceMirrorChyanDescription" xml:space="preserve">
+    <value>Download via Mirror酱 CDN with excellent connectivity in China (CDK required)</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkTitle" xml:space="preserve">
+    <value>MirrorChyan CDK</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
+    <value>Enter your Mirror酱 activation key (CDK), or leave blank to skip. Get one at mirrorchyan.com.</value>
   </data>
 </root>

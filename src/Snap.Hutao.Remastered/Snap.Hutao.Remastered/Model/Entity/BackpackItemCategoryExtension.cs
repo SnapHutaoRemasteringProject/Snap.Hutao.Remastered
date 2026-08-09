@@ -103,7 +103,8 @@ public static class BackpackItemCategoryExtension
     private static bool IsPreciousItemId(uint itemId)
     {
         return (itemId is >= 201 and <= 207) ||
-               (itemId is >= 141001 and <= 200000);
+               (itemId is >= 141001 and <= 200000) ||
+               (itemId == 220007);
     }
 
     private static bool IsGadgetItemId(uint itemId)

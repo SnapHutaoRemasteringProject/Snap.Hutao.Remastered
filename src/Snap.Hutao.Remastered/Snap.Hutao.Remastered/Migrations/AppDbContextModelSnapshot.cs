@@ -165,6 +165,48 @@ namespace Snap.Hutao.Remastered.Migrations
                     b.ToTable("backpack_items");
                 });
 
+            modelBuilder.Entity("Snap.Hutao.Remastered.Model.Entity.BackpackReliquaryScoreConfig", b =>
+                {
+                    b.Property<Guid>("InnerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("AttackPercentWeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("ChargeEfficiencyWeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("CritHurtWeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("CritWeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("DefensePercentWeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("ElementalMasteryWeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("HpPercentWeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PresetKey")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("InnerId");
+
+                    b.ToTable("backpack_reliquary_score_config");
+                });
+
             modelBuilder.Entity("Snap.Hutao.Remastered.Model.Entity.BeyondGachaItem", b =>
                 {
                     b.Property<Guid>("InnerId")
