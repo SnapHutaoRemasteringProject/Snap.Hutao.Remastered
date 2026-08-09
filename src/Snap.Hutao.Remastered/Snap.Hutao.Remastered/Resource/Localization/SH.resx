@@ -2222,8 +2222,17 @@
   <data name="ViewModelLaunchGameSchemeNotSelected" xml:space="preserve">
     <value>尚未选择任何服务器</value>
   </data>
+  <data name="ViewModelLaunchGamePickShellUriHint" xml:space="preserve">
+    <value>请输入应用的 Shell URI，例如 shell:AppsFolder\{FamilyName}!App 或 ms-windows-store://pdp/?ProductId=...</value>
+  </data>
+  <data name="ViewModelLaunchGamePickShellUriTitle" xml:space="preserve">
+    <value>从已安装应用中选择</value>
+  </data>
+  <data name="ViewModelLaunchGameShellUriInvalid" xml:space="preserve">
+    <value>无效的 Shell URI 格式，必须以 shell: 或 ms- 开头</value>
+  </data>
   <data name="ViewModelLaunchGameSetGamePathButtonText" xml:space="preserve">
-    <value>设置游戏目录</value>
+    <value>设置游戏路径</value>
   </data>
   <data name="ViewModelLaunchGameSwitchGameAccountFail" xml:space="preserve">
     <value>切换账号失败</value>

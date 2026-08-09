@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.IO.Ini;
+using Snap.Hutao.Remastered.Service.Game.PathAbstraction;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -47,6 +48,15 @@ public static class GameFileSystemExtension
 
                 if (GameFileSystemGameDirectories.TryGetValue(gameFileSystem, out string? gameDirectory))
                 {
+                    return gameDirectory;
+                }
+
+                if (gameFileSystem.GameFilePath is { Length: > 0 } path
+                    && (path.StartsWith("shell:", StringComparison.OrdinalIgnoreCase)
+                        || path.StartsWith("ms-", StringComparison.OrdinalIgnoreCase)))
+                {
+                    gameDirectory = string.Empty;
+                    GameFileSystemGameDirectories.Add(gameFileSystem, gameDirectory);
                     return gameDirectory;
                 }
 
@@ -183,6 +193,14 @@ public static class GameFileSystemExtension
             get
             {
                 ObjectDisposedException.ThrowIf(gameFileSystem.IsDisposed, gameFileSystem);
+
+                string gameFilePath = gameFileSystem.GameFilePath;
+                if (gameFilePath is { Length: > 0 } path
+                    && (path.StartsWith("shell:", StringComparison.OrdinalIgnoreCase)
+                        || path.StartsWith("ms-", StringComparison.OrdinalIgnoreCase)))
+                {
+                    throw HutaoException.Throw($"Cannot determine game region for shell URI: {gameFilePath}");
+                }
 
                 string gameFileName = gameFileSystem.GameFileName;
                 return gameFileName.ToUpperInvariant() switch

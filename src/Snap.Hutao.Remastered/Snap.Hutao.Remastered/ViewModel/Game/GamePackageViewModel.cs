@@ -122,6 +122,13 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
 
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
+        if (launchOptions.GamePathEntry.Value is { Path: { Length: > 0 } path }
+            && (path.StartsWith("shell:", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("ms-", StringComparison.OrdinalIgnoreCase)))
+        {
+            return false;
+        }
+
         if (launchGameShared.GetCurrentLaunchSchemeFromConfigurationFile() is not { } launchScheme)
         {
             return false;

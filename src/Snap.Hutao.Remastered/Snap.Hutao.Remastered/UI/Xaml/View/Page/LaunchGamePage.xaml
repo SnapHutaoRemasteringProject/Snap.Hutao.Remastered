@@ -177,6 +177,17 @@
                         </cwc:SettingsCard.Description>
                     </cwc:SettingsCard>
                     <cwc:SettingsCard
+                        ActionIcon="{shuxm:FontIcon Glyph=&#xE71E;}"
+                        ActionIconToolTip="{shuxm:ResourceString Name=ViewModelLaunchGamePickShellUriTitle}"
+                        Command="{Binding PickShellUriCommand}"
+                        Header="{shuxm:ResourceString Name=ViewModelLaunchGamePickShellUriTitle}"
+                        HeaderIcon="{shuxm:FontIcon Glyph=&#xE8A6;}"
+                        IsClickEnabled="True">
+                        <cwc:SettingsCard.Description>
+                            <TextBlock Foreground="{ThemeResource SystemErrorTextColor}" Text="{shuxm:ResourceString Name=ViewModelLaunchGamePickShellUriHint}"/>
+                        </cwc:SettingsCard.Description>
+                    </cwc:SettingsCard>
+                    <cwc:SettingsCard
                         Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
                         Command="{Binding GamePackageInstallViewModel.StartCommand}"
                         Description="{Binding GamePackageInstallViewModel.RemoteVersionText}"
