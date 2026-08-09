@@ -53,7 +53,7 @@ public sealed partial class GamePathService : IGamePathService
             }
 
             ImmutableArray<GamePathEntry>.Builder builder = launchOptions.GamePathEntries.Value.ToBuilder();
-            builder.AddRange(paths.Select(GamePathEntry.Create));
+            builder.AddRange(paths.Select(path => GamePathEntry.Create(path)));
 
             // Since all path we add are not in original list, we can skip calling PerformGamePathEntrySynchronization
             await taskContext.SwitchToMainThreadAsync();

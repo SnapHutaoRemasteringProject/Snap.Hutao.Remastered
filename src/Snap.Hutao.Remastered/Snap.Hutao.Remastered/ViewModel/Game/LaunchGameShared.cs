@@ -41,8 +41,19 @@ public sealed partial class LaunchGameShared
     [GeneratedConstructor]
     public partial LaunchGameShared(IServiceProvider serviceProvoder);
 
+    /// <summary>
+    /// 从游戏配置文件获取当前启动方案。
+    /// Shell URI 路径没有传统游戏目录，直接返回 <c>null</c>。
+    /// </summary>
     public LaunchScheme? GetCurrentLaunchSchemeFromConfigurationFile(bool showInfo = true)
     {
+        if (launchOptions.GamePathEntry.Value is { Path: { Length: > 0 } path }
+            && (path.StartsWith("shell:", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("ms-", StringComparison.OrdinalIgnoreCase)))
+        {
+            return default;
+        }
+
         ChannelOptions options = gameService.GetChannelOptions();
 
         if (options.ErrorKind is ChannelOptionsErrorKind.None)
