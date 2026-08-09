@@ -6,6 +6,7 @@ using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Service.Game.FileSystem;
 using Snap.Hutao.Remastered.Service.Game.Launching.Context;
+using Snap.Hutao.Remastered.Service.Game.PathAbstraction;
 
 namespace Snap.Hutao.Remastered.Service.Game.Launching;
 
@@ -43,6 +44,14 @@ public sealed class GameProcessFactory
         }
 
         string gameFilePath = context.FileSystem.GameFilePath;
+
+        // Shell URI launch (packaged apps, ms-windows-store, etc.)
+        // Command-line arguments and Island injection are not supported for shell URIs.
+        if (IsShellUri(gameFilePath))
+        {
+            return ProcessFactory.CreateUsingShellExecuteRunAs(string.Empty, gameFilePath, string.Empty);
+        }
+
         string gameDirectory = context.FileSystem.GameDirectory;
 
         return launchOptions.IsIslandEnabled.Value
@@ -68,5 +77,16 @@ public sealed class GameProcessFactory
             .ToString();
 
         return ProcessFactory.CreateSuspended(commandLine, context.FileSystem.GameFilePath, context.FileSystem.GameDirectory);
+    }
+
+    /// <summary>
+    /// 判断指定的路径是否为 Shell URI（用于启动打包应用或通过协议启动）。
+    /// </summary>
+    /// <param name="path">待判断的路径或 URI。</param>
+    /// <returns>如果以 <c>shell:</c> 或 <c>ms-</c> 开头则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+    private static bool IsShellUri(string path)
+    {
+        return path.StartsWith("shell:", StringComparison.OrdinalIgnoreCase)
+            || path.StartsWith("ms-", StringComparison.OrdinalIgnoreCase);
     }
 }

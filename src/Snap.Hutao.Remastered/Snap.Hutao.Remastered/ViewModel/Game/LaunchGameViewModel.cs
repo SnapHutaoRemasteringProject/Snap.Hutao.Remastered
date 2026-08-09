@@ -90,7 +90,7 @@ public sealed partial class LaunchGameViewModel : Abstraction.ViewModel, IViewMo
 
     public IReadOnlyObservableProperty<string> DisplayGamePath { get => field ??= Property.Observe(LaunchOptions.GamePathEntry, static entry => SH.FormatViewModelLaunchGameDisplayGamePath(entry?.Path)); }
 
-    public IReadOnlyObservableProperty<bool> GamePathEntryValid { get => field ??= Property.Observe(LaunchOptions.GamePathEntry, static entry => !string.IsNullOrEmpty(entry?.Path)).WithValueChangedCallback(static (v, vm) => vm.HandleGamePathEntryChangeAsync().SafeForget(), this); }
+    public IReadOnlyObservableProperty<bool> GamePathEntryValid { get => field ??= Property.Observe(LaunchOptions.GamePathEntry, static entry => entry is not null && !string.IsNullOrEmpty(entry.Path)).WithValueChangedCallback(static (v, vm) => vm.HandleGamePathEntryChangeAsync().SafeForget(), this); }
 
     public IReadOnlyObservableProperty<bool> IsIslandConnected { get => GameLifeCycle.IsIslandConnected.AsReadOnly(); }
 
@@ -151,6 +151,14 @@ public sealed partial class LaunchGameViewModel : Abstraction.ViewModel, IViewMo
 
                 await taskContext.SwitchToMainThreadAsync();
                 await TargetSchemeFilteredGameAccountsView.SetAsync(currentScheme).ConfigureAwait(true);
+
+                if (GamePathEntry.Value is { Path: { Length: > 0 } path }
+                    && (path.StartsWith("shell:", StringComparison.OrdinalIgnoreCase)
+                        || path.StartsWith("ms-", StringComparison.OrdinalIgnoreCase)))
+                {
+                    return;
+                }
+
                 await GamePackageViewModel.ReloadAsync().ConfigureAwait(true);
             }
         }
@@ -276,6 +284,9 @@ public sealed partial class LaunchGameViewModel : Abstraction.ViewModel, IViewMo
     }
 
     [Command("PickGamePathCommand")]
+    /// <summary>
+    /// 打开文件选择对话框，让用户选择游戏可执行文件（.exe）作为启动路径。
+    /// </summary>
     private async Task PickGamePathAsync()
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Set game path by picker", "LaunchGameViewModel.Command"));
@@ -286,6 +297,30 @@ public sealed partial class LaunchGameViewModel : Abstraction.ViewModel, IViewMo
 
         await taskContext.SwitchToMainThreadAsync();
         LaunchOptions.PerformGamePathEntrySynchronization(path);
+    }
+
+    [Command("PickShellUriCommand")]
+    /// <summary>
+    /// 打开 Shell URI 输入对话框，让用户输入一个已安装应用的 Shell URI 作为游戏启动路径。
+    /// </summary>
+    private async Task PickShellUriAsync()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Set game path by shell uri", "LaunchGameViewModel.Command"));
+        using (IServiceScope scope = serviceProvider.CreateScope())
+        {
+            GameShellUriInputDialog dialog = await scope.ServiceProvider
+                .GetRequiredService<IContentDialogFactory>()
+                .CreateInstanceAsync<GameShellUriInputDialog>(scope.ServiceProvider)
+                .ConfigureAwait(false);
+
+            if (await dialog.GetShellUriAsync().ConfigureAwait(false) is not (true, var uri))
+            {
+                return;
+            }
+
+            await taskContext.SwitchToMainThreadAsync();
+            LaunchOptions.PerformGamePathEntrySynchronization(uri, GameLaunchMethod.ShellUri);
+        }
     }
 
     [Command("ResetGamePathCommand")]

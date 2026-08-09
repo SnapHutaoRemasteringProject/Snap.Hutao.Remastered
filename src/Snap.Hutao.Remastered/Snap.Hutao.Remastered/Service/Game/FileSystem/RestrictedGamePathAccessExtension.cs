@@ -36,8 +36,14 @@ public static class RestrictedGamePathAccessExtension
             return GameFileSystemErrorKind.None;
         }
 
-        // The return value is the final game path after synchronization
-        public string PerformGamePathEntrySynchronization(string? gamePath = default)
+        /// <summary>
+        /// 同步游戏路径条目。如果路径已存在于条目列表中，则选中已有条目；
+        /// 否则将新路径添加到列表中并选中。
+        /// </summary>
+        /// <param name="gamePath">游戏路径或 Shell URI。如果为 <c>null</c>，则使用当前选中的路径。</param>
+        /// <param name="launchMethod">新路径对应的启动方式，仅在添加新条目时使用。</param>
+        /// <returns>同步后的最终游戏路径。</returns>
+        public string PerformGamePathEntrySynchronization(string? gamePath = default, GameLaunchMethod launchMethod = GameLaunchMethod.Executable)
         {
             gamePath ??= access.GamePathEntry.Value?.Path;
 
@@ -70,7 +76,7 @@ public static class RestrictedGamePathAccessExtension
                     using (releaser)
                     {
                         // The game path is not in the entries, add it to the entries.
-                        GamePathEntry newEntry = GamePathEntry.Create(gamePath);
+                        GamePathEntry newEntry = GamePathEntry.Create(gamePath, launchMethod);
                         access.GamePathEntries.Value = access.GamePathEntries.Value.Add(newEntry);
                         access.GamePathEntry.Value = newEntry;
                     }

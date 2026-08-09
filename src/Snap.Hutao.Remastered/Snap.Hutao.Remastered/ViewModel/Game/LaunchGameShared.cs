@@ -223,7 +223,15 @@ public sealed partial class LaunchGameShared
                     }
                 }
 
-                if (string.IsNullOrWhiteSpace(entry.Path) || !File.Exists(entry.Path))
+                if (string.IsNullOrWhiteSpace(entry.Path))
+                {
+                    messenger.Send(InfoBarMessage.Error(SH.ViewModelLaunchGameAdvancedStartProgramNotExists, entry.Path));
+                    return;
+                }
+
+                if (!entry.Path.StartsWith("shell:", StringComparison.OrdinalIgnoreCase)
+                    && !entry.Path.StartsWith("ms-", StringComparison.OrdinalIgnoreCase)
+                    && !File.Exists(entry.Path))
                 {
                     messenger.Send(InfoBarMessage.Error(SH.ViewModelLaunchGameAdvancedStartProgramNotExists, entry.Path));
                     return;
