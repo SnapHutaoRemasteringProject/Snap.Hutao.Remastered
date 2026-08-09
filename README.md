@@ -124,11 +124,13 @@ https://api.snaphutaorp.org/
 
 ---
 
-## Sponsors
+## 捐赠者 / Sponsors
 
 ### [<img src="https://avatars.githubusercontent.com/u/34448643" alt="SignPath" width="48" /> Code signing provided by SignPath](https://signpath.org)
 
 Free code signing is provided by [SignPath.io](https://about.signpath.io), and the certificate is provided by [SignPath Foundation](https://signpath.org).
+
+---
 
 ## ⚙️ 使用的技术栈 / Tech Stack
 
@@ -149,4 +151,14 @@ Free code signing is provided by [SignPath.io](https://about.signpath.io), and t
 
 ![Alt](https://repobeats.axiom.co/api/embed/9876638ea2cec2a214a07632390215e57f4ecc40.svg "Repobeats analytics image")
 
-[![Star History Chart](https://api.star-history.com/svg?repos=SnapHutaoRemasteringProject/Snap.Hutao.Remastered&type=Date)](https://api.star-history.com/chart?repos=SnapHutaoRemasteringProject/Snap.Hutao.Remastered&type=date&legend=top-left&sealed_token=pFvNPg2Hqrpv7DLuDncVVsZUDd5ggm-Rgu38AObI3FvzcThAWOaJOpYhJgPOpceGNGFA-I-U-SXsEgosgGF4tBBbe19ngFjnZgGCOf_mUmLRaTS2LouPxA)
+---
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=SnapHutaoRemasteringProject%2FSnap.Hutao.Remastered&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=SnapHutaoRemasteringProject/Snap.Hutao.Remastered&type=date&theme=dark&legend=top-left&sealed_token=ORY8opURoV5wW5OmY7E1bLmUY1Fqne0tMgEhfv-SLgga0E1qbZlgVXqQSBDuS-b5-FMDOHB635zSgvl9_l4S_ks4PJIicDmX3iqGMvsBL5x2CnI5lRAVlsdZPxEdmoAMnTr3qMtxXJSY_Omm1TrnOefKR8ZwQ3oJDu5m1J8iEy-24i8992L4sbU8hEcJ" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=SnapHutaoRemasteringProject/Snap.Hutao.Remastered&type=date&legend=top-left&sealed_token=ORY8opURoV5wW5OmY7E1bLmUY1Fqne0tMgEhfv-SLgga0E1qbZlgVXqQSBDuS-b5-FMDOHB635zSgvl9_l4S_ks4PJIicDmX3iqGMvsBL5x2CnI5lRAVlsdZPxEdmoAMnTr3qMtxXJSY_Omm1TrnOefKR8ZwQ3oJDu5m1J8iEy-24i8992L4sbU8hEcJ" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=SnapHutaoRemasteringProject/Snap.Hutao.Remastered&type=date&legend=top-left&sealed_token=ORY8opURoV5wW5OmY7E1bLmUY1Fqne0tMgEhfv-SLgga0E1qbZlgVXqQSBDuS-b5-FMDOHB635zSgvl9_l4S_ks4PJIicDmX3iqGMvsBL5x2CnI5lRAVlsdZPxEdmoAMnTr3qMtxXJSY_Omm1TrnOefKR8ZwQ3oJDu5m1J8iEy-24i8992L4sbU8hEcJ" />
+ </picture>
+</a>
