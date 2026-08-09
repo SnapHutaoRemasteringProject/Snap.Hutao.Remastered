@@ -317,6 +317,11 @@
                         Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/AvatarProperty.png}"/>
 
                     <NavigationViewItem
+                        shuxc:NavigationViewItemHelper.NavigateTo="shuxvp:BackpackPage"
+                        Content="{shuxm:ResourceString Name=ViewBackpackHeader}"
+                        Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/Backpack.png}"/>
+
+                    <NavigationViewItem
                         shuxc:NavigationViewItemHelper.NavigateTo="shuxvp:CultivationPage"
                         Content="{shuxm:ResourceString Name=ViewCultivationHeader}"
                         Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/Cultivation.png}"/>

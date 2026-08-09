@@ -93,6 +93,9 @@ public sealed partial class LaunchOptions : DbStoreOptions, IRestrictedGamePathA
     public IObservableProperty<bool> UsingBetterGenshinImpactAutomation { get => field ??= CreateProperty(SettingKeys.LaunchUsingBetterGenshinImpactAutomation, false); }
 
     [field: MaybeNull]
+    public IObservableProperty<string> BetterGenshinImpactPath { get => field ??= CreateProperty(SettingKeys.LaunchBetterGenshinImpactPath, string.Empty); }
+
+    [field: MaybeNull]
     public IObservableProperty<bool> IsIslandEnabled { get => field ??= CreateProperty(SettingKeys.LaunchIsIslandEnabled, false); }
 
     [field: MaybeNull]

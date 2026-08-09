@@ -16,5 +16,7 @@ public interface IInventoryService
 
     void SaveInventoryItem(InventoryItemView item);
 
+    void SaveInventoryItemsFromBackpackArchive(CultivateProject project, ImmutableArray<BackpackItem> backpackItems, ICultivationMetadataContext context);
+
     ValueTask RefreshInventoryAsync(RefreshOptions refreshOptions);
 }

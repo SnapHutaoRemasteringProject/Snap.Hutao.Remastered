@@ -39,6 +39,10 @@ public sealed partial class AppDbContext : DbContext
 
     public DbSet<AchievementArchive> AchievementArchives { get; set; } = default!;
 
+    public DbSet<BackpackArchive> BackpackArchives { get; set; } = default!;
+
+    public DbSet<BackpackItem> BackpackItems { get; set; } = default!;
+
     public DbSet<GachaItem> GachaItems { get; set; } = default!;
 
     public DbSet<BeyondGachaItem> BeyondGachaItems { get; set; } = default!;
@@ -72,6 +76,8 @@ public sealed partial class AppDbContext : DbContext
     public DbSet<AvatarStrategy> AvatarStrategies { get; set; } = default!;
 
     public DbSet<HardChallengeEntry> HardChallenges { get; set; } = default!;
+
+    public DbSet<BackpackReliquaryScoreConfig> BackpackReliquaryScoreConfigs { get; set; } = default!;
 
     public static AppDbContext Create(IServiceProvider serviceProvider, string sqlConnectionString)
     {

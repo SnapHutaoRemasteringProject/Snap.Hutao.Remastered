@@ -28,6 +28,10 @@
     "Documentation": "合成配方 Id"
   },
   {
+    "Name": "CookRecipeId",
+    "Documentation": "烹饪配方 Id"
+  },
+  {
     "Name": "CostumeId",
     "Documentation": "角色装扮 Id"
   },

@@ -27,6 +27,11 @@ public static class MetadataServiceImmutableArrayExtension
             return metadataService.FromCacheOrFileAsync<Chapter>(MetadataFileStrategies.Chapter, token);
         }
 
+        public ValueTask<ImmutableArray<CookRecipe>> GetCookRecipeArrayAsync(CancellationToken token = default)
+        {
+            return metadataService.FromCacheOrFileAsync<CookRecipe>(MetadataFileStrategies.CookRecipe, token);
+        }
+
         public ValueTask<ImmutableArray<AchievementGoal>> GetAchievementGoalArrayAsync(CancellationToken token = default)
         {
             return metadataService.FromCacheOrFileAsync<AchievementGoal>(MetadataFileStrategies.AchievementGoal, token);

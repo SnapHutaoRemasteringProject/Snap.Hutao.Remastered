@@ -223,6 +223,11 @@ public static class MetadataServiceImmutableDictionaryExtension
                 token);
         }
 
+        public ValueTask<ImmutableDictionary<CookRecipeId, CookRecipe>> GetIdToCookRecipeMapAsync(CancellationToken token = default)
+        {
+            return metadataService.FromCacheAsDictionaryAsync<CookRecipeId, CookRecipe>(MetadataFileStrategies.CookRecipe, token);
+        }
+
         public ValueTask<ImmutableDictionary<MaterialId, Combine>> GetResultMaterialIdToCombineMapAsync(CancellationToken token = default)
         {
             return metadataService.FromCacheAsDictionaryAsync<MaterialId, Combine>(

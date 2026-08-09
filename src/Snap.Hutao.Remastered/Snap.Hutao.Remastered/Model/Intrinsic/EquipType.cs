@@ -3,37 +3,25 @@
 
 namespace Snap.Hutao.Remastered.Model.Intrinsic;
 
+[ExtendedEnum]
 public enum EquipType
 {
     EQUIP_NONE = 0,
 
-    /// <summary>
-    /// 花
-    /// </summary>
+    [LocalizationKey(nameof(SH.ModelIntrinsicEquipBracer))]
     EQUIP_BRACER = 1,
 
-    /// <summary>
-    /// 羽毛
-    /// </summary>
+    [LocalizationKey(nameof(SH.ModelIntrinsicEquipNecklace))]
     EQUIP_NECKLACE = 2,
 
-    /// <summary>
-    /// 沙
-    /// </summary>
+    [LocalizationKey(nameof(SH.ModelIntrinsicEquipShoes))]
     EQUIP_SHOES = 3,
 
-    /// <summary>
-    /// 杯
-    /// </summary>
+    [LocalizationKey(nameof(SH.ModelIntrinsicEquipRing))]
     EQUIP_RING = 4,
 
-    /// <summary>
-    /// 头
-    /// </summary>
+    [LocalizationKey(nameof(SH.ModelIntrinsicEquipDress))]
     EQUIP_DRESS = 5,
 
-    /// <summary>
-    /// 武器
-    /// </summary>
     EQUIP_WEAPON = 6,
 }

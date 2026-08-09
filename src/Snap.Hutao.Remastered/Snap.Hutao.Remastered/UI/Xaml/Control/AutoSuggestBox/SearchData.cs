@@ -49,4 +49,9 @@ public sealed partial class SearchData : ObservableObject
     {
         return new(SearchTokens.GetForWikiMonster(array));
     }
+
+    public static SearchData Create(FrozenDictionary<string, SearchToken> availableTokens)
+    {
+        return new(availableTokens);
+    }
 }

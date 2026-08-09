@@ -15,7 +15,7 @@ namespace Snap.Hutao.Remastered.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.9");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.10");
 
             modelBuilder.Entity("Snap.Hutao.Remastered.Model.Entity.Achievement", b =>
                 {
@@ -99,6 +99,112 @@ namespace Snap.Hutao.Remastered.Migrations
                     b.HasKey("AvatarId");
 
                     b.ToTable("avatar_strategies");
+                });
+
+            modelBuilder.Entity("Snap.Hutao.Remastered.Model.Entity.BackpackArchive", b =>
+                {
+                    b.Property<Guid>("InnerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsSelected")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("InnerId");
+
+                    b.ToTable("backpack_archives");
+                });
+
+            modelBuilder.Entity("Snap.Hutao.Remastered.Model.Entity.BackpackItem", b =>
+                {
+                    b.Property<Guid>("InnerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AppendPropIdListJson")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ArchiveId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<uint>("Count")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<ulong>("Guid")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsLocked")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsMarked")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("Level")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint?>("MainPropId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("PromoteLevel")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("RefinementRank")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("InnerId");
+
+                    b.HasIndex("ArchiveId");
+
+                    b.ToTable("backpack_items");
+                });
+
+            modelBuilder.Entity("Snap.Hutao.Remastered.Model.Entity.BackpackReliquaryScoreConfig", b =>
+                {
+                    b.Property<Guid>("InnerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("AttackPercentWeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("ChargeEfficiencyWeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("CritHurtWeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("CritWeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("DefensePercentWeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("ElementalMasteryWeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("HpPercentWeight")
+                        .HasColumnType("REAL");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PresetKey")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("InnerId");
+
+                    b.ToTable("backpack_reliquary_score_config");
                 });
 
             modelBuilder.Entity("Snap.Hutao.Remastered.Model.Entity.BeyondGachaItem", b =>
@@ -606,6 +712,17 @@ namespace Snap.Hutao.Remastered.Migrations
             modelBuilder.Entity("Snap.Hutao.Remastered.Model.Entity.Achievement", b =>
                 {
                     b.HasOne("Snap.Hutao.Remastered.Model.Entity.AchievementArchive", "Archive")
+                        .WithMany()
+                        .HasForeignKey("ArchiveId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Archive");
+                });
+
+            modelBuilder.Entity("Snap.Hutao.Remastered.Model.Entity.BackpackItem", b =>
+                {
+                    b.HasOne("Snap.Hutao.Remastered.Model.Entity.BackpackArchive", "Archive")
                         .WithMany()
                         .HasForeignKey("ArchiveId")
                         .OnDelete(DeleteBehavior.Cascade)

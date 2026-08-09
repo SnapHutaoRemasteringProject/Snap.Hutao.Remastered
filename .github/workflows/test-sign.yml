@@ -1,0 +1,78 @@
+name: Snap Hutao Remastered Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  test-sign:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/Snap.Hutao.Remastered.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Build unsigned MSIX
+        id: build
+        shell: pwsh
+        run: dotnet tool restore && dotnet cake test-sign.cake
+
+      - name: Upload unsigned MSIX
+        id: upload-unsigned
+        uses: actions/upload-artifact@v7
+        with:
+          name: Snap.Hutao.Remastered.Test-${{ steps.build.outputs.version }}-unsigned
+          path: ${{ steps.build.outputs.msix-path }}
+
+      - name: Submit to SignPath for test signing
+        id: signpath
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ba79caf8-8aa3-44e6-8a7b-ac8541512be4
+          project-slug: Snap.Hutao.Remastered
+          signing-policy-slug: test-signing
+          artifact-configuration-slug: msix
+          github-artifact-id: ${{ steps.upload-unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: ${{ github.workspace }}/src/output/signed
+
+      - name: Upload signed MSIX
+        uses: actions/upload-artifact@v7
+        with:
+          name: Snap.Hutao.Remastered.Test-${{ steps.build.outputs.version }}-signed
+          path: ${{ github.workspace }}/src/output/signed
+
+      - name: Add summary
+        shell: pwsh
+        run: |
+          $summary = @"
+          ## Snap Hutao Remastered Test Build (SignPath Test Signing)
+
+          - **Version:** ${{ steps.build.outputs.version }}
+          - **Signing Policy:** test-signing
+          - **Certificate:** CN=Test certificate for 'Snap.Hutao.Remastered [OSS]'
+          - **Signing Request:** ${{ steps.signpath.outputs.signing-request-web-url }}
+
+          > [!WARNING]
+          > 该版本使用 SignPath 测试证书签名
+
+          > [!IMPORTANT]
+          > 安装前需将测试证书导入到 **受信任的人员(TrustedPeople)** 存储
+          "@
+          echo $summary >> $Env:GITHUB_STEP_SUMMARY

@@ -65,6 +65,38 @@ public sealed partial class InventoryService : IInventoryService
         return ValueTask.CompletedTask;
     }
 
+    public void SaveInventoryItemsFromBackpackArchive(CultivateProject project, ImmutableArray<BackpackItem> backpackItems, ICultivationMetadataContext context)
+    {
+        Dictionary<uint, uint> backpackCounts = [];
+        foreach (BackpackItem item in backpackItems)
+        {
+            if (item.Count > 0)
+            {
+                if (backpackCounts.TryGetValue(item.ItemId, out uint existing))
+                {
+                    backpackCounts[item.ItemId] = existing + item.Count;
+                }
+                else
+                {
+                    backpackCounts[item.ItemId] = item.Count;
+                }
+            }
+        }
+
+        Guid projectId = project.InnerId;
+        List<InventoryItem> items = [];
+        foreach (Material meta in context.EnumerateInventoryMaterial())
+        {
+            if (backpackCounts.TryGetValue(meta.Id, out uint count))
+            {
+                items.Add(InventoryItem.From(projectId, meta.Id, count));
+            }
+        }
+
+        inventoryRepository.RemoveInventoryItemRangeByProjectId(projectId);
+        inventoryRepository.AddInventoryItemRangeByProjectId(items);
+    }
+
     public void RemoveInventoryItems(CultivateProject cultivateProject)
     {
         Guid projectId = cultivateProject.InnerId;

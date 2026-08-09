@@ -158,6 +158,9 @@
     <Content Include="Resource\GuideLocalization\Gemini-64.png" />
     <Content Include="Resource\GuideStaticResourceQualityComparison.png" />
     <Content Include="Resource\HutaoIconSourceTransparentBackgroundGradient1.png" />
+    <Content Include="Resource\Icon\Icon_Common_Cook.png" />
+    <Content Include="Resource\Icon\Icon_Good_Cook.png" />
+    <Content Include="Resource\Icon\Icon_Perfect_Cook.png" />
     <Content Include="Resource\Icon\UI_BagTabIcon_Weapon.png" />
     <Content Include="Resource\Icon\UI_BtnIcon_Beyond_GH.png" />
     <Content Include="Resource\Icon\UI_BtnIcon_Homeworld.png" />
@@ -175,6 +178,8 @@
     <Content Include="Resource\Icon\UI_Icon_Fetter.png" />
     <Content Include="Resource\Icon\UI_Icon_Locked.png" />
     <Content Include="Resource\Icon\UI_Icon_Paimon.png" />
+    <Content Include="Resource\Icon\UI_Icon_RelicType1.png" />
+    <Content Include="Resource\Icon\UI_Icon_RelicType2.png" />
     <Content Include="Resource\Icon\UI_Icon_RelicType3.png" />
     <Content Include="Resource\Icon\UI_Icon_RelicType4.png" />
     <Content Include="Resource\Icon\UI_Icon_RelicType5.png" />
@@ -184,6 +189,8 @@
     <Content Include="Resource\Icon\UI_Icon_Tower_Star1.png" />
     <Content Include="Resource\Icon\UI_Icon_Tower_Star2.png" />
     <Content Include="Resource\Icon\UI_Icon_UGC_Beyond.png" />
+    <Content Include="Resource\Icon\UI_Icon_UGC_Collect.png" />
+    <Content Include="Resource\Icon\UI_Icon_Unlock.png" />
     <Content Include="Resource\Icon\UI_Img_RoleCombat_EventDetail_Pic_Chance.png" />
     <Content Include="Resource\Icon\UI_ItemIcon_106.png" />
     <Content Include="Resource\Icon\UI_ItemIcon_201.png" />
@@ -215,6 +222,7 @@
     <Content Include="Resource\Navigation\Achievement.png" />
     <Content Include="Resource\Navigation\Announcement.png" />
     <Content Include="Resource\Navigation\AvatarProperty.png" />
+    <Content Include="Resource\Navigation\Backpack.png" />
     <Content Include="Resource\Navigation\CheckIn.png" />
     <Content Include="Resource\Navigation\Cultivation.png" />
     <Content Include="Resource\Navigation\DailyNote.png" />
@@ -302,11 +310,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-	<PackageReference Include="Snap.Hutao.Remastered.Deployment.Runtime" Version="1.7.2">
+	<PackageReference Include="Snap.Hutao.Remastered.Deployment.Runtime" Version="1.8.0">
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
     <PackageReference Include="Snap.LibGit2Sharp" Version="0.31.1-preview.0.4" />
+    <PackageReference Include="Snap.Hutao.FileUnlocker" Version="1.2.0" />
     <PackageReference Include="Snap.ZStandard" Version="1.5.7" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.10" />
     <PackageReference Include="System.Formats.Nrbf" Version="10.0.10" />

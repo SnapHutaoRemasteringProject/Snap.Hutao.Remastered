@@ -1,0 +1,39 @@
+name: mirrorchyan_release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        default: ''
+        required: false
+  release:
+    types: [published]
+
+jobs:
+  mirrorchyan:
+    runs-on: macos-latest
+    if: ${{ github.repository_owner == 'SnapHutaoRemasteringProject' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: SnapHutaoRemastered
+            filename: 'Snap.Hutao.Remastered-*-Setup.exe'
+          - rid: SnapHutaoRemastered_msix
+            filename: 'Snap.Hutao.Remastered-*.msix'
+
+    steps:
+      - uses: MirrorChyan/uploading-action@v1
+        with:
+          filetype: latest-release
+          filename: ${{ matrix.filename }}
+          mirrorchyan_rid: ${{ matrix.rid }}
+          tag: ${{ inputs.tag || github.event.release.tag_name }}
+
+          os: win
+          arch: x64
+
+          owner: SnapHutaoRemasteringProject
+          repo: Snap.Hutao.Remastered
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          upload_token: ${{ secrets.MirrorChyanUploadToken }}

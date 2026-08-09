@@ -13,6 +13,7 @@ public static class MetadataFileStrategies
     public static readonly MetadataFileStrategy BeyondItem = new("BeyondItem");
     public static readonly MetadataFileStrategy Chapter = new("Chapter");
     public static readonly MetadataFileStrategy Combine = new("Combine");
+    public static readonly MetadataFileStrategy CookRecipe = new("CookRecipe");
     public static readonly MetadataFileStrategy DisplayItem = new("DisplayItem");
     public static readonly MetadataFileStrategy GachaEvent = new("GachaEvent");
     public static readonly MetadataFileStrategy HardChallengeSchedule = new("HardChallengeSchedule");

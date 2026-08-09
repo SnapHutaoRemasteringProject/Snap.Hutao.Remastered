@@ -382,6 +382,10 @@
                                     Icon="{shuxm:FontIcon Glyph=&#xE7FC;}"
                                     Text="{shuxm:ResourceString Name=ViewPageCultivationRefreshInventoryByEmbeddedYae}"/>
                                 <MenuFlyoutItem
+                                    Command="{Binding RefreshInventoryByBackpackArchiveCommand}"
+                                    Icon="{shuxm:FontIcon Glyph=&#xE895;}"
+                                    Text="{shuxm:ResourceString Name=ViewPageCultivationRefreshInventoryByBackpackArchive}"/>
+                                <MenuFlyoutItem
                                     Command="{Binding RefreshInventoryByCalculatorCommand}"
                                     Icon="{shuxm:FontIcon Glyph=&#xE8EF;}"
                                     Text="{shuxm:ResourceString Name=ViewPageCultivationRefreshInventoryByCalculator}"/>

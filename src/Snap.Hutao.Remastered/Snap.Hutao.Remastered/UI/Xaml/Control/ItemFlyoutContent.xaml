@@ -1,0 +1,50 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
+    xmlns:shuxctb="using:Snap.Hutao.Remastered.UI.Xaml.Control.TextBlock">
+
+    <Style TargetType="shuxc:ItemFlyoutContent">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="shuxc:ItemFlyoutContent">
+                    <Border Padding="16" Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <StackPanel MaxWidth="280" Spacing="8">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <shuxc:ItemIcon
+                                    Width="48"
+                                    Height="48"
+                                    Icon="{Binding IconUri}"
+                                    Quality="{Binding Quality}"/>
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock
+                                        Style="{StaticResource BodyStrongTextBlockStyle}"
+                                        Text="{Binding Name}"/>
+                                    <TextBlock
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="{Binding TypeDescription}"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <Rectangle Height="1" Fill="{ThemeResource ControlStrokeColorDefaultBrush}"/>
+                            <shuxctb:DescriptionTextBlock Description="{Binding Description}"/>
+                            <Rectangle Height="1" Fill="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                       Visibility="{Binding SetDescriptions, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
+                            <ItemsControl ItemsSource="{Binding SetDescriptions}"
+                                          Visibility="{Binding SetDescriptions, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <shuxctb:DescriptionTextBlock
+                                            Margin="0,2,0,0"
+                                            Description="{Binding}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

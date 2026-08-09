@@ -16,4 +16,11 @@ public enum SearchTokenKind
     Avatar,
     Weapon,
     Monster,
+    BackpackEquipType,
+    BackpackLockState,
+    BackpackMarkState,
+    BackpackFoodQuality,
+    BackpackCookFoodType,
+    BackpackReliquarySet,
+    BackpackQuality,
 }

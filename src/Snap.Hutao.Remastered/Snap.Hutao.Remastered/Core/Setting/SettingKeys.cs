@@ -8,6 +8,7 @@ namespace Snap.Hutao.Remastered.Core.Setting;
 public static class SettingKeys
 {
     // Application
+    public const string LowWindowsVersionWarningShown   = "Snap::Hutao::Application::LowWindowsVersionWarningShown";
     public const string DataDirectory                   = "Snap::Hutao::Application::DataFolderPath";
     public const string IsUnpackagedNotificationRegistered = "Snap::Hutao::Application::Notification::Unpackaged::Registered";
     public const string OverrideElevationRequirement    = "Snap::Hutao::Application::Elevation::Override";
@@ -20,6 +21,7 @@ public static class SettingKeys
     public const string AlwaysIsFirstRunAfterUpdate     = "Snap::Hutao::Application::Update::LastVersion::TreatAsFirstRun";
     public const string PendingRefreshAutoStartTaskAfterUpdate = "Snap::Hutao::Application::Update::StartupTask::PendingRefresh";
     public const string OverrideUpdateVersionComparison = "Snap::Hutao::Application::Update::VersionComparison::Override";
+    public const string MirrorChyanCdk = "Snap::Hutao::Application::Update::MirrorChyanCdk";
 
     // Globalization
     public const string FirstDayOfWeek               = "Snap::Hutao::Globalization::FirstDayOfWeek";
@@ -121,6 +123,7 @@ public static class SettingKeys
     public const string LaunchIsScreenWidthEnabled                       = "Snap::Hutao::Game::CommandLine::ScreenWidth::Enabled";
     public const string LaunchUsingStarwardPlayTimeStatistics            = "Snap::Hutao::Game::InterProcess::Starward::PlayTimeStatistics";
     public const string LaunchUsingBetterGenshinImpactAutomation         = "Snap::Hutao::Game::InterProcess::BetterGenshinImpact::Automation";
+    public const string LaunchBetterGenshinImpactPath                   = "Snap::Hutao::Game::InterProcess::BetterGenshinImpact::Path";
     public const string LaunchDisableShowDamageText                      = "Snap::Hutao::Game::Island::DamageText::Show";
     public const string LaunchIsIslandEnabled                            = "Snap::Hutao::Game::Island::Enabled";
     public const string LaunchDisableEventCameraMove                     = "Snap::Hutao::Game::Island::Event::CameraMove::Disabled";

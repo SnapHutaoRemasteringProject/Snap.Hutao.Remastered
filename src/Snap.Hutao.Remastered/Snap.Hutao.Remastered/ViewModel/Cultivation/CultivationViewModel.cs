@@ -9,6 +9,7 @@ using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Model.Entity;
+using Snap.Hutao.Remastered.Service.Backpack;
 using Snap.Hutao.Remastered.Service.Cultivation;
 using Snap.Hutao.Remastered.Service.Inventory;
 using Snap.Hutao.Remastered.Service.Metadata;
@@ -32,6 +33,7 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
 {
     private readonly ExclusiveTokenProvider exclusiveTokenProvider = new();
 
+    private readonly IBackpackService backpackService;
     private readonly IContentDialogFactory contentDialogFactory;
     private readonly ICultivationService cultivationService;
     private readonly INavigationService navigationService;
@@ -293,6 +295,41 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
             using (await contentDialogFactory.BlockAsync(dialog).ConfigureAwait(false))
             {
                 await inventoryService.RefreshInventoryAsync(RefreshOptions.CreateForWebCalculator(Projects.CurrentItem, metadataContext)).ConfigureAwait(false);
+
+                await UpdateInventoryItemsAsync().ConfigureAwait(false);
+                await UpdateStatisticsItemsAsync().ConfigureAwait(false);
+            }
+        }
+    }
+
+    [Command("RefreshInventoryByBackpackArchiveCommand")]
+    private async Task RefreshInventoryByBackpackArchiveAsync()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Refresh inventory", "CultivationViewModel.Command", [("source", "Backpack Archive")]));
+
+        if (Projects?.CurrentItem is null || metadataContext is null)
+        {
+            return;
+        }
+
+        BackpackArchivePickerDialog dialog = await contentDialogFactory.CreateInstanceAsync<BackpackArchivePickerDialog>(serviceProvider).ConfigureAwait(false);
+        (bool isOk, BackpackArchive archive) = await dialog.GetSelectedArchiveAsync().ConfigureAwait(false);
+
+        if (!isOk || archive is null)
+        {
+            return;
+        }
+
+        using (await EnterCriticalSectionAsync().ConfigureAwait(false))
+        {
+            ContentDialog waitDialog = await contentDialogFactory
+                .CreateForIndeterminateProgressAsync(SH.ViewModelCultivationRefreshInventoryProgress)
+                .ConfigureAwait(false);
+
+            using (await contentDialogFactory.BlockAsync(waitDialog).ConfigureAwait(false))
+            {
+                ImmutableArray<BackpackItem> backpackItems = backpackService.GetBackpackItemImmutableArrayByArchiveId(archive.InnerId);
+                inventoryService.SaveInventoryItemsFromBackpackArchive(Projects.CurrentItem, backpackItems, metadataContext);
 
                 await UpdateInventoryItemsAsync().ConfigureAwait(false);
                 await UpdateStatisticsItemsAsync().ConfigureAwait(false);
