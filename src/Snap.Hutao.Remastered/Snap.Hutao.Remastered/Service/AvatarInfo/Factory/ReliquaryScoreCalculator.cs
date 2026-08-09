@@ -47,12 +47,18 @@ public static class ReliquaryScoreCalculator
                 continue;
             }
 
-            // Backpack stores percentage values as decimals (0.031 = 3.1%), but ScoreStat expects percentage numbers (3.1)
-            double scaledValue = prop.IsFightPropPercent() ? value * 100.0 : value;
-            totalScore += ScoreStat(prop, scaledValue, weight);
+            double normalizedValue = NormalizeStatValue(prop, value);
+            totalScore += ScoreStat(prop, normalizedValue, weight);
         }
 
         return totalScore;
+    }
+
+    private static double NormalizeStatValue(FightProperty prop, double rawValue)
+    {
+        // Backpack stores percentage values as decimals (e.g., 0.031 = 3.1%),
+        // but ScoreStat expects percentage numbers (e.g., 3.1).
+        return prop.IsFightPropPercent() ? rawValue * 100.0 : rawValue;
     }
 
     private static double ScoreStat(FightProperty prop, double value, double weight)

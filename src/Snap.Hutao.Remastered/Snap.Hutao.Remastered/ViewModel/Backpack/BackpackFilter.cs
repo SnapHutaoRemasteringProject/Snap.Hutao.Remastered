@@ -53,108 +53,68 @@ public static class BackpackFilter
         FrozenDictionary<uint, int> foodQualityMap,
         FrozenDictionary<uint, CookFoodType> foodTypeMap)
     {
-        List<bool> matches = [];
+        // Use short-circuit evaluation to avoid per-item List<bool> allocations
+        bool anyChecked = false;
 
         foreach ((SearchTokenKind kind, IEnumerable<string> tokens) in lookup)
         {
-            switch (kind)
+            anyChecked = true;
+
+            bool matches = kind switch
             {
-                case SearchTokenKind.None:
-                    matches.Add(tokens.Any(token => item.Name.Contains(token, StringComparison.OrdinalIgnoreCase)));
-                    break;
+                SearchTokenKind.None => tokens.Any(token => item.Name.Contains(token, StringComparison.OrdinalIgnoreCase)),
 
-                case SearchTokenKind.WeaponType:
-                    if (item is BackpackWeaponItemView w)
+                SearchTokenKind.WeaponType => item is not BackpackWeaponItemView || (item is BackpackWeaponItemView w && tokens.Contains(w.WeaponTypeName)),
+
+                SearchTokenKind.ItemQuality or SearchTokenKind.BackpackQuality => tokens.Contains(
+                    (item switch
                     {
-                        matches.Add(tokens.Contains(w.WeaponTypeName));
-                    }
+                        BackpackWeaponItemView wv => wv.Weapon.RankLevel,
+                        BackpackReliquaryItemView rq => rq.Reliquary.RankLevel,
+                        _ when item.Material is not null => item.Material.RankLevel,
+                        _ => QualityType.QUALITY_NONE,
+                    }).GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture)),
 
-                    break;
+                SearchTokenKind.BackpackLockState => tokens.Contains(
+                    item.Entity.IsLocked
+                        ? SH.ViewPageBackpackFilterLocked
+                        : SH.ViewPageBackpackFilterUnlocked),
 
-                case SearchTokenKind.ItemQuality:
-                case SearchTokenKind.BackpackQuality:
+                SearchTokenKind.BackpackMarkState => item is not BackpackReliquaryItemView ||
+                    (item is BackpackReliquaryItemView r &&
+                    tokens.Contains(r.IsMarked
+                        ? SH.ViewPageBackpackFilterMarked
+                        : SH.ViewPageBackpackFilterUnmarked)),
+
+                SearchTokenKind.BackpackFoodQuality => !foodQualityMap.TryGetValue(item.Entity.ItemId, out int qualityIndex) ||
+                    tokens.Contains(qualityIndex switch
                     {
-                        QualityType quality = item switch
-                        {
-                            BackpackWeaponItemView wv => wv.Weapon.RankLevel,
-                            BackpackReliquaryItemView rq => rq.Reliquary.RankLevel,
-                            _ when item.Material is not null => item.Material.RankLevel,
-                            _ => QualityType.QUALITY_NONE,
-                        };
+                        0 => SH.ViewPageBackpackFilterFoodQualitySuspicious,
+                        1 => SH.ViewPageBackpackFilterFoodQualityNormal,
+                        2 => SH.ViewPageBackpackFilterFoodQualityDelicious,
+                        _ => string.Empty,
+                    }),
 
-                        matches.Add(tokens.Contains(quality.GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture)));
-                        break;
-                    }
+                SearchTokenKind.BackpackCookFoodType => !foodTypeMap.TryGetValue(item.Entity.ItemId, out CookFoodType foodType) ||
+                    tokens.Contains(foodType.GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture)!),
 
-                case SearchTokenKind.BackpackLockState:
-                    {
-                        bool isLocked = item.Entity.IsLocked;
-                        string lockState = isLocked
-                            ? SH.ViewPageBackpackFilterLocked
-                            : SH.ViewPageBackpackFilterUnlocked;
-                        matches.Add(tokens.Contains(lockState));
-                        break;
-                    }
+                SearchTokenKind.BackpackReliquarySet => item is not BackpackReliquaryItemView ||
+                    (item is BackpackReliquaryItemView rSet &&
+                    tokens.Contains(rSet.SetName ?? string.Empty)),
 
-                case SearchTokenKind.BackpackMarkState:
-                    {
-                        if (item is BackpackReliquaryItemView r)
-                        {
-                            string markState = r.IsMarked
-                                ? SH.ViewPageBackpackFilterMarked
-                                : SH.ViewPageBackpackFilterUnmarked;
-                            matches.Add(tokens.Contains(markState));
-                        }
-                    }
+                SearchTokenKind.BackpackEquipType => item is not BackpackReliquaryItemView ||
+                    (item is BackpackReliquaryItemView rEquip &&
+                    tokens.Contains(rEquip.EquipTypeName)),
 
-                    break;
+                _ => false,
+            };
 
-                case SearchTokenKind.BackpackFoodQuality:
-                    if (foodQualityMap.TryGetValue(item.Entity.ItemId, out int qualityIndex))
-                    {
-                        string qualityName = qualityIndex switch
-                        {
-                            0 => SH.ViewPageBackpackFilterFoodQualitySuspicious,
-                            1 => SH.ViewPageBackpackFilterFoodQualityNormal,
-                            2 => SH.ViewPageBackpackFilterFoodQualityDelicious,
-                            _ => string.Empty,
-                        };
-                        matches.Add(tokens.Contains(qualityName));
-                    }
-
-                    break;
-
-                case SearchTokenKind.BackpackCookFoodType:
-                    if (foodTypeMap.TryGetValue(item.Entity.ItemId, out CookFoodType foodType))
-                    {
-                        string foodTypeName = foodType.GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture)!;
-                        matches.Add(tokens.Contains(foodTypeName));
-                    }
-
-                    break;
-
-                case SearchTokenKind.BackpackReliquarySet:
-                    if (item is BackpackReliquaryItemView rSet)
-                    {
-                        matches.Add(tokens.Contains(rSet.SetName ?? string.Empty));
-                    }
-
-                    break;
-
-                case SearchTokenKind.BackpackEquipType:
-                    if (item is BackpackReliquaryItemView rEquip)
-                    {
-                        matches.Add(tokens.Contains(rEquip.EquipTypeName));
-                    }
-
-                    break;
-
-                default:
-                    matches.Add(false);
-                    break;
+            if (!matches)
+            {
+                return false; // Short-circuit: one mismatch is enough
             }
         }
 
-        return matches.Count > 0 && matches.All(r => r);
+        return anyChecked;
     }
 }

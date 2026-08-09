@@ -28,7 +28,7 @@ public static class BackpackSortComparer
         };
     }
 
-    private static int GetQualityRank(BackpackItemView item)
+    public static int GetQualityRank(BackpackItemView item)
     {
         if (item is BackpackWeaponItemView w)
         {

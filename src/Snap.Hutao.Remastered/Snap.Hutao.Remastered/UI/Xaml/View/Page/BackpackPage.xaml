@@ -58,7 +58,7 @@
                         <Setter Property="Padding" Value="0"/>
                     </Style>
                 </Flyout.FlyoutPresenterStyle>
-                <shuxc:ItemFlyoutContent Item="{Binding}"/>
+                <shuxc:ItemFlyoutContent/>
             </Flyout>
 
             <!-- Weapon card -->

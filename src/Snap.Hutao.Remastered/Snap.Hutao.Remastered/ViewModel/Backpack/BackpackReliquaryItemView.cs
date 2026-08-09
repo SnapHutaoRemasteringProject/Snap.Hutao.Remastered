@@ -41,31 +41,11 @@ public sealed class BackpackReliquaryItemView : BackpackItemView
 
     public ImmutableArray<BackpackReliquarySubStatView> SubStats { get; private set; } = [];
 
-    public ImmutableArray<string> SetDescriptions { get; private set; } = [];
-
     /// <summary>
     /// Always returns at least 4 entries, padding with empty placeholders.
+    /// Computed once in <see cref="Create"/> to avoid per-access allocations from XAML bindings.
     /// </summary>
-    public ImmutableArray<BackpackReliquarySubStatView> PaddedSubStats
-    {
-        get
-        {
-            int count = SubStats.Length;
-            if (count >= 4)
-            {
-                return SubStats;
-            }
-
-            ImmutableArray<BackpackReliquarySubStatView>.Builder builder = ImmutableArray.CreateBuilder<BackpackReliquarySubStatView>(4);
-            builder.AddRange(SubStats);
-            for (int i = count; i < 4; i++)
-            {
-                builder.Add(BackpackReliquarySubStatView.Empty);
-            }
-
-            return builder.MoveToImmutable();
-        }
-    }
+    public ImmutableArray<BackpackReliquarySubStatView> PaddedSubStats { get; private set; } = [];
 
     public static BackpackReliquaryItemView Create(BackpackItem entity, BackpackServiceMetadataContext context, Reliquary reliquary)
     {
@@ -129,6 +109,25 @@ public sealed class BackpackReliquaryItemView : BackpackItemView
         }
 
         view.BuildSubStats(context);
+
+        // Cache padded sub-stats to avoid allocations on every XAML binding access
+        int count = view.SubStats.Length;
+        if (count >= 4)
+        {
+            view.PaddedSubStats = view.SubStats;
+        }
+        else
+        {
+            ImmutableArray<BackpackReliquarySubStatView>.Builder builder = ImmutableArray.CreateBuilder<BackpackReliquarySubStatView>(4);
+            builder.AddRange(view.SubStats);
+            for (int i = count; i < 4; i++)
+            {
+                builder.Add(BackpackReliquarySubStatView.Empty);
+            }
+
+            view.PaddedSubStats = builder.MoveToImmutable();
+        }
+
         return view;
     }
 
@@ -196,8 +195,12 @@ public sealed class BackpackReliquaryItemView : BackpackItemView
 
             SubStats = builder.ToImmutable();
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
+            SentrySdk.AddBreadcrumb(
+                message: $"Failed to deserialize AppendPropIdListJson: {ex.Message}",
+                category: "BackpackReliquaryItemView",
+                level: BreadcrumbLevel.Error);
         }
     }
 }

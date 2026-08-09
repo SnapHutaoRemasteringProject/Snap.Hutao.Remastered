@@ -22,7 +22,6 @@ using Snap.Hutao.Remastered.ViewModel.Game;
 
 using System.Collections.Frozen;
 using System.Collections.Immutable;
-using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.ViewModel.Backpack;
 
@@ -36,6 +35,8 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
     private FrozenDictionary<uint, CookFoodType> foodTypeMap = FrozenDictionary<uint, CookFoodType>.Empty;
     private ImmutableDictionary<BackpackItemCategory, FrozenDictionary<string, SearchToken>> categoryTokens = [];
     private ImmutableDictionary<BackpackItemCategory, ImmutableArray<AutoSortToken>> categorySortTokens = [];
+    private readonly Dictionary<BackpackItemCategory, List<(AutoSortTokenKind Kind, bool IsSelected, int SortOrder, bool IsDescending)>> savedSortState = [];
+    private BackpackItemCategory previousSortCategory;
 
     private static readonly ImmutableArray<BackpackItemCategory> CategoryIndexMap = [
         BackpackItemCategory.Weapon,
@@ -201,6 +202,7 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
         }
         catch (OperationCanceledException)
         {
+            // Cancellation is expected when the user rapidly switches archives — the CTS cancels the in-flight save.
         }
 
         IAdvancedDbCollectionView<BackpackArchive> archives = await scopeContext.BackpackService.GetArchiveCollectionAsync().ConfigureAwait(false);
@@ -285,11 +287,11 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
 
     private async ValueTask UpdateItemsAsync(BackpackArchive? archive, CancellationToken token)
     {
-        await scopeContext.TaskContext.InvokeOnMainThreadAsync(() => Items = []).ConfigureAwait(false);
         token.ThrowIfCancellationRequested();
 
         if (archive is null)
         {
+            await scopeContext.TaskContext.InvokeOnMainThreadAsync(() => Items = []).ConfigureAwait(false);
             categoryItems = [];
             return;
         }
@@ -345,6 +347,7 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
         categoryTokens = tokenBuilder.ToImmutable();
         categorySortTokens = BackpackSortTokenBuilder.Build();
 
+        // Swap to new items atomically on main thread — avoids flash of empty list
         await scopeContext.TaskContext.SwitchToMainThreadAsync();
         token.ThrowIfCancellationRequested();
 
@@ -375,14 +378,44 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
 
     private void BuildSortTokens(BackpackItemCategory category)
     {
+        // Save current sort state before switching categories
+        if (previousSortCategory != category && !AvailableSortTokens.IsDefaultOrEmpty)
+        {
+            savedSortState[previousSortCategory] = AvailableSortTokens
+                .Select(t => (t.Kind, t.IsSelected, t.SortOrder, t.IsDescending))
+                .ToList();
+        }
+
+        previousSortCategory = category;
+
         if (categorySortTokens.TryGetValue(category, out ImmutableArray<AutoSortToken> tokens))
         {
-            // Reset selection state on all tokens
-            foreach (AutoSortToken token in tokens)
+            if (savedSortState.TryGetValue(category, out List<(AutoSortTokenKind Kind, bool IsSelected, int SortOrder, bool IsDescending)>? saved))
             {
-                token.IsSelected = false;
-                token.SortOrder = 0;
-                token.IsDescending = true;
+                // Restore saved sort state for this category
+                foreach (AutoSortToken token in tokens)
+                {
+                    int index = saved.FindIndex(s => s.Kind == token.Kind);
+                    if (index >= 0)
+                    {
+                        (_, token.IsSelected, token.SortOrder, token.IsDescending) = saved[index];
+                    }
+                    else
+                    {
+                        token.IsSelected = false;
+                        token.SortOrder = 0;
+                        token.IsDescending = true;
+                    }
+                }
+            }
+            else
+            {
+                foreach (AutoSortToken token in tokens)
+                {
+                    token.IsSelected = false;
+                    token.SortOrder = 0;
+                    token.IsDescending = true;
+                }
             }
 
             AvailableSortTokens = tokens;
@@ -396,8 +429,9 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
         ImmutableArray<BackpackItemView> filtered = predicate is null ? items : [.. items.Where(item => predicate(item))];
 
         // Items in categoryItems are already sorted with default sort; only re-sort when custom sort is active
-        IComparer<BackpackItemView>? comparer = new AutoSortData<BackpackItemView>(AvailableSortTokens, BackpackSortComparer.CompareByKind).Compile();
-        Items = comparer is null ? filtered : [.. filtered.OrderBy(x => x, comparer)];
+        Items = new AutoSortData<BackpackItemView>(AvailableSortTokens, BackpackSortComparer.CompareByKind).Compile() is { } comparer
+            ? [.. filtered.OrderBy(x => x, comparer)]
+            : filtered;
     }
 
     private static ImmutableArray<BackpackItemView> ApplyDefaultSort(ImmutableArray<BackpackItemView> items, BackpackItemCategory category)
@@ -414,27 +448,11 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
                 .OrderByDescending(r => r.Level)
                 .ThenBy(r => r.Entity.ItemId)],
             _ => [.. items
-                .OrderByDescending(GetRank)
+                .OrderByDescending(BackpackSortComparer.GetQualityRank)
                 .ThenBy(item => item.Entity.ItemId)],
         };
     }
 
-    private static uint GetRank(BackpackItemView item)
-    {
-        if (item is BackpackWeaponItemView w)
-        {
-            QualityType rank = w.Weapon.RankLevel;
-            return Unsafe.As<QualityType, uint>(ref rank);
-        }
-
-        if (item.Material is not null)
-        {
-            QualityType rank = item.Material.RankLevel;
-            return Unsafe.As<QualityType, uint>(ref rank);
-        }
-
-        return 1;
-    }
 
     private static ImmutableDictionary<BackpackItemCategory, ImmutableArray<BackpackItemView>> BuildCategoryViews(ImmutableArray<BackpackItemView> all)
     {

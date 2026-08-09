@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using System.Collections.Immutable;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Model.Metadata.Converter;
@@ -30,6 +31,10 @@ public class BackpackItemView
     public Uri IconUri { get; protected set; } = default!;
 
     public QualityType Quality { get; protected set; }
+
+    public ImmutableArray<string> SetDescriptions { get; protected set; } = [];
+
+    public bool HasSetDescriptions => !SetDescriptions.IsDefaultOrEmpty;
 
     public static BackpackItemView Create(BackpackItem entity, BackpackServiceMetadataContext context)
     {
