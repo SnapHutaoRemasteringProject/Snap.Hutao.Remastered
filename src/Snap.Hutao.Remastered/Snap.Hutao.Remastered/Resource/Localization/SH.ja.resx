@@ -1943,6 +1943,9 @@
   <data name="ViewModelCultivationEntryAddSuccess" xml:space="preserve">
     <value>選択中の育成計画に正常に追加されました</value>
   </data>
+  <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
+    <value>已成功修改养成参数</value>
+  </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>まずは育成計画へ新規作成をして、選択した後に続けてください</value>
   </data>
@@ -2614,6 +2617,12 @@
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>リストを削除</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
+    <value>养成参数</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
+    <value>修改养成参数</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>現在の育成計画を削除</value>
