@@ -1943,6 +1943,9 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewModelCultivationEntryAddSuccess" xml:space="preserve">
     <value>Erfolgreich zum aktuellen Aufwertungsplan hinzugefügt</value>
   </data>
+  <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
+    <value>已成功修改养成参数</value>
+  </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>Bitte erstelle und wähle zuerst einen Plan auf der Seite für Aufwertungspläne aus</value>
   </data>
@@ -2614,6 +2617,12 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Liste löschen</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
+    <value>养成参数</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
+    <value>修改养成参数</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>Aktuellen Plan löschen</value>
