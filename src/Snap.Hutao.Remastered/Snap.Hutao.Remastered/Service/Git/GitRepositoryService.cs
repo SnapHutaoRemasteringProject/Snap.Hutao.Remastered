@@ -60,11 +60,14 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
 
             string directory = Path.GetFullPath(Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), name));
 
-            // Unlock files in the target directory before git operations to prevent
-            // file-in-use errors during delete/overwrite.
-            await fileUnlockerService.UnlockAsync(directory).ConfigureAwait(false);
-
             BackgroundActivity.BackgroundActivity activity = GetActivityByName(name);
+
+            if (activity == backgroundActivityOptions.FullTrustInitialization)
+            {
+                // Unlock files in the target directory before git operations to prevent
+                // file-in-use errors during delete/overwrite.
+                await fileUnlockerService.UnlockAsync(directory).ConfigureAwait(false);
+            }
 
             bool failed = false;
             bool succeeded = false;
