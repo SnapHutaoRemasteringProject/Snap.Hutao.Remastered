@@ -78,7 +78,7 @@ public sealed partial class GamePackageOperationWindow : Microsoft.UI.Xaml.Windo
     {
         GamePackageOperationViewModel? viewModel = RootGrid.DataContext<GamePackageOperationViewModel>();
         viewModel?.HandleProgressUpdate(status);
-        UpdateSpeedGraphs(viewModel, status);
+        UpdateSpeedGraphsSafely(viewModel, status);
     }
 
     [Command("CloseCommand")]
@@ -88,25 +88,32 @@ public sealed partial class GamePackageOperationWindow : Microsoft.UI.Xaml.Windo
         Close();
     }
 
-    private void UpdateSpeedGraphs(GamePackageOperationViewModel? viewModel, GamePackageOperationReport status)
+    private void UpdateSpeedGraphsSafely(GamePackageOperationViewModel? viewModel, GamePackageOperationReport status)
     {
         if (viewModel is null)
         {
             return;
         }
 
-        switch (status)
+        try
         {
-            case GamePackageOperationReport.Reset:
-                GamePackageOperationSpeedGraphHelper.ResetSpeedGraph(new SpeedGraphAdapter(DownloadSpeedGraph), ref downloadMaxSpeed, ref downloadSpeedGraphLastUpdateTimestamp);
-                GamePackageOperationSpeedGraphHelper.ResetSpeedGraph(new SpeedGraphAdapter(InstallSpeedGraph), ref installMaxSpeed, ref installSpeedGraphLastUpdateTimestamp);
-                return;
-            case GamePackageOperationReport.Download:
-                GamePackageOperationSpeedGraphHelper.UpdateSpeedGraph(new SpeedGraphAdapter(DownloadSpeedGraph), ref downloadMaxSpeed, ref downloadSpeedGraphLastUpdateTimestamp, viewModel.DownloadTotalBytes, viewModel.DownloadedBytes, viewModel.DownloadSpeedBytesPerSecond, Stopwatch.GetTimestamp(), SpeedGraphUpdateInterval);
-                return;
-            case GamePackageOperationReport.Install:
-                GamePackageOperationSpeedGraphHelper.UpdateSpeedGraph(new SpeedGraphAdapter(InstallSpeedGraph), ref installMaxSpeed, ref installSpeedGraphLastUpdateTimestamp, viewModel.InstallTotalBytes, viewModel.InstalledBytes, viewModel.InstallSpeedBytesPerSecond, Stopwatch.GetTimestamp(), SpeedGraphUpdateInterval);
-                return;
+            switch (status)
+            {
+                case GamePackageOperationReport.Reset:
+                    GamePackageOperationSpeedGraphHelper.ResetSpeedGraph(new SpeedGraphAdapter(DownloadSpeedGraph), ref downloadMaxSpeed, ref downloadSpeedGraphLastUpdateTimestamp);
+                    GamePackageOperationSpeedGraphHelper.ResetSpeedGraph(new SpeedGraphAdapter(InstallSpeedGraph), ref installMaxSpeed, ref installSpeedGraphLastUpdateTimestamp);
+                    return;
+                case GamePackageOperationReport.Download:
+                    GamePackageOperationSpeedGraphHelper.UpdateSpeedGraph(new SpeedGraphAdapter(DownloadSpeedGraph), ref downloadMaxSpeed, ref downloadSpeedGraphLastUpdateTimestamp, viewModel.DownloadTotalBytes, viewModel.DownloadedBytes, viewModel.DownloadSpeedBytesPerSecond, Stopwatch.GetTimestamp(), SpeedGraphUpdateInterval);
+                    return;
+                case GamePackageOperationReport.Install:
+                    GamePackageOperationSpeedGraphHelper.UpdateSpeedGraph(new SpeedGraphAdapter(InstallSpeedGraph), ref installMaxSpeed, ref installSpeedGraphLastUpdateTimestamp, viewModel.InstallTotalBytes, viewModel.InstalledBytes, viewModel.InstallSpeedBytesPerSecond, Stopwatch.GetTimestamp(), SpeedGraphUpdateInterval);
+                    return;
+            }
+        }
+        catch (Exception ex)
+        {
+            SentrySdk.CaptureException(ex);
         }
     }
 }

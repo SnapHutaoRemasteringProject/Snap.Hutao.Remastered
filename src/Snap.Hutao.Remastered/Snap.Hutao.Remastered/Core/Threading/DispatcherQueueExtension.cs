@@ -45,6 +45,7 @@ public static class DispatcherQueueExtension
                 }
             }))
             {
+                exceptionDispatchInfo = ExceptionDispatchInfo.Capture(DispatchQueueShutDownException());
                 blockEvent.Set();
             }
 
@@ -83,6 +84,7 @@ public static class DispatcherQueueExtension
                 }
             }))
             {
+                exceptionDispatchInfo = ExceptionDispatchInfo.Capture(DispatchQueueShutDownException());
                 blockEvent.Set();
             }
 
@@ -121,6 +123,7 @@ public static class DispatcherQueueExtension
                 }
             }))
             {
+                exceptionDispatchInfo = ExceptionDispatchInfo.Capture(DispatchQueueShutDownException());
                 blockEvent.Set();
             }
 
@@ -160,6 +163,7 @@ public static class DispatcherQueueExtension
                 }
             }))
             {
+                exceptionDispatchInfo = ExceptionDispatchInfo.Capture(DispatchQueueShutDownException());
                 blockEvent.Set();
             }
 
@@ -168,6 +172,11 @@ public static class DispatcherQueueExtension
 
             exceptionDispatchInfo?.Throw();
             return result;
+        }
+
+        private static InvalidOperationException DispatchQueueShutDownException()
+        {
+            return new InvalidOperationException("The DispatcherQueue has been shut down and cannot accept new work items.");
         }
     }
 
