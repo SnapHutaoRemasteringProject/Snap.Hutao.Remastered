@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.Database;
+using Snap.Hutao.Remastered.Model.Calculable;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Entity.Primitive;
 using Snap.Hutao.Remastered.Model.Intrinsic;
@@ -83,7 +84,20 @@ public sealed partial class CultivationService : ICultivationService
                     _ => default!,
                 };
 
-                resultEntries.Add(CultivateEntryView.Create(entry, item, entryItems.ToImmutable()));
+                CalculableAvatar? calculableAvatar = null;
+                CalculableWeapon? calculableWeapon = null;
+
+                switch (entry.Type)
+                {
+                    case CultivateType.AvatarAndSkill:
+                        calculableAvatar = CalculableAvatar.From(context.IdAvatarMap[(AvatarId)entry.Id]);
+                        break;
+                    case CultivateType.Weapon:
+                        calculableWeapon = CalculableWeapon.From(context.IdWeaponMap[(WeaponId)entry.Id]);
+                        break;
+                }
+
+                resultEntries.Add(CultivateEntryView.Create(entry, item, entryItems.ToImmutable(), calculableAvatar, calculableWeapon));
             }
 
             ObservableCollection<CultivateEntryView> result = resultEntries.SortByDescending(e => e.IsToday).ToObservableCollection();

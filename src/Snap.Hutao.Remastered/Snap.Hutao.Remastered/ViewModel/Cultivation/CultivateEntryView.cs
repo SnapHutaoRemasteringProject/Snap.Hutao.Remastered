@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Model;
+using Snap.Hutao.Remastered.Model.Calculable;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Entity.Primitive;
 using Snap.Hutao.Remastered.Model.Metadata.Item;
@@ -16,6 +17,7 @@ public sealed partial class CultivateEntryView : Item, IPropertyValuesProvider
 {
     private CultivateEntryView(CultivateEntry entry, Item item, ImmutableArray<CultivateItemView> items)
     {
+        Entry = entry;
         Id = entry.Id;
         EntryId = entry.InnerId;
         Name = item.Name;
@@ -100,6 +102,12 @@ public sealed partial class CultivateEntryView : Item, IPropertyValuesProvider
         }
     }
 
+    public CultivateEntry Entry { get; }
+
+    public CalculableAvatar? Avatar { get; private set; }
+
+    public CalculableWeapon? Weapon { get; private set; }
+
     public ImmutableArray<CultivateItemView> Items { get; set; }
 
     public ImmutableArray<MaterialId> RotationalItemIds { get; }
@@ -114,8 +122,36 @@ public sealed partial class CultivateEntryView : Item, IPropertyValuesProvider
 
     public CultivateType Type { get; }
 
-    public static CultivateEntryView Create(CultivateEntry entry, Item item, ImmutableArray<CultivateItemView> items)
+    public static CultivateEntryView Create(CultivateEntry entry, Item item, ImmutableArray<CultivateItemView> items, CalculableAvatar? calculableAvatar = null, CalculableWeapon? calculableWeapon = null)
     {
-        return new(entry, item, items);
+        CultivateEntryView view = new(entry, item, items);
+        view.Avatar = calculableAvatar;
+        view.Weapon = calculableWeapon;
+
+        if (calculableAvatar is not null && entry.LevelInformation is { } levelInfo)
+        {
+            calculableAvatar.LevelCurrent = levelInfo.AvatarLevelFrom;
+            calculableAvatar.LevelTarget = levelInfo.AvatarLevelTo;
+            calculableAvatar.IsPromoted = levelInfo.AvatarIsPromoting;
+
+            if (calculableAvatar.Skills is [{ } skillA, { } skillE, { } skillQ, ..])
+            {
+                skillA.LevelCurrent = levelInfo.SkillALevelFrom;
+                skillA.LevelTarget = levelInfo.SkillALevelTo;
+                skillE.LevelCurrent = levelInfo.SkillELevelFrom;
+                skillE.LevelTarget = levelInfo.SkillELevelTo;
+                skillQ.LevelCurrent = levelInfo.SkillQLevelFrom;
+                skillQ.LevelTarget = levelInfo.SkillQLevelTo;
+            }
+        }
+
+        if (calculableWeapon is not null && entry.LevelInformation is { } weaponLevelInfo)
+        {
+            calculableWeapon.LevelCurrent = weaponLevelInfo.WeaponLevelFrom;
+            calculableWeapon.LevelTarget = weaponLevelInfo.WeaponLevelTo;
+            calculableWeapon.IsPromoted = weaponLevelInfo.WeaponIsPromoting;
+        }
+
+        return view;
     }
 }

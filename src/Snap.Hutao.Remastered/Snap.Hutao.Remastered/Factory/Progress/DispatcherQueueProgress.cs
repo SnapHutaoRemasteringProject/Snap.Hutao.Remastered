@@ -20,6 +20,7 @@ public class DispatcherQueueProgress<T> : IProgress<T>
     {
         // Avoid capture <this>
         Action<T> handler = this.handler;
+        ArgumentNullException.ThrowIfNull(handler);
 
         if (dispatcherQueue.HasThreadAccess)
         {
@@ -53,6 +54,7 @@ public class DispatcherQueueProgress<T, TState> : IProgress<T>
         // Avoid capture <this>
         Action<T, TState> handler = this.handler;
         TState state = this.state;
+        ArgumentNullException.ThrowIfNull(handler);
 
         if (dispatcherQueue.HasThreadAccess)
         {

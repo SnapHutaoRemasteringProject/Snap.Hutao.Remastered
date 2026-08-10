@@ -11,6 +11,8 @@ using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Service.Backpack;
 using Snap.Hutao.Remastered.Service.Cultivation;
+using Snap.Hutao.Remastered.Service.Cultivation.Consumption;
+using Snap.Hutao.Remastered.Service.Cultivation.Offline;
 using Snap.Hutao.Remastered.Service.Inventory;
 using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
@@ -23,6 +25,9 @@ using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.ViewModel.Game;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
+using AvatarPromotionDelta = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate.AvatarPromotionDelta;
+using CalculateBatchConsumption = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate.BatchConsumption;
+using PromotionDelta = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate.PromotionDelta;
 
 namespace Snap.Hutao.Remastered.ViewModel.Cultivation;
 
@@ -430,6 +435,134 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
 
         await taskContext.SwitchToMainThreadAsync();
         InventoryItems = inventoryService.GetInventoryItemViews(metadataContext, Projects.CurrentItem, SaveInventoryItemCommand);
+    }
+
+    [Command("ModifyEntryCommand")]
+    private async Task ModifyEntryAsync(CultivateEntryView? entryView)
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Modify entry", "CultivationViewModel.Command"));
+
+        if (entryView?.Entry is not { } entry)
+        {
+            return;
+        }
+
+        if (metadataContext is null || Projects?.CurrentItem is null)
+        {
+            return;
+        }
+
+        AvatarPromotionDelta delta = new();
+
+        switch (entry.Type)
+        {
+            case Model.Entity.Primitive.CultivateType.AvatarAndSkill:
+                {
+                    if (entryView.Avatar is not { } calculableAvatar)
+                    {
+                        return;
+                    }
+
+                    delta.AvatarId = calculableAvatar.AvatarId;
+                    delta.AvatarLevelCurrent = Math.Clamp(calculableAvatar.LevelCurrent, calculableAvatar.LevelMin, calculableAvatar.LevelMax);
+                    delta.AvatarLevelTarget = Math.Clamp(calculableAvatar.LevelTarget, calculableAvatar.LevelMin, calculableAvatar.LevelMax);
+                    delta.AvatarPromoteLevel = calculableAvatar.PromoteLevel;
+                    delta.SkillList = calculableAvatar.Skills.SelectAsArray(static skill => new PromotionDelta
+                    {
+                        Id = skill.GroupId,
+                        LevelCurrent = Math.Clamp(skill.LevelCurrent, skill.LevelMin, skill.LevelMax),
+                        LevelTarget = Math.Clamp(skill.LevelTarget, skill.LevelMin, skill.LevelMax),
+                    });
+                    break;
+                }
+
+            case Model.Entity.Primitive.CultivateType.Weapon:
+                {
+                    if (entryView.Weapon is not { } calculableWeapon)
+                    {
+                        return;
+                    }
+
+                    delta.Weapon = new PromotionDelta
+                    {
+                        Id = calculableWeapon.WeaponId,
+                        LevelCurrent = Math.Clamp(calculableWeapon.LevelCurrent, calculableWeapon.LevelMin, calculableWeapon.LevelMax),
+                        LevelTarget = Math.Clamp(calculableWeapon.LevelTarget, calculableWeapon.LevelMin, calculableWeapon.LevelMax),
+                        WeaponPromoteLevel = calculableWeapon.PromoteLevel,
+                    };
+                    break;
+                }
+
+            default:
+                return;
+        }
+
+        CalculateBatchConsumption batchConsumption;
+        InputConsumption input;
+
+        switch (entry.Type)
+        {
+            case Model.Entity.Primitive.CultivateType.AvatarAndSkill:
+                {
+                    Model.Metadata.Avatar.Avatar avatar = metadataContext.IdAvatarMap[entry.Id];
+                    batchConsumption = OfflineCalculator.CalculateWikiAvatarConsumption(delta, avatar);
+                    if (batchConsumption.OverallConsume.IsEmpty)
+                    {
+                        messenger.Send(InfoBarMessage.Warning(SH.ViewModelCultivationEntryAddNoConsumptionWarning));
+                        return;
+                    }
+
+                    input = new()
+                    {
+                        Type = Model.Entity.Primitive.CultivateType.AvatarAndSkill,
+                        ItemId = avatar.Id,
+                        Items = batchConsumption.OverallConsume,
+                        LevelInformation = LevelInformation.From(delta),
+                        Strategy = ConsumptionSaveStrategyKind.OverwriteExisting,
+                    };
+                    break;
+                }
+
+            case Model.Entity.Primitive.CultivateType.Weapon:
+                {
+                    Model.Metadata.Weapon.Weapon weapon = metadataContext.IdWeaponMap[entry.Id];
+                    batchConsumption = OfflineCalculator.CalculateWikiWeaponConsumption(delta, weapon);
+                    if (batchConsumption.OverallConsume.IsEmpty)
+                    {
+                        messenger.Send(InfoBarMessage.Warning(SH.ViewModelCultivationEntryAddNoConsumptionWarning));
+                        return;
+                    }
+
+                    input = new()
+                    {
+                        Type = Model.Entity.Primitive.CultivateType.Weapon,
+                        ItemId = weapon.Id,
+                        Items = batchConsumption.OverallConsume,
+                        LevelInformation = LevelInformation.From(delta),
+                        Strategy = ConsumptionSaveStrategyKind.OverwriteExisting,
+                    };
+                    break;
+                }
+
+            default:
+                return;
+        }
+
+        ConsumptionSaveResultKind result = await cultivationService.SaveConsumptionAsync(input).ConfigureAwait(false);
+        InfoBarMessage? message = result switch
+        {
+            ConsumptionSaveResultKind.NoProject => InfoBarMessage.Warning(SH.ViewModelCultivationEntryAddWarning),
+            ConsumptionSaveResultKind.NoItem => InfoBarMessage.Information(SH.ViewModelCultivationConsumptionSaveNoItemHint),
+            ConsumptionSaveResultKind.Added => InfoBarMessage.Success(SH.ViewModelCultivationEntryModifySuccess),
+            _ => default,
+        };
+
+        if (message is not null)
+        {
+            messenger.Send(message);
+        }
+
+        await UpdateEntryCollectionAsync(Projects.CurrentItem).ConfigureAwait(false);
     }
 
     [Command("NavigateToPageCommand")]

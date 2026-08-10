@@ -11,6 +11,7 @@
     xmlns:shhuxcp="using:Snap.Hutao.Remastered.UI.Xaml.Control.Panel"
     xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
+    xmlns:shuxba="using:Snap.Hutao.Remastered.UI.Xaml.Behavior.Action"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxca="using:Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox"
     xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
@@ -49,6 +50,228 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <shux:BindingProxy x:Key="BindingProxy" DataContext="{Binding}"/>
+
+            <DataTemplate x:Key="FlyoutSkillTemplate">
+                <Border Margin="0,2,0,0" Style="{StaticResource BorderCardStyle}">
+                    <Grid Margin="8" ColumnSpacing="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <shuxci:CachedImage
+                            Grid.Column="0"
+                            Width="32"
+                            Height="32"
+                            ShowAsMonoChrome="True"
+                            Source="{Binding Icon}"/>
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="16,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{Binding Name}"
+                            TextTrimming="CharacterEllipsis"/>
+                        <NumberBox
+                            Grid.Column="3"
+                            MinWidth="80"
+                            VerticalAlignment="Center"
+                            Maximum="{Binding LevelMax}"
+                            Minimum="{Binding LevelMin}"
+                            SpinButtonPlacementMode="Inline"
+                            Value="{Binding LevelCurrent, Mode=TwoWay}"/>
+                        <FontIcon
+                            Grid.Column="4"
+                            Margin="4,0"
+                            FontSize="12"
+                            Glyph="&#xEBE7;"/>
+                        <NumberBox
+                            Grid.Column="5"
+                            MinWidth="80"
+                            VerticalAlignment="Center"
+                            Maximum="{Binding LevelMax}"
+                            Minimum="{Binding LevelCurrent, Mode=OneWay}"
+                            SpinButtonPlacementMode="Inline"
+                            Value="{Binding LevelTarget, Mode=TwoWay}"/>
+                    </Grid>
+                </Border>
+            </DataTemplate>
+
+            <Flyout
+                x:Key="CultivateEntryFlyout"
+                ShouldConstrainToRootBounds="False">
+                <Flyout.FlyoutPresenterStyle>
+                    <Style BasedOn="{StaticResource FlyoutPresenterPadding8Style}" TargetType="FlyoutPresenter">
+                        <Setter Property="MaxWidth" Value="540"/>
+                    </Style>
+                </Flyout.FlyoutPresenterStyle>
+                <Grid RowSpacing="6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Avatar section -->
+                    <StackPanel Grid.Row="0" Visibility="{Binding Avatar, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                        <Grid
+                            Padding="8"
+                            ColumnSpacing="6"
+                            DataContext="{Binding Avatar}"
+                            Style="{ThemeResource GridCardStyle}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <shuxc:ItemIcon
+                                Grid.Column="0"
+                                Width="32"
+                                Height="32"
+                                Icon="{Binding Icon}"
+                                Quality="{Binding Quality}"/>
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding Name}"
+                                TextTrimming="CharacterEllipsis"/>
+                            <StackPanel
+                                Grid.Column="2"
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal"
+                                Visibility="{Binding IsPromotionAvailable}">
+                                <CheckBox
+                                    VerticalAlignment="Center"
+                                    Content="{shuxm:ResourceString Name=ViewDialogCultivatePromotionDeltaPromoted}"
+                                    IsChecked="{Binding IsPromoted, Mode=TwoWay}"/>
+                            </StackPanel>
+                            <NumberBox
+                                Grid.Column="3"
+                                MinWidth="80"
+                                VerticalAlignment="Center"
+                                Maximum="{Binding LevelMax}"
+                                Minimum="{Binding LevelMin}"
+                                SpinButtonPlacementMode="Inline"
+                                Value="{Binding LevelCurrent, Mode=TwoWay}"/>
+                            <FontIcon
+                                Grid.Column="4"
+                                Margin="4,0"
+                                FontSize="12"
+                                Glyph="&#xEBE7;"/>
+                            <NumberBox
+                                Grid.Column="5"
+                                MinWidth="80"
+                                VerticalAlignment="Center"
+                                Maximum="{Binding LevelMax}"
+                                Minimum="{Binding LevelCurrent, Mode=OneWay}"
+                                SpinButtonPlacementMode="Inline"
+                                Value="{Binding LevelTarget, Mode=TwoWay}"/>
+                        </Grid>
+
+                        <ItemsControl ItemTemplate="{StaticResource FlyoutSkillTemplate}" ItemsSource="{Binding Avatar.Skills}"/>
+                    </StackPanel>
+
+                    <!-- Weapon section -->
+                    <StackPanel Grid.Row="1" Visibility="{Binding Weapon, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                        <Grid
+                            Padding="8"
+                            ColumnSpacing="6"
+                            DataContext="{Binding Weapon}"
+                            Style="{ThemeResource GridCardStyle}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <shuxc:ItemIcon
+                                Grid.Column="0"
+                                Width="32"
+                                Height="32"
+                                Icon="{Binding Icon}"
+                                Quality="{Binding Quality}"/>
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{Binding Name}"
+                                TextTrimming="CharacterEllipsis"/>
+                            <StackPanel
+                                Grid.Column="2"
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal"
+                                Visibility="{Binding IsPromotionAvailable}">
+                                <CheckBox
+                                    VerticalAlignment="Center"
+                                    Content="{shuxm:ResourceString Name=ViewDialogCultivatePromotionDeltaPromoted}"
+                                    IsChecked="{Binding IsPromoted, Mode=TwoWay}"/>
+                            </StackPanel>
+                            <NumberBox
+                                Grid.Column="3"
+                                MinWidth="80"
+                                VerticalAlignment="Center"
+                                Maximum="{Binding LevelMax}"
+                                Minimum="{Binding LevelMin}"
+                                SpinButtonPlacementMode="Inline"
+                                Value="{Binding LevelCurrent, Mode=TwoWay}"/>
+                            <FontIcon
+                                Grid.Column="4"
+                                Margin="4,0"
+                                FontSize="12"
+                                Glyph="&#xEBE7;"/>
+                            <NumberBox
+                                Grid.Column="5"
+                                MinWidth="80"
+                                VerticalAlignment="Center"
+                                Maximum="{Binding LevelMax}"
+                                Minimum="{Binding LevelCurrent, Mode=OneWay}"
+                                SpinButtonPlacementMode="Inline"
+                                Value="{Binding LevelTarget, Mode=TwoWay}"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Action buttons -->
+                    <Grid Grid.Row="2" Margin="0,6,0,0" ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button
+                            Grid.Column="0"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding Path=DataContext.ModifyEntryCommand, Source={StaticResource BindingProxy}}"
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource AccentButtonStyle}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <FontIcon FontSize="14" Glyph="&#xE73E;"/>
+                                <TextBlock Text="{shuxm:ResourceString Name=ContentDialogConfirmPrimaryButtonText}"/>
+                            </StackPanel>
+                        </Button>
+                        <Button
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            Style="{StaticResource DefaultButtonStyle}">
+                            <mxi:Interaction.Behaviors>
+                                <mxi:EventTriggerBehavior EventName="Click">
+                                    <shuxba:HideAttachedFlyoutAction/>
+                                </mxi:EventTriggerBehavior>
+                            </mxi:Interaction.Behaviors>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <FontIcon FontSize="14" Glyph="&#xE711;"/>
+                                <TextBlock Text="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Flyout>
 
             <cwconv:BoolToObjectConverter x:Key="BoolToOpacityConverter">
                 <cwconv:BoolToObjectConverter.TrueValue>
@@ -172,6 +395,14 @@
 
             <DataTemplate x:Key="CultivateEntryTemplate" x:DataType="shvcu:CultivateEntryView">
                 <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
+                    <mxi:Interaction.Behaviors>
+                        <mxi:EventTriggerBehavior EventName="Tapped">
+                            <shuxba:ShowAttachedFlyoutAction/>
+                        </mxi:EventTriggerBehavior>
+                    </mxi:Interaction.Behaviors>
+                    <FlyoutBase.AttachedFlyout>
+                        <StaticResource ResourceKey="CultivateEntryFlyout"/>
+                    </FlyoutBase.AttachedFlyout>
                     <Grid Style="{ThemeResource AcrylicGridCardStyle}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>

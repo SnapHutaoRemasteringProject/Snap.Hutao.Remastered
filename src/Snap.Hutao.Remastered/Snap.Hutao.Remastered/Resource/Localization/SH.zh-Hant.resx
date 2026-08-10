@@ -1943,6 +1943,9 @@
   <data name="ViewModelCultivationEntryAddSuccess" xml:space="preserve">
     <value>已成功新增至目前養成計劃</value>
   </data>
+  <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
+    <value>已成功修改養成參數</value>
+  </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>請先前往養成計劃頁面建立計劃並選取</value>
   </data>
@@ -2614,6 +2617,12 @@
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>刪除清單</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
+    <value>養成參數</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
+    <value>修改養成參數</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>刪除目前計劃</value>

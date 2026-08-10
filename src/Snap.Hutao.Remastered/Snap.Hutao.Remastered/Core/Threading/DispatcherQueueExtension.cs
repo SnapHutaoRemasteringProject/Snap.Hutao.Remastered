@@ -17,6 +17,9 @@ public static class DispatcherQueueExtension
     {
         public void Invoke(Action action)
         {
+            ArgumentNullException.ThrowIfNull(dispatcherQueue);
+            ArgumentNullException.ThrowIfNull(action);
+
             if (dispatcherQueue.HasThreadAccess)
             {
                 action();
@@ -26,7 +29,7 @@ public static class DispatcherQueueExtension
             ExceptionDispatchInfo? exceptionDispatchInfo = null;
             ManualResetEventSlim blockEvent = EventPool.Get();
 
-            dispatcherQueue.TryEnqueue(() =>
+            if (!dispatcherQueue.TryEnqueue(() =>
             {
                 try
                 {
@@ -40,7 +43,10 @@ public static class DispatcherQueueExtension
                 {
                     blockEvent.Set();
                 }
-            });
+            }))
+            {
+                blockEvent.Set();
+            }
 
             blockEvent.Wait();
             EventPool.Return(blockEvent);
@@ -50,6 +56,9 @@ public static class DispatcherQueueExtension
 
         public void Invoke(DispatcherQueuePriority priority, Action action)
         {
+            ArgumentNullException.ThrowIfNull(dispatcherQueue);
+            ArgumentNullException.ThrowIfNull(action);
+
             if (dispatcherQueue.HasThreadAccess)
             {
                 action();
@@ -58,7 +67,7 @@ public static class DispatcherQueueExtension
 
             ExceptionDispatchInfo? exceptionDispatchInfo = null;
             ManualResetEventSlim blockEvent = EventPool.Get();
-            dispatcherQueue.TryEnqueue(priority, () =>
+            if (!dispatcherQueue.TryEnqueue(priority, () =>
             {
                 try
                 {
@@ -72,7 +81,10 @@ public static class DispatcherQueueExtension
                 {
                     blockEvent.Set();
                 }
-            });
+            }))
+            {
+                blockEvent.Set();
+            }
 
             blockEvent.Wait();
             EventPool.Return(blockEvent);
@@ -82,6 +94,9 @@ public static class DispatcherQueueExtension
 
         public T Invoke<T>(Func<T> func)
         {
+            ArgumentNullException.ThrowIfNull(dispatcherQueue);
+            ArgumentNullException.ThrowIfNull(func);
+
             if (dispatcherQueue.HasThreadAccess)
             {
                 return func();
@@ -90,7 +105,7 @@ public static class DispatcherQueueExtension
             T result = default!;
             ExceptionDispatchInfo? exceptionDispatchInfo = null;
             ManualResetEventSlim blockEvent = EventPool.Get();
-            dispatcherQueue.TryEnqueue(() =>
+            if (!dispatcherQueue.TryEnqueue(() =>
             {
                 try
                 {
@@ -104,7 +119,10 @@ public static class DispatcherQueueExtension
                 {
                     blockEvent.Set();
                 }
-            });
+            }))
+            {
+                blockEvent.Set();
+            }
 
             blockEvent.Wait();
             EventPool.Return(blockEvent);
@@ -115,6 +133,9 @@ public static class DispatcherQueueExtension
 
         public T Invoke<T>(DispatcherQueuePriority priority, Func<T> func)
         {
+            ArgumentNullException.ThrowIfNull(dispatcherQueue);
+            ArgumentNullException.ThrowIfNull(func);
+
             if (dispatcherQueue.HasThreadAccess)
             {
                 return func();
@@ -123,7 +144,7 @@ public static class DispatcherQueueExtension
             T result = default!;
             ExceptionDispatchInfo? exceptionDispatchInfo = null;
             ManualResetEventSlim blockEvent = EventPool.Get();
-            dispatcherQueue.TryEnqueue(priority, () =>
+            if (!dispatcherQueue.TryEnqueue(priority, () =>
             {
                 try
                 {
@@ -137,7 +158,10 @@ public static class DispatcherQueueExtension
                 {
                     blockEvent.Set();
                 }
-            });
+            }))
+            {
+                blockEvent.Set();
+            }
 
             blockEvent.Wait();
             EventPool.Return(blockEvent);

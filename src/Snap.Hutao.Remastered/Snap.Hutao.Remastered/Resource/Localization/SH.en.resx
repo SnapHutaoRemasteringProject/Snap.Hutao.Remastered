@@ -1943,6 +1943,9 @@ Space Available: {2}</value>
   <data name="ViewModelCultivationEntryAddSuccess" xml:space="preserve">
     <value>Successfully added to current plan</value>
   </data>
+  <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
+    <value>Successfully modified cultivation parameters</value>
+  </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>Please create a plan and select it in the Enhancement Progression Plan feature</value>
   </data>
@@ -2614,6 +2617,12 @@ Space Available: {2}</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Delete list</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
+    <value>Cultivation Parameters</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
+    <value>Modify Cultivation Parameters</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>Delete Current Plan</value>

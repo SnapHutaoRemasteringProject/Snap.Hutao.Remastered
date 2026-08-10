@@ -1943,6 +1943,9 @@
   <data name="ViewModelCultivationEntryAddSuccess" xml:space="preserve">
     <value>已成功添加至当前养成计划</value>
   </data>
+  <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
+    <value>已成功修改养成参数</value>
+  </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>请先前往养成计划页面创建计划并选中</value>
   </data>
@@ -2614,6 +2617,12 @@
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>删除清单</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
+    <value>养成参数</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
+    <value>修改养成参数</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>删除当前计划</value>
