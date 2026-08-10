@@ -1943,6 +1943,9 @@ Spazio disponibile: {2}</value>
   <data name="ViewModelCultivationEntryAddSuccess" xml:space="preserve">
     <value>Aggiunto con successo al piano di potenziamento attuale</value>
   </data>
+  <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
+    <value>已成功修改养成参数</value>
+  </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>Crea e seleziona prima un piano nella pagina del piano di potenziamento</value>
   </data>
@@ -2614,6 +2617,12 @@ Spazio disponibile: {2}</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Elimina lista</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
+    <value>养成参数</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
+    <value>修改养成参数</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>Elimina piano attuale</value>
