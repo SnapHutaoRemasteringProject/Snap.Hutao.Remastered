@@ -35,8 +35,6 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
     private FrozenDictionary<uint, CookFoodType> foodTypeMap = FrozenDictionary<uint, CookFoodType>.Empty;
     private ImmutableDictionary<BackpackItemCategory, FrozenDictionary<string, SearchToken>> categoryTokens = [];
     private ImmutableDictionary<BackpackItemCategory, ImmutableArray<AutoSortToken>> categorySortTokens = [];
-    private readonly Dictionary<BackpackItemCategory, List<(AutoSortTokenKind Kind, bool IsSelected, int SortOrder, bool IsDescending)>> savedSortState = [];
-    private BackpackItemCategory previousSortCategory;
 
     private static readonly ImmutableArray<BackpackItemCategory> CategoryIndexMap = [
         BackpackItemCategory.Weapon,
@@ -378,46 +376,8 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
 
     private void BuildSortTokens(BackpackItemCategory category)
     {
-        // Save current sort state before switching categories
-        if (previousSortCategory != category && !AvailableSortTokens.IsDefaultOrEmpty)
-        {
-            savedSortState[previousSortCategory] = AvailableSortTokens
-                .Select(t => (t.Kind, t.IsSelected, t.SortOrder, t.IsDescending))
-                .ToList();
-        }
-
-        previousSortCategory = category;
-
         if (categorySortTokens.TryGetValue(category, out ImmutableArray<AutoSortToken> tokens))
         {
-            if (savedSortState.TryGetValue(category, out List<(AutoSortTokenKind Kind, bool IsSelected, int SortOrder, bool IsDescending)>? saved))
-            {
-                // Restore saved sort state for this category
-                foreach (AutoSortToken token in tokens)
-                {
-                    int index = saved.FindIndex(s => s.Kind == token.Kind);
-                    if (index >= 0)
-                    {
-                        (_, token.IsSelected, token.SortOrder, token.IsDescending) = saved[index];
-                    }
-                    else
-                    {
-                        token.IsSelected = false;
-                        token.SortOrder = 0;
-                        token.IsDescending = true;
-                    }
-                }
-            }
-            else
-            {
-                foreach (AutoSortToken token in tokens)
-                {
-                    token.IsSelected = false;
-                    token.SortOrder = 0;
-                    token.IsDescending = true;
-                }
-            }
-
             AvailableSortTokens = tokens;
         }
     }
