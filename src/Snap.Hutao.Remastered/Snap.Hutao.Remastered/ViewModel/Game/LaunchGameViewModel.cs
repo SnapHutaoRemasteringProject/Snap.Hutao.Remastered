@@ -365,6 +365,14 @@ public sealed partial class LaunchGameViewModel : Abstraction.ViewModel, IViewMo
             Shared.LaunchAdvancedDelayedAsync().SafeForget();
         }
 
+        if (LaunchOptions.GamePathEntry.Value is { Path: { Length: > 0 } path }
+            && (path.StartsWith("shell:", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("ms-", StringComparison.OrdinalIgnoreCase)))
+        {
+            await Shared.LaunchShellUriAsync(path).ConfigureAwait(false);
+            return;
+        }
+
         UserAndUid? userAndUid = await userService.GetCurrentUserAndUidAsync().ConfigureAwait(false);
         await Shared.DefaultLaunchExecutionAsync(this, userAndUid).ConfigureAwait(false);
     }

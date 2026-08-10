@@ -103,6 +103,22 @@ public sealed class ProcessFactory
         return false;
     }
 
+    public static IProcess CreateUsingShellExecute(string arguments, string fileName, string workingDirectory)
+    {
+        global::System.Diagnostics.Process process = new()
+        {
+            StartInfo = new()
+            {
+                Arguments = arguments,
+                FileName = fileName,
+                UseShellExecute = true,
+                WorkingDirectory = workingDirectory,
+            },
+        };
+
+        return new DiagnosticsProcess(process);
+    }
+
     public static IProcess CreateUsingShellExecuteRunAs(string arguments, string fileName, string workingDirectory)
     {
         global::System.Diagnostics.Process process = new()

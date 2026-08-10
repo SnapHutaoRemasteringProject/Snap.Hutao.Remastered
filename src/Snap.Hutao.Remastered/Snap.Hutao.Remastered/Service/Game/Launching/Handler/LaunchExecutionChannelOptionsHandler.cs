@@ -15,6 +15,13 @@ public sealed class LaunchExecutionChannelOptionsHandler : AbstractLaunchExecuti
 {
     public override ValueTask BeforeAsync(BeforeLaunchExecutionContext context)
     {
+        if (context.FileSystem.GameFilePath is { Length: > 0 } path
+            && (path.StartsWith("shell:", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("ms-", StringComparison.OrdinalIgnoreCase)))
+        {
+            return ValueTask.CompletedTask;
+        }
+
         string configPath = context.FileSystem.GameConfigurationFilePath;
 
         IniElement[]? elements;

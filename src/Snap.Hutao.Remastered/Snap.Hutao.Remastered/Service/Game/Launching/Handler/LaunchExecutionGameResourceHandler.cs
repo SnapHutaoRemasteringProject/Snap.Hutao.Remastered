@@ -45,6 +45,13 @@ public sealed class LaunchExecutionGameResourceHandler : AbstractLaunchExecution
 
     private static bool ShouldConvert(BeforeLaunchExecutionContext context)
     {
+        if (context.FileSystem.GameFilePath is { Length: > 0 } path
+            && (path.StartsWith("shell:", StringComparison.OrdinalIgnoreCase)
+                || path.StartsWith("ms-", StringComparison.OrdinalIgnoreCase)))
+        {
+            return false;
+        }
+
         // Configuration file changed
         if (context.TryGetOption(LaunchExecutionOptionsKey.ChannelOptionsChanged, out bool changed) && changed)
         {

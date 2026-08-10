@@ -49,7 +49,7 @@ public sealed class GameProcessFactory
         // Command-line arguments and Island injection are not supported for shell URIs.
         if (IsShellUri(gameFilePath))
         {
-            return ProcessFactory.CreateUsingShellExecuteRunAs(string.Empty, gameFilePath, string.Empty);
+            return ProcessFactory.CreateUsingShellExecute(string.Empty, gameFilePath, string.Empty);
         }
 
         string gameDirectory = context.FileSystem.GameDirectory;

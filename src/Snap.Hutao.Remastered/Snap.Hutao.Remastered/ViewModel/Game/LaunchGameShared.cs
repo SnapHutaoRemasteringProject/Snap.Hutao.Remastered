@@ -3,6 +3,7 @@
 // Copyright (c) Millennium-Science-Technology-R-D-Inst. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
@@ -204,6 +205,26 @@ public sealed partial class LaunchGameShared
             messenger.Send(InfoBarMessage.Error(ex));
         }
     }
+
+    /// <summary>
+    /// 直接启动 Shell URI 指向的打包应用，跳过依赖启动方案的传统游戏启动管道。
+    /// </summary>
+    /// <param name="shellUri">Shell URI，如 <c>shell:AppsFolder\...</c> 或 <c>ms-...</c> 协议。</param>
+    public ValueTask LaunchShellUriAsync(string shellUri)
+    {
+        try
+        {
+            IProcess process = ProcessFactory.CreateUsingShellExecute(string.Empty, shellUri, string.Empty);
+            process.Start();
+        }
+        catch (Exception ex)
+        {
+            messenger.Send(InfoBarMessage.Error(ex));
+        }
+
+        return ValueTask.CompletedTask;
+    }
+
     public async Task LaunchAdvancedDelayedAsync(CancellationToken token = default)
     {
         // Load delayed program entries from store (no UI dependencies)
