@@ -89,7 +89,9 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#MyAppShortN
 
 [Code]
 const
+#ifdef CodeSigningCertificatePath
   CodeSigningCertificateThumbprint = '{#CodeSigningCertificateThumbprint}';
+#endif
   CodeSigningCertificateFileName = '{#CodeSigningCertificateFileName}';
   CertificateTrustMarkerKey = 'Software\SnapHutaoRemasteringProject\Snap.Hutao.Remastered';
   CertificateTrustMarkerValue = 'InstallerCreatedTrustedPeopleThumbprint';

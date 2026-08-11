@@ -179,6 +179,8 @@ public static partial class Bootstrap
             return false;
         }
 
+        bool registered = false;
+
         try
         {
             ComWrappersSupport.InitializeComWrappers();
@@ -193,19 +195,40 @@ public static partial class Bootstrap
             Uri iconUri = new(iconPath);
 
             AppNotificationManager.Default.Register(displayName, iconUri);
+            registered = true;
         }
         catch
         {
             // Toast helper failure is non-fatal
         }
 
-        AppNotification notification = new(request.RawXml)
+        try
         {
-            SuppressDisplay = request.SuppressDisplay,
-        };
-        AppNotificationManager.Default.Show(notification);
-        Thread.Sleep(500);
-        AppNotificationManager.Default.Unregister();
+            AppNotification notification = new(request.RawXml)
+            {
+                SuppressDisplay = request.SuppressDisplay,
+            };
+            AppNotificationManager.Default.Show(notification);
+            Thread.Sleep(500);
+        }
+        catch
+        {
+            // Toast helper failure is non-fatal
+        }
+        finally
+        {
+            if (registered)
+            {
+                try
+                {
+                    AppNotificationManager.Default.Unregister();
+                }
+                catch
+                {
+                    // Toast helper failure is non-fatal
+                }
+            }
+        }
 
         return true;
     }
