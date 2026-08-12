@@ -14,7 +14,7 @@ public sealed partial class OfficialLauncherClient
 {
     private readonly IHttpRequestMessageBuilderFactory httpRequestMessageBuilderFactory;
     private readonly ILogger<OfficialLauncherClient> logger;
-    private readonly IApiEndpoints apiEndpoints;
+    private readonly IApiEndpointsFactory apiEndpointsFactory;
     private readonly HttpClient httpClient;
 
     [GeneratedConstructor]
@@ -23,7 +23,7 @@ public sealed partial class OfficialLauncherClient
     public async ValueTask<string?> GetBackgroundVideoUrlAsync(CancellationToken token = default)
     {
         HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
-            .SetRequestUri(apiEndpoints.HoyoPlayAllGameBasicInfo())
+            .SetRequestUri(apiEndpointsFactory.Create(ApiEndpointsKind.Chinese).HoyoPlayAllGameBasicInfo())
             .Get();
 
         OfficialLauncherBackground? resp = await builder.SendAsync<OfficialLauncherBackground>(httpClient, token).ConfigureAwait(false);
