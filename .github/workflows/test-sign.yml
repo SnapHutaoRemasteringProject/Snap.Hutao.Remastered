@@ -52,6 +52,7 @@ jobs:
           github-artifact-id: ${{ steps.upload-zip.outputs.artifact-id }}
           wait-for-completion: true
           output-artifact-directory: ${{ github.workspace }}/src/output/signed-zip
+          skip-decompress: true
 
       - name: Package installer and MSIX from signed files
         id: package
