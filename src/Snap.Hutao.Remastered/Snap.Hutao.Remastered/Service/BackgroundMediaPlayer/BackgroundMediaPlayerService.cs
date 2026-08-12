@@ -6,6 +6,7 @@ using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Web.Hoyolab.HoyoPlay;
 using Windows.Media.Core;
 using Windows.Media.Playback;
+using System.Collections.Frozen;
 
 namespace Snap.Hutao.Remastered.Service.BackgroundMediaPlayer;
 
@@ -16,6 +17,11 @@ public sealed partial class BackgroundMediaPlayerService : IBackgroundMediaPlaye
     {
         ".mp4", ".mkv", ".webm", ".m4v", ".mov", ".wmv", ".avi"
     };
+
+    private static readonly FrozenDictionary<string, string> videoUriMapper = new Dictionary<string, string>()
+    {
+        { "https://launcher-webstatic.mihoyo.com/launcher-public/2026/08/05/8e1c78aaa6e33ed60b88e12a461f8ee5_6759941859929004894.webm", "https://static.snaphutaorp.org/static/launcher/20260812.mp4" }
+    }.ToFrozenDictionary();
 
     private readonly AppOptions appOptions;
     private readonly IServiceProvider serviceProvider;
@@ -104,6 +110,11 @@ public sealed partial class BackgroundMediaPlayerService : IBackgroundMediaPlaye
                             if (!string.IsNullOrEmpty(videoUrl))
                             {
                                 IImageCache? imageCache = scope.ServiceProvider.GetService<IImageCache>();
+                                if (videoUriMapper.TryGetValue(videoUrl, out string? mappedUrl))
+                                {
+                                    videoUrl = mappedUrl;
+                                }
+
                                 Uri targetUri = new(videoUrl);
 
                                 if (imageCache is not null)
