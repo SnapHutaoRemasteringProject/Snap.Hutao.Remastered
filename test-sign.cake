@@ -121,7 +121,7 @@ Task("Zip loose files")
         System.IO.File.Delete(zipPath);
     }
 
-    System.IO.Compression.ZipFile.CreateFromDirectory(binPath, zipPath);
+    System.IO.Compression.ZipFile.CreateFromDirectory(binPath, zipPath, CompressionLevel.Optimal, false);
     Information($"Unsigned zip: {zipPath}");
 
     if (GitHubActions.IsRunningOnGitHubActions)
