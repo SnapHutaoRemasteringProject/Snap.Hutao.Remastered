@@ -1,6 +1,6 @@
 #addin nuget:?package=Cake.Http&version=4.0.0
 
-var target = Argument("target", "Build");
+var target = Argument("target", "BuildAndZip");
 var configuration = Argument("configuration", "Release");
 
 // Paths
@@ -36,45 +36,19 @@ var winsdkPath = (string)winsdkRegistry.GetValue("KitsRoot10");
 var winsdkBinPath = System.IO.Path.Combine(winsdkPath, "bin", winsdkVersion, "x64");
 Information($"Windows SDK: {winsdkPath}");
 
-// SignPath test certificate subject
-const string TestCertificateSubject = "CN=Test certificate for 'Snap.Hutao.Remastered [OSS]'";
+var zipPath = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Test-{version}-unsigned.zip");
 
 // ============================================================
-// Tasks
+// BuildAndZip (default target): build project and zip loose files
 // ============================================================
 
-Task("Build")
-    .IsDependentOn("Modify manifest for test signing")
+Task("BuildAndZip")
     .IsDependentOn("Build binary package")
     .IsDependentOn("Copy files")
     .IsDependentOn("Remove unused files")
-    .IsDependentOn("Build MSIX");
-
-Task("Modify manifest for test signing")
-    .Does(() =>
-{
-    Information("Modifying manifest for SignPath test signing...");
-
-    var content = System.IO.File.ReadAllText(manifest);
-
-    // Replace publisher with SignPath test certificate subject
-    content = System.Text.RegularExpressions.Regex.Replace(
-        content,
-        "  Publisher=\"([^\"]*)\"",
-        $"  Publisher=\"{TestCertificateSubject}\"");
-
-    // Replace display names to indicate test build
-    content = content
-        .Replace("Snap Hutao Remastered", "Snap Hutao Remastered Test")
-        .Replace("胡桃重制版", "胡桃重制版 Test");
-
-    System.IO.File.WriteAllText(manifest, content);
-
-    Information("Manifest updated for test signing.");
-});
+    .IsDependentOn("Zip loose files");
 
 Task("Build binary package")
-    .IsDependentOn("Modify manifest for test signing")
     .Does(() =>
 {
     Information("Building...");
@@ -131,10 +105,129 @@ Task("Remove unused files")
     }
 });
 
-Task("Build MSIX")
+Task("Zip loose files")
     .IsDependentOn("Build binary package")
     .IsDependentOn("Copy files")
     .IsDependentOn("Remove unused files")
+    .Does(() =>
+{
+    if (System.IO.File.Exists(zipPath))
+    {
+        System.IO.File.Delete(zipPath);
+    }
+
+    System.IO.Compression.ZipFile.CreateFromDirectory(binPath, zipPath);
+    Information($"Unsigned zip: {zipPath}");
+
+    if (GitHubActions.IsRunningOnGitHubActions)
+    {
+        GitHubActions.Commands.SetOutputParameter("zip-path", zipPath);
+    }
+});
+
+// ============================================================
+// PackageFromSigned: extract signed zip, build installer + MSIX
+// ============================================================
+
+var signedZipDir = Argument<string>("signedZipDir", null);
+
+Task("PackageFromSigned")
+    .IsDependentOn("Extract signed zip")
+    .IsDependentOn("Prepare installer output")
+    .IsDependentOn("VC Redist")
+    .IsDependentOn("Compile installer")
+    .IsDependentOn("Build MSIX");
+
+Task("Extract signed zip")
+    .Does(() =>
+{
+    if (string.IsNullOrEmpty(signedZipDir))
+    {
+        throw new Exception("--signedZipDir argument is required for PackageFromSigned target");
+    }
+
+    var signedZip = System.IO.Directory.GetFiles(signedZipDir, "*.zip").FirstOrDefault();
+    if (signedZip == null)
+    {
+        throw new Exception($"No signed zip found in: {signedZipDir}");
+    }
+
+    Information($"Extracting signed zip: {signedZip}");
+
+    if (System.IO.Directory.Exists(binPath))
+    {
+        System.IO.Directory.Delete(binPath, true);
+    }
+
+    System.IO.Compression.ZipFile.ExtractToDirectory(signedZip, binPath);
+    Information($"Extracted to: {binPath}");
+});
+
+Task("Prepare installer output")
+    .IsDependentOn("Extract signed zip")
+    .Does(() =>
+{
+    var publishDir = System.IO.Path.Combine(repoDir, "Installer", "Publish");
+    if (System.IO.Directory.Exists(publishDir))
+    {
+        System.IO.Directory.Delete(publishDir, true);
+    }
+
+    System.IO.Directory.CreateDirectory(publishDir);
+    CopyDirectory(binPath, publishDir);
+    Information("Installer publish directory prepared.");
+});
+
+Task("VC Redist")
+    .Does(() =>
+{
+    var vcRedist = System.IO.Path.Combine(repoDir, "Installer", "VC_redist.x64.exe");
+    if (System.IO.File.Exists(vcRedist))
+    {
+        Information("VC_redist.x64.exe already exists.");
+        return;
+    }
+
+    Information("Downloading VC_redist.x64.exe...");
+    DownloadFile("https://aka.ms/vs/17/release/vc_redist.x64.exe", vcRedist);
+    Information("Downloaded VC_redist.x64.exe");
+});
+
+Task("Compile installer")
+    .IsDependentOn("Prepare installer output")
+    .IsDependentOn("VC Redist")
+    .Does(() =>
+{
+    var iscc = Context.Tools.Resolve("iscc.exe")?.FullPath;
+    if (string.IsNullOrEmpty(iscc))
+    {
+        var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+        iscc = System.IO.Directory.GetDirectories(pf, "Inno Setup*")
+            .Select(d => System.IO.Path.Combine(d, "iscc.exe"))
+            .FirstOrDefault(System.IO.File.Exists);
+    }
+
+    if (string.IsNullOrEmpty(iscc)) { throw new Exception("Inno Setup not found"); }
+
+    var iss = System.IO.Path.Combine(repoDir, "Installer", "installer.iss");
+    var p = StartProcess(iscc, new ProcessSettings { Arguments = $"/dMyAppVersion=\"{version}\" \"{iss}\"", WorkingDirectory = repoDir });
+
+    if (p != 0) { throw new InvalidOperationException($"Inno Setup failed ({p})"); }
+    Information("Installer compiled.");
+
+    if (GitHubActions.IsRunningOnGitHubActions)
+    {
+        var installerDir = System.IO.Path.Combine(repoDir, "publish");
+        var installer = System.IO.Directory.GetFiles(installerDir, "Snap.Hutao.Remastered-*.exe").FirstOrDefault();
+        if (installer != null)
+        {
+            GitHubActions.Commands.SetOutputParameter("installer-path", installer);
+        }
+    }
+});
+
+Task("Build MSIX")
+    .IsDependentOn("Extract signed zip")
     .Does(() =>
 {
     var makeappx = System.IO.Path.Combine(winsdkBinPath, "makeappx.exe");
@@ -142,7 +235,7 @@ Task("Build MSIX")
     var p = StartProcess(makeappx, new ProcessSettings { Arguments = $"pack /d \"{binPath}\" /p \"{msix}\"" });
 
     if (p != 0) { throw new InvalidOperationException($"MSIX build failed ({p})"); }
-    Information($"Unsigned MSIX: {msix}");
+    Information($"MSIX (unsigned): {msix}");
 
     if (GitHubActions.IsRunningOnGitHubActions)
     {

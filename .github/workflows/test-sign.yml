@@ -27,36 +27,67 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Build unsigned MSIX
+      - name: Build and zip
         id: build
         shell: pwsh
-        run: dotnet tool restore && dotnet cake test-sign.cake
+        run: dotnet tool restore && dotnet cake test-sign.cake --target=BuildAndZip
 
-      - name: Upload unsigned MSIX
-        id: upload-unsigned
+      - name: Upload unsigned zip
+        id: upload-zip
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered.Test-${{ steps.build.outputs.version }}-unsigned
-          path: ${{ steps.build.outputs.msix-path }}
+          name: Snap.Hutao.Remastered.Test-${{ steps.build.outputs.version }}-unsigned-zip
+          path: ${{ steps.build.outputs.zip-path }}
 
-      - name: Submit to SignPath for test signing
-        id: signpath
+      - name: Submit zip to SignPath for signing
+        id: signpath-zip
         uses: signpath/github-action-submit-signing-request@v2
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ba79caf8-8aa3-44e6-8a7b-ac8541512be4
           project-slug: Snap.Hutao.Remastered
           signing-policy-slug: test-signing
-          artifact-configuration-slug: msix
-          github-artifact-id: ${{ steps.upload-unsigned.outputs.artifact-id }}
+          artifact-configuration-slug: zip
+          github-artifact-id: ${{ steps.upload-zip.outputs.artifact-id }}
           wait-for-completion: true
-          output-artifact-directory: ${{ github.workspace }}/src/output/signed
+          output-artifact-directory: ${{ github.workspace }}/src/output/signed-zip
 
-      - name: Upload signed MSIX
+      - name: Package installer and MSIX from signed files
+        id: package
+        shell: pwsh
+        run: dotnet cake test-sign.cake --target=PackageFromSigned --signedZipDir="${{ github.workspace }}/src/output/signed-zip"
+
+      - name: Upload unsigned installer
+        id: upload-installer
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered.Test-${{ steps.build.outputs.version }}-signed
-          path: ${{ github.workspace }}/src/output/signed
+          name: Snap.Hutao.Remastered.Test-${{ steps.build.outputs.version }}-unsigned-installer
+          path: ${{ steps.package.outputs.installer-path }}
+
+      - name: Submit installer to SignPath for signing
+        id: signpath-installer
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ba79caf8-8aa3-44e6-8a7b-ac8541512be4
+          project-slug: Snap.Hutao.Remastered
+          signing-policy-slug: test-signing
+          artifact-configuration-slug: initial
+          github-artifact-id: ${{ steps.upload-installer.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: ${{ github.workspace }}/src/output/signed-installer
+
+      - name: Upload MSIX (unsigned)
+        uses: actions/upload-artifact@v7
+        with:
+          name: Snap.Hutao.Remastered.Test-${{ steps.build.outputs.version }}-msix
+          path: ${{ steps.package.outputs.msix-path }}
+
+      - name: Upload signed installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: Snap.Hutao.Remastered.Test-${{ steps.build.outputs.version }}-signed-installer
+          path: ${{ github.workspace }}/src/output/signed-installer
 
       - name: Add summary
         shell: pwsh
@@ -67,7 +98,8 @@ jobs:
           - **Version:** ${{ steps.build.outputs.version }}
           - **Signing Policy:** test-signing
           - **Certificate:** CN=Test certificate for 'Snap.Hutao.Remastered [OSS]'
-          - **Signing Request:** ${{ steps.signpath.outputs.signing-request-web-url }}
+          - **Zip Signing Request:** ${{ steps.signpath-zip.outputs.signing-request-web-url }}
+          - **Installer Signing Request:** ${{ steps.signpath-installer.outputs.signing-request-web-url }}
 
           > [!WARNING]
           > 该版本使用 SignPath 测试证书签名
