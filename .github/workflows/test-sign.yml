@@ -38,6 +38,7 @@ jobs:
         with:
           name: Snap.Hutao.Remastered.Test-${{ steps.build.outputs.version }}-unsigned-zip
           path: ${{ steps.build.outputs.zip-path }}
+          archive: false
 
       - name: Submit zip to SignPath for signing
         id: signpath-zip
