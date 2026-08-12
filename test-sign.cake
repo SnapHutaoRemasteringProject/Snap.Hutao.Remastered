@@ -111,6 +111,11 @@ Task("Zip loose files")
     .IsDependentOn("Remove unused files")
     .Does(() =>
 {
+    if (!System.IO.Directory.Exists(outputPath))
+    {
+        System.IO.Directory.CreateDirectory(outputPath);
+    }
+
     if (System.IO.File.Exists(zipPath))
     {
         System.IO.File.Delete(zipPath);
