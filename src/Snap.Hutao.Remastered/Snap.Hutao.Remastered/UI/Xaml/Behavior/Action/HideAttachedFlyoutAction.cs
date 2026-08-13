@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.Xaml.Interactivity;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 
@@ -23,7 +24,7 @@ public sealed class HideAttachedFlyoutAction : DependencyObject, IAction
         {
             if (current is FlyoutPresenter)
             {
-                foreach (Popup popup in VisualTreeHelper.GetOpenPopupsForXamlRoot(((FrameworkElement)element).XamlRoot))
+                foreach (Popup popup in VisualTreeHelper.GetOpenPopupsForXamlRoot((Unsafe.As<FrameworkElement>(element)).XamlRoot))
                 {
                     if (popup.Child == current)
                     {

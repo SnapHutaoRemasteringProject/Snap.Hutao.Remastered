@@ -181,26 +181,33 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
 
     private async ValueTask UpdateEntryCollectionAsync(CultivateProject? project)
     {
+        if (project is null)
+        {
+            return;
+        }
+
+        await taskContext.SwitchToMainThreadAsync();
+        EntriesUpdating = true;
+
         try
         {
-            EntriesUpdating = true;
-            if (project is null)
-            {
-                return;
-            }
-
-            CultivationMetadataContext context = await metadataService.GetContextAsync<CultivationMetadataContext>().ConfigureAwait(false);
+            CultivationMetadataContext context = await metadataService
+                .GetContextAsync<CultivationMetadataContext>()
+                .ConfigureAwait(false);
 
             ObservableCollection<CultivateEntryView> entries = await cultivationService
                 .GetCultivateEntryCollectionAsync(project, context)
                 .ConfigureAwait(false);
 
-            IAdvancedCollectionView<CultivateEntryView> entriesView = entries.AsAdvancedCollectionView();
-
             await taskContext.SwitchToMainThreadAsync();
+
+            IAdvancedCollectionView<CultivateEntryView> entriesView = entries.AsAdvancedCollectionView();
             CultivateEntries = entriesView;
 
             await UpdateInventoryItemsAsync().ConfigureAwait(false);
+
+            await taskContext.SwitchToMainThreadAsync();
+
             await UpdateStatisticsItemsAsync().ConfigureAwait(false);
         }
         finally
@@ -440,6 +447,8 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
     [Command("ModifyEntryCommand")]
     private async Task ModifyEntryAsync(CultivateEntryView? entryView)
     {
+        await taskContext.SwitchToMainThreadAsync();
+
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Modify entry", "CultivationViewModel.Command"));
 
         if (entryView?.Entry is not { } entry)
@@ -473,6 +482,7 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
                         LevelCurrent = Math.Clamp(skill.LevelCurrent, skill.LevelMin, skill.LevelMax),
                         LevelTarget = Math.Clamp(skill.LevelTarget, skill.LevelMin, skill.LevelMax),
                     });
+
                     break;
                 }
 
@@ -490,6 +500,7 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
                         LevelTarget = Math.Clamp(calculableWeapon.LevelTarget, calculableWeapon.LevelMin, calculableWeapon.LevelMax),
                         WeaponPromoteLevel = calculableWeapon.PromoteLevel,
                     };
+
                     break;
                 }
 
@@ -505,7 +516,9 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
             case Model.Entity.Primitive.CultivateType.AvatarAndSkill:
                 {
                     Model.Metadata.Avatar.Avatar avatar = metadataContext.IdAvatarMap[entry.Id];
+
                     batchConsumption = OfflineCalculator.CalculateWikiAvatarConsumption(delta, avatar);
+
                     if (batchConsumption.OverallConsume.IsEmpty)
                     {
                         messenger.Send(InfoBarMessage.Warning(SH.ViewModelCultivationEntryAddNoConsumptionWarning));
@@ -520,13 +533,16 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
                         LevelInformation = LevelInformation.From(delta),
                         Strategy = ConsumptionSaveStrategyKind.OverwriteExisting,
                     };
+
                     break;
                 }
 
             case Model.Entity.Primitive.CultivateType.Weapon:
                 {
                     Model.Metadata.Weapon.Weapon weapon = metadataContext.IdWeaponMap[entry.Id];
+
                     batchConsumption = OfflineCalculator.CalculateWikiWeaponConsumption(delta, weapon);
+
                     if (batchConsumption.OverallConsume.IsEmpty)
                     {
                         messenger.Send(InfoBarMessage.Warning(SH.ViewModelCultivationEntryAddNoConsumptionWarning));
@@ -541,6 +557,7 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
                         LevelInformation = LevelInformation.From(delta),
                         Strategy = ConsumptionSaveStrategyKind.OverwriteExisting,
                     };
+
                     break;
                 }
 
@@ -549,20 +566,25 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
         }
 
         ConsumptionSaveResultKind result = await cultivationService.SaveConsumptionAsync(input).ConfigureAwait(false);
+
         InfoBarMessage? message = result switch
         {
             ConsumptionSaveResultKind.NoProject => InfoBarMessage.Warning(SH.ViewModelCultivationEntryAddWarning),
             ConsumptionSaveResultKind.NoItem => InfoBarMessage.Information(SH.ViewModelCultivationConsumptionSaveNoItemHint),
             ConsumptionSaveResultKind.Added => InfoBarMessage.Success(SH.ViewModelCultivationEntryModifySuccess),
-            _ => default,
+            _ => null,
         };
+
+        await taskContext.SwitchToMainThreadAsync();
 
         if (message is not null)
         {
             messenger.Send(message);
         }
 
-        await UpdateEntryCollectionAsync(Projects.CurrentItem).ConfigureAwait(false);
+        CultivateProject? currentProject = Projects?.CurrentItem;
+
+        await UpdateEntryCollectionAsync(currentProject).ConfigureAwait(false);
     }
 
     [Command("NavigateToPageCommand")]
