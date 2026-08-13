@@ -321,7 +321,7 @@
     <PackageReference Include="System.Formats.Nrbf" Version="10.0.10" />
     <PackageReference Include="System.IO.Hashing" Version="10.0.10" />
     <PackageReference Include="System.Threading.RateLimiting" Version="10.0.10" />
-    <PackageReference Include="Yae.Lib" Version="5.4.4">
+    <PackageReference Include="Yae.Lib" Version="5.4.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
