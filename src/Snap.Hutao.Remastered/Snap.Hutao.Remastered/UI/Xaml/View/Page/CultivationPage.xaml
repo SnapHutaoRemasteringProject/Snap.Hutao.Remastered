@@ -101,10 +101,11 @@
 
             <Flyout
                 x:Key="CultivateEntryFlyout"
+                Placement="RightEdgeAlignedTop"
                 ShouldConstrainToRootBounds="False">
                 <Flyout.FlyoutPresenterStyle>
                     <Style BasedOn="{StaticResource FlyoutPresenterPadding8Style}" TargetType="FlyoutPresenter">
-                        <Setter Property="MaxWidth" Value="540"/>
+                        <Setter Property="MaxWidth" Value="Infinity"/>
                     </Style>
                 </Flyout.FlyoutPresenterStyle>
                 <Grid RowSpacing="6">
@@ -114,7 +115,7 @@
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Avatar section -->
+                    <!--  Avatar section  -->
                     <StackPanel Grid.Row="0" Visibility="{Binding Avatar, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
                         <Grid
                             Padding="8"
@@ -177,7 +178,7 @@
                         <ItemsControl ItemTemplate="{StaticResource FlyoutSkillTemplate}" ItemsSource="{Binding Avatar.Skills}"/>
                     </StackPanel>
 
-                    <!-- Weapon section -->
+                    <!--  Weapon section  -->
                     <StackPanel Grid.Row="1" Visibility="{Binding Weapon, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
                         <Grid
                             Padding="8"
@@ -238,8 +239,11 @@
                         </Grid>
                     </StackPanel>
 
-                    <!-- Action buttons -->
-                    <Grid Grid.Row="2" Margin="0,6,0,0" ColumnSpacing="8">
+                    <!--  Action buttons  -->
+                    <Grid
+                        Grid.Row="2"
+                        Margin="0,6,0,0"
+                        ColumnSpacing="8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
                             <ColumnDefinition/>
@@ -396,7 +400,7 @@
             <DataTemplate x:Key="CultivateEntryTemplate" x:DataType="shvcu:CultivateEntryView">
                 <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                     <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="Tapped">
+                        <mxi:EventTriggerBehavior EventName="PointerPressed">
                             <shuxba:ShowAttachedFlyoutAction/>
                         </mxi:EventTriggerBehavior>
                     </mxi:Interaction.Behaviors>

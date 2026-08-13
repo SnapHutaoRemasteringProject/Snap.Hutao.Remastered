@@ -23,7 +23,7 @@ public sealed class HideAttachedFlyoutAction : DependencyObject, IAction
         {
             if (current is FlyoutPresenter)
             {
-                foreach (Popup popup in VisualTreeHelper.GetOpenPopups(Window.Current))
+                foreach (Popup popup in VisualTreeHelper.GetOpenPopupsForXamlRoot(((FrameworkElement)element).XamlRoot))
                 {
                     if (popup.Child == current)
                     {
