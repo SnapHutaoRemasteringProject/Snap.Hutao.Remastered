@@ -66,7 +66,8 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
             {
                 // Unlock files in the target directory before git operations to prevent
                 // file-in-use errors during delete/overwrite.
-                await fileUnlockerService.UnlockAsync(directory).ConfigureAwait(false);
+                // https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.FileUnlocker
+                // await fileUnlockerService.UnlockAsync(directory).ConfigureAwait(false);
             }
 
             bool failed = false;
