@@ -13,9 +13,9 @@ public interface IBackpackService
 {
     ValueTask<IAdvancedDbCollectionView<BackpackArchive>> GetArchiveCollectionAsync();
 
-    ValueTask<bool> RefreshByEmbeddedYaeAsync(BackpackArchive archive, PlayerStoreResult storeResult);
+    bool RefreshByEmbeddedYae(BackpackArchive archive, PlayerStoreResult storeResult);
 
-    ValueTask RemoveArchiveAsync(BackpackArchive archive);
+    void RemoveArchive(BackpackArchive archive);
 
     BackpackArchive AddArchive(string name);
 

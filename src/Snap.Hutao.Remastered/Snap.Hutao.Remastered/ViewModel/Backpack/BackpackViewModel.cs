@@ -195,7 +195,7 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
         {
             using (await EnterCriticalSectionAsync().ConfigureAwait(false))
             {
-                await scopeContext.BackpackService.RemoveArchiveAsync(current).ConfigureAwait(false);
+                scopeContext.BackpackService.RemoveArchive(current);
             }
         }
         catch (OperationCanceledException)
@@ -271,7 +271,7 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
             return;
         }
 
-        if (await scopeContext.BackpackService.RefreshByEmbeddedYaeAsync(archive, storeResult).ConfigureAwait(false))
+        if (scopeContext.BackpackService.RefreshByEmbeddedYae(archive, storeResult))
         {
             scopeContext.Messenger.Send(InfoBarMessage.Success(SH.ViewPageBackpackRefreshSuccess));
         }
@@ -412,7 +412,6 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
                 .ThenBy(item => item.Entity.ItemId)],
         };
     }
-
 
     private static ImmutableDictionary<BackpackItemCategory, ImmutableArray<BackpackItemView>> BuildCategoryViews(ImmutableArray<BackpackItemView> all)
     {

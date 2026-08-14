@@ -42,10 +42,8 @@ public sealed partial class BackpackService : IBackpackService
         return archive;
     }
 
-    public async ValueTask<bool> RefreshByEmbeddedYaeAsync(BackpackArchive archive, PlayerStoreResult storeResult)
+    public bool RefreshByEmbeddedYae(BackpackArchive archive, PlayerStoreResult storeResult)
     {
-        await Task.CompletedTask.ConfigureAwait(false);
-
         ArgumentNullException.ThrowIfNull(storeResult.StoreBytes);
         ImmutableArray<BackpackItem> items = PlayerStoreParser.ParseToBackpackItems(storeResult.StoreBytes, archive.InnerId);
 
@@ -59,9 +57,8 @@ public sealed partial class BackpackService : IBackpackService
         return true;
     }
 
-    public async ValueTask RemoveArchiveAsync(BackpackArchive archive)
+    public void RemoveArchive(BackpackArchive archive)
     {
-        await Task.CompletedTask.ConfigureAwait(false);
         backpackRepository.RemoveBackpackItemRangeByArchiveId(archive.InnerId);
         backpackRepository.RemoveBackpackArchiveById(archive.InnerId);
 
