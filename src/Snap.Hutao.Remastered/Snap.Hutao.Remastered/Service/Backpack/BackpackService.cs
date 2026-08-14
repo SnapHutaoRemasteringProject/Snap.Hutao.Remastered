@@ -77,12 +77,12 @@ public sealed partial class BackpackService : IBackpackService
     {
         ImmutableArray<BackpackItem>.Builder builder = ImmutableArray.CreateBuilder<BackpackItem>();
 
-        AddIfPositive(201, propMap.GetValueOrDefault(InterestedPropType.PlayerHCoin) - propMap.GetValueOrDefault(InterestedPropType.PlayerWaitSubHCoin));
-        AddIfPositive(202, propMap.GetValueOrDefault(InterestedPropType.PlayerSCoin) - propMap.GetValueOrDefault(InterestedPropType.PlayerWaitSubSCoin));
-        AddIfPositive(203, propMap.GetValueOrDefault(InterestedPropType.PlayerMCoin) - propMap.GetValueOrDefault(InterestedPropType.PlayerWaitSubMCoin));
-        AddIfPositive(204, propMap.GetValueOrDefault(InterestedPropType.PlayerHomeCoin) - propMap.GetValueOrDefault(InterestedPropType.PlayerWaitSubHomeCoin));
-        AddIfPositive(206, propMap.GetValueOrDefault(InterestedPropType.PlayerRoleCombatCoin));
-        AddIfPositive(207, propMap.GetValueOrDefault(InterestedPropType.PlayerMusicGameBookCoin));
+        AddIfPositive(ItemIds.Primogem, propMap.GetValueOrDefault(InterestedPropType.PlayerHCoin) - propMap.GetValueOrDefault(InterestedPropType.PlayerWaitSubHCoin));
+        AddIfPositive(ItemIds.Mora, propMap.GetValueOrDefault(InterestedPropType.PlayerSCoin) - propMap.GetValueOrDefault(InterestedPropType.PlayerWaitSubSCoin));
+        AddIfPositive(ItemIds.GenesisCrystal, propMap.GetValueOrDefault(InterestedPropType.PlayerMCoin) - propMap.GetValueOrDefault(InterestedPropType.PlayerWaitSubMCoin));
+        AddIfPositive(ItemIds.RealmCurrency, propMap.GetValueOrDefault(InterestedPropType.PlayerHomeCoin) - propMap.GetValueOrDefault(InterestedPropType.PlayerWaitSubHomeCoin));
+        AddIfPositive(ItemIds.ToyMedal, propMap.GetValueOrDefault(InterestedPropType.PlayerRoleCombatCoin));
+        AddIfPositive(ItemIds.RepertoireCoins, propMap.GetValueOrDefault(InterestedPropType.PlayerMusicGameBookCoin));
 
         return builder.ToImmutable();
 
