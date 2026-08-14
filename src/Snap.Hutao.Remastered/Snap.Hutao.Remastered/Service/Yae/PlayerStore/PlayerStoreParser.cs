@@ -14,92 +14,75 @@ public static class PlayerStoreParser
     public static UIIF? Parse(ByteString bytes)
     {
         List<Item> items = [];
-        using (CodedInputStream stream = bytes.CreateCodedInput())
+        try
         {
-            try
-            {
-                while (stream.TryReadTag(out uint tag))
-                {
-                    switch (WireFormat.GetTagWireType(tag))
-                    {
-                        case WireFormat.WireType.Varint:
-                            {
-                                _ = stream.ReadUInt32();
-                                continue;
-                            }
-
-                        case WireFormat.WireType.LengthDelimited:
-                            {
-                                using (CodedInputStream inputStream = stream.UnsafeReadLengthDelimitedStream())
-                                {
-                                    while (inputStream.TryPeekTag(out _))
-                                    {
-                                        items.Add(Item.Parser.ParseFrom(inputStream));
-                                    }
-                                }
-
-                                break;
-                            }
-                    }
-                }
-            }
-            catch (InvalidProtocolBufferException)
-            {
-                return default;
-            }
-
-            return new()
-            {
-                Info = UIIFInfo.CreateForEmbeddedYae(),
-                List = [.. items.Select(UIIFItem.FromInGameItem)],
-            };
+            ParseItems(bytes, items);
         }
+        catch (InvalidProtocolBufferException)
+        {
+            return default;
+        }
+
+        return new()
+        {
+            Info = UIIFInfo.CreateForEmbeddedYae(),
+            List = [.. items.Select(UIIFItem.FromInGameItem)],
+        };
     }
 
     public static ImmutableArray<BackpackItem> ParseToBackpackItems(ByteString bytes, Guid archiveId)
     {
-        ImmutableArray<BackpackItem>.Builder builder = ImmutableArray.CreateBuilder<BackpackItem>();
-        using (CodedInputStream stream = bytes.CreateCodedInput())
+        List<Item> items = [];
+        try
         {
-            try
-            {
-                while (stream.TryReadTag(out uint tag))
-                {
-                    switch (WireFormat.GetTagWireType(tag))
-                    {
-                        case WireFormat.WireType.Varint:
-                            {
-                                _ = stream.ReadUInt32();
-                                continue;
-                            }
+            ParseItems(bytes, items);
+        }
+        catch (InvalidProtocolBufferException)
+        {
+            // Partial read is acceptable - return what we have
+        }
 
-                        case WireFormat.WireType.LengthDelimited:
-                            {
-                                using (CodedInputStream inputStream = stream.UnsafeReadLengthDelimitedStream())
-                                {
-                                    while (inputStream.TryPeekTag(out _))
-                                    {
-                                        Item item = Item.Parser.ParseFrom(inputStream);
-                                        BackpackItem? backpackItem = ConvertToBackpackItem(item, archiveId);
-                                        if (backpackItem is not null)
-                                        {
-                                            builder.Add(backpackItem);
-                                        }
-                                    }
-                                }
-
-                                break;
-                            }
-                    }
-                }
-            }
-            catch (InvalidProtocolBufferException)
+        ImmutableArray<BackpackItem>.Builder builder = ImmutableArray.CreateBuilder<BackpackItem>(items.Count);
+        foreach (Item item in items)
+        {
+            if (ConvertToBackpackItem(item, archiveId) is { } backpackItem)
             {
-                // Partial read is acceptable - return what we have
+                builder.Add(backpackItem);
             }
         }
 
         return builder.ToImmutable();
+    }
+
+    private static void ParseItems(ByteString bytes, List<Item> items)
+    {
+        using (CodedInputStream stream = bytes.CreateCodedInput())
+        {
+            while (stream.TryReadTag(out uint tag))
+            {
+                switch (WireFormat.GetTagWireType(tag))
+                {
+                    case WireFormat.WireType.Varint:
+                        {
+                            _ = stream.ReadUInt32();
+                            continue;
+                        }
+
+                    case WireFormat.WireType.LengthDelimited:
+                        {
+                            using (CodedInputStream inputStream = stream.UnsafeReadLengthDelimitedStream())
+                            {
+                                while (inputStream.TryPeekTag(out _))
+                                {
+                                    items.Add(Item.Parser.ParseFrom(inputStream));
+                                }
+                            }
+
+                            break;
+                        }
+                }
+            }
+        }
     }
 
     private static BackpackItem? ConvertToBackpackItem(Item item, Guid archiveId)
