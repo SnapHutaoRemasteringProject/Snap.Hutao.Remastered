@@ -1,9 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.UI.Xaml.Control.AutoSortBox;
-using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.ViewModel.Backpack;
 
@@ -32,20 +30,17 @@ public static class BackpackSortComparer
     {
         if (item is BackpackWeaponItemView w)
         {
-            QualityType rank = w.Weapon.RankLevel;
-            return Unsafe.As<QualityType, int>(ref rank);
+            return (int)w.Weapon.RankLevel;
         }
 
         if (item is BackpackReliquaryItemView r)
         {
-            QualityType rank = r.Reliquary.RankLevel;
-            return Unsafe.As<QualityType, int>(ref rank);
+            return (int)r.Reliquary.RankLevel;
         }
 
         if (item.Material is not null)
         {
-            QualityType rank = item.Material.RankLevel;
-            return Unsafe.As<QualityType, int>(ref rank);
+            return (int)item.Material.RankLevel;
         }
 
         return 0;
@@ -55,26 +50,22 @@ public static class BackpackSortComparer
     {
         if (item is BackpackWeaponItemView wl)
         {
-            uint level = wl.Level;
-            return Unsafe.As<uint, int>(ref level);
+            return (int)wl.Level;
         }
 
         if (item is BackpackReliquaryItemView rl)
         {
-            uint level = rl.Level;
-            return Unsafe.As<uint, int>(ref level);
+            return (int)rl.Level;
         }
 
-        uint rootLevel = item.Entity.Level;
-        return Unsafe.As<uint, int>(ref rootLevel);
+        return (int)item.Entity.Level;
     }
 
     private static int GetRefinementRank(BackpackItemView item)
     {
         if (item is BackpackWeaponItemView wr)
         {
-            uint rank = wr.RefinementRank;
-            return Unsafe.As<uint, int>(ref rank);
+            return (int)wr.RefinementRank;
         }
 
         return 0;
@@ -84,8 +75,7 @@ public static class BackpackSortComparer
     {
         if (item is BackpackWeaponItemView wt)
         {
-            WeaponType type = wt.Weapon.WeaponType;
-            return Unsafe.As<WeaponType, int>(ref type);
+            return (int)wt.Weapon.WeaponType;
         }
 
         return 0;
@@ -95,8 +85,7 @@ public static class BackpackSortComparer
     {
         if (item is BackpackReliquaryItemView re)
         {
-            EquipType type = re.Reliquary.EquipType;
-            return Unsafe.As<EquipType, int>(ref type);
+            return (int)re.Reliquary.EquipType;
         }
 
         return 0;
