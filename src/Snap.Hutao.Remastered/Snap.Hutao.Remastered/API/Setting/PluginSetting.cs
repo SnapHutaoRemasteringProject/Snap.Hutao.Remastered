@@ -47,15 +47,16 @@ public class PluginSetting<T>
         
         if (isRegistered && pluginSettingService != null && pluginId != null)
         {
-            _ = pluginSettingService.SetSettingAsync(pluginId, Name, value);
+            pluginSettingService.SetSettingAsync(pluginId, Name, value).SafeForget();
         }
     }
 
     public T? GetValue()
     {
-        if (isRegistered && pluginSettingService != null && pluginId != null)
+        if (isRegistered && pluginSettingService != null && pluginId != null &&
+            pluginSettingService.TryGetCachedSetting(pluginId, Name, out T? cachedValue))
         {
-            value = Task.Run(() => pluginSettingService.GetSettingAsync(pluginId, Name, DefaultValue)).Result;
+            value = cachedValue;
         }
 
         return value;

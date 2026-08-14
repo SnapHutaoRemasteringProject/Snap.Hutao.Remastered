@@ -87,6 +87,23 @@ public partial class PluginSettingService : IPluginSettingService
         }
     }
 
+    public bool TryGetCachedSetting<T>(string pluginId, string settingName, out T? value)
+    {
+        lock (lockObject)
+        {
+            if (settingsCache.TryGetValue(pluginId, out Dictionary<string, object>? pluginSettings) &&
+                pluginSettings.TryGetValue(settingName, out object? cachedValue) &&
+                cachedValue is T)
+            {
+                value = (T)cachedValue;
+                return true;
+            }
+        }
+
+        value = default;
+        return false;
+    }
+
     public async Task<object?> GetSettingAsync(Type type, string pluginId, string settingName, object? defaultValue = default)
     {
         if (!IsSupportedType(type))
@@ -234,6 +251,9 @@ public partial class PluginSettingService : IPluginSettingService
             throw new NotSupportedException($"Type '{typeof(T)}' is not supported for plugin settings.");
         }
 
+        // Read the persisted value (if any) outside the lock to avoid holding it during file I/O.
+        object? persistedValue = LoadPersistedSetting<T>(pluginId, settingName);
+
         lock (lockObject)
         {
             if (IsSettingRegistered(pluginId, settingName))
@@ -241,33 +261,57 @@ public partial class PluginSettingService : IPluginSettingService
                 throw new InvalidOperationException($"Setting '{settingName}' for plugin '{pluginId}' is already registered.");
             }
 
-            if (!registeredSettings.ContainsKey(pluginId))
+            if (!registeredSettings.TryGetValue(pluginId, out List<RegisteredSettingInfo>? list))
             {
-                registeredSettings[pluginId] = new List<RegisteredSettingInfo>();
+                registeredSettings[pluginId] = list = [];
             }
 
-            RegisteredSettingInfo settingInfo = new RegisteredSettingInfo(
+            list.Add(new RegisteredSettingInfo(
                 pluginId,
                 settingName,
                 typeof(T),
                 defaultValue,
                 description
-            );
+            ));
 
-            registeredSettings[pluginId].Add(settingInfo);
-
-            if (!settingsCache.ContainsKey(pluginId))
+            if (!settingsCache.TryGetValue(pluginId, out Dictionary<string, object>? cache))
             {
-                settingsCache[pluginId] = new Dictionary<string, object>();
+                settingsCache[pluginId] = cache = [];
+            }
+
+            // A persisted value wins over the default; only seed when non-null to keep prior behavior.
+            if (persistedValue is not null)
+            {
+                cache[settingName] = persistedValue;
+            }
+            else if (defaultValue is not null)
+            {
+                cache[settingName] = defaultValue;
             }
         }
+    }
 
-
-        Task.Run(() => GetSettingAsync<T>(pluginId, settingName, defaultValue)).Wait();
-
-        if (defaultValue != null && !settingsCache[pluginId].ContainsKey(settingName))
+    private object? LoadPersistedSetting<T>(string pluginId, string settingName)
+    {
+        string filePath = GetSettingFilePath(pluginId, settingName);
+        if (!File.Exists(filePath))
         {
-            settingsCache[pluginId][settingName] = defaultValue;
+            return null;
+        }
+
+        try
+        {
+            string json = File.ReadAllText(filePath);
+            JsonSerializerOptions options = new()
+            {
+                PropertyNameCaseInsensitive = true,
+            };
+
+            return JsonSerializer.Deserialize<T>(json, options);
+        }
+        catch (Exception)
+        {
+            return null;
         }
     }
 
