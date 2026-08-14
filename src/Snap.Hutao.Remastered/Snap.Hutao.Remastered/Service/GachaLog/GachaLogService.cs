@@ -53,24 +53,7 @@ public sealed partial class GachaLogService : IGachaLogService
         {
             ImmutableArray<BeyondGachaItem> beyondItems = gachaLogRepository.GetBeyondGachaItemImmutableArrayByArchiveId(archive.InnerId);
             
-            GachaStatistics statistics = await gachaStatisticsFactory.CreateAsync(context, default!, beyondItems).ConfigureAwait(false);
-            
-            return new GachaStatistics
-            {
-                AvatarWish = statistics.AvatarWish,
-                WeaponWish = statistics.WeaponWish,
-                ChronicledWish = statistics.ChronicledWish,
-                StandardWish = statistics.StandardWish,
-                NoviceWish = statistics.NoviceWish,
-                BeyondStandardWish = statistics.BeyondStandardWish,
-                BeyondEventWish = statistics.BeyondEventWish,
-                HistoryWishes = statistics.HistoryWishes,
-                OrangeAvatars = statistics.OrangeAvatars,
-                PurpleAvatars = statistics.PurpleAvatars,
-                OrangeWeapons = statistics.OrangeWeapons,
-                PurpleWeapons = statistics.PurpleWeapons,
-                BlueWeapons = statistics.BlueWeapons
-            };
+            return await gachaStatisticsFactory.CreateAsync(context, default!, beyondItems).ConfigureAwait(false);
         }
     }
 
