@@ -163,6 +163,7 @@
     <Content Include="Resource\Icon\Icon_Perfect_Cook.png" />
     <Content Include="Resource\Icon\UI_BagTabIcon_Weapon.png" />
     <Content Include="Resource\Icon\UI_BtnIcon_Beyond_GH.png" />
+    <Content Include="Resource\Icon\UI_BtnIcon_Beyond_GH_Dark.png" />
     <Content Include="Resource\Icon\UI_BtnIcon_Homeworld.png" />
     <Content Include="Resource\Icon\UI_BtnIcon_PlayerGirl.png" />
     <Content Include="Resource\Icon\UI_GachaShowPanel_Bg_Weapon.png" />
@@ -177,6 +178,7 @@
     <Content Include="Resource\Icon\UI_IconKira.png" />
     <Content Include="Resource\Icon\UI_Icon_Fetter.png" />
     <Content Include="Resource\Icon\UI_Icon_Locked.png" />
+    <Content Include="Resource\Icon\UI_Icon_Locked_Dark.png" />
     <Content Include="Resource\Icon\UI_Icon_Paimon.png" />
     <Content Include="Resource\Icon\UI_Icon_RelicType1.png" />
     <Content Include="Resource\Icon\UI_Icon_RelicType2.png" />
@@ -189,8 +191,11 @@
     <Content Include="Resource\Icon\UI_Icon_Tower_Star1.png" />
     <Content Include="Resource\Icon\UI_Icon_Tower_Star2.png" />
     <Content Include="Resource\Icon\UI_Icon_UGC_Beyond.png" />
+    <Content Include="Resource\Icon\UI_Icon_UGC_Beyond_Dark.png" />
     <Content Include="Resource\Icon\UI_Icon_UGC_Collect.png" />
+    <Content Include="Resource\Icon\UI_Icon_UGC_Collect_Dark.png" />
     <Content Include="Resource\Icon\UI_Icon_Unlock.png" />
+    <Content Include="Resource\Icon\UI_Icon_Unlock_Dark.png" />
     <Content Include="Resource\Icon\UI_Img_RoleCombat_EventDetail_Pic_Chance.png" />
     <Content Include="Resource\Icon\UI_ItemIcon_106.png" />
     <Content Include="Resource\Icon\UI_ItemIcon_201.png" />

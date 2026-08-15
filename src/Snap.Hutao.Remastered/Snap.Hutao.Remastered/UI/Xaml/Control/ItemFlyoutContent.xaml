@@ -17,9 +17,7 @@
                                     Icon="{Binding IconUri}"
                                     Quality="{Binding Quality}"/>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock
-                                        Style="{StaticResource BodyStrongTextBlockStyle}"
-                                        Text="{Binding Name}"/>
+                                    <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{Binding Name}"/>
                                     <TextBlock
                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                         Style="{StaticResource CaptionTextBlockStyle}"
@@ -28,15 +26,14 @@
                             </StackPanel>
                             <Rectangle Height="1" Fill="{ThemeResource ControlStrokeColorDefaultBrush}"/>
                             <shuxctb:DescriptionTextBlock Description="{Binding Description}"/>
-                            <Rectangle Height="1" Fill="{ThemeResource ControlStrokeColorDefaultBrush}"
-                                       Visibility="{Binding HasSetDescriptions, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                            <ItemsControl ItemsSource="{Binding SetDescriptions}"
-                                          Visibility="{Binding HasSetDescriptions, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Rectangle
+                                Height="1"
+                                Fill="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                Visibility="{Binding HasSetDescriptions, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <ItemsControl ItemsSource="{Binding SetDescriptions}" Visibility="{Binding HasSetDescriptions, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <shuxctb:DescriptionTextBlock
-                                            Margin="0,2,0,0"
-                                            Description="{Binding}"/>
+                                        <shuxctb:DescriptionTextBlock Margin="0,2,0,0" Description="{Binding}"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

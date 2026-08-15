@@ -75,6 +75,7 @@ public sealed partial class LockIcon : Microsoft.UI.Xaml.Controls.Control
             }
         };
 
+        // Delete will cause some of the overlay lost effect
         ApplyRedOverlay(surface);
     }
 

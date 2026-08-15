@@ -7,6 +7,7 @@
     xmlns:cwconv="using:CommunityToolkit.WinUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxca="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
     xmlns:shhuxcp="using:Snap.Hutao.Remastered.UI.Xaml.Control.Panel"
     xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
@@ -298,6 +299,7 @@
 
             <shuxdc:SpecificStringToVisibilityConverter x:Key="MaterialListSelectedItemIsEntryViewConverter" Value="Entry"/>
             <shuxdc:SpecificStringToVisibilityConverter x:Key="MaterialListSelectedItemIsStatisticsViewConverter" Value="Statistics"/>
+            <shuxdc:BoolToAnimatedIconStateConverter x:Key="BoolToAnimatedIconStateConverter"/>
 
             <DataTemplate x:Key="TokenTemplate" x:DataType="shuxca:SearchToken">
                 <Grid Height="22" VerticalAlignment="Center">
@@ -361,12 +363,18 @@
                             Icon="{Binding Inner.Icon, Converter={StaticResource ItemIconConverter}}"
                             Opacity="{Binding IsFinished, Converter={StaticResource BoolToOpacityConverter}}"
                             Quality="{Binding Inner.RankLevel}"/>
-                        <FontIcon
+
+                        <AnimatedIcon
+                            Width="24"
+                            Height="24"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            FontSize="24"
-                            Glyph="&#xE73E;"
-                            Visibility="{Binding IsFinished, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            State="{Binding IsFinished, Converter={StaticResource BoolToAnimatedIconStateConverter}}">
+                            <muxca:AnimatedAcceptVisualSource/>
+                            <AnimatedIcon.FallbackIconSource>
+                                <FontIconSource FontSize="24" Glyph="&#xE73E;"/>
+                            </AnimatedIcon.FallbackIconSource>
+                        </AnimatedIcon>
                     </Grid>
                     <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
                     <Button
