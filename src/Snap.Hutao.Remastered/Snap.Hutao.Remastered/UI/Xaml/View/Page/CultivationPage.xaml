@@ -254,6 +254,11 @@
                             Command="{Binding Path=DataContext.ModifyEntryCommand, Source={StaticResource BindingProxy}}"
                             CommandParameter="{Binding}"
                             Style="{StaticResource AccentButtonStyle}">
+                            <mxi:Interaction.Behaviors>
+                                <mxi:EventTriggerBehavior EventName="Click">
+                                    <shuxba:HideAttachedFlyoutAction/>
+                                </mxi:EventTriggerBehavior>
+                            </mxi:Interaction.Behaviors>
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <FontIcon FontSize="14" Glyph="&#xE73E;"/>
                                 <TextBlock Text="{shuxm:ResourceString Name=ContentDialogConfirmPrimaryButtonText}"/>
