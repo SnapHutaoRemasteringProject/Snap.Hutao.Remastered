@@ -13,11 +13,14 @@
             <Setter.Value>
                 <ControlTemplate TargetType="shuxc:MarkIcon">
                     <Border
-                        Background="#FFF3F3F3"
+                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
                         BorderBrush="#FFCCCCCC"
                         BorderThickness="1"
                         CornerRadius="{StaticResource ControlCornerRadius}">
-                        <Image x:Name="IconImage" Source="{StaticResource MarkIcon_Icon}"/>
+                        <Image
+                            x:Name="IconImage"
+                            Margin="2"
+                            Source="{StaticResource MarkIcon_Icon}"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

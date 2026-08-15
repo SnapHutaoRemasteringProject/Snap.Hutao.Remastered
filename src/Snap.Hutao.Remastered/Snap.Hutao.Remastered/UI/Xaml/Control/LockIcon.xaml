@@ -22,7 +22,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="shuxc:LockIcon">
-                    <Grid Background="#FF6A6A6A" CornerRadius="{StaticResource ControlCornerRadius}">
+                    <Grid
+                        Background="#FF6A6A6A"
+                        BorderBrush="#FFCCCCCC"
+                        BorderThickness="1"
+                        CornerRadius="{StaticResource ControlCornerRadius}">
                         <Border Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
                             <Image
                                 x:Name="IconImage"
