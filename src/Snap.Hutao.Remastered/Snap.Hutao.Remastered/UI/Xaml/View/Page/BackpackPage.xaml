@@ -12,7 +12,6 @@
     xmlns:shuxca="using:Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox"
     xmlns:shuxcas="using:Snap.Hutao.Remastered.UI.Xaml.Control.AutoSortBox"
     xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
-
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
     xmlns:shuxdcs="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
@@ -31,10 +30,10 @@
                         Minimum="#FF4B00D9"/>
                     <shuxdcs:Int32ToGradientColorConverter
                         x:Key="ScoreToColorConverter"
-                        MaximumValue="50"
-                        MinimumValue="0"
                         Maximum="#FFFF8F00"
-                        Minimum="#FF9E9E9E"/>
+                        MaximumValue="50"
+                        Minimum="#FF9E9E9E"
+                        MinimumValue="0"/>
                     <SolidColorBrush x:Key="TokenSideIconBackgroundBrush" Color="#FFAAAAAA"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
@@ -44,10 +43,10 @@
                         Minimum="#FF9F69FF"/>
                     <shuxdcs:Int32ToGradientColorConverter
                         x:Key="ScoreToColorConverter"
-                        MaximumValue="50"
-                        MinimumValue="0"
                         Maximum="#FFFF8F00"
-                        Minimum="#FF9E9E9E"/>
+                        MaximumValue="50"
+                        Minimum="#FF9E9E9E"
+                        MinimumValue="0"/>
                     <SolidColorBrush x:Key="TokenSideIconBackgroundBrush" Color="Transparent"/>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
@@ -61,7 +60,7 @@
                 <shuxc:ItemFlyoutContent/>
             </Flyout>
 
-            <!-- Weapon card -->
+            <!--  Weapon card  -->
             <DataTemplate x:Key="WeaponCardTemplate" x:DataType="shv:BackpackWeaponItemView">
                 <shuxcc:HorizontalCard Width="270">
                     <mxi:Interaction.Behaviors>
@@ -74,9 +73,9 @@
                     </FlyoutBase.AttachedFlyout>
                     <shuxcc:HorizontalCard.Left>
                         <shuxc:ItemIcon
-                            Margin="4,0"
                             Width="54"
                             Height="54"
+                            Margin="4,0"
                             Icon="{Binding Weapon.Icon, Converter={StaticResource EquipIconConverter}}"
                             Quality="{Binding Weapon.RankLevel}"/>
                     </shuxcc:HorizontalCard.Left>
@@ -91,16 +90,14 @@
                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                     Style="{StaticResource CaptionTextBlockStyle}"
                                     Text="{Binding WeaponTypeName}"/>
-                                <TextBlock
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="{Binding LevelRefinementInfo}"/>
+                                <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{Binding LevelRefinementInfo}"/>
                             </StackPanel>
                             <shuxc:LockIcon
+                                Width="20"
+                                Height="20"
                                 Margin="0,0,-10,4"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
-                                Height="20"
-                                Width="20"
                                 IsLocked="{Binding IsLocked}"/>
                         </Grid>
                     </shuxcc:HorizontalCard.Right>
@@ -127,6 +124,31 @@
                         </Grid.RowDefinitions>
 
                         <Grid
+                            Margin="0,0,4,4"
+                            HorizontalAlignment="Right"
+                            ColumnSpacing="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <shuxc:LockIcon
+                                Grid.Column="0"
+                                Width="20"
+                                Height="20"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                IsLocked="{Binding IsLocked}"/>
+                            <shuxc:MarkIcon
+                                Grid.Column="1"
+                                Width="20"
+                                Height="20"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                IsMarked="{Binding IsMarked}"/>
+                        </Grid>
+
+                        <Grid
                             Grid.Row="0"
                             Padding="12"
                             ColumnSpacing="12">
@@ -148,9 +170,7 @@
                                         Style="{StaticResource CaptionTextBlockStyle}"
                                         Text="{Binding SetName}"/>
                                 </StackPanel>
-                                <StackPanel
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Top">
+                                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top">
                                     <TextBlock
                                         HorizontalAlignment="Right"
                                         FontWeight="Bold"
@@ -169,31 +189,6 @@
                                     </TextBlock>
                                 </StackPanel>
                             </Grid>
-                        </Grid>
-
-                        <Grid
-                            Margin="0,0,4,4"
-                            HorizontalAlignment="Right"
-                            ColumnSpacing="4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <shuxc:LockIcon
-                                Grid.Column="0"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom"
-                                Height="20"
-                                Width="20"
-                                IsLocked="{Binding IsLocked}"/>
-                            <shuxc:MarkIcon
-                                Grid.Column="1"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom"
-                                Height="20"
-                                Width="20"
-                                IsMarked="{Binding IsMarked}"/>
                         </Grid>
 
                         <Rectangle
@@ -225,14 +220,17 @@
                         <ItemsControl
                             Grid.Row="4"
                             Margin="0,12"
-                            ItemsSource="{Binding PaddedSubStats}"
-                            ItemTemplate="{StaticResource BackpackReliquarySubStatTemplate}"/>
+                            ItemTemplate="{StaticResource BackpackReliquarySubStatTemplate}"
+                            ItemsSource="{Binding PaddedSubStats}"/>
                     </Grid>
                 </Border>
             </DataTemplate>
 
             <DataTemplate x:Key="BackpackReliquarySubStatTemplate" x:DataType="shv:BackpackReliquarySubStatView">
-                <Grid Padding="12,0" ColumnSpacing="6" MinHeight="20">
+                <Grid
+                    MinHeight="20"
+                    Padding="12,0"
+                    ColumnSpacing="6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition Width="auto"/>
@@ -271,7 +269,7 @@
                 </Grid>
             </DataTemplate>
 
-            <!-- Default card -->
+            <!--  Default card  -->
             <DataTemplate x:Key="DefaultCardTemplate" x:DataType="shv:BackpackItemView">
                 <shuxcc:HorizontalCard Width="270">
                     <mxi:Interaction.Behaviors>
@@ -322,17 +320,17 @@
                         <ColumnDefinition Width="24"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <!-- IconUri -->
+                    <!--  IconUri  -->
                     <shuxci:CachedImage
                         Grid.Column="0"
-                        Margin="-4,0,0,0"
                         Width="20"
                         Height="20"
+                        Margin="-4,0,0,0"
+                        HorizontalAlignment="Left"
                         ShowAsMonoChrome="True"
                         Source="{Binding IconUri, Mode=OneWay}"
-                        HorizontalAlignment="Left"
                         Visibility="{Binding IconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
-                    <!-- Quality dot -->
+                    <!--  Quality dot  -->
                     <Ellipse
                         Grid.Column="0"
                         Width="12"
@@ -344,24 +342,24 @@
                         </Ellipse.Fill>
                     </Ellipse>
                     <Grid Grid.Column="0">
-                        <!-- Gray background for SideIconUri (light theme only) -->
+                        <!--  Gray background for SideIconUri (light theme only)  -->
                         <Ellipse
-                            Margin="-4,0,0,0"
                             Width="20"
                             Height="20"
+                            Margin="-4,0,0,0"
+                            HorizontalAlignment="Left"
                             Fill="{ThemeResource TokenSideIconBackgroundBrush}"
-                            HorizontalAlignment="Left"
                             Visibility="{Binding SideIconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
-                        <!-- SideIconUri-->
+                        <!--  SideIconUri  -->
                         <shuxci:CachedImage
-                            Margin="-4,0,0,0"
                             Width="20"
                             Height="20"
-                            Source="{Binding SideIconUri, Mode=OneWay}"
+                            Margin="-4,0,0,0"
                             HorizontalAlignment="Left"
+                            Source="{Binding SideIconUri, Mode=OneWay}"
                             Visibility="{Binding SideIconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
                     </Grid>
-                    
+
                     <TextBlock
                         Grid.Column="1"
                         Height="20"
@@ -376,9 +374,7 @@
         <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
     </mxi:Interaction.Behaviors>
 
-    <shuxc:StandardView
-        HideCondition="{Binding IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
-        ShowCondition="{Binding Archives.CurrentItem, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
+    <shuxc:StandardView HideCondition="{Binding IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" ShowCondition="{Binding Archives.CurrentItem, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
         <shuxc:StandardView.EmptyContent>
             <Border
                 HorizontalAlignment="Center"
@@ -415,9 +411,11 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <!-- Filter bar -->
+            <!--  Filter bar  -->
             <Border
-                Margin="16" Grid.Row="0" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
+                Grid.Row="0"
+                Margin="16"
+                cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                 <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                     <Grid Margin="4,4" ColumnSpacing="4">
                         <Grid.ColumnDefinitions>
@@ -440,7 +438,11 @@
                             SuggestedItemsSource="{Binding SearchData.AvailableTokens.Values}"
                             Text="{Binding SearchData.FilterToken, Mode=TwoWay}"
                             TokenItemTemplate="{StaticResource TokenTemplate}"/>
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                        <StackPanel
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal"
+                            Spacing="6">
                             <TextBlock
                                 VerticalAlignment="Center"
                                 Style="{StaticResource BodyTextBlockStyle}"
@@ -452,8 +454,7 @@
                                 PlaceholderText="0"
                                 SpinButtonPlacementMode="Hidden"
                                 Value="{Binding FilterLevel, Mode=TwoWay}"/>
-                            <Button
-                                VerticalAlignment="Center">
+                            <Button VerticalAlignment="Center">
                                 <Button.Flyout>
                                     <Flyout>
                                         <shuxcas:AutoSortList
@@ -472,12 +473,12 @@
                 </Border>
             </Border>
             <Pivot
-                Margin="0,-24"
                 Grid.Row="1"
+                Margin="0,-24"
                 SelectedIndex="{Binding SelectedCategoryIndex, Mode=TwoWay}"
                 Style="{ThemeResource CardPivotStyle}">
                 <Pivot.RightHeader>
-                    <CommandBar DefaultLabelPosition="Right" Background="Transparent">
+                    <CommandBar Background="Transparent" DefaultLabelPosition="Right">
                         <AppBarElementContainer AllowFocusOnInteraction="True">
                             <shuxc:SizeRestrictedContentControl Margin="2,6,3,6">
                                 <ComboBox
