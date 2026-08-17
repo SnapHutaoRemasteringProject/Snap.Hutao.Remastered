@@ -5,5 +5,5 @@ namespace Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.BetterGenshinImpact.
 
 public interface IAutomationCultivationService
 {
-    AutomationCultivationProject? GetCurrentProject();
+    ValueTask<AutomationCultivationProject?> GetCurrentProjectAsync(CancellationToken token = default);
 }

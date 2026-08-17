@@ -8,36 +8,36 @@ public sealed class AutomationTaskService : IAutomationTaskService
 {
     public PipeResponse CreateOneShotTask(AutomationTaskDefinition definition)
     {
-        throw new NotImplementedException();
+        return PipeResponse.CreateNone();
     }
 
     public PipeResponse CreateSteppedTask(SteppedAutomationTaskDefinition definition)
     {
-        throw new NotImplementedException();
+        return PipeResponse.CreateNone();
     }
 
     public PipeResponse RemoveTask(string id)
     {
-        throw new NotImplementedException();
+        return PipeResponse.CreateNone();
     }
 
     public PipeResponse UpdateTaskDefinition(string id, string name, string description)
     {
-        throw new NotImplementedException();
+        return PipeResponse.CreateNone();
     }
 
     public PipeResponse UpdateTaskStepDefinition(string id, int index, string description)
     {
-        throw new NotImplementedException();
+        return PipeResponse.CreateNone();
     }
 
     public PipeResponse UpdateTaskStepIndex(string id, int index)
     {
-        throw new NotImplementedException();
+        return PipeResponse.CreateNone();
     }
 
     public PipeResponse AddTaskStepDefinition(string id, string description)
     {
-        throw new NotImplementedException();
+        return PipeResponse.CreateNone();
     }
 }

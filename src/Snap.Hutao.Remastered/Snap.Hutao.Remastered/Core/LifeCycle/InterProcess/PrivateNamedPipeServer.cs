@@ -63,7 +63,7 @@ public sealed partial class PrivateNamedPipeServer : IDisposable
                 {
                     await serverStream.WaitForConnectionAsync(serverTokenSource.Token).ConfigureAwait(false);
                     logger.LogInformation("Pipe session created");
-                    RunPacketSession(serverStream, serverTokenSource.Token);
+                    await RunPacketSession(serverStream, serverTokenSource.Token).ConfigureAwait(false);
                 }
                 catch (IOException)
                 {
@@ -84,7 +84,7 @@ public sealed partial class PrivateNamedPipeServer : IDisposable
         }
     }
 
-    private void RunPacketSession(NamedPipeServerStream serverStream, CancellationToken token)
+    private async ValueTask RunPacketSession(NamedPipeServerStream serverStream, CancellationToken token)
     {
         while (serverStream.IsConnected && !token.IsCancellationRequested)
         {
@@ -104,7 +104,7 @@ public sealed partial class PrivateNamedPipeServer : IDisposable
 
                 case (PipePacketType.Request, PipePacketCommand.BetterGenshinImpactToSnapHutaoRequest):
                     PipeRequest<JsonElement>? request = serverStream.ReadJsonContent<PipeRequest<JsonElement>>(in header);
-                    PipeResponse response = betterGenshinImpactNamedPipeServer.DispatchRequest(request);
+                    PipeResponse response = await betterGenshinImpactNamedPipeServer.DispatchRequest(request).ConfigureAwait(false);
                     serverStream.WritePacketWithJsonContent(PrivateNamedPipe.PrivateVersion, PipePacketType.Response, PipePacketCommand.SnapHutaoToBetterGenshinImpactResponse, response);
                     serverStream.Flush();
                     break;

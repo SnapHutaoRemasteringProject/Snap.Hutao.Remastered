@@ -44,7 +44,7 @@ public static class PipeStreamExtension
             }
         }
 
-        public void WritePacketWithJsonContent<TData>(byte version, PipePacketType type, PipePacketCommand command, TData data)
+        public void WritePacketWithJsonContent(byte version, PipePacketType type, PipePacketCommand command, object data)
         {
             PipePacketHeader header = default;
             header.Version = version;
@@ -52,7 +52,8 @@ public static class PipeStreamExtension
             header.Command = command;
             header.ContentType = PipePacketContentType.Json;
 
-            stream.WritePacket(ref header, JsonSerializer.SerializeToUtf8Bytes(data));
+            // 使用运行时类型序列化，避免被推断为基类 PipeResponse 时擦除 PipeResponse<T> 的 Data 字段。
+            stream.WritePacket(ref header, JsonSerializer.SerializeToUtf8Bytes(data, data.GetType()));
         }
 
         public void WritePacket(ref PipePacketHeader header, ReadOnlySpan<byte> content)

@@ -7,5 +7,7 @@ public sealed class AutomationInventoryItem
 {
     public required uint ItemId { get; set; }
 
+    public required string Name { get; set; }
+
     public required uint Count { get; set; }
 }
