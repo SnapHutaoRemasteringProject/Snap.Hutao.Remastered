@@ -67,7 +67,12 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
     public partial List<CardReference>? Cards { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsActivityCalendarPresented))]
     public partial ActCalendar ActivityCalendar { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsActivityCalendarPresented))]
+    public partial bool IsActivityCalendarLoading { get; set; } = true;
 
     [ObservableProperty]
     public partial ImmutableArray<Act> DisplayedActivityCards { get; set; } = [];
@@ -75,6 +80,12 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
     public bool IsHomeAnnouncementActivityCalendarPresented
     {
         get => LocalSetting.Get(SettingKeys.IsHomeAnnouncementActivityCalendarPresented, true);
+    }
+
+    public bool IsActivityCalendarPresented
+    {
+        get => LocalSetting.Get(SettingKeys.IsHomeAnnouncementActivityCalendarPresented, true)
+            && (ActivityCalendar is not null || IsActivityCalendarLoading);
     }
 
     public void Receive(UserAndUidChangedMessage message)
@@ -89,6 +100,7 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
             {
                 ActivityCalendar = default!;
                 DisplayedActivityCards = [];
+                IsActivityCalendarLoading = false;
             });
         }
     }
@@ -258,6 +270,8 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
                 IUserService userService = scope.ServiceProvider.GetRequiredService<IUserService>();
                 if (await userService.GetCurrentUserAndUidAsync().ConfigureAwait(false) is not { IsOversea: false } userAndUid)
                 {
+                    await taskContext.SwitchToMainThreadAsync();
+                    IsActivityCalendarLoading = false;
                     return true;
                 }
 
@@ -300,6 +314,9 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
             return;
         }
 
+        await taskContext.SwitchToMainThreadAsync();
+        IsActivityCalendarLoading = true;
+
         IGameRecordClient gameRecordClient = serviceProvider
             .GetRequiredService<IOverseaSupportFactory<IGameRecordClient>>()
             .CreateFor(userAndUid);
@@ -311,7 +328,7 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
             await taskContext.SwitchToMainThreadAsync();
             ActivityCalendar = calendar;
             UpdateDisplayedActivityCards();
-            DeferContentLoader?.Load(nameof(UI.Xaml.View.Page.AnnouncementPage.ActivityCalendarGrid));
+            IsActivityCalendarLoading = false;
         }
     }
 

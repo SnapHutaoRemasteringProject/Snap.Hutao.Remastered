@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwa="using:CommunityToolkit.WinUI.Animations"
+    xmlns:clw="using:CommunityToolkit.Labs.WinUI"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:cwconv="using:CommunityToolkit.WinUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -1026,103 +1027,137 @@
                     MaxHeight="354.6"
                     Padding="8"
                     x:FieldModifier="internal"
-                    x:Load="False"
-                    ColumnSpacing="8"
-                    DataContext="{Binding ActivityCalendar}"
                     Style="{ThemeResource AcrylicGridCardStyle}"
-                    Visibility="{Binding DataContext.IsHomeAnnouncementActivityCalendarPresented, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
+                    Visibility="{Binding DataContext.IsActivityCalendarPresented, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}">
 
-                    <ItemsControl ItemsPanel="{ThemeResource StackPanelSpacing8Template}" ItemsSource="{Binding CompositeCardPools}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid RowSpacing="6" Style="{ThemeResource GridShimmerStyle}">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
-                                    <StackPanel
-                                        Grid.Row="0"
-                                        Margin="6,6,0,0"
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal"
-                                        Spacing="6">
-                                        <Border
-                                            Padding="4,1"
+                    <!--  Placeholder shown while the activity calendar is loading  -->
+                    <Grid
+                        ColumnSpacing="8"
+                        Visibility="{Binding DataContext.ActivityCalendar, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Spacing="8">
+                            <Border Width="300" Height="104" Style="{ThemeResource BorderShimmerStyle}"/>
+                            <Border Width="300" Height="104" Style="{ThemeResource BorderShimmerStyle}"/>
+                            <Border Width="300" Height="104" Style="{ThemeResource BorderShimmerStyle}"/>
+                        </StackPanel>
+
+                        <Border Grid.Column="1" Style="{ThemeResource BorderShimmerStyle}"/>
+
+                        <clw:Shimmer
+                            Grid.Column="0"
+                            IsActive="True"
+                            CornerRadius="{ThemeResource ControlCornerRadius}"
+                            Duration="0:0:1"/>
+
+                        <clw:Shimmer
+                            Grid.Column="1"
+                            IsActive="True"
+                            CornerRadius="{ThemeResource ControlCornerRadius}"
+                            Duration="0:0:1"/>
+                    </Grid>
+
+                    <!--  Activity calendar content  -->
+                    <Grid
+                        ColumnSpacing="8"
+                        DataContext="{Binding ActivityCalendar}"
+                        Visibility="{Binding DataContext.ActivityCalendar, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <ItemsControl ItemsPanel="{ThemeResource StackPanelSpacing8Template}" ItemsSource="{Binding CompositeCardPools}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid RowSpacing="6" Style="{ThemeResource GridShimmerStyle}">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <StackPanel
+                                            Grid.Row="0"
+                                            Margin="6,6,0,0"
                                             VerticalAlignment="Center"
-                                            CornerRadius="2">
-                                            <Border.Background>
-                                                <SolidColorBrush Opacity="0.3" Color="{ThemeResource SystemAccentColor}"/>
-                                            </Border.Background>
-                                            <TextBlock
-                                                FontSize="10"
-                                                IsTextSelectionEnabled="True"
-                                                Style="{StaticResource CaptionTextBlockStyle}"
-                                                Text="{Binding VersionName}"
-                                                TextTrimming="None"
-                                                TextWrapping="NoWrap"/>
-                                        </Border>
-                                        <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding PoolName}"/>
-                                    </StackPanel>
-                                    <TextBlock
-                                        Grid.Row="0"
-                                        Margin="0,6,6,0"
-                                        HorizontalAlignment="Right"
-                                        Style="{ThemeResource BodyTextBlockStyle}"
-                                        Text="{Binding FormattedCountdown}"/>
-                                    <ItemsControl
-                                        Grid.Row="1"
-                                        Margin="6,0"
-                                        ItemsPanel="{ThemeResource HorizontalStackPanelSpacing6Template}"
-                                        ItemsSource="{Binding CompositeItems}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <shuxc:ItemIcon
-                                                    Width="40"
-                                                    Height="40"
-                                                    Icon="{Binding Icon}"
-                                                    Quality="{Binding Rarity}"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                    <Border
-                                        Grid.Row="2"
-                                        Padding="6"
-                                        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                                        BorderThickness="0,1,0,0"
-                                        CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                            Orientation="Horizontal"
+                                            Spacing="6">
+                                            <Border
+                                                Padding="4,1"
+                                                VerticalAlignment="Center"
+                                                CornerRadius="2">
+                                                <Border.Background>
+                                                    <SolidColorBrush Opacity="0.3" Color="{ThemeResource SystemAccentColor}"/>
+                                                </Border.Background>
+                                                <TextBlock
+                                                    FontSize="10"
+                                                    IsTextSelectionEnabled="True"
+                                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                                    Text="{Binding VersionName}"
+                                                    TextTrimming="None"
+                                                    TextWrapping="NoWrap"/>
+                                            </Border>
+                                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding PoolName}"/>
+                                        </StackPanel>
                                         <TextBlock
-                                            HorizontalAlignment="Center"
-                                            Opacity="0.7"
-                                            Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding FormattedDuration}"/>
-                                    </Border>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                                            Grid.Row="0"
+                                            Margin="0,6,6,0"
+                                            HorizontalAlignment="Right"
+                                            Style="{ThemeResource BodyTextBlockStyle}"
+                                            Text="{Binding FormattedCountdown}"/>
+                                        <ItemsControl
+                                            Grid.Row="1"
+                                            Margin="6,0"
+                                            ItemsPanel="{ThemeResource HorizontalStackPanelSpacing6Template}"
+                                            ItemsSource="{Binding CompositeItems}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <shuxc:ItemIcon
+                                                        Width="40"
+                                                        Height="40"
+                                                        Icon="{Binding Icon}"
+                                                        Quality="{Binding Rarity}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <Border
+                                            Grid.Row="2"
+                                            Padding="6"
+                                            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                            BorderThickness="0,1,0,0"
+                                            CornerRadius="{ThemeResource ControlCornerRadiusBottom}">
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                Opacity="0.7"
+                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                Text="{Binding FormattedDuration}"/>
+                                        </Border>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
-                    <Grid Grid.Column="1" Style="{ThemeResource GridShimmerStyle}">
-                        <ScrollViewer>
-                            <ItemsControl
-                                Margin="8"
-                                VerticalAlignment="Top"
-                                ItemTemplateSelector="{StaticResource ActivityTemplateSelector}"
-                                ItemsSource="{Binding DataContext.DisplayedActivityCards, Source={StaticResource ViewModelBindingProxy}}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <shuxcp:UniformPanel
-                                            ColumnSpacing="8"
-                                            MinItemWidth="360"
-                                            RowSpacing="8"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                        </ScrollViewer>
+                        <Grid Grid.Column="1" Style="{ThemeResource GridShimmerStyle}">
+                            <ScrollViewer>
+                                <ItemsControl
+                                    Margin="8"
+                                    VerticalAlignment="Top"
+                                    ItemTemplateSelector="{StaticResource ActivityTemplateSelector}"
+                                    ItemsSource="{Binding DataContext.DisplayedActivityCards, Source={StaticResource ViewModelBindingProxy}}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <shuxcp:UniformPanel
+                                                ColumnSpacing="8"
+                                                MinItemWidth="360"
+                                                RowSpacing="8"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </Grid>
                     </Grid>
                 </Grid>
 
