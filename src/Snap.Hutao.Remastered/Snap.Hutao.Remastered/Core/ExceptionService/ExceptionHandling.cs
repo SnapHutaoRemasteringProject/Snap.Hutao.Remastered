@@ -59,6 +59,11 @@ public sealed partial class ExceptionHandling
             return;
         }
 
+        if (XamlApplicationLifetime.Exiting || XamlApplicationLifetime.Exited)
+        {
+            return;
+        }
+
         Debugger.Break();
         XamlApplicationLifetime.Exiting = true;
 
@@ -78,11 +83,6 @@ public sealed partial class ExceptionHandling
 
         // Handled has to be set to true, the control flow is returned after post
         e.Handled = true;
-
-        if (XamlApplicationLifetime.Exiting || XamlApplicationLifetime.Exited)
-        {
-            return;
-        }
 
         // TODO: Maybe we should close current xaml window because the message pump is still alive.
         // And user can still interact with the UI without any problems.
