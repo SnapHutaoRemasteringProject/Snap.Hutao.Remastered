@@ -197,6 +197,10 @@
                                                 <ColumnDefinition Width="auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Padding="16" Spacing="16">
+                                                <StackPanel.ChildrenTransitions>
+                                                    <EntranceThemeTransition FromVerticalOffset="50"/>
+                                                    <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                                                </StackPanel.ChildrenTransitions>
                                                 <TextBlock
                                                     Margin="1,0,0,0"
                                                     HorizontalAlignment="Stretch"

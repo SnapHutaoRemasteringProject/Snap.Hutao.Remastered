@@ -266,6 +266,10 @@
                                         </StackPanel>
                                         <ScrollViewer shuxc:ScrollViewerHelper.ScrollToTopAssociatedObject="{Binding Weapons.CurrentItem}" Visibility="{Binding Weapons.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
                                             <StackPanel Padding="16" Spacing="16">
+                                                <StackPanel.ChildrenTransitions>
+                                                    <EntranceThemeTransition FromVerticalOffset="50"/>
+                                                    <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                                                </StackPanel.ChildrenTransitions>
                                                 <Border Style="{ThemeResource BorderCardStyle}">
                                                     <Border.Background>
                                                         <ImageBrush ImageSource="ms-appx:///Resource/Icon/UI_GachaShowPanel_Bg_Weapon.png"/>

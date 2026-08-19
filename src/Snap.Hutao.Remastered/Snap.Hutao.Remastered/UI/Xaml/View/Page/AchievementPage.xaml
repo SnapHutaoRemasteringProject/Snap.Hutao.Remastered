@@ -45,12 +45,12 @@
                         VerticalAlignment="Center"
                         Text="{Binding Name}"
                         TextWrapping="Wrap"/>
-                        <TextBlock
+                    <TextBlock
                         Margin="0,2,0,0"
-                            VerticalAlignment="Center"
-                            Opacity="0.7"
-                            Style="{StaticResource CaptionTextBlockStyle}"
-                            Text="{Binding FinishDescription}"/>
+                        VerticalAlignment="Center"
+                        Opacity="0.7"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Text="{Binding FinishDescription}"/>
                     <ProgressBar
                         Margin="0,4,0,0"
                         Foreground="{Binding FinishPercent, Converter={StaticResource ProgressToColorConverter}}"

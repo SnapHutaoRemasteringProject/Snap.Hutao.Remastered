@@ -49,8 +49,8 @@
                 <StackPanel Grid.ColumnSpan="{Binding ElementName=ProudSelector, Path=Visibility, Converter={StaticResource VisibilityToColumnSpanConverter}}">
                     <Border
                         Padding="8,4"
-                        CornerRadius="4"
                         BorderThickness="1"
+                        CornerRadius="4"
                         Visibility="{Binding SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
                         <Border.Background>
                             <SolidColorBrush Color="{StaticResource SpecialDescriptionBaseBackgroundColor}"/>
@@ -73,8 +73,8 @@
                     <Border
                         Margin="0,8,0,0"
                         Padding="8,4"
-                        CornerRadius="4"
                         BorderThickness="1"
+                        CornerRadius="4"
                         Visibility="{Binding SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
                         <Border.Background>
                             <SolidColorBrush Color="{StaticResource SpecialDescriptionSpecialBackgroundColor}"/>
@@ -103,8 +103,8 @@
             <StackPanel Margin="0,12,0,0">
                 <Border
                     Padding="8,4"
-                    CornerRadius="4"
                     BorderThickness="1"
+                    CornerRadius="4"
                     Visibility="{Binding SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
                     <Border.Background>
                         <SolidColorBrush Color="{StaticResource SpecialDescriptionBaseBackgroundColor}"/>
@@ -125,8 +125,8 @@
                 <Border
                     Margin="0,8,0,0"
                     Padding="8,4"
-                    CornerRadius="4"
                     BorderThickness="1"
+                    CornerRadius="4"
                     Visibility="{Binding SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
                     <Border.Background>
                         <SolidColorBrush Color="{StaticResource SpecialDescriptionSpecialBackgroundColor}"/>
@@ -485,6 +485,10 @@
                                                 Margin="0,16"
                                                 HorizontalAlignment="Left"
                                                 Spacing="16">
+                                                <StackPanel.ChildrenTransitions>
+                                                    <EntranceThemeTransition FromVerticalOffset="50"/>
+                                                    <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                                                </StackPanel.ChildrenTransitions>
                                                 <!--  简介  -->
                                                 <Grid Style="{ThemeResource GridShimmerStyle}">
                                                     <Grid.RowDefinitions>

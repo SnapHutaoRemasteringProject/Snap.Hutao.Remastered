@@ -52,6 +52,10 @@
             <SplitView.Pane>
                 <ScrollViewer>
                     <StackPanel Margin="16" Spacing="16">
+                        <StackPanel.ChildrenTransitions>
+                            <EntranceThemeTransition FromVerticalOffset="50"/>
+                            <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                        </StackPanel.ChildrenTransitions>
                         <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                             <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                                 <cwcont:SettingsExpander
@@ -251,6 +255,10 @@
                             <shuxc:StandardView Grid.Row="1" ShowCondition="{Binding SearchResults.Count, Converter={StaticResource Int32ToBoolConverter}}">
                                 <shuxc:StandardView.EmptyContent>
                                     <StackPanel VerticalAlignment="Center">
+                                        <StackPanel.ChildrenTransitions>
+                                            <EntranceThemeTransition FromVerticalOffset="50"/>
+                                            <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                                        </StackPanel.ChildrenTransitions>
                                         <shuxci:CachedImage
                                             Height="120"
                                             MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
