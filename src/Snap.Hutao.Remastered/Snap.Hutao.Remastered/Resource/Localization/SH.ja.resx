@@ -3482,6 +3482,9 @@
   <data name="ViewPageSettingHomeCardItemSignInHeader" xml:space="preserve">
     <value>ログイン</value>
   </data>
+  <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
+    <value>旅行者札记</value>
+  </data>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>祈願履歴</value>
   </data>
@@ -5096,5 +5099,14 @@
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
     <value>Mirror酱 アクティベーションキー (CDK) を入力してください。空のままにするとスキップします。mirrorchyan.com から取得できます。</value>
+  </data>
+  <data name="ViewTravelersDiaryHeader" xml:space="preserve">
+    <value>旅行者札记</value>
+  </data>
+  <data name="ViewTravelersDiaryToday" xml:space="preserve">
+    <value>今日</value>
+  </data>
+  <data name="ViewTravelersDiaryMonth" xml:space="preserve">
+    <value>本月</value>
   </data>
 </root>
