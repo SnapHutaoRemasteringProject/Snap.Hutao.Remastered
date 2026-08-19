@@ -3482,6 +3482,9 @@ Dung lượng còn trống: {2}</value>
   <data name="ViewPageSettingHomeCardItemSignInHeader" xml:space="preserve">
     <value>Đăng nhập</value>
   </data>
+  <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
+    <value>旅行者札记</value>
+  </data>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>Lịch sử cầu nguyện</value>
   </data>
@@ -5096,5 +5099,14 @@ Dung lượng còn trống: {2}</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
     <value>Vui lòng nhập khóa kích hoạt Mirror酱 (CDK), để trống sẽ bỏ qua. Có thể lấy từ mirrorchyan.com.</value>
+  </data>
+  <data name="ViewTravelersDiaryHeader" xml:space="preserve">
+    <value>旅行者札记</value>
+  </data>
+  <data name="ViewTravelersDiaryToday" xml:space="preserve">
+    <value>今日</value>
+  </data>
+  <data name="ViewTravelersDiaryMonth" xml:space="preserve">
+    <value>本月</value>
   </data>
 </root>
