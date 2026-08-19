@@ -3482,6 +3482,9 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageSettingHomeCardItemSignInHeader" xml:space="preserve">
     <value>Giriş</value>
   </data>
+  <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
+    <value>旅行者札记</value>
+  </data>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>Dilek Kaydı</value>
   </data>
@@ -5096,5 +5099,14 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
     <value>Lütfen Mirror酱 etkinleştirme anahtarını (CDK) girin, boş bırakılırsa atlanır. mirrorchyan.com adresinden alabilirsiniz.</value>
+  </data>
+  <data name="ViewTravelersDiaryHeader" xml:space="preserve">
+    <value>旅行者札记</value>
+  </data>
+  <data name="ViewTravelersDiaryToday" xml:space="preserve">
+    <value>今日</value>
+  </data>
+  <data name="ViewTravelersDiaryMonth" xml:space="preserve">
+    <value>本月</value>
   </data>
 </root>
