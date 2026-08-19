@@ -17,9 +17,9 @@
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
+    xmlns:shuxdcs="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shvg="using:Snap.Hutao.Remastered.ViewModel.Game"
-    xmlns:shuxdcs="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized"
     d:DataContext="{d:DesignInstance shvg:LaunchGameViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
@@ -225,6 +225,10 @@
             <PivotItem Header="{shuxm:ResourceString Name=ViewPageLaunchGameOptionsHeader}">
                 <ScrollViewer>
                     <StackPanel Margin="16" Spacing="16">
+                        <StackPanel.ChildrenTransitions>
+                            <EntranceThemeTransition FromVerticalOffset="50"/>
+                            <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                        </StackPanel.ChildrenTransitions>
                         <!--  需要管理员权限的操作  -->
                         <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                             <Grid Style="{ThemeResource AcrylicGridCardStyle}">
@@ -441,6 +445,10 @@
                         <Border Padding="0" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                             <Border Padding="16" Style="{ThemeResource AcrylicBorderCardStyle}">
                                 <StackPanel Spacing="{ThemeResource SettingsCardSpacing}">
+                                    <StackPanel.ChildrenTransitions>
+                                        <EntranceThemeTransition FromVerticalOffset="50"/>
+                                        <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                                    </StackPanel.ChildrenTransitions>
                                     <cwc:SettingsCard
                                         Description="{shuxm:ResourceString Name=ViewPageLaunchGameWindowsHDRDescription}"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameWindowsHDRHeader}"
@@ -557,8 +565,8 @@
                                                         VerticalAlignment="Center"
                                                         Text="{Binding LaunchOptions.BetterGenshinImpactPath.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                                     <Button
-                                                        Height="34"
                                                         Width="50"
+                                                        Height="34"
                                                         Command="{Binding PickBetterGenshinImpactPathCommand}"
                                                         Content="{shuxm:FontIcon Glyph=&#xE8DA;}"/>
                                                 </StackPanel>
@@ -587,6 +595,10 @@
             <PivotItem Header="{shuxm:ResourceString Name=ViewPageLaunchGameAdvancedStartOptionsHeader}">
                 <ScrollViewer>
                     <StackPanel Margin="16" Spacing="8">
+                        <StackPanel.ChildrenTransitions>
+                            <EntranceThemeTransition FromVerticalOffset="50"/>
+                            <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                        </StackPanel.ChildrenTransitions>
                         <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                             <Grid
                                 Padding="16,8"
@@ -626,6 +638,10 @@
                                         Grid.Row="0"
                                         HorizontalAlignment="Left"
                                         Orientation="Horizontal">
+                                        <StackPanel.ChildrenTransitions>
+                                            <EntranceThemeTransition FromVerticalOffset="50"/>
+                                            <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                                        </StackPanel.ChildrenTransitions>
                                         <AppBarButton
                                             Width="200"
                                             HorizontalAlignment="Left"
@@ -880,8 +896,8 @@
                         <ScrollViewer Grid.Row="3">
                             <ContentControl
                                 HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Stretch"
                                 VerticalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
                                 VerticalContentAlignment="Stretch"
                                 IsEnabled="{Binding LaunchOptions.IsIslandEnabled.Value}">
                                 <Grid
@@ -1114,11 +1130,11 @@
                                         Grid.Column="0"
                                         Padding="10,8,6,6"
                                         VerticalAlignment="Center"
-                                        Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandCombineMenuHotkeyHeader}"
-                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandCombineMenuHotkeyDescription}"
                                         DisplayMemberPath="Name"
+                                        Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandCombineMenuHotkeyHeader}"
                                         ItemsSource="{Binding LaunchOptions.VirtualKeys}"
-                                        SelectedValue="{Binding LaunchOptions.CombineMenuHotkey.Value, Mode=TwoWay, Converter={StaticResource IntToNameValueVirtualKeyConverter}}"/>
+                                        SelectedValue="{Binding LaunchOptions.CombineMenuHotkey.Value, Mode=TwoWay, Converter={StaticResource IntToNameValueVirtualKeyConverter}}"
+                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandCombineMenuHotkeyDescription}"/>
 
                                     <ToggleSwitch
                                         Grid.Row="4"
