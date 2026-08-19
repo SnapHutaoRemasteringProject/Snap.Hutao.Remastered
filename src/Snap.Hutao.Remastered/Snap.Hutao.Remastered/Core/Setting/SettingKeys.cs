@@ -56,6 +56,8 @@ public static class SettingKeys
     public const string IsHomeCardLaunchGamePresented      = "Snap::Hutao::UI::Home::Card::LaunchGame::Presented";
     public const string HomeCardSignInOrder                = "Snap::Hutao::UI::Home::Card::SignIn::Order";
     public const string IsHomeCardSignInPresented          = "Snap::Hutao::UI::Home::Card::SignIn::Presented";
+    public const string HomeCardTravelersDiaryOrder        = "Snap::Hutao::UI::Home::Card::TravelersDiary::Order";
+    public const string IsHomeCardTravelersDiaryPresented  = "Snap::Hutao::UI::Home::Card::TravelersDiary::Presented";
     public const string HomeAnnouncementActPreviewEnabled  = "Snap::Hutao::UI::Home::Announcement::ActPreviewEnabled";
     public const string IsHomeAnnouncementActivityCalendarPresented = "Snap::Hutao::UI::Home::Announcement::ActivityCalendar::Presented";
 

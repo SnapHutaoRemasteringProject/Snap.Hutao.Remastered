@@ -195,6 +195,7 @@
     <Content Include="Resource\Icon\UI_Icon_UGC_Collect.png" />
     <Content Include="Resource\Icon\UI_Icon_UGC_Collect_Dark.png" />
     <Content Include="Resource\Icon\UI_Icon_Unlock.png" />
+    <Content Include="Resource\Icon\UI_TravelersDiary_Logo.png" />
     <Content Include="Resource\Icon\UI_Icon_Unlock_Dark.png" />
     <Content Include="Resource\Icon\UI_Img_RoleCombat_EventDetail_Pic_Chance.png" />
     <Content Include="Resource\Icon\UI_ItemIcon_106.png" />
@@ -337,5 +338,10 @@
        package has not yet been restored -->
   <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnablePreviewMsixTooling)'=='true'">
     <ProjectCapability Include="Msix" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="UI\Xaml\View\Card\TravelersDiaryCard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>

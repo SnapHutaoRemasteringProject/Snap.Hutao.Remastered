@@ -72,6 +72,7 @@ public sealed partial class SettingHomeViewModel : Abstraction.ViewModel
             new(SH.ViewPageSettingHomeCardItemgachaStatisticsHeader, SettingKeys.IsHomeCardGachaStatisticsPresented, SettingKeys.HomeCardGachaStatisticsOrder),
             new(SH.ViewPageSettingHomeCardItemAchievementHeader, SettingKeys.IsHomeCardAchievementPresented, SettingKeys.HomeCardAchievementOrder),
             new(SH.ViewPageSettingHomeCardItemDailyNoteHeader, SettingKeys.IsHomeCardDailyNotePresented, SettingKeys.HomeCardDailyNoteOrder),
+            new(SH.ViewPageSettingHomeCardItemTravelersDiaryHeader, SettingKeys.IsHomeCardTravelersDiaryPresented, SettingKeys.HomeCardTravelersDiaryOrder),
             new(SH.ViewPageSettingHomeCardItemCalendarHeader, SettingKeys.IsHomeCardCalendarPresented, SettingKeys.HomeCardCalendarOrder),
             new(SH.ViewPageSettingHomeCardItemSignInHeader, SettingKeys.IsHomeCardSignInPresented, SettingKeys.HomeCardSignInOrder),
         ];

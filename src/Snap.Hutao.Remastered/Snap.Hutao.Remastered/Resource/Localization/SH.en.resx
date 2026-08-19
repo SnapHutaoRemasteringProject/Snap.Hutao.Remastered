@@ -3485,6 +3485,9 @@ Space Available: {2}</value>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>Wish History</value>
   </data>
+  <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
+    <value>Traveler's Diary</value>
+  </data>
   <data name="ViewPageSettingHomeCardOff" xml:space="preserve">
     <value>Hide</value>
   </data>
@@ -3889,6 +3892,15 @@ Space Available: {2}</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>Tools</value>
+  </data>
+  <data name="ViewTravelersDiaryHeader" xml:space="preserve">
+    <value>Traveler's Diary</value>
+  </data>
+  <data name="ViewTravelersDiaryToday" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="ViewTravelersDiaryMonth" xml:space="preserve">
+    <value>This Month</value>
   </data>
   <data name="ViewUserCookieOperation" xml:space="preserve">
     <value>MiYouShe</value>

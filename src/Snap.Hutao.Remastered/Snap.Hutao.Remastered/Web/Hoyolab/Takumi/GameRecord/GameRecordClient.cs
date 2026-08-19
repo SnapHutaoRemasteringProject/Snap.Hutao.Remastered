@@ -48,6 +48,23 @@ public sealed partial class GameRecordClient : IGameRecordClient
         return await RetryIf1034Async(builder, userAndUid, resp, SH.WebDailyNoteVerificationFailed, CardVerificationHeaders.CreateForDailyNote, token).ConfigureAwait(false);
     }
 
+    public async ValueTask<Response<Ledger.Ledger>> GetLedgerAsync(UserAndUid userAndUid, int month, CancellationToken token = default)
+    {
+        HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
+            .SetRequestUri(apiEndpoints.GameRecordLedgerMonthInfo(userAndUid.Uid, month))
+            .SetUserCookieAndFpHeader(userAndUid, CookieType.Cookie)
+            .SetReferer(apiEndpoints.WebStaticReferer())
+            .Get();
+
+        await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.X4, false).ConfigureAwait(false);
+
+        Response<Ledger.Ledger>? resp = await builder
+            .SendAsync<Response<Ledger.Ledger>>(httpClient, token)
+            .ConfigureAwait(false);
+
+        return Response.Response.DefaultIfNull(resp);
+    }
+
     public async ValueTask<Response<PlayerInfo>> GetPlayerInfoAsync(UserAndUid userAndUid, CancellationToken token = default)
     {
         HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()

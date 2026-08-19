@@ -3483,6 +3483,9 @@
   <data name="ViewPageSettingHomeCardItemSignInHeader" xml:space="preserve">
     <value>签到</value>
   </data>
+  <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
+    <value>旅行者札记</value>
+  </data>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>祈愿记录</value>
   </data>
@@ -5097,5 +5100,14 @@
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
     <value>请输入 Mirror酱 激活密钥（CDK），留空则跳过。可从 mirrorchyan.com 获取。</value>
+  </data>
+  <data name="ViewTravelersDiaryHeader" xml:space="preserve">
+    <value>旅行者札记</value>
+  </data>
+  <data name="ViewTravelersDiaryToday" xml:space="preserve">
+    <value>今日</value>
+  </data>
+  <data name="ViewTravelersDiaryMonth" xml:space="preserve">
+    <value>本月</value>
   </data>
 </root>

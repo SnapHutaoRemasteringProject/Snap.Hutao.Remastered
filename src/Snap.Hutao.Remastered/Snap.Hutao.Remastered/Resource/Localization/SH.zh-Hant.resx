@@ -3486,6 +3486,9 @@
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>祈願紀錄</value>
   </data>
+  <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
+    <value>旅行者札記</value>
+  </data>
   <data name="ViewPageSettingHomeCardOff" xml:space="preserve">
     <value>隱藏</value>
   </data>
@@ -3890,6 +3893,15 @@
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>工具</value>
+  </data>
+  <data name="ViewTravelersDiaryHeader" xml:space="preserve">
+    <value>旅行者札記</value>
+  </data>
+  <data name="ViewTravelersDiaryToday" xml:space="preserve">
+    <value>今日</value>
+  </data>
+  <data name="ViewTravelersDiaryMonth" xml:space="preserve">
+    <value>本月</value>
   </data>
   <data name="ViewUserCookieOperation" xml:space="preserve">
     <value>米遊社</value>

@@ -1,0 +1,204 @@
+<Button
+    x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Card.TravelersDiaryCard"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mxi="using:Microsoft.Xaml.Interactivity"
+    xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
+    xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
+    xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
+    xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    xmlns:shvt="using:Snap.Hutao.Remastered.ViewModel.TravelersDiary"
+    Height="{ThemeResource HomeAdaptiveCardHeight}"
+    Padding="0"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Stretch"
+    HorizontalContentAlignment="Stretch"
+    d:DataContext="{d:DesignInstance shvt:TravelersDiaryViewModel}"
+    Background="Transparent"
+    BorderBrush="{x:Null}"
+    BorderThickness="0"
+    Style="{ThemeResource DefaultButtonStyle}"
+    mc:Ignorable="d">
+
+    <Button.Resources>
+        <Style x:Key="TravelersDiarySectionBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="{ThemeResource ControlAltFillColorSecondaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}"/>
+        </Style>
+    </Button.Resources>
+
+    <mxi:Interaction.Behaviors>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+    </mxi:Interaction.Behaviors>
+
+    <Grid>
+        <Grid Visibility="{Binding IsInitialized, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid Visibility="{Binding Ledger, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                <Grid
+                    Margin="12"
+                    DataContext="{Binding Ledger}"
+                    RowSpacing="8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <!--  Header  -->
+                    <Grid 
+                        Grid.Row="0"
+                        Height="48"
+                        Padding="12"
+                        Style="{ThemeResource GridShimmerStyle}">
+                        <StackPanel
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal"
+                            Spacing="12">
+                            <Image
+                                Height="32"
+                                Margin="-5"
+                                Source="ms-appx:///Resource/Icon/UI_TravelersDiary_Logo.png"/>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Style="{StaticResource BaseTextBlockStyle}"
+                                Text="{shuxm:ResourceString Name=ViewTravelersDiaryHeader}"/>
+                        </StackPanel>
+                        <TextBlock
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Text="{Binding Uid}"/>
+                    </Grid>
+
+                    <!--  Today  -->
+                    <Border
+                        Grid.Row="1"
+                        Padding="8"
+                        Style="{StaticResource TravelersDiarySectionBorderStyle}">
+                        <Grid RowSpacing="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Opacity="0.6"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{shuxm:ResourceString Name=ViewTravelersDiaryToday}"/>
+                            <Grid
+                                Grid.Row="1"
+                                ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Orientation="Horizontal"
+                                    Spacing="6">
+                                    <Image
+                                        Width="20"
+                                        Height="20"
+                                        VerticalAlignment="Center"
+                                        Source="{StaticResource UI_ItemIcon_201}"/>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="{Binding DayData.FormattedPrimogems}"/>
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Column="1"
+                                    Orientation="Horizontal"
+                                    Spacing="6">
+                                    <Image
+                                        Width="20"
+                                        Height="20"
+                                        VerticalAlignment="Center"
+                                        Source="{StaticResource UI_ItemIcon_202}"/>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="{Binding DayData.FormattedMora}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <!--  Month  -->
+                    <Border
+                        Grid.Row="2"
+                        Padding="8"
+                        Style="{StaticResource TravelersDiarySectionBorderStyle}">
+                        <Grid RowSpacing="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Opacity="0.6"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{shuxm:ResourceString Name=ViewTravelersDiaryMonth}"/>
+                            <Grid
+                                Grid.Row="1"
+                                ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Orientation="Horizontal"
+                                    Spacing="6">
+                                    <Image
+                                        Width="20"
+                                        Height="20"
+                                        VerticalAlignment="Center"
+                                        Source="{StaticResource UI_ItemIcon_201}"/>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="{Binding MonthData.FormattedPrimogems}"/>
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Column="1"
+                                    Orientation="Horizontal"
+                                    Spacing="6">
+                                    <Image
+                                        Width="20"
+                                        Height="20"
+                                        VerticalAlignment="Center"
+                                        Source="{StaticResource UI_ItemIcon_202}"/>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="{Binding MonthData.FormattedMora}"/>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Spacing="8"
+                Visibility="{Binding Ledger, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}}">
+                <Image
+                    Width="64"
+                    Height="64"
+                    Source="ms-appx:///Resource/Icon/UI_ItemIcon_201.png"/>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Text="{shuxm:ResourceString Name=ViewTravelersDiaryHeader}"/>
+            </StackPanel>
+        </Grid>
+
+        <shuxc:Loading IsLoading="{Binding IsInitialized, Converter={StaticResource BoolNegationConverter}}" Style="{ThemeResource DefaultLoadingCardStyle}"/>
+    </Grid>
+</Button>

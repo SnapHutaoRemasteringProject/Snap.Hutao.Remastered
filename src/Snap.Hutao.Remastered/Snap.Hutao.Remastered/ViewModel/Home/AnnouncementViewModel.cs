@@ -470,6 +470,11 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
             result.Add(CardReference.Create(new DailyNoteCard(serviceProvider), SettingKeys.HomeCardDailyNoteOrder));
         }
 
+        if (LocalSetting.Get(SettingKeys.IsHomeCardTravelersDiaryPresented, true))
+        {
+            result.Add(CardReference.Create(new TravelersDiaryCard(serviceProvider), SettingKeys.HomeCardTravelersDiaryOrder));
+        }
+
         if (LocalSetting.Get(SettingKeys.IsHomeCardCalendarPresented, true))
         {
             result.Add(CardReference.Create(new CalendarCard(serviceProvider), SettingKeys.HomeCardCalendarOrder));

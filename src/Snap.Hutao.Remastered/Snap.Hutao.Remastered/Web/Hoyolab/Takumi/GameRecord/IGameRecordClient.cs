@@ -15,6 +15,8 @@ public interface IGameRecordClient
 
     ValueTask<Response<DailyNote.DailyNote>> GetDailyNoteAsync(UserAndUid userAndUid, CancellationToken token = default);
 
+    ValueTask<Response<Ledger.Ledger>> GetLedgerAsync(UserAndUid userAndUid, int month, CancellationToken token = default);
+
     ValueTask<Response<PlayerInfo>> GetPlayerInfoAsync(UserAndUid userAndUid, CancellationToken token = default);
 
     ValueTask<Response<SpiralAbyss.SpiralAbyss>> GetSpiralAbyssAsync(UserAndUid userAndUid, ScheduleType schedule, CancellationToken token = default);
