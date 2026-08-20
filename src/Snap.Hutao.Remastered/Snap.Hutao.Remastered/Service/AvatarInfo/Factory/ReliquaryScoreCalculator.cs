@@ -14,15 +14,16 @@ public static class ReliquaryScoreCalculator
     public static double Calculate(
         ImmutableArray<FightProperty> recommendedSubProperties,
         ImmutableArray<ReliquaryProperty> subProperties,
-        EnergyType energyType)
+        EnergyType energyType,
+        bool isCritEffective)
     {
-        bool hasCritHurt = recommendedSubProperties.Contains(FightProperty.FIGHT_PROP_CRITICAL_HURT);
+        bool hasCritHurt = isCritEffective || recommendedSubProperties.Contains(FightProperty.FIGHT_PROP_CRITICAL_HURT);
 
         double totalScore = 0;
 
         foreach (ReliquaryProperty subProperty in subProperties)
         {
-            double weight = GetWeight(subProperty.PropertyType, recommendedSubProperties, hasCritHurt, energyType);
+            double weight = GetWeight(subProperty.PropertyType, recommendedSubProperties, hasCritHurt, energyType, isCritEffective);
             if (weight <= 0)
             {
                 continue;
@@ -83,8 +84,15 @@ public static class ReliquaryScoreCalculator
         FightProperty propertyType,
         ImmutableArray<FightProperty> recommendedSubProperties,
         bool hasCritHurt,
-        EnergyType energyType)
+        EnergyType energyType,
+        bool isCritEffective)
     {
+        // 非心海角色双爆强制有效，避免米游社推荐副属性缺失双爆时评分失真
+        if (isCritEffective && propertyType is FightProperty.FIGHT_PROP_CRITICAL or FightProperty.FIGHT_PROP_CRITICAL_HURT)
+        {
+            return 1.0;
+        }
+
         bool isRecommended = recommendedSubProperties.Contains(propertyType);
 
         if (propertyType is FightProperty.FIGHT_PROP_CHARGE_EFFICIENCY && !isRecommended)
