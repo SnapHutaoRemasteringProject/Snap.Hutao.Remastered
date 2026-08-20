@@ -1,6 +1,11 @@
 name: Snap Hutao Remastered Publish
+
 on:
   workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
 
 jobs:
   publish:
@@ -22,44 +27,86 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Publish (MSIX + Installer)
-        id: publish
+      - name: Build and zip
+        id: build
         shell: pwsh
-        run: dotnet tool restore && dotnet cake publish.cake
+        run: dotnet tool restore && dotnet cake publish.cake --target=BuildAndZip
+
+      - name: Upload unsigned zip
+        id: upload-zip
+        uses: actions/upload-artifact@v7
+        with:
+          name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-unsigned-zip
+          path: ${{ steps.build.outputs.zip-path }}
+          archive: false
+
+      - name: Submit zip to SignPath for signing
+        id: signpath-zip
+        uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ba79caf8-8aa3-44e6-8a7b-ac8541512be4
+          project-slug: Snap.Hutao.Remastered
+          signing-policy-slug: release-signing
+          artifact-configuration-slug: zip
+          github-artifact-id: ${{ steps.upload-zip.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: ${{ github.workspace }}/src/output/signed-zip
+          skip-decompress: true
+
+      - name: Package installer and MSIX from signed files
+        id: package
+        shell: pwsh
+        run: dotnet cake publish.cake --target=PackageFromSigned --signedZipDir="${{ github.workspace }}/src/output/signed-zip"
         env:
           PUBLISH_CERT: ${{ secrets.PUBLISH_CERT }}
           PUBLISH_PW: ${{ secrets.PUBLISH_PW }}
 
-      - name: Upload MSIX
+      - name: Upload unsigned installer
+        id: upload-installer
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}
-          path: ${{ github.workspace }}/src/output/Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}.msix
+          name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-unsigned-installer
+          path: ${{ steps.package.outputs.installer-path }}
 
-      - name: Upload installer
-        uses: actions/upload-artifact@v7
+      - name: Submit installer to SignPath for signing
+        id: signpath-installer
+        uses: signpath/github-action-submit-signing-request@v2
         with:
-          name: Snap.Hutao.Remastered-Setup-${{ steps.publish.outputs.version }}
-          path: ${{ github.workspace }}/publish/Snap.Hutao.Remastered-*.exe
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ba79caf8-8aa3-44e6-8a7b-ac8541512be4
+          project-slug: Snap.Hutao.Remastered
+          signing-policy-slug: release-signing
+          artifact-configuration-slug: installer
+          github-artifact-id: ${{ steps.upload-installer.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: ${{ github.workspace }}/src/output/signed-installer
 
-      - name: Upload code-signing certificate
+      - name: Upload MSIX 
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered-SnapHutaoRemasteringProject-${{ steps.publish.outputs.version }}
-          path: ${{ github.workspace }}/temp-code-signing.cer
+          name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-msix
+          path: ${{ steps.package.outputs.msix-path }}
+
+      - name: Upload signed installer
+        uses: actions/upload-artifact@v7
+        with:
+          name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-signed-installer
+          path: ${{ github.workspace }}/src/output/signed-installer
 
       - name: Add summary
         shell: pwsh
         run: |
           $summary = @"
-          ## Snap Hutao Remastered Release Build
+          ## Snap Hutao Remastered Publish Build (SignPath Release Signing)
 
-          - **Version:** ${{ steps.publish.outputs.version }}
-          - **MSIX:** Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}.msix
-          - **Installer:** Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}-Setup.exe
-          - **Signed:** Yes
+          - **Version:** ${{ steps.build.outputs.version }}
+          - **Signing Policy:** release-signing (zip / installer)
+          - **MSIX Signing:** release certificate (PUBLISH_CERT)
+          - **Zip Signing Request:** ${{ steps.signpath-zip.outputs.signing-request-web-url }}
+          - **Installer Signing Request:** ${{ steps.signpath-installer.outputs.signing-request-web-url }}
 
           > [!IMPORTANT]
-          > 这是正式发布版本，已签名，可直接安装使用。
+          > 该版本为正式发布版本，zip/安装器由 SignPath release-signing 证书签名，MSIX 由 release 证书签名，可直接安装使用。
           "@
           echo $summary >> $Env:GITHUB_STEP_SUMMARY
