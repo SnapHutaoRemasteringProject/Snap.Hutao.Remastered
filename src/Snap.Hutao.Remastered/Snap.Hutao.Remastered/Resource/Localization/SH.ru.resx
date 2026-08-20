@@ -4514,6 +4514,9 @@
   <data name="ViewPageAvatarPropertyReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} балла</value>
   </data>
+  <data name="ViewPageAvatarPropertyTotalScore" xml:space="preserve">
+    <value>角色总分：</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Пользовательский запуск</value>
   </data>
