@@ -136,6 +136,9 @@ public static class AvatarIds
     public static readonly AvatarId Prune = 10000132;
     public static readonly AvatarId MarionetteNew = 10000133;
 
+    public static readonly AvatarId Alyosha = 10000148;
+    public static readonly AvatarId Odette = 10000150;
+
     private static readonly FrozenSet<AvatarId> StandardWishIds =
     [
         Qin,
