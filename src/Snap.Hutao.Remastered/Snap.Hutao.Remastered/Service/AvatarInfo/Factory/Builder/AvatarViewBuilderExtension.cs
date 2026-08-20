@@ -150,6 +150,12 @@ public static class AvatarViewBuilderExtension
         return builder.Configure(b => b.View.Reliquaries = reliquaries);
     }
 
+    public static TBuilder SetScore<TBuilder>(this TBuilder builder, double score)
+        where TBuilder : class, IAvatarViewBuilder
+    {
+        return builder.Configure(b => b.View.Score = score);
+    }
+
     public static TBuilder SetWeapon<TBuilder>(this TBuilder builder, WeaponView? weapon)
         where TBuilder : class, IAvatarViewBuilder
     {

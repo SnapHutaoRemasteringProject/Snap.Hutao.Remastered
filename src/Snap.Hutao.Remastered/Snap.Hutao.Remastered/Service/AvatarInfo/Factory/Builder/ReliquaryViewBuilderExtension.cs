@@ -65,6 +65,12 @@ public static class ReliquaryViewBuilderExtension
         return builder.Configure(b => b.View.SetName = setName);
     }
 
+    public static TBuilder SetScoreValue<TBuilder>(this TBuilder builder, double scoreValue)
+        where TBuilder : class, IReliquaryViewBuilder
+    {
+        return builder.Configure(b => b.View.ScoreValue = scoreValue);
+    }
+
     public static TBuilder SetScore<TBuilder>(this TBuilder builder, string score)
         where TBuilder : class, IReliquaryViewBuilder
     {

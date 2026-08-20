@@ -185,6 +185,12 @@ public static class AvatarIds
         return MasterAvatars.Contains(avatarId);
     }
 
+    // 仅珊瑚宫心海(天赋降低自身暴击率 无法暴击)双爆无效 其余角色一律视为有效
+    public static bool IsCritEffective(AvatarId avatarId)
+    {
+        return avatarId != Kokomi;
+    }
+
     public static ImmutableDictionary<AvatarId, Avatar> WithPlayers(ImmutableDictionary<AvatarId, Avatar> idAvatarMap)
     {
         ImmutableDictionary<AvatarId, Avatar>.Builder builder = ImmutableDictionary.CreateBuilder<AvatarId, Avatar>();

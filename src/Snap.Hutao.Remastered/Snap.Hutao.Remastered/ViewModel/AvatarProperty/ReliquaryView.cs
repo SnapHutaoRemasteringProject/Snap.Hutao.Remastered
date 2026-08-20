@@ -11,5 +11,9 @@ public sealed class ReliquaryView : EquipView
 
     public string SetName { get; set; } = default!;
 
+    public double ScoreValue { get; set; }
+
     public string Score { get; set; } = default!;
+
+    public int ScoreColorValue => (int)Math.Round(ScoreValue);
 }

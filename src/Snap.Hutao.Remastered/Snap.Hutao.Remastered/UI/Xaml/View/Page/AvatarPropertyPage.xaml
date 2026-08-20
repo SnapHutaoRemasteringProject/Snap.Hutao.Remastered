@@ -35,12 +35,36 @@
                         x:Key="CountToGradientColorConverter"
                         Maximum="#FFFD0093"
                         Minimum="#FF4B00D9"/>
+                    <shuxdcs:Int32ToGradientColorConverter
+                        x:Key="ScoreToColorConverter"
+                        Maximum="#FFFF8F00"
+                        MaximumValue="50"
+                        Minimum="#FF9E9E9E"
+                        MinimumValue="0"/>
+                    <shuxdcs:Int32ToGradientColorConverter
+                        x:Key="TotalScoreToColorConverter"
+                        Maximum="#FFFF8F00"
+                        MaximumValue="100"
+                        Minimum="#FF9E9E9E"
+                        MinimumValue="0"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <shuxdcs:UInt32ToGradientColorConverter
                         x:Key="CountToGradientColorConverter"
                         Maximum="#FFFF69BF"
                         Minimum="#FF9F69FF"/>
+                    <shuxdcs:Int32ToGradientColorConverter
+                        x:Key="ScoreToColorConverter"
+                        Maximum="#FFFF8F00"
+                        MaximumValue="50"
+                        Minimum="#FF9E9E9E"
+                        MinimumValue="0"/>
+                    <shuxdcs:Int32ToGradientColorConverter
+                        x:Key="TotalScoreToColorConverter"
+                        Maximum="#FFFF8F00"
+                        MaximumValue="100"
+                        Minimum="#FF9E9E9E"
+                        MinimumValue="0"/>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 
@@ -518,7 +542,11 @@
                                 VerticalAlignment="Center"
                                 FontWeight="Bold"
                                 Style="{StaticResource BaseTextBlockStyle}"
-                                Text="{Binding Score}"/>
+                                Text="{Binding Score}">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{Binding ScoreColorValue, Converter={ThemeResource ScoreToColorConverter}}"/>
+                                </TextBlock.Foreground>
+                            </TextBlock>
                         </Grid>
                     </Grid>
                     <Rectangle
@@ -878,6 +906,22 @@
                                                                             TextAlignment="Center"
                                                                             TextTrimming="None"
                                                                             TextWrapping="NoWrap"/>
+                                                                    </StackPanel>
+                                                                    <StackPanel Margin="0,2,0,0" Orientation="Horizontal">
+                                                                        <TextBlock
+                                                                            Foreground="#FFFFFFFF"
+                                                                            Style="{StaticResource BaseTextBlockStyle}"
+                                                                            Text="{shuxm:ResourceString Name=ViewPageAvatarPropertyTotalScore}"/>
+                                                                        <TextBlock
+                                                                            Margin="0,0,0,2"
+                                                                            VerticalAlignment="Center"
+                                                                            FontWeight="Bold"
+                                                                            Style="{StaticResource BaseTextBlockStyle}"
+                                                                            Text="{Binding Summary.Avatars.CurrentItem.DisplayScore}">
+                                                                            <TextBlock.Foreground>
+                                                                                <SolidColorBrush Color="{Binding Summary.Avatars.CurrentItem.ScoreColorValue, Converter={ThemeResource TotalScoreToColorConverter}}"/>
+                                                                            </TextBlock.Foreground>
+                                                                        </TextBlock>
                                                                     </StackPanel>
                                                                 </StackPanel>
                                                             </Grid>

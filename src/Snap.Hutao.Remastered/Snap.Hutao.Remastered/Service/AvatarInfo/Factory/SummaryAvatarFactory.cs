@@ -52,6 +52,10 @@ public sealed class SummaryAvatarFactory
         ImmutableArray<AvatarProperty> properties = character.SelectedProperties.SelectAsArray(FightPropertyFormat.ToAvatarProperty);
         properties.SortInPlace(InGameAvatarPropertyComparer.Shared);
 
+        ImmutableArray<ReliquaryView> reliquaries = character.Relics.SelectAsArray(
+            (relic, ctx) => SummaryReliquaryFactory.Create(ctx.context, relic, ctx.recommendedSubProperties, ctx.energyType, ctx.isCritEffective),
+            (context: context, recommendedSubProperties: character.RecommendRelicProperty.RecommendProperties.SubPropertyList, energyType: avatar.SkillDepot.EnergySkill.SpecialEnergyType, isCritEffective: AvatarIds.IsCritEffective(avatar.Id)));
+
         AvatarView propertyAvatar = new AvatarViewBuilder()
             .SetId(avatar.Id)
             .SetName(avatar.Name)
@@ -65,9 +69,8 @@ public sealed class SummaryAvatarFactory
             .SetLevelNumber(character.Base.Level)
             .SetWeapon(CreateWeapon(character.Weapon))
             .SetRecommendedProperties(character.RecommendRelicProperty.RecommendProperties)
-            .SetReliquaries(character.Relics.SelectAsArray(
-                (relic, ctx) => SummaryReliquaryFactory.Create(ctx.context, relic, ctx.recommendedSubProperties, ctx.energyType),
-                (context: context, recommendedSubProperties: character.RecommendRelicProperty.RecommendProperties.SubPropertyList, energyType: avatar.SkillDepot.EnergySkill.SpecialEnergyType)))
+            .SetReliquaries(reliquaries)
+            .SetScore(reliquaries.Sum(static reliquary => reliquary.ScoreValue))
             .SetCostumeIconOrDefault(character, avatar)
             .SetPromoteLevel(character.Base.PromoteLevel)
             .View;

@@ -19,26 +19,30 @@ public sealed class SummaryReliquaryFactory
     private readonly DetailedReliquary reliquary;
     private readonly ImmutableArray<FightProperty> recommendedSubProperties;
     private readonly EnergyType energyType;
+    private readonly bool isCritEffective;
 
     public SummaryReliquaryFactory(
         SummaryFactoryMetadataContext metadataContext,
         DetailedReliquary reliquary,
         ImmutableArray<FightProperty> recommendedSubProperties,
-        EnergyType energyType)
+        EnergyType energyType,
+        bool isCritEffective)
     {
         this.metadataContext = metadataContext;
         this.reliquary = reliquary;
         this.recommendedSubProperties = recommendedSubProperties;
         this.energyType = energyType;
+        this.isCritEffective = isCritEffective;
     }
 
     public static ReliquaryView Create(
         SummaryFactoryMetadataContext metadataContext,
         DetailedReliquary reliquary,
         ImmutableArray<FightProperty> recommendedSubProperties,
-        EnergyType energyType)
+        EnergyType energyType,
+        bool isCritEffective)
     {
-        return new SummaryReliquaryFactory(metadataContext, reliquary, recommendedSubProperties, energyType).Create();
+        return new SummaryReliquaryFactory(metadataContext, reliquary, recommendedSubProperties, energyType, isCritEffective).Create();
     }
 
     public ReliquaryView Create()
@@ -46,7 +50,7 @@ public sealed class SummaryReliquaryFactory
         MetadataReliquary metaReliquary = metadataContext.IdReliquaryMap[reliquary.Id];
         MetadataReliquarySet metaReliquarySet = metadataContext.IdReliquarySetMap[metaReliquary.SetId];
 
-        double score = ReliquaryScoreCalculator.Calculate(recommendedSubProperties, reliquary.SubPropertyList, energyType);
+        double score = ReliquaryScoreCalculator.Calculate(recommendedSubProperties, reliquary.SubPropertyList, energyType, isCritEffective);
 
         ReliquaryViewBuilder reliquaryViewBuilder = new ReliquaryViewBuilder()
             .SetName(metaReliquary.Name)
@@ -58,6 +62,7 @@ public sealed class SummaryReliquaryFactory
             .SetSetName(metaReliquarySet.Name)
             .SetMainProperty(FightPropertyFormat.ToNameValue(reliquary.MainProperty))
             .SetComposedSubProperties(reliquary.SubPropertyList.SelectAsArray(CreateSubProperty))
+            .SetScoreValue(score)
             .SetScore(string.Format(SH.ViewPageAvatarPropertyReliquaryScoreValue, score));
 
         return reliquaryViewBuilder.View;

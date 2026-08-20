@@ -34,6 +34,12 @@ public sealed partial class AvatarView : INameIconSide<Uri>,
 
     public ImmutableArray<ReliquaryView> Reliquaries { get; set; }
 
+    public double Score { get; set; }
+
+    public string DisplayScore => string.Format(SH.ViewPageAvatarPropertyReliquaryScoreValue, Score);
+
+    public int ScoreColorValue => (int)Math.Round(Score);
+
     public ImmutableArray<ConstellationView> Constellations { get; set; }
 
     public int ActivatedConstellationCount { get => Constellations.Count(c => c.IsActivated); }
