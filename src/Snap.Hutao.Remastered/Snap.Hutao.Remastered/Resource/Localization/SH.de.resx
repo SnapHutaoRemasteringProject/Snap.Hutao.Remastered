@@ -1943,6 +1943,9 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewModelCultivationEntryAddSuccess" xml:space="preserve">
     <value>Erfolgreich zum aktuellen Aufwertungsplan hinzugefügt</value>
   </data>
+  <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
+    <value>Entwicklungsparameter erfolgreich geändert</value>
+  </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>Bitte erstelle und wähle zuerst einen Plan auf der Seite für Aufwertungspläne aus</value>
   </data>
@@ -2614,6 +2617,12 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Liste löschen</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
+    <value>Entwicklungsparameter</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
+    <value>Entwicklungsparameter ändern</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>Aktuellen Plan löschen</value>
@@ -3472,6 +3481,9 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ViewPageSettingHomeCardItemSignInHeader" xml:space="preserve">
     <value>Anmeldung</value>
+  </data>
+  <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
+    <value>Reisetagebuch</value>
   </data>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>Wunschliste</value>
@@ -4496,6 +4508,9 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewPageAvatarPropertyReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} Punkte</value>
   </data>
+  <data name="ViewPageAvatarPropertyTotalScore" xml:space="preserve">
+    <value>Charakter-Gesamtpunktzahl:</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Benutzerdefinierter Start</value>
   </data>
@@ -5083,5 +5098,14 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
     <value>Bitte geben Sie den Mirror酱-Aktivierungsschlüssel (CDK) ein. Leer lassen, um zu überspringen. Erhältlich unter mirrorchyan.com.</value>
+  </data>
+  <data name="ViewTravelersDiaryHeader" xml:space="preserve">
+    <value>Reisetagebuch</value>
+  </data>
+  <data name="ViewTravelersDiaryToday" xml:space="preserve">
+    <value>Heute</value>
+  </data>
+  <data name="ViewTravelersDiaryMonth" xml:space="preserve">
+    <value>Diesen Monat</value>
   </data>
 </root>

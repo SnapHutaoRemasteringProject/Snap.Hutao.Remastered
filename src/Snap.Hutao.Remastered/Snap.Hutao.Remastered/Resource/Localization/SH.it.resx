@@ -1943,6 +1943,9 @@ Spazio disponibile: {2}</value>
   <data name="ViewModelCultivationEntryAddSuccess" xml:space="preserve">
     <value>Aggiunto con successo al piano di potenziamento attuale</value>
   </data>
+  <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
+    <value>Parametri di sviluppo modificati con successo</value>
+  </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>Crea e seleziona prima un piano nella pagina del piano di potenziamento</value>
   </data>
@@ -2614,6 +2617,12 @@ Spazio disponibile: {2}</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Elimina lista</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
+    <value>Parametri di sviluppo</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
+    <value>Modifica parametri di sviluppo</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>Elimina piano attuale</value>
@@ -3472,6 +3481,9 @@ Spazio disponibile: {2}</value>
   </data>
   <data name="ViewPageSettingHomeCardItemSignInHeader" xml:space="preserve">
     <value>Check-in</value>
+  </data>
+  <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
+    <value>Diario del Viaggiatore</value>
   </data>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>Registro desideri</value>
@@ -4496,6 +4508,9 @@ Spazio disponibile: {2}</value>
   <data name="ViewPageAvatarPropertyReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} punti</value>
   </data>
+  <data name="ViewPageAvatarPropertyTotalScore" xml:space="preserve">
+    <value>Punteggio totale del personaggio:</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Avvio personalizzato</value>
   </data>
@@ -5083,5 +5098,14 @@ Spazio disponibile: {2}</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
     <value>Inserisci la chiave di attivazione Mirror酱 (CDK), lascia vuoto per saltare. Disponibile su mirrorchyan.com.</value>
+  </data>
+  <data name="ViewTravelersDiaryHeader" xml:space="preserve">
+    <value>Diario del Viaggiatore</value>
+  </data>
+  <data name="ViewTravelersDiaryToday" xml:space="preserve">
+    <value>Oggi</value>
+  </data>
+  <data name="ViewTravelersDiaryMonth" xml:space="preserve">
+    <value>Questo mese</value>
   </data>
 </root>

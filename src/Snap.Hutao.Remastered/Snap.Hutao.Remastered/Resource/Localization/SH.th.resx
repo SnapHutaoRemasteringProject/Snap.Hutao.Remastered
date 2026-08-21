@@ -1943,6 +1943,9 @@
   <data name="ViewModelCultivationEntryAddSuccess" xml:space="preserve">
     <value>เพิ่มไปยังแผนการพัฒนาปัจจุบันสำเร็จแล้ว</value>
   </data>
+  <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
+    <value>แก้ไขพารามิเตอร์การฝึกฝนสำเร็จแล้ว</value>
+  </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>โปรดสร้างแผนและเลือกในหน้าแผนการพัฒนาก่อน</value>
   </data>
@@ -2614,6 +2617,12 @@
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>ลบรายการ</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
+    <value>พารามิเตอร์การฝึกฝน</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
+    <value>แก้ไขพารามิเตอร์การฝึกฝน</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>ลบแผนปัจจุบัน</value>
@@ -3472,6 +3481,9 @@
   </data>
   <data name="ViewPageSettingHomeCardItemSignInHeader" xml:space="preserve">
     <value>ลงชื่อเข้าใช้</value>
+  </data>
+  <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
+    <value>บันทึกนักเดินทาง</value>
   </data>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>บันทึกการอธิษฐาน</value>
@@ -4496,6 +4508,9 @@
   <data name="ViewPageAvatarPropertyReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} คะแนน</value>
   </data>
+  <data name="ViewPageAvatarPropertyTotalScore" xml:space="preserve">
+    <value>คะแนนรวมตัวละคร:</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>การเริ่มต้นแบบกำหนดเอง</value>
   </data>
@@ -5083,5 +5098,14 @@
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
     <value>กรุณาใส่คีย์การเปิดใช้งาน Mirror酱 (CDK) หากเว้นว่างไว้จะข้าม สามารถรับได้จาก mirrorchyan.com</value>
+  </data>
+  <data name="ViewTravelersDiaryHeader" xml:space="preserve">
+    <value>บันทึกนักเดินทาง</value>
+  </data>
+  <data name="ViewTravelersDiaryToday" xml:space="preserve">
+    <value>วันนี้</value>
+  </data>
+  <data name="ViewTravelersDiaryMonth" xml:space="preserve">
+    <value>เดือนนี้</value>
   </data>
 </root>

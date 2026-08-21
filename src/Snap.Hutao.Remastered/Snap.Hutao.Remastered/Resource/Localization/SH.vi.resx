@@ -1943,6 +1943,9 @@ Dung lượng còn trống: {2}</value>
   <data name="ViewModelCultivationEntryAddSuccess" xml:space="preserve">
     <value>Đã thêm thành công vào kế hoạch bồi dưỡng hiện tại</value>
   </data>
+  <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
+    <value>Đã sửa thông số nuôi dưỡng thành công</value>
+  </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>Vui lòng đến trang kế hoạch bồi dưỡng tạo kế hoạch và chọn trước</value>
   </data>
@@ -2614,6 +2617,12 @@ Dung lượng còn trống: {2}</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Xóa danh sách</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
+    <value>Thông số nuôi dưỡng</value>
+  </data>
+  <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
+    <value>Sửa thông số nuôi dưỡng</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>Xóa kế hoạch hiện tại</value>
@@ -3472,6 +3481,9 @@ Dung lượng còn trống: {2}</value>
   </data>
   <data name="ViewPageSettingHomeCardItemSignInHeader" xml:space="preserve">
     <value>Đăng nhập</value>
+  </data>
+  <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
+    <value>Nhật ký lữ hành</value>
   </data>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>Lịch sử cầu nguyện</value>
@@ -4496,6 +4508,9 @@ Dung lượng còn trống: {2}</value>
   <data name="ViewPageAvatarPropertyReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} điểm</value>
   </data>
+  <data name="ViewPageAvatarPropertyTotalScore" xml:space="preserve">
+    <value>Tổng điểm nhân vật:</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Khởi chạy tùy chỉnh</value>
   </data>
@@ -5087,5 +5102,14 @@ Dung lượng còn trống: {2}</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
     <value>Vui lòng nhập khóa kích hoạt Mirror酱 (CDK), để trống sẽ bỏ qua. Có thể lấy từ mirrorchyan.com.</value>
+  </data>
+  <data name="ViewTravelersDiaryHeader" xml:space="preserve">
+    <value>Nhật ký lữ hành</value>
+  </data>
+  <data name="ViewTravelersDiaryToday" xml:space="preserve">
+    <value>Hôm nay</value>
+  </data>
+  <data name="ViewTravelersDiaryMonth" xml:space="preserve">
+    <value>Tháng này</value>
   </data>
 </root>
