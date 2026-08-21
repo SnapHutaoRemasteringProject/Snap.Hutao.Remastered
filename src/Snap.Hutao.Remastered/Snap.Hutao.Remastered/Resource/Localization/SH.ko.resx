@@ -1944,7 +1944,7 @@
     <value>현재 육성 계획 추가에 성공했습니다</value>
   </data>
   <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
-    <value>已成功修改养成参数</value>
+    <value>육성 파라미터를 성공적으로 수정했습니다</value>
   </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>육성 계획 페이지로 이동하여 계획을 만들고 택하세요</value>
@@ -2619,10 +2619,10 @@
     <value>목록 삭제</value>
   </data>
   <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
-    <value>养成参数</value>
+    <value>육성 파라미터</value>
   </data>
   <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
-    <value>修改养成参数</value>
+    <value>육성 파라미터 수정</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>현재 계획 삭제</value>
@@ -3483,7 +3483,7 @@
     <value>체크인</value>
   </data>
   <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
-    <value>旅行者札记</value>
+    <value>여행자 일기</value>
   </data>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>기원 기록</value>
@@ -4509,7 +4509,7 @@
     <value>{0:F1} 점</value>
   </data>
   <data name="ViewPageAvatarPropertyTotalScore" xml:space="preserve">
-    <value>角色总分：</value>
+    <value>캐릭터 총점:</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>사용자 정의 시작</value>
@@ -5100,12 +5100,12 @@
     <value>Mirror酱 활성화 키 (CDK)를 입력하세요. 비워 두면 건너뜁니다. mirrorchyan.com에서 얻을 수 있습니다.</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
-    <value>旅行者札记</value>
+    <value>여행자 일기</value>
   </data>
   <data name="ViewTravelersDiaryToday" xml:space="preserve">
-    <value>今日</value>
+    <value>오늘</value>
   </data>
   <data name="ViewTravelersDiaryMonth" xml:space="preserve">
-    <value>本月</value>
+    <value>이번 달</value>
   </data>
 </root>
