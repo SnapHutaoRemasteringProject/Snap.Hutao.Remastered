@@ -15,7 +15,7 @@ public sealed partial class ToastNotificationService : IToastNotificationService
     {
         if (HutaoRuntime.IsProcessElevated)
         {
-            LaunchToastHelper(rawXml, suppressDisplay);
+            Task.Run(() => LaunchToastHelper(rawXml, suppressDisplay)).SafeForget();
         }
         else
         {
