@@ -16,6 +16,7 @@
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
+    <Color x:Key="GreenColor">#FF148567</Color>
     <Color x:Key="BlueColor">#FF5180CB</Color>
     <Color x:Key="BlueDark2Color">#FF324F7E</Color>
     <Color x:Key="PurpleColor">#FFA156E0</Color>
@@ -32,6 +33,7 @@
 
     <SolidColorBrush x:Key="SolidBackgroundFillColorTransparentBrush" Color="{ThemeResource SolidBackgroundFillColorTransparent}"/>
 
+    <SolidColorBrush x:Key="GreenColorBrush" Color="{ThemeResource GreenColor}" />
     <SolidColorBrush x:Key="BlueColorBrush" Color="{ThemeResource BlueColor}"/>
     <SolidColorBrush x:Key="BlueDark2ColorBrush" Color="{ThemeResource BlueDark2Color}"/>
     <SolidColorBrush x:Key="PurpleColorBrush" Color="{ThemeResource PurpleColor}"/>

@@ -48,6 +48,11 @@ public sealed partial class TypedWishSummary : Wish, INotifyPropertyChanged
         get => $"{TotalBluePull} [{(TotalBluePercent is double.NaN ? 0D : TotalBluePercent),6:p2}]";
     }
 
+    public string FormattedTotalOther
+    {
+        get => $"{TotalOtherPull} [{(TotalOtherPercent is double.NaN ? 0D : TotalOtherPercent),6:p2}]";
+    }
+
     public string FormattedAverageOrangePull
     {
         get => SH.FormatModelBindingGachaTypedWishSummaryAveragePull(AverageOrangePull);
@@ -156,6 +161,10 @@ public sealed partial class TypedWishSummary : Wish, INotifyPropertyChanged
     public required int TotalBluePull { get; init; }
 
     public required double TotalBluePercent { get; init; }
+
+    public int TotalOtherPull => TotalCount - TotalOrangePull - TotalPurplePull - TotalBluePull;
+
+    public double TotalOtherPercent => TotalCount == 0 ? double.NaN : (1.0 - TotalOrangePercent - TotalPurplePercent - TotalBluePercent);
 
     public required double AverageOrangePull { get; init; }
 
