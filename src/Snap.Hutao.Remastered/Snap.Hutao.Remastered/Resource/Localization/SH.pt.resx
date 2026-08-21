@@ -1944,7 +1944,7 @@ Espaço disponível: {2}</value>
     <value>Adicionado com sucesso ao planejamento</value>
   </data>
   <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
-    <value>已成功修改养成参数</value>
+    <value>Parâmetros de desenvolvimento modificados com sucesso</value>
   </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>Crie um plano e selecione-o na função de planejamento</value>
@@ -2619,10 +2619,10 @@ Espaço disponível: {2}</value>
     <value>Excluir lista</value>
   </data>
   <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
-    <value>养成参数</value>
+    <value>Parâmetros de desenvolvimento</value>
   </data>
   <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
-    <value>修改养成参数</value>
+    <value>Modificar parâmetros de desenvolvimento</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>Excluir plano atual</value>
@@ -3483,7 +3483,7 @@ Espaço disponível: {2}</value>
     <value>Check-in</value>
   </data>
   <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
-    <value>旅行者札记</value>
+    <value>Diário do Viajante</value>
   </data>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>Histórico de orações</value>
@@ -4509,7 +4509,7 @@ Espaço disponível: {2}</value>
     <value>{0:F1} pontos</value>
   </data>
   <data name="ViewPageAvatarPropertyTotalScore" xml:space="preserve">
-    <value>角色总分：</value>
+    <value>Pontuação total do personagem:</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Inicialização personalizada</value>
@@ -5100,12 +5100,12 @@ Espaço disponível: {2}</value>
     <value>Insira a chave de ativação Mirror酱 (CDK); deixe em branco para ignorar. Disponível em mirrorchyan.com.</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
-    <value>旅行者札记</value>
+    <value>Diário do Viajante</value>
   </data>
   <data name="ViewTravelersDiaryToday" xml:space="preserve">
-    <value>今日</value>
+    <value>Hoje</value>
   </data>
   <data name="ViewTravelersDiaryMonth" xml:space="preserve">
-    <value>本月</value>
+    <value>Este mês</value>
   </data>
 </root>
