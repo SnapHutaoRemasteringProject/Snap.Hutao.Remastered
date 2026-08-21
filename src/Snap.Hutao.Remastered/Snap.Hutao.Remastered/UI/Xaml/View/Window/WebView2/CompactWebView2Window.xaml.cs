@@ -157,7 +157,12 @@ public sealed partial class CompactWebView2Window : Microsoft.UI.Xaml.Window,
 
         cancel = false;
 
-        LocalSetting.Set(SettingKeys.CompactWebView2WindowPreviousSourceUrl, Source);
+        // 不要将空白页/about:blank 保存为上次访问页面，否则再次打开时始终是空白页
+        string source = Source;
+        if (!string.IsNullOrWhiteSpace(source) && !source.StartsWith("about:", StringComparison.OrdinalIgnoreCase))
+        {
+            LocalSetting.Set(SettingKeys.CompactWebView2WindowPreviousSourceUrl, source);
+        }
 
         // Only uninitialize low-level keyboard hooks if they were enabled
         if (isLowLevelKeyboardEnabled)
@@ -186,6 +191,13 @@ public sealed partial class CompactWebView2Window : Microsoft.UI.Xaml.Window,
 
     private static void OnNewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs args)
     {
+        // 原生视频控件开启画中画时，WebView2 会以 about:blank 触发 NewWindowRequested。
+        // 此时不应把当前页面导航到 about:blank，而是交由 WebView2 默认打开画中画小窗。
+        if (string.Equals(args.Uri, "about:blank", StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
         args.Handled = true;
         ArgumentNullException.ThrowIfNull(sender);
         sender.As<CoreWebView2>().Navigate(args.Uri);
@@ -377,7 +389,13 @@ public sealed partial class CompactWebView2Window : Microsoft.UI.Xaml.Window,
                 WebView.CoreWebView2.DisableDevToolsForReleaseBuild();
 
                 await taskContext.SwitchToMainThreadAsync();
-                Source = LocalSetting.Get(SettingKeys.CompactWebView2WindowPreviousSourceUrl, string.Empty);
+
+                // 忽略历史版本误存的 about:blank，避免恢复成空白页
+                string previousSource = LocalSetting.Get(SettingKeys.CompactWebView2WindowPreviousSourceUrl, string.Empty);
+                if (!string.IsNullOrWhiteSpace(previousSource) && !previousSource.StartsWith("about:", StringComparison.OrdinalIgnoreCase))
+                {
+                    Source = previousSource;
+                }
             }
         }
     }
