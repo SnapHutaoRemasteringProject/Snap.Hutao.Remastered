@@ -260,30 +260,30 @@
   <!-- Packages -->
   <ItemGroup>
     <!-- https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-Labs/nuget/v3/index.json -->
-    <PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.DataTable" Version="0.1.260416-build.2580" />
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.Controls.DataTable" Version="0.1.260617-build.2640" />
     <PackageReference Include="CommunityToolkit.Labs.WinUI.Shimmer" Version="0.1.250828-build.2223" />
     <PackageReference Include="CommunityToolkit.Labs.WinUI.TokenView" Version="0.1.250828-build.2223" />
-    <PackageReference Include="CommunityToolkit.Labs.WinUI.TransitionHelper" Version="0.1.260416-build.2580" />
+    <PackageReference Include="CommunityToolkit.Labs.WinUI.TransitionHelper" Version="0.1.260617-build.2640" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <PackageReference Include="CommunityToolkit.WinUI.Behaviors" Version="8.3.260411-build.1777" />
+    <PackageReference Include="CommunityToolkit.WinUI.Behaviors" Version="8.3.260804-build.1839" />
     <PackageReference Include="CommunityToolkit.WinUI.Collections" Version="8.2.251219" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.HeaderedControls" Version="8.2.251219" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.2.251219" />
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
-    <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.3.260411-build.1777" />
+    <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.3.260804-build.1839" />
     <PackageReference Include="CommunityToolkit.WinUI.Media" Version="8.2.251219" />
     <PackageReference Include="DevWinUI" Version="10.3.0" />
-    <PackageReference Include="Google.Protobuf" Version="3.35.1" />
+    <PackageReference Include="Google.Protobuf" Version="3.36.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2026.2.0" />
     <PackageReference Include="Lib.Harmony" Version="2.4.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="5.6.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="5.6.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.6.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.6.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="5.9.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.9.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.9.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.11">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -303,7 +303,7 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
     <PackageReference Include="QRCoder" Version="1.8.0" />
     <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.19.1" />
-    <PackageReference Include="Sentry.Extensions.Logging" Version="6.8.0" />
+    <PackageReference Include="Sentry.Extensions.Logging" Version="6.9.0" />
     <PackageReference Include="Snap.HPatch" Version="0.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
