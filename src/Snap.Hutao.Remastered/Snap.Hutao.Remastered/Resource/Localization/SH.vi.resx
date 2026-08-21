@@ -1944,7 +1944,7 @@ Dung lượng còn trống: {2}</value>
     <value>Đã thêm thành công vào kế hoạch bồi dưỡng hiện tại</value>
   </data>
   <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
-    <value>已成功修改养成参数</value>
+    <value>Đã sửa thông số nuôi dưỡng thành công</value>
   </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>Vui lòng đến trang kế hoạch bồi dưỡng tạo kế hoạch và chọn trước</value>
@@ -2619,10 +2619,10 @@ Dung lượng còn trống: {2}</value>
     <value>Xóa danh sách</value>
   </data>
   <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
-    <value>养成参数</value>
+    <value>Thông số nuôi dưỡng</value>
   </data>
   <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
-    <value>修改养成参数</value>
+    <value>Sửa thông số nuôi dưỡng</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>Xóa kế hoạch hiện tại</value>
@@ -3483,7 +3483,7 @@ Dung lượng còn trống: {2}</value>
     <value>Đăng nhập</value>
   </data>
   <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
-    <value>旅行者札记</value>
+    <value>Nhật ký lữ hành</value>
   </data>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>Lịch sử cầu nguyện</value>
@@ -4509,7 +4509,7 @@ Dung lượng còn trống: {2}</value>
     <value>{0:F1} điểm</value>
   </data>
   <data name="ViewPageAvatarPropertyTotalScore" xml:space="preserve">
-    <value>角色总分：</value>
+    <value>Tổng điểm nhân vật:</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Khởi chạy tùy chỉnh</value>
@@ -5104,12 +5104,12 @@ Dung lượng còn trống: {2}</value>
     <value>Vui lòng nhập khóa kích hoạt Mirror酱 (CDK), để trống sẽ bỏ qua. Có thể lấy từ mirrorchyan.com.</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
-    <value>旅行者札记</value>
+    <value>Nhật ký lữ hành</value>
   </data>
   <data name="ViewTravelersDiaryToday" xml:space="preserve">
-    <value>今日</value>
+    <value>Hôm nay</value>
   </data>
   <data name="ViewTravelersDiaryMonth" xml:space="preserve">
-    <value>本月</value>
+    <value>Tháng này</value>
   </data>
 </root>
