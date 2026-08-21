@@ -1944,7 +1944,7 @@
     <value>選択中の育成計画に正常に追加されました</value>
   </data>
   <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
-    <value>已成功修改养成参数</value>
+    <value>育成パラメータの変更に成功しました</value>
   </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>まずは育成計画へ新規作成をして、選択した後に続けてください</value>
@@ -2619,10 +2619,10 @@
     <value>リストを削除</value>
   </data>
   <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
-    <value>养成参数</value>
+    <value>育成パラメータ</value>
   </data>
   <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
-    <value>修改养成参数</value>
+    <value>育成パラメータを変更</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>現在の育成計画を削除</value>
@@ -3483,7 +3483,7 @@
     <value>ログイン</value>
   </data>
   <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
-    <value>旅行者札记</value>
+    <value>旅人手記</value>
   </data>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>祈願履歴</value>
@@ -4509,7 +4509,7 @@
     <value>{0:F1} 点</value>
   </data>
   <data name="ViewPageAvatarPropertyTotalScore" xml:space="preserve">
-    <value>角色总分：</value>
+    <value>キャラクター総合得点：</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>カスタム起動</value>
@@ -5104,12 +5104,12 @@
     <value>Mirror酱 アクティベーションキー (CDK) を入力してください。空のままにするとスキップします。mirrorchyan.com から取得できます。</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
-    <value>旅行者札记</value>
+    <value>旅人手記</value>
   </data>
   <data name="ViewTravelersDiaryToday" xml:space="preserve">
-    <value>今日</value>
+    <value>本日</value>
   </data>
   <data name="ViewTravelersDiaryMonth" xml:space="preserve">
-    <value>本月</value>
+    <value>今月</value>
   </data>
 </root>
