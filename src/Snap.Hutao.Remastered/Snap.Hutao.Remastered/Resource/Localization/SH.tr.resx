@@ -1944,7 +1944,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Mevcut geliştirme planına başarıyla eklendi</value>
   </data>
   <data name="ViewModelCultivationEntryModifySuccess" xml:space="preserve">
-    <value>已成功修改养成参数</value>
+    <value>Geliştirme parametreleri başarıyla değiştirildi</value>
   </data>
   <data name="ViewModelCultivationEntryAddWarning" xml:space="preserve">
     <value>Lütfen önce geliştirme planları sayfasına gidip bir plan oluşturun ve seçin</value>
@@ -2619,10 +2619,10 @@ Kullanılabilir Alan: {2}</value>
     <value>Listeyi Sil</value>
   </data>
   <data name="ViewPageCultivationModifyEntryTitle" xml:space="preserve">
-    <value>养成参数</value>
+    <value>Geliştirme Parametreleri</value>
   </data>
   <data name="ViewPageCultivationModifyEntryButton" xml:space="preserve">
-    <value>修改养成参数</value>
+    <value>Geliştirme Parametrelerini Değiştir</value>
   </data>
   <data name="ViewPageCultivationRemoveProject" xml:space="preserve">
     <value>Mevcut Planı Sil</value>
@@ -3483,7 +3483,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Giriş</value>
   </data>
   <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
-    <value>旅行者札记</value>
+    <value>Gezgin Günlüğü</value>
   </data>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>Dilek Kaydı</value>
@@ -4509,7 +4509,7 @@ Kullanılabilir Alan: {2}</value>
     <value>{0:F1} Puan</value>
   </data>
   <data name="ViewPageAvatarPropertyTotalScore" xml:space="preserve">
-    <value>角色总分：</value>
+    <value>Karakter Toplam Puanı:</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Özel Başlatma</value>
@@ -5104,12 +5104,12 @@ Kullanılabilir Alan: {2}</value>
     <value>Lütfen Mirror酱 etkinleştirme anahtarını (CDK) girin, boş bırakılırsa atlanır. mirrorchyan.com adresinden alabilirsiniz.</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
-    <value>旅行者札记</value>
+    <value>Gezgin Günlüğü</value>
   </data>
   <data name="ViewTravelersDiaryToday" xml:space="preserve">
-    <value>今日</value>
+    <value>Bugün</value>
   </data>
   <data name="ViewTravelersDiaryMonth" xml:space="preserve">
-    <value>本月</value>
+    <value>Bu Ay</value>
   </data>
 </root>
