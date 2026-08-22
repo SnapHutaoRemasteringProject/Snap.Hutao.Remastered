@@ -338,21 +338,21 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <Grid Grid.Column="0" Style="{ThemeResource GridShimmerStyle}">
+                            <Grid Grid.Column="2" Style="{ThemeResource GridShimmerStyle}">
                                 <StackPanel
                                     Margin="8,0"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center">
                                     <TextBlock
-                                        Foreground="{StaticResource OrangeColorBrush}"
+                                        Foreground="{StaticResource GreenColorBrush}"
                                         Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{shuxm:ResourceString Name=ViewControlStatisticsCardOrangeText}"/>
+                                        Text="{shuxm:ResourceString Name=ViewControlStatisticsCardGreenText}"/>
                                     <Viewbox StretchDirection="DownOnly">
-                                        <TextBlock Foreground="{StaticResource OrangeColorBrush}" Text="{Binding FormattedTotalOrange}"/>
+                                        <TextBlock Foreground="{StaticResource GreenColorBrush}" Text="{Binding FormattedTotalOther}"/>
                                     </Viewbox>
                                 </StackPanel>
                             </Grid>
-                            <Grid Grid.Column="1" Style="{ThemeResource GridShimmerStyle}">
+                            <Grid Grid.Column="0" Style="{ThemeResource GridShimmerStyle}">
                                 <StackPanel
                                     Margin="8,0"
                                     HorizontalAlignment="Center"
@@ -366,7 +366,7 @@
                                     </Viewbox>
                                 </StackPanel>
                             </Grid>
-                            <Grid Grid.Column="2" Style="{ThemeResource GridShimmerStyle}">
+                            <Grid Grid.Column="1" Style="{ThemeResource GridShimmerStyle}">
                                 <StackPanel
                                     Margin="8,0"
                                     HorizontalAlignment="Center"

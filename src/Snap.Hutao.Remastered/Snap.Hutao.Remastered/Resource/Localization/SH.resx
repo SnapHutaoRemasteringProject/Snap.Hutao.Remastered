@@ -5113,4 +5113,7 @@
   <data name="ViewTravelersDiaryMonth" xml:space="preserve">
     <value>本月</value>
   </data>
+  <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
+    <value>二星</value>
+  </data>
 </root>
