@@ -1,6 +1,6 @@
 #addin nuget:?package=Cake.Http&version=4.0.0
 
-var target = Argument("target", "BuildAndZip");
+var target = Argument("target", "Publish");
 var configuration = Argument("configuration", "Release");
 
 // Paths
@@ -23,8 +23,22 @@ var version = XmlPeek(manifest, "appx:Package/appx:Identity/@Version", new XmlPe
 
 Information($"Version: {version}");
 
+// Certificate (CI only)
+
+var pfxPath = "pfxPath";
+var pw = "pw";
+string codeSigningCertificateThumbprint = "";
+const string CodeSigningCertificatePathArgumentName = "CodeSigningCertificatePath";
+const string CodeSigningCertificateThumbprintArgumentName = "CodeSigningCertificateThumbprint";
+var codeSigningCertificatePath = System.IO.Path.Combine(repoDir, "temp-code-signing.cer");
+
 if (GitHubActions.IsRunningOnGitHubActions)
 {
+    var certificateBase64 = HasEnvironmentVariable("PUBLISH_CERT") ? EnvironmentVariable("PUBLISH_CERT") : throw new Exception("Cannot find PUBLISH_CERT");
+    pw = HasEnvironmentVariable("PUBLISH_PW") ? EnvironmentVariable("PUBLISH_PW") : throw new Exception("Cannot find PUBLISH_PW");
+    pfxPath = System.IO.Path.Combine(repoDir, "temp.pfx");
+    System.IO.File.WriteAllBytes(pfxPath, System.Convert.FromBase64String(certificateBase64));
+
     GitHubActions.Commands.SetOutputParameter("version", version);
 }
 
@@ -36,17 +50,21 @@ var winsdkPath = (string)winsdkRegistry.GetValue("KitsRoot10");
 var winsdkBinPath = System.IO.Path.Combine(winsdkPath, "bin", winsdkVersion, "x64");
 Information($"Windows SDK: {winsdkPath}");
 
-var zipPath = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}-unsigned.zip");
-
 // ============================================================
-// BuildAndZip (default target): build project and zip loose files
+// Tasks
 // ============================================================
 
-Task("BuildAndZip")
+Task("Publish")
     .IsDependentOn("Build binary package")
     .IsDependentOn("Copy files")
     .IsDependentOn("Remove unused files")
-    .IsDependentOn("Zip loose files");
+    .IsDependentOn("Inner Sign")
+    .IsDependentOn("Build MSIX")
+    .IsDependentOn("Sign MSIX")
+    .IsDependentOn("Prepare installer output")
+    .IsDependentOn("VC Redist")
+    .IsDependentOn("Compile installer")
+    .IsDependentOn("Sign installer");
 
 Task("Build binary package")
     .Does(() =>
@@ -105,82 +123,54 @@ Task("Remove unused files")
     }
 });
 
-Task("Zip loose files")
+Task("Inner Sign")
+    .IsDependentOn("Build binary package")
+    .WithCriteria(GitHubActions.IsRunningOnGitHubActions)
+    .Does(() =>
+{
+    var signtool = System.IO.Path.Combine(winsdkBinPath, "signtool.exe");
+    var p = StartProcess(
+        signtool,
+        new ProcessSettings { Arguments = $"sign /debug /v /as /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f \"{pfxPath}\" /p \"{pw}\" \"{System.IO.Path.Combine(binPath, "*.exe")}\" \"{System.IO.Path.Combine(binPath, "*.dll")}\"" });
+
+    if (p != 0) { throw new InvalidOperationException($"Inner sign failed ({p})"); }
+});
+
+Task("Build MSIX")
     .IsDependentOn("Build binary package")
     .IsDependentOn("Copy files")
     .IsDependentOn("Remove unused files")
+    .IsDependentOn("Inner Sign")
     .Does(() =>
 {
-    if (!System.IO.Directory.Exists(outputPath))
-    {
-        System.IO.Directory.CreateDirectory(outputPath);
-    }
+    var makeappx = System.IO.Path.Combine(winsdkBinPath, "makeappx.exe");
+    var msix = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}.msix");
+    var p = StartProcess(makeappx, new ProcessSettings { Arguments = $"pack /d \"{binPath}\" /p \"{msix}\"" });
 
-    if (System.IO.File.Exists(zipPath))
-    {
-        System.IO.File.Delete(zipPath);
-    }
- System.IO.Compression.ZipFile.CreateFromDirectory(binPath, zipPath, System.IO.Compression.CompressionLevel.Optimal, false);
-    Information($"Unsigned zip: {zipPath}");
-
-    if (GitHubActions.IsRunningOnGitHubActions)
-    {
-        GitHubActions.Commands.SetOutputParameter("zip-path", zipPath);
-    }
+    if (p != 0) { throw new InvalidOperationException($"MSIX build failed ({p})"); }
+    Information($"MSIX: {msix}");
 });
 
-// ============================================================
-// PackageFromSigned: extract signed zip, build installer + MSIX
-// ============================================================
-
-var signedZipDir = Argument<string>("signedZipDir", null);
-
-Task("PackageFromSigned")
-    .IsDependentOn("Extract signed zip")
-    .IsDependentOn("Prepare installer output")
-    .IsDependentOn("VC Redist")
-    .IsDependentOn("Compile installer")
+Task("Sign MSIX")
     .IsDependentOn("Build MSIX")
-    .IsDependentOn("Sign MSIX");
-
-Task("Extract signed zip")
+    .WithCriteria(GitHubActions.IsRunningOnGitHubActions)
     .Does(() =>
 {
-    if (string.IsNullOrEmpty(signedZipDir))
-    {
-        throw new Exception("--signedZipDir argument is required for PackageFromSigned target");
-    }
+    var signtool = System.IO.Path.Combine(winsdkBinPath, "signtool.exe");
+    var msix = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}.msix");
+    var p = StartProcess(signtool, new ProcessSettings { Arguments = $"sign /debug /v /a /fd SHA256 /f \"{pfxPath}\" /p \"{pw}\" \"{msix}\"" });
 
-    var signedZip = System.IO.Directory.GetFiles(signedZipDir, "*.zip").FirstOrDefault();
-    if (signedZip == null)
-    {
-        throw new Exception($"No signed zip found in: {signedZipDir}");
-    }
-
-    Information($"Extracting signed zip: {signedZip}");
-
-    if (System.IO.Directory.Exists(binPath))
-    {
-        System.IO.Directory.Delete(binPath, true);
-    }
-
-    System.IO.Compression.ZipFile.ExtractToDirectory(signedZip, binPath);
-    Information($"Extracted to: {binPath}");
+    if (p != 0) { throw new InvalidOperationException($"MSIX sign failed ({p})"); }
 });
 
 Task("Prepare installer output")
-    .IsDependentOn("Extract signed zip")
+    .IsDependentOn("Copy files")
     .Does(() =>
 {
     var publishDir = System.IO.Path.Combine(repoDir, "Installer", "Publish");
-    if (System.IO.Directory.Exists(publishDir))
-    {
-        System.IO.Directory.Delete(publishDir, true);
-    }
-
+    if (System.IO.Directory.Exists(publishDir)) { System.IO.Directory.Delete(publishDir, true); }
     System.IO.Directory.CreateDirectory(publishDir);
     CopyDirectory(binPath, publishDir);
-    Information("Installer publish directory prepared.");
 });
 
 Task("VC Redist")
@@ -198,9 +188,45 @@ Task("VC Redist")
     Information("Downloaded VC_redist.x64.exe");
 });
 
+Task("Export code signing certificate")
+    .WithCriteria(GitHubActions.IsRunningOnGitHubActions)
+    .Does(() =>
+{
+    using (var certificate = System.Security.Cryptography.X509Certificates.X509CertificateLoader.LoadPkcs12FromFile(
+        pfxPath,
+        pw,
+        System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.EphemeralKeySet))
+    {
+        bool isCertificateAuthority = certificate.Extensions
+            .OfType<System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension>()
+            .Any(extension => extension.CertificateAuthority);
+        if (isCertificateAuthority)
+        {
+            throw new InvalidOperationException("The installer trust certificate must not be a CA certificate.");
+        }
+
+        bool supportsCodeSigning = certificate.Extensions
+            .OfType<System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension>()
+            .SelectMany(extension => extension.EnhancedKeyUsages.Cast<System.Security.Cryptography.Oid>())
+            .Any(oid => string.Equals(oid.Value, "1.3.6.1.5.5.7.3.3", System.StringComparison.Ordinal));
+        if (!supportsCodeSigning)
+        {
+            throw new InvalidOperationException("The installer trust certificate must have the code-signing EKU.");
+        }
+
+        codeSigningCertificateThumbprint = certificate.Thumbprint.Replace(" ", string.Empty).ToUpperInvariant();
+
+        System.IO.File.WriteAllBytes(
+            codeSigningCertificatePath,
+            certificate.Export(System.Security.Cryptography.X509Certificates.X509ContentType.Cert));
+        Information($"Exported code-signing certificate: {codeSigningCertificatePath} (thumbprint: {codeSigningCertificateThumbprint})");
+    }
+});
+
 Task("Compile installer")
     .IsDependentOn("Prepare installer output")
     .IsDependentOn("VC Redist")
+    .IsDependentOn("Export code signing certificate")
     .Does(() =>
 {
     var iscc = Context.Tools.Resolve("iscc.exe")?.FullPath;
@@ -215,55 +241,34 @@ Task("Compile installer")
     if (string.IsNullOrEmpty(iscc)) { throw new Exception("Inno Setup not found"); }
 
     var iss = System.IO.Path.Combine(repoDir, "Installer", "installer.iss");
-    var p = StartProcess(iscc, new ProcessSettings { Arguments = $"/dMyAppVersion=\"{version}\" \"{iss}\"", WorkingDirectory = repoDir });
+    var codeSigningCertificatePathArgument = System.IO.File.Exists(codeSigningCertificatePath)
+        ? $"/d{CodeSigningCertificatePathArgumentName}=\"{codeSigningCertificatePath}\" "
+        : string.Empty;
+    var codeSigningCertificateThumbprintArgument = !string.IsNullOrEmpty(codeSigningCertificateThumbprint)
+        ? $"/d{CodeSigningCertificateThumbprintArgumentName}=\"{codeSigningCertificateThumbprint}\" "
+        : string.Empty;
+    var p = StartProcess(iscc, new ProcessSettings { Arguments = $"/dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{iss}\"", WorkingDirectory = repoDir });
 
     if (p != 0) { throw new InvalidOperationException($"Inno Setup failed ({p})"); }
     Information("Installer compiled.");
-
-    if (GitHubActions.IsRunningOnGitHubActions)
-    {
-        var installerDir = System.IO.Path.Combine(repoDir, "publish");
-        var installer = System.IO.Directory.GetFiles(installerDir, "Snap.Hutao.Remastered-*.exe").FirstOrDefault();
-        if (installer != null)
-        {
-            GitHubActions.Commands.SetOutputParameter("installer-path", installer);
-        }
-    }
 });
 
-Task("Build MSIX")
-    .IsDependentOn("Extract signed zip")
-    .Does(() =>
-{
-    var makeappx = System.IO.Path.Combine(winsdkBinPath, "makeappx.exe");
-    var msix = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}.msix");
-    var p = StartProcess(makeappx, new ProcessSettings { Arguments = $"pack /d \"{binPath}\" /p \"{msix}\"" });
-
-    if (p != 0) { throw new InvalidOperationException($"MSIX build failed ({p})"); }
-    Information($"MSIX: {msix}");
-
-    if (GitHubActions.IsRunningOnGitHubActions)
-    {
-        GitHubActions.Commands.SetOutputParameter("msix-path", msix);
-    }
-});
-
-Task("Sign MSIX")
-    .IsDependentOn("Build MSIX")
+Task("Sign installer")
+    .IsDependentOn("Compile installer")
     .WithCriteria(GitHubActions.IsRunningOnGitHubActions)
     .Does(() =>
 {
-    var certificateBase64 = HasEnvironmentVariable("PUBLISH_CERT") ? EnvironmentVariable("PUBLISH_CERT") : throw new Exception("Cannot find PUBLISH_CERT");
-    var pw = HasEnvironmentVariable("PUBLISH_PW") ? EnvironmentVariable("PUBLISH_PW") : throw new Exception("Cannot find PUBLISH_PW");
-    var pfxPath = System.IO.Path.Combine(repoDir, "temp.pfx");
-    System.IO.File.WriteAllBytes(pfxPath, System.Convert.FromBase64String(certificateBase64));
+    var signtool = Context.Tools.Resolve("signtool.exe")?.FullPath
+        ?? System.IO.Path.Combine(winsdkBinPath, "signtool.exe");
 
-    var signtool = System.IO.Path.Combine(winsdkBinPath, "signtool.exe");
-    var msix = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}.msix");
-    var p = StartProcess(signtool, new ProcessSettings { Arguments = $"sign /debug /v /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f \"{pfxPath}\" /p \"{pw}\" \"{msix}\"" });
+    if (!System.IO.File.Exists(signtool)) { Information("signtool not found, skipping."); return; }
 
-    if (p != 0) { throw new InvalidOperationException($"MSIX sign failed ({p})"); }
-    Information($"MSIX signed: {msix}");
+    var installerDir = System.IO.Path.Combine(repoDir, "publish");
+    foreach (var installer in System.IO.Directory.GetFiles(installerDir, "Snap.Hutao.Remastered-*.exe"))
+    {
+        var p = StartProcess(signtool, new ProcessSettings { Arguments = $"sign /debug /v /a /fd SHA256 /f \"{pfxPath}\" /p \"{pw}\" /tr http://timestamp.digicert.com /td SHA256 \"{installer}\"" });
+        Information(p == 0 ? $"Signed: {System.IO.Path.GetFileName(installer)}" : $"Failed: {System.IO.Path.GetFileName(installer)}");
+    }
 });
 
 RunTarget(target);
