@@ -42,38 +42,64 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
             "aWdfY291bnRfZG93bl90aW1lGAMgASgNGjcKFURlbGV0ZVRpbWVOdW1NYXBF",
             "bnRyeRILCgNrZXkYASABKA0SDQoFdmFsdWUYAiABKA06AjgBQg0KC2RlbGV0",
             "ZV9pbmZvIkMKCE1hdGVyaWFsEg0KBWNvdW50GAEgASgNEigKC2RlbGV0ZV9p",
-            "bmZvGAIgASgLMhMuTWF0ZXJpYWxEZWxldGVJbmZvIoQBCglSZWxpcXVhcnkS",
+            "bmZvGAIgASgLMhMuTWF0ZXJpYWxEZWxldGVJbmZvItEBCglSZWxpcXVhcnkS",
             "DQoFbGV2ZWwYASABKA0SCwoDZXhwGAIgASgNEhUKDXByb21vdGVfbGV2ZWwY",
             "AyABKA0SFAoMbWFpbl9wcm9wX2lkGAQgASgNEhsKE2FwcGVuZF9wcm9wX2lk",
-            "X2xpc3QYBSADKA0SEQoJaXNfbWFya2VkGAYgASgIIq4BCgZXZWFwb24SDQoF",
-            "bGV2ZWwYASABKA0SCwoDZXhwGAIgASgNEhUKDXByb21vdGVfbGV2ZWwYAyAB",
-            "KA0SKAoJYWZmaXhfbWFwGAQgAygLMhUuV2VhcG9uLkFmZml4TWFwRW50cnkS",
-            "FgoOaXNfYXJraGVfb3VzaWEYBSABKAgaLwoNQWZmaXhNYXBFbnRyeRILCgNr",
-            "ZXkYASABKA0SDQoFdmFsdWUYAiABKA06AjgBImAKBUVxdWlwEh8KCXJlbGlx",
-            "dWFyeRgBIAEoCzIKLlJlbGlxdWFyeUgAEhkKBndlYXBvbhgCIAEoCzIHLldl",
-            "YXBvbkgAEhEKCWlzX2xvY2tlZBgDIAEoCEIICgZkZXRhaWwiGgoJRnVybml0",
-            "dXJlEg0KBWNvdW50GAEgASgNIogBCgRJdGVtEg8KB2l0ZW1faWQYASABKA0S",
-            "DAoEZ3VpZBgCIAEoBBIdCghtYXRlcmlhbBgFIAEoCzIJLk1hdGVyaWFsSAAS",
-            "FwoFZXF1aXAYBiABKAsyBi5FcXVpcEgAEh8KCWZ1cm5pdHVyZRgHIAEoCzIK",
-            "LkZ1cm5pdHVyZUgAQggKBmRldGFpbEIlqgIiU25hcC5IdXRhby5TZXJ2aWNl",
-            "LllhZS5QbGF5ZXJTdG9yZWIGcHJvdG8z"));
+            "X2xpc3QYBSADKA0SEQoJaXNfbWFya2VkGAYgASgIEiUKHXB1cmNoYXNlZF9h",
+            "cHBlbmRfcHJvcF9pZF9saXN0GAcgAygNEiQKHGRlZmluaXRlX2FwcGVuZF9w",
+            "cm9wX2lkX2xpc3QYCCADKA0irgEKBldlYXBvbhINCgVsZXZlbBgBIAEoDRIL",
+            "CgNleHAYAiABKA0SFQoNcHJvbW90ZV9sZXZlbBgDIAEoDRIoCglhZmZpeF9t",
+            "YXAYBCADKAsyFS5XZWFwb24uQWZmaXhNYXBFbnRyeRIWCg5pc19hcmtoZV9v",
+            "dXNpYRgFIAEoCBovCg1BZmZpeE1hcEVudHJ5EgsKA2tleRgBIAEoDRINCgV2",
+            "YWx1ZRgCIAEoDToCOAEiYAoFRXF1aXASHwoJcmVsaXF1YXJ5GAEgASgLMgou",
+            "UmVsaXF1YXJ5SAASGQoGd2VhcG9uGAIgASgLMgcuV2VhcG9uSAASEQoJaXNf",
+            "bG9ja2VkGAMgASgIQggKBmRldGFpbCIaCglGdXJuaXR1cmUSDQoFY291bnQY",
+            "ASABKA0ilwEKE1VuazY2MDBfTE5ERk1QRE9GRUwSRwoTZGVsZXRlX3RpbWVf",
+            "bnVtX21hcBgBIAMoCzIqLlVuazY2MDBfTE5ERk1QRE9GRUwuRGVsZXRlVGlt",
+            "ZU51bU1hcEVudHJ5GjcKFURlbGV0ZVRpbWVOdW1NYXBFbnRyeRILCgNrZXkY",
+            "ASABKA0SDQoFdmFsdWUYAiABKA06AjgBIkoKDkJleW9uZE1hdGVyaWFsEg0K",
+            "BWNvdW50GAEgASgNEikKC2RlbGV0ZV9pbmZvGAIgASgLMhQuVW5rNjYwMF9M",
+            "TkRGTVBET0ZFTCIZCghGYWNpbGl0eRINCgVjb3VudBgBIAEoDSIcCgtWaXJ0",
+            "dWFsSXRlbRINCgVjb3VudBgBIAEoAyL6AQoESXRlbRIPCgdpdGVtX2lkGAEg",
+            "ASgNEgwKBGd1aWQYAiABKAQSHQoIbWF0ZXJpYWwYBSABKAsyCS5NYXRlcmlh",
+            "bEgAEhcKBWVxdWlwGAYgASgLMgYuRXF1aXBIABIfCglmdXJuaXR1cmUYByAB",
+            "KAsyCi5GdXJuaXR1cmVIABIqCg9iZXlvbmRfbWF0ZXJpYWwYCCABKAsyDy5C",
+            "ZXlvbmRNYXRlcmlhbEgAEh0KCGZhY2lsaXR5GAkgASgLMgkuRmFjaWxpdHlI",
+            "ABIlCgx2aXJ0dWFsX2l0ZW0Y/wEgASgLMgwuVmlydHVhbEl0ZW1IAEIICgZk",
+            "ZXRhaWwqSwoJU3RvcmVUeXBlEhMKD1NUT1JFX1RZUEVfTk9ORRAAEhMKD1NU",
+            "T1JFX1RZUEVfUEFDSxABEhQKEFNUT1JFX1RZUEVfREVQT1QQAkIwqgItU25h",
+            "cC5IdXRhby5SZW1hc3RlcmVkLlNlcnZpY2UuWWFlLlBsYXllclN0b3JlYgZw",
+            "cm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.StoreType), }, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.MaterialDeleteInfo), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.MaterialDeleteInfo.Parser, new[]{ "HasDeleteConfig", "CountDownDelete", "DateDelete", "DelayWeekCountDownDelete" }, new[]{ "DeleteInfo" }, null, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.MaterialDeleteInfo.Types.CountDownDelete), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.MaterialDeleteInfo.Types.CountDownDelete.Parser, new[]{ "DeleteTimeNumMap", "ConfigCountDownTime" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.MaterialDeleteInfo.Types.DateTimeDelete), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.MaterialDeleteInfo.Types.DateTimeDelete.Parser, new[]{ "DeleteTime" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.MaterialDeleteInfo.Types.DelayWeekCountDownDelete), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.MaterialDeleteInfo.Types.DelayWeekCountDownDelete.Parser, new[]{ "DeleteTimeNumMap", "ConfigDelayWeek", "ConfigCountDownTime" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, })}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Material), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Material.Parser, new[]{ "Count", "DeleteInfo" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Reliquary), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Reliquary.Parser, new[]{ "Level", "Exp", "PromoteLevel", "MainPropId", "AppendPropIdList", "IsMarked" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Reliquary), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Reliquary.Parser, new[]{ "Level", "Exp", "PromoteLevel", "MainPropId", "AppendPropIdList", "IsMarked", "PurchasedAppendPropIdList", "DefiniteAppendPropIdList" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Weapon), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Weapon.Parser, new[]{ "Level", "Exp", "PromoteLevel", "AffixMap", "IsArkheOusia" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
             new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Equip), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Equip.Parser, new[]{ "Reliquary", "Weapon", "IsLocked" }, new[]{ "Detail" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Furniture), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Furniture.Parser, new[]{ "Count" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Item), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Item.Parser, new[]{ "ItemId", "Guid", "Material", "Equip", "Furniture" }, new[]{ "Detail" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Unk6600_LNDFMPDOFEL), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Unk6600_LNDFMPDOFEL.Parser, new[]{ "DeleteTimeNumMap" }, null, null, null, new pbr::GeneratedClrTypeInfo[] { null, }),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.BeyondMaterial), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.BeyondMaterial.Parser, new[]{ "Count", "DeleteInfo" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Facility), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Facility.Parser, new[]{ "Count" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.VirtualItem), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.VirtualItem.Parser, new[]{ "Count" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Item), global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Item.Parser, new[]{ "ItemId", "Guid", "Material", "Equip", "Furniture", "BeyondMaterial", "Facility", "VirtualItem" }, new[]{ "Detail" }, null, null, null)
           }));
     }
     #endregion
 
   }
+  #region Enums
+  public enum StoreType {
+    [pbr::OriginalName("STORE_TYPE_NONE")] None = 0,
+    [pbr::OriginalName("STORE_TYPE_PACK")] Pack = 1,
+    [pbr::OriginalName("STORE_TYPE_DEPOT")] Depot = 2,
+  }
+
+  #endregion
+
   #region Messages
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class MaterialDeleteInfo : pb::IMessage<MaterialDeleteInfo>
@@ -1435,6 +1461,8 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
       mainPropId_ = other.mainPropId_;
       appendPropIdList_ = other.appendPropIdList_.Clone();
       isMarked_ = other.isMarked_;
+      purchasedAppendPropIdList_ = other.purchasedAppendPropIdList_.Clone();
+      definiteAppendPropIdList_ = other.definiteAppendPropIdList_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1515,6 +1543,28 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
       }
     }
 
+    /// <summary>Field number for the "purchased_append_prop_id_list" field.</summary>
+    public const int PurchasedAppendPropIdListFieldNumber = 7;
+    private static readonly pb::FieldCodec<uint> _repeated_purchasedAppendPropIdList_codec
+        = pb::FieldCodec.ForUInt32(58);
+    private readonly pbc::RepeatedField<uint> purchasedAppendPropIdList_ = new pbc::RepeatedField<uint>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<uint> PurchasedAppendPropIdList {
+      get { return purchasedAppendPropIdList_; }
+    }
+
+    /// <summary>Field number for the "definite_append_prop_id_list" field.</summary>
+    public const int DefiniteAppendPropIdListFieldNumber = 8;
+    private static readonly pb::FieldCodec<uint> _repeated_definiteAppendPropIdList_codec
+        = pb::FieldCodec.ForUInt32(66);
+    private readonly pbc::RepeatedField<uint> definiteAppendPropIdList_ = new pbc::RepeatedField<uint>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<uint> DefiniteAppendPropIdList {
+      get { return definiteAppendPropIdList_; }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1536,6 +1586,8 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
       if (MainPropId != other.MainPropId) return false;
       if(!appendPropIdList_.Equals(other.appendPropIdList_)) return false;
       if (IsMarked != other.IsMarked) return false;
+      if(!purchasedAppendPropIdList_.Equals(other.purchasedAppendPropIdList_)) return false;
+      if(!definiteAppendPropIdList_.Equals(other.definiteAppendPropIdList_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1549,6 +1601,8 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
       if (MainPropId != 0) hash ^= MainPropId.GetHashCode();
       hash ^= appendPropIdList_.GetHashCode();
       if (IsMarked != false) hash ^= IsMarked.GetHashCode();
+      hash ^= purchasedAppendPropIdList_.GetHashCode();
+      hash ^= definiteAppendPropIdList_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1588,6 +1642,8 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
         output.WriteRawTag(48);
         output.WriteBool(IsMarked);
       }
+      purchasedAppendPropIdList_.WriteTo(output, _repeated_purchasedAppendPropIdList_codec);
+      definiteAppendPropIdList_.WriteTo(output, _repeated_definiteAppendPropIdList_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1619,6 +1675,8 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
         output.WriteRawTag(48);
         output.WriteBool(IsMarked);
       }
+      purchasedAppendPropIdList_.WriteTo(ref output, _repeated_purchasedAppendPropIdList_codec);
+      definiteAppendPropIdList_.WriteTo(ref output, _repeated_definiteAppendPropIdList_codec);
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1645,6 +1703,8 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
       if (IsMarked != false) {
         size += 1 + 1;
       }
+      size += purchasedAppendPropIdList_.CalculateSize(_repeated_purchasedAppendPropIdList_codec);
+      size += definiteAppendPropIdList_.CalculateSize(_repeated_definiteAppendPropIdList_codec);
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -1673,6 +1733,8 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
       if (other.IsMarked != false) {
         IsMarked = other.IsMarked;
       }
+      purchasedAppendPropIdList_.Add(other.purchasedAppendPropIdList_);
+      definiteAppendPropIdList_.Add(other.definiteAppendPropIdList_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -1717,6 +1779,16 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
             IsMarked = input.ReadBool();
             break;
           }
+          case 58:
+          case 56: {
+            purchasedAppendPropIdList_.AddEntriesFrom(input, _repeated_purchasedAppendPropIdList_codec);
+            break;
+          }
+          case 66:
+          case 64: {
+            definiteAppendPropIdList_.AddEntriesFrom(input, _repeated_definiteAppendPropIdList_codec);
+            break;
+          }
         }
       }
     #endif
@@ -1759,6 +1831,16 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
           }
           case 48: {
             IsMarked = input.ReadBool();
+            break;
+          }
+          case 58:
+          case 56: {
+            purchasedAppendPropIdList_.AddEntriesFrom(ref input, _repeated_purchasedAppendPropIdList_codec);
+            break;
+          }
+          case 66:
+          case 64: {
+            definiteAppendPropIdList_.AddEntriesFrom(ref input, _repeated_definiteAppendPropIdList_codec);
             break;
           }
         }
@@ -2633,6 +2715,836 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
   }
 
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class Unk6600_LNDFMPDOFEL : pb::IMessage<Unk6600_LNDFMPDOFEL>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Unk6600_LNDFMPDOFEL> _parser = new pb::MessageParser<Unk6600_LNDFMPDOFEL>(() => new Unk6600_LNDFMPDOFEL());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<Unk6600_LNDFMPDOFEL> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.StoreDataReflection.Descriptor.MessageTypes[6]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Unk6600_LNDFMPDOFEL() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Unk6600_LNDFMPDOFEL(Unk6600_LNDFMPDOFEL other) : this() {
+      deleteTimeNumMap_ = other.deleteTimeNumMap_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Unk6600_LNDFMPDOFEL Clone() {
+      return new Unk6600_LNDFMPDOFEL(this);
+    }
+
+    /// <summary>Field number for the "delete_time_num_map" field.</summary>
+    public const int DeleteTimeNumMapFieldNumber = 1;
+    private static readonly pbc::MapField<uint, uint>.Codec _map_deleteTimeNumMap_codec
+        = new pbc::MapField<uint, uint>.Codec(pb::FieldCodec.ForUInt32(8, 0), pb::FieldCodec.ForUInt32(16, 0), 10);
+    private readonly pbc::MapField<uint, uint> deleteTimeNumMap_ = new pbc::MapField<uint, uint>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::MapField<uint, uint> DeleteTimeNumMap {
+      get { return deleteTimeNumMap_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as Unk6600_LNDFMPDOFEL);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(Unk6600_LNDFMPDOFEL other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!DeleteTimeNumMap.Equals(other.DeleteTimeNumMap)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= DeleteTimeNumMap.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      deleteTimeNumMap_.WriteTo(output, _map_deleteTimeNumMap_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      deleteTimeNumMap_.WriteTo(ref output, _map_deleteTimeNumMap_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += deleteTimeNumMap_.CalculateSize(_map_deleteTimeNumMap_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(Unk6600_LNDFMPDOFEL other) {
+      if (other == null) {
+        return;
+      }
+      deleteTimeNumMap_.MergeFrom(other.deleteTimeNumMap_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            deleteTimeNumMap_.AddEntriesFrom(input, _map_deleteTimeNumMap_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            deleteTimeNumMap_.AddEntriesFrom(ref input, _map_deleteTimeNumMap_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class BeyondMaterial : pb::IMessage<BeyondMaterial>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<BeyondMaterial> _parser = new pb::MessageParser<BeyondMaterial>(() => new BeyondMaterial());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<BeyondMaterial> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.StoreDataReflection.Descriptor.MessageTypes[7]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BeyondMaterial() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BeyondMaterial(BeyondMaterial other) : this() {
+      count_ = other.count_;
+      deleteInfo_ = other.deleteInfo_ != null ? other.deleteInfo_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public BeyondMaterial Clone() {
+      return new BeyondMaterial(this);
+    }
+
+    /// <summary>Field number for the "count" field.</summary>
+    public const int CountFieldNumber = 1;
+    private uint count_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint Count {
+      get { return count_; }
+      set {
+        count_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "delete_info" field.</summary>
+    public const int DeleteInfoFieldNumber = 2;
+    private global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Unk6600_LNDFMPDOFEL deleteInfo_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Unk6600_LNDFMPDOFEL DeleteInfo {
+      get { return deleteInfo_; }
+      set {
+        deleteInfo_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as BeyondMaterial);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(BeyondMaterial other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Count != other.Count) return false;
+      if (!object.Equals(DeleteInfo, other.DeleteInfo)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Count != 0) hash ^= Count.GetHashCode();
+      if (deleteInfo_ != null) hash ^= DeleteInfo.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Count != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(Count);
+      }
+      if (deleteInfo_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(DeleteInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Count != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(Count);
+      }
+      if (deleteInfo_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(DeleteInfo);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Count != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Count);
+      }
+      if (deleteInfo_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(DeleteInfo);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(BeyondMaterial other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Count != 0) {
+        Count = other.Count;
+      }
+      if (other.deleteInfo_ != null) {
+        if (deleteInfo_ == null) {
+          DeleteInfo = new global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Unk6600_LNDFMPDOFEL();
+        }
+        DeleteInfo.MergeFrom(other.DeleteInfo);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Count = input.ReadUInt32();
+            break;
+          }
+          case 18: {
+            if (deleteInfo_ == null) {
+              DeleteInfo = new global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Unk6600_LNDFMPDOFEL();
+            }
+            input.ReadMessage(DeleteInfo);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Count = input.ReadUInt32();
+            break;
+          }
+          case 18: {
+            if (deleteInfo_ == null) {
+              DeleteInfo = new global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Unk6600_LNDFMPDOFEL();
+            }
+            input.ReadMessage(DeleteInfo);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class Facility : pb::IMessage<Facility>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Facility> _parser = new pb::MessageParser<Facility>(() => new Facility());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<Facility> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.StoreDataReflection.Descriptor.MessageTypes[8]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Facility() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Facility(Facility other) : this() {
+      count_ = other.count_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Facility Clone() {
+      return new Facility(this);
+    }
+
+    /// <summary>Field number for the "count" field.</summary>
+    public const int CountFieldNumber = 1;
+    private uint count_;
+    /// <summary>
+    /// 24
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint Count {
+      get { return count_; }
+      set {
+        count_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as Facility);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(Facility other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Count != other.Count) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Count != 0) hash ^= Count.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Count != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(Count);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Count != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(Count);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Count != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Count);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(Facility other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Count != 0) {
+        Count = other.Count;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Count = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Count = input.ReadUInt32();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class VirtualItem : pb::IMessage<VirtualItem>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<VirtualItem> _parser = new pb::MessageParser<VirtualItem>(() => new VirtualItem());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<VirtualItem> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.StoreDataReflection.Descriptor.MessageTypes[9]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public VirtualItem() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public VirtualItem(VirtualItem other) : this() {
+      count_ = other.count_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public VirtualItem Clone() {
+      return new VirtualItem(this);
+    }
+
+    /// <summary>Field number for the "count" field.</summary>
+    public const int CountFieldNumber = 1;
+    private long count_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public long Count {
+      get { return count_; }
+      set {
+        count_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as VirtualItem);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(VirtualItem other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Count != other.Count) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Count != 0L) hash ^= Count.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Count != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Count);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Count != 0L) {
+        output.WriteRawTag(8);
+        output.WriteInt64(Count);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Count != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(Count);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(VirtualItem other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Count != 0L) {
+        Count = other.Count;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Count = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            Count = input.ReadInt64();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Item : pb::IMessage<Item>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2647,7 +3559,7 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.StoreDataReflection.Descriptor.MessageTypes[6]; }
+      get { return global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.StoreDataReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2678,6 +3590,15 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
           break;
         case DetailOneofCase.Furniture:
           Furniture = other.Furniture.Clone();
+          break;
+        case DetailOneofCase.BeyondMaterial:
+          BeyondMaterial = other.BeyondMaterial.Clone();
+          break;
+        case DetailOneofCase.Facility:
+          Facility = other.Facility.Clone();
+          break;
+        case DetailOneofCase.VirtualItem:
+          VirtualItem = other.VirtualItem.Clone();
           break;
       }
 
@@ -2750,6 +3671,42 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
       }
     }
 
+    /// <summary>Field number for the "beyond_material" field.</summary>
+    public const int BeyondMaterialFieldNumber = 8;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.BeyondMaterial BeyondMaterial {
+      get { return detailCase_ == DetailOneofCase.BeyondMaterial ? (global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.BeyondMaterial) detail_ : null; }
+      set {
+        detail_ = value;
+        detailCase_ = value == null ? DetailOneofCase.None : DetailOneofCase.BeyondMaterial;
+      }
+    }
+
+    /// <summary>Field number for the "facility" field.</summary>
+    public const int FacilityFieldNumber = 9;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Facility Facility {
+      get { return detailCase_ == DetailOneofCase.Facility ? (global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Facility) detail_ : null; }
+      set {
+        detail_ = value;
+        detailCase_ = value == null ? DetailOneofCase.None : DetailOneofCase.Facility;
+      }
+    }
+
+    /// <summary>Field number for the "virtual_item" field.</summary>
+    public const int VirtualItemFieldNumber = 255;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.VirtualItem VirtualItem {
+      get { return detailCase_ == DetailOneofCase.VirtualItem ? (global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.VirtualItem) detail_ : null; }
+      set {
+        detail_ = value;
+        detailCase_ = value == null ? DetailOneofCase.None : DetailOneofCase.VirtualItem;
+      }
+    }
+
     private object detail_;
     /// <summary>Enum of possible cases for the "detail" oneof.</summary>
     public enum DetailOneofCase {
@@ -2757,6 +3714,9 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
       Material = 5,
       Equip = 6,
       Furniture = 7,
+      BeyondMaterial = 8,
+      Facility = 9,
+      VirtualItem = 255,
     }
     private DetailOneofCase detailCase_ = DetailOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2792,6 +3752,9 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
       if (!object.Equals(Material, other.Material)) return false;
       if (!object.Equals(Equip, other.Equip)) return false;
       if (!object.Equals(Furniture, other.Furniture)) return false;
+      if (!object.Equals(BeyondMaterial, other.BeyondMaterial)) return false;
+      if (!object.Equals(Facility, other.Facility)) return false;
+      if (!object.Equals(VirtualItem, other.VirtualItem)) return false;
       if (DetailCase != other.DetailCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -2805,6 +3768,9 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
       if (detailCase_ == DetailOneofCase.Material) hash ^= Material.GetHashCode();
       if (detailCase_ == DetailOneofCase.Equip) hash ^= Equip.GetHashCode();
       if (detailCase_ == DetailOneofCase.Furniture) hash ^= Furniture.GetHashCode();
+      if (detailCase_ == DetailOneofCase.BeyondMaterial) hash ^= BeyondMaterial.GetHashCode();
+      if (detailCase_ == DetailOneofCase.Facility) hash ^= Facility.GetHashCode();
+      if (detailCase_ == DetailOneofCase.VirtualItem) hash ^= VirtualItem.GetHashCode();
       hash ^= (int) detailCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -2844,6 +3810,18 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
         output.WriteRawTag(58);
         output.WriteMessage(Furniture);
       }
+      if (detailCase_ == DetailOneofCase.BeyondMaterial) {
+        output.WriteRawTag(66);
+        output.WriteMessage(BeyondMaterial);
+      }
+      if (detailCase_ == DetailOneofCase.Facility) {
+        output.WriteRawTag(74);
+        output.WriteMessage(Facility);
+      }
+      if (detailCase_ == DetailOneofCase.VirtualItem) {
+        output.WriteRawTag(250, 15);
+        output.WriteMessage(VirtualItem);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2874,6 +3852,18 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
         output.WriteRawTag(58);
         output.WriteMessage(Furniture);
       }
+      if (detailCase_ == DetailOneofCase.BeyondMaterial) {
+        output.WriteRawTag(66);
+        output.WriteMessage(BeyondMaterial);
+      }
+      if (detailCase_ == DetailOneofCase.Facility) {
+        output.WriteRawTag(74);
+        output.WriteMessage(Facility);
+      }
+      if (detailCase_ == DetailOneofCase.VirtualItem) {
+        output.WriteRawTag(250, 15);
+        output.WriteMessage(VirtualItem);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -2898,6 +3888,15 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
       }
       if (detailCase_ == DetailOneofCase.Furniture) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Furniture);
+      }
+      if (detailCase_ == DetailOneofCase.BeyondMaterial) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(BeyondMaterial);
+      }
+      if (detailCase_ == DetailOneofCase.Facility) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Facility);
+      }
+      if (detailCase_ == DetailOneofCase.VirtualItem) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(VirtualItem);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2935,6 +3934,24 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
             Furniture = new global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Furniture();
           }
           Furniture.MergeFrom(other.Furniture);
+          break;
+        case DetailOneofCase.BeyondMaterial:
+          if (BeyondMaterial == null) {
+            BeyondMaterial = new global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.BeyondMaterial();
+          }
+          BeyondMaterial.MergeFrom(other.BeyondMaterial);
+          break;
+        case DetailOneofCase.Facility:
+          if (Facility == null) {
+            Facility = new global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Facility();
+          }
+          Facility.MergeFrom(other.Facility);
+          break;
+        case DetailOneofCase.VirtualItem:
+          if (VirtualItem == null) {
+            VirtualItem = new global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.VirtualItem();
+          }
+          VirtualItem.MergeFrom(other.VirtualItem);
           break;
       }
 
@@ -2992,6 +4009,33 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
             Furniture = subBuilder;
             break;
           }
+          case 66: {
+            global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.BeyondMaterial subBuilder = new global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.BeyondMaterial();
+            if (detailCase_ == DetailOneofCase.BeyondMaterial) {
+              subBuilder.MergeFrom(BeyondMaterial);
+            }
+            input.ReadMessage(subBuilder);
+            BeyondMaterial = subBuilder;
+            break;
+          }
+          case 74: {
+            global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Facility subBuilder = new global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Facility();
+            if (detailCase_ == DetailOneofCase.Facility) {
+              subBuilder.MergeFrom(Facility);
+            }
+            input.ReadMessage(subBuilder);
+            Facility = subBuilder;
+            break;
+          }
+          case 2042: {
+            global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.VirtualItem subBuilder = new global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.VirtualItem();
+            if (detailCase_ == DetailOneofCase.VirtualItem) {
+              subBuilder.MergeFrom(VirtualItem);
+            }
+            input.ReadMessage(subBuilder);
+            VirtualItem = subBuilder;
+            break;
+          }
         }
       }
     #endif
@@ -3044,6 +4088,33 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore {
             }
             input.ReadMessage(subBuilder);
             Furniture = subBuilder;
+            break;
+          }
+          case 66: {
+            global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.BeyondMaterial subBuilder = new global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.BeyondMaterial();
+            if (detailCase_ == DetailOneofCase.BeyondMaterial) {
+              subBuilder.MergeFrom(BeyondMaterial);
+            }
+            input.ReadMessage(subBuilder);
+            BeyondMaterial = subBuilder;
+            break;
+          }
+          case 74: {
+            global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Facility subBuilder = new global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.Facility();
+            if (detailCase_ == DetailOneofCase.Facility) {
+              subBuilder.MergeFrom(Facility);
+            }
+            input.ReadMessage(subBuilder);
+            Facility = subBuilder;
+            break;
+          }
+          case 2042: {
+            global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.VirtualItem subBuilder = new global::Snap.Hutao.Remastered.Service.Yae.PlayerStore.VirtualItem();
+            if (detailCase_ == DetailOneofCase.VirtualItem) {
+              subBuilder.MergeFrom(VirtualItem);
+            }
+            input.ReadMessage(subBuilder);
+            VirtualItem = subBuilder;
             break;
           }
         }

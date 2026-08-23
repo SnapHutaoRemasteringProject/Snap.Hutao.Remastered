@@ -2,6 +2,12 @@ syntax = "proto3";
 
 option csharp_namespace = "Snap.Hutao.Remastered.Service.Yae.PlayerStore";
 
+enum StoreType {
+  STORE_TYPE_NONE = 0;
+  STORE_TYPE_PACK = 1;
+  STORE_TYPE_DEPOT = 2;
+}
+
 message MaterialDeleteInfo {
   message CountDownDelete {
     map<uint32, uint32> delete_time_num_map = 1;
@@ -35,6 +41,8 @@ message Reliquary {
   uint32 main_prop_id = 4;
   repeated uint32 append_prop_id_list = 5;
   bool is_marked = 6;
+  repeated uint32 purchased_append_prop_id_list = 7;
+  repeated uint32 definite_append_prop_id_list = 8;
 }
 
 message Weapon {
@@ -57,6 +65,23 @@ message Furniture {
   uint32 count = 1;
 }
 
+message Unk6600_LNDFMPDOFEL {
+  map<uint32, uint32> delete_time_num_map = 1;
+}
+
+message BeyondMaterial {
+  uint32 count = 1;
+  Unk6600_LNDFMPDOFEL delete_info = 2;
+}
+
+message Facility {
+  uint32 count = 1;	// 24
+}
+
+message VirtualItem {
+  int64 count = 1;
+}
+
 message Item {
   uint32 item_id = 1;
   uint64 guid = 2;
@@ -64,5 +89,8 @@ message Item {
     Material material = 5;
     Equip equip = 6;
     Furniture furniture = 7;
+    BeyondMaterial beyond_material = 8;
+    Facility facility = 9;
+    VirtualItem virtual_item = 255;
   }
 }
