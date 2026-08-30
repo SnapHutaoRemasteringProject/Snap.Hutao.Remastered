@@ -154,6 +154,7 @@ public static class SettingKeys
     public const string LaunchRedirectCombineEntry                       = "Snap::Hutao::Game::Island::Synthesis::Redirect";
     public const string LaunchCombineMenuHotkey                          = "Snap::Hutao::Game::Island::Synthesis::Hotkey";
     public const string LaunchWeakMapCheck                               = "Snap::Hutao::Game::Island::OpenMap::WeakCheck";
+    public const string LaunchFastSkipTalk                               = "Snap::Hutao::Game::Island::Dialogue::SkipCooldown::Remove";
     public const string LaunchUsingOverlay                               = "Snap::Hutao::Game::Overlay";
     public const string LaunchOverlaySelectedCatalogId                   = "Snap::Hutao::Game::Overlay::CatalogId";
     public const string LaunchOverlayWindowIsVisible                     = "Snap::Hutao::Game::Overlay::Visible";

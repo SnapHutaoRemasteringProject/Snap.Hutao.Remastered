@@ -41,6 +41,7 @@ public struct IslandEnvironment
     public int CombineHotkey;
     public BOOL WeakMapCheck;
     public BOOL DisablePlayerDiveMosaic;
+    public BOOL FastSkipTalk;
 }
 
 public class HexStringToNintConverter : JsonConverter<nint>

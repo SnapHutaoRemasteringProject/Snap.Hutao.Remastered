@@ -175,6 +175,9 @@ public sealed partial class LaunchOptions : DbStoreOptions, IRestrictedGamePathA
     public IObservableProperty<bool> HideGrass { get => field ??= CreateProperty(SettingKeys.LaunchHideGrass, false); }
 
     [field: MaybeNull]
+    public IObservableProperty<bool> FastSkipTalk { get => field ??= CreateProperty(SettingKeys.LaunchFastSkipTalk, false); }
+
+    [field: MaybeNull]
     public IObservableProperty<ImmutableArray<AspectRatio>> AspectRatios { get => field ??= CreatePropertyForStructUsingJson(SettingKeys.LaunchAspectRatios, ImmutableArray<AspectRatio>.Empty); }
 
     public AspectRatio? SelectedAspectRatio

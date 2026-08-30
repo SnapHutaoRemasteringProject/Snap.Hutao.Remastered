@@ -167,6 +167,7 @@ public sealed class GameIslandInterop : IGameIslandInterop
         pIslandEnvironment->EnableInLevelClockPageSpeedUp = options.EnableInLevelClockPageSpeedUp.Value;
         pIslandEnvironment->CombineHotkey = options.CombineMenuHotkey.Value;
         pIslandEnvironment->WeakMapCheck = options.WeakMapCheck.Value;
+        pIslandEnvironment->FastSkipTalk = options.FastSkipTalk.Value;
 
         return pIslandEnvironment->View;
     }
