@@ -4296,8 +4296,17 @@
   <data name="ViewDialogFastSkipTalkConfirmPrimaryButtonText" xml:space="preserve">
     <value>我知道我在做什麼！</value>
   </data>
-  <data name="ViewDialogCountdownConfirmCountdownFormat" xml:space="preserve">
+  <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
     <value>{0}({1}s)</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
+    <value>樹脂物品選項已全部關閉</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledHint" xml:space="preserve">
+    <value>關閉全部樹脂物品選項後，將無法在秘境中領取獎勵。是否確認關閉？</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledConfirmButtonText" xml:space="preserve">
+    <value>確認關閉</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>反角色虛化</value>
