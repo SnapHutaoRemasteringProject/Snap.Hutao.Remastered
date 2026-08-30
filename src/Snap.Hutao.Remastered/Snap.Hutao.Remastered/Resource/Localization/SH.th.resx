@@ -3201,13 +3201,13 @@
     <value>สลับอัตราเฟรม</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipSubtitle" xml:space="preserve">
-    <value>หากเฟรมเรตไม่สามารถเกิน 60/เฟรมเรตของจอแสดงผลหลังจากเปิดใช้งานฟังก์ชันนี้ แต่ฟังก์ชันอื่นทำงานปกติ แสดงว่านี่ไม่ใช่ข้อบกพร่องของซอฟต์แวร์ อย่ารายงานให้เราทราบ โปรดตรวจสอบด้วยตนเองว่าไม่ได้ปิด (รวมแต่ไม่จำกัดเพียง) V-Sync, ขีดจำกัดเฟรมเรตสูงสุด, การแทรกเฟรมอัจฉริยะ ฯลฯ ใน การตั้งค่าเกม/การตั้งค่าตัวขับการ์ดแสดงผล/การตั้งค่าจอแสดงผล</value>
+    <value>若在启用此功能后帧率无法超过 60/显示器帧率 但其他功能正常，那么这一定不是软件 BUG，不要向我们反馈。请自行检查 游戏设置/显卡驱动设置/显示器设置 中是否未关闭（包括但不限于）垂直同步，最大帧率限制，智能插帧等功能。若使用过远程控制软件（ToDesk、向日葵、Parsec 等）或虚拟显示适配器，也请一并排查——此类软件常自带帧率或垂直同步类限制，容易被忽略。</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipTitle" xml:space="preserve">
     <value>ไม่สามารถปลดล็อคขีดจำกัดเฟรมเรตได้หรือไม่?</value>
   </data>
   <data name="ViewPageLaunchGameUnlockFpsDescription" xml:space="preserve">
-    <value>โปรดปิดตัวเลือก "Vertical Sync" ภายในเกม ซึ่งต้องใช้ GPU ประสิทธิภาพสูงเพื่อรองรับอัตราเฟรมที่สูงขึ้น และตั้งค่าเป็น -1 เพื่ออัตราเฟรมที่ไม่จำกัด</value>
+    <value>请在游戏内关闭「垂直同步」选项，需要高性能的显卡以支持更高的帧率。若设置高于显示器刷新率仍无效，请检查显卡驱动或远程桌面/虚拟显示适配器是否开启了垂直同步类限制</value>
   </data>
   <data name="ViewPageLaunchGameUseHoyolabAccountDescription" xml:space="preserve">
     <value>ลงชื่อเข้าใช้ด้วยบัญชีผู้ใช้ MiYouShe / HoYoLAB ที่เลือกในปัจจุบัน ต้องเปิดใช้งาน "พารามิเตอร์เริ่มต้น"</value>
