@@ -1638,7 +1638,7 @@
     <value>為了確保功能的啟用者有獨立的判斷能力，我們將不定期更新這些功能的啟用條件，如果您是一位內容創造者，在創作胡桃相關的內容時請不要向你的受眾介紹具體的啟用方法。</value>
   </data>
   <data name="ViewDialogReconfirmTextHeader" xml:space="preserve">
-    <value>為防止你在無意間啟用，請輸入正在啟用的功能開關的<b>標題名稱</b></value>
+    <value>為防止你在無意間啟用，請輸入正在啟用的功能開關的&lt;b&gt;標題名稱&lt;/b&gt;</value>
   </data>
   <data name="ViewDialogReconfirmTitle" xml:space="preserve">
     <value>你正在啟用一個危險功能</value>
@@ -3489,9 +3489,6 @@
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>祈願紀錄</value>
   </data>
-  <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
-    <value>旅行者札記</value>
-  </data>
   <data name="ViewPageSettingHomeCardOff" xml:space="preserve">
     <value>隱藏</value>
   </data>
@@ -3897,15 +3894,6 @@
   <data name="ViewToolHeader" xml:space="preserve">
     <value>工具</value>
   </data>
-  <data name="ViewTravelersDiaryHeader" xml:space="preserve">
-    <value>旅行者札記</value>
-  </data>
-  <data name="ViewTravelersDiaryToday" xml:space="preserve">
-    <value>今日</value>
-  </data>
-  <data name="ViewTravelersDiaryMonth" xml:space="preserve">
-    <value>本月</value>
-  </data>
   <data name="ViewUserCookieOperation" xml:space="preserve">
     <value>米遊社</value>
   </data>
@@ -4308,8 +4296,17 @@
   <data name="ViewDialogFastSkipTalkConfirmPrimaryButtonText" xml:space="preserve">
     <value>我知道我在做什麼！</value>
   </data>
-  <data name="ViewDialogCountdownConfirmCountdownFormat" xml:space="preserve">
+  <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
     <value>{0}({1}s)</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
+    <value>樹脂物品選項已全部關閉</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledHint" xml:space="preserve">
+    <value>關閉全部樹脂物品選項後，將無法在秘境中領取獎勵。是否確認關閉？</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledConfirmButtonText" xml:space="preserve">
+    <value>確認關閉</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>反角色虛化</value>

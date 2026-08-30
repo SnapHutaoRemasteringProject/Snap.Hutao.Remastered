@@ -1638,7 +1638,7 @@ Space Available: {2}</value>
     <value>In order to ensure that functionaries have independent judgement capability, we will irregularly update the enabling conditions for these features. If you are a content creator, do not share specific activation methods with your audience.</value>
   </data>
   <data name="ViewDialogReconfirmTextHeader" xml:space="preserve">
-    <value>To avoid enabling unintentionally, please input the <b>title name</b> of feature you are enabling</value>
+    <value>To avoid enabling unintentionally, please input the &lt;b&gt;title name&lt;/b&gt; of feature you are enabling</value>
   </data>
   <data name="ViewDialogReconfirmTitle" xml:space="preserve">
     <value>You are Enabling a Dangerous Feature</value>
@@ -3488,9 +3488,6 @@ Space Available: {2}</value>
   <data name="ViewPageSettingHomeCardItemgachaStatisticsHeader" xml:space="preserve">
     <value>Wish History</value>
   </data>
-  <data name="ViewPageSettingHomeCardItemTravelersDiaryHeader" xml:space="preserve">
-    <value>Traveler's Diary</value>
-  </data>
   <data name="ViewPageSettingHomeCardOff" xml:space="preserve">
     <value>Hide</value>
   </data>
@@ -3896,15 +3893,6 @@ Space Available: {2}</value>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>Tools</value>
   </data>
-  <data name="ViewTravelersDiaryHeader" xml:space="preserve">
-    <value>Traveler's Diary</value>
-  </data>
-  <data name="ViewTravelersDiaryToday" xml:space="preserve">
-    <value>Today</value>
-  </data>
-  <data name="ViewTravelersDiaryMonth" xml:space="preserve">
-    <value>This Month</value>
-  </data>
   <data name="ViewUserCookieOperation" xml:space="preserve">
     <value>MiYouShe</value>
   </data>
@@ -4307,8 +4295,17 @@ Space Available: {2}</value>
   <data name="ViewDialogFastSkipTalkConfirmPrimaryButtonText" xml:space="preserve">
     <value>I know what I'm doing!</value>
   </data>
-  <data name="ViewDialogCountdownConfirmCountdownFormat" xml:space="preserve">
+  <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
     <value>{0}({1}s)</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
+    <value>All resin item options disabled</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledHint" xml:space="preserve">
+    <value>With all resin item options disabled, you will not be able to claim rewards in domains. Confirm disabling them?</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledConfirmButtonText" xml:space="preserve">
+    <value>Confirm disable</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>Special Interface Fix</value>

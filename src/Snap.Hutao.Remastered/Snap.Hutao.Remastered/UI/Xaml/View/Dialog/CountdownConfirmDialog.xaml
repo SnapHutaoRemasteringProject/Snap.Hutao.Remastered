@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     CloseButtonText="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"
+    DefaultButton="Close"
     IsPrimaryButtonEnabled="False"
     Style="{StaticResource DefaultContentDialogStyle}"
     mc:Ignorable="d">
@@ -22,6 +23,6 @@
             IsClosable="False"
             IsOpen="True"
             Message="{x:Bind Message, Mode=OneWay}"
-            Severity="Error"/>
+            Severity="{x:Bind Severity, Mode=OneWay}"/>
     </StackPanel>
 </ContentDialog>

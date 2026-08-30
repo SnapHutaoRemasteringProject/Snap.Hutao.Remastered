@@ -9,6 +9,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 
 [DependencyProperty<string>("Message")]
 [DependencyProperty<string>("ConfirmText")]
+[DependencyProperty<InfoBarSeverity>("Severity", NotNull = true)]
 public sealed partial class CountdownConfirmDialog : ContentDialog
 {
     private const int CountdownSeconds = 5;
@@ -20,27 +21,35 @@ public sealed partial class CountdownConfirmDialog : ContentDialog
     [GeneratedConstructor(InitializeComponent = true)]
     public partial CountdownConfirmDialog(IServiceProvider serviceProvider);
 
-    public CountdownConfirmDialog(IServiceProvider serviceProvider, string title, string message, string confirmText)
+    public CountdownConfirmDialog(IServiceProvider serviceProvider, string title, string message, string confirmText, InfoBarSeverity severity)
         : this(serviceProvider)
     {
         Title = title;
         Message = message;
         ConfirmText = confirmText;
+        Severity = severity;
+
+        IsPrimaryButtonEnabled = false;
+        PrimaryButtonText = SH.FormatViewDialogCountdownConfirmCountdownSuffix(confirmText, CountdownSeconds);
+        Opened += OnDialogOpened;
     }
 
     public async ValueTask<bool> ConfirmAsync()
     {
         await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
-        StartCountdown();
         ContentDialogResult result = await contentDialogFactory.EnqueueAndShowAsync(this).ShowTask.ConfigureAwait(false);
         return result is ContentDialogResult.Primary;
+    }
+
+    private void OnDialogOpened(ContentDialog sender, ContentDialogOpenedEventArgs args)
+    {
+        StartCountdown();
     }
 
     private void StartCountdown()
     {
         remainingSeconds = CountdownSeconds;
         IsPrimaryButtonEnabled = false;
-        DefaultButton = ContentDialogButton.None;
         UpdatePrimaryButtonText();
 
         countdownTimer ??= DispatcherQueue.CreateTimer();
@@ -57,7 +66,6 @@ public sealed partial class CountdownConfirmDialog : ContentDialog
         {
             countdownTimer?.Stop();
             IsPrimaryButtonEnabled = true;
-            DefaultButton = ContentDialogButton.Primary;
             PrimaryButtonText = ConfirmText;
             return;
         }
@@ -67,6 +75,6 @@ public sealed partial class CountdownConfirmDialog : ContentDialog
 
     private void UpdatePrimaryButtonText()
     {
-        PrimaryButtonText = string.Format(SH.ViewDialogCountdownConfirmCountdownFormat, ConfirmText, remainingSeconds);
+        PrimaryButtonText = SH.FormatViewDialogCountdownConfirmCountdownSuffix(ConfirmText, remainingSeconds);
     }
 }
