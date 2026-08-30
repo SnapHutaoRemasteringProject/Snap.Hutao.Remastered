@@ -4292,6 +4292,24 @@ Space Available: {2}</value>
   <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
     <value>Hide Player Information</value>
   </data>
+  <data name="ViewPageLaunchGameIslandFastSkipTalkHeader" xml:space="preserve">
+    <value>Remove Dialogue Skip Cooldown</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandFastSkipTalkDescription" xml:space="preserve">
+    <value>Remove the cooldown after skipping dialogue</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
+    <value>Remove Dialogue Skip Cooldown</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmHint" xml:space="preserve">
+    <value>This feature can easily lead to an account ban.</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmPrimaryButtonText" xml:space="preserve">
+    <value>I know what I'm doing!</value>
+  </data>
+  <data name="ViewDialogCountdownConfirmCountdownFormat" xml:space="preserve">
+    <value>{0}({1}s)</value>
+  </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>Special Interface Fix</value>
   </data>

@@ -4293,6 +4293,24 @@
   <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
     <value>隱藏玩家資訊</value>
   </data>
+  <data name="ViewPageLaunchGameIslandFastSkipTalkHeader" xml:space="preserve">
+    <value>移除對話跳過冷卻</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandFastSkipTalkDescription" xml:space="preserve">
+    <value>移除對話跳過後的冷卻時間</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
+    <value>移除對話跳過冷卻</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmHint" xml:space="preserve">
+    <value>此功能極易導致封號 請謹慎使用</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmPrimaryButtonText" xml:space="preserve">
+    <value>我知道我在做什麼！</value>
+  </data>
+  <data name="ViewDialogCountdownConfirmCountdownFormat" xml:space="preserve">
+    <value>{0}({1}s)</value>
+  </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>反角色虛化</value>
   </data>

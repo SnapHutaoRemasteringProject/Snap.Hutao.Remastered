@@ -1215,10 +1215,12 @@
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandHidePlayerInfoDescription}"
                                         Visibility="{Binding IsDeveloperAndLoggedIn, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                     <ToggleSwitch
+                                        x:Name="FastSkipTalkToggleSwitch"
                                         Grid.Row="8"
                                         Grid.Column="2"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandFastSkipTalkHeader}"
                                         IsOn="{Binding LaunchOptions.FastSkipTalk.Value, Mode=TwoWay}"
+                                        Toggled="FastSkipTalkToggleSwitch_Toggled"
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandFastSkipTalkDescription}"
                                         Visibility="{Binding IsDeveloperAndLoggedIn, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
