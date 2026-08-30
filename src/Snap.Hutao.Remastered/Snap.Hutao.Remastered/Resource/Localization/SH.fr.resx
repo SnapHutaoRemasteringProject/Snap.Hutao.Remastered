@@ -3201,13 +3201,13 @@ Espace disponible : {2}</value>
     <value>Commutateur chaud de fréquence d'images</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipSubtitle" xml:space="preserve">
-    <value>Si la fréquence d'images ne peut pas dépasser 60/la fréquence d'images de l'écran après avoir activé cette fonction mais que les autres fonctions fonctionnent normalement, ce n'est certainement pas un bogue du logiciel, ne nous le signalez pas. Veuillez vérifier par vous-même si la synchronisation verticale, la limitation du taux de rafraîchissement maximal, l'interpolation d'images intelligente, etc. ne sont pas désactivées (y compris, mais sans s'y limiter) dans les paramètres du jeu/les paramètres du pilote graphique/les paramètres de l'écran.</value>
+    <value>若在启用此功能后帧率无法超过 60/显示器帧率 但其他功能正常，那么这一定不是软件 BUG，不要向我们反馈。请自行检查 游戏设置/显卡驱动设置/显示器设置 中是否未关闭（包括但不限于）垂直同步，最大帧率限制，智能插帧等功能。若使用过远程控制软件（ToDesk、向日葵、Parsec 等）或虚拟显示适配器，也请一并排查——此类软件常自带帧率或垂直同步类限制，容易被忽略。</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipTitle" xml:space="preserve">
     <value>Impossible de déverrouiller la limite de fréquence d'images ?</value>
   </data>
   <data name="ViewPageLaunchGameUnlockFpsDescription" xml:space="preserve">
-    <value>Veuillez désactiver l'option « Synchronisation verticale » dans le jeu. Une carte graphique haute performance est nécessaire pour prendre en charge une fréquence d'images plus élevée. Définissez la valeur sur -1 pour une fréquence d'images illimitée.</value>
+    <value>请在游戏内关闭「垂直同步」选项，需要高性能的显卡以支持更高的帧率。若设置高于显示器刷新率仍无效，请检查显卡驱动或远程桌面/虚拟显示适配器是否开启了垂直同步类限制</value>
   </data>
   <data name="ViewPageLaunchGameUseHoyolabAccountDescription" xml:space="preserve">
     <value>Connectez-vous avec l'utilisateur  MiYouShe / HoYoLAB sélectionné. Les paramètres de démarrage doivent être activés</value>
