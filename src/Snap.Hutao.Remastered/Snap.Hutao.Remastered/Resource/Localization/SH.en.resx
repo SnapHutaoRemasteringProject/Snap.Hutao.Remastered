@@ -4295,8 +4295,17 @@ Space Available: {2}</value>
   <data name="ViewDialogFastSkipTalkConfirmPrimaryButtonText" xml:space="preserve">
     <value>I know what I'm doing!</value>
   </data>
-  <data name="ViewDialogCountdownConfirmCountdownFormat" xml:space="preserve">
+  <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
     <value>{0}({1}s)</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
+    <value>All resin item options disabled</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledHint" xml:space="preserve">
+    <value>With all resin item options disabled, you will not be able to claim rewards in domains. Confirm disabling them?</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledConfirmButtonText" xml:space="preserve">
+    <value>Confirm disable</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>Special Interface Fix</value>
