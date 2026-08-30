@@ -3201,13 +3201,13 @@ Space Available: {2}</value>
     <value>Frame Rate Hot Switch</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipSubtitle" xml:space="preserve">
-    <value>If the frame rate cannot exceed 60/monitor frame rate after enabling this feature but other functions are normal, then this is definitely not a software BUG, do not report it to us. Please check whether (including but not limited to) vertical sync, maximum frame rate limit, smart frame interpolation, and other functions are not disabled in the game settings/graphics driver settings/monitor settings.</value>
+    <value>若在启用此功能后帧率无法超过 60/显示器帧率 但其他功能正常，那么这一定不是软件 BUG，不要向我们反馈。请自行检查 游戏设置/显卡驱动设置/显示器设置 中是否未关闭（包括但不限于）垂直同步，最大帧率限制，智能插帧等功能。若使用过远程控制软件（ToDesk、向日葵、Parsec 等）或虚拟显示适配器，也请一并排查——此类软件常自带帧率或垂直同步类限制，容易被忽略。</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipTitle" xml:space="preserve">
     <value>Unable to Unlock Frame Rate Limit?</value>
   </data>
   <data name="ViewPageLaunchGameUnlockFpsDescription" xml:space="preserve">
-    <value>Please disable the "Vertical Sync" option inside the game, which requires a high-performance GPU to support higher frame rate, and set the value to -1 for unlimited framers.</value>
+    <value>请在游戏内关闭「垂直同步」选项，需要高性能的显卡以支持更高的帧率。若设置高于显示器刷新率仍无效，请检查显卡驱动或远程桌面/虚拟显示适配器是否开启了垂直同步类限制</value>
   </data>
   <data name="ViewPageLaunchGameUseHoyolabAccountDescription" xml:space="preserve">
     <value>Sign in with the currently selected MiYouShe / HoYoLAB user. Start parameters need to be enabled</value>
