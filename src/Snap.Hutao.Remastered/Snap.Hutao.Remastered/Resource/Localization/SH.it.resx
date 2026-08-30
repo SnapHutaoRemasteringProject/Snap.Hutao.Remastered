@@ -4295,8 +4295,17 @@ Spazio disponibile: {2}</value>
   <data name="ViewDialogFastSkipTalkConfirmPrimaryButtonText" xml:space="preserve">
     <value>我知道我在做什么！</value>
   </data>
-  <data name="ViewDialogCountdownConfirmCountdownFormat" xml:space="preserve">
+  <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
     <value>{0}({1}s)</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
+    <value>树脂物品选项已全部关闭</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledHint" xml:space="preserve">
+    <value>关闭全部树脂物品选项后，将无法在秘境中领取奖励。是否确认关闭？</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledConfirmButtonText" xml:space="preserve">
+    <value>确认关闭</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>Disabilita sfocatura personaggio</value>
