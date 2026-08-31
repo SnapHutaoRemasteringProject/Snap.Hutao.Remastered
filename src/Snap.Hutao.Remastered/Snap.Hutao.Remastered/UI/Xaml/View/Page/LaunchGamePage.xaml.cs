@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
@@ -15,39 +14,31 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 public sealed partial class LaunchGamePage : ScopedPage
 {
     private bool isInitializing;
-    private DispatcherQueueTimer? initGuardTimer;
 
     public LaunchGamePage()
     {
         InitializeComponent();
-        Loaded += OnPageLoaded;
     }
 
     protected override void LoadingOverride()
     {
-        // 树脂物品与 FastSkipTalk 开关是 TwoWay 绑定，初始化时绑定会把持久化的值
+        // 树脂物品与 FastSkipTalk 开关是 TwoWay 绑定，页面挂载时绑定会把持久化的值
         // 推入 IsOn 并触发 Toggled，若此时弹确认框就会"进页面就弹窗"。
+        // 因此这里在绑定激活前先把 IsOn 置为持久化值：绑定随后推入相同值时，依赖属性
+        // 值未变化、不会触发变更回调（这正是弹窗只在 DB 值≠默认时才出现的原因）
         isInitializing = true;
         InitializeDataContext<LaunchGameViewModel>();
-    }
 
-    // 绑定激活发生在元素连接到视觉树后的布局/渲染周期，实测仅靠 Loaded + 一个
-    // DispatcherQueue 回调周期仍会漏网（初始化 Toggled 在标志位清除后才触发）。
-    // 因此改用定时器延迟清除标志位，确保初始化 Toggled 全部被屏蔽后再放行用户操作。
-    private void OnPageLoaded(object sender, RoutedEventArgs e)
-    {
-        initGuardTimer ??= DispatcherQueue.CreateTimer();
-        initGuardTimer.Interval = TimeSpan.FromMilliseconds(500);
-        initGuardTimer.Tick -= OnInitGuardTimerTick;
-        initGuardTimer.Tick += OnInitGuardTimerTick;
-        initGuardTimer.Stop();
-        initGuardTimer.Start();
-    }
+        if (DataContext is LaunchGameViewModel { LaunchOptions: { } launchOptions })
+        {
+            OriginalResinAllowedToggleSwitch.IsOn = launchOptions.ResinListItemId000106Allowed.Value;
+            PrimogemAllowedToggleSwitch.IsOn = launchOptions.ResinListItemId000201Allowed.Value;
+            FragileResinAllowedToggleSwitch.IsOn = launchOptions.ResinListItemId107009Allowed.Value;
+            TransientResinAllowedToggleSwitch.IsOn = launchOptions.ResinListItemId107012Allowed.Value;
+            CondensedResinAllowedToggleSwitch.IsOn = launchOptions.ResinListItemId220007Allowed.Value;
+            FastSkipTalkToggleSwitch.IsOn = launchOptions.FastSkipTalk.Value;
+        }
 
-    private void OnInitGuardTimerTick(DispatcherQueueTimer sender, object args)
-    {
-        sender.Stop();
-        sender.Tick -= OnInitGuardTimerTick;
         isInitializing = false;
     }
 
@@ -78,7 +69,6 @@ public sealed partial class LaunchGamePage : ScopedPage
                     scope.ServiceProvider,
                     SH.ViewDialogFastSkipTalkConfirmTitle,
                     SH.ViewDialogFastSkipTalkConfirmHint,
-                    SH.ViewDialogFastSkipTalkConfirmPrimaryButtonText,
                     InfoBarSeverity.Error)
                 .ConfigureAwait(false);
 
@@ -134,7 +124,6 @@ public sealed partial class LaunchGamePage : ScopedPage
                     scope.ServiceProvider,
                     SH.ViewDialogResinListItemAllDisabledTitle,
                     SH.ViewDialogResinListItemAllDisabledHint,
-                    SH.ViewDialogResinListItemAllDisabledConfirmButtonText,
                     InfoBarSeverity.Warning)
                 .ConfigureAwait(false);
 

@@ -4305,9 +4305,6 @@
   <data name="ViewDialogResinListItemAllDisabledHint" xml:space="preserve">
     <value>關閉全部樹脂物品選項後，將無法在秘境中領取獎勵。是否確認關閉？</value>
   </data>
-  <data name="ViewDialogResinListItemAllDisabledConfirmButtonText" xml:space="preserve">
-    <value>確認關閉</value>
-  </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>反角色虛化</value>
   </data>

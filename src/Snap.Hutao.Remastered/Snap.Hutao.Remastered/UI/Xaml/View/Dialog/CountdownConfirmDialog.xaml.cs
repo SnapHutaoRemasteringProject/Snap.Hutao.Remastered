@@ -2,13 +2,13 @@
 // Licensed under the MIT license.
 
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 
 [DependencyProperty<string>("Message")]
-[DependencyProperty<string>("ConfirmText")]
 [DependencyProperty<InfoBarSeverity>("Severity", NotNull = true)]
 public sealed partial class CountdownConfirmDialog : ContentDialog
 {
@@ -21,16 +21,15 @@ public sealed partial class CountdownConfirmDialog : ContentDialog
     [GeneratedConstructor(InitializeComponent = true)]
     public partial CountdownConfirmDialog(IServiceProvider serviceProvider);
 
-    public CountdownConfirmDialog(IServiceProvider serviceProvider, string title, string message, string confirmText, InfoBarSeverity severity)
+    public CountdownConfirmDialog(IServiceProvider serviceProvider, string title, string message, InfoBarSeverity severity)
         : this(serviceProvider)
     {
         Title = title;
         Message = message;
-        ConfirmText = confirmText;
         Severity = severity;
 
         IsPrimaryButtonEnabled = false;
-        PrimaryButtonText = SH.FormatViewDialogCountdownConfirmCountdownSuffix(confirmText, CountdownSeconds);
+        UpdatePrimaryButtonText();
         Opened += OnDialogOpened;
     }
 
@@ -66,7 +65,7 @@ public sealed partial class CountdownConfirmDialog : ContentDialog
         {
             countdownTimer?.Stop();
             IsPrimaryButtonEnabled = true;
-            PrimaryButtonText = ConfirmText;
+            PrimaryButtonText = SH.ViewDialogFastSkipTalkConfirmPrimaryButtonText;
             return;
         }
 
@@ -75,6 +74,6 @@ public sealed partial class CountdownConfirmDialog : ContentDialog
 
     private void UpdatePrimaryButtonText()
     {
-        PrimaryButtonText = SH.FormatViewDialogCountdownConfirmCountdownSuffix(ConfirmText, remainingSeconds);
+        PrimaryButtonText = SH.FormatViewDialogCountdownConfirmCountdownSuffix(SH.ViewDialogFastSkipTalkConfirmPrimaryButtonText, remainingSeconds);
     }
 }
