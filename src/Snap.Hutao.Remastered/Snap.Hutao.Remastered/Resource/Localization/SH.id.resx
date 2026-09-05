@@ -3278,6 +3278,12 @@ Ruang Tersedia: {2}</value>
   <data name="ViewPageSettingAppearanceCloseButtonBehaviorHeader" xml:space="preserve">
     <value>Perilaku Tombol Tutup</value>
   </data>
+  <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintDescription" xml:space="preserve">
+    <value>关闭窗口进入后台运行时，显示“胡桃已进入后台运行”系统通知</value>
+  </data>
+  <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintHeader" xml:space="preserve">
+    <value>进入后台运行通知</value>
+  </data>
   <data name="ViewPageSettingApperanceFirstDayOfWeekDescription" xml:space="preserve">
     <value>Pilih hari pertama dalam seminggu yang sesuai untuk Anda</value>
   </data>
