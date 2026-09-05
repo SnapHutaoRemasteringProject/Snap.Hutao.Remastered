@@ -196,9 +196,6 @@ public sealed partial class CalendarViewModel : Abstraction.ViewModelSlim<Cultiv
             [DayOfWeek.Saturday] = materials36,
         };
 
-        // 卡池/版本全开窗口期内的日期，所有轮换副本素材均全天可获取
-        ImmutableArray<CalendarMaterial> materialsAll = [.. materials14.Concat(materials25).Concat(materials36).OrderBy(static material => (uint)material.Inner.Id)];
-
         DateTimeOffset effectiveToday = DateTimeOffset.Now.ToOffset(serverTimeZoneOffset).Date;
         DayOfWeek firstDayOfWeek = cultureOptions.FirstDayOfWeek.Value;
         DateTimeOffset nearestStartOfWeek = effectiveToday.AddDays((int)firstDayOfWeek - (int)effectiveToday.DayOfWeek);
@@ -212,8 +209,10 @@ public sealed partial class CalendarViewModel : Abstraction.ViewModelSlim<Cultiv
             .Select(i =>
             {
                 DateTimeOffset date = nearestStartOfWeek.AddDays(i);
+                // 卡池/版本全开窗口内的日期与周日同理：不逐项列出素材，
+                // 让日历卡片在 Materials 为空时显示"全部材料副本均可挑战"的文字提示
                 ImmutableArray<CalendarMaterial> materials = metadataContext.GachaEvents.IsDateInAllMaterialsOpenWindow(DateOnly.FromDateTime(date.DateTime), serverTimeZoneOffset)
-                    ? materialsAll
+                    ? []
                     : dailyMaterials.GetValueOrDefault(date.DayOfWeek, []);
                 return CreateCalendarDay(date, context2, materials);
             })

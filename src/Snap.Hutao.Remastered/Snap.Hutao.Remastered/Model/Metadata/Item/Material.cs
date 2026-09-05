@@ -77,9 +77,15 @@ public sealed class Material : DisplayItem
 
     public bool IsItemOfToday(in TimeSpan offset, bool treatSundayAsTrue = false, bool treatAllMaterialsAsOpenToday = false)
     {
+        bool isRotational = MaterialIds.MondayThursdayItems.Contains(Id)
+            || MaterialIds.TuesdayFridayItems.Contains(Id)
+            || MaterialIds.WednesdaySaturdayItems.Contains(Id);
+
         if (treatAllMaterialsAsOpenToday)
         {
-            return true;
+            // 卡池/版本全开窗口仅豁免“按星期轮换”的副本素材；
+            // 无日期限制的素材(首领/周本等)本就天天可刷，不额外标绿
+            return isRotational;
         }
 
         return (DateTimeOffset.Now.ToOffset(offset) - TimeSpan.FromHours(4)).DayOfWeek switch
@@ -87,7 +93,7 @@ public sealed class Material : DisplayItem
             DayOfWeek.Monday or DayOfWeek.Thursday => MaterialIds.MondayThursdayItems.Contains(Id),
             DayOfWeek.Tuesday or DayOfWeek.Friday => MaterialIds.TuesdayFridayItems.Contains(Id),
             DayOfWeek.Wednesday or DayOfWeek.Saturday => MaterialIds.WednesdaySaturdayItems.Contains(Id),
-            _ => treatSundayAsTrue && (MaterialIds.MondayThursdayItems.Contains(Id) || MaterialIds.TuesdayFridayItems.Contains(Id) || MaterialIds.WednesdaySaturdayItems.Contains(Id)),
+            _ => treatSundayAsTrue && isRotational,
         };
     }
 
