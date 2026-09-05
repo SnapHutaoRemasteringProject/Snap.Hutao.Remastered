@@ -10,12 +10,14 @@ namespace Snap.Hutao.Remastered.ViewModel.Cultivation;
 public sealed partial class CultivateItemView : ObservableObject, IEntityAccessWithMetadata<Model.Entity.CultivateItem, Material>
 {
     private readonly TimeSpan offset;
+    private readonly bool isAllMaterialsOpenToday;
 
-    private CultivateItemView(Model.Entity.CultivateItem entity, Material inner, in TimeSpan offset)
+    private CultivateItemView(Model.Entity.CultivateItem entity, Material inner, in TimeSpan offset, bool isAllMaterialsOpenToday)
     {
         Entity = entity;
         Inner = inner;
         this.offset = offset;
+        this.isAllMaterialsOpenToday = isAllMaterialsOpenToday;
     }
 
     public Material Inner { get; }
@@ -28,12 +30,12 @@ public sealed partial class CultivateItemView : ObservableObject, IEntityAccessW
         set => SetProperty(Entity.IsFinished, value, Entity, (entity, isFinished) => entity.IsFinished = isFinished);
     }
 
-    public bool IsToday { get => Inner.IsItemOfToday(offset, true); }
+    public bool IsToday { get => Inner.IsItemOfToday(offset, true, isAllMaterialsOpenToday); }
 
     public DaysOfWeek DaysOfWeek { get => Inner.GetDaysOfWeek(); }
 
-    public static CultivateItemView Create(Model.Entity.CultivateItem entity, Material inner, in TimeSpan offset)
+    public static CultivateItemView Create(Model.Entity.CultivateItem entity, Material inner, in TimeSpan offset, bool isAllMaterialsOpenToday)
     {
-        return new(entity, inner, offset);
+        return new(entity, inner, offset, isAllMaterialsOpenToday);
     }
 }

@@ -15,6 +15,8 @@ public class CultivationMetadataContext : ICultivationMetadataContext
 {
     public ImmutableArray<Material> Materials { get; set; } = default!;
 
+    public ImmutableArray<GachaEvent> GachaEvents { get; set; } = default!;
+
     public ImmutableDictionary<MaterialId, Material> IdMaterialMap { get; set; } = default!;
 
     public ImmutableDictionary<AvatarId, Model.Metadata.Avatar.Avatar> IdAvatarMap { get; set; } = default!;

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Model.Entity;
+using Snap.Hutao.Remastered.Model.Metadata;
 using Snap.Hutao.Remastered.Model.Metadata.Avatar;
 using Snap.Hutao.Remastered.Model.Metadata.Item;
 using Snap.Hutao.Remastered.Model.Metadata.Weapon;
@@ -64,7 +65,7 @@ public sealed partial class CalendarViewModel : Abstraction.ViewModelSlim<Cultiv
         IsInitialized = true;
     }
 
-    private static CalendarDay CreateCalendarDay(DateTimeOffset date, CalendarMetadataContext2 context2, IReadOnlyDictionary<DayOfWeek, ImmutableArray<CalendarMaterial>> dailyMaterials)
+    private static CalendarDay CreateCalendarDay(DateTimeOffset date, CalendarMetadataContext2 context2, ImmutableArray<CalendarMaterial> materials)
     {
         DateTimeFormatInfo formatInfo = CultureInfo.CurrentCulture.DateTimeFormat;
 
@@ -74,7 +75,7 @@ public sealed partial class CalendarViewModel : Abstraction.ViewModelSlim<Cultiv
             DayInMonth = date.Day,
             DayName = formatInfo.GetAbbreviatedDayName(date.DayOfWeek),
             BirthDayAvatars = [.. context2.AvatarBirthdays[new((uint)date.Month, (uint)date.Day)].Select(a => a.ToItem<Item>())],
-            Materials = dailyMaterials.GetValueOrDefault(date.DayOfWeek, []),
+            Materials = materials,
         };
     }
 
@@ -195,6 +196,9 @@ public sealed partial class CalendarViewModel : Abstraction.ViewModelSlim<Cultiv
             [DayOfWeek.Saturday] = materials36,
         };
 
+        // 卡池/版本全开窗口期内的日期，所有轮换副本素材均全天可获取
+        ImmutableArray<CalendarMaterial> materialsAll = [.. materials14.Concat(materials25).Concat(materials36).OrderBy(static material => (uint)material.Inner.Id)];
+
         DateTimeOffset effectiveToday = DateTimeOffset.Now.ToOffset(serverTimeZoneOffset).Date;
         DayOfWeek firstDayOfWeek = cultureOptions.FirstDayOfWeek.Value;
         DateTimeOffset nearestStartOfWeek = effectiveToday.AddDays((int)firstDayOfWeek - (int)effectiveToday.DayOfWeek);
@@ -205,7 +209,14 @@ public sealed partial class CalendarViewModel : Abstraction.ViewModelSlim<Cultiv
 
         IAdvancedCollectionView<CalendarDay> weekDays = Enumerable
             .Range(0, 7)
-            .Select(i => CreateCalendarDay(nearestStartOfWeek.AddDays(i), context2, dailyMaterials))
+            .Select(i =>
+            {
+                DateTimeOffset date = nearestStartOfWeek.AddDays(i);
+                ImmutableArray<CalendarMaterial> materials = metadataContext.GachaEvents.IsDateInAllMaterialsOpenWindow(DateOnly.FromDateTime(date.DateTime), serverTimeZoneOffset)
+                    ? materialsAll
+                    : dailyMaterials.GetValueOrDefault(date.DayOfWeek, []);
+                return CreateCalendarDay(date, context2, materials);
+            })
             .AsAdvancedCollectionView();
         return weekDays;
     }

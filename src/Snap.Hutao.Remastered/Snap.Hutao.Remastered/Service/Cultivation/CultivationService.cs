@@ -62,6 +62,8 @@ public sealed partial class CultivationService : ICultivationService
 
         ObservableCollection<CultivateEntryView> SynchronizedGetCultivateEntryCollection(CultivateProject cultivateProject, ICultivationMetadataContext context)
         {
+            bool allMaterialsOpenToday = IsAllMaterialsOpenToday(context, cultivateProject.ServerTimeZoneOffset);
+
             ImmutableArray<CultivateEntry> entries = cultivationRepository.GetCultivateEntryImmutableArrayIncludingLevelInformationByProjectId(cultivateProject.InnerId);
 
             List<CultivateEntryView> resultEntries = new(entries.Length);
@@ -72,7 +74,7 @@ public sealed partial class CultivationService : ICultivationService
 
                 foreach (ref readonly CultivateItem cultivateItem in items.AsSpan())
                 {
-                    entryItems.Add(CultivateItemView.Create(cultivateItem, context.GetMaterial(cultivateItem.ItemId), cultivateProject.ServerTimeZoneOffset));
+                    entryItems.Add(CultivateItemView.Create(cultivateItem, context.GetMaterial(cultivateItem.ItemId), cultivateProject.ServerTimeZoneOffset, allMaterialsOpenToday));
                 }
 
                 ModelItem item = entry.Type switch
@@ -113,6 +115,8 @@ public sealed partial class CultivationService : ICultivationService
 
         StatisticsCultivateItemCollection SynchronizedGetStatisticsCultivateItemCollection(CultivateProject cultivateProject, ICultivationMetadataContext context)
         {
+            bool allMaterialsOpenToday = IsAllMaterialsOpenToday(context, cultivateProject.ServerTimeZoneOffset);
+
             Dictionary</* ItemId */ uint, StatisticsCultivateItem> resultItems = [];
             Guid projectId = cultivateProject.InnerId;
 
@@ -123,14 +127,14 @@ public sealed partial class CultivationService : ICultivationService
                     ref StatisticsCultivateItem? existedItem = ref CollectionsMarshal.GetValueRefOrAddDefault(resultItems, item.ItemId, out _);
                     if (existedItem is null || existedItem.ExcludedFromPresentation)
                     {
-                        existedItem = StatisticsCultivateItem.Create(context.GetMaterial(item.ItemId), item, cultivateProject.ServerTimeZoneOffset);
+                        existedItem = StatisticsCultivateItem.Create(context.GetMaterial(item.ItemId), item, cultivateProject.ServerTimeZoneOffset, allMaterialsOpenToday);
                     }
                     else
                     {
                         existedItem.Count += item.Count;
                     }
 
-                    RecursiveAddMaterialIngredientsByMaterialId(cultivateProject, context, resultItems, item.ItemId);
+                    RecursiveAddMaterialIngredientsByMaterialId(cultivateProject, context, resultItems, item.ItemId, allMaterialsOpenToday);
                 }
             }
 
@@ -294,14 +298,14 @@ public sealed partial class CultivationService : ICultivationService
         return true;
     }
 
-    private static void RecursiveAddMaterialIngredientsByMaterialId(CultivateProject cultivateProject, ICultivationMetadataContext context, Dictionary<uint, StatisticsCultivateItem> resultItems, MaterialId materialId)
+    private static void RecursiveAddMaterialIngredientsByMaterialId(CultivateProject cultivateProject, ICultivationMetadataContext context, Dictionary<uint, StatisticsCultivateItem> resultItems, MaterialId materialId, bool allMaterialsOpenToday)
     {
         if (materialId == 104003U)
         {
             foreach (ref readonly MaterialId xpBookId in (ReadOnlySpan<MaterialId>)[104001U, 104002U])
             {
                 ref StatisticsCultivateItem? bookItem = ref CollectionsMarshal.GetValueRefOrAddDefault(resultItems, xpBookId, out _);
-                bookItem ??= StatisticsCultivateItem.Create(context.GetMaterial(xpBookId), cultivateProject.ServerTimeZoneOffset);
+                bookItem ??= StatisticsCultivateItem.Create(context.GetMaterial(xpBookId), cultivateProject.ServerTimeZoneOffset, allMaterialsOpenToday);
             }
 
             return;
@@ -312,9 +316,15 @@ public sealed partial class CultivationService : ICultivationService
             foreach (ref readonly IdCount ingredient in combine.Materials.AsSpan())
             {
                 ref StatisticsCultivateItem? ingredientItem = ref CollectionsMarshal.GetValueRefOrAddDefault(resultItems, ingredient.Id, out _);
-                ingredientItem ??= StatisticsCultivateItem.Create(context.GetMaterial(ingredient.Id), cultivateProject.ServerTimeZoneOffset);
-                RecursiveAddMaterialIngredientsByMaterialId(cultivateProject, context, resultItems, ingredient.Id);
+                ingredientItem ??= StatisticsCultivateItem.Create(context.GetMaterial(ingredient.Id), cultivateProject.ServerTimeZoneOffset, allMaterialsOpenToday);
+                RecursiveAddMaterialIngredientsByMaterialId(cultivateProject, context, resultItems, ingredient.Id, allMaterialsOpenToday);
             }
         }
+    }
+
+    private static bool IsAllMaterialsOpenToday(ICultivationMetadataContext context, in TimeSpan serverTimeZoneOffset)
+    {
+        DateOnly today = DateOnly.FromDateTime(DateTimeOffset.Now.ToOffset(serverTimeZoneOffset).DateTime);
+        return context.GachaEvents.IsDateInAllMaterialsOpenWindow(today, serverTimeZoneOffset);
     }
 }
