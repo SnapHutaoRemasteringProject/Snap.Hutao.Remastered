@@ -140,6 +140,9 @@ public sealed partial class AppOptions : DbStoreOptions
     public IObservableProperty<LastWindowCloseBehavior> LastWindowCloseBehavior { get => field ??= CreateProperty(SettingKeys.LastWindowCloseBehavior, Service.LastWindowCloseBehavior.EnsureNotifyIconCreated); }
 
     [field: MaybeNull]
+    public IObservableProperty<bool> IsNotifyIconBackgroundHintEnabled { get => field ??= CreateProperty(SettingKeys.IsNotifyIconBackgroundHintEnabled, true); }
+
+    [field: MaybeNull]
     public IObservableProperty<bool> AutoRestartAsAdmin { get => field ??= CreateProperty(SettingKeys.AutoRestartAsAdmin, false).WithValueChangedCallback(OnAutoRestartAsAdminChanged, this); }
 
     [field: MaybeNull]

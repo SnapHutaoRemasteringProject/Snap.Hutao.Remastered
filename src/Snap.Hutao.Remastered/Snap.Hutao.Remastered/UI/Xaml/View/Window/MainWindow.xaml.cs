@@ -125,7 +125,9 @@ public sealed partial class MainWindow : Microsoft.UI.Xaml.Window,
             return;
         }
 
-        if (this.TryGetAssociatedServiceProvider(out IServiceProvider serviceProvider) && !serviceProvider.GetRequiredService<NotifyIconController>().IsPromoted())
+        if (this.TryGetAssociatedServiceProvider(out IServiceProvider serviceProvider)
+            && !serviceProvider.GetRequiredService<NotifyIconController>().IsPromoted()
+            && app.Options.IsNotifyIconBackgroundHintEnabled.Value)
         {
             try
             {

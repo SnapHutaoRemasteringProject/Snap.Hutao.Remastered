@@ -455,6 +455,13 @@
                                             SelectedItem="{Binding SelectedLastWindowCloseBehavior, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
+                                <cwc:SettingsCard
+                                    Description="{shuxm:ResourceString Name=ViewPageSettingAppearanceNotifyIconBackgroundHintDescription}"
+                                    Header="{shuxm:ResourceString Name=ViewPageSettingAppearanceNotifyIconBackgroundHintHeader}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE946;}"
+                                    IsEnabled="{Binding AppOptions.NotifyIconCreated}">
+                                    <ToggleSwitch IsOn="{Binding AppOptions.IsNotifyIconBackgroundHintEnabled.Value, Mode=TwoWay}"/>
+                                </cwc:SettingsCard>
                             </StackPanel>
                         </Border>
                     </Border>

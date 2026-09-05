@@ -41,6 +41,7 @@ public static class SettingKeys
     public const string LastWindowCloseBehavior      = "Snap::Hutao::UI::Windowing::LastWindowCloseBehavior";
     public const string IsLastWindowCloseBehaviorSet = "Snap::Hutao::UI::Windowing::LastWindowCloseBehavior::Set";
     public const string IsNavPaneOpen                = "Snap::Hutao::UI::Windowing::MainWindow::NavigationView::IsPaneOpen";
+    public const string IsNotifyIconBackgroundHintEnabled = "Snap::Hutao::UI::Windowing::NotifyIcon::BackgroundHint::Enabled";
 
     // HomeCard
     public const string HomeCardAchievementOrder           = "Snap::Hutao::UI::Home::Card::Achievement::Order";
