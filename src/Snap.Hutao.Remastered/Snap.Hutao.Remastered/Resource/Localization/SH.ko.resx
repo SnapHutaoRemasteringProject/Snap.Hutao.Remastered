@@ -3278,6 +3278,12 @@
   <data name="ViewPageSettingAppearanceCloseButtonBehaviorHeader" xml:space="preserve">
     <value>닫기 버튼 동작</value>
   </data>
+  <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintDescription" xml:space="preserve">
+    <value>关闭窗口进入后台运行时，显示“胡桃已进入后台运行”系统通知</value>
+  </data>
+  <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintHeader" xml:space="preserve">
+    <value>进入后台运行通知</value>
+  </data>
   <data name="ViewPageSettingApperanceFirstDayOfWeekDescription" xml:space="preserve">
     <value>귀하에게 적합한 한 주의 첫날을 선택하세요</value>
   </data>
