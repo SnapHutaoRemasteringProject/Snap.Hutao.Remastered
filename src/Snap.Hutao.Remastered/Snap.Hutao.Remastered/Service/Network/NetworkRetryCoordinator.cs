@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Web;
+using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using System.Net.Http;
 using Windows.Networking.Connectivity;
@@ -21,11 +22,14 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
         public string? WarningMessage { get; set; }
     }
 
+    private readonly IServiceProvider serviceProvider;
     private readonly IMessenger messenger;
     private readonly ITaskContext taskContext;
     private readonly object syncRoot = new();
     private readonly Dictionary<string, RetryJob> jobs = new();
     private readonly CancellationTokenSource disposeCancellationTokenSource = new();
+
+    private static readonly TimeSpan PeriodicProbeInterval = TimeSpan.FromSeconds(15);
 
     private bool? isInternetAvailable;
     private int hasShownOfflineWarning;
@@ -34,11 +38,14 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
 
     public NetworkRetryCoordinator(IServiceProvider serviceProvider)
     {
+        this.serviceProvider = serviceProvider;
         messenger = serviceProvider.GetRequiredService<IMessenger>();
         taskContext = serviceProvider.GetRequiredService<ITaskContext>();
 
         isInternetAvailable = HasInternetAccess();
         NetworkInformation.NetworkStatusChanged += OnNetworkStatusChanged;
+
+        StartPeriodicProbeAsync().SafeForget();
     }
 
     public IDisposable Register(string key, Func<CancellationToken, ValueTask<bool>> retryAsync)
@@ -94,6 +101,33 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
         }
     }
 
+    public async ValueTask<bool> HasInternetAccessAsync(CancellationToken token = default)
+    {
+        // NCSI reports InternetAccess → trust it, no HTTP round trip needed.
+        if (HasInternetAccess())
+        {
+            return true;
+        }
+
+        // NCSI is not reliable: when it reports no Internet (e.g. probe hijacked and misjudged
+        // as captive portal, see issue #268) it may stay stale and never fire NetworkStatusChanged.
+        // Fall back to an active probe against the Snap Hutao API so a working network is not
+        // mistaken for an offline one.
+        using IServiceScope scope = serviceProvider.CreateScope();
+        using CancellationTokenSource timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(token);
+        timeoutCts.CancelAfter(TimeSpan.FromSeconds(3));
+
+        try
+        {
+            HutaoInfrastructureClient infrastructureClient = scope.ServiceProvider.GetRequiredService<HutaoInfrastructureClient>();
+            return await infrastructureClient.IsReachableAsync(timeoutCts.Token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            return false;
+        }
+    }
+
     public void Dispose()
     {
         disposeCancellationTokenSource.Cancel();
@@ -104,6 +138,38 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
     private void OnNetworkStatusChanged(object? sender)
     {
         ScheduleEvaluationAsync(true).SafeForget();
+    }
+
+    private async ValueTask StartPeriodicProbeAsync()
+    {
+        // Periodic backstop: when a job is pending and NCSI keeps reporting "no Internet",
+        // Windows may never raise NetworkStatusChanged again (e.g. captive-portal false positive,
+        // issue #268). Re-check periodically so recovery is eventually detected.
+        using PeriodicTimer timer = new(PeriodicProbeInterval);
+        try
+        {
+            while (await timer.WaitForNextTickAsync(disposeCancellationTokenSource.Token).ConfigureAwait(false))
+            {
+                // If NCSI now reports Internet, rely on the regular event-driven path.
+                if (!HasPendingJob() || HasInternetAccess())
+                {
+                    continue;
+                }
+
+                ScheduleEvaluationAsync(notifyRecovered: false).SafeForget();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
+    private bool HasPendingJob()
+    {
+        lock (syncRoot)
+        {
+            return jobs.Values.Any(static job => job.IsPending);
+        }
     }
 
     private async ValueTask ScheduleEvaluationAsync(bool notifyRecovered)
@@ -136,7 +202,7 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
 
         try
         {
-            bool internetAvailable = HasInternetAccess();
+            bool internetAvailable = await HasInternetAccessAsync(disposeCancellationTokenSource.Token).ConfigureAwait(false);
             bool? previousInternetAvailable = isInternetAvailable;
             isInternetAvailable = internetAvailable;
 

@@ -26,7 +26,6 @@ using Snap.Hutao.Remastered.Web;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using System.Net.Http;
 using System.IO;
-using Windows.Networking.Connectivity;
 
 namespace Snap.Hutao.Remastered.ViewModel;
 
@@ -157,7 +156,7 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
 
     private async ValueTask<bool> RetryStartupAsync(CancellationToken token)
     {
-        if (!HasInternetAccess())
+        if (!await networkRetryCoordinator.HasInternetAccessAsync(token).ConfigureAwait(false))
         {
             networkRetryCoordinator.MarkPending("MainViewModel.Startup", SH.ViewModelMainNetworkUnavailableWillAutoRetry);
             return false;
@@ -198,10 +197,5 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
             TaskCanceledException => true,
             _ => false,
         };
-    }
-
-    private static bool HasInternetAccess()
-    {
-        return NetworkInformation.GetInternetConnectionProfile()?.GetNetworkConnectivityLevel() is NetworkConnectivityLevel.InternetAccess;
     }
 }

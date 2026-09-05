@@ -7,6 +7,8 @@ public interface INetworkRetryCoordinator
 {
     IDisposable Register(string key, Func<CancellationToken, ValueTask<bool>> retryAsync);
 
+    ValueTask<bool> HasInternetAccessAsync(CancellationToken token = default);
+
     void MarkPending(string key, string warningMessage);
 
     void ClearPending(string key);

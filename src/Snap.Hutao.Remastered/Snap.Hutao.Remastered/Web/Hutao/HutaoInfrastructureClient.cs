@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation.HttpClient;
+using Snap.Hutao.Remastered.Core.IO.Http;
 using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
 using Snap.Hutao.Remastered.Web.Request.Builder;
@@ -40,6 +41,22 @@ public sealed partial class HutaoInfrastructureClient
 
         HutaoResponse<IPInformation>? resp = await builder.SendAsync<HutaoResponse<IPInformation>>(httpClient, token).ConfigureAwait(false);
         return Web.Response.Response.DefaultIfNull(resp);
+    }
+
+    /// <summary>
+    /// Lightweight connectivity probe against the Snap Hutao API. Used as a fallback when
+    /// NCSI's cached connectivity state is unreliable. Returns true only when a valid JSON
+    /// response is received, so hijacked/offline connections are reported as unreachable.
+    /// </summary>
+    public async ValueTask<bool> IsReachableAsync(CancellationToken token = default)
+    {
+        HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
+            .SetRequestUri(hutaoEndpointsFactory.Create().Ip())
+            .SetOptions(RetryHttpHandler.DisableRetry, true)
+            .Get();
+
+        HutaoResponse<IPInformation>? resp = await builder.SendAsync<HutaoResponse<IPInformation>>(httpClient, token).ConfigureAwait(false);
+        return resp is not null;
     }
 
     public async ValueTask<HutaoResponse<HutaoPackageInformation>> GetHutaoVersionInformationAsync(CancellationToken token = default)
