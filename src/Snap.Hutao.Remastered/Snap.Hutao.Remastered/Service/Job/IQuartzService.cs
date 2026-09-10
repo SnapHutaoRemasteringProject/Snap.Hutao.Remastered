@@ -12,5 +12,5 @@ public interface IQuartzService
 
     Task StopJobAsync(string group, string triggerName, CancellationToken token = default);
 
-    Task UpdateJobAsync(string group, string triggerName, Func<TriggerBuilder, TriggerBuilder> configure, CancellationToken token = default);
+    Task UpdateJobAsync(string group, string triggerName, Func<TriggerBuilder<IJob>, TriggerBuilder<IJob>> configure, CancellationToken token = default);
 }

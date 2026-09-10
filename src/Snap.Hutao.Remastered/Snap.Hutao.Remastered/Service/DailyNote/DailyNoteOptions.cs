@@ -54,7 +54,7 @@ public sealed partial class DailyNoteOptions : DbStoreOptions
                 int refreshTime = options.SelectedRefreshTime.Value.Value;
                 options.quartzService.UpdateJobAsync(JobIdentity.DailyNoteGroupName, JobIdentity.DailyNoteRefreshTriggerName, builder =>
                 {
-                    return builder.WithSimpleSchedule(sb => sb.WithIntervalInSeconds(refreshTime).RepeatForever());
+                    return builder.WithSimpleSchedule(sb => sb.WithInterval(TimeSpan.FromSeconds(refreshTime)));
                 }).GetAwaiter().GetResult();
             }
         }
@@ -68,7 +68,7 @@ public sealed partial class DailyNoteOptions : DbStoreOptions
     {
         options.quartzService.UpdateJobAsync(JobIdentity.DailyNoteGroupName, JobIdentity.DailyNoteRefreshTriggerName, builder =>
         {
-            return builder.WithSimpleSchedule(sb => sb.WithIntervalInSeconds(value).RepeatForever());
+            return builder.WithSimpleSchedule(sb => sb.WithInterval(TimeSpan.FromSeconds(value)));
         }).GetAwaiter().GetResult();
     }
 }

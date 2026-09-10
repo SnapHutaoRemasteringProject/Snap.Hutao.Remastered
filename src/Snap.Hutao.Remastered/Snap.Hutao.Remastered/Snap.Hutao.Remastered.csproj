@@ -273,8 +273,8 @@
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
     <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.3.260804-build.1839" />
     <PackageReference Include="CommunityToolkit.WinUI.Media" Version="8.2.251219" />
-    <PackageReference Include="DevWinUI" Version="10.3.0" />
-    <PackageReference Include="Google.Protobuf" Version="3.36.0" />
+    <PackageReference Include="DevWinUI" Version="10.4.1" />
+    <PackageReference Include="Google.Protobuf" Version="3.36.1" />
     <PackageReference Include="JetBrains.Annotations" Version="2026.2.0" />
     <PackageReference Include="Lib.Harmony" Version="2.4.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="5.6.0">
@@ -284,26 +284,26 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="5.9.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.9.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.9.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.11">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.12">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.11" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.11" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.11" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.11" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.11" />
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="10.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="10.0.12" />
     <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Validation" Version="17.13.22" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4129.50" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4191.47" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.3.1" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2526" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
     <PackageReference Include="QRCoder" Version="1.8.0" />
-    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.19.1" />
-    <PackageReference Include="Sentry.Extensions.Logging" Version="6.9.0" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="4.0.1" />
+    <PackageReference Include="Sentry.Extensions.Logging" Version="6.10.0" />
     <PackageReference Include="Snap.HPatch" Version="0.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -323,11 +323,11 @@
     <PackageReference Include="Snap.LibGit2Sharp" Version="0.31.1-preview.0.4" />
     <PackageReference Include="Snap.Hutao.FileUnlocker" Version="1.2.0" />
     <PackageReference Include="Snap.ZStandard" Version="1.5.7" />
-    <PackageReference Include="System.Drawing.Common" Version="10.0.11" />
-    <PackageReference Include="System.Formats.Nrbf" Version="10.0.11" />
-    <PackageReference Include="System.IO.Hashing" Version="10.0.11" />
-    <PackageReference Include="System.Threading.RateLimiting" Version="10.0.11" />
-    <PackageReference Include="Yae.Lib" Version="5.4.5">
+    <PackageReference Include="System.Drawing.Common" Version="10.0.12" />
+    <PackageReference Include="System.Formats.Nrbf" Version="10.0.12" />
+    <PackageReference Include="System.IO.Hashing" Version="10.0.12" />
+    <PackageReference Include="System.Threading.RateLimiting" Version="10.0.12" />
+    <PackageReference Include="Yae.Lib" Version="5.5.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

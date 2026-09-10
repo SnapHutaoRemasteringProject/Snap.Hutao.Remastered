@@ -14,8 +14,8 @@ public sealed partial class DailyNoteRefreshJob : IJob
     public partial DailyNoteRefreshJob(IServiceProvider serviceProvider);
 
     [SuppressMessage("", "SH003")]
-    public async Task Execute(IJobExecutionContext context)
+    public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
-        await dailyNoteService.RefreshDailyNotesAsync(context.CancellationToken).ConfigureAwait(false);
+        await dailyNoteService.RefreshDailyNotesAsync(cancellationToken).ConfigureAwait(false);
     }
 }

@@ -33,7 +33,7 @@ public sealed partial class QuartzService : IQuartzService, IDisposable
         startupCompleted.SetResult();
     }
 
-    public async Task UpdateJobAsync(string group, string triggerName, Func<TriggerBuilder, TriggerBuilder> configure, CancellationToken token = default)
+    public async Task UpdateJobAsync(string group, string triggerName, Func<TriggerBuilder<IJob>, TriggerBuilder<IJob>> configure, CancellationToken token = default)
     {
         if (scheduler is null)
         {

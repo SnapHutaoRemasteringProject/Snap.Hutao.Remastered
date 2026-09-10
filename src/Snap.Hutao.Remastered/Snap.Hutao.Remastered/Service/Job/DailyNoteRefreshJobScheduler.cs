@@ -27,7 +27,7 @@ public sealed partial class DailyNoteRefreshJobScheduler : IJobScheduler
 
         ITrigger dailyNoteTrigger = TriggerBuilder.Create()
             .WithIdentity(JobIdentity.DailyNoteRefreshTriggerName, JobIdentity.DailyNoteGroupName)
-            .WithSimpleSchedule(builder => builder.WithIntervalInSeconds(interval).RepeatForever())
+            .WithSimpleSchedule(builder => builder.WithInterval(TimeSpan.FromSeconds(interval)).RepeatForever())
             .StartAt(DateTimeOffset.Now.AddSeconds(interval))
             .Build();
 

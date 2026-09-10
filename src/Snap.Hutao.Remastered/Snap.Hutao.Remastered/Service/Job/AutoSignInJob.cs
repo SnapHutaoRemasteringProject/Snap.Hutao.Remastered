@@ -15,7 +15,7 @@ public sealed partial class AutoSignInJob : IJob
     [GeneratedConstructor]
     public partial AutoSignInJob(IServiceProvider serviceProvider);
 
-    public async Task Execute(IJobExecutionContext context)
+    public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
         logger.LogInformation("AutoSignInJob triggered at {NowUtc:O}", DateTimeOffset.UtcNow);
 
@@ -26,6 +26,6 @@ public sealed partial class AutoSignInJob : IJob
         }
 
         logger.LogInformation("AutoSignInJob running for uid {Uid}", userAndUid.Uid.Value);
-        await autoSignInService.RunOnceAsync(userAndUid, context.CancellationToken).ConfigureAwait(false);
+        await autoSignInService.RunOnceAsync(userAndUid, cancellationToken).ConfigureAwait(false);
     }
 }
