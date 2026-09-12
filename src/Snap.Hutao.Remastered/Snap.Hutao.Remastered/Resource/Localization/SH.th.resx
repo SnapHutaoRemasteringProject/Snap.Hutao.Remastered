@@ -3201,13 +3201,13 @@
     <value>สลับอัตราเฟรม</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipSubtitle" xml:space="preserve">
-    <value>若在启用此功能后帧率无法超过 60/显示器帧率 但其他功能正常，那么这一定不是软件 BUG，不要向我们反馈。请自行检查 游戏设置/显卡驱动设置/显示器设置 中是否未关闭（包括但不限于）垂直同步，最大帧率限制，智能插帧等功能。若使用过远程控制软件（ToDesk、向日葵、Parsec 等）或虚拟显示适配器，也请一并排查——此类软件常自带帧率或垂直同步类限制，容易被忽略。</value>
+    <value>หากหลังจากเปิดใช้งานฟังก์ชันนี้แล้วอัตราเฟรมไม่สามารถเกิน 60/อัตรารีเฟรชของจอแสดงผลได้ แต่ฟังก์ชันอื่นยังทำงานปกติ แสดงว่านี่ไม่ใช่บั๊กของซอฟต์แวร์อย่างแน่นอน ไม่ต้องรายงานให้เราทราบ โปรดตรวจสอบด้วยตนเองว่าฟังก์ชันต่างๆ เช่น V-Sync, ขีดจำกัดอัตราเฟรมสูงสุด, การแทรกเฟรมอัจฉริยะ (รวมถึงแต่ไม่จำกัดเพียงเท่านี้) ใน การตั้งค่าเกม/การตั้งค่าตัวขับการ์ดแสดงผล/การตั้งค่าจอแสดงผล ยังไม่ได้ปิดอยู่หรือไม่ หากเคยใช้ซอฟต์แวร์ควบคุมระยะไกล (ToDesk, Sunlogin/向日葵, Parsec ฯลฯ) หรืออะแดปเตอร์จอแสดงผลเสมือน โปรดตรวจสอบไปพร้อมกันด้วย — ซอฟต์แวร์ประเภทนี้มักมีข้อจำกัดด้านอัตราเฟรมหรือ V-Sync ติดมาด้วย ซึ่งมักถูกมองข้ามได้ง่าย</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipTitle" xml:space="preserve">
     <value>ไม่สามารถปลดล็อคขีดจำกัดเฟรมเรตได้หรือไม่?</value>
   </data>
   <data name="ViewPageLaunchGameUnlockFpsDescription" xml:space="preserve">
-    <value>请在游戏内关闭「垂直同步」选项，需要高性能的显卡以支持更高的帧率。若设置高于显示器刷新率仍无效，请检查显卡驱动或远程桌面/虚拟显示适配器是否开启了垂直同步类限制</value>
+    <value>โปรดปิดตัวเลือก「V-Sync」ภายในเกม จำเป็นต้องใช้การ์ดแสดงผลประสิทธิภาพสูงเพื่อรองรับอัตราเฟรมที่สูงขึ้น หากตั้งค่าให้สูงกว่าอัตรารีเฟรชของจอแสดงผลแล้วยังไม่เกิดผล โปรดตรวจสอบว่าตัวขับการ์ดแสดงผลหรือเดสก์ท็อประยะไกล/อะแดปเตอร์จอแสดงผลเสมือนเปิดใช้งานข้อจำกัดประเภท V-Sync อยู่หรือไม่</value>
   </data>
   <data name="ViewPageLaunchGameUseHoyolabAccountDescription" xml:space="preserve">
     <value>ลงชื่อเข้าใช้ด้วยบัญชีผู้ใช้ MiYouShe / HoYoLAB ที่เลือกในปัจจุบัน ต้องเปิดใช้งาน "พารามิเตอร์เริ่มต้น"</value>
@@ -3279,10 +3279,10 @@
     <value>พฤติกรรมของปุ่มปิด</value>
   </data>
   <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintDescription" xml:space="preserve">
-    <value>关闭窗口进入后台运行时，显示“胡桃已进入后台运行”系统通知</value>
+    <value>เมื่อปิดหน้าต่างเพื่อทำงานเบื้องหลัง จะแสดงการแจ้งเตือนของระบบ “Hutao กำลังทำงานเบื้องหลัง”</value>
   </data>
   <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintHeader" xml:space="preserve">
-    <value>进入后台运行通知</value>
+    <value>การแจ้งเตือนเมื่อเข้าสู่การทำงานเบื้องหลัง</value>
   </data>
   <data name="ViewPageSettingApperanceFirstDayOfWeekDescription" xml:space="preserve">
     <value>เลือกวันแรกของสัปดาห์ที่เหมาะกับคุณ</value>
@@ -4287,28 +4287,28 @@
     <value>隐藏玩家信息</value>
   </data>
   <data name="ViewPageLaunchGameIslandFastSkipTalkHeader" xml:space="preserve">
-    <value>移除对话跳过冷却</value>
+    <value>ลบเวลาคูลดาวน์การข้ามบทสนทนา</value>
   </data>
   <data name="ViewPageLaunchGameIslandFastSkipTalkDescription" xml:space="preserve">
-    <value>移除对话跳过后的冷却时间</value>
+    <value>ลบเวลาคูลดาวน์หลังการข้ามบทสนทนา</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
-    <value>移除对话跳过冷却</value>
+    <value>ลบเวลาคูลดาวน์การข้ามบทสนทนา</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmHint" xml:space="preserve">
-    <value>这个功能极易导致封号 谨慎使用</value>
+    <value>ฟีเจอร์นี้มีความเสี่ยงสูงที่จะทำให้บัญชีถูกแบน โปรดใช้ด้วยความระมัดระวัง</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmPrimaryButtonText" xml:space="preserve">
-    <value>我知道我在做什么！</value>
+    <value>ฉันรู้ว่าฉันกำลังทำอะไรอยู่!</value>
   </data>
   <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
-    <value>{0}({1}s)</value>
+    <value>{0}({1}วิ)</value>
   </data>
   <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
-    <value>树脂物品选项已全部关闭</value>
+    <value>ตัวเลือกไอเทมที่ใช้เรซินถูกปิดทั้งหมดแล้ว</value>
   </data>
   <data name="ViewDialogResinListItemAllDisabledHint" xml:space="preserve">
-    <value>关闭全部树脂物品选项后，将无法在秘境中领取奖励。是否确认关闭？</value>
+    <value>หลังจากปิดตัวเลือกไอเทมที่ใช้เรซินทั้งหมดแล้ว จะไม่สามารถรับรางวัลในโดเมนได้ ยืนยันที่จะปิดหรือไม่?</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>反角色虚化</value>
