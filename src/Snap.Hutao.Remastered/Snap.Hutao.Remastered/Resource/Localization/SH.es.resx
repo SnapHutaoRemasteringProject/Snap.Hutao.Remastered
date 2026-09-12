@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -1072,7 +1072,7 @@
     <value>Antes de usar Embedded Yae, se requiere que Snap Hutao se ejecute con privilegios de administrador</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeErrorSystemIntegrityPolicyViolation" xml:space="preserve">
-    <value>Error de inyección, posiblemente debido a que Windows Defender y el control de aplicaciones y navegador &gt; la política de control de aplicaciones inteligentes bloqueó la operación, intente desactivarla.</value>
+    <value>Error de inyección, posiblemente debido a que Windows Defender y el control de aplicaciones y navegador > la política de control de aplicaciones inteligentes bloqueó la operación, intente desactivarla.</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>Antes de usar Embedded Yae, debe conocer los riesgos relacionados y activar la función de inyección en la página "Iniciar juego"</value>
@@ -1994,6 +1994,15 @@ Espacio disponible: {2}</value>
   <data name="ViewModelCultivationResinStatisticsWeeklyBossTitle" xml:space="preserve">
     <value>Jefe semanal</value>
   </data>
+  <data name="ViewModelCultivationSyncAvatarInfoCompleted" xml:space="preserve">
+    <value>已更新 {0} 个角色条目，跳过 {1} 个</value>
+  </data>
+  <data name="ViewModelCultivationSyncAvatarInfoNoCharacter" xml:space="preserve">
+    <value>未获取到可用于同步的角色详情</value>
+  </data>
+  <data name="ViewModelCultivationSyncAvatarInfoProgress" xml:space="preserve">
+    <value>正在从米游社同步角色等级与天赋</value>
+  </data>
   <data name="ViewModelDailyNoteConfigWebhookUrlComplete" xml:space="preserve">
     <value>URL del Webhook de nota en tiempo real configurada correctamente</value>
   </data>
@@ -2614,6 +2623,9 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewPageCultivationRefreshInventoryByBackpackArchive" xml:space="preserve">
     <value>Sincronizar mediante archivo de objetos del inventario</value>
+  </data>
+  <data name="ViewPageCultivationSyncAvatarInfo" xml:space="preserve">
+    <value>同步角色等级与天赋</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Eliminar lista</value>
@@ -3277,6 +3289,12 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewPageSettingAppearanceCloseButtonBehaviorHeader" xml:space="preserve">
     <value>Comportamiento del botón de cerrar</value>
+  </data>
+  <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintDescription" xml:space="preserve">
+    <value>Al cerrar la ventana y pasar a segundo plano, muestra la notificación del sistema “Hutao se ha ejecutado en segundo plano”</value>
+  </data>
+  <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintHeader" xml:space="preserve">
+    <value>Notificación de ejecución en segundo plano</value>
   </data>
   <data name="ViewPageSettingApperanceFirstDayOfWeekDescription" xml:space="preserve">
     <value>Selecciona el primer día de la semana</value>
@@ -4279,6 +4297,30 @@ Espacio disponible: {2}</value>
   </data>
   <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
     <value>Ocultar información del jugador</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandFastSkipTalkHeader" xml:space="preserve">
+    <value>Eliminar el tiempo de enfriamiento al omitir diálogos</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandFastSkipTalkDescription" xml:space="preserve">
+    <value>Eliminar el tiempo de enfriamiento tras omitir diálogos</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
+    <value>Eliminar el tiempo de enfriamiento al omitir diálogos</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmHint" xml:space="preserve">
+    <value>Esta función puede provocar fácilmente el baneo de la cuenta, úsala con precaución</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmPrimaryButtonText" xml:space="preserve">
+    <value>¡Sé lo que estoy haciendo!</value>
+  </data>
+  <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
+    <value>{0} ({1} s)</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
+    <value>Todas las opciones de objetos de resina están desactivadas</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledHint" xml:space="preserve">
+    <value>Si desactivas todas las opciones de objetos de resina, no podrás reclamar recompensas en los dominios. ¿Confirmas la desactivación?</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>Desactivar desenfoque del personaje</value>
