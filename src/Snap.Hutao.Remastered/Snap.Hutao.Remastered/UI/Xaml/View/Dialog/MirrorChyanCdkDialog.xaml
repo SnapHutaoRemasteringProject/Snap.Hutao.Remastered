@@ -15,8 +15,14 @@
     <StackPanel Spacing="12">
         <TextBlock
             Style="{ThemeResource CaptionTextBlockStyle}"
-            Text="{shuxm:ResourceString Name=ViewDialogMirrorChyanCdkHint}"
-            TextWrapping="Wrap"/>
+            TextWrapping="Wrap">
+            <TextBlock.Inlines>
+                <Run Text="{shuxm:ResourceString Name=ViewDialogMirrorChyanCdkHint}"/>
+                <Hyperlink NavigateUri="https://mirrorchyan.com/zh/projects?rid=SnapHutaoRemastered">
+                    <Run Text="{shuxm:ResourceString Name=ViewDialogMirrorChyanCdkGetCdk}"/>
+                </Hyperlink>
+            </TextBlock.Inlines>
+        </TextBlock>
         <TextBox Text="{x:Bind Text, Mode=TwoWay}"/>
     </StackPanel>
 </ContentDialog>

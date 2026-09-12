@@ -5141,7 +5141,10 @@
     <value>Mirror醬 CDK</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
-    <value>請輸入 Mirror醬 啟用金鑰（CDK），留空則跳過。可從 mirrorchyan.com 取得。</value>
+    <value>請輸入 Mirror醬 啟用金鑰（CDK），留空則跳過。</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkGetCdk" xml:space="preserve">
+    <value>取得 CDK</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
     <value>旅行者札記</value>

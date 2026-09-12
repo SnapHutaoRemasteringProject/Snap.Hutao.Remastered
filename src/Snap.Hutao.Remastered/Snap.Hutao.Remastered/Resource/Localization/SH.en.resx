@@ -5140,7 +5140,10 @@ Space Available: {2}</value>
     <value>MirrorChyan CDK</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
-    <value>Enter your Mirror酱 activation key (CDK), or leave blank to skip. Get one at mirrorchyan.com.</value>
+    <value>Enter your Mirror酱 activation key (CDK), or leave blank to skip. </value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkGetCdk" xml:space="preserve">
+    <value>Get CDK</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
     <value>Traveler's Diary</value>
