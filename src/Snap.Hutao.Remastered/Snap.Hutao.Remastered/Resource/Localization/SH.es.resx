@@ -5136,7 +5136,10 @@ Espacio disponible: {2}</value>
     <value>CDK de Mirror酱</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
-    <value>Introduzca la clave de activación de Mirror酱 (CDK), déjelo en blanco para omitir. Se puede obtener en mirrorchyan.com.</value>
+    <value>请输入 Mirror酱 激活密钥（CDK），留空则跳过。</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkGetCdk" xml:space="preserve">
+    <value>获取 CDK</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
     <value>Diario del viajero</value>
