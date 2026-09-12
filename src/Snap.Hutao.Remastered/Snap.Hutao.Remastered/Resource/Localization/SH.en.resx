@@ -4302,7 +4302,7 @@ Space Available: {2}</value>
     <value>I know what I'm doing!</value>
   </data>
   <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
-    <value>{0}({1}s)</value>
+    <value>{0} ({1}s)</value>
   </data>
   <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
     <value>All resin item options disabled</value>
