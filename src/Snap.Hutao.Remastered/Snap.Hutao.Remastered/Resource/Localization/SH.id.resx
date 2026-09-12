@@ -3201,13 +3201,13 @@ Ruang Tersedia: {2}</value>
     <value>Sakelar Panas Laju Bingkai</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipSubtitle" xml:space="preserve">
-    <value>若在启用此功能后帧率无法超过 60/显示器帧率 但其他功能正常，那么这一定不是软件 BUG，不要向我们反馈。请自行检查 游戏设置/显卡驱动设置/显示器设置 中是否未关闭（包括但不限于）垂直同步，最大帧率限制，智能插帧等功能。若使用过远程控制软件（ToDesk、向日葵、Parsec 等）或虚拟显示适配器，也请一并排查——此类软件常自带帧率或垂直同步类限制，容易被忽略。</value>
+    <value>Jika setelah mengaktifkan fitur ini frame rate tidak dapat melebihi 60/frame rate monitor tetapi fungsi lain berjalan normal, maka ini pasti bukan BUG perangkat lunak, jangan laporkan kepada kami. Periksa sendiri apakah di pengaturan game/pengaturan driver kartu grafis/pengaturan monitor belum dinonaktifkan (termasuk namun tidak terbatas pada) sinkronisasi vertikal, batas frame rate maksimum, interpolasi frame pintar, dan fitur lainnya. Jika pernah menggunakan perangkat lunak kendali jarak jauh (ToDesk, Sunlogin, Parsec, dll.) atau adaptor tampilan virtual, periksa juga semuanya—perangkat lunak semacam itu sering memiliki batasan frame rate atau sinkronisasi vertikal sendiri yang mudah terlewat.</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipTitle" xml:space="preserve">
     <value>Tidak Dapat Membuka Batas Frame Rate?</value>
   </data>
   <data name="ViewPageLaunchGameUnlockFpsDescription" xml:space="preserve">
-    <value>请在游戏内关闭「垂直同步」选项，需要高性能的显卡以支持更高的帧率。若设置高于显示器刷新率仍无效，请检查显卡驱动或远程桌面/虚拟显示适配器是否开启了垂直同步类限制</value>
+    <value>Harap nonaktifkan opsi "Sinkronisasi Vertikal" di dalam game, diperlukan kartu grafis berperforma tinggi untuk mendukung frame rate yang lebih tinggi. Jika pengaturan yang lebih tinggi dari refresh rate monitor tetap tidak berfungsi, periksa apakah driver kartu grafis atau desktop jarak jauh/adaptor tampilan virtual mengaktifkan batasan sejenis sinkronisasi vertikal</value>
   </data>
   <data name="ViewPageLaunchGameUseHoyolabAccountDescription" xml:space="preserve">
     <value>Masuk dengan pengguna {米游社} / HoYoLAB yang saat ini dipilih, parameter mulai perlu diaktifkan</value>
@@ -3279,10 +3279,10 @@ Ruang Tersedia: {2}</value>
     <value>Perilaku Tombol Tutup</value>
   </data>
   <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintDescription" xml:space="preserve">
-    <value>关闭窗口进入后台运行时，显示“胡桃已进入后台运行”系统通知</value>
+    <value>Saat menutup jendela dan beralih ke latar belakang, tampilkan notifikasi sistem “Hutao telah berjalan di latar belakang”</value>
   </data>
   <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintHeader" xml:space="preserve">
-    <value>进入后台运行通知</value>
+    <value>Notifikasi berjalan di latar belakang</value>
   </data>
   <data name="ViewPageSettingApperanceFirstDayOfWeekDescription" xml:space="preserve">
     <value>Pilih hari pertama dalam seminggu yang sesuai untuk Anda</value>
@@ -4287,28 +4287,28 @@ Ruang Tersedia: {2}</value>
     <value>Sembunyikan info pemain</value>
   </data>
   <data name="ViewPageLaunchGameIslandFastSkipTalkHeader" xml:space="preserve">
-    <value>移除对话跳过冷却</value>
+    <value>Hapus cooldown lewati dialog</value>
   </data>
   <data name="ViewPageLaunchGameIslandFastSkipTalkDescription" xml:space="preserve">
-    <value>移除对话跳过后的冷却时间</value>
+    <value>Hapus waktu cooldown setelah melewati dialog</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
-    <value>移除对话跳过冷却</value>
+    <value>Hapus cooldown lewati dialog</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmHint" xml:space="preserve">
-    <value>这个功能极易导致封号 谨慎使用</value>
+    <value>Fitur ini sangat berisiko menyebabkan akun diblokir, gunakan dengan hati-hati</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmPrimaryButtonText" xml:space="preserve">
-    <value>我知道我在做什么！</value>
+    <value>Saya tahu apa yang saya lakukan!</value>
   </data>
   <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
-    <value>{0}({1}s)</value>
+    <value>{0}({1} dtk)</value>
   </data>
   <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
-    <value>树脂物品选项已全部关闭</value>
+    <value>Semua opsi item Resin telah dinonaktifkan</value>
   </data>
   <data name="ViewDialogResinListItemAllDisabledHint" xml:space="preserve">
-    <value>关闭全部树脂物品选项后，将无法在秘境中领取奖励。是否确认关闭？</value>
+    <value>Setelah menonaktifkan semua opsi item Resin, Anda tidak akan bisa mengambil hadiah di Domain. Yakin ingin menonaktifkan?</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>Anti-blur karakter</value>
