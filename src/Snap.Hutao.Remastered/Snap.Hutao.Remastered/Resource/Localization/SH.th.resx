@@ -5150,6 +5150,9 @@
   <data name="ViewTravelersDiaryMonth" xml:space="preserve">
     <value>เดือนนี้</value>
   </data>
+  <data name="ViewTravelersDiaryNoIncomeSourceHint" xml:space="preserve">
+    <value>本月暂无原石收入记录</value>
+  </data>
   <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
     <value>ดาวสองดวง</value>
   </data>
