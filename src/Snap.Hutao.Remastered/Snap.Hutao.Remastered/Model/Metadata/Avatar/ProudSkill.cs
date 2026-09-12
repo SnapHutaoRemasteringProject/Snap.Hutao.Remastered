@@ -15,6 +15,8 @@ public sealed class ProudSkill : Skill, ITypedCalculableSource<ICalculableSkill,
 
     public required EnergyType SpecialEnergyType { get; init; }
 
+    public float? CdTime { get; set; }
+
     public static uint GetMaxLevel()
     {
         return 10U;
