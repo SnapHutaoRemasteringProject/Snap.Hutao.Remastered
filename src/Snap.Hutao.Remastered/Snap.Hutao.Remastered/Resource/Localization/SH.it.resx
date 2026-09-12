@@ -3201,13 +3201,13 @@ Spazio disponibile: {2}</value>
     <value>Interruttore rapido frequenza fotogrammi</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipSubtitle" xml:space="preserve">
-    <value>若在启用此功能后帧率无法超过 60/显示器帧率 但其他功能正常，那么这一定不是软件 BUG，不要向我们反馈。请自行检查 游戏设置/显卡驱动设置/显示器设置 中是否未关闭（包括但不限于）垂直同步，最大帧率限制，智能插帧等功能。若使用过远程控制软件（ToDesk、向日葵、Parsec 等）或虚拟显示适配器，也请一并排查——此类软件常自带帧率或垂直同步类限制，容易被忽略。</value>
+    <value>Se dopo aver attivato questa funzione il frame rate non riesce a superare i 60/il frame rate del monitor ma le altre funzioni funzionano normalmente, allora sicuramente non è un BUG del software, non segnalarcelo. Controlla personalmente se nelle impostazioni di gioco/impostazioni del driver della scheda video/impostazioni del monitor non siano disattivate (inclusi ma non limitati a) la sincronizzazione verticale, il limite massimo di frame rate, l'interpolazione dei frame intelligente e altre funzioni. Se hai usato software di controllo remoto (ToDesk, Sunlogin, Parsec, ecc.) o adattatori di visualizzazione virtuale, verifica anche questi — tali software spesso includono limiti di frame rate o simili alla sincronizzazione verticale, che è facile trascurare.</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipTitle" xml:space="preserve">
     <value>Impossibile sbloccare il limite di frame rate?</value>
   </data>
   <data name="ViewPageLaunchGameUnlockFpsDescription" xml:space="preserve">
-    <value>请在游戏内关闭「垂直同步」选项，需要高性能的显卡以支持更高的帧率。若设置高于显示器刷新率仍无效，请检查显卡驱动或远程桌面/虚拟显示适配器是否开启了垂直同步类限制</value>
+    <value>Disattiva l'opzione «Sincronizzazione verticale» nel gioco; è necessaria una scheda video ad alte prestazioni per supportare frame rate più elevati. Se impostando un valore superiore alla frequenza di aggiornamento del monitor non funziona ancora, controlla se il driver della scheda video o il desktop remoto/adattatore di visualizzazione virtuale hanno attivato limiti simili alla sincronizzazione verticale</value>
   </data>
   <data name="ViewPageLaunchGameUseHoyolabAccountDescription" xml:space="preserve">
     <value>Accedi con l'utente 米游社 / HoYoLAB attualmente selezionato. È necessario abilitare i "Parametri di avvio"</value>
@@ -3279,10 +3279,10 @@ Spazio disponibile: {2}</value>
     <value>Comportamento del pulsante di chiusura</value>
   </data>
   <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintDescription" xml:space="preserve">
-    <value>关闭窗口进入后台运行时，显示“胡桃已进入后台运行”系统通知</value>
+    <value>Quando si chiude la finestra per l'esecuzione in background, mostra la notifica di sistema "Hutao è in esecuzione in background"</value>
   </data>
   <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintHeader" xml:space="preserve">
-    <value>进入后台运行通知</value>
+    <value>Notifica di esecuzione in background</value>
   </data>
   <data name="ViewPageSettingApperanceFirstDayOfWeekDescription" xml:space="preserve">
     <value>Seleziona il primo giorno della settimana</value>
@@ -4287,28 +4287,28 @@ Spazio disponibile: {2}</value>
     <value>Nascondi informazioni giocatore</value>
   </data>
   <data name="ViewPageLaunchGameIslandFastSkipTalkHeader" xml:space="preserve">
-    <value>移除对话跳过冷却</value>
+    <value>Rimuovi il tempo di attesa per il salto dei dialoghi</value>
   </data>
   <data name="ViewPageLaunchGameIslandFastSkipTalkDescription" xml:space="preserve">
-    <value>移除对话跳过后的冷却时间</value>
+    <value>Rimuovi il tempo di attesa dopo il salto dei dialoghi</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
-    <value>移除对话跳过冷却</value>
+    <value>Rimuovi il tempo di attesa per il salto dei dialoghi</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmHint" xml:space="preserve">
-    <value>这个功能极易导致封号 谨慎使用</value>
+    <value>Questa funzione può causare molto facilmente la sospensione dell'account. Usare con cautela</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmPrimaryButtonText" xml:space="preserve">
-    <value>我知道我在做什么！</value>
+    <value>So quello che sto facendo!</value>
   </data>
   <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
     <value>{0}({1}s)</value>
   </data>
   <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
-    <value>树脂物品选项已全部关闭</value>
+    <value>Tutte le opzioni degli oggetti Resina sono state disattivate</value>
   </data>
   <data name="ViewDialogResinListItemAllDisabledHint" xml:space="preserve">
-    <value>关闭全部树脂物品选项后，将无法在秘境中领取奖励。是否确认关闭？</value>
+    <value>Dopo aver disattivato tutte le opzioni degli oggetti Resina, non sarà più possibile ritirare le ricompense nei Domini. Confermi la disattivazione?</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>Disabilita sfocatura personaggio</value>
