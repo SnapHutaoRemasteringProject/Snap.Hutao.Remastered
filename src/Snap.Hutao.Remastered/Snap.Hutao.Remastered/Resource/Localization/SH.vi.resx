@@ -5154,6 +5154,9 @@ Dung lượng còn trống: {2}</value>
   <data name="ViewTravelersDiaryMonth" xml:space="preserve">
     <value>Tháng này</value>
   </data>
+  <data name="ViewTravelersDiaryNoIncomeSourceHint" xml:space="preserve">
+    <value>本月暂无原石收入记录</value>
+  </data>
   <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
     <value>2 Sao</value>
   </data>
