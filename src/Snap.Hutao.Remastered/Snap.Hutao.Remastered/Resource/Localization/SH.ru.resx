@@ -3207,13 +3207,13 @@
     <value>Горячее переключение частоты кадров</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipSubtitle" xml:space="preserve">
-    <value>若在启用此功能后帧率无法超过 60/显示器帧率 但其他功能正常，那么这一定不是软件 BUG，不要向我们反馈。请自行检查 游戏设置/显卡驱动设置/显示器设置 中是否未关闭（包括但不限于）垂直同步，最大帧率限制，智能插帧等功能。若使用过远程控制软件（ToDesk、向日葵、Parsec 等）或虚拟显示适配器，也请一并排查——此类软件常自带帧率或垂直同步类限制，容易被忽略。</value>
+    <value>Если после включения этой функции частота кадров не может превысить 60/частоту кадров монитора, но при этом остальные функции работают нормально, то это точно не ошибка ПО, не сообщайте нам об этом. Самостоятельно проверьте, не отключены ли (включая, но не ограничиваясь) вертикальная синхронизация, ограничение максимальной частоты кадров, интеллектуальная интерполяция кадров и другие подобные функции в настройках игры/драйвера видеокарты/монитора. Если вы пользовались программами удалённого управления (ToDesk, Sunflower, Parsec и т. п.) или виртуальными видеоадаптерами, также проверьте их — такие программы часто имеют встроенные ограничения частоты кадров или вертикальной синхронизации, которые легко упустить.</value>
   </data>
   <data name="ViewPageLaunchGameTargetFpsTeachingTipTitle" xml:space="preserve">
     <value>Не удаётся разблокировать ограничение частоты кадров?</value>
   </data>
   <data name="ViewPageLaunchGameUnlockFpsDescription" xml:space="preserve">
-    <value>请在游戏内关闭「垂直同步」选项，需要高性能的显卡以支持更高的帧率。若设置高于显示器刷新率仍无效，请检查显卡驱动或远程桌面/虚拟显示适配器是否开启了垂直同步类限制</value>
+    <value>Отключите параметр «Вертикальная синхронизация» в игре; для поддержки более высокой частоты кадров требуется мощная видеокарта. Если установка значения выше частоты обновления монитора всё равно не даёт результата, проверьте, не включены ли ограничения типа вертикальной синхронизации в драйвере видеокарты или в программе удалённого рабочего стола/виртуальном видеоадаптере</value>
   </data>
   <data name="ViewPageLaunchGameUseHoyolabAccountDescription" xml:space="preserve">
     <value>Выполните вход, используя выбранного пользователя Миюшэ / HoYoLAB. Необходимо включить «Параметры запуска»</value>
@@ -3285,10 +3285,10 @@
     <value>Поведение кнопки закрытия</value>
   </data>
   <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintDescription" xml:space="preserve">
-    <value>关闭窗口进入后台运行时，显示“胡桃已进入后台运行”系统通知</value>
+    <value>При закрытии окна и переходе в фоновый режим показывать системное уведомление «Hutao перешла в фоновый режим»</value>
   </data>
   <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintHeader" xml:space="preserve">
-    <value>进入后台运行通知</value>
+    <value>Уведомление о переходе в фоновый режим</value>
   </data>
   <data name="ViewPageSettingApperanceFirstDayOfWeekDescription" xml:space="preserve">
     <value>Выберите первый день недели, который вам подходит</value>
@@ -4293,28 +4293,28 @@
     <value>Скрыть информацию об игроке</value>
   </data>
   <data name="ViewPageLaunchGameIslandFastSkipTalkHeader" xml:space="preserve">
-    <value>移除对话跳过冷却</value>
+    <value>Убрать задержку пропуска диалогов</value>
   </data>
   <data name="ViewPageLaunchGameIslandFastSkipTalkDescription" xml:space="preserve">
-    <value>移除对话跳过后的冷却时间</value>
+    <value>Убрать задержку после пропуска диалогов</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
-    <value>移除对话跳过冷却</value>
+    <value>Убрать задержку пропуска диалогов</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmHint" xml:space="preserve">
-    <value>这个功能极易导致封号 谨慎使用</value>
+    <value>Эта функция может легко привести к блокировке аккаунта. Используйте с осторожностью</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmPrimaryButtonText" xml:space="preserve">
-    <value>我知道我在做什么！</value>
+    <value>Я знаю, что делаю!</value>
   </data>
   <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
-    <value>{0}({1}s)</value>
+    <value>{0}({1}с)</value>
   </data>
   <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
-    <value>树脂物品选项已全部关闭</value>
+    <value>Все опции предметов смолы отключены</value>
   </data>
   <data name="ViewDialogResinListItemAllDisabledHint" xml:space="preserve">
-    <value>关闭全部树脂物品选项后，将无法在秘境中领取奖励。是否确认关闭？</value>
+    <value>После отключения всех опций предметов смолы вы не сможете получать награды в подземельях. Подтвердить отключение?</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>Отключить прозрачность персонажа</value>
