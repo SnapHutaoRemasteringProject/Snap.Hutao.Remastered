@@ -8,6 +8,7 @@
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
+    xmlns:shuxdc="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shvt="using:Snap.Hutao.Remastered.ViewModel.TravelersDiary"
     Height="{ThemeResource HomeAdaptiveCardHeight}"
@@ -45,7 +46,6 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
                         <RowDefinition/>
-                        <RowDefinition/>
                     </Grid.RowDefinitions>
 
                     <!--  Header  -->
@@ -73,113 +73,249 @@
                             Text="{Binding Uid}"/>
                     </Grid>
 
-                    <!--  Today  -->
-                    <Border
+                    <FlipView
+                        x:Name="RootFlipView"
                         Grid.Row="1"
-                        Padding="8"
-                        Style="{StaticResource TravelersDiarySectionBorderStyle}">
-                        <Grid RowSpacing="2">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="auto"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock
-                                Grid.Row="0"
-                                Opacity="0.6"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{shuxm:ResourceString Name=ViewTravelersDiaryToday}"/>
-                            <Grid
-                                Grid.Row="1"
-                                ColumnSpacing="12">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel
-                                    Grid.Column="0"
-                                    Orientation="Horizontal"
-                                    Spacing="6">
-                                    <Image
-                                        Width="20"
-                                        Height="20"
-                                        VerticalAlignment="Center"
-                                        Source="{StaticResource UI_ItemIcon_201}"/>
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{Binding DayData.FormattedPrimogems}"/>
-                                </StackPanel>
-                                <StackPanel
-                                    Grid.Column="1"
-                                    Orientation="Horizontal"
-                                    Spacing="6">
-                                    <Image
-                                        Width="20"
-                                        Height="20"
-                                        VerticalAlignment="Center"
-                                        Source="{StaticResource UI_ItemIcon_202}"/>
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{Binding DayData.FormattedMora}"/>
-                                </StackPanel>
-                            </Grid>
-                        </Grid>
-                    </Border>
+                        Background="{x:Null}">
+                        <FlipViewItem>
+                            <Grid RowSpacing="8">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
 
-                    <!--  Month  -->
-                    <Border
-                        Grid.Row="2"
-                        Padding="8"
-                        Style="{StaticResource TravelersDiarySectionBorderStyle}">
-                        <Grid RowSpacing="2">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="auto"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock
-                                Grid.Row="0"
-                                Opacity="0.6"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{shuxm:ResourceString Name=ViewTravelersDiaryMonth}"/>
-                            <Grid
-                                Grid.Row="1"
-                                ColumnSpacing="12">
+                                <!--  Today  -->
+                                <Border
+                                    Grid.Row="0"
+                                    Padding="8"
+                                    Style="{StaticResource TravelersDiarySectionBorderStyle}">
+                                    <Grid RowSpacing="2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock
+                                            Grid.Row="0"
+                                            Opacity="0.6"
+                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                            Text="{shuxm:ResourceString Name=ViewTravelersDiaryToday}"/>
+                                        <Grid
+                                            Grid.Row="1"
+                                            ColumnSpacing="12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel
+                                                Grid.Column="0"
+                                                Orientation="Horizontal"
+                                                Spacing="6">
+                                                <Image
+                                                    Width="20"
+                                                    Height="20"
+                                                    VerticalAlignment="Center"
+                                                    Source="{StaticResource UI_ItemIcon_201}"/>
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                                    Text="{Binding DayData.FormattedPrimogems}"/>
+                                            </StackPanel>
+                                            <StackPanel
+                                                Grid.Column="1"
+                                                Orientation="Horizontal"
+                                                Spacing="6">
+                                                <Image
+                                                    Width="20"
+                                                    Height="20"
+                                                    VerticalAlignment="Center"
+                                                    Source="{StaticResource UI_ItemIcon_202}"/>
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                                    Text="{Binding DayData.FormattedMora}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+
+                                <!--  Month  -->
+                                <Border
+                                    Grid.Row="1"
+                                    Padding="8"
+                                    Style="{StaticResource TravelersDiarySectionBorderStyle}">
+                                    <Grid RowSpacing="2">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="auto"/>
+                                            <RowDefinition Height="auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock
+                                            Grid.Row="0"
+                                            Opacity="0.6"
+                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                            Text="{shuxm:ResourceString Name=ViewTravelersDiaryMonth}"/>
+                                        <Grid
+                                            Grid.Row="1"
+                                            ColumnSpacing="12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel
+                                                Grid.Column="0"
+                                                Orientation="Horizontal"
+                                                Spacing="6">
+                                                <Image
+                                                    Width="20"
+                                                    Height="20"
+                                                    VerticalAlignment="Center"
+                                                    Source="{StaticResource UI_ItemIcon_201}"/>
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                                    Text="{Binding MonthData.FormattedPrimogems}"/>
+                                            </StackPanel>
+                                            <StackPanel
+                                                Grid.Column="1"
+                                                Orientation="Horizontal"
+                                                Spacing="6">
+                                                <Image
+                                                    Width="20"
+                                                    Height="20"
+                                                    VerticalAlignment="Center"
+                                                    Source="{StaticResource UI_ItemIcon_202}"/>
+                                                <TextBlock
+                                                    VerticalAlignment="Center"
+                                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                                    Text="{Binding MonthData.FormattedMora}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </FlipViewItem>
+
+                        <FlipViewItem>
+                            <Grid ColumnSpacing="12">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
-                                <StackPanel
+
+                                <Border
+                                    Grid.ColumnSpan="2"
+                                    Padding="12"
+                                    Style="{StaticResource TravelersDiarySectionBorderStyle}"
+                                    Visibility="{Binding MonthData.GroupBy, Converter={StaticResource EmptyCollectionToVisibilityRevertConverter}}">
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Opacity="0.6"
+                                        Text="{shuxm:ResourceString Name=ViewTravelersDiaryNoIncomeSourceHint}"/>
+                                </Border>
+
+                                <Grid
                                     Grid.Column="0"
-                                    Orientation="Horizontal"
-                                    Spacing="6">
-                                    <Image
-                                        Width="20"
-                                        Height="20"
+                                    Width="104"
+                                    Height="104"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Visibility="{Binding MonthData.GroupBy, Converter={StaticResource EmptyCollectionToVisibilityConverter}}">
+                                    <ItemsControl ItemsSource="{Binding MonthData.GroupBy, Converter={StaticResource LedgerIncomeSourceToDonutSliceConverter}}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <Grid/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="shuxdc:LedgerIncomeSlice">
+                                                <Path
+                                                    Width="104"
+                                                    Height="104"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Data="{Binding Data}"
+                                                    Fill="{Binding Fill}"
+                                                    Stretch="None"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
-                                        Source="{StaticResource UI_ItemIcon_201}"/>
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{Binding MonthData.FormattedPrimogems}"/>
-                                </StackPanel>
-                                <StackPanel
+                                        Spacing="2">
+                                        <Image
+                                            Width="20"
+                                            Height="20"
+                                            Source="{StaticResource UI_ItemIcon_201}"/>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                            Text="{Binding MonthData.FormattedPrimogems}"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <ScrollViewer
                                     Grid.Column="1"
-                                    Orientation="Horizontal"
-                                    Spacing="6">
-                                    <Image
-                                        Width="20"
-                                        Height="20"
-                                        VerticalAlignment="Center"
-                                        Source="{StaticResource UI_ItemIcon_202}"/>
-                                    <TextBlock
-                                        VerticalAlignment="Center"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{Binding MonthData.FormattedMora}"/>
-                                </StackPanel>
+                                    Padding="0,0,0,16"
+                                    HorizontalScrollBarVisibility="Disabled"
+                                    VerticalScrollBarVisibility="Auto"
+                                    Visibility="{Binding MonthData.GroupBy, Converter={StaticResource EmptyCollectionToVisibilityConverter}}">
+                                    <ItemsControl ItemsSource="{Binding MonthData.GroupBy, Converter={StaticResource LedgerIncomeSourceToDonutSliceConverter}}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="shuxdc:LedgerIncomeSlice">
+                                                <Grid
+                                                    Margin="0,2"
+                                                    ColumnSpacing="6">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Rectangle
+                                                        Grid.Column="0"
+                                                        Width="4"
+                                                        Height="12"
+                                                        VerticalAlignment="Center"
+                                                        Fill="{Binding Fill}"
+                                                        RadiusX="2"
+                                                        RadiusY="2"/>
+                                                    <TextBlock
+                                                        Grid.Column="1"
+                                                        VerticalAlignment="Center"
+                                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                                        Text="{Binding Action}"
+                                                        TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock
+                                                        Grid.Column="2"
+                                                        VerticalAlignment="Center"
+                                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                                        Text="{Binding FormattedNum}"/>
+                                                    <TextBlock
+                                                        Grid.Column="3"
+                                                        Width="36"
+                                                        VerticalAlignment="Center"
+                                                        Opacity="0.6"
+                                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                                        Text="{Binding FormattedPercent}"
+                                                        TextAlignment="Right"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
                             </Grid>
-                        </Grid>
-                    </Border>
+                        </FlipViewItem>
+                    </FlipView>
+
+                    <PipsPager
+                        Grid.Row="1"
+                        Height="16"
+                        Margin="0,0,0,2"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Bottom"
+                        NumberOfPages="2"
+                        SelectedPageIndex="{x:Bind Path=RootFlipView.SelectedIndex, Mode=TwoWay}"/>
                 </Grid>
             </Grid>
 
