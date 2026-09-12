@@ -34,7 +34,6 @@
                         MaximumValue="50"
                         Minimum="#FF9E9E9E"
                         MinimumValue="0"/>
-                    <SolidColorBrush x:Key="TokenSideIconBackgroundBrush" Color="#FFAAAAAA"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <shuxdcs:UInt32ToGradientColorConverter
@@ -47,7 +46,6 @@
                         MaximumValue="50"
                         Minimum="#FF9E9E9E"
                         MinimumValue="0"/>
-                    <SolidColorBrush x:Key="TokenSideIconBackgroundBrush" Color="Transparent"/>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 
@@ -342,14 +340,6 @@
                         </Ellipse.Fill>
                     </Ellipse>
                     <Grid Grid.Column="0">
-                        <!--  Gray background for SideIconUri (light theme only)  -->
-                        <Ellipse
-                            Width="20"
-                            Height="20"
-                            Margin="-4,0,0,0"
-                            HorizontalAlignment="Left"
-                            Fill="{ThemeResource TokenSideIconBackgroundBrush}"
-                            Visibility="{Binding SideIconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
                         <!--  SideIconUri  -->
                         <shuxci:CachedImage
                             Width="20"
