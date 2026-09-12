@@ -9,6 +9,8 @@ using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Model.Entity;
+using Snap.Hutao.Remastered.Model.Primitive;
+using Snap.Hutao.Remastered.Service.AvatarInfo;
 using Snap.Hutao.Remastered.Service.Backpack;
 using Snap.Hutao.Remastered.Service.Cultivation;
 using Snap.Hutao.Remastered.Service.Cultivation.Consumption;
@@ -18,15 +20,18 @@ using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
 using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.Service.Notification;
+using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.Service.Yae;
 using Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.ViewModel.Game;
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using AvatarPromotionDelta = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate.AvatarPromotionDelta;
 using CalculateBatchConsumption = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate.BatchConsumption;
+using DetailedCharacter = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.Avatar.DetailedCharacter;
 using PromotionDelta = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate.PromotionDelta;
 
 namespace Snap.Hutao.Remastered.ViewModel.Cultivation;
@@ -39,6 +44,7 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
     private readonly ExclusiveTokenProvider exclusiveTokenProvider = new();
 
     private readonly IBackpackService backpackService;
+    private readonly AvatarInfoRepositoryOperation avatarInfoRepositoryOperation;
     private readonly IContentDialogFactory contentDialogFactory;
     private readonly ICultivationService cultivationService;
     private readonly INavigationService navigationService;
@@ -46,6 +52,7 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
     private readonly IServiceProvider serviceProvider;
     private readonly IMetadataService metadataService;
     private readonly ITaskContext taskContext;
+    private readonly IUserService userService;
     private readonly IYaeService yaeService;
     private readonly IMessenger messenger;
 
@@ -347,6 +354,167 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
                 await UpdateStatisticsItemsAsync().ConfigureAwait(false);
             }
         }
+    }
+
+    [Command("SyncAvatarInfoByHoyolabGameRecordCommand")]
+    private async Task SyncAvatarInfoByHoyolabGameRecordAsync()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Sync avatar info", "CultivationViewModel.Command", [("source", "Hoyolab game record")]));
+
+        if (Projects?.CurrentItem is not { } project || metadataContext is not { } context || CultivateEntries is null)
+        {
+            return;
+        }
+
+        if (await userService.GetCurrentUserAndUidAsync().ConfigureAwait(false) is not { } userAndUid)
+        {
+            messenger.Send(InfoBarMessage.Warning(SH.MustSelectUserAndUid));
+            return;
+        }
+
+        using (await EnterCriticalSectionAsync().ConfigureAwait(false))
+        {
+            ContentDialog progressDialog = await contentDialogFactory
+                .CreateForIndeterminateProgressAsync(SH.ViewModelCultivationSyncAvatarInfoProgress)
+                .ConfigureAwait(false);
+
+            int updated = 0;
+            int skipped = 0;
+
+            using (await contentDialogFactory.BlockAsync(progressDialog).ConfigureAwait(false))
+            {
+                ImmutableArray<CultivateEntryView> entries = [.. CultivateEntries.Source];
+
+                ImmutableArray<Model.Entity.AvatarInfo> avatarInfos = await avatarInfoRepositoryOperation
+                    .UpdateDbAvatarInfosAsync(userAndUid, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+                Dictionary<AvatarId, DetailedCharacter> characterMap = [];
+                foreach (ref readonly Model.Entity.AvatarInfo avatarInfo in avatarInfos.AsSpan())
+                {
+                    if (avatarInfo.Info2 is { } character)
+                    {
+                        characterMap[character.Base.Id] = character;
+                    }
+                }
+
+                if (characterMap.Count is 0)
+                {
+                    messenger.Send(InfoBarMessage.Information(SH.ViewModelCultivationSyncAvatarInfoNoCharacter));
+                    return;
+                }
+
+                foreach (CultivateEntryView entryView in entries)
+                {
+                    if (entryView.Type is not Model.Entity.Primitive.CultivateType.AvatarAndSkill)
+                    {
+                        continue;
+                    }
+
+                    if (entryView.Entry.LevelInformation is not { } levelInfo)
+                    {
+                        ++skipped;
+                        continue;
+                    }
+
+                    if (!characterMap.TryGetValue(entryView.Id, out DetailedCharacter? character))
+                    {
+                        ++skipped;
+                        continue;
+                    }
+
+                    if (!context.IdAvatarMap.TryGetValue(entryView.Id, out Model.Metadata.Avatar.Avatar? avatar))
+                    {
+                        ++skipped;
+                        continue;
+                    }
+
+                    if (avatar.SkillDepot.CompositeSkillsNoInherents is not [{ } skillA, { } skillE, { } skillQ, ..])
+                    {
+                        ++skipped;
+                        continue;
+                    }
+
+                    if (levelInfo.AvatarLevelTo is 0U || levelInfo.SkillALevelTo is 0U || levelInfo.SkillELevelTo is 0U || levelInfo.SkillQLevelTo is 0U)
+                    {
+                        ++skipped;
+                        continue;
+                    }
+
+                    // The game record skill id matches the metadata proud skill id.
+                    FrozenDictionary<SkillId, SkillLevel> talents = character.Skills.ToFrozenDictionary(static s => s.SkillId, static s => s.Level);
+
+                    if (!talents.TryGetValue(skillA.Id, out SkillLevel talentA)
+                        || !talents.TryGetValue(skillE.Id, out SkillLevel talentE)
+                        || !talents.TryGetValue(skillQ.Id, out SkillLevel talentQ))
+                    {
+                        ++skipped;
+                        continue;
+                    }
+
+                    AvatarPromotionDelta delta = new()
+                    {
+                        AvatarId = avatar.Id,
+                        AvatarLevelCurrent = Math.Min((uint)character.Base.Level, levelInfo.AvatarLevelTo),
+                        AvatarLevelTarget = levelInfo.AvatarLevelTo,
+                        AvatarPromoteLevel = character.Base.PromoteLevel,
+                        SkillList =
+                        [
+                            new PromotionDelta { Id = skillA.GroupId, LevelCurrent = Math.Min((uint)talentA, levelInfo.SkillALevelTo), LevelTarget = levelInfo.SkillALevelTo },
+                            new PromotionDelta { Id = skillE.GroupId, LevelCurrent = Math.Min((uint)talentE, levelInfo.SkillELevelTo), LevelTarget = levelInfo.SkillELevelTo },
+                            new PromotionDelta { Id = skillQ.GroupId, LevelCurrent = Math.Min((uint)talentQ, levelInfo.SkillQLevelTo), LevelTarget = levelInfo.SkillQLevelTo },
+                        ],
+                    };
+
+                    LevelInformation levelInformation = LevelInformation.From(delta);
+                    if (IsSameLevelInformation(levelInfo, levelInformation))
+                    {
+                        ++skipped;
+                        continue;
+                    }
+
+                    CalculateBatchConsumption batchConsumption = OfflineCalculator.CalculateWikiAvatarConsumption(delta, avatar);
+                    if (batchConsumption.OverallConsume.IsEmpty)
+                    {
+                        ++skipped;
+                        continue;
+                    }
+
+                    InputConsumption input = new()
+                    {
+                        Type = Model.Entity.Primitive.CultivateType.AvatarAndSkill,
+                        ItemId = avatar.Id,
+                        Items = batchConsumption.OverallConsume,
+                        LevelInformation = levelInformation,
+                        Strategy = ConsumptionSaveStrategyKind.OverwriteExisting,
+                    };
+
+                    await cultivationService.SaveConsumptionAsync(input).ConfigureAwait(false);
+                    ++updated;
+                }
+
+                await UpdateEntryCollectionAsync(project).ConfigureAwait(false);
+            }
+
+            InfoBarMessage message = updated > 0
+                ? InfoBarMessage.Success(SH.FormatViewModelCultivationSyncAvatarInfoCompleted(updated, skipped))
+                : InfoBarMessage.Information(SH.ViewModelCultivationSyncAvatarInfoNoCharacter);
+
+            messenger.Send(message);
+        }
+    }
+
+    private static bool IsSameLevelInformation(CultivateEntryLevelInformation current, LevelInformation updated)
+    {
+        return current.AvatarLevelFrom == updated.AvatarLevelFrom
+            && current.AvatarLevelTo == updated.AvatarLevelTo
+            && current.AvatarIsPromoting == updated.AvatarIsPromoting
+            && current.SkillALevelFrom == updated.SkillALevelFrom
+            && current.SkillALevelTo == updated.SkillALevelTo
+            && current.SkillELevelFrom == updated.SkillELevelFrom
+            && current.SkillELevelTo == updated.SkillELevelTo
+            && current.SkillQLevelFrom == updated.SkillQLevelFrom
+            && current.SkillQLevelTo == updated.SkillQLevelTo;
     }
 
     [Command("ClearInventoryCommand")]

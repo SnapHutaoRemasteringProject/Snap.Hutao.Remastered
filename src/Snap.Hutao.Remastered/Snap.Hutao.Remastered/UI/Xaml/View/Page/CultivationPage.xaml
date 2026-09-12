@@ -641,6 +641,10 @@
                         </AppBarButton.Flyout>
                     </AppBarButton>
                     <AppBarButton
+                        Command="{Binding SyncAvatarInfoByHoyolabGameRecordCommand}"
+                        Icon="{shuxm:FontIcon Glyph=&#xE77B;}"
+                        Label="{shuxm:ResourceString Name=ViewPageCultivationSyncAvatarInfo}"/>
+                    <AppBarButton
                         Command="{Binding AddProjectCommand}"
                         Icon="{shuxm:FontIcon Glyph=&#xE710;}"
                         Label="{shuxm:ResourceString Name=ViewPageCultivationAddProject}"/>
