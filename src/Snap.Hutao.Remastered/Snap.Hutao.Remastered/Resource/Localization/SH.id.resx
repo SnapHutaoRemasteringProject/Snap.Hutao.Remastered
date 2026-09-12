@@ -5140,7 +5140,10 @@ Ruang Tersedia: {2}</value>
     <value>Mirror CDK</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
-    <value>Silakan masukkan kunci aktivasi Mirror酱 (CDK), kosongkan untuk melewati. Dapat diperoleh dari mirrorchyan.com.</value>
+    <value>请输入 Mirror酱 激活密钥（CDK），留空则跳过。</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkGetCdk" xml:space="preserve">
+    <value>获取 CDK</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
     <value>Catatan Pengembara</value>
