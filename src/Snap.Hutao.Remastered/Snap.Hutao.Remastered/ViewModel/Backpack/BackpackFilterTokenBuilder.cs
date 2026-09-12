@@ -50,13 +50,13 @@ public static class BackpackFilterTokenBuilder
                     tokens.Add(KeyValuePair.Create(name, new SearchToken(SearchTokenKind.BackpackEquipType, name, (int)equipType, sideIconUri: EquipTypeIconConverter.EquipTypeToIconUri(equipType))));
                 }
 
-                // Reliquary set tokens (use sideIconUri for colored version)
+                // Reliquary set tokens (use sideIconUri for colored version), ordered by metadata sort order
                 HashSet<string> seen = [];
-                foreach (BackpackReliquaryItemView reliquary in items.OfType<BackpackReliquaryItemView>())
+                foreach (BackpackReliquaryItemView reliquary in items.OfType<BackpackReliquaryItemView>().OrderBy(r => r.Reliquary.SortOrder))
                 {
                     if (reliquary.SetName is { } name && reliquary.SetIconUri is { } uri && seen.Add(name))
                     {
-                        tokens.Add(KeyValuePair.Create(name, new SearchToken(SearchTokenKind.BackpackReliquarySet, name, 0, sideIconUri: uri)));
+                        tokens.Add(KeyValuePair.Create(name, new SearchToken(SearchTokenKind.BackpackReliquarySet, name, (int)reliquary.Reliquary.SortOrder, sideIconUri: uri)));
                     }
                 }
 

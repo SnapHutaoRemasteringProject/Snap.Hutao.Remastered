@@ -398,7 +398,7 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
             BackpackItemCategory.Reliquary => [.. items
                 .Cast<BackpackReliquaryItemView>()
                 .OrderByDescending(r => r.Level)
-                .ThenBy(r => r.Entity.ItemId)],
+                .ThenBy(r => r.Reliquary.SortOrder)],
             _ => [.. items
                 .OrderByDescending(BackpackSortComparer.GetQualityRank)
                 .ThenBy(item => item.Entity.ItemId)],
