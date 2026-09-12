@@ -5140,7 +5140,10 @@
     <value>Mirrorちゃん CDK</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
-    <value>Mirror酱 アクティベーションキー (CDK) を入力してください。空のままにするとスキップします。mirrorchyan.com から取得できます。</value>
+    <value>请输入 Mirror酱 激活密钥（CDK），留空则跳过。</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkGetCdk" xml:space="preserve">
+    <value>获取 CDK</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
     <value>旅人手記</value>
