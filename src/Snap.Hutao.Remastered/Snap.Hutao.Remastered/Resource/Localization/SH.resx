@@ -4981,9 +4981,6 @@
   <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
     <value>名称/类型/品质...</value>
   </data>
-  <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
-    <value>等级</value>
-  </data>
   <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} 分</value>
   </data>

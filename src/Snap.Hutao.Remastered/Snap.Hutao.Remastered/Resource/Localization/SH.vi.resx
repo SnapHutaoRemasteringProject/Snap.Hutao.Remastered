@@ -4950,9 +4950,6 @@ Dung lượng còn trống: {2}</value>
   <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
     <value>Tên/Loại/Chất lượng…</value>
   </data>
-  <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
-    <value>Cấp độ</value>
-  </data>
   <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} điểm</value>
   </data>

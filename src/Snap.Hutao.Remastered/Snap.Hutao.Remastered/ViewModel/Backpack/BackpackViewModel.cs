@@ -72,9 +72,6 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
     public partial SearchData? SearchData { get; set; }
 
     [ObservableProperty]
-    public partial double? FilterLevel { get; set; }
-
-    [ObservableProperty]
     public partial ImmutableArray<AutoSortToken> AvailableSortTokens { get; set; } = [];
 
     public BackpackReliquaryScoreConfig? ScoreConfig { get; private set; }
@@ -129,11 +126,6 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
         BuildSearchData(category);
         BuildSortTokens(category);
         UpdateItemsFilter(category);
-    }
-
-    partial void OnFilterLevelChanged(double? value)
-    {
-        UpdateItemsFilter(GetSelectedCategory());
     }
 
     [Command("ApplySortCommand")]
@@ -385,7 +377,7 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
     private void UpdateItemsFilter(BackpackItemCategory category)
     {
         ImmutableArray<BackpackItemView> items = categoryItems.GetValueOrDefault(category, []);
-        Predicate<BackpackItemView>? predicate = BackpackFilter.Compile(SearchData, FilterLevel, foodQualityMap, foodTypeMap);
+        Predicate<BackpackItemView>? predicate = BackpackFilter.Compile(SearchData, foodQualityMap, foodTypeMap);
         ImmutableArray<BackpackItemView> filtered = predicate is null ? items : [.. items.Where(item => predicate(item))];
 
         // Items in categoryItems are already sorted with default sort; only re-sort when custom sort is active

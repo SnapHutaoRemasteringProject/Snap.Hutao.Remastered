@@ -443,17 +443,6 @@
                             VerticalAlignment="Center"
                             Orientation="Horizontal"
                             Spacing="6">
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                Style="{StaticResource BodyTextBlockStyle}"
-                                Text="{shuxm:ResourceString Name=ViewPageBackpackFilterLevel}"/>
-                            <NumberBox
-                                Width="70"
-                                VerticalAlignment="Center"
-                                Header="{x:Null}"
-                                PlaceholderText="0"
-                                SpinButtonPlacementMode="Hidden"
-                                Value="{Binding FilterLevel, Mode=TwoWay}"/>
                             <Button VerticalAlignment="Center">
                                 <Button.Flyout>
                                     <Flyout>

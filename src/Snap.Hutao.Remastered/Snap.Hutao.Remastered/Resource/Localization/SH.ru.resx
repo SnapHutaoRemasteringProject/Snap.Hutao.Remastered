@@ -4952,9 +4952,6 @@
   <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
     <value>Название/тип/качество...</value>
   </data>
-  <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
-    <value>Уровень</value>
-  </data>
   <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} баллов</value>
   </data>

@@ -4950,9 +4950,6 @@ Ruang Tersedia: {2}</value>
   <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
     <value>Nama/Tipe/Kualitas...</value>
   </data>
-  <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
-    <value>Level</value>
-  </data>
   <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} Poin</value>
   </data>

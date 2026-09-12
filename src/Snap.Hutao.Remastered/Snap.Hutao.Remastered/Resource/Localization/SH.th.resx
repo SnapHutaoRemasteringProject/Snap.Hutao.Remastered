@@ -4946,9 +4946,6 @@
   <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
     <value>ชื่อ/ประเภท/คุณภาพ...</value>
   </data>
-  <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
-    <value>เลเวล</value>
-  </data>
   <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} คะแนน</value>
   </data>

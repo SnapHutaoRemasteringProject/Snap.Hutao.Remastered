@@ -4946,9 +4946,6 @@ Espace disponible : {2}</value>
   <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
     <value>Nom/Type/Qualité...</value>
   </data>
-  <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
-    <value>Niveau</value>
-  </data>
   <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} points</value>
   </data>

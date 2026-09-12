@@ -4950,9 +4950,6 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
     <value>Ad/Tür/Kalite...</value>
   </data>
-  <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
-    <value>Seviye</value>
-  </data>
   <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} puan</value>
   </data>

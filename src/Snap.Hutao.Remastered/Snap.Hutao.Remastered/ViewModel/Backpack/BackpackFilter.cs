@@ -12,30 +12,12 @@ public static class BackpackFilter
 {
     public static Predicate<BackpackItemView>? Compile(
         SearchData? searchData,
-        double? level,
         FrozenDictionary<uint, int> foodQualityMap,
         FrozenDictionary<uint, CookFoodType> foodTypeMap)
     {
-        Predicate<BackpackItemView>? tokenPredicate = searchData is { FilterTokens.Count: > 0 }
+        return searchData is { FilterTokens.Count: > 0 }
             ? Compile(searchData.FilterTokens, foodQualityMap, foodTypeMap)
             : null;
-
-        if (level.HasValue && !double.IsNaN(level.Value))
-        {
-            uint targetLevel = (uint)level.Value;
-            bool levelPredicate(BackpackItemView item) => item switch
-            {
-                BackpackWeaponItemView w => w.Level == targetLevel,
-                BackpackReliquaryItemView r => r.Level == targetLevel,
-                _ => false,
-            };
-
-            return tokenPredicate is null
-                ? levelPredicate
-                : item => tokenPredicate(item) && levelPredicate(item);
-        }
-
-        return tokenPredicate;
     }
 
     private static Predicate<BackpackItemView> Compile(

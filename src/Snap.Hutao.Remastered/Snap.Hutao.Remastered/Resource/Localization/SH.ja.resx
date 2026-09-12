@@ -4950,9 +4950,6 @@
   <data name="ViewPageBackpackFilterPlaceholder" xml:space="preserve">
     <value>名前/タイプ/品質...</value>
   </data>
-  <data name="ViewPageBackpackFilterLevel" xml:space="preserve">
-    <value>レベル</value>
-  </data>
   <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} 点</value>
   </data>
