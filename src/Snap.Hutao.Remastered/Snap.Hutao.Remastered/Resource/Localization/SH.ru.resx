@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -1994,6 +1994,15 @@
   <data name="ViewModelCultivationResinStatisticsWeeklyBossTitle" xml:space="preserve">
     <value>Еженедельный босс</value>
   </data>
+  <data name="ViewModelCultivationSyncAvatarInfoCompleted" xml:space="preserve">
+    <value>已更新 {0} 个角色条目，跳过 {1} 个</value>
+  </data>
+  <data name="ViewModelCultivationSyncAvatarInfoNoCharacter" xml:space="preserve">
+    <value>未获取到可用于同步的角色详情</value>
+  </data>
+  <data name="ViewModelCultivationSyncAvatarInfoProgress" xml:space="preserve">
+    <value>正在从米游社同步角色等级与天赋</value>
+  </data>
   <data name="ViewModelDailyNoteConfigWebhookUrlComplete" xml:space="preserve">
     <value>URL-адрес Webhook для заметок в реальном времени успешно настроен</value>
   </data>
@@ -2614,6 +2623,9 @@
   </data>
   <data name="ViewPageCultivationRefreshInventoryByBackpackArchive" xml:space="preserve">
     <value>Синхронизировать через архив предметов инвентаря</value>
+  </data>
+  <data name="ViewPageCultivationSyncAvatarInfo" xml:space="preserve">
+    <value>同步角色等级与天赋</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Удалить список</value>
@@ -3283,6 +3295,12 @@
   </data>
   <data name="ViewPageSettingAppearanceCloseButtonBehaviorHeader" xml:space="preserve">
     <value>Поведение кнопки закрытия</value>
+  </data>
+  <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintDescription" xml:space="preserve">
+    <value>При закрытии окна и переходе в фоновый режим показывать системное уведомление «Hutao перешла в фоновый режим»</value>
+  </data>
+  <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintHeader" xml:space="preserve">
+    <value>Уведомление о переходе в фоновый режим</value>
   </data>
   <data name="ViewPageSettingApperanceFirstDayOfWeekDescription" xml:space="preserve">
     <value>Выберите первый день недели, который вам подходит</value>
@@ -4285,6 +4303,30 @@
   </data>
   <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
     <value>Скрыть информацию об игроке</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandFastSkipTalkHeader" xml:space="preserve">
+    <value>Убрать задержку пропуска диалогов</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandFastSkipTalkDescription" xml:space="preserve">
+    <value>Убрать задержку после пропуска диалогов</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
+    <value>Убрать задержку пропуска диалогов</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmHint" xml:space="preserve">
+    <value>Эта функция может легко привести к блокировке аккаунта. Используйте с осторожностью</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmPrimaryButtonText" xml:space="preserve">
+    <value>Я знаю, что делаю!</value>
+  </data>
+  <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
+    <value>{0}({1}с)</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
+    <value>Все опции предметов смолы отключены</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledHint" xml:space="preserve">
+    <value>После отключения всех опций предметов смолы вы не сможете получать награды в подземельях. Подтвердить отключение?</value>
   </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>Отключить прозрачность персонажа</value>
