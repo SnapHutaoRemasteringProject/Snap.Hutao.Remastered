@@ -24,4 +24,6 @@ public sealed class Reliquary
     public required string Description { get; init; }
 
     public required string Icon { get; init; }
+
+    public required uint SortOrder { get; init; }
 }
