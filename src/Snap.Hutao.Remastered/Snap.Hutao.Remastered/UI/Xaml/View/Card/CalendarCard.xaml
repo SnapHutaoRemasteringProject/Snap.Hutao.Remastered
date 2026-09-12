@@ -151,80 +151,84 @@
                     Text="{shuxm:ResourceString Name=ViewCardCalendarAllMaterialsHint}"/>
             </Border>
 
-            <ItemsControl
+            <ScrollViewer
                 Grid.Row="1"
-                ItemsSource="{Binding Materials}"
-                Visibility="{Binding Materials.IsEmpty, Converter={StaticResource BoolToVisibilityRevertConverter}}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <cwcont:UniformGrid
-                            ColumnSpacing="4"
-                            Columns="7"
-                            RowSpacing="4"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button
-                            MinWidth="0"
-                            Padding="0"
-                            VerticalAlignment="Stretch"
-                            Background="{Binding Highlight, Converter={ThemeResource BoolToBrushSelector}}"
-                            Style="{ThemeResource ShimmerButtonStyle}">
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
+                <ItemsControl
+                    ItemsSource="{Binding Materials}"
+                    Visibility="{Binding Materials.IsEmpty, Converter={StaticResource BoolToVisibilityRevertConverter}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <cwcont:UniformGrid
+                                ColumnSpacing="4"
+                                Columns="7"
+                                RowSpacing="4"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button
+                                MinWidth="0"
+                                Padding="0"
+                                VerticalAlignment="Stretch"
+                                Background="{Binding Highlight, Converter={ThemeResource BoolToBrushSelector}}"
+                                Style="{ThemeResource ShimmerButtonStyle}">
 
-                            <shuxci:CachedImage
-                                Width="24"
-                                Height="24"
-                                Source="{Binding Inner.Icon, Converter={StaticResource ItemIconConverter}}"/>
-                            <Button.Flyout>
-                                <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                    <Grid RowSpacing="6">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="auto"/>
-                                            <RowDefinition/>
-                                        </Grid.RowDefinitions>
-                                        <shuxcc:HorizontalCard Grid.Row="0">
-                                            <shuxcc:HorizontalCard.Left>
-                                                <shuxc:ItemIcon
-                                                    Width="48"
-                                                    Height="48"
-                                                    Icon="{Binding Inner.Icon, Converter={StaticResource ItemIconConverter}}"
-                                                    Quality="{Binding Inner.RankLevel}"/>
-                                            </shuxcc:HorizontalCard.Left>
-                                            <shuxcc:HorizontalCard.Right>
-                                                <StackPanel Margin="12,0">
-                                                    <TextBlock Text="{Binding Inner.Name}"/>
-                                                    <TextBlock
-                                                        Opacity="0.7"
-                                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                                        Text="{Binding Inner.TypeDescription}"/>
-                                                </StackPanel>
-                                            </shuxcc:HorizontalCard.Right>
-                                        </shuxcc:HorizontalCard>
-                                        <Border
-                                            Grid.Row="1"
-                                            HorizontalAlignment="Stretch"
-                                            Style="{ThemeResource BorderShimmerStyle}">
-                                            <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{Binding Items}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <shuxc:ItemIcon
-                                                            Width="48"
-                                                            Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Opacity="{Binding Highlight, Converter={StaticResource BoolToOpacityConverter}}"
-                                                            Quality="{Binding Quality}"/>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </Border>
-                                    </Grid>
-                                </Flyout>
-                            </Button.Flyout>
-                        </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                                <shuxci:CachedImage
+                                    Width="24"
+                                    Height="24"
+                                    Source="{Binding Inner.Icon, Converter={StaticResource ItemIconConverter}}"/>
+                                <Button.Flyout>
+                                    <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
+                                        <Grid RowSpacing="6">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="auto"/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <shuxcc:HorizontalCard Grid.Row="0">
+                                                <shuxcc:HorizontalCard.Left>
+                                                    <shuxc:ItemIcon
+                                                        Width="48"
+                                                        Height="48"
+                                                        Icon="{Binding Inner.Icon, Converter={StaticResource ItemIconConverter}}"
+                                                        Quality="{Binding Inner.RankLevel}"/>
+                                                </shuxcc:HorizontalCard.Left>
+                                                <shuxcc:HorizontalCard.Right>
+                                                    <StackPanel Margin="12,0">
+                                                        <TextBlock Text="{Binding Inner.Name}"/>
+                                                        <TextBlock
+                                                            Opacity="0.7"
+                                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                                            Text="{Binding Inner.TypeDescription}"/>
+                                                    </StackPanel>
+                                                </shuxcc:HorizontalCard.Right>
+                                            </shuxcc:HorizontalCard>
+                                            <Border
+                                                Grid.Row="1"
+                                                HorizontalAlignment="Stretch"
+                                                Style="{ThemeResource BorderShimmerStyle}">
+                                                <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{Binding Items}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <shuxc:ItemIcon
+                                                                Width="48"
+                                                                Height="48"
+                                                                Icon="{Binding Icon}"
+                                                                Opacity="{Binding Highlight, Converter={StaticResource BoolToOpacityConverter}}"
+                                                                Quality="{Binding Quality}"/>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </Border>
+                                        </Grid>
+                                    </Flyout>
+                                </Button.Flyout>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </Button>
