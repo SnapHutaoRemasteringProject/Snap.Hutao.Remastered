@@ -4303,7 +4303,7 @@
     <value>我知道我在做什麼！</value>
   </data>
   <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
-    <value>{0}({1}s)</value>
+    <value>{0}（{1}秒）</value>
   </data>
   <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
     <value>樹脂物品選項已全部關閉</value>
