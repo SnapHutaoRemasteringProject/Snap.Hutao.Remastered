@@ -302,8 +302,8 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
     <PackageReference Include="QRCoder" Version="1.8.0" />
-    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="4.0.1" />
-    <PackageReference Include="Sentry.Extensions.Logging" Version="6.10.0" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="4.1.0" />
+    <PackageReference Include="Sentry.Extensions.Logging" Version="6.11.0" />
     <PackageReference Include="Snap.HPatch" Version="0.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -312,7 +312,7 @@
 	 <PrivateAssets>all</PrivateAssets>
 	 <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
-    <PackageReference Include="Snap.Hutao.Remastered.SourceGeneration" Version="1.3.15">
+    <PackageReference Include="Snap.Hutao.Remastered.SourceGeneration" Version="1.3.16">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -338,10 +338,5 @@
        package has not yet been restored -->
   <ItemGroup Condition="'$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnablePreviewMsixTooling)'=='true'">
     <ProjectCapability Include="Msix" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="UI\Xaml\View\Card\TravelersDiaryCard.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
 </Project>
