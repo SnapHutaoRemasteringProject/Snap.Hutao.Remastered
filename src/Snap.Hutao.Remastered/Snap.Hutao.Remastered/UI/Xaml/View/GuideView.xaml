@@ -95,9 +95,7 @@
                             Margin="0,4,0,0"
                             Maximum="1"
                             Value="{Binding ProgressValue}"/>
-                        <TextBlock
-                            Opacity="0.6"
-                            Style="{StaticResource CaptionTextBlockStyle}">
+                        <TextBlock Opacity="0.6" Style="{StaticResource CaptionTextBlockStyle}">
                             <Run Text="{Binding Description}"/>
                             <Run Text=" "/>
                             <Run Text="{Binding Speed}"/>
@@ -548,6 +546,117 @@
                 </Grid>
             </cwc:Case>
 
+            <!--  Material  -->
+            <cwc:Case Value="{shuxm:UInt32 Value=7}">
+                <ScrollViewer>
+                    <StackPanel
+                        Width="820"
+                        Margin="32"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="12">
+                        <FontIcon FontSize="44" Glyph="&#xE790;"/>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Style="{StaticResource TitleTextBlockStyle}"
+                            Text="{shuxm:ResourceString Name=ViewGuideMaterialTitle}"/>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{shuxm:ResourceString Name=ViewGuideMaterialDescription}"
+                            TextAlignment="Center"
+                            TextWrapping="Wrap"/>
+                        <ComboBox
+                            MinWidth="220"
+                            HorizontalAlignment="Center"
+                            DisplayMemberPath="Name"
+                            Header="{shuxm:ResourceString Name=ViewPageSettingControlMaterialHeader}"
+                            ItemsSource="{Binding AppOptions.ControlMaterials}"
+                            SelectedItem="{Binding SelectedControlMaterial, Mode=TwoWay}"/>
+
+                        <Grid
+                            Height="300"
+                            Margin="0,12,0,0"
+                            Background="#FF17233D"
+                            CornerRadius="20">
+                            <Canvas IsHitTestVisible="False">
+                                <Ellipse
+                                    Canvas.Left="30"
+                                    Canvas.Top="24"
+                                    Width="220"
+                                    Height="220"
+                                    Fill="#FF28C4D8"/>
+                                <Ellipse
+                                    Canvas.Left="520"
+                                    Canvas.Top="68"
+                                    Width="230"
+                                    Height="230"
+                                    Fill="#FFE94B79"/>
+                                <Rectangle
+                                    Canvas.Left="80"
+                                    Canvas.Top="128"
+                                    Width="670"
+                                    Height="54"
+                                    Fill="#FFF4C542"
+                                    RenderTransformOrigin="0.5,0.5">
+                                    <Rectangle.RenderTransform>
+                                        <RotateTransform Angle="-9"/>
+                                    </Rectangle.RenderTransform>
+                                </Rectangle>
+                            </Canvas>
+                            <Grid Margin="36" ColumnSpacing="28">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Border
+                                    Grid.Column="0"
+                                    Padding="24"
+                                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="16">
+                                    <StackPanel VerticalAlignment="Center" Spacing="8">
+                                        <FontIcon FontSize="32" Glyph="&#xE8A5;"/>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            FontSize="22"
+                                            FontWeight="SemiBold"
+                                            Text="{shuxm:ResourceString Name=ViewPageSettingControlMaterialDefault}"/>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Text="{shuxm:ResourceString Name=ViewGuideMaterialDefaultPreviewDescription}"
+                                            TextAlignment="Center"
+                                            TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+                                <Border
+                                    Grid.Column="1"
+                                    Padding="24"
+                                    Background="{ThemeResource HutaoGuideLiquidGlassBrush}"
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="16">
+                                    <StackPanel VerticalAlignment="Center" Spacing="8">
+                                        <FontIcon FontSize="32" Glyph="&#xE790;"/>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            FontSize="22"
+                                            FontWeight="SemiBold"
+                                            Text="{shuxm:ResourceString Name=ViewPageSettingControlMaterialLiquidGlass}"/>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            Text="{shuxm:ResourceString Name=ViewGuideMaterialLiquidGlassPreviewDescription}"
+                                            TextAlignment="Center"
+                                            TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </cwc:Case>
+
             <!--  StaticResourceSetting  -->
             <cwc:Case Value="{shuxm:UInt32 Value=5}">
                 <Grid>
@@ -685,7 +794,7 @@
             </cwc:Case>
 
             <!--  Complete - empty case for fallback  -->
-            <cwc:Case Value="{shuxm:UInt32 Value=7}"/>
+            <cwc:Case Value="{shuxm:UInt32 Value=8}"/>
         </cwc:SwitchPresenter>
         <Grid Grid.Row="1">
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
@@ -701,6 +810,7 @@
                     <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xE713;}"/>
                     <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xE8BA;}"/>
                     <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xE8B9;}"/>
+                    <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xE790;}"/>
                 </cwc:Segmented>
                 <Button
                     Command="{Binding NextOrCompleteCommand}"

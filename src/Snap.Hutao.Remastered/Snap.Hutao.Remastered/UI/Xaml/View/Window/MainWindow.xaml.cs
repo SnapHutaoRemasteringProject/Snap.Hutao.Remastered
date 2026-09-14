@@ -1,4 +1,4 @@
-// Copyright (c) DGP Studio. All rights reserved.
+﻿// Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
 using Microsoft.UI.Input;
@@ -34,6 +34,8 @@ public sealed partial class MainWindow : Microsoft.UI.Xaml.Window,
     {
         Instance = this;
         InitializeComponent();
+        AppOptions appOptions = serviceProvider.GetRequiredService<AppOptions>();
+        Control.Theme.MaterialTheme.Apply(appOptions.ControlMaterial.Value);
 
         if (AppWindow.Presenter is OverlappedPresenter presenter)
         {

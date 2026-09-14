@@ -457,7 +457,7 @@
                 SelectedIndex="{Binding SelectedCategoryIndex, Mode=TwoWay}"
                 Style="{ThemeResource CardPivotStyle}">
                 <Pivot.RightHeader>
-                    <CommandBar Background="Transparent" DefaultLabelPosition="Right">
+                    <CommandBar Background="{ThemeResource HutaoSurfaceBrush}" DefaultLabelPosition="Right">
                         <AppBarElementContainer AllowFocusOnInteraction="True">
                             <shuxc:SizeRestrictedContentControl Margin="2,6,3,6">
                                 <ComboBox

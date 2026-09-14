@@ -6,7 +6,7 @@
     <Style BasedOn="{StaticResource DefaultCardProgressBarStyle}" TargetType="shuxcc:CardProgressBar"/>
 
     <Style x:Key="DefaultCardProgressBarStyle" TargetType="shuxcc:CardProgressBar">
-        <Setter Property="Background" Value="{ThemeResource ControlAltFillColorSecondaryBrush}"/>
+        <Setter Property="Background" Value="{ThemeResource HutaoSurfaceBrush}"/>
         <Setter Property="MinHeight" Value="40"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -55,7 +55,7 @@
     </Style>
 
     <Style x:Key="CompactCardProgressBarStyle" TargetType="shuxcc:CardProgressBar">
-        <Setter Property="Background" Value="{ThemeResource ControlAltFillColorSecondaryBrush}"/>
+        <Setter Property="Background" Value="{ThemeResource HutaoSurfaceBrush}"/>
         <Setter Property="MinHeight" Value="40"/>
         <Setter Property="ProgressForeground" Value="{ThemeResource ProgressBarForegroundThemeBrush}"/>
         <Setter Property="Template">

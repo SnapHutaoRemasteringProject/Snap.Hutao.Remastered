@@ -376,7 +376,7 @@
             <Pivot.RightHeader>
                 <CommandBar DefaultLabelPosition="Right">
                     <CommandBar.Resources>
-                        <StaticResource x:Key="CommandBarBackgroundOpen" ResourceKey="ControlFillColorTransparentBrush"/>
+                        <StaticResource x:Key="CommandBarBackgroundOpen" ResourceKey="HutaoSurfaceBrush"/>
                         <!--  ReSharper disable once Xaml.RedundantResource  -->
                         <Thickness x:Key="CommandBarBorderThicknessOpen">0</Thickness>
                     </CommandBar.Resources>

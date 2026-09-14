@@ -1,0 +1,121 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
+    xmlns:hlsl="using:WinUI.Composition.Hlsl">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoTitleCardBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="8"
+                DispersionStrength="1.2"
+                FallbackColor="#E6FFFFFF"
+                HighlightStrength="1.6"
+                IsEnabled="False"
+                RefractionStrength="24"/>
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoCardBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="4"
+                DispersionStrength="1.2"
+                FallbackColor="#E6FFFFFF"
+                HighlightStrength="1.6"
+                IsEnabled="False"
+                RefractionStrength="24"/>
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoSurfaceBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="4"
+                DispersionStrength="0.8"
+                FallbackColor="#D9FFFFFF"
+                HighlightStrength="1.6"
+                IsEnabled="False"
+                RefractionStrength="18"/>
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoGuideLiquidGlassBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="16"
+                DispersionStrength="1.2"
+                FallbackColor="#E6FFFFFF"
+                HighlightStrength="1.6"
+                RefractionStrength="24"/>
+            <StaticResource x:Key="SettingsCardBackground" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="SettingsCardBackgroundPointerOver" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="SettingsCardBackgroundPressed" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="CommandBarBackground" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="CommandBarBackgroundOpen" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="CommandBarOverflowPresenterBackground" ResourceKey="HutaoSurfaceBrush"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoTitleCardBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="8"
+                DispersionStrength="1.2"
+                FallbackColor="#D92C2C2C"
+                HighlightStrength="1.6"
+                IsEnabled="False"
+                RefractionStrength="24"/>
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoCardBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="4"
+                DispersionStrength="1.2"
+                FallbackColor="#D92C2C2C"
+                HighlightStrength="1.6"
+                IsEnabled="False"
+                RefractionStrength="24"/>
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoSurfaceBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="4"
+                DispersionStrength="0.8"
+                FallbackColor="#CC2C2C2C"
+                HighlightStrength="1.6"
+                IsEnabled="False"
+                RefractionStrength="18"/>
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoGuideLiquidGlassBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="16"
+                DispersionStrength="1.2"
+                FallbackColor="#D92C2C2C"
+                HighlightStrength="1.6"
+                RefractionStrength="24"/>
+            <StaticResource x:Key="SettingsCardBackground" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="SettingsCardBackgroundPointerOver" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="SettingsCardBackgroundPressed" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="CommandBarBackground" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="CommandBarBackgroundOpen" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="CommandBarOverflowPresenterBackground" ResourceKey="HutaoSurfaceBrush"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="HutaoTitleCardBrush" Color="{ThemeResource SystemColorWindowColor}"/>
+            <SolidColorBrush x:Key="HutaoCardBrush" Color="{ThemeResource SystemColorWindowColor}"/>
+            <SolidColorBrush x:Key="HutaoSurfaceBrush" Color="{ThemeResource SystemColorWindowColor}"/>
+            <SolidColorBrush x:Key="HutaoGuideLiquidGlassBrush" Color="{ThemeResource SystemColorWindowColor}"/>
+            <StaticResource x:Key="SettingsCardBackground" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="SettingsCardBackgroundPointerOver" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="SettingsCardBackgroundPressed" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="CommandBarBackground" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="CommandBarBackgroundOpen" ResourceKey="HutaoSurfaceBrush"/>
+            <StaticResource x:Key="CommandBarOverflowPresenterBackground" ResourceKey="HutaoSurfaceBrush"/>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <Style BasedOn="{StaticResource DefaultCommandBarStyle}" TargetType="CommandBar">
+        <Setter Property="Background" Value="{ThemeResource HutaoSurfaceBrush}"/>
+    </Style>
+    <Style BasedOn="{StaticResource DefaultSettingsCardStyle}" TargetType="cwc:SettingsCard">
+        <Setter Property="Background" Value="{ThemeResource HutaoSurfaceBrush}"/>
+    </Style>
+</ResourceDictionary>
