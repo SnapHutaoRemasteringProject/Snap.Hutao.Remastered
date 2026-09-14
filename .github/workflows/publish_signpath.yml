@@ -42,7 +42,7 @@ jobs:
 
       - name: Submit zip to SignPath for signing
         id: signpath-zip
-        uses: signpath/github-action-submit-signing-request@v2
+        uses: signpath/github-action-submit-signing-request@v3
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ba79caf8-8aa3-44e6-8a7b-ac8541512be4
@@ -71,7 +71,7 @@ jobs:
 
       - name: Submit installer to SignPath for signing
         id: signpath-installer
-        uses: signpath/github-action-submit-signing-request@v2
+        uses: signpath/github-action-submit-signing-request@v3
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ba79caf8-8aa3-44e6-8a7b-ac8541512be4
