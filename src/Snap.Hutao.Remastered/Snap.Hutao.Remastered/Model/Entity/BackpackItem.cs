@@ -34,6 +34,10 @@ public sealed class BackpackItem
 
     public string? AppendPropIdListJson { get; set; }
 
+    public string? PurchasedAppendPropIdListJson { get; set; }
+
+    public string? DefiniteAppendPropIdListJson { get; set; }
+
     public bool IsLocked { get; set; }
 
     public bool IsMarked { get; set; }

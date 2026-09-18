@@ -195,6 +195,12 @@ public static class PlayerStoreParser
             AppendPropIdListJson = reliquary.AppendPropIdList is { Count: > 0 }
                 ? JsonSerializer.Serialize(reliquary.AppendPropIdList.ToArray())
                 : null,
+            PurchasedAppendPropIdListJson = reliquary.PurchasedAppendPropIdList is { Count: > 0 }
+                ? JsonSerializer.Serialize(reliquary.PurchasedAppendPropIdList.ToArray())
+                : null,
+            DefiniteAppendPropIdListJson = reliquary.DefiniteAppendPropIdList is { Count: > 0 }
+                ? JsonSerializer.Serialize(reliquary.DefiniteAppendPropIdList.ToArray())
+                : null,
             IsLocked = equip.IsLocked,
             IsMarked = reliquary.IsMarked,
         };
