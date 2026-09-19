@@ -10,6 +10,7 @@ using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Service.Abstraction;
 using Snap.Hutao.Remastered.Service.BackgroundImage;
 using Snap.Hutao.Remastered.Service.BackgroundMediaPlayer;
+using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using Snap.Hutao.Remastered.UI.Xaml.Media.Backdrop;
 using Snap.Hutao.Remastered.Web.Bridge;
 using Snap.Hutao.Remastered.Web;
@@ -49,6 +50,12 @@ public sealed partial class AppOptions : DbStoreOptions
 
     public ImmutableArray<NameValue<BackdropType>> BackdropTypes { get; } = ImmutableCollectionsNameValue.FromEnum<BackdropType>(type => type >= 0);
 
+    public ImmutableArray<NameValue<ControlMaterial>> ControlMaterials { get; } =
+    [
+        new(SH.ViewPageSettingControlMaterialDefault, UI.Xaml.Control.Theme.ControlMaterial.Default),
+        new(SH.ViewPageSettingControlMaterialLiquidGlass, UI.Xaml.Control.Theme.ControlMaterial.LiquidGlass),
+    ];
+
     public ImmutableArray<NameValue<BackgroundImageType>> BackgroundImageTypes { get; } = ImmutableCollectionsNameValue.FromEnum<BackgroundImageType>(type => type.GetLocalizedDescription(SH.ResourceManager, CultureInfo.CurrentCulture) ?? string.Empty);
 
     public ImmutableArray<NameValue<BackgroundMediaType>> BackgroundMediaTypes { get; } = ImmutableCollectionsNameValue.FromEnum<BackgroundMediaType>(type =>
@@ -80,6 +87,9 @@ public sealed partial class AppOptions : DbStoreOptions
 
     [field: MaybeNull]
     public IObservableProperty<ElementTheme> ElementTheme { get => field ??= CreateProperty(SettingKeys.ElementTheme, Microsoft.UI.Xaml.ElementTheme.Default); }
+
+    [field: MaybeNull]
+    public IObservableProperty<ControlMaterial> ControlMaterial { get => field ??= CreateProperty(SettingKeys.ControlMaterial, UI.Xaml.Control.Theme.ControlMaterial.Default); }
 
     [field: MaybeNull]
     public IObservableProperty<BackgroundImageType> BackgroundImageType { get => field ??= CreateProperty(SettingKeys.BackgroundImageType, BackgroundImage.BackgroundImageType.None); }

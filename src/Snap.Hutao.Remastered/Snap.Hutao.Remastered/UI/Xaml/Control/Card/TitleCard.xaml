@@ -6,7 +6,7 @@
     <Style BasedOn="{StaticResource DefaultTitleCardStyle}" TargetType="local:TitleCard"/>
 
     <Style x:Key="DefaultTitleCardStyle" TargetType="local:TitleCard">
-        <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+        <Setter Property="Background" Value="{ThemeResource HutaoTitleCardBrush}"/>
         <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="{ThemeResource OverlayCornerRadius}"/>

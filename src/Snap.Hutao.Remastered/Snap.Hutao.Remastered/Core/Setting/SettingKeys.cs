@@ -36,6 +36,7 @@ public static class SettingKeys
     public const string IsBackgroundMediaMuted       = "Snap::Hutao::UI::BackgroundMedia::IsMuted";
     public const string IsBackgroundMediaLooping     = "Snap::Hutao::UI::BackgroundMedia::IsLooping";
     public const string ElementTheme                 = "Snap::Hutao::UI::ElementTheme";
+    public const string ControlMaterial              = "Snap::Hutao::UI::ControlMaterial";
     public const string SystemBackdropType           = "Snap::Hutao::UI::SystemBackdropType";
     public const string GuideState                   = "Snap::Hutao::UI::Windowing::GuideWindow::State::1.17";
     public const string LastWindowCloseBehavior      = "Snap::Hutao::UI::Windowing::LastWindowCloseBehavior";

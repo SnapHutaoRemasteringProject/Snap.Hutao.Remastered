@@ -3675,6 +3675,30 @@
   <data name="ViewPageSettingThemeHeader" xml:space="preserve">
     <value>颜色主题</value>
   </data>
+  <data name="ViewPageSettingControlMaterialHeader" xml:space="preserve">
+    <value>控件材质</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDescription" xml:space="preserve">
+    <value>更改卡片与卡片面板的材质效果</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDefault" xml:space="preserve">
+    <value>默认</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialLiquidGlass" xml:space="preserve">
+    <value>液态玻璃</value>
+  </data>
+  <data name="ViewGuideMaterialTitle" xml:space="preserve">
+    <value>选择控件材质</value>
+  </data>
+  <data name="ViewGuideMaterialDescription" xml:space="preserve">
+    <value>对比原生 Fluent 表面与液态玻璃，然后选择应用全局使用的控件材质。</value>
+  </data>
+  <data name="ViewGuideMaterialDefaultPreviewDescription" xml:space="preserve">
+    <value>原生 Fluent 表面</value>
+  </data>
+  <data name="ViewGuideMaterialLiquidGlassPreviewDescription" xml:space="preserve">
+    <value>模糊、折射与边缘高光</value>
+  </data>
   <data name="ViewPageSettingTranslateNavigate" xml:space="preserve">
     <value>贡献翻译</value>
   </data>

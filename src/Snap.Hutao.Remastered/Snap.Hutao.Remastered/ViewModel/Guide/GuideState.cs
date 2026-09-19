@@ -44,6 +44,11 @@ public enum GuideState : uint
     StaticResourceBegin,
 
     /// <summary>
+    /// 选择控件材质
+    /// </summary>
+    Material,
+
+    /// <summary>
     /// 完成
     /// </summary>
     Completed,

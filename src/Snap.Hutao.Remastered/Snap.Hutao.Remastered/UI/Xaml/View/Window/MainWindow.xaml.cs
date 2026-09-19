@@ -1,4 +1,4 @@
-// Copyright (c) DGP Studio. All rights reserved.
+﻿// Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
 using Microsoft.UI.Input;
@@ -26,7 +26,9 @@ public sealed partial class MainWindow : Microsoft.UI.Xaml.Window,
 {
     private readonly LastWindowCloseBehaviorTraits closeBehaviorTraits;
     private readonly App app;
+    private readonly AppOptions appOptions;
     private readonly IBackgroundMediaPlayerService backgroundMediaPlayerService;
+    private bool materialApplied;
 
     public static MainWindow Instance { get; private set; } = null!;
 
@@ -34,6 +36,8 @@ public sealed partial class MainWindow : Microsoft.UI.Xaml.Window,
     {
         Instance = this;
         InitializeComponent();
+        appOptions = serviceProvider.GetRequiredService<AppOptions>();
+        MainView.Loaded += MainWindow_Loaded;
 
         if (AppWindow.Presenter is OverlappedPresenter presenter)
         {
@@ -50,6 +54,17 @@ public sealed partial class MainWindow : Microsoft.UI.Xaml.Window,
         closeBehaviorTraits = scope.ServiceProvider.GetRequiredService<LastWindowCloseBehaviorTraits>();
         app = scope.ServiceProvider.GetRequiredService<App>();
         backgroundMediaPlayerService = serviceProvider.GetRequiredService<IBackgroundMediaPlayerService>();
+    }
+
+    private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (materialApplied)
+        {
+            return;
+        }
+
+        materialApplied = true;
+        Control.Theme.MaterialTheme.Apply(appOptions.ControlMaterial.Value);
     }
 
     public SizeInt32 InitSize { get => ScaledSizeInt32.CreateForWindow(1200, 741, this); }
