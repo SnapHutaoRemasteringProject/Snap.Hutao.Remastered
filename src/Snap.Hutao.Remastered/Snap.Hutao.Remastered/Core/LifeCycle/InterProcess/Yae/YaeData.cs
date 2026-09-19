@@ -13,11 +13,12 @@ public sealed partial class YaeData : IDisposable
     private readonly IMemoryOwner<byte> owner;
     private readonly int contentLength;
 
-    public YaeData(YaeCommandKind kind, IMemoryOwner<byte> owner, int contentLength)
+    public YaeData(YaeCommandKind kind, IMemoryOwner<byte> owner, int contentLength, uint cmdId = 0)
     {
         Kind = kind;
         this.owner = owner;
         this.contentLength = contentLength;
+        CmdId = cmdId;
     }
 
     ~YaeData()
@@ -28,6 +29,11 @@ public sealed partial class YaeData : IDisposable
     public static YaeData SessionEnd { get => new(YaeCommandKind.SessionEnd, IMemoryOwner<byte>.Empty, 0); }
 
     public YaeCommandKind Kind { get; }
+
+    /// <summary>
+    /// 仅 <see cref="YaeCommandKind.ResponsePacket"/> 有效，表示该数据包对应的游戏命令 Id。
+    /// </summary>
+    public uint CmdId { get; }
 
     public ByteString Bytes { get => ByteStringMarshal.Create(owner.Memory[..contentLength]); }
 

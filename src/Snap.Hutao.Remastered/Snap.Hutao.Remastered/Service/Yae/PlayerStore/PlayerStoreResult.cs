@@ -10,5 +10,7 @@ public sealed class PlayerStoreResult
 {
     public ByteString? StoreBytes { get; init; }
 
+    public ByteString? AvatarDataBytes { get; init; }
+
     public Dictionary<InterestedPropType, double> PropMap { get; init; } = [];
 }

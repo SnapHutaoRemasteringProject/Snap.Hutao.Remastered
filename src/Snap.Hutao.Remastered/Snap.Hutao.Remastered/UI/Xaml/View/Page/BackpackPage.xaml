@@ -34,6 +34,11 @@
                         MaximumValue="50"
                         Minimum="#FF9E9E9E"
                         MinimumValue="0"/>
+                    <shuxdcs:ReliquarySubStatStateToColorConverter
+                        x:Key="ReliquarySubStatStateToColorConverter"
+                        Crit="#FFE09600"
+                        Effective="#E4000000"
+                        Muted="#FF9E9E9E"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <shuxdcs:UInt32ToGradientColorConverter
@@ -46,6 +51,11 @@
                         MaximumValue="50"
                         Minimum="#FF9E9E9E"
                         MinimumValue="0"/>
+                    <shuxdcs:ReliquarySubStatStateToColorConverter
+                        x:Key="ReliquarySubStatStateToColorConverter"
+                        Crit="#FFFFCC33"
+                        Effective="#FFFFFFFF"
+                        Muted="#FF8E8E8E"/>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
 
@@ -238,11 +248,19 @@
                         Style="{StaticResource BaseTextBlockStyle}"
                         Text="{Binding DisplayName}"
                         TextWrapping="NoWrap"
-                        Visibility="{Binding HasValue, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        Visibility="{Binding HasValue, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock.Foreground>
+                            <SolidColorBrush Color="{Binding State, Converter={ThemeResource ReliquarySubStatStateToColorConverter}}"/>
+                        </TextBlock.Foreground>
+                    </TextBlock>
                     <TextBlock
                         Grid.Column="1"
                         Text="{Binding DisplayValue}"
-                        Visibility="{Binding HasValue, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        Visibility="{Binding HasValue, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock.Foreground>
+                            <SolidColorBrush Color="{Binding State, Converter={ThemeResource ReliquarySubStatStateToColorConverter}}"/>
+                        </TextBlock.Foreground>
+                    </TextBlock>
                     <Grid Grid.Column="2" Visibility="{Binding HasValue, Converter={StaticResource BoolToVisibilityConverter}}">
                         <Ellipse
                             Width="16"

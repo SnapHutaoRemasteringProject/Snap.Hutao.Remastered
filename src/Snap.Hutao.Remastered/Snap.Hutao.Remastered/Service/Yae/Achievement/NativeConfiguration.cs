@@ -11,6 +11,9 @@ public sealed class NativeConfiguration
     [JsonPropertyName("achievementCmdId")]
     public required uint AchievementCmdId { get; init; }
 
+    [JsonPropertyName("avatarCmdId")]
+    public required uint AvatarCmdId { get; init; }
+
     [JsonPropertyName("methodRva")]
     public required MethodRvaWrapper MethodRva { get; init; }
 }

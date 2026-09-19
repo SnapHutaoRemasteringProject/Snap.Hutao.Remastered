@@ -83,6 +83,21 @@ public static class AvatarDataParser
         }
     }
 
+    // 返回 装备 guid -> 角色 Id 的映射，用于标记背包物品的装备者。
+    public static ImmutableDictionary<ulong, uint> ParseEquippedItemOwners(ByteString bytes)
+    {
+        ImmutableDictionary<ulong, uint>.Builder builder = ImmutableDictionary.CreateBuilder<ulong, uint>();
+        foreach (AvatarInfo avatar in Parse(bytes))
+        {
+            foreach (ulong guid in avatar.EquipGuidList)
+            {
+                builder[guid] = avatar.AvatarId;
+            }
+        }
+
+        return builder.ToImmutable();
+    }
+
     // AvatarInfo 内部签名：字段 1/2 都是 varint（avatar_id / guid，历代稳定），
     // 且有 >= 4 个去重字段。map 项 / rename 项只有 1~2 个字段，会被排除。
     private static bool LooksLikeAvatarInfo(ByteString element)

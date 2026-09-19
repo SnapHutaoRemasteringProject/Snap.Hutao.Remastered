@@ -30,7 +30,7 @@ public static class PlayerStoreParser
         };
     }
 
-    public static ImmutableArray<BackpackItem> ParseToBackpackItems(ByteString bytes, Guid archiveId)
+    public static ImmutableArray<BackpackItem> ParseToBackpackItems(ByteString bytes, Guid archiveId, ImmutableDictionary<ulong, uint> equippedItemOwners)
     {
         List<Item> items = [];
         try
@@ -47,6 +47,7 @@ public static class PlayerStoreParser
         {
             if (ConvertToBackpackItem(item, archiveId) is { } backpackItem)
             {
+                backpackItem.EquippedAvatarId = equippedItemOwners.GetValueOrDefault(backpackItem.Guid);
                 builder.Add(backpackItem);
             }
         }
@@ -194,6 +195,12 @@ public static class PlayerStoreParser
             MainPropId = reliquary.MainPropId,
             AppendPropIdListJson = reliquary.AppendPropIdList is { Count: > 0 }
                 ? JsonSerializer.Serialize(reliquary.AppendPropIdList.ToArray())
+                : null,
+            PurchasedAppendPropIdListJson = reliquary.PurchasedAppendPropIdList is { Count: > 0 }
+                ? JsonSerializer.Serialize(reliquary.PurchasedAppendPropIdList.ToArray())
+                : null,
+            DefiniteAppendPropIdListJson = reliquary.DefiniteAppendPropIdList is { Count: > 0 }
+                ? JsonSerializer.Serialize(reliquary.DefiniteAppendPropIdList.ToArray())
                 : null,
             IsLocked = equip.IsLocked,
             IsMarked = reliquary.IsMarked,

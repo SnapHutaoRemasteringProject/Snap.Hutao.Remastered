@@ -303,7 +303,9 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
         {
             if (item is BackpackReliquaryItemView relicItem)
             {
-                relicItem.Score = ReliquaryScoreCalculator.CalculateWithWeights(relicItem.SubStats.Select(s => (s.FightProp, s.Value)), context.ReliquaryScoreConfig.GetWeight);
+                relicItem.Score = ReliquaryScoreCalculator.CalculateWithWeights(
+                    relicItem.SubStats.Where(s => s.State is not ReliquarySubStatState.Inactive).Select(s => (s.FightProp, s.Value)),
+                    context.ReliquaryScoreConfig.GetWeight);
             }
         }
 

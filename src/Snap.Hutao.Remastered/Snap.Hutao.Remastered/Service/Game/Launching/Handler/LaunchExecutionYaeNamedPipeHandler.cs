@@ -17,11 +17,13 @@ public sealed class LaunchExecutionYaeNamedPipeHandler : AbstractLaunchExecution
 {
     private readonly TargetNativeConfiguration config;
     private readonly YaeDataArrayReceiver receiver;
+    private readonly YaeDataRequest request;
 
-    public LaunchExecutionYaeNamedPipeHandler(TargetNativeConfiguration config, YaeDataArrayReceiver receiver)
+    public LaunchExecutionYaeNamedPipeHandler(TargetNativeConfiguration config, YaeDataArrayReceiver receiver, YaeDataRequest request)
     {
         this.config = config;
         this.receiver = receiver;
+        this.request = request;
     }
 
     public override async ValueTask ExecuteAsync(LaunchExecutionContext context)
@@ -61,7 +63,7 @@ public sealed class LaunchExecutionYaeNamedPipeHandler : AbstractLaunchExecution
         try
         {
 #pragma warning disable CA2007
-            await using (YaeNamedPipeServer server = new(context.ServiceProvider, context.Process, config))
+            await using (YaeNamedPipeServer server = new(context.ServiceProvider, context.Process, config, request))
 #pragma warning restore CA2007
             {
                 receiver.Array = await server.GetDataArrayAsync().ConfigureAwait(false);
