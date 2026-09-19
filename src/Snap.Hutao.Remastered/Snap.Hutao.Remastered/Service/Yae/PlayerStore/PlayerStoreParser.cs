@@ -30,7 +30,7 @@ public static class PlayerStoreParser
         };
     }
 
-    public static ImmutableArray<BackpackItem> ParseToBackpackItems(ByteString bytes, Guid archiveId)
+    public static ImmutableArray<BackpackItem> ParseToBackpackItems(ByteString bytes, Guid archiveId, ImmutableDictionary<ulong, uint> equippedItemOwners)
     {
         List<Item> items = [];
         try
@@ -47,6 +47,7 @@ public static class PlayerStoreParser
         {
             if (ConvertToBackpackItem(item, archiveId) is { } backpackItem)
             {
+                backpackItem.EquippedAvatarId = equippedItemOwners.GetValueOrDefault(backpackItem.Guid);
                 builder.Add(backpackItem);
             }
         }
