@@ -30,6 +30,8 @@ public sealed class BackpackItem
 
     public uint RefinementRank { get; set; }
 
+    public uint EquippedAvatarId { get; set; }
+
     public uint? MainPropId { get; set; }
 
     public string? AppendPropIdListJson { get; set; }
