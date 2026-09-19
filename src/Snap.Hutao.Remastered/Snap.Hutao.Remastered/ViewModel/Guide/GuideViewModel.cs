@@ -14,6 +14,7 @@ using Snap.Hutao.Remastered.Factory.Picker;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.Notification;
+using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using Snap.Hutao.Remastered.ViewModel.Setting;
 using Snap.Hutao.Remastered.Web.Hoyolab;
 using Snap.Hutao.Remastered.Web.Hutao;
@@ -95,6 +96,20 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
     public partial AppOptions AppOptions { get; }
 
     public partial StaticResourceOptions StaticResourceOptions { get; }
+
+    // TODO: Replace with IObservableProperty
+    public NameValue<ControlMaterial>? SelectedControlMaterial
+    {
+        get => field ??= AppOptions.ControlMaterials.Single(material => material.Value == AppOptions.ControlMaterial.Value);
+        set
+        {
+            if (SetProperty(ref field, value) && value is not null)
+            {
+                AppOptions.ControlMaterial.Value = value.Value;
+                MaterialTheme.Apply(value.Value);
+            }
+        }
+    }
 
     // TODO: Replace with IObservableProperty
     public NameCultureInfoValue? SelectedCulture
@@ -322,7 +337,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         }
 
         StaticResource.FulfillAll();
-        UnsafeLocalSetting.Set(SettingKeys.GuideState, GuideState.Completed);
+        UnsafeLocalSetting.Set(SettingKeys.GuideState, GuideState.Material);
         AppInstance.Restart(string.Empty);
     }
 

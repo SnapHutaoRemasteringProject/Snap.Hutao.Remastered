@@ -161,12 +161,8 @@
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE72D;}"
                                     IsClickEnabled="True"/>
 
-                                <cwc:SettingsCard
-                                    Header="{shuxm:ResourceString Name=ViewPageSettingMirrorChyanLinkHeader}"
-                                    IsClickEnabled="False">
-                                    <HyperlinkButton
-                                        Content="{shuxm:ResourceString Name=ViewPageSettingMirrorChyanLinkHeader}"
-                                        NavigateUri="https://mirrorchyan.com?source=snap_hutao_app_settings"/>
+                                <cwc:SettingsCard Header="{shuxm:ResourceString Name=ViewPageSettingMirrorChyanLinkHeader}" IsClickEnabled="False">
+                                    <HyperlinkButton Content="{shuxm:ResourceString Name=ViewPageSettingMirrorChyanLinkHeader}" NavigateUri="https://mirrorchyan.com?source=snap_hutao_app_settings"/>
                                 </cwc:SettingsCard>
                             </StackPanel>
                         </ScrollViewer>
@@ -373,6 +369,17 @@
                                             SelectedItem="{Binding SelectedElementTheme, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
+                                <cwc:SettingsCard
+                                    Description="{shuxm:ResourceString Name=ViewPageSettingControlMaterialDescription}"
+                                    Header="{shuxm:ResourceString Name=ViewPageSettingControlMaterialHeader}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE790;}">
+                                    <shuxc:SizeRestrictedContentControl>
+                                        <ComboBox
+                                            DisplayMemberPath="Name"
+                                            ItemsSource="{Binding AppOptions.ControlMaterials}"
+                                            SelectedItem="{Binding SelectedControlMaterial, Mode=TwoWay}"/>
+                                    </shuxc:SizeRestrictedContentControl>
+                                </cwc:SettingsCard>
                                 <cwc:SettingsExpander
                                     Description="{shuxm:ResourceString Name=ViewPageSettingBackgroundImageDescription}"
                                     Header="{shuxm:ResourceString Name=ViewPageSettingBackgroundImageHeader}"
@@ -513,9 +520,7 @@
                                             Description="{shuxm:ResourceString Name=ViewPageSettingOpenBackgroundVideoFolderDescription}"
                                             Header="{shuxm:ResourceString Name=ViewPageSettingOpenBackgroundVideoFolderHeader}"
                                             IsClickEnabled="True"/>
-                                        <cwc:SettingsCard
-                                            Description="{shuxm:ResourceString Name=ViewPageSettingStorageBackgroundVideoHint}"
-                                            IsClickEnabled="False"/>
+                                        <cwc:SettingsCard Description="{shuxm:ResourceString Name=ViewPageSettingStorageBackgroundVideoHint}" IsClickEnabled="False"/>
                                         <cwc:SettingsCard
                                             ActionIcon="{shuxm:FontIcon Glyph=&#xE76C;}"
                                             ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingStorageSetAction}"

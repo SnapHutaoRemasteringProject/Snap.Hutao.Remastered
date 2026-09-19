@@ -31,6 +31,20 @@ public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
     public partial IMessenger Messenger { get; }
 
     // TODO: Replace with IObservableProperty
+    public NameValue<ControlMaterial>? SelectedControlMaterial
+    {
+        get => field ??= AppOptions.ControlMaterials.Single(material => material.Value == AppOptions.ControlMaterial.Value);
+        set
+        {
+            if (SetProperty(ref field, value) && value is not null)
+            {
+                AppOptions.ControlMaterial.Value = value.Value;
+                MaterialTheme.Apply(value.Value);
+            }
+        }
+    }
+
+    // TODO: Replace with IObservableProperty
     public NameValue<BackgroundMediaType>? SelectedBackgroundMediaType
     {
         get => field ??= Selection.Initialize(AppOptions.BackgroundMediaTypes, AppOptions.BackgroundMediaType.Value);

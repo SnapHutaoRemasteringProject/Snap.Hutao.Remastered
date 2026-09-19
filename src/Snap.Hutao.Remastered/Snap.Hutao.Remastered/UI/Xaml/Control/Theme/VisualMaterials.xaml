@@ -1,0 +1,98 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:hlsl="using:WinUI.Composition.Hlsl">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoTitleCardBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="8"
+                DispersionStrength="1.2"
+                FallbackColor="#E6FFFFFF"
+                HighlightStrength="1.6"
+                IsEnabled="False"
+                RefractionStrength="24"/>
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoCardBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="4"
+                DispersionStrength="1.2"
+                FallbackColor="#E6FFFFFF"
+                HighlightStrength="1.6"
+                IsEnabled="False"
+                RefractionStrength="24"/>
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoSurfaceBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="4"
+                DispersionStrength="0.8"
+                FallbackColor="#D9FFFFFF"
+                HighlightStrength="1.6"
+                IsEnabled="False"
+                RefractionStrength="18"/>
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoGuideLiquidGlassBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="16"
+                DispersionStrength="1.2"
+                FallbackColor="#E6FFFFFF"
+                HighlightStrength="1.6"
+                IsEnabled="False"
+                RefractionStrength="24"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoTitleCardBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="8"
+                DispersionStrength="1.2"
+                FallbackColor="#D92C2C2C"
+                HighlightStrength="1.6"
+                IsEnabled="False"
+                RefractionStrength="24"/>
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoCardBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="4"
+                DispersionStrength="1.2"
+                FallbackColor="#D92C2C2C"
+                HighlightStrength="1.6"
+                IsEnabled="False"
+                RefractionStrength="24"/>
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoSurfaceBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="4"
+                DispersionStrength="0.8"
+                FallbackColor="#CC2C2C2C"
+                HighlightStrength="1.6"
+                IsEnabled="False"
+                RefractionStrength="18"/>
+            <hlsl:LiquidGlassBrush
+                x:Key="HutaoGuideLiquidGlassBrush"
+                BlurRadius="1"
+                BorderThickness="0"
+                CornerRadius="16"
+                DispersionStrength="1.2"
+                FallbackColor="#D92C2C2C"
+                HighlightStrength="1.6"
+                IsEnabled="False"
+                RefractionStrength="24"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="HutaoTitleCardBrush" Color="{ThemeResource SystemColorWindowColor}"/>
+            <SolidColorBrush x:Key="HutaoCardBrush" Color="{ThemeResource SystemColorWindowColor}"/>
+            <SolidColorBrush x:Key="HutaoSurfaceBrush" Color="{ThemeResource SystemColorWindowColor}"/>
+            <SolidColorBrush x:Key="HutaoGuideLiquidGlassBrush" Color="{ThemeResource SystemColorWindowColor}"/>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+</ResourceDictionary>

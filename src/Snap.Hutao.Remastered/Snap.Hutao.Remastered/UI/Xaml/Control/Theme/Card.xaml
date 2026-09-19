@@ -18,14 +18,14 @@
         Offset="0,4,0"/>
 
     <Style x:Key="BorderCardStyle" TargetType="Border">
-        <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+        <Setter Property="Background" Value="{ThemeResource HutaoCardBrush}"/>
         <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}"/>
     </Style>
 
     <Style x:Key="BorderShimmerStyle" TargetType="Border">
-        <Setter Property="Background" Value="{ThemeResource ControlAltFillColorSecondaryBrush}"/>
+        <Setter Property="Background" Value="{ThemeResource HutaoSurfaceBrush}"/>
         <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}"/>
@@ -55,14 +55,14 @@
     </Style>
 
     <Style x:Key="GridCardStyle" TargetType="Grid">
-        <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+        <Setter Property="Background" Value="{ThemeResource HutaoCardBrush}"/>
         <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}"/>
     </Style>
 
     <Style x:Key="GridShimmerStyle" TargetType="Grid">
-        <Setter Property="Background" Value="{ThemeResource ControlAltFillColorSecondaryBrush}"/>
+        <Setter Property="Background" Value="{ThemeResource HutaoSurfaceBrush}"/>
         <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}"/>
