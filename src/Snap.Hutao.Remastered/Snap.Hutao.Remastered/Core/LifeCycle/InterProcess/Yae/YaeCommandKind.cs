@@ -6,11 +6,11 @@ namespace Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.Yae;
 public enum YaeCommandKind : byte
 {
     None = 0,
-    ResponseAchievement = 1,
-    ResponsePlayerStore = 2,
-    ResponsePlayerProp = 3,
-    RequestCmdId = 252,
-    RequestRva = 253,
-    RequestResumeThread = 254,
-    SessionEnd = 255,
+    ResponsePlayerProp = 0x03,
+    ResponsePacket = 0x04,
+    RequestPacketList = 0xFA,
+    RequestPlayerPropList = 0xFB,
+    RequestRva = 0xFD,
+    RequestResumeThread = 0xFE,
+    SessionEnd = 0xFF,
 }

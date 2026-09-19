@@ -67,14 +67,15 @@ public sealed partial class YaeService : IYaeService
                     ArgumentNullException.ThrowIfNull(fieldId);
 
                     TargetNativeConfiguration config = TargetNativeConfiguration.Create(fieldId.NativeConfig, isOversea);
-                    await new YaeLaunchExecutionInvoker(config, receiver).InvokeAsync(context).ConfigureAwait(false);
+                    YaeDataRequest request = new() { PacketCmdIds = [config.AchievementCmdId], PlayerPropTypes = [] };
+                    await new YaeLaunchExecutionInvoker(config, receiver, request).InvokeAsync(context).ConfigureAwait(false);
 
                     UIAF? uiaf = default;
                     foreach (YaeData data in receiver.Array)
                     {
                         using (data)
                         {
-                            if (data.Kind is YaeCommandKind.ResponseAchievement)
+                            if (data.Kind is YaeCommandKind.ResponsePacket && data.CmdId == config.AchievementCmdId)
                             {
                                 Debug.Assert(uiaf is null);
                                 uiaf = AchievementParser.Parse(data.Bytes, fieldId);
@@ -106,6 +107,7 @@ public sealed partial class YaeService : IYaeService
             Dictionary<InterestedPropType, double> propMap = [];
             using (YaeDataArrayReceiver receiver = new())
             {
+                TargetNativeConfiguration config;
                 try
                 {
                     UserAndUid? userAndUid = await userService.GetCurrentUserAndUidAsync().ConfigureAwait(false);
@@ -125,8 +127,9 @@ public sealed partial class YaeService : IYaeService
                     AchievementFieldId? fieldId = await featureService.GetAchievementFieldIdAsync(version).ConfigureAwait(false);
                     ArgumentNullException.ThrowIfNull(fieldId);
 
-                    TargetNativeConfiguration config = TargetNativeConfiguration.Create(fieldId.NativeConfig, isOversea);
-                    await new YaeLaunchExecutionInvoker(config, receiver).InvokeAsync(context).ConfigureAwait(false);
+                    config = TargetNativeConfiguration.Create(fieldId.NativeConfig, isOversea);
+                    YaeDataRequest request = new() { PacketCmdIds = [config.StoreCmdId], PlayerPropTypes = YaeDataRequest.AllPlayerPropTypes };
+                    await new YaeLaunchExecutionInvoker(config, receiver, request).InvokeAsync(context).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -140,14 +143,14 @@ public sealed partial class YaeService : IYaeService
                     {
                         switch (data.Kind)
                         {
-                            case YaeCommandKind.ResponsePlayerStore:
+                            case YaeCommandKind.ResponsePacket when data.CmdId == config.StoreCmdId:
                                 Debug.Assert(uiif is null);
                                 uiif = PlayerStoreParser.Parse(data.Bytes);
                                 break;
                             case YaeCommandKind.ResponsePlayerProp:
                                 {
                                     ref readonly YaePropertyTypeValue typeValue = ref data.PropertyTypeValue;
-                                    propMap.Add(typeValue.Type, typeValue.Value);
+                                    propMap[typeValue.Type] = typeValue.Value;
                                     break;
                                 }
                         }
@@ -180,6 +183,7 @@ public sealed partial class YaeService : IYaeService
             ByteString? storeBytes = default;
             using (YaeDataArrayReceiver receiver = new())
             {
+                TargetNativeConfiguration config;
                 try
                 {
                     UserAndUid? userAndUid = await userService.GetCurrentUserAndUidAsync().ConfigureAwait(false);
@@ -199,8 +203,9 @@ public sealed partial class YaeService : IYaeService
                     AchievementFieldId? fieldId = await featureService.GetAchievementFieldIdAsync(version).ConfigureAwait(false);
                     ArgumentNullException.ThrowIfNull(fieldId);
 
-                    TargetNativeConfiguration config = TargetNativeConfiguration.Create(fieldId.NativeConfig, isOversea);
-                    await new YaeLaunchExecutionInvoker(config, receiver).InvokeAsync(context).ConfigureAwait(false);
+                    config = TargetNativeConfiguration.Create(fieldId.NativeConfig, isOversea);
+                    YaeDataRequest request = new() { PacketCmdIds = [config.StoreCmdId], PlayerPropTypes = [] };
+                    await new YaeLaunchExecutionInvoker(config, receiver, request).InvokeAsync(context).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -212,7 +217,7 @@ public sealed partial class YaeService : IYaeService
                 {
                     using (data)
                     {
-                        if (data.Kind is YaeCommandKind.ResponsePlayerStore)
+                        if (data.Kind is YaeCommandKind.ResponsePacket && data.CmdId == config.StoreCmdId)
                         {
                             storeBytes = data.Bytes;
                             break;
@@ -235,9 +240,11 @@ public sealed partial class YaeService : IYaeService
         {
             await taskContext.SwitchToBackgroundAsync();
             ByteString? storeBytes = default;
+            ByteString? avatarDataBytes = default;
             Dictionary<InterestedPropType, double> propMap = [];
             using (YaeDataArrayReceiver receiver = new())
             {
+                TargetNativeConfiguration config;
                 try
                 {
                     UserAndUid? userAndUid = await userService.GetCurrentUserAndUidAsync().ConfigureAwait(false);
@@ -257,8 +264,14 @@ public sealed partial class YaeService : IYaeService
                     AchievementFieldId? fieldId = await featureService.GetAchievementFieldIdAsync(version).ConfigureAwait(false);
                     ArgumentNullException.ThrowIfNull(fieldId);
 
-                    TargetNativeConfiguration config = TargetNativeConfiguration.Create(fieldId.NativeConfig, isOversea);
-                    await new YaeLaunchExecutionInvoker(config, receiver).InvokeAsync(context).ConfigureAwait(false);
+                    config = TargetNativeConfiguration.Create(fieldId.NativeConfig, isOversea);
+                    YaeDataRequest request = new()
+                    {
+                        PacketCmdIds = [config.StoreCmdId, config.AvatarCmdId],
+                        PlayerPropTypes = YaeDataRequest.AllPlayerPropTypes,
+                    };
+
+                    await new YaeLaunchExecutionInvoker(config, receiver, request).InvokeAsync(context).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -272,13 +285,16 @@ public sealed partial class YaeService : IYaeService
                     {
                         switch (data.Kind)
                         {
-                            case YaeCommandKind.ResponsePlayerStore:
+                            case YaeCommandKind.ResponsePacket when data.CmdId == config.StoreCmdId:
                                 storeBytes = data.Bytes;
+                                break;
+                            case YaeCommandKind.ResponsePacket when data.CmdId == config.AvatarCmdId:
+                                avatarDataBytes = data.Bytes;
                                 break;
                             case YaeCommandKind.ResponsePlayerProp:
                                 {
                                     ref readonly YaePropertyTypeValue typeValue = ref data.PropertyTypeValue;
-                                    propMap.Add(typeValue.Type, typeValue.Value);
+                                    propMap[typeValue.Type] = typeValue.Value;
                                     break;
                                 }
                         }
@@ -294,6 +310,7 @@ public sealed partial class YaeService : IYaeService
             return new()
             {
                 StoreBytes = storeBytes,
+                AvatarDataBytes = avatarDataBytes,
                 PropMap = propMap,
             };
         }

@@ -21,6 +21,7 @@ public sealed class YaeNamedPipeServer : IAsyncDisposable
     private readonly AsyncLock disposeLock = new();
 
     private readonly TargetNativeConfiguration config;
+    private readonly YaeDataRequest request;
     private readonly ITaskContext taskContext;
     private readonly IProcess gameProcess;
 
@@ -28,7 +29,7 @@ public sealed class YaeNamedPipeServer : IAsyncDisposable
 
     private volatile bool disposed;
 
-    public YaeNamedPipeServer(IServiceProvider serviceProvider, IProcess gameProcess, TargetNativeConfiguration config)
+    public YaeNamedPipeServer(IServiceProvider serviceProvider, IProcess gameProcess, TargetNativeConfiguration config, YaeDataRequest request)
     {
         Verify.Operation(HutaoRuntime.IsProcessElevated, "Snap Hutao must be elevated to use Yae.");
 
@@ -36,6 +37,7 @@ public sealed class YaeNamedPipeServer : IAsyncDisposable
 
         this.gameProcess = gameProcess;
         this.config = config;
+        this.request = request;
 
         // Yae is always running elevated, so we don't need to use ACL method.
         serverStream = new(PipeName);
@@ -92,10 +94,27 @@ public sealed class YaeNamedPipeServer : IAsyncDisposable
 
         switch (kind)
         {
-            case YaeCommandKind.RequestCmdId:
+            case YaeCommandKind.RequestPacketList:
                 {
-                    writer.Write(config.AchievementCmdId);
-                    writer.Write(config.StoreCmdId);
+                    foreach (uint cmdId in request.PacketCmdIds)
+                    {
+                        writer.Write(cmdId);
+                    }
+
+                    writer.Write(uint.MaxValue);
+                    writer.Flush();
+                    return default;
+                }
+
+            case YaeCommandKind.RequestPlayerPropList:
+                {
+                    foreach (InterestedPropType propType in request.PlayerPropTypes)
+                    {
+                        writer.Write((uint)propType);
+                    }
+
+                    writer.Write(uint.MaxValue);
+                    writer.Flush();
                     return default;
                 }
 
@@ -120,12 +139,16 @@ public sealed class YaeNamedPipeServer : IAsyncDisposable
                     return default;
                 }
 
-            case YaeCommandKind.ResponseAchievement or YaeCommandKind.ResponsePlayerStore:
+            case YaeCommandKind.ResponsePacket:
                 {
-                    int contentLength = reader.ReadInt32();
+                    uint cmdId = reader.Read<ushort>();
+                    int contentLength = reader.Read<int>();
                     IMemoryOwner<byte> owner = MemoryPool<byte>.Shared.RentExactly(contentLength);
                     reader.ReadExactly(owner.Memory.Span);
-                    return new(kind, owner, contentLength);
+
+                    // true 表示后续不再需要该数据包
+                    writer.Write(true);
+                    return new(kind, owner, contentLength, cmdId);
                 }
 
             case YaeCommandKind.ResponsePlayerProp:
@@ -133,6 +156,9 @@ public sealed class YaeNamedPipeServer : IAsyncDisposable
                     int contentLength = sizeof(YaePropertyTypeValue);
                     IMemoryOwner<byte> owner = MemoryPool<byte>.Shared.RentExactly(contentLength);
                     reader.ReadExactly(owner.Memory.Span);
+
+                    // true 表示后续不再需要该属性
+                    writer.Write(true);
                     return new(kind, owner, contentLength);
                 }
 

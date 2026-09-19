@@ -11,7 +11,7 @@ namespace Snap.Hutao.Remastered.Service.Game.Launching.Invoker;
 
 public sealed class YaeLaunchExecutionInvoker : AbstractLaunchExecutionInvoker
 {
-    public YaeLaunchExecutionInvoker(TargetNativeConfiguration config, YaeDataArrayReceiver receiver)
+    public YaeLaunchExecutionInvoker(TargetNativeConfiguration config, YaeDataArrayReceiver receiver, YaeDataRequest request)
     {
         Handlers =
         [
@@ -20,7 +20,7 @@ public sealed class YaeLaunchExecutionInvoker : AbstractLaunchExecutionInvoker
             new LaunchExecutionGameResourceHandler(false),
             new LaunchExecutionGameIdentityHandler(),
             new LaunchExecutionGameProcessStartHandler(),
-            new LaunchExecutionYaeNamedPipeHandler(config, receiver),
+            new LaunchExecutionYaeNamedPipeHandler(config, receiver, request),
         ];
     }
 
