@@ -85,7 +85,6 @@ public sealed partial class GamePackageService : IGamePackageService
 
             // TODO: Move window creation out of this service.
             GamePackageOperationWindow window = scope.ServiceProvider.GetRequiredService<GamePackageOperationWindow>();
-            window.SetOperationContext(operationContext);
             IProgress<GamePackageOperationReport> progress = scope.ServiceProvider
                 .GetRequiredService<IProgressFactory>()
                 .CreateForMainThread<GamePackageOperationReport>(window.HandleProgressUpdate);
