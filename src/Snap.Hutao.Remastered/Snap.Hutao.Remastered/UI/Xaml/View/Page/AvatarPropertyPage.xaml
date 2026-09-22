@@ -775,7 +775,7 @@
                                 DisplayMode="Inline"
                                 IsPaneOpen="True"
                                 OpenPaneLength="{StaticResource CompatSplitViewOpenPaneLength}"
-                                PaneBackground="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                                PaneBackground="{ThemeResource HutaoSurfaceBrush}">
                                 <SplitView.Pane>
                                     <Grid>
                                         <Grid.RowDefinitions>
@@ -1032,7 +1032,7 @@
                                                         Header="{shuxm:ResourceString Name=ViewPageAvatarPropertyHeader}">
                                                         <Border
                                                             Margin="0,-1,0,0"
-                                                            Background="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                            Background="{ThemeResource HutaoSurfaceBrush}"
                                                             BorderThickness="0">
                                                             <ItemsControl ItemTemplate="{StaticResource AvatarPropertyTemplate}" ItemsSource="{Binding Summary.Avatars.CurrentItem.Properties}"/>
                                                         </Border>

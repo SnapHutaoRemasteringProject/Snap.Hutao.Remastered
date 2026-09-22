@@ -12,7 +12,7 @@
 
     <ControlTemplate x:Key="AutoSortListTemplate" TargetType="shuxcas:AutoSortList">
         <Border
-            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            Background="{ThemeResource HutaoCardBrush}"
             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
             BorderThickness="1"
             CornerRadius="{ThemeResource ControlCornerRadius}">

@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Navigation;
 using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.UI.Content;
+using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using Snap.Hutao.Remastered.ViewModel.Abstraction;
 using Snap.Hutao.Remastered.Win32.Foundation;
 
@@ -20,6 +21,13 @@ public partial class ScopedPage : Page
 
     protected ScopedPage()
     {
+        ResourceDictionary materialResources = new()
+        {
+            Source = new Uri("ms-appx:///UI/Xaml/Control/Theme/VisualMaterials.xaml"),
+        };
+        Resources.MergedDictionaries.Add(materialResources);
+        MaterialTheme.Register(materialResources);
+
         // Events/Override Methods order
         // ----------------------------------------------------------------------
         // Page Navigation methods:

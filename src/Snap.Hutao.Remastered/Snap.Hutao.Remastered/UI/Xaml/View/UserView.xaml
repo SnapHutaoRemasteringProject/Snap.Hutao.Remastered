@@ -303,7 +303,7 @@
                             Grid.Column="0"
                             Margin="0,0"
                             Padding="0,2"
-                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            Background="{ThemeResource HutaoCardBrush}"
                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                             BorderThickness="0,0,1,0">
                             <!--  米游社 登录  -->

@@ -122,7 +122,7 @@
                                 </Grid.RowDefinitions>
                                 <Grid
                                     Grid.Row="0"
-                                    Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                    Background="{ThemeResource HutaoSurfaceBrush}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                     BorderThickness="0,0,0,1">
                                     <TextBlock
@@ -156,7 +156,7 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Border
-                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                Background="{ThemeResource HutaoCardBrush}"
                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                 BorderThickness="0,0,0,1">
                 <TextBlock

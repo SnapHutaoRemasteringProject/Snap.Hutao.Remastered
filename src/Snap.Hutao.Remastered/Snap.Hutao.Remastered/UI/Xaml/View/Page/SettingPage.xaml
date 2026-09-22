@@ -7,6 +7,7 @@
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:cwcvt="using:CommunityToolkit.WinUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:lg="using:WinUI.LiquidGlass"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
@@ -374,10 +375,20 @@
                                     Header="{shuxm:ResourceString Name=ViewPageSettingControlMaterialHeader}"
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE790;}">
                                     <shuxc:SizeRestrictedContentControl>
-                                        <ComboBox
-                                            DisplayMemberPath="Name"
-                                            ItemsSource="{Binding AppOptions.ControlMaterials}"
-                                            SelectedItem="{Binding SelectedControlMaterial, Mode=TwoWay}"/>
+                                        <cwc:SwitchPresenter Value="{Binding ControlMaterialState, Mode=OneWay}">
+                                            <cwc:Case Value="{shuxm:Int32 Value=0}">
+                                                <ComboBox
+                                                    DisplayMemberPath="Name"
+                                                    ItemsSource="{Binding AppOptions.ControlMaterials}"
+                                                    SelectedItem="{Binding SelectedControlMaterial, Mode=TwoWay}"/>
+                                            </cwc:Case>
+                                            <cwc:Case Value="{shuxm:Int32 Value=1}">
+                                                <lg:LiquidGlassComboBox
+                                                    DisplayMemberPath="Name"
+                                                    ItemsSource="{Binding AppOptions.ControlMaterials}"
+                                                    SelectedItem="{Binding SelectedControlMaterial, Mode=TwoWay}"/>
+                                            </cwc:Case>
+                                        </cwc:SwitchPresenter>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
                                 <cwc:SettingsExpander

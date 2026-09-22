@@ -30,6 +30,8 @@ public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
 
     public partial IMessenger Messenger { get; }
 
+    public int ControlMaterialState => (int)AppOptions.ControlMaterial.Value;
+
     // TODO: Replace with IObservableProperty
     public NameValue<ControlMaterial>? SelectedControlMaterial
     {
@@ -40,6 +42,7 @@ public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
             {
                 AppOptions.ControlMaterial.Value = value.Value;
                 MaterialTheme.Apply(value.Value);
+                OnPropertyChanged(nameof(ControlMaterialState));
             }
         }
     }

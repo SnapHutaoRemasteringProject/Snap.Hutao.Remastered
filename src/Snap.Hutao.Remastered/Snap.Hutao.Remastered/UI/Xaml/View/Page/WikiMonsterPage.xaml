@@ -71,7 +71,7 @@
             <cwc:SettingsCard
                 MinHeight="40"
                 Padding="0,0,16,0"
-                Background="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                Background="{ThemeResource HutaoSurfaceBrush}"
                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}">
                 <cwc:SettingsCard.Resources>
                     <!--  ReSharper disable Xaml.RedundantResource  -->
@@ -175,7 +175,7 @@
                                 DisplayMode="Inline"
                                 IsPaneOpen="True"
                                 OpenPaneLength="{StaticResource CompatSplitViewOpenPaneLength2}"
-                                PaneBackground="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                                PaneBackground="{ThemeResource HutaoSurfaceBrush}">
                                 <SplitView.Pane>
                                     <ListView
                                         Grid.Row="1"

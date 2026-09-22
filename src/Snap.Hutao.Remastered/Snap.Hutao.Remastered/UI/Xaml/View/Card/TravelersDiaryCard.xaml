@@ -25,7 +25,7 @@
 
     <Button.Resources>
         <Style x:Key="TravelersDiarySectionBorderStyle" TargetType="Border">
-            <Setter Property="Background" Value="{ThemeResource ControlAltFillColorSecondaryBrush}"/>
+            <Setter Property="Background" Value="{ThemeResource HutaoSurfaceBrush}"/>
             <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}"/>

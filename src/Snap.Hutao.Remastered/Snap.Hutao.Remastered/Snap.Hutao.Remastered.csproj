@@ -302,8 +302,8 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.5.1" />
     <PackageReference Include="QRCoder" Version="1.8.0" />
-    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="4.1.0" />
-    <PackageReference Include="Sentry.Extensions.Logging" Version="6.11.0" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="4.1.1" />
+    <PackageReference Include="Sentry.Extensions.Logging" Version="6.11.1" />
     <PackageReference Include="Snap.HPatch" Version="0.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -327,8 +327,8 @@
     <PackageReference Include="System.Formats.Nrbf" Version="10.0.12" />
     <PackageReference Include="System.IO.Hashing" Version="10.0.12" />
     <PackageReference Include="System.Threading.RateLimiting" Version="10.0.12" />
-    <PackageReference Include="WinUI.Composition.Hlsl" Version="1.1.337" />
-    <PackageReference Include="WinUI.LiquidGlass" Version="1.1.337" />
+    <PackageReference Include="WinUI.Composition.Hlsl" Version="1.1.339" />
+    <PackageReference Include="WinUI.LiquidGlass" Version="1.1.339" />
     <PackageReference Include="Yae.Lib" Version="5.5.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

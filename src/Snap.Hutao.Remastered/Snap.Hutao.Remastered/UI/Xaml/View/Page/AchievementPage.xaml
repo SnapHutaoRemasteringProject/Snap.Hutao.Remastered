@@ -407,7 +407,7 @@
                                 DisplayMode="Inline"
                                 IsPaneOpen="True"
                                 OpenPaneLength="{StaticResource CompatSplitViewOpenPaneLength2}"
-                                PaneBackground="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                                PaneBackground="{ThemeResource HutaoSurfaceBrush}">
                                 <SplitView.Pane>
                                     <ListView
                                         Padding="{ThemeResource ListViewInSplitPanePadding}"

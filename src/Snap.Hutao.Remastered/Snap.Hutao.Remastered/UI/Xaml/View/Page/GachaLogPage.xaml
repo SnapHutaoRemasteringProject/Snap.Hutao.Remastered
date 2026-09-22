@@ -90,7 +90,7 @@
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0">
                             <StackPanel
-                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                Background="{ThemeResource HutaoCardBrush}"
                                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                 BorderThickness="0,0,0,1"
                                 Spacing="8">
@@ -185,7 +185,7 @@
                             Grid.Row="2"
                             Padding="8"
                             HorizontalAlignment="Stretch"
-                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            Background="{ThemeResource HutaoCardBrush}"
                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                             BorderThickness="0,1,0,0">
                             <Button
@@ -483,7 +483,7 @@
                             DisplayMode="Inline"
                             IsPaneOpen="True"
                             OpenPaneLength="439"
-                            PaneBackground="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                            PaneBackground="{ThemeResource HutaoSurfaceBrush}">
                             <SplitView.Pane>
                                 <ListView
                                     Padding="{ThemeResource ListViewInSplitPanePadding}"
