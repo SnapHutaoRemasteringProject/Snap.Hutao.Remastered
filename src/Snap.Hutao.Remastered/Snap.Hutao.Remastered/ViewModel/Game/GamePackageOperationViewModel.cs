@@ -31,8 +31,8 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
     private readonly ILogger<GamePackageOperationViewModel> logger;
     private readonly IGamePackageService gamePackageService;
     private readonly ITaskContext taskContext;
+    private readonly CancellationTokenSource lifetimeCts = new();
 
-    private GamePackageOperationContext? operationContext;
     private long bytesDownloadedSinceLastUpdate;
     private long totalBytesDownloaded;
     private long bytesDownloadedLastRefreshTime;
@@ -113,9 +113,11 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
 
     public bool CanContinue { get => IsCanceling || IsRetryableFailure; }
 
-    public void SetOperationContext(GamePackageOperationContext context)
+    public override void Dispose()
     {
-        operationContext = context;
+        lifetimeCts.Cancel();
+        lifetimeCts.Dispose();
+        base.Dispose();
     }
 
     public void HandleProgressUpdate(GamePackageOperationReport status)
@@ -300,14 +302,21 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
     [Command("PeriodicRefreshUICommand")]
     private async Task PeriodicRefreshUIAsync()
     {
+        CancellationToken token = lifetimeCts.Token;
         using (PeriodicTimer timer = new(TimeSpan.FromSeconds(5)))
         {
-            do
+            try
             {
-                Refresh();
-                await timer.WaitForNextTickAsync(CancellationToken).ConfigureAwait(false);
+                do
+                {
+                    Refresh();
+                    await timer.WaitForNextTickAsync(token).ConfigureAwait(false);
+                }
+                while (!IsFinished && !token.IsCancellationRequested);
             }
-            while (!IsFinished && !CancellationToken.IsCancellationRequested);
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
+            {
+            }
         }
 
         void Refresh()
@@ -355,11 +364,6 @@ public sealed partial class GamePackageOperationViewModel : Abstraction.ViewMode
     [Command("ContinueCommand")]
     private async Task ContinueAsync()
     {
-        if (operationContext is null)
-        {
-            return;
-        }
-
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Continue", "GamePackageOperationViewModel.Command"));
 
         IsCanceling = false;

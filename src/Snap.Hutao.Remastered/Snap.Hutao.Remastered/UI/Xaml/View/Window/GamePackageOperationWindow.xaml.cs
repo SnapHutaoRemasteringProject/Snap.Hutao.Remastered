@@ -59,11 +59,6 @@ public sealed partial class GamePackageOperationWindow : Microsoft.UI.Xaml.Windo
 
     public Task CloseTask { get => closeTcs.Task; }
 
-    public void SetOperationContext(GamePackageOperationContext context)
-    {
-        RootGrid.DataContext<GamePackageOperationViewModel>()?.SetOperationContext(context);
-    }
-
     public void OnWindowClosing(out bool cancel)
     {
         cancel = RootGrid.DataContext<GamePackageOperationViewModel>() is not { CanClose: true };
