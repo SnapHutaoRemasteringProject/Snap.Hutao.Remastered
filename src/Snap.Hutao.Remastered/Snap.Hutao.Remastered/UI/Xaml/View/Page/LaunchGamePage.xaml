@@ -309,6 +309,14 @@
                                                             Foreground="{ThemeResource InfoBarInformationalSeverityIconForeground}"
                                                             Glyph="{ThemeResource InfoBarInformationalIconGlyph}"/>
                                                     </Grid>
+                                                    <!--  预下载进度  -->
+                                                    <InfoBadge
+                                                        Margin="4,8"
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Bottom"
+                                                        ToolTipService.ToolTip="{Binding GamePackageViewModel.PredownloadProgressText}"
+                                                        Visibility="{Binding GamePackageViewModel.IsPredownloadInProgress, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                        Value="{Binding GamePackageViewModel.PredownloadProgress}"/>
                                                     <!--  预下载完成 Icon  -->
                                                     <Grid
                                                         Margin="4,8"
