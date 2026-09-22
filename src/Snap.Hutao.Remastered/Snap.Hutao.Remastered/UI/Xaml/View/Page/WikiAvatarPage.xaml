@@ -451,7 +451,7 @@
                                 DisplayMode="Inline"
                                 IsPaneOpen="True"
                                 OpenPaneLength="{StaticResource CompatSplitViewOpenPaneLength}"
-                                PaneBackground="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                                PaneBackground="{ThemeResource HutaoSurfaceBrush}">
                                 <SplitView.Pane>
                                     <ListView
                                         Padding="{ThemeResource ListViewInSplitPanePadding}"
@@ -860,7 +860,7 @@
                                                     <Expander
                                                         HorizontalAlignment="Stretch"
                                                         HorizontalContentAlignment="Stretch"
-                                                        Background="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                        Background="{ThemeResource HutaoSurfaceBrush}"
                                                         Header="{shuxm:ResourceString Name=ViewPageWiKiAvatarNameCardHeader}"
                                                         IsExpanded="True">
                                                         <Grid DataContext="{Binding Avatars.CurrentItem.NameCard}" RowSpacing="16">
@@ -958,7 +958,7 @@
                                                     <Expander
                                                         HorizontalAlignment="Stretch"
                                                         HorizontalContentAlignment="Stretch"
-                                                        Background="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                        Background="{ThemeResource HutaoSurfaceBrush}"
                                                         Header="{shuxm:ResourceString Name=ViewPageWiKiAvatarTraceEffectHeader}"
                                                         IsExpanded="True">
                                                         <Grid DataContext="{Binding Avatars.CurrentItem.TraceEffect}">
@@ -994,7 +994,7 @@
                                                     <Expander
                                                         HorizontalAlignment="Stretch"
                                                         HorizontalContentAlignment="Stretch"
-                                                        Background="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                        Background="{ThemeResource HutaoSurfaceBrush}"
                                                         Header="{shuxm:ResourceString Name=ViewPageWiKiAvatarFoodHeader}"
                                                         IsExpanded="True">
                                                         <Grid DataContext="{Binding Avatars.CurrentItem.CookBonusView}">

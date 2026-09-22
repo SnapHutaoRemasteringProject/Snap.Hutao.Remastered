@@ -337,7 +337,7 @@
                             <SplitView.Pane>
                                 <ListView
                                     Padding="{ThemeResource ListViewInSplitPanePadding}"
-                                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                    Background="{ThemeResource HutaoCardBrush}"
                                     ItemTemplate="{StaticResource SpiralAbyssListTemplate}"
                                     ItemsSource="{Binding SpiralAbyssEntries}"
                                     SelectedItem="{Binding SpiralAbyssEntries.CurrentItem, Mode=TwoWay}"/>

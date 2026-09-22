@@ -108,7 +108,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+    <Grid Background="{ThemeResource HutaoSurfaceBrush}">
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="auto"/>
@@ -606,68 +606,60 @@
                                     </Rectangle.RenderTransform>
                                 </Rectangle>
                             </Canvas>
-                            <Grid Margin="36" ColumnSpacing="28">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                                <Border
-                                    Grid.Column="0"
-                                    Padding="24"
-                                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="16">
-                                    <StackPanel VerticalAlignment="Center" Spacing="8">
-                                        <FontIcon FontSize="32" Glyph="&#xE8A5;"/>
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            FontSize="22"
-                                            FontWeight="SemiBold"
-                                            Text="{shuxm:ResourceString Name=ViewPageSettingControlMaterialDefault}"/>
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            Text="{shuxm:ResourceString Name=ViewGuideMaterialDefaultPreviewDescription}"
-                                            TextAlignment="Center"
-                                            TextWrapping="Wrap"/>
-                                    </StackPanel>
-                                </Border>
-                                <Border
-                                    Grid.Column="1"
-                                    Padding="24"
-                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="16">
-                                    <Border.Background>
-                                        <hlsl:LiquidGlassBrush
-                                            BlurRadius="0"
-                                            BorderThickness="0"
-                                            GlassThickness="10"
-                                            InnerShadowStrength="0.1"
-                                            MagnificationStrength="45"
-                                            MaterialOpacity="1"
-                                            RefractionStrength="50"
-                                            RefractiveIndex="3"
-                                            Saturation="1"
-                                            SpecularSaturation="1"
-                                            SurfaceProfile="ConvexSquircle"/>
-                                    </Border.Background>
-
-                                    <StackPanel VerticalAlignment="Center" Spacing="8">
-                                        <FontIcon FontSize="32" Glyph="&#xE790;"/>
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            FontSize="22"
-                                            FontWeight="SemiBold"
-                                            Text="{shuxm:ResourceString Name=ViewPageSettingControlMaterialLiquidGlass}"/>
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            Text="{shuxm:ResourceString Name=ViewGuideMaterialLiquidGlassPreviewDescription}"
-                                            TextAlignment="Center"
-                                            TextWrapping="Wrap"/>
-                                    </StackPanel>
-                                </Border>
-                            </Grid>
+                            <cwc:SwitchPresenter Margin="36" Value="{Binding ControlMaterialState, Mode=OneWay}">
+                                <cwc:Case Value="{shuxm:Int32 Value=0}">
+                                    <Border
+                                        Padding="24"
+                                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="16">
+                                        <StackPanel VerticalAlignment="Center" Spacing="12">
+                                            <FontIcon FontSize="32" Glyph="&#xE8A5;"/>
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                FontSize="22"
+                                                FontWeight="SemiBold"
+                                                Text="{shuxm:ResourceString Name=ViewPageSettingControlMaterialDefault}"/>
+                                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="12">
+                                                <Button Content="Button"/>
+                                                <ToggleSwitch Header="Switch" IsOn="True"/>
+                                                <Slider Width="150" Value="60"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </cwc:Case>
+                                <cwc:Case Value="{shuxm:Int32 Value=1}">
+                                    <lg:LiquidGlassCard CornerRadius="16" Padding="24">
+                                        <lg:LiquidGlassCard.GlassBrush>
+                                            <hlsl:LiquidGlassBrush
+                                                BlurRadius="0"
+                                                BorderThickness="0"
+                                                GlassThickness="10"
+                                                InnerShadowStrength="0.1"
+                                                MagnificationStrength="45"
+                                                MaterialOpacity="1"
+                                                RefractionStrength="50"
+                                                RefractiveIndex="3"
+                                                Saturation="1"
+                                                SpecularSaturation="1"/>
+                                        </lg:LiquidGlassCard.GlassBrush>
+                                        <StackPanel VerticalAlignment="Center" Spacing="12">
+                                            <FontIcon FontSize="32" Glyph="&#xE790;"/>
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                FontSize="22"
+                                                FontWeight="SemiBold"
+                                                Text="{shuxm:ResourceString Name=ViewPageSettingControlMaterialLiquidGlass}"/>
+                                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Spacing="12">
+                                                <lg:LiquidGlassButton Content="Button"/>
+                                                <lg:LiquidGlassToggleSwitch Header="Switch" IsOn="True"/>
+                                                <lg:LiquidGlassSlider Width="150" Value="60"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </lg:LiquidGlassCard>
+                                </cwc:Case>
+                            </cwc:SwitchPresenter>
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>
@@ -818,7 +810,7 @@
                     Margin="16"
                     HorizontalAlignment="Center"
                     IsHitTestVisible="False"
-                    SelectedIndex="{Binding State, Mode=TwoWay}">
+                    SelectedIndex="{Binding StepIndex, Mode=OneWay}">
                     <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xF2B7;}"/>
                     <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xF28B;}"/>
                     <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xE81E;}"/>

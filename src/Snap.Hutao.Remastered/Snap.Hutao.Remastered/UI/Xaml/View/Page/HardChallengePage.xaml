@@ -142,7 +142,7 @@
                             <SplitView.Pane>
                                 <ListView
                                     Padding="{ThemeResource ListViewInSplitPanePadding}"
-                                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                    Background="{ThemeResource HutaoCardBrush}"
                                     ItemTemplate="{StaticResource HardChallengeListTemplate}"
                                     ItemsSource="{Binding HardChallengeEntries}"
                                     SelectedItem="{Binding HardChallengeEntries.CurrentItem, Mode=TwoWay}"/>
