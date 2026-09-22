@@ -88,30 +88,24 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
     {
         get
         {
-            const string LockTrace = $"{nameof(GamePackageViewModel)}.{nameof(IsPredownloadFinished)}";
-            if (launchOptions.TryGetGameFileSystem(LockTrace, out IGameFileSystem? gameFileSystem) is not GameFileSystemErrorKind.None)
-            {
-                return false;
-            }
-
-            ArgumentNullException.ThrowIfNull(gameFileSystem);
-            using (gameFileSystem)
-            {
-                if (!File.Exists(gameFileSystem.PredownloadStatusFilePath))
-                {
-                    return false;
-                }
-
-                if (JsonSerializer.Deserialize<PredownloadStatus>(File.ReadAllText(gameFileSystem.PredownloadStatusFilePath), jsonOptions) is { } predownloadStatus)
-                {
-                    int fileCount = Directory.GetFiles(gameFileSystem.ChunksDirectory).Length - 1;
-                    return predownloadStatus.Finished && fileCount == predownloadStatus.TotalBlocks;
-                }
-            }
-
-            return false;
+            PredownloadProgressInfo info = GetPredownloadProgressInfo();
+            return info.Finished && info.DownloadedBlocks == info.TotalBlocks;
         }
     }
+
+    public int PredownloadProgress
+    {
+        get
+        {
+            PredownloadProgressInfo info = GetPredownloadProgressInfo();
+            int progress = info.TotalBlocks is 0 ? 0 : (int)Math.Clamp((long)info.DownloadedBlocks * 100 / info.TotalBlocks, 0, 100);
+            return info.Finished ? progress : Math.Min(progress, 99);
+        }
+    }
+
+    public bool IsPredownloadInProgress { get => PredownloadProgress is > 0 and < 100; }
+
+    public string PredownloadProgressText { get => $"{PredownloadProgress}%"; }
 
     public async ValueTask ReloadAsync()
     {
@@ -211,6 +205,12 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
             if (!await gamePackageService.ExecuteOperationAsync(context).ConfigureAwait(false))
             {
                 // Operation canceled
+                if (operationKind is GamePackageOperationKind.Predownload)
+                {
+                    await taskContext.SwitchToMainThreadAsync();
+                    NotifyPredownloadStatusChanged();
+                }
+
                 return;
             }
         }
@@ -225,10 +225,44 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
                 LocalVersion = RemoteVersion;
                 break;
             case GamePackageOperationKind.Predownload:
-                OnPropertyChanged(nameof(IsPredownloadButtonEnabled));
-                OnPropertyChanged(nameof(IsPredownloadFinished));
+                NotifyPredownloadStatusChanged();
                 break;
         }
+    }
+
+    private PredownloadProgressInfo GetPredownloadProgressInfo()
+    {
+        const string LockTrace = $"{nameof(GamePackageViewModel)}.{nameof(GetPredownloadProgressInfo)}";
+        if (launchOptions.TryGetGameFileSystem(LockTrace, out IGameFileSystem? gameFileSystem) is not GameFileSystemErrorKind.None)
+        {
+            return default;
+        }
+
+        ArgumentNullException.ThrowIfNull(gameFileSystem);
+        using (gameFileSystem)
+        {
+            if (!File.Exists(gameFileSystem.PredownloadStatusFilePath))
+            {
+                return default;
+            }
+
+            if (JsonSerializer.Deserialize<PredownloadStatus>(File.ReadAllText(gameFileSystem.PredownloadStatusFilePath), jsonOptions) is { } status)
+            {
+                int downloadedBlocks = Math.Max(Directory.GetFiles(gameFileSystem.ChunksDirectory).Length - 1, 0);
+                return new(status.Finished, downloadedBlocks, status.TotalBlocks);
+            }
+        }
+
+        return default;
+    }
+
+    private void NotifyPredownloadStatusChanged()
+    {
+        OnPropertyChanged(nameof(IsPredownloadButtonEnabled));
+        OnPropertyChanged(nameof(IsPredownloadFinished));
+        OnPropertyChanged(nameof(PredownloadProgress));
+        OnPropertyChanged(nameof(IsPredownloadInProgress));
+        OnPropertyChanged(nameof(PredownloadProgressText));
     }
 
     private async ValueTask<SophonDecodedBuilds?> GetSophonDecodedBuildsAsync(GamePackageOperationKind operationKind, GameBranch branch, IGameFileSystem gameFileSystem)
@@ -311,4 +345,6 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
 
         public required SophonDecodedPatchBuild? PatchBuild { get; init; }
     }
+
+    private readonly record struct PredownloadProgressInfo(bool Finished, int DownloadedBlocks, int TotalBlocks);
 }

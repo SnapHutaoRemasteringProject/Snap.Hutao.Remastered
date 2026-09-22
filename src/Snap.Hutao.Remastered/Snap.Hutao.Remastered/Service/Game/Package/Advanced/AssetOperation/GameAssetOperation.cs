@@ -169,7 +169,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
             for (int i = 0; i < chunks.Count; i++)
             {
                 await context.WaitForExecutionAsync().ConfigureAwait(false);
-                 AssetChunk chunk = chunks[i];
+                AssetChunk chunk = chunks[i];
                 using (IMemoryOwner<byte> memoryOwner = MemoryPool<byte>.Shared.RentExactly((int)chunk.ChunkSizeDecompressed))
                 {
                     Memory<byte> buffer = memoryOwner.Memory;
@@ -236,7 +236,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
 
                 using (Stream webStream = await context.HttpClient.GetStreamAsync(sophonChunk.ChunkDownloadUrl, token).ConfigureAwait(false))
                 {
-                    using (StreamCopyWorker<GamePackageOperationReport> worker = new(webStream, fileStream, (bytesRead, _) => new GamePackageOperationReport.Download(bytesRead, 0, sophonChunk.AssetChunk.ChunkName)))
+                    using (StreamCopyWorker<GamePackageOperationReport> worker = new(webStream, fileStream, (bytesRead, _) => new GamePackageOperationReport.Download(bytesRead, 0, sophonChunk.AssetChunk.ChunkName), waitForExecutionAsync: context.WaitForExecutionAsync))
                     {
                         await worker.CopyAsync(context.StreamCopyRateLimiter, context.Progress, token).ConfigureAwait(false);
 
@@ -325,7 +325,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
                 foreach (AssetChunk chunk in asset.NewAsset.AssetChunks)
                 {
                     await context.WaitForExecutionAsync().ConfigureAwait(false);
-                     newAssetStream.Position = chunk.ChunkOnFileOffset;
+                    newAssetStream.Position = chunk.ChunkOnFileOffset;
 
                     if (asset.OldAsset.AssetChunks.FirstOrDefault(c => c.ChunkDecompressedHashMd5 == chunk.ChunkDecompressedHashMd5) is not { } oldChunk)
                     {
@@ -363,7 +363,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
                             while (bytesToCopy > 0)
                             {
                                 await context.WaitForExecutionAsync().ConfigureAwait(false);
-                                 int bytesRead = await RandomAccess.ReadAsync(oldAssetHandle, buffer[..(int)Math.Min(buffer.Length, bytesToCopy)], offset, token).ConfigureAwait(false);
+                                int bytesRead = await RandomAccess.ReadAsync(oldAssetHandle, buffer[..(int)Math.Min(buffer.Length, bytesToCopy)], offset, token).ConfigureAwait(false);
                                 if (bytesRead <= 0)
                                 {
                                     break;
@@ -402,6 +402,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
 
     protected static async ValueTask DownloadPatchAsync(GamePackageServiceContext context, SophonPatchAsset asset)
     {
+        await context.WaitForExecutionAsync().ConfigureAwait(false);
         CancellationToken token = context.CancellationToken;
         token.ThrowIfCancellationRequested();
         Directory.CreateDirectory(context.Operation.EffectiveChunksDirectory);
@@ -432,7 +433,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
 
                 using (Stream webStream = await context.HttpClient.GetStreamAsync(asset.PatchDownloadUrl, token).ConfigureAwait(false))
                 {
-                    using (StreamCopyWorker<GamePackageOperationReport> worker = new(webStream, fileStream, (bytesRead, _) => new GamePackageOperationReport.Download(bytesRead, 0, asset.PatchInfo.Id)))
+                    using (StreamCopyWorker<GamePackageOperationReport> worker = new(webStream, fileStream, (bytesRead, _) => new GamePackageOperationReport.Download(bytesRead, 0, asset.PatchInfo.Id), waitForExecutionAsync: context.WaitForExecutionAsync))
                     {
                         await worker.CopyAsync(context.StreamCopyRateLimiter, context.Progress, token).ConfigureAwait(false);
 
@@ -496,7 +497,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
                         while (patchLength > 0)
                         {
                             await context.WaitForExecutionAsync().ConfigureAwait(false);
-                             int bytesRead = await RandomAccess.ReadAsync(patchFileHandle, buffer[..(int)Math.Min(buffer.Length, patchLength)], patchStartOffset, token).ConfigureAwait(false);
+                            int bytesRead = await RandomAccess.ReadAsync(patchFileHandle, buffer[..(int)Math.Min(buffer.Length, patchLength)], patchStartOffset, token).ConfigureAwait(false);
                             if (bytesRead <= 0)
                             {
                                 break;

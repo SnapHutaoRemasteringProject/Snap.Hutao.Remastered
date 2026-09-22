@@ -28,9 +28,10 @@ public partial class StreamCopyWorker<TStatus> : IDisposable
 
     private readonly int bufferSize;
     private readonly StreamCopyStatusFactory<TStatus> statusFactory;
+    private readonly Func<ValueTask>? waitForExecutionAsync;
     private readonly TokenBucketRateLimiter progressReportRateLimiter;
 
-    public StreamCopyWorker(Stream source, Stream destination, StreamCopyStatusFactory<TStatus> statusFactory, int bufferSize = 81920)
+    public StreamCopyWorker(Stream source, Stream destination, StreamCopyStatusFactory<TStatus> statusFactory, int bufferSize = 81920, Func<ValueTask>? waitForExecutionAsync = default)
     {
         Verify.Operation(source.CanRead, "Source Stream can't read");
         Verify.Operation(destination.CanWrite, "Destination Stream can't write");
@@ -39,6 +40,7 @@ public partial class StreamCopyWorker<TStatus> : IDisposable
         this.destination = destination;
         this.statusFactory = statusFactory;
         this.bufferSize = bufferSize;
+        this.waitForExecutionAsync = waitForExecutionAsync;
 
         progressReportRateLimiter = ProgressReportRateLimiter.Create(1000);
     }
@@ -54,6 +56,11 @@ public partial class StreamCopyWorker<TStatus> : IDisposable
 
             do
             {
+                if (waitForExecutionAsync is not null)
+                {
+                    await waitForExecutionAsync().ConfigureAwait(false);
+                }
+
                 int bytesRead = await source.ReadAsync(buffer, token).ConfigureAwait(false);
                 if (bytesRead is 0)
                 {
@@ -96,6 +103,11 @@ public partial class StreamCopyWorker<TStatus> : IDisposable
 
             do
             {
+                if (waitForExecutionAsync is not null)
+                {
+                    await waitForExecutionAsync().ConfigureAwait(false);
+                }
+
                 if (!rateLimiter.TryAcquire(buffer.Length, out int bytesToRead, out TimeSpan retryAfter))
                 {
                     await Task.Delay(retryAfter, token).ConfigureAwait(false);
