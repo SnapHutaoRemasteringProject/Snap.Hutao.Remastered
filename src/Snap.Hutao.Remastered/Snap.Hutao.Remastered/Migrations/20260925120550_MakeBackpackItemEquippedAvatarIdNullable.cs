@@ -18,10 +18,18 @@ namespace Snap.Hutao.Remastered.Migrations
                 oldClrType: typeof(uint),
                 oldType: "INTEGER");
 
-            // Backfilling the column with its default value marked every pre-existing item as
-            // "not equipped" instead of "unknown". Reset those values so the equipment state of
-            // archives that were never refreshed stays unknown rather than being misreported.
-            migrationBuilder.Sql("UPDATE backpack_items SET EquippedAvatarId = NULL WHERE EquippedAvatarId = 0;");
+            // Adding the column backfilled every pre-existing item with its default value, marking
+            // items as "not equipped" when their equipment state was never actually collected.
+            // Reset those values to unknown, but only for archives that hold no collected state at
+            // all: a non-zero value can only have been written by a refresh, so an archive that has
+            // one was refreshed and its zeros mean "not equipped" for real.
+            migrationBuilder.Sql(
+                """
+                UPDATE backpack_items
+                SET EquippedAvatarId = NULL
+                WHERE EquippedAvatarId = 0
+                  AND ArchiveId NOT IN (SELECT ArchiveId FROM backpack_items WHERE EquippedAvatarId > 0);
+                """);
         }
 
         /// <inheritdoc />
