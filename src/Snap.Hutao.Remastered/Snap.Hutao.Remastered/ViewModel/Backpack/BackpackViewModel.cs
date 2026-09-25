@@ -327,13 +327,17 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
         foodQualityMap = qualityMap.ToFrozenDictionary();
         foodTypeMap = typeMap.ToFrozenDictionary();
 
+        // The equipment state is only stored for archives refreshed after equipment data collection
+        // was introduced, so hide the equipped state filter for archives that lack it.
+        bool hasEquippedStateData = allItems.Any(item => item.Entity.EquippedAvatarId is not null);
+
         // Pre-build token dictionaries for all categories (on background thread)
         ImmutableDictionary<BackpackItemCategory, FrozenDictionary<string, SearchToken>>.Builder tokenBuilder =
             ImmutableDictionary.CreateBuilder<BackpackItemCategory, FrozenDictionary<string, SearchToken>>();
         foreach (BackpackItemCategory cat in Enum.GetValues<BackpackItemCategory>())
         {
             ImmutableArray<BackpackItemView> catItems = categoryItems.GetValueOrDefault(cat, []);
-            tokenBuilder.Add(cat, BackpackFilterTokenBuilder.Build(cat, catItems));
+            tokenBuilder.Add(cat, BackpackFilterTokenBuilder.Build(cat, catItems, hasEquippedStateData));
         }
 
         categoryTokens = tokenBuilder.ToImmutable();

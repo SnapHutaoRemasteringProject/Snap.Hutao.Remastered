@@ -86,12 +86,12 @@ public class BackpackItemView
     /// </summary>
     protected void FillEquippedAvatar(BackpackServiceMetadataContext context)
     {
-        if (Entity.EquippedAvatarId is 0)
+        if (Entity.EquippedAvatarId is not { } equippedAvatarId || equippedAvatarId is 0)
         {
             return;
         }
 
-        if (!context.IdAvatarMap.TryGetValue((AvatarId)Entity.EquippedAvatarId, out Avatar? avatar))
+        if (!context.IdAvatarMap.TryGetValue((AvatarId)equippedAvatarId, out Avatar? avatar))
         {
             return;
         }
