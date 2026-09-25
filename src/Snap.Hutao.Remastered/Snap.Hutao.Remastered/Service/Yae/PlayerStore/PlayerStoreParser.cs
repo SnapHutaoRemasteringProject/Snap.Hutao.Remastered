@@ -30,7 +30,12 @@ public static class PlayerStoreParser
         };
     }
 
-    public static ImmutableArray<BackpackItem> ParseToBackpackItems(ByteString bytes, Guid archiveId)
+    /// <remarks>
+    /// <paramref name="equippedItemOwners"/> maps an item guid to the id of the avatar equipping it.
+    /// Pass <see langword="null"/> when the avatar data is unavailable, so the equipment state is
+    /// left unknown instead of being reported as "not equipped".
+    /// </remarks>
+    public static ImmutableArray<BackpackItem> ParseToBackpackItems(ByteString bytes, Guid archiveId, ImmutableDictionary<ulong, uint>? equippedItemOwners)
     {
         List<Item> items = [];
         try
@@ -47,6 +52,11 @@ public static class PlayerStoreParser
         {
             if (ConvertToBackpackItem(item, archiveId) is { } backpackItem)
             {
+                if (equippedItemOwners is not null)
+                {
+                    backpackItem.EquippedAvatarId = equippedItemOwners.GetValueOrDefault(backpackItem.Guid);
+                }
+
                 builder.Add(backpackItem);
             }
         }
@@ -194,6 +204,12 @@ public static class PlayerStoreParser
             MainPropId = reliquary.MainPropId,
             AppendPropIdListJson = reliquary.AppendPropIdList is { Count: > 0 }
                 ? JsonSerializer.Serialize(reliquary.AppendPropIdList.ToArray())
+                : null,
+            PurchasedAppendPropIdListJson = reliquary.PurchasedAppendPropIdList is { Count: > 0 }
+                ? JsonSerializer.Serialize(reliquary.PurchasedAppendPropIdList.ToArray())
+                : null,
+            DefiniteAppendPropIdListJson = reliquary.DefiniteAppendPropIdList is { Count: > 0 }
+                ? JsonSerializer.Serialize(reliquary.DefiniteAppendPropIdList.ToArray())
                 : null,
             IsLocked = equip.IsLocked,
             IsMarked = reliquary.IsMarked,

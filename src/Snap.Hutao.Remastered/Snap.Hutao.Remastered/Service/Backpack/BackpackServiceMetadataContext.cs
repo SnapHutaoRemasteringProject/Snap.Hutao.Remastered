@@ -4,6 +4,7 @@
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Model.Metadata;
+using Snap.Hutao.Remastered.Model.Metadata.Avatar;
 using Snap.Hutao.Remastered.Model.Metadata.Item;
 using Snap.Hutao.Remastered.Model.Metadata.Reliquary;
 using Snap.Hutao.Remastered.Model.Metadata.Weapon;
@@ -25,8 +26,11 @@ public sealed class BackpackServiceMetadataContext : IMetadataContext,
     IMetadataDictionaryIdReliquarySubAffixSource,
     IMetadataArrayReliquaryMainAffixLevelSource,
     IMetadataArrayCookRecipeSource,
-    IMetadataDictionaryIdCookRecipeSource
+    IMetadataDictionaryIdCookRecipeSource,
+    IMetadataDictionaryIdAvatarWithPlayersSource
 {
+    public ImmutableDictionary<AvatarId, Avatar> IdAvatarMap { get; set; } = default!;
+
     public ImmutableDictionary<MaterialId, DisplayItem> IdDisplayItemAndMaterialMap { get; set; } = default!;
 
     public ImmutableDictionary<MaterialId, Material> IdMaterialMap { get; set; } = default!;

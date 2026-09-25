@@ -19,6 +19,8 @@ public enum SearchTokenKind
     BackpackEquipType,
     BackpackLockState,
     BackpackMarkState,
+    BackpackEquippedState,
+    BackpackPurchasedAppendProp,
     BackpackFoodQuality,
     BackpackCookFoodType,
     BackpackReliquarySet,

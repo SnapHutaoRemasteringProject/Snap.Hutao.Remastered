@@ -68,6 +68,21 @@ public static class BackpackFilter
                         ? SH.ViewPageBackpackFilterMarked
                         : SH.ViewPageBackpackFilterUnmarked)),
 
+                // Unknown equipment state (null) matches neither filter, so stale archives never
+                // report an item as equipped or unequipped when that is simply not known.
+                SearchTokenKind.BackpackEquippedState => item.Entity.EquippedAvatarId switch
+                {
+                    null => false,
+                    > 0 => tokens.Contains(SH.ViewPageBackpackFilterEquipped),
+                    _ => tokens.Contains(SH.ViewPageBackpackFilterUnequipped),
+                },
+
+                SearchTokenKind.BackpackPurchasedAppendProp => item is not BackpackReliquaryItemView ||
+                    (item is BackpackReliquaryItemView rPurchased &&
+                    tokens.Contains(rPurchased.HasPurchasedAppendProp
+                        ? SH.ViewPageBackpackFilterPurchasedAppendProp
+                        : SH.ViewPageBackpackFilterNotPurchasedAppendProp)),
+
                 SearchTokenKind.BackpackFoodQuality => !foodQualityMap.TryGetValue(item.Entity.ItemId, out int qualityIndex) ||
                     tokens.Contains(qualityIndex switch
                     {

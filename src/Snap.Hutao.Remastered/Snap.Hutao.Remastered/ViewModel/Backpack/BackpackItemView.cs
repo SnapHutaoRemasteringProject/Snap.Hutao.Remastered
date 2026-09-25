@@ -4,10 +4,12 @@
 using System.Collections.Immutable;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Intrinsic;
+using Snap.Hutao.Remastered.Model.Metadata.Avatar;
 using Snap.Hutao.Remastered.Model.Metadata.Converter;
 using Snap.Hutao.Remastered.Model.Metadata.Item;
 using Snap.Hutao.Remastered.Model.Metadata.Reliquary;
 using Snap.Hutao.Remastered.Model.Metadata.Weapon;
+using Snap.Hutao.Remastered.Model.Primitive;
 using Snap.Hutao.Remastered.Service.Backpack;
 
 namespace Snap.Hutao.Remastered.ViewModel.Backpack;
@@ -35,6 +37,16 @@ public class BackpackItemView
     public ImmutableArray<string> SetDescriptions { get; protected set; } = [];
 
     public bool HasSetDescriptions => !SetDescriptions.IsDefaultOrEmpty;
+
+    public string? EquippedAvatarName { get; protected set; }
+
+    public Uri? EquippedAvatarIconUri { get; protected set; }
+
+    public bool HasEquippedAvatar => EquippedAvatarName is not null;
+
+    public string EquippedAvatarDisplayName => EquippedAvatarName is null
+        ? string.Empty
+        : SH.FormatViewPageBackpackEquippedState(EquippedAvatarName);
 
     public static BackpackItemView Create(BackpackItem entity, BackpackServiceMetadataContext context)
     {
@@ -64,6 +76,27 @@ public class BackpackItemView
             Quality = material?.RankLevel ?? QualityType.QUALITY_NONE,
         };
 
+        view.FillEquippedAvatar(context);
+
         return view;
+    }
+
+    /// <summary>
+    /// Resolves the equipping avatar from metadata. Missing avatar metadata is a degrade, not an error.
+    /// </summary>
+    protected void FillEquippedAvatar(BackpackServiceMetadataContext context)
+    {
+        if (Entity.EquippedAvatarId is not { } equippedAvatarId || equippedAvatarId is 0)
+        {
+            return;
+        }
+
+        if (!context.IdAvatarMap.TryGetValue((AvatarId)equippedAvatarId, out Avatar? avatar))
+        {
+            return;
+        }
+
+        EquippedAvatarName = avatar.Name;
+        EquippedAvatarIconUri = AvatarSideIconConverter.IconNameToUri(avatar.SideIcon);
     }
 }

@@ -30,9 +30,20 @@ public sealed class BackpackItem
 
     public uint RefinementRank { get; set; }
 
+    /// <summary>
+    /// Gets or sets the id of the avatar this item is equipped by.
+    /// <see langword="null"/> means the equipment state is not known, which is the case for archives
+    /// stored before this information was collected; <c>0</c> means the item is not equipped.
+    /// </summary>
+    public uint? EquippedAvatarId { get; set; }
+
     public uint? MainPropId { get; set; }
 
     public string? AppendPropIdListJson { get; set; }
+
+    public string? PurchasedAppendPropIdListJson { get; set; }
+
+    public string? DefiniteAppendPropIdListJson { get; set; }
 
     public bool IsLocked { get; set; }
 

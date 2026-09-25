@@ -9,6 +9,8 @@ public sealed class TargetNativeConfiguration
 
     public required uint AchievementCmdId { get; init; }
 
+    public required uint AvatarCmdId { get; init; }
+
     public required uint DoCmd { get; init; }
 
     public required uint UpdateNormalProperty { get; init; }
@@ -37,6 +39,7 @@ public sealed class TargetNativeConfiguration
         {
             StoreCmdId = config.StoreCmdId,
             AchievementCmdId = config.AchievementCmdId,
+            AvatarCmdId = config.AvatarCmdId,
 
             // Method RVAs
             DoCmd = methodRva.DoCmd,

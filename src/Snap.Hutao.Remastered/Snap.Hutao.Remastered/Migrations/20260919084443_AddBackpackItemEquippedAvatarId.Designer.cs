@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Snap.Hutao.Remastered.Model.Entity.Database;
 
@@ -10,9 +11,11 @@ using Snap.Hutao.Remastered.Model.Entity.Database;
 namespace Snap.Hutao.Remastered.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260919084443_AddBackpackItemEquippedAvatarId")]
+    partial class AddBackpackItemEquippedAvatarId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.12");
@@ -137,7 +140,7 @@ namespace Snap.Hutao.Remastered.Migrations
                     b.Property<string>("DefiniteAppendPropIdListJson")
                         .HasColumnType("TEXT");
 
-                    b.Property<uint?>("EquippedAvatarId")
+                    b.Property<uint>("EquippedAvatarId")
                         .HasColumnType("INTEGER");
 
                     b.Property<ulong>("Guid")

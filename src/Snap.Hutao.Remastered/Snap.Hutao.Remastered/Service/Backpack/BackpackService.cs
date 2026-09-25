@@ -5,6 +5,7 @@ using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.Yae;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Intrinsic;
+using Snap.Hutao.Remastered.Service.Yae.AvatarData;
 using Snap.Hutao.Remastered.Service.Yae.PlayerStore;
 using System.Collections.Immutable;
 
@@ -45,7 +46,12 @@ public sealed partial class BackpackService : IBackpackService
     public bool RefreshByEmbeddedYae(BackpackArchive archive, PlayerStoreResult storeResult)
     {
         ArgumentNullException.ThrowIfNull(storeResult.StoreBytes);
-        ImmutableArray<BackpackItem> items = PlayerStoreParser.ParseToBackpackItems(storeResult.StoreBytes, archive.InnerId);
+
+        ImmutableDictionary<ulong, uint>? equippedItemOwners = storeResult.AvatarDataBytes is { } avatarDataBytes
+            ? AvatarDataParser.ParseEquippedItemOwners(avatarDataBytes)
+            : null;
+
+        ImmutableArray<BackpackItem> items = PlayerStoreParser.ParseToBackpackItems(storeResult.StoreBytes, archive.InnerId, equippedItemOwners);
 
         // Add virtual currency items from player properties
         ImmutableArray<BackpackItem> virtualItems = CreateVirtualItems(archive.InnerId, storeResult.PropMap);

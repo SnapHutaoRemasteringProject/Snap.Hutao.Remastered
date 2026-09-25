@@ -12,11 +12,16 @@ public sealed class ShowAttachedFlyoutAction : DependencyObject, IAction
 {
     public object? Execute(object? sender, object parameter)
     {
-        if (sender is not FrameworkElement element)
+        if (sender is FrameworkElement element)
         {
-            return default;
+            ShowAttachedFlyout(element);
         }
 
+        return default;
+    }
+
+    public static void ShowAttachedFlyout(FrameworkElement element)
+    {
         // The Flyout is shared via StaticResource across all card templates. WinUI's
         // DataContext inheritance doesn't reliably propagate when reparenting a shared
         // flyout between different placement targets. Explicitly set the content's
@@ -27,6 +32,5 @@ public sealed class ShowAttachedFlyoutAction : DependencyObject, IAction
         }
 
         FlyoutBase.ShowAttachedFlyout(element);
-        return default;
     }
 }

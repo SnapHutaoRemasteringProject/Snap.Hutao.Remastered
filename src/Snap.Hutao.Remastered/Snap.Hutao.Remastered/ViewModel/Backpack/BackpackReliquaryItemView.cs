@@ -47,6 +47,13 @@ public sealed class BackpackReliquaryItemView : BackpackItemView
     /// </summary>
     public ImmutableArray<BackpackReliquarySubStatView> PaddedSubStats { get; private set; } = [];
 
+    /// <summary>
+    /// Gets the properties defined by 祝圣之霜 when the reliquary was crafted with it. Empty for every other reliquary.
+    /// </summary>
+    public ImmutableArray<string> PurchasedAppendPropNames { get; private set; } = [];
+
+    public bool HasPurchasedAppendProp => PurchasedAppendPropNames.Length > 0;
+
     public static BackpackReliquaryItemView Create(BackpackItem entity, BackpackServiceMetadataContext context, Reliquary reliquary)
     {
         BackpackReliquaryItemView view = new()
@@ -128,79 +135,144 @@ public sealed class BackpackReliquaryItemView : BackpackItemView
             view.PaddedSubStats = builder.MoveToImmutable();
         }
 
+        view.BuildPurchasedAppendProps();
+        view.FillEquippedAvatar(context);
+
         return view;
     }
 
-    private void BuildSubStats(BackpackServiceMetadataContext context)
+    private void BuildPurchasedAppendProps()
     {
-        if (string.IsNullOrEmpty(Entity.AppendPropIdListJson))
+        if (DeserializeSubAffixIds(Entity.PurchasedAppendPropIdListJson, nameof(Entity.PurchasedAppendPropIdListJson)) is not { Length: > 0 } ids)
         {
             return;
         }
 
+        // Unlike AppendPropIdList, this list holds raw FightProperty values instead of sub affix ids
+        ImmutableArray<string>.Builder builder = ImmutableArray.CreateBuilder<string>(ids.Length);
+        HashSet<string> seen = [];
+        foreach (uint id in ids)
+        {
+            if (((FightProperty)id).GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture) is { Length: > 0 } name && seen.Add(name))
+            {
+                builder.Add(name);
+            }
+        }
+
+        if (builder.Count is 0)
+        {
+            return;
+        }
+
+        PurchasedAppendPropNames = builder.ToImmutable();
+    }
+
+    private void BuildSubStats(BackpackServiceMetadataContext context)
+    {
+        // Resolve IDs to FightProp+Value pairs, maintaining order
+        List<(FightProperty Prop, float Value)> resolved = ResolveSubAffixes(context, Entity.AppendPropIdListJson, nameof(Entity.AppendPropIdListJson));
+        if (resolved.Count == 0)
+        {
+            return;
+        }
+
+        // Merge same FightProp: first occurrence = initial, subsequent = upgrades
+        Dictionary<FightProperty, (float TotalValue, uint EnhancedCount)> merged = [];
+        HashSet<FightProperty> seen = [];
+        foreach ((FightProperty prop, float value) in resolved)
+        {
+            if (seen.Add(prop))
+            {
+                merged[prop] = (value, 0);
+            }
+            else
+            {
+                (float total, uint count) = merged[prop];
+                merged[prop] = (total + value, count + 1);
+            }
+        }
+
+        ImmutableArray<BackpackReliquarySubStatView>.Builder builder = ImmutableArray.CreateBuilder<BackpackReliquarySubStatView>();
+        HashSet<FightProperty> added = [];
+        foreach ((FightProperty prop, float _) in resolved)
+        {
+            if (added.Add(prop))
+            {
+                (float totalValue, uint enhancedCount) = merged[prop];
+                builder.Add(new BackpackReliquarySubStatView
+                {
+                    FightProp = prop,
+                    Value = totalValue,
+                    EnhancedCount = enhancedCount,
+                    State = GetSubStatState(prop, context.ReliquaryScoreConfig),
+                });
+            }
+        }
+
+        // The fourth sub stat of an artifact that has not reached level 4 is already known, but not active yet
+        foreach ((FightProperty prop, float value) in ResolveSubAffixes(context, Entity.DefiniteAppendPropIdListJson, nameof(Entity.DefiniteAppendPropIdListJson)))
+        {
+            if (added.Add(prop))
+            {
+                builder.Add(new BackpackReliquarySubStatView
+                {
+                    FightProp = prop,
+                    Value = value,
+                    State = ReliquarySubStatState.Inactive,
+                });
+            }
+        }
+
+        SubStats = builder.ToImmutable();
+    }
+
+    private static List<(FightProperty Prop, float Value)> ResolveSubAffixes(BackpackServiceMetadataContext context, string? json, string propertyName)
+    {
+        List<(FightProperty Prop, float Value)> resolved = [];
+        if (DeserializeSubAffixIds(json, propertyName) is not { Length: > 0 } ids)
+        {
+            return resolved;
+        }
+
+        foreach (uint id in ids)
+        {
+            if (context.IdReliquarySubAffixMap.TryGetValue(id, out ReliquarySubAffix? subAffix))
+            {
+                resolved.Add((subAffix.Type, subAffix.Value));
+            }
+        }
+
+        return resolved;
+    }
+
+    private static uint[]? DeserializeSubAffixIds(string? json, string propertyName)
+    {
+        if (string.IsNullOrEmpty(json))
+        {
+            return null;
+        }
+
         try
         {
-            uint[]? ids = JsonSerializer.Deserialize<uint[]>(Entity.AppendPropIdListJson);
-            if (ids is not { Length: > 0 })
-            {
-                return;
-            }
-
-            // Resolve IDs to FightProp+Value pairs, maintaining order
-            List<(FightProperty Prop, float Value)> resolved = [];
-            foreach (uint id in ids)
-            {
-                if (context.IdReliquarySubAffixMap.TryGetValue(id, out ReliquarySubAffix? subAffix))
-                {
-                    resolved.Add((subAffix.Type, subAffix.Value));
-                }
-            }
-
-            if (resolved.Count == 0)
-            {
-                return;
-            }
-
-            // Merge same FightProp: first occurrence = initial, subsequent = upgrades
-            Dictionary<FightProperty, (float TotalValue, uint EnhancedCount)> merged = [];
-            HashSet<FightProperty> seen = [];
-            foreach ((FightProperty prop, float value) in resolved)
-            {
-                if (seen.Add(prop))
-                {
-                    merged[prop] = (value, 0);
-                }
-                else
-                {
-                    (float total, uint count) = merged[prop];
-                    merged[prop] = (total + value, count + 1);
-                }
-            }
-
-            ImmutableArray<BackpackReliquarySubStatView>.Builder builder = ImmutableArray.CreateBuilder<BackpackReliquarySubStatView>();
-            HashSet<FightProperty> added = [];
-            foreach ((FightProperty prop, float _) in resolved)
-            {
-                if (added.Add(prop))
-                {
-                    (float totalValue, uint enhancedCount) = merged[prop];
-                    builder.Add(new BackpackReliquarySubStatView
-                    {
-                        FightProp = prop,
-                        Value = totalValue,
-                        EnhancedCount = enhancedCount,
-                    });
-                }
-            }
-
-            SubStats = builder.ToImmutable();
+            return JsonSerializer.Deserialize<uint[]>(json);
         }
         catch (JsonException ex)
         {
             SentrySdk.AddBreadcrumb(
-                message: $"Failed to deserialize AppendPropIdListJson: {ex.Message}",
+                message: $"Failed to deserialize {propertyName}: {ex.Message}",
                 category: "BackpackReliquaryItemView",
                 level: BreadcrumbLevel.Error);
+            return null;
         }
+    }
+
+    private static ReliquarySubStatState GetSubStatState(FightProperty prop, BackpackReliquaryScoreConfig scoreConfig)
+    {
+        if (prop is FightProperty.FIGHT_PROP_CRITICAL or FightProperty.FIGHT_PROP_CRITICAL_HURT)
+        {
+            return ReliquarySubStatState.Crit;
+        }
+
+        return scoreConfig.GetWeight(prop) > 0 ? ReliquarySubStatState.Effective : ReliquarySubStatState.Ineffective;
     }
 }

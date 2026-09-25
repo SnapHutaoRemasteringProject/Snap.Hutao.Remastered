@@ -25,7 +25,7 @@ public sealed class BackpackWeaponItemView : BackpackItemView
 
     public static BackpackWeaponItemView Create(BackpackItem entity, BackpackServiceMetadataContext context, Weapon weapon)
     {
-        return new()
+        BackpackWeaponItemView view = new()
         {
             Entity = entity,
             Category = BackpackItemCategory.Weapon,
@@ -36,5 +36,9 @@ public sealed class BackpackWeaponItemView : BackpackItemView
             IconUri = EquipIconConverter.IconNameToUri(weapon.Icon),
             Quality = weapon.RankLevel,
         };
+
+        view.FillEquippedAvatar(context);
+
+        return view;
     }
 }

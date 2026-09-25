@@ -1,0 +1,29 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control">
+
+    <!--  祝圣之霜  -->
+    <BitmapImage x:Key="SanctifyingElixirIcon_Source" UriSource="ms-appx:///Resource/Icon/UI_ItemIcon_105005.png"/>
+
+    <Style BasedOn="{StaticResource DefaultSanctifyingElixirIconStyle}" TargetType="shuxc:SanctifyingElixirIcon"/>
+
+    <Style x:Key="DefaultSanctifyingElixirIconStyle" TargetType="shuxc:SanctifyingElixirIcon">
+        <Setter Property="Height" Value="80"/>
+        <Setter Property="Width" Value="80"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="shuxc:SanctifyingElixirIcon">
+                    <Border
+                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                        BorderBrush="#FFCCCCCC"
+                        BorderThickness="1"
+                        CornerRadius="{StaticResource ControlCornerRadius}">
+                        <Image Margin="2" Source="{StaticResource SanctifyingElixirIcon_Source}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

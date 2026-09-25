@@ -18,11 +18,21 @@ public sealed class BackpackReliquarySubStatView
 
     public bool HasValue { get; init; } = true;
 
-    public string DisplayName => HasValue ? FightProp.GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture)! : string.Empty;
+    public ReliquarySubStatState State { get; init; } = ReliquarySubStatState.Effective;
+
+    public string DisplayName => HasValue ? GetDisplayName() : string.Empty;
 
     public string DisplayValue => HasValue
         ? (FightProp.IsFightPropPercent()
             ? Value.ToString("P1", CultureInfo.CurrentCulture)
             : Value.ToString("F0", CultureInfo.CurrentCulture))
         : string.Empty;
+
+    private string GetDisplayName()
+    {
+        string name = FightProp.GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture)!;
+        return State is ReliquarySubStatState.Inactive
+            ? $"{name} {SH.ViewPageBackpackReliquarySubStatInactive}"
+            : name;
+    }
 }

@@ -4995,6 +4995,9 @@ Space Available: {2}</value>
   <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} pts</value>
   </data>
+  <data name="ViewPageBackpackReliquarySubStatInactive" xml:space="preserve">
+    <value>(Inactive)</value>
+  </data>
   <data name="ViewPageBackpackSetEffectLabel" xml:space="preserve">
     <value>{0}-Piece Set Effect: </value>
   </data>
