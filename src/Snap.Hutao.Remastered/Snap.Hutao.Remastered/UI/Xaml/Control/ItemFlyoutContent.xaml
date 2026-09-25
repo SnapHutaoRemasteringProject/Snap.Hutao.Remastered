@@ -2,6 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
+    xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
     xmlns:shuxctb="using:Snap.Hutao.Remastered.UI.Xaml.Control.TextBlock">
 
     <Style TargetType="shuxc:ItemFlyoutContent">
@@ -37,6 +38,28 @@
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
+                            <StackPanel Spacing="8" Visibility="{Binding HasEquippedAvatar, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <Rectangle Height="1" Fill="{ThemeResource ControlStrokeColorDefaultBrush}"/>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <!--  Same bust and same shift ratio as EquippedAvatarBadgeTemplate, only larger; the clip keeps it from poking through the separator above  -->
+                                    <Grid Width="36" Height="36">
+                                        <Grid.Clip>
+                                            <RectangleGeometry Rect="0,0,36,36"/>
+                                        </Grid.Clip>
+                                        <shuxci:CachedImage
+                                            Width="36"
+                                            Height="36"
+                                            Margin="0,-4,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Source="{Binding EquippedAvatarIconUri}"/>
+                                    </Grid>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{Binding EquippedAvatarDisplayName}"/>
+                                </StackPanel>
+                            </StackPanel>
                         </StackPanel>
                     </Border>
                 </ControlTemplate>

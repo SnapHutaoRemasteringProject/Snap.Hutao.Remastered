@@ -68,6 +68,28 @@
                 <shuxc:ItemFlyoutContent/>
             </Flyout>
 
+            <!--  Avatar that equips the item, overlaid on the top right corner of the item icon  -->
+            <DataTemplate x:Key="EquippedAvatarBadgeTemplate" x:DataType="shv:BackpackItemView">
+                <Grid
+                    Width="24"
+                    Height="24"
+                    Visibility="{Binding HasEquippedAvatar, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <Grid.Clip>
+                        <!--  Keep equal to the Width/Height above: the image is larger than the plate, a bigger Rect would clip nothing and let it spill onto the card  -->
+                        <RectangleGeometry Rect="0,0,24,24"/>
+                    </Grid.Clip>
+                    <Border Background="{ThemeResource EquippedAvatarBadgeBackgroundBrush}" CornerRadius="{StaticResource ControlCornerRadius}"/>
+                    <!--  AvatarSideIcon is a bottom cropped bust whose own padding varies per avatar, so a fixed shift can only center it on average; -6,-6 puts the right and bottom edges flush (nothing clipped there) and the clip above keeps the leftover top overflow off the card  -->
+                    <shuxci:CachedImage
+                        Width="30"
+                        Height="30"
+                        Margin="-4,-6,0,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Source="{Binding EquippedAvatarIconUri}"/>
+                </Grid>
+            </DataTemplate>
+
             <!--  Weapon card  -->
             <DataTemplate x:Key="WeaponCardTemplate" x:DataType="shv:BackpackWeaponItemView">
                 <shuxcc:HorizontalCard Width="270">
@@ -80,12 +102,18 @@
                         <StaticResource ResourceKey="ItemDetailFlyout"/>
                     </FlyoutBase.AttachedFlyout>
                     <shuxcc:HorizontalCard.Left>
-                        <shuxc:ItemIcon
-                            Width="54"
-                            Height="54"
-                            Margin="4,0"
-                            Icon="{Binding Weapon.Icon, Converter={StaticResource EquipIconConverter}}"
-                            Quality="{Binding Weapon.RankLevel}"/>
+                        <Grid Margin="4,0" VerticalAlignment="Center">
+                            <shuxc:ItemIcon
+                                Width="54"
+                                Height="54"
+                                Icon="{Binding Weapon.Icon, Converter={StaticResource EquipIconConverter}}"
+                                Quality="{Binding Weapon.RankLevel}"/>
+                            <ContentControl
+                                Content="{Binding}"
+                                ContentTemplate="{StaticResource EquippedAvatarBadgeTemplate}"
+                                HorizontalContentAlignment="Right"
+                                VerticalContentAlignment="Bottom"/>
+                        </Grid>
                     </shuxcc:HorizontalCard.Left>
                     <shuxcc:HorizontalCard.Right>
                         <Grid Margin="16,0">
@@ -164,12 +192,18 @@
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <shuxc:ItemIcon
-                                Grid.Column="0"
-                                Width="54"
-                                Height="54"
-                                Icon="{Binding Reliquary.Icon, Converter={StaticResource ItemIconConverter}}"
-                                Quality="{Binding Reliquary.RankLevel}"/>
+                            <Grid Grid.Column="0" VerticalAlignment="Center">
+                                <shuxc:ItemIcon
+                                    Width="54"
+                                    Height="54"
+                                    Icon="{Binding Reliquary.Icon, Converter={StaticResource ItemIconConverter}}"
+                                    Quality="{Binding Reliquary.RankLevel}"/>
+                                <ContentControl
+                                    Content="{Binding}"
+                                    ContentTemplate="{StaticResource EquippedAvatarBadgeTemplate}"
+                                    HorizontalContentAlignment="Right"
+                                    VerticalContentAlignment="Bottom"/>
+                            </Grid>
                             <Grid Grid.Column="1">
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
                                     <TextBlock Text="{Binding Reliquary.Name}"/>

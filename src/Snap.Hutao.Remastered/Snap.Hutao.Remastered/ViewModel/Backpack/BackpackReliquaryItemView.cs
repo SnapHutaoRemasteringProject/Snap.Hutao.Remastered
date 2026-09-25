@@ -128,6 +128,8 @@ public sealed class BackpackReliquaryItemView : BackpackItemView
             view.PaddedSubStats = builder.MoveToImmutable();
         }
 
+        view.FillEquippedAvatar(context);
+
         return view;
     }
 

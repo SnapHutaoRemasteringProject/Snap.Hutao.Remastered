@@ -31,6 +31,8 @@
     <Color x:Key="GuaranteePullColor">#FF0063FF</Color>
     <Color x:Key="UpPullColor">#FFFFA400</Color>
 
+    <Color x:Key="EquippedAvatarBadgeBackgroundColor">#66000000</Color>
+
     <SolidColorBrush x:Key="SolidBackgroundFillColorTransparentBrush" Color="{ThemeResource SolidBackgroundFillColorTransparent}"/>
 
     <SolidColorBrush x:Key="GreenColorBrush" Color="{ThemeResource GreenColor}" />
@@ -43,6 +45,8 @@
 
     <SolidColorBrush x:Key="GuaranteePullColorBrush" Color="{ThemeResource GuaranteePullColor}"/>
     <SolidColorBrush x:Key="UpPullColorBrush" Color="{ThemeResource UpPullColor}"/>
+
+    <SolidColorBrush x:Key="EquippedAvatarBadgeBackgroundBrush" Color="{ThemeResource EquippedAvatarBadgeBackgroundColor}"/>
 
     <SolidColorBrush x:Key="DarkOnlyOverlayMaskColorBrush" Color="{ThemeResource DarkOnlyOverlayMaskColor}"/>
     <SolidColorBrush x:Key="LightOnlyIconBackgroundColorBrush" Color="{ThemeResource LightOnlyIconBackgroundColor}"/>

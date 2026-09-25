@@ -4981,6 +4981,9 @@
   <data name="ViewPageBackpackFilterUnmarked" xml:space="preserve">
     <value>未标记</value>
   </data>
+  <data name="ViewPageBackpackEquippedState" xml:space="preserve">
+    <value>{0} 已装备</value>
+  </data>
   <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
     <value>奇怪的</value>
   </data>
