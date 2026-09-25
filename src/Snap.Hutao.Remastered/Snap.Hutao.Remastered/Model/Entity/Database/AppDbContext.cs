@@ -79,6 +79,8 @@ public sealed partial class AppDbContext : DbContext
 
     public DbSet<BackpackReliquaryScoreConfig> BackpackReliquaryScoreConfigs { get; set; } = default!;
 
+    public DbSet<AvatarReliquaryScoreSetting> AvatarReliquaryScoreSettings { get; set; } = default!;
+
     public static AppDbContext Create(IServiceProvider serviceProvider, string sqlConnectionString)
     {
         DbContextOptions<AppDbContext> options = new DbContextOptionsBuilder<AppDbContext>()

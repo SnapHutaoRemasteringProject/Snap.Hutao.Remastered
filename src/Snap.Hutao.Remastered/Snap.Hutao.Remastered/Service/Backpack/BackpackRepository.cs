@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Entity.Database;
@@ -131,6 +132,12 @@ public sealed partial class BackpackRepository : IBackpackRepository
             {
                 appDbContext.Attach(config);
                 appDbContext.BackpackReliquaryScoreConfigs.Remove(config);
+
+                // 同时清理「我的角色」页面引用此配置的评分算法设置，避免悬挂的 ConfigId
+                appDbContext.AvatarReliquaryScoreSettings
+                    .Where(s => s.ConfigId == configId)
+                    .ExecuteDelete();
+
                 appDbContext.SaveChanges();
             }
         }

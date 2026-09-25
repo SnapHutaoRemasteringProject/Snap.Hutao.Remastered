@@ -4554,6 +4554,15 @@
   <data name="ViewPageAvatarPropertyTotalScore" xml:space="preserve">
     <value>角色总分：</value>
   </data>
+  <data name="ViewPageAvatarPropertyScoreAlgorithm" xml:space="preserve">
+    <value>圣遗物评分算法</value>
+  </data>
+  <data name="ViewPageAvatarPropertyScoreAlgorithmHoyolabRecommend" xml:space="preserve">
+    <value>米游社推荐属性</value>
+  </data>
+  <data name="ViewPageAvatarPropertyConfigureScore" xml:space="preserve">
+    <value>评分配置</value>
+  </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>自定义启动</value>
   </data>

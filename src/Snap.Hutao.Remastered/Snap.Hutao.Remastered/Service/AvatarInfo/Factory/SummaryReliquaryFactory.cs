@@ -62,8 +62,7 @@ public sealed class SummaryReliquaryFactory
             .SetSetName(metaReliquarySet.Name)
             .SetMainProperty(FightPropertyFormat.ToNameValue(reliquary.MainProperty))
             .SetComposedSubProperties(reliquary.SubPropertyList.SelectAsArray(CreateSubProperty))
-            .SetScoreValue(score)
-            .SetScore(string.Format(SH.ViewPageAvatarPropertyReliquaryScoreValue, score));
+            .SetScoreValue(score);
 
         return reliquaryViewBuilder.View;
     }

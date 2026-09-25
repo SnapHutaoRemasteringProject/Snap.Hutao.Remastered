@@ -4,6 +4,7 @@
 using Snap.Hutao.Remastered.Core.DataTransfer;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Service.AvatarInfo;
+using Snap.Hutao.Remastered.Service.Backpack;
 using Snap.Hutao.Remastered.Service.Cultivation;
 using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.User;
@@ -23,6 +24,8 @@ public sealed partial class AvatarPropertyViewModelScopeContext
     public partial ICultivationService CultivationService { get; }
 
     public partial IAvatarInfoService AvatarInfoService { get; }
+
+    public partial IBackpackService BackpackService { get; }
 
     public partial IClipboardProvider ClipboardProvider { get; }
 
