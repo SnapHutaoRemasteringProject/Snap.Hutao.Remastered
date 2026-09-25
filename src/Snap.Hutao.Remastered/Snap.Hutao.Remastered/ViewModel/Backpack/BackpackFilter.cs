@@ -68,6 +68,11 @@ public static class BackpackFilter
                         ? SH.ViewPageBackpackFilterMarked
                         : SH.ViewPageBackpackFilterUnmarked)),
 
+                SearchTokenKind.BackpackEquippedState => tokens.Contains(
+                    item.Entity.EquippedAvatarId is not 0
+                        ? SH.ViewPageBackpackFilterEquipped
+                        : SH.ViewPageBackpackFilterUnequipped),
+
                 SearchTokenKind.BackpackFoodQuality => !foodQualityMap.TryGetValue(item.Entity.ItemId, out int qualityIndex) ||
                     tokens.Contains(qualityIndex switch
                     {

@@ -161,6 +161,7 @@
     <Content Include="Resource\Icon\Icon_Common_Cook.png" />
     <Content Include="Resource\Icon\Icon_Good_Cook.png" />
     <Content Include="Resource\Icon\Icon_Perfect_Cook.png" />
+    <Content Include="Resource\Icon\UI_AvatarIcon_Side_Hutao.png" />
     <Content Include="Resource\Icon\UI_BagTabIcon_Weapon.png" />
     <Content Include="Resource\Icon\UI_BtnIcon_Beyond_GH.png" />
     <Content Include="Resource\Icon\UI_BtnIcon_Beyond_GH_Dark.png" />
@@ -180,6 +181,7 @@
     <Content Include="Resource\Icon\UI_Icon_Locked.png" />
     <Content Include="Resource\Icon\UI_Icon_Locked_Dark.png" />
     <Content Include="Resource\Icon\UI_Icon_Paimon.png" />
+    <Content Include="Resource\Icon\UI_Icon_Paimon_Unequipped.png" />
     <Content Include="Resource\Icon\UI_Icon_RelicType1.png" />
     <Content Include="Resource\Icon\UI_Icon_RelicType2.png" />
     <Content Include="Resource\Icon\UI_Icon_RelicType3.png" />

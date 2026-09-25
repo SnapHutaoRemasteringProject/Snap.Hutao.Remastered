@@ -19,6 +19,7 @@ public enum SearchTokenKind
     BackpackEquipType,
     BackpackLockState,
     BackpackMarkState,
+    BackpackEquippedState,
     BackpackFoodQuality,
     BackpackCookFoodType,
     BackpackReliquarySet,
