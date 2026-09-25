@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using Google.Protobuf;
-using Snap.Hutao.Remastered.Core.Protobuf;
 using System.Buffers;
 using System.Runtime.InteropServices;
 
@@ -35,7 +34,11 @@ public sealed partial class YaeData : IDisposable
     /// </summary>
     public uint CmdId { get; }
 
-    public ByteString Bytes { get => ByteStringMarshal.Create(owner.Memory[..contentLength]); }
+    /// <summary>
+    /// Gets a copy of the packet content. The backing buffer is pooled and returned to the pool on
+    /// <see cref="Dispose"/>, so the returned value owns its bytes and remains valid after that.
+    /// </summary>
+    public ByteString Bytes { get => ByteString.CopyFrom(owner.Memory.Span[..contentLength]); }
 
     public ref readonly YaePropertyTypeValue PropertyTypeValue
     {
