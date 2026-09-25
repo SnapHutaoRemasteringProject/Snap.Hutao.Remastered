@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -1638,7 +1638,7 @@
     <value>為了確保功能的啟用者有獨立的判斷能力，我們將不定期更新這些功能的啟用條件，如果您是一位內容創造者，在創作胡桃相關的內容時請不要向你的受眾介紹具體的啟用方法。</value>
   </data>
   <data name="ViewDialogReconfirmTextHeader" xml:space="preserve">
-    <value>為防止你在無意間啟用，請輸入正在啟用的功能開關的&lt;b&gt;標題名稱&lt;/b&gt;</value>
+    <value>為防止你在無意間啟用，請輸入正在啟用的功能開關的<b>標題名稱</b></value>
   </data>
   <data name="ViewDialogReconfirmTitle" xml:space="preserve">
     <value>你正在啟用一個危險功能</value>
@@ -4315,7 +4315,7 @@
     <value>我知道我在做什麼！</value>
   </data>
   <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
-    <value>{0}({1}s)</value>
+    <value>{0}（{1}秒）</value>
   </data>
   <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
     <value>樹脂物品選項已全部關閉</value>
@@ -4980,6 +4980,24 @@
   </data>
   <data name="ViewPageBackpackFilterUnmarked" xml:space="preserve">
     <value>未標記</value>
+  </data>
+  <data name="ViewPageBackpackFilterEquipped" xml:space="preserve">
+    <value>已装备</value>
+  </data>
+  <data name="ViewPageBackpackFilterUnequipped" xml:space="preserve">
+    <value>未装备</value>
+  </data>
+  <data name="ViewPageBackpackFilterPurchasedAppendProp" xml:space="preserve">
+    <value>祝圣之霜定义</value>
+  </data>
+  <data name="ViewPageBackpackFilterNotPurchasedAppendProp" xml:space="preserve">
+    <value>非祝圣之霜定义</value>
+  </data>
+  <data name="ViewPageBackpackEquippedState" xml:space="preserve">
+    <value>{0} 已装备</value>
+  </data>
+  <data name="ViewPageBackpackPurchasedAppendPropTitle" xml:space="preserve">
+    <value>祝圣之霜定义的词条</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
     <value>奇怪的</value>

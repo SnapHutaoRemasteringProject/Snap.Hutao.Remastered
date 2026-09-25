@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -1072,7 +1072,7 @@
     <value>Snap Hutao should be run in administrator privilege before using Embedded Yae</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeErrorSystemIntegrityPolicyViolation" xml:space="preserve">
-    <value>Injection failed, possibly due to Windows Defender App &amp; Browser Control &gt; Smart App Control policy blocking the operation. Please try turning it off.</value>
+    <value>Injection failed, possibly due to Windows Defender App &amp; Browser Control > Smart App Control policy blocking the operation. Please try turning it off.</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>You should know about the related risks and turn on the embedding function in Launch Game page before using Embedded Yae</value>
@@ -1638,7 +1638,7 @@ Space Available: {2}</value>
     <value>In order to ensure that functionaries have independent judgement capability, we will irregularly update the enabling conditions for these features. If you are a content creator, do not share specific activation methods with your audience.</value>
   </data>
   <data name="ViewDialogReconfirmTextHeader" xml:space="preserve">
-    <value>To avoid enabling unintentionally, please input the &lt;b&gt;title name&lt;/b&gt; of feature you are enabling</value>
+    <value>To avoid enabling unintentionally, please input the <b>title name</b> of feature you are enabling</value>
   </data>
   <data name="ViewDialogReconfirmTitle" xml:space="preserve">
     <value>You are Enabling a Dangerous Feature</value>
@@ -4314,7 +4314,7 @@ Space Available: {2}</value>
     <value>I know what I'm doing!</value>
   </data>
   <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
-    <value>{0}({1}s)</value>
+    <value>{0} ({1}s)</value>
   </data>
   <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
     <value>All resin item options disabled</value>
@@ -4979,6 +4979,24 @@ Space Available: {2}</value>
   </data>
   <data name="ViewPageBackpackFilterUnmarked" xml:space="preserve">
     <value>Unmarked</value>
+  </data>
+  <data name="ViewPageBackpackFilterEquipped" xml:space="preserve">
+    <value>已装备</value>
+  </data>
+  <data name="ViewPageBackpackFilterUnequipped" xml:space="preserve">
+    <value>未装备</value>
+  </data>
+  <data name="ViewPageBackpackFilterPurchasedAppendProp" xml:space="preserve">
+    <value>祝圣之霜定义</value>
+  </data>
+  <data name="ViewPageBackpackFilterNotPurchasedAppendProp" xml:space="preserve">
+    <value>非祝圣之霜定义</value>
+  </data>
+  <data name="ViewPageBackpackEquippedState" xml:space="preserve">
+    <value>{0} 已装备</value>
+  </data>
+  <data name="ViewPageBackpackPurchasedAppendPropTitle" xml:space="preserve">
+    <value>祝圣之霜定义的词条</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
     <value>Suspicious</value>

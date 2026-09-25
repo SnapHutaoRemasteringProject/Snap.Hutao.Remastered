@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -1994,6 +1994,15 @@ Ruang Tersedia: {2}</value>
   <data name="ViewModelCultivationResinStatisticsWeeklyBossTitle" xml:space="preserve">
     <value>Boss Mingguan</value>
   </data>
+  <data name="ViewModelCultivationSyncAvatarInfoCompleted" xml:space="preserve">
+    <value>已更新 {0} 个角色条目，跳过 {1} 个</value>
+  </data>
+  <data name="ViewModelCultivationSyncAvatarInfoNoCharacter" xml:space="preserve">
+    <value>未获取到可用于同步的角色详情</value>
+  </data>
+  <data name="ViewModelCultivationSyncAvatarInfoProgress" xml:space="preserve">
+    <value>正在从米游社同步角色等级与天赋</value>
+  </data>
   <data name="ViewModelDailyNoteConfigWebhookUrlComplete" xml:space="preserve">
     <value>URL Webhook Catatan Realtime berhasil dikonfigurasi.</value>
   </data>
@@ -2614,6 +2623,9 @@ Ruang Tersedia: {2}</value>
   </data>
   <data name="ViewPageCultivationRefreshInventoryByBackpackArchive" xml:space="preserve">
     <value>Sinkronkan melalui arsip item inventori</value>
+  </data>
+  <data name="ViewPageCultivationSyncAvatarInfo" xml:space="preserve">
+    <value>同步角色等级与天赋</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Hapus daftar</value>
@@ -3277,6 +3289,12 @@ Ruang Tersedia: {2}</value>
   </data>
   <data name="ViewPageSettingAppearanceCloseButtonBehaviorHeader" xml:space="preserve">
     <value>Perilaku Tombol Tutup</value>
+  </data>
+  <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintDescription" xml:space="preserve">
+    <value>Saat menutup jendela dan beralih ke latar belakang, tampilkan notifikasi sistem “Hutao telah berjalan di latar belakang”</value>
+  </data>
+  <data name="ViewPageSettingAppearanceNotifyIconBackgroundHintHeader" xml:space="preserve">
+    <value>Notifikasi berjalan di latar belakang</value>
   </data>
   <data name="ViewPageSettingApperanceFirstDayOfWeekDescription" xml:space="preserve">
     <value>Pilih hari pertama dalam seminggu yang sesuai untuk Anda</value>
@@ -4280,6 +4298,30 @@ Ruang Tersedia: {2}</value>
   <data name="ViewPageLaunchGameIslandHidePlayerInfoDescription" xml:space="preserve">
     <value>Sembunyikan info pemain</value>
   </data>
+  <data name="ViewPageLaunchGameIslandFastSkipTalkHeader" xml:space="preserve">
+    <value>Hapus cooldown lewati dialog</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandFastSkipTalkDescription" xml:space="preserve">
+    <value>Hapus waktu cooldown setelah melewati dialog</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
+    <value>Hapus cooldown lewati dialog</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmHint" xml:space="preserve">
+    <value>Fitur ini sangat berisiko menyebabkan akun diblokir, gunakan dengan hati-hati</value>
+  </data>
+  <data name="ViewDialogFastSkipTalkConfirmPrimaryButtonText" xml:space="preserve">
+    <value>Saya tahu apa yang saya lakukan!</value>
+  </data>
+  <data name="ViewDialogCountdownConfirmCountdownSuffix" xml:space="preserve">
+    <value>{0}({1} dtk)</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledTitle" xml:space="preserve">
+    <value>Semua opsi item Resin telah dinonaktifkan</value>
+  </data>
+  <data name="ViewDialogResinListItemAllDisabledHint" xml:space="preserve">
+    <value>Setelah menonaktifkan semua opsi item Resin, Anda tidak akan bisa mengambil hadiah di Domain. Yakin ingin menonaktifkan?</value>
+  </data>
   <data name="ViewPageLaunchGameDisablePlayerPerspectiveDescription" xml:space="preserve">
     <value>Anti-blur karakter</value>
   </data>
@@ -4938,6 +4980,24 @@ Ruang Tersedia: {2}</value>
   <data name="ViewPageBackpackFilterUnmarked" xml:space="preserve">
     <value>Tidak Ditandai</value>
   </data>
+  <data name="ViewPageBackpackFilterEquipped" xml:space="preserve">
+    <value>已装备</value>
+  </data>
+  <data name="ViewPageBackpackFilterUnequipped" xml:space="preserve">
+    <value>未装备</value>
+  </data>
+  <data name="ViewPageBackpackFilterPurchasedAppendProp" xml:space="preserve">
+    <value>祝圣之霜定义</value>
+  </data>
+  <data name="ViewPageBackpackFilterNotPurchasedAppendProp" xml:space="preserve">
+    <value>非祝圣之霜定义</value>
+  </data>
+  <data name="ViewPageBackpackEquippedState" xml:space="preserve">
+    <value>{0} 已装备</value>
+  </data>
+  <data name="ViewPageBackpackPurchasedAppendPropTitle" xml:space="preserve">
+    <value>祝圣之霜定义的词条</value>
+  </data>
   <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
     <value>Aneh</value>
   </data>
@@ -4952,6 +5012,9 @@ Ruang Tersedia: {2}</value>
   </data>
   <data name="ViewPageBackpackReliquaryScoreValue" xml:space="preserve">
     <value>{0:F1} Poin</value>
+  </data>
+  <data name="ViewPageBackpackReliquarySubStatInactive" xml:space="preserve">
+    <value>(未激活)</value>
   </data>
   <data name="ViewPageBackpackSetEffectLabel" xml:space="preserve">
     <value>Efek Set {0} Bagian: </value>
@@ -5098,7 +5161,10 @@ Ruang Tersedia: {2}</value>
     <value>Mirror CDK</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
-    <value>Silakan masukkan kunci aktivasi Mirror酱 (CDK), kosongkan untuk melewati. Dapat diperoleh dari mirrorchyan.com.</value>
+    <value>请输入 Mirror酱 激活密钥（CDK），留空则跳过。</value>
+  </data>
+  <data name="ViewDialogMirrorChyanCdkGetCdk" xml:space="preserve">
+    <value>获取 CDK</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
     <value>Catatan Pengembara</value>
@@ -5108,6 +5174,9 @@ Ruang Tersedia: {2}</value>
   </data>
   <data name="ViewTravelersDiaryMonth" xml:space="preserve">
     <value>Bulan Ini</value>
+  </data>
+  <data name="ViewTravelersDiaryNoIncomeSourceHint" xml:space="preserve">
+    <value>本月暂无原石收入记录</value>
   </data>
   <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
     <value>2 Stars</value>
