@@ -168,5 +168,21 @@ public sealed partial class BackgroundMediaPlayerService : IBackgroundMediaPlaye
                 element.Source = null;
                 break;
         }
+
+        // The underlying MediaPlayer is created lazily by the MediaPlayerElement when a source is
+        // assigned, so the player can only be reached after the switch above. A background video
+        // behaves like a wallpaper and must not appear in the system media transport controls
+        // (SMTC) nor react to the hardware media keys.
+        DisableSystemMediaTransportControls(element.MediaPlayer);
+    }
+
+    private static void DisableSystemMediaTransportControls(MediaPlayer? player)
+    {
+        if (player is null)
+        {
+            return;
+        }
+
+        player.CommandManager.IsEnabled = false;
     }
 }
