@@ -47,6 +47,13 @@ public sealed class BackpackReliquaryItemView : BackpackItemView
     /// </summary>
     public ImmutableArray<BackpackReliquarySubStatView> PaddedSubStats { get; private set; } = [];
 
+    /// <summary>
+    /// Gets the properties defined by 祝圣之霜 when the reliquary was crafted with it. Empty for every other reliquary.
+    /// </summary>
+    public ImmutableArray<string> PurchasedAppendPropNames { get; private set; } = [];
+
+    public bool HasPurchasedAppendProp => PurchasedAppendPropNames.Length > 0;
+
     public static BackpackReliquaryItemView Create(BackpackItem entity, BackpackServiceMetadataContext context, Reliquary reliquary)
     {
         BackpackReliquaryItemView view = new()
@@ -128,9 +135,36 @@ public sealed class BackpackReliquaryItemView : BackpackItemView
             view.PaddedSubStats = builder.MoveToImmutable();
         }
 
+        view.BuildPurchasedAppendProps();
         view.FillEquippedAvatar(context);
 
         return view;
+    }
+
+    private void BuildPurchasedAppendProps()
+    {
+        if (DeserializeSubAffixIds(Entity.PurchasedAppendPropIdListJson, nameof(Entity.PurchasedAppendPropIdListJson)) is not { Length: > 0 } ids)
+        {
+            return;
+        }
+
+        // Unlike AppendPropIdList, this list holds raw FightProperty values instead of sub affix ids
+        ImmutableArray<string>.Builder builder = ImmutableArray.CreateBuilder<string>(ids.Length);
+        HashSet<string> seen = [];
+        foreach (uint id in ids)
+        {
+            if (((FightProperty)id).GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture) is { Length: > 0 } name && seen.Add(name))
+            {
+                builder.Add(name);
+            }
+        }
+
+        if (builder.Count is 0)
+        {
+            return;
+        }
+
+        PurchasedAppendPropNames = builder.ToImmutable();
     }
 
     private void BuildSubStats(BackpackServiceMetadataContext context)

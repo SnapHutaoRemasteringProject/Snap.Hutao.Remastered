@@ -14,6 +14,7 @@
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Loading.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/LockIcon.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/MarkIcon.xaml"/>
+                <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/SanctifyingElixirIcon.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/StandardView.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/AutoSuggestBox/AutoSuggestTokenBox.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/AutoSortBox/AutoSortList.xaml"/>

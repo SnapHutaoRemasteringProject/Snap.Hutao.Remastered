@@ -174,8 +174,8 @@
     <Content Include="Resource\Icon\UI_Gcg_Buff_Common_Element_Rock.png" />
     <Content Include="Resource\Icon\UI_Gcg_Buff_Common_Element_Water.png" />
     <Content Include="Resource\Icon\UI_Gcg_Buff_Common_Element_Wind.png" />
-    <Content Include="Resource\Icon\UI_IconSmall_EP.png" />
     <Content Include="Resource\Icon\UI_IconKira.png" />
+    <Content Include="Resource\Icon\UI_IconSmall_EP.png" />
     <Content Include="Resource\Icon\UI_Icon_Fetter.png" />
     <Content Include="Resource\Icon\UI_Icon_Locked.png" />
     <Content Include="Resource\Icon\UI_Icon_Locked_Dark.png" />
@@ -195,14 +195,14 @@
     <Content Include="Resource\Icon\UI_Icon_UGC_Collect.png" />
     <Content Include="Resource\Icon\UI_Icon_UGC_Collect_Dark.png" />
     <Content Include="Resource\Icon\UI_Icon_Unlock.png" />
-    <Content Include="Resource\Icon\UI_TravelersDiary_Logo.png" />
     <Content Include="Resource\Icon\UI_Icon_Unlock_Dark.png" />
     <Content Include="Resource\Icon\UI_Img_RoleCombat_EventDetail_Pic_Chance.png" />
+    <Content Include="Resource\Icon\UI_ItemIcon_105005.png" />
     <Content Include="Resource\Icon\UI_ItemIcon_106.png" />
     <Content Include="Resource\Icon\UI_ItemIcon_201.png" />
     <Content Include="Resource\Icon\UI_ItemIcon_210.png" />
     <Content Include="Resource\Icon\UI_ItemIcon_211.png" />
-	<Content Include="Resource\Icon\UI_ItemIcon_231.png" />
+    <Content Include="Resource\Icon\UI_ItemIcon_231.png" />
     <Content Include="Resource\Icon\UI_LeyLineChallenge_Medal_0.png" />
     <Content Include="Resource\Icon\UI_LeyLineChallenge_Medal_1.png" />
     <Content Include="Resource\Icon\UI_LeyLineChallenge_Medal_2.png" />
@@ -217,6 +217,7 @@
     <Content Include="Resource\Icon\UI_RoleCombat_Medal_S_3.png" />
     <Content Include="Resource\Icon\UI_RoleCombat_Medal_S_4.png" />
     <Content Include="Resource\Icon\UI_RoleCombat_Medal_S_5.png" />
+    <Content Include="Resource\Icon\UI_TravelersDiary_Logo.png" />
     <Content Include="Resource\ItemIcon\UI_ImgSign_ItemIcon.png" />
     <Content Include="Resource\ItemIcon\UI_QUALITY_BLUE.png" />
     <Content Include="Resource\ItemIcon\UI_QUALITY_GREEN.png" />
@@ -250,10 +251,10 @@
     <Content Include="Resource\ThirdParty\Apple.png" />
     <Content Include="Resource\ThirdParty\Facebook.png" />
     <Content Include="Resource\ThirdParty\Google.png" />
+    <Content Include="Resource\ThirdParty\Twitter.png" />
     <Content Include="Resource\ThirdParty\bilibili128.png" />
     <Content Include="Resource\ThirdParty\hoyolab128.png" />
     <Content Include="Resource\ThirdParty\miyoushe128.png" />
-    <Content Include="Resource\ThirdParty\Twitter.png" />
     <Content Include="Resource\WelcomeView_Background.png" />
   </ItemGroup>
 
@@ -308,20 +309,20 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-	<PackageReference Include="Snap.Hutao.Remastered.Native" Version="1.5.0">
-	 <PrivateAssets>all</PrivateAssets>
-	 <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	</PackageReference>
+    <PackageReference Include="Snap.Hutao.FileUnlocker" Version="1.2.0" />
+    <PackageReference Include="Snap.Hutao.Remastered.Deployment.Runtime" Version="1.8.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Snap.Hutao.Remastered.Native" Version="1.5.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Snap.Hutao.Remastered.SourceGeneration" Version="1.3.16">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-	<PackageReference Include="Snap.Hutao.Remastered.Deployment.Runtime" Version="1.8.1">
-		<PrivateAssets>all</PrivateAssets>
-		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	</PackageReference>
     <PackageReference Include="Snap.LibGit2Sharp" Version="0.31.1-preview.0.4" />
-    <PackageReference Include="Snap.Hutao.FileUnlocker" Version="1.2.0" />
     <PackageReference Include="Snap.ZStandard" Version="1.5.7" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.12" />
     <PackageReference Include="System.Formats.Nrbf" Version="10.0.12" />

@@ -4984,6 +4984,9 @@
   <data name="ViewPageBackpackEquippedState" xml:space="preserve">
     <value>{0} 已装备</value>
   </data>
+  <data name="ViewPageBackpackPurchasedAppendPropTitle" xml:space="preserve">
+    <value>祝圣之霜定义的词条</value>
+  </data>
   <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
     <value>奇怪的</value>
   </data>

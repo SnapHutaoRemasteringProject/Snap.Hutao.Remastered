@@ -68,6 +68,33 @@
                 <shuxc:ItemFlyoutContent/>
             </Flyout>
 
+            <!--  Properties defined by 祝圣之霜, only reachable from a reliquary crafted with it  -->
+            <Flyout x:Key="PurchasedAppendPropFlyout">
+                <Flyout.FlyoutPresenterStyle>
+                    <Style TargetType="FlyoutPresenter">
+                        <Setter Property="Padding" Value="0"/>
+                    </Style>
+                </Flyout.FlyoutPresenterStyle>
+                <Border Padding="16" Style="{ThemeResource AcrylicBorderCardStyle}">
+                    <StackPanel MaxWidth="240" Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <shuxc:SanctifyingElixirIcon Width="28" Height="28"/>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Style="{StaticResource BodyStrongTextBlockStyle}"
+                                Text="{shuxm:ResourceString Name=ViewPageBackpackPurchasedAppendPropTitle}"/>
+                        </StackPanel>
+                        <ItemsControl ItemsSource="{Binding PurchasedAppendPropNames}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{Binding}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </Flyout>
+
             <!--  Avatar that equips the item, overlaid on the top right corner of the item icon  -->
             <DataTemplate x:Key="EquippedAvatarBadgeTemplate" x:DataType="shv:BackpackItemView">
                 <Grid
@@ -166,17 +193,26 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <shuxc:LockIcon
+                            <shuxc:SanctifyingElixirIcon
                                 Grid.Column="0"
+                                Width="20"
+                                Height="20"
+                                VerticalAlignment="Bottom"
+                                FlyoutBase.AttachedFlyout="{StaticResource PurchasedAppendPropFlyout}"
+                                Tapped="OnPurchasedAppendPropIconTapped"
+                                Visibility="{Binding HasPurchasedAppendProp, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            <shuxc:LockIcon
+                                Grid.Column="1"
                                 Width="20"
                                 Height="20"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
                                 IsLocked="{Binding IsLocked}"/>
                             <shuxc:MarkIcon
-                                Grid.Column="1"
+                                Grid.Column="2"
                                 Width="20"
                                 Height="20"
                                 HorizontalAlignment="Right"
