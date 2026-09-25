@@ -268,7 +268,7 @@ public sealed partial class App : Application
     }
 
     [Conditional("DEBUG")]
-    private static void DebugPatchXamlDiagnosticsRemoveRootObjectFromLVT()
+    private void DebugPatchXamlDiagnosticsRemoveRootObjectFromLVT()
     {
         // Extremely dangerous patch to workaround XamlDiagnostics::RemoveRootObjectFromLVT crashing when
         // Window is closed during debugging. at LiveVisualTree.cpp line 423
@@ -278,20 +278,26 @@ public sealed partial class App : Application
         // But the RuntimeObject is actually closed properly.
 
         // If no debugger is attached, do not patch. There will be no diagnostics LVT.
-        if (Debugger.IsAttached)
+        if (!Debugger.IsAttached)
         {
-            // 74 65            jz      short loc_8E219D
-            // 48 8D 55 F0      lea     root, [rbp+50h + p] ; p
-            // 48 8B CB         mov     this, rbx; this
-            // E8 58 DF FF FF   call    ??$As @UIVisualTreeServiceCallback3@@@?$ComPtr @UIVisualTreeServiceCallback@@@WRL @Microsoft@@QEBAJV ?$ComPtrRef @V?$ComPtr @UIVisualTreeServiceCallback3@@@WRL @Microsoft@@@Details@12@@Z; Microsoft::WRL::ComPtr < IVisualTreeServiceCallback >::As<IVisualTreeServiceCallback3>(Microsoft::WRL::Details::ComPtrRef<Microsoft::WRL::ComPtr<IVisualTreeServiceCallback3>>)
-            // 85 C0            test    eax, eax
-            // 78 55            js      short loc_8E219D
-            // Should be 78 xx (js near)
-            Win32.MemoryUtilities.Patch("Microsoft.ui.xaml.dll", 0x0090C1D6, 2, static codes =>
-            {
-                // Rewrite to jmp
-                codes[0] = 0xEB;
-            });
+            return;
         }
+
+        // The RVA changes on every WindowsAppSDK update, re-derive it with the byte sequence below
+        // (unique in the whole module) and then adjust the offset.
+        // Microsoft.ui.xaml.dll 3.2.0.2511
+        // XamlDiagnostics::RemoveRootObjectFromLVT + 0x132
+        // 74 65            jz      short loc_18090C48D
+        // 48 8D 55 F0      lea     rdx, [rbp-10h] ; p
+        // 48 8B CB         mov     rcx, rbx ; this
+        // E8 00 DF FF FF   call    ??$As @UIVisualTreeServiceCallback3@@@?$ComPtr @UIVisualTreeServiceCallback@@@WRL @Microsoft@@QEBAJV ?$ComPtrRef @V?$ComPtr @UIVisualTreeServiceCallback3@@@WRL @Microsoft@@@Details@12@@Z; Microsoft::WRL::ComPtr < IVisualTreeServiceCallback >::As<IVisualTreeServiceCallback3>(Microsoft::WRL::Details::ComPtrRef<Microsoft::WRL::ComPtr<IVisualTreeServiceCallback3>>)
+        // 85 C0            test    eax, eax
+        // 78 55            js      short loc_18090C48D
+        // Should be 78 xx (js near)
+        Win32.MemoryUtilities.Patch("Microsoft.ui.xaml.dll", 0x0090C436, 3, codes =>
+        {
+            // Rewrite js to jmp
+            codes[2] = 0xEB;
+        });
     }
 }
