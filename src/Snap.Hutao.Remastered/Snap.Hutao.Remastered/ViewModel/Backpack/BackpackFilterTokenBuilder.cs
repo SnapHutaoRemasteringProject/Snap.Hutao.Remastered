@@ -19,6 +19,7 @@ public static class BackpackFilterTokenBuilder
     private static readonly Uri MarkIconUri = new("ms-appx:///Resource/Icon/UI_Icon_UGC_Collect.png");
     private static readonly Uri EquippedAvatarIconUri = new("ms-appx:///Resource/Icon/UI_AvatarIcon_Side_Hutao.png");
     private static readonly Uri UnequippedAvatarIconUri = new("ms-appx:///Resource/Icon/UI_Icon_Paimon_Unequipped.png");
+    private static readonly Uri PurchasedAppendPropIconUri = new("ms-appx:///Resource/Icon/UI_ItemIcon_105005.png");
     private static readonly Uri SuspiciousFoodIconUri = new("ms-appx:///Resource/Icon/Icon_Common_Cook.png");
     private static readonly Uri NormalFoodIconUri = new("ms-appx:///Resource/Icon/Icon_Good_Cook.png");
     private static readonly Uri DeliciousFoodIconUri = new("ms-appx:///Resource/Icon/Icon_Perfect_Cook.png");
@@ -77,6 +78,10 @@ public static class BackpackFilterTokenBuilder
                 // Equipped state tokens
                 tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterEquipped, new SearchToken(SearchTokenKind.BackpackEquippedState, SH.ViewPageBackpackFilterEquipped, 0, sideIconUri: EquippedAvatarIconUri)));
                 tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterUnequipped, new SearchToken(SearchTokenKind.BackpackEquippedState, SH.ViewPageBackpackFilterUnequipped, 1, sideIconUri: UnequippedAvatarIconUri)));
+
+                // Purchased append prop (Sanctifying Elixir) state tokens
+                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterPurchasedAppendProp, new SearchToken(SearchTokenKind.BackpackPurchasedAppendProp, SH.ViewPageBackpackFilterPurchasedAppendProp, 0, sideIconUri: PurchasedAppendPropIconUri)));
+                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterNotPurchasedAppendProp, new SearchToken(SearchTokenKind.BackpackPurchasedAppendProp, SH.ViewPageBackpackFilterNotPurchasedAppendProp, 1, sideIconUri: PurchasedAppendPropIconUri)));
                 break;
 
             case BackpackItemCategory.Food:

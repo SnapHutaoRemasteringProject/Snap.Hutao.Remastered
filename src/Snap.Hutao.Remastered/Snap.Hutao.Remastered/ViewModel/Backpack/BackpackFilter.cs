@@ -73,6 +73,12 @@ public static class BackpackFilter
                         ? SH.ViewPageBackpackFilterEquipped
                         : SH.ViewPageBackpackFilterUnequipped),
 
+                SearchTokenKind.BackpackPurchasedAppendProp => item is not BackpackReliquaryItemView ||
+                    (item is BackpackReliquaryItemView rPurchased &&
+                    tokens.Contains(rPurchased.HasPurchasedAppendProp
+                        ? SH.ViewPageBackpackFilterPurchasedAppendProp
+                        : SH.ViewPageBackpackFilterNotPurchasedAppendProp)),
+
                 SearchTokenKind.BackpackFoodQuality => !foodQualityMap.TryGetValue(item.Entity.ItemId, out int qualityIndex) ||
                     tokens.Contains(qualityIndex switch
                     {
