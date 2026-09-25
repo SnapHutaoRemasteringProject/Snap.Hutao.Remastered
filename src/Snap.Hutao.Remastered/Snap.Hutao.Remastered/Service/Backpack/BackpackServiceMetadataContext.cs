@@ -27,7 +27,7 @@ public sealed class BackpackServiceMetadataContext : IMetadataContext,
     IMetadataArrayReliquaryMainAffixLevelSource,
     IMetadataArrayCookRecipeSource,
     IMetadataDictionaryIdCookRecipeSource,
-    IMetadataDictionaryIdAvatarSource
+    IMetadataDictionaryIdAvatarWithPlayersSource
 {
     public ImmutableDictionary<AvatarId, Avatar> IdAvatarMap { get; set; } = default!;
 
