@@ -362,16 +362,25 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
             return;
         }
 
+        // 未命名的默认预设与内置「默认」预设完全等价，BuildScoreConfigOptions 会把它过滤掉，
+        // 保存下来只会得到一条在下拉列表里永远无法选中的配置，因此直接应用内置预设
+        if (result.PresetKey is ReliquaryScoreConfigPreset.Default && string.IsNullOrEmpty(result.Name))
+        {
+            await scopeContext.TaskContext.SwitchToMainThreadAsync();
+            ApplyScoreOptionAfterRefresh(static o => o.Algorithm is AvatarReliquaryScoreAlgorithm.Preset && o.PresetKey is ReliquaryScoreConfigPreset.Default);
+            return;
+        }
+
         BackpackReliquaryScoreConfig saved = scopeContext.BackpackService.SaveReliquaryScoreConfig(result);
 
         await scopeContext.TaskContext.SwitchToMainThreadAsync();
-        ApplySavedScoreConfig(saved.InnerId);
+        ApplyScoreOptionAfterRefresh(o => o.Algorithm is AvatarReliquaryScoreAlgorithm.SavedConfig && o.ConfigId == saved.InnerId);
     }
 
     /// <summary>
-    /// 评分配置对话框保存成功后重新读取配置列表，并把当前角色切换到刚保存的配置
+    /// 评分配置对话框确认后重新读取配置列表，并把当前角色切换到匹配的评分算法
     /// </summary>
-    private void ApplySavedScoreConfig(Guid configId)
+    private void ApplyScoreOptionAfterRefresh(Func<AvatarReliquaryScoreOption, bool> predicate)
     {
         ScoreConfigOptions = PrepareScoreConfigurations();
 
@@ -380,9 +389,7 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
             return;
         }
 
-        AvatarReliquaryScoreOption? option =
-            ScoreConfigOptions.FirstOrDefault(o => o.Algorithm is AvatarReliquaryScoreAlgorithm.SavedConfig && o.ConfigId == configId)
-            ?? ResolveScoreOption((uint)avatar.Id);
+        AvatarReliquaryScoreOption option = ScoreConfigOptions.FirstOrDefault(predicate) ?? ResolveScoreOption((uint)avatar.Id);
 
         // 先置空再赋值：选项是值相等的 record，这样能确保一定触发通知，
         // 让下拉重新绑定到新列表中的实例（替换 ItemsSource 后下拉会先清空选中项）

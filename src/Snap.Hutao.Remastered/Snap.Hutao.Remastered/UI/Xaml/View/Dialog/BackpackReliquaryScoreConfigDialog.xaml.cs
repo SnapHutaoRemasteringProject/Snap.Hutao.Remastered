@@ -15,6 +15,7 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
     private readonly IContentDialogFactory contentDialogFactory;
 
     private ImmutableArray<BackpackReliquaryScoreConfig> savedConfigs = [];
+    private readonly List<Guid> deletedConfigIds = [];
     private List<PresetComboItem> comboItems = [];
     private PresetComboItem? selectedComboItem;
     private BackpackReliquaryScoreConfig currentConfig = default!;
@@ -54,6 +55,13 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
 
         if (result is ContentDialogResult.Primary)
         {
+            // 删除只在用户确认后才落库：取消时对话框不应留下任何持久化副作用，
+            // 否则调用方会持有已被删除的配置（下拉、缓存权重、角色设置都成了旧数据）
+            foreach (Guid deletedConfigId in deletedConfigIds)
+            {
+                deleteCallback?.Invoke(deletedConfigId);
+            }
+
             currentConfig.IsActive = true;
             return currentConfig;
         }
@@ -225,7 +233,8 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
             return;
         }
 
-        deleteCallback?.Invoke(configId);
+        // 仅从对话框的列表里移除，真正的删除推迟到用户点击确定
+        deletedConfigIds.Add(configId);
         savedConfigs = savedConfigs.Where(c => c.InnerId != configId).ToImmutableArray();
         comboItems = BuildComboItems();
         PresetComboBox.ItemsSource = comboItems;
