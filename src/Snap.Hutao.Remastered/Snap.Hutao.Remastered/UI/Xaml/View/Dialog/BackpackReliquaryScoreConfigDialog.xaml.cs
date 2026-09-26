@@ -124,15 +124,25 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
             NameTextBox.Text = GetConfigDisplayName(currentConfig);
         }
 
-        // 先按 ConfigId 精确匹配已保存的配置，再退回按预设匹配内置预设行；
-        // 顺序反过来的话，内置预设行会抢先命中，导致使用了内置预设的已保存配置无法被选中和删除
-        PresetComboItem? match =
-            comboItems.Find(item => item.ConfigId.HasValue && item.ConfigId == currentConfig.InnerId)
-            ?? comboItems.Find(item => item.PresetKey.HasValue && item.PresetKey == currentConfig.PresetKey && currentConfig.PresetKey != ReliquaryScoreConfigPreset.Custom);
+        // 用户刚点选的那一行优先：编辑已有配置时再选内置预设，currentConfig 仍带着原配置的 InnerId，
+        // 若直接按 InnerId 反查会把下拉选回原配置行，用户刚选的预设看起来被弹了回去。
+        // 同时把 selectedComboItem 同步成实际显示的行，删除按钮才有明确的操作对象
+        PresetComboItem? match = selectedComboItem ?? ResolveComboItem();
+        selectedComboItem = match;
 
         DeleteButton.Visibility = match?.ConfigId.HasValue == true ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
         PresetComboBox.SelectedItem = match;
         isUpdating = false;
+    }
+
+    /// <summary>
+    /// 未指定选中行时按当前配置反查：先按 InnerId 精确匹配已保存的配置，再退回按预设匹配内置预设行。
+    /// 顺序反过来的话，内置预设行会抢先命中，使用了内置预设的已保存配置就无法被选中和删除
+    /// </summary>
+    private PresetComboItem? ResolveComboItem()
+    {
+        return comboItems.Find(item => item.ConfigId.HasValue && item.ConfigId == currentConfig.InnerId)
+            ?? comboItems.Find(item => item.PresetKey.HasValue && item.PresetKey == currentConfig.PresetKey && currentConfig.PresetKey != ReliquaryScoreConfigPreset.Custom);
     }
 
     private void UpdateAllLabels()

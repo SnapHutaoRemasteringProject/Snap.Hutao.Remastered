@@ -362,12 +362,9 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
             return;
         }
 
-        // 尚无任何配置时，未命名的默认预设与内置「默认」预设完全等价，不必新建一条冗余配置，
-        // 直接应用内置预设即可；若对话框编辑的是已有配置（InnerId 非空），必须走保存流程，
-        // 否则用户在对话框里的改动会被静默丢弃
-        if (result.InnerId == Guid.Empty
-            && result.PresetKey is ReliquaryScoreConfigPreset.Default
-            && string.IsNullOrEmpty(result.Name))
+        // 尚未落库的未命名默认预设与内置「默认」预设完全等价，不必新建一条冗余配置，直接应用内置预设；
+        // 若对话框编辑的是已有配置，必须走保存流程，否则用户在对话框里的改动会被静默丢弃
+        if (result.IsTransientDefaultPreset)
         {
             await scopeContext.TaskContext.SwitchToMainThreadAsync();
             ApplyScoreOptionAfterRefresh(static o => o.Algorithm is AvatarReliquaryScoreAlgorithm.Preset && o.PresetKey is ReliquaryScoreConfigPreset.Default);
