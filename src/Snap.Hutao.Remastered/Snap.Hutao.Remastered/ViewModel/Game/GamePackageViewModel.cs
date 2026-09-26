@@ -103,7 +103,14 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
         }
     }
 
-    public bool IsPredownloadInProgress { get => PredownloadProgress is > 0 and < 100; }
+    public bool IsPredownloadInProgress
+    {
+        get
+        {
+            PredownloadProgressInfo info = GetPredownloadProgressInfo();
+            return info.TotalBlocks > 0 && !info.Finished;
+        }
+    }
 
     public string PredownloadProgressText { get => $"{PredownloadProgress}%"; }
 
