@@ -362,9 +362,12 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
             return;
         }
 
-        // 未命名的默认预设与内置「默认」预设完全等价，BuildScoreConfigOptions 会把它过滤掉，
-        // 保存下来只会得到一条在下拉列表里永远无法选中的配置，因此直接应用内置预设
-        if (result.PresetKey is ReliquaryScoreConfigPreset.Default && string.IsNullOrEmpty(result.Name))
+        // 尚无任何配置时，未命名的默认预设与内置「默认」预设完全等价，不必新建一条冗余配置，
+        // 直接应用内置预设即可；若对话框编辑的是已有配置（InnerId 非空），必须走保存流程，
+        // 否则用户在对话框里的改动会被静默丢弃
+        if (result.InnerId == Guid.Empty
+            && result.PresetKey is ReliquaryScoreConfigPreset.Default
+            && string.IsNullOrEmpty(result.Name))
         {
             await scopeContext.TaskContext.SwitchToMainThreadAsync();
             ApplyScoreOptionAfterRefresh(static o => o.Algorithm is AvatarReliquaryScoreAlgorithm.Preset && o.PresetKey is ReliquaryScoreConfigPreset.Default);
@@ -442,12 +445,8 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
 
         foreach (BackpackReliquaryScoreConfig config in configs)
         {
-            // 与评分配置对话框保持一致：跳过未命名的默认预设行
-            if (config.PresetKey is ReliquaryScoreConfigPreset.Default && string.IsNullOrEmpty(config.Name))
-            {
-                continue;
-            }
-
+            // 已落库的配置一律列出：被过滤掉会让用户刚保存的配置无法选中，
+            // 引用了它的角色也会静默退回米游社推荐
             string name = string.IsNullOrEmpty(config.Name)
                 ? config.PresetKey.GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture) ?? config.PresetKey.ToString()
                 : config.Name;

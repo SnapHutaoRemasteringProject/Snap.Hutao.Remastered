@@ -91,11 +91,7 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
 
         foreach (BackpackReliquaryScoreConfig saved in savedConfigs)
         {
-            if (saved.PresetKey is ReliquaryScoreConfigPreset.Default && string.IsNullOrEmpty(saved.Name))
-            {
-                continue;
-            }
-
+            // 已落库的配置一律列出，否则用户既看不到也无法选中、重命名或删除它
             string name = string.IsNullOrEmpty(saved.Name)
                 ? saved.PresetKey.GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture) ?? saved.PresetKey.ToString()
                 : saved.Name;
@@ -128,9 +124,11 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
             NameTextBox.Text = GetConfigDisplayName(currentConfig);
         }
 
-        PresetComboItem? match = comboItems.Find(item =>
-            (item.ConfigId.HasValue && item.ConfigId == currentConfig.InnerId) ||
-            (item.PresetKey.HasValue && item.PresetKey == currentConfig.PresetKey && currentConfig.PresetKey != ReliquaryScoreConfigPreset.Custom));
+        // 先按 ConfigId 精确匹配已保存的配置，再退回按预设匹配内置预设行；
+        // 顺序反过来的话，内置预设行会抢先命中，导致使用了内置预设的已保存配置无法被选中和删除
+        PresetComboItem? match =
+            comboItems.Find(item => item.ConfigId.HasValue && item.ConfigId == currentConfig.InnerId)
+            ?? comboItems.Find(item => item.PresetKey.HasValue && item.PresetKey == currentConfig.PresetKey && currentConfig.PresetKey != ReliquaryScoreConfigPreset.Custom);
 
         DeleteButton.Visibility = match?.ConfigId.HasValue == true ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
         PresetComboBox.SelectedItem = match;
