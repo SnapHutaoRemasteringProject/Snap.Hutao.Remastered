@@ -1,6 +1,8 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Entity.Database;
@@ -129,9 +131,21 @@ public sealed partial class BackpackRepository : IBackpackRepository
             BackpackReliquaryScoreConfig? config = appDbContext.BackpackReliquaryScoreConfigs.Find(configId);
             if (config is not null)
             {
-                appDbContext.Attach(config);
-                appDbContext.BackpackReliquaryScoreConfigs.Remove(config);
-                appDbContext.SaveChanges();
+                // ExecuteDelete 会立即落库，与下方的 SaveChanges 不在同一事务里，
+                // 失败时会留下「配置还在但角色已丢失评分偏好」的中间状态，故用事务包住两次删除
+                using (IDbContextTransaction transaction = appDbContext.Database.BeginTransaction())
+                {
+                    appDbContext.Attach(config);
+                    appDbContext.BackpackReliquaryScoreConfigs.Remove(config);
+
+                    // 同时清理「我的角色」页面引用此配置的评分算法设置，避免悬挂的 ConfigId
+                    appDbContext.AvatarReliquaryScoreSettings
+                        .Where(s => s.ConfigId == configId)
+                        .ExecuteDelete();
+
+                    appDbContext.SaveChanges();
+                    transaction.Commit();
+                }
             }
         }
     }

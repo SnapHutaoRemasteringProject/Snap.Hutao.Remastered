@@ -20,6 +20,12 @@ public sealed class BackpackReliquaryScoreConfig : IAppDbEntity
 
     public bool IsActive { get; set; }
 
+    /// <summary>
+    /// 未命名且尚未落库的默认预设。内置「默认」预设已在下拉列表中占位，落库只会多出一条等价配置
+    /// </summary>
+    [NotMapped]
+    public bool IsTransientDefaultPreset => InnerId == Guid.Empty && PresetKey is ReliquaryScoreConfigPreset.Default && string.IsNullOrEmpty(Name);
+
     public double CritWeight { get; set; } = 1.0;
 
     public double CritHurtWeight { get; set; } = 1.0;

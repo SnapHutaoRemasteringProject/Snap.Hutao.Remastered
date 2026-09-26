@@ -695,6 +695,25 @@
                                         SelectedItem="{Binding SortDescriptionKind, Mode=TwoWay}"
                                         Style="{ThemeResource DefaultComboBoxStyle}"/>
                                 </shuxc:SizeRestrictedContentControl>
+                                <shuxc:SizeRestrictedContentControl Margin="8,8,0,0" MaxWidth="220">
+                                    <ComboBox
+                                        Height="32"
+                                        Padding="12,6,0,7"
+                                        DisplayMemberPath="Name"
+                                        ItemsSource="{Binding ScoreConfigOptions}"
+                                        SelectedItem="{Binding CurrentScoreOption, Mode=TwoWay}"
+                                        Style="{ThemeResource DefaultComboBoxStyle}"
+                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageAvatarPropertyScoreAlgorithm}"/>
+                                </shuxc:SizeRestrictedContentControl>
+                                <Button
+                                    Width="40"
+                                    Height="32"
+                                    Margin="4,8,0,0"
+                                    Padding="0"
+                                    Command="{Binding ConfigureScoreCommand}"
+                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageAvatarPropertyConfigureScore}">
+                                    <FontIcon FontSize="14" Glyph="&#xE946;"/>
+                                </Button>
                             </StackPanel>
                         </CommandBar.Content>
                         <AppBarElementContainer>

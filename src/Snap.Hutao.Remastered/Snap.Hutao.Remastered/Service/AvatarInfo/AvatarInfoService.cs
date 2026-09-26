@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.Diagnostics;
+using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Service.AvatarInfo.Factory;
 using Snap.Hutao.Remastered.ViewModel.AvatarProperty;
 using Snap.Hutao.Remastered.ViewModel.User;
@@ -39,6 +40,16 @@ public sealed partial class AvatarInfoService : IAvatarInfoService
                     return summary.Avatars is [] ? null : summary;
                 }
         }
+    }
+
+    public ImmutableArray<AvatarReliquaryScoreSetting> GetAvatarReliquaryScoreSettings()
+    {
+        return avatarInfoRepository.GetAvatarReliquaryScoreSettings();
+    }
+
+    public void SaveAvatarReliquaryScoreSetting(AvatarReliquaryScoreSetting setting)
+    {
+        avatarInfoRepository.SaveAvatarReliquaryScoreSetting(setting);
     }
 
     private async ValueTask<Summary> PrivateGetSummaryAsync(SummaryFactoryMetadataContext context, ImmutableArray<EntityAvatarInfo> avatarInfos, CancellationToken token)
