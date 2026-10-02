@@ -20,9 +20,6 @@ public sealed partial class CultureOptions : DbStoreOptions
 
     public ImmutableArray<NameValue<DayOfWeek>> DayOfWeeks { get => !field.IsDefaultOrEmpty ? field : field = ImmutableCollectionsNameValue.FromEnum<DayOfWeek>(CurrentCulture.Value.DateTimeFormat.GetDayName); }
 
-    [field: MaybeNull]
-    public IObservableProperty<CultureInfo> CurrentCulture { get => field ??= CreatePropertyForClassUsingCustom(SettingKeys.PrimaryLanguage, SupportedCultures.GetSupportedCulture(CultureInfo.CurrentUICulture), static v => SupportedCultures.GetSupportedCulture(CultureInfo.GetCultureInfo(v)), static v => v.Name); }
-
     public CultureInfo SystemCulture { get; set; } = default!;
 
     public string LocaleName { get => LocaleNames.GetLocaleName(CurrentCulture.Value); }

@@ -13,11 +13,17 @@
 
   <ItemGroup>
     <Compile Include="..\Snap.Hutao.Remastered\Service\SupportedCultures.cs" Link="Service\SupportedCultures.cs" />
+    <Compile Include="..\Snap.Hutao.Remastered\Service\CultureOptions.CurrentCulture.cs" Link="Service\CultureOptions.CurrentCulture.cs" />
+    <Compile Include="..\Snap.Hutao.Remastered\Core\Setting\SettingKeys.cs" Link="Core\Setting\SettingKeys.cs" />
+    <Compile Include="..\Snap.Hutao.Remastered\Core\Property\IObservableProperty.cs" Link="Core\Property\IObservableProperty.cs" />
+    <Compile Include="..\Snap.Hutao.Remastered\Core\Property\IProperty.cs" Link="Core\Property\IProperty.cs" />
+    <Compile Include="..\Snap.Hutao.Remastered\Core\Property\INotifyPropertyChangedDeferral.cs" Link="Core\Property\INotifyPropertyChangedDeferral.cs" />
     <Compile Include="..\Snap.Hutao.Remastered\Model\NameValue.cs" Link="Model\NameValue.cs" />
     <Compile Include="..\Snap.Hutao.Remastered\Model\NameCultureInfoValue.cs" Link="Model\NameCultureInfoValue.cs" />
     <Compile Include="..\Snap.Hutao.Remastered\Model\LocalizationSource.cs" Link="Model\LocalizationSource.cs" />
     <Using Include="System" />
     <Using Include="System.Collections.Generic" />
+    <Using Include="System.ComponentModel" />
     <Using Include="System.Diagnostics.CodeAnalysis" />
   </ItemGroup>
 
