@@ -325,12 +325,11 @@
                 Spacing="8"
                 Visibility="{Binding Ledger, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}}">
                 <Image
-                    Width="64"
-                    Height="64"
+                    Width="96"
+                    Height="96"
                     Source="ms-appx:///Resource/Icon/UI_ItemIcon_201.png"/>
                 <TextBlock
                     HorizontalAlignment="Center"
-                    Style="{StaticResource CaptionTextBlockStyle}"
                     Text="{shuxm:ResourceString Name=ViewTravelersDiaryHeader}"/>
             </StackPanel>
         </Grid>
