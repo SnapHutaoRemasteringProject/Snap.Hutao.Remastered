@@ -17,20 +17,35 @@ public static class ReliquaryScoreCalculator
         EnergyType energyType,
         bool isCritEffective)
     {
+        return Calculate(
+            recommendedSubProperties,
+            subProperties.SelectAsArray(static subProperty => (subProperty.PropertyType, subProperty.Value)),
+            energyType,
+            isCritEffective);
+    }
+
+    /// <summary>
+    /// 按米游社推荐副属性评分，副属性值使用带格式化后缀的字符串（如 "3.1%"）
+    /// </summary>
+    public static double Calculate(
+        ImmutableArray<FightProperty> recommendedSubProperties,
+        IEnumerable<(FightProperty PropertyType, string Value)> subProperties,
+        EnergyType energyType,
+        bool isCritEffective)
+    {
         bool hasCritHurt = isCritEffective || recommendedSubProperties.Contains(FightProperty.FIGHT_PROP_CRITICAL_HURT);
 
         double totalScore = 0;
 
-        foreach (ReliquaryProperty subProperty in subProperties)
+        foreach ((FightProperty propertyType, string value) in subProperties)
         {
-            double weight = GetWeight(subProperty.PropertyType, recommendedSubProperties, hasCritHurt, energyType, isCritEffective);
+            double weight = GetWeight(propertyType, recommendedSubProperties, hasCritHurt, energyType, isCritEffective);
             if (weight <= 0)
             {
                 continue;
             }
 
-            double value = ParseValue(subProperty.PropertyType, subProperty.Value);
-            totalScore += ScoreStat(subProperty.PropertyType, value, weight);
+            totalScore += ScoreStat(propertyType, ParseValue(propertyType, value), weight);
         }
 
         return totalScore;
@@ -50,6 +65,29 @@ public static class ReliquaryScoreCalculator
 
             double normalizedValue = NormalizeStatValue(prop, value);
             totalScore += ScoreStat(prop, normalizedValue, weight);
+        }
+
+        return totalScore;
+    }
+
+    /// <summary>
+    /// 按自定义权重评分，副属性值使用带格式化后缀的字符串（如 "3.1%"），
+    /// 与 <see cref="CalculateWithWeights(IEnumerable{ValueTuple{FightProperty, float}}, Func{FightProperty, double})"/>
+    /// 的区别是不做小数到百分比的换算
+    /// </summary>
+    public static double CalculateWithWeights(IEnumerable<(FightProperty Prop, string Value)> subStats, Func<FightProperty, double> getWeight)
+    {
+        double totalScore = 0;
+
+        foreach ((FightProperty prop, string value) in subStats)
+        {
+            double weight = getWeight(prop);
+            if (weight <= 0)
+            {
+                continue;
+            }
+
+            totalScore += ScoreStat(prop, ParseValue(prop, value), weight);
         }
 
         return totalScore;

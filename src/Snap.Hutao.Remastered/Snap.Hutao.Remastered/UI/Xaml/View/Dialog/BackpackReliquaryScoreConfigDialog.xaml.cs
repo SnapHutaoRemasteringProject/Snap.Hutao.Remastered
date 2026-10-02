@@ -15,6 +15,7 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
     private readonly IContentDialogFactory contentDialogFactory;
 
     private ImmutableArray<BackpackReliquaryScoreConfig> savedConfigs = [];
+    private readonly List<Guid> deletedConfigIds = [];
     private List<PresetComboItem> comboItems = [];
     private PresetComboItem? selectedComboItem;
     private BackpackReliquaryScoreConfig currentConfig = default!;
@@ -54,6 +55,13 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
 
         if (result is ContentDialogResult.Primary)
         {
+            // 删除只在用户确认后才落库：取消时对话框不应留下任何持久化副作用，
+            // 否则调用方会持有已被删除的配置（下拉、缓存权重、角色设置都成了旧数据）
+            foreach (Guid deletedConfigId in deletedConfigIds)
+            {
+                deleteCallback?.Invoke(deletedConfigId);
+            }
+
             currentConfig.IsActive = true;
             return currentConfig;
         }
@@ -83,11 +91,7 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
 
         foreach (BackpackReliquaryScoreConfig saved in savedConfigs)
         {
-            if (saved.PresetKey is ReliquaryScoreConfigPreset.Default && string.IsNullOrEmpty(saved.Name))
-            {
-                continue;
-            }
-
+            // 已落库的配置一律列出，否则用户既看不到也无法选中、重命名或删除它
             string name = string.IsNullOrEmpty(saved.Name)
                 ? saved.PresetKey.GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture) ?? saved.PresetKey.ToString()
                 : saved.Name;
@@ -120,13 +124,25 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
             NameTextBox.Text = GetConfigDisplayName(currentConfig);
         }
 
-        PresetComboItem? match = comboItems.Find(item =>
-            (item.ConfigId.HasValue && item.ConfigId == currentConfig.InnerId) ||
-            (item.PresetKey.HasValue && item.PresetKey == currentConfig.PresetKey && currentConfig.PresetKey != ReliquaryScoreConfigPreset.Custom));
+        // 用户刚点选的那一行优先：编辑已有配置时再选内置预设，currentConfig 仍带着原配置的 InnerId，
+        // 若直接按 InnerId 反查会把下拉选回原配置行，用户刚选的预设看起来被弹了回去。
+        // 同时把 selectedComboItem 同步成实际显示的行，删除按钮才有明确的操作对象
+        PresetComboItem? match = selectedComboItem ?? ResolveComboItem();
+        selectedComboItem = match;
 
         DeleteButton.Visibility = match?.ConfigId.HasValue == true ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
         PresetComboBox.SelectedItem = match;
         isUpdating = false;
+    }
+
+    /// <summary>
+    /// 未指定选中行时按当前配置反查：先按 InnerId 精确匹配已保存的配置，再退回按预设匹配内置预设行。
+    /// 顺序反过来的话，内置预设行会抢先命中，使用了内置预设的已保存配置就无法被选中和删除
+    /// </summary>
+    private PresetComboItem? ResolveComboItem()
+    {
+        return comboItems.Find(item => item.ConfigId.HasValue && item.ConfigId == currentConfig.InnerId)
+            ?? comboItems.Find(item => item.PresetKey.HasValue && item.PresetKey == currentConfig.PresetKey && currentConfig.PresetKey != ReliquaryScoreConfigPreset.Custom);
     }
 
     private void UpdateAllLabels()
@@ -225,7 +241,8 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
             return;
         }
 
-        deleteCallback?.Invoke(configId);
+        // 仅从对话框的列表里移除，真正的删除推迟到用户点击确定
+        deletedConfigIds.Add(configId);
         savedConfigs = savedConfigs.Where(c => c.InnerId != configId).ToImmutableArray();
         comboItems = BuildComboItems();
         PresetComboBox.ItemsSource = comboItems;

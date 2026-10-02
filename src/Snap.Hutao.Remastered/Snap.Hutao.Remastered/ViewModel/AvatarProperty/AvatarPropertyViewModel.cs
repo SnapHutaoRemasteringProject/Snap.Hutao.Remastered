@@ -9,7 +9,9 @@ using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Model.Calculable;
+using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Entity.Primitive;
+using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.AvatarInfo;
 using Snap.Hutao.Remastered.Service.AvatarInfo.Factory;
@@ -20,6 +22,7 @@ using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox;
+using Snap.Hutao.Remastered.UI.Xaml.Data;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.ViewModel.User;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate;
@@ -38,8 +41,22 @@ namespace Snap.Hutao.Remastered.ViewModel.AvatarProperty;
 [Service(ServiceLifetime.Scoped)]
 public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRecipient<UserAndUidChangedMessage>, IDisposable
 {
+    private static readonly ReliquaryScoreConfigPreset[] BuiltInScorePresets =
+    [
+        ReliquaryScoreConfigPreset.Default,
+        ReliquaryScoreConfigPreset.ATKScaler,
+        ReliquaryScoreConfigPreset.HPScaler,
+        ReliquaryScoreConfigPreset.DEFScaler,
+        ReliquaryScoreConfigPreset.EM,
+    ];
+
     private readonly ExclusiveTokenProvider refreshTokenProvider = new();
     private readonly AvatarPropertyViewModelScopeContext scopeContext;
+
+    private readonly Dictionary<uint, AvatarReliquaryScoreSetting> avatarScoreSettings = [];
+    private ImmutableDictionary<Guid, BackpackReliquaryScoreConfig> savedScoreConfigs = ImmutableDictionary<Guid, BackpackReliquaryScoreConfig>.Empty;
+    private IAdvancedCollectionView<AvatarView>? attachedAvatars;
+    private bool isUpdatingScoreOption;
 
     private SummaryFactoryMetadataContext? metadataContext;
 
@@ -51,6 +68,12 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
 
     [ObservableProperty]
     public partial SearchData? SearchData { get; set; }
+
+    [ObservableProperty]
+    public partial ImmutableArray<AvatarReliquaryScoreOption> ScoreConfigOptions { get; set; } = [];
+
+    [ObservableProperty]
+    public partial AvatarReliquaryScoreOption? CurrentScoreOption { get; set; }
 
     public string FormattedTotalAvatarCount { get => SH.FormatViewModelAvatarPropertyTotalAvatarCountHint(Summary?.Avatars.Count ?? 0); }
 
@@ -104,6 +127,8 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
 
     public override void Dispose()
     {
+        AdvancedCollectionViewCurrentChanged.Detach(attachedAvatars, OnAvatarsCurrentChanged);
+        attachedAvatars = default;
         refreshTokenProvider.Dispose();
         base.Dispose();
     }
@@ -116,7 +141,12 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
         }
 
         metadataContext = await scopeContext.MetadataService.GetContextAsync<SummaryFactoryMetadataContext>(token).ConfigureAwait(false);
+        ImmutableArray<AvatarReliquaryScoreOption> scoreConfigOptions = PrepareScoreConfigurations();
         SearchData searchData = SearchData.CreateForAvatarProperty();
+
+        // 必须先于下方刷新赋值，刷新设置 Summary 时会立即用其解析评分算法
+        await scopeContext.TaskContext.SwitchToMainThreadAsync();
+        ScoreConfigOptions = scoreConfigOptions;
 
         if (await scopeContext.UserService.GetCurrentUserAndUidAsync().ConfigureAwait(false) is { } userAndUid)
         {
@@ -194,6 +224,234 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
         }
 
         avatars.MoveCurrentToFirst();
+
+        // 当前角色变化后重算评分，MoveCurrentToFirst 未触发 CurrentChanged 时兜底
+        if (Summary is { } summary)
+        {
+            ApplyCurrentAvatarScoreOption(summary);
+        }
+    }
+
+    partial void OnSummaryChanged(Summary? value)
+    {
+        AdvancedCollectionViewCurrentChanged.Detach(attachedAvatars, OnAvatarsCurrentChanged);
+        attachedAvatars = value?.Avatars;
+        AdvancedCollectionViewCurrentChanged.Attach(attachedAvatars, OnAvatarsCurrentChanged);
+
+        if (value is not null)
+        {
+            ApplyCurrentAvatarScoreOption(value);
+        }
+    }
+
+    partial void OnCurrentScoreOptionChanged(AvatarReliquaryScoreOption? value)
+    {
+        // 切换角色时的下拉同步会走到这里，此时不应保存设置，重算由 ApplyCurrentAvatarScoreOption 负责
+        if (isUpdatingScoreOption || value is null || Summary?.Avatars.CurrentItem is not { } avatar)
+        {
+            return;
+        }
+
+        uint avatarId = (uint)avatar.Id;
+        AvatarReliquaryScoreSetting setting = new()
+        {
+            AvatarId = avatarId,
+            Algorithm = value.Algorithm,
+            PresetKey = value.PresetKey,
+            ConfigId = value.ConfigId,
+        };
+
+        avatarScoreSettings[avatarId] = setting;
+        scopeContext.AvatarInfoService.SaveAvatarReliquaryScoreSetting(setting);
+
+        ApplyScoreOption(avatar, value);
+    }
+
+    private void OnAvatarsCurrentChanged(object? sender, object e)
+    {
+        if (Summary is { } summary)
+        {
+            ApplyCurrentAvatarScoreOption(summary);
+        }
+    }
+
+    /// <summary>
+    /// 将当前选中角色的已保存评分算法同步到下拉，并按该算法就地重算其圣遗物分数与总分
+    /// </summary>
+    private void ApplyCurrentAvatarScoreOption(Summary summary)
+    {
+        if (summary.Avatars.CurrentItem is not { } avatar)
+        {
+            return;
+        }
+
+        AvatarReliquaryScoreOption option = ResolveScoreOption((uint)avatar.Id);
+
+        isUpdatingScoreOption = true;
+        CurrentScoreOption = option;
+        isUpdatingScoreOption = false;
+
+        ApplyScoreOption(avatar, option);
+    }
+
+    private AvatarReliquaryScoreOption ResolveScoreOption(uint avatarId)
+    {
+        AvatarReliquaryScoreOption? option = null;
+
+        if (avatarScoreSettings.TryGetValue(avatarId, out AvatarReliquaryScoreSetting? setting))
+        {
+            option = setting.Algorithm switch
+            {
+                AvatarReliquaryScoreAlgorithm.Preset => ScoreConfigOptions.FirstOrDefault(o => o.Algorithm is AvatarReliquaryScoreAlgorithm.Preset && o.PresetKey == setting.PresetKey),
+                AvatarReliquaryScoreAlgorithm.SavedConfig => ScoreConfigOptions.FirstOrDefault(o => o.Algorithm is AvatarReliquaryScoreAlgorithm.SavedConfig && o.ConfigId == setting.ConfigId),
+                _ => null,
+            };
+        }
+
+        // 未保存过算法的角色、以及引用的配置已被删除的角色，均回退到米游社推荐属性
+        return option ?? ScoreConfigOptions.First(static o => o.Algorithm is AvatarReliquaryScoreAlgorithm.HoyolabRecommend);
+    }
+
+    private void ApplyScoreOption(AvatarView avatar, AvatarReliquaryScoreOption option)
+    {
+        Func<FightProperty, double>? getWeight = option.Algorithm switch
+        {
+            AvatarReliquaryScoreAlgorithm.Preset => scopeContext.BackpackService.CreatePreset(option.PresetKey).GetWeight,
+            AvatarReliquaryScoreAlgorithm.SavedConfig => savedScoreConfigs.GetValueOrDefault(option.ConfigId) is { } config ? config.GetWeight : null,
+            _ => null,
+        };
+
+        double totalScore = 0;
+
+        foreach (ReliquaryView reliquary in avatar.Reliquaries)
+        {
+            ImmutableArray<(FightProperty PropertyType, string Value)> subProperties = reliquary.ComposedSubProperties.SelectAsArray(static property => (property.Type, property.Value));
+
+            double score = getWeight is null
+                ? ReliquaryScoreCalculator.Calculate(avatar.RecommendedSubProperties, subProperties, avatar.EnergyType, avatar.IsCritEffective)
+                : ReliquaryScoreCalculator.CalculateWithWeights(subProperties, getWeight);
+
+            reliquary.SetScoreValue(score);
+            totalScore += score;
+        }
+
+        avatar.Score = totalScore;
+    }
+
+    [Command("ConfigureScoreCommand")]
+    private async Task ConfigureScoreAsync()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("ConfigureScore", "AvatarPropertyViewModel.Command"));
+
+        // 在切到后台线程前取值，避免读取视图模型状态时与 UI 线程的更新竞争
+        ImmutableArray<BackpackReliquaryScoreConfig> allConfigs = scopeContext.BackpackService.GetAllReliquaryScoreConfigs();
+        BackpackReliquaryScoreConfig initialConfig = ResolveDialogInitialConfig();
+
+        BackpackReliquaryScoreConfigDialog dialog = await scopeContext.ContentDialogFactory
+            .CreateInstanceAsync<BackpackReliquaryScoreConfigDialog>(scopeContext.ServiceProvider)
+            .ConfigureAwait(false);
+
+        BackpackReliquaryScoreConfig? result = await dialog.GetInputAsync(
+            allConfigs,
+            initialConfig,
+            scopeContext.BackpackService.CreatePreset,
+            scopeContext.BackpackService.DeleteReliquaryScoreConfig).ConfigureAwait(false);
+
+        if (result is null)
+        {
+            return;
+        }
+
+        // 尚未落库的未命名默认预设与内置「默认」预设完全等价，不必新建一条冗余配置，直接应用内置预设；
+        // 若对话框编辑的是已有配置，必须走保存流程，否则用户在对话框里的改动会被静默丢弃
+        if (result.IsTransientDefaultPreset)
+        {
+            await scopeContext.TaskContext.SwitchToMainThreadAsync();
+            ApplyScoreOptionAfterRefresh(static o => o.Algorithm is AvatarReliquaryScoreAlgorithm.Preset && o.PresetKey is ReliquaryScoreConfigPreset.Default);
+            return;
+        }
+
+        BackpackReliquaryScoreConfig saved = scopeContext.BackpackService.SaveReliquaryScoreConfig(result);
+
+        await scopeContext.TaskContext.SwitchToMainThreadAsync();
+        ApplyScoreOptionAfterRefresh(o => o.Algorithm is AvatarReliquaryScoreAlgorithm.SavedConfig && o.ConfigId == saved.InnerId);
+    }
+
+    /// <summary>
+    /// 评分配置对话框确认后重新读取配置列表，并把当前角色切换到匹配的评分算法
+    /// </summary>
+    private void ApplyScoreOptionAfterRefresh(Func<AvatarReliquaryScoreOption, bool> predicate)
+    {
+        ScoreConfigOptions = PrepareScoreConfigurations();
+
+        if (Summary?.Avatars.CurrentItem is not { } avatar)
+        {
+            return;
+        }
+
+        AvatarReliquaryScoreOption option = ScoreConfigOptions.FirstOrDefault(predicate) ?? ResolveScoreOption((uint)avatar.Id);
+
+        // 先置空再赋值：选项是值相等的 record，这样能确保一定触发通知，
+        // 让下拉重新绑定到新列表中的实例（替换 ItemsSource 后下拉会先清空选中项）
+        CurrentScoreOption = null;
+        CurrentScoreOption = option;
+    }
+
+    /// <summary>
+    /// 评分配置对话框的初始配置：当前角色用着已保存的配置时就用它，否则用背包当前激活的配置。
+    /// 内置预设没有对应的持久化配置，若用它做初始值，用户直接确定就会多出一行与预设同名的配置。
+    /// </summary>
+    private BackpackReliquaryScoreConfig ResolveDialogInitialConfig()
+    {
+        if (Summary?.Avatars.CurrentItem is { } avatar)
+        {
+            AvatarReliquaryScoreOption option = ResolveScoreOption((uint)avatar.Id);
+            if (option.Algorithm is AvatarReliquaryScoreAlgorithm.SavedConfig
+                && savedScoreConfigs.GetValueOrDefault(option.ConfigId) is { } saved)
+            {
+                return saved;
+            }
+        }
+
+        return scopeContext.BackpackService.GetActiveReliquaryScoreConfig();
+    }
+
+    private ImmutableArray<AvatarReliquaryScoreOption> PrepareScoreConfigurations()
+    {
+        ImmutableArray<BackpackReliquaryScoreConfig> configs = scopeContext.BackpackService.GetAllReliquaryScoreConfigs();
+        savedScoreConfigs = configs.ToImmutableDictionary(static config => config.InnerId);
+
+        avatarScoreSettings.Clear();
+        foreach (AvatarReliquaryScoreSetting setting in scopeContext.AvatarInfoService.GetAvatarReliquaryScoreSettings())
+        {
+            avatarScoreSettings[setting.AvatarId] = setting;
+        }
+
+        return BuildScoreConfigOptions(configs);
+    }
+
+    private static ImmutableArray<AvatarReliquaryScoreOption> BuildScoreConfigOptions(ImmutableArray<BackpackReliquaryScoreConfig> configs)
+    {
+        ImmutableArray<AvatarReliquaryScoreOption>.Builder builder = ImmutableArray.CreateBuilder<AvatarReliquaryScoreOption>();
+        builder.Add(new(SH.ViewPageAvatarPropertyScoreAlgorithmHoyolabRecommend, AvatarReliquaryScoreAlgorithm.HoyolabRecommend, ReliquaryScoreConfigPreset.Default, Guid.Empty));
+
+        foreach (ReliquaryScoreConfigPreset preset in BuiltInScorePresets)
+        {
+            builder.Add(new(preset.GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture) ?? preset.ToString(), AvatarReliquaryScoreAlgorithm.Preset, preset, Guid.Empty));
+        }
+
+        foreach (BackpackReliquaryScoreConfig config in configs)
+        {
+            // 已落库的配置一律列出：被过滤掉会让用户刚保存的配置无法选中，
+            // 引用了它的角色也会静默退回米游社推荐
+            string name = string.IsNullOrEmpty(config.Name)
+                ? config.PresetKey.GetLocalizedDescriptionOrDefault(SH.ResourceManager, CultureInfo.CurrentCulture) ?? config.PresetKey.ToString()
+                : config.Name;
+
+            builder.Add(new(name, AvatarReliquaryScoreAlgorithm.SavedConfig, config.PresetKey, config.InnerId));
+        }
+
+        return builder.ToImmutable();
     }
 
     [Command("CultivateCommand")]

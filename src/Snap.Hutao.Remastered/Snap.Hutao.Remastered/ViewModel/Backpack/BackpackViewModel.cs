@@ -224,7 +224,13 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
         }
 
         result.IsActive = true;
-        result = scopeContext.BackpackService.SaveReliquaryScoreConfig(result);
+
+        // 删除当前配置后对话框会返回一条未落库的未命名默认预设，保存它只会让刚删掉的配置凭空长回来
+        if (!result.IsTransientDefaultPreset)
+        {
+            result = scopeContext.BackpackService.SaveReliquaryScoreConfig(result);
+        }
+
         ScoreConfig = result;
 
         // Refresh all items to update scores with the saved config

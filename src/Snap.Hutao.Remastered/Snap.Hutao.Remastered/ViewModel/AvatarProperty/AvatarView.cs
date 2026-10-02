@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Model.Calculable;
 using Snap.Hutao.Remastered.Model.Intrinsic;
@@ -10,7 +11,8 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.AvatarProperty;
 
-public sealed partial class AvatarView : INameIconSide<Uri>,
+public sealed partial class AvatarView : ObservableObject,
+    INameIconSide<Uri>,
     ICalculableSource<ICalculableAvatar>,
     IPropertyValuesProvider
 {
@@ -34,11 +36,25 @@ public sealed partial class AvatarView : INameIconSide<Uri>,
 
     public ImmutableArray<ReliquaryView> Reliquaries { get; set; }
 
-    public double Score { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayScore))]
+    [NotifyPropertyChangedFor(nameof(ScoreColorValue))]
+    public partial double Score { get; set; }
 
     public string DisplayScore => string.Format(SH.ViewPageAvatarPropertyReliquaryScoreValue, Score);
 
     public int ScoreColorValue => (int)Math.Round(Score);
+
+    /// <summary>
+    /// 「我的角色」页面切换评分算法后就地重算所需的输入，来自 <see cref="Service.AvatarInfo.Factory.SummaryAvatarFactory"/>
+    /// </summary>
+    public ImmutableArray<FightProperty> RecommendedSubProperties { get; set; }
+
+    /// <inheritdoc cref="RecommendedSubProperties"/>
+    public EnergyType EnergyType { get; set; }
+
+    /// <inheritdoc cref="RecommendedSubProperties"/>
+    public bool IsCritEffective { get; set; }
 
     public ImmutableArray<ConstellationView> Constellations { get; set; }
 

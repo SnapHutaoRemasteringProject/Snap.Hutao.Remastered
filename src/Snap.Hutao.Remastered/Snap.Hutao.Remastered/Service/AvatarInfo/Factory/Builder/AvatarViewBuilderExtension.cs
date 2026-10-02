@@ -150,6 +150,17 @@ public static class AvatarViewBuilderExtension
         return builder.Configure(b => b.View.Reliquaries = reliquaries);
     }
 
+    public static TBuilder SetReliquaryScoreContext<TBuilder>(this TBuilder builder, ImmutableArray<FightProperty> recommendedSubProperties, EnergyType energyType, bool isCritEffective)
+        where TBuilder : class, IAvatarViewBuilder
+    {
+        return builder.Configure(b =>
+        {
+            b.View.RecommendedSubProperties = recommendedSubProperties;
+            b.View.EnergyType = energyType;
+            b.View.IsCritEffective = isCritEffective;
+        });
+    }
+
     public static TBuilder SetScore<TBuilder>(this TBuilder builder, double score)
         where TBuilder : class, IAvatarViewBuilder
     {
