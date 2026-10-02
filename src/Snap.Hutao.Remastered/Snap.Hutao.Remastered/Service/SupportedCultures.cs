@@ -11,6 +11,25 @@ namespace Snap.Hutao.Remastered.Service;
 [SuppressMessage("", "SA1513")]
 public static class SupportedCultures
 {
+    public static CultureInfo GetSupportedCulture(CultureInfo cultureInfo)
+    {
+        ImmutableArray<NameCultureInfoValue> cultures = GetValues();
+        while (!cultureInfo.Equals(CultureInfo.InvariantCulture))
+        {
+            foreach (NameCultureInfoValue culture in cultures)
+            {
+                if (culture.Value.Equals(cultureInfo))
+                {
+                    return culture.Value;
+                }
+            }
+
+            cultureInfo = cultureInfo.Parent;
+        }
+
+        return cultures[0].Value;
+    }
+
     public static ImmutableArray<NameCultureInfoValue> GetValues()
     {
         return

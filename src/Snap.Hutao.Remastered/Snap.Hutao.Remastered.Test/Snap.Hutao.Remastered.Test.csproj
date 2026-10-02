@@ -12,6 +12,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Snap.Hutao.Remastered\Service\SupportedCultures.cs" Link="Service\SupportedCultures.cs" />
+    <Compile Include="..\Snap.Hutao.Remastered\Model\NameValue.cs" Link="Model\NameValue.cs" />
+    <Compile Include="..\Snap.Hutao.Remastered\Model\NameCultureInfoValue.cs" Link="Model\NameCultureInfoValue.cs" />
+    <Compile Include="..\Snap.Hutao.Remastered\Model\LocalizationSource.cs" Link="Model\LocalizationSource.cs" />
+    <Using Include="System" />
+    <Using Include="System.Collections.Generic" />
+    <Using Include="System.Diagnostics.CodeAnalysis" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.12" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.0" />
