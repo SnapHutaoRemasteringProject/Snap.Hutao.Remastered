@@ -18,18 +18,10 @@ namespace Snap.Hutao.Remastered.Migrations
                 oldClrType: typeof(uint),
                 oldType: "INTEGER");
 
-            // Adding the column backfilled every pre-existing item with its default value, marking
-            // items as "not equipped" when their equipment state was never actually collected.
-            // Reset those values to unknown, but only for archives that hold no collected state at
-            // all: a non-zero value can only have been written by a refresh, so an archive that has
-            // one was refreshed and its zeros mean "not equipped" for real.
-            migrationBuilder.Sql(
-                """
-                UPDATE backpack_items
-                SET EquippedAvatarId = NULL
-                WHERE EquippedAvatarId = 0
-                  AND ArchiveId NOT IN (SELECT ArchiveId FROM backpack_items WHERE EquippedAvatarId > 0);
-                """);
+            // The backfill of pre-existing rows lives in a separate migration
+            // (BackfillBackpackItemEquippedAvatarIdUnknown). SQLite performs AlterColumn with a
+            // table rebuild, which EF Core defers to the end of the migration, so a raw SqlOperation
+            // placed here would run while the column is still NOT NULL and fail on non-empty tables.
         }
 
         /// <inheritdoc />
