@@ -47,9 +47,9 @@ public sealed partial class BackpackService : IBackpackService
     {
         ArgumentNullException.ThrowIfNull(storeResult.StoreBytes);
 
-        ImmutableDictionary<ulong, uint>? equippedItemOwners = storeResult.AvatarDataBytes is { } avatarDataBytes
+        ImmutableDictionary<ulong, uint> equippedItemOwners = storeResult.AvatarDataBytes is { } avatarDataBytes
             ? AvatarDataParser.ParseEquippedItemOwners(avatarDataBytes)
-            : null;
+            : ImmutableDictionary<ulong, uint>.Empty;
 
         ImmutableArray<BackpackItem> items = PlayerStoreParser.ParseToBackpackItems(storeResult.StoreBytes, archive.InnerId, equippedItemOwners);
 

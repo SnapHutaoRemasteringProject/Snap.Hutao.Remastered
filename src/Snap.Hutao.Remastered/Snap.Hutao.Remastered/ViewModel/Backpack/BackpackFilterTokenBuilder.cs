@@ -24,12 +24,7 @@ public static class BackpackFilterTokenBuilder
     private static readonly Uri NormalFoodIconUri = new("ms-appx:///Resource/Icon/Icon_Good_Cook.png");
     private static readonly Uri DeliciousFoodIconUri = new("ms-appx:///Resource/Icon/Icon_Perfect_Cook.png");
 
-    /// <remarks>
-    /// <paramref name="hasEquippedStateData"/> tells whether the equipment state of the archive is
-    /// known. When it is not, offering the equipped state tokens would mislead, because every
-    /// item's state is unknown.
-    /// </remarks>
-    public static FrozenDictionary<string, SearchToken> Build(BackpackItemCategory category, ImmutableArray<BackpackItemView> items, bool hasEquippedStateData)
+    public static FrozenDictionary<string, SearchToken> Build(BackpackItemCategory category, ImmutableArray<BackpackItemView> items)
     {
         List<KeyValuePair<string, SearchToken>> tokens = [];
 
@@ -46,12 +41,8 @@ public static class BackpackFilterTokenBuilder
                 tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterUnlocked, new SearchToken(SearchTokenKind.BackpackLockState, SH.ViewPageBackpackFilterUnlocked, 1, iconUri: UnlockedIconUri)));
 
                 // Equipped state tokens
-                if (hasEquippedStateData)
-                {
-                    tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterEquipped, new SearchToken(SearchTokenKind.BackpackEquippedState, SH.ViewPageBackpackFilterEquipped, 0, sideIconUri: EquippedAvatarIconUri)));
-                    tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterUnequipped, new SearchToken(SearchTokenKind.BackpackEquippedState, SH.ViewPageBackpackFilterUnequipped, 1, sideIconUri: UnequippedAvatarIconUri)));
-                }
-
+                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterEquipped, new SearchToken(SearchTokenKind.BackpackEquippedState, SH.ViewPageBackpackFilterEquipped, 0, sideIconUri: EquippedAvatarIconUri)));
+                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterUnequipped, new SearchToken(SearchTokenKind.BackpackEquippedState, SH.ViewPageBackpackFilterUnequipped, 1, sideIconUri: UnequippedAvatarIconUri)));
                 break;
 
             case BackpackItemCategory.Reliquary:
@@ -85,11 +76,8 @@ public static class BackpackFilterTokenBuilder
                 tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterUnmarked, new SearchToken(SearchTokenKind.BackpackMarkState, SH.ViewPageBackpackFilterUnmarked, 1, iconUri: MarkIconUri)));
 
                 // Equipped state tokens
-                if (hasEquippedStateData)
-                {
-                    tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterEquipped, new SearchToken(SearchTokenKind.BackpackEquippedState, SH.ViewPageBackpackFilterEquipped, 0, sideIconUri: EquippedAvatarIconUri)));
-                    tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterUnequipped, new SearchToken(SearchTokenKind.BackpackEquippedState, SH.ViewPageBackpackFilterUnequipped, 1, sideIconUri: UnequippedAvatarIconUri)));
-                }
+                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterEquipped, new SearchToken(SearchTokenKind.BackpackEquippedState, SH.ViewPageBackpackFilterEquipped, 0, sideIconUri: EquippedAvatarIconUri)));
+                tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterUnequipped, new SearchToken(SearchTokenKind.BackpackEquippedState, SH.ViewPageBackpackFilterUnequipped, 1, sideIconUri: UnequippedAvatarIconUri)));
 
                 // Purchased append prop (Sanctifying Elixir) state tokens
                 tokens.Add(KeyValuePair.Create(SH.ViewPageBackpackFilterPurchasedAppendProp, new SearchToken(SearchTokenKind.BackpackPurchasedAppendProp, SH.ViewPageBackpackFilterPurchasedAppendProp, 0, sideIconUri: PurchasedAppendPropIconUri)));

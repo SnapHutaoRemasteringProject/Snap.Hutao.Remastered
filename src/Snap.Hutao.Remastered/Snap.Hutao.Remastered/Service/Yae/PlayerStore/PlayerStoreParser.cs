@@ -30,12 +30,7 @@ public static class PlayerStoreParser
         };
     }
 
-    /// <remarks>
-    /// <paramref name="equippedItemOwners"/> maps an item guid to the id of the avatar equipping it.
-    /// Pass <see langword="null"/> when the avatar data is unavailable, so the equipment state is
-    /// left unknown instead of being reported as "not equipped".
-    /// </remarks>
-    public static ImmutableArray<BackpackItem> ParseToBackpackItems(ByteString bytes, Guid archiveId, ImmutableDictionary<ulong, uint>? equippedItemOwners)
+    public static ImmutableArray<BackpackItem> ParseToBackpackItems(ByteString bytes, Guid archiveId, ImmutableDictionary<ulong, uint> equippedItemOwners)
     {
         List<Item> items = [];
         try
@@ -52,11 +47,7 @@ public static class PlayerStoreParser
         {
             if (ConvertToBackpackItem(item, archiveId) is { } backpackItem)
             {
-                if (equippedItemOwners is not null)
-                {
-                    backpackItem.EquippedAvatarId = equippedItemOwners.GetValueOrDefault(backpackItem.Guid);
-                }
-
+                backpackItem.EquippedAvatarId = equippedItemOwners.GetValueOrDefault(backpackItem.Guid);
                 builder.Add(backpackItem);
             }
         }
