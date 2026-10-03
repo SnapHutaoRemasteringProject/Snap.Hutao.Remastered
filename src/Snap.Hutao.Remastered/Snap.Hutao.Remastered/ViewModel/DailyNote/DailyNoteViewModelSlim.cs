@@ -3,6 +3,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Core.ExceptionService;
+using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Service.DailyNote;
 using Snap.Hutao.Remastered.Service.Metadata;
@@ -30,6 +31,36 @@ public sealed partial class DailyNoteViewModelSlim : Abstraction.ViewModelSlim<D
     // This property must be a reference type
     [ObservableProperty]
     public partial List<DailyNoteEntry>? DailyNoteEntries { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsRefreshing { get; set; }
+
+    [Command("RefreshCommand")]
+    private async Task RefreshAsync()
+    {
+        if (IsRefreshing)
+        {
+            return;
+        }
+
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Refresh daily note", "DailyNoteViewModelSlim.Command"));
+        IsRefreshing = true;
+
+        try
+        {
+            await dailyNoteService.RefreshDailyNotesAsync().ConfigureAwait(false);
+        }
+        catch (HutaoException ex)
+        {
+            await taskContext.SwitchToMainThreadAsync();
+            messenger.Send(InfoBarMessage.Error(ex));
+        }
+        finally
+        {
+            await taskContext.SwitchToMainThreadAsync();
+            IsRefreshing = false;
+        }
+    }
 
     /// <inheritdoc/>
     protected override async Task LoadAsync()

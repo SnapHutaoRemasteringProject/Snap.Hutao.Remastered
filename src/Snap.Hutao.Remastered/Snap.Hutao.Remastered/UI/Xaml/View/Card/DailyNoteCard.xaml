@@ -65,6 +65,7 @@
                     </StackPanel>
 
                     <TextBlock
+                        Margin="0,0,34,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         Text="{Binding RefreshTimeFormatted}"/>
@@ -136,6 +137,51 @@
                     VerticalAlignment="Bottom"
                     NumberOfPages="{Binding DailyNoteEntries.Count, FallbackValue={x:Null}}"
                     SelectedPageIndex="{x:Bind Path=RootFlipView.SelectedIndex, Mode=TwoWay}"/>
+
+                <Button
+                    MinWidth="0"
+                    MinHeight="0"
+                    Margin="0,23,24,0"
+                    Padding="6"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    BorderThickness="0"
+                    Command="{Binding RefreshCommand}"
+                    IsEnabled="{Binding IsRefreshing, Converter={StaticResource BoolNegationConverter}}"
+                    Style="{ThemeResource DefaultButtonStyle}"
+                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteRefresh}">
+                    <Button.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.ThemeDictionaries>
+                                <ResourceDictionary x:Key="Light">
+                                    <StaticResource x:Key="ButtonBackground" ResourceKey="ControlFillColorTransparentBrush"/>
+                                    <StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush"/>
+                                    <StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush"/>
+                                    <StaticResource x:Key="ButtonBackgroundDisabled" ResourceKey="ControlFillColorTransparentBrush"/>
+                                    <StaticResource x:Key="ButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush"/>
+                                </ResourceDictionary>
+                                <ResourceDictionary x:Key="Dark">
+                                    <StaticResource x:Key="ButtonBackground" ResourceKey="ControlFillColorTransparentBrush"/>
+                                    <StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush"/>
+                                    <StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush"/>
+                                    <StaticResource x:Key="ButtonBackgroundDisabled" ResourceKey="ControlFillColorTransparentBrush"/>
+                                    <StaticResource x:Key="ButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush"/>
+                                </ResourceDictionary>
+                            </ResourceDictionary.ThemeDictionaries>
+                        </ResourceDictionary>
+                    </Button.Resources>
+                    <Grid>
+                        <FontIcon
+                            FontSize="14"
+                            Glyph="{StaticResource FontIconContentRefresh}"
+                            Visibility="{Binding IsRefreshing, Converter={StaticResource BoolToVisibilityRevertConverter}}"/>
+                        <ProgressRing
+                            Width="14"
+                            Height="14"
+                            IsActive="{Binding IsRefreshing}"
+                            Visibility="{Binding IsRefreshing, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                    </Grid>
+                </Button>
             </Grid>
 
             <StackPanel
