@@ -23,7 +23,7 @@ public sealed partial class SignInService : ISignInService
     [GeneratedConstructor]
     public partial SignInService(IServiceProvider serviceProvider);
 
-    public async ValueTask<bool> ClaimSignInRewardAsync(UserAndUid userAndUid, CancellationToken token = default)
+    public async ValueTask<bool> ClaimSignInRewardAsync(UserAndUid userAndUid, bool fallbackToWebView2 = true, CancellationToken token = default)
     {
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
@@ -51,7 +51,12 @@ public sealed partial class SignInService : ISignInService
             }
 
             messenger.Send(InfoBarMessage.Error(SH.FormatServiceSignInClaimRewardFailed(message)));
-            await FallbackToWebView2SignInAsync().ConfigureAwait(false);
+
+            if (fallbackToWebView2)
+            {
+                await FallbackToWebView2SignInAsync().ConfigureAwait(false);
+            }
+
             return false;
         }
     }

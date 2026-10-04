@@ -7,7 +7,7 @@ namespace Snap.Hutao.Remastered.Service.SignIn;
 
 public interface ISignInService
 {
-    ValueTask<bool> ClaimSignInRewardAsync(UserAndUid userAndUid, CancellationToken token = default);
+    ValueTask<bool> ClaimSignInRewardAsync(UserAndUid userAndUid, bool fallbackToWebView2 = true, CancellationToken token = default);
 
     ValueTask<bool> ClaimResignInRewardAsync(UserAndUid userAndUid, CancellationToken token = default);
 }

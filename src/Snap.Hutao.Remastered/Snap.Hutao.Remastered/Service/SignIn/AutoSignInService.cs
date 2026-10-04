@@ -7,8 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Model.Entity.Database;
+using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.ViewModel.User;
 using Snap.Hutao.Remastered.Web.Hoyolab;
+using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Binding;
+using BindingUser = Snap.Hutao.Remastered.ViewModel.User.User;
 
 namespace Snap.Hutao.Remastered.Service.SignIn;
 
@@ -19,6 +22,7 @@ public sealed partial class AutoSignInService : IAutoSignInService
 
     private readonly ISignInService signInService;
     private readonly IServiceProvider serviceProvider;
+    private readonly ILogger<AutoSignInService> logger;
 
     [GeneratedConstructor]
     public partial AutoSignInService(IServiceProvider serviceProvider);
@@ -41,6 +45,12 @@ public sealed partial class AutoSignInService : IAutoSignInService
 
     public async ValueTask RunOnceAsync(UserAndUid userAndUid, CancellationToken token = default)
     {
+        // The user is interacting with the app, so the risk verification fallback is expected.
+        await RunOnceAsync(userAndUid, true, token).ConfigureAwait(false);
+    }
+
+    public async ValueTask RunOnceAsync(UserAndUid userAndUid, bool fallbackToWebView2, CancellationToken token = default)
+    {
         if (!IsEnabled)
         {
             return;
@@ -48,7 +58,7 @@ public sealed partial class AutoSignInService : IAutoSignInService
 
         try
         {
-            await TrySignInAsync(userAndUid, token).ConfigureAwait(false);
+            await TrySignInAsync(userAndUid, fallbackToWebView2, token).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {
@@ -56,11 +66,55 @@ public sealed partial class AutoSignInService : IAutoSignInService
         }
         catch (Exception ex)
         {
+            logger.LogError(ex, "Auto sign-in failed for uid {Uid}", userAndUid.Uid.Value);
             SentrySdk.CaptureException(ex);
         }
     }
 
-    private async ValueTask<bool> TrySignInAsync(UserAndUid userAndUid, CancellationToken token)
+    public async ValueTask RunForAllUsersAsync(CancellationToken token = default)
+    {
+        if (!IsEnabled)
+        {
+            return;
+        }
+
+        using (IServiceScope scope = serviceProvider.CreateScope())
+        {
+            IUserService userService = scope.ServiceProvider.GetRequiredService<IUserService>();
+            AdvancedDbCollectionView<BindingUser, Model.Entity.User> users = await userService.GetUsersAsync().ConfigureAwait(false);
+
+            // Snapshot because the collection can be modified by the user while the job is running.
+            List<(BindingUser User, List<UserGameRole> GameRoles)> snapshot = new(users.Source.Count);
+            foreach (BindingUser user in users.Source)
+            {
+                snapshot.Add((user, user.UserGameRoles.Source.ToList()));
+            }
+
+            foreach ((BindingUser user, List<UserGameRole> gameRoles) in snapshot)
+            {
+                if (token.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                // Cookie token is refreshed while resuming a user, do the same for the accounts
+                // which are not the current one and may hold an expired cookie token.
+                await userService.RefreshCookieTokenAsync(user).ConfigureAwait(false);
+
+                // Sign in every game role of the account, not only the current one.
+                foreach (UserGameRole gameRole in gameRoles)
+                {
+                    UserAndUid userAndUid = UserAndUid.From(user.Entity, gameRole);
+
+                    // This runs without user interaction, opening a WebView2 window for an
+                    // unsatisfied risk verification of any account would be disruptive.
+                    await RunOnceAsync(userAndUid, false, token).ConfigureAwait(false);
+                }
+            }
+        }
+    }
+
+    private async ValueTask<bool> TrySignInAsync(UserAndUid userAndUid, bool fallbackToWebView2, CancellationToken token)
     {
         string completedDayKeySetting = GetCompletedDayKeySetting(userAndUid);
         string lastFailureTicksKey = GetLastFailureTicksKey(userAndUid);
@@ -94,7 +148,7 @@ public sealed partial class AutoSignInService : IAutoSignInService
                 }
             }
 
-            bool success = await signInService.ClaimSignInRewardAsync(userAndUid, token).ConfigureAwait(false);
+            bool success = await signInService.ClaimSignInRewardAsync(userAndUid, fallbackToWebView2, token).ConfigureAwait(false);
             if (success)
             {
                 SetSettingValue(appDbContext, completedDayKeySetting, serverDayKey);
