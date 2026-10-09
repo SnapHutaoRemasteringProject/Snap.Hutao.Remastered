@@ -443,6 +443,7 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
 
                     // The game record skill id matches the metadata proud skill id.
                     FrozenDictionary<SkillId, SkillLevel> talents = character.Skills.ToFrozenDictionary(static s => s.SkillId, static s => s.Level);
+                    FrozenDictionary<SkillId, SkillLevel> extraLevels = AvatarSkillExtraLevelResolver.Resolve(avatar.SkillDepot, character.Constellations);
 
                     if (!talents.TryGetValue(skillA.Id, out SkillLevel talentA)
                         || !talents.TryGetValue(skillE.Id, out SkillLevel talentE)
@@ -452,6 +453,12 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
                         continue;
                     }
 
+                    // The game record talent level contains the constellation and inherent talent bonus,
+                    // the cultivation plan only consumes the non extra leveled 1 - 10 level.
+                    uint levelA = GetNonExtraLevel(skillA.Id, talentA, extraLevels);
+                    uint levelE = GetNonExtraLevel(skillE.Id, talentE, extraLevels);
+                    uint levelQ = GetNonExtraLevel(skillQ.Id, talentQ, extraLevels);
+
                     AvatarPromotionDelta delta = new()
                     {
                         AvatarId = avatar.Id,
@@ -460,9 +467,9 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
                         AvatarPromoteLevel = character.Base.PromoteLevel,
                         SkillList =
                         [
-                            new PromotionDelta { Id = skillA.GroupId, LevelCurrent = Math.Min((uint)talentA, levelInfo.SkillALevelTo), LevelTarget = levelInfo.SkillALevelTo },
-                            new PromotionDelta { Id = skillE.GroupId, LevelCurrent = Math.Min((uint)talentE, levelInfo.SkillELevelTo), LevelTarget = levelInfo.SkillELevelTo },
-                            new PromotionDelta { Id = skillQ.GroupId, LevelCurrent = Math.Min((uint)talentQ, levelInfo.SkillQLevelTo), LevelTarget = levelInfo.SkillQLevelTo },
+                            new PromotionDelta { Id = skillA.GroupId, LevelCurrent = Math.Min(levelA, levelInfo.SkillALevelTo), LevelTarget = levelInfo.SkillALevelTo },
+                            new PromotionDelta { Id = skillE.GroupId, LevelCurrent = Math.Min(levelE, levelInfo.SkillELevelTo), LevelTarget = levelInfo.SkillELevelTo },
+                            new PromotionDelta { Id = skillQ.GroupId, LevelCurrent = Math.Min(levelQ, levelInfo.SkillQLevelTo), LevelTarget = levelInfo.SkillQLevelTo },
                         ],
                     };
 
@@ -502,6 +509,18 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
 
             messenger.Send(message);
         }
+    }
+
+    private static uint GetNonExtraLevel(SkillId skillId, SkillLevel level, FrozenDictionary<SkillId, SkillLevel> extraLevels)
+    {
+        uint result = (uint)level;
+        if (extraLevels.TryGetValue(skillId, out SkillLevel extraLevel))
+        {
+            uint extra = (uint)extraLevel;
+            result = result > extra ? result - extra : 1U;
+        }
+
+        return result;
     }
 
     private static bool IsSameLevelInformation(CultivateEntryLevelInformation current, LevelInformation updated)

@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Model.Metadata.Avatar;
@@ -90,16 +89,9 @@ public sealed class SummaryAvatarFactory
         out FrozenDictionary<SkillId, SkillLevel> extraLevels)
     {
         HashSet<SkillId> constellationIds = [];
-        Dictionary<SkillId, SkillLevel> levels = [];
-
-        // 达达利亚天赋：普攻技能等级+1
-        if (depot.Inherents is [_, _, { } inherent] && inherent.GroupId == 3323U)
-        {
-            levels.Add(depot.CompositeSkillsNoInherents[0].Id, 1);
-        }
 
         Verify.Operation(depot.Talents.Length == dataConstellations.Length, "Constellation count mismatch");
-        foreach ((Model.Metadata.Avatar.Skill metaConstellation, Constellation dataConstellation) in depot.Talents.Zip(dataConstellations))
+        foreach ((Model.Metadata.Avatar.Skill _, Constellation dataConstellation) in depot.Talents.Zip(dataConstellations))
         {
             // Constellations are activated in order, so if the current constellation is
             // not activated, all the subsequent constellations will not be activated.
@@ -109,23 +101,10 @@ public sealed class SummaryAvatarFactory
             }
 
             constellationIds.Add(dataConstellation.Id);
-
-            if (metaConstellation.ExtraLevel is { } extraLevel)
-            {
-                int index = extraLevel.Index switch
-                {
-                    ExtraLevelIndexKind.NormalAttack => 0,
-                    ExtraLevelIndexKind.ElementalSkill => 1,
-                    ExtraLevelIndexKind.ElementalBurst => 2,
-                    _ => throw HutaoException.NotSupported("Unexpected extra level index."),
-                };
-
-                levels.Add(depot.CompositeSkillsNoInherents[index].Id, extraLevel.Level);
-            }
         }
 
         activatedConstellationIds = constellationIds.ToFrozenSet();
-        extraLevels = levels.ToFrozenDictionary();
+        extraLevels = AvatarSkillExtraLevelResolver.Resolve(depot, dataConstellations);
     }
 
     private WeaponView CreateWeapon(DetailedWeapon detailedWeapon)
