@@ -1995,13 +1995,13 @@
     <value>บอสประจำสัปดาห์</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoCompleted" xml:space="preserve">
-    <value>已更新 {0} 个角色条目，跳过 {1} 个</value>
+    <value>อัปเดตรายการตัวละครแล้ว {0} รายการ ข้าม {1} รายการ</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoNoCharacter" xml:space="preserve">
-    <value>未获取到可用于同步的角色详情</value>
+    <value>ไม่พบรายละเอียดตัวละครที่สามารถใช้ซิงค์ได้</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoProgress" xml:space="preserve">
-    <value>正在从米游社同步角色等级与天赋</value>
+    <value>กำลังซิงค์ระดับและพรสวรรค์ของตัวละครจาก HoYoLAB</value>
   </data>
   <data name="ViewModelDailyNoteConfigWebhookUrlComplete" xml:space="preserve">
     <value>กำหนดค่า URL Webhook บันทึกเรียลไทม์สำเร็จ</value>
@@ -2625,7 +2625,7 @@
     <value>ซิงค์ผ่านที่เก็บถาวรไอเทมในกระเป๋า</value>
   </data>
   <data name="ViewPageCultivationSyncAvatarInfo" xml:space="preserve">
-    <value>同步角色等级与天赋</value>
+    <value>ซิงค์ระดับและพรสวรรค์ของตัวละคร</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>ลบรายการ</value>
@@ -4554,13 +4554,13 @@
     <value>คะแนนรวมตัวละคร:</value>
   </data>
   <data name="ViewPageAvatarPropertyScoreAlgorithm" xml:space="preserve">
-    <value>圣遗物评分算法</value>
+    <value>อัลกอริทึมการให้คะแนนอาร์ติแฟกต์</value>
   </data>
   <data name="ViewPageAvatarPropertyScoreAlgorithmHoyolabRecommend" xml:space="preserve">
-    <value>米游社推荐属性</value>
+    <value>คุณสมบัติที่ HoYoLAB แนะนำ</value>
   </data>
   <data name="ViewPageAvatarPropertyConfigureScore" xml:space="preserve">
-    <value>评分配置</value>
+    <value>การตั้งค่าคะแนน</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>การเริ่มต้นแบบกำหนดเอง</value>
@@ -4986,22 +4986,22 @@
     <value>ไม่ได้ทำเครื่องหมาย</value>
   </data>
   <data name="ViewPageBackpackFilterEquipped" xml:space="preserve">
-    <value>已装备</value>
+    <value>สวมใส่แล้ว</value>
   </data>
   <data name="ViewPageBackpackFilterUnequipped" xml:space="preserve">
-    <value>未装备</value>
+    <value>ยังไม่ได้สวมใส่</value>
   </data>
   <data name="ViewPageBackpackFilterPurchasedAppendProp" xml:space="preserve">
-    <value>祝圣之霜定义</value>
+    <value>กำหนดโดยน้ำอมฤตศักดิ์สิทธิ์</value>
   </data>
   <data name="ViewPageBackpackFilterNotPurchasedAppendProp" xml:space="preserve">
-    <value>非祝圣之霜定义</value>
+    <value>ไม่ได้กำหนดโดยน้ำอมฤตศักดิ์สิทธิ์</value>
   </data>
   <data name="ViewPageBackpackEquippedState" xml:space="preserve">
-    <value>{0} 已装备</value>
+    <value>{0} สวมใส่แล้ว</value>
   </data>
   <data name="ViewPageBackpackPurchasedAppendPropTitle" xml:space="preserve">
-    <value>祝圣之霜定义的词条</value>
+    <value>คุณสมบัติที่กำหนดโดยน้ำอมฤตศักดิ์สิทธิ์</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
     <value>พิลึก</value>
@@ -5019,7 +5019,7 @@
     <value>{0:F1} คะแนน</value>
   </data>
   <data name="ViewPageBackpackReliquarySubStatInactive" xml:space="preserve">
-    <value>(未激活)</value>
+    <value>(ยังไม่เปิดใช้งาน)</value>
   </data>
   <data name="ViewPageBackpackSetEffectLabel" xml:space="preserve">
     <value>เอฟเฟกต์เซ็ต {0} ชิ้น: </value>
@@ -5166,10 +5166,10 @@
     <value>มิเรอร์酱 CDK</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
-    <value>请输入 Mirror酱 激活密钥（CDK），留空则跳过。</value>
+    <value>กรุณากรอกรหัสเปิดใช้งาน (CDK) ของ Mirror酱 หากเว้นว่างไว้จะข้าม</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkGetCdk" xml:space="preserve">
-    <value>获取 CDK</value>
+    <value>รับ CDK</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
     <value>บันทึกนักเดินทาง</value>
@@ -5181,7 +5181,7 @@
     <value>เดือนนี้</value>
   </data>
   <data name="ViewTravelersDiaryNoIncomeSourceHint" xml:space="preserve">
-    <value>本月暂无原石收入记录</value>
+    <value>เดือนนี้ยังไม่มีบันทึกรายได้หินต้นกำเนิด</value>
   </data>
   <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
     <value>ดาวสองดวง</value>
