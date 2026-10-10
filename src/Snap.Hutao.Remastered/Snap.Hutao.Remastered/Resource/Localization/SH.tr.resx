@@ -1995,13 +1995,13 @@ Kullanılabilir Alan: {2}</value>
     <value>Haftalık BOSS</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoCompleted" xml:space="preserve">
-    <value>已更新 {0} 个角色条目，跳过 {1} 个</value>
+    <value>{0} karakter kaydı güncellendi, {1} tanesi atlandı</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoNoCharacter" xml:space="preserve">
-    <value>未获取到可用于同步的角色详情</value>
+    <value>Senkronizasyon için kullanılabilecek karakter ayrıntısı bulunamadı</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoProgress" xml:space="preserve">
-    <value>正在从米游社同步角色等级与天赋</value>
+    <value>Karakter seviyesi ve yetenekleri HoYoLAB'den senkronize ediliyor</value>
   </data>
   <data name="ViewModelDailyNoteConfigWebhookUrlComplete" xml:space="preserve">
     <value>Gerçek Zamanlı Not Webhook URL'si başarıyla yapılandırıldı</value>
@@ -2625,7 +2625,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Envanter öğesi arşivi ile senkronize et</value>
   </data>
   <data name="ViewPageCultivationSyncAvatarInfo" xml:space="preserve">
-    <value>同步角色等级与天赋</value>
+    <value>Karakter seviyesi ve yeteneklerini senkronize et</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Listeyi Sil</value>
@@ -4554,13 +4554,13 @@ Kullanılabilir Alan: {2}</value>
     <value>Karakter Toplam Puanı:</value>
   </data>
   <data name="ViewPageAvatarPropertyScoreAlgorithm" xml:space="preserve">
-    <value>圣遗物评分算法</value>
+    <value>Yadigâr puanlama algoritması</value>
   </data>
   <data name="ViewPageAvatarPropertyScoreAlgorithmHoyolabRecommend" xml:space="preserve">
-    <value>米游社推荐属性</value>
+    <value>HoYoLAB önerilen özellikler</value>
   </data>
   <data name="ViewPageAvatarPropertyConfigureScore" xml:space="preserve">
-    <value>评分配置</value>
+    <value>Puanlama yapılandırması</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Özel Başlatma</value>
@@ -4990,22 +4990,22 @@ Kullanılabilir Alan: {2}</value>
     <value>İşaretsiz</value>
   </data>
   <data name="ViewPageBackpackFilterEquipped" xml:space="preserve">
-    <value>已装备</value>
+    <value>Kuşanılmış</value>
   </data>
   <data name="ViewPageBackpackFilterUnequipped" xml:space="preserve">
-    <value>未装备</value>
+    <value>Kuşanılmamış</value>
   </data>
   <data name="ViewPageBackpackFilterPurchasedAppendProp" xml:space="preserve">
-    <value>祝圣之霜定义</value>
+    <value>Kutsal İksir tanımı</value>
   </data>
   <data name="ViewPageBackpackFilterNotPurchasedAppendProp" xml:space="preserve">
-    <value>非祝圣之霜定义</value>
+    <value>Kutsal İksir tanımı olmayan</value>
   </data>
   <data name="ViewPageBackpackEquippedState" xml:space="preserve">
-    <value>{0} 已装备</value>
+    <value>{0} kuşanılmış</value>
   </data>
   <data name="ViewPageBackpackPurchasedAppendPropTitle" xml:space="preserve">
-    <value>祝圣之霜定义的词条</value>
+    <value>Kutsal İksir ile tanımlanan özellikler</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
     <value>Tuhaf</value>
@@ -5023,7 +5023,7 @@ Kullanılabilir Alan: {2}</value>
     <value>{0:F1} puan</value>
   </data>
   <data name="ViewPageBackpackReliquarySubStatInactive" xml:space="preserve">
-    <value>(未激活)</value>
+    <value>(Etkin değil)</value>
   </data>
   <data name="ViewPageBackpackSetEffectLabel" xml:space="preserve">
     <value>{0} Parçalı Set Etkisi: </value>
@@ -5170,10 +5170,10 @@ Kullanılabilir Alan: {2}</value>
     <value>Mirror CDK</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
-    <value>请输入 Mirror酱 激活密钥（CDK），留空则跳过。</value>
+    <value>Mirror酱 etkinleştirme anahtarını (CDK) girin, boş bırakırsanız atlanır.</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkGetCdk" xml:space="preserve">
-    <value>获取 CDK</value>
+    <value>CDK al</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
     <value>Gezgin Günlüğü</value>
@@ -5185,7 +5185,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Bu Ay</value>
   </data>
   <data name="ViewTravelersDiaryNoIncomeSourceHint" xml:space="preserve">
-    <value>本月暂无原石收入记录</value>
+    <value>Bu ay için Primogem geliri kaydı yok</value>
   </data>
   <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
     <value>İki Yıldız</value>
