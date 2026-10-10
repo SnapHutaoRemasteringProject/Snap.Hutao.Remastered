@@ -1995,13 +1995,13 @@ Ruang Tersedia: {2}</value>
     <value>Boss Mingguan</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoCompleted" xml:space="preserve">
-    <value>已更新 {0} 个角色条目，跳过 {1} 个</value>
+    <value>Berhasil memperbarui {0} entri karakter, melewati {1}</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoNoCharacter" xml:space="preserve">
-    <value>未获取到可用于同步的角色详情</value>
+    <value>Detail karakter yang dapat disinkronkan tidak ditemukan</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoProgress" xml:space="preserve">
-    <value>正在从米游社同步角色等级与天赋</value>
+    <value>Menyinkronkan level dan talenta karakter dari HoYoLAB</value>
   </data>
   <data name="ViewModelDailyNoteConfigWebhookUrlComplete" xml:space="preserve">
     <value>URL Webhook Catatan Realtime berhasil dikonfigurasi.</value>
@@ -2625,7 +2625,7 @@ Ruang Tersedia: {2}</value>
     <value>Sinkronkan melalui arsip item inventori</value>
   </data>
   <data name="ViewPageCultivationSyncAvatarInfo" xml:space="preserve">
-    <value>同步角色等级与天赋</value>
+    <value>Sinkronkan Level dan Talenta Karakter</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Hapus daftar</value>
@@ -4554,13 +4554,13 @@ Ruang Tersedia: {2}</value>
     <value>Total Skor Karakter:</value>
   </data>
   <data name="ViewPageAvatarPropertyScoreAlgorithm" xml:space="preserve">
-    <value>圣遗物评分算法</value>
+    <value>Algoritma Penilaian Artefak</value>
   </data>
   <data name="ViewPageAvatarPropertyScoreAlgorithmHoyolabRecommend" xml:space="preserve">
-    <value>米游社推荐属性</value>
+    <value>Atribut Rekomendasi HoYoLAB</value>
   </data>
   <data name="ViewPageAvatarPropertyConfigureScore" xml:space="preserve">
-    <value>评分配置</value>
+    <value>Konfigurasi Penilaian</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Peluncuran kustom</value>
@@ -4990,22 +4990,22 @@ Ruang Tersedia: {2}</value>
     <value>Tidak Ditandai</value>
   </data>
   <data name="ViewPageBackpackFilterEquipped" xml:space="preserve">
-    <value>已装备</value>
+    <value>Terpasang</value>
   </data>
   <data name="ViewPageBackpackFilterUnequipped" xml:space="preserve">
-    <value>未装备</value>
+    <value>Tidak Terpasang</value>
   </data>
   <data name="ViewPageBackpackFilterPurchasedAppendProp" xml:space="preserve">
-    <value>祝圣之霜定义</value>
+    <value>Definisi Sanctifying Elixir</value>
   </data>
   <data name="ViewPageBackpackFilterNotPurchasedAppendProp" xml:space="preserve">
-    <value>非祝圣之霜定义</value>
+    <value>Bukan Definisi Sanctifying Elixir</value>
   </data>
   <data name="ViewPageBackpackEquippedState" xml:space="preserve">
-    <value>{0} 已装备</value>
+    <value>{0} Terpasang</value>
   </data>
   <data name="ViewPageBackpackPurchasedAppendPropTitle" xml:space="preserve">
-    <value>祝圣之霜定义的词条</value>
+    <value>Atribut yang Ditentukan Sanctifying Elixir</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
     <value>Aneh</value>
@@ -5023,7 +5023,7 @@ Ruang Tersedia: {2}</value>
     <value>{0:F1} Poin</value>
   </data>
   <data name="ViewPageBackpackReliquarySubStatInactive" xml:space="preserve">
-    <value>(未激活)</value>
+    <value>(Tidak Aktif)</value>
   </data>
   <data name="ViewPageBackpackSetEffectLabel" xml:space="preserve">
     <value>Efek Set {0} Bagian: </value>
@@ -5170,10 +5170,10 @@ Ruang Tersedia: {2}</value>
     <value>Mirror CDK</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
-    <value>请输入 Mirror酱 激活密钥（CDK），留空则跳过。</value>
+    <value>Masukkan kunci aktivasi (CDK) Mirror酱, kosongkan untuk melewati.</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkGetCdk" xml:space="preserve">
-    <value>获取 CDK</value>
+    <value>Dapatkan CDK</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
     <value>Catatan Pengembara</value>
@@ -5185,7 +5185,7 @@ Ruang Tersedia: {2}</value>
     <value>Bulan Ini</value>
   </data>
   <data name="ViewTravelersDiaryNoIncomeSourceHint" xml:space="preserve">
-    <value>本月暂无原石收入记录</value>
+    <value>Belum ada catatan pendapatan Primogem bulan ini</value>
   </data>
   <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
     <value>2 Stars</value>
