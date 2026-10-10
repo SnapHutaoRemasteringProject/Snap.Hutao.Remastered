@@ -1995,13 +1995,13 @@ Espace disponible : {2}</value>
     <value>Boss hebdomadaire</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoCompleted" xml:space="preserve">
-    <value>已更新 {0} 个角色条目，跳过 {1} 个</value>
+    <value>{0} entrées de personnage mises à jour, {1} ignorées</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoNoCharacter" xml:space="preserve">
-    <value>未获取到可用于同步的角色详情</value>
+    <value>Aucun détail de personnage disponible pour la synchronisation</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoProgress" xml:space="preserve">
-    <value>正在从米游社同步角色等级与天赋</value>
+    <value>Synchronisation des niveaux et talents des personnages depuis HoYoLAB</value>
   </data>
   <data name="ViewModelDailyNoteConfigWebhookUrlComplete" xml:space="preserve">
     <value>URL Webhook des notes en temps réel configurée avec succès</value>
@@ -2625,7 +2625,7 @@ Espace disponible : {2}</value>
     <value>Synchroniser via l'archive d'objets d'inventaire</value>
   </data>
   <data name="ViewPageCultivationSyncAvatarInfo" xml:space="preserve">
-    <value>同步角色等级与天赋</value>
+    <value>Synchroniser les niveaux et talents des personnages</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>Supprimer la liste</value>
@@ -4554,13 +4554,13 @@ Espace disponible : {2}</value>
     <value>Score total du personnage :</value>
   </data>
   <data name="ViewPageAvatarPropertyScoreAlgorithm" xml:space="preserve">
-    <value>圣遗物评分算法</value>
+    <value>Algorithme de notation des artéfacts</value>
   </data>
   <data name="ViewPageAvatarPropertyScoreAlgorithmHoyolabRecommend" xml:space="preserve">
-    <value>米游社推荐属性</value>
+    <value>Attributs recommandés par HoYoLAB</value>
   </data>
   <data name="ViewPageAvatarPropertyConfigureScore" xml:space="preserve">
-    <value>评分配置</value>
+    <value>Configuration de la notation</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>Lancement personnalisé</value>
@@ -4986,22 +4986,22 @@ Espace disponible : {2}</value>
     <value>Non marqué</value>
   </data>
   <data name="ViewPageBackpackFilterEquipped" xml:space="preserve">
-    <value>已装备</value>
+    <value>Équipé</value>
   </data>
   <data name="ViewPageBackpackFilterUnequipped" xml:space="preserve">
-    <value>未装备</value>
+    <value>Non équipé</value>
   </data>
   <data name="ViewPageBackpackFilterPurchasedAppendProp" xml:space="preserve">
-    <value>祝圣之霜定义</value>
+    <value>Défini par l'Élixir sanctificateur</value>
   </data>
   <data name="ViewPageBackpackFilterNotPurchasedAppendProp" xml:space="preserve">
-    <value>非祝圣之霜定义</value>
+    <value>Non défini par l'Élixir sanctificateur</value>
   </data>
   <data name="ViewPageBackpackEquippedState" xml:space="preserve">
-    <value>{0} 已装备</value>
+    <value>{0} équipé</value>
   </data>
   <data name="ViewPageBackpackPurchasedAppendPropTitle" xml:space="preserve">
-    <value>祝圣之霜定义的词条</value>
+    <value>Affixes définis par l'Élixir sanctificateur</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
     <value>Suspect</value>
@@ -5019,7 +5019,7 @@ Espace disponible : {2}</value>
     <value>{0:F1} points</value>
   </data>
   <data name="ViewPageBackpackReliquarySubStatInactive" xml:space="preserve">
-    <value>(未激活)</value>
+    <value>(Inactif)</value>
   </data>
   <data name="ViewPageBackpackSetEffectLabel" xml:space="preserve">
     <value>Effet {0} pièces : </value>
@@ -5166,10 +5166,10 @@ Espace disponible : {2}</value>
     <value>CDK Mirror酱</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
-    <value>请输入 Mirror酱 激活密钥（CDK），留空则跳过。</value>
+    <value>Veuillez saisir la clé d'activation (CDK) de Mirror酱, laissez vide pour ignorer.</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkGetCdk" xml:space="preserve">
-    <value>获取 CDK</value>
+    <value>Obtenir le CDK</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
     <value>Journal du voyageur</value>
@@ -5181,7 +5181,7 @@ Espace disponible : {2}</value>
     <value>Ce mois-ci</value>
   </data>
   <data name="ViewTravelersDiaryNoIncomeSourceHint" xml:space="preserve">
-    <value>本月暂无原石收入记录</value>
+    <value>Aucun revenu de primogemmes enregistré ce mois-ci</value>
   </data>
   <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
     <value>2★</value>
