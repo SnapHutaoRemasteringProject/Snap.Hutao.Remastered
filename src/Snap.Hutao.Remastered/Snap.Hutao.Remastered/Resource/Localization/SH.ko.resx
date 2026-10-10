@@ -1995,13 +1995,13 @@
     <value>주간 BOSS</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoCompleted" xml:space="preserve">
-    <value>已更新 {0} 个角色条目，跳过 {1} 个</value>
+    <value>캐릭터 항목 {0}개를 업데이트했으며, {1}개를 건너뛰었습니다</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoNoCharacter" xml:space="preserve">
-    <value>未获取到可用于同步的角色详情</value>
+    <value>동기화할 수 있는 캐릭터 상세 정보를 가져오지 못했습니다</value>
   </data>
   <data name="ViewModelCultivationSyncAvatarInfoProgress" xml:space="preserve">
-    <value>正在从米游社同步角色等级与天赋</value>
+    <value>HoYoLAB에서 캐릭터 레벨과 특성을 동기화하는 중</value>
   </data>
   <data name="ViewModelDailyNoteConfigWebhookUrlComplete" xml:space="preserve">
     <value>실시간 메모 Webhook URL 구성 성공</value>
@@ -2625,7 +2625,7 @@
     <value>배낭 아이템 아카이브를 통해 동기화</value>
   </data>
   <data name="ViewPageCultivationSyncAvatarInfo" xml:space="preserve">
-    <value>同步角色等级与天赋</value>
+    <value>캐릭터 레벨 및 특성 동기화</value>
   </data>
   <data name="ViewPageCultivationRemoveEntry" xml:space="preserve">
     <value>목록 삭제</value>
@@ -4554,13 +4554,13 @@
     <value>캐릭터 총점:</value>
   </data>
   <data name="ViewPageAvatarPropertyScoreAlgorithm" xml:space="preserve">
-    <value>圣遗物评分算法</value>
+    <value>성유물 점수 알고리즘</value>
   </data>
   <data name="ViewPageAvatarPropertyScoreAlgorithmHoyolabRecommend" xml:space="preserve">
-    <value>米游社推荐属性</value>
+    <value>HoYoLAB 추천 속성</value>
   </data>
   <data name="ViewPageAvatarPropertyConfigureScore" xml:space="preserve">
-    <value>评分配置</value>
+    <value>점수 설정</value>
   </data>
   <data name="ViewPageLaunchGameAdvancedStartOptionsHeader" xml:space="preserve">
     <value>사용자 정의 시작</value>
@@ -4986,22 +4986,22 @@
     <value>표시되지 않음</value>
   </data>
   <data name="ViewPageBackpackFilterEquipped" xml:space="preserve">
-    <value>已装备</value>
+    <value>장착됨</value>
   </data>
   <data name="ViewPageBackpackFilterUnequipped" xml:space="preserve">
-    <value>未装备</value>
+    <value>미장착</value>
   </data>
   <data name="ViewPageBackpackFilterPurchasedAppendProp" xml:space="preserve">
-    <value>祝圣之霜定义</value>
+    <value>축성의 서리 정의</value>
   </data>
   <data name="ViewPageBackpackFilterNotPurchasedAppendProp" xml:space="preserve">
-    <value>非祝圣之霜定义</value>
+    <value>축성의 서리가 아닌 정의</value>
   </data>
   <data name="ViewPageBackpackEquippedState" xml:space="preserve">
-    <value>{0} 已装备</value>
+    <value>{0} 장착됨</value>
   </data>
   <data name="ViewPageBackpackPurchasedAppendPropTitle" xml:space="preserve">
-    <value>祝圣之霜定义的词条</value>
+    <value>축성의 서리로 정의된 옵션</value>
   </data>
   <data name="ViewPageBackpackFilterFoodQualitySuspicious" xml:space="preserve">
     <value>이상한</value>
@@ -5019,7 +5019,7 @@
     <value>{0:F1} 점</value>
   </data>
   <data name="ViewPageBackpackReliquarySubStatInactive" xml:space="preserve">
-    <value>(未激活)</value>
+    <value>(미활성)</value>
   </data>
   <data name="ViewPageBackpackSetEffectLabel" xml:space="preserve">
     <value>{0}세트 효과: </value>
@@ -5166,10 +5166,10 @@
     <value>Mirror CDK</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkHint" xml:space="preserve">
-    <value>请输入 Mirror酱 激活密钥（CDK），留空则跳过。</value>
+    <value>Mirror酱 활성화 키(CDK)를 입력하세요. 비워 두면 건너뜁니다.</value>
   </data>
   <data name="ViewDialogMirrorChyanCdkGetCdk" xml:space="preserve">
-    <value>获取 CDK</value>
+    <value>CDK 받기</value>
   </data>
   <data name="ViewTravelersDiaryHeader" xml:space="preserve">
     <value>여행자 일기</value>
@@ -5181,7 +5181,7 @@
     <value>이번 달</value>
   </data>
   <data name="ViewTravelersDiaryNoIncomeSourceHint" xml:space="preserve">
-    <value>本月暂无原石收入记录</value>
+    <value>이번 달 원석 수입 기록이 없습니다</value>
   </data>
   <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
     <value>2성</value>
