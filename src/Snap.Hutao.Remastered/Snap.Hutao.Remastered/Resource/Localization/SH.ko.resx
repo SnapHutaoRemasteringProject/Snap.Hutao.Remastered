@@ -887,6 +887,9 @@
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
     <value>준비 중, 장시간 반응이 없으면 네트워크 및 서버 상태를 재부팅하거나 확인하십시오.</value>
   </data>
+  <data name="ServiceBackgroundImageDecodeFailed" xml:space="preserve">
+    <value>无法解码背景图片：系统缺少可用的图像解码组件，已跳过本次壁纸切换</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing 일일 배경화면</value>
   </data>
