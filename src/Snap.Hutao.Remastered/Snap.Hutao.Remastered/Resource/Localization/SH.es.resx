@@ -887,6 +887,9 @@
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
     <value>Preparando, si tarda mucho reinicia o verifica la red y el estado del servidor</value>
   </data>
+  <data name="ServiceBackgroundImageDecodeFailed" xml:space="preserve">
+    <value>无法解码背景图片：系统缺少可用的图像解码组件，已跳过本次壁纸切换</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Imagen diaria de Bing</value>
   </data>
