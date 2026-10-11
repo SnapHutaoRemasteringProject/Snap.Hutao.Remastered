@@ -4478,6 +4478,21 @@ Dung lượng còn trống: {2}</value>
   <data name="ServicePluginUninstallDescription" xml:space="preserve">
     <value>Bạn có chắc muốn gỡ cài đặt plugin {0} không? Hành động này không thể hoàn tác.</value>
   </data>
+  <data name="ViewPagePluginSettingLoadFailed" xml:space="preserve">
+    <value>加载插件设置失败</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveSuccess" xml:space="preserve">
+    <value>设置'{0}'已保存</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveFailed" xml:space="preserve">
+    <value>保存设置'{0}'失败</value>
+  </data>
+  <data name="ViewPagePluginSettingResetSuccess" xml:space="preserve">
+    <value>设置'{0}'已重置</value>
+  </data>
+  <data name="ViewPagePluginSettingResetFailed" xml:space="preserve">
+    <value>重置设置'{0}'失败</value>
+  </data>
   <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
     <value>Chuyển đổi nóng tay cầm</value>
   </data>
