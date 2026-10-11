@@ -1641,7 +1641,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Bu özellikleri etkinleştirenlerin bağımsız karar vermesini sağlamak için etkinleştirme koşullarını düzensiz güncelleyeceğiz. Eğer bir içerik üreticisiyseniz, Snap Hutao ile ilgili içeriklerde belirli etkinleştirme yöntemlerini paylaşmayın.</value>
   </data>
   <data name="ViewDialogReconfirmTextHeader" xml:space="preserve">
-    <value>Yanlışlıkla etkinleştirmenizi önlemek için lütfen etkinleştirdiğiniz özellik anahtarının <b>başlık adını</b> girin</value>
+    <value>Yanlışlıkla etkinleştirmenizi önlemek için lütfen etkinleştirdiğiniz özellik anahtarının &lt;b&gt;başlık adını&lt;/b&gt; girin</value>
   </data>
   <data name="ViewDialogReconfirmTitle" xml:space="preserve">
     <value>Tehlikeli bir özelliği etkinleştiriyorsunuz</value>
