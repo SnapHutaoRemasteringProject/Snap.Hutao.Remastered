@@ -18,6 +18,13 @@ public sealed partial class ServerDomainRedirectHandler : DelegatingHandler
 {
     private const int MaxRedirects = 5;
 
+    private readonly IServerDomainService serverDomain;
+
+    public ServerDomainRedirectHandler(IServerDomainService serverDomain)
+    {
+        this.serverDomain = serverDomain;
+    }
+
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         HttpResponseMessage response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
@@ -32,8 +39,7 @@ public sealed partial class ServerDomainRedirectHandler : DelegatingHandler
             }
 
             // Rewrite domain if needed (backup ↔ primary)
-            string rewritten = RewriteDomainIfNeeded(location.OriginalString);
-            Uri target = rewritten != location.OriginalString ? new Uri(rewritten, UriKind.Absolute) : location;
+            Uri target = RewriteDomainIfNeeded(location);
 
             response.Dispose();
 
@@ -58,14 +64,10 @@ public sealed partial class ServerDomainRedirectHandler : DelegatingHandler
         return (int)statusCode is >= 300 and < 400;
     }
 
-    private static string RewriteDomainIfNeeded(string url)
+    private Uri RewriteDomainIfNeeded(Uri location)
     {
-        if (ServerDomain.IsBackupMode())
-        {
-            // Backup mode: rewrite primary domain → backup domain in redirects
-            return url.Replace("snaphutaorp.org", "hutaorp.org");
-        }
-
-        return url;
+        return serverDomain.IsBackupMode()
+            ? serverDomain.RewriteHostToCurrentMode(location) ?? location
+            : location;
     }
 }

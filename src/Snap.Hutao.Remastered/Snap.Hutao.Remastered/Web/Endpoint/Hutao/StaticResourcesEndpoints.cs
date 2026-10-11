@@ -3,9 +3,14 @@
 
 namespace Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 
+/// <remarks>
+/// Statically reachable on purpose: XAML value converters (which build icon urls from their static field
+/// initializers and <c>Convert</c> methods) are instantiated by the XAML parser and cannot take injected
+/// services. The domain itself is owned by <see cref="IServerDomainService"/>.
+/// </remarks>
 public static class StaticResourcesEndpoints
 {
-    public static string Root { get => ServerDomain.GetApiRoot(); }
+    public static string Root { get => ServerDomainService.Current.GetApiRoot(); }
 
     public static Uri UIIconNone { get => StaticRaw("Bg", "UI_Icon_None.png").ToUri(); }
 

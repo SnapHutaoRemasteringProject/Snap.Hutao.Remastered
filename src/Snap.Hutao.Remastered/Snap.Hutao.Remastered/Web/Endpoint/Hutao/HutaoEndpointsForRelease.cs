@@ -6,9 +6,16 @@ namespace Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 [Service(ServiceLifetime.Singleton, typeof(IHutaoEndpoints), Key = HutaoEndpointsKind.Release)]
 public sealed class HutaoEndpointsForRelease : IHutaoEndpoints
 {
-    string IHomaRootAccess.Root { get => ServerDomain.GetHomaRoot(); }
+    private readonly IServerDomainService serverDomain;
 
-    string IInfrastructureRootAccess.Root { get => ServerDomain.GetApiRoot(); }
+    public HutaoEndpointsForRelease(IServerDomainService serverDomain)
+    {
+        this.serverDomain = serverDomain;
+    }
 
-    string IInfrastructureRawRootAccess.RawRoot { get => ServerDomain.GetApiRoot(); }
+    string IHomaRootAccess.Root { get => serverDomain.GetHomaRoot(); }
+
+    string IInfrastructureRootAccess.Root { get => serverDomain.GetApiRoot(); }
+
+    string IInfrastructureRawRootAccess.RawRoot { get => serverDomain.GetApiRoot(); }
 }

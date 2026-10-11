@@ -23,6 +23,8 @@ namespace Snap.Hutao.Remastered.Service;
 [Service(ServiceLifetime.Singleton)]
 public sealed partial class AppOptions : DbStoreOptions
 {
+    private readonly IServerDomainService serverDomain;
+
     [GeneratedConstructor(CallBaseConstructor = true)]
     public partial AppOptions(IServiceProvider serviceProvider);
 
@@ -119,17 +121,17 @@ public sealed partial class AppOptions : DbStoreOptions
             if (field is null)
             {
                 ServerDomainMode initial = UnsafeLocalSetting.Get(SettingKeys.ServerDomainMode, Web.ServerDomainMode.Primary);
-                field = new ObservablePropertyValueChangedCallbackWrapper<ServerDomainMode>(new ObservableProperty<ServerDomainMode>(initial), OnServerDomainModeChanged);
-                ServerDomain.SetMode(initial);
+                field = new ObservablePropertyValueChangedCallbackWrapper<ServerDomainMode, AppOptions>(new ObservableProperty<ServerDomainMode>(initial), OnServerDomainModeChanged, this);
+                serverDomain.SetMode(initial);
             }
 
             return field;
         }
     }
 
-    private static void OnServerDomainModeChanged(ServerDomainMode mode)
+    private static void OnServerDomainModeChanged(ServerDomainMode mode, AppOptions appOptions)
     {
-        ServerDomain.SetMode(mode);
+        appOptions.serverDomain.SetMode(mode);
         UnsafeLocalSetting.Set(SettingKeys.ServerDomainMode, mode);
     }
 

@@ -16,7 +16,7 @@ public sealed partial class HttpProxyUsingSystemProxy : ObservableObject, IWebPr
 {
     private const string ProxySettingPath = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Connections";
 
-    private static readonly Lazy<Uri> ProxyTestDestination = new(static () => ServerDomain.GetRootDomain().ToUri());
+    private static readonly Lazy<Uri> ProxyTestDestination = new(static () => ServerDomainService.Current.GetRootDomain().ToUri());
 
     // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
     private readonly HutaoNativeRegistryNotification native;

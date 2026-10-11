@@ -23,9 +23,10 @@ public sealed class UpdateLogContentProvider : IWebView2ContentProvider
     public ValueTask InitializeAsync(IServiceProvider serviceProvider, CancellationToken token)
     {
         languageCode = serviceProvider.GetRequiredService<CultureOptions>().LanguageCode;
+        string rootDomain = serviceProvider.GetRequiredService<IServerDomainService>().GetRootDomain();
 
         ArgumentNullException.ThrowIfNull(CoreWebView2);
-        string updateLogUrl = $"{ServerDomain.GetRootDomain()}/statements/latest.html";
+        string updateLogUrl = $"{rootDomain}/statements/latest.html";
         CoreWebView2.AddWebResourceRequestedFilter(updateLogUrl, CoreWebView2WebResourceContext.Document);
         CoreWebView2.NewWindowRequested += OnNewWindowRequested;
         CoreWebView2.WebResourceRequested += OnWebResourceRequested;

@@ -12,6 +12,7 @@ using Snap.Hutao.Remastered.Service.Game.Package.Advanced.Model;
 using Snap.Hutao.Remastered.Service.Game.Package.Advanced.PackageOperation;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window;
+using Snap.Hutao.Remastered.Web;
 using Snap.Hutao.Remastered.Web.Hoyolab.Downloader;
 using Snap.Hutao.Remastered.Web.Hoyolab.HoyoPlay.Connect.Branch;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Downloader.Proto;
@@ -38,6 +39,7 @@ public sealed partial class GamePackageService : IGamePackageService
     private readonly IMemoryStreamFactory memoryStreamFactory;
     private readonly IHttpClientFactory httpClientFactory;
     private readonly IServiceProvider serviceProvider;
+    private readonly IServerDomainService serverDomain;
     private readonly object operationStateLock = new();
 
     private CancellationTokenSource? operationCts;
@@ -140,7 +142,7 @@ public sealed partial class GamePackageService : IGamePackageService
                             }
 
                             StringBuilder messageBuilder = new();
-                            if (!HttpRequestExceptionHandling.FormatException(messageBuilder, ex, null))
+                            if (!HttpRequestExceptionHandling.FormatException(messageBuilder, ex, null, serverDomain))
                             {
                                 messageBuilder.AppendLine(ex.Message);
                             }
@@ -324,7 +326,7 @@ public sealed partial class GamePackageService : IGamePackageService
                 catch (Exception ex)
                 {
                     StringBuilder messageBuilder = new();
-                    if (HttpRequestExceptionHandling.FormatException(messageBuilder, ex, manifestDownloadUrl))
+                    if (HttpRequestExceptionHandling.FormatException(messageBuilder, ex, manifestDownloadUrl, serverDomain))
                     {
                         serviceProvider.GetRequiredService<IMessenger>().Send(InfoBarMessage.Error(messageBuilder.ToString(), ex));
                     }

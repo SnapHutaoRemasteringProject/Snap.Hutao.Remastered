@@ -30,7 +30,7 @@ public static class HttpRequestExceptionHandling
             return true;
         }
 
-        if (FormatException(messageBuilder, ex, uri?.GetLeftPart(UriPartial.Path)))
+        if (FormatException(messageBuilder, ex, uri?.GetLeftPart(UriPartial.Path), builder.ServiceProvider.GetRequiredService<IServerDomainService>()))
         {
             return true;
         }
@@ -56,7 +56,7 @@ public static class HttpRequestExceptionHandling
         return false;
     }
 
-    public static bool FormatException(StringBuilder builder, Exception ex, string? url)
+    public static bool FormatException(StringBuilder builder, Exception ex, string? url, IServerDomainService serverDomain)
     {
         if (ex is HttpRequestException httpRequestException)
         {
@@ -72,7 +72,7 @@ public static class HttpRequestExceptionHandling
                     case NetworkError.ERR_SECURE_CONNECTION_ERROR:
                     case NetworkError.ERR_SECURE_CONNECTION_ABORTED:
                         builder.AppendLine(ex.Message);
-                        ServerDomain.TryAutoFallback();
+                        serverDomain.TryAutoFallback();
                         break;
                     case NetworkError.ERR_SECURE_CONNECTION_AUTHENTICATION_ERROR:
                         builder.AppendLine(ex.InnerException?.Message); // AuthenticationException has more details
