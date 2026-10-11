@@ -1641,7 +1641,7 @@ Verfügbarer Speicherplatz: {2}</value>
     <value>Um sicherzustellen, dass die Aktivierer von Funktionen eine unabhängige Urteilsfähigkeit haben, werden wir die Aktivierungsbedingungen für diese Funktionen unregelmäßig aktualisieren. Wenn Sie ein Inhaltsersteller sind, sollten Sie Ihren Zuhörern die spezifischen Aktivierungsmethoden bei der Erstellung von Inhalten über Snap Hutao nicht vorstellen.</value>
   </data>
   <data name="ViewDialogReconfirmTextHeader" xml:space="preserve">
-    <value>Um ein versehentliches Aktivieren zu vermeiden, gib den <b>Titelnamen</b> der Funktion ein, die du aktivieren möchtest.</value>
+    <value>Um ein versehentliches Aktivieren zu vermeiden, gib den &lt;b&gt;Titelnamen&lt;/b&gt; der Funktion ein, die du aktivieren möchtest.</value>
   </data>
   <data name="ViewDialogReconfirmTitle" xml:space="preserve">
     <value>Du aktivierst eine gefährliche Funktion</value>
