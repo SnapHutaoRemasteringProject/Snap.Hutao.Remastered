@@ -4484,6 +4484,21 @@
   <data name="ServicePluginUninstallDescription" xml:space="preserve">
     <value>Вы уверены, что хотите удалить плагин {0}? Это действие необратимо.</value>
   </data>
+  <data name="ViewPagePluginSettingLoadFailed" xml:space="preserve">
+    <value>加载插件设置失败</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveSuccess" xml:space="preserve">
+    <value>设置'{0}'已保存</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveFailed" xml:space="preserve">
+    <value>保存设置'{0}'失败</value>
+  </data>
+  <data name="ViewPagePluginSettingResetSuccess" xml:space="preserve">
+    <value>设置'{0}'已重置</value>
+  </data>
+  <data name="ViewPagePluginSettingResetFailed" xml:space="preserve">
+    <value>重置设置'{0}'失败</value>
+  </data>
   <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
     <value>Быстрое переключение геймпада</value>
   </data>
