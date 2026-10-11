@@ -1641,7 +1641,7 @@ Space Available: {2}</value>
     <value>In order to ensure that functionaries have independent judgement capability, we will irregularly update the enabling conditions for these features. If you are a content creator, do not share specific activation methods with your audience.</value>
   </data>
   <data name="ViewDialogReconfirmTextHeader" xml:space="preserve">
-    <value>To avoid enabling unintentionally, please input the <b>title name</b> of feature you are enabling</value>
+    <value>To avoid enabling unintentionally, please input the &lt;b&gt;title name&lt;/b&gt; of feature you are enabling</value>
   </data>
   <data name="ViewDialogReconfirmTitle" xml:space="preserve">
     <value>You are Enabling a Dangerous Feature</value>
