@@ -97,12 +97,15 @@ public sealed class GameIslandInterop : IGameIslandInterop
                     IPluginService pluginService = context.PluginService;
 
                     // Load dll in inject of plugins
-                    foreach (HutaoPlugin plugin in pluginService.GetAllPlugins())
+                    foreach (PluginInfo plugin in pluginService.GetAllPluginInfos())
                     {
                         if (!plugin.IsEnabled) continue;
-                        if (!Directory.Exists(Path.Combine(pluginService.GetPluginPath(plugin), "inject"))) continue;
 
-                        string injectPath = Path.Combine(pluginService.GetPluginPath(plugin), "inject");
+                        string? pluginDirectory = pluginService.GetPluginPath(plugin.Id);
+                        if (pluginDirectory is null) continue;
+                        if (!Directory.Exists(Path.Combine(pluginDirectory, "inject"))) continue;
+
+                        string injectPath = Path.Combine(pluginDirectory, "inject");
 
                         foreach (FileInfo inject in new DirectoryInfo(injectPath).GetFiles("*.dll", SearchOption.TopDirectoryOnly))
                         {

@@ -33,19 +33,44 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
     public partial PluginViewModel(IServiceProvider serviceProvider);
 
     [ObservableProperty]
-    public partial ObservableCollection<HutaoPlugin> Plugins { get; set; } = new();
+    public partial ObservableCollection<PluginInfo> Plugins { get; set; } = new();
 
     [ObservableProperty]
-    public partial HutaoPlugin? SelectedPlugin { get; set; }
+    public partial PluginInfo? SelectedPlugin { get; set; }
 
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
         await taskContext.SwitchToMainThreadAsync();
 
-        IEnumerable<HutaoPlugin> pluginList = pluginService.GetAllPlugins();
-        Plugins = new ObservableCollection<HutaoPlugin>(pluginList);
-        
+        // Plugins are loaded during background initialization, so this page can be open before any of
+        // them exist. The subscription is the only thing that makes them appear once they finish loading.
+        pluginService.PluginsChanged -= OnPluginsChanged;
+        pluginService.PluginsChanged += OnPluginsChanged;
+
+        RefreshPluginList();
         return true;
+    }
+
+    protected override void UninitializeOverride()
+    {
+        // PluginService is a singleton, so a subscription left behind would keep this scoped view alive.
+        pluginService.PluginsChanged -= OnPluginsChanged;
+    }
+
+    private void OnPluginsChanged(object? sender, EventArgs args)
+    {
+        // Raised on the main thread by PluginService.
+        RefreshPluginList();
+    }
+
+    private void RefreshPluginList()
+    {
+        Plugins.Clear();
+
+        foreach (PluginInfo plugin in pluginService.GetAllPluginInfos())
+        {
+            Plugins.Add(plugin);
+        }
     }
 
     [Command("InstallPluginCommand")]
@@ -55,7 +80,6 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
 
         try
         {
-
             ValueResult<bool, ValueFile> file = fileSystem.PickFile(SH.ServicePluginPickFileTitle, "HutaoPlugin", "*.hutao");
             if (!file.IsOk)
             {
@@ -63,12 +87,7 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
             }
 
             string path = file.Value.ToString();
-            bool result = await pluginService.InstallPluginAsync(path);
-            
-            if (result)
-            {
-                await LoadCommand.ExecuteAsync(null);
-            }
+            await pluginService.InstallPluginAsync(path);
         }
         catch (Exception ex)
         {
@@ -77,66 +96,52 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
     }
 
     [Command("EnablePluginCommand")]
-    private async Task EnablePluginAsync(HutaoPlugin? plugin)
+    private async Task EnablePluginAsync(PluginInfo? plugin)
     {
-        if (plugin == null) return;
+        if (plugin is null)
+        {
+            return;
+        }
 
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Enable plugin", "PluginViewModel.Command", new Dictionary<string, string>
         {
-            { "PluginId", plugin.Manifest.Id },
+            { "PluginId", plugin.Id },
             { "PluginName", plugin.Manifest.Name },
         }));
 
-        if (plugin == null)
-        {
-            return;
-        }
-
-        bool result = await pluginService.EnablePluginAsync(plugin);
-        if (result)
-        {
-            await LoadCommand.ExecuteAsync(null);
-        }
+        await pluginService.EnablePluginAsync(plugin.Id);
     }
 
     [Command("DisablePluginCommand")]
-    private async Task DisablePluginAsync(HutaoPlugin? plugin)
+    private async Task DisablePluginAsync(PluginInfo? plugin)
     {
-        if (plugin == null) return;
+        if (plugin is null)
+        {
+            return;
+        }
 
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Disable plugin", "PluginViewModel.Command", new Dictionary<string, string>
         {
-            { "PluginId", plugin.Manifest.Id },
+            { "PluginId", plugin.Id },
             { "PluginName", plugin.Manifest.Name },
         }));
 
-        if (plugin == null)
-        {
-            return;
-        }
-
-        bool result = await pluginService.DisablePluginAsync(plugin);
-        if (result)
-        {
-            await LoadCommand.ExecuteAsync(null);
-        }
+        await pluginService.DisablePluginAsync(plugin.Id);
     }
 
     [Command("UninstallPluginCommand")]
-    private async Task UninstallPluginAsync(HutaoPlugin? plugin)
+    private async Task UninstallPluginAsync(PluginInfo? plugin)
     {
-        if (plugin == null) return;
-
-        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Uninstall plugin", "PluginViewModel.Command", new Dictionary<string, string>
-        {
-            { "PluginId", plugin.Manifest.Id },
-            { "PluginName", plugin.Manifest.Name },
-        }));
-
-        if (plugin == null)
+        if (plugin is null)
         {
             return;
         }
+
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Uninstall plugin", "PluginViewModel.Command", new Dictionary<string, string>
+        {
+            { "PluginId", plugin.Id },
+            { "PluginName", plugin.Manifest.Name },
+        }));
 
         ContentDialogResult result = await contentDialogFactory
             .CreateForConfirmCancelAsync(
@@ -146,8 +151,7 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
 
         if (result is ContentDialogResult.Primary)
         {
-            await pluginService.UninstallPlugin(plugin);
-            await LoadCommand.ExecuteAsync(null);
+            pluginService.UninstallPlugin(plugin.Id);
         }
     }
 
@@ -156,7 +160,9 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Refresh plugins", "PluginViewModel.Command"));
 
-        await LoadCommand.ExecuteAsync(null);
+        // The list is kept current by the PluginsChanged subscription; only a page that was opened
+        // before the startup scan finished would need this, and that case is already covered.
+        RefreshPluginList();
     }
 
     [Command("OpenPluginDirectoryCommand")]
@@ -169,21 +175,24 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
         {
             Directory.CreateDirectory(pluginsDirectory);
         }
-        
+
         System.Diagnostics.Process.Start("explorer.exe", pluginsDirectory);
     }
 
     [Command("OpenPluginSettingsCommand")]
-    private async Task OpenPluginSettingsAsync(HutaoPlugin? plugin)
+    private async Task OpenPluginSettingsAsync(PluginInfo? plugin)
     {
-        if (plugin == null) return;
+        if (plugin is null)
+        {
+            return;
+        }
 
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Open plugin settings", "PluginViewModel.Command", new Dictionary<string, string>
         {
-            { "PluginId", plugin.Manifest.Id },
+            { "PluginId", plugin.Id },
             { "PluginName", plugin.Manifest.Name },
         }));
 
-        await navigationService.NavigateAsync<PluginSettingPage>(new NavigationExtraData(plugin.Manifest.Id));
+        await navigationService.NavigateAsync<PluginSettingPage>(new NavigationExtraData(plugin.Id));
     }
 }

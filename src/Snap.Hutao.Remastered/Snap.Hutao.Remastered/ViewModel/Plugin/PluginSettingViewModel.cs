@@ -77,7 +77,7 @@ public sealed partial class PluginSettingViewModel : Abstraction.ViewModel
         }
         catch (Exception ex)
         {
-            messenger.Send(InfoBarMessage.Error("加载插件设置失败", ex));
+            messenger.Send(InfoBarMessage.Error(SH.ViewPagePluginSettingLoadFailed, ex));
             return false;
         }
     }
@@ -96,14 +96,14 @@ public sealed partial class PluginSettingViewModel : Abstraction.ViewModel
                 settingItem.ValueType,
                 PluginId, 
                 settingItem.Name,
-                ConvertToCurrectType(settingItem)
+                ConvertToCorrectType(settingItem)
                 );
 
-            messenger.Send(InfoBarMessage.Success($"设置 '{settingItem.Name}' 已保存"));
+            messenger.Send(InfoBarMessage.Success(SH.FormatViewPagePluginSettingSaveSuccess(settingItem.Name)));
         }
         catch (Exception ex)
         {
-            messenger.Send(InfoBarMessage.Error($"保存设置 '{settingItem.Name}' 失败", ex));
+            messenger.Send(InfoBarMessage.Error(SH.FormatViewPagePluginSettingSaveFailed(settingItem.Name), ex));
         }
     }
 
@@ -122,18 +122,18 @@ public sealed partial class PluginSettingViewModel : Abstraction.ViewModel
                 settingItem.ValueType,
                 PluginId,
                 settingItem.Name,
-                ConvertToCurrectType(settingItem)
+                ConvertToCorrectType(settingItem)
                 );
 
-            messenger.Send(InfoBarMessage.Success($"设置 '{settingItem.Name}' 已重置"));
+            messenger.Send(InfoBarMessage.Success(SH.FormatViewPagePluginSettingResetSuccess(settingItem.Name)));
         }
         catch (Exception ex)
         {
-            messenger.Send(InfoBarMessage.Error($"重置设置 '{settingItem.Name}' 失败", ex));
+            messenger.Send(InfoBarMessage.Error(SH.FormatViewPagePluginSettingResetFailed(settingItem.Name), ex));
         }
     }
 
-    private object? ConvertToCurrectType(EditableSettingItem settingItem)
+    private static object? ConvertToCorrectType(EditableSettingItem settingItem)
     {
         string? s = settingItem.CurrentValue?.ToString();
 
