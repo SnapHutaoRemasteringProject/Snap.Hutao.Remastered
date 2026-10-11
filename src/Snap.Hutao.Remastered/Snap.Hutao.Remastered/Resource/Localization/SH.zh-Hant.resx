@@ -1641,7 +1641,7 @@
     <value>為了確保功能的啟用者有獨立的判斷能力，我們將不定期更新這些功能的啟用條件，如果您是一位內容創造者，在創作胡桃相關的內容時請不要向你的受眾介紹具體的啟用方法。</value>
   </data>
   <data name="ViewDialogReconfirmTextHeader" xml:space="preserve">
-    <value>為防止你在無意間啟用，請輸入正在啟用的功能開關的<b>標題名稱</b></value>
+    <value>為防止你在無意間啟用，請輸入正在啟用的功能開關的&lt;b&gt;標題名稱&lt;/b&gt;</value>
   </data>
   <data name="ViewDialogReconfirmTitle" xml:space="preserve">
     <value>你正在啟用一個危險功能</value>
