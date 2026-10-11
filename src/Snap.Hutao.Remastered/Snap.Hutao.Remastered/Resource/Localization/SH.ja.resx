@@ -1641,7 +1641,7 @@
     <value>これらの機能の使用人は独立的な判断能力を確保するため、私たちは不定期に機能の有効条件を更新します。コンテンツ制作者の方は、胡桃関連の内容を創作する際には、特定の有効化方法を視聴者と共有しないでください。</value>
   </data>
   <data name="ViewDialogReconfirmTextHeader" xml:space="preserve">
-    <value>意図せず有効になってしまうのを防ぐため、有効にしようとしている機能の<title>タイトル名</title>を入力してください。</value>
+    <value>意図せず有効になってしまうのを防ぐため、有効にしようとしている機能の&lt;b&gt;タイトル名&lt;/b&gt;を入力してください。</value>
   </data>
   <data name="ViewDialogReconfirmTitle" xml:space="preserve">
     <value>危険な機能を有効にしています</value>
