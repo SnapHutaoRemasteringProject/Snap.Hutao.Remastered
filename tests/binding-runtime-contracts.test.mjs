@@ -124,7 +124,7 @@ test('settings open two independent windows with native TwoWay editors and a liv
     assert.match(settings, /Click="OpenGlassControls"/);
     assert.match(settings, /Click="OpenGlassEffects"/);
     assert.doesNotMatch(settings, /LiquidGlassParameterSettingStyle|LiquidGlassToggleSettingStyle/);
-    assert.match(controls, /ToggleSwitch IsOn="\{x:Bind Enabled, Mode=TwoWay\}"/);
+    assert.match(controls, /<ToggleSwitch\b[^>]*\bIsOn="\{x:Bind Enabled, Mode=TwoWay\}"/);
     assert.match(effects, /Value="\{x:Bind Value, Mode=TwoWay\}"/);
     assert.doesNotMatch(controls + effects, /<NumberBox|<CheckBox/);
     assert.match(read('UI/Xaml/View/Window/LiquidGlassEffectsWindow.xaml.cs'), /LiquidGlassPreview.Create\(profile, true\)/);
@@ -166,7 +166,7 @@ test('queued optical refreshes cannot reconnect controls during application shut
 
 test('compact achievement search keeps the transparent glass focus template', () => {
     const page = read('UI/Xaml/View/Page/AchievementPage.xaml');
-    const search = page.match(/<wl:LiquidGlassSearchBox\b[\s\S]*?<\/wl:LiquidGlassSearchBox>/)[0];
+    const search = page.match(/<wl:LiquidGlassSearchBox\b[^>]*(?:\/>|>[\s\S]*?<\/wl:LiquidGlassSearchBox>)/)[0];
     assert.doesNotMatch(search, /AutoSuggestBoxTextBoxStyle|LiquidGlassSearchBox.TextBoxStyle/);
     for (const setting of ['Height="36"', 'MinHeight="0"'])
         assert.ok(search.includes(setting));
@@ -208,4 +208,25 @@ test('mutable presentation models and their calculated values have notification 
     assert.match(read('ViewModel/Cultivation/StatisticsCultivateItem.cs'), /NotifyPropertyChangedFor\(nameof\(IsFinished\)\)/);
     assert.match(read('ViewModel/GachaLog/Countdown.cs'), /Histories.CollectionChanged \+= OnHistoriesChanged/);
     assert.doesNotMatch(read('Snap.Hutao.Remastered.csproj'), /NoWarn[^<]*WMC1506/);
+});
+
+test('dev score recalculation API shares the inherited notification event', () => {
+    const score = read('ViewModel/AvatarProperty/ReliquaryView.cs');
+    assert.match(score, /SetScoreValue\(double value\)\s*\{\s*ScoreValue = value;/);
+    assert.match(score, /NotifyPropertyChangedFor\(nameof\(Score\)\)/);
+    assert.match(score, /NotifyPropertyChangedFor\(nameof\(ScoreColorValue\)\)/);
+    assert.doesNotMatch(score, /event PropertyChangedEventHandler/);
+    assert.match(read('ViewModel/AvatarProperty/AvatarView.cs'), /RecommendedSubProperties[^\n]*= \[\]/);
+});
+
+test('dev backpack badges and inactive substats survive the glass rebase', () => {
+    const page = read('UI/Xaml/View/Page/BackpackPage.xaml');
+    assert.ok([...page.matchAll(/ContentTemplate="\{StaticResource EquippedAvatarBadgeTemplate\}"/g)].length >= 2);
+    assert.match(page, /ReliquarySubStatStateToColorConverter/);
+    const item = read('ViewModel/Backpack/BackpackItemView.cs');
+    assert.match(item, /FillEquippedAvatar\(BackpackServiceMetadataContext context\)/);
+    assert.match(item, /NotifyPropertyChangedFor\(nameof\(HasEquippedAvatar\)\)/);
+    const stat = read('ViewModel/Backpack/BackpackReliquarySubStatView.cs');
+    assert.match(stat, /ReliquarySubStatState.Inactive/);
+    assert.match(stat, /case nameof\(State\):\s*OnPropertyChanged\(nameof\(DisplayName\)\)/);
 });
