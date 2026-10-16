@@ -25,7 +25,7 @@
                     SelectionMode="Multiple">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="shuxvd:UIGFUidSelection">
-                            <TextBlock Text="{Binding Uid}"/>
+                            <TextBlock Text="{x:Bind Uid, Mode=OneWay}"/>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ListView>

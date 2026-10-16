@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cw="using:CommunityToolkit.WinUI"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
@@ -13,9 +14,11 @@
     xmlns:shuxcas="using:Snap.Hutao.Remastered.UI.Xaml.Control.AutoSortBox"
     xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxdcs="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shv="using:Snap.Hutao.Remastered.ViewModel.Backpack"
+    xmlns:wl="using:WinUI.LiquidGlass"
     d:DataContext="{d:DesignInstance shv:BackpackViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
@@ -133,8 +136,8 @@
                             <shuxc:ItemIcon
                                 Width="54"
                                 Height="54"
-                                Icon="{Binding Weapon.Icon, Converter={StaticResource EquipIconConverter}}"
-                                Quality="{Binding Weapon.RankLevel}"/>
+                                Icon="{x:Bind Weapon.Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}"
+                                Quality="{x:Bind Weapon.RankLevel, Mode=OneWay}"/>
                             <ContentControl
                                 Content="{Binding}"
                                 ContentTemplate="{StaticResource EquippedAvatarBadgeTemplate}"
@@ -146,14 +149,14 @@
                         <Grid Margin="16,0">
                             <StackPanel VerticalAlignment="Center" Spacing="2">
                                 <TextBlock
-                                    Text="{Binding Weapon.Name}"
+                                    Text="{x:Bind Weapon.Name, Mode=OneWay}"
                                     TextTrimming="CharacterEllipsis"
                                     TextWrapping="NoWrap"/>
                                 <TextBlock
                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="{Binding WeaponTypeName}"/>
-                                <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{Binding LevelRefinementInfo}"/>
+                                    Text="{x:Bind WeaponTypeName, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind LevelRefinementInfo, Mode=OneWay}"/>
                             </StackPanel>
                             <shuxc:LockIcon
                                 Width="20"
@@ -161,7 +164,7 @@
                                 Margin="0,0,-10,4"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
-                                IsLocked="{Binding IsLocked}"/>
+                                IsLocked="{x:Bind IsLocked, Mode=OneWay}"/>
                         </Grid>
                     </shuxcc:HorizontalCard.Right>
                 </shuxcc:HorizontalCard>
@@ -210,14 +213,14 @@
                                 Height="20"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
-                                IsLocked="{Binding IsLocked}"/>
+                                IsLocked="{x:Bind IsLocked, Mode=OneWay}"/>
                             <shuxc:MarkIcon
                                 Grid.Column="2"
                                 Width="20"
                                 Height="20"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
-                                IsMarked="{Binding IsMarked}"/>
+                                IsMarked="{x:Bind IsMarked, Mode=OneWay}"/>
                         </Grid>
 
                         <Grid
@@ -232,8 +235,8 @@
                                 <shuxc:ItemIcon
                                     Width="54"
                                     Height="54"
-                                    Icon="{Binding Reliquary.Icon, Converter={StaticResource ItemIconConverter}}"
-                                    Quality="{Binding Reliquary.RankLevel}"/>
+                                    Icon="{x:Bind Reliquary.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                                    Quality="{x:Bind Reliquary.RankLevel, Mode=OneWay}"/>
                                 <ContentControl
                                     Content="{Binding}"
                                     ContentTemplate="{StaticResource EquippedAvatarBadgeTemplate}"
@@ -242,11 +245,11 @@
                             </Grid>
                             <Grid Grid.Column="1">
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Text="{Binding Reliquary.Name}"/>
+                                    <TextBlock Text="{x:Bind Reliquary.Name, Mode=OneWay}"/>
                                     <TextBlock
                                         Opacity="0.7"
                                         Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{Binding SetName}"/>
+                                        Text="{x:Bind SetName, Mode=OneWay}"/>
                                 </StackPanel>
                                 <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top">
                                     <TextBlock
@@ -254,15 +257,15 @@
                                         FontWeight="Bold"
                                         Style="{StaticResource BaseTextBlockStyle}">
                                         <Run Text="+"/>
-                                        <Run Text="{Binding Level}"/>
+                                        <Run Text="{x:Bind Level, Mode=OneWay}"/>
                                     </TextBlock>
                                     <TextBlock
                                         HorizontalAlignment="Right"
                                         Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{Binding DisplayScore}"
-                                        Visibility="{Binding HasScore, Converter={StaticResource BoolToVisibilityConverter}}">
+                                        Text="{x:Bind DisplayScore, Mode=OneWay}"
+                                        Visibility="{x:Bind HasScore, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                                         <TextBlock.Foreground>
-                                            <SolidColorBrush Color="{Binding ScoreColorValue, Converter={ThemeResource ScoreToColorConverter}}"/>
+                                            <SolidColorBrush Color="{Binding ScoreColorValue, Converter={ThemeResource ScoreToColorConverter}, Mode=OneWay}"/>
                                         </TextBlock.Foreground>
                                     </TextBlock>
                                 </StackPanel>
@@ -282,12 +285,12 @@
                             <TextBlock
                                 FontWeight="Bold"
                                 Style="{StaticResource BaseTextBlockStyle}"
-                                Text="{Binding MainPropName}"/>
+                                Text="{x:Bind MainPropName, Mode=OneWay}"/>
                             <TextBlock
                                 Grid.Column="1"
                                 FontWeight="Bold"
                                 Style="{StaticResource BaseTextBlockStyle}"
-                                Text="{Binding MainPropValue}"/>
+                                Text="{x:Bind MainPropValue, Mode=OneWay}"/>
                         </Grid>
 
                         <Rectangle
@@ -299,7 +302,7 @@
                             Grid.Row="4"
                             Margin="0,12"
                             ItemTemplate="{StaticResource BackpackReliquarySubStatTemplate}"
-                            ItemsSource="{Binding PaddedSubStats}"/>
+                            ItemsSource="{x:Bind PaddedSubStats, Mode=OneWay}"/>
                     </Grid>
                 </Border>
             </DataTemplate>
@@ -316,29 +319,29 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock
                         Style="{StaticResource BaseTextBlockStyle}"
-                        Text="{Binding DisplayName}"
+                        Text="{x:Bind DisplayName, Mode=OneWay}"
                         TextWrapping="NoWrap"
-                        Visibility="{Binding HasValue, Converter={StaticResource BoolToVisibilityConverter}}">
+                        Visibility="{x:Bind HasValue, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                         <TextBlock.Foreground>
                             <SolidColorBrush Color="{Binding State, Converter={ThemeResource ReliquarySubStatStateToColorConverter}}"/>
                         </TextBlock.Foreground>
                     </TextBlock>
                     <TextBlock
                         Grid.Column="1"
-                        Text="{Binding DisplayValue}"
-                        Visibility="{Binding HasValue, Converter={StaticResource BoolToVisibilityConverter}}">
+                        Text="{x:Bind DisplayValue, Mode=OneWay}"
+                        Visibility="{x:Bind HasValue, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                         <TextBlock.Foreground>
                             <SolidColorBrush Color="{Binding State, Converter={ThemeResource ReliquarySubStatStateToColorConverter}}"/>
                         </TextBlock.Foreground>
                     </TextBlock>
-                    <Grid Grid.Column="2" Visibility="{Binding HasValue, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <Grid Grid.Column="2" Visibility="{x:Bind HasValue, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                         <Ellipse
                             Width="16"
                             Height="16"
                             Opacity="0.8"
                             StrokeThickness="1">
                             <Ellipse.Stroke>
-                                <SolidColorBrush Color="{Binding EnhancedCount, Converter={ThemeResource CountToGradientColorConverter}}"/>
+                                <SolidColorBrush Color="{Binding EnhancedCount, Converter={ThemeResource CountToGradientColorConverter}, Mode=OneWay}"/>
                             </Ellipse.Stroke>
                         </Ellipse>
                         <TextBlock
@@ -346,9 +349,9 @@
                             VerticalAlignment="Center"
                             FontSize="{ThemeResource InfoBadgeValueFontSize}"
                             Style="{StaticResource CaptionTextBlockStyle}"
-                            Text="{Binding EnhancedCount}">
+                            Text="{x:Bind EnhancedCount, Mode=OneWay}">
                             <TextBlock.Foreground>
-                                <SolidColorBrush Color="{Binding EnhancedCount, Converter={ThemeResource CountToGradientColorConverter}}"/>
+                                <SolidColorBrush Color="{Binding EnhancedCount, Converter={ThemeResource CountToGradientColorConverter}, Mode=OneWay}"/>
                             </TextBlock.Foreground>
                         </TextBlock>
                     </Grid>
@@ -370,8 +373,8 @@
                         <shuxc:ItemIcon
                             Width="40"
                             Height="40"
-                            Icon="{Binding Material.Icon, Converter={StaticResource ItemIconConverter}}"
-                            Quality="{Binding Material.RankLevel}"/>
+                            Icon="{x:Bind Material.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                            Quality="{x:Bind Material.RankLevel, Mode=OneWay}"/>
                     </shuxcc:HorizontalCard.Left>
                     <shuxcc:HorizontalCard.Right>
                         <Grid Margin="16,0">
@@ -381,14 +384,14 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock
                                 VerticalAlignment="Center"
-                                Text="{Binding Material.Name}"
+                                Text="{x:Bind Material.Name, Mode=OneWay}"
                                 TextTrimming="CharacterEllipsis"/>
                             <TextBlock
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
                                 Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                                 Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{Binding DisplayCount}"/>
+                                Text="{x:Bind DisplayCount, Mode=OneWay}"/>
                         </Grid>
                     </shuxcc:HorizontalCard.Right>
                 </shuxcc:HorizontalCard>
@@ -414,17 +417,17 @@
                         Margin="-4,0,0,0"
                         HorizontalAlignment="Left"
                         ShowAsMonoChrome="True"
-                        Source="{Binding IconUri, Mode=OneWay}"
-                        Visibility="{Binding IconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
+                        Source="{x:Bind IconUri, Mode=OneTime}"
+                        Visibility="{x:Bind IconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneTime}"/>
                     <!--  Quality dot  -->
                     <Ellipse
                         Grid.Column="0"
                         Width="12"
                         Height="12"
                         HorizontalAlignment="Left"
-                        Visibility="{Binding Quality, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                        Visibility="{x:Bind Quality, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneTime}">
                         <Ellipse.Fill>
-                            <SolidColorBrush Color="{Binding Quality}"/>
+                            <SolidColorBrush Color="{x:Bind QualityColor}"/>
                         </Ellipse.Fill>
                     </Ellipse>
                     <Grid Grid.Column="0">
@@ -434,25 +437,25 @@
                             Height="20"
                             Margin="-4,0,0,0"
                             HorizontalAlignment="Left"
-                            Source="{Binding SideIconUri, Mode=OneWay}"
-                            Visibility="{Binding SideIconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
+                            Source="{x:Bind SideIconUri, Mode=OneTime}"
+                            Visibility="{x:Bind SideIconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneTime}"/>
                     </Grid>
 
                     <TextBlock
                         Grid.Column="1"
                         Height="20"
                         VerticalAlignment="Center"
-                        Text="{Binding Value}"/>
+                        Text="{x:Bind Value, Mode=OneTime}"/>
                 </Grid>
             </DataTemplate>
         </ResourceDictionary>
     </Page.Resources>
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shv:BackpackViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
-    <shuxc:StandardView HideCondition="{Binding IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" ShowCondition="{Binding Archives.CurrentItem, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
+    <shuxc:StandardView HideCondition="{x:Bind ((shv:BackpackViewModel)DataContext).IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" ShowCondition="{x:Bind ((shv:BackpackViewModel)DataContext).Archives.CurrentItem, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
         <shuxc:StandardView.EmptyContent>
             <Border
                 HorizontalAlignment="Center"
@@ -461,6 +464,7 @@
                 <Border
                     MinWidth="480"
                     Padding="16"
+                    Background="{ThemeResource HutaoCardBrush}"
                     Style="{ThemeResource AcrylicBorderCardStyle}">
                     <StackPanel>
                         <Image
@@ -472,12 +476,37 @@
                             HorizontalAlignment="Center"
                             Style="{StaticResource SubtitleTextBlockStyle}"
                             Text="{shuxm:ResourceString Name=ViewPageBackpackAddArchiveHint}"/>
-                        <Button
+                        <cwc:SwitchPresenter
+                            x:Name="GlassPresenter_20193"
                             Margin="0,16,0,0"
-                            Padding="16,8"
                             HorizontalAlignment="Stretch"
-                            Command="{Binding AddArchiveCommand}"
-                            Content="{shuxm:ResourceString Name=ViewPageBackpackAddArchive}"/>
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            IsTabStop="False"
+                            Tag="LiquidGlass:Button"
+                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>0</x:Int32>
+                                </cwc:Case.Value>
+                                <Button
+                                    Padding="16,8"
+                                    HorizontalAlignment="Stretch"
+                                    Command="{x:Bind ((shv:BackpackViewModel)DataContext).AddArchiveCommand, Mode=OneWay}"
+                                    Content="{shuxm:ResourceString Name=ViewPageBackpackAddArchive}"/>
+                            </cwc:Case>
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>1</x:Int32>
+                                </cwc:Case.Value>
+                                <wl:LiquidGlassButton
+                                    Padding="16,8"
+                                    HorizontalAlignment="Stretch"
+                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                    Command="{x:Bind ((shv:BackpackViewModel)DataContext).AddArchiveCommand, Mode=OneWay}"
+                                    Content="{shuxm:ResourceString Name=ViewPageBackpackAddArchive}"/>
+                            </cwc:Case>
+                        </cwc:SwitchPresenter>
                     </StackPanel>
                 </Border>
             </Border>
@@ -494,7 +523,7 @@
                 Grid.Row="0"
                 Margin="16"
                 cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
                     <Grid Margin="4,4" ColumnSpacing="4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -505,36 +534,69 @@
                             Height="44"
                             Margin="6,-2,6,6"
                             HorizontalAlignment="Right"
-                            AvailableTokens="{Binding SearchData.AvailableTokens}"
-                            FilterCommand="{Binding FilterCommand}"
-                            ItemsSource="{Binding SearchData.FilterTokens, Mode=TwoWay}"
+                            AvailableTokens="{x:Bind ((shv:BackpackViewModel)DataContext).SearchData.AvailableTokens, Mode=OneWay}"
+                            FilterCommand="{x:Bind ((shv:BackpackViewModel)DataContext).FilterCommand, Mode=OneWay}"
+                            ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).SearchData.FilterTokens, Mode=OneWay}"
                             MaximumTokens="5"
                             PlaceholderText="{shuxm:ResourceString Name=ViewPageBackpackFilterPlaceholder}"
                             QueryIcon="{cw:FontIconSource Glyph=&#xE721;}"
                             Style="{StaticResource DefaultAutoSuggestTokenBoxStyle}"
                             SuggestedItemTemplate="{StaticResource TokenTemplate}"
-                            SuggestedItemsSource="{Binding SearchData.AvailableTokens.Values}"
-                            Text="{Binding SearchData.FilterToken, Mode=TwoWay}"
+                            SuggestedItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).SearchData.AvailableTokens.Values, Mode=OneWay}"
+                            Text="{x:Bind ((shv:BackpackViewModel)DataContext).SearchData.FilterToken, Mode=TwoWay}"
                             TokenItemTemplate="{StaticResource TokenTemplate}"/>
                         <StackPanel
                             Grid.Column="1"
                             VerticalAlignment="Center"
                             Orientation="Horizontal"
                             Spacing="6">
-                            <Button VerticalAlignment="Center">
-                                <Button.Flyout>
-                                    <Flyout>
-                                        <shuxcas:AutoSortList
-                                            Width="260"
-                                            AvailableTokens="{Binding AvailableSortTokens}"
-                                            SortCommand="{Binding ApplySortCommand}"/>
-                                    </Flyout>
-                                </Button.Flyout>
-                                <StackPanel Orientation="Horizontal" Spacing="4">
-                                    <FontIcon FontSize="12" Glyph="&#xE8CB;"/>
-                                    <TextBlock Text="{shuxm:ResourceString Name=ViewPageBackpackSortHeader}"/>
-                                </StackPanel>
-                            </Button>
+                            <cwc:SwitchPresenter
+                                x:Name="GlassPresenter_22704"
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
+                                IsTabStop="False"
+                                Tag="LiquidGlass:Button"
+                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>0</x:Int32>
+                                    </cwc:Case.Value>
+                                    <Button VerticalAlignment="Center">
+                                        <Button.Flyout>
+                                            <Flyout>
+                                                <shuxcas:AutoSortList
+                                                    Width="260"
+                                                    AvailableTokens="{x:Bind ((shv:BackpackViewModel)DataContext).AvailableSortTokens, Mode=OneWay}"
+                                                    SortCommand="{x:Bind ((shv:BackpackViewModel)DataContext).ApplySortCommand, Mode=OneWay}"/>
+                                            </Flyout>
+                                        </Button.Flyout>
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <FontIcon FontSize="12" Glyph="&#xE8CB;"/>
+                                            <TextBlock Text="{shuxm:ResourceString Name=ViewPageBackpackSortHeader}"/>
+                                        </StackPanel>
+                                    </Button>
+                                </cwc:Case>
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>1</x:Int32>
+                                    </cwc:Case.Value>
+                                    <wl:LiquidGlassButton VerticalAlignment="Center" shuxcth:ControlMaterialState.IsManaged="True">
+                                        <wl:LiquidGlassButton.Flyout>
+                                            <Flyout>
+                                                <shuxcas:AutoSortList
+                                                    Width="260"
+                                                    AvailableTokens="{x:Bind ((shv:BackpackViewModel)DataContext).AvailableSortTokens, Mode=OneWay}"
+                                                    SortCommand="{x:Bind ((shv:BackpackViewModel)DataContext).ApplySortCommand, Mode=OneWay}"/>
+                                            </Flyout>
+                                        </wl:LiquidGlassButton.Flyout>
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <FontIcon FontSize="12" Glyph="&#xE8CB;"/>
+                                            <TextBlock Text="{shuxm:ResourceString Name=ViewPageBackpackSortHeader}"/>
+                                        </StackPanel>
+                                    </wl:LiquidGlassButton>
+                                </cwc:Case>
+                            </cwc:SwitchPresenter>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -542,35 +604,88 @@
             <Pivot
                 Grid.Row="1"
                 Margin="0,-24"
-                SelectedIndex="{Binding SelectedCategoryIndex, Mode=TwoWay}"
+                SelectedIndex="{x:Bind ((shv:BackpackViewModel)DataContext).SelectedCategoryIndex, Mode=TwoWay}"
                 Style="{ThemeResource CardPivotStyle}">
                 <Pivot.RightHeader>
                     <CommandBar Background="Transparent" DefaultLabelPosition="Right">
                         <AppBarElementContainer AllowFocusOnInteraction="True">
                             <shuxc:SizeRestrictedContentControl Margin="2,6,3,6">
-                                <ComboBox
-                                    DisplayMemberPath="Name"
-                                    ItemsSource="{Binding Archives}"
-                                    SelectedItem="{Binding Archives.CurrentItem, Mode=TwoWay}"
-                                    Style="{ThemeResource CommandBarComboBoxStyle}"/>
+                                <cwc:SwitchPresenter
+                                    x:Name="GlassPresenter_24224"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    IsTabStop="False"
+                                    Tag="LiquidGlass:ComboBox"
+                                    Visibility="{x:Bind GlassPresenter_24224_State.Visibility, Mode=OneWay}"
+                                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
+                                    <cwc:Case>
+                                        <cwc:Case.Value>
+                                            <x:Int32>0</x:Int32>
+                                        </cwc:Case.Value>
+                                        <ComboBox
+                                            x:Name="GlassPresenter_24224_State"
+                                            DataContext="{x:Bind GlassPresenter_24224.DataContext, Mode=OneWay}"
+                                            DisplayMemberPath="Name"
+                                            ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Archives, Mode=OneWay}"
+                                            RequestedTheme="{x:Bind GlassPresenter_24224.ActualTheme, Mode=OneWay}"
+                                            SelectedItem="{x:Bind ((shv:BackpackViewModel)DataContext).Archives.CurrentItem, Mode=TwoWay}"
+                                            Style="{ThemeResource CommandBarComboBoxStyle}"/>
+                                    </cwc:Case>
+                                    <cwc:Case>
+                                        <cwc:Case.Value>
+                                            <x:Int32>1</x:Int32>
+                                        </cwc:Case.Value>
+                                        <wl:LiquidGlassComboBox
+                                            x:Name="GlassPresenter_24224_StateGlass"
+                                            Width="{x:Bind GlassPresenter_24224_State.Width, Mode=OneWay}"
+                                            Height="{x:Bind GlassPresenter_24224_State.Height, Mode=OneWay}"
+                                            MinWidth="{x:Bind GlassPresenter_24224_State.MinWidth, Mode=OneWay}"
+                                            MinHeight="{x:Bind GlassPresenter_24224_State.MinHeight, Mode=OneWay}"
+                                            MaxWidth="{x:Bind GlassPresenter_24224_State.MaxWidth, Mode=OneWay}"
+                                            MaxHeight="{x:Bind GlassPresenter_24224_State.MaxHeight, Mode=OneWay}"
+                                            Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(GlassPresenter_24224_State.Padding), Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassPresenter_24224_State, Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                                            BorderThickness="{x:Bind GlassPresenter_24224_State.BorderThickness, Mode=OneWay}"
+                                            DisplayMemberPath="{x:Bind GlassPresenter_24224_State.DisplayMemberPath, Mode=OneWay}"
+                                            FlowDirection="{x:Bind GlassPresenter_24224_State.FlowDirection, Mode=OneWay}"
+                                            FontFamily="{x:Bind GlassPresenter_24224_State.FontFamily, Mode=OneWay}"
+                                            FontSize="{x:Bind GlassPresenter_24224_State.FontSize, Mode=OneWay}"
+                                            FontStyle="{x:Bind GlassPresenter_24224_State.FontStyle, Mode=OneWay}"
+                                            FontWeight="{x:Bind GlassPresenter_24224_State.FontWeight, Mode=OneWay}"
+                                            Foreground="{x:Bind GlassPresenter_24224_State.Foreground, Mode=OneWay}"
+                                            Header="{x:Bind GlassPresenter_24224_State.Header, Mode=OneWay}"
+                                            HeaderTemplate="{x:Bind GlassPresenter_24224_State.HeaderTemplate, Mode=OneWay}"
+                                            IsDropDownOpen="{x:Bind GlassPresenter_24224_State.IsDropDownOpen, Mode=TwoWay}"
+                                            IsEditable="{x:Bind GlassPresenter_24224_State.IsEditable, Mode=OneWay}"
+                                            IsEnabled="{x:Bind GlassPresenter_24224_State.IsEnabled, Mode=OneWay}"
+                                            IsTextSearchEnabled="{x:Bind GlassPresenter_24224_State.IsTextSearchEnabled, Mode=OneWay}"
+                                            ItemsSource="{x:Bind GlassPresenter_24224_State.ItemsSource, Mode=OneWay}"
+                                            MaxDropDownHeight="{x:Bind GlassPresenter_24224_State.MaxDropDownHeight, Mode=OneWay}"
+                                            PlaceholderText="{x:Bind GlassPresenter_24224_State.PlaceholderText, Mode=OneWay}"
+                                            SelectedIndex="{x:Bind GlassPresenter_24224_State.SelectedIndex, Mode=TwoWay}"
+                                            SelectedValuePath="{x:Bind GlassPresenter_24224_State.SelectedValuePath, Mode=OneWay}"/>
+                                    </cwc:Case>
+                                </cwc:SwitchPresenter>
                             </shuxc:SizeRestrictedContentControl>
                         </AppBarElementContainer>
                         <AppBarButton
-                            Command="{Binding AddArchiveCommand}"
+                            Command="{x:Bind ((shv:BackpackViewModel)DataContext).AddArchiveCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE710;}"
                             Label="{shuxm:ResourceString Name=ViewPageBackpackAddArchive}"/>
                         <AppBarButton
-                            Command="{Binding RemoveArchiveCommand}"
+                            Command="{x:Bind ((shv:BackpackViewModel)DataContext).RemoveArchiveCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE74D;}"
                             Label="{shuxm:ResourceString Name=ViewPageBackpackRemoveArchive}"/>
                         <AppBarSeparator/>
                         <AppBarButton
-                            Command="{Binding RefreshByEmbeddedYaeCommand}"
+                            Command="{x:Bind ((shv:BackpackViewModel)DataContext).RefreshByEmbeddedYaeCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE72C;}"
                             Label="{shuxm:ResourceString Name=ViewPageBackpackRefreshByEmbeddedYae}"/>
                         <AppBarSeparator/>
                         <AppBarButton
-                            Command="{Binding ConfigureScoreCommand}"
+                            Command="{x:Bind ((shv:BackpackViewModel)DataContext).ConfigureScoreCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE946;}"
                             Label="{shuxm:ResourceString Name=ViewPageBackpackConfigureScore}"/>
                     </CommandBar>
@@ -578,11 +693,11 @@
 
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryWeapon}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{Binding Items}"
+                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -596,11 +711,11 @@
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryReliquary}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{Binding Items}"
+                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -614,11 +729,11 @@
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryUpgradeItem}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{Binding Items}"
+                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -632,11 +747,11 @@
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryFood}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{Binding Items}"
+                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -650,11 +765,11 @@
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryMaterial}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{Binding Items}"
+                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -668,11 +783,11 @@
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryGadget}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{Binding Items}"
+                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -686,11 +801,11 @@
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryQuest}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{Binding Items}"
+                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -704,11 +819,11 @@
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryPreciousItem}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{Binding Items}"
+                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -722,7 +837,9 @@
                 </PivotItem>
                 <!--<PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryFurniture}">
                 <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                    <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                    <Border
+                        Background="{ThemeResource HutaoCardBrush}"
+                        Style="{ThemeResource AcrylicBorderCardStyle}">
                         <GridView
                             Padding="16,16,10,10"
                             ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"

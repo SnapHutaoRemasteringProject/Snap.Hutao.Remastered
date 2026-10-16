@@ -1,11 +1,14 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model;
 
 namespace Snap.Hutao.Remastered.ViewModel.GachaLog;
 
-public sealed class StatisticsItem : Item
+[ObservableObject]
+public sealed partial class StatisticsItem : Item
 {
-    public int Count { get; set; }
+    [ObservableProperty]
+    public partial int Count { get; set; }
 }

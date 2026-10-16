@@ -1,13 +1,14 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Microsoft.UI;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI;
 using Snap.Hutao.Remastered.Core.Text.Json.Converter;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Common.Announcement;
 
-public sealed class Announcement : AnnouncementContent
+public sealed partial class Announcement : AnnouncementContent
 {
     #region Binding
 
@@ -79,43 +80,68 @@ public sealed class Announcement : AnnouncementContent
     #endregion
 
     [JsonPropertyName("type_label")]
-    public string TypeLabel { get; set; } = default!;
+    [ObservableProperty]
+    public partial string TypeLabel { get; set; } = default!;
 
     [JsonPropertyName("tag_label")]
-    public string TagLabel { get; set; } = default!;
+    [ObservableProperty]
+    public partial string TagLabel { get; set; } = default!;
 
     [JsonPropertyName("tag_icon")]
-    public string TagIcon { get; set; } = default!;
+    [ObservableProperty]
+    public partial string TagIcon { get; set; } = default!;
 
     [JsonPropertyName("login_alert")]
-    public int LoginAlert { get; set; }
+    [ObservableProperty]
+    public partial int LoginAlert { get; set; }
 
     [JsonPropertyName("start_time")]
     [JsonConverter(typeof(SimpleDateTimeOffsetConverter))]
-    public DateTimeOffset StartTime { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TimeDescriptionBrush))]
+    [NotifyPropertyChangedFor(nameof(TimeDescription))]
+    [NotifyPropertyChangedFor(nameof(TimePercent))]
+    [NotifyPropertyChangedFor(nameof(ShouldShowTimePercent))]
+    [NotifyPropertyChangedFor(nameof(TimeFormatted))]
+    public partial DateTimeOffset StartTime { get; set; }
 
     [JsonPropertyName("end_time")]
     [JsonConverter(typeof(SimpleDateTimeOffsetConverter))]
-    public DateTimeOffset EndTime { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(TimeDescriptionBrush))]
+    [NotifyPropertyChangedFor(nameof(TimeDescription))]
+    [NotifyPropertyChangedFor(nameof(TimePercent))]
+    [NotifyPropertyChangedFor(nameof(ShouldShowTimePercent))]
+    [NotifyPropertyChangedFor(nameof(TimeFormatted))]
+    public partial DateTimeOffset EndTime { get; set; }
 
     [JsonPropertyName("type")]
-    public int Type { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShouldShowTimeDescription))]
+    [NotifyPropertyChangedFor(nameof(ShouldShowTimePercent))]
+    public partial int Type { get; set; }
 
     [JsonPropertyName("remind")]
-    public int Remind { get; set; }
+    [ObservableProperty]
+    public partial int Remind { get; set; }
 
     [JsonPropertyName("alert")]
-    public int Alert { get; set; }
+    [ObservableProperty]
+    public partial int Alert { get; set; }
 
     [JsonPropertyName("tag_start_time")]
-    public string TagStartTime { get; set; } = default!;
+    [ObservableProperty]
+    public partial string TagStartTime { get; set; } = default!;
 
     [JsonPropertyName("tag_end_time")]
-    public string TagEndTime { get; set; } = default!;
+    [ObservableProperty]
+    public partial string TagEndTime { get; set; } = default!;
 
     [JsonPropertyName("remind_ver")]
-    public int RemindVersion { get; set; }
+    [ObservableProperty]
+    public partial int RemindVersion { get; set; }
 
     [JsonPropertyName("has_content")]
-    public bool HasContent { get; set; }
+    [ObservableProperty]
+    public partial bool HasContent { get; set; }
 }

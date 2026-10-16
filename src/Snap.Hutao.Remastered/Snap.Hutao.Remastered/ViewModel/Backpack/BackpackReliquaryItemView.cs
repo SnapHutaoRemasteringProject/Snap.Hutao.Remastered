@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Model.Metadata.Converter;
@@ -11,7 +12,8 @@ using System.Globalization;
 
 namespace Snap.Hutao.Remastered.ViewModel.Backpack;
 
-public sealed class BackpackReliquaryItemView : BackpackItemView
+[WinRT.GeneratedBindableCustomProperty]
+public sealed partial class BackpackReliquaryItemView : BackpackItemView
 {
     public Reliquary Reliquary { get; private set; } = default!;
 
@@ -31,7 +33,11 @@ public sealed class BackpackReliquaryItemView : BackpackItemView
 
     public string? MainPropValue { get; private set; }
 
-    public double Score { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasScore))]
+    [NotifyPropertyChangedFor(nameof(DisplayScore))]
+    [NotifyPropertyChangedFor(nameof(ScoreColorValue))]
+    public partial double Score { get; set; }
 
     public bool HasScore => Score > 0;
 

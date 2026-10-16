@@ -58,15 +58,15 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
     [GeneratedConstructor]
     public partial TestViewModel(IServiceProvider serviceProvider);
 
-    public UploadAnnouncement Announcement { get; set => SetProperty(ref field, value); } = new();
+    public AnnouncementEditor Announcement { get; set => SetProperty(ref field, value); } = new();
 
     public ExtractOptions ExtractExeOptions { get; } = new();
 
-    public int GachaLogCompensationDays { get; set; } = 15;
+    public int GachaLogCompensationDays { get; set => SetProperty(ref field, value); } = 15;
 
     public DesignationOptions GachaLogDesignationOptions { get; } = new();
 
-    public int CdnCompensationDays { get; set; } = 15;
+    public int CdnCompensationDays { get; set => SetProperty(ref field, value); } = 15;
 
     public DesignationOptions CdnDesignationOptions { get; } = new();
 
@@ -75,61 +75,111 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
     public bool OverrideElevationRequirement
     {
         get => LocalSetting.Get(SettingKeys.OverrideElevationRequirement, false);
-        set => LocalSetting.Set(SettingKeys.OverrideElevationRequirement, value);
+        set
+        {
+            if (OverrideElevationRequirement == value) return;
+            LocalSetting.Set(SettingKeys.OverrideElevationRequirement, value);
+            OnPropertyChanged(nameof(OverrideElevationRequirement));
+        }
     }
 
     public bool OverrideUpdateVersionComparison
     {
         get => LocalSetting.Get(SettingKeys.OverrideUpdateVersionComparison, false);
-        set => LocalSetting.Set(SettingKeys.OverrideUpdateVersionComparison, value);
+        set
+        {
+            if (OverrideUpdateVersionComparison == value) return;
+            LocalSetting.Set(SettingKeys.OverrideUpdateVersionComparison, value);
+            OnPropertyChanged(nameof(OverrideUpdateVersionComparison));
+        }
     }
 
     public bool OverridePackageConvertDirectoryPermissionsRequirement
     {
         get => LocalSetting.Get(SettingKeys.LaunchOverridePackageConvertDirectoryPermissions, false);
-        set => LocalSetting.Set(SettingKeys.LaunchOverridePackageConvertDirectoryPermissions, value);
+        set
+        {
+            if (OverridePackageConvertDirectoryPermissionsRequirement == value) return;
+            LocalSetting.Set(SettingKeys.LaunchOverridePackageConvertDirectoryPermissions, value);
+            OnPropertyChanged(nameof(OverridePackageConvertDirectoryPermissionsRequirement));
+        }
     }
 
     public bool OverrideHardDriveType
     {
         get => LocalSetting.Get(SettingKeys.OverridePhysicalDriverType, false);
-        set => LocalSetting.Set(SettingKeys.OverridePhysicalDriverType, value);
+        set
+        {
+            if (OverrideHardDriveType == value) return;
+            LocalSetting.Set(SettingKeys.OverridePhysicalDriverType, value);
+            OnPropertyChanged(nameof(OverrideHardDriveType));
+        }
     }
 
     public bool OverrideHardDriveTypeIsSolidState
     {
         get => LocalSetting.Get(SettingKeys.PhysicalDriverIsAlwaysSolidState, false);
-        set => LocalSetting.Set(SettingKeys.PhysicalDriverIsAlwaysSolidState, value);
+        set
+        {
+            if (OverrideHardDriveTypeIsSolidState == value) return;
+            LocalSetting.Set(SettingKeys.PhysicalDriverIsAlwaysSolidState, value);
+            OnPropertyChanged(nameof(OverrideHardDriveTypeIsSolidState));
+        }
     }
 
     public bool AlwaysIsFirstRunAfterUpdate
     {
         get => LocalSetting.Get(SettingKeys.AlwaysIsFirstRunAfterUpdate, false);
-        set => LocalSetting.Set(SettingKeys.AlwaysIsFirstRunAfterUpdate, value);
+        set
+        {
+            if (AlwaysIsFirstRunAfterUpdate == value) return;
+            LocalSetting.Set(SettingKeys.AlwaysIsFirstRunAfterUpdate, value);
+            OnPropertyChanged(nameof(AlwaysIsFirstRunAfterUpdate));
+        }
     }
 
     public bool AlphaBuildUseCNPatchEndpoint
     {
         get => LocalSetting.Get(SettingKeys.AlphaBuildUseCnPatchEndpoint, false);
-        set => LocalSetting.Set(SettingKeys.AlphaBuildUseCnPatchEndpoint, value);
+        set
+        {
+            if (AlphaBuildUseCNPatchEndpoint == value) return;
+            LocalSetting.Set(SettingKeys.AlphaBuildUseCnPatchEndpoint, value);
+            OnPropertyChanged(nameof(AlphaBuildUseCNPatchEndpoint));
+        }
     }
 
     public bool AlphaBuildUseFJPatchEndpoint
     {
         get => LocalSetting.Get(SettingKeys.AlphaBuildUseFjPatchEndpoint, false);
-        set => LocalSetting.Set(SettingKeys.AlphaBuildUseFjPatchEndpoint, value);
+        set
+        {
+            if (AlphaBuildUseFJPatchEndpoint == value) return;
+            LocalSetting.Set(SettingKeys.AlphaBuildUseFjPatchEndpoint, value);
+            OnPropertyChanged(nameof(AlphaBuildUseFJPatchEndpoint));
+        }
     }
 
     public bool TreatPredownloadAsMain
     {
         get => LocalSetting.Get(SettingKeys.TreatPredownloadAsMain, false);
-        set => LocalSetting.Set(SettingKeys.TreatPredownloadAsMain, value);
+        set
+        {
+            if (TreatPredownloadAsMain == value) return;
+            LocalSetting.Set(SettingKeys.TreatPredownloadAsMain, value);
+            OnPropertyChanged(nameof(TreatPredownloadAsMain));
+        }
     }
 
     public bool EnableBetaGameInstall
     {
         get => LocalSetting.Get(SettingKeys.EnableBetaGameInstall, false);
-        set => LocalSetting.Set(SettingKeys.EnableBetaGameInstall, value);
+        set
+        {
+            if (EnableBetaGameInstall == value) return;
+            LocalSetting.Set(SettingKeys.EnableBetaGameInstall, value);
+            OnPropertyChanged(nameof(EnableBetaGameInstall));
+        }
     }
 
     [GeneratedRegex(@"AssetBundles.*\.blk$", RegexOptions.IgnoreCase)]
@@ -188,7 +238,7 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
         {
             string? accessToken = await hutaoUserOptions.GetAccessTokenAsync().ConfigureAwait(false);
             HutaoAsAServiceClient hutaoAsAServiceClient = scope.ServiceProvider.GetRequiredService<HutaoAsAServiceClient>();
-            Response response = await hutaoAsAServiceClient.UploadAnnouncementAsync(accessToken, Announcement).ConfigureAwait(false);
+            Response response = await hutaoAsAServiceClient.UploadAnnouncementAsync(accessToken, Announcement.ToRequest()).ConfigureAwait(false);
             if (ResponseValidator.TryValidate(response, scope.ServiceProvider))
             {
                 messenger.Send(InfoBarMessage.Success(response.Message));
@@ -651,23 +701,47 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
         }
     }
 
-    public sealed class ExtractOptions
+    // Keep the wire DTO unchanged; the editable UI model supplies notifications
+    // so inactive native/glass branches also observe edits to announcement fields.
+    public sealed class AnnouncementEditor : ObservableObject
     {
-        public bool IsOversea { get; set; }
+        public string Title { get; set => SetProperty(ref field, value); } = default!;
 
-        public bool IsPreDownload { get; set; }
+        public string Content { get; set => SetProperty(ref field, value); } = default!;
+
+        public InfoBarSeverity Severity { get; set => SetProperty(ref field, value); } = InfoBarSeverity.Informational;
+
+        public string Link { get; set => SetProperty(ref field, value); } = default!;
+
+        public string? MaxPresentVersion { get; set => SetProperty(ref field, value); }
+
+        public UploadAnnouncement ToRequest() => new()
+        {
+            Title = Title,
+            Content = Content,
+            Severity = Severity,
+            Link = Link,
+            MaxPresentVersion = MaxPresentVersion,
+        };
     }
 
-    public sealed class DesignationOptions
+    public sealed class ExtractOptions : ObservableObject
     {
-        public string UserName { get; set; } = default!;
+        public bool IsOversea { get; set => SetProperty(ref field, value); }
 
-        public int Days { get; set; }
+        public bool IsPreDownload { get; set => SetProperty(ref field, value); }
+    }
+
+    public sealed class DesignationOptions : ObservableObject
+    {
+        public string UserName { get; set => SetProperty(ref field, value); } = default!;
+
+        public int Days { get; set => SetProperty(ref field, value); }
     }
 
     public sealed partial class RedeemCodeGenerateOptions : ObservableObject
     {
-        public uint Count { get; set; }
+        public uint Count { get; set => SetProperty(ref field, value); }
 
         [ObservableProperty]
         public partial bool IsTimeLimited { get; set; }
@@ -675,14 +749,14 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
         [ObservableProperty]
         public partial bool IsTimesLimited { get; set; }
 
-        public RedeemCodeTargetServiceType ServiceType { get; set; }
+        public RedeemCodeTargetServiceType ServiceType { get; set => SetProperty(ref field, value); }
 
-        public int Value { get; set; }
+        public int Value { get; set => SetProperty(ref field, value); }
 
-        public string Description { get; set; } = default!;
+        public string Description { get; set => SetProperty(ref field, value); } = default!;
 
-        public int ExpireHours { get; set; }
+        public int ExpireHours { get; set => SetProperty(ref field, value); }
 
-        public uint Times { get; set; }
+        public uint Times { get; set => SetProperty(ref field, value); }
     }
 }

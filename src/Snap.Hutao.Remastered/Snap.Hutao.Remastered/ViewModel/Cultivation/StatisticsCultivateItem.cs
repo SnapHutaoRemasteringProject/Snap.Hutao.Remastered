@@ -1,11 +1,13 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Metadata.Item;
 
 namespace Snap.Hutao.Remastered.ViewModel.Cultivation;
 
-public sealed class StatisticsCultivateItem
+[WinRT.GeneratedBindableCustomProperty]
+public sealed partial class StatisticsCultivateItem : ObservableObject
 {
     private readonly TimeSpan offset;
     private readonly bool isAllMaterialsOpenToday;
@@ -28,9 +30,15 @@ public sealed class StatisticsCultivateItem
 
     public Material Inner { get; }
 
-    public uint Count { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsFinished))]
+    [NotifyPropertyChangedFor(nameof(FormattedCount))]
+    public partial uint Count { get; set; }
 
-    public uint Current { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsFinished))]
+    [NotifyPropertyChangedFor(nameof(FormattedCount))]
+    public partial uint Current { get; set; }
 
     public bool IsFinished { get => Current >= Count; }
 
@@ -38,7 +46,8 @@ public sealed class StatisticsCultivateItem
 
     public bool IsToday { get => Inner.IsItemOfToday(offset, true, isAllMaterialsOpenToday); }
 
-    public bool ExcludedFromPresentation { get; set; }
+    [ObservableProperty]
+    public partial bool ExcludedFromPresentation { get; set; }
 
     public static StatisticsCultivateItem Create(Material inner, TimeSpan offset, bool isAllMaterialsOpenToday)
     {

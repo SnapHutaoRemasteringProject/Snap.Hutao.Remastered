@@ -1,32 +1,36 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Metadata.Tower;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.SpiralAbyss;
 
-public sealed partial class FloorView : IPropertyValuesProvider
+public sealed partial class FloorView : ObservableObject, IPropertyValuesProvider
 {
     public FloorView(TowerFloor floor, SpiralAbyssMetadataContext context)
     {
         Index = SH.FormatModelBindingHutaoComplexRankFloor(floor.Index);
         IndexValue = floor.Index;
-        Disorders = floor.Descriptions;
+        Disorders = floor.Descriptions.EmptyIfDefault();
         UpDisorders = floor.FirstDescriptions.EmptyIfDefault();
         DownDisorders = floor.SecondDescriptions.EmptyIfDefault();
 
         Levels = [.. context.IdArrayTowerLevelMap[floor.LevelGroupId].OrderBy(l => l.Index).Select(l => LevelView.Create(l, context))];
     }
 
-    public bool Engaged { get; private set; }
+    [ObservableProperty]
+    public partial bool Engaged { get; private set; }
 
     public string Index { get; }
 
-    public string? SettleTime { get; private set; }
+    [ObservableProperty]
+    public partial string? SettleTime { get; private set; }
 
-    public int Star { get; private set; }
+    [ObservableProperty]
+    public partial int Star { get; private set; }
 
     public ImmutableArray<string> Disorders { get; }
 

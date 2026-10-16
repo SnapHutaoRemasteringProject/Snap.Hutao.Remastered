@@ -1,14 +1,10 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using System.Runtime.CompilerServices;
-
 namespace Snap.Hutao.Remastered.ViewModel.GachaLog;
 
-public sealed partial class TypedWishSummary : Wish, INotifyPropertyChanged
+public sealed partial class TypedWishSummary : Wish
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     public required string TypeName { get; init; }
 
     public string FormattedMaxOrangePull
@@ -200,23 +196,6 @@ public sealed partial class TypedWishSummary : Wish, INotifyPropertyChanged
             field = value;
             OnPropertyChanged(nameof(FormattedProbabilityOfNextPullIsOrange));
         }
-    }
-
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new(propertyName));
-    }
-
-    private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (!EqualityComparer<T>.Default.Equals(field, value))
-        {
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
-        return false;
     }
 
 }

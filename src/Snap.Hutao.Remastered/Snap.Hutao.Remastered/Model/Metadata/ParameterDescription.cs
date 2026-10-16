@@ -1,9 +1,11 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace Snap.Hutao.Remastered.Model.Metadata;
 
-public sealed class ParameterDescription
+public sealed partial class ParameterDescription : ObservableObject
 {
     public ParameterDescription(string parameter, string description)
     {
@@ -15,5 +17,6 @@ public sealed class ParameterDescription
 
     public string Description { get; }
 
-    public bool IsSpecial { get; set; }
+    [ObservableProperty]
+    public partial bool IsSpecial { get; set; }
 }

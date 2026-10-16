@@ -24,7 +24,7 @@ public sealed partial class HutaoRoleCombatDatabaseViewModel : Abstraction.ViewM
     public partial int RecordTotal { get; set; }
 
     [ObservableProperty]
-    public partial ImmutableArray<AvatarView> AvatarAppearances { get; set; }
+    public partial ImmutableArray<AvatarView> AvatarAppearances { get; set; } = [];
 
     protected override async Task LoadAsync()
     {
@@ -38,6 +38,6 @@ public sealed partial class HutaoRoleCombatDatabaseViewModel : Abstraction.ViewM
         await taskContext.SwitchToMainThreadAsync();
 
         RecordTotal = hutaoCache.RecordTotal;
-        AvatarAppearances = hutaoCache.AvatarAppearances;
+        AvatarAppearances = hutaoCache.AvatarAppearances.EmptyIfDefault();
     }
 }

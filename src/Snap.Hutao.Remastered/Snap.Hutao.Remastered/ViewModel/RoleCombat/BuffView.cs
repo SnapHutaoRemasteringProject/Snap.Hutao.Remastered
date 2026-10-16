@@ -1,11 +1,12 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.RoleCombat;
 
 namespace Snap.Hutao.Remastered.ViewModel.RoleCombat;
 
-public sealed class BuffView
+public sealed partial class BuffView : ObservableObject
 {
     private BuffView(RoleCombatBuff roleCombatBuff)
     {
@@ -14,11 +15,11 @@ public sealed class BuffView
         Description = roleCombatBuff.Description.Replace("\\n", "\n", StringComparison.OrdinalIgnoreCase);
     }
 
-    public Uri Icon { get; }
+    public Uri Icon { get; private set => SetProperty(ref field, value); }
 
-    public string Name { get; }
+    public string Name { get; private set => SetProperty(ref field, value); }
 
-    public string Description { get; }
+    public string Description { get; private set => SetProperty(ref field, value); }
 
     public static BuffView Create(RoleCombatBuff roleCombatBuff)
     {

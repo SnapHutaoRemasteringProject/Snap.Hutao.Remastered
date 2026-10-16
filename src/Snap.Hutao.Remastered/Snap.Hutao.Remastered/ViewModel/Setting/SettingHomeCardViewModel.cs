@@ -22,12 +22,22 @@ public sealed partial class SettingHomeCardViewModel : ObservableObject
     public bool IsPresented
     {
         get => LocalSetting.Get(presentKey, true);
-        set => LocalSetting.Set(presentKey, value);
+        set
+        {
+            if (IsPresented == value) return;
+            LocalSetting.Set(presentKey, value);
+            OnPropertyChanged(nameof(IsPresented));
+        }
     }
 
     public int Order
     {
         get => LocalSetting.Get(orderKey, 0);
-        set => LocalSetting.Set(orderKey, value);
+        set
+        {
+            if (Order == value) return;
+            LocalSetting.Set(orderKey, value);
+            OnPropertyChanged(nameof(Order));
+        }
     }
 }

@@ -1,12 +1,12 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Microsoft.UI.Xaml.Controls;
+using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using Snap.Hutao.Remastered.ViewModel.Abstraction;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Card;
 
-public sealed partial class DailyNoteCard : Button
+public sealed partial class DailyNoteCard : MaterialCardButton
 {
     public DailyNoteCard(IServiceProvider serviceProvider)
     {

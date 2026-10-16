@@ -1,19 +1,20 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Core.Database;
+using CommunityToolkit.Mvvm.ComponentModel;
+using EntityUser = Snap.Hutao.Remastered.Model.Entity.User;
 using Snap.Hutao.Remastered.Core.Database.Abstraction;
-using Snap.Hutao.Remastered.Model;
+using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Model.Entity.Database;
+using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
-using Snap.Hutao.Remastered.Web.Hoyolab;
 using Snap.Hutao.Remastered.Web.Hoyolab.Bbs.User;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Binding;
-using EntityUser = Snap.Hutao.Remastered.Model.Entity.User;
+using Snap.Hutao.Remastered.Web.Hoyolab;
 
 namespace Snap.Hutao.Remastered.ViewModel.User;
 
-public sealed partial class User : IEntityAccess<EntityUser>,
+public sealed partial class User : ObservableObject, IEntityAccess<EntityUser>,
     ISelectable,
     IPropertyValuesProvider
 {
@@ -27,9 +28,11 @@ public sealed partial class User : IEntityAccess<EntityUser>,
         this.serviceProvider = serviceProvider;
     }
 
-    public bool IsInitialized { get; set; }
+    [ObservableProperty]
+    public partial bool IsInitialized { get; set; }
 
-    public UserInfo? UserInfo { get; set; }
+    [ObservableProperty]
+    public partial UserInfo? UserInfo { get; set; }
 
 #pragma warning disable SA1500
 #pragma warning disable SA1513
@@ -39,7 +42,7 @@ public sealed partial class User : IEntityAccess<EntityUser>,
         set
         {
             AdvancedCollectionViewCurrentChanged.Detach(field, OnCurrentUserGameRoleChanged);
-            field = value;
+            SetProperty(ref field, value);
             AdvancedCollectionViewCurrentChanged.Attach(field, OnCurrentUserGameRoleChanged);
         }
     } = default!;
@@ -53,7 +56,12 @@ public sealed partial class User : IEntityAccess<EntityUser>,
     public bool IsSelected
     {
         get => Entity.IsSelected;
-        set => Entity.IsSelected = value;
+        set
+        {
+            if (Entity.IsSelected == value) return;
+            Entity.IsSelected = value;
+            OnPropertyChanged();
+        }
     }
 
     public Cookie? CookieToken
@@ -78,7 +86,8 @@ public sealed partial class User : IEntityAccess<EntityUser>,
 
     public EntityUser Entity { get; }
 
-    public bool NeedDbUpdateAfterResume { get; set; }
+    [ObservableProperty]
+    public partial bool NeedDbUpdateAfterResume { get; set; }
 
     public string? PreferredUid { get => Entity.PreferredUid; private set => Entity.PreferredUid = value; }
 

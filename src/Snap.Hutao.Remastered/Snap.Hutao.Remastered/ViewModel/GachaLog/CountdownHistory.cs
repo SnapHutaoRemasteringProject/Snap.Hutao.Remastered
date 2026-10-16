@@ -1,11 +1,12 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Metadata;
 
 namespace Snap.Hutao.Remastered.ViewModel.GachaLog;
 
-public sealed class CountdownHistory
+public sealed partial class CountdownHistory : ObservableObject
 {
     public CountdownHistory(GachaEvent gachaEvent)
     {
@@ -15,11 +16,11 @@ public sealed class CountdownHistory
         Banner = gachaEvent.Banner;
     }
 
-    public string FormattedTime { get; }
+    public string FormattedTime { get; private set => SetProperty(ref field, value); }
 
-    public string FormattedVersionOrder { get; }
+    public string FormattedVersionOrder { get; private set => SetProperty(ref field, value); }
 
-    public Uri Banner { get; }
+    public Uri Banner { get; private set => SetProperty(ref field, value); }
 
-    public DateTimeOffset LastTime { get; }
+    public DateTimeOffset LastTime { get; private set => SetProperty(ref field, value); }
 }

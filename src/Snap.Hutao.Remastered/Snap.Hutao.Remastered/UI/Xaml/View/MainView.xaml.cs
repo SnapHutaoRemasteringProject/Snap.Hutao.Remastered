@@ -4,6 +4,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using WinUI.LiquidGlass;
 using Snap.Hutao.Remastered.ViewModel;
 using Snap.Hutao.Remastered.ViewModel.User;
 
@@ -24,27 +25,27 @@ public sealed partial class MainView : UserControl, IDataContextInitialized
 
     private void OnBackgroundActivityButtonPointerEntered(object sender, PointerRoutedEventArgs e)
     {
-        if (OpenedChevronAnimatedIcon is not null)
+        if ((sender is LiquidGlassButton ? OpenedChevronAnimatedIconGlass : OpenedChevronAnimatedIcon) is { } OpenedChevronAnimatedIconActive)
         {
-            AnimatedIcon.SetState(OpenedChevronAnimatedIcon, "PointerOver");
+            AnimatedIcon.SetState(OpenedChevronAnimatedIconActive, "PointerOver");
         }
 
-        if (ClosedChevronAnimatedIcon is not null)
+        if ((sender is LiquidGlassButton ? ClosedChevronAnimatedIconGlass : ClosedChevronAnimatedIcon) is { } ClosedChevronAnimatedIconActive)
         {
-            AnimatedIcon.SetState(ClosedChevronAnimatedIcon, "PointerOver");
+            AnimatedIcon.SetState(ClosedChevronAnimatedIconActive, "PointerOver");
         }
     }
 
     private void OnBackgroundActivityButtonPointerExited(object sender, PointerRoutedEventArgs e)
     {
-        if (OpenedChevronAnimatedIcon is not null)
+        if ((sender is LiquidGlassButton ? OpenedChevronAnimatedIconGlass : OpenedChevronAnimatedIcon) is { } OpenedChevronAnimatedIconActive)
         {
-            AnimatedIcon.SetState(OpenedChevronAnimatedIcon, "Normal");
+            AnimatedIcon.SetState(OpenedChevronAnimatedIconActive, "Normal");
         }
 
-        if (ClosedChevronAnimatedIcon is not null)
+        if ((sender is LiquidGlassButton ? ClosedChevronAnimatedIconGlass : ClosedChevronAnimatedIcon) is { } ClosedChevronAnimatedIconActive)
         {
-            AnimatedIcon.SetState(ClosedChevronAnimatedIcon, "Normal");
+            AnimatedIcon.SetState(ClosedChevronAnimatedIconActive, "Normal");
         }
     }
 

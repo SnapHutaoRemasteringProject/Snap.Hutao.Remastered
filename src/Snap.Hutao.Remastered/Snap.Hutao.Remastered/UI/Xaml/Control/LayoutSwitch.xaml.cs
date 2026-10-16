@@ -11,13 +11,22 @@ using WinRT;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control;
 
-[DependencyProperty<string>("Current", DefaultValue = List)]
 [DependencyProperty<string>("LocalSettingKeySuffixForCurrent")]
 [DependencyProperty<string>("LocalSettingKeyExtraForCurrent", DefaultValue = "")]
 public sealed partial class LayoutSwitch : Segmented
 {
     public const string List = nameof(List);
     public const string Grid = nameof(Grid);
+
+    // x:Bind observes a dependency property through its public identifier.
+    public static readonly DependencyProperty CurrentProperty = DependencyProperty.Register(
+        nameof(Current), typeof(string), typeof(LayoutSwitch), new PropertyMetadata(List));
+
+    public string Current
+    {
+        get => (string)GetValue(CurrentProperty);
+        set => SetValue(CurrentProperty, value);
+    }
 
     private static readonly FrozenDictionary<int, string> IndexTypeMap = WinRTAdaptive.ToFrozenDictionary(
     [

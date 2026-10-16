@@ -1,9 +1,11 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace Snap.Hutao.Remastered.Model;
 
-public class NameDescription
+public partial class NameDescription : ObservableObject
 {
     public NameDescription()
     {
@@ -17,7 +19,9 @@ public class NameDescription
 
     public static NameDescription Default { get; } = new(SH.ModelNameValueDefaultName, SH.ModelNameValueDefaultDescription);
 
-    public string Name { get; set; } = default!;
+    [ObservableProperty]
+    public partial string Name { get; set; } = default!;
 
-    public string Description { get; set; } = default!;
+    [ObservableProperty]
+    public partial string Description { get; set; } = default!;
 }

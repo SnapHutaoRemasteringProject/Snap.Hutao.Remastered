@@ -1,18 +1,20 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Model;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Calculable;
-using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Entity.Primitive;
+using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Metadata.Item;
-using Snap.Hutao.Remastered.Model.Primitive;
+using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
 using System.Collections.Immutable;
 using System.Text;
 
 namespace Snap.Hutao.Remastered.ViewModel.Cultivation;
 
+[WinRT.GeneratedBindableCustomProperty]
+[ObservableObject]
 public sealed partial class CultivateEntryView : Item, IPropertyValuesProvider
 {
     private CultivateEntryView(CultivateEntry entry, Item item, ImmutableArray<CultivateItemView> items)
@@ -104,13 +106,16 @@ public sealed partial class CultivateEntryView : Item, IPropertyValuesProvider
 
     public CultivateEntry Entry { get; }
 
-    public CalculableAvatar? Avatar { get; private set; }
+    [ObservableProperty]
+    public partial CalculableAvatar? Avatar { get; private set; }
 
-    public CalculableWeapon? Weapon { get; private set; }
+    [ObservableProperty]
+    public partial CalculableWeapon? Weapon { get; private set; }
 
-    public ImmutableArray<CultivateItemView> Items { get; set; }
+    [ObservableProperty]
+    public partial ImmutableArray<CultivateItemView> Items { get; set; } = [];
 
-    public ImmutableArray<MaterialId> RotationalItemIds { get; }
+    public ImmutableArray<global::Snap.Hutao.Remastered.Model.Primitive.MaterialId> RotationalItemIds { get; }
 
     public bool IsToday { get; }
 

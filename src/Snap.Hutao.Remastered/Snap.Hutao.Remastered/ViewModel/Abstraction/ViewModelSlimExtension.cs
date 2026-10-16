@@ -14,15 +14,21 @@ public static class ViewModelSlimExtension
         public void InitializeViewModelSlim<TDataContext>(IServiceProvider serviceProvider)
             where TDataContext : ViewModelSlim
         {
+            frameworkElement.Loaded += OnFrameworkElementLoaded;
             frameworkElement.Unloaded += OnFrameworkElementUnloaded;
             frameworkElement.InitializeDataContext<TDataContext>(serviceProvider);
         }
     }
 
+    private static void OnFrameworkElementLoaded(object sender, RoutedEventArgs e)
+    {
+        FrameworkElement frameworkElement = sender.As<FrameworkElement>();
+        frameworkElement.DataContext<ViewModelSlim>()?.IsViewUnloaded.Value = false;
+    }
+
     private static void OnFrameworkElementUnloaded(object sender, RoutedEventArgs e)
     {
         FrameworkElement frameworkElement = sender.As<FrameworkElement>();
-        frameworkElement.Unloaded -= OnFrameworkElementUnloaded;
         frameworkElement.DataContext<ViewModelSlim>()?.IsViewUnloaded.Value = true;
     }
 }

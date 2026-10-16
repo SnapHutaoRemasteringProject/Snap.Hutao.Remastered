@@ -1,15 +1,16 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Model;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Model.Metadata.Avatar;
+using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.RoleCombat;
 
 namespace Snap.Hutao.Remastered.ViewModel.RoleCombat;
 
-public class AvatarView : INameIconSide<Uri>
+public partial class AvatarView : ObservableObject, INameIconSide<Uri>
 {
     protected AvatarView(Avatar metaAvatar)
     {
@@ -25,15 +26,15 @@ public class AvatarView : INameIconSide<Uri>
         Type = roleCombatAvatar.AvatarType;
     }
 
-    public string Name { get; }
+    public string Name { get; private set => SetProperty(ref field, value); }
 
-    public Uri Icon { get; }
+    public Uri Icon { get; private set => SetProperty(ref field, value); }
 
-    public Uri SideIcon { get; }
+    public Uri SideIcon { get; private set => SetProperty(ref field, value); }
 
-    public QualityType Quality { get; }
+    public QualityType Quality { get; private set => SetProperty(ref field, value); }
 
-    public RoleCombatAvatarType Type { get; }
+    public RoleCombatAvatarType Type { get; private set => SetProperty(ref field, value); }
 
     public static AvatarView Create(Avatar metaAvatar)
     {

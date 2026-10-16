@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using WinRT;
 
 // ReSharper disable once CheckNamespace
@@ -14,10 +13,12 @@ namespace ABI.Microsoft.UI.Windowing;
 [SuppressMessage("", "IDE1006")]
 public static class IAppWindowExperimentalMethods
 {
+    private static readonly Guid InterfaceId = new("04db96c7-deb6-5be4-bfdc-1bc0361c8a12");
+
     public static ref readonly Guid IID
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref MemoryMarshal.AsRef<Guid>([0xC7, 0x96, 0xDB, 0x4, 0xB6, 0xDE, 0xE4, 0x5B, 0xBF, 0xDC, 0x1B, 0xC0, 0x36, 0x1C, 0x8A, 0x12]);
+        get => ref InterfaceId;
     }
 
     public static unsafe global::Microsoft.UI.Windowing.AppWindowPlacementDetails GetCurrentPlacement(IObjectReference obj)

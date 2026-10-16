@@ -24,7 +24,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Page.Resources>
@@ -41,9 +41,9 @@
                     Margin="1,0,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Stretch"
-                    Visibility="{Binding Quality, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                    Visibility="{x:Bind Quality, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneTime}">
                     <Ellipse.Fill>
-                        <SolidColorBrush Color="{Binding Quality}"/>
+                        <SolidColorBrush Color="{x:Bind QualityColor}"/>
                     </Ellipse.Fill>
                 </Ellipse>
                 <shuxci:CachedImage
@@ -52,20 +52,20 @@
                     Height="20"
                     Margin="-5,2,9,0"
                     ShowAsMonoChrome="True"
-                    Source="{Binding IconUri, Mode=OneWay}"
-                    Visibility="{Binding IconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
+                    Source="{x:Bind IconUri, Mode=OneTime}"
+                    Visibility="{x:Bind IconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneTime}"/>
                 <shuxci:CachedImage
                     Grid.Column="0"
                     Width="20"
                     Height="20"
                     Margin="-4,0,8,0"
-                    Source="{Binding SideIconUri, Mode=OneWay}"
-                    Visibility="{Binding SideIconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
+                    Source="{x:Bind SideIconUri, Mode=OneTime}"
+                    Visibility="{x:Bind SideIconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneTime}"/>
                 <TextBlock
                     Grid.Column="1"
                     Height="20"
                     VerticalAlignment="Center"
-                    Text="{Binding Value}"/>
+                    Text="{x:Bind Value, Mode=OneTime}"/>
             </Grid>
         </DataTemplate>
 
@@ -75,7 +75,7 @@
                     <MenuFlyout>
                         <MenuFlyoutItem
                             Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
-                            CommandParameter="{Binding}"
+                            CommandParameter="{x:Bind Mode=OneWay}"
                             Text="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
                     </MenuFlyout>
                 </Grid.ContextFlyout>
@@ -88,12 +88,12 @@
                     Width="48"
                     Height="48"
                     Margin="0,0,12,6"
-                    Source="{Binding Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}"/>
+                    Source="{x:Bind Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}"/>
                 <TextBlock
                     Grid.Column="1"
                     Margin="12,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding Name}"/>
+                    Text="{x:Bind Name, Mode=OneWay}"/>
             </Grid>
         </DataTemplate>
 
@@ -103,26 +103,26 @@
                     <shuxc:ItemIcon
                         Width="40"
                         Height="40"
-                        Icon="{Binding Icon, Converter={StaticResource ItemIconConverter}}"
-                        Quality="{Binding RankLevel}"/>
+                        Icon="{x:Bind Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                        Quality="{x:Bind RankLevel, Mode=OneWay}"/>
                 </shuxcc:HorizontalCard.Left>
                 <shuxcc:HorizontalCard.Right>
                     <TextBlock
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Text="{Binding Name}"/>
+                        Text="{x:Bind Name, Mode=OneWay}"/>
                 </shuxcc:HorizontalCard.Right>
             </shuxcc:HorizontalCard>
         </DataTemplate>
 
         <DataTemplate x:Key="AffixPivotHeaderTemplate" x:DataType="shmmw:LevelDescription">
-            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{Binding FormattedLevel}"/>
+            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind FormattedLevel, Mode=OneWay}"/>
         </DataTemplate>
 
         <DataTemplate x:Key="AffixPivotItemTemplate" x:DataType="shmmw:LevelDescription">
             <shuxct:DescriptionTextBlock
                 Margin="16,8,0,0"
-                Description="{Binding Description}"
+                Description="{x:Bind Description, Mode=OneWay}"
                 TextStyle="{StaticResource BodyTextBlockStyle}"/>
         </DataTemplate>
 
@@ -132,20 +132,20 @@
                     <shuxc:ItemIcon
                         Width="48"
                         Height="48"
-                        Icon="{Binding Icon}"
-                        Quality="{Binding Quality}"/>
+                        Icon="{x:Bind Icon, Mode=OneWay}"
+                        Quality="{x:Bind Quality, Mode=OneWay}"/>
                 </shuxcc:HorizontalCard.Left>
                 <shuxcc:HorizontalCard.Right>
                     <StackPanel Margin="8,0,0,0" HorizontalAlignment="Left">
-                        <TextBlock Text="{Binding Name}"/>
+                        <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
                         <StackPanel Orientation="Horizontal" Spacing="4">
                             <TextBlock
                                 Opacity="0.7"
                                 Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{Binding Rate}"/>
+                                Text="{x:Bind Rate, Mode=OneWay}"/>
                             <shuxct:RateDeltaTextBlock
                                 Opacity="0.7"
-                                Text="{Binding RateDelta}"
+                                Text="{x:Bind RateDelta, Mode=OneWay}"
                                 TextStyle="{StaticResource CaptionTextBlockStyle}"/>
                         </StackPanel>
                     </StackPanel>
@@ -159,26 +159,26 @@
                     <MenuFlyout>
                         <MenuFlyoutItem
                             Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
-                            CommandParameter="{Binding}"
+                            CommandParameter="{x:Bind Mode=OneWay}"
                             Text="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
                     </MenuFlyout>
                 </shuxcc:VerticalCard.ContextFlyout>
                 <shuxcc:VerticalCard.Top>
-                    <shuxc:ItemIcon Icon="{Binding Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}" Quality="{Binding Quality}"/>
+                    <shuxc:ItemIcon Icon="{x:Bind Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}" Quality="{x:Bind Quality, Mode=OneWay}"/>
                 </shuxcc:VerticalCard.Top>
                 <shuxcc:VerticalCard.Bottom>
                     <TextBlock
                         Margin="2,0"
-                        Text="{Binding Name}"
+                        Text="{x:Bind Name, Mode=OneWay}"
                         TextTrimming="CharacterEllipsis"/>
                 </shuxcc:VerticalCard.Bottom>
             </shuxcc:VerticalCard>
         </DataTemplate>
     </Page.Resources>
 
-    <shuxc:StandardView ShowCondition="{Binding Weapons, Converter={StaticResource EmptyObjectToBoolConverter}}">
+    <shuxc:StandardView ShowCondition="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
         <shuxc:StandardView.EmptyContent>
-            <shuxc:Loading IsLoading="{Binding Weapons, Converter={StaticResource EmptyObjectToBoolRevertConverter}}" Style="{ThemeResource DefaultLoadingViewStyle}"/>
+            <shuxc:Loading IsLoading="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons, Converter={StaticResource EmptyObjectToBoolRevertConverter}, Mode=OneWay}" Style="{ThemeResource DefaultLoadingViewStyle}"/>
         </shuxc:StandardView.EmptyContent>
         <Grid>
             <Grid.RowDefinitions>
@@ -205,21 +205,21 @@
                                 Margin="6,-2,6,6"
                                 HorizontalAlignment="Stretch"
                                 VerticalContentAlignment="Center"
-                                AvailableTokens="{Binding SearchData.AvailableTokens}"
-                                FilterCommand="{Binding FilterCommand}"
-                                ItemsSource="{Binding SearchData.FilterTokens, Mode=TwoWay}"
+                                AvailableTokens="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).SearchData.AvailableTokens, Mode=OneWay}"
+                                FilterCommand="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).FilterCommand, Mode=OneWay}"
+                                ItemsSource="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).SearchData.FilterTokens, Mode=OneWay}"
                                 MaximumTokens="5"
                                 PlaceholderText="{shuxm:ResourceString Name=ViewPageWiKiWeaponAutoSuggestBoxPlaceHolder}"
                                 QueryIcon="{cw:FontIconSource Glyph=&#xE721;}"
                                 Style="{StaticResource DefaultAutoSuggestTokenBoxStyle}"
                                 SuggestedItemTemplate="{StaticResource TokenTemplate}"
-                                SuggestedItemsSource="{Binding SearchData.AvailableTokens.Values}"
-                                Text="{Binding SearchData.FilterToken, Mode=TwoWay}"
+                                SuggestedItemsSource="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).SearchData.AvailableTokens.Values, Mode=OneWay}"
+                                Text="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).SearchData.FilterToken, Mode=TwoWay}"
                                 TokenItemTemplate="{StaticResource TokenTemplate}"/>
                         </AppBarElementContainer>
                         <AppBarButton
-                            Command="{Binding CultivateCommand}"
-                            CommandParameter="{Binding Weapons.CurrentItem}"
+                            Command="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).CultivateCommand, Mode=OneWay}"
+                            CommandParameter="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE8EF;}"
                             Label="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
                     </CommandBar>
@@ -229,7 +229,7 @@
             <cwc:SwitchPresenter
                 Grid.Row="1"
                 ContentTransitions="{ThemeResource EntranceThemeTransitions}"
-                Value="{Binding ElementName=ItemsPanelSelector, Path=Current}">
+                Value="{x:Bind ItemsPanelSelector.Current, Mode=OneWay}">
                 <cwc:Case Value="List">
                     <Border Margin="16,0,16,16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                         <Border Style="{ThemeResource AcrylicBorderCardStyle}">
@@ -243,8 +243,8 @@
                                         Grid.Row="1"
                                         Padding="{ThemeResource ListViewInSplitPanePadding}"
                                         ItemTemplate="{StaticResource WeaponListTemplate}"
-                                        ItemsSource="{Binding Weapons}"
-                                        SelectedItem="{Binding Weapons.CurrentItem, Mode=TwoWay}"
+                                        ItemsSource="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons, Mode=OneWay}"
+                                        SelectedItem="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem, Mode=TwoWay}"
                                         SelectionMode="Single">
                                         <mxi:Interaction.Behaviors>
                                             <shuxb:SelectedItemInViewBehavior/>
@@ -253,7 +253,7 @@
                                 </SplitView.Pane>
                                 <SplitView.Content>
                                     <Grid>
-                                        <StackPanel VerticalAlignment="Center" Visibility="{Binding Weapons.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}}">
+                                        <StackPanel VerticalAlignment="Center" Visibility="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}, Mode=OneWay}">
                                             <shuxci:CachedImage
                                                 Height="120"
                                                 MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
@@ -264,7 +264,7 @@
                                                 Style="{StaticResource SubtitleTextBlockStyle}"
                                                 Text="{shuxm:ResourceString Name=ControlAutoSuggestBoxNotFoundValue}"/>
                                         </StackPanel>
-                                        <ScrollViewer shuxc:ScrollViewerHelper.ScrollToTopAssociatedObject="{Binding Weapons.CurrentItem}" Visibility="{Binding Weapons.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                                        <ScrollViewer shuxc:ScrollViewerHelper.ScrollToTopAssociatedObject="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem, Mode=OneWay}" Visibility="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                                             <StackPanel Padding="16" Spacing="16">
                                                 <StackPanel.ChildrenTransitions>
                                                     <EntranceThemeTransition FromVerticalOffset="50"/>
@@ -291,7 +291,7 @@
                                                                     Grid.Column="1"
                                                                     HorizontalAlignment="Center"
                                                                     VerticalAlignment="Stretch"
-                                                                    Source="{Binding Weapons.CurrentItem.Icon, Converter={StaticResource GachaEquipIconConverter}}"/>
+                                                                    Source="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem.Icon, Converter={StaticResource GachaEquipIconConverter}, Mode=OneWay}"/>
                                                             </Grid>
                                                             <ScrollViewer
                                                                 Grid.Column="0"
@@ -300,7 +300,7 @@
                                                                 <StackPanel Spacing="16">
                                                                     <shuxcc:VerticalCard>
                                                                         <shuxcc:VerticalCard.Top>
-                                                                            <shuxc:ItemIcon Icon="{Binding Weapons.CurrentItem.Icon, Converter={StaticResource EquipIconConverter}}" Quality="{Binding Weapons.CurrentItem.RankLevel}"/>
+                                                                            <shuxc:ItemIcon Icon="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem.Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}" Quality="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem.RankLevel, Mode=OneWay}"/>
                                                                         </shuxcc:VerticalCard.Top>
                                                                         <shuxcc:VerticalCard.Bottom>
                                                                             <TextBlock
@@ -312,7 +312,7 @@
                                                                     </shuxcc:VerticalCard>
                                                                     <shuxcc:VerticalCard>
                                                                         <shuxcc:VerticalCard.Top>
-                                                                            <shuxc:ItemIcon Icon="{Binding Weapons.CurrentItem.AwakenIcon, Converter={StaticResource EquipIconConverter}}" Quality="{Binding Weapons.CurrentItem.RankLevel}"/>
+                                                                            <shuxc:ItemIcon Icon="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem.AwakenIcon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}" Quality="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem.RankLevel, Mode=OneWay}"/>
                                                                         </shuxcc:VerticalCard.Top>
                                                                         <shuxcc:VerticalCard.Bottom>
                                                                             <TextBlock
@@ -330,19 +330,19 @@
                                                                 HorizontalAlignment="Right"
                                                                 VerticalAlignment="Bottom"
                                                                 Style="{StaticResource SubtitleTextBlockStyle}"
-                                                                Text="{Binding Weapons.CurrentItem.Name}"/>
+                                                                Text="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem.Name, Mode=OneWay}"/>
                                                         </Grid>
                                                     </cwc:ConstrainedBox>
                                                 </Border>
 
                                                 <TextBlock
                                                     Margin="1,0,0,0"
-                                                    Text="{Binding Weapons.CurrentItem.Description}"
+                                                    Text="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem.Description, Mode=OneWay}"
                                                     TextWrapping="Wrap"/>
                                                 <shuxvs:BaseValueSlider
                                                     HorizontalAlignment="Stretch"
                                                     HorizontalContentAlignment="Stretch"
-                                                    BaseValueInfo="{Binding BaseValueInfo, Mode=OneWay}"/>
+                                                    BaseValueInfo="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).BaseValueInfo, Mode=OneWay}"/>
 
                                                 <Border Padding="16" Style="{ThemeResource BorderShimmerStyle}">
                                                     <StackPanel Spacing="16">
@@ -350,7 +350,7 @@
                                                             Margin="0,0,0,0"
                                                             Style="{StaticResource BaseTextBlockStyle}"
                                                             Text="{shuxm:ResourceString Name=ViewPageWiKiAvatarAscensionMaterialsHeader}"/>
-                                                        <ItemsControl ItemTemplate="{StaticResource CultivationItemTemplate}" ItemsSource="{Binding Weapons.CurrentItem.CultivationItemsView}">
+                                                        <ItemsControl ItemTemplate="{StaticResource CultivationItemTemplate}" ItemsSource="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem.CultivationItemsView, Mode=OneWay}">
                                                             <ItemsControl.ItemsPanel>
                                                                 <ItemsPanelTemplate>
                                                                     <cwc:UniformGrid
@@ -366,14 +366,14 @@
                                                 <Border
                                                     Padding="16"
                                                     Style="{ThemeResource BorderShimmerStyle}"
-                                                    Visibility="{Binding Weapons.CurrentItem.Affix, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                                                    Visibility="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem.Affix, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                                                     <StackPanel Spacing="16">
-                                                        <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{Binding Weapons.CurrentItem.Affix.Name}"/>
+                                                        <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem.Affix.Name, Mode=OneWay}"/>
                                                         <Pivot
                                                             Margin="-16,-16,0,0"
                                                             HeaderTemplate="{StaticResource AffixPivotHeaderTemplate}"
                                                             ItemTemplate="{StaticResource AffixPivotItemTemplate}"
-                                                            ItemsSource="{Binding Weapons.CurrentItem.Affix.Descriptions}"/>
+                                                            ItemsSource="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem.Affix.Descriptions, Mode=OneWay}"/>
                                                     </StackPanel>
                                                 </Border>
 
@@ -381,10 +381,10 @@
                                                 <Border
                                                     Padding="16"
                                                     Style="{ThemeResource BorderShimmerStyle}"
-                                                    Visibility="{Binding Weapons.CurrentItem.CollocationView, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                                                    Visibility="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem.CollocationView, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                                                     <StackPanel Spacing="16">
                                                         <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageWiKiAvatarTeamCombinationHeader}"/>
-                                                        <ItemsControl ItemTemplate="{StaticResource CollocationTemplate}" ItemsSource="{Binding Weapons.CurrentItem.CollocationView.Avatars}">
+                                                        <ItemsControl ItemTemplate="{StaticResource CollocationTemplate}" ItemsSource="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem.CollocationView.Avatars, Mode=OneWay}">
                                                             <ItemsControl.ItemsPanel>
                                                                 <ItemsPanelTemplate>
                                                                     <cwc:UniformGrid
@@ -408,7 +408,7 @@
                     <Border Margin="16,0,16,16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                         <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                             <Grid Padding="16,16,4,-6">
-                                <StackPanel VerticalAlignment="Center" Visibility="{Binding Weapons.Count, Converter={StaticResource Int32ToVisibilityRevertConverter}}">
+                                <StackPanel VerticalAlignment="Center" Visibility="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.Count, Converter={StaticResource Int32ToVisibilityRevertConverter}, Mode=OneWay}">
                                     <shuxci:CachedImage
                                         Height="120"
                                         MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
@@ -424,10 +424,10 @@
                                     HorizontalContentAlignment="Left"
                                     ItemContainerStyle="{StaticResource LargeGridViewItemStyle}"
                                     ItemTemplate="{StaticResource WeaponGridTemplate}"
-                                    ItemsSource="{Binding Weapons}"
-                                    SelectedItem="{Binding Weapons.CurrentItem, Mode=TwoWay}"
+                                    ItemsSource="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons, Mode=OneWay}"
+                                    SelectedItem="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.CurrentItem, Mode=TwoWay}"
                                     SelectionMode="Single"
-                                    Visibility="{Binding Weapons.Count, Converter={StaticResource Int32ToVisibilityConverter}}">
+                                    Visibility="{x:Bind ((shvw:WikiWeaponViewModel)DataContext).Weapons.Count, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
                                     <mxi:Interaction.Behaviors>
                                         <shuxb:SelectedItemInViewBehavior/>
                                     </mxi:Interaction.Behaviors>

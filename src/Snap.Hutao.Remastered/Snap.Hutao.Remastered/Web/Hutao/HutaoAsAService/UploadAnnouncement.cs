@@ -1,19 +1,25 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Snap.Hutao.Remastered.Web.Hutao.HutaoAsAService;
 
-public class UploadAnnouncement
+public partial class UploadAnnouncement : ObservableObject
 {
-    public string Title { get; set; } = default!;
+    [ObservableProperty]
+    public partial string Title { get; set; } = default!;
 
-    public string Content { get; set; } = default!;
+    [ObservableProperty]
+    public partial string Content { get; set; } = default!;
 
-    public InfoBarSeverity Severity { get; set; } = InfoBarSeverity.Informational;
+    [ObservableProperty]
+    public partial InfoBarSeverity Severity { get; set; } = InfoBarSeverity.Informational;
 
-    public string Link { get; set; } = default!;
+    [ObservableProperty]
+    public partial string Link { get; set; } = default!;
 
-    public string? MaxPresentVersion { get; set; }
+    [ObservableProperty]
+    public partial string? MaxPresentVersion { get; set; }
 }

@@ -4,22 +4,25 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:clw="using:CommunityToolkit.Labs.WinUI"
     xmlns:cw="using:CommunityToolkit.WinUI"
-    xmlns:cwcont="using:CommunityToolkit.WinUI.Controls"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:cwconv="using:CommunityToolkit.WinUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
+    xmlns:shc="using:Snap.Hutao.Remastered.Core"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shvf="using:Snap.Hutao.Remastered.ViewModel.Feedback"
+    xmlns:wl="using:WinUI.LiquidGlass"
     d:DataContext="{d:DesignInstance shvf:FeedbackViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvf:FeedbackViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Page.Resources>
@@ -37,7 +40,29 @@
                 <TextBlock Text="{shuxm:ResourceString Name=ViewPageFeedbackEnableLoopbackEnabledDescription}"/>
             </cwconv:BoolToObjectConverter.TrueValue>
             <cwconv:BoolToObjectConverter.FalseValue>
-                <HyperlinkButton Content="{shuxm:ResourceString Name=ViewPageAnnouncementViewDetails}" NavigateUri="{StaticResource DocumentLink_Loopback}"/>
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_2251"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:HyperlinkButton"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.HyperlinkButtonMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <HyperlinkButton Content="{shuxm:ResourceString Name=ViewPageAnnouncementViewDetails}" NavigateUri="{StaticResource DocumentLink_Loopback}"/>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassHyperlinkButton
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Content="{shuxm:ResourceString Name=ViewPageAnnouncementViewDetails}"
+                            NavigateUri="{StaticResource DocumentLink_Loopback}"/>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
             </cwconv:BoolToObjectConverter.FalseValue>
         </cwconv:BoolToObjectConverter>
     </Page.Resources>
@@ -58,167 +83,167 @@
                         </StackPanel.ChildrenTransitions>
                         <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                             <Border Style="{ThemeResource AcrylicBorderCardStyle}">
-                                <cwcont:SettingsExpander
-                                    Description="{Binding RuntimeOptions.Version}"
+                                <cwc:SettingsExpander
+                                    Description="{x:Bind shc:HutaoRuntime.Version}"
                                     Header="{shuxm:ResourceString Name=AppName}"
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xECAA;}"
                                     IsExpanded="True">
-                                    <cwcont:SettingsExpander.Items>
-                                        <cwcont:SettingsCard
+                                    <cwc:SettingsExpander.Items>
+                                        <cwc:SettingsCard
                                             ActionIcon="{shuxm:FontIcon Glyph=&#xE8C8;}"
                                             ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCopyDeviceIdAction}"
-                                            Command="{Binding CopyDeviceIdCommand}"
-                                            Description="{Binding RuntimeOptions.DeviceId}"
+                                            Command="{x:Bind ((shvf:FeedbackViewModel)DataContext).CopyDeviceIdCommand, Mode=OneWay}"
+                                            Description="{x:Bind shc:HutaoRuntime.DeviceId}"
                                             Header="{shuxm:ResourceString Name=ViewPageSettingDeviceIdHeader}"
                                             IsClickEnabled="True"/>
-                                        <cwcont:SettingsCard Description="{Binding IPInformation}" Header="{shuxm:ResourceString Name=ViewPageSettingDeviceIpHeader}"/>
-                                        <cwcont:SettingsCard Description="{Binding DynamicHttpProxy.DisplayProxyUri}" Header="{shuxm:ResourceString Name=ViewPageFeedbackCurrentProxyHeader}"/>
-                                        <cwcont:SettingsCard
-                                            Command="{Binding EnableLoopbackCommand}"
+                                        <cwc:SettingsCard Description="{x:Bind ((shvf:FeedbackViewModel)DataContext).IPInformation, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageSettingDeviceIpHeader}"/>
+                                        <cwc:SettingsCard Description="{x:Bind shvf:FeedbackViewModel.DynamicHttpProxy.DisplayProxyUri, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageFeedbackCurrentProxyHeader}"/>
+                                        <cwc:SettingsCard
+                                            Command="{x:Bind ((shvf:FeedbackViewModel)DataContext).EnableLoopbackCommand, Mode=OneWay}"
                                             Header="{shuxm:ResourceString Name=ViewPageFeedbackEnableLoopbackHeader}"
-                                            IsClickEnabled="{Binding LoopbackSupport.CanEnableLoopback}"
-                                            IsEnabled="{Binding LoopbackSupport.IsLoopbackEnabled, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}">
-                                            <cwcont:SettingsCard.Description>
-                                                <UserControl Content="{Binding LoopbackSupport.IsLoopbackEnabled, Converter={StaticResource BoolToLoopbackDescriptionControlConverter}, Mode=OneWay}"/>
-                                            </cwcont:SettingsCard.Description>
-                                        </cwcont:SettingsCard>
-                                        <cwcont:SettingsCard Description="{Binding RuntimeOptions.WebView2Version}" Header="{shuxm:ResourceString Name=ViewPageSettingWebview2Header}"/>
-                                    </cwcont:SettingsExpander.Items>
-                                </cwcont:SettingsExpander>
+                                            IsClickEnabled="{x:Bind ((shvf:FeedbackViewModel)DataContext).LoopbackSupport.CanEnableLoopback, Mode=OneWay}"
+                                            IsEnabled="{x:Bind ((shvf:FeedbackViewModel)DataContext).LoopbackSupport.IsLoopbackEnabled, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}">
+                                            <cwc:SettingsCard.Description>
+                                                <UserControl Content="{x:Bind ((shvf:FeedbackViewModel)DataContext).LoopbackSupport.IsLoopbackEnabled, Converter={StaticResource BoolToLoopbackDescriptionControlConverter}, Mode=OneWay}"/>
+                                            </cwc:SettingsCard.Description>
+                                        </cwc:SettingsCard>
+                                        <cwc:SettingsCard Description="{x:Bind shc:HutaoRuntime.WebView2Version.Version}" Header="{shuxm:ResourceString Name=ViewPageSettingWebview2Header}"/>
+                                    </cwc:SettingsExpander.Items>
+                                </cwc:SettingsExpander>
                             </Border>
                         </Border>
                         <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                             <Border Style="{ThemeResource AcrylicBorderCardStyle}">
-                                <cwcont:SettingsExpander
+                                <cwc:SettingsExpander
                                     Description="{shuxm:ResourceString Name=ViewPageFeedbackEngageWithUsDescription}"
                                     Header="{shuxm:ResourceString Name=ViewPageFeedbackCommonLinksHeader}"
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE71B;}"
                                     IsExpanded="True">
-                                    <cwcont:SettingsExpander.Items>
-                                        <cwcont:SettingsCard
-                                            Command="{Binding NavigateToUriCommand}"
+                                    <cwc:SettingsExpander.Items>
+                                        <cwc:SettingsCard
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/issues/new/choose"
                                             Description="{shuxm:ResourceString Name=ViewPageFeedbackGithubIssuesDescription}"
                                             Header="GitHub Issues"
                                             IsClickEnabled="True"/>
-                                        <cwcont:SettingsCard
-                                            Command="{Binding NavigateToUriCommand}"
+                                        <cwc:SettingsCard
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://status.snaphutaorp.org/status/all"
                                             Description="{shuxm:ResourceString Name=ViewPageFeedbackServerStatusDescription}"
                                             Header="{shuxm:ResourceString Name=ViewPageFeedbackServerStatusHeader}"
                                             IsClickEnabled="True"/>
-                                    </cwcont:SettingsExpander.Items>
-                                </cwcont:SettingsExpander>
+                                    </cwc:SettingsExpander.Items>
+                                </cwc:SettingsExpander>
                             </Border>
                         </Border>
                         <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                             <Border Style="{ThemeResource AcrylicBorderCardStyle}">
-                                <cwcont:SettingsExpander
+                                <cwc:SettingsExpander
                                     Header="{shuxm:ResourceString Name=ViewPageFeedbackFeatureGuideHeader}"
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xF8A5;}"
                                     IsExpanded="False">
-                                    <cwcont:SettingsExpander.Items>
-                                        <cwcont:SettingsCard
+                                    <cwc:SettingsExpander.Items>
+                                        <cwc:SettingsCard
                                             Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
-                                            Command="{Binding NavigateToUriCommand}"
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://snaphutaorp.org/features/dashboard.html"
                                             Header="{shuxm:ResourceString Name=ViewAnnouncementHeader}"
                                             HeaderIcon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/Announcement.png}"
                                             IsClickEnabled="True"/>
-                                        <cwcont:SettingsCard
+                                        <cwc:SettingsCard
                                             Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
-                                            Command="{Binding NavigateToUriCommand}"
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://snaphutaorp.org/features/game-launcher.html"
                                             Header="{shuxm:ResourceString Name=ViewLaunchGameHeader}"
                                             IsClickEnabled="True">
-                                            <cwcont:SettingsCard.HeaderIcon>
+                                            <cwc:SettingsCard.HeaderIcon>
                                                 <!--  This icon is not a square  -->
                                                 <BitmapIcon
                                                     Width="24"
                                                     Height="24"
                                                     ShowAsMonochrome="False"
                                                     UriSource="ms-appx:///Resource/Navigation/LaunchGame.png"/>
-                                            </cwcont:SettingsCard.HeaderIcon>
-                                        </cwcont:SettingsCard>
-                                        <cwcont:SettingsCard
+                                            </cwc:SettingsCard.HeaderIcon>
+                                        </cwc:SettingsCard>
+                                        <cwc:SettingsCard
                                             Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
-                                            Command="{Binding NavigateToUriCommand}"
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://snaphutaorp.org/features/wish-export.html"
                                             Header="{shuxm:ResourceString Name=ViewGachaLogHeader}"
                                             HeaderIcon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/GachaLog.png}"
                                             IsClickEnabled="True"/>
-                                        <cwcont:SettingsCard
+                                        <cwc:SettingsCard
                                             Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
-                                            Command="{Binding NavigateToUriCommand}"
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://snaphutaorp.org/features/achievements.html"
                                             Header="{shuxm:ResourceString Name=ViewAchievementHeader}"
                                             HeaderIcon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/Achievement.png}"
                                             IsClickEnabled="True"/>
-                                        <cwcont:SettingsCard
+                                        <cwc:SettingsCard
                                             Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
-                                            Command="{Binding NavigateToUriCommand}"
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://snaphutaorp.org/features/real-time-notes.html"
                                             Header="{shuxm:ResourceString Name=ViewDailyNoteHeader}"
                                             HeaderIcon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/DailyNote.png}"
                                             IsClickEnabled="True"/>
-                                        <cwcont:SettingsCard
+                                        <cwc:SettingsCard
                                             Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
-                                            Command="{Binding NavigateToUriCommand}"
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://snaphutaorp.org/features/character-data.html"
                                             Header="{shuxm:ResourceString Name=ViewAvatarPropertyHeader}"
                                             HeaderIcon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/AvatarProperty.png}"
                                             IsClickEnabled="True"/>
-                                        <cwcont:SettingsCard
+                                        <cwc:SettingsCard
                                             Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
-                                            Command="{Binding NavigateToUriCommand}"
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://snaphutaorp.org/features/hutao-API.html"
                                             Header="{shuxm:ResourceString Name=ViewSpiralAbyssHeader}"
                                             HeaderIcon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/SpiralAbyss.png}"
                                             IsClickEnabled="True"/>
-                                        <cwcont:SettingsCard
+                                        <cwc:SettingsCard
                                             Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
-                                            Command="{Binding NavigateToUriCommand}"
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://snaphutaorp.org/zh/features/imaginarium-theater.html"
                                             Header="{shuxm:ResourceString Name=ViewRoleCombatHeader}"
                                             HeaderIcon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/RoleCombat.png}"
                                             IsClickEnabled="True"/>
-                                        <cwcont:SettingsCard
+                                        <cwc:SettingsCard
                                             Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
-                                            Command="{Binding NavigateToUriCommand}"
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://snaphutaorp.org/features/develop-plan.html"
                                             Header="{shuxm:ResourceString Name=ViewCultivationHeader}"
                                             HeaderIcon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/Cultivation.png}"
                                             IsClickEnabled="True"/>
-                                        <cwcont:SettingsCard
+                                        <cwc:SettingsCard
                                             Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
-                                            Command="{Binding NavigateToUriCommand}"
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://snaphutaorp.org/features/character-wiki.html"
                                             Header="{shuxm:ResourceString Name=ViewWikiAvatarHeader}"
                                             HeaderIcon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/WikiAvatar.png}"
                                             IsClickEnabled="True"/>
-                                        <cwcont:SettingsCard
+                                        <cwc:SettingsCard
                                             Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
-                                            Command="{Binding NavigateToUriCommand}"
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://snaphutaorp.org/features/weapon-wiki.html"
                                             Header="{shuxm:ResourceString Name=ViewWikiWeaponHeader}"
                                             HeaderIcon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/WikiWeapon.png}"
                                             IsClickEnabled="True"/>
-                                        <cwcont:SettingsCard
+                                        <cwc:SettingsCard
                                             Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
-                                            Command="{Binding NavigateToUriCommand}"
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://snaphutaorp.org/features/monster-wiki.html"
                                             Header="{shuxm:ResourceString Name=ViewWikiMonsterHeader}"
                                             HeaderIcon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/WikiMonster.png}"
                                             IsClickEnabled="True"/>
-                                        <cwcont:SettingsCard
+                                        <cwc:SettingsCard
                                             Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
-                                            Command="{Binding NavigateToUriCommand}"
+                                            Command="{x:Bind shvf:FeedbackViewModel.NavigateToUriCommand}"
                                             CommandParameter="https://snaphutaorp.org/features/hutao-settings.html"
                                             Header="{shuxm:ResourceString Name=ViewSettingHeader}"
                                             HeaderIcon="{shuxm:FontIcon Glyph=&#xE713;}"
                                             IsClickEnabled="True"/>
-                                    </cwcont:SettingsExpander.Items>
-                                </cwcont:SettingsExpander>
+                                    </cwc:SettingsExpander.Items>
+                                </cwc:SettingsExpander>
                             </Border>
                         </Border>
                     </StackPanel>
@@ -226,9 +251,9 @@
             </SplitView.Pane>
             <Border Margin="16,16,0,16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                 <Grid Style="{ThemeResource AcrylicGridCardStyle}">
-                    <shuxc:StandardView ShowCondition="{Binding IsInitialized, Mode=OneWay}">
+                    <shuxc:StandardView ShowCondition="{x:Bind ((shvf:FeedbackViewModel)DataContext).IsInitialized, Mode=OneWay}">
                         <shuxc:StandardView.EmptyContent>
-                            <clw:Shimmer IsActive="{Binding IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"/>
+                            <clw:Shimmer IsActive="{x:Bind ((shvf:FeedbackViewModel)DataContext).IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"/>
                         </shuxc:StandardView.EmptyContent>
 
                         <Grid Padding="16" RowSpacing="8">
@@ -236,23 +261,66 @@
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <AutoSuggestBox
+                            <cwc:SwitchPresenter
+                                x:Name="SearchPresenter_19969"
                                 Grid.Row="0"
-                                Height="36"
                                 Margin="0,0,0,8"
                                 HorizontalAlignment="Stretch"
-                                VerticalContentAlignment="Center"
-                                PlaceholderText="{shuxm:ResourceString Name=ViewPageFeedbackAutoSuggestBoxPlaceholder}"
-                                QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
-                                Style="{StaticResource DefaultAutoSuggestBoxStyle}"
-                                Text="{Binding SearchText, Mode=TwoWay}">
-                                <mxi:Interaction.Behaviors>
-                                    <mxi:EventTriggerBehavior EventName="QuerySubmitted">
-                                        <mxi:InvokeCommandAction Command="{Binding SearchDocumentCommand}" CommandParameter="{Binding SearchText}"/>
-                                    </mxi:EventTriggerBehavior>
-                                </mxi:Interaction.Behaviors>
-                            </AutoSuggestBox>
-                            <shuxc:StandardView Grid.Row="1" ShowCondition="{Binding SearchResults.Count, Converter={StaticResource Int32ToBoolConverter}}">
+                                HorizontalContentAlignment="Stretch"
+                                IsTabStop="False"
+                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.SearchBoxMaterial, Mode=OneWay}">
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>0</x:Int32>
+                                    </cwc:Case.Value>
+                                    <AutoSuggestBox
+                                        x:Name="NativeSearch_19969"
+                                        Height="36"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalContentAlignment="Center"
+                                        DataContext="{x:Bind SearchPresenter_19969.DataContext, Mode=OneWay}"
+                                        PlaceholderText="{shuxm:ResourceString Name=ViewPageFeedbackAutoSuggestBoxPlaceholder}"
+                                        QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
+                                        RequestedTheme="{x:Bind SearchPresenter_19969.ActualTheme, Mode=OneWay}"
+                                        Style="{StaticResource DefaultAutoSuggestBoxStyle}"
+                                        Text="{x:Bind ((shvf:FeedbackViewModel)DataContext).SearchText, Mode=TwoWay}">
+                                        <mxi:Interaction.Behaviors>
+                                            <mxi:EventTriggerBehavior EventName="QuerySubmitted">
+                                                <mxi:InvokeCommandAction Command="{x:Bind ((shvf:FeedbackViewModel)DataContext).SearchDocumentCommand, Mode=OneWay}" CommandParameter="{x:Bind ((shvf:FeedbackViewModel)DataContext).SearchText, Mode=OneWay}"/>
+                                            </mxi:EventTriggerBehavior>
+                                        </mxi:Interaction.Behaviors>
+                                    </AutoSuggestBox>
+                                </cwc:Case>
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>1</x:Int32>
+                                    </cwc:Case.Value>
+                                    <wl:LiquidGlassSearchBox
+                                        x:Name="NativeSearch_19969Glass"
+                                        Height="36"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalContentAlignment="Center"
+                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                        shuxcth:ControlMaterialState.NativeControl="{x:Bind NativeSearch_19969, Mode=OneWay}"
+                                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                                        Description="{x:Bind NativeSearch_19969.Description, Mode=OneWay}"
+                                        Foreground="{x:Bind NativeSearch_19969.Foreground, Mode=OneWay}"
+                                        Header="{x:Bind NativeSearch_19969.Header, Mode=OneWay}"
+                                        IsEnabled="{x:Bind NativeSearch_19969.IsEnabled, Mode=OneWay}"
+                                        IsSuggestionListOpen="{x:Bind NativeSearch_19969.IsSuggestionListOpen, Mode=TwoWay}"
+                                        ItemTemplate="{x:Bind NativeSearch_19969.ItemTemplate, Mode=OneWay}"
+                                        ItemsSource="{x:Bind NativeSearch_19969.ItemsSource, Mode=OneWay}"
+                                        MaxSuggestionListHeight="{x:Bind NativeSearch_19969.MaxSuggestionListHeight, Mode=OneWay}"
+                                        PlaceholderText="{x:Bind NativeSearch_19969.PlaceholderText, Mode=OneWay}"
+                                        QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
+                                        RequestedTheme="{x:Bind SearchPresenter_19969.ActualTheme, Mode=OneWay}"
+                                        Text="{x:Bind NativeSearch_19969.Text, Mode=TwoWay}"
+                                        TextBoxStyle="{x:Bind NativeSearch_19969.TextBoxStyle, Mode=OneWay}"
+                                        TextMemberPath="{x:Bind NativeSearch_19969.TextMemberPath, Mode=OneWay}"
+                                        UpdateTextOnSelect="{x:Bind NativeSearch_19969.UpdateTextOnSelect, Mode=OneWay}"/>
+                                </cwc:Case>
+                            </cwc:SwitchPresenter>
+                            <shuxc:StandardView Grid.Row="1" ShowCondition="{x:Bind ((shvf:FeedbackViewModel)DataContext).SearchResults.Count, Converter={StaticResource Int32ToBoolConverter}, Mode=OneWay}">
                                 <shuxc:StandardView.EmptyContent>
                                     <StackPanel VerticalAlignment="Center">
                                         <StackPanel.ChildrenTransitions>
@@ -274,26 +342,62 @@
                                     <ItemsControl
                                         ItemContainerTransitions="{ThemeResource ListViewLikeThemeTransitions}"
                                         ItemsPanel="{ThemeResource StackPanelSpacing8Template}"
-                                        ItemsSource="{Binding SearchResults}">
+                                        ItemsSource="{x:Bind ((shvf:FeedbackViewModel)DataContext).SearchResults, Mode=OneWay}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <Border Style="{ThemeResource BorderCardStyle}">
-                                                    <HyperlinkButton
+                                                    <cwc:SwitchPresenter
+                                                        x:Name="GlassPresenter_22099"
                                                         HorizontalAlignment="Stretch"
                                                         HorizontalContentAlignment="Stretch"
-                                                        NavigateUri="{Binding Url}">
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition/>
-                                                                <ColumnDefinition Width="auto"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <BreadcrumbBar
-                                                                Grid.Column="0"
-                                                                Margin="4,8,8,4"
-                                                                IsHitTestVisible="False"
-                                                                ItemsSource="{Binding Hierarchy.DisplayLevels}"/>
-                                                        </Grid>
-                                                    </HyperlinkButton>
+                                                        VerticalContentAlignment="Stretch"
+                                                        IsTabStop="False"
+                                                        Tag="LiquidGlass:HyperlinkButton"
+                                                        Value="{Binding HyperlinkButtonMaterial, Source={StaticResource ControlMaterialState}, Mode=OneWay}">
+                                                        <cwc:Case>
+                                                            <cwc:Case.Value>
+                                                                <x:Int32>0</x:Int32>
+                                                            </cwc:Case.Value>
+                                                            <HyperlinkButton
+                                                                HorizontalAlignment="Stretch"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                NavigateUri="{Binding Url}">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition/>
+                                                                        <ColumnDefinition Width="auto"/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <BreadcrumbBar
+                                                                        Grid.Column="0"
+                                                                        Margin="4,8,8,4"
+                                                                        IsHitTestVisible="False"
+                                                                        ItemsSource="{Binding Hierarchy.DisplayLevels}"/>
+                                                                </Grid>
+                                                            </HyperlinkButton>
+                                                        </cwc:Case>
+                                                        <cwc:Case>
+                                                            <cwc:Case.Value>
+                                                                <x:Int32>1</x:Int32>
+                                                            </cwc:Case.Value>
+                                                            <wl:LiquidGlassHyperlinkButton
+                                                                HorizontalAlignment="Stretch"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                shuxcth:ControlMaterialState.IsManaged="True"
+                                                                NavigateUri="{Binding Url}">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition/>
+                                                                        <ColumnDefinition Width="auto"/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <BreadcrumbBar
+                                                                        Grid.Column="0"
+                                                                        Margin="4,8,8,4"
+                                                                        IsHitTestVisible="False"
+                                                                        ItemsSource="{Binding Hierarchy.DisplayLevels}"/>
+                                                                </Grid>
+                                                            </wl:LiquidGlassHyperlinkButton>
+                                                        </cwc:Case>
+                                                    </cwc:SwitchPresenter>
                                                 </Border>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>

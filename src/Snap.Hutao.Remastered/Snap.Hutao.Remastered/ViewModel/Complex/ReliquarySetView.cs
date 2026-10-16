@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Metadata.Converter;
 using Snap.Hutao.Remastered.Model.Primitive;
 using Snap.Hutao.Remastered.Web.Hutao.SpiralAbyss;
@@ -12,7 +13,7 @@ namespace Snap.Hutao.Remastered.ViewModel.Complex;
 /// <summary>
 /// 圣遗物套装
 /// </summary>
-public sealed class ReliquarySetView : RateAndDelta
+public sealed partial class ReliquarySetView : RateAndDelta
 {
     public ReliquarySetView(ImmutableDictionary<ExtendedEquipAffixId, Model.Metadata.Reliquary.ReliquarySet> idReliquarySetMap, ItemRate<ReliquarySets, double> setRate, ItemRate<ReliquarySets, double>? lastSetRate)
         : base(setRate.Rate, lastSetRate?.Rate)
@@ -42,10 +43,10 @@ public sealed class ReliquarySetView : RateAndDelta
     /// <summary>
     /// 名称
     /// </summary>
-    public string Name { get; }
+    public string Name { get; private set => SetProperty(ref field, value); }
 
     /// <summary>
     /// 图标
     /// </summary>
-    public List<Uri>? Icons { get; }
+    public List<Uri>? Icons { get; private set => SetProperty(ref field, value); }
 }

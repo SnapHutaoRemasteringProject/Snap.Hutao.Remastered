@@ -1,4 +1,4 @@
-<Button
+<shuxcth:MaterialCardButton
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Card.GachaStatisticsCard"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -8,6 +8,7 @@
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shvg="using:Snap.Hutao.Remastered.ViewModel.GachaLog"
     Height="{ThemeResource HomeAdaptiveCardHeight}"
@@ -19,15 +20,14 @@
     Background="Transparent"
     BorderBrush="{x:Null}"
     BorderThickness="0"
-    Command="{Binding NavigateCommand}"
-    Style="{ThemeResource DefaultButtonStyle}"
+    Command="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).NavigateCommand, Mode=OneWay}"
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
-    <Button.Resources>
+    <shuxcth:MaterialCardButton.Resources>
         <DataTemplate x:Key="GachaStatisticsTemplate" x:DataType="shvg:GachaStatisticsSlim">
             <Grid
                 Padding="12"
@@ -66,7 +66,7 @@
                     <TextBlock
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
-                        Text="{Binding Uid}"/>
+                        Text="{x:Bind Uid, Mode=OneWay}"/>
                 </Grid>
 
                 <Border
@@ -170,22 +170,22 @@
                 </Border>
             </Grid>
         </DataTemplate>
-    </Button.Resources>
+    </shuxcth:MaterialCardButton.Resources>
 
     <Grid>
-        <Grid Visibility="{Binding IsInitialized, Converter={StaticResource BoolToVisibilityConverter}}">
-            <Grid Visibility="{Binding StatisticsList.Length, Converter={StaticResource Int32ToVisibilityConverter}}">
+        <Grid Visibility="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+            <Grid Visibility="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).StatisticsList.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
                 <FlipView
                     x:Name="RootFlipView"
                     Background="{x:Null}"
                     ItemTemplate="{StaticResource GachaStatisticsTemplate}"
-                    ItemsSource="{Binding StatisticsList}"/>
+                    ItemsSource="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).StatisticsList, Mode=OneWay}"/>
 
                 <PipsPager
                     Height="16"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Bottom"
-                    NumberOfPages="{Binding StatisticsList.Length}"
+                    NumberOfPages="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).StatisticsList.Length, Mode=OneWay}"
                     SelectedPageIndex="{x:Bind Path=RootFlipView.SelectedIndex, Mode=TwoWay}"/>
             </Grid>
         </Grid>
@@ -193,7 +193,7 @@
         <StackPanel
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Visibility="{Binding StatisticsList.Length, Converter={StaticResource Int32ToVisibilityRevertConverter}}">
+            Visibility="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).StatisticsList.Length, Converter={StaticResource Int32ToVisibilityRevertConverter}, Mode=OneWay}">
             <Image
                 Width="80"
                 Height="80"
@@ -201,6 +201,6 @@
             <TextBlock HorizontalAlignment="Center" Text="{shuxm:ResourceString Name=ViewGachaLogHeader}"/>
         </StackPanel>
 
-        <shuxc:Loading IsLoading="{Binding IsInitialized, Converter={StaticResource BoolNegationConverter}}" Style="{ThemeResource DefaultLoadingCardStyle}"/>
+        <shuxc:Loading IsLoading="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" Style="{ThemeResource DefaultLoadingCardStyle}"/>
     </Grid>
-</Button>
+</shuxcth:MaterialCardButton>

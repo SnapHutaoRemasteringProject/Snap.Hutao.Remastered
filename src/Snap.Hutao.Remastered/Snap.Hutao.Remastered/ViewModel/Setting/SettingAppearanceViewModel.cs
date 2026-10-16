@@ -19,6 +19,7 @@ namespace Snap.Hutao.Remastered.ViewModel.Setting;
 [Service(ServiceLifetime.Scoped)]
 public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
 {
+    private bool observesControlMaterial;
     [GeneratedConstructor]
     public partial SettingAppearanceViewModel(IServiceProvider serviceProvider);
 
@@ -32,19 +33,40 @@ public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
 
     public int ControlMaterialState => (int)AppOptions.ControlMaterial.Value;
 
-    // TODO: Replace with IObservableProperty
     public NameValue<ControlMaterial>? SelectedControlMaterial
     {
-        get => field ??= AppOptions.ControlMaterials.Single(material => material.Value == AppOptions.ControlMaterial.Value);
+        get
+        {
+            ObserveControlMaterial();
+            return AppOptions.ControlMaterials.Single(material => material.Value == AppOptions.ControlMaterial.Value);
+        }
         set
         {
-            if (SetProperty(ref field, value) && value is not null)
-            {
-                AppOptions.ControlMaterial.Value = value.Value;
-                MaterialTheme.Apply(value.Value);
-                OnPropertyChanged(nameof(ControlMaterialState));
-            }
+            if (value is null || AppOptions.ControlMaterial.Value == value.Value) return;
+            ObserveControlMaterial();
+            AppOptions.ControlMaterial.Value = value.Value;
+            MaterialTheme.Apply(value.Value);
         }
+    }
+
+    private void ObserveControlMaterial()
+    {
+        if (observesControlMaterial) return;
+        observesControlMaterial = true;
+        AppOptions.ControlMaterial.PropertyChanged += OnControlMaterialChanged;
+    }
+
+    private void OnControlMaterialChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(SelectedControlMaterial));
+        OnPropertyChanged(nameof(ControlMaterialState));
+    }
+
+    public override void Dispose()
+    {
+        if (observesControlMaterial)
+            AppOptions.ControlMaterial.PropertyChanged -= OnControlMaterialChanged;
+        base.Dispose();
     }
 
     // TODO: Replace with IObservableProperty

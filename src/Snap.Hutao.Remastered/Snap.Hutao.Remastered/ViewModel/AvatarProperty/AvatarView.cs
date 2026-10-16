@@ -11,30 +11,39 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.AvatarProperty;
 
-public sealed partial class AvatarView : ObservableObject,
-    INameIconSide<Uri>,
+[WinRT.GeneratedBindableCustomProperty]
+public sealed partial class AvatarView : ObservableObject, INameIconSide<Uri>,
     ICalculableSource<ICalculableAvatar>,
     IPropertyValuesProvider
 {
-    public string Name { get; set; } = default!;
+    [ObservableProperty]
+    public partial string Name { get; set; } = default!;
 
-    public Uri Icon { get; set; } = default!;
+    [ObservableProperty]
+    public partial Uri Icon { get; set; } = default!;
 
-    public Uri SideIcon { get; set; } = default!;
+    [ObservableProperty]
+    public partial Uri SideIcon { get; set; } = default!;
 
-    public Uri NameCard { get; set; } = default!;
+    [ObservableProperty]
+    public partial Uri NameCard { get; set; } = default!;
 
-    public QualityType Quality { get; set; }
+    [ObservableProperty]
+    public partial QualityType Quality { get; set; }
 
-    public ElementType Element { get; set; }
+    [ObservableProperty]
+    public partial ElementType Element { get; set; }
 
     public string Level { get => LevelFormat.Format(LevelNumber); }
 
-    public WeaponView? Weapon { get; set; }
+    [ObservableProperty]
+    public partial WeaponView? Weapon { get; set; }
 
-    public RecommendPropertiesView RecommendedProperties { get; set; } = default!;
+    [ObservableProperty]
+    public partial RecommendPropertiesView RecommendedProperties { get; set; } = default!;
 
-    public ImmutableArray<ReliquaryView> Reliquaries { get; set; }
+    [ObservableProperty]
+    public partial ImmutableArray<ReliquaryView> Reliquaries { get; set; } = [];
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(DisplayScore))]
@@ -48,29 +57,45 @@ public sealed partial class AvatarView : ObservableObject,
     /// <summary>
     /// 「我的角色」页面切换评分算法后就地重算所需的输入，来自 <see cref="Service.AvatarInfo.Factory.SummaryAvatarFactory"/>
     /// </summary>
-    public ImmutableArray<FightProperty> RecommendedSubProperties { get; set; }
+    [ObservableProperty]
+    public partial ImmutableArray<FightProperty> RecommendedSubProperties { get; set; } = [];
 
     /// <inheritdoc cref="RecommendedSubProperties"/>
-    public EnergyType EnergyType { get; set; }
+    [ObservableProperty]
+    public partial EnergyType EnergyType { get; set; }
 
     /// <inheritdoc cref="RecommendedSubProperties"/>
-    public bool IsCritEffective { get; set; }
+    [ObservableProperty]
+    public partial bool IsCritEffective { get; set; }
 
-    public ImmutableArray<ConstellationView> Constellations { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ActivatedConstellationCount))]
+    public partial ImmutableArray<ConstellationView> Constellations { get; set; } = [];
 
     public int ActivatedConstellationCount { get => Constellations.Count(c => c.IsActivated); }
 
-    public ImmutableArray<SkillView> Skills { get; set; }
+    [ObservableProperty]
+    public partial ImmutableArray<SkillView> Skills { get; set; } = [];
 
-    public ImmutableArray<AvatarProperty> Properties { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(MaxHp))]
+    [NotifyPropertyChangedFor(nameof(CurAttack))]
+    [NotifyPropertyChangedFor(nameof(CurDefense))]
+    [NotifyPropertyChangedFor(nameof(ElementMastery))]
+    public partial ImmutableArray<AvatarProperty> Properties { get; set; } = [];
 
-    public uint FetterLevel { get; set; }
+    [ObservableProperty]
+    public partial uint FetterLevel { get; set; }
 
-    public ImmutableArray<bool> PromoteArray { get; set; }
+    [ObservableProperty]
+    public partial ImmutableArray<bool> PromoteArray { get; set; } = [];
 
-    public AvatarId Id { get; set; }
+    [ObservableProperty]
+    public partial AvatarId Id { get; set; }
 
-    public uint LevelNumber { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Level))]
+    public partial uint LevelNumber { get; set; }
 
     public int MaxHp { get => GetAvatarPropertyValue(FightProperty.FIGHT_PROP_MAX_HP); }
 
@@ -80,11 +105,23 @@ public sealed partial class AvatarView : ObservableObject,
 
     public int ElementMastery { get => GetAvatarPropertyValue(FightProperty.FIGHT_PROP_ELEMENT_MASTERY); }
 
-    public PromoteLevel PromoteLevel { get; set; }
+    [ObservableProperty]
+    public partial global::Snap.Hutao.Remastered.Model.Primitive.PromoteLevel PromoteLevel { get; set; }
 
     public ICalculableAvatar ToCalculable()
     {
         return CalculableAvatar.From(this);
+    }
+
+    partial void OnConstellationsChanged(ImmutableArray<ConstellationView> oldValue, ImmutableArray<ConstellationView> newValue)
+    {
+        foreach (ConstellationView constellation in oldValue.EmptyIfDefault()) constellation.PropertyChanged -= OnConstellationPropertyChanged;
+        foreach (ConstellationView constellation in newValue.EmptyIfDefault()) constellation.PropertyChanged += OnConstellationPropertyChanged;
+    }
+
+    private void OnConstellationPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ConstellationView.IsActivated)) OnPropertyChanged(nameof(ActivatedConstellationCount));
     }
 
     private int GetAvatarPropertyValue(FightProperty fightProperty)

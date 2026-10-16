@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Calculable;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Model.Metadata.Abstraction;
@@ -17,7 +18,7 @@ using System.Diagnostics;
 namespace Snap.Hutao.Remastered.Model.Metadata.Avatar;
 
 [DebuggerDisplay("Name={Name},Id={Id}")]
-public partial class Avatar : IDefaultIdentity<AvatarId>,
+public partial class Avatar : ObservableObject, IDefaultIdentity<AvatarId>,
     INameQualityAccess,
     IStatisticsItemConvertible,
     ISummaryItemConvertible,
@@ -66,16 +67,20 @@ public partial class Avatar : IDefaultIdentity<AvatarId>,
     public TraceEffect? TraceEffect { get; init; }
 
     [JsonIgnore]
-    public AvatarCollocationView? CollocationView { get; set; }
+    [ObservableProperty]
+    public partial AvatarCollocationView? CollocationView { get; set; }
 
     [JsonIgnore]
-    public CookBonusView? CookBonusView { get; set; }
+    [ObservableProperty]
+    public partial CookBonusView? CookBonusView { get; set; }
 
     [JsonIgnore]
-    public ImmutableArray<Material>? CultivationItemsView { get; set; }
+    [ObservableProperty]
+    public partial ImmutableArray<Material>? CultivationItemsView { get; set; }
 
     [JsonIgnore]
-    public IAdvancedCollectionView<Costume>? CostumesView { get; set; }
+    [ObservableProperty]
+    public partial IAdvancedCollectionView<Costume>? CostumesView { get; set; }
 
     [SuppressMessage("", "CA1822")]
     public uint MaxLevel { get => GetMaxLevel(); }

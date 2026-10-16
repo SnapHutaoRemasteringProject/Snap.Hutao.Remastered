@@ -1,15 +1,19 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace Snap.Hutao.Remastered.ViewModel.GachaLog;
 
-public sealed class Countdown
+public sealed partial class Countdown : ObservableObject
 {
     public Countdown(Item item)
     {
         Item = item;
+        Histories.CollectionChanged += OnHistoriesChanged;
     }
 
     public string FormattedLastTime
@@ -17,7 +21,7 @@ public sealed class Countdown
         get => LastTime <= DateTimeOffset.Now ? SH.FormatViewModelGachaLogCountdownLastTime(LastTime) : SH.ViewModelGachaLogCountdownCurrentWish;
     }
 
-    public string FormattedVersionOrder { get => Histories.First().FormattedVersionOrder; }
+    public string FormattedVersionOrder { get => Histories.FirstOrDefault()?.FormattedVersionOrder ?? string.Empty; }
 
     public string FormattedCountdown
     {
@@ -32,7 +36,16 @@ public sealed class Countdown
 
     public Item Item { get; }
 
-    public List<CountdownHistory> Histories { get; } = [];
+    public ObservableCollection<CountdownHistory> Histories { get; } = [];
+
+    private void OnHistoriesChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        OnPropertyChanged(nameof(LastTime));
+        OnPropertyChanged(nameof(FormattedLastTime));
+        OnPropertyChanged(nameof(FormattedVersionOrder));
+        OnPropertyChanged(nameof(FormattedCountdown));
+        OnPropertyChanged(nameof(FormattedHistoryCount));
+    }
 
     public DateTimeOffset LastTime { get => Histories.FirstOrDefault()?.LastTime ?? default; }
 }

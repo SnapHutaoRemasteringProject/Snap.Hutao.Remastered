@@ -1,25 +1,34 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Snap.Hutao.Remastered.Service.Notification;
 
-public sealed class InfoBarOptions
+public sealed partial class InfoBarOptions : ObservableObject
 {
-    public InfoBarSeverity Severity { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsTextSelectionEnabled))]
+    public partial InfoBarSeverity Severity { get; set; }
 
-    public string? Title { get; set; }
+    [ObservableProperty]
+    public partial string? Title { get; set; }
 
-    public string? Message { get; set; }
+    [ObservableProperty]
+    public partial string? Message { get; set; }
 
-    public object? Content { get; set; }
+    [ObservableProperty]
+    public partial object? Content { get; set; }
 
-    public string? ActionButtonContent { get; set; }
+    [ObservableProperty]
+    public partial string? ActionButtonContent { get; set; }
 
-    public ICommand? ActionButtonCommand { get; set; }
+    [ObservableProperty]
+    public partial ICommand? ActionButtonCommand { get; set; }
 
-    public int MilliSecondsDelay { get; set; }
+    [ObservableProperty]
+    public partial int MilliSecondsDelay { get; set; }
 
     public bool IsTextSelectionEnabled { get => Severity >= InfoBarSeverity.Warning; }
 

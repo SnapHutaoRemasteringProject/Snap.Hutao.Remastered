@@ -32,8 +32,8 @@
             <cwc:SettingsCard
                 Padding="{ThemeResource SettingsExpanderItemHasIconPadding}"
                 ActionIcon="{shuxm:FontIcon Glyph={StaticResource FontIconContentCopy}}"
-                Command="{Binding CopyPathCommand}"
-                Header="{Binding DisplayName}"
+                Command="{x:Bind CopyPathCommand, Mode=OneWay}"
+                Header="{x:Bind DisplayName, Mode=OneWay}"
                 IsClickEnabled="True">
                 <cwc:SettingsCard.Description>
                     <StackPanel
@@ -45,17 +45,17 @@
                         <TextBlock
                             Width="80"
                             Style="{StaticResource CaptionTextBlockStyle}"
-                            Text="{Binding Size, Converter={StaticResource FileSizeToFriendlyStringConverter}}"/>
+                            Text="{x:Bind Size, Converter={StaticResource FileSizeToFriendlyStringConverter}, Mode=OneWay}"/>
                         <FontIcon FontSize="{StaticResource CaptionTextBlockFontSize}" Glyph="{StaticResource FontIconContentFolder}"/>
                         <TextBlock
                             Width="80"
                             Style="{StaticResource CaptionTextBlockStyle}"
-                            Text="{Binding DecompressedSize, Converter={StaticResource FileSizeToFriendlyStringConverter}}"/>
+                            Text="{x:Bind DecompressedSize, Converter={StaticResource FileSizeToFriendlyStringConverter}, Mode=OneWay}"/>
                         <FontIcon FontSize="{StaticResource CaptionTextBlockFontSize}" Glyph="{StaticResource FontIconContentAsteriskBadge12}"/>
                         <TextBlock
                             IsTextSelectionEnabled="True"
                             Style="{StaticResource CaptionTextBlockStyle}"
-                            Text="{Binding MD5}"/>
+                            Text="{x:Bind MD5, Mode=OneWay}"/>
                     </StackPanel>
                 </cwc:SettingsCard.Description>
             </cwc:SettingsCard>

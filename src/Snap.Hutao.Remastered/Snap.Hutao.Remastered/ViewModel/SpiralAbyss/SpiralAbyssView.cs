@@ -1,16 +1,17 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Model;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Metadata.Tower;
+using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
 using Snap.Hutao.Remastered.Web.Hoyolab;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.SpiralAbyss;
 
-public sealed partial class SpiralAbyssView : IEntityAccess<SpiralAbyssEntry?>, IPropertyValuesProvider
+public sealed partial class SpiralAbyssView : ObservableObject, IEntityAccess<SpiralAbyssEntry?>, IPropertyValuesProvider
 {
     private SpiralAbyssView(SpiralAbyssEntry entity, SpiralAbyssMetadataContext context)
         : this(entity, context.IdTowerScheduleMap[entity.ScheduleId], context)
@@ -55,39 +56,39 @@ public sealed partial class SpiralAbyssView : IEntityAccess<SpiralAbyssEntry?>, 
         Floors = towerSchedule.FloorIds.Select(id => FloorView.Create(context.IdTowerFloorMap[id], context)).Reverse().AsAdvancedCollectionView();
     }
 
-    public uint ScheduleId { get; }
+    public uint ScheduleId { get; private set => SetProperty(ref field, value); }
 
     public string Schedule { get => SH.FormatModelEntitySpiralAbyssSchedule(ScheduleId); }
 
-    public string FormattedTime { get; }
+    public string FormattedTime { get; private set => SetProperty(ref field, value); }
 
-    public bool Engaged { get; }
+    public bool Engaged { get; private set => SetProperty(ref field, value); }
 
-    public SpiralAbyssEntry? Entity { get; }
+    public SpiralAbyssEntry? Entity { get; private set => SetProperty(ref field, value); }
 
-    public string BlessingName { get; }
+    public string BlessingName { get; private set => SetProperty(ref field, value); }
 
-    public ImmutableArray<string> Blessings { get; }
+    public ImmutableArray<string> Blessings { get; private set => SetProperty(ref field, value); }
 
-    public int TotalBattleTimes { get; }
+    public int TotalBattleTimes { get; private set => SetProperty(ref field, value); }
 
-    public int TotalStar { get; }
+    public int TotalStar { get; private set => SetProperty(ref field, value); }
 
-    public string MaxFloor { get; } = default!;
+    public string MaxFloor { get; private set => SetProperty(ref field, value); } = default!;
 
-    public ImmutableArray<RankAvatar> Reveals { get; } = [];
+    public ImmutableArray<RankAvatar> Reveals { get; private set => SetProperty(ref field, value); } = [];
 
-    public IAdvancedCollectionView<FloorView> Floors { get; }
+    public IAdvancedCollectionView<FloorView> Floors { get; private set => SetProperty(ref field, value); }
 
-    public RankAvatar? Defeat { get; }
+    public RankAvatar? Defeat { get; private set => SetProperty(ref field, value); }
 
-    public RankAvatar? Damage { get; }
+    public RankAvatar? Damage { get; private set => SetProperty(ref field, value); }
 
-    public RankAvatar? TakeDamage { get; }
+    public RankAvatar? TakeDamage { get; private set => SetProperty(ref field, value); }
 
-    public RankAvatar? NormalSkill { get; }
+    public RankAvatar? NormalSkill { get; private set => SetProperty(ref field, value); }
 
-    public RankAvatar? EnergySkill { get; }
+    public RankAvatar? EnergySkill { get; private set => SetProperty(ref field, value); }
 
     public static SpiralAbyssView From(SpiralAbyssEntry entity, SpiralAbyssMetadataContext context)
     {
@@ -107,5 +108,16 @@ public sealed partial class SpiralAbyssView : IEntityAccess<SpiralAbyssEntry?>, 
     private static RankAvatar? ToRankAvatar(ImmutableArray<Web.Hoyolab.Takumi.GameRecord.SpiralAbyss.SpiralAbyssRank> ranks, SpiralAbyssMetadataContext context)
     {
         return ranks.Where(r => r.AvatarId != 0U).Select(r => new RankAvatar(r.Value, context.IdAvatarMap[r.AvatarId])).SingleOrDefault();
+    }
+
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        switch (e.PropertyName)
+        {
+            case nameof(ScheduleId):
+                OnPropertyChanged(nameof(Schedule));
+                break;
+        }
     }
 }

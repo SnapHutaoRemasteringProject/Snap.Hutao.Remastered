@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <LangVersion>preview</LangVersion>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -12,6 +12,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="../Snap.Hutao.Remastered/Service/Hutao/StatisticsCache.cs" Link="Production/StatisticsCache.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/DesiredSizeRestriction.cs" Link="Production/DesiredSizeRestriction.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Theme/LiquidGlassOverrideStore.cs" Link="Production/LiquidGlassOverrideStore.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Theme/PageResourceScope.cs" Link="Production/PageResourceScope.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Model/NameDescription.cs" Link="Production/NameDescription.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Model/INameIcon.cs" Link="Production/INameIcon.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/ViewModel/AvatarProperty/NameIconDescription.cs" Link="Production/NameIconDescription.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Model/Metadata/ParameterDescription.cs" Link="Production/ParameterDescription.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/Game/PathAbstraction/GamePathEntry.cs" Link="Production/GamePathEntry.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.12" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.12" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.0" />

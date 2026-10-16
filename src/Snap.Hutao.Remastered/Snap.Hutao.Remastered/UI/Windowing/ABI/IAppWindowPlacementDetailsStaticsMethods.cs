@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using WinRT;
 
 // ReSharper disable once CheckNamespace
@@ -12,10 +11,12 @@ namespace ABI.Microsoft.UI.Windowing;
 
 public static class IAppWindowPlacementDetailsStaticsMethods
 {
+    private static readonly Guid InterfaceId = new("f19f1745-52ad-5cf7-97ea-76c5fd6ff3c1");
+
     public static ref readonly Guid IID
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get => ref MemoryMarshal.AsRef<Guid>([0x45, 0x17, 0x9F, 0xF1, 0xAD, 0x52, 0xF7, 0x5C, 0x97, 0xEA, 0x76, 0xC5, 0xFD, 0x6F, 0xF3, 0xC1]);
+        get => ref InterfaceId;
     }
 
     public static unsafe global::Microsoft.UI.Windowing.AppWindowPlacementDetails Create(IObjectReference obj, global::Windows.Graphics.RectInt32 normalRect, global::Windows.Graphics.RectInt32 workArea, int dpi, int showCmd, global::Windows.Graphics.RectInt32 arrangeRect, global::Microsoft.UI.Windowing.PlacementInfo flags, string deviceName)

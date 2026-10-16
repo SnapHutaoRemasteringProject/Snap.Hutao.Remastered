@@ -2,9 +2,12 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Dialog.HutaoPassportUseRedeemCodeDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    xmlns:wl="using:WinUI.LiquidGlass"
     Title="{shuxm:ResourceString Name=ViewDialogHutaoPassportUseRedeemCodeTitle}"
     CloseButtonText="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"
     DefaultButton="Primary"
@@ -16,9 +19,32 @@
         Margin="0,8,0,0"
         HorizontalAlignment="Stretch"
         Spacing="16">
-        <TextBox
-            IsSpellCheckEnabled="False"
-            PlaceholderText="{shuxm:ResourceString Name=ViewPageHutaoPassportRedeemCodeHint}"
-            Text="{x:Bind RedeemCode, Mode=TwoWay}"/>
+        <cwc:SwitchPresenter
+            x:Name="GlassPresenter_906"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            IsTabStop="False"
+            Tag="LiquidGlass:TextBox"
+            Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
+            <cwc:Case>
+                <cwc:Case.Value>
+                    <x:Int32>0</x:Int32>
+                </cwc:Case.Value>
+                <TextBox
+                    IsSpellCheckEnabled="False"
+                    PlaceholderText="{shuxm:ResourceString Name=ViewPageHutaoPassportRedeemCodeHint}"
+                    Text="{x:Bind RedeemCode, Mode=TwoWay}"/>
+            </cwc:Case>
+            <cwc:Case>
+                <cwc:Case.Value>
+                    <x:Int32>1</x:Int32>
+                </cwc:Case.Value>
+                <wl:LiquidGlassTextBox
+                    shuxcth:ControlMaterialState.IsManaged="True"
+                    IsSpellCheckEnabled="False"
+                    PlaceholderText="{shuxm:ResourceString Name=ViewPageHutaoPassportRedeemCodeHint}"
+                    Text="{x:Bind RedeemCode, Mode=TwoWay}"/>
+            </cwc:Case>
+        </cwc:SwitchPresenter>
     </StackPanel>
 </ContentDialog>

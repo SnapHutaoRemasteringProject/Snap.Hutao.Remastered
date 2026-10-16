@@ -12,15 +12,17 @@
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
     xmlns:shuxcp="using:Snap.Hutao.Remastered.UI.Xaml.Control.Panel"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxd="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shva="using:Snap.Hutao.Remastered.ViewModel.Achievement"
+    xmlns:wl="using:WinUI.LiquidGlass"
     d:DataContext="{d:DesignInstance shva:AchievementViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
     <Page.Resources>
-        <shux:BindingProxy x:Key="BindingProxy" DataContext="{Binding}"/>
+        <shux:BindingProxy x:Key="BindingProxy" DataContext="{x:Bind ((shva:AchievementViewModel)DataContext), Mode=OneWay}"/>
         <shuxd:ProgressToColorConverter x:Key="ProgressToColorConverter"/>
 
         <DataTemplate x:Key="AchievementGoalListTemplate" x:DataType="shva:AchievementGoalView">
@@ -37,25 +39,25 @@
                     <shuxci:CachedImage
                         Width="36"
                         Height="36"
-                        Source="{Binding Icon}"/>
+                        Source="{x:Bind Icon, Mode=OneWay}"/>
                 </Border>
 
                 <StackPanel Grid.Column="1" Margin="12,0,0,2">
                     <TextBlock
                         VerticalAlignment="Center"
-                        Text="{Binding Name}"
+                        Text="{x:Bind Name, Mode=OneWay}"
                         TextWrapping="Wrap"/>
                     <TextBlock
                         Margin="0,2,0,0"
                         VerticalAlignment="Center"
                         Opacity="0.7"
                         Style="{StaticResource CaptionTextBlockStyle}"
-                        Text="{Binding FinishDescription}"/>
+                        Text="{x:Bind FinishDescription, Mode=OneWay}"/>
                     <ProgressBar
                         Margin="0,4,0,0"
-                        Foreground="{Binding FinishPercent, Converter={StaticResource ProgressToColorConverter}}"
+                        Foreground="{x:Bind FinishPercent, Converter={StaticResource ProgressToColorConverter}, Mode=OneWay}"
                         Maximum="1"
-                        Value="{Binding FinishPercent}"/>
+                        Value="{x:Bind FinishPercent, Mode=OneWay}"/>
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -72,12 +74,12 @@
                         Width="64"
                         Height="64"
                         Margin="8"
-                        Source="{Binding Icon}"/>
+                        Source="{x:Bind Icon, Mode=OneWay}"/>
                     <StackPanel Grid.Row="1" Margin="8,0">
                         <TextBlock
                             HorizontalAlignment="Center"
                             FontSize="{StaticResource BodyTextBlockFontSize}"
-                            Text="{Binding Name}"
+                            Text="{x:Bind Name, Mode=OneWay}"
                             TextTrimming="CharacterEllipsis"
                             TextWrapping="WrapWholeWords"/>
                         <TextBlock
@@ -85,7 +87,7 @@
                             HorizontalAlignment="Center"
                             Opacity="0.7"
                             Style="{StaticResource CaptionTextBlockStyle}"
-                            Text="{Binding FinishDescription}"/>
+                            Text="{x:Bind FinishDescription, Mode=OneWay}"/>
                         <Grid HorizontalAlignment="Center">
                             <Grid.ColumnDefinitions>
                                 <!--  pic  -->
@@ -102,13 +104,13 @@
                                 VerticalAlignment="Center"
                                 Opacity="0.7"
                                 Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{Binding Item201Description}"/>
+                                Text="{x:Bind Item201Description, Mode=OneWay}"/>
                         </Grid>
                         <ProgressBar
                             Margin="0,8"
-                            Foreground="{Binding FinishPercent, Converter={StaticResource ProgressToColorConverter}}"
+                            Foreground="{x:Bind FinishPercent, Converter={StaticResource ProgressToColorConverter}, Mode=OneWay}"
                             Maximum="1"
-                            Value="{Binding FinishPercent}"/>
+                            Value="{x:Bind FinishPercent, Mode=OneWay}"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -125,13 +127,13 @@
                         <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
                         <MenuFlyoutItem
                             Command="{Binding Path=DataContext.CopyAchievementIdCommand, Source={StaticResource BindingProxy}}"
-                            CommandParameter="{Binding}"
+                            CommandParameter="{x:Bind Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE8C8;}"
-                            Text="{Binding Inner.Id}"/>
+                            Text="{x:Bind Inner.Id, Mode=OneWay}"/>
                         <MenuFlyoutSeparator/>
                         <MenuFlyoutItem
                             Command="{Binding Path=DataContext.SearchInMiyousheCommand, Source={StaticResource BindingProxy}}"
-                            CommandParameter="{Binding}"
+                            CommandParameter="{x:Bind Mode=OneWay}"
                             Text="{shuxm:ResourceString Name=ViewModelAchievementSearchInMiyoushe}">
                             <MenuFlyoutItem.Icon>
                                 <ImageIcon Source="ms-appx:///Resource/ThirdParty/miyoushe128.png"/>
@@ -139,7 +141,7 @@
                         </MenuFlyoutItem>
                         <MenuFlyoutItem
                             Command="{Binding Path=DataContext.SearchInHoYoLABCommand, Source={StaticResource BindingProxy}}"
-                            CommandParameter="{Binding}"
+                            CommandParameter="{x:Bind Mode=OneWay}"
                             Text="{shuxm:ResourceString Name=ViewModelAchievementSearchInHoYoLAB}">
                             <MenuFlyoutItem.Icon>
                                 <ImageIcon Source="ms-appx:///Resource/ThirdParty/hoyolab128.png"/>
@@ -154,15 +156,41 @@
                     </Grid.ColumnDefinitions>
 
                     <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                    <CheckBox
+                    <cwc:SwitchPresenter
+                        x:Name="GlassPresenter_8192"
                         Grid.Column="0"
-                        MinWidth="0"
-                        MinHeight="0"
                         Margin="8,0"
-                        Padding="0,0,0,0"
-                        Command="{Binding Path=DataContext.SaveAchievementCommand, Source={StaticResource BindingProxy}}"
-                        CommandParameter="{Binding}"
-                        IsChecked="{Binding IsChecked, Mode=TwoWay}"/>
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        IsTabStop="False"
+                        Tag="LiquidGlass:CheckBox"
+                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
+                        <cwc:Case>
+                            <cwc:Case.Value>
+                                <x:Int32>0</x:Int32>
+                            </cwc:Case.Value>
+                            <CheckBox
+                                MinWidth="0"
+                                MinHeight="0"
+                                Padding="0,0,0,0"
+                                Command="{Binding Path=DataContext.SaveAchievementCommand, Source={StaticResource BindingProxy}}"
+                                CommandParameter="{x:Bind Mode=OneWay}"
+                                IsChecked="{x:Bind IsChecked, Mode=TwoWay}"/>
+                        </cwc:Case>
+                        <cwc:Case>
+                            <cwc:Case.Value>
+                                <x:Int32>1</x:Int32>
+                            </cwc:Case.Value>
+                            <wl:LiquidGlassCheckBox
+                                MinWidth="0"
+                                MinHeight="0"
+                                Padding="0,0,0,0"
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                Command="{Binding Path=DataContext.SaveAchievementCommand, Source={StaticResource BindingProxy}}"
+                                CommandParameter="{x:Bind Mode=OneWay}"
+                                IsChecked="{x:Bind IsChecked, Mode=TwoWay}"/>
+                        </cwc:Case>
+                    </cwc:SwitchPresenter>
                     <Grid Grid.Column="1" Margin="8,0,0,0">
                         <Grid.ColumnDefinitions>
                             <!--  text  -->
@@ -178,7 +206,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock
                                     IsTextSelectionEnabled="True"
-                                    Text="{Binding Inner.Title}"
+                                    Text="{x:Bind Inner.Title, Mode=OneWay}"
                                     TextTrimming="CharacterEllipsis"
                                     TextWrapping="NoWrap"/>
                                 <Border
@@ -193,7 +221,7 @@
                                         FontSize="10"
                                         IsTextSelectionEnabled="True"
                                         Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{Binding Inner.Version}"
+                                        Text="{x:Bind Inner.Version, Mode=OneWay}"
                                         TextTrimming="None"
                                         TextWrapping="NoWrap"/>
                                 </Border>
@@ -203,15 +231,15 @@
                                 Margin="0,2,0,0"
                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                 Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{Binding Inner.Description}"
+                                Text="{x:Bind Inner.Description, Mode=OneWay}"
                                 TextWrapping="NoWrap"/>
                         </StackPanel>
                         <TextBlock
                             Grid.Column="1"
                             Margin="12,0,12,0"
                             VerticalAlignment="Center"
-                            Text="{Binding Time}"
-                            Visibility="{Binding IsChecked, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            Text="{x:Bind Time, Mode=OneWay}"
+                            Visibility="{x:Bind IsChecked, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                         <Image
                             Grid.Column="2"
                             shux:FrameworkElementHelper.SquareLength="32"
@@ -220,7 +248,7 @@
                             Grid.Column="3"
                             Margin="12,0,0,0"
                             VerticalAlignment="Center"
-                            Text="{Binding Inner.FinishReward.Count}"/>
+                            Text="{x:Bind Inner.FinishReward.Count, Mode=OneWay}"/>
                     </Grid>
                 </Grid>
             </Border>
@@ -243,10 +271,10 @@
     </Page.Resources>
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shva:AchievementViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
-    <shuxc:StandardView HideCondition="{Binding IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" ShowCondition="{Binding Archives.CurrentItem, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
+    <shuxc:StandardView HideCondition="{x:Bind ((shva:AchievementViewModel)DataContext).IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" ShowCondition="{x:Bind ((shva:AchievementViewModel)DataContext).Archives.CurrentItem, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
         <shuxc:StandardView.EmptyContent>
             <Border
                 HorizontalAlignment="Center"
@@ -266,12 +294,37 @@
                             HorizontalAlignment="Center"
                             Style="{StaticResource SubtitleTextBlockStyle}"
                             Text="{shuxm:ResourceString Name=ViewPageAchievementAddArchiveHint}"/>
-                        <Button
+                        <cwc:SwitchPresenter
+                            x:Name="GlassPresenter_13882"
                             Margin="0,16,0,0"
-                            Padding="16,8"
                             HorizontalAlignment="Stretch"
-                            Command="{Binding AddArchiveCommand}"
-                            Content="{shuxm:ResourceString Name=ViewPageAchievementAddArchive}"/>
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            IsTabStop="False"
+                            Tag="LiquidGlass:Button"
+                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>0</x:Int32>
+                                </cwc:Case.Value>
+                                <Button
+                                    Padding="16,8"
+                                    HorizontalAlignment="Stretch"
+                                    Command="{x:Bind ((shva:AchievementViewModel)DataContext).AddArchiveCommand, Mode=OneWay}"
+                                    Content="{shuxm:ResourceString Name=ViewPageAchievementAddArchive}"/>
+                            </cwc:Case>
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>1</x:Int32>
+                                </cwc:Case.Value>
+                                <wl:LiquidGlassButton
+                                    Padding="16,8"
+                                    HorizontalAlignment="Stretch"
+                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                    Command="{x:Bind ((shva:AchievementViewModel)DataContext).AddArchiveCommand, Mode=OneWay}"
+                                    Content="{shuxm:ResourceString Name=ViewPageAchievementAddArchive}"/>
+                            </cwc:Case>
+                        </cwc:SwitchPresenter>
                     </StackPanel>
                 </Border>
             </Border>
@@ -305,7 +358,7 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Style="{ThemeResource SubtitleTextBlockStyle}"
-                                Text="{Binding FinishDescription}"/>
+                                Text="{x:Bind ((shva:AchievementViewModel)DataContext).FinishDescription, Mode=OneWay}"/>
                         </Viewbox>
                     </StackPanel>
 
@@ -317,44 +370,141 @@
                         </CommandBar.Resources>
 
                         <CommandBar.Content>
-                            <AutoSuggestBox
-                                Width="300"
-                                Height="36"
+                            <cwc:SwitchPresenter
+                                x:Name="SearchPresenter_19087"
                                 Margin="4,6,6,0"
                                 HorizontalAlignment="Stretch"
-                                VerticalContentAlignment="Center"
-                                PlaceholderText="{shuxm:ResourceString Name=ViewPageAchievementSearchPlaceholder}"
-                                QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
-                                Text="{Binding SearchText, Mode=TwoWay}">
-                                <AutoSuggestBox.TextBoxStyle>
-                                    <Style BasedOn="{StaticResource AutoSuggestBoxTextBoxStyle}" TargetType="TextBox">
-                                        <Setter Property="IsSpellCheckEnabled" Value="False"/>
-                                        <Setter Property="Padding" Value="10,1,0,0"/>
-                                    </Style>
-                                </AutoSuggestBox.TextBoxStyle>
-                                <mxi:Interaction.Behaviors>
-                                    <mxi:EventTriggerBehavior EventName="QuerySubmitted">
-                                        <mxi:InvokeCommandAction Command="{Binding SearchAchievementCommand}" CommandParameter="{Binding SearchText}"/>
-                                    </mxi:EventTriggerBehavior>
-                                </mxi:Interaction.Behaviors>
-                            </AutoSuggestBox>
+                                HorizontalContentAlignment="Stretch"
+                                IsTabStop="False"
+                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.SearchBoxMaterial, Mode=OneWay}">
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>0</x:Int32>
+                                    </cwc:Case.Value>
+                                    <AutoSuggestBox
+                                        x:Name="NativeSearch_19087"
+                                        Width="300"
+                                        Height="36"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalContentAlignment="Center"
+                                        DataContext="{x:Bind SearchPresenter_19087.DataContext, Mode=OneWay}"
+                                        PlaceholderText="{shuxm:ResourceString Name=ViewPageAchievementSearchPlaceholder}"
+                                        QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
+                                        RequestedTheme="{x:Bind SearchPresenter_19087.ActualTheme, Mode=OneWay}"
+                                        Text="{x:Bind ((shva:AchievementViewModel)DataContext).SearchText, Mode=TwoWay}">
+                                        <AutoSuggestBox.TextBoxStyle>
+                                            <Style BasedOn="{StaticResource AutoSuggestBoxTextBoxStyle}" TargetType="TextBox">
+                                                <Setter Property="IsSpellCheckEnabled" Value="False"/>
+                                                <Setter Property="Padding" Value="10,1,0,0"/>
+                                            </Style>
+                                        </AutoSuggestBox.TextBoxStyle>
+                                        <mxi:Interaction.Behaviors>
+                                            <mxi:EventTriggerBehavior EventName="QuerySubmitted">
+                                                <mxi:InvokeCommandAction Command="{x:Bind ((shva:AchievementViewModel)DataContext).SearchAchievementCommand, Mode=OneWay}" CommandParameter="{x:Bind ((shva:AchievementViewModel)DataContext).SearchText, Mode=OneWay}"/>
+                                            </mxi:EventTriggerBehavior>
+                                        </mxi:Interaction.Behaviors>
+                                    </AutoSuggestBox>
+                                </cwc:Case>
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>1</x:Int32>
+                                    </cwc:Case.Value>
+                                    <wl:LiquidGlassSearchBox
+                                        x:Name="NativeSearch_19087Glass"
+                                        Width="300"
+                                        Height="36"
+                                        MinHeight="0"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalContentAlignment="Center"
+                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                        shuxcth:ControlMaterialState.NativeControl="{x:Bind NativeSearch_19087, Mode=OneWay}"
+                                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                                        Description="{x:Bind NativeSearch_19087.Description, Mode=OneWay}"
+                                        Foreground="{x:Bind NativeSearch_19087.Foreground, Mode=OneWay}"
+                                        Header="{x:Bind NativeSearch_19087.Header, Mode=OneWay}"
+                                        IsEnabled="{x:Bind NativeSearch_19087.IsEnabled, Mode=OneWay}"
+                                        IsSuggestionListOpen="{x:Bind NativeSearch_19087.IsSuggestionListOpen, Mode=TwoWay}"
+                                        ItemTemplate="{x:Bind NativeSearch_19087.ItemTemplate, Mode=OneWay}"
+                                        ItemsSource="{x:Bind NativeSearch_19087.ItemsSource, Mode=OneWay}"
+                                        MaxSuggestionListHeight="{x:Bind NativeSearch_19087.MaxSuggestionListHeight, Mode=OneWay}"
+                                        PlaceholderText="{x:Bind NativeSearch_19087.PlaceholderText, Mode=OneWay}"
+                                        QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
+                                        RequestedTheme="{x:Bind SearchPresenter_19087.ActualTheme, Mode=OneWay}"
+                                        Text="{x:Bind NativeSearch_19087.Text, Mode=TwoWay}"
+                                        TextMemberPath="{x:Bind NativeSearch_19087.TextMemberPath, Mode=OneWay}"
+                                        UpdateTextOnSelect="{x:Bind NativeSearch_19087.UpdateTextOnSelect, Mode=OneWay}"/>
+                                </cwc:Case>
+                            </cwc:SwitchPresenter>
                         </CommandBar.Content>
 
                         <AppBarElementContainer AllowFocusOnInteraction="True">
                             <shuxc:SizeRestrictedContentControl Margin="2,6,3,6">
-                                <ComboBox
-                                    DisplayMemberPath="Name"
-                                    ItemsSource="{Binding Archives, Mode=OneWay}"
-                                    SelectedItem="{Binding Archives.CurrentItem, Mode=TwoWay}"
-                                    Style="{ThemeResource CommandBarComboBoxStyle}"/>
+                                <cwc:SwitchPresenter
+                                    x:Name="GlassPresenter_18149"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    IsTabStop="False"
+                                    Tag="LiquidGlass:ComboBox"
+                                    Visibility="{x:Bind GlassPresenter_18149_State.Visibility, Mode=OneWay}"
+                                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
+                                    <cwc:Case>
+                                        <cwc:Case.Value>
+                                            <x:Int32>0</x:Int32>
+                                        </cwc:Case.Value>
+                                        <ComboBox
+                                            x:Name="GlassPresenter_18149_State"
+                                            DataContext="{x:Bind GlassPresenter_18149.DataContext, Mode=OneWay}"
+                                            DisplayMemberPath="Name"
+                                            ItemsSource="{x:Bind ((shva:AchievementViewModel)DataContext).Archives, Mode=OneWay}"
+                                            RequestedTheme="{x:Bind GlassPresenter_18149.ActualTheme, Mode=OneWay}"
+                                            SelectedItem="{x:Bind ((shva:AchievementViewModel)DataContext).Archives.CurrentItem, Mode=TwoWay}"
+                                            Style="{ThemeResource CommandBarComboBoxStyle}"/>
+                                    </cwc:Case>
+                                    <cwc:Case>
+                                        <cwc:Case.Value>
+                                            <x:Int32>1</x:Int32>
+                                        </cwc:Case.Value>
+                                        <wl:LiquidGlassComboBox
+                                            x:Name="GlassPresenter_18149_StateGlass"
+                                            Width="{x:Bind GlassPresenter_18149_State.Width, Mode=OneWay}"
+                                            Height="{x:Bind GlassPresenter_18149_State.Height, Mode=OneWay}"
+                                            MinWidth="{x:Bind GlassPresenter_18149_State.MinWidth, Mode=OneWay}"
+                                            MinHeight="{x:Bind GlassPresenter_18149_State.MinHeight, Mode=OneWay}"
+                                            MaxWidth="{x:Bind GlassPresenter_18149_State.MaxWidth, Mode=OneWay}"
+                                            MaxHeight="{x:Bind GlassPresenter_18149_State.MaxHeight, Mode=OneWay}"
+                                            Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(GlassPresenter_18149_State.Padding), Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassPresenter_18149_State, Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                                            BorderThickness="{x:Bind GlassPresenter_18149_State.BorderThickness, Mode=OneWay}"
+                                            DisplayMemberPath="{x:Bind GlassPresenter_18149_State.DisplayMemberPath, Mode=OneWay}"
+                                            FlowDirection="{x:Bind GlassPresenter_18149_State.FlowDirection, Mode=OneWay}"
+                                            FontFamily="{x:Bind GlassPresenter_18149_State.FontFamily, Mode=OneWay}"
+                                            FontSize="{x:Bind GlassPresenter_18149_State.FontSize, Mode=OneWay}"
+                                            FontStyle="{x:Bind GlassPresenter_18149_State.FontStyle, Mode=OneWay}"
+                                            FontWeight="{x:Bind GlassPresenter_18149_State.FontWeight, Mode=OneWay}"
+                                            Foreground="{x:Bind GlassPresenter_18149_State.Foreground, Mode=OneWay}"
+                                            Header="{x:Bind GlassPresenter_18149_State.Header, Mode=OneWay}"
+                                            HeaderTemplate="{x:Bind GlassPresenter_18149_State.HeaderTemplate, Mode=OneWay}"
+                                            IsDropDownOpen="{x:Bind GlassPresenter_18149_State.IsDropDownOpen, Mode=TwoWay}"
+                                            IsEditable="{x:Bind GlassPresenter_18149_State.IsEditable, Mode=OneWay}"
+                                            IsEnabled="{x:Bind GlassPresenter_18149_State.IsEnabled, Mode=OneWay}"
+                                            IsTextSearchEnabled="{x:Bind GlassPresenter_18149_State.IsTextSearchEnabled, Mode=OneWay}"
+                                            ItemsSource="{x:Bind GlassPresenter_18149_State.ItemsSource, Mode=OneWay}"
+                                            MaxDropDownHeight="{x:Bind GlassPresenter_18149_State.MaxDropDownHeight, Mode=OneWay}"
+                                            PlaceholderText="{x:Bind GlassPresenter_18149_State.PlaceholderText, Mode=OneWay}"
+                                            SelectedIndex="{x:Bind GlassPresenter_18149_State.SelectedIndex, Mode=TwoWay}"
+                                            SelectedValuePath="{x:Bind GlassPresenter_18149_State.SelectedValuePath, Mode=OneWay}"/>
+                                    </cwc:Case>
+                                </cwc:SwitchPresenter>
                             </shuxc:SizeRestrictedContentControl>
                         </AppBarElementContainer>
                         <AppBarButton
-                            Command="{Binding AddArchiveCommand}"
+                            Command="{x:Bind ((shva:AchievementViewModel)DataContext).AddArchiveCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE710;}"
                             Label="{shuxm:ResourceString Name=ViewPageAchievementAddArchive}"/>
                         <AppBarButton
-                            Command="{Binding RemoveArchiveCommand}"
+                            Command="{x:Bind ((shva:AchievementViewModel)DataContext).RemoveArchiveCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE74D;}"
                             Label="{shuxm:ResourceString Name=ViewPageAchievementRemoveArchive}"/>
                         <AppBarSeparator/>
@@ -363,34 +513,34 @@
                             <AppBarButton.Flyout>
                                 <MenuFlyout Placement="BottomEdgeAlignedRight">
                                     <MenuFlyoutItem
-                                        Command="{Binding ImportUIAFFromEmbeddedYaeCommand}"
+                                        Command="{x:Bind ((shva:AchievementViewModel)DataContext).ImportUIAFFromEmbeddedYaeCommand, Mode=OneWay}"
                                         Icon="{shuxm:FontIcon Glyph=&#xE7FC;}"
                                         Text="{shuxm:ResourceString Name=ViewPageAchievementImportFromEmbeddedYae}"/>
                                     <MenuFlyoutItem
-                                        Command="{Binding ImportUIAFFromClipboardCommand}"
+                                        Command="{x:Bind ((shva:AchievementViewModel)DataContext).ImportUIAFFromClipboardCommand, Mode=OneWay}"
                                         Icon="{shuxm:FontIcon Glyph=&#xE77F;}"
                                         Text="{shuxm:ResourceString Name=ViewPageAchievementImportFromClipboard}"/>
                                     <MenuFlyoutItem
-                                        Command="{Binding ImportUIAFFromFileCommand}"
+                                        Command="{x:Bind ((shva:AchievementViewModel)DataContext).ImportUIAFFromFileCommand, Mode=OneWay}"
                                         Icon="{shuxm:FontIcon Glyph=&#xE8E5;}"
                                         Text="{shuxm:ResourceString Name=ViewPageAchievementImportFromFile}"/>
                                 </MenuFlyout>
                             </AppBarButton.Flyout>
                         </AppBarButton>
                         <AppBarButton
-                            Command="{Binding ExportAsUIAFToFileCommand}"
+                            Command="{x:Bind ((shva:AchievementViewModel)DataContext).ExportAsUIAFToFileCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xEDE1;}"
                             Label="{shuxm:ResourceString Name=ViewPageAchievementExportLabel}"/>
                         <AppBarSeparator/>
                         <AppBarToggleButton
-                            Command="{Binding SortUncompletedSwitchCommand}"
+                            Command="{x:Bind ((shva:AchievementViewModel)DataContext).SortUncompletedSwitchCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE8CB;}"
-                            IsChecked="{Binding IsUncompletedItemsFirst, Mode=TwoWay}"
+                            IsChecked="{x:Bind ((shva:AchievementViewModel)DataContext).IsUncompletedItemsFirst, Mode=TwoWay}"
                             Label="{shuxm:ResourceString Name=ViewPageAchievementSortIncompletedItemsFirst}"/>
                         <AppBarToggleButton
-                            Command="{Binding FilterDailyQuestSwitchCommand}"
+                            Command="{x:Bind ((shva:AchievementViewModel)DataContext).FilterDailyQuestSwitchCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE8ED;}"
-                            IsChecked="{Binding FilterDailyQuestItems, Mode=TwoWay}"
+                            IsChecked="{x:Bind ((shva:AchievementViewModel)DataContext).FilterDailyQuestItems, Mode=TwoWay}"
                             Label="{shuxm:ResourceString Name=ViewPageAchievementFilterDailyQuestItems}"/>
                     </CommandBar>
                 </Grid>
@@ -401,7 +551,7 @@
                 Margin="16,0,16,16"
                 cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                 <Border Style="{ThemeResource AcrylicBorderCardStyle}">
-                    <cwc:SwitchPresenter ContentTransitions="{StaticResource EntranceThemeTransitions}" Value="{Binding ElementName=ItemsPanelSelector, Path=Current}">
+                    <cwc:SwitchPresenter ContentTransitions="{StaticResource EntranceThemeTransitions}" Value="{x:Bind ItemsPanelSelector.Current, Mode=OneWay}">
                         <cwc:Case Value="List">
                             <SplitView
                                 DisplayMode="Inline"
@@ -413,8 +563,8 @@
                                         Padding="{ThemeResource ListViewInSplitPanePadding}"
                                         ItemContainerStyle="{StaticResource AchievementGoalListViewItemStyle}"
                                         ItemTemplate="{StaticResource AchievementGoalListTemplate}"
-                                        ItemsSource="{Binding AchievementGoals}"
-                                        SelectedItem="{Binding AchievementGoals.CurrentItem, Mode=TwoWay}"
+                                        ItemsSource="{x:Bind ((shva:AchievementViewModel)DataContext).AchievementGoals, Mode=OneWay}"
+                                        SelectedItem="{x:Bind ((shva:AchievementViewModel)DataContext).AchievementGoals.CurrentItem, Mode=TwoWay}"
                                         SelectionMode="Single">
                                         <mxi:Interaction.Behaviors>
                                             <shuxb:SelectedItemInViewBehavior/>
@@ -428,7 +578,7 @@
                                         Padding="0,0,0,8"
                                         ItemContainerStyle="{StaticResource AchievementListViewItemStyle}"
                                         ItemTemplate="{StaticResource AchievementTemplate}"
-                                        ItemsSource="{Binding Achievements}"
+                                        ItemsSource="{x:Bind ((shva:AchievementViewModel)DataContext).Achievements, Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </SplitView.Content>
                             </SplitView>
@@ -438,8 +588,8 @@
                                 HorizontalAlignment="Stretch"
                                 HorizontalContentAlignment="Stretch"
                                 ItemTemplate="{StaticResource AchievementGoalGridTemplate}"
-                                ItemsSource="{Binding AchievementGoals}"
-                                SelectedItem="{Binding AchievementGoals.CurrentItem, Mode=TwoWay}"
+                                ItemsSource="{x:Bind ((shva:AchievementViewModel)DataContext).AchievementGoals, Mode=OneWay}"
+                                SelectedItem="{x:Bind ((shva:AchievementViewModel)DataContext).AchievementGoals.CurrentItem, Mode=TwoWay}"
                                 SelectionMode="Single">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">

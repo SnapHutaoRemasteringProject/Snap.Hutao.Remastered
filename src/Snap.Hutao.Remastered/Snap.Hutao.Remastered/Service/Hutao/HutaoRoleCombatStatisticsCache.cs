@@ -19,7 +19,7 @@ public sealed partial class HutaoRoleCombatStatisticsCache : StatisticsCache, IH
 
     public int RecordTotal { get; private set; }
 
-    public ImmutableArray<AvatarView> AvatarAppearances { get; private set; }
+    public ImmutableArray<AvatarView> AvatarAppearances { get; private set; } = [];
 
     public ValueTask InitializeForRoleCombatViewAsync(HutaoRoleCombatStatisticsMetadataContext context)
     {

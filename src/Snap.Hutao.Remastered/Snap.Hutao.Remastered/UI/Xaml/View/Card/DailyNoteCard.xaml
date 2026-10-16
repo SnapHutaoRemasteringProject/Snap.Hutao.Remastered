@@ -1,4 +1,4 @@
-<Button
+<shuxcth:MaterialCardButton
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Card.DailyNoteCard"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,6 +9,7 @@
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shvd="using:Snap.Hutao.Remastered.ViewModel.DailyNote"
     Height="{ThemeResource HomeAdaptiveCardHeight}"
@@ -20,15 +21,14 @@
     Background="Transparent"
     BorderBrush="{x:Null}"
     BorderThickness="0"
-    Command="{Binding NavigateCommand}"
-    Style="{ThemeResource DefaultButtonStyle}"
+    Command="{x:Bind ((shvd:DailyNoteViewModelSlim)DataContext).NavigateCommand, Mode=OneWay}"
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvd:DailyNoteViewModelSlim)DataContext).LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
-    <Button.Resources>
+    <shuxcth:MaterialCardButton.Resources>
         <DataTemplate x:Key="DailyNoteTemplate" x:DataType="shme:DailyNoteEntry">
             <Grid
                 Margin="12"
@@ -61,25 +61,25 @@
                             Margin="-4"
                             Source="ms-appx:///Resource/Navigation/DailyNote.png"/>
 
-                        <TextBlock Text="{Binding Uid}"/>
+                        <TextBlock Text="{x:Bind Uid, Mode=OneWay}"/>
                     </StackPanel>
 
                     <TextBlock
                         Margin="0,0,34,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
-                        Text="{Binding RefreshTimeFormatted}"/>
+                        Text="{x:Bind RefreshTimeFormatted, Mode=OneWay}"/>
                 </Grid>
 
 
                 <shuxcc:CardBlock
                     Grid.Row="1"
                     Grid.Column="0"
-                    DotVisibility="{Binding ResinDotVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                    DotVisibility="{x:Bind ResinDotVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                     IconSquareLength="64"
                     ImageSource="{StaticResource UI_ItemIcon_106}"
-                    Text="{Binding DailyNote.FormattedResin, FallbackValue={x:Null}}"
-                    ToolTipService.ToolTip="{Binding DailyNote.ResinRecoveryTargetTime, Mode=OneWay}"/>
+                    Text="{x:Bind DailyNote.FormattedResin, FallbackValue={x:Null}, Mode=OneWay}"
+                    ToolTipService.ToolTip="{x:Bind DailyNote.ResinRecoveryTargetTime, Mode=OneWay}"/>
 
                 <Grid
                     Grid.Row="1"
@@ -91,14 +91,14 @@
                     </Grid.RowDefinitions>
                     <shuxcc:CardBlock
                         Grid.Row="0"
-                        DotVisibility="{Binding HomeCoinDotVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                        DotVisibility="{x:Bind HomeCoinDotVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                         ImageSource="{StaticResource UI_ItemIcon_204}"
-                        Text="{Binding DailyNote.FormattedHomeCoin, FallbackValue={x:Null}}"/>
+                        Text="{x:Bind DailyNote.FormattedHomeCoin, FallbackValue={x:Null}, Mode=OneWay}"/>
                     <shuxcc:CardBlock
                         Grid.Row="1"
-                        DotVisibility="{Binding DailyTaskDotVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                        DotVisibility="{x:Bind DailyTaskDotVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                         ImageSource="{StaticResource UI_MarkQuest_Events_Proce}"
-                        Text="{Binding DailyNote.FormattedTask, FallbackValue={x:Null}}"/>
+                        Text="{x:Bind DailyNote.FormattedTask, FallbackValue={x:Null}, Mode=OneWay}"/>
                 </Grid>
                 <Grid
                     Grid.Row="1"
@@ -111,31 +111,31 @@
                     <shuxcc:CardBlock
                         Grid.Row="0"
                         ImageSource="{StaticResource UI_MarkTower}"
-                        Text="{Binding DailyNote.FormattedResinDiscount, FallbackValue={x:Null}}"/>
+                        Text="{x:Bind DailyNote.FormattedResinDiscount, FallbackValue={x:Null}, Mode=OneWay}"/>
                     <shuxcc:CardBlock
                         Grid.Row="1"
-                        DotVisibility="{Binding TransformerDotVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                        DotVisibility="{x:Bind TransformerDotVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                         ImageSource="{StaticResource UI_ItemIcon_220021}"
-                        Text="{Binding DailyNote.Transformer.ObtainedAndReachedFormatted, FallbackValue={x:Null}}"/>
+                        Text="{x:Bind DailyNote.Transformer.ObtainedAndReachedFormatted, FallbackValue={x:Null}, Mode=OneWay}"/>
                 </Grid>
             </Grid>
         </DataTemplate>
-    </Button.Resources>
+    </shuxcth:MaterialCardButton.Resources>
 
     <Grid>
-        <Grid Visibility="{Binding IsInitialized, Converter={StaticResource BoolToVisibilityConverter}}">
-            <Grid Visibility="{Binding DailyNoteEntries.Count, FallbackValue={StaticResource VisibilityCollapsed}, Converter={StaticResource Int32ToVisibilityConverter}}">
+        <Grid Visibility="{x:Bind ((shvd:DailyNoteViewModelSlim)DataContext).IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+            <Grid Visibility="{x:Bind ((shvd:DailyNoteViewModelSlim)DataContext).DailyNoteEntries.Count, FallbackValue=Collapsed, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
                 <FlipView
                     x:Name="RootFlipView"
                     Background="{x:Null}"
                     ItemTemplate="{StaticResource DailyNoteTemplate}"
-                    ItemsSource="{Binding DailyNoteEntries}"/>
+                    ItemsSource="{x:Bind ((shvd:DailyNoteViewModelSlim)DataContext).DailyNoteEntries, Mode=OneWay}"/>
 
                 <PipsPager
                     Height="16"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Bottom"
-                    NumberOfPages="{Binding DailyNoteEntries.Count, FallbackValue={x:Null}}"
+                    NumberOfPages="{x:Bind ((shvd:DailyNoteViewModelSlim)DataContext).DailyNoteEntries.Count, FallbackValue=0, Mode=OneWay}"
                     SelectedPageIndex="{x:Bind Path=RootFlipView.SelectedIndex, Mode=TwoWay}"/>
 
                 <Button
@@ -187,7 +187,7 @@
             <StackPanel
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Visibility="{Binding DailyNoteEntries.Count, FallbackValue={StaticResource VisibilityCollapsed}, Converter={StaticResource Int32ToVisibilityRevertConverter}}">
+                Visibility="{x:Bind ((shvd:DailyNoteViewModelSlim)DataContext).DailyNoteEntries.Count, FallbackValue=Collapsed, Converter={StaticResource Int32ToVisibilityRevertConverter}, Mode=OneWay}">
                 <Image
                     Width="80"
                     Height="80"
@@ -196,6 +196,6 @@
             </StackPanel>
         </Grid>
 
-        <shuxc:Loading IsLoading="{Binding IsInitialized, Converter={StaticResource BoolNegationConverter}}" Style="{ThemeResource DefaultLoadingCardStyle}"/>
+        <shuxc:Loading IsLoading="{x:Bind ((shvd:DailyNoteViewModelSlim)DataContext).IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" Style="{ThemeResource DefaultLoadingCardStyle}"/>
     </Grid>
-</Button>
+</shuxcth:MaterialCardButton>

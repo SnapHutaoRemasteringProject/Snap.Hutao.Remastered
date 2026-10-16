@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cw="using:CommunityToolkit.WinUI"
-    xmlns:cwcont="using:CommunityToolkit.WinUI.Controls"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:cwconv="using:CommunityToolkit.WinUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -11,10 +11,12 @@
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxdcs="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shuxvs="using:Snap.Hutao.Remastered.UI.Xaml.View.Specialized"
     xmlns:shvg="using:Snap.Hutao.Remastered.ViewModel.GachaLog"
+    xmlns:wl="using:WinUI.LiquidGlass"
     cw:Effects.Shadow="{ThemeResource CompatCardShadow}"
     d:DataContext="{d:DesignInstance shvg:TypedWishSummary}"
     mc:Ignorable="d">
@@ -47,18 +49,18 @@
             <DataTemplate x:Key="SummaryListTemplate" x:DataType="shvg:SummaryItem">
                 <Grid Margin="0" Style="{ThemeResource GridShimmerStyle}">
                     <ToolTipService.ToolTip>
-                        <TextBlock Text="{Binding FormattedTime}"/>
+                        <TextBlock Text="{x:Bind FormattedTime, Mode=OneWay}"/>
                     </ToolTipService.ToolTip>
 
                     <ProgressBar
                         MinHeight="40"
                         Background="Transparent"
                         CornerRadius="{StaticResource ControlCornerRadius}"
-                        Maximum="{Binding GuaranteeOrangeThreshold}"
+                        Maximum="{x:Bind GuaranteeOrangeThreshold, Mode=OneWay}"
                         Opacity="{StaticResource LargeBackgroundProgressBarOpacity}"
-                        Value="{Binding LastPull}">
+                        Value="{x:Bind LastPull, Mode=OneWay}">
                         <ProgressBar.Foreground>
-                            <SolidColorBrush Color="{Binding LastPull, Converter={StaticResource Int32ToGradientColorConverter}}"/>
+                            <SolidColorBrush Color="{x:Bind LastPull, Converter={StaticResource Int32ToGradientColorConverter}, Mode=OneWay}"/>
                         </ProgressBar.Foreground>
                     </ProgressBar>
 
@@ -66,13 +68,13 @@
                         <shuxci:CachedImage
                             shux:FrameworkElementHelper.SquareLength="40"
                             CornerRadius="{ThemeResource ControlCornerRadius}"
-                            Source="{Binding Icon}"/>
+                            Source="{x:Bind Icon, Mode=OneWay}"/>
                         <TextBlock
                             Margin="16,0,0,0"
                             VerticalAlignment="Center"
-                            Text="{Binding Name}">
+                            Text="{x:Bind Name, Mode=OneWay}">
                             <TextBlock.Foreground>
-                                <SolidColorBrush Color="{Binding Color}"/>
+                                <SolidColorBrush Color="{x:Bind Color, Mode=OneWay}"/>
                             </TextBlock.Foreground>
                         </TextBlock>
                     </StackPanel>
@@ -83,20 +85,20 @@
                             VerticalAlignment="Center"
                             Foreground="{StaticResource GuaranteePullColorBrush}"
                             Text="{shuxm:ResourceString Name=ViewControlStatisticsCardGuaranteeText}"
-                            Visibility="{Binding IsGuarantee, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            Visibility="{x:Bind IsGuarantee, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                         <TextBlock
                             Margin="0,0,8,0"
                             VerticalAlignment="Center"
                             Foreground="{StaticResource UpPullColorBrush}"
                             Text="{shuxm:ResourceString Name=ViewControlStatisticsCardUpText}"
-                            Visibility="{Binding IsUp, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            Visibility="{x:Bind IsUp, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
 
                         <TextBlock
                             MinWidth="24"
                             Margin="0,0,8,0"
                             VerticalAlignment="Center"
                             Style="{StaticResource BodyTextBlockStyle}"
-                            Text="{Binding LastPull}"
+                            Text="{x:Bind LastPull, Mode=OneWay}"
                             TextAlignment="Center"
                             TextWrapping="NoWrap"/>
                     </StackPanel>
@@ -105,19 +107,19 @@
 
             <DataTemplate x:Key="OrangeGridTemplate" x:DataType="shvg:SummaryItem">
                 <shuxcc:VerticalCard
-                    Background="{Binding IsUp, Converter={ThemeResource BoolToBrushConverter}}"
+                    Background="{Binding IsUp, Converter={ThemeResource BoolToBrushConverter}, Mode=OneWay}"
                     BottomPadding="0,1"
-                    ToolTipService.ToolTip="{Binding FormattedTime}">
+                    ToolTipService.ToolTip="{x:Bind FormattedTime, Mode=OneWay}">
                     <shuxcc:VerticalCard.Top>
                         <shuxc:ItemIcon
                             shux:FrameworkElementHelper.SquareLength="40"
-                            Icon="{Binding Icon}"
-                            Quality="{Binding Quality}"/>
+                            Icon="{x:Bind Icon, Mode=OneWay}"
+                            Quality="{x:Bind Quality, Mode=OneWay}"/>
                     </shuxcc:VerticalCard.Top>
                     <shuxcc:VerticalCard.Bottom>
-                        <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{Binding LastPull}">
+                        <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind LastPull, Mode=OneWay}">
                             <TextBlock.Foreground>
-                                <SolidColorBrush Color="{Binding Color}"/>
+                                <SolidColorBrush Color="{x:Bind Color, Mode=OneWay}"/>
                             </TextBlock.Foreground>
                         </TextBlock>
                     </shuxcc:VerticalCard.Bottom>
@@ -175,16 +177,65 @@
                                 TextTrimming="None"
                                 TextWrapping="NoWrap"/>
                         </Viewbox>
-                        <ToggleButton
-                            x:Name="CombinedModeToggle"
+                        <cwc:SwitchPresenter
+                            x:Name="GlassPresenter_9122"
                             Margin="0,0,4,0"
                             VerticalAlignment="Center"
-                            FontSize="14"
-                            FontWeight="Bold"
-                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewControlStatisticsCardCombinedModeTooltip}"
-                            Visibility="{x:Bind ShowCombinedModeToggle, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-                            <TextBlock FontSize="14" Text="&#x2605;"/>
-                        </ToggleButton>
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            IsTabStop="False"
+                            Tag="LiquidGlass:ToggleButton"
+                            Visibility="{x:Bind CombinedModeToggle.Visibility, Mode=OneWay}"
+                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleButtonMaterial, Mode=OneWay}">
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>0</x:Int32>
+                                </cwc:Case.Value>
+                                <ToggleButton
+                                    x:Name="CombinedModeToggle"
+                                    VerticalAlignment="Center"
+                                    DataContext="{x:Bind GlassPresenter_9122.DataContext, Mode=OneWay}"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    RequestedTheme="{x:Bind GlassPresenter_9122.ActualTheme, Mode=OneWay}"
+                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewControlStatisticsCardCombinedModeTooltip}"
+                                    Visibility="{x:Bind ShowCombinedModeToggle, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                    <TextBlock FontSize="14" Text="&#x2605;"/>
+                                </ToggleButton>
+                            </cwc:Case>
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>1</x:Int32>
+                                </cwc:Case.Value>
+                                <wl:LiquidGlassToggleButton
+                                    x:Name="CombinedModeToggleGlass"
+                                    Width="{x:Bind CombinedModeToggle.Width, Mode=OneWay}"
+                                    Height="{x:Bind CombinedModeToggle.Height, Mode=OneWay}"
+                                    MinWidth="{x:Bind CombinedModeToggle.MinWidth, Mode=OneWay}"
+                                    MinHeight="{x:Bind CombinedModeToggle.MinHeight, Mode=OneWay}"
+                                    MaxWidth="{x:Bind CombinedModeToggle.MaxWidth, Mode=OneWay}"
+                                    MaxHeight="{x:Bind CombinedModeToggle.MaxHeight, Mode=OneWay}"
+                                    Padding="{x:Bind CombinedModeToggle.Padding, Mode=OneWay}"
+                                    VerticalAlignment="Center"
+                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                    shuxcth:ControlMaterialState.NativeControl="{x:Bind CombinedModeToggle, Mode=OneWay}"
+                                    BorderThickness="{x:Bind CombinedModeToggle.BorderThickness, Mode=OneWay}"
+                                    Command="{x:Bind CombinedModeToggle.Command, Mode=OneWay}"
+                                    CommandParameter="{x:Bind CombinedModeToggle.CommandParameter, Mode=OneWay}"
+                                    FlowDirection="{x:Bind CombinedModeToggle.FlowDirection, Mode=OneWay}"
+                                    FontFamily="{x:Bind CombinedModeToggle.FontFamily, Mode=OneWay}"
+                                    FontSize="{x:Bind CombinedModeToggle.FontSize, Mode=OneWay}"
+                                    FontStyle="{x:Bind CombinedModeToggle.FontStyle, Mode=OneWay}"
+                                    FontWeight="{x:Bind CombinedModeToggle.FontWeight, Mode=OneWay}"
+                                    Foreground="{x:Bind CombinedModeToggle.Foreground, Mode=OneWay}"
+                                    IsChecked="{x:Bind CombinedModeToggle.IsChecked, Mode=TwoWay}"
+                                    IsEnabled="{x:Bind CombinedModeToggle.IsEnabled, Mode=OneWay}"
+                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewControlStatisticsCardCombinedModeTooltip}"
+                                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True">
+                                    <TextBlock FontSize="14" Text="&#x2605;"/>
+                                </wl:LiquidGlassToggleButton>
+                            </cwc:Case>
+                        </cwc:SwitchPresenter>
                         <shuxc:LayoutSwitch
                             x:Name="ItemsPanelSelector"
                             Margin="6,0,0,0"
@@ -258,11 +309,11 @@
                     HorizontalAlignment="Stretch"
                     IsPredictPullAvailable="{Binding IsPredictPullAvailable}"
                     SelectedIndex="0"/>
-                <cwcont:SwitchPresenter
+                <cwc:SwitchPresenter
                     Height="96"
                     Padding="0,12"
                     Value="{x:Bind StatisticsSegmented.SelectedIndex, Mode=OneWay}">
-                    <cwcont:Case Value="{shuxm:Int32 Value=0}">
+                    <cwc:Case Value="{shuxm:Int32 Value=0}">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -330,8 +381,8 @@
                                 </Border>
                             </Grid>
                         </Grid>
-                    </cwcont:Case>
-                    <cwcont:Case Value="{shuxm:Int32 Value=1}">
+                    </cwc:Case>
+                    <cwc:Case Value="{shuxm:Int32 Value=1}">
                         <Grid ColumnSpacing="4">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
@@ -381,8 +432,8 @@
                                 </StackPanel>
                             </Grid>
                         </Grid>
-                    </cwcont:Case>
-                    <cwcont:Case Value="{shuxm:Int32 Value=2}">
+                    </cwc:Case>
+                    <cwc:Case Value="{shuxm:Int32 Value=2}">
                         <Grid RowSpacing="4">
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
@@ -407,18 +458,18 @@
                                 </Viewbox>
                             </Border>
                         </Grid>
-                    </cwcont:Case>
-                </cwcont:SwitchPresenter>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
                 <MenuFlyoutSeparator Margin="-12,0"/>
             </StackPanel>
         </Expander>
 
-        <cwcont:SwitchPresenter
+        <cwc:SwitchPresenter
             Grid.Row="2"
             Margin="12,0"
             ContentTransitions="{StaticResource EntranceThemeTransitions}"
-            Value="{Binding ElementName=ItemsPanelSelector, Path=Current}">
-            <cwcont:Case Value="List">
+            Value="{x:Bind ItemsPanelSelector.Current, Mode=OneWay}">
+            <cwc:Case Value="List">
                 <ListView
                     Padding="0,6,0,12"
                     ItemContainerStyle="{StaticResource NoneSelectionListViewItemStyle}"
@@ -426,8 +477,8 @@
                     ItemsSource="{Binding DisplayList}"
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                     SelectionMode="None"/>
-            </cwcont:Case>
-            <cwcont:Case Value="Grid">
+            </cwc:Case>
+            <cwc:Case Value="Grid">
                 <GridView
                     Margin="0,0,-2,-4"
                     Padding="0,12"
@@ -436,8 +487,8 @@
                     ItemsSource="{Binding DisplayList}"
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                     SelectionMode="None"/>
-            </cwcont:Case>
-        </cwcont:SwitchPresenter>
+            </cwc:Case>
+        </cwc:SwitchPresenter>
 
     </Grid>
 

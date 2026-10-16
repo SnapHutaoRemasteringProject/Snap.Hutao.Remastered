@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Calculable;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Model.Metadata.Abstraction;
@@ -14,7 +15,7 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Weapon;
 
-public sealed partial class Weapon : IDefaultIdentity<WeaponId>,
+public sealed partial class Weapon : ObservableObject, IDefaultIdentity<WeaponId>,
     INameQualityAccess,
     IStatisticsItemConvertible,
     ISummaryItemConvertible,
@@ -48,10 +49,12 @@ public sealed partial class Weapon : IDefaultIdentity<WeaponId>,
     public required ImmutableArray<MaterialId> CultivationItems { get; init; }
 
     [JsonIgnore]
-    public WeaponCollocationView? CollocationView { get; set; }
+    [ObservableProperty]
+    public partial WeaponCollocationView? CollocationView { get; set; }
 
     [JsonIgnore]
-    public List<Material>? CultivationItemsView { get; set; }
+    [ObservableProperty]
+    public partial List<Material>? CultivationItemsView { get; set; }
 
     [JsonIgnore]
     public QualityType Quality

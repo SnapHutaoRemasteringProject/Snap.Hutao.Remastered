@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar;
@@ -14,7 +15,7 @@ namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar;
 [JsonDerivedType(typeof(ActRoleCombat), nameof(ActType.ActTypeRoleCombat))]
 [JsonDerivedType(typeof(ActHardChallenge), nameof(ActType.ActTypeHardChallenge))]
 [JsonDerivedType(typeof(ActOther), nameof(ActType.ActTypeOther))]
-public class Act
+public partial class Act : ObservableObject
 {
     [JsonPropertyName("id")]
     public required int Id { get; init; }
@@ -68,5 +69,6 @@ public class Act
     public required ImmutableArray<ActReward> RewardList { get; init; }
 
     [JsonPropertyName("is_finished")]
-    public required bool IsFinished { get; set; }
+    [ObservableProperty]
+    public required partial bool IsFinished { get; set; }
 }

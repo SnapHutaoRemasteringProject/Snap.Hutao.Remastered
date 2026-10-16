@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cw="using:CommunityToolkit.WinUI"
-    xmlns:cwcont="using:CommunityToolkit.WinUI.Controls"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:cwconv="using:CommunityToolkit.WinUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,9 +19,11 @@
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
     xmlns:shuxcl="using:Snap.Hutao.Remastered.UI.Xaml.Control.Layout"
     xmlns:shuxcpd="using:Snap.Hutao.Remastered.UI.Xaml.Control.Panel.DataTable"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxdc="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shvcu="using:Snap.Hutao.Remastered.ViewModel.Cultivation"
+    xmlns:wl="using:WinUI.LiquidGlass"
     d:DataContext="{d:DesignInstance shvcu:CultivationViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
@@ -50,7 +52,7 @@
                         TrueValue="{StaticResource CultivationHighlightColorBrush}"/>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-            <shux:BindingProxy x:Key="BindingProxy" DataContext="{Binding}"/>
+            <shux:BindingProxy x:Key="BindingProxy" DataContext="{x:Bind ((shvcu:CultivationViewModel)DataContext), Mode=OneWay}"/>
 
             <DataTemplate x:Key="FlyoutSkillTemplate">
                 <Border Margin="0,2,0,0" Style="{StaticResource BorderCardStyle}">
@@ -100,15 +102,7 @@
                 </Border>
             </DataTemplate>
 
-            <Flyout
-                x:Key="CultivateEntryFlyout"
-                Placement="RightEdgeAlignedTop"
-                ShouldConstrainToRootBounds="False">
-                <Flyout.FlyoutPresenterStyle>
-                    <Style BasedOn="{StaticResource FlyoutPresenterPadding8Style}" TargetType="FlyoutPresenter">
-                        <Setter Property="MaxWidth" Value="Infinity"/>
-                    </Style>
-                </Flyout.FlyoutPresenterStyle>
+            <DataTemplate x:Key="CultivateEntryFlyoutContentTemplate" x:DataType="shvcu:CultivateEntryView">
                 <Grid RowSpacing="6">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
@@ -117,11 +111,11 @@
                     </Grid.RowDefinitions>
 
                     <!--  Avatar section  -->
-                    <StackPanel Grid.Row="0" Visibility="{Binding Avatar, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                    <StackPanel Grid.Row="0" Visibility="{x:Bind Avatar, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                         <Grid
                             Padding="8"
                             ColumnSpacing="6"
-                            DataContext="{Binding Avatar}"
+                            DataContext="{x:Bind Avatar, Mode=OneWay}"
                             Style="{ThemeResource GridCardStyle}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
@@ -135,32 +129,56 @@
                                 Grid.Column="0"
                                 Width="32"
                                 Height="32"
-                                Icon="{Binding Icon}"
-                                Quality="{Binding Quality}"/>
+                                Icon="{x:Bind Avatar.Icon, Mode=OneWay}"
+                                Quality="{x:Bind Avatar.Quality, Mode=OneWay}"/>
                             <TextBlock
                                 Grid.Column="1"
                                 Margin="16,0,0,0"
                                 VerticalAlignment="Center"
-                                Text="{Binding Name}"
+                                Text="{x:Bind Avatar.Name, Mode=OneWay}"
                                 TextTrimming="CharacterEllipsis"/>
                             <StackPanel
                                 Grid.Column="2"
                                 HorizontalAlignment="Right"
                                 Orientation="Horizontal"
-                                Visibility="{Binding IsPromotionAvailable}">
-                                <CheckBox
+                                Visibility="{x:Bind Avatar.IsPromotionAvailable, Mode=OneWay}">
+                                <cwc:SwitchPresenter
+                                    x:Name="GlassPresenter_8164"
                                     VerticalAlignment="Center"
-                                    Content="{shuxm:ResourceString Name=ViewDialogCultivatePromotionDeltaPromoted}"
-                                    IsChecked="{Binding IsPromoted, Mode=TwoWay}"/>
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    IsTabStop="False"
+                                    Tag="LiquidGlass:CheckBox"
+                                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
+                                    <cwc:Case>
+                                        <cwc:Case.Value>
+                                            <x:Int32>0</x:Int32>
+                                        </cwc:Case.Value>
+                                        <CheckBox
+                                            VerticalAlignment="Center"
+                                            Content="{shuxm:ResourceString Name=ViewDialogCultivatePromotionDeltaPromoted}"
+                                            IsChecked="{x:Bind Avatar.IsPromoted, Mode=TwoWay}"/>
+                                    </cwc:Case>
+                                    <cwc:Case>
+                                        <cwc:Case.Value>
+                                            <x:Int32>1</x:Int32>
+                                        </cwc:Case.Value>
+                                        <wl:LiquidGlassCheckBox
+                                            VerticalAlignment="Center"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            Content="{shuxm:ResourceString Name=ViewDialogCultivatePromotionDeltaPromoted}"
+                                            IsChecked="{x:Bind Avatar.IsPromoted, Mode=TwoWay}"/>
+                                    </cwc:Case>
+                                </cwc:SwitchPresenter>
                             </StackPanel>
                             <NumberBox
                                 Grid.Column="3"
                                 MinWidth="80"
                                 VerticalAlignment="Center"
-                                Maximum="{Binding LevelMax}"
-                                Minimum="{Binding LevelMin}"
+                                Maximum="{x:Bind Avatar.LevelMax, Mode=OneWay}"
+                                Minimum="{x:Bind Avatar.LevelMin, Mode=OneWay}"
                                 SpinButtonPlacementMode="Inline"
-                                Value="{Binding LevelCurrent, Mode=TwoWay}"/>
+                                Value="{x:Bind Avatar.LevelCurrent, Mode=TwoWay}"/>
                             <FontIcon
                                 Grid.Column="4"
                                 Margin="4,0"
@@ -170,21 +188,21 @@
                                 Grid.Column="5"
                                 MinWidth="80"
                                 VerticalAlignment="Center"
-                                Maximum="{Binding LevelMax}"
-                                Minimum="{Binding LevelCurrent, Mode=OneWay}"
+                                Maximum="{x:Bind Avatar.LevelMax, Mode=OneWay}"
+                                Minimum="{x:Bind Avatar.LevelCurrent, Mode=OneWay}"
                                 SpinButtonPlacementMode="Inline"
-                                Value="{Binding LevelTarget, Mode=TwoWay}"/>
+                                Value="{x:Bind Avatar.LevelTarget, Mode=TwoWay}"/>
                         </Grid>
 
-                        <ItemsControl ItemTemplate="{StaticResource FlyoutSkillTemplate}" ItemsSource="{Binding Avatar.Skills}"/>
+                        <ItemsControl ItemTemplate="{StaticResource FlyoutSkillTemplate}" ItemsSource="{x:Bind Avatar.Skills, Mode=OneWay}"/>
                     </StackPanel>
 
                     <!--  Weapon section  -->
-                    <StackPanel Grid.Row="1" Visibility="{Binding Weapon, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                    <StackPanel Grid.Row="1" Visibility="{x:Bind Weapon, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                         <Grid
                             Padding="8"
                             ColumnSpacing="6"
-                            DataContext="{Binding Weapon}"
+                            DataContext="{x:Bind Weapon, Mode=OneWay}"
                             Style="{ThemeResource GridCardStyle}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
@@ -198,32 +216,56 @@
                                 Grid.Column="0"
                                 Width="32"
                                 Height="32"
-                                Icon="{Binding Icon}"
-                                Quality="{Binding Quality}"/>
+                                Icon="{x:Bind Weapon.Icon, Mode=OneWay}"
+                                Quality="{x:Bind Weapon.Quality, Mode=OneWay}"/>
                             <TextBlock
                                 Grid.Column="1"
                                 Margin="16,0,0,0"
                                 VerticalAlignment="Center"
-                                Text="{Binding Name}"
+                                Text="{x:Bind Weapon.Name, Mode=OneWay}"
                                 TextTrimming="CharacterEllipsis"/>
                             <StackPanel
                                 Grid.Column="2"
                                 HorizontalAlignment="Right"
                                 Orientation="Horizontal"
-                                Visibility="{Binding IsPromotionAvailable}">
-                                <CheckBox
+                                Visibility="{x:Bind Weapon.IsPromotionAvailable, Mode=OneWay}">
+                                <cwc:SwitchPresenter
+                                    x:Name="GlassPresenter_11656"
                                     VerticalAlignment="Center"
-                                    Content="{shuxm:ResourceString Name=ViewDialogCultivatePromotionDeltaPromoted}"
-                                    IsChecked="{Binding IsPromoted, Mode=TwoWay}"/>
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    IsTabStop="False"
+                                    Tag="LiquidGlass:CheckBox"
+                                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
+                                    <cwc:Case>
+                                        <cwc:Case.Value>
+                                            <x:Int32>0</x:Int32>
+                                        </cwc:Case.Value>
+                                        <CheckBox
+                                            VerticalAlignment="Center"
+                                            Content="{shuxm:ResourceString Name=ViewDialogCultivatePromotionDeltaPromoted}"
+                                            IsChecked="{x:Bind Weapon.IsPromoted, Mode=TwoWay}"/>
+                                    </cwc:Case>
+                                    <cwc:Case>
+                                        <cwc:Case.Value>
+                                            <x:Int32>1</x:Int32>
+                                        </cwc:Case.Value>
+                                        <wl:LiquidGlassCheckBox
+                                            VerticalAlignment="Center"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            Content="{shuxm:ResourceString Name=ViewDialogCultivatePromotionDeltaPromoted}"
+                                            IsChecked="{x:Bind Weapon.IsPromoted, Mode=TwoWay}"/>
+                                    </cwc:Case>
+                                </cwc:SwitchPresenter>
                             </StackPanel>
                             <NumberBox
                                 Grid.Column="3"
                                 MinWidth="80"
                                 VerticalAlignment="Center"
-                                Maximum="{Binding LevelMax}"
-                                Minimum="{Binding LevelMin}"
+                                Maximum="{x:Bind Weapon.LevelMax, Mode=OneWay}"
+                                Minimum="{x:Bind Weapon.LevelMin, Mode=OneWay}"
                                 SpinButtonPlacementMode="Inline"
-                                Value="{Binding LevelCurrent, Mode=TwoWay}"/>
+                                Value="{x:Bind Weapon.LevelCurrent, Mode=TwoWay}"/>
                             <FontIcon
                                 Grid.Column="4"
                                 Margin="4,0"
@@ -233,10 +275,10 @@
                                 Grid.Column="5"
                                 MinWidth="80"
                                 VerticalAlignment="Center"
-                                Maximum="{Binding LevelMax}"
-                                Minimum="{Binding LevelCurrent, Mode=OneWay}"
+                                Maximum="{x:Bind Weapon.LevelMax, Mode=OneWay}"
+                                Minimum="{x:Bind Weapon.LevelCurrent, Mode=OneWay}"
                                 SpinButtonPlacementMode="Inline"
-                                Value="{Binding LevelTarget, Mode=TwoWay}"/>
+                                Value="{x:Bind Weapon.LevelTarget, Mode=TwoWay}"/>
                         </Grid>
                     </StackPanel>
 
@@ -249,38 +291,119 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button
+                        <cwc:SwitchPresenter
+                            x:Name="GlassPresenter_13608"
                             Grid.Column="0"
                             HorizontalAlignment="Stretch"
-                            Command="{Binding Path=DataContext.ModifyEntryCommand, Source={StaticResource BindingProxy}}"
-                            CommandParameter="{Binding}"
-                            Style="{StaticResource AccentButtonStyle}">
-                            <mxi:Interaction.Behaviors>
-                                <mxi:EventTriggerBehavior EventName="Click">
-                                    <shuxba:HideAttachedFlyoutAction/>
-                                </mxi:EventTriggerBehavior>
-                            </mxi:Interaction.Behaviors>
-                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                <FontIcon FontSize="14" Glyph="&#xE73E;"/>
-                                <TextBlock Text="{shuxm:ResourceString Name=ContentDialogConfirmPrimaryButtonText}"/>
-                            </StackPanel>
-                        </Button>
-                        <Button
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            IsTabStop="False"
+                            Tag="LiquidGlass:Button"
+                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>0</x:Int32>
+                                </cwc:Case.Value>
+                                <Button
+                                    HorizontalAlignment="Stretch"
+                                    Command="{Binding Path=DataContext.ModifyEntryCommand, Source={StaticResource BindingProxy}}"
+                                    CommandParameter="{x:Bind}"
+                                    Style="{StaticResource AccentButtonStyle}">
+                                    <mxi:Interaction.Behaviors>
+                                        <mxi:EventTriggerBehavior EventName="Click">
+                                            <shuxba:HideAttachedFlyoutAction/>
+                                        </mxi:EventTriggerBehavior>
+                                    </mxi:Interaction.Behaviors>
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <FontIcon FontSize="14" Glyph="&#xE73E;"/>
+                                        <TextBlock Text="{shuxm:ResourceString Name=ContentDialogConfirmPrimaryButtonText}"/>
+                                    </StackPanel>
+                                </Button>
+                            </cwc:Case>
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>1</x:Int32>
+                                </cwc:Case.Value>
+                                <wl:LiquidGlassButton
+                                    HorizontalAlignment="Stretch"
+                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                    Command="{Binding Path=DataContext.ModifyEntryCommand, Source={StaticResource BindingProxy}}"
+                                    CommandParameter="{x:Bind}"
+                                    Style="{StaticResource AccentButtonStyle}">
+                                    <mxi:Interaction.Behaviors>
+                                        <mxi:EventTriggerBehavior EventName="Click">
+                                            <shuxba:HideAttachedFlyoutAction/>
+                                        </mxi:EventTriggerBehavior>
+                                    </mxi:Interaction.Behaviors>
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <FontIcon FontSize="14" Glyph="&#xE73E;"/>
+                                        <TextBlock Text="{shuxm:ResourceString Name=ContentDialogConfirmPrimaryButtonText}"/>
+                                    </StackPanel>
+                                </wl:LiquidGlassButton>
+                            </cwc:Case>
+                        </cwc:SwitchPresenter>
+                        <cwc:SwitchPresenter
+                            x:Name="GlassPresenter_14661"
                             Grid.Column="1"
                             HorizontalAlignment="Stretch"
-                            Style="{StaticResource DefaultButtonStyle}">
-                            <mxi:Interaction.Behaviors>
-                                <mxi:EventTriggerBehavior EventName="Click">
-                                    <shuxba:HideAttachedFlyoutAction/>
-                                </mxi:EventTriggerBehavior>
-                            </mxi:Interaction.Behaviors>
-                            <StackPanel Orientation="Horizontal" Spacing="4">
-                                <FontIcon FontSize="14" Glyph="&#xE711;"/>
-                                <TextBlock Text="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"/>
-                            </StackPanel>
-                        </Button>
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            IsTabStop="False"
+                            Tag="LiquidGlass:Button"
+                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>0</x:Int32>
+                                </cwc:Case.Value>
+                                <Button HorizontalAlignment="Stretch" Style="{StaticResource DefaultButtonStyle}">
+                                    <mxi:Interaction.Behaviors>
+                                        <mxi:EventTriggerBehavior EventName="Click">
+                                            <shuxba:HideAttachedFlyoutAction/>
+                                        </mxi:EventTriggerBehavior>
+                                    </mxi:Interaction.Behaviors>
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <FontIcon FontSize="14" Glyph="&#xE711;"/>
+                                        <TextBlock Text="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"/>
+                                    </StackPanel>
+                                </Button>
+                            </cwc:Case>
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>1</x:Int32>
+                                </cwc:Case.Value>
+                                <wl:LiquidGlassButton
+                                    HorizontalAlignment="Stretch"
+                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                    Style="{StaticResource DefaultButtonStyle}">
+                                    <mxi:Interaction.Behaviors>
+                                        <mxi:EventTriggerBehavior EventName="Click">
+                                            <shuxba:HideAttachedFlyoutAction/>
+                                        </mxi:EventTriggerBehavior>
+                                    </mxi:Interaction.Behaviors>
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <FontIcon FontSize="14" Glyph="&#xE711;"/>
+                                        <TextBlock Text="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"/>
+                                    </StackPanel>
+                                </wl:LiquidGlassButton>
+                            </cwc:Case>
+                        </cwc:SwitchPresenter>
                     </Grid>
                 </Grid>
+            </DataTemplate>
+
+            <Flyout
+                x:Key="CultivateEntryFlyout"
+                Placement="RightEdgeAlignedTop"
+                ShouldConstrainToRootBounds="False">
+                <Flyout.FlyoutPresenterStyle>
+                    <Style BasedOn="{StaticResource FlyoutPresenterPadding8Style}" TargetType="FlyoutPresenter">
+                        <Setter Property="MaxWidth" Value="Infinity"/>
+                    </Style>
+                </Flyout.FlyoutPresenterStyle>
+                <ContentControl
+                    HorizontalContentAlignment="Stretch"
+                    Content="{Binding}"
+                    ContentTemplate="{StaticResource CultivateEntryFlyoutContentTemplate}"/>
             </Flyout>
 
             <cwconv:BoolToObjectConverter x:Key="BoolToOpacityConverter">
@@ -314,9 +437,9 @@
                         Margin="1,1,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Stretch"
-                        Visibility="{Binding Quality, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                        Visibility="{x:Bind Quality, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneTime}">
                         <Ellipse.Fill>
-                            <SolidColorBrush Color="{Binding Quality}"/>
+                            <SolidColorBrush Color="{x:Bind QualityColor}"/>
                         </Ellipse.Fill>
                     </Ellipse>
                     <BitmapIcon
@@ -325,28 +448,28 @@
                         Height="20"
                         Margin="-3,2,7,0"
                         ShowAsMonochrome="True"
-                        UriSource="{Binding PackageIconUri, Mode=OneWay}"
-                        Visibility="{Binding PackageIconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
+                        UriSource="{x:Bind PackageIconUri, Mode=OneTime}"
+                        Visibility="{x:Bind PackageIconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneTime}"/>
                     <shuxci:CachedImage
                         Grid.Column="0"
                         Width="20"
                         Height="20"
                         Margin="-3,2,7,0"
                         ShowAsMonoChrome="True"
-                        Source="{Binding IconUri, Mode=OneWay}"
-                        Visibility="{Binding IconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
+                        Source="{x:Bind IconUri, Mode=OneTime}"
+                        Visibility="{x:Bind IconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneTime}"/>
                     <shuxci:CachedImage
                         Grid.Column="0"
                         Width="20"
                         Height="20"
                         Margin="-4,-2,8,2"
-                        Source="{Binding SideIconUri, Mode=OneWay}"
-                        Visibility="{Binding SideIconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
+                        Source="{x:Bind SideIconUri, Mode=OneTime}"
+                        Visibility="{x:Bind SideIconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneTime}"/>
                     <TextBlock
                         Grid.Column="1"
                         Height="20"
                         VerticalAlignment="Center"
-                        Text="{Binding Value}"/>
+                        Text="{x:Bind Value, Mode=OneTime}"/>
                 </Grid>
             </DataTemplate>
 
@@ -360,16 +483,16 @@
                         <shuxc:ItemIcon
                             Width="32"
                             Height="32"
-                            Icon="{Binding Inner.Icon, Converter={StaticResource ItemIconConverter}}"
-                            Opacity="{Binding IsFinished, Converter={StaticResource BoolToOpacityConverter}}"
-                            Quality="{Binding Inner.RankLevel}"/>
+                            Icon="{x:Bind Inner.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                            Opacity="{x:Bind IsFinished, Converter={StaticResource BoolToOpacityConverter}, Mode=OneWay}"
+                            Quality="{x:Bind Inner.RankLevel, Mode=OneWay}"/>
 
                         <AnimatedIcon
                             Width="24"
                             Height="24"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            State="{Binding IsFinished, Converter={StaticResource BoolToAnimatedIconStateConverter}}">
+                            State="{x:Bind IsFinished, Converter={StaticResource BoolToAnimatedIconStateConverter}, Mode=OneWay}">
                             <muxca:AnimatedAcceptVisualSource/>
                             <AnimatedIcon.FallbackIconSource>
                                 <FontIconSource FontSize="24" Glyph="&#xE73E;"/>
@@ -377,36 +500,83 @@
                         </AnimatedIcon>
                     </Grid>
                     <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                    <Button
+                    <cwc:SwitchPresenter
+                        x:Name="GlassPresenter_20565"
                         Grid.Column="1"
-                        Height="32"
                         Margin="6,0,0,0"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Stretch"
-                        Background="{Binding IsToday, Converter={ThemeResource BoolToBrushSelector}}"
-                        Command="{Binding Path=DataContext.FinishStateCommand, Source={StaticResource BindingProxy}}"
-                        CommandParameter="{Binding}"
-                        Style="{StaticResource ButtonRevealStyle}">
-                        <Grid Opacity="{Binding IsFinished, Converter={StaticResource BoolToOpacityConverter}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock
-                                Grid.Column="0"
-                                Margin="0,0,0,0"
-                                VerticalAlignment="Center"
-                                Style="{Binding IsToday, Converter={StaticResource BoolToStyleSelector}}"
-                                Text="{Binding Inner.Name}"
-                                TextTrimming="CharacterEllipsis"/>
-                            <TextBlock
-                                Grid.Column="1"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                Style="{Binding IsToday, Converter={StaticResource BoolToStyleSelector}}"
-                                Text="{Binding Entity.Count}"/>
-                        </Grid>
-                    </Button>
+                        VerticalContentAlignment="Stretch"
+                        IsTabStop="False"
+                        Tag="LiquidGlass:Button"
+                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                        <cwc:Case>
+                            <cwc:Case.Value>
+                                <x:Int32>0</x:Int32>
+                            </cwc:Case.Value>
+                            <Button
+                                Height="32"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                Background="{Binding IsToday, Converter={ThemeResource BoolToBrushSelector}, Mode=OneWay}"
+                                Command="{Binding Path=DataContext.FinishStateCommand, Source={StaticResource BindingProxy}}"
+                                CommandParameter="{x:Bind Mode=OneWay}"
+                                Style="{StaticResource ButtonRevealStyle}">
+                                <Grid Opacity="{x:Bind IsFinished, Converter={StaticResource BoolToOpacityConverter}, Mode=OneWay}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        Margin="0,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Style="{x:Bind IsToday, Converter={StaticResource BoolToStyleSelector}, Mode=OneWay}"
+                                        Text="{x:Bind Inner.Name, Mode=OneWay}"
+                                        TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Style="{x:Bind IsToday, Converter={StaticResource BoolToStyleSelector}, Mode=OneWay}"
+                                        Text="{x:Bind Entity.Count, Mode=OneWay}"/>
+                                </Grid>
+                            </Button>
+                        </cwc:Case>
+                        <cwc:Case>
+                            <cwc:Case.Value>
+                                <x:Int32>1</x:Int32>
+                            </cwc:Case.Value>
+                            <wl:LiquidGlassButton
+                                Height="32"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                Command="{Binding Path=DataContext.FinishStateCommand, Source={StaticResource BindingProxy}}"
+                                CommandParameter="{x:Bind Mode=OneWay}"
+                                Style="{StaticResource ButtonRevealStyle}">
+                                <Grid Opacity="{x:Bind IsFinished, Converter={StaticResource BoolToOpacityConverter}, Mode=OneWay}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="auto"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        Margin="0,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Style="{x:Bind IsToday, Converter={StaticResource BoolToStyleSelector}, Mode=OneWay}"
+                                        Text="{x:Bind Inner.Name, Mode=OneWay}"
+                                        TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Style="{x:Bind IsToday, Converter={StaticResource BoolToStyleSelector}, Mode=OneWay}"
+                                        Text="{x:Bind Entity.Count, Mode=OneWay}"/>
+                                </Grid>
+                            </wl:LiquidGlassButton>
+                        </cwc:Case>
+                    </cwc:SwitchPresenter>
                 </Grid>
             </DataTemplate>
 
@@ -435,32 +605,60 @@
                             <shuxc:ItemIcon
                                 Width="52"
                                 Height="52"
-                                Icon="{Binding Icon}"
-                                Quality="{Binding Quality}"/>
+                                Icon="{x:Bind Icon, Mode=OneWay}"
+                                Quality="{x:Bind Quality, Mode=OneWay}"/>
                             <StackPanel
                                 Grid.Column="1"
                                 Margin="8,0,0,0"
                                 VerticalAlignment="Center">
-                                <TextBlock Text="{Binding Name}"/>
+                                <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
                                 <TextBlock
                                     Opacity="0.7"
                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="{Binding Description}"/>
+                                    Text="{x:Bind Description, Mode=OneWay}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2" Orientation="Horizontal">
                                 <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                                <Button
-                                    Width="48"
-                                    Height="48"
+                                <cwc:SwitchPresenter
+                                    x:Name="GlassPresenter_24738"
                                     Margin="8,0,0,0"
-                                    Background="Transparent"
-                                    Command="{Binding Path=DataContext.RemoveEntryCommand, Source={StaticResource BindingProxy}}"
-                                    CommandParameter="{Binding}"
-                                    Content="&#xE74D;"
-                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                    Style="{StaticResource ButtonRevealStyle}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageCultivationRemoveEntry}"/>
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    IsTabStop="False"
+                                    Tag="LiquidGlass:Button"
+                                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                                    <cwc:Case>
+                                        <cwc:Case.Value>
+                                            <x:Int32>0</x:Int32>
+                                        </cwc:Case.Value>
+                                        <Button
+                                            Width="48"
+                                            Height="48"
+                                            Background="Transparent"
+                                            Command="{Binding Path=DataContext.RemoveEntryCommand, Source={StaticResource BindingProxy}}"
+                                            CommandParameter="{x:Bind Mode=OneWay}"
+                                            Content="&#xE74D;"
+                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                            Style="{StaticResource ButtonRevealStyle}"
+                                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageCultivationRemoveEntry}"/>
+                                    </cwc:Case>
+                                    <cwc:Case>
+                                        <cwc:Case.Value>
+                                            <x:Int32>1</x:Int32>
+                                        </cwc:Case.Value>
+                                        <wl:LiquidGlassButton
+                                            Width="48"
+                                            Height="48"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            Command="{Binding Path=DataContext.RemoveEntryCommand, Source={StaticResource BindingProxy}}"
+                                            CommandParameter="{x:Bind Mode=OneWay}"
+                                            Content="&#xE74D;"
+                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                            Style="{StaticResource ButtonRevealStyle}"
+                                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageCultivationRemoveEntry}"/>
+                                    </cwc:Case>
+                                </cwc:SwitchPresenter>
                             </StackPanel>
                         </Grid>
                         <MenuFlyoutSeparator Grid.Row="1"/>
@@ -468,28 +666,28 @@
                             <ItemsControl
                                 Margin="8,0,8,8"
                                 ItemTemplate="{ThemeResource CultivateEntryItemTemplate}"
-                                ItemsSource="{Binding Items}"/>
+                                ItemsSource="{x:Bind Items, Mode=OneWay}"/>
                         </ScrollViewer>
                     </Grid>
                 </Border>
             </DataTemplate>
 
             <DataTemplate x:Key="StatisticsItemTemplate" x:DataType="shvcu:StatisticsCultivateItem">
-                <shuxcc:HorizontalCard Background="{Binding IsToday, Converter={ThemeResource BoolToStatisticsBrushSelector}}">
+                <shuxcc:HorizontalCard Background="{Binding IsToday, Converter={ThemeResource BoolToStatisticsBrushSelector}, Mode=OneWay}">
                     <shuxcc:HorizontalCard.Left>
                         <Grid Grid.Column="0">
                             <shuxc:ItemIcon
                                 Width="40"
                                 Height="40"
-                                Icon="{Binding Inner.Icon, Converter={StaticResource ItemIconConverter}}"
-                                Opacity="{Binding IsFinished, Converter={StaticResource BoolToOpacityConverter}}"
-                                Quality="{Binding Inner.RankLevel}"/>
+                                Icon="{x:Bind Inner.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                                Opacity="{x:Bind IsFinished, Converter={StaticResource BoolToOpacityConverter}, Mode=OneWay}"
+                                Quality="{x:Bind Inner.RankLevel, Mode=OneWay}"/>
                             <FontIcon
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 FontSize="24"
                                 Glyph="&#xE73E;"
-                                Visibility="{Binding IsFinished, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                Visibility="{x:Bind IsFinished, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                         </Grid>
                     </shuxcc:HorizontalCard.Left>
                     <shuxcc:HorizontalCard.Right>
@@ -502,77 +700,144 @@
                                 Grid.Column="0"
                                 Margin="0,0,0,0"
                                 VerticalAlignment="Center"
-                                Text="{Binding Inner.Name}"
+                                Text="{x:Bind Inner.Name, Mode=OneWay}"
                                 TextTrimming="CharacterEllipsis"/>
                             <TextBlock
                                 Grid.Column="1"
                                 Margin="0,0,0,0"
                                 VerticalAlignment="Center"
-                                Text="{Binding FormattedCount}"/>
+                                Text="{x:Bind FormattedCount, Mode=OneWay}"/>
                         </Grid>
                     </shuxcc:HorizontalCard.Right>
                 </shuxcc:HorizontalCard>
             </DataTemplate>
 
             <DataTemplate x:Key="InventoryItemTemplate" x:DataType="shvcu:InventoryItemView">
-                <Button
-                    Padding="0"
-                    Background="Transparent"
-                    BorderBrush="{x:Null}"
-                    BorderThickness="0">
-                    <shuxcc:HorizontalCard Width="300">
-                        <shuxcc:HorizontalCard.Left>
-                            <shuxc:ItemIcon
-                                Width="40"
-                                Height="40"
-                                Icon="{Binding Inner.Icon, Converter={StaticResource ItemIconConverter}}"
-                                Quality="{Binding Inner.RankLevel}"/>
-                        </shuxcc:HorizontalCard.Left>
-                        <shuxcc:HorizontalCard.Right>
-                            <Grid Margin="16,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock
-                                    Grid.Column="0"
-                                    Margin="0,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Text="{Binding Inner.Name}"
-                                    TextTrimming="CharacterEllipsis"/>
-                                <TextBlock Grid.Column="1" Text="{Binding Count, Mode=OneWay}"/>
-                            </Grid>
-                        </shuxcc:HorizontalCard.Right>
-                    </shuxcc:HorizontalCard>
-                    <Button.Flyout>
-                        <Flyout>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{Binding Inner.Name}"/>
-                                <NumberBox
-                                    Grid.Row="1"
-                                    MinWidth="160"
-                                    Margin="0,16,0,0"
-                                    Maximum="4294967295"
-                                    Minimum="0"
-                                    Value="{Binding Count, Mode=TwoWay}"/>
-                            </Grid>
-                        </Flyout>
-                    </Button.Flyout>
-                </Button>
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_28433"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:Button"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <Button
+                            Padding="0"
+                            Background="Transparent"
+                            BorderBrush="{x:Null}"
+                            BorderThickness="0">
+                            <shuxcc:HorizontalCard Width="300">
+                                <shuxcc:HorizontalCard.Left>
+                                    <shuxc:ItemIcon
+                                        Width="40"
+                                        Height="40"
+                                        Icon="{x:Bind Inner.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                                        Quality="{x:Bind Inner.RankLevel, Mode=OneWay}"/>
+                                </shuxcc:HorizontalCard.Left>
+                                <shuxcc:HorizontalCard.Right>
+                                    <Grid Margin="16,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            Margin="0,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="{x:Bind Inner.Name, Mode=OneWay}"
+                                            TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Grid.Column="1" Text="{x:Bind Count, Mode=OneWay}"/>
+                                    </Grid>
+                                </shuxcc:HorizontalCard.Right>
+                            </shuxcc:HorizontalCard>
+                            <Button.Flyout>
+                                <Flyout>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{x:Bind Inner.Name, Mode=OneWay}"/>
+                                        <NumberBox
+                                            Grid.Row="1"
+                                            MinWidth="160"
+                                            Margin="0,16,0,0"
+                                            Maximum="4294967295"
+                                            Minimum="0"
+                                            Value="{x:Bind Count, Mode=TwoWay}"/>
+                                    </Grid>
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassButton
+                            Padding="0"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            BorderBrush="{x:Null}"
+                            BorderThickness="0">
+                            <shuxcc:HorizontalCard Width="300">
+                                <shuxcc:HorizontalCard.Left>
+                                    <shuxc:ItemIcon
+                                        Width="40"
+                                        Height="40"
+                                        Icon="{x:Bind Inner.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                                        Quality="{x:Bind Inner.RankLevel, Mode=OneWay}"/>
+                                </shuxcc:HorizontalCard.Left>
+                                <shuxcc:HorizontalCard.Right>
+                                    <Grid Margin="16,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            Margin="0,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="{x:Bind Inner.Name, Mode=OneWay}"
+                                            TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Grid.Column="1" Text="{x:Bind Count, Mode=OneWay}"/>
+                                    </Grid>
+                                </shuxcc:HorizontalCard.Right>
+                            </shuxcc:HorizontalCard>
+                            <wl:LiquidGlassButton.Flyout>
+                                <Flyout>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                            <RowDefinition/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{x:Bind Inner.Name, Mode=OneWay}"/>
+                                        <NumberBox
+                                            Grid.Row="1"
+                                            MinWidth="160"
+                                            Margin="0,16,0,0"
+                                            Maximum="4294967295"
+                                            Minimum="0"
+                                            Value="{x:Bind Count, Mode=TwoWay}"/>
+                                    </Grid>
+                                </Flyout>
+                            </wl:LiquidGlassButton.Flyout>
+                        </wl:LiquidGlassButton>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
             </DataTemplate>
         </ResourceDictionary>
     </Page.Resources>
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvcu:CultivationViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
-    <shuxc:StandardView HideCondition="{Binding IsInitialized, Converter={StaticResource BoolNegationConverter}}" ShowCondition="{Binding Projects.Count, Converter={StaticResource Int32ToBoolConverter}}">
+    <shuxc:StandardView HideCondition="{x:Bind ((shvcu:CultivationViewModel)DataContext).IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" ShowCondition="{x:Bind ((shvcu:CultivationViewModel)DataContext).Projects.Count, Converter={StaticResource Int32ToBoolConverter}, Mode=OneWay}">
         <shuxc:StandardView.EmptyContent>
             <Border
                 HorizontalAlignment="Center"
@@ -581,6 +846,7 @@
                 <Border
                     MinWidth="480"
                     Padding="16"
+                    Background="{ThemeResource HutaoCardBrush}"
                     Style="{ThemeResource AcrylicBorderCardStyle}">
                     <StackPanel>
                         <shuxci:CachedImage
@@ -593,9 +859,9 @@
                             Style="{StaticResource SubtitleTextBlockStyle}"
                             Text="{shuxm:ResourceString Name=ViewPageCultivationAddProjectContinue}"/>
                         <StackPanel Margin="0,24,0,0">
-                            <cwcont:SettingsCard
+                            <cwc:SettingsCard
                                 ActionIconToolTip="{shuxm:ResourceString Name=ViewPageCultivationAddProjectAction}"
-                                Command="{Binding AddProjectCommand}"
+                                Command="{x:Bind ((shvcu:CultivationViewModel)DataContext).AddProjectCommand, Mode=OneWay}"
                                 Description="{shuxm:ResourceString Name=ViewPageCultivationAddProjectDescription}"
                                 Header="{shuxm:ResourceString Name=ViewPageCultivationAddProject}"
                                 HeaderIcon="{shuxm:FontIcon Glyph=&#xE710;}"
@@ -610,54 +876,107 @@
                 <CommandBar DefaultLabelPosition="Right">
                     <AppBarElementContainer>
                         <shuxc:SizeRestrictedContentControl Margin="6,6,6,6">
-                            <ComboBox
-                                DisplayMemberPath="Name"
-                                ItemsSource="{Binding Projects}"
-                                SelectedItem="{Binding Projects.CurrentItem, Mode=TwoWay}"
-                                Style="{ThemeResource CommandBarComboBoxStyle}"/>
+                            <cwc:SwitchPresenter
+                                x:Name="GlassPresenter_33449"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
+                                IsTabStop="False"
+                                Tag="LiquidGlass:ComboBox"
+                                Visibility="{x:Bind GlassPresenter_33449_State.Visibility, Mode=OneWay}"
+                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>0</x:Int32>
+                                    </cwc:Case.Value>
+                                    <ComboBox
+                                        x:Name="GlassPresenter_33449_State"
+                                        DataContext="{x:Bind GlassPresenter_33449.DataContext, Mode=OneWay}"
+                                        DisplayMemberPath="Name"
+                                        ItemsSource="{x:Bind ((shvcu:CultivationViewModel)DataContext).Projects, Mode=OneWay}"
+                                        RequestedTheme="{x:Bind GlassPresenter_33449.ActualTheme, Mode=OneWay}"
+                                        SelectedItem="{x:Bind ((shvcu:CultivationViewModel)DataContext).Projects.CurrentItem, Mode=TwoWay}"
+                                        Style="{ThemeResource CommandBarComboBoxStyle}"/>
+                                </cwc:Case>
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>1</x:Int32>
+                                    </cwc:Case.Value>
+                                    <wl:LiquidGlassComboBox
+                                        x:Name="GlassPresenter_33449_StateGlass"
+                                        Width="{x:Bind GlassPresenter_33449_State.Width, Mode=OneWay}"
+                                        Height="{x:Bind GlassPresenter_33449_State.Height, Mode=OneWay}"
+                                        MinWidth="{x:Bind GlassPresenter_33449_State.MinWidth, Mode=OneWay}"
+                                        MinHeight="{x:Bind GlassPresenter_33449_State.MinHeight, Mode=OneWay}"
+                                        MaxWidth="{x:Bind GlassPresenter_33449_State.MaxWidth, Mode=OneWay}"
+                                        MaxHeight="{x:Bind GlassPresenter_33449_State.MaxHeight, Mode=OneWay}"
+                                        Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(GlassPresenter_33449_State.Padding), Mode=OneWay}"
+                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                        shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassPresenter_33449_State, Mode=OneWay}"
+                                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                                        BorderThickness="{x:Bind GlassPresenter_33449_State.BorderThickness, Mode=OneWay}"
+                                        DisplayMemberPath="{x:Bind GlassPresenter_33449_State.DisplayMemberPath, Mode=OneWay}"
+                                        FlowDirection="{x:Bind GlassPresenter_33449_State.FlowDirection, Mode=OneWay}"
+                                        FontFamily="{x:Bind GlassPresenter_33449_State.FontFamily, Mode=OneWay}"
+                                        FontSize="{x:Bind GlassPresenter_33449_State.FontSize, Mode=OneWay}"
+                                        FontStyle="{x:Bind GlassPresenter_33449_State.FontStyle, Mode=OneWay}"
+                                        FontWeight="{x:Bind GlassPresenter_33449_State.FontWeight, Mode=OneWay}"
+                                        Foreground="{x:Bind GlassPresenter_33449_State.Foreground, Mode=OneWay}"
+                                        Header="{x:Bind GlassPresenter_33449_State.Header, Mode=OneWay}"
+                                        HeaderTemplate="{x:Bind GlassPresenter_33449_State.HeaderTemplate, Mode=OneWay}"
+                                        IsDropDownOpen="{x:Bind GlassPresenter_33449_State.IsDropDownOpen, Mode=TwoWay}"
+                                        IsEditable="{x:Bind GlassPresenter_33449_State.IsEditable, Mode=OneWay}"
+                                        IsEnabled="{x:Bind GlassPresenter_33449_State.IsEnabled, Mode=OneWay}"
+                                        IsTextSearchEnabled="{x:Bind GlassPresenter_33449_State.IsTextSearchEnabled, Mode=OneWay}"
+                                        ItemsSource="{x:Bind GlassPresenter_33449_State.ItemsSource, Mode=OneWay}"
+                                        MaxDropDownHeight="{x:Bind GlassPresenter_33449_State.MaxDropDownHeight, Mode=OneWay}"
+                                        PlaceholderText="{x:Bind GlassPresenter_33449_State.PlaceholderText, Mode=OneWay}"
+                                        SelectedIndex="{x:Bind GlassPresenter_33449_State.SelectedIndex, Mode=TwoWay}"
+                                        SelectedValuePath="{x:Bind GlassPresenter_33449_State.SelectedValuePath, Mode=OneWay}"/>
+                                </cwc:Case>
+                            </cwc:SwitchPresenter>
                         </shuxc:SizeRestrictedContentControl>
                     </AppBarElementContainer>
                     <AppBarButton
-                        Command="{Binding ClearInventoryCommand}"
-                        CommandParameter="{Binding Projects.CurrentItem, Mode=OneWay}"
+                        Command="{x:Bind ((shvcu:CultivationViewModel)DataContext).ClearInventoryCommand, Mode=OneWay}"
+                        CommandParameter="{x:Bind ((shvcu:CultivationViewModel)DataContext).Projects.CurrentItem, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph=&#xE894;}"
                         Label="{shuxm:ResourceString Name=ViewPageCultivationClearInventory}"/>
                     <AppBarButton Icon="{shuxm:FontIcon Glyph=&#xE895;}" Label="{shuxm:ResourceString Name=ViewPageCultivationRefreshInventory}">
                         <AppBarButton.Flyout>
                             <MenuFlyout Placement="BottomEdgeAlignedRight">
                                 <MenuFlyoutItem
-                                    Command="{Binding RefreshInventoryByEmbeddedYaeCommand}"
+                                    Command="{x:Bind ((shvcu:CultivationViewModel)DataContext).RefreshInventoryByEmbeddedYaeCommand, Mode=OneWay}"
                                     Icon="{shuxm:FontIcon Glyph=&#xE7FC;}"
                                     Text="{shuxm:ResourceString Name=ViewPageCultivationRefreshInventoryByEmbeddedYae}"/>
                                 <MenuFlyoutItem
-                                    Command="{Binding RefreshInventoryByBackpackArchiveCommand}"
+                                    Command="{x:Bind ((shvcu:CultivationViewModel)DataContext).RefreshInventoryByBackpackArchiveCommand, Mode=OneWay}"
                                     Icon="{shuxm:FontIcon Glyph=&#xE895;}"
                                     Text="{shuxm:ResourceString Name=ViewPageCultivationRefreshInventoryByBackpackArchive}"/>
                                 <MenuFlyoutItem
-                                    Command="{Binding RefreshInventoryByCalculatorCommand}"
+                                    Command="{x:Bind ((shvcu:CultivationViewModel)DataContext).RefreshInventoryByCalculatorCommand, Mode=OneWay}"
                                     Icon="{shuxm:FontIcon Glyph=&#xE8EF;}"
                                     Text="{shuxm:ResourceString Name=ViewPageCultivationRefreshInventoryByCalculator}"/>
                             </MenuFlyout>
                         </AppBarButton.Flyout>
                     </AppBarButton>
                     <AppBarButton
-                        Command="{Binding SyncAvatarInfoByHoyolabGameRecordCommand}"
+                        Command="{x:Bind ((shvcu:CultivationViewModel)DataContext).SyncAvatarInfoByHoyolabGameRecordCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph=&#xE77B;}"
                         Label="{shuxm:ResourceString Name=ViewPageCultivationSyncAvatarInfo}"/>
                     <AppBarButton
-                        Command="{Binding AddProjectCommand}"
+                        Command="{x:Bind ((shvcu:CultivationViewModel)DataContext).AddProjectCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph=&#xE710;}"
                         Label="{shuxm:ResourceString Name=ViewPageCultivationAddProject}"/>
                     <AppBarButton
-                        Command="{Binding RemoveProjectCommand}"
-                        CommandParameter="{Binding Projects.CurrentItem, Mode=OneWay}"
+                        Command="{x:Bind ((shvcu:CultivationViewModel)DataContext).RemoveProjectCommand, Mode=OneWay}"
+                        CommandParameter="{x:Bind ((shvcu:CultivationViewModel)DataContext).Projects.CurrentItem, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph=&#xE74D;}"
                         Label="{shuxm:ResourceString Name=ViewPageCultivationRemoveProject}"/>
                 </CommandBar>
             </Pivot.RightHeader>
 
             <PivotItem Header="{shuxm:ResourceString Name=ViewPageCultivationMaterialList}">
-                <shuxc:StandardView HideCondition="{Binding EntriesUpdating}" ShowCondition="{Binding CultivateEntries.Source.Count, Converter={StaticResource Int32ToBoolConverter}}">
+                <shuxc:StandardView HideCondition="{x:Bind ((shvcu:CultivationViewModel)DataContext).EntriesUpdating, Mode=OneWay}" ShowCondition="{x:Bind ((shvcu:CultivationViewModel)DataContext).CultivateEntries.Source.Count, Converter={StaticResource Int32ToBoolConverter}, Mode=OneWay}">
                     <shuxc:StandardView.EmptyContent>
                         <Border
                             HorizontalAlignment="Center"
@@ -666,6 +985,7 @@
                             <Border
                                 MinWidth="480"
                                 Padding="16"
+                                Background="{ThemeResource HutaoCardBrush}"
                                 Style="{ThemeResource AcrylicBorderCardStyle}">
                                 <StackPanel Spacing="{StaticResource SettingsCardSpacing}">
                                     <StackPanel.Resources>
@@ -680,25 +1000,25 @@
                                         Height="120"
                                         Margin="0,0,0,16"
                                         Source="{StaticResource UI_EmotionIcon433}"/>
-                                    <cwcont:SettingsCard
+                                    <cwc:SettingsCard
                                         ActionIconToolTip="{shuxm:ResourceString Name=ViewPageCultivationNavigateAction}"
-                                        Command="{Binding NavigateToPageCommand}"
+                                        Command="{x:Bind ((shvcu:CultivationViewModel)DataContext).NavigateToPageCommand, Mode=OneWay}"
                                         CommandParameter="Snap.Hutao.Remastered.UI.Xaml.View.Page.WikiAvatarPage"
                                         Description="{shuxm:ResourceString Name=ViewPageCultivationWikiAvatarDescription}"
                                         Header="{shuxm:ResourceString Name=ViewWikiAvatarHeader}"
                                         HeaderIcon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/WikiAvatar.png}"
                                         IsClickEnabled="True"/>
-                                    <cwcont:SettingsCard
+                                    <cwc:SettingsCard
                                         ActionIconToolTip="{shuxm:ResourceString Name=ViewPageCultivationNavigateAction}"
-                                        Command="{Binding NavigateToPageCommand}"
+                                        Command="{x:Bind ((shvcu:CultivationViewModel)DataContext).NavigateToPageCommand, Mode=OneWay}"
                                         CommandParameter="Snap.Hutao.Remastered.UI.Xaml.View.Page.WikiWeaponPage"
                                         Description="{shuxm:ResourceString Name=ViewPageCultivationWikiWeaponDescription}"
                                         Header="{shuxm:ResourceString Name=ViewWikiWeaponHeader}"
                                         HeaderIcon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/WikiWeapon.png}"
                                         IsClickEnabled="True"/>
-                                    <cwcont:SettingsCard
+                                    <cwc:SettingsCard
                                         ActionIconToolTip="{shuxm:ResourceString Name=ViewPageCultivationNavigateAction}"
-                                        Command="{Binding NavigateToPageCommand}"
+                                        Command="{x:Bind ((shvcu:CultivationViewModel)DataContext).NavigateToPageCommand, Mode=OneWay}"
                                         CommandParameter="Snap.Hutao.Remastered.UI.Xaml.View.Page.AvatarPropertyPage"
                                         Description="{shuxm:ResourceString Name=ViewPageCultivationAvatarPropertyDescription}"
                                         Header="{shuxm:ResourceString Name=ViewAvatarPropertyHeader}"
@@ -718,30 +1038,30 @@
                                         Margin="6,-2,6,6"
                                         HorizontalAlignment="Right"
                                         VerticalContentAlignment="Center"
-                                        AvailableTokens="{Binding SearchData.AvailableTokens}"
-                                        FilterCommand="{Binding FilterCommand}"
-                                        ItemsSource="{Binding SearchData.FilterTokens, Mode=TwoWay}"
+                                        AvailableTokens="{x:Bind ((shvcu:CultivationViewModel)DataContext).SearchData.AvailableTokens, Mode=OneWay}"
+                                        FilterCommand="{x:Bind ((shvcu:CultivationViewModel)DataContext).FilterCommand, Mode=OneWay}"
+                                        ItemsSource="{x:Bind ((shvcu:CultivationViewModel)DataContext).SearchData.FilterTokens, Mode=OneWay}"
                                         MaximumTokens="5"
                                         PlaceholderText="筛选养成物品"
                                         QueryIcon="{cw:FontIconSource Glyph=&#xE721;}"
                                         Style="{StaticResource DefaultAutoSuggestTokenBoxStyle}"
                                         SuggestedItemTemplate="{StaticResource TokenTemplate}"
-                                        SuggestedItemsSource="{Binding SearchData.AvailableTokens.Values}"
-                                        Text="{Binding SearchData.FilterToken, Mode=TwoWay}"
+                                        SuggestedItemsSource="{x:Bind ((shvcu:CultivationViewModel)DataContext).SearchData.AvailableTokens.Values, Mode=OneWay}"
+                                        Text="{x:Bind ((shvcu:CultivationViewModel)DataContext).SearchData.FilterToken, Mode=TwoWay}"
                                         TokenItemTemplate="{StaticResource TokenTemplate}"
-                                        Visibility="{Binding ElementName=MaterialListPivot, Path=SelectedItem.Tag, Converter={StaticResource MaterialListSelectedItemIsEntryViewConverter}}"/>
+                                        Visibility="{x:Bind ((PivotItem)MaterialListPivot.SelectedItem).Tag, Converter={StaticResource MaterialListSelectedItemIsEntryViewConverter}, Mode=OneWay}"/>
                                 </AppBarElementContainer>
                                 <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
                                 <AppBarToggleButton
-                                    Command="{Binding RefreshStatisticsItemsCommand}"
+                                    Command="{x:Bind ((shvcu:CultivationViewModel)DataContext).RefreshStatisticsItemsCommand, Mode=OneWay}"
                                     Icon="{shuxm:FontIcon Glyph=&#xE8CB;}"
-                                    IsChecked="{Binding IncompleteFirst, Mode=TwoWay}"
+                                    IsChecked="{x:Bind ((shvcu:CultivationViewModel)DataContext).IncompleteFirst, Mode=TwoWay}"
                                     Label="{shuxm:ResourceString Name=ViewPageCultivationMaterialListIncompleteFirstLabel}"
-                                    Visibility="{Binding ElementName=MaterialListPivot, Path=SelectedItem.Tag, Converter={StaticResource MaterialListSelectedItemIsStatisticsViewConverter}}"/>
+                                    Visibility="{x:Bind ((PivotItem)MaterialListPivot.SelectedItem).Tag, Converter={StaticResource MaterialListSelectedItemIsStatisticsViewConverter}, Mode=OneWay}"/>
                                 <AppBarButton Icon="{shuxm:FontIcon Glyph=&#xE946;}" Label="{shuxm:ResourceString Name=ViewPageCultivationMaterialListResinStatisticsLabel}">
                                     <AppBarButton.Flyout>
                                         <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding0Style}" Placement="BottomEdgeAlignedRight">
-                                            <StackPanel DataContext="{Binding ResinStatistics}">
+                                            <StackPanel DataContext="{x:Bind ((shvcu:CultivationViewModel)DataContext).ResinStatistics, Mode=OneWay}">
                                                 <Border
                                                     Padding="8"
                                                     Background="{ThemeResource LayerOnAcrylicFillColorDefaultBrush}"
@@ -762,27 +1082,80 @@
                                                             HorizontalAlignment="Right"
                                                             VerticalAlignment="Center"
                                                             AllowFocusOnInteraction="True">
-                                                            <ComboBox
-                                                                DisplayMemberPath="WorldLevel"
-                                                                ItemsSource="{Binding DropDistributions}"
-                                                                SelectedItem="{Binding SelectedDropDistribution, Mode=TwoWay}"/>
+                                                            <cwc:SwitchPresenter
+                                                                x:Name="GlassPresenter_45763"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                VerticalContentAlignment="Stretch"
+                                                                IsTabStop="False"
+                                                                Tag="LiquidGlass:ComboBox"
+                                                                Visibility="{x:Bind GlassPresenter_45763_State.Visibility, Mode=OneWay}"
+                                                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
+                                                                <cwc:Case>
+                                                                    <cwc:Case.Value>
+                                                                        <x:Int32>0</x:Int32>
+                                                                    </cwc:Case.Value>
+                                                                    <ComboBox
+                                                                        x:Name="GlassPresenter_45763_State"
+                                                                        DataContext="{x:Bind GlassPresenter_45763.DataContext, Mode=OneWay}"
+                                                                        DisplayMemberPath="WorldLevel"
+                                                                        ItemsSource="{x:Bind ((shvcu:CultivationViewModel)DataContext).ResinStatistics.DropDistributions, Mode=OneWay}"
+                                                                        RequestedTheme="{x:Bind GlassPresenter_45763.ActualTheme, Mode=OneWay}"
+                                                                        SelectedItem="{x:Bind ((shvcu:CultivationViewModel)DataContext).ResinStatistics.SelectedDropDistribution, Mode=TwoWay}"/>
+                                                                </cwc:Case>
+                                                                <cwc:Case>
+                                                                    <cwc:Case.Value>
+                                                                        <x:Int32>1</x:Int32>
+                                                                    </cwc:Case.Value>
+                                                                    <wl:LiquidGlassComboBox
+                                                                        x:Name="GlassPresenter_45763_StateGlass"
+                                                                        Width="{x:Bind GlassPresenter_45763_State.Width, Mode=OneWay}"
+                                                                        Height="{x:Bind GlassPresenter_45763_State.Height, Mode=OneWay}"
+                                                                        MinWidth="{x:Bind GlassPresenter_45763_State.MinWidth, Mode=OneWay}"
+                                                                        MinHeight="{x:Bind GlassPresenter_45763_State.MinHeight, Mode=OneWay}"
+                                                                        MaxWidth="{x:Bind GlassPresenter_45763_State.MaxWidth, Mode=OneWay}"
+                                                                        MaxHeight="{x:Bind GlassPresenter_45763_State.MaxHeight, Mode=OneWay}"
+                                                                        Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(GlassPresenter_45763_State.Padding), Mode=OneWay}"
+                                                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                                                        shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassPresenter_45763_State, Mode=OneWay}"
+                                                                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                                                                        BorderThickness="{x:Bind GlassPresenter_45763_State.BorderThickness, Mode=OneWay}"
+                                                                        DisplayMemberPath="{x:Bind GlassPresenter_45763_State.DisplayMemberPath, Mode=OneWay}"
+                                                                        FlowDirection="{x:Bind GlassPresenter_45763_State.FlowDirection, Mode=OneWay}"
+                                                                        FontFamily="{x:Bind GlassPresenter_45763_State.FontFamily, Mode=OneWay}"
+                                                                        FontSize="{x:Bind GlassPresenter_45763_State.FontSize, Mode=OneWay}"
+                                                                        FontStyle="{x:Bind GlassPresenter_45763_State.FontStyle, Mode=OneWay}"
+                                                                        FontWeight="{x:Bind GlassPresenter_45763_State.FontWeight, Mode=OneWay}"
+                                                                        Foreground="{x:Bind GlassPresenter_45763_State.Foreground, Mode=OneWay}"
+                                                                        Header="{x:Bind GlassPresenter_45763_State.Header, Mode=OneWay}"
+                                                                        HeaderTemplate="{x:Bind GlassPresenter_45763_State.HeaderTemplate, Mode=OneWay}"
+                                                                        IsDropDownOpen="{x:Bind GlassPresenter_45763_State.IsDropDownOpen, Mode=TwoWay}"
+                                                                        IsEditable="{x:Bind GlassPresenter_45763_State.IsEditable, Mode=OneWay}"
+                                                                        IsEnabled="{x:Bind GlassPresenter_45763_State.IsEnabled, Mode=OneWay}"
+                                                                        IsTextSearchEnabled="{x:Bind GlassPresenter_45763_State.IsTextSearchEnabled, Mode=OneWay}"
+                                                                        ItemsSource="{x:Bind GlassPresenter_45763_State.ItemsSource, Mode=OneWay}"
+                                                                        MaxDropDownHeight="{x:Bind GlassPresenter_45763_State.MaxDropDownHeight, Mode=OneWay}"
+                                                                        PlaceholderText="{x:Bind GlassPresenter_45763_State.PlaceholderText, Mode=OneWay}"
+                                                                        SelectedIndex="{x:Bind GlassPresenter_45763_State.SelectedIndex, Mode=TwoWay}"
+                                                                        SelectedValuePath="{x:Bind GlassPresenter_45763_State.SelectedValuePath, Mode=OneWay}"/>
+                                                                </cwc:Case>
+                                                            </cwc:SwitchPresenter>
                                                         </shuxc:SizeRestrictedContentControl>
                                                     </Grid>
                                                 </Border>
 
-                                                <cwcont:HeaderedItemsControl Margin="0,8,0,4" ItemsSource="{Binding ItemsSource}">
-                                                    <cwcont:HeaderedItemsControl.Header>
+                                                <cwc:HeaderedItemsControl Margin="0,8,0,4" ItemsSource="{x:Bind ((shvcu:CultivationViewModel)DataContext).ResinStatistics.ItemsSource, Mode=OneWay}">
+                                                    <cwc:HeaderedItemsControl.Header>
                                                         <shuxcpd:DataTable ColumnSpacing="8">
                                                             <shuxcpd:DataColumn CanResize="False"/>
                                                             <shuxcpd:DataColumn CanResize="False"/>
                                                             <shuxcpd:DataColumn CanResize="False"/>
                                                             <shuxcpd:DataColumn CanResize="False"/>
                                                         </shuxcpd:DataTable>
-                                                    </cwcont:HeaderedItemsControl.Header>
-                                                    <cwcont:HeaderedItemsControl.ItemTemplate>
+                                                    </cwc:HeaderedItemsControl.Header>
+                                                    <cwc:HeaderedItemsControl.ItemTemplate>
                                                         <DataTemplate x:DataType="shvcu:ResinStatisticsItem">
                                                             <shuxcpd:DataRow Margin="16,0,16,8">
-                                                                <TextBlock VerticalAlignment="Center" Text="{Binding Title, Mode=OneWay}"/>
+                                                                <TextBlock VerticalAlignment="Center" Text="{x:Bind Title, Mode=OneWay}"/>
 
                                                                 <StackPanel
                                                                     VerticalAlignment="Center"
@@ -792,7 +1165,7 @@
                                                                         Width="20"
                                                                         ShowAsMonochrome="False"
                                                                         UriSource="ms-appx:///Resource/Icon/UI_ItemIcon_106.png"/>
-                                                                    <TextBlock Text="{Binding TotalResin, Mode=OneWay}"/>
+                                                                    <TextBlock Text="{x:Bind TotalResin, Mode=OneWay}"/>
                                                                 </StackPanel>
 
                                                                 <StackPanel
@@ -803,15 +1176,15 @@
                                                                         Width="20"
                                                                         ShowAsMonochrome="False"
                                                                         UriSource="ms-appx:///Resource/Icon/UI_ItemIcon_210.png"
-                                                                        Visibility="{Binding FragileResin, Converter={StaticResource EmptyObjectToBoolConverter}}"/>
-                                                                    <TextBlock Text="{Binding FragileResin, Mode=OneWay}"/>
+                                                                        Visibility="{x:Bind FragileResin, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}"/>
+                                                                    <TextBlock Text="{x:Bind FragileResin, Mode=OneWay}"/>
                                                                 </StackPanel>
 
-                                                                <TextBlock VerticalAlignment="Center" Text="{Binding Days, Mode=OneWay}"/>
+                                                                <TextBlock VerticalAlignment="Center" Text="{x:Bind Days, Mode=OneWay}"/>
                                                             </shuxcpd:DataRow>
                                                         </DataTemplate>
-                                                    </cwcont:HeaderedItemsControl.ItemTemplate>
-                                                </cwcont:HeaderedItemsControl>
+                                                    </cwc:HeaderedItemsControl.ItemTemplate>
+                                                </cwc:HeaderedItemsControl>
                                             </StackPanel>
                                         </Flyout>
                                     </AppBarButton.Flyout>
@@ -820,11 +1193,11 @@
                         </Pivot.RightHeader>
                         <PivotItem Header="{shuxm:ResourceString Name=ViewPageCultivationCultivateEntry}" Tag="Entry">
                             <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                                <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                                <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
                                     <ScrollViewer Padding="16" HorizontalScrollBarVisibility="Disabled">
-                                        <ItemsRepeater ItemTemplate="{StaticResource CultivateEntryTemplate}" ItemsSource="{Binding CultivateEntries}">
+                                        <ItemsRepeater ItemTemplate="{StaticResource CultivateEntryTemplate}" ItemsSource="{x:Bind ((shvcu:CultivationViewModel)DataContext).CultivateEntries, Mode=OneWay}">
                                             <mxi:Interaction.Behaviors>
-                                                <shuxb:InvalidateMeasureOnCollectionResetBehavior ItemsSource="{Binding CultivateEntries}"/>
+                                                <shuxb:InvalidateMeasureOnCollectionResetBehavior ItemsSource="{x:Bind ((shvcu:CultivationViewModel)DataContext).CultivateEntries, Mode=OneWay}"/>
                                             </mxi:Interaction.Behaviors>
                                             <ItemsRepeater.Layout>
                                                 <shuxcl:UniformStaggeredLayout
@@ -839,9 +1212,9 @@
                         </PivotItem>
                         <PivotItem Header="{shuxm:ResourceString Name=ViewPageCultivationMaterialStatistics}" Tag="Statistics">
                             <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                                <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                                <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
                                     <ScrollViewer Padding="16" HorizontalScrollBarVisibility="Disabled">
-                                        <ItemsControl ItemTemplate="{StaticResource StatisticsItemTemplate}" ItemsSource="{Binding StatisticsItems}">
+                                        <ItemsControl ItemTemplate="{StaticResource StatisticsItemTemplate}" ItemsSource="{x:Bind ((shvcu:CultivationViewModel)DataContext).StatisticsItems, Mode=OneWay}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
                                                     <shhuxcp:UniformPanel
@@ -860,11 +1233,11 @@
             </PivotItem>
             <PivotItem Header="{shuxm:ResourceString Name=ViewPageCultivationInventoryItem}">
                 <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                    <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                    <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
                         <GridView
                             Padding="16,16,10,10"
                             ItemTemplate="{StaticResource InventoryItemTemplate}"
-                            ItemsSource="{Binding InventoryItems}"
+                            ItemsSource="{x:Bind ((shvcu:CultivationViewModel)DataContext).InventoryItems, Mode=OneWay}"
                             SelectionMode="None">
                             <GridView.ItemContainerStyle>
                                 <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">

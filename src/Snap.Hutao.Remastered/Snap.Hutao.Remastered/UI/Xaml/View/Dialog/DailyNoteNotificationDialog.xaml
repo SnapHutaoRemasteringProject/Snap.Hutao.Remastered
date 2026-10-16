@@ -2,11 +2,13 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Dialog.DailyNoteNotificationDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:clw="using:CommunityToolkit.WinUI.Controls"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:shme="using:Snap.Hutao.Remastered.Model.Entity"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    xmlns:wl="using:WinUI.LiquidGlass"
     Title="{shuxm:ResourceString Name=ViewDialogDailyNoteNotificationTitle}"
     d:DataContext="{d:DesignInstance shme:DailyNoteEntry}"
     DefaultButton="Primary"
@@ -24,33 +26,138 @@
                 Margin="0,3,0,3"
                 Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                 Text="{Binding UserGameRole}"/>
-            <clw:SettingsCard
+            <cwc:SettingsCard
                 Width="480"
                 Padding="16,8"
                 Header="{shuxm:ResourceString Name=ViewDialogDailyNoteNotificationResinNotifyThreshold}">
-                <Slider
-                    MinWidth="160"
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_1640"
                     Margin="32,0,0,0"
-                    Maximum="{Binding DailyNote.MaxResin}"
-                    Minimum="0"
-                    Value="{Binding ResinNotifyThreshold, Mode=TwoWay}"/>
-            </clw:SettingsCard>
-            <clw:SettingsCard Padding="16,8" Header="{shuxm:ResourceString Name=ViewDialogDailyNoteNotificationHomeCoinNotifyThreshold}">
-                <Slider
-                    MinWidth="160"
-                    Maximum="{Binding DailyNote.MaxHomeCoin}"
-                    Minimum="0"
-                    Value="{Binding HomeCoinNotifyThreshold, Mode=TwoWay}"/>
-            </clw:SettingsCard>
-            <clw:SettingsCard Padding="16,8" Header="{shuxm:ResourceString Name=ViewDialogDailyNoteNotificationTransformerNotify}">
-                <ToggleSwitch IsOn="{Binding TransformerNotify, Mode=TwoWay}"/>
-            </clw:SettingsCard>
-            <clw:SettingsCard Padding="16,8" Header="{shuxm:ResourceString Name=ViewDialogDailyNoteNotificationDailyTaskNotify}">
-                <ToggleSwitch IsOn="{Binding DailyTaskNotify, Mode=TwoWay}"/>
-            </clw:SettingsCard>
-            <clw:SettingsCard Padding="16,8" Header="{shuxm:ResourceString Name=ViewDialogDailyNoteNotificationExpeditionNotify}">
-                <ToggleSwitch IsOn="{Binding ExpeditionNotify, Mode=TwoWay}"/>
-            </clw:SettingsCard>
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:Slider"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.SliderMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <Slider
+                            MinWidth="160"
+                            Maximum="{Binding DailyNote.MaxResin}"
+                            Minimum="0"
+                            Value="{Binding ResinNotifyThreshold, Mode=TwoWay}"/>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassSlider
+                            MinWidth="160"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Maximum="{Binding DailyNote.MaxResin}"
+                            Minimum="0"
+                            Value="{Binding ResinNotifyThreshold, Mode=TwoWay}"/>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
+            </cwc:SettingsCard>
+            <cwc:SettingsCard Padding="16,8" Header="{shuxm:ResourceString Name=ViewDialogDailyNoteNotificationHomeCoinNotifyThreshold}">
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_2072"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:Slider"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.SliderMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <Slider
+                            MinWidth="160"
+                            Maximum="{Binding DailyNote.MaxHomeCoin}"
+                            Minimum="0"
+                            Value="{Binding HomeCoinNotifyThreshold, Mode=TwoWay}"/>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassSlider
+                            MinWidth="160"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Maximum="{Binding DailyNote.MaxHomeCoin}"
+                            Minimum="0"
+                            Value="{Binding HomeCoinNotifyThreshold, Mode=TwoWay}"/>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
+            </cwc:SettingsCard>
+            <cwc:SettingsCard Padding="16,8" Header="{shuxm:ResourceString Name=ViewDialogDailyNoteNotificationTransformerNotify}">
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_2466"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:ToggleSwitch"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <ToggleSwitch IsOn="{Binding TransformerNotify, Mode=TwoWay}"/>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{Binding TransformerNotify, Mode=TwoWay}"/>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
+            </cwc:SettingsCard>
+            <cwc:SettingsCard Padding="16,8" Header="{shuxm:ResourceString Name=ViewDialogDailyNoteNotificationDailyTaskNotify}">
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_2708"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:ToggleSwitch"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <ToggleSwitch IsOn="{Binding DailyTaskNotify, Mode=TwoWay}"/>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{Binding DailyTaskNotify, Mode=TwoWay}"/>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
+            </cwc:SettingsCard>
+            <cwc:SettingsCard Padding="16,8" Header="{shuxm:ResourceString Name=ViewDialogDailyNoteNotificationExpeditionNotify}">
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_2949"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:ToggleSwitch"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <ToggleSwitch IsOn="{Binding ExpeditionNotify, Mode=TwoWay}"/>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{Binding ExpeditionNotify, Mode=TwoWay}"/>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
+            </cwc:SettingsCard>
         </StackPanel>
     </ScrollViewer>
 </ContentDialog>

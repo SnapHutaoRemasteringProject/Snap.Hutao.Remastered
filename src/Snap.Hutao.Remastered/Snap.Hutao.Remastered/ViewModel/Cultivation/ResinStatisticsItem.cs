@@ -1,13 +1,14 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using JetBrains.Annotations;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Model.Metadata.Item;
 
 namespace Snap.Hutao.Remastered.ViewModel.Cultivation;
 
-public sealed class ResinStatisticsItem
+public sealed partial class ResinStatisticsItem : ObservableObject
 {
     private readonly ResinStatisticsItemKind kind;
 
@@ -31,12 +32,27 @@ public sealed class ResinStatisticsItem
         {
             if (value is not null)
             {
-                field = value;
+                if (SetProperty(ref field, value))
+                {
+                    OnPropertyChanged(nameof(RawTimes));
+                    OnPropertyChanged(nameof(TotalResin));
+                    OnPropertyChanged(nameof(FragileResin));
+                    OnPropertyChanged(nameof(Days));
+                    OnPropertyChanged(nameof(Mora));
+                }
             }
         }
     }
 
-    public double RawItemCount { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ItemCount))]
+    [NotifyPropertyChangedFor(nameof(HasData))]
+    [NotifyPropertyChangedFor(nameof(RawTimes))]
+    [NotifyPropertyChangedFor(nameof(TotalResin))]
+    [NotifyPropertyChangedFor(nameof(FragileResin))]
+    [NotifyPropertyChangedFor(nameof(Days))]
+    [NotifyPropertyChangedFor(nameof(Mora))]
+    public partial double RawItemCount { get; set; }
 
     [UsedImplicitly]
     public bool HasData
@@ -62,7 +78,15 @@ public sealed class ResinStatisticsItem
     /// <summary>
     /// ONLY BlossomOfWealth has value.
     /// </summary>
-    public double MiscMoraEarned { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ItemCount))]
+    [NotifyPropertyChangedFor(nameof(HasData))]
+    [NotifyPropertyChangedFor(nameof(RawTimes))]
+    [NotifyPropertyChangedFor(nameof(TotalResin))]
+    [NotifyPropertyChangedFor(nameof(FragileResin))]
+    [NotifyPropertyChangedFor(nameof(Days))]
+    [NotifyPropertyChangedFor(nameof(Mora))]
+    public partial double MiscMoraEarned { get; set; }
 
     public int RawTimes
     {

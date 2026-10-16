@@ -1,17 +1,18 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.Achievement;
 
-public sealed class AchievementStatistics
+public sealed partial class AchievementStatistics : ObservableObject
 {
-    public required string DisplayName { get; init; }
+    public required string DisplayName { get; init => SetProperty(ref field, value); }
 
-    public required string FinishDescription { get; init; }
+    public required string FinishDescription { get; init => SetProperty(ref field, value); }
 
-    public required ImmutableArray<AchievementView> Achievements { get; init; }
+    public required ImmutableArray<AchievementView> Achievements { get; init => SetProperty(ref field, value); }
 
     /// <summary>
     /// 格式化完成进度

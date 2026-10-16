@@ -25,18 +25,33 @@ public sealed partial class SettingGameViewModel : Abstraction.ViewModel
     public bool ForceUsingTouchScreenWhenIntegratedTouchPresent
     {
         get => LocalSetting.Get(SettingKeys.LaunchForceUsingTouchScreen, false);
-        set => LocalSetting.Set(SettingKeys.LaunchForceUsingTouchScreen, value);
+        set
+        {
+            if (ForceUsingTouchScreenWhenIntegratedTouchPresent == value) return;
+            LocalSetting.Set(SettingKeys.LaunchForceUsingTouchScreen, value);
+            OnPropertyChanged(nameof(ForceUsingTouchScreenWhenIntegratedTouchPresent));
+        }
     }
     public bool CloseWhenGameStarted
     {
         get => LocalSetting.Get(SettingKeys.LaunchIsCloseWhenGameStarted, false);
-        set => LocalSetting.Set(SettingKeys.LaunchIsCloseWhenGameStarted, value);
+        set
+        {
+            if (CloseWhenGameStarted == value) return;
+            LocalSetting.Set(SettingKeys.LaunchIsCloseWhenGameStarted, value);
+            OnPropertyChanged(nameof(CloseWhenGameStarted));
+        }
     }
 
     public bool AutoSignInEnabled
     {
         get => LocalSetting.Get(SettingKeys.AutoSignInEnabled, true);
-        set => LocalSetting.Set(SettingKeys.AutoSignInEnabled, value);
+        set
+        {
+            if (AutoSignInEnabled == value) return;
+            LocalSetting.Set(SettingKeys.AutoSignInEnabled, value);
+            OnPropertyChanged(nameof(AutoSignInEnabled));
+        }
     }
 
     [Command("DeleteGameWebCacheCommand")]

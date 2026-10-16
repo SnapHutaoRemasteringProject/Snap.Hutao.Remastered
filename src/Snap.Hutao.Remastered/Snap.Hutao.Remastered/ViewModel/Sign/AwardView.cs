@@ -1,12 +1,13 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.BbsSignReward;
 
 namespace Snap.Hutao.Remastered.ViewModel.Sign;
 
-public sealed partial class AwardView : IPropertyValuesProvider
+public sealed partial class AwardView : ObservableObject, IPropertyValuesProvider
 {
     public required int Index { get; init; }
 
@@ -16,7 +17,8 @@ public sealed partial class AwardView : IPropertyValuesProvider
 
     public required int Count { get; init; }
 
-    public bool IsClaimed { get; set; }
+    [ObservableProperty]
+    public partial bool IsClaimed { get; set; }
 
     public static AwardView Create(Award award, int index)
     {

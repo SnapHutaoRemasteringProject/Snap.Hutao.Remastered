@@ -35,7 +35,7 @@
 
     <SolidColorBrush x:Key="SolidBackgroundFillColorTransparentBrush" Color="{ThemeResource SolidBackgroundFillColorTransparent}"/>
 
-    <SolidColorBrush x:Key="GreenColorBrush" Color="{ThemeResource GreenColor}" />
+    <SolidColorBrush x:Key="GreenColorBrush" Color="{ThemeResource GreenColor}"/>
     <SolidColorBrush x:Key="BlueColorBrush" Color="{ThemeResource BlueColor}"/>
     <SolidColorBrush x:Key="BlueDark2ColorBrush" Color="{ThemeResource BlueDark2Color}"/>
     <SolidColorBrush x:Key="PurpleColorBrush" Color="{ThemeResource PurpleColor}"/>

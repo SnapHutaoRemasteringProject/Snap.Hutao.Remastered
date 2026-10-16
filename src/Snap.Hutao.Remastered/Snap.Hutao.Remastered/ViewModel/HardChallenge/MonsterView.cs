@@ -14,8 +14,8 @@ public sealed class MonsterView
         Name = monster.Name;
         Level = LevelFormat.Format(monster.Level);
         Icon = monster.Icon;
-        Descriptions = [.. monster.Descriptions.Where(static d => !string.IsNullOrEmpty(d))];
-        Tags = monster.Tags;
+        Descriptions = [.. monster.Descriptions.EmptyIfDefault().Where(static d => !string.IsNullOrEmpty(d))];
+        Tags = monster.Tags.EmptyIfDefault();
     }
 
     public string Name { get; }

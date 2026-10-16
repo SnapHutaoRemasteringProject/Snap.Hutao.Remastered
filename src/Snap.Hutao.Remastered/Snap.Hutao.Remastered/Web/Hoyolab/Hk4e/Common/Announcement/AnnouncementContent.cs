@@ -1,25 +1,33 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Common.Announcement;
 
-public class AnnouncementContent
+public partial class AnnouncementContent : ObservableObject
 {
     [JsonPropertyName("ann_id")]
-    public int AnnId { get; set; }
+    [ObservableProperty]
+    public partial int AnnId { get; set; }
 
     [JsonPropertyName("title")]
-    public string Title { get; set; } = default!;
+    [ObservableProperty]
+    public partial string Title { get; set; } = default!;
 
     [JsonPropertyName("subtitle")]
-    public string Subtitle { get; set; } = default!;
+    [ObservableProperty]
+    public partial string Subtitle { get; set; } = default!;
 
     [JsonPropertyName("banner")]
-    public string Banner { get; set; } = default!;
+    [ObservableProperty]
+    public partial string Banner { get; set; } = default!;
 
     [JsonPropertyName("content")]
-    public string Content { get; set; } = default!;
+    [ObservableProperty]
+    public partial string Content { get; set; } = default!;
 
     [JsonPropertyName("lang")]
-    public string Lang { get; set; } = default!;
+    [ObservableProperty]
+    public partial string Lang { get; set; } = default!;
 }

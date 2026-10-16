@@ -1,19 +1,20 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 
-public sealed partial class UIGFUidSelection
+public sealed partial class UIGFUidSelection : ObservableObject
 {
     public UIGFUidSelection(uint uid)
     {
         Uid = uid;
     }
 
-    public uint Uid { get; }
+    public uint Uid { get; private set => SetProperty(ref field, value); }
 
     public static UIGFUidSelection Create(uint uid)
     {

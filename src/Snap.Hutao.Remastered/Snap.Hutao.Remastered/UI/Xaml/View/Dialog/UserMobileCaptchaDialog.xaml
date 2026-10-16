@@ -2,9 +2,12 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Dialog.UserMobileCaptchaDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    xmlns:wl="using:WinUI.LiquidGlass"
     Title="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaTitle}"
     CloseButtonText="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"
     DefaultButton="Primary"
@@ -24,35 +27,185 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <TextBox
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_1296"
                     Grid.Column="0"
-                    Width="48"
-                    MinWidth="0"
-                    CornerRadius="4,0,0,4"
-                    IsEnabled="False"
-                    Style="{StaticResource DefaultTextBoxStyle}"
-                    Text="+86"/>
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:TextBox"
+                    Visibility="{x:Bind GlassPresenter_1296_State.Visibility, Mode=OneWay}"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <TextBox
+                            x:Name="GlassPresenter_1296_State"
+                            Width="48"
+                            MinWidth="0"
+                            CornerRadius="4,0,0,4"
+                            DataContext="{x:Bind GlassPresenter_1296.DataContext, Mode=OneWay}"
+                            IsEnabled="False"
+                            RequestedTheme="{x:Bind GlassPresenter_1296.ActualTheme, Mode=OneWay}"
+                            Style="{StaticResource DefaultTextBoxStyle}"
+                            Text="+86"/>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassTextBox
+                            x:Name="GlassPresenter_1296_StateGlass"
+                            Width="{x:Bind GlassPresenter_1296_State.Width, Mode=OneWay}"
+                            Height="{x:Bind GlassPresenter_1296_State.Height, Mode=OneWay}"
+                            MinWidth="{x:Bind GlassPresenter_1296_State.MinWidth, Mode=OneWay}"
+                            MinHeight="{x:Bind GlassPresenter_1296_State.MinHeight, Mode=OneWay}"
+                            MaxWidth="{x:Bind GlassPresenter_1296_State.MaxWidth, Mode=OneWay}"
+                            MaxHeight="{x:Bind GlassPresenter_1296_State.MaxHeight, Mode=OneWay}"
+                            Padding="{x:Bind GlassPresenter_1296_State.Padding, Mode=OneWay}"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassPresenter_1296_State, Mode=OneWay}"
+                            shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                            AcceptsReturn="{x:Bind GlassPresenter_1296_State.AcceptsReturn, Mode=OneWay}"
+                            BorderThickness="{x:Bind GlassPresenter_1296_State.BorderThickness, Mode=OneWay}"
+                            CharacterCasing="{x:Bind GlassPresenter_1296_State.CharacterCasing, Mode=OneWay}"
+                            CornerRadius="4,0,0,4"
+                            FlowDirection="{x:Bind GlassPresenter_1296_State.FlowDirection, Mode=OneWay}"
+                            FontFamily="{x:Bind GlassPresenter_1296_State.FontFamily, Mode=OneWay}"
+                            FontSize="{x:Bind GlassPresenter_1296_State.FontSize, Mode=OneWay}"
+                            FontStyle="{x:Bind GlassPresenter_1296_State.FontStyle, Mode=OneWay}"
+                            FontWeight="{x:Bind GlassPresenter_1296_State.FontWeight, Mode=OneWay}"
+                            Foreground="{x:Bind GlassPresenter_1296_State.Foreground, Mode=OneWay}"
+                            Header="{x:Bind GlassPresenter_1296_State.Header, Mode=OneWay}"
+                            HeaderTemplate="{x:Bind GlassPresenter_1296_State.HeaderTemplate, Mode=OneWay}"
+                            InputScope="{x:Bind GlassPresenter_1296_State.InputScope, Mode=OneWay}"
+                            IsEnabled="{x:Bind GlassPresenter_1296_State.IsEnabled, Mode=OneWay}"
+                            IsReadOnly="{x:Bind GlassPresenter_1296_State.IsReadOnly, Mode=OneWay}"
+                            MaxLength="{x:Bind GlassPresenter_1296_State.MaxLength, Mode=OneWay}"
+                            PlaceholderText="{x:Bind GlassPresenter_1296_State.PlaceholderText, Mode=OneWay}"
+                            SelectionHighlightColor="{x:Bind GlassPresenter_1296_State.SelectionHighlightColor, Mode=OneWay}"
+                            Style="{StaticResource DefaultTextBoxStyle}"
+                            Text="{x:Bind GlassPresenter_1296_State.Text, Mode=TwoWay}"
+                            TextAlignment="{x:Bind GlassPresenter_1296_State.TextAlignment, Mode=OneWay}"
+                            TextWrapping="{x:Bind GlassPresenter_1296_State.TextWrapping, Mode=OneWay}"/>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
 
-                <TextBox
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_1601"
                     Grid.Column="1"
-                    CornerRadius="0,4,4,0"
-                    KeyDown="OnTextKeyDown"
-                    KeyUp="OnTextKeyUp"
-                    PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaMobileHint}"
-                    Text="{x:Bind Mobile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:TextBox"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <TextBox
+                            CornerRadius="0,4,4,0"
+                            KeyDown="OnTextKeyDown"
+                            KeyUp="OnTextKeyUp"
+                            PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaMobileHint}"
+                            Text="{x:Bind Mobile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassTextBox
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            CornerRadius="0,4,4,0"
+                            KeyDown="OnTextKeyDown"
+                            KeyUp="OnTextKeyUp"
+                            PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaMobileHint}"
+                            Text="{x:Bind Mobile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
             </Grid>
-            <Button
+            <cwc:SwitchPresenter
+                x:Name="GlassPresenter_2004"
                 Grid.Column="1"
-                Command="{x:Bind SendMobileCaptchaCommand}"
-                Content="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaSendCaptchaAction}"
-                IsEnabled="{x:Bind IsSendCaptchaEnabled, Mode=OneWay}"/>
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                IsTabStop="False"
+                Tag="LiquidGlass:Button"
+                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>0</x:Int32>
+                    </cwc:Case.Value>
+                    <Button
+                        Command="{x:Bind SendMobileCaptchaCommand}"
+                        Content="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaSendCaptchaAction}"
+                        IsEnabled="{x:Bind IsSendCaptchaEnabled, Mode=OneWay}"/>
+                </cwc:Case>
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>1</x:Int32>
+                    </cwc:Case.Value>
+                    <wl:LiquidGlassButton
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        Command="{x:Bind SendMobileCaptchaCommand}"
+                        Content="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaSendCaptchaAction}"
+                        IsEnabled="{x:Bind IsSendCaptchaEnabled, Mode=OneWay}"/>
+                </cwc:Case>
+            </cwc:SwitchPresenter>
         </Grid>
 
-        <PasswordBox
-            KeyDown="OnTextKeyDown"
-            KeyUp="OnTextKeyUp"
-            Password="{x:Bind Captcha, Mode=TwoWay}"
-            PasswordChar="*"
-            PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaCaptchaHint}"/>
+        <cwc:SwitchPresenter
+            x:Name="GlassPresenter_2301"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            IsTabStop="False"
+            Tag="LiquidGlass:PasswordBox"
+            Visibility="{x:Bind GlassNative_2301.Visibility, Mode=OneWay}"
+            Value="{x:Bind shuxcth:MaterialBindingSource.Current.PasswordBoxMaterial, Mode=OneWay}">
+            <cwc:Case>
+                <cwc:Case.Value>
+                    <x:Int32>0</x:Int32>
+                </cwc:Case.Value>
+                <PasswordBox
+                    x:Name="GlassNative_2301"
+                    DataContext="{x:Bind GlassPresenter_2301.DataContext, Mode=OneWay}"
+                    KeyDown="OnTextKeyDown"
+                    KeyUp="OnTextKeyUp"
+                    Password="{x:Bind Captcha, Mode=TwoWay}"
+                    PasswordChar="*"
+                    PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaCaptchaHint}"
+                    RequestedTheme="{x:Bind GlassPresenter_2301.ActualTheme, Mode=OneWay}"/>
+            </cwc:Case>
+            <cwc:Case>
+                <cwc:Case.Value>
+                    <x:Int32>1</x:Int32>
+                </cwc:Case.Value>
+                <wl:LiquidGlassPasswordBox
+                    x:Name="GlassNative_2301Glass"
+                    Width="{x:Bind GlassNative_2301.Width, Mode=OneWay}"
+                    Height="{x:Bind GlassNative_2301.Height, Mode=OneWay}"
+                    MinWidth="{x:Bind GlassNative_2301.MinWidth, Mode=OneWay}"
+                    MinHeight="{x:Bind GlassNative_2301.MinHeight, Mode=OneWay}"
+                    MaxWidth="{x:Bind GlassNative_2301.MaxWidth, Mode=OneWay}"
+                    MaxHeight="{x:Bind GlassNative_2301.MaxHeight, Mode=OneWay}"
+                    Padding="{x:Bind GlassNative_2301.Padding, Mode=OneWay}"
+                    shuxcth:ControlMaterialState.IsManaged="True"
+                    shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassNative_2301, Mode=OneWay}"
+                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                    BorderThickness="{x:Bind GlassNative_2301.BorderThickness, Mode=OneWay}"
+                    FlowDirection="{x:Bind GlassNative_2301.FlowDirection, Mode=OneWay}"
+                    FontFamily="{x:Bind GlassNative_2301.FontFamily, Mode=OneWay}"
+                    FontSize="{x:Bind GlassNative_2301.FontSize, Mode=OneWay}"
+                    FontStyle="{x:Bind GlassNative_2301.FontStyle, Mode=OneWay}"
+                    FontWeight="{x:Bind GlassNative_2301.FontWeight, Mode=OneWay}"
+                    Foreground="{x:Bind GlassNative_2301.Foreground, Mode=OneWay}"
+                    IsEnabled="{x:Bind GlassNative_2301.IsEnabled, Mode=OneWay}"
+                    KeyDown="OnTextKeyDown"
+                    KeyUp="OnTextKeyUp"
+                    Password="{x:Bind GlassNative_2301.Password, Mode=TwoWay}"
+                    PlaceholderText="{x:Bind GlassNative_2301.PlaceholderText, Mode=OneWay}"/>
+            </cwc:Case>
+        </cwc:SwitchPresenter>
     </StackPanel>
 </ContentDialog>

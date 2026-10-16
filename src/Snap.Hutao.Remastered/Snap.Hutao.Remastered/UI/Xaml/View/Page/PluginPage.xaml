@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:clw="using:CommunityToolkit.Labs.WinUI"
     xmlns:cw="using:CommunityToolkit.WinUI"
-    xmlns:cwcont="using:CommunityToolkit.WinUI.Controls"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:cwconv="using:CommunityToolkit.WinUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:Snap.Hutao.Remastered.UI.Xaml.View.Page"
@@ -13,14 +13,16 @@
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shvp="using:Snap.Hutao.Remastered.ViewModel.Plugin"
+    xmlns:wl="using:WinUI.LiquidGlass"
     d:DataContext="{d:DesignInstance shvp:PluginViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvp:PluginViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Page.Resources>
@@ -117,42 +119,152 @@
                         Grid.Column="2"
                         Orientation="Horizontal"
                         Spacing="8">
-                        <Button
-                            Command="{Binding ElementName=Root, Path=DataContext.EnablePluginCommand}"
-                            CommandParameter="{Binding}"
-                            Style="{StaticResource AccentButtonStyle}"
-                            Visibility="{Binding IsEnabled, Converter={StaticResource BoolNegationConverter}}">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginEnableButton}"/>
-                            </StackPanel>
-                        </Button>
-                        <Button
-                            Command="{Binding ElementName=Root, Path=DataContext.DisablePluginCommand}"
-                            CommandParameter="{Binding}"
-                            Style="{StaticResource DangerButtonStyle}"
-                            Visibility="{Binding IsEnabled, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginDisableButton}"/>
-                            </StackPanel>
-                        </Button>
-                        <Button
-                            Command="{Binding ElementName=Root, Path=DataContext.OpenPluginSettingsCommand}"
-                            CommandParameter="{Binding}"
-                            Style="{StaticResource DefaultButtonStyle}">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <FontIcon Glyph="&#xE713;"/>
-                                <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginSettingsButton}"/>
-                            </StackPanel>
-                        </Button>
-                        <Button
-                            Command="{Binding ElementName=Root, Path=DataContext.UninstallPluginCommand}"
-                            CommandParameter="{Binding}"
-                            Style="{StaticResource DefaultButtonStyle}">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <FontIcon Glyph="&#xE74D;"/>
-                                <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginUninstallButton}"/>
-                            </StackPanel>
-                        </Button>
+                        <cwc:SwitchPresenter
+                            x:Name="GlassPresenter_6594"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            IsTabStop="False"
+                            Tag="LiquidGlass:Button"
+                            Visibility="{Binding IsEnabled, Converter={StaticResource BoolNegationConverter}}"
+                            Value="{Binding ButtonMaterial, Source={StaticResource ControlMaterialState}, Mode=OneWay}">
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>0</x:Int32>
+                                </cwc:Case.Value>
+                                <Button
+                                    Command="{Binding ElementName=Root, Path=DataContext.EnablePluginCommand}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource AccentButtonStyle}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginEnableButton}"/>
+                                    </StackPanel>
+                                </Button>
+                            </cwc:Case>
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>1</x:Int32>
+                                </cwc:Case.Value>
+                                <wl:LiquidGlassButton
+                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                    Command="{Binding ElementName=Root, Path=DataContext.EnablePluginCommand}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource AccentButtonStyle}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginEnableButton}"/>
+                                    </StackPanel>
+                                </wl:LiquidGlassButton>
+                            </cwc:Case>
+                        </cwc:SwitchPresenter>
+                        <cwc:SwitchPresenter
+                            x:Name="GlassPresenter_7230"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            IsTabStop="False"
+                            Tag="LiquidGlass:Button"
+                            Visibility="{Binding IsEnabled, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Value="{Binding ButtonMaterial, Source={StaticResource ControlMaterialState}, Mode=OneWay}">
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>0</x:Int32>
+                                </cwc:Case.Value>
+                                <Button
+                                    Command="{Binding ElementName=Root, Path=DataContext.DisablePluginCommand}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource DangerButtonStyle}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginDisableButton}"/>
+                                    </StackPanel>
+                                </Button>
+                            </cwc:Case>
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>1</x:Int32>
+                                </cwc:Case.Value>
+                                <wl:LiquidGlassButton
+                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                    Command="{Binding ElementName=Root, Path=DataContext.DisablePluginCommand}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource DangerButtonStyle}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginDisableButton}"/>
+                                    </StackPanel>
+                                </wl:LiquidGlassButton>
+                            </cwc:Case>
+                        </cwc:SwitchPresenter>
+                        <cwc:SwitchPresenter
+                            x:Name="GlassPresenter_7872"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            IsTabStop="False"
+                            Tag="LiquidGlass:Button"
+                            Value="{Binding ButtonMaterial, Source={StaticResource ControlMaterialState}, Mode=OneWay}">
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>0</x:Int32>
+                                </cwc:Case.Value>
+                                <Button
+                                    Command="{Binding ElementName=Root, Path=DataContext.OpenPluginSettingsCommand}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource DefaultButtonStyle}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE713;"/>
+                                        <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginSettingsButton}"/>
+                                    </StackPanel>
+                                </Button>
+                            </cwc:Case>
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>1</x:Int32>
+                                </cwc:Case.Value>
+                                <wl:LiquidGlassButton
+                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                    Command="{Binding ElementName=Root, Path=DataContext.OpenPluginSettingsCommand}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource DefaultButtonStyle}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE713;"/>
+                                        <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginSettingsButton}"/>
+                                    </StackPanel>
+                                </wl:LiquidGlassButton>
+                            </cwc:Case>
+                        </cwc:SwitchPresenter>
+                        <cwc:SwitchPresenter
+                            x:Name="GlassPresenter_8467"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            IsTabStop="False"
+                            Tag="LiquidGlass:Button"
+                            Value="{Binding ButtonMaterial, Source={StaticResource ControlMaterialState}, Mode=OneWay}">
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>0</x:Int32>
+                                </cwc:Case.Value>
+                                <Button
+                                    Command="{Binding ElementName=Root, Path=DataContext.UninstallPluginCommand}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource DefaultButtonStyle}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE74D;"/>
+                                        <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginUninstallButton}"/>
+                                    </StackPanel>
+                                </Button>
+                            </cwc:Case>
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>1</x:Int32>
+                                </cwc:Case.Value>
+                                <wl:LiquidGlassButton
+                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                    Command="{Binding ElementName=Root, Path=DataContext.UninstallPluginCommand}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource DefaultButtonStyle}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE74D;"/>
+                                        <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginUninstallButton}"/>
+                                    </StackPanel>
+                                </wl:LiquidGlassButton>
+                            </cwc:Case>
+                        </cwc:SwitchPresenter>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -171,9 +283,9 @@
     </Page.Resources>
 
     <Grid x:Name="Root">
-        <shuxc:StandardView ShowCondition="{Binding IsInitialized, Mode=OneWay}">
+        <shuxc:StandardView ShowCondition="{x:Bind ((shvp:PluginViewModel)DataContext).IsInitialized, Mode=OneWay}">
             <shuxc:StandardView.EmptyContent>
-                <clw:Shimmer IsActive="{Binding IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"/>
+                <clw:Shimmer IsActive="{x:Bind ((shvp:PluginViewModel)DataContext).IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"/>
             </shuxc:StandardView.EmptyContent>
 
             <Grid Margin="16">
@@ -192,51 +304,147 @@
                             Padding="16"
                             Orientation="Horizontal"
                             Spacing="12">
-                            <Button
-                                Command="{Binding InstallPluginCommand}"
-                                Content="{shuxm:ResourceString Name=ViewPagePluginInstallButton}"
-                                Style="{StaticResource AccentButtonStyle}">
-                                <Button.ContentTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <FontIcon Glyph="&#xE710;"/>
-                                            <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginInstallButton}"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </Button.ContentTemplate>
-                            </Button>
+                            <cwc:SwitchPresenter
+                                x:Name="GlassPresenter_10751"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
+                                IsTabStop="False"
+                                Tag="LiquidGlass:Button"
+                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>0</x:Int32>
+                                    </cwc:Case.Value>
+                                    <Button
+                                        Command="{x:Bind ((shvp:PluginViewModel)DataContext).InstallPluginCommand, Mode=OneWay}"
+                                        Content="{shuxm:ResourceString Name=ViewPagePluginInstallButton}"
+                                        Style="{StaticResource AccentButtonStyle}">
+                                        <Button.ContentTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <FontIcon Glyph="&#xE710;"/>
+                                                    <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginInstallButton}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </Button.ContentTemplate>
+                                    </Button>
+                                </cwc:Case>
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>1</x:Int32>
+                                    </cwc:Case.Value>
+                                    <wl:LiquidGlassButton
+                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                        Command="{x:Bind ((shvp:PluginViewModel)DataContext).InstallPluginCommand, Mode=OneWay}"
+                                        Content="{shuxm:ResourceString Name=ViewPagePluginInstallButton}"
+                                        Style="{StaticResource AccentButtonStyle}">
+                                        <wl:LiquidGlassButton.ContentTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <FontIcon Glyph="&#xE710;"/>
+                                                    <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginInstallButton}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </wl:LiquidGlassButton.ContentTemplate>
+                                    </wl:LiquidGlassButton>
+                                </cwc:Case>
+                            </cwc:SwitchPresenter>
 
-                            <Button
-                                Command="{Binding RefreshPluginsCommand}"
-                                Content="{shuxm:ResourceString Name=ViewPagePluginRefreshButton}"
-                                Style="{StaticResource DefaultButtonStyle}">
-                                <Button.ContentTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <FontIcon Glyph="&#xE72C;"/>
-                                            <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginRefreshButton}"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </Button.ContentTemplate>
-                            </Button>
+                            <cwc:SwitchPresenter
+                                x:Name="GlassPresenter_11628"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
+                                IsTabStop="False"
+                                Tag="LiquidGlass:Button"
+                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>0</x:Int32>
+                                    </cwc:Case.Value>
+                                    <Button
+                                        Command="{x:Bind ((shvp:PluginViewModel)DataContext).RefreshPluginsCommand, Mode=OneWay}"
+                                        Content="{shuxm:ResourceString Name=ViewPagePluginRefreshButton}"
+                                        Style="{StaticResource DefaultButtonStyle}">
+                                        <Button.ContentTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <FontIcon Glyph="&#xE72C;"/>
+                                                    <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginRefreshButton}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </Button.ContentTemplate>
+                                    </Button>
+                                </cwc:Case>
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>1</x:Int32>
+                                    </cwc:Case.Value>
+                                    <wl:LiquidGlassButton
+                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                        Command="{x:Bind ((shvp:PluginViewModel)DataContext).RefreshPluginsCommand, Mode=OneWay}"
+                                        Content="{shuxm:ResourceString Name=ViewPagePluginRefreshButton}"
+                                        Style="{StaticResource DefaultButtonStyle}">
+                                        <wl:LiquidGlassButton.ContentTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <FontIcon Glyph="&#xE72C;"/>
+                                                    <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginRefreshButton}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </wl:LiquidGlassButton.ContentTemplate>
+                                    </wl:LiquidGlassButton>
+                                </cwc:Case>
+                            </cwc:SwitchPresenter>
 
-                            <Button
-                                Command="{Binding OpenPluginDirectoryCommand}"
-                                Content="{shuxm:ResourceString Name=ViewPagePluginOpenDirectoryButton}"
-                                Style="{StaticResource DefaultButtonStyle}">
-                                <Button.ContentTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <FontIcon Glyph="&#xE8DA;"/>
-                                            <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginOpenDirectoryButton}"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </Button.ContentTemplate>
-                            </Button>
+                            <cwc:SwitchPresenter
+                                x:Name="GlassPresenter_12507"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
+                                IsTabStop="False"
+                                Tag="LiquidGlass:Button"
+                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>0</x:Int32>
+                                    </cwc:Case.Value>
+                                    <Button
+                                        Command="{x:Bind ((shvp:PluginViewModel)DataContext).OpenPluginDirectoryCommand, Mode=OneWay}"
+                                        Content="{shuxm:ResourceString Name=ViewPagePluginOpenDirectoryButton}"
+                                        Style="{StaticResource DefaultButtonStyle}">
+                                        <Button.ContentTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <FontIcon Glyph="&#xE8DA;"/>
+                                                    <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginOpenDirectoryButton}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </Button.ContentTemplate>
+                                    </Button>
+                                </cwc:Case>
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>1</x:Int32>
+                                    </cwc:Case.Value>
+                                    <wl:LiquidGlassButton
+                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                        Command="{x:Bind ((shvp:PluginViewModel)DataContext).OpenPluginDirectoryCommand, Mode=OneWay}"
+                                        Content="{shuxm:ResourceString Name=ViewPagePluginOpenDirectoryButton}"
+                                        Style="{StaticResource DefaultButtonStyle}">
+                                        <wl:LiquidGlassButton.ContentTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <FontIcon Glyph="&#xE8DA;"/>
+                                                    <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginOpenDirectoryButton}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </wl:LiquidGlassButton.ContentTemplate>
+                                    </wl:LiquidGlassButton>
+                                </cwc:Case>
+                            </cwc:SwitchPresenter>
 
                             <TextBlock VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}">
                                 <Run Text="{shuxm:ResourceString Name=ViewPagePluginTotalText}"/>
-                                <Run Text="{Binding Plugins.Count}"/>
+                                <Run Text="{x:Bind ((shvp:PluginViewModel)DataContext).Plugins.Count, Mode=OneWay}"/>
                                 <Run Text="{shuxm:ResourceString Name=ViewPagePluginCountText}"/>
                             </TextBlock>
                         </StackPanel>
@@ -246,7 +454,7 @@
                 <!--  插件列表  -->
                 <Border Grid.Row="1" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                     <Grid Style="{ThemeResource AcrylicGridCardStyle}">
-                        <shuxc:StandardView ShowCondition="{Binding Plugins.Count, Converter={StaticResource Int32ToBoolConverter}}">
+                        <shuxc:StandardView ShowCondition="{x:Bind ((shvp:PluginViewModel)DataContext).Plugins.Count, Converter={StaticResource Int32ToBoolConverter}, Mode=OneWay}">
                             <shuxc:StandardView.EmptyContent>
                                 <StackPanel
                                     HorizontalAlignment="Center"
@@ -269,7 +477,7 @@
                                     ItemContainerTransitions="{ThemeResource ListViewLikeThemeTransitions}"
                                     ItemTemplate="{StaticResource PluginItemTemplate}"
                                     ItemsPanel="{ThemeResource StackPanelSpacing8Template}"
-                                    ItemsSource="{Binding Plugins}"/>
+                                    ItemsSource="{x:Bind ((shvp:PluginViewModel)DataContext).Plugins, Mode=OneWay}"/>
                             </ScrollViewer>
                         </shuxc:StandardView>
                     </Grid>

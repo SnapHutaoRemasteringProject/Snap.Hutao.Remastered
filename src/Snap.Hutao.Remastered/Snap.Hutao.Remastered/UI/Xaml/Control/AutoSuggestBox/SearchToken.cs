@@ -5,7 +5,8 @@ using Windows.UI;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox;
 
-public sealed class SearchToken
+[WinRT.GeneratedBindableCustomProperty]
+public sealed partial class SearchToken
 {
     public static readonly SearchToken NotFound = new(SearchTokenKind.None, SH.ControlAutoSuggestBoxNotFoundValue, 0);
 
@@ -31,6 +32,8 @@ public sealed class SearchToken
     public Uri? SideIconUri { get; }
 
     public Color? Quality { get; }
+
+    public Color QualityColor => Quality ?? Microsoft.UI.Colors.Transparent;
 
     public int Order { get; }
 

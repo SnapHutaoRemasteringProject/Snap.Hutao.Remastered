@@ -1,31 +1,42 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model;
 
 namespace Snap.Hutao.Remastered.ViewModel.GachaLog;
 
-public sealed class SummaryItem : Item
+[WinRT.GeneratedBindableCustomProperty]
+[ObservableObject]
+public sealed partial class SummaryItem : Item
 {
-    public bool IsUp { get; set; }
+    [ObservableProperty]
+    public partial bool IsUp { get; set; }
 
-    public bool IsGuarantee { get; set; }
+    [ObservableProperty]
+    public partial bool IsGuarantee { get; set; }
 
     // Used in ListView for ProgressBar Maximum Value
-    public int GuaranteeOrangeThreshold { get; set; }
+    [ObservableProperty]
+    public partial int GuaranteeOrangeThreshold { get; set; }
 
-    public int LastPull { get; set; }
+    [ObservableProperty]
+    public partial int LastPull { get; set; }
 
     // Total pulls since the last rate-up (up) 5-star, combining both lost-50/50 and guarantee pity.
     // Only meaningful for IsUp == true items.
-    public int TotalCyclePull { get; set; }
+    [ObservableProperty]
+    public partial int TotalCyclePull { get; set; }
 
     public string FormattedTime
     {
         get => $"{Time.ToLocalTime():yyy.MM.dd HH:mm:ss}";
     }
 
-    public Windows.UI.Color Color { get; set; }
+    [ObservableProperty]
+    public partial Windows.UI.Color Color { get; set; }
 
-    public DateTimeOffset Time { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FormattedTime))]
+    public partial DateTimeOffset Time { get; set; }
 }

@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Metadata.Avatar;
 using Snap.Hutao.Remastered.Model.Primitive;
 using Snap.Hutao.Remastered.Web.Hutao.SpiralAbyss;
@@ -9,6 +10,7 @@ using System.Globalization;
 
 namespace Snap.Hutao.Remastered.ViewModel.Complex;
 
+[ObservableObject]
 public sealed partial class Team : List<AvatarView>
 {
     public Team(ItemRate<string, int> team, ImmutableDictionary<AvatarId, Avatar> idAvatarMap, int rank)
@@ -29,5 +31,6 @@ public sealed partial class Team : List<AvatarView>
 
     public string UpCount { get; }
 
-    public int Rank { get; set; }
+    [ObservableProperty]
+    public partial int Rank { get; set; }
 }

@@ -36,17 +36,26 @@ public abstract class StatisticsCache
 
     protected async ValueTask InitializeForTypeAsync<T, TContext>(TContext context, Func<TContext, Task> initialization)
     {
-        if (typeToTcs.TryGetValue(typeof(T), out TaskCompletionSource? tcs))
+        TaskCompletionSource pending = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        TaskCompletionSource current = typeToTcs.GetOrAdd(typeof(T), pending);
+        if (!ReferenceEquals(current, pending))
         {
-            await tcs.Task.ConfigureAwait(false);
+            await current.Task.ConfigureAwait(false);
             return;
         }
 
-        tcs = new();
-        if (typeToTcs.TryAdd(typeof(T), tcs))
+        try
         {
             await initialization(context).ConfigureAwait(false);
-            tcs.TrySetResult();
+            pending.TrySetResult();
+        }
+        catch (Exception exception)
+        {
+            // Complete every concurrent waiter, then allow a later navigation to retry.
+            pending.TrySetException(exception);
+            typeToTcs.TryRemove(new KeyValuePair<Type, TaskCompletionSource>(typeof(T), pending));
+            _ = pending.Task.Exception;
+            throw;
         }
     }
 }

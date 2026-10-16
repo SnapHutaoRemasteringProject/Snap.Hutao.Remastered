@@ -17,18 +17,20 @@
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
     xmlns:shuxcp="using:Snap.Hutao.Remastered.UI.Xaml.Control.Panel"
     xmlns:shuxct="using:Snap.Hutao.Remastered.UI.Xaml.Control.TextBlock"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxdc="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter"
     xmlns:shuxdcs="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shuxvs="using:Snap.Hutao.Remastered.UI.Xaml.View.Specialized"
     xmlns:shvc="using:Snap.Hutao.Remastered.ViewModel.Complex"
     xmlns:shvw="using:Snap.Hutao.Remastered.ViewModel.Wiki"
+    xmlns:wl="using:WinUI.LiquidGlass"
     x:Name="RootPage"
     d:DataContext="{d:DesignInstance Type=shvw:WikiAvatarViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
     <Page.Resources>
         <shuxdc:VisibilityToObjectConverter
@@ -38,7 +40,7 @@
 
         <shuxdcs:RangedInt32Converter x:Key="RangedInt32Converter"/>
 
-        <shux:BindingProxy x:Key="BindingProxy" DataContext="{Binding}"/>
+        <shux:BindingProxy x:Key="BindingProxy" DataContext="{x:Bind ((shvw:WikiAvatarViewModel)DataContext), Mode=OneWay}"/>
 
         <DataTemplate x:Key="SkillDataTemplate" x:DataType="shmma:ProudSkill">
             <Grid Margin="0,16,0,0" ColumnSpacing="16">
@@ -46,12 +48,12 @@
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="3*"/>
                 </Grid.ColumnDefinitions>
-                <StackPanel Grid.ColumnSpan="{Binding ElementName=ProudSelector, Path=Visibility, Converter={StaticResource VisibilityToColumnSpanConverter}}">
+                <StackPanel Grid.ColumnSpan="{x:Bind ProudSelector.Visibility, Converter={StaticResource VisibilityToColumnSpanConverter}, Mode=OneWay}">
                     <Border
                         Padding="8,4"
                         BorderThickness="1"
                         CornerRadius="4"
-                        Visibility="{Binding SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                        Visibility="{x:Bind SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                         <Border.Background>
                             <SolidColorBrush Color="{StaticResource SpecialDescriptionBaseBackgroundColor}"/>
                         </Border.Background>
@@ -60,22 +62,22 @@
                         </Border.BorderBrush>
                         <shuxct:DescriptionTextBlock
                             VerticalAlignment="Top"
-                            Description="{Binding Description}"
+                            Description="{x:Bind Description, Mode=OneWay}"
                             LinkContext="{Binding DataContext.LinkContext, Source={StaticResource BindingProxy}}"
                             TextStyle="{StaticResource BodyTextBlockStyle}"/>
                     </Border>
                     <shuxct:DescriptionTextBlock
                         VerticalAlignment="Top"
-                        Description="{Binding Description}"
+                        Description="{x:Bind Description, Mode=OneWay}"
                         LinkContext="{Binding DataContext.LinkContext, Source={StaticResource BindingProxy}}"
                         TextStyle="{StaticResource BodyTextBlockStyle}"
-                        Visibility="{Binding SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}}"/>
+                        Visibility="{x:Bind SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}, Mode=OneWay}"/>
                     <Border
                         Margin="0,8,0,0"
                         Padding="8,4"
                         BorderThickness="1"
                         CornerRadius="4"
-                        Visibility="{Binding SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                        Visibility="{x:Bind SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                         <Border.Background>
                             <SolidColorBrush Color="{StaticResource SpecialDescriptionSpecialBackgroundColor}"/>
                         </Border.Background>
@@ -84,7 +86,7 @@
                         </Border.BorderBrush>
                         <shuxct:DescriptionTextBlock
                             VerticalAlignment="Top"
-                            Description="{Binding SpecialDescription}"
+                            Description="{x:Bind SpecialDescription, Mode=OneWay}"
                             LinkContext="{Binding DataContext.LinkContext, Source={StaticResource BindingProxy}}"
                             TextStyle="{StaticResource BodyTextBlockStyle}"/>
                     </Border>
@@ -95,7 +97,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
                     PreferredSelectedIndex="9"
-                    Source="{Binding Proud, Mode=OneWay, Converter={StaticResource DescParamDescriptor}}"/>
+                    Source="{x:Bind Proud, Mode=OneWay, Converter={StaticResource DescParamDescriptor}}"/>
             </Grid>
         </DataTemplate>
 
@@ -105,7 +107,7 @@
                     Padding="8,4"
                     BorderThickness="1"
                     CornerRadius="4"
-                    Visibility="{Binding SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                    Visibility="{x:Bind SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                     <Border.Background>
                         <SolidColorBrush Color="{StaticResource SpecialDescriptionBaseBackgroundColor}"/>
                     </Border.Background>
@@ -113,21 +115,21 @@
                         <SolidColorBrush Color="{StaticResource SpecialDescriptionBaseBorderColor}"/>
                     </Border.BorderBrush>
                     <shuxct:DescriptionTextBlock
-                        Description="{Binding Description}"
+                        Description="{x:Bind Description, Mode=OneWay}"
                         LinkContext="{Binding DataContext.LinkContext, Source={StaticResource BindingProxy}}"
                         TextStyle="{StaticResource BodyTextBlockStyle}"/>
                 </Border>
                 <shuxct:DescriptionTextBlock
-                    Description="{Binding Description}"
+                    Description="{x:Bind Description, Mode=OneWay}"
                     LinkContext="{Binding DataContext.LinkContext, Source={StaticResource BindingProxy}}"
                     TextStyle="{StaticResource BodyTextBlockStyle}"
-                    Visibility="{Binding SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}}"/>
+                    Visibility="{x:Bind SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}, Mode=OneWay}"/>
                 <Border
                     Margin="0,8,0,0"
                     Padding="8,4"
                     BorderThickness="1"
                     CornerRadius="4"
-                    Visibility="{Binding SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                    Visibility="{x:Bind SpecialDescription, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                     <Border.Background>
                         <SolidColorBrush Color="{StaticResource SpecialDescriptionSpecialBackgroundColor}"/>
                     </Border.Background>
@@ -135,7 +137,7 @@
                         <SolidColorBrush Color="{StaticResource SpecialDescriptionSpecialBorderColor}"/>
                     </Border.BorderBrush>
                     <shuxct:DescriptionTextBlock
-                        Description="{Binding SpecialDescription}"
+                        Description="{x:Bind SpecialDescription, Mode=OneWay}"
                         LinkContext="{Binding DataContext.LinkContext, Source={StaticResource BindingProxy}}"
                         TextStyle="{StaticResource BodyTextBlockStyle}"/>
                 </Border>
@@ -155,9 +157,9 @@
                     Margin="1,1,0,0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Stretch"
-                    Visibility="{Binding Quality, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                    Visibility="{x:Bind Quality, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneTime}">
                     <Ellipse.Fill>
-                        <SolidColorBrush Color="{Binding Quality}"/>
+                        <SolidColorBrush Color="{x:Bind QualityColor}"/>
                     </Ellipse.Fill>
                 </Ellipse>
                 <shuxci:CachedImage
@@ -166,20 +168,20 @@
                     Height="20"
                     Margin="-3,2,7,0"
                     ShowAsMonoChrome="True"
-                    Source="{Binding IconUri, Mode=OneWay}"
-                    Visibility="{Binding IconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
+                    Source="{x:Bind IconUri, Mode=OneTime}"
+                    Visibility="{x:Bind IconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneTime}"/>
                 <shuxci:CachedImage
                     Grid.Column="0"
                     Width="20"
                     Height="20"
                     Margin="-4,-2,8,2"
-                    Source="{Binding SideIconUri, Mode=OneWay}"
-                    Visibility="{Binding SideIconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
+                    Source="{x:Bind SideIconUri, Mode=OneTime}"
+                    Visibility="{x:Bind SideIconUri, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneTime}"/>
                 <TextBlock
                     Grid.Column="1"
                     Height="20"
                     VerticalAlignment="Center"
-                    Text="{Binding Value}"/>
+                    Text="{x:Bind Value, Mode=OneTime}"/>
             </Grid>
         </DataTemplate>
 
@@ -189,7 +191,7 @@
                     <MenuFlyout>
                         <MenuFlyoutItem
                             Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
-                            CommandParameter="{Binding}"
+                            CommandParameter="{x:Bind Mode=OneWay}"
                             Text="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
                     </MenuFlyout>
                 </Grid.ContextFlyout>
@@ -202,12 +204,12 @@
                     Width="48"
                     Height="48"
                     Margin="0,0,12,12"
-                    Source="{Binding SideIcon, Converter={StaticResource AvatarSideIconConverter}, Mode=OneWay}"/>
+                    Source="{x:Bind SideIcon, Converter={StaticResource AvatarSideIconConverter}, Mode=OneWay}"/>
                 <TextBlock
                     Grid.Column="1"
                     Margin="12,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding Name}"/>
+                    Text="{x:Bind Name, Mode=OneWay}"/>
             </Grid>
         </DataTemplate>
 
@@ -217,14 +219,14 @@
                     <shuxc:ItemIcon
                         Width="40"
                         Height="40"
-                        Icon="{Binding Icon, Converter={StaticResource ItemIconConverter}}"
-                        Quality="{Binding RankLevel}"/>
+                        Icon="{x:Bind Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                        Quality="{x:Bind RankLevel, Mode=OneWay}"/>
                 </shuxcc:HorizontalCard.Left>
                 <shuxcc:HorizontalCard.Right>
                     <TextBlock
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Text="{Binding Name}"/>
+                        Text="{x:Bind Name, Mode=OneWay}"/>
                 </shuxcc:HorizontalCard.Right>
             </shuxcc:HorizontalCard>
         </DataTemplate>
@@ -235,20 +237,20 @@
                     <shuxc:ItemIcon
                         Width="48"
                         Height="48"
-                        Icon="{Binding Icon}"
-                        Quality="{Binding Quality}"/>
+                        Icon="{x:Bind Icon, Mode=OneWay}"
+                        Quality="{x:Bind Quality, Mode=OneWay}"/>
                 </shuxcc:HorizontalCard.Left>
                 <shuxcc:HorizontalCard.Right>
                     <StackPanel Margin="8,0,0,0" HorizontalAlignment="Left">
-                        <TextBlock Text="{Binding Name}"/>
+                        <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
                         <StackPanel Orientation="Horizontal" Spacing="4">
                             <TextBlock
                                 Opacity="0.7"
                                 Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{Binding Rate}"/>
+                                Text="{x:Bind Rate, Mode=OneWay}"/>
                             <shuxct:RateDeltaTextBlock
                                 Opacity="0.7"
-                                Text="{Binding RateDelta}"
+                                Text="{x:Bind RateDelta, Mode=OneWay}"
                                 TextStyle="{StaticResource CaptionTextBlockStyle}"/>
                         </StackPanel>
                     </StackPanel>
@@ -259,7 +261,7 @@
         <DataTemplate x:Key="CollocationReliquaryTemplate" x:DataType="shvc:ReliquarySetView">
             <shuxcc:HorizontalCard>
                 <shuxcc:HorizontalCard.Left>
-                    <cwc:SwitchPresenter Value="{Binding Icons.Count, Mode=OneWay}">
+                    <cwc:SwitchPresenter Value="{x:Bind Icons.Count, Mode=OneWay}">
                         <cwc:Case IsDefault="True">
                             <cwc:Case.Value>
                                 <x:Int32>0</x:Int32>
@@ -312,17 +314,17 @@
                 <shuxcc:HorizontalCard.Right>
                     <StackPanel Margin="8,0,8,0" HorizontalAlignment="Left">
                         <TextBlock
-                            Text="{Binding Name}"
+                            Text="{x:Bind Name, Mode=OneWay}"
                             TextTrimming="CharacterEllipsis"
                             TextWrapping="NoWrap"/>
                         <StackPanel Orientation="Horizontal" Spacing="4">
                             <TextBlock
                                 Opacity="0.7"
                                 Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{Binding Rate}"/>
+                                Text="{x:Bind Rate, Mode=OneWay}"/>
                             <shuxct:RateDeltaTextBlock
                                 Opacity="0.7"
-                                Text="{Binding RateDelta}"
+                                Text="{x:Bind RateDelta, Mode=OneWay}"
                                 TextStyle="{StaticResource CaptionTextBlockStyle}"/>
                         </StackPanel>
                     </StackPanel>
@@ -346,12 +348,12 @@
                     Width="80"
                     Height="80"
                     Margin="0,0,16,0"
-                    Source="{Binding FrontIcon, Converter={StaticResource AvatarCardConverter}}"/>
+                    Source="{x:Bind FrontIcon, Converter={StaticResource AvatarCardConverter}, Mode=OneWay}"/>
                 <StackPanel Grid.Column="1" Margin="0,0,16,-4">
-                    <TextBlock Text="{Binding Name}"/>
+                    <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
                     <shuxct:DescriptionTextBlock
                         Margin="0,8,0,16"
-                        Description="{Binding Description}"
+                        Description="{x:Bind Description, Mode=OneWay}"
                         TextStyle="{StaticResource CaptionTextBlockStyle}"/>
                 </StackPanel>
             </Grid>
@@ -360,10 +362,10 @@
         <DataTemplate x:Key="FetterStoryTemplate" x:DataType="shmma:Fetter">
             <cwc:SettingsCard Padding="16,8,8,8" BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}">
                 <cwc:SettingsCard.Header>
-                    <shuxct:DescriptionTextBlock Description="{Binding Title}" TextStyle="{StaticResource BaseTextBlockStyle}"/>
+                    <shuxct:DescriptionTextBlock Description="{x:Bind Title, Mode=OneWay}" TextStyle="{StaticResource BaseTextBlockStyle}"/>
                 </cwc:SettingsCard.Header>
                 <cwc:SettingsCard.Description>
-                    <shuxct:DescriptionTextBlock Description="{Binding Context}" TextStyle="{StaticResource CaptionTextBlockStyle}"/>
+                    <shuxct:DescriptionTextBlock Description="{x:Bind Context, Mode=OneWay}" TextStyle="{StaticResource CaptionTextBlockStyle}"/>
                 </cwc:SettingsCard.Description>
             </cwc:SettingsCard>
         </DataTemplate>
@@ -373,26 +375,26 @@
                     <MenuFlyout>
                         <MenuFlyoutItem
                             Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
-                            CommandParameter="{Binding}"
+                            CommandParameter="{x:Bind Mode=OneWay}"
                             Text="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
                     </MenuFlyout>
                 </shuxcc:VerticalCard.ContextFlyout>
                 <shuxcc:VerticalCard.Top>
-                    <shuxc:ItemIcon Icon="{Binding Icon, Converter={StaticResource AvatarIconConverter}, Mode=OneWay}" Quality="{Binding Quality}"/>
+                    <shuxc:ItemIcon Icon="{x:Bind Icon, Converter={StaticResource AvatarIconConverter}, Mode=OneWay}" Quality="{x:Bind Quality, Mode=OneWay}"/>
                 </shuxcc:VerticalCard.Top>
                 <shuxcc:VerticalCard.Bottom>
                     <TextBlock
                         Margin="2,0"
-                        Text="{Binding Name}"
+                        Text="{x:Bind Name, Mode=OneWay}"
                         TextTrimming="CharacterEllipsis"/>
                 </shuxcc:VerticalCard.Bottom>
             </shuxcc:VerticalCard>
         </DataTemplate>
     </Page.Resources>
 
-    <shuxc:StandardView ShowCondition="{Binding Avatars, Converter={StaticResource EmptyObjectToBoolConverter}}">
+    <shuxc:StandardView ShowCondition="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
         <shuxc:StandardView.EmptyContent>
-            <shuxc:Loading IsLoading="{Binding Avatars, Converter={StaticResource EmptyObjectToBoolRevertConverter}}" Style="{ThemeResource DefaultLoadingViewStyle}"/>
+            <shuxc:Loading IsLoading="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars, Converter={StaticResource EmptyObjectToBoolRevertConverter}, Mode=OneWay}" Style="{ThemeResource DefaultLoadingViewStyle}"/>
         </shuxc:StandardView.EmptyContent>
         <Grid>
             <Grid.RowDefinitions>
@@ -419,21 +421,21 @@
                                 Margin="6,-2,6,6"
                                 HorizontalAlignment="Right"
                                 VerticalContentAlignment="Center"
-                                AvailableTokens="{Binding SearchData.AvailableTokens}"
-                                FilterCommand="{Binding FilterCommand}"
-                                ItemsSource="{Binding SearchData.FilterTokens, Mode=TwoWay}"
+                                AvailableTokens="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).SearchData.AvailableTokens, Mode=OneWay}"
+                                FilterCommand="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).FilterCommand, Mode=OneWay}"
+                                ItemsSource="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).SearchData.FilterTokens, Mode=OneWay}"
                                 MaximumTokens="5"
                                 PlaceholderText="{shuxm:ResourceString Name=ViewPageWiKiAvatarAutoSuggestBoxPlaceHolder}"
                                 QueryIcon="{cw:FontIconSource Glyph=&#xE721;}"
                                 Style="{StaticResource DefaultAutoSuggestTokenBoxStyle}"
                                 SuggestedItemTemplate="{StaticResource TokenTemplate}"
-                                SuggestedItemsSource="{Binding SearchData.AvailableTokens.Values}"
-                                Text="{Binding SearchData.FilterToken, Mode=TwoWay}"
+                                SuggestedItemsSource="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).SearchData.AvailableTokens.Values, Mode=OneWay}"
+                                Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).SearchData.FilterToken, Mode=TwoWay}"
                                 TokenItemTemplate="{StaticResource TokenTemplate}"/>
                         </AppBarElementContainer>
                         <AppBarButton
-                            Command="{Binding CultivateCommand}"
-                            CommandParameter="{Binding Avatars.CurrentItem}"
+                            Command="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).CultivateCommand, Mode=OneWay}"
+                            CommandParameter="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE8EF;}"
                             Label="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
                     </CommandBar>
@@ -443,7 +445,7 @@
             <cwc:SwitchPresenter
                 Grid.Row="1"
                 ContentTransitions="{ThemeResource EntranceThemeTransitions}"
-                Value="{Binding ElementName=ItemsPanelSelector, Path=Current}">
+                Value="{x:Bind ItemsPanelSelector.Current, Mode=OneWay}">
                 <cwc:Case Value="List">
                     <Border Margin="16,0,16,16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                         <Border Style="{ThemeResource AcrylicBorderCardStyle}">
@@ -456,8 +458,8 @@
                                     <ListView
                                         Padding="{ThemeResource ListViewInSplitPanePadding}"
                                         ItemTemplate="{StaticResource AvatarListTemplate}"
-                                        ItemsSource="{Binding Avatars}"
-                                        SelectedItem="{Binding Avatars.CurrentItem, Mode=TwoWay}"
+                                        ItemsSource="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars, Mode=OneWay}"
+                                        SelectedItem="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem, Mode=TwoWay}"
                                         SelectionMode="Single">
                                         <mxi:Interaction.Behaviors>
                                             <shuxb:SelectedItemInViewBehavior/>
@@ -466,7 +468,7 @@
                                 </SplitView.Pane>
                                 <SplitView.Content>
                                     <Grid>
-                                        <StackPanel VerticalAlignment="Center" Visibility="{Binding Avatars.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}}">
+                                        <StackPanel VerticalAlignment="Center" Visibility="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}, Mode=OneWay}">
                                             <shuxci:CachedImage
                                                 Height="120"
                                                 MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
@@ -479,8 +481,8 @@
                                         </StackPanel>
                                         <ScrollViewer
                                             Padding="16,0"
-                                            shuxc:ScrollViewerHelper.ScrollToTopAssociatedObject="{Binding Avatars.CurrentItem}"
-                                            Visibility="{Binding Avatars.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                                            shuxc:ScrollViewerHelper.ScrollToTopAssociatedObject="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem, Mode=OneWay}"
+                                            Visibility="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                                             <StackPanel
                                                 Margin="0,16"
                                                 HorizontalAlignment="Left"
@@ -511,20 +513,20 @@
                                                                 Height="32"
                                                                 HorizontalAlignment="Left"
                                                                 ShowAsMonoChrome="True"
-                                                                Source="{Binding Avatars.CurrentItem.FetterInfo.VisionBefore, Converter={StaticResource ElementNameIconConverter}}"/>
+                                                                Source="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.FetterInfo.VisionBefore, Converter={StaticResource ElementNameIconConverter}, Mode=OneWay}"/>
                                                             <shuxci:CachedImage
                                                                 Grid.Column="1"
                                                                 Width="32"
                                                                 Height="32"
                                                                 ShowAsMonoChrome="True"
-                                                                Source="{Binding Avatars.CurrentItem.Weapon, Converter={StaticResource WeaponTypeIconConverter}}"/>
+                                                                Source="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.Weapon, Converter={StaticResource WeaponTypeIconConverter}, Mode=OneWay}"/>
                                                         </Grid>
                                                         <Border Style="{ThemeResource BorderCardStyle}">
                                                             <shuxc:ItemIcon
                                                                 Width="128"
                                                                 Height="128"
-                                                                Icon="{Binding Avatars.CurrentItem.Icon, Converter={StaticResource AvatarIconConverter}, Mode=OneWay}"
-                                                                Quality="{Binding Avatars.CurrentItem.Quality, Mode=OneWay}"/>
+                                                                Icon="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.Icon, Converter={StaticResource AvatarIconConverter}, Mode=OneWay}"
+                                                                Quality="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.Quality, Mode=OneWay}"/>
                                                         </Border>
 
                                                     </StackPanel>
@@ -537,20 +539,20 @@
                                                             <TextBlock
                                                                 VerticalAlignment="Center"
                                                                 Style="{StaticResource SubtitleTextBlockStyle}"
-                                                                Text="{Binding Avatars.CurrentItem.Name}"
+                                                                Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.Name, Mode=OneWay}"
                                                                 TextWrapping="NoWrap"/>
                                                             <TextBlock
                                                                 Margin="24,0,0,0"
                                                                 VerticalAlignment="Center"
                                                                 Style="{StaticResource SubtitleTextBlockStyle}"
-                                                                Text="{Binding Avatars.CurrentItem.FetterInfo.Title}"
+                                                                Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.FetterInfo.Title, Mode=OneWay}"
                                                                 TextWrapping="NoWrap"/>
                                                         </StackPanel>
 
                                                         <TextBlock
                                                             Opacity="0.7"
                                                             Style="{StaticResource CaptionTextBlockStyle}"
-                                                            Text="{Binding Avatars.CurrentItem.FetterInfo.Detail}"
+                                                            Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.FetterInfo.Detail, Mode=OneWay}"
                                                             TextWrapping="NoWrap"/>
 
                                                         <cwc:UniformGrid
@@ -562,7 +564,7 @@
                                                                 <TextBlock
                                                                     Margin="0,6,0,0"
                                                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                                                    Text="{Binding Avatars.CurrentItem.FetterInfo.BirthFormatted}"
+                                                                    Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.FetterInfo.BirthFormatted, Mode=OneWay}"
                                                                     TextWrapping="NoWrap"/>
                                                             </StackPanel>
                                                             <StackPanel>
@@ -570,15 +572,15 @@
                                                                 <TextBlock
                                                                     Margin="0,6,0,0"
                                                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                                                    Text="{Binding Avatars.CurrentItem.FetterInfo.Native}"
+                                                                    Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.FetterInfo.Native, Mode=OneWay}"
                                                                     TextWrapping="NoWrap"/>
                                                             </StackPanel>
                                                             <StackPanel>
-                                                                <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{Binding Avatars.CurrentItem.FetterInfo.VisionOverride}"/>
+                                                                <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.FetterInfo.VisionOverride, Mode=OneWay}"/>
                                                                 <TextBlock
                                                                     Margin="0,6,0,0"
                                                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                                                    Text="{Binding Avatars.CurrentItem.FetterInfo.Vision}"
+                                                                    Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.FetterInfo.Vision, Mode=OneWay}"
                                                                     TextWrapping="NoWrap"/>
                                                             </StackPanel>
                                                             <StackPanel>
@@ -586,7 +588,7 @@
                                                                 <TextBlock
                                                                     Margin="0,6,0,0"
                                                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                                                    Text="{Binding Avatars.CurrentItem.FetterInfo.Constellation}"
+                                                                    Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.FetterInfo.Constellation, Mode=OneWay}"
                                                                     TextWrapping="NoWrap"/>
                                                             </StackPanel>
 
@@ -601,7 +603,7 @@
                                                                 <TextBlock
                                                                     Margin="0,6,0,0"
                                                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                                                    Text="{Binding Avatars.CurrentItem.FetterInfo.CvChinese}"
+                                                                    Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.FetterInfo.CvChinese, Mode=OneWay}"
                                                                     TextWrapping="NoWrap"/>
                                                             </StackPanel>
                                                             <StackPanel>
@@ -609,7 +611,7 @@
                                                                 <TextBlock
                                                                     Margin="0,6,0,0"
                                                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                                                    Text="{Binding Avatars.CurrentItem.FetterInfo.CvJapanese}"
+                                                                    Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.FetterInfo.CvJapanese, Mode=OneWay}"
                                                                     TextWrapping="NoWrap"/>
                                                             </StackPanel>
                                                             <StackPanel>
@@ -617,7 +619,7 @@
                                                                 <TextBlock
                                                                     Margin="0,6,0,0"
                                                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                                                    Text="{Binding Avatars.CurrentItem.FetterInfo.CvEnglish}"
+                                                                    Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.FetterInfo.CvEnglish, Mode=OneWay}"
                                                                     TextWrapping="NoWrap"/>
                                                             </StackPanel>
                                                             <StackPanel>
@@ -625,7 +627,7 @@
                                                                 <TextBlock
                                                                     Margin="0,6,0,0"
                                                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                                                    Text="{Binding Avatars.CurrentItem.FetterInfo.CvKorean}"
+                                                                    Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.FetterInfo.CvKorean, Mode=OneWay}"
                                                                     TextWrapping="NoWrap"/>
                                                             </StackPanel>
                                                         </cwc:UniformGrid>
@@ -638,7 +640,7 @@
                                                         <ItemsControl
                                                             Margin="16,0,16,16"
                                                             ItemTemplate="{StaticResource CultivationItemTemplate}"
-                                                            ItemsSource="{Binding Avatars.CurrentItem.CultivationItemsView}">
+                                                            ItemsSource="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CultivationItemsView, Mode=OneWay}">
                                                             <ItemsControl.ItemsPanel>
                                                                 <ItemsPanelTemplate>
                                                                     <cwc:UniformGrid
@@ -653,114 +655,255 @@
 
                                                 <!--  攻略  -->
                                                 <shuxcp:EqualPanel Spacing="16">
-                                                    <Button
-                                                        Padding="16,8"
+                                                    <cwc:SwitchPresenter
+                                                        x:Name="GlassPresenter_41651"
                                                         HorizontalContentAlignment="Stretch"
-                                                        Command="{Binding StrategyComponent.ChineseStrategyCommand}"
-                                                        CommandParameter="{Binding Avatars.CurrentItem}"
-                                                        Style="{ThemeResource SettingButtonStyle}">
-                                                        <Grid ColumnSpacing="16">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="auto"/>
-                                                                <ColumnDefinition/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <Border
-                                                                Grid.Column="0"
-                                                                Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                                                                CornerRadius="4">
-                                                                <Image
-                                                                    Width="24"
-                                                                    Height="24"
-                                                                    Source="ms-appx:///Resource/ThirdParty/miyoushe128.png"/>
-                                                            </Border>
+                                                        VerticalContentAlignment="Stretch"
+                                                        IsTabStop="False"
+                                                        Tag="LiquidGlass:Button"
+                                                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                                                        <cwc:Case>
+                                                            <cwc:Case.Value>
+                                                                <x:Int32>0</x:Int32>
+                                                            </cwc:Case.Value>
+                                                            <Button
+                                                                Padding="16,8"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                Command="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).StrategyComponent.ChineseStrategyCommand, Mode=OneWay}"
+                                                                CommandParameter="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem, Mode=OneWay}"
+                                                                Style="{ThemeResource SettingButtonStyle}">
+                                                                <Grid ColumnSpacing="16">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="auto"/>
+                                                                        <ColumnDefinition/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <Border
+                                                                        Grid.Column="0"
+                                                                        Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                                                                        CornerRadius="4">
+                                                                        <Image
+                                                                            Width="24"
+                                                                            Height="24"
+                                                                            Source="ms-appx:///Resource/ThirdParty/miyoushe128.png"/>
+                                                                    </Border>
 
-                                                            <TextBlock
-                                                                Grid.Column="1"
-                                                                VerticalAlignment="Center"
-                                                                Text="{shuxm:ResourceString Name=ViewPageWiKiAvatarStrategyChineseButtonLabel}"
-                                                                TextWrapping="NoWrap"/>
-                                                        </Grid>
-                                                    </Button>
-                                                    <Button
-                                                        Padding="16,8"
+                                                                    <TextBlock
+                                                                        Grid.Column="1"
+                                                                        VerticalAlignment="Center"
+                                                                        Text="{shuxm:ResourceString Name=ViewPageWiKiAvatarStrategyChineseButtonLabel}"
+                                                                        TextWrapping="NoWrap"/>
+                                                                </Grid>
+                                                            </Button>
+                                                        </cwc:Case>
+                                                        <cwc:Case>
+                                                            <cwc:Case.Value>
+                                                                <x:Int32>1</x:Int32>
+                                                            </cwc:Case.Value>
+                                                            <wl:LiquidGlassButton
+                                                                Padding="16,8"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                shuxcth:ControlMaterialState.IsManaged="True"
+                                                                Command="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).StrategyComponent.ChineseStrategyCommand, Mode=OneWay}"
+                                                                CommandParameter="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem, Mode=OneWay}"
+                                                                Style="{ThemeResource SettingButtonStyle}">
+                                                                <Grid ColumnSpacing="16">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="auto"/>
+                                                                        <ColumnDefinition/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <Border
+                                                                        Grid.Column="0"
+                                                                        Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                                                                        CornerRadius="4">
+                                                                        <Image
+                                                                            Width="24"
+                                                                            Height="24"
+                                                                            Source="ms-appx:///Resource/ThirdParty/miyoushe128.png"/>
+                                                                    </Border>
+
+                                                                    <TextBlock
+                                                                        Grid.Column="1"
+                                                                        VerticalAlignment="Center"
+                                                                        Text="{shuxm:ResourceString Name=ViewPageWiKiAvatarStrategyChineseButtonLabel}"
+                                                                        TextWrapping="NoWrap"/>
+                                                                </Grid>
+                                                            </wl:LiquidGlassButton>
+                                                        </cwc:Case>
+                                                    </cwc:SwitchPresenter>
+                                                    <cwc:SwitchPresenter
+                                                        x:Name="GlassPresenter_44015"
                                                         HorizontalContentAlignment="Stretch"
-                                                        Command="{Binding StrategyComponent.BilibiliStrategyCommand}"
-                                                        CommandParameter="{Binding Avatars.CurrentItem}"
-                                                        Style="{ThemeResource SettingButtonStyle}"
-                                                        Visibility="{Binding StrategyComponent.IsBilibiliAvailable}">
-                                                        <Grid ColumnSpacing="16">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="auto"/>
-                                                                <ColumnDefinition/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <Border
-                                                                Grid.Column="0"
-                                                                Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                                                                CornerRadius="4">
-                                                                <Image
-                                                                    Width="24"
-                                                                    Height="24"
-                                                                    Source="ms-appx:///Resource/ThirdParty/bilibili128.png"/>
-                                                            </Border>
+                                                        VerticalContentAlignment="Stretch"
+                                                        IsTabStop="False"
+                                                        Tag="LiquidGlass:Button"
+                                                        Visibility="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).StrategyComponent.IsBilibiliAvailable, Mode=OneWay}"
+                                                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                                                        <cwc:Case>
+                                                            <cwc:Case.Value>
+                                                                <x:Int32>0</x:Int32>
+                                                            </cwc:Case.Value>
+                                                            <Button
+                                                                Padding="16,8"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                Command="{x:Bind shvw:WikiAvatarStrategyComponent.BilibiliStrategyCommand}"
+                                                                CommandParameter="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem, Mode=OneWay}"
+                                                                Style="{ThemeResource SettingButtonStyle}">
+                                                                <Grid ColumnSpacing="16">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="auto"/>
+                                                                        <ColumnDefinition/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <Border
+                                                                        Grid.Column="0"
+                                                                        Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                                                                        CornerRadius="4">
+                                                                        <Image
+                                                                            Width="24"
+                                                                            Height="24"
+                                                                            Source="ms-appx:///Resource/ThirdParty/bilibili128.png"/>
+                                                                    </Border>
 
-                                                            <TextBlock
-                                                                Grid.Column="1"
-                                                                VerticalAlignment="Center"
-                                                                Text="{shuxm:ResourceString Name=ViewPageWiKiAvatarStrategyBilibiliButtonLabel}"
-                                                                TextWrapping="NoWrap"/>
-                                                        </Grid>
-                                                    </Button>
-                                                    <Button
-                                                        Padding="16,8"
+                                                                    <TextBlock
+                                                                        Grid.Column="1"
+                                                                        VerticalAlignment="Center"
+                                                                        Text="{shuxm:ResourceString Name=ViewPageWiKiAvatarStrategyBilibiliButtonLabel}"
+                                                                        TextWrapping="NoWrap"/>
+                                                                </Grid>
+                                                            </Button>
+                                                        </cwc:Case>
+                                                        <cwc:Case>
+                                                            <cwc:Case.Value>
+                                                                <x:Int32>1</x:Int32>
+                                                            </cwc:Case.Value>
+                                                            <wl:LiquidGlassButton
+                                                                Padding="16,8"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                shuxcth:ControlMaterialState.IsManaged="True"
+                                                                Command="{x:Bind shvw:WikiAvatarStrategyComponent.BilibiliStrategyCommand}"
+                                                                CommandParameter="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem, Mode=OneWay}"
+                                                                Style="{ThemeResource SettingButtonStyle}">
+                                                                <Grid ColumnSpacing="16">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="auto"/>
+                                                                        <ColumnDefinition/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <Border
+                                                                        Grid.Column="0"
+                                                                        Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                                                                        CornerRadius="4">
+                                                                        <Image
+                                                                            Width="24"
+                                                                            Height="24"
+                                                                            Source="ms-appx:///Resource/ThirdParty/bilibili128.png"/>
+                                                                    </Border>
+
+                                                                    <TextBlock
+                                                                        Grid.Column="1"
+                                                                        VerticalAlignment="Center"
+                                                                        Text="{shuxm:ResourceString Name=ViewPageWiKiAvatarStrategyBilibiliButtonLabel}"
+                                                                        TextWrapping="NoWrap"/>
+                                                                </Grid>
+                                                            </wl:LiquidGlassButton>
+                                                        </cwc:Case>
+                                                    </cwc:SwitchPresenter>
+                                                    <cwc:SwitchPresenter
+                                                        x:Name="GlassPresenter_46498"
                                                         HorizontalContentAlignment="Stretch"
-                                                        Command="{Binding StrategyComponent.OverseaStrategyCommand}"
-                                                        CommandParameter="{Binding Avatars.CurrentItem}"
-                                                        Style="{ThemeResource SettingButtonStyle}">
-                                                        <Grid ColumnSpacing="16">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="auto"/>
-                                                                <ColumnDefinition/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <Border
-                                                                Grid.Column="0"
-                                                                Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                                                                CornerRadius="4">
-                                                                <Image
-                                                                    Width="24"
-                                                                    Height="24"
-                                                                    Source="ms-appx:///Resource/ThirdParty/hoyolab128.png"/>
-                                                            </Border>
+                                                        VerticalContentAlignment="Stretch"
+                                                        IsTabStop="False"
+                                                        Tag="LiquidGlass:Button"
+                                                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                                                        <cwc:Case>
+                                                            <cwc:Case.Value>
+                                                                <x:Int32>0</x:Int32>
+                                                            </cwc:Case.Value>
+                                                            <Button
+                                                                Padding="16,8"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                Command="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).StrategyComponent.OverseaStrategyCommand, Mode=OneWay}"
+                                                                CommandParameter="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem, Mode=OneWay}"
+                                                                Style="{ThemeResource SettingButtonStyle}">
+                                                                <Grid ColumnSpacing="16">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="auto"/>
+                                                                        <ColumnDefinition/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <Border
+                                                                        Grid.Column="0"
+                                                                        Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                                                                        CornerRadius="4">
+                                                                        <Image
+                                                                            Width="24"
+                                                                            Height="24"
+                                                                            Source="ms-appx:///Resource/ThirdParty/hoyolab128.png"/>
+                                                                    </Border>
 
-                                                            <TextBlock
-                                                                Grid.Column="1"
-                                                                VerticalAlignment="Center"
-                                                                Text="{shuxm:ResourceString Name=ViewPageWiKiAvatarStrategyOverseaButtonLabel}"
-                                                                TextWrapping="NoWrap"/>
-                                                        </Grid>
-                                                    </Button>
+                                                                    <TextBlock
+                                                                        Grid.Column="1"
+                                                                        VerticalAlignment="Center"
+                                                                        Text="{shuxm:ResourceString Name=ViewPageWiKiAvatarStrategyOverseaButtonLabel}"
+                                                                        TextWrapping="NoWrap"/>
+                                                                </Grid>
+                                                            </Button>
+                                                        </cwc:Case>
+                                                        <cwc:Case>
+                                                            <cwc:Case.Value>
+                                                                <x:Int32>1</x:Int32>
+                                                            </cwc:Case.Value>
+                                                            <wl:LiquidGlassButton
+                                                                Padding="16,8"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                shuxcth:ControlMaterialState.IsManaged="True"
+                                                                Command="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).StrategyComponent.OverseaStrategyCommand, Mode=OneWay}"
+                                                                CommandParameter="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem, Mode=OneWay}"
+                                                                Style="{ThemeResource SettingButtonStyle}">
+                                                                <Grid ColumnSpacing="16">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="auto"/>
+                                                                        <ColumnDefinition/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <Border
+                                                                        Grid.Column="0"
+                                                                        Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
+                                                                        CornerRadius="4">
+                                                                        <Image
+                                                                            Width="24"
+                                                                            Height="24"
+                                                                            Source="ms-appx:///Resource/ThirdParty/hoyolab128.png"/>
+                                                                    </Border>
+
+                                                                    <TextBlock
+                                                                        Grid.Column="1"
+                                                                        VerticalAlignment="Center"
+                                                                        Text="{shuxm:ResourceString Name=ViewPageWiKiAvatarStrategyOverseaButtonLabel}"
+                                                                        TextWrapping="NoWrap"/>
+                                                                </Grid>
+                                                            </wl:LiquidGlassButton>
+                                                        </cwc:Case>
+                                                    </cwc:SwitchPresenter>
                                                 </shuxcp:EqualPanel>
 
                                                 <!--  属性  -->
                                                 <shuxvs:BaseValueSlider
                                                     HorizontalAlignment="Stretch"
                                                     HorizontalContentAlignment="Stretch"
-                                                    BaseValueInfo="{Binding BaseValueInfo, Mode=OneWay}"/>
+                                                    BaseValueInfo="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).BaseValueInfo, Mode=OneWay}"/>
 
                                                 <!--  天赋  -->
                                                 <Border Padding="16" Style="{ThemeResource BorderShimmerStyle}">
-                                                    <shuxvs:SkillPivot ItemTemplate="{StaticResource SkillDataTemplate}" Skills="{Binding Avatars.CurrentItem.SkillDepot.CompositeSkills}"/>
+                                                    <shuxvs:SkillPivot ItemTemplate="{StaticResource SkillDataTemplate}" Skills="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.SkillDepot.CompositeSkills, Mode=OneWay}"/>
                                                 </Border>
 
                                                 <!--  命座  -->
                                                 <Border Padding="16" Style="{ThemeResource BorderShimmerStyle}">
-                                                    <shuxvs:SkillPivot ItemTemplate="{StaticResource TalentDataTemplate}" Skills="{Binding Avatars.CurrentItem.SkillDepot.Talents}"/>
+                                                    <shuxvs:SkillPivot ItemTemplate="{StaticResource TalentDataTemplate}" Skills="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.SkillDepot.Talents, Mode=OneWay}"/>
                                                 </Border>
 
                                                 <!--  搭配  -->
                                                 <Border
                                                     Padding="16"
                                                     Style="{ThemeResource BorderShimmerStyle}"
-                                                    Visibility="{Binding Avatars.CurrentItem.CollocationView, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                                                    Visibility="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CollocationView, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                                                     <Grid ColumnSpacing="8" RowSpacing="8">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition/>
@@ -791,19 +934,19 @@
                                                             Grid.Column="0"
                                                             ItemTemplate="{StaticResource CollocationTemplate}"
                                                             ItemsPanel="{StaticResource StackPanelSpacing4Template}"
-                                                            ItemsSource="{Binding Avatars.CurrentItem.CollocationView.Avatars}"/>
+                                                            ItemsSource="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CollocationView.Avatars, Mode=OneWay}"/>
                                                         <ItemsControl
                                                             Grid.Row="1"
                                                             Grid.Column="1"
                                                             ItemTemplate="{StaticResource CollocationTemplate}"
                                                             ItemsPanel="{StaticResource StackPanelSpacing4Template}"
-                                                            ItemsSource="{Binding Avatars.CurrentItem.CollocationView.Weapons}"/>
+                                                            ItemsSource="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CollocationView.Weapons, Mode=OneWay}"/>
                                                         <ItemsControl
                                                             Grid.Row="1"
                                                             Grid.Column="2"
                                                             ItemTemplate="{StaticResource CollocationReliquaryTemplate}"
                                                             ItemsPanel="{StaticResource StackPanelSpacing4Template}"
-                                                            ItemsSource="{Binding Avatars.CurrentItem.CollocationView.ReliquarySets}"/>
+                                                            ItemsSource="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CollocationView.ReliquarySets, Mode=OneWay}"/>
                                                     </Grid>
                                                 </Border>
 
@@ -818,8 +961,8 @@
                                                         <Border Grid.Row="0" Style="{ThemeResource BorderShimmerStyle}">
                                                             <cwc:ConstrainedBox AspectRatio="2048:1024">
                                                                 <Grid>
-                                                                    <shuxci:CachedImage Source="{Binding Avatars.CurrentItem.Icon, Converter={StaticResource GachaAvatarImgConverter}}" Visibility="{Binding Avatars.CurrentItem.CostumesView.CurrentItem.IsDefault}"/>
-                                                                    <shuxci:CachedImage Source="{Binding Avatars.CurrentItem.CostumesView.CurrentItem.FrontIcon, Converter={StaticResource CostumeConverter}}" Visibility="{Binding Avatars.CurrentItem.CostumesView.CurrentItem.IsDefault, Converter={StaticResource BoolToVisibilityRevertConverter}}"/>
+                                                                    <shuxci:CachedImage Source="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.Icon, Converter={StaticResource GachaAvatarImgConverter}, Mode=OneWay}" Visibility="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CostumesView.CurrentItem.IsDefault, Mode=OneWay}"/>
+                                                                    <shuxci:CachedImage Source="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CostumesView.CurrentItem.FrontIcon, Converter={StaticResource CostumeConverter}, Mode=OneWay}" Visibility="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CostumesView.CurrentItem.IsDefault, Converter={StaticResource BoolToVisibilityRevertConverter}, Mode=OneWay}"/>
                                                                 </Grid>
                                                             </cwc:ConstrainedBox>
                                                         </Border>
@@ -835,14 +978,14 @@
                                                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                                             BorderThickness="1"
                                                             ItemTemplate="{StaticResource CostumeTemplate}"
-                                                            ItemsSource="{Binding Avatars.CurrentItem.CostumesView}"
-                                                            SelectedItem="{Binding Avatars.CurrentItem.CostumesView.CurrentItem, Mode=TwoWay}"/>
+                                                            ItemsSource="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CostumesView, Mode=OneWay}"
+                                                            SelectedItem="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CostumesView.CurrentItem, Mode=TwoWay}"/>
                                                         <PipsPager
                                                             Grid.Row="1"
                                                             Height="16"
                                                             HorizontalAlignment="Center"
                                                             VerticalAlignment="Bottom"
-                                                            NumberOfPages="{Binding Avatars.CurrentItem.CostumesView.Count, FallbackValue={x:Null}}"
+                                                            NumberOfPages="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CostumesView.Count, FallbackValue=0, Mode=OneWay}"
                                                             SelectedPageIndex="{x:Bind CostumeFlipView.SelectedIndex, Mode=TwoWay, Converter={StaticResource RangedInt32Converter}}"/>
                                                     </Grid>
                                                 </Border>
@@ -863,7 +1006,7 @@
                                                         Background="{ThemeResource HutaoSurfaceBrush}"
                                                         Header="{shuxm:ResourceString Name=ViewPageWiKiAvatarNameCardHeader}"
                                                         IsExpanded="True">
-                                                        <Grid DataContext="{Binding Avatars.CurrentItem.NameCard}" RowSpacing="16">
+                                                        <Grid DataContext="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.NameCard, Mode=OneWay}" RowSpacing="16">
                                                             <Grid.RowDefinitions>
                                                                 <RowDefinition Height="auto"/>
                                                                 <RowDefinition/>
@@ -883,7 +1026,7 @@
                                                                     Margin="0,0,0,0"
                                                                     HorizontalAlignment="Right"
                                                                     VerticalAlignment="Center"
-                                                                    Source="{Binding PicturePrefix, Converter={StaticResource AvatarNameCardPicAlphaConverter}}"
+                                                                    Source="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.NameCard.PicturePrefix, Converter={StaticResource AvatarNameCardPicAlphaConverter}, Mode=OneWay}"
                                                                     Stretch="Uniform"/>
                                                                 <Grid
                                                                     Grid.Column="0"
@@ -906,7 +1049,7 @@
                                                             </Grid>
 
                                                             <Border Grid.Row="1" CornerRadius="{ThemeResource OverlayCornerRadius}">
-                                                                <shuxci:CachedImage Source="{Binding PicturePrefix, Converter={StaticResource AvatarNameCardPicConverter}}" Stretch="Uniform"/>
+                                                                <shuxci:CachedImage Source="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.NameCard.PicturePrefix, Converter={StaticResource AvatarNameCardPicConverter}, Mode=OneWay}" Stretch="Uniform"/>
                                                             </Border>
 
                                                             <Grid
@@ -926,7 +1069,7 @@
                                                                     Width="80"
                                                                     Height="80"
                                                                     VerticalAlignment="Top"
-                                                                    Icon="{Binding Icon, Converter={StaticResource AvatarNameCardIconConverter}}"
+                                                                    Icon="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.NameCard.Icon, Converter={StaticResource AvatarNameCardIconConverter}, Mode=OneWay}"
                                                                     Quality="QUALITY_PURPLE"/>
 
 
@@ -934,9 +1077,9 @@
                                                                     Grid.Column="1"
                                                                     VerticalAlignment="Center"
                                                                     Spacing="8">
-                                                                    <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding Name}"/>
+                                                                    <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.NameCard.Name, Mode=OneWay}"/>
                                                                     <TextBlock
-                                                                        Text="{Binding Description}"
+                                                                        Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.NameCard.Description, Mode=OneWay}"
                                                                         TextTrimming="None"
                                                                         TextWrapping="Wrap"/>
                                                                 </StackPanel>
@@ -946,7 +1089,7 @@
                                                 </Border>
 
                                                 <!--  游迹  -->
-                                                <Border Visibility="{Binding Avatars.CurrentItem.TraceEffect, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                                                <Border Visibility="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.TraceEffect, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                                                     <Border.Resources>
                                                         <!--  ReSharper disable Xaml.RedundantResource  -->
                                                         <SolidColorBrush x:Key="ExpanderContentBorderBrush" Color="{ThemeResource ControlStrokeColorDefault}"/>
@@ -961,20 +1104,20 @@
                                                         Background="{ThemeResource HutaoSurfaceBrush}"
                                                         Header="{shuxm:ResourceString Name=ViewPageWiKiAvatarTraceEffectHeader}"
                                                         IsExpanded="True">
-                                                        <Grid DataContext="{Binding Avatars.CurrentItem.TraceEffect}">
+                                                        <Grid DataContext="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.TraceEffect, Mode=OneWay}">
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="auto"/>
                                                                 <ColumnDefinition/>
                                                             </Grid.ColumnDefinitions>
                                                             <shuxc:ItemIcon
                                                                 Grid.Column="0"
-                                                                Icon="{Binding Icon, Converter={StaticResource AvatarTraceEffectIconConverter}}"
+                                                                Icon="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.TraceEffect.Icon, Converter={StaticResource AvatarTraceEffectIconConverter}, Mode=OneWay}"
                                                                 Quality="QUALITY_NONE"/>
                                                             <StackPanel Grid.Column="1" Margin="16,0,0,0">
-                                                                <TextBlock Text="{Binding Name}" TextWrapping="Wrap"/>
+                                                                <TextBlock Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.TraceEffect.Name, Mode=OneWay}" TextWrapping="Wrap"/>
                                                                 <TextBlock
                                                                     Margin="0,16,0,0"
-                                                                    Text="{Binding Description}"
+                                                                    Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.TraceEffect.Description, Mode=OneWay}"
                                                                     TextWrapping="Wrap"/>
                                                             </StackPanel>
                                                         </Grid>
@@ -982,7 +1125,7 @@
                                                 </Border>
 
                                                 <!--  料理  -->
-                                                <Border Visibility="{Binding Avatars.CurrentItem.CookBonusView, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                                                <Border Visibility="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CookBonusView, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                                                     <Border.Resources>
                                                         <!--  ReSharper disable Xaml.RedundantResource  -->
                                                         <SolidColorBrush x:Key="ExpanderContentBorderBrush" Color="{ThemeResource ControlStrokeColorDefault}"/>
@@ -997,7 +1140,7 @@
                                                         Background="{ThemeResource HutaoSurfaceBrush}"
                                                         Header="{shuxm:ResourceString Name=ViewPageWiKiAvatarFoodHeader}"
                                                         IsExpanded="True">
-                                                        <Grid DataContext="{Binding Avatars.CurrentItem.CookBonusView}">
+                                                        <Grid DataContext="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CookBonusView, Mode=OneWay}">
                                                             <Grid.RowDefinitions>
                                                                 <RowDefinition Height="auto"/>
                                                                 <RowDefinition Height="auto"/>
@@ -1024,10 +1167,10 @@
                                                                 Grid.RowSpan="4"
                                                                 Grid.Column="2"
                                                                 Margin="16,0,0,0">
-                                                                <TextBlock Text="{Binding Item.Description}" TextWrapping="Wrap"/>
+                                                                <TextBlock Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CookBonusView.Item.Description, Mode=OneWay}" TextWrapping="Wrap"/>
                                                                 <TextBlock
                                                                     Margin="0,16,0,0"
-                                                                    Text="{Binding Item.EffectDescription}"
+                                                                    Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CookBonusView.Item.EffectDescription, Mode=OneWay}"
                                                                     TextWrapping="Wrap"/>
                                                             </StackPanel>
                                                             <shuxcc:VerticalCard
@@ -1035,12 +1178,12 @@
                                                                 Grid.Column="0"
                                                                 Margin="0,16,0,0">
                                                                 <shuxcc:VerticalCard.Top>
-                                                                    <shuxc:ItemIcon Icon="{Binding Item.Icon, Converter={StaticResource ItemIconConverter}}" Quality="{Binding Item.RankLevel}"/>
+                                                                    <shuxc:ItemIcon Icon="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CookBonusView.Item.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}" Quality="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CookBonusView.Item.RankLevel, Mode=OneWay}"/>
                                                                 </shuxcc:VerticalCard.Top>
                                                                 <shuxcc:VerticalCard.Bottom>
                                                                     <TextBlock
                                                                         MaxWidth="80"
-                                                                        Text="{Binding Item.Name}"
+                                                                        Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CookBonusView.Item.Name, Mode=OneWay}"
                                                                         TextTrimming="CharacterEllipsis"
                                                                         TextWrapping="NoWrap"/>
                                                                 </shuxcc:VerticalCard.Bottom>
@@ -1050,12 +1193,12 @@
                                                                 Grid.Column="1"
                                                                 Margin="16,16,0,0">
                                                                 <shuxcc:VerticalCard.Top>
-                                                                    <shuxc:ItemIcon Icon="{Binding OriginItem.Icon, Converter={StaticResource ItemIconConverter}}" Quality="{Binding OriginItem.RankLevel}"/>
+                                                                    <shuxc:ItemIcon Icon="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CookBonusView.OriginItem.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}" Quality="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CookBonusView.OriginItem.RankLevel, Mode=OneWay}"/>
                                                                 </shuxcc:VerticalCard.Top>
                                                                 <shuxcc:VerticalCard.Bottom>
                                                                     <TextBlock
                                                                         MaxWidth="80"
-                                                                        Text="{Binding OriginItem.Name}"
+                                                                        Text="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CookBonusView.OriginItem.Name, Mode=OneWay}"
                                                                         TextTrimming="CharacterEllipsis"
                                                                         TextWrapping="NoWrap"/>
                                                                 </shuxcc:VerticalCard.Bottom>
@@ -1083,7 +1226,7 @@
                                                         <cwc:SettingsExpander
                                                             Header="{shuxm:ResourceString Name=ViewPageWiKiAvatarQuotesHeader}"
                                                             ItemTemplate="{StaticResource FetterStoryTemplate}"
-                                                            ItemsSource="{Binding Avatars.CurrentItem.FetterInfo.Fetters}"/>
+                                                            ItemsSource="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.FetterInfo.Fetters, Mode=OneWay}"/>
                                                     </ScrollViewer>
                                                 </Border>
 
@@ -1106,7 +1249,7 @@
                                                         <cwc:SettingsExpander
                                                             Header="{shuxm:ResourceString Name=ViewPageWiKiAvatarStoriesHeader}"
                                                             ItemTemplate="{StaticResource FetterStoryTemplate}"
-                                                            ItemsSource="{Binding Avatars.CurrentItem.FetterInfo.FetterStories}"/>
+                                                            ItemsSource="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.FetterInfo.FetterStories, Mode=OneWay}"/>
                                                     </ScrollViewer>
                                                 </Border>
                                             </StackPanel>
@@ -1121,7 +1264,7 @@
                     <Border Margin="16,0,16,16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                         <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                             <Grid Padding="16,16,4,-6">
-                                <StackPanel VerticalAlignment="Center" Visibility="{Binding Avatars.Count, Converter={StaticResource Int32ToVisibilityRevertConverter}}">
+                                <StackPanel VerticalAlignment="Center" Visibility="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.Count, Converter={StaticResource Int32ToVisibilityRevertConverter}, Mode=OneWay}">
                                     <shuxci:CachedImage
                                         Height="120"
                                         MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
@@ -1137,10 +1280,10 @@
                                     HorizontalContentAlignment="Left"
                                     ItemContainerStyle="{StaticResource LargeGridViewItemStyle}"
                                     ItemTemplate="{StaticResource AvatarGridTemplate}"
-                                    ItemsSource="{Binding Avatars}"
-                                    SelectedItem="{Binding Avatars.CurrentItem, Mode=TwoWay}"
+                                    ItemsSource="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars, Mode=OneWay}"
+                                    SelectedItem="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem, Mode=TwoWay}"
                                     SelectionMode="Single"
-                                    Visibility="{Binding Avatars.Count, Converter={StaticResource Int32ToVisibilityConverter}}">
+                                    Visibility="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.Count, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
                                     <mxi:Interaction.Behaviors>
                                         <shuxb:SelectedItemInViewBehavior/>
                                     </mxi:Interaction.Behaviors>

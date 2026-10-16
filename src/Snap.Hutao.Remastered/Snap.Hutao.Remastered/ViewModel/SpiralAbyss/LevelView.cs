@@ -1,12 +1,13 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Metadata.Tower;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.SpiralAbyss;
 
-public sealed class LevelView
+public sealed partial class LevelView : ObservableObject
 {
     private LevelView(TowerLevel towerLevel, SpiralAbyssMetadataContext context)
     {
@@ -17,7 +18,8 @@ public sealed class LevelView
 
     public string Index { get; }
 
-    public int Star { get; private set; }
+    [ObservableProperty]
+    public partial int Star { get; private set; }
 
     public ImmutableArray<BattleView> Battles { get; }
 

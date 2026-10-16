@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Metadata.Converter;
 using Snap.Hutao.Remastered.Model.Metadata.Weapon;
@@ -9,9 +10,10 @@ using System.Globalization;
 
 namespace Snap.Hutao.Remastered.ViewModel.Backpack;
 
-public sealed class BackpackWeaponItemView : BackpackItemView
+public sealed partial class BackpackWeaponItemView : BackpackItemView
 {
-    public Weapon Weapon { get; private set; } = default!;
+    [ObservableProperty]
+    public partial Weapon Weapon { get; private set; } = default!;
 
     public uint Level => Entity.Level;
 
@@ -40,5 +42,16 @@ public sealed class BackpackWeaponItemView : BackpackItemView
         view.FillEquippedAvatar(context);
 
         return view;
+    }
+
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        switch (e.PropertyName)
+        {
+            case nameof(Weapon):
+                OnPropertyChanged(nameof(WeaponTypeName));
+                break;
+        }
     }
 }

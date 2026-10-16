@@ -2,6 +2,7 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.UserView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
@@ -9,17 +10,19 @@
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxba="using:Snap.Hutao.Remastered.UI.Xaml.Behavior.Action"
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxdcs="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shuxvww="using:Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2"
     xmlns:shvu="using:Snap.Hutao.Remastered.ViewModel.User"
     xmlns:shwhtb="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Binding"
+    xmlns:wl="using:WinUI.LiquidGlass"
     d:DataContext="{d:DesignInstance shvu:UserViewModel}"
     mc:Ignorable="d">
 
     <UserControl.Resources>
         <shuxdcs:ThirdPartyIconConverter x:Key="ThirdPartyIconConverter"/>
-        <shux:BindingProxy x:Key="ViewModelBindingProxy" DataContext="{Binding}"/>
+        <shux:BindingProxy x:Key="ViewModelBindingProxy" DataContext="{x:Bind ((shvu:UserViewModel)DataContext), Mode=OneWay}"/>
 
         <DataTemplate x:Key="UserGameRoleTemplate" x:DataType="shwhtb:UserGameRole">
             <Grid Padding="0,12" Background="Transparent">
@@ -34,61 +37,125 @@
                     HorizontalAlignment="Left"
                     Background="#FFDAB79B"
                     CornerRadius="{ThemeResource CornerRadiusAll16}"
-                    Source="{Binding ProfilePictureIcon, Converter={StaticResource AvatarIconCircleConverter}}"/>
-                <Button
+                    Source="{x:Bind ProfilePictureIcon, Converter={StaticResource AvatarIconCircleConverter}, Mode=OneWay}"/>
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_2197"
                     Grid.Column="0"
-                    Width="32"
-                    Height="32"
                     Margin="2,0"
-                    Padding="0"
                     HorizontalAlignment="Left"
-                    Background="Transparent"
-                    BorderBrush="Transparent"
-                    BorderThickness="0"
-                    Command="{Binding RefreshProfilePictureCommand}"
-                    CommandParameter="{Binding}"
-                    CornerRadius="{ThemeResource CornerRadiusAll16}">
-                    <Button.Resources>
-                        <Storyboard x:Key="ShowRefreshIcon">
-                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshIcon" Storyboard.TargetProperty="Visibility">
-                                <DiscreteObjectKeyFrame KeyTime="0">
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <Visibility>Visible</Visibility>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                            </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
-                        <Storyboard x:Key="HideRefreshIcon">
-                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshIcon" Storyboard.TargetProperty="Visibility">
-                                <DiscreteObjectKeyFrame KeyTime="0">
-                                    <DiscreteObjectKeyFrame.Value>
-                                        <Visibility>Collapsed</Visibility>
-                                    </DiscreteObjectKeyFrame.Value>
-                                </DiscreteObjectKeyFrame>
-                            </ObjectAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </Button.Resources>
-                    <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="PointerEntered">
-                            <mxi:ControlStoryboardAction Storyboard="{StaticResource ShowRefreshIcon}"/>
-                        </mxi:EventTriggerBehavior>
-                        <mxi:EventTriggerBehavior EventName="PointerExited">
-                            <mxi:ControlStoryboardAction Storyboard="{StaticResource HideRefreshIcon}"/>
-                        </mxi:EventTriggerBehavior>
-                    </mxi:Interaction.Behaviors>
-                    <FontIcon
-                        x:Name="RefreshIcon"
-                        FontSize="12"
-                        Glyph="&#xE72C;"
-                        Visibility="Collapsed"/>
-                </Button>
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:Button"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <Button
+                            Width="32"
+                            Height="32"
+                            Padding="0"
+                            HorizontalAlignment="Left"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Command="{x:Bind RefreshProfilePictureCommand, Mode=OneWay}"
+                            CommandParameter="{x:Bind Mode=OneWay}"
+                            CornerRadius="{ThemeResource CornerRadiusAll16}">
+                            <Button.Resources>
+                                <Storyboard x:Key="ShowRefreshIcon">
+                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshIcon" Storyboard.TargetProperty="Visibility">
+                                        <DiscreteObjectKeyFrame KeyTime="0">
+                                            <DiscreteObjectKeyFrame.Value>
+                                                <Visibility>Visible</Visibility>
+                                            </DiscreteObjectKeyFrame.Value>
+                                        </DiscreteObjectKeyFrame>
+                                    </ObjectAnimationUsingKeyFrames>
+                                </Storyboard>
+                                <Storyboard x:Key="HideRefreshIcon">
+                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshIcon" Storyboard.TargetProperty="Visibility">
+                                        <DiscreteObjectKeyFrame KeyTime="0">
+                                            <DiscreteObjectKeyFrame.Value>
+                                                <Visibility>Collapsed</Visibility>
+                                            </DiscreteObjectKeyFrame.Value>
+                                        </DiscreteObjectKeyFrame>
+                                    </ObjectAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </Button.Resources>
+                            <mxi:Interaction.Behaviors>
+                                <mxi:EventTriggerBehavior EventName="PointerEntered">
+                                    <mxi:ControlStoryboardAction Storyboard="{StaticResource ShowRefreshIcon}"/>
+                                </mxi:EventTriggerBehavior>
+                                <mxi:EventTriggerBehavior EventName="PointerExited">
+                                    <mxi:ControlStoryboardAction Storyboard="{StaticResource HideRefreshIcon}"/>
+                                </mxi:EventTriggerBehavior>
+                            </mxi:Interaction.Behaviors>
+                            <FontIcon
+                                x:Name="RefreshIcon"
+                                FontSize="12"
+                                Glyph="&#xE72C;"
+                                Visibility="Collapsed"/>
+                        </Button>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassButton
+                            Width="32"
+                            Height="32"
+                            Padding="0"
+                            HorizontalAlignment="Left"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Command="{x:Bind RefreshProfilePictureCommand, Mode=OneWay}"
+                            CommandParameter="{x:Bind Mode=OneWay}"
+                            CornerRadius="{ThemeResource CornerRadiusAll16}">
+                            <wl:LiquidGlassButton.Resources>
+                                <Storyboard x:Key="ShowRefreshIcon">
+                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshIconGlass" Storyboard.TargetProperty="Visibility">
+                                        <DiscreteObjectKeyFrame KeyTime="0">
+                                            <DiscreteObjectKeyFrame.Value>
+                                                <Visibility>Visible</Visibility>
+                                            </DiscreteObjectKeyFrame.Value>
+                                        </DiscreteObjectKeyFrame>
+                                    </ObjectAnimationUsingKeyFrames>
+                                </Storyboard>
+                                <Storyboard x:Key="HideRefreshIcon">
+                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshIconGlass" Storyboard.TargetProperty="Visibility">
+                                        <DiscreteObjectKeyFrame KeyTime="0">
+                                            <DiscreteObjectKeyFrame.Value>
+                                                <Visibility>Collapsed</Visibility>
+                                            </DiscreteObjectKeyFrame.Value>
+                                        </DiscreteObjectKeyFrame>
+                                    </ObjectAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </wl:LiquidGlassButton.Resources>
+                            <mxi:Interaction.Behaviors>
+                                <mxi:EventTriggerBehavior EventName="PointerEntered">
+                                    <mxi:ControlStoryboardAction Storyboard="{StaticResource ShowRefreshIcon}"/>
+                                </mxi:EventTriggerBehavior>
+                                <mxi:EventTriggerBehavior EventName="PointerExited">
+                                    <mxi:ControlStoryboardAction Storyboard="{StaticResource HideRefreshIcon}"/>
+                                </mxi:EventTriggerBehavior>
+                            </mxi:Interaction.Behaviors>
+                            <FontIcon
+                                x:Name="RefreshIconGlass"
+                                FontSize="12"
+                                Glyph="&#xE72C;"
+                                Visibility="Collapsed"/>
+                        </wl:LiquidGlassButton>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
                 <StackPanel Grid.Column="1" Margin="12,0">
-                    <TextBlock Text="{Binding Nickname}"/>
+                    <TextBlock Text="{x:Bind Nickname, Mode=OneWay}"/>
                     <TextBlock
                         Margin="0,2,0,0"
                         Opacity="0.6"
                         Style="{StaticResource CaptionTextBlockStyle}"
-                        Text="{Binding Description}"/>
+                        Text="{x:Bind Description, Mode=OneWay}"/>
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -149,13 +216,16 @@
                 <PersonPicture
                     Height="32"
                     Margin="2,0"
-                    HorizontalAlignment="Left"
-                    ProfilePicture="{Binding UserInfo.AvatarUri, Mode=OneWay}"/>
+                    HorizontalAlignment="Left">
+                    <PersonPicture.ProfilePicture>
+                        <BitmapImage UriSource="{x:Bind UserInfo.AvatarUri, Mode=OneWay}"/>
+                    </PersonPicture.ProfilePicture>
+                </PersonPicture>
                 <TextBlock
                     Grid.Column="1"
                     Margin="12,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding UserInfo.Nickname}"/>
+                    Text="{x:Bind UserInfo.Nickname, Mode=OneWay}"/>
                 <Border
                     x:Name="HoYoLABLabel"
                     Grid.Column="2"
@@ -164,7 +234,7 @@
                     <TextBlock
                         Style="{StaticResource CaptionTextBlockStyle}"
                         Text="HoYoLAB"
-                        Visibility="{Binding IsOversea}"/>
+                        Visibility="{x:Bind IsOversea, Mode=OneWay}"/>
                 </Border>
 
                 <StackPanel
@@ -173,28 +243,86 @@
                     Orientation="Horizontal"
                     Visibility="Collapsed">
                     <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                    <Button
+                    <cwc:SwitchPresenter
+                        x:Name="GlassPresenter_9539"
                         Margin="12,0,0,0"
                         VerticalAlignment="Stretch"
-                        Background="Transparent"
-                        Command="{Binding DataContext.CopyCookieCommand, Source={StaticResource ViewModelBindingProxy}}"
-                        CommandParameter="{Binding}"
-                        Content="{StaticResource FontIconContentCopy}"
-                        FontFamily="{StaticResource SymbolThemeFontFamily}"
-                        Style="{StaticResource ButtonRevealStyle}"
-                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewUserCopyCookieAction}"/>
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        IsTabStop="False"
+                        Tag="LiquidGlass:Button"
+                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                        <cwc:Case>
+                            <cwc:Case.Value>
+                                <x:Int32>0</x:Int32>
+                            </cwc:Case.Value>
+                            <Button
+                                VerticalAlignment="Stretch"
+                                Background="Transparent"
+                                Command="{Binding DataContext.CopyCookieCommand, Source={StaticResource ViewModelBindingProxy}}"
+                                CommandParameter="{x:Bind Mode=OneWay}"
+                                Content="{StaticResource FontIconContentCopy}"
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                Style="{StaticResource ButtonRevealStyle}"
+                                ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewUserCopyCookieAction}"/>
+                        </cwc:Case>
+                        <cwc:Case>
+                            <cwc:Case.Value>
+                                <x:Int32>1</x:Int32>
+                            </cwc:Case.Value>
+                            <wl:LiquidGlassButton
+                                VerticalAlignment="Stretch"
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                Command="{Binding DataContext.CopyCookieCommand, Source={StaticResource ViewModelBindingProxy}}"
+                                CommandParameter="{x:Bind Mode=OneWay}"
+                                Content="{StaticResource FontIconContentCopy}"
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                Style="{StaticResource ButtonRevealStyle}"
+                                ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewUserCopyCookieAction}"/>
+                        </cwc:Case>
+                    </cwc:SwitchPresenter>
                     <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                    <Button
+                    <cwc:SwitchPresenter
+                        x:Name="GlassPresenter_10291"
                         Margin="6,0,0,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Stretch"
-                        Background="Transparent"
-                        Command="{Binding DataContext.RemoveUserCommand, Source={StaticResource ViewModelBindingProxy}}"
-                        CommandParameter="{Binding}"
-                        Content="{StaticResource FontIconContentDelete}"
-                        FontFamily="{StaticResource SymbolThemeFontFamily}"
-                        Style="{StaticResource ButtonRevealStyle}"
-                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewUserRemoveAction}"/>
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        IsTabStop="False"
+                        Tag="LiquidGlass:Button"
+                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                        <cwc:Case>
+                            <cwc:Case.Value>
+                                <x:Int32>0</x:Int32>
+                            </cwc:Case.Value>
+                            <Button
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Stretch"
+                                Background="Transparent"
+                                Command="{Binding DataContext.RemoveUserCommand, Source={StaticResource ViewModelBindingProxy}}"
+                                CommandParameter="{x:Bind Mode=OneWay}"
+                                Content="{StaticResource FontIconContentDelete}"
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                Style="{StaticResource ButtonRevealStyle}"
+                                ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewUserRemoveAction}"/>
+                        </cwc:Case>
+                        <cwc:Case>
+                            <cwc:Case.Value>
+                                <x:Int32>1</x:Int32>
+                            </cwc:Case.Value>
+                            <wl:LiquidGlassButton
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Stretch"
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                Command="{Binding DataContext.RemoveUserCommand, Source={StaticResource ViewModelBindingProxy}}"
+                                CommandParameter="{x:Bind Mode=OneWay}"
+                                Content="{StaticResource FontIconContentDelete}"
+                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                Style="{StaticResource ButtonRevealStyle}"
+                                ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewUserRemoveAction}"/>
+                        </cwc:Case>
+                    </cwc:SwitchPresenter>
                 </StackPanel>
             </Grid>
         </DataTemplate>
@@ -214,7 +342,7 @@
     </UserControl.Resources>
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvu:UserViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <StackPanel
@@ -260,224 +388,467 @@
             </ResourceDictionary>
         </StackPanel.Resources>
 
-        <Button MaxHeight="40" Margin="4,0">
-            <Button.Content>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-                    <PersonPicture
-                        Width="36"
-                        Height="36"
-                        Margin="1,1,6,1"
-                        HorizontalAlignment="Left"
-                        ProfilePicture="{Binding Users.CurrentItem.UserInfo.AvatarUri, Mode=OneWay}"/>
-                    <TextBlock
-                        Grid.Column="1"
-                        Margin="1,0,0,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding Users.CurrentItem.UserInfo.Nickname, Mode=OneWay, FallbackValue={shuxm:ResourceString Name=ViewUserNoUserHint}}"
-                        TextTrimming="CharacterEllipsis"
-                        TextWrapping="NoWrap"/>
-                    <FontIcon
-                        Grid.Column="2"
-                        Margin="0,0,8,0"
-                        VerticalAlignment="Center"
-                        FontSize="12"
-                        Glyph="{StaticResource FontIconContentChevronRight}"/>
-                </Grid>
-            </Button.Content>
-            <Button.Flyout>
-                <Flyout
-                    FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding0Style}"
-                    LightDismissOverlayMode="On"
-                    Placement="LeftEdgeAlignedBottom">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="auto"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel
-                            Grid.Column="0"
-                            Margin="0,0"
-                            Padding="0,2"
-                            Background="{ThemeResource HutaoCardBrush}"
-                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                            BorderThickness="0,0,1,0">
-                            <!--  米游社 登录  -->
-                            <AppBarButton
-                                Width="{StaticResource LargeAppBarButtonWidth}"
-                                MaxWidth="{StaticResource LargeAppBarButtonWidth}"
-                                Margin="2,-4"
-                                Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/ThirdParty/miyoushe128.png}"
-                                Label="{shuxm:ResourceString Name=ViewUserCookieOperation}">
-                                <AppBarButton.Flyout>
-                                    <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding2Style}" Placement="Right">
-                                        <StackPanel Orientation="Horizontal" Spacing="0">
-                                            <AppBarButton
-                                                Width="{StaticResource LargeAppBarButtonWidth}"
-                                                MaxWidth="{StaticResource LargeAppBarButtonWidth}"
-                                                Margin="0,-4"
-                                                Command="{Binding LoginByQRCodeCommand}"
-                                                Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentQRCode}}"
-                                                Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginQRCodeAction}"/>
-                                            <AppBarButton
-                                                Width="{StaticResource LargeAppBarButtonWidth}"
-                                                MaxWidth="{StaticResource LargeAppBarButtonWidth}"
-                                                Margin="0,-4"
-                                                Command="{Binding LoginByMobileCaptchaCommand}"
-                                                Icon="{shuxm:FontIcon Glyph=&#xE8EA;}"
-                                                Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginMobileCaptchaAction}"/>
-                                            <AppBarButton
-                                                Width="{StaticResource LargeAppBarButtonWidth}"
-                                                MaxWidth="{StaticResource LargeAppBarButtonWidth}"
-                                                Margin="0,-4"
-                                                Command="{Binding AddUserCommand}"
-                                                Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentAdd}}"
-                                                Label="{shuxm:ResourceString Name=ViewUserCookieOperationManualInputAction}"/>
-                                        </StackPanel>
-                                    </Flyout>
-                                </AppBarButton.Flyout>
-                            </AppBarButton>
-                            <!--  HoYoLAB 登录  -->
-                            <AppBarButton
-                                Width="{StaticResource LargeAppBarButtonWidth}"
-                                MaxWidth="{StaticResource LargeAppBarButtonWidth}"
-                                Margin="2,-4"
-                                Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/ThirdParty/hoyolab128.png}"
-                                Label="{shuxm:ResourceString Name=ViewUserCookieOperation2}">
-                                <AppBarButton.Flyout>
-                                    <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding2Style}" Placement="Right">
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="auto"/>
-                                                <RowDefinition Height="auto"/>
-                                            </Grid.RowDefinitions>
-                                            <ItemsControl
-                                                Grid.Row="0"
-                                                ItemTemplate="{StaticResource ThirdPartyLoginButtonTemplate}"
-                                                ItemsPanel="{ThemeResource HorizontalStackPanelSpacing0Template}"
-                                                ItemsSource="{Binding OverseaThirdPartyKinds}"/>
-                                            <StackPanel Grid.Row="1" Orientation="Horizontal">
-                                                <AppBarButton
-                                                    Width="{StaticResource LargeAppBarButtonWidth}"
-                                                    MaxWidth="{StaticResource LargeAppBarButtonWidth}"
-                                                    Margin="0,-4"
-                                                    Command="{Binding LoginByPasswordOverseaCommand}"
-                                                    Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentOtherUser}}"
-                                                    Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginByPasswordAction}"/>
-                                                <AppBarButton
-                                                    Width="{StaticResource LargeAppBarButtonWidth}"
-                                                    MaxWidth="{StaticResource LargeAppBarButtonWidth}"
-                                                    Margin="0,-4"
-                                                    Command="{Binding AddOverseaUserCommand}"
-                                                    Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentAdd}}"
-                                                    Label="{shuxm:ResourceString Name=ViewUserCookieOperationManualInputAction}"/>
-                                            </StackPanel>
-                                        </Grid>
-
-                                    </Flyout>
-                                </AppBarButton.Flyout>
-                            </AppBarButton>
-
-                            <MenuFlyoutSeparator Margin="4,0"/>
+        <cwc:SwitchPresenter
+            x:Name="GlassPresenter_15470"
+            Margin="4,0"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            IsTabStop="False"
+            Tag="LiquidGlass:Button"
+            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+            <cwc:Case>
+                <cwc:Case.Value>
+                    <x:Int32>0</x:Int32>
+                </cwc:Case.Value>
+                <Button MaxHeight="40">
+                    <Button.Content>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <PersonPicture
+                                Width="36"
+                                Height="36"
+                                Margin="1,1,6,1"
+                                HorizontalAlignment="Left">
+                                <PersonPicture.ProfilePicture>
+                                    <BitmapImage UriSource="{x:Bind ((shvu:UserViewModel)DataContext).Users.CurrentItem.UserInfo.AvatarUri, Mode=OneWay}"/>
+                                </PersonPicture.ProfilePicture>
+                            </PersonPicture>
                             <TextBlock
-                                Margin="0,4,0,2"
-                                HorizontalAlignment="Center"
-                                Style="{StaticResource BaseTextBlockStyle}"
-                                Text="{shuxm:ResourceString Name=ViewUserCookieOperation3}"/>
-                            <AppBarButton
-                                Width="{StaticResource LargeAppBarButtonWidth}"
-                                MaxWidth="{StaticResource LargeAppBarButtonWidth}"
-                                Margin="2,-4"
-                                AllowFocusOnInteraction="True"
-                                Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentHomeGroup}}"
-                                Label="{shuxm:ResourceString Name=ViewUserCookieOperationGameRecordIndexAction}"
-                                Style="{StaticResource DefaultAppBarButtonStyle}">
-                                <mxi:Interaction.Behaviors>
-                                    <mxi:EventTriggerBehavior EventName="Click">
-                                        <shuxba:ShowWebView2WindowAction>
-                                            <shuxba:ShowWebView2WindowAction.ContentProvider>
-                                                <shuxvww:MiHoYoJSBridgeWebView2ContentProvider>
-                                                    <shuxvww:MiHoYoJSBridgeWebView2ContentProvider.SourceProvider>
-                                                        <shuxvww:StaticJSBridgeUriSourceProvider ChineseSource="https://webstatic.mihoyo.com/bbs/event/e20200511toolbox/index.html?game_biz=ys_cn"/>
-                                                    </shuxvww:MiHoYoJSBridgeWebView2ContentProvider.SourceProvider>
-                                                </shuxvww:MiHoYoJSBridgeWebView2ContentProvider>
-                                            </shuxba:ShowWebView2WindowAction.ContentProvider>
-                                        </shuxba:ShowWebView2WindowAction>
-                                    </mxi:EventTriggerBehavior>
-                                </mxi:Interaction.Behaviors>
-                            </AppBarButton>
-                            <AppBarButton
-                                Width="{StaticResource LargeAppBarButtonWidth}"
-                                MaxWidth="{StaticResource LargeAppBarButtonWidth}"
-                                Margin="2,-4"
-                                Command="{Binding RefreshCookieTokenCommand}"
-                                Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentRefresh}}"
-                                Label="{shuxm:ResourceString Name=ViewUserCookieOperationRefreshCookieAction}"/>
-                        </StackPanel>
+                                Grid.Column="1"
+                                Margin="1,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{x:Bind GetUserNickname(((shvu:UserViewModel)DataContext).Users.CurrentItem), Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap"/>
+                            <FontIcon
+                                Grid.Column="2"
+                                Margin="0,0,8,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Glyph="{StaticResource FontIconContentChevronRight}"/>
+                        </Grid>
+                    </Button.Content>
+                    <Button.Flyout>
+                        <Flyout
+                            FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding0Style}"
+                            LightDismissOverlayMode="On"
+                            Placement="LeftEdgeAlignedBottom">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Margin="0,0"
+                                    Padding="0,2"
+                                    Background="{ThemeResource HutaoCardBrush}"
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="0,0,1,0">
+                                    <!--  米游社 登录  -->
+                                    <AppBarButton
+                                        Width="{StaticResource LargeAppBarButtonWidth}"
+                                        MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                        Margin="2,-4"
+                                        Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/ThirdParty/miyoushe128.png}"
+                                        Label="{shuxm:ResourceString Name=ViewUserCookieOperation}">
+                                        <AppBarButton.Flyout>
+                                            <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding2Style}" Placement="Right">
+                                                <StackPanel Orientation="Horizontal" Spacing="0">
+                                                    <AppBarButton
+                                                        Width="{StaticResource LargeAppBarButtonWidth}"
+                                                        MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                                        Margin="0,-4"
+                                                        Command="{x:Bind ((shvu:UserViewModel)DataContext).LoginByQRCodeCommand, Mode=OneWay}"
+                                                        Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentQRCode}}"
+                                                        Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginQRCodeAction}"/>
+                                                    <AppBarButton
+                                                        Width="{StaticResource LargeAppBarButtonWidth}"
+                                                        MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                                        Margin="0,-4"
+                                                        Command="{x:Bind ((shvu:UserViewModel)DataContext).LoginByMobileCaptchaCommand, Mode=OneWay}"
+                                                        Icon="{shuxm:FontIcon Glyph=&#xE8EA;}"
+                                                        Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginMobileCaptchaAction}"/>
+                                                    <AppBarButton
+                                                        Width="{StaticResource LargeAppBarButtonWidth}"
+                                                        MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                                        Margin="0,-4"
+                                                        Command="{x:Bind ((shvu:UserViewModel)DataContext).AddUserCommand, Mode=OneWay}"
+                                                        Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentAdd}}"
+                                                        Label="{shuxm:ResourceString Name=ViewUserCookieOperationManualInputAction}"/>
+                                                </StackPanel>
+                                            </Flyout>
+                                        </AppBarButton.Flyout>
+                                    </AppBarButton>
+                                    <!--  HoYoLAB 登录  -->
+                                    <AppBarButton
+                                        Width="{StaticResource LargeAppBarButtonWidth}"
+                                        MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                        Margin="2,-4"
+                                        Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/ThirdParty/hoyolab128.png}"
+                                        Label="{shuxm:ResourceString Name=ViewUserCookieOperation2}">
+                                        <AppBarButton.Flyout>
+                                            <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding2Style}" Placement="Right">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="auto"/>
+                                                        <RowDefinition Height="auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <ItemsControl
+                                                        Grid.Row="0"
+                                                        ItemTemplate="{StaticResource ThirdPartyLoginButtonTemplate}"
+                                                        ItemsPanel="{ThemeResource HorizontalStackPanelSpacing0Template}"
+                                                        ItemsSource="{x:Bind ((shvu:UserViewModel)DataContext).OverseaThirdPartyKinds, Mode=OneWay}"/>
+                                                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                        <AppBarButton
+                                                            Width="{StaticResource LargeAppBarButtonWidth}"
+                                                            MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                                            Margin="0,-4"
+                                                            Command="{x:Bind ((shvu:UserViewModel)DataContext).LoginByPasswordOverseaCommand, Mode=OneWay}"
+                                                            Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentOtherUser}}"
+                                                            Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginByPasswordAction}"/>
+                                                        <AppBarButton
+                                                            Width="{StaticResource LargeAppBarButtonWidth}"
+                                                            MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                                            Margin="0,-4"
+                                                            Command="{x:Bind ((shvu:UserViewModel)DataContext).AddOverseaUserCommand, Mode=OneWay}"
+                                                            Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentAdd}}"
+                                                            Label="{shuxm:ResourceString Name=ViewUserCookieOperationManualInputAction}"/>
+                                                    </StackPanel>
+                                                </Grid>
 
-                        <Grid Grid.Column="1" Width="280">
-                            <StackPanel Visibility="{Binding Users.Count, Converter={StaticResource Int32ToVisibilityConverter}}">
-                                <StackPanel Visibility="{Binding Users.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
+                                            </Flyout>
+                                        </AppBarButton.Flyout>
+                                    </AppBarButton>
+
+                                    <MenuFlyoutSeparator Margin="4,0"/>
                                     <TextBlock
-                                        Margin="10,6,0,6"
+                                        Margin="0,4,0,2"
+                                        HorizontalAlignment="Center"
                                         Style="{StaticResource BaseTextBlockStyle}"
-                                        Text="{shuxm:ResourceString Name=ViewUserRole}"/>
-                                    <ListView
-                                        Margin="4"
-                                        ItemTemplate="{StaticResource UserGameRoleTemplate}"
-                                        ItemsSource="{Binding Users.CurrentItem.UserGameRoles}"
-                                        SelectedItem="{Binding Users.CurrentItem.UserGameRoles.CurrentItem, Mode=TwoWay}"
-                                        SelectionMode="Single"/>
+                                        Text="{shuxm:ResourceString Name=ViewUserCookieOperation3}"/>
+                                    <AppBarButton
+                                        Width="{StaticResource LargeAppBarButtonWidth}"
+                                        MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                        Margin="2,-4"
+                                        AllowFocusOnInteraction="True"
+                                        Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentHomeGroup}}"
+                                        Label="{shuxm:ResourceString Name=ViewUserCookieOperationGameRecordIndexAction}"
+                                        Style="{StaticResource DefaultAppBarButtonStyle}">
+                                        <mxi:Interaction.Behaviors>
+                                            <mxi:EventTriggerBehavior EventName="Click">
+                                                <shuxba:ShowWebView2WindowAction>
+                                                    <shuxba:ShowWebView2WindowAction.ContentProvider>
+                                                        <shuxvww:MiHoYoJSBridgeWebView2ContentProvider>
+                                                            <shuxvww:MiHoYoJSBridgeWebView2ContentProvider.SourceProvider>
+                                                                <shuxvww:StaticJSBridgeUriSourceProvider ChineseSource="https://webstatic.mihoyo.com/bbs/event/e20200511toolbox/index.html?game_biz=ys_cn"/>
+                                                            </shuxvww:MiHoYoJSBridgeWebView2ContentProvider.SourceProvider>
+                                                        </shuxvww:MiHoYoJSBridgeWebView2ContentProvider>
+                                                    </shuxba:ShowWebView2WindowAction.ContentProvider>
+                                                </shuxba:ShowWebView2WindowAction>
+                                            </mxi:EventTriggerBehavior>
+                                        </mxi:Interaction.Behaviors>
+                                    </AppBarButton>
+                                    <AppBarButton
+                                        Width="{StaticResource LargeAppBarButtonWidth}"
+                                        MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                        Margin="2,-4"
+                                        Command="{x:Bind ((shvu:UserViewModel)DataContext).RefreshCookieTokenCommand, Mode=OneWay}"
+                                        Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentRefresh}}"
+                                        Label="{shuxm:ResourceString Name=ViewUserCookieOperationRefreshCookieAction}"/>
                                 </StackPanel>
 
-                                <TextBlock
-                                    Margin="10,6,0,6"
-                                    Style="{StaticResource BaseTextBlockStyle}"
-                                    Text="{shuxm:ResourceString Name=ViewUserUser}"/>
-                                <ListView
-                                    Margin="4"
-                                    AllowDrop="{shuxm:IsProcessNotElevated}"
-                                    CanReorderItems="{shuxm:IsProcessNotElevated}"
-                                    ItemTemplate="{StaticResource UserTemplate}"
-                                    ItemsSource="{Binding Users}"
-                                    SelectedItem="{Binding Users.CurrentItem, Mode=TwoWay}"
-                                    SelectionMode="Single"
-                                    Visibility="{Binding Users.Count, Converter={StaticResource Int32ToVisibilityConverter}}">
-                                    <ListView.Header>
-                                        <InfoBar
-                                            Title="{shuxm:ResourceString Name=ViewListViewDragElevatedHint}"
-                                            Margin="4,0,4,2"
-                                            IsClosable="True"
-                                            IsOpen="True"
-                                            Severity="Warning"
-                                            Visibility="{shuxm:VisibleWhenProcessElevated}"/>
-                                    </ListView.Header>
-                                </ListView>
-                            </StackPanel>
+                                <Grid Grid.Column="1" Width="280">
+                                    <StackPanel Visibility="{x:Bind ((shvu:UserViewModel)DataContext).Users.Count, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
+                                        <StackPanel Visibility="{x:Bind ((shvu:UserViewModel)DataContext).Users.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
+                                            <TextBlock
+                                                Margin="10,6,0,6"
+                                                Style="{StaticResource BaseTextBlockStyle}"
+                                                Text="{shuxm:ResourceString Name=ViewUserRole}"/>
+                                            <ListView
+                                                Margin="4"
+                                                ItemTemplate="{StaticResource UserGameRoleTemplate}"
+                                                ItemsSource="{x:Bind ((shvu:UserViewModel)DataContext).Users.CurrentItem.UserGameRoles, Mode=OneWay}"
+                                                SelectedItem="{x:Bind ((shvu:UserViewModel)DataContext).Users.CurrentItem.UserGameRoles.CurrentItem, Mode=TwoWay}"
+                                                SelectionMode="Single"/>
+                                        </StackPanel>
+
+                                        <TextBlock
+                                            Margin="10,6,0,6"
+                                            Style="{StaticResource BaseTextBlockStyle}"
+                                            Text="{shuxm:ResourceString Name=ViewUserUser}"/>
+                                        <ListView
+                                            Margin="4"
+                                            AllowDrop="{shuxm:IsProcessNotElevated}"
+                                            CanReorderItems="{shuxm:IsProcessNotElevated}"
+                                            ItemTemplate="{StaticResource UserTemplate}"
+                                            ItemsSource="{x:Bind ((shvu:UserViewModel)DataContext).Users, Mode=OneWay}"
+                                            SelectedItem="{x:Bind ((shvu:UserViewModel)DataContext).Users.CurrentItem, Mode=TwoWay}"
+                                            SelectionMode="Single"
+                                            Visibility="{x:Bind ((shvu:UserViewModel)DataContext).Users.Count, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
+                                            <ListView.Header>
+                                                <InfoBar
+                                                    Title="{shuxm:ResourceString Name=ViewListViewDragElevatedHint}"
+                                                    Margin="4,0,4,2"
+                                                    IsClosable="True"
+                                                    IsOpen="True"
+                                                    Severity="Warning"
+                                                    Visibility="{shuxm:VisibleWhenProcessElevated}"/>
+                                            </ListView.Header>
+                                        </ListView>
+                                    </StackPanel>
+                                    <TextBlock
+                                        Margin="16"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource SubtitleTextBlockStyle}"
+                                        Text="{shuxm:ResourceString Name=ViewUserDefaultDescription}"
+                                        Visibility="{x:Bind ((shvu:UserViewModel)DataContext).Users.Count, Converter={StaticResource Int32ToVisibilityRevertConverter}, Mode=OneWay}"/>
+                                </Grid>
+                            </Grid>
+                        </Flyout>
+                    </Button.Flyout>
+                    <Button.Style>
+                        <Style BasedOn="{StaticResource DefaultButtonStyle}" TargetType="Button">
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="0"/>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </cwc:Case>
+            <cwc:Case>
+                <cwc:Case.Value>
+                    <x:Int32>1</x:Int32>
+                </cwc:Case.Value>
+                <wl:LiquidGlassButton MaxHeight="40" shuxcth:ControlMaterialState.IsManaged="True">
+                    <wl:LiquidGlassButton.Content>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <PersonPicture
+                                Width="36"
+                                Height="36"
+                                Margin="1,1,6,1"
+                                HorizontalAlignment="Left">
+                                <PersonPicture.ProfilePicture>
+                                    <BitmapImage UriSource="{x:Bind ((shvu:UserViewModel)DataContext).Users.CurrentItem.UserInfo.AvatarUri, Mode=OneWay}"/>
+                                </PersonPicture.ProfilePicture>
+                            </PersonPicture>
                             <TextBlock
-                                Margin="16"
-                                HorizontalAlignment="Center"
+                                Grid.Column="1"
+                                Margin="1,0,0,0"
                                 VerticalAlignment="Center"
-                                Style="{StaticResource SubtitleTextBlockStyle}"
-                                Text="{shuxm:ResourceString Name=ViewUserDefaultDescription}"
-                                Visibility="{Binding Users.Count, Converter={StaticResource Int32ToVisibilityRevertConverter}}"/>
+                                Text="{x:Bind GetUserNickname(((shvu:UserViewModel)DataContext).Users.CurrentItem), Mode=OneWay}"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="NoWrap"/>
+                            <FontIcon
+                                Grid.Column="2"
+                                Margin="0,0,8,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Glyph="{StaticResource FontIconContentChevronRight}"/>
                         </Grid>
-                    </Grid>
-                </Flyout>
-            </Button.Flyout>
-            <Button.Style>
-                <Style BasedOn="{StaticResource DefaultButtonStyle}" TargetType="Button">
-                    <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    <Setter Property="Padding" Value="0"/>
-                </Style>
-            </Button.Style>
-        </Button>
+                    </wl:LiquidGlassButton.Content>
+                    <wl:LiquidGlassButton.Flyout>
+                        <Flyout
+                            FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding0Style}"
+                            LightDismissOverlayMode="On"
+                            Placement="LeftEdgeAlignedBottom">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel
+                                    Grid.Column="0"
+                                    Margin="0,0"
+                                    Padding="0,2"
+                                    Background="{ThemeResource HutaoCardBrush}"
+                                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="0,0,1,0">
+                                    <!--  米游社 登录  -->
+                                    <AppBarButton
+                                        Width="{StaticResource LargeAppBarButtonWidth}"
+                                        MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                        Margin="2,-4"
+                                        Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/ThirdParty/miyoushe128.png}"
+                                        Label="{shuxm:ResourceString Name=ViewUserCookieOperation}">
+                                        <AppBarButton.Flyout>
+                                            <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding2Style}" Placement="Right">
+                                                <StackPanel Orientation="Horizontal" Spacing="0">
+                                                    <AppBarButton
+                                                        Width="{StaticResource LargeAppBarButtonWidth}"
+                                                        MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                                        Margin="0,-4"
+                                                        Command="{x:Bind ((shvu:UserViewModel)DataContext).LoginByQRCodeCommand, Mode=OneWay}"
+                                                        Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentQRCode}}"
+                                                        Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginQRCodeAction}"/>
+                                                    <AppBarButton
+                                                        Width="{StaticResource LargeAppBarButtonWidth}"
+                                                        MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                                        Margin="0,-4"
+                                                        Command="{x:Bind ((shvu:UserViewModel)DataContext).LoginByMobileCaptchaCommand, Mode=OneWay}"
+                                                        Icon="{shuxm:FontIcon Glyph=&#xE8EA;}"
+                                                        Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginMobileCaptchaAction}"/>
+                                                    <AppBarButton
+                                                        Width="{StaticResource LargeAppBarButtonWidth}"
+                                                        MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                                        Margin="0,-4"
+                                                        Command="{x:Bind ((shvu:UserViewModel)DataContext).AddUserCommand, Mode=OneWay}"
+                                                        Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentAdd}}"
+                                                        Label="{shuxm:ResourceString Name=ViewUserCookieOperationManualInputAction}"/>
+                                                </StackPanel>
+                                            </Flyout>
+                                        </AppBarButton.Flyout>
+                                    </AppBarButton>
+                                    <!--  HoYoLAB 登录  -->
+                                    <AppBarButton
+                                        Width="{StaticResource LargeAppBarButtonWidth}"
+                                        MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                        Margin="2,-4"
+                                        Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/ThirdParty/hoyolab128.png}"
+                                        Label="{shuxm:ResourceString Name=ViewUserCookieOperation2}">
+                                        <AppBarButton.Flyout>
+                                            <Flyout FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding2Style}" Placement="Right">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="auto"/>
+                                                        <RowDefinition Height="auto"/>
+                                                    </Grid.RowDefinitions>
+                                                    <ItemsControl
+                                                        Grid.Row="0"
+                                                        ItemTemplate="{StaticResource ThirdPartyLoginButtonTemplate}"
+                                                        ItemsPanel="{ThemeResource HorizontalStackPanelSpacing0Template}"
+                                                        ItemsSource="{x:Bind ((shvu:UserViewModel)DataContext).OverseaThirdPartyKinds, Mode=OneWay}"/>
+                                                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                                        <AppBarButton
+                                                            Width="{StaticResource LargeAppBarButtonWidth}"
+                                                            MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                                            Margin="0,-4"
+                                                            Command="{x:Bind ((shvu:UserViewModel)DataContext).LoginByPasswordOverseaCommand, Mode=OneWay}"
+                                                            Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentOtherUser}}"
+                                                            Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginByPasswordAction}"/>
+                                                        <AppBarButton
+                                                            Width="{StaticResource LargeAppBarButtonWidth}"
+                                                            MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                                            Margin="0,-4"
+                                                            Command="{x:Bind ((shvu:UserViewModel)DataContext).AddOverseaUserCommand, Mode=OneWay}"
+                                                            Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentAdd}}"
+                                                            Label="{shuxm:ResourceString Name=ViewUserCookieOperationManualInputAction}"/>
+                                                    </StackPanel>
+                                                </Grid>
+
+                                            </Flyout>
+                                        </AppBarButton.Flyout>
+                                    </AppBarButton>
+
+                                    <MenuFlyoutSeparator Margin="4,0"/>
+                                    <TextBlock
+                                        Margin="0,4,0,2"
+                                        HorizontalAlignment="Center"
+                                        Style="{StaticResource BaseTextBlockStyle}"
+                                        Text="{shuxm:ResourceString Name=ViewUserCookieOperation3}"/>
+                                    <AppBarButton
+                                        Width="{StaticResource LargeAppBarButtonWidth}"
+                                        MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                        Margin="2,-4"
+                                        AllowFocusOnInteraction="True"
+                                        Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentHomeGroup}}"
+                                        Label="{shuxm:ResourceString Name=ViewUserCookieOperationGameRecordIndexAction}"
+                                        Style="{StaticResource DefaultAppBarButtonStyle}">
+                                        <mxi:Interaction.Behaviors>
+                                            <mxi:EventTriggerBehavior EventName="Click">
+                                                <shuxba:ShowWebView2WindowAction>
+                                                    <shuxba:ShowWebView2WindowAction.ContentProvider>
+                                                        <shuxvww:MiHoYoJSBridgeWebView2ContentProvider>
+                                                            <shuxvww:MiHoYoJSBridgeWebView2ContentProvider.SourceProvider>
+                                                                <shuxvww:StaticJSBridgeUriSourceProvider ChineseSource="https://webstatic.mihoyo.com/bbs/event/e20200511toolbox/index.html?game_biz=ys_cn"/>
+                                                            </shuxvww:MiHoYoJSBridgeWebView2ContentProvider.SourceProvider>
+                                                        </shuxvww:MiHoYoJSBridgeWebView2ContentProvider>
+                                                    </shuxba:ShowWebView2WindowAction.ContentProvider>
+                                                </shuxba:ShowWebView2WindowAction>
+                                            </mxi:EventTriggerBehavior>
+                                        </mxi:Interaction.Behaviors>
+                                    </AppBarButton>
+                                    <AppBarButton
+                                        Width="{StaticResource LargeAppBarButtonWidth}"
+                                        MaxWidth="{StaticResource LargeAppBarButtonWidth}"
+                                        Margin="2,-4"
+                                        Command="{x:Bind ((shvu:UserViewModel)DataContext).RefreshCookieTokenCommand, Mode=OneWay}"
+                                        Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentRefresh}}"
+                                        Label="{shuxm:ResourceString Name=ViewUserCookieOperationRefreshCookieAction}"/>
+                                </StackPanel>
+
+                                <Grid Grid.Column="1" Width="280">
+                                    <StackPanel Visibility="{x:Bind ((shvu:UserViewModel)DataContext).Users.Count, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
+                                        <StackPanel Visibility="{x:Bind ((shvu:UserViewModel)DataContext).Users.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
+                                            <TextBlock
+                                                Margin="10,6,0,6"
+                                                Style="{StaticResource BaseTextBlockStyle}"
+                                                Text="{shuxm:ResourceString Name=ViewUserRole}"/>
+                                            <ListView
+                                                Margin="4"
+                                                ItemTemplate="{StaticResource UserGameRoleTemplate}"
+                                                ItemsSource="{x:Bind ((shvu:UserViewModel)DataContext).Users.CurrentItem.UserGameRoles, Mode=OneWay}"
+                                                SelectedItem="{x:Bind ((shvu:UserViewModel)DataContext).Users.CurrentItem.UserGameRoles.CurrentItem, Mode=TwoWay}"
+                                                SelectionMode="Single"/>
+                                        </StackPanel>
+
+                                        <TextBlock
+                                            Margin="10,6,0,6"
+                                            Style="{StaticResource BaseTextBlockStyle}"
+                                            Text="{shuxm:ResourceString Name=ViewUserUser}"/>
+                                        <ListView
+                                            Margin="4"
+                                            AllowDrop="{shuxm:IsProcessNotElevated}"
+                                            CanReorderItems="{shuxm:IsProcessNotElevated}"
+                                            ItemTemplate="{StaticResource UserTemplate}"
+                                            ItemsSource="{x:Bind ((shvu:UserViewModel)DataContext).Users, Mode=OneWay}"
+                                            SelectedItem="{x:Bind ((shvu:UserViewModel)DataContext).Users.CurrentItem, Mode=TwoWay}"
+                                            SelectionMode="Single"
+                                            Visibility="{x:Bind ((shvu:UserViewModel)DataContext).Users.Count, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
+                                            <ListView.Header>
+                                                <InfoBar
+                                                    Title="{shuxm:ResourceString Name=ViewListViewDragElevatedHint}"
+                                                    Margin="4,0,4,2"
+                                                    IsClosable="True"
+                                                    IsOpen="True"
+                                                    Severity="Warning"
+                                                    Visibility="{shuxm:VisibleWhenProcessElevated}"/>
+                                            </ListView.Header>
+                                        </ListView>
+                                    </StackPanel>
+                                    <TextBlock
+                                        Margin="16"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource SubtitleTextBlockStyle}"
+                                        Text="{shuxm:ResourceString Name=ViewUserDefaultDescription}"
+                                        Visibility="{x:Bind ((shvu:UserViewModel)DataContext).Users.Count, Converter={StaticResource Int32ToVisibilityRevertConverter}, Mode=OneWay}"/>
+                                </Grid>
+                            </Grid>
+                        </Flyout>
+                    </wl:LiquidGlassButton.Flyout>
+                    <wl:LiquidGlassButton.Style>
+                        <Style BasedOn="{StaticResource DefaultButtonStyle}" TargetType="Button">
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Padding" Value="0"/>
+                        </Style>
+                    </wl:LiquidGlassButton.Style>
+                </wl:LiquidGlassButton>
+            </cwc:Case>
+        </cwc:SwitchPresenter>
 
         <NavigationViewItemSeparator/>
     </StackPanel>

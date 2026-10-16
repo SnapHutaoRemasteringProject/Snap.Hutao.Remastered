@@ -10,15 +10,17 @@
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxd="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shvp="using:Snap.Hutao.Remastered.ViewModel.Plugin"
+    xmlns:wl="using:WinUI.LiquidGlass"
     d:DataContext="{d:DesignInstance shvp:PluginSettingViewModel}"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvp:PluginSettingViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Page.Resources>
@@ -32,7 +34,7 @@
     </Page.Resources>
 
     <Grid x:Name="Root">
-        <shuxc:StandardView ShowCondition="{Binding IsInitialized, Mode=OneWay}">
+        <shuxc:StandardView ShowCondition="{x:Bind ((shvp:PluginSettingViewModel)DataContext).IsInitialized, Mode=OneWay}">
             <shuxc:StandardView.EmptyContent>
                 <Grid>
                     <ProgressRing
@@ -58,24 +60,56 @@
                             Padding="16"
                             Orientation="Horizontal"
                             Spacing="12">
-                            <Button
-                                Command="{Binding GoBackCommand}"
-                                Content="{shuxm:ResourceString Name=ViewPagePluginSettingBackButton}"
-                                Style="{StaticResource DefaultButtonStyle}">
-                                <Button.ContentTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <FontIcon Glyph="&#xE72B;"/>
-                                            <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginSettingBackButton}"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </Button.ContentTemplate>
-                            </Button>
+                            <cwc:SwitchPresenter
+                                x:Name="GlassPresenter_2876"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
+                                IsTabStop="False"
+                                Tag="LiquidGlass:Button"
+                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>0</x:Int32>
+                                    </cwc:Case.Value>
+                                    <Button
+                                        Command="{x:Bind ((shvp:PluginSettingViewModel)DataContext).GoBackCommand, Mode=OneWay}"
+                                        Content="{shuxm:ResourceString Name=ViewPagePluginSettingBackButton}"
+                                        Style="{StaticResource DefaultButtonStyle}">
+                                        <Button.ContentTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <FontIcon Glyph="&#xE72B;"/>
+                                                    <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginSettingBackButton}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </Button.ContentTemplate>
+                                    </Button>
+                                </cwc:Case>
+                                <cwc:Case>
+                                    <cwc:Case.Value>
+                                        <x:Int32>1</x:Int32>
+                                    </cwc:Case.Value>
+                                    <wl:LiquidGlassButton
+                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                        Command="{x:Bind ((shvp:PluginSettingViewModel)DataContext).GoBackCommand, Mode=OneWay}"
+                                        Content="{shuxm:ResourceString Name=ViewPagePluginSettingBackButton}"
+                                        Style="{StaticResource DefaultButtonStyle}">
+                                        <wl:LiquidGlassButton.ContentTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <FontIcon Glyph="&#xE72B;"/>
+                                                    <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginSettingBackButton}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </wl:LiquidGlassButton.ContentTemplate>
+                                    </wl:LiquidGlassButton>
+                                </cwc:Case>
+                            </cwc:SwitchPresenter>
 
                             <TextBlock
                                 VerticalAlignment="Center"
                                 Style="{StaticResource TitleTextBlockStyle}"
-                                Text="{Binding PluginName}"/>
+                                Text="{x:Bind ((shvp:PluginSettingViewModel)DataContext).PluginName, Mode=OneWay}"/>
 
                             <TextBlock
                                 VerticalAlignment="Center"
@@ -88,7 +122,7 @@
                 <!--  设置列表  -->
                 <Border Grid.Row="1" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                     <Grid Style="{ThemeResource AcrylicGridCardStyle}">
-                        <shuxc:StandardView ShowCondition="{Binding Settings.Count, Converter={StaticResource Int32ToBoolConverter}}">
+                        <shuxc:StandardView ShowCondition="{x:Bind ((shvp:PluginSettingViewModel)DataContext).Settings.Count, Converter={StaticResource Int32ToBoolConverter}, Mode=OneWay}">
                             <shuxc:StandardView.EmptyContent>
                                 <StackPanel
                                     HorizontalAlignment="Center"
@@ -114,7 +148,7 @@
                                     Margin="16"
                                     ItemContainerTransitions="{ThemeResource ListViewLikeThemeTransitions}"
                                     ItemsPanel="{ThemeResource StackPanelSpacing8Template}"
-                                    ItemsSource="{Binding Settings}">
+                                    ItemsSource="{x:Bind ((shvp:PluginSettingViewModel)DataContext).Settings, Mode=OneWay}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Border Padding="12" Style="{ThemeResource BorderCardStyle}">
@@ -144,10 +178,30 @@
 
                                                         <StackPanel Grid.Column="0">
                                                             <!--  字符串类型  -->
-                                                            <TextBox
-                                                                PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingStringPlaceholder}"
-                                                                Text="{Binding CurrentValue, Mode=TwoWay}"
-                                                                Visibility="{Binding Converter={StaticResource StringTypeConverter}}"/>
+                                                            <cwc:SwitchPresenter
+                                                                x:Name="GlassPresenter_8575"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                VerticalContentAlignment="Stretch"
+                                                                IsTabStop="False"
+                                                                Tag="LiquidGlass:TextBox"
+                                                                Visibility="{Binding Converter={StaticResource StringTypeConverter}}"
+                                                                Value="{Binding TextBoxMaterial, Source={StaticResource ControlMaterialState}, Mode=OneWay}">
+                                                                <cwc:Case>
+                                                                    <cwc:Case.Value>
+                                                                        <x:Int32>0</x:Int32>
+                                                                    </cwc:Case.Value>
+                                                                    <TextBox PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingStringPlaceholder}" Text="{Binding CurrentValue, Mode=TwoWay}"/>
+                                                                </cwc:Case>
+                                                                <cwc:Case>
+                                                                    <cwc:Case.Value>
+                                                                        <x:Int32>1</x:Int32>
+                                                                    </cwc:Case.Value>
+                                                                    <wl:LiquidGlassTextBox
+                                                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                                                        PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingStringPlaceholder}"
+                                                                        Text="{Binding CurrentValue, Mode=TwoWay}"/>
+                                                                </cwc:Case>
+                                                            </cwc:SwitchPresenter>
 
                                                             <!--  整数类型  -->
                                                             <NumberBox
@@ -156,17 +210,60 @@
                                                                 Value="{Binding CurrentValue, Mode=TwoWay}"/>
 
                                                             <!--  布尔类型  -->
-                                                            <ToggleSwitch
-                                                                IsOn="{Binding CurrentValue, Mode=TwoWay}"
-                                                                OffContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOff}"
-                                                                OnContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOn}"
-                                                                Visibility="{Binding Converter={StaticResource BooleanTypeConverter}}"/>
+                                                            <cwc:SwitchPresenter
+                                                                x:Name="GlassPresenter_9650"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                VerticalContentAlignment="Stretch"
+                                                                IsTabStop="False"
+                                                                Tag="LiquidGlass:ToggleSwitch"
+                                                                Visibility="{Binding Converter={StaticResource BooleanTypeConverter}}"
+                                                                Value="{Binding ToggleSwitchMaterial, Source={StaticResource ControlMaterialState}, Mode=OneWay}">
+                                                                <cwc:Case>
+                                                                    <cwc:Case.Value>
+                                                                        <x:Int32>0</x:Int32>
+                                                                    </cwc:Case.Value>
+                                                                    <ToggleSwitch
+                                                                        IsOn="{Binding CurrentValue, Mode=TwoWay}"
+                                                                        OffContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOff}"
+                                                                        OnContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOn}"/>
+                                                                </cwc:Case>
+                                                                <cwc:Case>
+                                                                    <cwc:Case.Value>
+                                                                        <x:Int32>1</x:Int32>
+                                                                    </cwc:Case.Value>
+                                                                    <wl:LiquidGlassToggleSwitch
+                                                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                                                        IsOn="{Binding CurrentValue, Mode=TwoWay}"
+                                                                        OffContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOff}"
+                                                                        OnContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOn}"/>
+                                                                </cwc:Case>
+                                                            </cwc:SwitchPresenter>
 
                                                             <!--  默认类型  -->
-                                                            <TextBox
-                                                                PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingDefaultPlaceholder}"
-                                                                Text="{Binding CurrentValue, Mode=TwoWay}"
-                                                                Visibility="{Binding Converter={StaticResource DefaultTypeConverter}}"/>
+                                                            <cwc:SwitchPresenter
+                                                                x:Name="GlassPresenter_10315"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                VerticalContentAlignment="Stretch"
+                                                                IsTabStop="False"
+                                                                Tag="LiquidGlass:TextBox"
+                                                                Visibility="{Binding Converter={StaticResource DefaultTypeConverter}}"
+                                                                Value="{Binding TextBoxMaterial, Source={StaticResource ControlMaterialState}, Mode=OneWay}">
+                                                                <cwc:Case>
+                                                                    <cwc:Case.Value>
+                                                                        <x:Int32>0</x:Int32>
+                                                                    </cwc:Case.Value>
+                                                                    <TextBox PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingDefaultPlaceholder}" Text="{Binding CurrentValue, Mode=TwoWay}"/>
+                                                                </cwc:Case>
+                                                                <cwc:Case>
+                                                                    <cwc:Case.Value>
+                                                                        <x:Int32>1</x:Int32>
+                                                                    </cwc:Case.Value>
+                                                                    <wl:LiquidGlassTextBox
+                                                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                                                        PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingDefaultPlaceholder}"
+                                                                        Text="{Binding CurrentValue, Mode=TwoWay}"/>
+                                                                </cwc:Case>
+                                                            </cwc:SwitchPresenter>
                                                         </StackPanel>
                                                         <!--  操作按钮  -->
                                                         <StackPanel
@@ -174,17 +271,65 @@
                                                             Margin="12,0,0,0"
                                                             Orientation="Horizontal"
                                                             Spacing="8">
-                                                            <Button
-                                                                Command="{Binding ElementName=Root, Path=DataContext.SaveSettingCommand}"
-                                                                CommandParameter="{Binding}"
-                                                                Content="{shuxm:ResourceString Name=ViewPagePluginSettingSaveButton}"
-                                                                Style="{StaticResource AccentButtonStyle}"/>
+                                                            <cwc:SwitchPresenter
+                                                                x:Name="GlassPresenter_11300"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                VerticalContentAlignment="Stretch"
+                                                                IsTabStop="False"
+                                                                Tag="LiquidGlass:Button"
+                                                                Value="{Binding ButtonMaterial, Source={StaticResource ControlMaterialState}, Mode=OneWay}">
+                                                                <cwc:Case>
+                                                                    <cwc:Case.Value>
+                                                                        <x:Int32>0</x:Int32>
+                                                                    </cwc:Case.Value>
+                                                                    <Button
+                                                                        Command="{Binding ElementName=Root, Path=DataContext.SaveSettingCommand}"
+                                                                        CommandParameter="{Binding}"
+                                                                        Content="{shuxm:ResourceString Name=ViewPagePluginSettingSaveButton}"
+                                                                        Style="{StaticResource AccentButtonStyle}"/>
+                                                                </cwc:Case>
+                                                                <cwc:Case>
+                                                                    <cwc:Case.Value>
+                                                                        <x:Int32>1</x:Int32>
+                                                                    </cwc:Case.Value>
+                                                                    <wl:LiquidGlassButton
+                                                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                                                        Command="{Binding ElementName=Root, Path=DataContext.SaveSettingCommand}"
+                                                                        CommandParameter="{Binding}"
+                                                                        Content="{shuxm:ResourceString Name=ViewPagePluginSettingSaveButton}"
+                                                                        Style="{StaticResource AccentButtonStyle}"/>
+                                                                </cwc:Case>
+                                                            </cwc:SwitchPresenter>
 
-                                                            <Button
-                                                                Command="{Binding ElementName=Root, Path=DataContext.ResetSettingCommand}"
-                                                                CommandParameter="{Binding}"
-                                                                Content="{shuxm:ResourceString Name=ViewPagePluginSettingResetButton}"
-                                                                Style="{StaticResource DefaultButtonStyle}"/>
+                                                            <cwc:SwitchPresenter
+                                                                x:Name="GlassPresenter_11843"
+                                                                HorizontalContentAlignment="Stretch"
+                                                                VerticalContentAlignment="Stretch"
+                                                                IsTabStop="False"
+                                                                Tag="LiquidGlass:Button"
+                                                                Value="{Binding ButtonMaterial, Source={StaticResource ControlMaterialState}, Mode=OneWay}">
+                                                                <cwc:Case>
+                                                                    <cwc:Case.Value>
+                                                                        <x:Int32>0</x:Int32>
+                                                                    </cwc:Case.Value>
+                                                                    <Button
+                                                                        Command="{Binding ElementName=Root, Path=DataContext.ResetSettingCommand}"
+                                                                        CommandParameter="{Binding}"
+                                                                        Content="{shuxm:ResourceString Name=ViewPagePluginSettingResetButton}"
+                                                                        Style="{StaticResource DefaultButtonStyle}"/>
+                                                                </cwc:Case>
+                                                                <cwc:Case>
+                                                                    <cwc:Case.Value>
+                                                                        <x:Int32>1</x:Int32>
+                                                                    </cwc:Case.Value>
+                                                                    <wl:LiquidGlassButton
+                                                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                                                        Command="{Binding ElementName=Root, Path=DataContext.ResetSettingCommand}"
+                                                                        CommandParameter="{Binding}"
+                                                                        Content="{shuxm:ResourceString Name=ViewPagePluginSettingResetButton}"
+                                                                        Style="{StaticResource DefaultButtonStyle}"/>
+                                                                </cwc:Case>
+                                                            </cwc:SwitchPresenter>
                                                         </StackPanel>
                                                     </Grid>
 

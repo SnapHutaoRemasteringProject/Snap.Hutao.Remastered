@@ -2,9 +2,12 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Dialog.BackpackReliquaryScoreConfigDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    xmlns:wl="using:WinUI.LiquidGlass"
     Title="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigTitle}"
     CloseButtonText="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"
     DefaultButton="Primary"
@@ -12,42 +15,215 @@
     Style="{StaticResource DefaultContentDialogStyle}"
     mc:Ignorable="d">
 
-    <StackPanel Spacing="12" Width="420">
-        <!-- Preset selector + buttons -->
+    <StackPanel Width="420" Spacing="12">
+        <!--  Preset selector + buttons  -->
         <Grid ColumnSpacing="8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <ComboBox
+            <cwc:SwitchPresenter
+                x:Name="GlassPresenter_1097"
                 Grid.Column="0"
-                x:Name="PresetComboBox"
-                DisplayMemberPath="DisplayName"
-                Header="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigPresetHeader}"
-                SelectionChanged="OnPresetComboBoxSelectionChanged"/>
-            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Bottom">
-                <Button
-                    Click="OnNewConfigClick"
-                    Content="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigNewConfig}"/>
-                <Button
-                    x:Name="DeleteButton"
-                    Click="OnDeleteConfigClick"
-                    Content="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigDeleteConfig}"
-                    Background="{ThemeResource SystemFillColorCriticalBrush}"
-                    Foreground="White"
-                    Visibility="Collapsed"/>
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                IsTabStop="False"
+                Tag="LiquidGlass:ComboBox"
+                Visibility="{x:Bind PresetComboBox.Visibility, Mode=OneWay}"
+                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>0</x:Int32>
+                    </cwc:Case.Value>
+                    <ComboBox
+                        x:Name="PresetComboBox"
+                        DataContext="{x:Bind GlassPresenter_1097.DataContext, Mode=OneWay}"
+                        DisplayMemberPath="DisplayName"
+                        Header="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigPresetHeader}"
+                        RequestedTheme="{x:Bind GlassPresenter_1097.ActualTheme, Mode=OneWay}"
+                        SelectionChanged="OnPresetComboBoxSelectionChanged"/>
+                </cwc:Case>
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>1</x:Int32>
+                    </cwc:Case.Value>
+                    <wl:LiquidGlassComboBox
+                        x:Name="PresetComboBoxGlass"
+                        Width="{x:Bind PresetComboBox.Width, Mode=OneWay}"
+                        Height="{x:Bind PresetComboBox.Height, Mode=OneWay}"
+                        MinWidth="{x:Bind PresetComboBox.MinWidth, Mode=OneWay}"
+                        MinHeight="{x:Bind PresetComboBox.MinHeight, Mode=OneWay}"
+                        MaxWidth="{x:Bind PresetComboBox.MaxWidth, Mode=OneWay}"
+                        MaxHeight="{x:Bind PresetComboBox.MaxHeight, Mode=OneWay}"
+                        Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(PresetComboBox.Padding), Mode=OneWay}"
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        shuxcth:ControlMaterialState.NativeControl="{x:Bind PresetComboBox, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                        BorderThickness="{x:Bind PresetComboBox.BorderThickness, Mode=OneWay}"
+                        DisplayMemberPath="{x:Bind PresetComboBox.DisplayMemberPath, Mode=OneWay}"
+                        FlowDirection="{x:Bind PresetComboBox.FlowDirection, Mode=OneWay}"
+                        FontFamily="{x:Bind PresetComboBox.FontFamily, Mode=OneWay}"
+                        FontSize="{x:Bind PresetComboBox.FontSize, Mode=OneWay}"
+                        FontStyle="{x:Bind PresetComboBox.FontStyle, Mode=OneWay}"
+                        FontWeight="{x:Bind PresetComboBox.FontWeight, Mode=OneWay}"
+                        Foreground="{x:Bind PresetComboBox.Foreground, Mode=OneWay}"
+                        Header="{x:Bind PresetComboBox.Header, Mode=OneWay}"
+                        HeaderTemplate="{x:Bind PresetComboBox.HeaderTemplate, Mode=OneWay}"
+                        IsDropDownOpen="{x:Bind PresetComboBox.IsDropDownOpen, Mode=TwoWay}"
+                        IsEditable="{x:Bind PresetComboBox.IsEditable, Mode=OneWay}"
+                        IsEnabled="{x:Bind PresetComboBox.IsEnabled, Mode=OneWay}"
+                        IsTextSearchEnabled="{x:Bind PresetComboBox.IsTextSearchEnabled, Mode=OneWay}"
+                        ItemsSource="{x:Bind PresetComboBox.ItemsSource, Mode=OneWay}"
+                        MaxDropDownHeight="{x:Bind PresetComboBox.MaxDropDownHeight, Mode=OneWay}"
+                        PlaceholderText="{x:Bind PresetComboBox.PlaceholderText, Mode=OneWay}"
+                        SelectedIndex="{x:Bind PresetComboBox.SelectedIndex, Mode=TwoWay}"
+                        SelectedValuePath="{x:Bind PresetComboBox.SelectedValuePath, Mode=OneWay}"/>
+                </cwc:Case>
+            </cwc:SwitchPresenter>
+            <StackPanel
+                Grid.Column="1"
+                VerticalAlignment="Bottom"
+                Orientation="Horizontal"
+                Spacing="8">
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_1522"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:Button"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <Button Click="OnNewConfigClick" Content="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigNewConfig}"/>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassButton
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Click="OnNewConfigClick"
+                            Content="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigNewConfig}"/>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_1699"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:Button"
+                    Visibility="{x:Bind DeleteButton.Visibility, Mode=OneWay}"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <Button
+                            x:Name="DeleteButton"
+                            Background="{ThemeResource SystemFillColorCriticalBrush}"
+                            Click="OnDeleteConfigClick"
+                            Content="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigDeleteConfig}"
+                            DataContext="{x:Bind GlassPresenter_1699.DataContext, Mode=OneWay}"
+                            Foreground="White"
+                            RequestedTheme="{x:Bind GlassPresenter_1699.ActualTheme, Mode=OneWay}"
+                            Visibility="Collapsed"/>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassButton
+                            x:Name="DeleteButtonGlass"
+                            Width="{x:Bind DeleteButton.Width, Mode=OneWay}"
+                            Height="{x:Bind DeleteButton.Height, Mode=OneWay}"
+                            MinWidth="{x:Bind DeleteButton.MinWidth, Mode=OneWay}"
+                            MinHeight="{x:Bind DeleteButton.MinHeight, Mode=OneWay}"
+                            MaxWidth="{x:Bind DeleteButton.MaxWidth, Mode=OneWay}"
+                            MaxHeight="{x:Bind DeleteButton.MaxHeight, Mode=OneWay}"
+                            Padding="{x:Bind DeleteButton.Padding, Mode=OneWay}"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            shuxcth:ControlMaterialState.NativeControl="{x:Bind DeleteButton, Mode=OneWay}"
+                            shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                            BorderThickness="{x:Bind DeleteButton.BorderThickness, Mode=OneWay}"
+                            Click="OnDeleteConfigClick"
+                            Command="{x:Bind DeleteButton.Command, Mode=OneWay}"
+                            CommandParameter="{x:Bind DeleteButton.CommandParameter, Mode=OneWay}"
+                            Content="{x:Bind DeleteButton.Content, Mode=OneWay}"
+                            FlowDirection="{x:Bind DeleteButton.FlowDirection, Mode=OneWay}"
+                            FontFamily="{x:Bind DeleteButton.FontFamily, Mode=OneWay}"
+                            FontSize="{x:Bind DeleteButton.FontSize, Mode=OneWay}"
+                            FontStyle="{x:Bind DeleteButton.FontStyle, Mode=OneWay}"
+                            FontWeight="{x:Bind DeleteButton.FontWeight, Mode=OneWay}"
+                            Foreground="{x:Bind DeleteButton.Foreground, Mode=OneWay}"
+                            IsEnabled="{x:Bind DeleteButton.IsEnabled, Mode=OneWay}"/>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
             </StackPanel>
         </Grid>
 
-        <!-- Name -->
-        <TextBox
-            x:Name="NameTextBox"
-            Header="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigNameHeader}"
-            TextChanged="OnNameTextChanged"/>
+        <!--  Name  -->
+        <cwc:SwitchPresenter
+            x:Name="GlassPresenter_2141"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            IsTabStop="False"
+            Tag="LiquidGlass:TextBox"
+            Visibility="{x:Bind NameTextBox.Visibility, Mode=OneWay}"
+            Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
+            <cwc:Case>
+                <cwc:Case.Value>
+                    <x:Int32>0</x:Int32>
+                </cwc:Case.Value>
+                <TextBox
+                    x:Name="NameTextBox"
+                    DataContext="{x:Bind GlassPresenter_2141.DataContext, Mode=OneWay}"
+                    Header="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigNameHeader}"
+                    RequestedTheme="{x:Bind GlassPresenter_2141.ActualTheme, Mode=OneWay}"
+                    TextChanged="OnNameTextChanged"/>
+            </cwc:Case>
+            <cwc:Case>
+                <cwc:Case.Value>
+                    <x:Int32>1</x:Int32>
+                </cwc:Case.Value>
+                <wl:LiquidGlassTextBox
+                    x:Name="NameTextBoxGlass"
+                    Width="{x:Bind NameTextBox.Width, Mode=OneWay}"
+                    Height="{x:Bind NameTextBox.Height, Mode=OneWay}"
+                    MinWidth="{x:Bind NameTextBox.MinWidth, Mode=OneWay}"
+                    MinHeight="{x:Bind NameTextBox.MinHeight, Mode=OneWay}"
+                    MaxWidth="{x:Bind NameTextBox.MaxWidth, Mode=OneWay}"
+                    MaxHeight="{x:Bind NameTextBox.MaxHeight, Mode=OneWay}"
+                    Padding="{x:Bind NameTextBox.Padding, Mode=OneWay}"
+                    shuxcth:ControlMaterialState.IsManaged="True"
+                    shuxcth:ControlMaterialState.NativeControl="{x:Bind NameTextBox, Mode=OneWay}"
+                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                    AcceptsReturn="{x:Bind NameTextBox.AcceptsReturn, Mode=OneWay}"
+                    BorderThickness="{x:Bind NameTextBox.BorderThickness, Mode=OneWay}"
+                    CharacterCasing="{x:Bind NameTextBox.CharacterCasing, Mode=OneWay}"
+                    FlowDirection="{x:Bind NameTextBox.FlowDirection, Mode=OneWay}"
+                    FontFamily="{x:Bind NameTextBox.FontFamily, Mode=OneWay}"
+                    FontSize="{x:Bind NameTextBox.FontSize, Mode=OneWay}"
+                    FontStyle="{x:Bind NameTextBox.FontStyle, Mode=OneWay}"
+                    FontWeight="{x:Bind NameTextBox.FontWeight, Mode=OneWay}"
+                    Foreground="{x:Bind NameTextBox.Foreground, Mode=OneWay}"
+                    Header="{x:Bind NameTextBox.Header, Mode=OneWay}"
+                    HeaderTemplate="{x:Bind NameTextBox.HeaderTemplate, Mode=OneWay}"
+                    InputScope="{x:Bind NameTextBox.InputScope, Mode=OneWay}"
+                    IsEnabled="{x:Bind NameTextBox.IsEnabled, Mode=OneWay}"
+                    IsReadOnly="{x:Bind NameTextBox.IsReadOnly, Mode=OneWay}"
+                    MaxLength="{x:Bind NameTextBox.MaxLength, Mode=OneWay}"
+                    PlaceholderText="{x:Bind NameTextBox.PlaceholderText, Mode=OneWay}"
+                    SelectionHighlightColor="{x:Bind NameTextBox.SelectionHighlightColor, Mode=OneWay}"
+                    Text="{x:Bind NameTextBox.Text, Mode=TwoWay}"
+                    TextAlignment="{x:Bind NameTextBox.TextAlignment, Mode=OneWay}"
+                    TextWrapping="{x:Bind NameTextBox.TextWrapping, Mode=OneWay}"/>
+            </cwc:Case>
+        </cwc:SwitchPresenter>
 
-        <!-- Weight sliders -->
-        <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}"
-                   Text="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigWeightsHeader}"/>
+        <!--  Weight sliders  -->
+        <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigWeightsHeader}"/>
         <Grid ColumnSpacing="12" RowSpacing="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
@@ -64,155 +240,526 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <!-- Crit Rate -->
+            <!--  Crit Rate  -->
             <TextBlock
                 Grid.Row="0"
                 Grid.Column="0"
                 VerticalAlignment="Center"
                 Text="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigCrit}"/>
-            <Slider
+            <cwc:SwitchPresenter
+                x:Name="GlassPresenter_3360"
                 Grid.Row="0"
                 Grid.Column="1"
-                x:Name="CritSlider"
-                Minimum="0"
-                Maximum="1.0"
-                StepFrequency="0.1"
-                ValueChanged="OnSliderValueChanged"/>
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                IsTabStop="False"
+                Tag="LiquidGlass:Slider"
+                Visibility="{x:Bind CritSlider.Visibility, Mode=OneWay}"
+                Value="{x:Bind shuxcth:MaterialBindingSource.Current.SliderMaterial, Mode=OneWay}">
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>0</x:Int32>
+                    </cwc:Case.Value>
+                    <Slider
+                        x:Name="CritSlider"
+                        DataContext="{x:Bind GlassPresenter_3360.DataContext, Mode=OneWay}"
+                        Maximum="1.0"
+                        Minimum="0"
+                        RequestedTheme="{x:Bind GlassPresenter_3360.ActualTheme, Mode=OneWay}"
+                        StepFrequency="0.1"
+                        ValueChanged="OnSliderValueChanged"/>
+                </cwc:Case>
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>1</x:Int32>
+                    </cwc:Case.Value>
+                    <wl:LiquidGlassSlider
+                        x:Name="CritSliderGlass"
+                        Width="{x:Bind CritSlider.Width, Mode=OneWay}"
+                        Height="{x:Bind CritSlider.Height, Mode=OneWay}"
+                        MinWidth="{x:Bind CritSlider.MinWidth, Mode=OneWay}"
+                        MinHeight="{x:Bind CritSlider.MinHeight, Mode=OneWay}"
+                        MaxWidth="{x:Bind CritSlider.MaxWidth, Mode=OneWay}"
+                        MaxHeight="{x:Bind CritSlider.MaxHeight, Mode=OneWay}"
+                        Padding="{x:Bind CritSlider.Padding, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        shuxcth:ControlMaterialState.NativeControl="{x:Bind CritSlider, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                        BorderThickness="{x:Bind CritSlider.BorderThickness, Mode=OneWay}"
+                        FlowDirection="{x:Bind CritSlider.FlowDirection, Mode=OneWay}"
+                        FontFamily="{x:Bind CritSlider.FontFamily, Mode=OneWay}"
+                        FontSize="{x:Bind CritSlider.FontSize, Mode=OneWay}"
+                        FontStyle="{x:Bind CritSlider.FontStyle, Mode=OneWay}"
+                        FontWeight="{x:Bind CritSlider.FontWeight, Mode=OneWay}"
+                        Foreground="{x:Bind CritSlider.Foreground, Mode=OneWay}"
+                        Header="{x:Bind CritSlider.Header, Mode=OneWay}"
+                        HeaderTemplate="{x:Bind CritSlider.HeaderTemplate, Mode=OneWay}"
+                        IsDirectionReversed="{x:Bind CritSlider.IsDirectionReversed, Mode=OneWay}"
+                        IsEnabled="{x:Bind CritSlider.IsEnabled, Mode=OneWay}"
+                        LargeChange="{x:Bind CritSlider.LargeChange, Mode=OneWay}"
+                        Maximum="{x:Bind CritSlider.Maximum, Mode=OneWay}"
+                        Minimum="{x:Bind CritSlider.Minimum, Mode=OneWay}"
+                        Orientation="{x:Bind CritSlider.Orientation, Mode=OneWay}"
+                        SmallChange="{x:Bind CritSlider.SmallChange, Mode=OneWay}"
+                        StepFrequency="{x:Bind CritSlider.StepFrequency, Mode=OneWay}"
+                        TickFrequency="{x:Bind CritSlider.TickFrequency, Mode=OneWay}"
+                        TickPlacement="{x:Bind CritSlider.TickPlacement, Mode=OneWay}"
+                        Value="{x:Bind CritSlider.Value, Mode=TwoWay}"/>
+                </cwc:Case>
+            </cwc:SwitchPresenter>
             <TextBlock
+                x:Name="CritLabel"
                 Grid.Row="0"
                 Grid.Column="2"
-                x:Name="CritLabel"
                 VerticalAlignment="Center"
                 TextAlignment="Right"/>
 
-            <!-- Crit Hurt -->
+            <!--  Crit Hurt  -->
             <TextBlock
                 Grid.Row="1"
                 Grid.Column="0"
                 VerticalAlignment="Center"
                 Text="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigCritHurt}"/>
-            <Slider
+            <cwc:SwitchPresenter
+                x:Name="GlassPresenter_4086"
                 Grid.Row="1"
                 Grid.Column="1"
-                x:Name="CritHurtSlider"
-                Minimum="0"
-                Maximum="1.0"
-                StepFrequency="0.1"
-                ValueChanged="OnSliderValueChanged"/>
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                IsTabStop="False"
+                Tag="LiquidGlass:Slider"
+                Visibility="{x:Bind CritHurtSlider.Visibility, Mode=OneWay}"
+                Value="{x:Bind shuxcth:MaterialBindingSource.Current.SliderMaterial, Mode=OneWay}">
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>0</x:Int32>
+                    </cwc:Case.Value>
+                    <Slider
+                        x:Name="CritHurtSlider"
+                        DataContext="{x:Bind GlassPresenter_4086.DataContext, Mode=OneWay}"
+                        Maximum="1.0"
+                        Minimum="0"
+                        RequestedTheme="{x:Bind GlassPresenter_4086.ActualTheme, Mode=OneWay}"
+                        StepFrequency="0.1"
+                        ValueChanged="OnSliderValueChanged"/>
+                </cwc:Case>
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>1</x:Int32>
+                    </cwc:Case.Value>
+                    <wl:LiquidGlassSlider
+                        x:Name="CritHurtSliderGlass"
+                        Width="{x:Bind CritHurtSlider.Width, Mode=OneWay}"
+                        Height="{x:Bind CritHurtSlider.Height, Mode=OneWay}"
+                        MinWidth="{x:Bind CritHurtSlider.MinWidth, Mode=OneWay}"
+                        MinHeight="{x:Bind CritHurtSlider.MinHeight, Mode=OneWay}"
+                        MaxWidth="{x:Bind CritHurtSlider.MaxWidth, Mode=OneWay}"
+                        MaxHeight="{x:Bind CritHurtSlider.MaxHeight, Mode=OneWay}"
+                        Padding="{x:Bind CritHurtSlider.Padding, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        shuxcth:ControlMaterialState.NativeControl="{x:Bind CritHurtSlider, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                        BorderThickness="{x:Bind CritHurtSlider.BorderThickness, Mode=OneWay}"
+                        FlowDirection="{x:Bind CritHurtSlider.FlowDirection, Mode=OneWay}"
+                        FontFamily="{x:Bind CritHurtSlider.FontFamily, Mode=OneWay}"
+                        FontSize="{x:Bind CritHurtSlider.FontSize, Mode=OneWay}"
+                        FontStyle="{x:Bind CritHurtSlider.FontStyle, Mode=OneWay}"
+                        FontWeight="{x:Bind CritHurtSlider.FontWeight, Mode=OneWay}"
+                        Foreground="{x:Bind CritHurtSlider.Foreground, Mode=OneWay}"
+                        Header="{x:Bind CritHurtSlider.Header, Mode=OneWay}"
+                        HeaderTemplate="{x:Bind CritHurtSlider.HeaderTemplate, Mode=OneWay}"
+                        IsDirectionReversed="{x:Bind CritHurtSlider.IsDirectionReversed, Mode=OneWay}"
+                        IsEnabled="{x:Bind CritHurtSlider.IsEnabled, Mode=OneWay}"
+                        LargeChange="{x:Bind CritHurtSlider.LargeChange, Mode=OneWay}"
+                        Maximum="{x:Bind CritHurtSlider.Maximum, Mode=OneWay}"
+                        Minimum="{x:Bind CritHurtSlider.Minimum, Mode=OneWay}"
+                        Orientation="{x:Bind CritHurtSlider.Orientation, Mode=OneWay}"
+                        SmallChange="{x:Bind CritHurtSlider.SmallChange, Mode=OneWay}"
+                        StepFrequency="{x:Bind CritHurtSlider.StepFrequency, Mode=OneWay}"
+                        TickFrequency="{x:Bind CritHurtSlider.TickFrequency, Mode=OneWay}"
+                        TickPlacement="{x:Bind CritHurtSlider.TickPlacement, Mode=OneWay}"
+                        Value="{x:Bind CritHurtSlider.Value, Mode=TwoWay}"/>
+                </cwc:Case>
+            </cwc:SwitchPresenter>
             <TextBlock
+                x:Name="CritHurtLabel"
                 Grid.Row="1"
                 Grid.Column="2"
-                x:Name="CritHurtLabel"
                 VerticalAlignment="Center"
                 TextAlignment="Right"/>
 
-            <!-- ATK% -->
+            <!--  ATK%  -->
             <TextBlock
                 Grid.Row="2"
                 Grid.Column="0"
                 VerticalAlignment="Center"
                 Text="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigAttackPercent}"/>
-            <Slider
+            <cwc:SwitchPresenter
+                x:Name="GlassPresenter_4820"
                 Grid.Row="2"
                 Grid.Column="1"
-                x:Name="AttackPercentSlider"
-                Minimum="0"
-                Maximum="1.0"
-                StepFrequency="0.1"
-                ValueChanged="OnSliderValueChanged"/>
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                IsTabStop="False"
+                Tag="LiquidGlass:Slider"
+                Visibility="{x:Bind AttackPercentSlider.Visibility, Mode=OneWay}"
+                Value="{x:Bind shuxcth:MaterialBindingSource.Current.SliderMaterial, Mode=OneWay}">
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>0</x:Int32>
+                    </cwc:Case.Value>
+                    <Slider
+                        x:Name="AttackPercentSlider"
+                        DataContext="{x:Bind GlassPresenter_4820.DataContext, Mode=OneWay}"
+                        Maximum="1.0"
+                        Minimum="0"
+                        RequestedTheme="{x:Bind GlassPresenter_4820.ActualTheme, Mode=OneWay}"
+                        StepFrequency="0.1"
+                        ValueChanged="OnSliderValueChanged"/>
+                </cwc:Case>
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>1</x:Int32>
+                    </cwc:Case.Value>
+                    <wl:LiquidGlassSlider
+                        x:Name="AttackPercentSliderGlass"
+                        Width="{x:Bind AttackPercentSlider.Width, Mode=OneWay}"
+                        Height="{x:Bind AttackPercentSlider.Height, Mode=OneWay}"
+                        MinWidth="{x:Bind AttackPercentSlider.MinWidth, Mode=OneWay}"
+                        MinHeight="{x:Bind AttackPercentSlider.MinHeight, Mode=OneWay}"
+                        MaxWidth="{x:Bind AttackPercentSlider.MaxWidth, Mode=OneWay}"
+                        MaxHeight="{x:Bind AttackPercentSlider.MaxHeight, Mode=OneWay}"
+                        Padding="{x:Bind AttackPercentSlider.Padding, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        shuxcth:ControlMaterialState.NativeControl="{x:Bind AttackPercentSlider, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                        BorderThickness="{x:Bind AttackPercentSlider.BorderThickness, Mode=OneWay}"
+                        FlowDirection="{x:Bind AttackPercentSlider.FlowDirection, Mode=OneWay}"
+                        FontFamily="{x:Bind AttackPercentSlider.FontFamily, Mode=OneWay}"
+                        FontSize="{x:Bind AttackPercentSlider.FontSize, Mode=OneWay}"
+                        FontStyle="{x:Bind AttackPercentSlider.FontStyle, Mode=OneWay}"
+                        FontWeight="{x:Bind AttackPercentSlider.FontWeight, Mode=OneWay}"
+                        Foreground="{x:Bind AttackPercentSlider.Foreground, Mode=OneWay}"
+                        Header="{x:Bind AttackPercentSlider.Header, Mode=OneWay}"
+                        HeaderTemplate="{x:Bind AttackPercentSlider.HeaderTemplate, Mode=OneWay}"
+                        IsDirectionReversed="{x:Bind AttackPercentSlider.IsDirectionReversed, Mode=OneWay}"
+                        IsEnabled="{x:Bind AttackPercentSlider.IsEnabled, Mode=OneWay}"
+                        LargeChange="{x:Bind AttackPercentSlider.LargeChange, Mode=OneWay}"
+                        Maximum="{x:Bind AttackPercentSlider.Maximum, Mode=OneWay}"
+                        Minimum="{x:Bind AttackPercentSlider.Minimum, Mode=OneWay}"
+                        Orientation="{x:Bind AttackPercentSlider.Orientation, Mode=OneWay}"
+                        SmallChange="{x:Bind AttackPercentSlider.SmallChange, Mode=OneWay}"
+                        StepFrequency="{x:Bind AttackPercentSlider.StepFrequency, Mode=OneWay}"
+                        TickFrequency="{x:Bind AttackPercentSlider.TickFrequency, Mode=OneWay}"
+                        TickPlacement="{x:Bind AttackPercentSlider.TickPlacement, Mode=OneWay}"
+                        Value="{x:Bind AttackPercentSlider.Value, Mode=TwoWay}"/>
+                </cwc:Case>
+            </cwc:SwitchPresenter>
             <TextBlock
+                x:Name="AttackPercentLabel"
                 Grid.Row="2"
                 Grid.Column="2"
-                x:Name="AttackPercentLabel"
                 VerticalAlignment="Center"
                 TextAlignment="Right"/>
 
-            <!-- ER -->
+            <!--  ER  -->
             <TextBlock
                 Grid.Row="3"
                 Grid.Column="0"
                 VerticalAlignment="Center"
                 Text="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigChargeEfficiency}"/>
-            <Slider
+            <cwc:SwitchPresenter
+                x:Name="GlassPresenter_5565"
                 Grid.Row="3"
                 Grid.Column="1"
-                x:Name="ChargeEfficiencySlider"
-                Minimum="0"
-                Maximum="1.0"
-                StepFrequency="0.1"
-                ValueChanged="OnSliderValueChanged"/>
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                IsTabStop="False"
+                Tag="LiquidGlass:Slider"
+                Visibility="{x:Bind ChargeEfficiencySlider.Visibility, Mode=OneWay}"
+                Value="{x:Bind shuxcth:MaterialBindingSource.Current.SliderMaterial, Mode=OneWay}">
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>0</x:Int32>
+                    </cwc:Case.Value>
+                    <Slider
+                        x:Name="ChargeEfficiencySlider"
+                        DataContext="{x:Bind GlassPresenter_5565.DataContext, Mode=OneWay}"
+                        Maximum="1.0"
+                        Minimum="0"
+                        RequestedTheme="{x:Bind GlassPresenter_5565.ActualTheme, Mode=OneWay}"
+                        StepFrequency="0.1"
+                        ValueChanged="OnSliderValueChanged"/>
+                </cwc:Case>
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>1</x:Int32>
+                    </cwc:Case.Value>
+                    <wl:LiquidGlassSlider
+                        x:Name="ChargeEfficiencySliderGlass"
+                        Width="{x:Bind ChargeEfficiencySlider.Width, Mode=OneWay}"
+                        Height="{x:Bind ChargeEfficiencySlider.Height, Mode=OneWay}"
+                        MinWidth="{x:Bind ChargeEfficiencySlider.MinWidth, Mode=OneWay}"
+                        MinHeight="{x:Bind ChargeEfficiencySlider.MinHeight, Mode=OneWay}"
+                        MaxWidth="{x:Bind ChargeEfficiencySlider.MaxWidth, Mode=OneWay}"
+                        MaxHeight="{x:Bind ChargeEfficiencySlider.MaxHeight, Mode=OneWay}"
+                        Padding="{x:Bind ChargeEfficiencySlider.Padding, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        shuxcth:ControlMaterialState.NativeControl="{x:Bind ChargeEfficiencySlider, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                        BorderThickness="{x:Bind ChargeEfficiencySlider.BorderThickness, Mode=OneWay}"
+                        FlowDirection="{x:Bind ChargeEfficiencySlider.FlowDirection, Mode=OneWay}"
+                        FontFamily="{x:Bind ChargeEfficiencySlider.FontFamily, Mode=OneWay}"
+                        FontSize="{x:Bind ChargeEfficiencySlider.FontSize, Mode=OneWay}"
+                        FontStyle="{x:Bind ChargeEfficiencySlider.FontStyle, Mode=OneWay}"
+                        FontWeight="{x:Bind ChargeEfficiencySlider.FontWeight, Mode=OneWay}"
+                        Foreground="{x:Bind ChargeEfficiencySlider.Foreground, Mode=OneWay}"
+                        Header="{x:Bind ChargeEfficiencySlider.Header, Mode=OneWay}"
+                        HeaderTemplate="{x:Bind ChargeEfficiencySlider.HeaderTemplate, Mode=OneWay}"
+                        IsDirectionReversed="{x:Bind ChargeEfficiencySlider.IsDirectionReversed, Mode=OneWay}"
+                        IsEnabled="{x:Bind ChargeEfficiencySlider.IsEnabled, Mode=OneWay}"
+                        LargeChange="{x:Bind ChargeEfficiencySlider.LargeChange, Mode=OneWay}"
+                        Maximum="{x:Bind ChargeEfficiencySlider.Maximum, Mode=OneWay}"
+                        Minimum="{x:Bind ChargeEfficiencySlider.Minimum, Mode=OneWay}"
+                        Orientation="{x:Bind ChargeEfficiencySlider.Orientation, Mode=OneWay}"
+                        SmallChange="{x:Bind ChargeEfficiencySlider.SmallChange, Mode=OneWay}"
+                        StepFrequency="{x:Bind ChargeEfficiencySlider.StepFrequency, Mode=OneWay}"
+                        TickFrequency="{x:Bind ChargeEfficiencySlider.TickFrequency, Mode=OneWay}"
+                        TickPlacement="{x:Bind ChargeEfficiencySlider.TickPlacement, Mode=OneWay}"
+                        Value="{x:Bind ChargeEfficiencySlider.Value, Mode=TwoWay}"/>
+                </cwc:Case>
+            </cwc:SwitchPresenter>
             <TextBlock
+                x:Name="ChargeEfficiencyLabel"
                 Grid.Row="3"
                 Grid.Column="2"
-                x:Name="ChargeEfficiencyLabel"
                 VerticalAlignment="Center"
                 TextAlignment="Right"/>
 
-            <!-- EM -->
+            <!--  EM  -->
             <TextBlock
                 Grid.Row="4"
                 Grid.Column="0"
                 VerticalAlignment="Center"
                 Text="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigElementalMastery}"/>
-            <Slider
+            <cwc:SwitchPresenter
+                x:Name="GlassPresenter_6316"
                 Grid.Row="4"
                 Grid.Column="1"
-                x:Name="ElementalMasterySlider"
-                Minimum="0"
-                Maximum="1.0"
-                StepFrequency="0.1"
-                ValueChanged="OnSliderValueChanged"/>
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                IsTabStop="False"
+                Tag="LiquidGlass:Slider"
+                Visibility="{x:Bind ElementalMasterySlider.Visibility, Mode=OneWay}"
+                Value="{x:Bind shuxcth:MaterialBindingSource.Current.SliderMaterial, Mode=OneWay}">
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>0</x:Int32>
+                    </cwc:Case.Value>
+                    <Slider
+                        x:Name="ElementalMasterySlider"
+                        DataContext="{x:Bind GlassPresenter_6316.DataContext, Mode=OneWay}"
+                        Maximum="1.0"
+                        Minimum="0"
+                        RequestedTheme="{x:Bind GlassPresenter_6316.ActualTheme, Mode=OneWay}"
+                        StepFrequency="0.1"
+                        ValueChanged="OnSliderValueChanged"/>
+                </cwc:Case>
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>1</x:Int32>
+                    </cwc:Case.Value>
+                    <wl:LiquidGlassSlider
+                        x:Name="ElementalMasterySliderGlass"
+                        Width="{x:Bind ElementalMasterySlider.Width, Mode=OneWay}"
+                        Height="{x:Bind ElementalMasterySlider.Height, Mode=OneWay}"
+                        MinWidth="{x:Bind ElementalMasterySlider.MinWidth, Mode=OneWay}"
+                        MinHeight="{x:Bind ElementalMasterySlider.MinHeight, Mode=OneWay}"
+                        MaxWidth="{x:Bind ElementalMasterySlider.MaxWidth, Mode=OneWay}"
+                        MaxHeight="{x:Bind ElementalMasterySlider.MaxHeight, Mode=OneWay}"
+                        Padding="{x:Bind ElementalMasterySlider.Padding, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        shuxcth:ControlMaterialState.NativeControl="{x:Bind ElementalMasterySlider, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                        BorderThickness="{x:Bind ElementalMasterySlider.BorderThickness, Mode=OneWay}"
+                        FlowDirection="{x:Bind ElementalMasterySlider.FlowDirection, Mode=OneWay}"
+                        FontFamily="{x:Bind ElementalMasterySlider.FontFamily, Mode=OneWay}"
+                        FontSize="{x:Bind ElementalMasterySlider.FontSize, Mode=OneWay}"
+                        FontStyle="{x:Bind ElementalMasterySlider.FontStyle, Mode=OneWay}"
+                        FontWeight="{x:Bind ElementalMasterySlider.FontWeight, Mode=OneWay}"
+                        Foreground="{x:Bind ElementalMasterySlider.Foreground, Mode=OneWay}"
+                        Header="{x:Bind ElementalMasterySlider.Header, Mode=OneWay}"
+                        HeaderTemplate="{x:Bind ElementalMasterySlider.HeaderTemplate, Mode=OneWay}"
+                        IsDirectionReversed="{x:Bind ElementalMasterySlider.IsDirectionReversed, Mode=OneWay}"
+                        IsEnabled="{x:Bind ElementalMasterySlider.IsEnabled, Mode=OneWay}"
+                        LargeChange="{x:Bind ElementalMasterySlider.LargeChange, Mode=OneWay}"
+                        Maximum="{x:Bind ElementalMasterySlider.Maximum, Mode=OneWay}"
+                        Minimum="{x:Bind ElementalMasterySlider.Minimum, Mode=OneWay}"
+                        Orientation="{x:Bind ElementalMasterySlider.Orientation, Mode=OneWay}"
+                        SmallChange="{x:Bind ElementalMasterySlider.SmallChange, Mode=OneWay}"
+                        StepFrequency="{x:Bind ElementalMasterySlider.StepFrequency, Mode=OneWay}"
+                        TickFrequency="{x:Bind ElementalMasterySlider.TickFrequency, Mode=OneWay}"
+                        TickPlacement="{x:Bind ElementalMasterySlider.TickPlacement, Mode=OneWay}"
+                        Value="{x:Bind ElementalMasterySlider.Value, Mode=TwoWay}"/>
+                </cwc:Case>
+            </cwc:SwitchPresenter>
             <TextBlock
+                x:Name="ElementalMasteryLabel"
                 Grid.Row="4"
                 Grid.Column="2"
-                x:Name="ElementalMasteryLabel"
                 VerticalAlignment="Center"
                 TextAlignment="Right"/>
 
-            <!-- HP% -->
+            <!--  HP%  -->
             <TextBlock
                 Grid.Row="5"
                 Grid.Column="0"
                 VerticalAlignment="Center"
                 Text="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigHpPercent}"/>
-            <Slider
+            <cwc:SwitchPresenter
+                x:Name="GlassPresenter_7061"
                 Grid.Row="5"
                 Grid.Column="1"
-                x:Name="HpPercentSlider"
-                Minimum="0"
-                Maximum="1.0"
-                StepFrequency="0.1"
-                ValueChanged="OnSliderValueChanged"/>
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                IsTabStop="False"
+                Tag="LiquidGlass:Slider"
+                Visibility="{x:Bind HpPercentSlider.Visibility, Mode=OneWay}"
+                Value="{x:Bind shuxcth:MaterialBindingSource.Current.SliderMaterial, Mode=OneWay}">
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>0</x:Int32>
+                    </cwc:Case.Value>
+                    <Slider
+                        x:Name="HpPercentSlider"
+                        DataContext="{x:Bind GlassPresenter_7061.DataContext, Mode=OneWay}"
+                        Maximum="1.0"
+                        Minimum="0"
+                        RequestedTheme="{x:Bind GlassPresenter_7061.ActualTheme, Mode=OneWay}"
+                        StepFrequency="0.1"
+                        ValueChanged="OnSliderValueChanged"/>
+                </cwc:Case>
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>1</x:Int32>
+                    </cwc:Case.Value>
+                    <wl:LiquidGlassSlider
+                        x:Name="HpPercentSliderGlass"
+                        Width="{x:Bind HpPercentSlider.Width, Mode=OneWay}"
+                        Height="{x:Bind HpPercentSlider.Height, Mode=OneWay}"
+                        MinWidth="{x:Bind HpPercentSlider.MinWidth, Mode=OneWay}"
+                        MinHeight="{x:Bind HpPercentSlider.MinHeight, Mode=OneWay}"
+                        MaxWidth="{x:Bind HpPercentSlider.MaxWidth, Mode=OneWay}"
+                        MaxHeight="{x:Bind HpPercentSlider.MaxHeight, Mode=OneWay}"
+                        Padding="{x:Bind HpPercentSlider.Padding, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        shuxcth:ControlMaterialState.NativeControl="{x:Bind HpPercentSlider, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                        BorderThickness="{x:Bind HpPercentSlider.BorderThickness, Mode=OneWay}"
+                        FlowDirection="{x:Bind HpPercentSlider.FlowDirection, Mode=OneWay}"
+                        FontFamily="{x:Bind HpPercentSlider.FontFamily, Mode=OneWay}"
+                        FontSize="{x:Bind HpPercentSlider.FontSize, Mode=OneWay}"
+                        FontStyle="{x:Bind HpPercentSlider.FontStyle, Mode=OneWay}"
+                        FontWeight="{x:Bind HpPercentSlider.FontWeight, Mode=OneWay}"
+                        Foreground="{x:Bind HpPercentSlider.Foreground, Mode=OneWay}"
+                        Header="{x:Bind HpPercentSlider.Header, Mode=OneWay}"
+                        HeaderTemplate="{x:Bind HpPercentSlider.HeaderTemplate, Mode=OneWay}"
+                        IsDirectionReversed="{x:Bind HpPercentSlider.IsDirectionReversed, Mode=OneWay}"
+                        IsEnabled="{x:Bind HpPercentSlider.IsEnabled, Mode=OneWay}"
+                        LargeChange="{x:Bind HpPercentSlider.LargeChange, Mode=OneWay}"
+                        Maximum="{x:Bind HpPercentSlider.Maximum, Mode=OneWay}"
+                        Minimum="{x:Bind HpPercentSlider.Minimum, Mode=OneWay}"
+                        Orientation="{x:Bind HpPercentSlider.Orientation, Mode=OneWay}"
+                        SmallChange="{x:Bind HpPercentSlider.SmallChange, Mode=OneWay}"
+                        StepFrequency="{x:Bind HpPercentSlider.StepFrequency, Mode=OneWay}"
+                        TickFrequency="{x:Bind HpPercentSlider.TickFrequency, Mode=OneWay}"
+                        TickPlacement="{x:Bind HpPercentSlider.TickPlacement, Mode=OneWay}"
+                        Value="{x:Bind HpPercentSlider.Value, Mode=TwoWay}"/>
+                </cwc:Case>
+            </cwc:SwitchPresenter>
             <TextBlock
+                x:Name="HpPercentLabel"
                 Grid.Row="5"
                 Grid.Column="2"
-                x:Name="HpPercentLabel"
                 VerticalAlignment="Center"
                 TextAlignment="Right"/>
 
-            <!-- DEF% -->
+            <!--  DEF%  -->
             <TextBlock
                 Grid.Row="6"
                 Grid.Column="0"
                 VerticalAlignment="Center"
                 Text="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigDefensePercent}"/>
-            <Slider
+            <cwc:SwitchPresenter
+                x:Name="GlassPresenter_7798"
                 Grid.Row="6"
                 Grid.Column="1"
-                x:Name="DefensePercentSlider"
-                Minimum="0"
-                Maximum="1.0"
-                StepFrequency="0.1"
-                ValueChanged="OnSliderValueChanged"/>
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                IsTabStop="False"
+                Tag="LiquidGlass:Slider"
+                Visibility="{x:Bind DefensePercentSlider.Visibility, Mode=OneWay}"
+                Value="{x:Bind shuxcth:MaterialBindingSource.Current.SliderMaterial, Mode=OneWay}">
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>0</x:Int32>
+                    </cwc:Case.Value>
+                    <Slider
+                        x:Name="DefensePercentSlider"
+                        DataContext="{x:Bind GlassPresenter_7798.DataContext, Mode=OneWay}"
+                        Maximum="1.0"
+                        Minimum="0"
+                        RequestedTheme="{x:Bind GlassPresenter_7798.ActualTheme, Mode=OneWay}"
+                        StepFrequency="0.1"
+                        ValueChanged="OnSliderValueChanged"/>
+                </cwc:Case>
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>1</x:Int32>
+                    </cwc:Case.Value>
+                    <wl:LiquidGlassSlider
+                        x:Name="DefensePercentSliderGlass"
+                        Width="{x:Bind DefensePercentSlider.Width, Mode=OneWay}"
+                        Height="{x:Bind DefensePercentSlider.Height, Mode=OneWay}"
+                        MinWidth="{x:Bind DefensePercentSlider.MinWidth, Mode=OneWay}"
+                        MinHeight="{x:Bind DefensePercentSlider.MinHeight, Mode=OneWay}"
+                        MaxWidth="{x:Bind DefensePercentSlider.MaxWidth, Mode=OneWay}"
+                        MaxHeight="{x:Bind DefensePercentSlider.MaxHeight, Mode=OneWay}"
+                        Padding="{x:Bind DefensePercentSlider.Padding, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        shuxcth:ControlMaterialState.NativeControl="{x:Bind DefensePercentSlider, Mode=OneWay}"
+                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                        BorderThickness="{x:Bind DefensePercentSlider.BorderThickness, Mode=OneWay}"
+                        FlowDirection="{x:Bind DefensePercentSlider.FlowDirection, Mode=OneWay}"
+                        FontFamily="{x:Bind DefensePercentSlider.FontFamily, Mode=OneWay}"
+                        FontSize="{x:Bind DefensePercentSlider.FontSize, Mode=OneWay}"
+                        FontStyle="{x:Bind DefensePercentSlider.FontStyle, Mode=OneWay}"
+                        FontWeight="{x:Bind DefensePercentSlider.FontWeight, Mode=OneWay}"
+                        Foreground="{x:Bind DefensePercentSlider.Foreground, Mode=OneWay}"
+                        Header="{x:Bind DefensePercentSlider.Header, Mode=OneWay}"
+                        HeaderTemplate="{x:Bind DefensePercentSlider.HeaderTemplate, Mode=OneWay}"
+                        IsDirectionReversed="{x:Bind DefensePercentSlider.IsDirectionReversed, Mode=OneWay}"
+                        IsEnabled="{x:Bind DefensePercentSlider.IsEnabled, Mode=OneWay}"
+                        LargeChange="{x:Bind DefensePercentSlider.LargeChange, Mode=OneWay}"
+                        Maximum="{x:Bind DefensePercentSlider.Maximum, Mode=OneWay}"
+                        Minimum="{x:Bind DefensePercentSlider.Minimum, Mode=OneWay}"
+                        Orientation="{x:Bind DefensePercentSlider.Orientation, Mode=OneWay}"
+                        SmallChange="{x:Bind DefensePercentSlider.SmallChange, Mode=OneWay}"
+                        StepFrequency="{x:Bind DefensePercentSlider.StepFrequency, Mode=OneWay}"
+                        TickFrequency="{x:Bind DefensePercentSlider.TickFrequency, Mode=OneWay}"
+                        TickPlacement="{x:Bind DefensePercentSlider.TickPlacement, Mode=OneWay}"
+                        Value="{x:Bind DefensePercentSlider.Value, Mode=TwoWay}"/>
+                </cwc:Case>
+            </cwc:SwitchPresenter>
             <TextBlock
+                x:Name="DefensePercentLabel"
                 Grid.Row="6"
                 Grid.Column="2"
-                x:Name="DefensePercentLabel"
                 VerticalAlignment="Center"
                 TextAlignment="Right"/>
         </Grid>
 
-        <!-- Hint -->
+        <!--  Hint  -->
         <TextBlock
             Style="{StaticResource CaptionTextBlockStyle}"
             Text="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigFlatHint}"

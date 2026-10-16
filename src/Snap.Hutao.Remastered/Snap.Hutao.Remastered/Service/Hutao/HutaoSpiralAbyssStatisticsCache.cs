@@ -20,13 +20,13 @@ public sealed partial class HutaoSpiralAbyssStatisticsCache : StatisticsCache, I
     [GeneratedConstructor]
     public partial HutaoSpiralAbyssStatisticsCache(IServiceProvider serviceProvider);
 
-    public ImmutableArray<AvatarRankView> AvatarUsageRanks { get; set; }
+    public ImmutableArray<AvatarRankView> AvatarUsageRanks { get; set; } = [];
 
-    public ImmutableArray<AvatarRankView> AvatarAppearanceRanks { get; set; }
+    public ImmutableArray<AvatarRankView> AvatarAppearanceRanks { get; set; } = [];
 
-    public ImmutableArray<AvatarConstellationInfoView> AvatarConstellationInfos { get; set; }
+    public ImmutableArray<AvatarConstellationInfoView> AvatarConstellationInfos { get; set; } = [];
 
-    public ImmutableArray<TeamAppearanceView> TeamAppearances { get; set; }
+    public ImmutableArray<TeamAppearanceView> TeamAppearances { get; set; } = [];
 
     public Overview? Overview { get; set; }
 

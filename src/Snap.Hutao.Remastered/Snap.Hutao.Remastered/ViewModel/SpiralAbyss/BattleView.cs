@@ -1,14 +1,15 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Model;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Metadata.Tower;
+using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.SpiralAbyss;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.SpiralAbyss;
 
-public sealed class BattleView
+public sealed partial class BattleView : ObservableObject
 {
     private BattleView(TowerLevel towerLevel, uint battleIndex, SpiralAbyssMetadataContext context)
     {
@@ -23,13 +24,15 @@ public sealed class BattleView
         {
             1U => towerLevel.FirstWaves.SelectAsArray(static (w, context) => BattleWave.Create(w, context), context),
             2U => towerLevel.SecondWaves.SelectAsArray(static (w, context) => BattleWave.Create(w, context), context),
-            _ => default!,
+            _ => [],
         };
     }
 
-    public string? Time { get; private set; }
+    [ObservableProperty]
+    public partial string? Time { get; private set; }
 
-    public ImmutableArray<AvatarView> Avatars { get; private set; } = [];
+    [ObservableProperty]
+    public partial ImmutableArray<AvatarView> Avatars { get; private set; } = [];
 
     public NameDescription? Gadget { get; }
 

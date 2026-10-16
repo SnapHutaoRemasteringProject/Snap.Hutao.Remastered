@@ -1,12 +1,13 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.RoleCombat;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.RoleCombat;
 
-public sealed class RoundView
+public sealed partial class RoundView : ObservableObject
 {
     private RoundView(RoleCombatRoundData data, in TimeSpan offset, RoleCombatMetadataContext context)
     {
@@ -25,25 +26,25 @@ public sealed class RoundView
         SplendourBuffs = data.SplendourBuff.Buffs.SelectAsArray(SplendourBuffView.Create);
     }
 
-    public string RoundId { get; }
+    public string RoundId { get; private set => SetProperty(ref field, value); }
 
-    public bool IsGetMedal { get; }
+    public bool IsGetMedal { get; private set => SetProperty(ref field, value); }
 
-    public bool IsTarot { get; }
+    public bool IsTarot { get; private set => SetProperty(ref field, value); }
 
-    public string FinishTimeString { get; }
+    public string FinishTimeString { get; private set => SetProperty(ref field, value); }
 
-    public ImmutableArray<EnemyView> Enemies { get; }
+    public ImmutableArray<EnemyView> Enemies { get; private set => SetProperty(ref field, value); }
 
-    public ImmutableArray<AvatarView> Avatars { get; }
+    public ImmutableArray<AvatarView> Avatars { get; private set => SetProperty(ref field, value); }
 
-    public ImmutableArray<BuffView> ChoiceCards { get; }
+    public ImmutableArray<BuffView> ChoiceCards { get; private set => SetProperty(ref field, value); }
 
-    public string SplendourSummary { get; }
+    public string SplendourSummary { get; private set => SetProperty(ref field, value); }
 
-    public ImmutableArray<SplendourBuffView> SplendourBuffs { get; }
+    public ImmutableArray<SplendourBuffView> SplendourBuffs { get; private set => SetProperty(ref field, value); }
 
-    public DateTimeOffset FinishTime { get; }
+    public DateTimeOffset FinishTime { get; private set => SetProperty(ref field, value); }
 
     public static RoundView Create(RoleCombatRoundData data, TimeSpan offset, RoleCombatMetadataContext context)
     {

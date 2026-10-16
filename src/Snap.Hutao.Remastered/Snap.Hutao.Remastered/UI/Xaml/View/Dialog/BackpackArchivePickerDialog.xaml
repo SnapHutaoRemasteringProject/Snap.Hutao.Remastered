@@ -2,9 +2,12 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Dialog.BackpackArchivePickerDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    xmlns:wl="using:WinUI.LiquidGlass"
     Title="{shuxm:ResourceString Name=ViewDialogBackpackArchivePickerTitle}"
     CloseButtonText="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"
     DefaultButton="Primary"
@@ -13,11 +16,65 @@
     mc:Ignorable="d">
 
     <Grid>
-        <ComboBox
-            x:Name="ArchiveComboBox"
-            MinWidth="240"
+        <cwc:SwitchPresenter
+            x:Name="GlassPresenter_806"
             Margin="0,0,0,8"
             VerticalAlignment="Top"
-            DisplayMemberPath="Name"/>
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            IsTabStop="False"
+            Tag="LiquidGlass:ComboBox"
+            Visibility="{x:Bind ArchiveComboBox.Visibility, Mode=OneWay}"
+            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
+            <cwc:Case>
+                <cwc:Case.Value>
+                    <x:Int32>0</x:Int32>
+                </cwc:Case.Value>
+                <ComboBox
+                    x:Name="ArchiveComboBox"
+                    MinWidth="240"
+                    VerticalAlignment="Top"
+                    DataContext="{x:Bind GlassPresenter_806.DataContext, Mode=OneWay}"
+                    DisplayMemberPath="Name"
+                    RequestedTheme="{x:Bind GlassPresenter_806.ActualTheme, Mode=OneWay}"/>
+            </cwc:Case>
+            <cwc:Case>
+                <cwc:Case.Value>
+                    <x:Int32>1</x:Int32>
+                </cwc:Case.Value>
+                <wl:LiquidGlassComboBox
+                    x:Name="ArchiveComboBoxGlass"
+                    Width="{x:Bind ArchiveComboBox.Width, Mode=OneWay}"
+                    Height="{x:Bind ArchiveComboBox.Height, Mode=OneWay}"
+                    MinWidth="{x:Bind ArchiveComboBox.MinWidth, Mode=OneWay}"
+                    MinHeight="{x:Bind ArchiveComboBox.MinHeight, Mode=OneWay}"
+                    MaxWidth="{x:Bind ArchiveComboBox.MaxWidth, Mode=OneWay}"
+                    MaxHeight="{x:Bind ArchiveComboBox.MaxHeight, Mode=OneWay}"
+                    Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(ArchiveComboBox.Padding), Mode=OneWay}"
+                    VerticalAlignment="Top"
+                    shuxcth:ControlMaterialState.IsManaged="True"
+                    shuxcth:ControlMaterialState.NativeControl="{x:Bind ArchiveComboBox, Mode=OneWay}"
+                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                    BorderThickness="{x:Bind ArchiveComboBox.BorderThickness, Mode=OneWay}"
+                    DisplayMemberPath="{x:Bind ArchiveComboBox.DisplayMemberPath, Mode=OneWay}"
+                    FlowDirection="{x:Bind ArchiveComboBox.FlowDirection, Mode=OneWay}"
+                    FontFamily="{x:Bind ArchiveComboBox.FontFamily, Mode=OneWay}"
+                    FontSize="{x:Bind ArchiveComboBox.FontSize, Mode=OneWay}"
+                    FontStyle="{x:Bind ArchiveComboBox.FontStyle, Mode=OneWay}"
+                    FontWeight="{x:Bind ArchiveComboBox.FontWeight, Mode=OneWay}"
+                    Foreground="{x:Bind ArchiveComboBox.Foreground, Mode=OneWay}"
+                    Header="{x:Bind ArchiveComboBox.Header, Mode=OneWay}"
+                    HeaderTemplate="{x:Bind ArchiveComboBox.HeaderTemplate, Mode=OneWay}"
+                    IsDropDownOpen="{x:Bind ArchiveComboBox.IsDropDownOpen, Mode=TwoWay}"
+                    IsEditable="{x:Bind ArchiveComboBox.IsEditable, Mode=OneWay}"
+                    IsEnabled="{x:Bind ArchiveComboBox.IsEnabled, Mode=OneWay}"
+                    IsTextSearchEnabled="{x:Bind ArchiveComboBox.IsTextSearchEnabled, Mode=OneWay}"
+                    ItemsSource="{x:Bind ArchiveComboBox.ItemsSource, Mode=OneWay}"
+                    MaxDropDownHeight="{x:Bind ArchiveComboBox.MaxDropDownHeight, Mode=OneWay}"
+                    PlaceholderText="{x:Bind ArchiveComboBox.PlaceholderText, Mode=OneWay}"
+                    SelectedIndex="{x:Bind ArchiveComboBox.SelectedIndex, Mode=TwoWay}"
+                    SelectedValuePath="{x:Bind ArchiveComboBox.SelectedValuePath, Mode=OneWay}"/>
+            </cwc:Case>
+        </cwc:SwitchPresenter>
     </Grid>
 </ContentDialog>

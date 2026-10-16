@@ -7,11 +7,11 @@ namespace Snap.Hutao.Remastered.ViewModel.AvatarProperty;
 
 public sealed class RecommendPropertiesView
 {
-    public ImmutableArray<string?> SandProperties { get; set; }
+    public ImmutableArray<string?> SandProperties { get; set; } = [];
 
-    public ImmutableArray<string?> GobletProperties { get; set; }
+    public ImmutableArray<string?> GobletProperties { get; set; } = [];
 
-    public ImmutableArray<string?> CircletProperties { get; set; }
+    public ImmutableArray<string?> CircletProperties { get; set; } = [];
 
-    public ImmutableArray<string?> SubProperties { get; set; }
+    public ImmutableArray<string?> SubProperties { get; set; } = [];
 }

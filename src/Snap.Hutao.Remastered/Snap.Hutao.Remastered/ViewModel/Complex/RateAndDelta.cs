@@ -1,9 +1,11 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace Snap.Hutao.Remastered.ViewModel.Complex;
 
-public class RateAndDelta
+public partial class RateAndDelta : ObservableObject
 {
     public RateAndDelta(double rate, double? lastRate)
     {
@@ -11,9 +13,9 @@ public class RateAndDelta
         RateDelta = lastRate.TryGetValue(out double lastRateValue) ? FormatDelta(rate - lastRateValue) : string.Empty;
     }
 
-    public string Rate { get; }
+    public string Rate { get; private set => SetProperty(ref field, value); }
 
-    public string RateDelta { get; }
+    public string RateDelta { get; private set => SetProperty(ref field, value); }
 
     public static RateAndDelta Create((double Rate, double? LastRate) tuple)
     {

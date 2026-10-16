@@ -1,14 +1,15 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Model.Intrinsic;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Intrinsic.Frozen;
+using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.ViewModel.Cultivation;
 using System.Text.RegularExpressions;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Item;
 
-public sealed class Material : DisplayItem
+public sealed partial class Material : DisplayItem
 {
     public static readonly Material Default = new()
     {
@@ -21,9 +22,9 @@ public sealed class Material : DisplayItem
         TypeDescription = "？？？",
     };
 
-    public MaterialType MaterialType { get; init; }
+    public MaterialType MaterialType { get; init => SetProperty(ref field, value); }
 
-    public string? EffectDescription { get; init; }
+    public string? EffectDescription { get; init => SetProperty(ref field, value); }
 
     public bool IsInventoryItem()
     {

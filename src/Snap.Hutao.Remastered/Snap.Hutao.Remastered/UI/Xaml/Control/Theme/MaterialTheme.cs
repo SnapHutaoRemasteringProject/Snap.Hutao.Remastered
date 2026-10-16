@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.UI.Xaml;
+using Snap.Hutao.Remastered.Core.Setting;
 using WinUI.Composition.Hlsl;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
@@ -21,6 +22,7 @@ public static class MaterialTheme
     public static void Apply(ControlMaterial material)
     {
         currentMaterial = material;
+        ControlMaterialState.Apply(material);
 
         if (Application.Current is not { } application)
         {
@@ -61,7 +63,8 @@ public static class MaterialTheme
             {
                 if (variant.TryGetValue(key, out object? resource) && resource is LiquidGlassBrush brush)
                 {
-                    brush.IsEnabled = material is ControlMaterial.LiquidGlass;
+                    ControlMaterialState.ConfigureSurface(brush);
+                    brush.IsEnabled = material is ControlMaterial.LiquidGlass && LocalSetting.Get("LiquidGlass.CardEnabled", true);
                 }
             }
         }

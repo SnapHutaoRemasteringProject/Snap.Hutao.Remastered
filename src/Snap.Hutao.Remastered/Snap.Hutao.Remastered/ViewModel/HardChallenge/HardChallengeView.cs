@@ -1,18 +1,19 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Model;
+using CommunityToolkit.Mvvm.ComponentModel;
+using MetadataHardChallengeSchedule = Snap.Hutao.Remastered.Model.Metadata.HardChallengeSchedule;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Intrinsic;
+using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.HardChallenge;
 using System.Collections.Immutable;
 using System.Globalization;
-using MetadataHardChallengeSchedule = Snap.Hutao.Remastered.Model.Metadata.HardChallengeSchedule;
 
 namespace Snap.Hutao.Remastered.ViewModel.HardChallenge;
 
-public sealed partial class HardChallengeView : IEntityAccess<HardChallengeEntry?>, IPropertyValuesProvider
+public sealed partial class HardChallengeView : ObservableObject, IEntityAccess<HardChallengeEntry?>, IPropertyValuesProvider
 {
     private HardChallengeView(HardChallengeEntry entity, HardChallengeMetadataContext context)
         : this(context.IdHardChallengeScheduleMap[entity.ScheduleId], context)
@@ -62,23 +63,23 @@ public sealed partial class HardChallengeView : IEntityAccess<HardChallengeEntry
         FormattedTime = $"{hardChallengeSchedule.Begin:yyyy.MM.dd HH:mm} - {hardChallengeSchedule.End:yyyy.MM.dd HH:mm}";
     }
 
-    public uint ScheduleId { get; }
+    public uint ScheduleId { get; private set => SetProperty(ref field, value); }
 
-    public string ScheduleName { get; }
+    public string ScheduleName { get; private set => SetProperty(ref field, value); }
 
     public string Schedule { get => SH.FormatModelEntityHardChallengeSchedule(ScheduleId - 5269000, ScheduleName); }
 
-    public string FormattedTime { get; }
+    public string FormattedTime { get; private set => SetProperty(ref field, value); }
 
-    public string? MaxDifficulty { get; }
+    public string? MaxDifficulty { get; private set => SetProperty(ref field, value); }
 
-    public bool Engaged { get; }
+    public bool Engaged { get; private set => SetProperty(ref field, value); }
 
-    public HardChallengeEntry? Entity { get; }
+    public HardChallengeEntry? Entity { get; private set => SetProperty(ref field, value); }
 
-    public IAdvancedCollectionView<DataEntryView>? DataEntries { get; }
+    public IAdvancedCollectionView<DataEntryView>? DataEntries { get; private set => SetProperty(ref field, value); }
 
-    public ImmutableArray<AvatarBling> BlingAvatars { get; } = [];
+    public ImmutableArray<AvatarBling> BlingAvatars { get; private set => SetProperty(ref field, value); } = [];
 
     public static HardChallengeView Create(HardChallengeEntry entity, HardChallengeMetadataContext context)
     {
@@ -88,5 +89,19 @@ public sealed partial class HardChallengeView : IEntityAccess<HardChallengeEntry
     public static HardChallengeView Create(HardChallengeEntry? entity, MetadataHardChallengeSchedule meta, HardChallengeMetadataContext context)
     {
         return entity is not null ? new(entity, context) : new(meta, context);
+    }
+
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        switch (e.PropertyName)
+        {
+            case nameof(ScheduleId):
+                OnPropertyChanged(nameof(Schedule));
+                break;
+            case nameof(ScheduleName):
+                OnPropertyChanged(nameof(Schedule));
+                break;
+        }
     }
 }

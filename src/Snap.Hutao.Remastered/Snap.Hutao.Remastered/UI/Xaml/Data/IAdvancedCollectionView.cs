@@ -9,7 +9,9 @@ using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Data;
 
-public interface IAdvancedCollectionView<T> : ICollectionView
+// Compiled bindings inspect this declared type, not the runtime implementation.
+// CurrentItem/Count changes must expose the notification contract here as well.
+public interface IAdvancedCollectionView<T> : ICollectionView, INotifyPropertyChanged
     where T : class
 {
     object? ICollectionView.CurrentItem
@@ -17,7 +19,9 @@ public interface IAdvancedCollectionView<T> : ICollectionView
         get => CurrentItem;
     }
 
-    new T? CurrentItem { get; }
+    // The concrete view already routes its setter through MoveCurrentTo. Expose
+    // the same contract here so compiled TwoWay bindings need no concrete cast.
+    new T? CurrentItem { get; set; }
 
     Predicate<T>? Filter { get; set; }
 

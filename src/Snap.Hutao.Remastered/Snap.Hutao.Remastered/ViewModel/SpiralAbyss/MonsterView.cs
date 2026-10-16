@@ -1,16 +1,17 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Model;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Metadata.Converter;
 using Snap.Hutao.Remastered.Model.Metadata.Tower;
 using Snap.Hutao.Remastered.Model.Primitive;
+using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.SpiralAbyss;
 
-public sealed class MonsterView : INameIcon<Uri>
+public sealed partial class MonsterView : ObservableObject, INameIcon<Uri>
 {
     private MonsterView(in MonsterDescribeId id)
     {
@@ -29,17 +30,17 @@ public sealed class MonsterView : INameIcon<Uri>
         AttackMonolith = towerMonster.AttackMonolith;
     }
 
-    public string Name { get; }
+    public string Name { get; private set => SetProperty(ref field, value); }
 
-    public Uri Icon { get; }
+    public Uri Icon { get; private set => SetProperty(ref field, value); }
 
-    public ImmutableArray<NameDescription> Affixes { get; }
+    public ImmutableArray<NameDescription> Affixes { get; private set => SetProperty(ref field, value); }
 
-    public int Count { get; }
+    public int Count { get; private set => SetProperty(ref field, value); }
 
     public bool IsCountOne { get => Count == 1; }
 
-    public bool AttackMonolith { get; }
+    public bool AttackMonolith { get; private set => SetProperty(ref field, value); }
 
     public static MonsterView Default(in MonsterDescribeId id)
     {
@@ -49,5 +50,16 @@ public sealed class MonsterView : INameIcon<Uri>
     public static MonsterView Create(TowerMonster tower, Model.Metadata.Monster.Monster meta)
     {
         return new(tower, meta);
+    }
+
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        switch (e.PropertyName)
+        {
+            case nameof(Count):
+                OnPropertyChanged(nameof(IsCountOne));
+                break;
+        }
     }
 }

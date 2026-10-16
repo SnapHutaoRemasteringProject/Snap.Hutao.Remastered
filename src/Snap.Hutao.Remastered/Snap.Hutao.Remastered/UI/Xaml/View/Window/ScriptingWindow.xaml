@@ -2,10 +2,13 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Window.ScriptingWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shvs="using:Snap.Hutao.Remastered.ViewModel.Scripting"
+    xmlns:wl="using:WinUI.LiquidGlass"
     mc:Ignorable="d">
 
     <Grid>
@@ -40,26 +43,98 @@
                 <!--  Result  -->
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <TextBox
+            <cwc:SwitchPresenter
+                x:Name="GlassPresenter_1568"
                 Grid.Row="0"
-                AcceptsReturn="True"
-                IsSpellCheckEnabled="False"
-                Text="{Binding InputScript, Mode=TwoWay}"/>
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                IsTabStop="False"
+                Tag="LiquidGlass:TextBox"
+                Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>0</x:Int32>
+                    </cwc:Case.Value>
+                    <TextBox
+                        AcceptsReturn="True"
+                        IsSpellCheckEnabled="False"
+                        Text="{Binding InputScript, Mode=TwoWay}"/>
+                </cwc:Case>
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>1</x:Int32>
+                    </cwc:Case.Value>
+                    <wl:LiquidGlassTextBox
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        AcceptsReturn="True"
+                        IsSpellCheckEnabled="False"
+                        Text="{Binding InputScript, Mode=TwoWay}"/>
+                </cwc:Case>
+            </cwc:SwitchPresenter>
             <Grid Grid.Row="1" ColumnSpacing="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <HyperlinkButton
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_1989"
                     VerticalAlignment="Stretch"
-                    Content="&#xE946;"
-                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                    NavigateUri="https://github.com/DGP-Studio/Snap.Hutao.Remastered/blob/main/src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Core/Scripting/ScriptContext.cs"/>
-                <Button
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:HyperlinkButton"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.HyperlinkButtonMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <HyperlinkButton
+                            VerticalAlignment="Stretch"
+                            Content="&#xE946;"
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            NavigateUri="https://github.com/DGP-Studio/Snap.Hutao.Remastered/blob/main/src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Core/Scripting/ScriptContext.cs"/>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassHyperlinkButton
+                            VerticalAlignment="Stretch"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Content="&#xE946;"
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            NavigateUri="https://github.com/DGP-Studio/Snap.Hutao.Remastered/blob/main/src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Core/Scripting/ScriptContext.cs"/>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_2358"
                     Grid.Column="1"
                     HorizontalAlignment="Stretch"
-                    Command="{Binding ExecuteScriptCommand}"
-                    Content="{shuxm:ResourceString Name=ViewWindowScriptingExecute}"/>
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:Button"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <Button
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding ExecuteScriptCommand}"
+                            Content="{shuxm:ResourceString Name=ViewWindowScriptingExecute}"/>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassButton
+                            HorizontalAlignment="Stretch"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Command="{Binding ExecuteScriptCommand}"
+                            Content="{shuxm:ResourceString Name=ViewWindowScriptingExecute}"/>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
             </Grid>
 
             <Border Grid.Row="2" Style="{ThemeResource BorderCardStyle}">

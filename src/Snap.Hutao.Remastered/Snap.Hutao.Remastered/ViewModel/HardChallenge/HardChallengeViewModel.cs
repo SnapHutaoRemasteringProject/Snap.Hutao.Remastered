@@ -42,7 +42,7 @@ public sealed partial class HardChallengeViewModel : Abstraction.ViewModel, IRec
     }
 
     [ObservableProperty]
-    public partial ImmutableArray<AvatarView> BlingAvatars { get; set; }
+    public partial ImmutableArray<AvatarView> BlingAvatars { get; set; } = [];
 
     public void Receive(UserAndUidChangedMessage message)
     {
@@ -107,7 +107,7 @@ public sealed partial class HardChallengeViewModel : Abstraction.ViewModel, IRec
                 HardChallengeEntries = hardChallengeEntries;
                 HardChallengeEntries.MoveCurrentTo(HardChallengeEntries.Source.FirstOrDefault(s => s.Engaged));
 
-                BlingAvatars = blingAvatars;
+                BlingAvatars = blingAvatars.EmptyIfDefault();
             }
         }
         catch (OperationCanceledException)

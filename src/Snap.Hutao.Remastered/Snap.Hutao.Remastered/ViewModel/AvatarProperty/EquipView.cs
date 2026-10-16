@@ -1,18 +1,23 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Model;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Intrinsic;
+using Snap.Hutao.Remastered.Model;
 
 namespace Snap.Hutao.Remastered.ViewModel.AvatarProperty;
 
-public abstract class EquipView : NameIconDescription
+public abstract partial class EquipView : NameIconDescription
 {
-    public string Level { get; set; } = default!;
+    [ObservableProperty]
+    public partial string Level { get; set; } = default!;
 
-    public QualityType Quality { get; set; }
+    [ObservableProperty]
+    public partial QualityType Quality { get; set; }
 
-    public NameValue<string>? MainProperty { get; set; }
+    [ObservableProperty]
+    public partial NameValue<string>? MainProperty { get; set; }
 
-    public EquipType EquipType { get; set; }
+    [ObservableProperty]
+    public partial EquipType EquipType { get; set; }
 }

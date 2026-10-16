@@ -1,13 +1,14 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Model;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Model.Metadata.Avatar;
+using Snap.Hutao.Remastered.Model;
 
 namespace Snap.Hutao.Remastered.ViewModel.SpiralAbyss;
 
-public class AvatarView : INameIconSide<Uri>
+public partial class AvatarView : ObservableObject, INameIconSide<Uri>
 {
     protected AvatarView(Avatar metaAvatar)
     {
@@ -17,13 +18,13 @@ public class AvatarView : INameIconSide<Uri>
         Quality = metaAvatar.Quality;
     }
 
-    public string Name { get; }
+    public string Name { get; private set => SetProperty(ref field, value); }
 
-    public Uri Icon { get; }
+    public Uri Icon { get; private set => SetProperty(ref field, value); }
 
-    public Uri SideIcon { get; }
+    public Uri SideIcon { get; private set => SetProperty(ref field, value); }
 
-    public QualityType Quality { get; }
+    public QualityType Quality { get; private set => SetProperty(ref field, value); }
 
     public static AvatarView From(Avatar source)
     {

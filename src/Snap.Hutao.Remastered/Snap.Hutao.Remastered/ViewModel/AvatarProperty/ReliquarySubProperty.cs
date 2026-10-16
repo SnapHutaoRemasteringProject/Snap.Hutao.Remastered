@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace Snap.Hutao.Remastered.ViewModel.AvatarProperty;
 
-public class ReliquarySubProperty
+public partial class ReliquarySubProperty
 {
     public ReliquarySubProperty(FightProperty type, string value)
     {

@@ -31,7 +31,6 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox;
 [DependencyProperty<DataTemplateSelector>("SuggestedItemTemplateSelector")]
 [DependencyProperty<Style>("SuggestedItemContainerStyle")]
 [DependencyProperty<bool>("TabNavigateBackOnArrow", DefaultValue = false, NotNull = true)]
-[DependencyProperty<string>("Text", PropertyChangedCallbackName = nameof(OnTextPropertyChanged))]
 [DependencyProperty<string>("TextMemberPath")]
 [DependencyProperty<DataTemplate>("TokenItemTemplate")]
 [DependencyProperty<DataTemplateSelector>("TokenItemTemplateSelector")]
@@ -45,6 +44,16 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox;
 [TemplatePart(Name = MaxUnreachedState, Type = typeof(VisualState))]
 public sealed partial class AutoSuggestTokenBox : ListViewBase
 {
+    // Compiled TwoWay bindings require the target DP identifier to be public.
+    public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
+        nameof(Text), typeof(string), typeof(AutoSuggestTokenBox), new PropertyMetadata(null, OnTextPropertyChanged));
+
+    public string? Text
+    {
+        get => (string?)GetValue(TextProperty);
+        set => SetValue(TextProperty, value);
+    }
+
     public const string NormalState = "Normal";
     public const string PointerOverState = "PointerOver";
     public const string FocusedState = "Focused";

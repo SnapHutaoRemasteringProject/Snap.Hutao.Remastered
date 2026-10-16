@@ -12,7 +12,7 @@
     mc:Ignorable="d">
 
     <ContentDialog.PrimaryButtonStyle>
-        <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+        <Style BasedOn="{StaticResource DefaultButtonStyle}" TargetType="Button">
             <Setter Property="Background" Value="#C42B1C"/>
             <Setter Property="Foreground" Value="White"/>
         </Style>

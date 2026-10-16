@@ -22,22 +22,22 @@ public sealed partial class HutaoSpiralAbyssDatabaseViewModel : Abstraction.View
     public partial HutaoSpiralAbyssDatabaseViewModel(IServiceProvider serviceProvider);
 
     [ObservableProperty]
-    public partial ImmutableArray<AvatarRankView> AvatarUsageRanks { get; set; }
+    public partial ImmutableArray<AvatarRankView> AvatarUsageRanks { get; set; } = [];
 
     [ObservableProperty]
     public partial AvatarRankView? SelectedAvatarUsageRank { get; set; }
 
     [ObservableProperty]
-    public partial ImmutableArray<AvatarRankView> AvatarAppearanceRanks { get; set; }
+    public partial ImmutableArray<AvatarRankView> AvatarAppearanceRanks { get; set; } = [];
 
     [ObservableProperty]
     public partial AvatarRankView? SelectedAvatarAppearanceRank { get; set; }
 
     [ObservableProperty]
-    public partial ImmutableArray<AvatarConstellationInfoView> AvatarConstellationInfos { get; set; }
+    public partial ImmutableArray<AvatarConstellationInfoView> AvatarConstellationInfos { get; set; } = [];
 
     [ObservableProperty]
-    public partial ImmutableArray<TeamAppearanceView> TeamAppearances { get; set; }
+    public partial ImmutableArray<TeamAppearanceView> TeamAppearances { get; set; } = [];
 
     [ObservableProperty]
     public partial TeamAppearanceView? SelectedTeamAppearance { get; set; }
@@ -56,16 +56,16 @@ public sealed partial class HutaoSpiralAbyssDatabaseViewModel : Abstraction.View
         await hutaoCache.InitializeForSpiralAbyssViewAsync(context).ConfigureAwait(false);
 
         await taskContext.SwitchToMainThreadAsync();
-        AvatarAppearanceRanks = hutaoCache.AvatarAppearanceRanks;
+        AvatarAppearanceRanks = hutaoCache.AvatarAppearanceRanks.EmptyIfDefault();
         SelectedAvatarAppearanceRank = AvatarAppearanceRanks.FirstOrDefault();
 
-        AvatarUsageRanks = hutaoCache.AvatarUsageRanks;
+        AvatarUsageRanks = hutaoCache.AvatarUsageRanks.EmptyIfDefault();
         SelectedAvatarUsageRank = AvatarUsageRanks.FirstOrDefault();
 
-        TeamAppearances = hutaoCache.TeamAppearances;
+        TeamAppearances = hutaoCache.TeamAppearances.EmptyIfDefault();
         SelectedTeamAppearance = TeamAppearances.FirstOrDefault();
 
-        AvatarConstellationInfos = hutaoCache.AvatarConstellationInfos;
+        AvatarConstellationInfos = hutaoCache.AvatarConstellationInfos.EmptyIfDefault();
         Overview = hutaoCache.Overview;
     }
 }

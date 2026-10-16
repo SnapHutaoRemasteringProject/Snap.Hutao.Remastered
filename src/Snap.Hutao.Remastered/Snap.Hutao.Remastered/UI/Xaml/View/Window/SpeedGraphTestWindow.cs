@@ -125,14 +125,12 @@ public sealed class SpeedGraphTestWindow : Microsoft.UI.Xaml.Window,
 
         replayButton.Content = SH.ViewWindowSpeedGraphTestReplay;
         replayButton.Click += ReplayButton_Click;
-        buttonPanel.Children.Add(replayButton);
+        buttonPanel.Children.Add(Snap.Hutao.Remastered.UI.Xaml.Control.Theme.ControlMaterialState.CreateButtonPresenter(replayButton, ReplayButton_Click));
 
-        Button closeButton = new()
-        {
-            Content = SH.ViewWindowSpeedGraphTestClose,
-        };
+        Button closeButton = new();
+        closeButton.Content = SH.ViewWindowSpeedGraphTestClose;
         closeButton.Click += CloseButton_Click;
-        buttonPanel.Children.Add(closeButton);
+        buttonPanel.Children.Add(Snap.Hutao.Remastered.UI.Xaml.Control.Theme.ControlMaterialState.CreateButtonPresenter(closeButton, CloseButton_Click));
         rootGrid.Children.Add(buttonPanel);
 
         Content = rootGrid;

@@ -2,9 +2,12 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Dialog.UserAccountVerificationDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    xmlns:wl="using:WinUI.LiquidGlass"
     Title="{shuxm:ResourceString Name=ViewDialogUserAccountVerificationTitle}"
     CloseButtonText="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"
     DefaultButton="Primary"
@@ -20,16 +23,61 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <TextBox
-                CornerRadius="0,4,4,0"
-                KeyDown="OnTextKeyDown"
-                KeyUp="OnTextKeyUp"
-                PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserAccountVerificationCaptchaPlaceholder}"
-                Text="{x:Bind Captcha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button
+            <cwc:SwitchPresenter
+                x:Name="GlassPresenter_1149"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                IsTabStop="False"
+                Tag="LiquidGlass:TextBox"
+                Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>0</x:Int32>
+                    </cwc:Case.Value>
+                    <TextBox
+                        CornerRadius="0,4,4,0"
+                        KeyDown="OnTextKeyDown"
+                        KeyUp="OnTextKeyUp"
+                        PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserAccountVerificationCaptchaPlaceholder}"
+                        Text="{x:Bind Captcha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </cwc:Case>
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>1</x:Int32>
+                    </cwc:Case.Value>
+                    <wl:LiquidGlassTextBox
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        CornerRadius="0,4,4,0"
+                        KeyDown="OnTextKeyDown"
+                        KeyUp="OnTextKeyUp"
+                        PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserAccountVerificationCaptchaPlaceholder}"
+                        Text="{x:Bind Captcha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </cwc:Case>
+            </cwc:SwitchPresenter>
+            <cwc:SwitchPresenter
+                x:Name="GlassPresenter_1491"
                 Grid.Column="1"
-                Command="{x:Bind SendEmailCaptchaCommand}"
-                Content="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaSendCaptchaAction}"/>
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch"
+                IsTabStop="False"
+                Tag="LiquidGlass:Button"
+                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>0</x:Int32>
+                    </cwc:Case.Value>
+                    <Button Command="{x:Bind SendEmailCaptchaCommand}" Content="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaSendCaptchaAction}"/>
+                </cwc:Case>
+                <cwc:Case>
+                    <cwc:Case.Value>
+                        <x:Int32>1</x:Int32>
+                    </cwc:Case.Value>
+                    <wl:LiquidGlassButton
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        Command="{x:Bind SendEmailCaptchaCommand}"
+                        Content="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaSendCaptchaAction}"/>
+                </cwc:Case>
+            </cwc:SwitchPresenter>
         </Grid>
     </StackPanel>
 </ContentDialog>

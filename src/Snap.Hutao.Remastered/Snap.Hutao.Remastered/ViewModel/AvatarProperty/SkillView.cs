@@ -1,23 +1,28 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Calculable;
 using Snap.Hutao.Remastered.Model.Metadata;
 using Snap.Hutao.Remastered.Model.Primitive;
 
 namespace Snap.Hutao.Remastered.ViewModel.AvatarProperty;
 
-public sealed class SkillView : NameIconDescription, ITypedCalculableSource<ICalculableSkill, SkillType>
+public sealed partial class SkillView : NameIconDescription, ITypedCalculableSource<ICalculableSkill, SkillType>
 {
-    public LevelParameters<string, ParameterDescription> Info { get; set; } = default!;
+    [ObservableProperty]
+    public partial LevelParameters<string, ParameterDescription> Info { get; set; } = default!;
 
-    public uint LevelNumber { get; set; }
+    [ObservableProperty]
+    public partial uint LevelNumber { get; set; }
 
-    public string Level { get; set; } = default!;
+    [ObservableProperty]
+    public partial string Level { get; set; } = default!;
 
-    public SkillGroupId GroupId { get; set; }
+    public SkillGroupId GroupId { get; set => SetProperty(ref field, value); }
 
-    public string? SpecialDescription { get; set; }
+    [ObservableProperty]
+    public partial string? SpecialDescription { get; set; }
 
     public ICalculableSkill ToCalculable(SkillType type)
     {

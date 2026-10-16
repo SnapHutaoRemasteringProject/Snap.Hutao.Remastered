@@ -22,11 +22,11 @@
                 <shuxcc:VerticalCard.Top>
                     <shuxc:ItemIcon
                         shux:FrameworkElementHelper.SquareLength="40"
-                        Icon="{Binding Icon}"
-                        Quality="{Binding Quality}"/>
+                        Icon="{x:Bind Icon, Mode=OneWay}"
+                        Quality="{x:Bind Quality, Mode=OneWay}"/>
                 </shuxcc:VerticalCard.Top>
                 <shuxcc:VerticalCard.Bottom>
-                    <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{Binding Count}"/>
+                    <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind Count, Mode=OneWay}"/>
                 </shuxcc:VerticalCard.Bottom>
             </shuxcc:VerticalCard>
         </DataTemplate>

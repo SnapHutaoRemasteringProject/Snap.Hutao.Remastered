@@ -1,12 +1,13 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Model;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Intrinsic;
+using Snap.Hutao.Remastered.Model;
 
 namespace Snap.Hutao.Remastered.ViewModel.Complex;
 
-public abstract class CollocationView : RateAndDelta, INameIcon<Uri>
+public abstract partial class CollocationView : RateAndDelta, INameIcon<Uri>
 {
     protected CollocationView(double rate, double? lastRate)
         : base(rate, lastRate)

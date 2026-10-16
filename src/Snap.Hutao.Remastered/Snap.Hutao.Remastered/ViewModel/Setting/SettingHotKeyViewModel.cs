@@ -26,6 +26,30 @@ public sealed partial class SettingHotKeyViewModel : Abstraction.ViewModel
         set => LocalSetting.Set(SettingKeys.CompactWebView2WindowInactiveOpacity, value);
     }
 
+    // Instance wrappers keep compiled UI bindings reactive without changing the
+    // static settings access used by keyboard and WebView services.
+    public int VideoSeekSeconds
+    {
+        get => WebView2VideoFastForwardOrRewindSeconds;
+        set
+        {
+            if (VideoSeekSeconds == value) return;
+            WebView2VideoFastForwardOrRewindSeconds = value;
+            OnPropertyChanged(nameof(VideoSeekSeconds));
+        }
+    }
+
+    public double InactiveWindowOpacity
+    {
+        get => CompactWebView2WindowInactiveOpacity;
+        set
+        {
+            if (InactiveWindowOpacity == value) return;
+            CompactWebView2WindowInactiveOpacity = value;
+            OnPropertyChanged(nameof(InactiveWindowOpacity));
+        }
+    }
+
     public partial LowLevelKeyOptions LowLevelKeyOptions { get; }
 
     public partial RuntimeOptions RuntimeOptions { get; }

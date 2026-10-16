@@ -13,49 +13,27 @@ public sealed partial class SizeRestrictedContentControl : ContentControl
 {
     private double minContentWidth;
     private double minContentHeight;
+    private double lastAvailableWidth = double.NaN;
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        if (Content is FrameworkElement element)
+        // Wrapped content gets a new intrinsic height when its width changes.
+        if (!lastAvailableWidth.Equals(availableSize.Width))
         {
-            element.Measure(availableSize);
-            Size contentDesiredSize = element.DesiredSize;
-
-            Size contentActualOrDesiredSize = new(
-                Math.Clamp(element.ActualWidth, contentDesiredSize.Width, availableSize.Width),
-                Math.Clamp(element.ActualHeight, contentDesiredSize.Height, availableSize.Height));
-
-            if (minContentWidth > availableSize.Width)
-            {
-                minContentWidth = 0;
-            }
-
-            if (minContentHeight > availableSize.Height)
-            {
-                minContentHeight = 0;
-            }
-
-            if (IsWidthRestricted)
-            {
-                if (contentActualOrDesiredSize.Width > minContentWidth)
-                {
-                    minContentWidth = contentActualOrDesiredSize.Width;
-                }
-
-                element.MinWidth = minContentWidth;
-            }
-
-            if (IsHeightRestricted)
-            {
-                if (contentActualOrDesiredSize.Height > minContentHeight)
-                {
-                    minContentHeight = contentActualOrDesiredSize.Height;
-                }
-
-                element.MinHeight = minContentHeight;
-            }
+            minContentHeight = 0;
+            lastAvailableWidth = availableSize.Width;
         }
 
-        return base.MeasureOverride(availableSize);
+        Size desiredSize = base.MeasureOverride(availableSize);
+        if (Content is not FrameworkElement element || element.Visibility is Visibility.Collapsed)
+        {
+            return desiredSize;
+        }
+
+        // Arrange may stretch a child to the entire viewport. That actual size
+        // is not an intrinsic minimum, and must never be written back to it.
+        return new(
+            DesiredSizeRestriction.Apply(desiredSize.Width, availableSize.Width, IsWidthRestricted, ref minContentWidth),
+            DesiredSizeRestriction.Apply(desiredSize.Height, availableSize.Height, IsHeightRestricted, ref minContentHeight));
     }
 }

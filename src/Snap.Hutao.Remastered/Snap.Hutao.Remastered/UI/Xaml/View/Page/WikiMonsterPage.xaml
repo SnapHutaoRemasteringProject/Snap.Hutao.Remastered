@@ -24,7 +24,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Page.Resources>
@@ -39,11 +39,11 @@
                     Width="22"
                     Height="22"
                     Margin="0,0,8,0"
-                    Source="{Binding SideIconUri, Mode=OneWay}"/>
+                    Source="{x:Bind SideIconUri, Mode=OneTime}"/>
                 <TextBlock
                     Grid.Column="1"
                     VerticalAlignment="Center"
-                    Text="{Binding Value}"/>
+                    Text="{x:Bind Value, Mode=OneTime}"/>
             </Grid>
         </DataTemplate>
 
@@ -58,12 +58,12 @@
                     Width="48"
                     Height="48"
                     Margin="0,6,12,6"
-                    Source="{Binding Icon, Converter={StaticResource MonsterIconConverter}, Mode=OneWay}"/>
+                    Source="{x:Bind Icon, Converter={StaticResource MonsterIconConverter}, Mode=OneWay}"/>
                 <TextBlock
                     Grid.Column="1"
                     Margin="12,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding Name}"/>
+                    Text="{x:Bind Name, Mode=OneWay}"/>
             </Grid>
         </DataTemplate>
 
@@ -81,9 +81,9 @@
                     <!--  ReSharper restore Xaml.RedundantResource  -->
                 </cwc:SettingsCard.Resources>
                 <cwc:SettingsCard.Header>
-                    <TextBlock Text="{Binding Name}" TextWrapping="NoWrap"/>
+                    <TextBlock Text="{Binding Name, Mode=OneWay}" TextWrapping="NoWrap"/>
                 </cwc:SettingsCard.Header>
-                <TextBlock Text="{Binding Value}"/>
+                <TextBlock Text="{Binding Value, Mode=OneWay}"/>
             </cwc:SettingsCard>
         </DataTemplate>
 
@@ -93,14 +93,14 @@
                     <shuxc:ItemIcon
                         Width="40"
                         Height="40"
-                        Icon="{Binding Icon, Converter={StaticResource ItemIconConverter}}"
-                        Quality="{Binding RankLevel}"/>
+                        Icon="{x:Bind Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                        Quality="{x:Bind RankLevel, Mode=OneWay}"/>
                 </shuxcc:HorizontalCard.Left>
                 <shuxcc:HorizontalCard.Right>
                     <TextBlock
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Text="{Binding Name}"/>
+                        Text="{x:Bind Name, Mode=OneWay}"/>
                 </shuxcc:HorizontalCard.Right>
             </shuxcc:HorizontalCard>
         </DataTemplate>
@@ -108,21 +108,21 @@
         <DataTemplate x:Key="MonsterGridTemplate" x:DataType="shmmm:Monster">
             <shuxcc:VerticalCard Width="82">
                 <shuxcc:VerticalCard.Top>
-                    <shuxc:ItemIcon Icon="{Binding Icon, Converter={StaticResource MonsterIconConverter}, Mode=OneWay}" Quality="QUALITY_NONE"/>
+                    <shuxc:ItemIcon Icon="{x:Bind Icon, Converter={StaticResource MonsterIconConverter}, Mode=OneWay}" Quality="QUALITY_NONE"/>
                 </shuxcc:VerticalCard.Top>
                 <shuxcc:VerticalCard.Bottom>
                     <TextBlock
                         Margin="2,0"
-                        Text="{Binding Name}"
+                        Text="{x:Bind Name, Mode=OneWay}"
                         TextTrimming="CharacterEllipsis"/>
                 </shuxcc:VerticalCard.Bottom>
             </shuxcc:VerticalCard>
         </DataTemplate>
     </Page.Resources>
 
-    <shuxc:StandardView ShowCondition="{Binding Monsters, Converter={StaticResource EmptyObjectToBoolConverter}}">
+    <shuxc:StandardView ShowCondition="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
         <shuxc:StandardView.EmptyContent>
-            <shuxc:Loading IsLoading="{Binding Monsters, Converter={StaticResource EmptyObjectToBoolRevertConverter}}" Style="{ThemeResource DefaultLoadingViewStyle}"/>
+            <shuxc:Loading IsLoading="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters, Converter={StaticResource EmptyObjectToBoolRevertConverter}, Mode=OneWay}" Style="{ThemeResource DefaultLoadingViewStyle}"/>
         </shuxc:StandardView.EmptyContent>
         <Grid>
             <Grid.RowDefinitions>
@@ -148,16 +148,16 @@
                                 Margin="6,-2,6,6"
                                 HorizontalAlignment="Right"
                                 VerticalContentAlignment="Center"
-                                AvailableTokens="{Binding SearchData.AvailableTokens}"
-                                FilterCommand="{Binding FilterCommand}"
-                                ItemsSource="{Binding SearchData.FilterTokens, Mode=TwoWay}"
+                                AvailableTokens="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).SearchData.AvailableTokens, Mode=OneWay}"
+                                FilterCommand="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).FilterCommand, Mode=OneWay}"
+                                ItemsSource="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).SearchData.FilterTokens, Mode=OneWay}"
                                 MaximumTokens="5"
                                 PlaceholderText="{shuxm:ResourceString Name=ViewPageWiKiMonsterAutoSuggestBoxPlaceHolder}"
                                 QueryIcon="{cw:FontIconSource Glyph=&#xE721;}"
                                 Style="{StaticResource DefaultAutoSuggestTokenBoxStyle}"
                                 SuggestedItemTemplate="{StaticResource TokenTemplate}"
-                                SuggestedItemsSource="{Binding SearchData.AvailableTokens.Values}"
-                                Text="{Binding SearchData.FilterToken, Mode=TwoWay}"
+                                SuggestedItemsSource="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).SearchData.AvailableTokens.Values, Mode=OneWay}"
+                                Text="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).SearchData.FilterToken, Mode=TwoWay}"
                                 TokenItemTemplate="{StaticResource TokenTemplate}"/>
                         </AppBarElementContainer>
                     </CommandBar>
@@ -167,7 +167,7 @@
             <cwc:SwitchPresenter
                 Grid.Row="1"
                 ContentTransitions="{ThemeResource EntranceThemeTransitions}"
-                Value="{Binding ElementName=ItemsPanelSelector, Path=Current}">
+                Value="{x:Bind ItemsPanelSelector.Current, Mode=OneWay}">
                 <cwc:Case Value="List">
                     <Border Margin="16,0,16,16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                         <Border Style="{ThemeResource AcrylicBorderCardStyle}">
@@ -181,8 +181,8 @@
                                         Grid.Row="1"
                                         Padding="{ThemeResource ListViewInSplitPanePadding}"
                                         ItemTemplate="{StaticResource MonsterListTemplate}"
-                                        ItemsSource="{Binding Monsters}"
-                                        SelectedItem="{Binding Monsters.CurrentItem, Mode=TwoWay}"
+                                        ItemsSource="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters, Mode=OneWay}"
+                                        SelectedItem="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem, Mode=TwoWay}"
                                         SelectionMode="Single">
                                         <mxi:Interaction.Behaviors>
                                             <shuxb:SelectedItemInViewBehavior/>
@@ -190,7 +190,7 @@
                                     </ListView>
                                 </SplitView.Pane>
                                 <SplitView.Content>
-                                    <ScrollViewer shuxc:ScrollViewerHelper.ScrollToTopAssociatedObject="{Binding Monsters.CurrentItem}">
+                                    <ScrollViewer shuxc:ScrollViewerHelper.ScrollToTopAssociatedObject="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem, Mode=OneWay}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition MaxWidth="800"/>
@@ -206,24 +206,24 @@
                                                     HorizontalAlignment="Stretch"
                                                     VerticalAlignment="Center"
                                                     Style="{StaticResource SubtitleTextBlockStyle}"
-                                                    Text="{Binding Monsters.CurrentItem.Title}"/>
+                                                    Text="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem.Title, Mode=OneWay}"/>
                                                 <shuxct:DescriptionTextBlock
                                                     Margin="1,0,0,0"
                                                     HorizontalAlignment="Stretch"
                                                     VerticalAlignment="Center"
-                                                    Description="{Binding Monsters.CurrentItem.Description}"
+                                                    Description="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem.Description, Mode=OneWay}"
                                                     Opacity="0.7"
                                                     TextStyle="{StaticResource CaptionTextBlockStyle}"/>
-                                                <clw:TokenView ItemsSource="{Binding Monsters.CurrentItem.Affixes}" SelectionMode="None"/>
+                                                <clw:TokenView ItemsSource="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem.Affixes, Mode=OneWay}" SelectionMode="None"/>
                                                 <shuxvs:BaseValueSlider
                                                     HorizontalAlignment="Stretch"
                                                     HorizontalContentAlignment="Stretch"
-                                                    BaseValueInfo="{Binding BaseValueInfo, Mode=OneWay}"
+                                                    BaseValueInfo="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).BaseValueInfo, Mode=OneWay}"
                                                     IsPromoteVisible="False"/>
                                                 <ItemsControl
                                                     ItemTemplate="{StaticResource MonsterBaseValueTemplate}"
                                                     ItemsPanel="{StaticResource UniformGridColumns2Spacing4Template}"
-                                                    ItemsSource="{Binding Monsters.CurrentItem.BaseValue.SubHurts}">
+                                                    ItemsSource="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem.BaseValue.SubHurts, Mode=OneWay}">
                                                     <ItemsControl.Resources>
                                                         <!--  ReSharper disable Xaml.RedundantResource  -->
                                                         <x:Double x:Key="SettingsCardMinHeight">0</x:Double>
@@ -237,11 +237,11 @@
                                                         <TextBlock
                                                             Style="{StaticResource BaseTextBlockStyle}"
                                                             Text="{shuxm:ResourceString Name=ViewPageWikiMonsterDropItems}"
-                                                            Visibility="{Binding Monsters.CurrentItem.DropsView, Converter={StaticResource EmptyObjectToVisibilityConverter}}"/>
+                                                            Visibility="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem.DropsView, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}"/>
                                                         <ItemsControl
                                                             ItemTemplate="{StaticResource MonsterDropTemplate}"
-                                                            ItemsSource="{Binding Monsters.CurrentItem.DropsView}"
-                                                            Visibility="{Binding Monsters.CurrentItem.DropsView, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                                                            ItemsSource="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem.DropsView, Mode=OneWay}"
+                                                            Visibility="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem.DropsView, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                                                             <ItemsControl.ItemsPanel>
                                                                 <ItemsPanelTemplate>
                                                                     <cwc:UniformGrid
@@ -270,8 +270,8 @@
                                 HorizontalContentAlignment="Left"
                                 ItemContainerStyle="{StaticResource LargeGridViewItemStyle}"
                                 ItemTemplate="{StaticResource MonsterGridTemplate}"
-                                ItemsSource="{Binding Monsters}"
-                                SelectedItem="{Binding Monsters.CurrentItem, Mode=TwoWay}"
+                                ItemsSource="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters, Mode=OneWay}"
+                                SelectedItem="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem, Mode=TwoWay}"
                                 SelectionMode="Single">
                                 <mxi:Interaction.Behaviors>
                                     <shuxb:SelectedItemInViewBehavior/>

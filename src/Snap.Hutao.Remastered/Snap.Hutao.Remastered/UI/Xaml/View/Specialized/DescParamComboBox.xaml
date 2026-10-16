@@ -8,7 +8,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:shmm="using:Snap.Hutao.Remastered.Model.Metadata"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    xmlns:wl="using:WinUI.LiquidGlass"
     Visibility="{x:Bind SelectedItem.Parameters.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"
     mc:Ignorable="d">
     <UserControl.Resources>
@@ -28,8 +30,7 @@
         <SolidColorBrush x:Key="SettingsCardBorderBrush" Color="{ThemeResource ControlStrokeColorDefault}"/>
         <SolidColorBrush x:Key="ToggleButtonBackground" Color="{ThemeResource ControlAltFillColorSecondary}"/>
 
-        <cwconv:BoolToObjectConverter x:Key="BoolToSpecialBackgroundConverter"
-            TrueValue="{StaticResource SpecialDescriptionSpecialBackgroundBrush}">
+        <cwconv:BoolToObjectConverter x:Key="BoolToSpecialBackgroundConverter" TrueValue="{StaticResource SpecialDescriptionSpecialBackgroundBrush}">
             <cwconv:BoolToObjectConverter.FalseValue>
                 <SolidColorBrush Color="Transparent"/>
             </cwconv:BoolToObjectConverter.FalseValue>
@@ -38,12 +39,12 @@
 
         <DataTemplate x:Key="ParameterDescriptionTemplate" x:DataType="shmm:ParameterDescription">
             <cwc:SettingsCard
-                    MinHeight="40"
-                    Padding="16,0,42,0"
-                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                    Background="{Binding IsSpecial, Converter={StaticResource BoolToSpecialBackgroundConverter}}"
-                    Header="{Binding Description}">
-                <TextBlock Text="{Binding Parameter}"/>
+                MinHeight="40"
+                Padding="16,0,42,0"
+                Background="{x:Bind IsSpecial, Converter={StaticResource BoolToSpecialBackgroundConverter}, Mode=OneWay}"
+                BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                Header="{x:Bind Description, Mode=OneWay}">
+                <TextBlock Text="{x:Bind Parameter, Mode=OneWay}"/>
             </cwc:SettingsCard>
         </DataTemplate>
     </UserControl.Resources>
@@ -55,12 +56,65 @@
             ItemTemplate="{StaticResource ParameterDescriptionTemplate}"
             ItemsSource="{x:Bind SelectedItem.Parameters, Mode=OneWay}">
             <shuxc:SizeRestrictedContentControl Margin="0,-8" IsHeightRestricted="False">
-                <ComboBox
-                    x:Name="LevelComboBox"
-                    DisplayMemberPath="Level"
-                    ItemsSource="{x:Bind Source, Mode=OneWay}"
-                    SelectedItem="{x:Bind SelectedItem, Mode=TwoWay}"
-                    Style="{StaticResource SettingsContentComboBoxStyle}"/>
+                <cwc:SwitchPresenter
+                    x:Name="GlassPresenter_3562"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch"
+                    IsTabStop="False"
+                    Tag="LiquidGlass:ComboBox"
+                    Visibility="{x:Bind LevelComboBox.Visibility, Mode=OneWay}"
+                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>0</x:Int32>
+                        </cwc:Case.Value>
+                        <ComboBox
+                            x:Name="LevelComboBox"
+                            DataContext="{x:Bind GlassPresenter_3562.DataContext, Mode=OneWay}"
+                            DisplayMemberPath="Level"
+                            ItemsSource="{x:Bind Source, Mode=OneWay}"
+                            RequestedTheme="{x:Bind GlassPresenter_3562.ActualTheme, Mode=OneWay}"
+                            SelectedItem="{x:Bind SelectedItem, Mode=TwoWay}"
+                            Style="{StaticResource SettingsContentComboBoxStyle}"/>
+                    </cwc:Case>
+                    <cwc:Case>
+                        <cwc:Case.Value>
+                            <x:Int32>1</x:Int32>
+                        </cwc:Case.Value>
+                        <wl:LiquidGlassComboBox
+                            x:Name="LevelComboBoxGlass"
+                            Width="{x:Bind LevelComboBox.Width, Mode=OneWay}"
+                            Height="{x:Bind LevelComboBox.Height, Mode=OneWay}"
+                            MinWidth="{x:Bind LevelComboBox.MinWidth, Mode=OneWay}"
+                            MinHeight="{x:Bind LevelComboBox.MinHeight, Mode=OneWay}"
+                            MaxWidth="{x:Bind LevelComboBox.MaxWidth, Mode=OneWay}"
+                            MaxHeight="{x:Bind LevelComboBox.MaxHeight, Mode=OneWay}"
+                            Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(LevelComboBox.Padding), Mode=OneWay}"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            shuxcth:ControlMaterialState.NativeControl="{x:Bind LevelComboBox, Mode=OneWay}"
+                            BorderThickness="{x:Bind LevelComboBox.BorderThickness, Mode=OneWay}"
+                            DisplayMemberPath="{x:Bind LevelComboBox.DisplayMemberPath, Mode=OneWay}"
+                            FlowDirection="{x:Bind LevelComboBox.FlowDirection, Mode=OneWay}"
+                            FontFamily="{x:Bind LevelComboBox.FontFamily, Mode=OneWay}"
+                            FontSize="{x:Bind LevelComboBox.FontSize, Mode=OneWay}"
+                            FontStyle="{x:Bind LevelComboBox.FontStyle, Mode=OneWay}"
+                            FontWeight="{x:Bind LevelComboBox.FontWeight, Mode=OneWay}"
+                            Foreground="{x:Bind LevelComboBox.Foreground, Mode=OneWay}"
+                            Header="{x:Bind LevelComboBox.Header, Mode=OneWay}"
+                            HeaderTemplate="{x:Bind LevelComboBox.HeaderTemplate, Mode=OneWay}"
+                            IsDropDownOpen="{x:Bind LevelComboBox.IsDropDownOpen, Mode=TwoWay}"
+                            IsEditable="{x:Bind LevelComboBox.IsEditable, Mode=OneWay}"
+                            IsEnabled="{x:Bind LevelComboBox.IsEnabled, Mode=OneWay}"
+                            IsTextSearchEnabled="{x:Bind LevelComboBox.IsTextSearchEnabled, Mode=OneWay}"
+                            ItemsSource="{x:Bind LevelComboBox.ItemsSource, Mode=OneWay}"
+                            MaxDropDownHeight="{x:Bind LevelComboBox.MaxDropDownHeight, Mode=OneWay}"
+                            PlaceholderText="{x:Bind LevelComboBox.PlaceholderText, Mode=OneWay}"
+                            SelectedIndex="{x:Bind LevelComboBox.SelectedIndex, Mode=TwoWay}"
+                            SelectedValuePath="{x:Bind LevelComboBox.SelectedValuePath, Mode=OneWay}"
+                            Style="{StaticResource SettingsContentComboBoxStyle}"
+                            shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"/>
+                    </cwc:Case>
+                </cwc:SwitchPresenter>
             </shuxc:SizeRestrictedContentControl>
         </cwc:SettingsExpander>
     </ScrollViewer>

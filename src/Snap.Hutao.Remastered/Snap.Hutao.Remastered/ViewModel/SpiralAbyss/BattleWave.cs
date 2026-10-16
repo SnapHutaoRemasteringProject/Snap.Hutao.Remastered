@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Metadata.Monster;
 using Snap.Hutao.Remastered.Model.Metadata.Tower;
 using Snap.Hutao.Remastered.Model.Primitive;
@@ -9,7 +10,7 @@ using System.Globalization;
 
 namespace Snap.Hutao.Remastered.ViewModel.SpiralAbyss;
 
-public sealed class BattleWave
+public sealed partial class BattleWave : ObservableObject
 {
     private BattleWave(TowerWave towerWave, SpiralAbyssMetadataContext context)
     {
@@ -17,9 +18,9 @@ public sealed class BattleWave
         Monsters = towerWave.Monsters.SelectAsArray(static (m, context) => CreateMonsterViewOrDefault(m, context), context);
     }
 
-    public string Description { get; }
+    public string Description { get; private set => SetProperty(ref field, value); }
 
-    public ImmutableArray<MonsterView> Monsters { get; }
+    public ImmutableArray<MonsterView> Monsters { get; private set => SetProperty(ref field, value); }
 
     public static BattleWave Create(TowerWave tower, SpiralAbyssMetadataContext context)
     {

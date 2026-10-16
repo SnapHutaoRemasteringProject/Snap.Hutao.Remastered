@@ -53,7 +53,7 @@
         </Grid>
         <ContentPresenter
             Grid.Row="1"
-            Content="{Binding HeaderContent, ElementName=Self}"/>
+            Content="{x:Bind HeaderContent, Mode=OneWay}"/>
         <Grid
             Grid.Row="2"
             HorizontalAlignment="Stretch"

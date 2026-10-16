@@ -1,20 +1,21 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Model;
+using CommunityToolkit.Mvvm.ComponentModel;
+using MetadataRoleCombatSchedule = Snap.Hutao.Remastered.Model.Metadata.RoleCombatSchedule;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Intrinsic;
+using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
-using Snap.Hutao.Remastered.Web.Hoyolab;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.RoleCombat;
+using Snap.Hutao.Remastered.Web.Hoyolab;
 using System.Collections.Immutable;
 using System.Globalization;
-using MetadataRoleCombatSchedule = Snap.Hutao.Remastered.Model.Metadata.RoleCombatSchedule;
 
 namespace Snap.Hutao.Remastered.ViewModel.RoleCombat;
 
-public sealed partial class RoleCombatView : IEntityAccess<RoleCombatEntry?>, IPropertyValuesProvider
+public sealed partial class RoleCombatView : ObservableObject, IEntityAccess<RoleCombatEntry?>, IPropertyValuesProvider
 {
     private RoleCombatView(RoleCombatEntry entity, RoleCombatMetadataContext context)
         : this(entity, context.IdRoleCombatScheduleMap[entity.ScheduleId], context)
@@ -64,21 +65,21 @@ public sealed partial class RoleCombatView : IEntityAccess<RoleCombatEntry?>, IP
         InitialAvatars = roleCombatSchedule.InitialAvatars.SelectAsArray(static (id, context) => AvatarView.Create(context.GetAvatar(id)), context);
     }
 
-    public uint ScheduleId { get; }
+    public uint ScheduleId { get; private set => SetProperty(ref field, value); }
 
     public string Schedule { get => SH.FormatModelEntitySpiralAbyssSchedule(ScheduleId); }
 
-    public string FormattedTime { get; }
+    public string FormattedTime { get; private set => SetProperty(ref field, value); }
 
-    public bool Engaged { get; }
+    public bool Engaged { get; private set => SetProperty(ref field, value); }
 
-    public RoleCombatEntry? Entity { get; }
+    public RoleCombatEntry? Entity { get; private set => SetProperty(ref field, value); }
 
-    public int TotalBattleTimes { get; }
+    public int TotalBattleTimes { get; private set => SetProperty(ref field, value); }
 
-    public string? Difficulty { get; }
+    public string? Difficulty { get; private set => SetProperty(ref field, value); }
 
-    public string? FormattedHeraldry { get; }
+    public string? FormattedHeraldry { get; private set => SetProperty(ref field, value); }
 
     public string? MaxRound
     {
@@ -97,25 +98,25 @@ public sealed partial class RoleCombatView : IEntityAccess<RoleCombatEntry?>, IP
 
     public string FormattedTotalBattleTimes { get => $"{TimeSpan.FromSeconds(TotalBattleTimes):hh':'mm':'ss}"; }
 
-    public RoleCombatStat? Stat { get; }
+    public RoleCombatStat? Stat { get; private set => SetProperty(ref field, value); }
 
-    public ImmutableArray<ElementType> Elements { get; }
+    public ImmutableArray<ElementType> Elements { get; private set => SetProperty(ref field, value); }
 
-    public ImmutableArray<AvatarView> SpecialAvatars { get; }
+    public ImmutableArray<AvatarView> SpecialAvatars { get; private set => SetProperty(ref field, value); }
 
-    public ImmutableArray<AvatarView> InitialAvatars { get; }
+    public ImmutableArray<AvatarView> InitialAvatars { get; private set => SetProperty(ref field, value); }
 
-    public ImmutableArray<AvatarView> BackupAvatars { get; } = [];
+    public ImmutableArray<AvatarView> BackupAvatars { get; private set => SetProperty(ref field, value); } = [];
 
-    public ImmutableArray<RoundView> Rounds { get; } = [];
+    public ImmutableArray<RoundView> Rounds { get; private set => SetProperty(ref field, value); } = [];
 
-    public ImmutableArray<AvatarDamage> Shortest { get; } = [];
+    public ImmutableArray<AvatarDamage> Shortest { get; private set => SetProperty(ref field, value); } = [];
 
-    public AvatarDamage? Defeat { get; }
+    public AvatarDamage? Defeat { get; private set => SetProperty(ref field, value); }
 
-    public AvatarDamage? Damage { get; }
+    public AvatarDamage? Damage { get; private set => SetProperty(ref field, value); }
 
-    public AvatarDamage? TakeDamage { get; }
+    public AvatarDamage? TakeDamage { get; private set => SetProperty(ref field, value); }
 
     public static RoleCombatView Create(RoleCombatEntry entity, RoleCombatMetadataContext context)
     {
@@ -140,5 +141,22 @@ public sealed partial class RoleCombatView : IEntityAccess<RoleCombatEntry?>, IP
         }
 
         return new(avatarDamage.Value, context.IdAvatarMap[avatarDamage.AvatarId]);
+    }
+
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        switch (e.PropertyName)
+        {
+            case nameof(ScheduleId):
+                OnPropertyChanged(nameof(Schedule));
+                break;
+            case nameof(TotalBattleTimes):
+                OnPropertyChanged(nameof(FormattedTotalBattleTimes));
+                break;
+            case nameof(Stat):
+                OnPropertyChanged(nameof(MaxRound));
+                break;
+        }
     }
 }
