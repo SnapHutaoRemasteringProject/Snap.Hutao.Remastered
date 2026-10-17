@@ -2,6 +2,7 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.RoleCombatPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -297,7 +298,8 @@
                             <SplitView.Pane>
                                 <ListView
                                     Padding="{ThemeResource ListViewInSplitPanePadding}"
-                                    Background="{ThemeResource HutaoCardBrush}"
+                                    shuxcth:MaterialBackground.NativeBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                    shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoCardBrush}"
                                     ItemTemplate="{StaticResource RoleCombatListTemplate}"
                                     ItemsSource="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries, Mode=OneWay}"
                                     SelectedItem="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem, Mode=TwoWay}"/>
@@ -399,7 +401,8 @@
                                                                 </ItemsPanelTemplate>
                                                             </ItemsControl.ItemsPanel>
                                                             <cwc:SettingsCard
-                                                                Background="{ThemeResource HutaoSurfaceBrush}"
+                                                                shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                                shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                                 Header="{shuxm:ResourceString Name=ViewSpiralAbyssDefeat}">
                                                                 <StackPanel Orientation="Horizontal">
@@ -418,7 +421,8 @@
                                                             </cwc:SettingsCard>
 
                                                             <cwc:SettingsCard
-                                                                Background="{ThemeResource HutaoSurfaceBrush}"
+                                                                shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                                shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                                 Header="{shuxm:ResourceString Name=ViewSpiralAbyssDamage}">
                                                                 <StackPanel Orientation="Horizontal">
@@ -437,7 +441,8 @@
                                                             </cwc:SettingsCard>
 
                                                             <cwc:SettingsCard
-                                                                Background="{ThemeResource HutaoSurfaceBrush}"
+                                                                shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                                shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                                 Header="{shuxm:ResourceString Name=ViewSpiralAbyssTakeDamage}">
                                                                 <StackPanel Orientation="Horizontal">
@@ -456,7 +461,8 @@
                                                             </cwc:SettingsCard>
 
                                                             <cwc:SettingsCard
-                                                                Background="{ThemeResource HutaoSurfaceBrush}"
+                                                                shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                                shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatCoinNumber}">
                                                                 <StackPanel Orientation="Horizontal">
@@ -469,7 +475,8 @@
                                                             </cwc:SettingsCard>
 
                                                             <cwc:SettingsCard
-                                                                Background="{ThemeResource HutaoSurfaceBrush}"
+                                                                shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                                shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatMedalRound}">
                                                                 <ItemsControl ItemsSource="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Rounds, Mode=OneWay}">
@@ -516,31 +523,36 @@
                                                             </cwc:SettingsCard>
 
                                                             <cwc:SettingsCard
-                                                                Background="{ThemeResource HutaoSurfaceBrush}"
+                                                                shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                                shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                                 Content="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.FormattedTotalBattleTimes, Mode=OneWay}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatTotalBattleTime}"/>
 
                                                             <cwc:SettingsCard
-                                                                Background="{ThemeResource HutaoSurfaceBrush}"
+                                                                shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                                shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                                 Content="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.MaxRound, Mode=OneWay}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatMaxRound}"/>
 
                                                             <cwc:SettingsCard
-                                                                Background="{ThemeResource HutaoSurfaceBrush}"
+                                                                shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                                shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                                 Content="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Stat.AvatarBonusNumber, Mode=OneWay}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatStatAvatarBonus}"/>
 
                                                             <cwc:SettingsCard
-                                                                Background="{ThemeResource HutaoSurfaceBrush}"
+                                                                shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                                shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                                 Content="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Stat.RentCount, Mode=OneWay}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatStatRent}"/>
 
                                                             <cwc:SettingsCard
-                                                                Background="{ThemeResource HutaoSurfaceBrush}"
+                                                                shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                                shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatShortest}">
                                                                 <ItemsControl ItemsPanel="{ThemeResource HorizontalStackPanelSpacing4Template}" ItemsSource="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Shortest, Mode=OneWay}">

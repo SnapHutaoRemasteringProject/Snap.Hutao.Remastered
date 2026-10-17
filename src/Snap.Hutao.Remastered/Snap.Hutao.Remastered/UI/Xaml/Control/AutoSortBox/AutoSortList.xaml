@@ -1,6 +1,7 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxcas="using:Snap.Hutao.Remastered.UI.Xaml.Control.AutoSortBox"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup">
 
@@ -12,7 +13,8 @@
 
     <ControlTemplate x:Key="AutoSortListTemplate" TargetType="shuxcas:AutoSortList">
         <Border
-            Background="{ThemeResource HutaoCardBrush}"
+            shuxcth:MaterialBackground.NativeBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoCardBrush}"
             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
             BorderThickness="1"
             CornerRadius="{ThemeResource ControlCornerRadius}">

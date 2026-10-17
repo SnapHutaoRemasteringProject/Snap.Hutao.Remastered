@@ -846,7 +846,6 @@
                 <Border
                     MinWidth="480"
                     Padding="16"
-                    Background="{ThemeResource HutaoCardBrush}"
                     Style="{ThemeResource AcrylicBorderCardStyle}">
                     <StackPanel>
                         <shuxci:CachedImage
@@ -985,7 +984,6 @@
                             <Border
                                 MinWidth="480"
                                 Padding="16"
-                                Background="{ThemeResource HutaoCardBrush}"
                                 Style="{ThemeResource AcrylicBorderCardStyle}">
                                 <StackPanel Spacing="{StaticResource SettingsCardSpacing}">
                                     <StackPanel.Resources>
@@ -1193,7 +1191,7 @@
                         </Pivot.RightHeader>
                         <PivotItem Header="{shuxm:ResourceString Name=ViewPageCultivationCultivateEntry}" Tag="Entry">
                             <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                                <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
+                                <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                                     <ScrollViewer Padding="16" HorizontalScrollBarVisibility="Disabled">
                                         <ItemsRepeater ItemTemplate="{StaticResource CultivateEntryTemplate}" ItemsSource="{x:Bind ((shvcu:CultivationViewModel)DataContext).CultivateEntries, Mode=OneWay}">
                                             <mxi:Interaction.Behaviors>
@@ -1212,7 +1210,7 @@
                         </PivotItem>
                         <PivotItem Header="{shuxm:ResourceString Name=ViewPageCultivationMaterialStatistics}" Tag="Statistics">
                             <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                                <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
+                                <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                                     <ScrollViewer Padding="16" HorizontalScrollBarVisibility="Disabled">
                                         <ItemsControl ItemTemplate="{StaticResource StatisticsItemTemplate}" ItemsSource="{x:Bind ((shvcu:CultivationViewModel)DataContext).StatisticsItems, Mode=OneWay}">
                                             <ItemsControl.ItemsPanel>
@@ -1233,7 +1231,7 @@
             </PivotItem>
             <PivotItem Header="{shuxm:ResourceString Name=ViewPageCultivationInventoryItem}">
                 <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                    <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
+                    <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                         <GridView
                             Padding="16,16,10,10"
                             ItemTemplate="{StaticResource InventoryItemTemplate}"

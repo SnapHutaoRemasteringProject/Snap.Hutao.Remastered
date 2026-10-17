@@ -137,7 +137,8 @@
                                         </Grid.RowDefinitions>
                                         <Grid
                                             Grid.Row="0"
-                                            Background="{ThemeResource HutaoSurfaceBrush}"
+                                            shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                            shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                             BorderThickness="0,0,0,1">
                                             <TextBlock
@@ -187,7 +188,8 @@
                                         </Grid.RowDefinitions>
                                         <Grid
                                             Grid.Row="0"
-                                            Background="{ThemeResource HutaoSurfaceBrush}"
+                                            shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                            shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                             BorderThickness="0,0,0,1">
                                             <TextBlock
@@ -223,7 +225,8 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Border
-                Background="{ThemeResource HutaoCardBrush}"
+                shuxcth:MaterialBackground.NativeBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoCardBrush}"
                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                 BorderThickness="0,0,0,1">
                 <TextBlock

@@ -827,7 +827,6 @@
                 <Border
                     MinWidth="480"
                     Padding="16"
-                    Background="{ThemeResource HutaoCardBrush}"
                     Style="{ThemeResource AcrylicBorderCardStyle}">
                     <StackPanel>
                         <shuxci:CachedImage
@@ -857,7 +856,7 @@
             </Grid.RowDefinitions>
 
             <Border Margin="16,16,16,0" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                <Border Background="{ThemeResource HutaoSurfaceBrush}" Style="{ThemeResource AcrylicSecondaryBorderCardStyle}">
+                <Border Style="{ThemeResource AcrylicSecondaryBorderCardStyle}">
                     <CommandBar Grid.Row="0" DefaultLabelPosition="Right">
                         <CommandBar.Content>
                             <StackPanel Orientation="Horizontal">
@@ -1011,7 +1010,7 @@
                 Grid.Row="1"
                 Margin="16,16,16,16"
                 cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
+                <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                     <cwc:SwitchPresenter ContentTransitions="{ThemeResource EntranceThemeTransitions}" Value="{x:Bind ItemsPanelSelector.Current, Mode=OneWay}">
                         <cwc:Case Value="Grid">
                             <GridView
@@ -1026,7 +1025,8 @@
                                 DisplayMode="Inline"
                                 IsPaneOpen="True"
                                 OpenPaneLength="{StaticResource CompatSplitViewOpenPaneLength}"
-                                PaneBackground="{ThemeResource HutaoSurfaceBrush}">
+                                shuxcth:MaterialBackground.NativePaneBrush="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                shuxcth:MaterialBackground.GlassPaneBrush="{ThemeResource HutaoSurfaceBrush}">
                                 <SplitView.Pane>
                                     <Grid>
                                         <Grid.RowDefinitions>
@@ -1341,7 +1341,8 @@
                                                         Header="{shuxm:ResourceString Name=ViewPageAvatarPropertyHeader}">
                                                         <Border
                                                             Margin="0,-1,0,0"
-                                                            Background="{ThemeResource HutaoSurfaceBrush}"
+                                                            shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                            shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                             BorderThickness="0">
                                                             <ItemsControl ItemTemplate="{StaticResource AvatarPropertyTemplate}" ItemsSource="{x:Bind ((shva:AvatarPropertyViewModel)DataContext).Summary.Avatars.CurrentItem.Properties, Mode=OneWay}"/>
                                                         </Border>

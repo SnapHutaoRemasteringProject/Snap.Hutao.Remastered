@@ -49,6 +49,10 @@ public static class MaterialTheme
                 RegisteredDictionaries.RemoveAt(index);
             }
         }
+
+        // Disabling a glass shader only selects its fallback color. Restore the
+        // native brush itself to recover acrylic blur and native surface fills.
+        MaterialBackground.Apply(material is ControlMaterial.LiquidGlass && LocalSetting.Get("LiquidGlass.CardEnabled", true));
     }
 
     private static void Apply(ResourceDictionary dictionary, ControlMaterial material)

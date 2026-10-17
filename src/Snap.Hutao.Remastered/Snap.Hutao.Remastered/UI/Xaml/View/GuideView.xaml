@@ -109,7 +109,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="{ThemeResource HutaoSurfaceBrush}">
+    <Grid shuxcth:MaterialBackground.NativeBrush="{ThemeResource CardBackgroundFillColorSecondaryBrush}" shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}">
         <Grid.RowDefinitions>
             <RowDefinition/>
             <RowDefinition Height="auto"/>
