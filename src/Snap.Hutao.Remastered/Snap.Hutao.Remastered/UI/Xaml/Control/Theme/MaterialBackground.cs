@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using XamlControl = Microsoft.UI.Xaml.Controls.Control;
+using XamlPanel = Microsoft.UI.Xaml.Controls.Panel;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 
@@ -77,7 +78,7 @@ public sealed partial class MaterialBackground : DependencyObject
         DependencyProperty? backgroundProperty = element switch
         {
             Border => Border.BackgroundProperty,
-            Panel => Panel.BackgroundProperty,
+            XamlPanel => XamlPanel.BackgroundProperty,
             XamlControl => XamlControl.BackgroundProperty,
             ContentPresenter => ContentPresenter.BackgroundProperty,
             _ => null,
