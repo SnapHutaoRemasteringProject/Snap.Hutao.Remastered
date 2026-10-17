@@ -887,6 +887,9 @@
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
     <value>Preparazione in corso. Se non succede nulla per molto tempo, prova a riavviare o controlla la connessione di rete e lo stato del server</value>
   </data>
+  <data name="ServiceBackgroundImageDecodeFailed" xml:space="preserve">
+    <value>Impossibile decodificare l'immagine di sfondo: nel sistema mancano componenti di decodifica delle immagini disponibili, cambio dello sfondo saltato</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Sfondo del giorno di Bing</value>
   </data>
@@ -3674,6 +3677,30 @@ Spazio disponibile: {2}</value>
   <data name="ViewPageSettingThemeHeader" xml:space="preserve">
     <value>Tema</value>
   </data>
+  <data name="ViewPageSettingControlMaterialHeader" xml:space="preserve">
+    <value>Materiale dei controlli</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDescription" xml:space="preserve">
+    <value>Modifica l'effetto materiale delle schede e dei pannelli delle schede</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDefault" xml:space="preserve">
+    <value>Predefinito</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialLiquidGlass" xml:space="preserve">
+    <value>Vetro liquido (anteprima sperimentale)</value>
+  </data>
+  <data name="ViewGuideMaterialTitle" xml:space="preserve">
+    <value>Seleziona il materiale dei controlli</value>
+  </data>
+  <data name="ViewGuideMaterialDescription" xml:space="preserve">
+    <value>Confronta le superfici Fluent native con il vetro liquido, quindi scegli il materiale dei controlli da applicare globalmente.</value>
+  </data>
+  <data name="ViewGuideMaterialDefaultPreviewDescription" xml:space="preserve">
+    <value>Superficie Fluent nativa</value>
+  </data>
+  <data name="ViewGuideMaterialLiquidGlassPreviewDescription" xml:space="preserve">
+    <value>Sfocatura, rifrazione e riflesso sui bordi</value>
+  </data>
   <data name="ViewPageSettingTranslateNavigate" xml:space="preserve">
     <value>Contribuisci alle traduzioni</value>
   </data>
@@ -4478,6 +4505,21 @@ Spazio disponibile: {2}</value>
   <data name="ServicePluginUninstallDescription" xml:space="preserve">
     <value>Sei sicuro di voler disinstallare il plugin {0}? Questa azione non può essere annullata.</value>
   </data>
+  <data name="ViewPagePluginSettingLoadFailed" xml:space="preserve">
+    <value>Impossibile caricare le impostazioni del plugin</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveSuccess" xml:space="preserve">
+    <value>Impostazione '{0}' salvata</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveFailed" xml:space="preserve">
+    <value>Impossibile salvare l'impostazione '{0}'</value>
+  </data>
+  <data name="ViewPagePluginSettingResetSuccess" xml:space="preserve">
+    <value>Impostazione '{0}' ripristinata</value>
+  </data>
+  <data name="ViewPagePluginSettingResetFailed" xml:space="preserve">
+    <value>Impossibile ripristinare l'impostazione '{0}'</value>
+  </data>
   <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
     <value>Cambio rapido controller</value>
   </data>
@@ -5185,5 +5227,335 @@ Spazio disponibile: {2}</value>
   </data>
   <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
     <value>Due stelle</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassButton" xml:space="preserve">
+    <value>Pulsante</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassToggleButton" xml:space="preserve">
+    <value>Pulsante di commutazione</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHyperlinkButton" xml:space="preserve">
+    <value>Pulsante ipertestuale</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassCheckBox" xml:space="preserve">
+    <value>Casella di controllo</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRadioButton" xml:space="preserve">
+    <value>Pulsante di opzione</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassSlider" xml:space="preserve">
+    <value>Dispositivo di scorrimento</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassTextBox" xml:space="preserve">
+    <value>Casella di testo</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassPasswordBox" xml:space="preserve">
+    <value>Casella password</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassComboBox" xml:space="preserve">
+    <value>Casella combinata</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassToggleSwitch" xml:space="preserve">
+    <value>Interruttore</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassCard" xml:space="preserve">
+    <value>Schede e superfici</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassStrength" xml:space="preserve">
+    <value>Intensità complessiva (0–2×)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBlurScale" xml:space="preserve">
+    <value>Intensità sfocatura (0–2×)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefractionScale" xml:space="preserve">
+    <value>Intensità rifrazione (0–2×)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDispersionScale" xml:space="preserve">
+    <value>Intensità dispersione (0–2×)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHighlightScale" xml:space="preserve">
+    <value>Intensità riflesso (0–2×)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassMagnificationScale" xml:space="preserve">
+    <value>Intensità ingrandimento (0–2×)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHeader" xml:space="preserve">
+    <value>Controlli ed effetti del vetro liquido</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDescription" xml:space="preserve">
+    <value>Abilita l'effetto vetro per tipo di controllo. Le modifiche hanno effetto immediato; i moltiplicatori ottici si basano sui preset originali di ciascun controllo.</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassSearchBox" xml:space="preserve">
+    <value>Casella di ricerca</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDispersionRange" xml:space="preserve">
+    <value>Intervallo dispersione</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelRange" xml:space="preserve">
+    <value>Intervallo Fresnel (DIP)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelHardness" xml:space="preserve">
+    <value>Durezza Fresnel</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelFactor" xml:space="preserve">
+    <value>Intensità Fresnel</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareRange" xml:space="preserve">
+    <value>Intervallo bagliore</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareHardness" xml:space="preserve">
+    <value>Durezza bagliore</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareFactor" xml:space="preserve">
+    <value>Intensità bagliore</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareConvergence" xml:space="preserve">
+    <value>Convergenza bagliore</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareOppositeFactor" xml:space="preserve">
+    <value>Intensità bagliore opposto</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareAngle" xml:space="preserve">
+    <value>Angolo di illuminazione (gradi)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassMagnification" xml:space="preserve">
+    <value>Fattore di ingrandimento</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBloomAmount" xml:space="preserve">
+    <value>Quantità di bloom</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBrightness" xml:space="preserve">
+    <value>Luminosità</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassTemperature" xml:space="preserve">
+    <value>Temperatura colore</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassVibrance" xml:space="preserve">
+    <value>Vividezza</value>
+  </data>
+  <data name="LiquidGlassControlsWindowTitle" xml:space="preserve">
+    <value>Controlli del vetro liquido</value>
+  </data>
+  <data name="LiquidGlassEffectsWindowTitle" xml:space="preserve">
+    <value>Effetti del vetro liquido</value>
+  </data>
+  <data name="GlassControlsCardDescription" xml:space="preserve">
+    <value>Scegli i tipi di controllo per cui abilitare il materiale vetro e visualizza l'anteprima interattiva.</value>
+  </data>
+  <data name="GlassEffectsCardDescription" xml:space="preserve">
+    <value>Regola i parametri per ciascun tipo di controllo; sono disponibili anteprima e ripristino dei valori predefiniti.</value>
+  </data>
+  <data name="GlassControlsIntro" xml:space="preserve">
+    <value>Scegli il materiale da applicare e i vari tipi di controllo. Le modifiche hanno effetto immediato e vengono salvate automaticamente. L'effetto vetro liquido influisce sulle prestazioni.</value>
+  </data>
+  <data name="GlassEffectsIntro" xml:space="preserve">
+    <value>Ogni tipo di controllo ha parametri indipendenti; le modifiche hanno effetto immediato e vengono salvate automaticamente.</value>
+  </data>
+  <data name="GlassNativeMaterial" xml:space="preserve">
+    <value>Materiale predefinito</value>
+  </data>
+  <data name="GlassLiquidMaterial" xml:space="preserve">
+    <value>Vetro liquido</value>
+  </data>
+  <data name="GlassPreviewHeading" xml:space="preserve">
+    <value>Anteprima interattiva</value>
+  </data>
+  <data name="GlassControlsPreviewHint" xml:space="preserve">
+    <value>L'anteprima segue il materiale dell'app e lo stato di attivazione di questo tipo. Prova a passare il mouse, premere, mettere a fuoco, digitare e trascinare.</value>
+  </data>
+  <data name="GlassEffectsPreviewHint" xml:space="preserve">
+    <value>Questa anteprima mostra sempre il vetro, anche se l'app non ha abilitato questo tipo di controllo. L'editor mantiene l'aspetto nativo.</value>
+  </data>
+  <data name="GlassPresetHint" xml:space="preserve">
+    <value>I valori predefiniti provengono dalla libreria dei controlli. Il ripristino influisce solo sui parametri del tipo corrente, senza modificare gli altri tipi o l'interruttore di attivazione.</value>
+  </data>
+  <data name="GlassResetType" xml:space="preserve">
+    <value>Ripristina l'effetto predefinito per questo tipo</value>
+  </data>
+  <data name="GlassResetParameter" xml:space="preserve">
+    <value>Ripristina</value>
+  </data>
+  <data name="GlassDefaultValue" xml:space="preserve">
+    <value>Valore predefinito:</value>
+  </data>
+  <data name="GlassPreviewButton" xml:space="preserve">
+    <value>Pulsante di anteprima</value>
+  </data>
+  <data name="GlassPreviewInput" xml:space="preserve">
+    <value>Digita del testo per visualizzare l'effetto di messa a fuoco</value>
+  </data>
+  <data name="GlassPreviewSearch" xml:space="preserve">
+    <value>Anteprima ricerca</value>
+  </data>
+  <data name="GlassPreviewPassword" xml:space="preserve">
+    <value>Anteprima password</value>
+  </data>
+  <data name="GlassPreviewSurface" xml:space="preserve">
+    <value>Superficie in vetro — il contenuto rimane leggibile</value>
+  </data>
+  <data name="GlassProfileButton" xml:space="preserve">
+    <value>Pulsante</value>
+  </data>
+  <data name="GlassProfileToggleButton" xml:space="preserve">
+    <value>Pulsante di commutazione</value>
+  </data>
+  <data name="GlassProfileHyperlinkButton" xml:space="preserve">
+    <value>Pulsante ipertestuale</value>
+  </data>
+  <data name="GlassProfileCheckBox" xml:space="preserve">
+    <value>Casella di controllo</value>
+  </data>
+  <data name="GlassProfileRadioButton" xml:space="preserve">
+    <value>Pulsante di opzione</value>
+  </data>
+  <data name="GlassProfileSlider" xml:space="preserve">
+    <value>Dispositivo di scorrimento</value>
+  </data>
+  <data name="GlassProfileTextBox" xml:space="preserve">
+    <value>Casella di testo</value>
+  </data>
+  <data name="GlassProfileSearchBox" xml:space="preserve">
+    <value>Casella di ricerca</value>
+  </data>
+  <data name="GlassProfilePasswordBox" xml:space="preserve">
+    <value>Casella password</value>
+  </data>
+  <data name="GlassProfileComboBox" xml:space="preserve">
+    <value>Casella combinata</value>
+  </data>
+  <data name="GlassProfileToggleSwitch" xml:space="preserve">
+    <value>Interruttore</value>
+  </data>
+  <data name="GlassProfileCard" xml:space="preserve">
+    <value>Schede e superfici</value>
+  </data>
+  <data name="GlassProfileFloatingPanel" xml:space="preserve">
+    <value>Pannello fluttuante</value>
+  </data>
+  <data name="GlassProfileTabBar" xml:space="preserve">
+    <value>Barra delle schede</value>
+  </data>
+  <data name="GlassParameterBlurRadius" xml:space="preserve">
+    <value>Raggio di sfocatura</value>
+  </data>
+  <data name="GlassParameterRefractionStrength" xml:space="preserve">
+    <value>Intensità rifrazione</value>
+  </data>
+  <data name="GlassParameterDispersionStrength" xml:space="preserve">
+    <value>Intensità dispersione</value>
+  </data>
+  <data name="GlassParameterHighlightStrength" xml:space="preserve">
+    <value>Intensità riflesso</value>
+  </data>
+  <data name="GlassParameterHighlightSharpness" xml:space="preserve">
+    <value>Nitidezza riflesso</value>
+  </data>
+  <data name="GlassParameterSpecularSaturation" xml:space="preserve">
+    <value>Saturazione speculare</value>
+  </data>
+  <data name="GlassParameterSpecularWidth" xml:space="preserve">
+    <value>Larghezza speculare</value>
+  </data>
+  <data name="GlassParameterRefractiveIndex" xml:space="preserve">
+    <value>Indice di rifrazione</value>
+  </data>
+  <data name="GlassParameterTintOpacity" xml:space="preserve">
+    <value>Opacità della tinta</value>
+  </data>
+  <data name="GlassParameterInnerShadowStrength" xml:space="preserve">
+    <value>Intensità ombra interna</value>
+  </data>
+  <data name="GlassParameterSaturation" xml:space="preserve">
+    <value>Saturazione</value>
+  </data>
+  <data name="GlassParameterContrast" xml:space="preserve">
+    <value>Contrasto</value>
+  </data>
+  <data name="GlassParameterExposure" xml:space="preserve">
+    <value>Esposizione</value>
+  </data>
+  <data name="GlassParameterMaterialOpacity" xml:space="preserve">
+    <value>Opacità del materiale</value>
+  </data>
+  <data name="GlassParameterDispersionRange" xml:space="preserve">
+    <value>Intervallo dispersione</value>
+  </data>
+  <data name="GlassParameterRefFresnelRange" xml:space="preserve">
+    <value>Intervallo Fresnel</value>
+  </data>
+  <data name="GlassParameterRefFresnelHardness" xml:space="preserve">
+    <value>Durezza Fresnel</value>
+  </data>
+  <data name="GlassParameterRefFresnelFactor" xml:space="preserve">
+    <value>Intensità Fresnel</value>
+  </data>
+  <data name="GlassParameterGlareRange" xml:space="preserve">
+    <value>Intervallo bagliore</value>
+  </data>
+  <data name="GlassParameterGlareHardness" xml:space="preserve">
+    <value>Durezza bagliore</value>
+  </data>
+  <data name="GlassParameterGlareFactor" xml:space="preserve">
+    <value>Intensità bagliore</value>
+  </data>
+  <data name="GlassParameterGlareConvergence" xml:space="preserve">
+    <value>Convergenza bagliore</value>
+  </data>
+  <data name="GlassParameterGlareOppositeFactor" xml:space="preserve">
+    <value>Proporzione bagliore opposto</value>
+  </data>
+  <data name="GlassParameterGlareAngle" xml:space="preserve">
+    <value>Direzione bagliore (°)</value>
+  </data>
+  <data name="GlassParameterMagnification" xml:space="preserve">
+    <value>Ingrandimento complessivo dello sfondo</value>
+  </data>
+  <data name="GlassParameterMagnificationStrength" xml:space="preserve">
+    <value>Intensità ingrandimento locale</value>
+  </data>
+  <data name="GlassParameterBloomAmount" xml:space="preserve">
+    <value>Proporzione di miscelazione sfocatura</value>
+  </data>
+  <data name="GlassParameterBrightness" xml:space="preserve">
+    <value>Luminosità</value>
+  </data>
+  <data name="GlassParameterTemperature" xml:space="preserve">
+    <value>Temperatura colore</value>
+  </data>
+  <data name="GlassParameterVibrance" xml:space="preserve">
+    <value>Vividezza</value>
+  </data>
+  <data name="GlassPreviewFirst" xml:space="preserve">
+    <value>Primo elemento</value>
+  </data>
+  <data name="GlassPreviewSecond" xml:space="preserve">
+    <value>Secondo elemento</value>
+  </data>
+  <data name="GlassPreviewOverview" xml:space="preserve">
+    <value>Panoramica</value>
+  </data>
+  <data name="GlassPreviewDetails" xml:space="preserve">
+    <value>Dettagli</value>
+  </data>
+  <data name="GlassPreviewActivity" xml:space="preserve">
+    <value>Attività</value>
+  </data>
+  <data name="RepositoryServerOfflineWarning" xml:space="preserve">
+    <value>Connessione al server non riuscita; è stata attivata la modalità offline e viene usato l'elenco locale dei repository. Le risorse online come le immagini potrebbero non caricarsi; puoi fare clic sul pulsante accanto all'attività in background per riconnetterti.</value>
+  </data>
+  <data name="RepositoryServerConnectionRestored" xml:space="preserve">
+    <value>Riconnessione al server riuscita; modalità offline disattivata.</value>
+  </data>
+  <data name="RepositoryServerReconnect" xml:space="preserve">
+    <value>Tenta di riconnetterti al server</value>
+  </data>
+  <data name="RepositoryServerReconnectFailed" xml:space="preserve">
+    <value>Impossibile connettersi al server; si continua a usare la modalità offline. Puoi riprovare più tardi.</value>
+  </data>
+  <data name="RepositoryServerOfflineStatus" xml:space="preserve">
+    <value>Modalità offline · Riconnetti</value>
+  </data>
+  <data name="RepositoryServerReconnecting" xml:space="preserve">
+    <value>Modalità offline · Riconnessione in corso</value>
   </data>
 </root>
