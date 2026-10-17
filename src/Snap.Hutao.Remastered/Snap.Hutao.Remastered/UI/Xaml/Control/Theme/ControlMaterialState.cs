@@ -409,12 +409,7 @@ public sealed partial class ControlMaterialState : DependencyObject
         };
         presenter.SwitchCases.Add(new Case { Value = 0, Content = native });
         presenter.SwitchCases.Add(new Case { Value = 1, Content = glass });
-        native.SetBinding(FrameworkElement.RequestedThemeProperty, new Binding
-        {
-            Source = presenter,
-            Path = new PropertyPath(nameof(FrameworkElement.ActualTheme)),
-            Mode = BindingMode.OneWay,
-        });
+        ThemeSynchronization.SetSource(native, presenter);
         ControlMaterialState? settings = null;
         ForEachState(state => settings ??= state);
         if (settings is not null)

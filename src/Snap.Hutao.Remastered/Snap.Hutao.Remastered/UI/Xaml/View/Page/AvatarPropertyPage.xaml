@@ -884,7 +884,7 @@
                                                 DataContext="{x:Bind GlassPresenter_38063.DataContext, Mode=OneWay}"
                                                 DisplayMemberPath="Name"
                                                 ItemsSource="{x:Bind ((shva:AvatarPropertyViewModel)DataContext).SortDescriptionKinds, Mode=OneWay}"
-                                                RequestedTheme="{x:Bind GlassPresenter_38063.ActualTheme, Mode=OneWay}"
+                                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_38063}"
                                                 SelectedItem="{x:Bind ((shva:AvatarPropertyViewModel)DataContext).SortDescriptionKind, Mode=TwoWay}"
                                                 Style="{ThemeResource DefaultComboBoxStyle}"/>
                                         </cwc:Case>

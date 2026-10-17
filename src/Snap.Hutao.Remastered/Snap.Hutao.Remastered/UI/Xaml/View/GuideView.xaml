@@ -935,9 +935,9 @@
                                 <cwc:Case Value="{shuxm:Int32 Value=0}">
                                     <Border
                                         Padding="24"
-                                        Background="{ThemeResource NativeHomeCardBackgroundBrush}"
+                                        Background="{ThemeResource SystemControlAcrylicElementBrush}"
                                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                        BorderThickness="1"
+                                        BorderThickness="0"
                                         CornerRadius="16">
                                         <StackPanel VerticalAlignment="Center" Spacing="12">
                                             <FontIcon FontSize="32" Glyph="&#xE8A5;"/>

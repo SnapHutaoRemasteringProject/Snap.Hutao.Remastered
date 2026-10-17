@@ -264,7 +264,7 @@
                                     x:Name="HardDriveTypeToggle"
                                     DataContext="{x:Bind GlassPresenter_7611.DataContext, Mode=OneWay}"
                                     IsOn="{x:Bind ((shv:TestViewModel)DataContext).OverrideHardDriveType, Mode=TwoWay}"
-                                    RequestedTheme="{x:Bind GlassPresenter_7611.ActualTheme, Mode=OneWay}"/>
+                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_7611}"/>
                             </cwc:Case>
                             <cwc:Case>
                                 <cwc:Case.Value>
@@ -344,7 +344,7 @@
                                     IsOn="{x:Bind ((shv:TestViewModel)DataContext).AlphaBuildUseCNPatchEndpoint, Mode=TwoWay}"
                                     OffContent="Oversea Endpoints"
                                     OnContent="Chinese Endpoints"
-                                    RequestedTheme="{x:Bind GlassPresenter_8212.ActualTheme, Mode=OneWay}"/>
+                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_8212}"/>
                             </cwc:Case>
                             <cwc:Case>
                                 <cwc:Case.Value>
@@ -613,7 +613,7 @@
                                         DataContext="{x:Bind GlassPresenter_14092.DataContext, Mode=OneWay}"
                                         Header="ServiceType"
                                         ItemsSource="{cwh:EnumValues Type=shwhr:RedeemCodeTargetServiceType}"
-                                        RequestedTheme="{x:Bind GlassPresenter_14092.ActualTheme, Mode=OneWay}"
+                                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_14092}"
                                         SelectedItem="{x:Bind ((shv:TestViewModel)DataContext).RedeemCodeGenerateOption.ServiceType, Mode=TwoWay}"/>
                                 </cwc:Case>
                                 <cwc:Case>
@@ -1048,7 +1048,7 @@
                                         DataContext="{x:Bind GlassPresenter_20277.DataContext, Mode=OneWay}"
                                         Header="Severity"
                                         ItemsSource="{cwh:EnumValues Type=InfoBarSeverity}"
-                                        RequestedTheme="{x:Bind GlassPresenter_20277.ActualTheme, Mode=OneWay}"
+                                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_20277}"
                                         SelectedItem="{x:Bind ((shv:TestViewModel)DataContext).Announcement.Severity, Mode=TwoWay}"/>
                                 </cwc:Case>
                                 <cwc:Case>

@@ -36,7 +36,7 @@
                     VerticalAlignment="Top"
                     DataContext="{x:Bind GlassPresenter_806.DataContext, Mode=OneWay}"
                     DisplayMemberPath="Name"
-                    RequestedTheme="{x:Bind GlassPresenter_806.ActualTheme, Mode=OneWay}"/>
+                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_806}"/>
             </cwc:Case>
             <cwc:Case>
                 <cwc:Case.Value>

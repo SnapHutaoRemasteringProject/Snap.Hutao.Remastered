@@ -39,7 +39,7 @@
                     InputScope="EmailSmtpAddress"
                     IsSpellCheckEnabled="False"
                     PlaceholderText="{shuxm:ResourceString Name=ViewPageHutaoPassportUserNameHint}"
-                    RequestedTheme="{x:Bind GlassPresenter_1035.ActualTheme, Mode=OneWay}"
+                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_1035}"
                     Text="{x:Bind UserName, Mode=TwoWay}"/>
             </cwc:Case>
             <cwc:Case>
@@ -160,7 +160,7 @@
                         Password="{x:Bind Password, Mode=TwoWay}"
                         PasswordChar="*"
                         PlaceholderText="{shuxm:ResourceString Name=ViewPageHutaoPassportPasswordHint}"
-                        RequestedTheme="{x:Bind GlassPresenter_2155.ActualTheme, Mode=OneWay}"/>
+                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_2155}"/>
                 </cwc:Case>
                 <cwc:Case>
                     <cwc:Case.Value>

@@ -86,17 +86,17 @@
                         x:Name="GlassNative_3863"
                         Content="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyPreserveExisting}"
                         DataContext="{x:Bind MaterialSelector_SaveModeSelector.DataContext, Mode=OneWay}"
-                        RequestedTheme="{x:Bind MaterialSelector_SaveModeSelector.ActualTheme, Mode=OneWay}"/>
+                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_SaveModeSelector}"/>
                     <RadioButton
                         x:Name="GlassNative_3989"
                         Content="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyOverwriteExisting}"
                         DataContext="{x:Bind MaterialSelector_SaveModeSelector.DataContext, Mode=OneWay}"
-                        RequestedTheme="{x:Bind MaterialSelector_SaveModeSelector.ActualTheme, Mode=OneWay}"/>
+                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_SaveModeSelector}"/>
                     <RadioButton
                         x:Name="GlassNative_4116"
                         Content="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyCreateNewEntry}"
                         DataContext="{x:Bind MaterialSelector_SaveModeSelector.DataContext, Mode=OneWay}"
-                        RequestedTheme="{x:Bind MaterialSelector_SaveModeSelector.ActualTheme, Mode=OneWay}"/>
+                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_SaveModeSelector}"/>
                 </RadioButtons>
             </cwc:Case>
             <cwc:Case Value="{shuxm:Int32 Value=1}">

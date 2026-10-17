@@ -79,17 +79,17 @@
                         x:Name="GlassNative_3487"
                         Content="{shuxm:ResourceString Name=ViewDialogAchievementArchiveImportStrategyAggressive}"
                         DataContext="{x:Bind MaterialSelector_ImportModeSelector.DataContext, Mode=OneWay}"
-                        RequestedTheme="{x:Bind MaterialSelector_ImportModeSelector.ActualTheme, Mode=OneWay}"/>
+                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_ImportModeSelector}"/>
                     <RadioButton
                         x:Name="GlassNative_3605"
                         Content="{shuxm:ResourceString Name=ViewDialogAchievementArchiveImportStrategyLazy}"
                         DataContext="{x:Bind MaterialSelector_ImportModeSelector.DataContext, Mode=OneWay}"
-                        RequestedTheme="{x:Bind MaterialSelector_ImportModeSelector.ActualTheme, Mode=OneWay}"/>
+                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_ImportModeSelector}"/>
                     <RadioButton
                         x:Name="GlassNative_3717"
                         Content="{shuxm:ResourceString Name=ViewDialogAchievementArchiveImportStrategyOverwrite}"
                         DataContext="{x:Bind MaterialSelector_ImportModeSelector.DataContext, Mode=OneWay}"
-                        RequestedTheme="{x:Bind MaterialSelector_ImportModeSelector.ActualTheme, Mode=OneWay}"/>
+                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_ImportModeSelector}"/>
                 </RadioButtons>
             </cwc:Case>
             <cwc:Case Value="{shuxm:Int32 Value=1}">

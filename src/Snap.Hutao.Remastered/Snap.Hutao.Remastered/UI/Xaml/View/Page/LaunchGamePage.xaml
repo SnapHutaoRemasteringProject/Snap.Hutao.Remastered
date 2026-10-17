@@ -559,7 +559,7 @@
                                                                             DataContext="{x:Bind GlassPresenter_26355.DataContext, Mode=OneWay}"
                                                                             DisplayMemberPath="Name"
                                                                             ItemsSource="{x:Bind shuil:LowLevelKeyOptions.VirtualKeys}"
-                                                                            RequestedTheme="{x:Bind GlassPresenter_26355.ActualTheme, Mode=OneWay}"
+                                                                            shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_26355}"
                                                                             SelectedItem="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LowLevelKeyOptions.OverlayHideKey, Mode=TwoWay}"/>
                                                                     </cwc:Case>
                                                                     <cwc:Case>
@@ -852,7 +852,7 @@
                                                                         DisplayMemberPath="Name"
                                                                         IsEnabled="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.IsPlatformTypeEnabled.Value, Mode=OneWay}"
                                                                         ItemsSource="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.PlatformTypes, Mode=OneWay}"
-                                                                        RequestedTheme="{x:Bind GlassPresenter_36147.ActualTheme, Mode=OneWay}"
+                                                                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_36147}"
                                                                         SelectedItem="{x:Bind ((shvg:LaunchGameViewModel)DataContext).SelectedPlatformType.Value, Mode=TwoWay}"/>
                                                                 </cwc:Case>
                                                                 <cwc:Case>
@@ -939,7 +939,7 @@
                                                                     ItemTemplateSelector="{StaticResource AspectRatioComboBoxTemplateSelector}"
                                                                     ItemsSource="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.AspectRatios.Value, Mode=OneWay}"
                                                                     PlaceholderText="{shuxm:ResourceString Name=ViewPageLaunchGameAppearanceAspectRatioPlaceHolder}"
-                                                                    RequestedTheme="{x:Bind GlassPresenter_37616.ActualTheme, Mode=OneWay}"
+                                                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_37616}"
                                                                     SelectedItem="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.SelectedAspectRatio, Mode=TwoWay}"
                                                                     Style="{ThemeResource DefaultComboBoxStyle}"/>
                                                             </cwc:Case>
@@ -1098,7 +1098,7 @@
                                                                         DisplayMemberPath="Name"
                                                                         IsEnabled="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.IsMonitorEnabled.Value, Mode=OneWay}"
                                                                         ItemsSource="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.Monitors, Mode=OneWay}"
-                                                                        RequestedTheme="{x:Bind GlassPresenter_41899.ActualTheme, Mode=OneWay}"
+                                                                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_41899}"
                                                                         SelectedItem="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.Monitor.Value, Mode=TwoWay}"/>
                                                                 </cwc:Case>
                                                                 <cwc:Case>
@@ -1958,7 +1958,7 @@
                                                 x:Name="TargetFpsToggleSwitch"
                                                 DataContext="{x:Bind GlassPresenter_128983.DataContext, Mode=OneWay}"
                                                 IsOn="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.IsSetTargetFrameRateEnabled.Value, Mode=TwoWay}"
-                                                RequestedTheme="{x:Bind GlassPresenter_128983.ActualTheme, Mode=OneWay}"
+                                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_128983}"
                                                 ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameHotSwitchDescription}">
                                                 <mxi:Interaction.Behaviors>
                                                     <shuxb:ToggleSwitchHeaderHitTestVisibleBehavior/>
@@ -2144,7 +2144,7 @@
                                                 DataContext="{x:Bind GlassPresenter_78392.DataContext, Mode=OneWay}"
                                                 Header="{shuxm:ResourceString Name=ViewPageLaunchGameDisablePlayerPerspectiveDescription}"
                                                 IsOn="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.DisablePlayerPerspective.Value, Mode=TwoWay}"
-                                                RequestedTheme="{x:Bind GlassPresenter_78392.ActualTheme, Mode=OneWay}"
+                                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_78392}"
                                                 ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameDisablePlayerPerspectiveDescription}"/>
                                         </cwc:Case>
                                         <cwc:Case>
@@ -2201,7 +2201,7 @@
                                                 IsOn="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.HideQuestBanner.Value, Mode=TwoWay}"
                                                 OffContent="{shuxm:ResourceString Name=ViewPageLaunchGameDisableFogOff}"
                                                 OnContent="{shuxm:ResourceString Name=ViewPageLaunchGameDisableFogOn}"
-                                                RequestedTheme="{x:Bind GlassPresenter_138209.ActualTheme, Mode=OneWay}"
+                                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_138209}"
                                                 ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameHotSwitchDescription}">
                                                 <mxi:Interaction.Behaviors>
                                                     <shuxb:ToggleSwitchHeaderHitTestVisibleBehavior/>
@@ -2509,7 +2509,7 @@
                                                 x:Name="RedirectCombineEntryToggleSwitch"
                                                 DataContext="{x:Bind GlassPresenter_153403.DataContext, Mode=OneWay}"
                                                 IsOn="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.RedirectCombineEntry.Value, Mode=TwoWay}"
-                                                RequestedTheme="{x:Bind GlassPresenter_153403.ActualTheme, Mode=OneWay}"
+                                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_153403}"
                                                 Style="{ThemeResource DefaultToggleSwitchStyle}"
                                                 ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandRedirectCombineEntryDescription}">
                                                 <mxi:Interaction.Behaviors>
@@ -2702,7 +2702,7 @@
                                                 DisplayMemberPath="Name"
                                                 Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandCombineMenuHotkeyHeader}"
                                                 ItemsSource="{x:Bind shsg:LaunchOptions.VirtualKeys}"
-                                                RequestedTheme="{x:Bind GlassPresenter_89103.ActualTheme, Mode=OneWay}"
+                                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_89103}"
                                                 SelectedValue="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.CombineMenuHotkey.Value, Mode=TwoWay, Converter={StaticResource IntToNameValueVirtualKeyConverter}}"
                                                 ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandCombineMenuHotkeyDescription}"/>
                                         </cwc:Case>
@@ -2912,7 +2912,7 @@
                                                 DataContext="{x:Bind GlassPresenter_92790.DataContext, Mode=OneWay}"
                                                 Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowOriginalResinHeader}"
                                                 IsOn="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.ResinListItemId000106Allowed.Value, Mode=TwoWay}"
-                                                RequestedTheme="{x:Bind GlassPresenter_92790.ActualTheme, Mode=OneWay}"
+                                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_92790}"
                                                 Toggled="ResinListItemToggle_Toggled"/>
                                         </cwc:Case>
                                         <cwc:Case>
@@ -2966,7 +2966,7 @@
                                                 DataContext="{x:Bind GlassPresenter_93369.DataContext, Mode=OneWay}"
                                                 Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowPrimogemHeader}"
                                                 IsOn="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.ResinListItemId000201Allowed.Value, Mode=TwoWay}"
-                                                RequestedTheme="{x:Bind GlassPresenter_93369.ActualTheme, Mode=OneWay}"
+                                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_93369}"
                                                 Toggled="ResinListItemToggle_Toggled"/>
                                         </cwc:Case>
                                         <cwc:Case>
@@ -3020,7 +3020,7 @@
                                                 DataContext="{x:Bind GlassPresenter_93938.DataContext, Mode=OneWay}"
                                                 Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowFragileResinHeader}"
                                                 IsOn="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.ResinListItemId107009Allowed.Value, Mode=TwoWay}"
-                                                RequestedTheme="{x:Bind GlassPresenter_93938.ActualTheme, Mode=OneWay}"
+                                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_93938}"
                                                 Toggled="ResinListItemToggle_Toggled"/>
                                         </cwc:Case>
                                         <cwc:Case>
@@ -3074,7 +3074,7 @@
                                                 DataContext="{x:Bind GlassPresenter_94515.DataContext, Mode=OneWay}"
                                                 Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowTransientResinHeader}"
                                                 IsOn="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.ResinListItemId107012Allowed.Value, Mode=TwoWay}"
-                                                RequestedTheme="{x:Bind GlassPresenter_94515.ActualTheme, Mode=OneWay}"
+                                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_94515}"
                                                 Toggled="ResinListItemToggle_Toggled"/>
                                         </cwc:Case>
                                         <cwc:Case>
@@ -3128,7 +3128,7 @@
                                                 DataContext="{x:Bind GlassPresenter_95096.DataContext, Mode=OneWay}"
                                                 Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowCondensedResinHeader}"
                                                 IsOn="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.ResinListItemId220007Allowed.Value, Mode=TwoWay}"
-                                                RequestedTheme="{x:Bind GlassPresenter_95096.ActualTheme, Mode=OneWay}"
+                                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_95096}"
                                                 Toggled="ResinListItemToggle_Toggled"/>
                                         </cwc:Case>
                                         <cwc:Case>
@@ -3271,7 +3271,7 @@
                                                 DataContext="{x:Bind GlassPresenter_97461.DataContext, Mode=OneWay}"
                                                 Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandFastSkipTalkHeader}"
                                                 IsOn="{x:Bind ((shvg:LaunchGameViewModel)DataContext).LaunchOptions.FastSkipTalk.Value, Mode=TwoWay}"
-                                                RequestedTheme="{x:Bind GlassPresenter_97461.ActualTheme, Mode=OneWay}"
+                                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_97461}"
                                                 Toggled="FastSkipTalkToggleSwitch_Toggled"
                                                 ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandFastSkipTalkDescription}"
                                                 Visibility="{x:Bind ((shvg:LaunchGameViewModel)DataContext).IsDeveloperAndLoggedIn, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>

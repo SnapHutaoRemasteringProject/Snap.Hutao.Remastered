@@ -691,7 +691,7 @@
                                                     DataContext="{x:Bind GlassPresenter_23859.DataContext, Mode=OneWay}"
                                                     DisplayMemberPath="Name"
                                                     ItemsSource="{x:Bind shs:CultureOptions.Cultures}"
-                                                    RequestedTheme="{x:Bind GlassPresenter_23859.ActualTheme, Mode=OneWay}"
+                                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_23859}"
                                                     SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.SelectedCulture, Mode=TwoWay}"/>
                                             </cwc:Case>
                                             <cwc:Case>
@@ -755,7 +755,7 @@
                                                     DataContext="{x:Bind GlassPresenter_24747.DataContext, Mode=OneWay}"
                                                     DisplayMemberPath="Name"
                                                     ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.CultureOptions.DayOfWeeks, Mode=OneWay}"
-                                                    RequestedTheme="{x:Bind GlassPresenter_24747.ActualTheme, Mode=OneWay}"
+                                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_24747}"
                                                     SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.SelectedFirstDayOfWeek, Mode=TwoWay}"/>
                                             </cwc:Case>
                                             <cwc:Case>
@@ -818,8 +818,9 @@
                                                     x:Name="GlassPresenter_25630_State"
                                                     DataContext="{x:Bind GlassPresenter_25630.DataContext, Mode=OneWay}"
                                                     DisplayMemberPath="Name"
+                                                    IsEnabled="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.IsBackdropSelectionEnabled, Mode=OneWay}"
                                                     ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.AppOptions.BackdropTypes, Mode=OneWay}"
-                                                    RequestedTheme="{x:Bind GlassPresenter_25630.ActualTheme, Mode=OneWay}"
+                                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_25630}"
                                                     SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.SelectedBackdropType, Mode=TwoWay}"/>
                                             </cwc:Case>
                                             <cwc:Case>
@@ -883,7 +884,7 @@
                                                     DataContext="{x:Bind GlassPresenter_26488.DataContext, Mode=OneWay}"
                                                     DisplayMemberPath="Name"
                                                     ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.AppOptions.LazyElementThemes.Value, Mode=OneWay}"
-                                                    RequestedTheme="{x:Bind GlassPresenter_26488.ActualTheme, Mode=OneWay}"
+                                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_26488}"
                                                     SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.SelectedElementTheme, Mode=TwoWay}"/>
                                             </cwc:Case>
                                             <cwc:Case>
@@ -982,7 +983,7 @@
                                                     DataContext="{x:Bind GlassPresenter_36087.DataContext, Mode=OneWay}"
                                                     DisplayMemberPath="Name"
                                                     ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.AppOptions.BackgroundImageTypes, Mode=OneWay}"
-                                                    RequestedTheme="{x:Bind GlassPresenter_36087.ActualTheme, Mode=OneWay}"
+                                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_36087}"
                                                     SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.SelectedBackgroundImageType, Mode=TwoWay}"/>
                                             </cwc:Case>
                                             <cwc:Case>
@@ -1072,7 +1073,7 @@
                                                     DataContext="{x:Bind GlassPresenter_39530.DataContext, Mode=OneWay}"
                                                     DisplayMemberPath="Name"
                                                     ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.AppOptions.BackgroundMediaTypes, Mode=OneWay}"
-                                                    RequestedTheme="{x:Bind GlassPresenter_39530.ActualTheme, Mode=OneWay}"
+                                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_39530}"
                                                     SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.SelectedBackgroundMediaType, Mode=TwoWay}"/>
                                             </cwc:Case>
                                             <cwc:Case>
@@ -1196,7 +1197,7 @@
                                                     DataContext="{x:Bind GlassPresenter_42518.DataContext, Mode=OneWay}"
                                                     DisplayMemberPath="Name"
                                                     ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.AppOptions.LastWindowCloseBehaviors, Mode=OneWay}"
-                                                    RequestedTheme="{x:Bind GlassPresenter_42518.ActualTheme, Mode=OneWay}"
+                                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_42518}"
                                                     SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.SelectedLastWindowCloseBehavior, Mode=TwoWay}"/>
                                             </cwc:Case>
                                             <cwc:Case>
@@ -1295,7 +1296,7 @@
                                                     DataContext="{x:Bind GlassPresenter_44665.DataContext, Mode=OneWay}"
                                                     DisplayMemberPath="Name"
                                                     ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).AppOptions.ServerDomainModes, Mode=OneWay}"
-                                                    RequestedTheme="{x:Bind GlassPresenter_44665.ActualTheme, Mode=OneWay}"
+                                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_44665}"
                                                     SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).SelectedServerDomainMode, Mode=TwoWay}"/>
                                             </cwc:Case>
                                             <cwc:Case>
@@ -1584,7 +1585,7 @@
                                                                             Content="Win"
                                                                             DataContext="{x:Bind GlassPresenter_55151.DataContext, Mode=OneWay}"
                                                                             IsEnabled="False"
-                                                                            RequestedTheme="{x:Bind GlassPresenter_55151.ActualTheme, Mode=OneWay}"/>
+                                                                            shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_55151}"/>
                                                                     </cwc:Case>
                                                                     <cwc:Case>
                                                                         <cwc:Case.Value>
@@ -1752,7 +1753,7 @@
                                                                             Content="Win"
                                                                             DataContext="{x:Bind GlassPresenter_55151Glass.DataContext, Mode=OneWay}"
                                                                             IsEnabled="False"
-                                                                            RequestedTheme="{x:Bind GlassPresenter_55151Glass.ActualTheme, Mode=OneWay}"/>
+                                                                            shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_55151Glass}"/>
                                                                     </cwc:Case>
                                                                     <cwc:Case>
                                                                         <cwc:Case.Value>
@@ -1902,7 +1903,7 @@
                                                         DataContext="{x:Bind GlassPresenter_57268.DataContext, Mode=OneWay}"
                                                         DisplayMemberPath="Name"
                                                         ItemsSource="{x:Bind shuih:HotKeyOptions.VirtualKeys}"
-                                                        RequestedTheme="{x:Bind GlassPresenter_57268.ActualTheme, Mode=OneWay}"
+                                                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_57268}"
                                                         SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).HotKey.HotKeyOptions.MouseClickRepeatForeverKeyCombination.KeyNameValue, Mode=TwoWay}"/>
                                                 </cwc:Case>
                                                 <cwc:Case>
@@ -2028,7 +2029,7 @@
                                                                             Content="Win"
                                                                             DataContext="{x:Bind GlassPresenter_60093.DataContext, Mode=OneWay}"
                                                                             IsEnabled="False"
-                                                                            RequestedTheme="{x:Bind GlassPresenter_60093.ActualTheme, Mode=OneWay}"/>
+                                                                            shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_60093}"/>
                                                                     </cwc:Case>
                                                                     <cwc:Case>
                                                                         <cwc:Case.Value>
@@ -2196,7 +2197,7 @@
                                                                             Content="Win"
                                                                             DataContext="{x:Bind GlassPresenter_60093Glass.DataContext, Mode=OneWay}"
                                                                             IsEnabled="False"
-                                                                            RequestedTheme="{x:Bind GlassPresenter_60093Glass.ActualTheme, Mode=OneWay}"/>
+                                                                            shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_60093Glass}"/>
                                                                     </cwc:Case>
                                                                     <cwc:Case>
                                                                         <cwc:Case.Value>
@@ -2346,7 +2347,7 @@
                                                         DataContext="{x:Bind GlassPresenter_62204.DataContext, Mode=OneWay}"
                                                         DisplayMemberPath="Name"
                                                         ItemsSource="{x:Bind shuih:HotKeyOptions.VirtualKeys}"
-                                                        RequestedTheme="{x:Bind GlassPresenter_62204.ActualTheme, Mode=OneWay}"
+                                                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_62204}"
                                                         SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).HotKey.HotKeyOptions.KeyPressRepeatForeverKeyCombination.KeyNameValue, Mode=TwoWay}"/>
                                                 </cwc:Case>
                                                 <cwc:Case>
@@ -2455,7 +2456,7 @@
                                                         DataContext="{x:Bind GlassPresenter_64634.DataContext, Mode=OneWay}"
                                                         DisplayMemberPath="Name"
                                                         ItemsSource="{x:Bind shuil:LowLevelKeyOptions.VirtualKeys}"
-                                                        RequestedTheme="{x:Bind GlassPresenter_64634.ActualTheme, Mode=OneWay}"
+                                                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_64634}"
                                                         SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).HotKey.LowLevelKeyOptions.WebView2VideoPlayPauseKey, Mode=TwoWay}"/>
                                                 </cwc:Case>
                                                 <cwc:Case>
@@ -2545,7 +2546,7 @@
                                                         DataContext="{x:Bind GlassPresenter_67550.DataContext, Mode=OneWay}"
                                                         DisplayMemberPath="Name"
                                                         ItemsSource="{x:Bind shuil:LowLevelKeyOptions.VirtualKeys}"
-                                                        RequestedTheme="{x:Bind GlassPresenter_67550.ActualTheme, Mode=OneWay}"
+                                                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_67550}"
                                                         SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).HotKey.LowLevelKeyOptions.WebView2VideoFastForwardKey, Mode=TwoWay}"/>
                                                 </cwc:Case>
                                                 <cwc:Case>
@@ -2617,7 +2618,7 @@
                                                         DataContext="{x:Bind GlassPresenter_69008.DataContext, Mode=OneWay}"
                                                         DisplayMemberPath="Name"
                                                         ItemsSource="{x:Bind shuil:LowLevelKeyOptions.VirtualKeys}"
-                                                        RequestedTheme="{x:Bind GlassPresenter_69008.ActualTheme, Mode=OneWay}"
+                                                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_69008}"
                                                         SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).HotKey.LowLevelKeyOptions.WebView2VideoRewindKey, Mode=TwoWay}"/>
                                                 </cwc:Case>
                                                 <cwc:Case>
@@ -2689,7 +2690,7 @@
                                                         DataContext="{x:Bind GlassPresenter_70447.DataContext, Mode=OneWay}"
                                                         DisplayMemberPath="Name"
                                                         ItemsSource="{x:Bind shuil:LowLevelKeyOptions.VirtualKeys}"
-                                                        RequestedTheme="{x:Bind GlassPresenter_70447.ActualTheme, Mode=OneWay}"
+                                                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_70447}"
                                                         SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).HotKey.LowLevelKeyOptions.WebView2HideKey, Mode=TwoWay}"/>
                                                 </cwc:Case>
                                                 <cwc:Case>
@@ -2842,7 +2843,7 @@
                                                     DataContext="{x:Bind GlassPresenter_76282.DataContext, Mode=OneWay}"
                                                     DisplayMemberPath="Name"
                                                     ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Home.AppOptions.LazyCalendarServerTimeZoneOffsets.Value, Mode=OneWay}"
-                                                    RequestedTheme="{x:Bind GlassPresenter_76282.ActualTheme, Mode=OneWay}"
+                                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_76282}"
                                                     SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Home.SelectedCalendarServerTimeZoneOffset, Mode=TwoWay}"/>
                                             </cwc:Case>
                                             <cwc:Case>
@@ -2906,7 +2907,7 @@
                                                     DataContext="{x:Bind GlassPresenter_77216.DataContext, Mode=OneWay}"
                                                     DisplayMemberPath="Name"
                                                     ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Home.AppOptions.LazyRegions.Value, Mode=OneWay}"
-                                                    RequestedTheme="{x:Bind GlassPresenter_77216.ActualTheme, Mode=OneWay}"
+                                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_77216}"
                                                     SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Home.SelectedRegion, Mode=TwoWay}"/>
                                             </cwc:Case>
                                             <cwc:Case>
@@ -3278,7 +3279,7 @@
                                                     MinWidth="100"
                                                     DataContext="{x:Bind GlassPresenter_87865.DataContext, Mode=OneWay}"
                                                     ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).GachaLog.UIGFVersions, Mode=OneWay}"
-                                                    RequestedTheme="{x:Bind GlassPresenter_87865.ActualTheme, Mode=OneWay}"
+                                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_87865}"
                                                     SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).GachaLog.SelectedUIGFVersion, Mode=TwoWay}">
                                                     <ComboBox.ItemTemplate>
                                                         <DataTemplate x:DataType="shsu:UIGFVersion">
@@ -3417,7 +3418,7 @@
                                                     DataContext="{x:Bind GlassPresenter_90428.DataContext, Mode=OneWay}"
                                                     DisplayMemberPath="Name"
                                                     ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).WebView.AppOptions.BridgeShareSaveTypes, Mode=OneWay}"
-                                                    RequestedTheme="{x:Bind GlassPresenter_90428.ActualTheme, Mode=OneWay}"
+                                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_90428}"
                                                     SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).WebView.SelectedShareSaveType, Mode=TwoWay}"/>
                                             </cwc:Case>
                                             <cwc:Case>

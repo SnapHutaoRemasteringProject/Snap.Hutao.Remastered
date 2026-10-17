@@ -73,7 +73,7 @@
                             DataContext="{x:Bind GlassPresenter_3562.DataContext, Mode=OneWay}"
                             DisplayMemberPath="Level"
                             ItemsSource="{x:Bind Source, Mode=OneWay}"
-                            RequestedTheme="{x:Bind GlassPresenter_3562.ActualTheme, Mode=OneWay}"
+                            shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_3562}"
                             SelectedItem="{x:Bind SelectedItem, Mode=TwoWay}"
                             Style="{StaticResource SettingsContentComboBoxStyle}"/>
                     </cwc:Case>

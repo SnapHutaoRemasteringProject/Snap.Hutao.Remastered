@@ -91,7 +91,30 @@ public sealed partial class AppOptions : DbStoreOptions
     public IObservableProperty<ElementTheme> ElementTheme { get => field ??= CreateProperty(SettingKeys.ElementTheme, Microsoft.UI.Xaml.ElementTheme.Default); }
 
     [field: MaybeNull]
-    public IObservableProperty<ControlMaterial> ControlMaterial { get => field ??= CreateProperty(SettingKeys.ControlMaterial, UI.Xaml.Control.Theme.ControlMaterial.Default); }
+    public IObservableProperty<ControlMaterial> ControlMaterial
+    {
+        get
+        {
+            if (field is null)
+            {
+                field = CreateProperty(SettingKeys.ControlMaterial, UI.Xaml.Control.Theme.ControlMaterial.Default)
+                    .WithValueChangedCallback(OnControlMaterialChanged, this);
+                OnControlMaterialChanged(field.Value, this);
+            }
+
+            return field;
+        }
+    }
+
+    private static void OnControlMaterialChanged(ControlMaterial material, AppOptions appOptions)
+    {
+        // System backdrops leave stale pixels beneath liquid glass. Also
+        // normalize a persisted glass selection before applying it at startup.
+        if (material is UI.Xaml.Control.Theme.ControlMaterial.LiquidGlass)
+        {
+            appOptions.BackdropType.Value = UI.Xaml.Media.Backdrop.BackdropType.None;
+        }
+    }
 
     [field: MaybeNull]
     public IObservableProperty<BackgroundImageType> BackgroundImageType { get => field ??= CreateProperty(SettingKeys.BackgroundImageType, BackgroundImage.BackgroundImageType.None); }

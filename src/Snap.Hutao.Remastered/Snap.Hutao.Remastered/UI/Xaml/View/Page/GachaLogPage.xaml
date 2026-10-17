@@ -481,7 +481,7 @@
                                 DataContext="{x:Bind GlassPresenter_22004.DataContext, Mode=OneWay}"
                                 DisplayMemberPath="Uid"
                                 ItemsSource="{x:Bind ((shvg:GachaLogViewModel)DataContext).Archives, Mode=OneWay}"
-                                RequestedTheme="{x:Bind GlassPresenter_22004.ActualTheme, Mode=OneWay}"
+                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_22004}"
                                 SelectedItem="{x:Bind ((shvg:GachaLogViewModel)DataContext).Archives.CurrentItem, Mode=TwoWay}"
                                 Style="{ThemeResource CommandBarComboBoxStyle}"/>
                         </cwc:Case>
