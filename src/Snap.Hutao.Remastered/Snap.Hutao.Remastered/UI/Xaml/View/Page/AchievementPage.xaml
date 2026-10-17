@@ -557,7 +557,8 @@
                                 DisplayMode="Inline"
                                 IsPaneOpen="True"
                                 OpenPaneLength="{StaticResource CompatSplitViewOpenPaneLength2}"
-                                PaneBackground="{ThemeResource HutaoSurfaceBrush}">
+                                shuxcth:MaterialBackground.NativePaneBrush="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                shuxcth:MaterialBackground.GlassPaneBrush="{ThemeResource HutaoSurfaceBrush}">
                                 <SplitView.Pane>
                                     <ListView
                                         Padding="{ThemeResource ListViewInSplitPanePadding}"

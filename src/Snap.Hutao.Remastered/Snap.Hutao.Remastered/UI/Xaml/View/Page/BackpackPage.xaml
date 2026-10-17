@@ -464,7 +464,6 @@
                 <Border
                     MinWidth="480"
                     Padding="16"
-                    Background="{ThemeResource HutaoCardBrush}"
                     Style="{ThemeResource AcrylicBorderCardStyle}">
                     <StackPanel>
                         <Image
@@ -523,7 +522,7 @@
                 Grid.Row="0"
                 Margin="16"
                 cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
+                <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                     <Grid Margin="4,4" ColumnSpacing="4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
@@ -693,7 +692,7 @@
 
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryWeapon}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
@@ -711,7 +710,7 @@
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryReliquary}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
@@ -729,7 +728,7 @@
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryUpgradeItem}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
@@ -747,7 +746,7 @@
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryFood}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
@@ -765,7 +764,7 @@
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryMaterial}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
@@ -783,7 +782,7 @@
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryGadget}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
@@ -801,7 +800,7 @@
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryQuest}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
@@ -819,7 +818,7 @@
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryPreciousItem}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
@@ -838,7 +837,6 @@
                 <!--<PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryFurniture}">
                 <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                     <Border
-                        Background="{ThemeResource HutaoCardBrush}"
                         Style="{ThemeResource AcrylicBorderCardStyle}">
                         <GridView
                             Padding="16,16,10,10"
