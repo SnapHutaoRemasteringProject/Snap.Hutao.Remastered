@@ -887,6 +887,9 @@
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
     <value>Preparing, if there is no response for a long time, please try restarting or checking the server status and network</value>
   </data>
+  <data name="ServiceBackgroundImageDecodeFailed" xml:space="preserve">
+    <value>Unable to decode the background image: the system is missing a usable image decoding component, so this wallpaper switch has been skipped</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing Daily Wallpaper</value>
   </data>
@@ -3674,6 +3677,30 @@ Space Available: {2}</value>
   <data name="ViewPageSettingThemeHeader" xml:space="preserve">
     <value>Theme</value>
   </data>
+  <data name="ViewPageSettingControlMaterialHeader" xml:space="preserve">
+    <value>Control Material</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDescription" xml:space="preserve">
+    <value>Change the material effect of cards and card panels</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDefault" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialLiquidGlass" xml:space="preserve">
+    <value>Liquid Glass (Experimental Preview)</value>
+  </data>
+  <data name="ViewGuideMaterialTitle" xml:space="preserve">
+    <value>Choose Control Material</value>
+  </data>
+  <data name="ViewGuideMaterialDescription" xml:space="preserve">
+    <value>Compare the native Fluent surface with Liquid Glass, then choose the control material used globally by the app.</value>
+  </data>
+  <data name="ViewGuideMaterialDefaultPreviewDescription" xml:space="preserve">
+    <value>Native Fluent Surface</value>
+  </data>
+  <data name="ViewGuideMaterialLiquidGlassPreviewDescription" xml:space="preserve">
+    <value>Blur, refraction, and edge highlights</value>
+  </data>
   <data name="ViewPageSettingTranslateNavigate" xml:space="preserve">
     <value>Contribute Translations</value>
   </data>
@@ -4477,6 +4504,21 @@ Space Available: {2}</value>
   </data>
   <data name="ServicePluginUninstallDescription" xml:space="preserve">
     <value>Are you sure you want to uninstall plugin {0}? This action cannot be undone.</value>
+  </data>
+  <data name="ViewPagePluginSettingLoadFailed" xml:space="preserve">
+    <value>Failed to load plugin settings</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveSuccess" xml:space="preserve">
+    <value>Setting '{0}' saved</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveFailed" xml:space="preserve">
+    <value>Failed to save setting '{0}'</value>
+  </data>
+  <data name="ViewPagePluginSettingResetSuccess" xml:space="preserve">
+    <value>Setting '{0}' reset</value>
+  </data>
+  <data name="ViewPagePluginSettingResetFailed" xml:space="preserve">
+    <value>Failed to reset setting '{0}'</value>
   </data>
   <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
     <value>Auto Input Swap</value>
@@ -5501,5 +5543,23 @@ Space Available: {2}</value>
   </data>
   <data name="GlassPreviewActivity" xml:space="preserve">
     <value>Activity</value>
+  </data>
+  <data name="RepositoryServerOfflineWarning" xml:space="preserve">
+    <value>Failed to connect to the server. Offline mode has been enabled and the local repository list is in use. Online resources such as images may fail to load. Click the button next to background tasks to reconnect.</value>
+  </data>
+  <data name="RepositoryServerConnectionRestored" xml:space="preserve">
+    <value>Reconnected to the server. Offline mode has been exited.</value>
+  </data>
+  <data name="RepositoryServerReconnect" xml:space="preserve">
+    <value>Retry server connection</value>
+  </data>
+  <data name="RepositoryServerReconnectFailed" xml:space="preserve">
+    <value>Still unable to connect to the server. Continuing to use offline mode. You can try again later.</value>
+  </data>
+  <data name="RepositoryServerOfflineStatus" xml:space="preserve">
+    <value>Offline Mode · Reconnect</value>
+  </data>
+  <data name="RepositoryServerReconnecting" xml:space="preserve">
+    <value>Offline Mode · Reconnecting</value>
   </data>
 </root>
