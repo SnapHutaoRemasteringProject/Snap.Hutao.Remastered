@@ -887,6 +887,9 @@
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
     <value>準備中、長時間反応しない場合はネットワークとサーバの状態を再起動または確認してみてください</value>
   </data>
+  <data name="ServiceBackgroundImageDecodeFailed" xml:space="preserve">
+    <value>背景画像をデコードできません：システムに利用可能な画像デコーダーコンポーネントがないため、今回の壁紙の切り替えをスキップしました</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing 日替わり画像</value>
   </data>
@@ -3674,6 +3677,30 @@
   <data name="ViewPageSettingThemeHeader" xml:space="preserve">
     <value>カラーテーマ</value>
   </data>
+  <data name="ViewPageSettingControlMaterialHeader" xml:space="preserve">
+    <value>コントロールのマテリアル</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDescription" xml:space="preserve">
+    <value>カードとカードパネルのマテリアル効果を変更</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDefault" xml:space="preserve">
+    <value>デフォルト</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialLiquidGlass" xml:space="preserve">
+    <value>リキッドグラス（試験的プレビュー）</value>
+  </data>
+  <data name="ViewGuideMaterialTitle" xml:space="preserve">
+    <value>コントロールのマテリアルを選択</value>
+  </data>
+  <data name="ViewGuideMaterialDescription" xml:space="preserve">
+    <value>ネイティブ Fluent サーフェスとリキッドグラスを比較し、アプリ全体で使用するコントロールのマテリアルを選択します。</value>
+  </data>
+  <data name="ViewGuideMaterialDefaultPreviewDescription" xml:space="preserve">
+    <value>ネイティブ Fluent サーフェス</value>
+  </data>
+  <data name="ViewGuideMaterialLiquidGlassPreviewDescription" xml:space="preserve">
+    <value>ぼかし、屈折、エッジのハイライト</value>
+  </data>
   <data name="ViewPageSettingTranslateNavigate" xml:space="preserve">
     <value>和訳を提供</value>
   </data>
@@ -4478,6 +4505,21 @@
   <data name="ServicePluginUninstallDescription" xml:space="preserve">
     <value>プラグイン {0} をアンインストールしてもよろしいですか？この操作は元に戻せません。</value>
   </data>
+  <data name="ViewPagePluginSettingLoadFailed" xml:space="preserve">
+    <value>プラグイン設定の読み込みに失敗しました</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveSuccess" xml:space="preserve">
+    <value>設定「{0}」を保存しました</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveFailed" xml:space="preserve">
+    <value>設定「{0}」の保存に失敗しました</value>
+  </data>
+  <data name="ViewPagePluginSettingResetSuccess" xml:space="preserve">
+    <value>設定「{0}」をリセットしました</value>
+  </data>
+  <data name="ViewPagePluginSettingResetFailed" xml:space="preserve">
+    <value>設定「{0}」のリセットに失敗しました</value>
+  </data>
   <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
     <value>コントローラーホットスワップ</value>
   </data>
@@ -5189,5 +5231,335 @@
   </data>
   <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
     <value>星2</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassButton" xml:space="preserve">
+    <value>ボタン</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassToggleButton" xml:space="preserve">
+    <value>トグルボタン</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHyperlinkButton" xml:space="preserve">
+    <value>ハイパーリンクボタン</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassCheckBox" xml:space="preserve">
+    <value>チェックボックス</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRadioButton" xml:space="preserve">
+    <value>ラジオボタン</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassSlider" xml:space="preserve">
+    <value>スライダー</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassTextBox" xml:space="preserve">
+    <value>テキストボックス</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassPasswordBox" xml:space="preserve">
+    <value>パスワードボックス</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassComboBox" xml:space="preserve">
+    <value>コンボボックス</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassToggleSwitch" xml:space="preserve">
+    <value>トグルスイッチ</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassCard" xml:space="preserve">
+    <value>カードとサーフェス</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassStrength" xml:space="preserve">
+    <value>全体の強度（0～2 倍）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBlurScale" xml:space="preserve">
+    <value>ぼかしの強度（0～2 倍）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefractionScale" xml:space="preserve">
+    <value>屈折の強度（0～2 倍）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDispersionScale" xml:space="preserve">
+    <value>分散の強度（0～2 倍）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHighlightScale" xml:space="preserve">
+    <value>ハイライトの強度（0～2 倍）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassMagnificationScale" xml:space="preserve">
+    <value>拡大の強度（0～2 倍）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHeader" xml:space="preserve">
+    <value>リキッドグラスのコントロールと効果</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDescription" xml:space="preserve">
+    <value>コントロールの種類ごとにガラス効果を有効にします。変更はすぐに反映されます。光学倍率は各コントロールの元のプリセットに基づきます。</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassSearchBox" xml:space="preserve">
+    <value>検索ボックス</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDispersionRange" xml:space="preserve">
+    <value>分散範囲</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelRange" xml:space="preserve">
+    <value>フレネル範囲（DIP）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelHardness" xml:space="preserve">
+    <value>フレネル硬度</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelFactor" xml:space="preserve">
+    <value>フレネル強度</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareRange" xml:space="preserve">
+    <value>グレア範囲</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareHardness" xml:space="preserve">
+    <value>グレア硬度</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareFactor" xml:space="preserve">
+    <value>グレア強度</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareConvergence" xml:space="preserve">
+    <value>グレアの収束</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareOppositeFactor" xml:space="preserve">
+    <value>逆グレア強度</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareAngle" xml:space="preserve">
+    <value>ライト角度（度）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassMagnification" xml:space="preserve">
+    <value>拡大倍率</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBloomAmount" xml:space="preserve">
+    <value>ブルーム量</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBrightness" xml:space="preserve">
+    <value>明るさ</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassTemperature" xml:space="preserve">
+    <value>色温度</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassVibrance" xml:space="preserve">
+    <value>自然な彩度</value>
+  </data>
+  <data name="LiquidGlassControlsWindowTitle" xml:space="preserve">
+    <value>リキッドグラスのコントロール</value>
+  </data>
+  <data name="LiquidGlassEffectsWindowTitle" xml:space="preserve">
+    <value>リキッドグラス効果</value>
+  </data>
+  <data name="GlassControlsCardDescription" xml:space="preserve">
+    <value>ガラスマテリアルを有効にするコントロールの種類を選択し、インタラクティブプレビューを確認します。</value>
+  </data>
+  <data name="GlassEffectsCardDescription" xml:space="preserve">
+    <value>コントロールの種類ごとにパラメータを個別に調整でき、プレビューとデフォルトへの復元に対応しています。</value>
+  </data>
+  <data name="GlassControlsIntro" xml:space="preserve">
+    <value>アプリのマテリアルと各コントロールの種類を選択します。変更はすぐに反映され自動保存されます。リキッドグラス効果はパフォーマンスに多少影響します。</value>
+  </data>
+  <data name="GlassEffectsIntro" xml:space="preserve">
+    <value>コントロールの種類ごとに独立したパラメータがあり、変更はすぐに反映され自動保存されます。</value>
+  </data>
+  <data name="GlassNativeMaterial" xml:space="preserve">
+    <value>デフォルトマテリアル</value>
+  </data>
+  <data name="GlassLiquidMaterial" xml:space="preserve">
+    <value>リキッドグラス</value>
+  </data>
+  <data name="GlassPreviewHeading" xml:space="preserve">
+    <value>インタラクティブプレビュー</value>
+  </data>
+  <data name="GlassControlsPreviewHint" xml:space="preserve">
+    <value>プレビューはアプリのマテリアルとこの種類の有効状態に従います。ホバー、押下、フォーカス、入力、ドラッグを試せます。</value>
+  </data>
+  <data name="GlassEffectsPreviewHint" xml:space="preserve">
+    <value>このプレビューは、アプリでこの種類のコントロールが有効でなくても常にガラスを表示します。エディターはネイティブの外観を保ちます。</value>
+  </data>
+  <data name="GlassPresetHint" xml:space="preserve">
+    <value>デフォルト値はコントロールライブラリに由来します。デフォルトへの復元は現在の種類のパラメータにのみ影響し、他の種類や有効化スイッチは変更しません。</value>
+  </data>
+  <data name="GlassResetType" xml:space="preserve">
+    <value>この種類のデフォルト効果に戻す</value>
+  </data>
+  <data name="GlassResetParameter" xml:space="preserve">
+    <value>リセット</value>
+  </data>
+  <data name="GlassDefaultValue" xml:space="preserve">
+    <value>デフォルト値：</value>
+  </data>
+  <data name="GlassPreviewButton" xml:space="preserve">
+    <value>プレビューボタン</value>
+  </data>
+  <data name="GlassPreviewInput" xml:space="preserve">
+    <value>フォーカス効果をプレビューするには入力してください</value>
+  </data>
+  <data name="GlassPreviewSearch" xml:space="preserve">
+    <value>検索プレビュー</value>
+  </data>
+  <data name="GlassPreviewPassword" xml:space="preserve">
+    <value>パスワードプレビュー</value>
+  </data>
+  <data name="GlassPreviewSurface" xml:space="preserve">
+    <value>ガラスサーフェス — 内容は読みやすいまま</value>
+  </data>
+  <data name="GlassProfileButton" xml:space="preserve">
+    <value>ボタン</value>
+  </data>
+  <data name="GlassProfileToggleButton" xml:space="preserve">
+    <value>トグルボタン</value>
+  </data>
+  <data name="GlassProfileHyperlinkButton" xml:space="preserve">
+    <value>ハイパーリンクボタン</value>
+  </data>
+  <data name="GlassProfileCheckBox" xml:space="preserve">
+    <value>チェックボックス</value>
+  </data>
+  <data name="GlassProfileRadioButton" xml:space="preserve">
+    <value>ラジオボタン</value>
+  </data>
+  <data name="GlassProfileSlider" xml:space="preserve">
+    <value>スライダー</value>
+  </data>
+  <data name="GlassProfileTextBox" xml:space="preserve">
+    <value>テキストボックス</value>
+  </data>
+  <data name="GlassProfileSearchBox" xml:space="preserve">
+    <value>検索ボックス</value>
+  </data>
+  <data name="GlassProfilePasswordBox" xml:space="preserve">
+    <value>パスワードボックス</value>
+  </data>
+  <data name="GlassProfileComboBox" xml:space="preserve">
+    <value>コンボボックス</value>
+  </data>
+  <data name="GlassProfileToggleSwitch" xml:space="preserve">
+    <value>トグルスイッチ</value>
+  </data>
+  <data name="GlassProfileCard" xml:space="preserve">
+    <value>カードとサーフェス</value>
+  </data>
+  <data name="GlassProfileFloatingPanel" xml:space="preserve">
+    <value>フローティングパネル</value>
+  </data>
+  <data name="GlassProfileTabBar" xml:space="preserve">
+    <value>タブバー</value>
+  </data>
+  <data name="GlassParameterBlurRadius" xml:space="preserve">
+    <value>ぼかし半径</value>
+  </data>
+  <data name="GlassParameterRefractionStrength" xml:space="preserve">
+    <value>屈折の強度</value>
+  </data>
+  <data name="GlassParameterDispersionStrength" xml:space="preserve">
+    <value>分散の強度</value>
+  </data>
+  <data name="GlassParameterHighlightStrength" xml:space="preserve">
+    <value>ハイライトの強度</value>
+  </data>
+  <data name="GlassParameterHighlightSharpness" xml:space="preserve">
+    <value>ハイライトのシャープネス</value>
+  </data>
+  <data name="GlassParameterSpecularSaturation" xml:space="preserve">
+    <value>鏡面の彩度</value>
+  </data>
+  <data name="GlassParameterSpecularWidth" xml:space="preserve">
+    <value>鏡面の幅</value>
+  </data>
+  <data name="GlassParameterRefractiveIndex" xml:space="preserve">
+    <value>屈折率</value>
+  </data>
+  <data name="GlassParameterTintOpacity" xml:space="preserve">
+    <value>ティントの不透明度</value>
+  </data>
+  <data name="GlassParameterInnerShadowStrength" xml:space="preserve">
+    <value>内側の影の強度</value>
+  </data>
+  <data name="GlassParameterSaturation" xml:space="preserve">
+    <value>彩度</value>
+  </data>
+  <data name="GlassParameterContrast" xml:space="preserve">
+    <value>コントラスト</value>
+  </data>
+  <data name="GlassParameterExposure" xml:space="preserve">
+    <value>露出</value>
+  </data>
+  <data name="GlassParameterMaterialOpacity" xml:space="preserve">
+    <value>マテリアルの不透明度</value>
+  </data>
+  <data name="GlassParameterDispersionRange" xml:space="preserve">
+    <value>分散範囲</value>
+  </data>
+  <data name="GlassParameterRefFresnelRange" xml:space="preserve">
+    <value>フレネル範囲</value>
+  </data>
+  <data name="GlassParameterRefFresnelHardness" xml:space="preserve">
+    <value>フレネル硬度</value>
+  </data>
+  <data name="GlassParameterRefFresnelFactor" xml:space="preserve">
+    <value>フレネル強度</value>
+  </data>
+  <data name="GlassParameterGlareRange" xml:space="preserve">
+    <value>グレア範囲</value>
+  </data>
+  <data name="GlassParameterGlareHardness" xml:space="preserve">
+    <value>グレア硬度</value>
+  </data>
+  <data name="GlassParameterGlareFactor" xml:space="preserve">
+    <value>グレア強度</value>
+  </data>
+  <data name="GlassParameterGlareConvergence" xml:space="preserve">
+    <value>グレアの収束度</value>
+  </data>
+  <data name="GlassParameterGlareOppositeFactor" xml:space="preserve">
+    <value>逆グレア比率</value>
+  </data>
+  <data name="GlassParameterGlareAngle" xml:space="preserve">
+    <value>グレア方向（°）</value>
+  </data>
+  <data name="GlassParameterMagnification" xml:space="preserve">
+    <value>背景全体の拡大</value>
+  </data>
+  <data name="GlassParameterMagnificationStrength" xml:space="preserve">
+    <value>局所拡大の強度</value>
+  </data>
+  <data name="GlassParameterBloomAmount" xml:space="preserve">
+    <value>ぼかしの混合比率</value>
+  </data>
+  <data name="GlassParameterBrightness" xml:space="preserve">
+    <value>明るさ</value>
+  </data>
+  <data name="GlassParameterTemperature" xml:space="preserve">
+    <value>色温度</value>
+  </data>
+  <data name="GlassParameterVibrance" xml:space="preserve">
+    <value>自然な彩度</value>
+  </data>
+  <data name="GlassPreviewFirst" xml:space="preserve">
+    <value>最初の項目</value>
+  </data>
+  <data name="GlassPreviewSecond" xml:space="preserve">
+    <value>2 番目の項目</value>
+  </data>
+  <data name="GlassPreviewOverview" xml:space="preserve">
+    <value>概要</value>
+  </data>
+  <data name="GlassPreviewDetails" xml:space="preserve">
+    <value>詳細</value>
+  </data>
+  <data name="GlassPreviewActivity" xml:space="preserve">
+    <value>アクティビティ</value>
+  </data>
+  <data name="RepositoryServerOfflineWarning" xml:space="preserve">
+    <value>サーバーへの接続に失敗しました。オフラインモードに切り替え、ローカルのリポジトリリストを使用しています。画像などのオンラインリソースが読み込めない場合があります。バックグラウンドタスクの横にあるボタンをクリックすると再接続できます。</value>
+  </data>
+  <data name="RepositoryServerConnectionRestored" xml:space="preserve">
+    <value>サーバーに再接続しました。オフラインモードを終了します。</value>
+  </data>
+  <data name="RepositoryServerReconnect" xml:space="preserve">
+    <value>サーバーへの再接続を試行</value>
+  </data>
+  <data name="RepositoryServerReconnectFailed" xml:space="preserve">
+    <value>サーバーに接続できませんでした。引き続きオフラインモードを使用します。後で再試行できます。</value>
+  </data>
+  <data name="RepositoryServerOfflineStatus" xml:space="preserve">
+    <value>オフラインモード · 再接続</value>
+  </data>
+  <data name="RepositoryServerReconnecting" xml:space="preserve">
+    <value>オフラインモード · 再接続中</value>
   </data>
 </root>
