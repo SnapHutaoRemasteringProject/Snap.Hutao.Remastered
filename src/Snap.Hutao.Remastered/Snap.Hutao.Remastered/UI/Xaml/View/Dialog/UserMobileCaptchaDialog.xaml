@@ -47,7 +47,7 @@
                             CornerRadius="4,0,0,4"
                             DataContext="{x:Bind GlassPresenter_1296.DataContext, Mode=OneWay}"
                             IsEnabled="False"
-                            RequestedTheme="{x:Bind GlassPresenter_1296.ActualTheme, Mode=OneWay}"
+                            shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_1296}"
                             Style="{StaticResource DefaultTextBoxStyle}"
                             Text="+86"/>
                     </cwc:Case>
@@ -175,7 +175,7 @@
                     Password="{x:Bind Captcha, Mode=TwoWay}"
                     PasswordChar="*"
                     PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaCaptchaHint}"
-                    RequestedTheme="{x:Bind GlassPresenter_2301.ActualTheme, Mode=OneWay}"/>
+                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_2301}"/>
             </cwc:Case>
             <cwc:Case>
                 <cwc:Case.Value>

@@ -2,6 +2,7 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.WikiMonsterPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:clw="using:CommunityToolkit.Labs.WinUI"
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
@@ -71,7 +72,8 @@
             <cwc:SettingsCard
                 MinHeight="40"
                 Padding="0,0,16,0"
-                Background="{ThemeResource HutaoSurfaceBrush}"
+                shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}">
                 <cwc:SettingsCard.Resources>
                     <!--  ReSharper disable Xaml.RedundantResource  -->
@@ -175,7 +177,8 @@
                                 DisplayMode="Inline"
                                 IsPaneOpen="True"
                                 OpenPaneLength="{StaticResource CompatSplitViewOpenPaneLength2}"
-                                PaneBackground="{ThemeResource HutaoSurfaceBrush}">
+                                shuxcth:MaterialBackground.NativePaneBrush="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                shuxcth:MaterialBackground.GlassPaneBrush="{ThemeResource HutaoSurfaceBrush}">
                                 <SplitView.Pane>
                                     <ListView
                                         Grid.Row="1"

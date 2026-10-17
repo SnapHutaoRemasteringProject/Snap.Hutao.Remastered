@@ -33,6 +33,8 @@ public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
 
     public int ControlMaterialState => (int)AppOptions.ControlMaterial.Value;
 
+    public bool IsBackdropSelectionEnabled => AppOptions.ControlMaterial.Value is not ControlMaterial.LiquidGlass;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ControlMaterialState))]
     public partial NameValue<ControlMaterial>? SelectedControlMaterial { get; set; }
@@ -41,6 +43,7 @@ public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
     {
         SelectedControlMaterial = AppOptions.ControlMaterials.Single(material => material.Value == AppOptions.ControlMaterial.Value);
         AppOptions.ControlMaterial.PropertyChanged += OnControlMaterialChanged;
+        AppOptions.BackdropType.PropertyChanged += OnBackdropTypeChanged;
     }
 
     partial void OnSelectedControlMaterialChanged(NameValue<ControlMaterial>? value)
@@ -54,11 +57,18 @@ public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
     {
         SelectedControlMaterial = AppOptions.ControlMaterials.Single(material => material.Value == AppOptions.ControlMaterial.Value);
         OnPropertyChanged(nameof(ControlMaterialState));
+        OnPropertyChanged(nameof(IsBackdropSelectionEnabled));
+    }
+
+    private void OnBackdropTypeChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        SelectedBackdropType = AppOptions.BackdropTypes.Single(backdrop => backdrop.Value == AppOptions.BackdropType.Value);
     }
 
     public override void Dispose()
     {
         AppOptions.ControlMaterial.PropertyChanged -= OnControlMaterialChanged;
+        AppOptions.BackdropType.PropertyChanged -= OnBackdropTypeChanged;
         base.Dispose();
     }
 
@@ -174,6 +184,11 @@ public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
         get => field ??= AppOptions.BackdropTypes.Single(t => t.Value == AppOptions.BackdropType.Value);
         set
         {
+            if (!IsBackdropSelectionEnabled && value?.Value is not BackdropType.None)
+            {
+                return;
+            }
+
             if (SetProperty(ref field, value) && value is not null)
             {
                 AppOptions.BackdropType.Value = value.Value;

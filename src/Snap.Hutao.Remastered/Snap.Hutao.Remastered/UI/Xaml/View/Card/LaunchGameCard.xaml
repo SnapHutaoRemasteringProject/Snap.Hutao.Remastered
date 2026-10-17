@@ -133,7 +133,7 @@
                             DisplayMemberPath="Name"
                             ItemsSource="{x:Bind ((shvg:LaunchGameViewModelSlim)DataContext).CurrentSchemeFilteredGameAccountsView.View, Mode=OneWay}"
                             PlaceholderText="{shuxm:ResourceString Name=ViewCardLaunchGameSelectAccountPlaceholder}"
-                            RequestedTheme="{x:Bind GlassPresenter_5872.ActualTheme, Mode=OneWay}"
+                            shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_5872}"
                             SelectedItem="{x:Bind ((shvg:LaunchGameViewModelSlim)DataContext).CurrentSchemeFilteredGameAccountsView.View.CurrentItem, FallbackValue={x:Null}, Mode=TwoWay}"
                             Style="{ThemeResource ShimmerComboBoxStyle}"
                             Visibility="{x:Bind ((shvg:LaunchGameViewModelSlim)DataContext).LaunchOptions.UsingHoyolabAccount.Value, Converter={StaticResource BoolToVisibilityRevertConverter}, Mode=OneWay}"/>

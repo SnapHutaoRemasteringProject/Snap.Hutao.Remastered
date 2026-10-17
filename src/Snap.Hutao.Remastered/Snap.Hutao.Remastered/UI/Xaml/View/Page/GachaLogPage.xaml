@@ -92,7 +92,8 @@
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0">
                             <StackPanel
-                                Background="{ThemeResource HutaoCardBrush}"
+                                shuxcth:MaterialBackground.NativeBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoCardBrush}"
                                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                 BorderThickness="0,0,0,1"
                                 Spacing="8">
@@ -249,7 +250,8 @@
                             Grid.Row="2"
                             Padding="8"
                             HorizontalAlignment="Stretch"
-                            Background="{ThemeResource HutaoCardBrush}"
+                            shuxcth:MaterialBackground.NativeBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                            shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoCardBrush}"
                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                             BorderThickness="0,1,0,0">
                             <cwc:SwitchPresenter
@@ -479,7 +481,7 @@
                                 DataContext="{x:Bind GlassPresenter_22004.DataContext, Mode=OneWay}"
                                 DisplayMemberPath="Uid"
                                 ItemsSource="{x:Bind ((shvg:GachaLogViewModel)DataContext).Archives, Mode=OneWay}"
-                                RequestedTheme="{x:Bind GlassPresenter_22004.ActualTheme, Mode=OneWay}"
+                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_22004}"
                                 SelectedItem="{x:Bind ((shvg:GachaLogViewModel)DataContext).Archives.CurrentItem, Mode=TwoWay}"
                                 Style="{ThemeResource CommandBarComboBoxStyle}"/>
                         </cwc:Case>
@@ -632,7 +634,8 @@
                             DisplayMode="Inline"
                             IsPaneOpen="True"
                             OpenPaneLength="439"
-                            PaneBackground="{ThemeResource HutaoSurfaceBrush}">
+                            shuxcth:MaterialBackground.NativePaneBrush="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                            shuxcth:MaterialBackground.GlassPaneBrush="{ThemeResource HutaoSurfaceBrush}">
                             <SplitView.Pane>
                                 <ListView
                                     Padding="{ThemeResource ListViewInSplitPanePadding}"

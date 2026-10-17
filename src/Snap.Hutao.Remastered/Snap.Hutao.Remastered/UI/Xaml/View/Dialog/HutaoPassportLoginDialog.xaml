@@ -63,7 +63,7 @@
                     Password="{x:Bind Password, Mode=TwoWay}"
                     PasswordChar="*"
                     PlaceholderText="{shuxm:ResourceString Name=ViewPageHutaoPassportPasswordHint}"
-                    RequestedTheme="{x:Bind GlassPresenter_1047.ActualTheme, Mode=OneWay}"/>
+                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_1047}"/>
             </cwc:Case>
             <cwc:Case>
                 <cwc:Case.Value>

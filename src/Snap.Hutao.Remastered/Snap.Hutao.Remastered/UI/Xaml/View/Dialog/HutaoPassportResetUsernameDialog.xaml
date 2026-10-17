@@ -34,7 +34,7 @@
                     InputScope="EmailSmtpAddress"
                     IsSpellCheckEnabled="False"
                     PlaceholderText="{shuxm:ResourceString Name=ViewPageHutaoPassportUserNameHint}"
-                    RequestedTheme="{x:Bind GlassPresenter_852.ActualTheme, Mode=OneWay}"
+                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_852}"
                     Text="{x:Bind UserName, Mode=TwoWay}"/>
             </cwc:Case>
             <cwc:Case>

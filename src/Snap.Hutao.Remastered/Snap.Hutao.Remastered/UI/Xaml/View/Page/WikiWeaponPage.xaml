@@ -2,6 +2,7 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.WikiWeaponPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -237,7 +238,8 @@
                                 DisplayMode="Inline"
                                 IsPaneOpen="True"
                                 OpenPaneLength="{StaticResource CompatSplitViewOpenPaneLength}"
-                                PaneBackground="{ThemeResource HutaoSurfaceBrush}">
+                                shuxcth:MaterialBackground.NativePaneBrush="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                shuxcth:MaterialBackground.GlassPaneBrush="{ThemeResource HutaoSurfaceBrush}">
                                 <SplitView.Pane>
                                     <ListView
                                         Grid.Row="1"

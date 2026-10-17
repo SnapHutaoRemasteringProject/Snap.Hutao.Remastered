@@ -64,7 +64,7 @@
                     DataContext="{x:Bind GlassPresenter_1055.DataContext, Mode=OneWay}"
                     DisplayMemberPath="Name"
                     ItemsSource="{x:Bind ServerTimeZoneOffsets}"
-                    RequestedTheme="{x:Bind GlassPresenter_1055.ActualTheme, Mode=OneWay}"
+                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_1055}"
                     SelectedItem="{x:Bind SelectedServerTimeZoneOffset, Mode=TwoWay}"/>
             </cwc:Case>
             <cwc:Case>

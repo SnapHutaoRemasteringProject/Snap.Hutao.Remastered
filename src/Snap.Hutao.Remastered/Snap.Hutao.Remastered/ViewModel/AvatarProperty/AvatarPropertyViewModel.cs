@@ -28,7 +28,6 @@ using Snap.Hutao.Remastered.ViewModel.User;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate;
 using System.Collections.Immutable;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Text;
 using CalculatorAvatarPromotionDelta = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate.AvatarPromotionDelta;
 using CalculatorBatchConsumption = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate.BatchConsumption;
@@ -95,34 +94,30 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
 
     public void Receive(UserAndUidChangedMessage message)
     {
+        CancellationToken accountToken = refreshTokenProvider.GetNewToken();
         if (message.UserAndUid is not { } userAndUid)
         {
             return;
         }
 
-        CancellationToken token = refreshTokenProvider.GetNewToken();
-        WeakReference<AvatarPropertyViewModel> weakThis = new(this);
+        RefreshAfterInitializationAsync(userAndUid, accountToken).SafeForget();
+    }
 
-        // 1. We need to wait for the view initialization (mainly for metadata context).
-        // 2. We need to refresh summary data. otherwise, the view can be un-synced.
-        Initialization.Task.ContinueWith(
-            static (init, state) =>
+    private async Task RefreshAfterInitializationAsync(UserAndUid userAndUid, CancellationToken accountToken)
+    {
+        using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(CancellationToken, accountToken);
+        try
+        {
+            // Cancel both the initialization wait and an already running refresh
+            // when the account changes again or the page is unloaded.
+            if (await Initialization.Task.WaitAsync(linkedCts.Token).ConfigureAwait(false))
             {
-                if (!init.Result)
-                {
-                    return;
-                }
-
-                (UserAndUid userAndUid, WeakReference<AvatarPropertyViewModel> weakThis) = Unsafe.Unbox<(UserAndUid, WeakReference<AvatarPropertyViewModel>)>(state!);
-                if (weakThis.TryGetTarget(out AvatarPropertyViewModel? viewModel) && !viewModel.IsViewUnloaded.Value)
-                {
-                    viewModel.PrivateRefreshAsync(userAndUid, RefreshOptionKind.None, viewModel.CancellationToken).SafeForget();
-                }
-            },
-            (userAndUid, weakThis),
-            token,
-            TaskContinuationOptions.None,
-            TaskScheduler.Current);
+                await PrivateRefreshAsync(userAndUid, RefreshOptionKind.None, linkedCts.Token).ConfigureAwait(false);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
     }
 
     public override void Dispose()
@@ -182,6 +177,7 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
             Summary? summary;
             using (await EnterCriticalSectionAsync().ConfigureAwait(false))
             {
+                token.ThrowIfCancellationRequested();
                 ContentDialog dialog = await scopeContext.ContentDialogFactory
                     .CreateForIndeterminateProgressAsync(SH.ViewModelAvatarPropertyFetch)
                     .ConfigureAwait(false);

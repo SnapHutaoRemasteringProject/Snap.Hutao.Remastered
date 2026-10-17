@@ -453,7 +453,8 @@
                                 DisplayMode="Inline"
                                 IsPaneOpen="True"
                                 OpenPaneLength="{StaticResource CompatSplitViewOpenPaneLength}"
-                                PaneBackground="{ThemeResource HutaoSurfaceBrush}">
+                                shuxcth:MaterialBackground.NativePaneBrush="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                shuxcth:MaterialBackground.GlassPaneBrush="{ThemeResource HutaoSurfaceBrush}">
                                 <SplitView.Pane>
                                     <ListView
                                         Padding="{ThemeResource ListViewInSplitPanePadding}"
@@ -1003,7 +1004,8 @@
                                                     <Expander
                                                         HorizontalAlignment="Stretch"
                                                         HorizontalContentAlignment="Stretch"
-                                                        Background="{ThemeResource HutaoSurfaceBrush}"
+                                                        shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                        shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                         Header="{shuxm:ResourceString Name=ViewPageWiKiAvatarNameCardHeader}"
                                                         IsExpanded="True">
                                                         <Grid DataContext="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.NameCard, Mode=OneWay}" RowSpacing="16">
@@ -1101,7 +1103,8 @@
                                                     <Expander
                                                         HorizontalAlignment="Stretch"
                                                         HorizontalContentAlignment="Stretch"
-                                                        Background="{ThemeResource HutaoSurfaceBrush}"
+                                                        shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                        shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                         Header="{shuxm:ResourceString Name=ViewPageWiKiAvatarTraceEffectHeader}"
                                                         IsExpanded="True">
                                                         <Grid DataContext="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.TraceEffect, Mode=OneWay}">
@@ -1137,7 +1140,8 @@
                                                     <Expander
                                                         HorizontalAlignment="Stretch"
                                                         HorizontalContentAlignment="Stretch"
-                                                        Background="{ThemeResource HutaoSurfaceBrush}"
+                                                        shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                        shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                         Header="{shuxm:ResourceString Name=ViewPageWiKiAvatarFoodHeader}"
                                                         IsExpanded="True">
                                                         <Grid DataContext="{x:Bind ((shvw:WikiAvatarViewModel)DataContext).Avatars.CurrentItem.CookBonusView, Mode=OneWay}">
