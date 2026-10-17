@@ -887,6 +887,9 @@
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
     <value>準備中，若長時間無反應請嘗試重啓或檢查網絡和服務器狀態</value>
   </data>
+  <data name="ServiceBackgroundImageDecodeFailed" xml:space="preserve">
+    <value>無法解碼背景圖片：系統缺少可用的影像解碼元件，已略過本次桌布切換</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing每日一圖</value>
   </data>
@@ -3675,6 +3678,30 @@
   <data name="ViewPageSettingThemeHeader" xml:space="preserve">
     <value>顏色主題</value>
   </data>
+  <data name="ViewPageSettingControlMaterialHeader" xml:space="preserve">
+    <value>控制項材質</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDescription" xml:space="preserve">
+    <value>變更卡片與卡片面板的材質效果</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDefault" xml:space="preserve">
+    <value>預設</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialLiquidGlass" xml:space="preserve">
+    <value>液態玻璃（實驗性預覽）</value>
+  </data>
+  <data name="ViewGuideMaterialTitle" xml:space="preserve">
+    <value>選擇控制項材質</value>
+  </data>
+  <data name="ViewGuideMaterialDescription" xml:space="preserve">
+    <value>對比原生 Fluent 表面與液態玻璃，然後選擇套用至全域的控制項材質。</value>
+  </data>
+  <data name="ViewGuideMaterialDefaultPreviewDescription" xml:space="preserve">
+    <value>原生 Fluent 表面</value>
+  </data>
+  <data name="ViewGuideMaterialLiquidGlassPreviewDescription" xml:space="preserve">
+    <value>模糊、折射與邊緣高光</value>
+  </data>
   <data name="ViewPageSettingTranslateNavigate" xml:space="preserve">
     <value>貢獻翻譯</value>
   </data>
@@ -4479,6 +4506,21 @@
   <data name="ServicePluginUninstallDescription" xml:space="preserve">
     <value>確定要解除安裝外掛 {0} 嗎？此操作無法復原。</value>
   </data>
+  <data name="ViewPagePluginSettingLoadFailed" xml:space="preserve">
+    <value>載入外掛設定失敗</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveSuccess" xml:space="preserve">
+    <value>設定「{0}」已儲存</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveFailed" xml:space="preserve">
+    <value>儲存設定「{0}」失敗</value>
+  </data>
+  <data name="ViewPagePluginSettingResetSuccess" xml:space="preserve">
+    <value>設定「{0}」已重設</value>
+  </data>
+  <data name="ViewPagePluginSettingResetFailed" xml:space="preserve">
+    <value>重設設定「{0}」失敗</value>
+  </data>
   <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
     <value>手把熱切換</value>
   </data>
@@ -5190,5 +5232,335 @@
   </data>
   <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
     <value>二星</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassButton" xml:space="preserve">
+    <value>按鈕</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassToggleButton" xml:space="preserve">
+    <value>切換按鈕</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHyperlinkButton" xml:space="preserve">
+    <value>超連結按鈕</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassCheckBox" xml:space="preserve">
+    <value>核取方塊</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRadioButton" xml:space="preserve">
+    <value>選項按鈕</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassSlider" xml:space="preserve">
+    <value>滑桿</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassTextBox" xml:space="preserve">
+    <value>文字輸入方塊</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassPasswordBox" xml:space="preserve">
+    <value>密碼輸入方塊</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassComboBox" xml:space="preserve">
+    <value>下拉式選取方塊</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassToggleSwitch" xml:space="preserve">
+    <value>開關</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassCard" xml:space="preserve">
+    <value>卡片與表面</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassStrength" xml:space="preserve">
+    <value>整體強度（0–2 倍）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBlurScale" xml:space="preserve">
+    <value>模糊強度（0–2 倍）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefractionScale" xml:space="preserve">
+    <value>折射強度（0–2 倍）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDispersionScale" xml:space="preserve">
+    <value>色散強度（0–2 倍）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHighlightScale" xml:space="preserve">
+    <value>高光強度（0–2 倍）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassMagnificationScale" xml:space="preserve">
+    <value>放大強度（0–2 倍）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHeader" xml:space="preserve">
+    <value>液態玻璃控制項與效果</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDescription" xml:space="preserve">
+    <value>依控制項類型啟用玻璃效果。修改立即生效；光學倍數基於各控制項原有預設。</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassSearchBox" xml:space="preserve">
+    <value>搜尋輸入方塊</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDispersionRange" xml:space="preserve">
+    <value>色散範圍</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelRange" xml:space="preserve">
+    <value>菲涅耳範圍（DIP）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelHardness" xml:space="preserve">
+    <value>菲涅耳硬度</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelFactor" xml:space="preserve">
+    <value>菲涅耳強度</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareRange" xml:space="preserve">
+    <value>眩光範圍</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareHardness" xml:space="preserve">
+    <value>眩光硬度</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareFactor" xml:space="preserve">
+    <value>眩光強度</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareConvergence" xml:space="preserve">
+    <value>眩光匯聚</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareOppositeFactor" xml:space="preserve">
+    <value>反向眩光強度</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareAngle" xml:space="preserve">
+    <value>光照角度（度）</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassMagnification" xml:space="preserve">
+    <value>放大倍率</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBloomAmount" xml:space="preserve">
+    <value>輝光量</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBrightness" xml:space="preserve">
+    <value>亮度</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassTemperature" xml:space="preserve">
+    <value>色溫</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassVibrance" xml:space="preserve">
+    <value>自然飽和度</value>
+  </data>
+  <data name="LiquidGlassControlsWindowTitle" xml:space="preserve">
+    <value>液態玻璃控制項</value>
+  </data>
+  <data name="LiquidGlassEffectsWindowTitle" xml:space="preserve">
+    <value>液態玻璃效果</value>
+  </data>
+  <data name="GlassControlsCardDescription" xml:space="preserve">
+    <value>選擇啟用玻璃材質的控制項類型，並檢視互動預覽。</value>
+  </data>
+  <data name="GlassEffectsCardDescription" xml:space="preserve">
+    <value>依控制項類型個別調整參數，支援預覽與還原預設。</value>
+  </data>
+  <data name="GlassControlsIntro" xml:space="preserve">
+    <value>選擇套用材質及各控制項類型。修改立即生效並自動儲存。液態玻璃效果對效能有一定影響。</value>
+  </data>
+  <data name="GlassEffectsIntro" xml:space="preserve">
+    <value>每類控制項有獨立參數，修改立即生效並自動儲存。</value>
+  </data>
+  <data name="GlassNativeMaterial" xml:space="preserve">
+    <value>預設材質</value>
+  </data>
+  <data name="GlassLiquidMaterial" xml:space="preserve">
+    <value>液態玻璃</value>
+  </data>
+  <data name="GlassPreviewHeading" xml:space="preserve">
+    <value>互動預覽</value>
+  </data>
+  <data name="GlassControlsPreviewHint" xml:space="preserve">
+    <value>預覽遵循套用材質與該類型的啟用狀態。可嘗試懸停、按下、聚焦、輸入與拖曳。</value>
+  </data>
+  <data name="GlassEffectsPreviewHint" xml:space="preserve">
+    <value>此預覽一律顯示玻璃，即使應用程式未啟用此類控制項。編輯器維持原生外觀。</value>
+  </data>
+  <data name="GlassPresetHint" xml:space="preserve">
+    <value>預設值來自控制項庫。還原預設僅影響目前類型的參數，不會變更其他類型或啟用開關。</value>
+  </data>
+  <data name="GlassResetType" xml:space="preserve">
+    <value>還原該類型預設效果</value>
+  </data>
+  <data name="GlassResetParameter" xml:space="preserve">
+    <value>重設</value>
+  </data>
+  <data name="GlassDefaultValue" xml:space="preserve">
+    <value>預設值：</value>
+  </data>
+  <data name="GlassPreviewButton" xml:space="preserve">
+    <value>預覽按鈕</value>
+  </data>
+  <data name="GlassPreviewInput" xml:space="preserve">
+    <value>輸入內容以預覽聚焦效果</value>
+  </data>
+  <data name="GlassPreviewSearch" xml:space="preserve">
+    <value>搜尋預覽</value>
+  </data>
+  <data name="GlassPreviewPassword" xml:space="preserve">
+    <value>密碼預覽</value>
+  </data>
+  <data name="GlassPreviewSurface" xml:space="preserve">
+    <value>玻璃表面 — 內容保持可讀</value>
+  </data>
+  <data name="GlassProfileButton" xml:space="preserve">
+    <value>按鈕</value>
+  </data>
+  <data name="GlassProfileToggleButton" xml:space="preserve">
+    <value>切換按鈕</value>
+  </data>
+  <data name="GlassProfileHyperlinkButton" xml:space="preserve">
+    <value>超連結按鈕</value>
+  </data>
+  <data name="GlassProfileCheckBox" xml:space="preserve">
+    <value>核取方塊</value>
+  </data>
+  <data name="GlassProfileRadioButton" xml:space="preserve">
+    <value>選項按鈕</value>
+  </data>
+  <data name="GlassProfileSlider" xml:space="preserve">
+    <value>滑桿</value>
+  </data>
+  <data name="GlassProfileTextBox" xml:space="preserve">
+    <value>文字輸入方塊</value>
+  </data>
+  <data name="GlassProfileSearchBox" xml:space="preserve">
+    <value>搜尋輸入方塊</value>
+  </data>
+  <data name="GlassProfilePasswordBox" xml:space="preserve">
+    <value>密碼輸入方塊</value>
+  </data>
+  <data name="GlassProfileComboBox" xml:space="preserve">
+    <value>下拉式選取方塊</value>
+  </data>
+  <data name="GlassProfileToggleSwitch" xml:space="preserve">
+    <value>開關</value>
+  </data>
+  <data name="GlassProfileCard" xml:space="preserve">
+    <value>卡片與表面</value>
+  </data>
+  <data name="GlassProfileFloatingPanel" xml:space="preserve">
+    <value>浮動面板</value>
+  </data>
+  <data name="GlassProfileTabBar" xml:space="preserve">
+    <value>標籤列</value>
+  </data>
+  <data name="GlassParameterBlurRadius" xml:space="preserve">
+    <value>模糊半徑</value>
+  </data>
+  <data name="GlassParameterRefractionStrength" xml:space="preserve">
+    <value>折射強度</value>
+  </data>
+  <data name="GlassParameterDispersionStrength" xml:space="preserve">
+    <value>色散強度</value>
+  </data>
+  <data name="GlassParameterHighlightStrength" xml:space="preserve">
+    <value>高光強度</value>
+  </data>
+  <data name="GlassParameterHighlightSharpness" xml:space="preserve">
+    <value>高光銳度</value>
+  </data>
+  <data name="GlassParameterSpecularSaturation" xml:space="preserve">
+    <value>鏡面飽和度</value>
+  </data>
+  <data name="GlassParameterSpecularWidth" xml:space="preserve">
+    <value>鏡面寬度</value>
+  </data>
+  <data name="GlassParameterRefractiveIndex" xml:space="preserve">
+    <value>折射率</value>
+  </data>
+  <data name="GlassParameterTintOpacity" xml:space="preserve">
+    <value>染色不透明度</value>
+  </data>
+  <data name="GlassParameterInnerShadowStrength" xml:space="preserve">
+    <value>內陰影強度</value>
+  </data>
+  <data name="GlassParameterSaturation" xml:space="preserve">
+    <value>飽和度</value>
+  </data>
+  <data name="GlassParameterContrast" xml:space="preserve">
+    <value>對比度</value>
+  </data>
+  <data name="GlassParameterExposure" xml:space="preserve">
+    <value>曝光</value>
+  </data>
+  <data name="GlassParameterMaterialOpacity" xml:space="preserve">
+    <value>材質不透明度</value>
+  </data>
+  <data name="GlassParameterDispersionRange" xml:space="preserve">
+    <value>色散範圍</value>
+  </data>
+  <data name="GlassParameterRefFresnelRange" xml:space="preserve">
+    <value>菲涅耳範圍</value>
+  </data>
+  <data name="GlassParameterRefFresnelHardness" xml:space="preserve">
+    <value>菲涅耳硬度</value>
+  </data>
+  <data name="GlassParameterRefFresnelFactor" xml:space="preserve">
+    <value>菲涅耳強度</value>
+  </data>
+  <data name="GlassParameterGlareRange" xml:space="preserve">
+    <value>眩光範圍</value>
+  </data>
+  <data name="GlassParameterGlareHardness" xml:space="preserve">
+    <value>眩光硬度</value>
+  </data>
+  <data name="GlassParameterGlareFactor" xml:space="preserve">
+    <value>眩光強度</value>
+  </data>
+  <data name="GlassParameterGlareConvergence" xml:space="preserve">
+    <value>眩光聚集度</value>
+  </data>
+  <data name="GlassParameterGlareOppositeFactor" xml:space="preserve">
+    <value>反向眩光比例</value>
+  </data>
+  <data name="GlassParameterGlareAngle" xml:space="preserve">
+    <value>眩光方向（°）</value>
+  </data>
+  <data name="GlassParameterMagnification" xml:space="preserve">
+    <value>整體背景放大</value>
+  </data>
+  <data name="GlassParameterMagnificationStrength" xml:space="preserve">
+    <value>局部放大強度</value>
+  </data>
+  <data name="GlassParameterBloomAmount" xml:space="preserve">
+    <value>模糊混合比例</value>
+  </data>
+  <data name="GlassParameterBrightness" xml:space="preserve">
+    <value>亮度</value>
+  </data>
+  <data name="GlassParameterTemperature" xml:space="preserve">
+    <value>色溫</value>
+  </data>
+  <data name="GlassParameterVibrance" xml:space="preserve">
+    <value>自然飽和度</value>
+  </data>
+  <data name="GlassPreviewFirst" xml:space="preserve">
+    <value>第一項</value>
+  </data>
+  <data name="GlassPreviewSecond" xml:space="preserve">
+    <value>第二項</value>
+  </data>
+  <data name="GlassPreviewOverview" xml:space="preserve">
+    <value>概覽</value>
+  </data>
+  <data name="GlassPreviewDetails" xml:space="preserve">
+    <value>詳情</value>
+  </data>
+  <data name="GlassPreviewActivity" xml:space="preserve">
+    <value>活動</value>
+  </data>
+  <data name="RepositoryServerOfflineWarning" xml:space="preserve">
+    <value>連線伺服器失敗，已進入離線模式並使用本機存放庫清單。圖片等線上資源可能無法載入，可點擊背景工作旁的按鈕重新連線。</value>
+  </data>
+  <data name="RepositoryServerConnectionRestored" xml:space="preserve">
+    <value>已重新連線伺服器，退出離線模式。</value>
+  </data>
+  <data name="RepositoryServerReconnect" xml:space="preserve">
+    <value>重新嘗試連線伺服器</value>
+  </data>
+  <data name="RepositoryServerReconnectFailed" xml:space="preserve">
+    <value>仍無法連線伺服器，繼續使用離線模式。可以稍後重新嘗試。</value>
+  </data>
+  <data name="RepositoryServerOfflineStatus" xml:space="preserve">
+    <value>離線模式 · 重新連線</value>
+  </data>
+  <data name="RepositoryServerReconnecting" xml:space="preserve">
+    <value>離線模式 · 正在重新連線</value>
   </data>
 </root>
