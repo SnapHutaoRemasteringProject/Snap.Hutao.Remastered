@@ -9,7 +9,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 /// Keeps an inactive SwitchPresenter branch in the live presenter's theme.
 /// ActualTheme's dependency property does not notify x:Bind in WinUI (#10390).
 /// </summary>
-public sealed class ThemeSynchronization : DependencyObject
+public sealed partial class ThemeSynchronization : DependencyObject
 {
     public static readonly DependencyProperty SourceProperty = DependencyProperty.RegisterAttached(
         "Source", typeof(FrameworkElement), typeof(ThemeSynchronization), new PropertyMetadata(null, OnSourceChanged));
@@ -58,6 +58,7 @@ public sealed class ThemeSynchronization : DependencyObject
 
         private void Synchronize()
         {
+            if (XamlApplicationLifetime.Exiting) return;
             if (target.TryGetTarget(out FrameworkElement? element))
             {
                 element.RequestedTheme = source.ActualTheme;
