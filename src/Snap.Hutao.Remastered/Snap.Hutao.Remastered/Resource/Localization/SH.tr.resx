@@ -887,6 +887,9 @@
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
     <value>Hazırlanıyor, uzun süre yanıt gelmezse lütfen uygulamayı yeniden başlatın veya ağı ve sunucu durumunu kontrol edin</value>
   </data>
+  <data name="ServiceBackgroundImageDecodeFailed" xml:space="preserve">
+    <value>Arka plan görseli çözümlenemedi: sistemde kullanılabilir görsel çözümleyici bileşen yok, bu duvar kağıdı değişikliği atlandı</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Bing Günlük Duvar Kağıdı</value>
   </data>
@@ -3674,6 +3677,30 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageSettingThemeHeader" xml:space="preserve">
     <value>Tema</value>
   </data>
+  <data name="ViewPageSettingControlMaterialHeader" xml:space="preserve">
+    <value>Denetim materyali</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDescription" xml:space="preserve">
+    <value>Kartların ve kart panellerinin materyal efektlerini değiştirin</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDefault" xml:space="preserve">
+    <value>Varsayılan</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialLiquidGlass" xml:space="preserve">
+    <value>Sıvı cam (deneysel önizleme)</value>
+  </data>
+  <data name="ViewGuideMaterialTitle" xml:space="preserve">
+    <value>Denetim materyalini seçin</value>
+  </data>
+  <data name="ViewGuideMaterialDescription" xml:space="preserve">
+    <value>Yerel Fluent yüzeyini sıvı camla karşılaştırın, ardından uygulamanın genelinde kullanılacak denetim materyalini seçin.</value>
+  </data>
+  <data name="ViewGuideMaterialDefaultPreviewDescription" xml:space="preserve">
+    <value>Yerel Fluent yüzeyi</value>
+  </data>
+  <data name="ViewGuideMaterialLiquidGlassPreviewDescription" xml:space="preserve">
+    <value>Bulanıklık, kırılma ve kenar vurgusu</value>
+  </data>
   <data name="ViewPageSettingTranslateNavigate" xml:space="preserve">
     <value>Çevirilere Katkıda Bulun</value>
   </data>
@@ -4478,6 +4505,21 @@ Kullanılabilir Alan: {2}</value>
   <data name="ServicePluginUninstallDescription" xml:space="preserve">
     <value>{0} eklentisini kaldırmak istediğinizden emin misiniz? Bu işlem geri alınamaz.</value>
   </data>
+  <data name="ViewPagePluginSettingLoadFailed" xml:space="preserve">
+    <value>Eklenti ayarları yüklenemedi</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveSuccess" xml:space="preserve">
+    <value>'{0}' ayarı kaydedildi</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveFailed" xml:space="preserve">
+    <value>'{0}' ayarı kaydedilemedi</value>
+  </data>
+  <data name="ViewPagePluginSettingResetSuccess" xml:space="preserve">
+    <value>'{0}' ayarı sıfırlandı</value>
+  </data>
+  <data name="ViewPagePluginSettingResetFailed" xml:space="preserve">
+    <value>'{0}' ayarı sıfırlanamadı</value>
+  </data>
   <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
     <value>Kumanda Sıcak Geçiş</value>
   </data>
@@ -5189,5 +5231,335 @@ Kullanılabilir Alan: {2}</value>
   </data>
   <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
     <value>İki Yıldız</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassButton" xml:space="preserve">
+    <value>Düğme</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassToggleButton" xml:space="preserve">
+    <value>Açma/kapama düğmesi</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHyperlinkButton" xml:space="preserve">
+    <value>Köprü düğmesi</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassCheckBox" xml:space="preserve">
+    <value>Onay kutusu</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRadioButton" xml:space="preserve">
+    <value>Radyo düğmesi</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassSlider" xml:space="preserve">
+    <value>Kaydırıcı</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassTextBox" xml:space="preserve">
+    <value>Metin kutusu</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassPasswordBox" xml:space="preserve">
+    <value>Parola kutusu</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassComboBox" xml:space="preserve">
+    <value>Açılır kutu</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassToggleSwitch" xml:space="preserve">
+    <value>Anahtar</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassCard" xml:space="preserve">
+    <value>Kartlar ve yüzeyler</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassStrength" xml:space="preserve">
+    <value>Genel yoğunluk (0–2 kat)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBlurScale" xml:space="preserve">
+    <value>Bulanıklık yoğunluğu (0–2 kat)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefractionScale" xml:space="preserve">
+    <value>Kırılma yoğunluğu (0–2 kat)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDispersionScale" xml:space="preserve">
+    <value>Dağılım yoğunluğu (0–2 kat)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHighlightScale" xml:space="preserve">
+    <value>Vurgu yoğunluğu (0–2 kat)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassMagnificationScale" xml:space="preserve">
+    <value>Büyütme yoğunluğu (0–2 kat)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHeader" xml:space="preserve">
+    <value>Sıvı cam denetimleri ve efektleri</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDescription" xml:space="preserve">
+    <value>Cam efektlerini denetim türüne göre etkinleştirin. Değişiklikler hemen uygulanır; optik çarpanlar her denetimin özgün ön ayarlarına dayanır.</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassSearchBox" xml:space="preserve">
+    <value>Arama kutusu</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDispersionRange" xml:space="preserve">
+    <value>Dağılım aralığı</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelRange" xml:space="preserve">
+    <value>Fresnel aralığı (DIP)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelHardness" xml:space="preserve">
+    <value>Fresnel sertliği</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelFactor" xml:space="preserve">
+    <value>Fresnel yoğunluğu</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareRange" xml:space="preserve">
+    <value>Parlama aralığı</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareHardness" xml:space="preserve">
+    <value>Parlama sertliği</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareFactor" xml:space="preserve">
+    <value>Parlama yoğunluğu</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareConvergence" xml:space="preserve">
+    <value>Parlama yakınsaması</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareOppositeFactor" xml:space="preserve">
+    <value>Ters parlama yoğunluğu</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareAngle" xml:space="preserve">
+    <value>Işık açısı (derece)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassMagnification" xml:space="preserve">
+    <value>Büyütme oranı</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBloomAmount" xml:space="preserve">
+    <value>Işıma miktarı</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBrightness" xml:space="preserve">
+    <value>Parlaklık</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassTemperature" xml:space="preserve">
+    <value>Renk sıcaklığı</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassVibrance" xml:space="preserve">
+    <value>Canlılık</value>
+  </data>
+  <data name="LiquidGlassControlsWindowTitle" xml:space="preserve">
+    <value>Sıvı cam denetimleri</value>
+  </data>
+  <data name="LiquidGlassEffectsWindowTitle" xml:space="preserve">
+    <value>Sıvı cam efektleri</value>
+  </data>
+  <data name="GlassControlsCardDescription" xml:space="preserve">
+    <value>Cam materyalini etkinleştireceğiniz denetim türlerini seçin ve etkileşimli önizlemeyi görüntüleyin.</value>
+  </data>
+  <data name="GlassEffectsCardDescription" xml:space="preserve">
+    <value>Parametreleri denetim türüne göre ayrı ayrı ayarlayın; önizleme ve varsayılana sıfırlama desteklenir.</value>
+  </data>
+  <data name="GlassControlsIntro" xml:space="preserve">
+    <value>Uygulama materyalini ve her denetim türünü seçin. Değişiklikler hemen uygulanır ve otomatik kaydedilir. Sıvı cam efektlerinin performans üzerinde belirli bir etkisi vardır.</value>
+  </data>
+  <data name="GlassEffectsIntro" xml:space="preserve">
+    <value>Her denetim türünün kendine ait parametreleri vardır; değişiklikler hemen uygulanır ve otomatik kaydedilir.</value>
+  </data>
+  <data name="GlassNativeMaterial" xml:space="preserve">
+    <value>Varsayılan materyal</value>
+  </data>
+  <data name="GlassLiquidMaterial" xml:space="preserve">
+    <value>Sıvı cam</value>
+  </data>
+  <data name="GlassPreviewHeading" xml:space="preserve">
+    <value>Etkileşimli önizleme</value>
+  </data>
+  <data name="GlassControlsPreviewHint" xml:space="preserve">
+    <value>Önizleme, uygulama materyaline ve bu türün etkinleştirme durumuna uyar. Üzerine gelmeyi, basmayı, odaklanmayı, yazmayı ve sürüklemeyi deneyebilirsiniz.</value>
+  </data>
+  <data name="GlassEffectsPreviewHint" xml:space="preserve">
+    <value>Bu önizleme, uygulama bu denetim türünü etkinleştirmemiş olsa bile her zaman camı gösterir. Düzenleyici yerel görünümünü korur.</value>
+  </data>
+  <data name="GlassPresetHint" xml:space="preserve">
+    <value>Varsayılan değerler denetim kitaplığından gelir. Varsayılana sıfırlama yalnızca geçerli türün parametrelerini etkiler; diğer türleri veya etkinleştirme anahtarlarını değiştirmez.</value>
+  </data>
+  <data name="GlassResetType" xml:space="preserve">
+    <value>Bu türün varsayılan efektlerine sıfırla</value>
+  </data>
+  <data name="GlassResetParameter" xml:space="preserve">
+    <value>Sıfırla</value>
+  </data>
+  <data name="GlassDefaultValue" xml:space="preserve">
+    <value>Varsayılan değer:</value>
+  </data>
+  <data name="GlassPreviewButton" xml:space="preserve">
+    <value>Önizleme düğmesi</value>
+  </data>
+  <data name="GlassPreviewInput" xml:space="preserve">
+    <value>Odak efektini önizlemek için bir şeyler yazın</value>
+  </data>
+  <data name="GlassPreviewSearch" xml:space="preserve">
+    <value>Arama önizlemesi</value>
+  </data>
+  <data name="GlassPreviewPassword" xml:space="preserve">
+    <value>Parola önizlemesi</value>
+  </data>
+  <data name="GlassPreviewSurface" xml:space="preserve">
+    <value>Cam yüzey — içerik okunabilir kalır</value>
+  </data>
+  <data name="GlassProfileButton" xml:space="preserve">
+    <value>Düğme</value>
+  </data>
+  <data name="GlassProfileToggleButton" xml:space="preserve">
+    <value>Açma/kapama düğmesi</value>
+  </data>
+  <data name="GlassProfileHyperlinkButton" xml:space="preserve">
+    <value>Köprü düğmesi</value>
+  </data>
+  <data name="GlassProfileCheckBox" xml:space="preserve">
+    <value>Onay kutusu</value>
+  </data>
+  <data name="GlassProfileRadioButton" xml:space="preserve">
+    <value>Radyo düğmesi</value>
+  </data>
+  <data name="GlassProfileSlider" xml:space="preserve">
+    <value>Kaydırıcı</value>
+  </data>
+  <data name="GlassProfileTextBox" xml:space="preserve">
+    <value>Metin kutusu</value>
+  </data>
+  <data name="GlassProfileSearchBox" xml:space="preserve">
+    <value>Arama kutusu</value>
+  </data>
+  <data name="GlassProfilePasswordBox" xml:space="preserve">
+    <value>Parola kutusu</value>
+  </data>
+  <data name="GlassProfileComboBox" xml:space="preserve">
+    <value>Açılır kutu</value>
+  </data>
+  <data name="GlassProfileToggleSwitch" xml:space="preserve">
+    <value>Anahtar</value>
+  </data>
+  <data name="GlassProfileCard" xml:space="preserve">
+    <value>Kartlar ve yüzeyler</value>
+  </data>
+  <data name="GlassProfileFloatingPanel" xml:space="preserve">
+    <value>Yüzen panel</value>
+  </data>
+  <data name="GlassProfileTabBar" xml:space="preserve">
+    <value>Sekme çubuğu</value>
+  </data>
+  <data name="GlassParameterBlurRadius" xml:space="preserve">
+    <value>Bulanıklık yarıçapı</value>
+  </data>
+  <data name="GlassParameterRefractionStrength" xml:space="preserve">
+    <value>Kırılma yoğunluğu</value>
+  </data>
+  <data name="GlassParameterDispersionStrength" xml:space="preserve">
+    <value>Dağılım yoğunluğu</value>
+  </data>
+  <data name="GlassParameterHighlightStrength" xml:space="preserve">
+    <value>Vurgu yoğunluğu</value>
+  </data>
+  <data name="GlassParameterHighlightSharpness" xml:space="preserve">
+    <value>Vurgu keskinliği</value>
+  </data>
+  <data name="GlassParameterSpecularSaturation" xml:space="preserve">
+    <value>Ayna doygunluğu</value>
+  </data>
+  <data name="GlassParameterSpecularWidth" xml:space="preserve">
+    <value>Ayna genişliği</value>
+  </data>
+  <data name="GlassParameterRefractiveIndex" xml:space="preserve">
+    <value>Kırılma indisi</value>
+  </data>
+  <data name="GlassParameterTintOpacity" xml:space="preserve">
+    <value>Renk tonu opaklığı</value>
+  </data>
+  <data name="GlassParameterInnerShadowStrength" xml:space="preserve">
+    <value>İç gölge yoğunluğu</value>
+  </data>
+  <data name="GlassParameterSaturation" xml:space="preserve">
+    <value>Doygunluk</value>
+  </data>
+  <data name="GlassParameterContrast" xml:space="preserve">
+    <value>Kontrast</value>
+  </data>
+  <data name="GlassParameterExposure" xml:space="preserve">
+    <value>Pozlama</value>
+  </data>
+  <data name="GlassParameterMaterialOpacity" xml:space="preserve">
+    <value>Materyal opaklığı</value>
+  </data>
+  <data name="GlassParameterDispersionRange" xml:space="preserve">
+    <value>Dağılım aralığı</value>
+  </data>
+  <data name="GlassParameterRefFresnelRange" xml:space="preserve">
+    <value>Fresnel aralığı</value>
+  </data>
+  <data name="GlassParameterRefFresnelHardness" xml:space="preserve">
+    <value>Fresnel sertliği</value>
+  </data>
+  <data name="GlassParameterRefFresnelFactor" xml:space="preserve">
+    <value>Fresnel yoğunluğu</value>
+  </data>
+  <data name="GlassParameterGlareRange" xml:space="preserve">
+    <value>Parlama aralığı</value>
+  </data>
+  <data name="GlassParameterGlareHardness" xml:space="preserve">
+    <value>Parlama sertliği</value>
+  </data>
+  <data name="GlassParameterGlareFactor" xml:space="preserve">
+    <value>Parlama yoğunluğu</value>
+  </data>
+  <data name="GlassParameterGlareConvergence" xml:space="preserve">
+    <value>Parlama yakınsaması</value>
+  </data>
+  <data name="GlassParameterGlareOppositeFactor" xml:space="preserve">
+    <value>Ters parlama oranı</value>
+  </data>
+  <data name="GlassParameterGlareAngle" xml:space="preserve">
+    <value>Parlama yönü (°)</value>
+  </data>
+  <data name="GlassParameterMagnification" xml:space="preserve">
+    <value>Genel arka plan büyütmesi</value>
+  </data>
+  <data name="GlassParameterMagnificationStrength" xml:space="preserve">
+    <value>Yerel büyütme yoğunluğu</value>
+  </data>
+  <data name="GlassParameterBloomAmount" xml:space="preserve">
+    <value>Bulanıklık karışım oranı</value>
+  </data>
+  <data name="GlassParameterBrightness" xml:space="preserve">
+    <value>Parlaklık</value>
+  </data>
+  <data name="GlassParameterTemperature" xml:space="preserve">
+    <value>Renk sıcaklığı</value>
+  </data>
+  <data name="GlassParameterVibrance" xml:space="preserve">
+    <value>Canlılık</value>
+  </data>
+  <data name="GlassPreviewFirst" xml:space="preserve">
+    <value>Birinci öğe</value>
+  </data>
+  <data name="GlassPreviewSecond" xml:space="preserve">
+    <value>İkinci öğe</value>
+  </data>
+  <data name="GlassPreviewOverview" xml:space="preserve">
+    <value>Genel bakış</value>
+  </data>
+  <data name="GlassPreviewDetails" xml:space="preserve">
+    <value>Detaylar</value>
+  </data>
+  <data name="GlassPreviewActivity" xml:space="preserve">
+    <value>Etkinlik</value>
+  </data>
+  <data name="RepositoryServerOfflineWarning" xml:space="preserve">
+    <value>Sunucuya bağlanılamadı; çevrimdışı moda geçildi ve yerel depo listesi kullanılıyor. Görseller gibi çevrimiçi kaynaklar yüklenemeyebilir. Arka plan görevlerinin yanındaki düğmeye tıklayarak yeniden bağlanabilirsiniz.</value>
+  </data>
+  <data name="RepositoryServerConnectionRestored" xml:space="preserve">
+    <value>Sunucuya yeniden bağlanıldı, çevrimdışı moddan çıkıldı.</value>
+  </data>
+  <data name="RepositoryServerReconnect" xml:space="preserve">
+    <value>Sunucuya yeniden bağlanmayı dene</value>
+  </data>
+  <data name="RepositoryServerReconnectFailed" xml:space="preserve">
+    <value>Sunucuya hâlâ bağlanılamıyor, çevrimdışı mod kullanılmaya devam ediliyor. Daha sonra tekrar deneyebilirsiniz.</value>
+  </data>
+  <data name="RepositoryServerOfflineStatus" xml:space="preserve">
+    <value>Çevrimdışı mod · Yeniden bağlan</value>
+  </data>
+  <data name="RepositoryServerReconnecting" xml:space="preserve">
+    <value>Çevrimdışı mod · Yeniden bağlanılıyor</value>
   </data>
 </root>
