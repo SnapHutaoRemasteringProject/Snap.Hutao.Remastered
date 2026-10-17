@@ -4,9 +4,9 @@
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 
-internal readonly record struct LiquidGlassParameterRange(string Key, double Minimum, double Maximum, double DefaultValue);
+public readonly record struct LiquidGlassParameterRange(string Key, double Minimum, double Maximum, double DefaultValue);
 
-internal sealed class LiquidGlassOverrideStore
+public sealed class LiquidGlassOverrideStore
 {
     private readonly Dictionary<string, LiquidGlassParameterRange> ranges;
     private readonly Dictionary<string, double> values = [];
@@ -42,4 +42,4 @@ internal sealed class LiquidGlassOverrideStore
 }
 
 [JsonSerializable(typeof(Dictionary<string, double>))]
-internal sealed partial class LiquidGlassProfileJsonContext : JsonSerializerContext;
+public sealed partial class LiquidGlassProfileJsonContext : JsonSerializerContext;

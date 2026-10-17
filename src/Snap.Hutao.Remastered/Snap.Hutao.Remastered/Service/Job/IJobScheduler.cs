@@ -7,5 +7,5 @@ namespace Snap.Hutao.Remastered.Service.Job;
 
 public interface IJobScheduler
 {
-    ValueTask ScheduleAsync(IScheduler scheduler);
+    ValueTask ScheduleAsync(IScheduler scheduler, CancellationToken token = default);
 }

@@ -27,6 +27,9 @@ public sealed class GamePackageOperationContext
 
     public GamePackageOperationKind Kind { get; }
 
+    /// <summary>Optional operation observer, invoked on the UI thread.</summary>
+    public Action<GamePackageOperationReport>? ProgressChanged { get; init; }
+
     public IGameAssetOperation Asset { get; }
 
     public IGameFileSystem GameFileSystem { get; init; }

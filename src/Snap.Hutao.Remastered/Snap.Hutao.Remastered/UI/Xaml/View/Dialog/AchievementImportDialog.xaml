@@ -61,35 +61,44 @@
                     Text="{x:Bind UIAF.List.Length, Mode=OneWay, TargetNullValue=Unknown}"/>
             </cwc:HeaderedContentControl>
         </cwc:UniformGrid>
-        <RadioButtons
-            x:Name="ImportModeSelector"
+        <cwc:SwitchPresenter
+            x:Name="MaterialSelector_ImportModeSelector"
             Grid.Row="1"
-            Margin="0,16,0,0"
-            Header="{shuxm:ResourceString Name=ViewDialogAchievementArchiveImportStrategy}"
-            SelectedIndex="0">
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_3487"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:RadioButton"
-                Visibility="{x:Bind GlassNative_3487.Visibility, Mode=OneWay}"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            IsTabStop="False"
+            Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
+            <cwc:Case Value="{shuxm:Int32 Value=0}">
+                <RadioButtons
+                    x:Name="ImportModeSelector"
+                    Grid.Row="1"
+                    Margin="0,16,0,0"
+                    Header="{shuxm:ResourceString Name=ViewDialogAchievementArchiveImportStrategy}"
+                    SelectedIndex="0">
                     <RadioButton
                         x:Name="GlassNative_3487"
                         Content="{shuxm:ResourceString Name=ViewDialogAchievementArchiveImportStrategyAggressive}"
-                        DataContext="{x:Bind GlassPresenter_3487.DataContext, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_3243"
-                        RequestedTheme="{x:Bind GlassPresenter_3487.ActualTheme, Mode=OneWay}"/>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
+                        DataContext="{x:Bind MaterialSelector_ImportModeSelector.DataContext, Mode=OneWay}"
+                        RequestedTheme="{x:Bind MaterialSelector_ImportModeSelector.ActualTheme, Mode=OneWay}"/>
+                    <RadioButton
+                        x:Name="GlassNative_3605"
+                        Content="{shuxm:ResourceString Name=ViewDialogAchievementArchiveImportStrategyLazy}"
+                        DataContext="{x:Bind MaterialSelector_ImportModeSelector.DataContext, Mode=OneWay}"
+                        RequestedTheme="{x:Bind MaterialSelector_ImportModeSelector.ActualTheme, Mode=OneWay}"/>
+                    <RadioButton
+                        x:Name="GlassNative_3717"
+                        Content="{shuxm:ResourceString Name=ViewDialogAchievementArchiveImportStrategyOverwrite}"
+                        DataContext="{x:Bind MaterialSelector_ImportModeSelector.DataContext, Mode=OneWay}"
+                        RequestedTheme="{x:Bind MaterialSelector_ImportModeSelector.ActualTheme, Mode=OneWay}"/>
+                </RadioButtons>
+            </cwc:Case>
+            <cwc:Case Value="{shuxm:Int32 Value=1}">
+                <RadioButtons
+                    x:Name="ImportModeSelectorGlass"
+                    Grid.Row="1"
+                    Margin="0,16,0,0"
+                    Header="{shuxm:ResourceString Name=ViewDialogAchievementArchiveImportStrategy}"
+                    SelectedIndex="{x:Bind ImportModeSelector.SelectedIndex, Mode=TwoWay}">
                     <wl:LiquidGlassRadioButton
                         x:Name="GlassNative_3487Glass"
                         Width="{x:Bind GlassNative_3487.Width, Mode=OneWay}"
@@ -112,34 +121,7 @@
                         FontStyle="{x:Bind GlassNative_3487.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_3487.FontWeight, Mode=OneWay}"
                         Foreground="{x:Bind GlassNative_3487.Foreground, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_3243Glass"
-                        IsChecked="{x:Bind GlassNative_3487.IsChecked, Mode=TwoWay}"
                         IsEnabled="{x:Bind GlassNative_3487.IsEnabled, Mode=OneWay}"/>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_3605"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:RadioButton"
-                Visibility="{x:Bind GlassNative_3605.Visibility, Mode=OneWay}"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
-                    <RadioButton
-                        x:Name="GlassNative_3605"
-                        Content="{shuxm:ResourceString Name=ViewDialogAchievementArchiveImportStrategyLazy}"
-                        DataContext="{x:Bind GlassPresenter_3605.DataContext, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_3243"
-                        RequestedTheme="{x:Bind GlassPresenter_3605.ActualTheme, Mode=OneWay}"/>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
                     <wl:LiquidGlassRadioButton
                         x:Name="GlassNative_3605Glass"
                         Width="{x:Bind GlassNative_3605.Width, Mode=OneWay}"
@@ -162,34 +144,7 @@
                         FontStyle="{x:Bind GlassNative_3605.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_3605.FontWeight, Mode=OneWay}"
                         Foreground="{x:Bind GlassNative_3605.Foreground, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_3243Glass"
-                        IsChecked="{x:Bind GlassNative_3605.IsChecked, Mode=TwoWay}"
                         IsEnabled="{x:Bind GlassNative_3605.IsEnabled, Mode=OneWay}"/>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_3717"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:RadioButton"
-                Visibility="{x:Bind GlassNative_3717.Visibility, Mode=OneWay}"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
-                    <RadioButton
-                        x:Name="GlassNative_3717"
-                        Content="{shuxm:ResourceString Name=ViewDialogAchievementArchiveImportStrategyOverwrite}"
-                        DataContext="{x:Bind GlassPresenter_3717.DataContext, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_3243"
-                        RequestedTheme="{x:Bind GlassPresenter_3717.ActualTheme, Mode=OneWay}"/>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
                     <wl:LiquidGlassRadioButton
                         x:Name="GlassNative_3717Glass"
                         Width="{x:Bind GlassNative_3717.Width, Mode=OneWay}"
@@ -212,11 +167,9 @@
                         FontStyle="{x:Bind GlassNative_3717.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_3717.FontWeight, Mode=OneWay}"
                         Foreground="{x:Bind GlassNative_3717.Foreground, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_3243Glass"
-                        IsChecked="{x:Bind GlassNative_3717.IsChecked, Mode=TwoWay}"
                         IsEnabled="{x:Bind GlassNative_3717.IsEnabled, Mode=OneWay}"/>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
-        </RadioButtons>
+                </RadioButtons>
+            </cwc:Case>
+        </cwc:SwitchPresenter>
     </Grid>
 </ContentDialog>

@@ -20,7 +20,7 @@
                             HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalAlignment}"
                             NineGrid="{TemplateBinding NineGrid}"
-                            Opacity="0"
+                            Opacity="1"
                             Stretch="{TemplateBinding Stretch}"
                             Visibility="Collapsed"/>
                     </Grid>

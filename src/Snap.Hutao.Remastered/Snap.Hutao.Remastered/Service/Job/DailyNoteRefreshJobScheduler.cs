@@ -14,7 +14,7 @@ public sealed partial class DailyNoteRefreshJobScheduler : IJobScheduler
     [GeneratedConstructor]
     public partial DailyNoteRefreshJobScheduler(IServiceProvider serviceProvider);
 
-    public async ValueTask ScheduleAsync(IScheduler scheduler)
+    public async ValueTask ScheduleAsync(IScheduler scheduler, CancellationToken token = default)
     {
         if (!TryGetRefreshInterval(out int interval))
         {
@@ -31,7 +31,7 @@ public sealed partial class DailyNoteRefreshJobScheduler : IJobScheduler
             .StartAt(DateTimeOffset.Now.AddSeconds(interval))
             .Build();
 
-        await scheduler.ScheduleJob(dailyNoteJob, dailyNoteTrigger).ConfigureAwait(false);
+        await scheduler.ScheduleJob(dailyNoteJob, dailyNoteTrigger, cancellationToken: token).ConfigureAwait(false);
     }
 
     private bool TryGetRefreshInterval(out int interval)

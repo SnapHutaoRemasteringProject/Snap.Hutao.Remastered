@@ -21,34 +21,37 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Text="{shuxm:ResourceString Name=ViewDialogCloseButtonBehaviorSetDialogHint}"/>
-        <RadioButtons
-            x:Name="CloseButtonBehaviorSelector"
+        <cwc:SwitchPresenter
+            x:Name="MaterialSelector_CloseButtonBehaviorSelector"
             Grid.Row="1"
-            Margin="0,8,0,16"
-            SelectedIndex="0">
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_1276"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:RadioButton"
-                Visibility="{x:Bind GlassNative_1276.Visibility, Mode=OneWay}"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            IsTabStop="False"
+            Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
+            <cwc:Case Value="{shuxm:Int32 Value=0}">
+                <RadioButtons
+                    x:Name="CloseButtonBehaviorSelector"
+                    Grid.Row="1"
+                    Margin="0,8,0,16"
+                    SelectedIndex="0">
                     <RadioButton
                         x:Name="GlassNative_1276"
                         Content="{shuxm:ResourceString Name=ServiceCloseButtonBehaviorTypeMinimize}"
-                        DataContext="{x:Bind GlassPresenter_1276.DataContext, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_1115"
-                        RequestedTheme="{x:Bind GlassPresenter_1276.ActualTheme, Mode=OneWay}"/>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
+                        DataContext="{x:Bind MaterialSelector_CloseButtonBehaviorSelector.DataContext, Mode=OneWay}"
+                        RequestedTheme="{x:Bind MaterialSelector_CloseButtonBehaviorSelector.ActualTheme, Mode=OneWay}"/>
+                    <RadioButton
+                        x:Name="GlassNative_1380"
+                        Content="{shuxm:ResourceString Name=ServiceCloseButtonBehaviorTypeExit}"
+                        DataContext="{x:Bind MaterialSelector_CloseButtonBehaviorSelector.DataContext, Mode=OneWay}"
+                        RequestedTheme="{x:Bind MaterialSelector_CloseButtonBehaviorSelector.ActualTheme, Mode=OneWay}"/>
+                </RadioButtons>
+            </cwc:Case>
+            <cwc:Case Value="{shuxm:Int32 Value=1}">
+                <RadioButtons
+                    x:Name="CloseButtonBehaviorSelectorGlass"
+                    Grid.Row="1"
+                    Margin="0,8,0,16"
+                    SelectedIndex="{x:Bind CloseButtonBehaviorSelector.SelectedIndex, Mode=TwoWay}">
                     <wl:LiquidGlassRadioButton
                         x:Name="GlassNative_1276Glass"
                         Width="{x:Bind GlassNative_1276.Width, Mode=OneWay}"
@@ -71,34 +74,7 @@
                         FontStyle="{x:Bind GlassNative_1276.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_1276.FontWeight, Mode=OneWay}"
                         Foreground="{x:Bind GlassNative_1276.Foreground, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_1115Glass"
-                        IsChecked="{x:Bind GlassNative_1276.IsChecked, Mode=TwoWay}"
                         IsEnabled="{x:Bind GlassNative_1276.IsEnabled, Mode=OneWay}"/>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_1380"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:RadioButton"
-                Visibility="{x:Bind GlassNative_1380.Visibility, Mode=OneWay}"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
-                    <RadioButton
-                        x:Name="GlassNative_1380"
-                        Content="{shuxm:ResourceString Name=ServiceCloseButtonBehaviorTypeExit}"
-                        DataContext="{x:Bind GlassPresenter_1380.DataContext, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_1115"
-                        RequestedTheme="{x:Bind GlassPresenter_1380.ActualTheme, Mode=OneWay}"/>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
                     <wl:LiquidGlassRadioButton
                         x:Name="GlassNative_1380Glass"
                         Width="{x:Bind GlassNative_1380.Width, Mode=OneWay}"
@@ -121,12 +97,10 @@
                         FontStyle="{x:Bind GlassNative_1380.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_1380.FontWeight, Mode=OneWay}"
                         Foreground="{x:Bind GlassNative_1380.Foreground, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_1115Glass"
-                        IsChecked="{x:Bind GlassNative_1380.IsChecked, Mode=TwoWay}"
                         IsEnabled="{x:Bind GlassNative_1380.IsEnabled, Mode=OneWay}"/>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
-        </RadioButtons>
+                </RadioButtons>
+            </cwc:Case>
+        </cwc:SwitchPresenter>
         <TextBlock
             Grid.Row="2"
             Opacity="0.8"

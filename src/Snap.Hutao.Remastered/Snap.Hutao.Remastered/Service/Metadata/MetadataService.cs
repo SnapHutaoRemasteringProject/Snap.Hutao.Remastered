@@ -16,7 +16,8 @@ namespace Snap.Hutao.Remastered.Service.Metadata;
 [HttpClient(HttpClientConfiguration.Default)]
 public sealed partial class MetadataService : IMetadataService
 {
-    private TaskCompletionSource initializeCompletionSource = new();
+    private TaskCompletionSource initializeCompletionSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private readonly SemaphoreSlim initializationGate = new(1, 1);
 
     private readonly IGitRepositoryService gitRepositoryService;
     private readonly ILogger<MetadataService> logger;
@@ -32,36 +33,40 @@ public sealed partial class MetadataService : IMetadataService
 
     public async ValueTask<bool> InitializeAsync()
     {
-        await initializeCompletionSource.Task.ConfigureAwait(false);
+        await initializeCompletionSource.Task.WaitAsync(XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false);
         return isInitialized;
     }
 
     public async ValueTask<bool> InitializepublicAsync(CancellationToken token = default)
     {
-        if (isInitialized)
+        using CancellationTokenSource linked = CancellationTokenSource.CreateLinkedTokenSource(token, XamlApplicationLifetime.ShutdownToken);
+        token = linked.Token;
+        await initializationGate.WaitAsync(token).ConfigureAwait(false);
+        try
         {
-            return true;
-        }
-
-        using (ValueStopwatch.MeasureExecution(logger))
-        {
-            // If a previous attempt completed the TCS (with failure), create a new one
-            // so callers of InitializeAsync() can properly wait for this retry.
-            if (initializeCompletionSource.Task.IsCompleted)
+            if (isInitialized) return true;
+            using (ValueStopwatch.MeasureExecution(logger))
             {
-                initializeCompletionSource = new();
+                (isInitialized, _) = await gitRepositoryService.EnsureRepositoryAsync("Snap.Metadata", token).ConfigureAwait(false);
             }
-
-            (isInitialized, _) = await gitRepositoryService.EnsureRepositoryAsync("Snap.Metadata").ConfigureAwait(false);
-
-            if (isInitialized)
-            {
-                initializeCompletionSource.TrySetResult();
-            }
-
             return isInitialized;
         }
+        catch (OperationCanceledException) { throw; }
+        catch (Exception exception)
+        {
+            logger.LogWarning(exception, "Metadata initialization failed; awaiting a later retry");
+            return false;
+        }
+        finally
+        {
+            // Consumers require real metadata, not merely a completed failed
+            // attempt. Keep the success signal pending across short retries;
+            // ShutdownToken releases those consumers when the application exits.
+            if (isInitialized) initializeCompletionSource.TrySetResult();
+            initializationGate.Release();
+        }
     }
+
 
     public async ValueTask<ImmutableArray<T>> FromCacheOrFileAsync<T>(MetadataFileStrategy strategy, CancellationToken token)
         where T : class
@@ -75,6 +80,9 @@ public sealed partial class MetadataService : IMetadataService
             return Unsafe.Unbox<ImmutableArray<T>>(value);
         }
 
+        // Cached filesystem reads/deserialization can complete synchronously.
+        // Keep that CPU work off the UI without changing initialization ordering.
+        await Task.CompletedTask.ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
         return strategy.IsScattered
             ? await FromCacheOrScatteredFileAsync<T>(strategy, cacheKey, token).ConfigureAwait(false)
             : await FromCacheOrSingleFileAsync<T>(strategy, cacheKey, token).ConfigureAwait(false);

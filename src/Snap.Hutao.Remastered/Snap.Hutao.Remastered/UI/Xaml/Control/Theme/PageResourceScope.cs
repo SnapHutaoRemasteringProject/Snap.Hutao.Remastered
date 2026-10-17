@@ -4,7 +4,7 @@
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 
 /// <summary>Creates a fresh resource dictionary for each owning resource root.</summary>
-internal sealed class PageResourceScope<TDictionary>(Func<TDictionary> create, Action<TDictionary, TDictionary> attach)
+public sealed class PageResourceScope<TDictionary>(Func<TDictionary> create, Action<TDictionary, TDictionary> attach)
     where TDictionary : class
 {
     private TDictionary? owner;

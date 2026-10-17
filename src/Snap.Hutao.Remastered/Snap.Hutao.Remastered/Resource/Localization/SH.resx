@@ -3688,7 +3688,7 @@
     <value>默认</value>
   </data>
   <data name="ViewPageSettingControlMaterialLiquidGlass" xml:space="preserve">
-    <value>液态玻璃</value>
+    <value>液态玻璃（实验性预览）</value>
   </data>
   <data name="ViewGuideMaterialTitle" xml:space="preserve">
     <value>选择控件材质</value>
@@ -5351,7 +5351,7 @@
     <value>按控件类型独立调整参数，支持预览与恢复默认。</value>
   </data>
   <data name="GlassControlsIntro" xml:space="preserve">
-    <value>选择应用材质及各控件类型。修改立即生效并自动保存。</value>
+    <value>选择应用材质及各控件类型。修改立即生效并自动保存。液态玻璃效果对性能有一定影响。</value>
   </data>
   <data name="GlassEffectsIntro" xml:space="preserve">
     <value>每类控件有独立参数，修改立即生效并自动保存。</value>
@@ -5544,5 +5544,23 @@
   </data>
   <data name="GlassPreviewActivity" xml:space="preserve">
     <value>活动</value>
+  </data>
+  <data name="RepositoryServerOfflineWarning" xml:space="preserve">
+    <value>连接服务器失败，已进入离线模式并使用本地仓库列表。图片等在线资源可能无法加载，可点击后台任务旁的按钮重新连接。</value>
+  </data>
+  <data name="RepositoryServerConnectionRestored" xml:space="preserve">
+    <value>已重新连接服务器，退出离线模式。</value>
+  </data>
+  <data name="RepositoryServerReconnect" xml:space="preserve">
+    <value>重新尝试连接服务器</value>
+  </data>
+  <data name="RepositoryServerReconnectFailed" xml:space="preserve">
+    <value>仍无法连接服务器，继续使用离线模式。可以稍后重新尝试。</value>
+  </data>
+  <data name="RepositoryServerOfflineStatus" xml:space="preserve">
+    <value>离线模式 · 重新连接</value>
+  </data>
+  <data name="RepositoryServerReconnecting" xml:space="preserve">
+    <value>离线模式 · 正在重连</value>
   </data>
 </root>

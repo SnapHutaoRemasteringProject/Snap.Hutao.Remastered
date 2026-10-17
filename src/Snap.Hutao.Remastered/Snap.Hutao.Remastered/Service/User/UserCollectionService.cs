@@ -22,6 +22,7 @@ public sealed partial class UserCollectionService : IUserCollectionService, IDis
     private readonly IMessenger messenger;
 
     private readonly AsyncLock collectionLocker = new();
+    private readonly SemaphoreSlim retryGate = new(1, 1);
 
     private AdvancedDbCollectionView<BindingUser, EntityUser>? users;
 
@@ -116,6 +117,15 @@ public sealed partial class UserCollectionService : IUserCollectionService, IDis
     }
 
     public async ValueTask<bool> RetryResumeUninitializedUsersAsync(CancellationToken token = default)
+    {
+        // Startup and the user view can recover together. Serialize the shared
+        // accounts' initialization instead of issuing duplicate account requests.
+        await retryGate.WaitAsync(token).ConfigureAwait(false);
+        try { return await RetryResumeUninitializedUsersCoreAsync(token).ConfigureAwait(false); }
+        finally { retryGate.Release(); }
+    }
+
+    private async ValueTask<bool> RetryResumeUninitializedUsersCoreAsync(CancellationToken token)
     {
         AdvancedDbCollectionView<BindingUser, EntityUser> users = await GetUsersAsync().ConfigureAwait(false);
 

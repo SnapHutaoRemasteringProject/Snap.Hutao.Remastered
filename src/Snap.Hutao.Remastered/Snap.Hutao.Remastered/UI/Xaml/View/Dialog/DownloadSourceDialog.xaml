@@ -21,24 +21,18 @@
             Style="{ThemeResource CaptionTextBlockStyle}"
             Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceHint}"
             TextWrapping="Wrap"/>
-        <RadioButtons x:Name="DownloadSourceSelector" SelectedIndex="0">
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_1125"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:RadioButton"
-                Visibility="{x:Bind GlassNative_1125.Visibility, Mode=OneWay}"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
+        <cwc:SwitchPresenter
+            x:Name="MaterialSelector_DownloadSourceSelector"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            IsTabStop="False"
+            Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
+            <cwc:Case Value="{shuxm:Int32 Value=0}">
+                <RadioButtons x:Name="DownloadSourceSelector" SelectedIndex="0">
                     <RadioButton
                         x:Name="GlassNative_1125"
-                        DataContext="{x:Bind GlassPresenter_1125.DataContext, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_1024"
-                        RequestedTheme="{x:Bind GlassPresenter_1125.ActualTheme, Mode=OneWay}">
+                        DataContext="{x:Bind MaterialSelector_DownloadSourceSelector.DataContext, Mode=OneWay}"
+                        RequestedTheme="{x:Bind MaterialSelector_DownloadSourceSelector.ActualTheme, Mode=OneWay}">
                         <StackPanel Spacing="2">
                             <TextBlock FontWeight="SemiBold" Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceOfficial}"/>
                             <TextBlock
@@ -47,11 +41,22 @@
                                 Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceOfficialDescription}"/>
                         </StackPanel>
                     </RadioButton>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
+                    <RadioButton
+                        x:Name="GlassNative_1616"
+                        DataContext="{x:Bind MaterialSelector_DownloadSourceSelector.DataContext, Mode=OneWay}"
+                        RequestedTheme="{x:Bind MaterialSelector_DownloadSourceSelector.ActualTheme, Mode=OneWay}">
+                        <StackPanel Spacing="2">
+                            <TextBlock FontWeight="SemiBold" Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceMirrorChyan}"/>
+                            <TextBlock
+                                Opacity="0.7"
+                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceMirrorChyanDescription}"/>
+                        </StackPanel>
+                    </RadioButton>
+                </RadioButtons>
+            </cwc:Case>
+            <cwc:Case Value="{shuxm:Int32 Value=1}">
+                <RadioButtons x:Name="DownloadSourceSelectorGlass" SelectedIndex="{x:Bind DownloadSourceSelector.SelectedIndex, Mode=TwoWay}">
                     <wl:LiquidGlassRadioButton
                         x:Name="GlassNative_1125Glass"
                         Width="{x:Bind GlassNative_1125.Width, Mode=OneWay}"
@@ -73,8 +78,6 @@
                         FontStyle="{x:Bind GlassNative_1125.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_1125.FontWeight, Mode=OneWay}"
                         Foreground="{x:Bind GlassNative_1125.Foreground, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_1024Glass"
-                        IsChecked="{x:Bind GlassNative_1125.IsChecked, Mode=TwoWay}"
                         IsEnabled="{x:Bind GlassNative_1125.IsEnabled, Mode=OneWay}">
                         <StackPanel Spacing="2">
                             <TextBlock FontWeight="SemiBold" Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceOfficial}"/>
@@ -84,38 +87,6 @@
                                 Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceOfficialDescription}"/>
                         </StackPanel>
                     </wl:LiquidGlassRadioButton>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_1616"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:RadioButton"
-                Visibility="{x:Bind GlassNative_1616.Visibility, Mode=OneWay}"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
-                    <RadioButton
-                        x:Name="GlassNative_1616"
-                        DataContext="{x:Bind GlassPresenter_1616.DataContext, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_1024"
-                        RequestedTheme="{x:Bind GlassPresenter_1616.ActualTheme, Mode=OneWay}">
-                        <StackPanel Spacing="2">
-                            <TextBlock FontWeight="SemiBold" Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceMirrorChyan}"/>
-                            <TextBlock
-                                Opacity="0.7"
-                                Style="{ThemeResource CaptionTextBlockStyle}"
-                                Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceMirrorChyanDescription}"/>
-                        </StackPanel>
-                    </RadioButton>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
                     <wl:LiquidGlassRadioButton
                         x:Name="GlassNative_1616Glass"
                         Width="{x:Bind GlassNative_1616.Width, Mode=OneWay}"
@@ -137,8 +108,6 @@
                         FontStyle="{x:Bind GlassNative_1616.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_1616.FontWeight, Mode=OneWay}"
                         Foreground="{x:Bind GlassNative_1616.Foreground, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_1024Glass"
-                        IsChecked="{x:Bind GlassNative_1616.IsChecked, Mode=TwoWay}"
                         IsEnabled="{x:Bind GlassNative_1616.IsEnabled, Mode=OneWay}">
                         <StackPanel Spacing="2">
                             <TextBlock FontWeight="SemiBold" Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceMirrorChyan}"/>
@@ -148,8 +117,8 @@
                                 Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceMirrorChyanDescription}"/>
                         </StackPanel>
                     </wl:LiquidGlassRadioButton>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
-        </RadioButtons>
+                </RadioButtons>
+            </cwc:Case>
+        </cwc:SwitchPresenter>
     </StackPanel>
 </ContentDialog>

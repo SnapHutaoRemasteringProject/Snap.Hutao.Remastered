@@ -75,6 +75,7 @@ public sealed class TaskContext : ITaskContext
                 }
                 catch (Exception ex)
                 {
+                    System.Diagnostics.Trace.WriteLine($"Unhandled dispatcher Post callback (exiting={XamlApplicationLifetime.Exiting}): {ex}");
                     ExceptionHelpers.ReportUnhandledError(ex);
                 }
             });
@@ -91,6 +92,7 @@ public sealed class TaskContext : ITaskContext
                 }
                 catch (Exception ex)
                 {
+                    System.Diagnostics.Trace.WriteLine($"Unhandled dispatcher Send callback (exiting={XamlApplicationLifetime.Exiting}): {ex}");
                     ExceptionHelpers.ReportUnhandledError(ex);
                 }
             });

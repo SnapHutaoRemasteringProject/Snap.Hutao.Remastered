@@ -13,6 +13,13 @@ public static class WindowExtension
 {
     private static readonly ConditionalWeakTable<Window, XamlWindowController> WindowControllers = [];
 
+    public static Task DetachAllContentAsync()
+    {
+        // Application.Exit already accepts process-wide shutdown. Do not route it
+        // through per-window close vetoes (e.g. an active download or WebView load).
+        return Task.WhenAll(WindowControllers.ToArray().Select(pair => pair.Value.DetachContentAsync()));
+    }
+
     extension<TWindow>(TWindow window)
         where TWindow : Window
     {

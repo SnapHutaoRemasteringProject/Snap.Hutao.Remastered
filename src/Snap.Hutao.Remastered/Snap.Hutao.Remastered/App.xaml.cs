@@ -14,6 +14,9 @@ using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.UI.Xaml;
+using Snap.Hutao.Remastered.UI.Windowing;
+using Snap.Hutao.Remastered.Service.Job;
+using Snap.Hutao.Remastered.UI.Xaml.Behavior;
 using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using System.Diagnostics;
 using System.IO;
@@ -44,6 +47,7 @@ public sealed partial class App : Application
     private readonly IServiceProvider serviceProvider;
     private readonly IAppActivation activation;
     private readonly ILogger<App> logger;
+    private bool exitRequested;
 
     [GeneratedConstructor(InitializeComponent = true)]
     public partial App(IServiceProvider serviceProvider);
@@ -68,11 +72,24 @@ public sealed partial class App : Application
     [SuppressMessage("", "SA1202")]
     public new void Exit()
     {
+        if (exitRequested) return;
+        exitRequested = true;
         XamlApplicationLifetime.Exiting = true;
+        FlyoutOpenStateBinding.CancelPendingSwitches();
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Application exiting", "Hutao"));
         // #114
         //SpinWait.SpinUntil(static () => XamlApplicationLifetime.ActivationAndInitializationCompleted);
-        base.Exit();
+        ExitAfterContentDetachedAsync().SafeForget();
+    }
+
+    private async Task ExitAfterContentDetachedAsync()
+    {
+        // Shutdown must happen before Application.Start returns. Quartz job setup
+        // and running jobs may otherwise await a dispatcher already destroyed.
+        await serviceProvider.GetRequiredService<IQuartzService>().ShutdownAsync().ConfigureAwait(true);
+        await WindowExtension.DetachAllContentAsync().ConfigureAwait(true);
+        // Leave the final Window.Closed callback before stopping its dispatcher.
+        Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread().TryEnqueue(() => base.Exit());
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)

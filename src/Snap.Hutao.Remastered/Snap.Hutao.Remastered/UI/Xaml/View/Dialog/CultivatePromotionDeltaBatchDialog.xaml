@@ -70,34 +70,41 @@
                 Value="{x:Bind PromotionDelta.Weapon.LevelTarget, Mode=TwoWay}"/>
         </cwc:SettingsCard>
 
-        <RadioButtons
-            x:Name="SaveModeSelector"
-            Margin="0,13,0,0"
-            Header="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyHeader}"
-            SelectedIndex="0">
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_3863"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:RadioButton"
-                Visibility="{x:Bind GlassNative_3863.Visibility, Mode=OneWay}"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
+        <cwc:SwitchPresenter
+            x:Name="MaterialSelector_SaveModeSelector"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
+            IsTabStop="False"
+            Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
+            <cwc:Case Value="{shuxm:Int32 Value=0}">
+                <RadioButtons
+                    x:Name="SaveModeSelector"
+                    Margin="0,13,0,0"
+                    Header="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyHeader}"
+                    SelectedIndex="0">
                     <RadioButton
                         x:Name="GlassNative_3863"
                         Content="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyPreserveExisting}"
-                        DataContext="{x:Bind GlassPresenter_3863.DataContext, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_3638"
-                        RequestedTheme="{x:Bind GlassPresenter_3863.ActualTheme, Mode=OneWay}"/>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
+                        DataContext="{x:Bind MaterialSelector_SaveModeSelector.DataContext, Mode=OneWay}"
+                        RequestedTheme="{x:Bind MaterialSelector_SaveModeSelector.ActualTheme, Mode=OneWay}"/>
+                    <RadioButton
+                        x:Name="GlassNative_3989"
+                        Content="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyOverwriteExisting}"
+                        DataContext="{x:Bind MaterialSelector_SaveModeSelector.DataContext, Mode=OneWay}"
+                        RequestedTheme="{x:Bind MaterialSelector_SaveModeSelector.ActualTheme, Mode=OneWay}"/>
+                    <RadioButton
+                        x:Name="GlassNative_4116"
+                        Content="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyCreateNewEntry}"
+                        DataContext="{x:Bind MaterialSelector_SaveModeSelector.DataContext, Mode=OneWay}"
+                        RequestedTheme="{x:Bind MaterialSelector_SaveModeSelector.ActualTheme, Mode=OneWay}"/>
+                </RadioButtons>
+            </cwc:Case>
+            <cwc:Case Value="{shuxm:Int32 Value=1}">
+                <RadioButtons
+                    x:Name="SaveModeSelectorGlass"
+                    Margin="0,13,0,0"
+                    Header="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyHeader}"
+                    SelectedIndex="{x:Bind SaveModeSelector.SelectedIndex, Mode=TwoWay}">
                     <wl:LiquidGlassRadioButton
                         x:Name="GlassNative_3863Glass"
                         Width="{x:Bind GlassNative_3863.Width, Mode=OneWay}"
@@ -120,34 +127,7 @@
                         FontStyle="{x:Bind GlassNative_3863.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_3863.FontWeight, Mode=OneWay}"
                         Foreground="{x:Bind GlassNative_3863.Foreground, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_3638Glass"
-                        IsChecked="{x:Bind GlassNative_3863.IsChecked, Mode=TwoWay}"
                         IsEnabled="{x:Bind GlassNative_3863.IsEnabled, Mode=OneWay}"/>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_3989"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:RadioButton"
-                Visibility="{x:Bind GlassNative_3989.Visibility, Mode=OneWay}"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
-                    <RadioButton
-                        x:Name="GlassNative_3989"
-                        Content="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyOverwriteExisting}"
-                        DataContext="{x:Bind GlassPresenter_3989.DataContext, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_3638"
-                        RequestedTheme="{x:Bind GlassPresenter_3989.ActualTheme, Mode=OneWay}"/>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
                     <wl:LiquidGlassRadioButton
                         x:Name="GlassNative_3989Glass"
                         Width="{x:Bind GlassNative_3989.Width, Mode=OneWay}"
@@ -170,34 +150,7 @@
                         FontStyle="{x:Bind GlassNative_3989.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_3989.FontWeight, Mode=OneWay}"
                         Foreground="{x:Bind GlassNative_3989.Foreground, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_3638Glass"
-                        IsChecked="{x:Bind GlassNative_3989.IsChecked, Mode=TwoWay}"
                         IsEnabled="{x:Bind GlassNative_3989.IsEnabled, Mode=OneWay}"/>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_4116"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:RadioButton"
-                Visibility="{x:Bind GlassNative_4116.Visibility, Mode=OneWay}"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
-                    <RadioButton
-                        x:Name="GlassNative_4116"
-                        Content="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyCreateNewEntry}"
-                        DataContext="{x:Bind GlassPresenter_4116.DataContext, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_3638"
-                        RequestedTheme="{x:Bind GlassPresenter_4116.ActualTheme, Mode=OneWay}"/>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
                     <wl:LiquidGlassRadioButton
                         x:Name="GlassNative_4116Glass"
                         Width="{x:Bind GlassNative_4116.Width, Mode=OneWay}"
@@ -220,11 +173,9 @@
                         FontStyle="{x:Bind GlassNative_4116.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_4116.FontWeight, Mode=OneWay}"
                         Foreground="{x:Bind GlassNative_4116.Foreground, Mode=OneWay}"
-                        GroupName="GlassRadioGroup_3638Glass"
-                        IsChecked="{x:Bind GlassNative_4116.IsChecked, Mode=TwoWay}"
                         IsEnabled="{x:Bind GlassNative_4116.IsEnabled, Mode=OneWay}"/>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
-        </RadioButtons>
+                </RadioButtons>
+            </cwc:Case>
+        </cwc:SwitchPresenter>
     </StackPanel>
 </ContentDialog>

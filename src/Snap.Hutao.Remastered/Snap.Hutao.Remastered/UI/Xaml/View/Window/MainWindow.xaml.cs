@@ -24,7 +24,8 @@ public sealed partial class MainWindow : Microsoft.UI.Xaml.Window,
     IXamlWindowExtendContentIntoTitleBar,
     IXamlWindowHasInitSize
 {
-    private readonly LastWindowCloseBehaviorTraits closeBehaviorTraits;
+    // This dependency uses the window's associated scope, established below.
+    private LastWindowCloseBehaviorTraits closeBehaviorTraits = default!;
     private readonly App app;
     private readonly AppOptions appOptions;
     private readonly IBackgroundMediaPlayerService backgroundMediaPlayerService;
@@ -32,11 +33,16 @@ public sealed partial class MainWindow : Microsoft.UI.Xaml.Window,
 
     public static MainWindow Instance { get; private set; } = null!;
 
-    public MainWindow(IServiceProvider serviceProvider)
+    [GeneratedConstructor(InitializeComponent = true)]
+    public partial MainWindow(IServiceProvider serviceProvider);
+
+    partial void PreConstruct(IServiceProvider serviceProvider)
     {
         Instance = this;
-        InitializeComponent();
-        appOptions = serviceProvider.GetRequiredService<AppOptions>();
+    }
+
+    partial void PostConstruct(IServiceProvider serviceProvider)
+    {
         MainView.Loaded += MainWindow_Loaded;
 
         if (AppWindow.Presenter is OverlappedPresenter presenter)
@@ -52,8 +58,6 @@ public sealed partial class MainWindow : Microsoft.UI.Xaml.Window,
         MainView.InitializeDataContext<MainViewModel>(scope.ServiceProvider);
 
         closeBehaviorTraits = scope.ServiceProvider.GetRequiredService<LastWindowCloseBehaviorTraits>();
-        app = scope.ServiceProvider.GetRequiredService<App>();
-        backgroundMediaPlayerService = serviceProvider.GetRequiredService<IBackgroundMediaPlayerService>();
     }
 
     private void MainWindow_Loaded(object sender, RoutedEventArgs e)

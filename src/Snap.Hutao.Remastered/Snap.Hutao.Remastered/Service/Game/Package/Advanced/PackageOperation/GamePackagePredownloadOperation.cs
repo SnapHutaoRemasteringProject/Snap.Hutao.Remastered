@@ -47,13 +47,13 @@ public sealed partial class GamePackagePredownloadOperation : GamePackageOperati
             await context.Operation.Asset.PredownloadDiffAssetsAsync(context, context.Information.DiffAssetOperations).ConfigureAwait(false);
         }
 
-        context.Progress.Report(new GamePackageOperationReport.Finish(context.Operation.Kind));
-
         using (FileStream predownloadStatusStream = File.Create(context.Operation.GameFileSystem.PredownloadStatusFilePath))
         {
             predownloadStatus.Finished = true;
             await JsonSerializer.SerializeAsync(predownloadStatusStream, predownloadStatus, jsonOptions).ConfigureAwait(false);
         }
+
+        context.Progress.Report(new GamePackageOperationReport.Finish(context.Operation.Kind));
     }
 
     private static int GetUniqueTotalBlocks(GamePackageServiceContext context)

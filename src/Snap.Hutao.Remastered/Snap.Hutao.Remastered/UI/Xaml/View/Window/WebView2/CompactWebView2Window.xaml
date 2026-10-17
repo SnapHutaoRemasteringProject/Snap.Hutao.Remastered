@@ -63,6 +63,7 @@
                             Padding="{x:Bind GoBackButton.Padding, Mode=OneWay}"
                             shuxcth:ControlMaterialState.IsManaged="True"
                             shuxcth:ControlMaterialState.NativeControl="{x:Bind GoBackButton, Mode=OneWay}"
+                            shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
                             BorderThickness="{x:Bind GoBackButton.BorderThickness, Mode=OneWay}"
                             Command="{x:Bind GoBackButton.Command, Mode=OneWay}"
                             CommandParameter="{x:Bind GoBackButton.CommandParameter, Mode=OneWay}"
@@ -74,8 +75,7 @@
                             FontWeight="{x:Bind GoBackButton.FontWeight, Mode=OneWay}"
                             Foreground="{x:Bind GoBackButton.Foreground, Mode=OneWay}"
                             IsEnabled="{x:Bind GoBackButton.IsEnabled, Mode=OneWay}"
-                            Style="{StaticResource NavigationBackButtonSmallStyle}"
-                            shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"/>
+                            Style="{StaticResource NavigationBackButtonSmallStyle}"/>
                     </cwc:Case>
                 </cwc:SwitchPresenter>
                 <cwc:SwitchPresenter
@@ -116,6 +116,7 @@
                             Padding="{x:Bind RefreshButton.Padding, Mode=OneWay}"
                             shuxcth:ControlMaterialState.IsManaged="True"
                             shuxcth:ControlMaterialState.NativeControl="{x:Bind RefreshButton, Mode=OneWay}"
+                            shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
                             BorderThickness="{x:Bind RefreshButton.BorderThickness, Mode=OneWay}"
                             Command="{x:Bind RefreshButton.Command, Mode=OneWay}"
                             CommandParameter="{x:Bind RefreshButton.CommandParameter, Mode=OneWay}"
@@ -127,8 +128,7 @@
                             FontWeight="{x:Bind RefreshButton.FontWeight, Mode=OneWay}"
                             Foreground="{x:Bind RefreshButton.Foreground, Mode=OneWay}"
                             IsEnabled="{x:Bind RefreshButton.IsEnabled, Mode=OneWay}"
-                            Style="{StaticResource NavigationBackButtonSmallStyle}"
-                            shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"/>
+                            Style="{StaticResource NavigationBackButtonSmallStyle}"/>
                     </cwc:Case>
                 </cwc:SwitchPresenter>
                 <ProgressRing
@@ -162,6 +162,8 @@
                         HorizontalContentAlignment="Stretch"
                         VerticalContentAlignment="Stretch"
                         IsTabStop="False"
+                        Loaded="OnAddressPresenterLoaded"
+                        SizeChanged="OnDocumentTitleSizeChanged"
                         Tag="LiquidGlass:TextBox"
                         Visibility="{x:Bind SourceTextBox.Visibility, Mode=OneWay}"
                         Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
@@ -193,6 +195,7 @@
                                 VerticalAlignment="Top"
                                 shuxcth:ControlMaterialState.IsManaged="True"
                                 shuxcth:ControlMaterialState.NativeControl="{x:Bind SourceTextBox, Mode=OneWay}"
+                                shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
                                 AcceptsReturn="{x:Bind SourceTextBox.AcceptsReturn, Mode=OneWay}"
                                 BorderThickness="{x:Bind SourceTextBox.BorderThickness, Mode=OneWay}"
                                 CharacterCasing="{x:Bind SourceTextBox.CharacterCasing, Mode=OneWay}"
@@ -213,8 +216,7 @@
                                 SelectionHighlightColor="{x:Bind SourceTextBox.SelectionHighlightColor, Mode=OneWay}"
                                 Text="{x:Bind SourceTextBox.Text, Mode=TwoWay}"
                                 TextAlignment="{x:Bind SourceTextBox.TextAlignment, Mode=OneWay}"
-                                TextWrapping="{x:Bind SourceTextBox.TextWrapping, Mode=OneWay}"
-                                shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"/>
+                                TextWrapping="{x:Bind SourceTextBox.TextWrapping, Mode=OneWay}"/>
                         </cwc:Case>
                     </cwc:SwitchPresenter>
                 </Grid>
@@ -323,6 +325,7 @@
                     VerticalAlignment="Top"
                     shuxcth:ControlMaterialState.IsManaged="True"
                     shuxcth:ControlMaterialState.NativeControl="{x:Bind ToggleLockButton, Mode=OneWay}"
+                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
                     BorderThickness="{x:Bind ToggleLockButton.BorderThickness, Mode=OneWay}"
                     Command="{x:Bind ToggleLockButton.Command, Mode=OneWay}"
                     CommandParameter="{x:Bind ToggleLockButton.CommandParameter, Mode=OneWay}"
@@ -334,8 +337,7 @@
                     FontWeight="{x:Bind ToggleLockButton.FontWeight, Mode=OneWay}"
                     Foreground="{x:Bind ToggleLockButton.Foreground, Mode=OneWay}"
                     IsEnabled="{x:Bind ToggleLockButton.IsEnabled, Mode=OneWay}"
-                    Style="{StaticResource NavigationBackButtonSmallStyle}"
-                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"/>
+                    Style="{StaticResource NavigationBackButtonSmallStyle}"/>
             </cwc:Case>
         </cwc:SwitchPresenter>
     </Grid>

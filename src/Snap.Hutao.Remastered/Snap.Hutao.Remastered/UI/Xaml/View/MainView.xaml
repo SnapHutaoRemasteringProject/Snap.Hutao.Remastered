@@ -125,6 +125,51 @@
                         </cwc:SwitchPresenter>
 
                         <cwc:SwitchPresenter
+                            x:Name="OfflineConnectionPresenter"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            IsTabStop="False"
+                            Tag="LiquidGlass:Button"
+                            Visibility="{x:Bind ((shvm:MainViewModel)DataContext).RepositoryCatalog.IsOffline, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>0</x:Int32>
+                                </cwc:Case.Value>
+                                <Button
+                                    Padding="10,6"
+                                    AutomationProperties.Name="{shuxm:ResourceString Name=RepositoryServerReconnect}"
+                                    Command="{x:Bind ((shvm:MainViewModel)DataContext).RepositoryCatalog.ReconnectCommand, Mode=OneWay}"
+                                    IsEnabled="{x:Bind ((shvm:MainViewModel)DataContext).RepositoryCatalog.CanReconnect, Mode=OneWay}"
+                                    Style="{ThemeResource SettingButtonStyle}"
+                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=RepositoryServerReconnect}">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <FontIcon FontSize="14" Glyph="&#xE72C;"/>
+                                        <TextBlock Text="{x:Bind ((shvm:MainViewModel)DataContext).RepositoryCatalog.ConnectionStatus, Mode=OneWay}"/>
+                                    </StackPanel>
+                                </Button>
+                            </cwc:Case>
+                            <cwc:Case>
+                                <cwc:Case.Value>
+                                    <x:Int32>1</x:Int32>
+                                </cwc:Case.Value>
+                                <wl:LiquidGlassButton
+                                    Padding="10,6"
+                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
+                                    AutomationProperties.Name="{shuxm:ResourceString Name=RepositoryServerReconnect}"
+                                    Command="{x:Bind ((shvm:MainViewModel)DataContext).RepositoryCatalog.ReconnectCommand, Mode=OneWay}"
+                                    IsEnabled="{x:Bind ((shvm:MainViewModel)DataContext).RepositoryCatalog.CanReconnect, Mode=OneWay}"
+                                    Style="{ThemeResource SettingButtonStyle}"
+                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=RepositoryServerReconnect}">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <FontIcon FontSize="14" Glyph="&#xE72C;"/>
+                                        <TextBlock Text="{x:Bind ((shvm:MainViewModel)DataContext).RepositoryCatalog.ConnectionStatus, Mode=OneWay}"/>
+                                    </StackPanel>
+                                </wl:LiquidGlassButton>
+                            </cwc:Case>
+                        </cwc:SwitchPresenter>
+                        <cwc:SwitchPresenter
                             x:Name="GlassPresenter_6177"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"

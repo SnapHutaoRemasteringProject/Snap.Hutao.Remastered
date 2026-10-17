@@ -16,6 +16,7 @@ using Snap.Hutao.Remastered.Service.BackgroundActivity;
 using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.Network;
+using Snap.Hutao.Remastered.Service.Git;
 using Snap.Hutao.Remastered.Service.Update;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml;
@@ -42,6 +43,7 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
     private readonly App app;
     private DispatcherTimer? successHideTimer;
     private IDisposable? startupRetryRegistration;
+    private readonly AsyncLoadOperation startupLoad = new();
 
     [GeneratedConstructor]
     public partial MainViewModel(IServiceProvider serviceProvider);
@@ -59,6 +61,8 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
     }
 
     public partial AppOptions AppOptions { get; }
+
+    public partial RepositoryCatalogService RepositoryCatalog { get; }
 
     public partial BackgroundActivityOptions BackgroundActivityOptions { get; }
 
@@ -85,9 +89,8 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
 
         ShowUpdateLogWindowAfterUpdate();
         NotifyIfDataFolderHasReparsePoint();
-        await RetryStartupAsync(token).ConfigureAwait(false);
-
-        return true;
+        using CancellationTokenSource startupCancellation = CancellationTokenSource.CreateLinkedTokenSource(token, XamlApplicationLifetime.ShutdownToken);
+        return await RetryStartupAsync(startupCancellation.Token).ConfigureAwait(false);
     }
 
     [Command("InvertAppThemeCommand")]
@@ -110,12 +113,14 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
         }
     }
 
-    private async ValueTask CheckUpdateAsync()
+    private async ValueTask CheckUpdateAsync(CancellationToken token)
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Check for update", "MainViewModel.Command"));
 
-        CheckUpdateResult checkUpdateResult = await updateService.CheckUpdateAsync().ConfigureAwait(false);
-        await updateService.TriggerUpdateAsync(checkUpdateResult).ConfigureAwait(false);
+        using CancellationTokenSource timeout = CancellationTokenSource.CreateLinkedTokenSource(token);
+        timeout.CancelAfter(TimeSpan.FromSeconds(3));
+        CheckUpdateResult checkUpdateResult = await updateService.CheckUpdateAsync(timeout.Token).ConfigureAwait(false);
+        await updateService.TriggerUpdateAsync(checkUpdateResult, token).ConfigureAwait(false);
     }
 
     private void NotifyIfDataFolderHasReparsePoint()
@@ -156,12 +161,14 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
 
     private async ValueTask<bool> RetryStartupAsync(CancellationToken token)
     {
-        if (!await networkRetryCoordinator.HasInternetAccessAsync(token).ConfigureAwait(false))
-        {
-            networkRetryCoordinator.MarkPending("MainViewModel.Startup", SH.ViewModelMainNetworkUnavailableWillAutoRetry);
-            return false;
-        }
+        using CancellationTokenSource linked = CancellationTokenSource.CreateLinkedTokenSource(token, CancellationToken, XamlApplicationLifetime.ShutdownToken);
+        bool success = await startupLoad.RunAsync(ct => RetryStartupCoreAsync(ct).AsTask(), linked.Token).ConfigureAwait(false);
+        if (success) await PublishInitializationAsync(true, linked.Token).ConfigureAwait(false);
+        return success;
+    }
 
+    private async ValueTask<bool> RetryStartupCoreAsync(CancellationToken token)
+    {
         try
         {
             if (!await metadataService.InitializepublicAsync(token).ConfigureAwait(false))
@@ -171,9 +178,13 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
             }
 
             await userService.RetryResumeUninitializedUsersAsync(token).ConfigureAwait(false);
-            await CheckUpdateAsync().ConfigureAwait(false);
+            if (!RepositoryCatalog.IsOffline) await CheckUpdateAsync(token).ConfigureAwait(false);
             networkRetryCoordinator.ClearPending("MainViewModel.Startup");
             return true;
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            throw;
         }
         catch (Exception ex)
         {
@@ -194,7 +205,7 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
         {
             HttpRequestException httpRequestException => HttpRequestExceptionHandling.HttpRequestExceptionToNetworkError(httpRequestException) is not NetworkError.NULL,
             TimeoutException => true,
-            TaskCanceledException => true,
+            OperationCanceledException => true,
             _ => false,
         };
     }

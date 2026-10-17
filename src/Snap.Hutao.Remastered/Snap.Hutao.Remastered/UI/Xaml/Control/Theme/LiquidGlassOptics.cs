@@ -7,10 +7,10 @@ using WinUI.LiquidGlass;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 
-internal sealed record LiquidGlassDescriptor(string Key, string EnglishLabel, double Minimum, double Maximum, double Step,
+public sealed record LiquidGlassDescriptor(string Key, string EnglishLabel, double Minimum, double Maximum, double Step,
     Func<LiquidGlassBrush, double> Read, Action<LiquidGlassBrush, double> Write);
 
-internal static class LiquidGlassOptics
+public static class LiquidGlassOptics
 {
     public static readonly LiquidGlassDescriptor[] Descriptors =
     [

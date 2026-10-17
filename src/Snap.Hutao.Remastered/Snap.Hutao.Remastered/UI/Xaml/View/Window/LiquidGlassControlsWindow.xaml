@@ -28,7 +28,7 @@
                 SelectedIndex="{x:Bind Settings.Value, Mode=OneWay}"
                 SelectionChanged="MaterialChanged">
                 <ComboBoxItem Content="{shuxm:ResourceString Name=GlassNativeMaterial}"/>
-                <ComboBoxItem Content="{shuxm:ResourceString Name=GlassLiquidMaterial}"/>
+                <ComboBoxItem Content="{shuxm:ResourceString Name=ViewPageSettingControlMaterialLiquidGlass}"/>
             </ComboBox>
         </StackPanel>
         <Grid

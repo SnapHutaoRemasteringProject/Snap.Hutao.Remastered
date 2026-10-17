@@ -17,9 +17,10 @@ public sealed partial class AutoSignInJobScheduler : IJobScheduler
     [GeneratedConstructor]
     public partial AutoSignInJobScheduler(IServiceProvider serviceProvider);
 
-    public async ValueTask ScheduleAsync(IScheduler scheduler)
+    public async ValueTask ScheduleAsync(IScheduler scheduler, CancellationToken token = default)
     {
-        TimeSpan serverOffset = await GetCurrentServerOffsetAsync().ConfigureAwait(false);
+        TimeSpan serverOffset = await GetCurrentServerOffsetAsync(token).ConfigureAwait(false);
+        token.ThrowIfCancellationRequested();
         DateTimeOffset firstRunTime = GetNextServerDayRandomTime(serverOffset);
 
         IJobDetail job = JobBuilder.Create<AutoSignInJob>()
@@ -32,12 +33,12 @@ public sealed partial class AutoSignInJobScheduler : IJobScheduler
             .StartAt(firstRunTime)
             .Build();
 
-        await scheduler.ScheduleJob(job, trigger).ConfigureAwait(false);
+        await scheduler.ScheduleJob(job, trigger, cancellationToken: token).ConfigureAwait(false);
     }
 
-    private async ValueTask<TimeSpan> GetCurrentServerOffsetAsync()
+    private async ValueTask<TimeSpan> GetCurrentServerOffsetAsync(CancellationToken token)
     {
-        if (await userService.GetCurrentUserAndUidAsync().ConfigureAwait(false) is { } userAndUid)
+        if (await userService.GetCurrentUserAndUidAsync().AsTask().WaitAsync(token).ConfigureAwait(false) is { } userAndUid)
         {
             return PlayerUid.GetRegionTimeZoneUtcOffsetForRegion(userAndUid.Uid.Region);
         }

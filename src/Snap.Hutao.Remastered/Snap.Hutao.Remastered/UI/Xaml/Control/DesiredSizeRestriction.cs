@@ -3,7 +3,7 @@
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control;
 
-internal static class DesiredSizeRestriction
+public static class DesiredSizeRestriction
 {
     public static double Apply(double desired, double available, bool restricted, ref double retained)
     {

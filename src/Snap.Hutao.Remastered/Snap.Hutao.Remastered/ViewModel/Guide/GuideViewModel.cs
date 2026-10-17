@@ -35,6 +35,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
     private readonly ITaskContext taskContext;
     private readonly IMessenger messenger;
     private readonly IShellLinkInterop shellLinkInterop;
+    private bool guideReady;
 
     [GeneratedConstructor]
     public partial GuideViewModel(IServiceProvider serviceProvider);
@@ -44,25 +45,34 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         get => string.Join('+', CultureOptions.Cultures.Select(c => SH.GetString("GuideWindowTitle", c.Value)));
     }
 
-    public uint State
-    {
-        get => (uint)UnsafeLocalSetting.Get(SettingKeys.GuideState, GuideState.Language);
-        set
-        {
-            value = Math.Clamp(value, 0, (uint)GuideState.Completed);
-            if (State == value)
-            {
-                return;
-            }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StepIndex), nameof(VisibleState))]
+    public partial uint State { get; set; }
 
-            LocalSetting.Set(SettingKeys.GuideState, value);
-            ApplyGuideState((GuideState)value);
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(StepIndex));
-        }
+    partial void PostConstruct(IServiceProvider serviceProvider)
+    {
+        State = GuideNavigation.Normalize((uint)UnsafeLocalSetting.Get(SettingKeys.GuideState, GuideState.Language));
+        SelectedControlMaterial = AppOptions.ControlMaterials.Single(material => material.Value == AppOptions.ControlMaterial.Value);
+        AppOptions.ControlMaterial.PropertyChanged += OnControlMaterialChanged;
+        ApplyGuideState((GuideState)State);
     }
 
-    public int StepIndex => (int)Math.Min(State, (uint)GuideState.Material);
+    partial void OnStateChanged(uint value)
+    {
+        uint normalized = GuideNavigation.Normalize(value);
+        if (value != normalized)
+        {
+            State = normalized;
+            return;
+        }
+
+        LocalSetting.Set(SettingKeys.GuideState, value);
+        ApplyGuideState((GuideState)value);
+    }
+
+    public int StepIndex => GuideNavigation.StepIndex(State);
+
+    public uint VisibleState => GuideNavigation.VisibleState(State);
 
     private void ApplyGuideState(GuideState state)
     {
@@ -78,13 +88,13 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
                 break;
             case GuideState.StaticResourceBegin:
                 (NextOrCompleteButtonText, IsNextOrCompleteButtonEnabled) = (SH.ViewModelGuideActionStaticResourceBegin, false);
-                if (!IsDownloading)
+                if (guideReady && !IsDownloading)
                 {
                     DownloadStaticResourceAsync().SafeForget();
                 }
                 break;
             case GuideState.Material:
-                (NextOrCompleteButtonText, IsNextOrCompleteButtonEnabled) = (SH.ViewModelGuideActionNext, true);
+                (NextOrCompleteButtonText, IsNextOrCompleteButtonEnabled) = (SH.ViewModelGuideActionComplete, true);
                 break;
             case GuideState.Completed:
                 (NextOrCompleteButtonText, IsNextOrCompleteButtonEnabled) = (SH.ViewModelGuideActionComplete, true);
@@ -95,11 +105,14 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         }
     }
 
-    public string NextOrCompleteButtonText { get; set => SetProperty(ref field, value); } = SH.ViewModelGuideActionNext;
+    [ObservableProperty]
+    public partial string NextOrCompleteButtonText { get; set; } = SH.ViewModelGuideActionNext;
 
-    public bool IsNextOrCompleteButtonEnabled { get; set => SetProperty(ref field, value); } = true;
+    [ObservableProperty]
+    public partial bool IsNextOrCompleteButtonEnabled { get; set; } = true;
 
-    public bool IsSetDataFolderEnabled { get; set => SetProperty(ref field, value); } = true;
+    [ObservableProperty]
+    public partial bool IsSetDataFolderEnabled { get; set; } = true;
 
     public partial CultureOptions CultureOptions { get; }
 
@@ -111,19 +124,36 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
 
     public int ControlMaterialState => (int)AppOptions.ControlMaterial.Value;
 
-    // TODO: Replace with IObservableProperty
-    public NameValue<ControlMaterial>? SelectedControlMaterial
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ControlMaterialState))]
+    public partial NameValue<ControlMaterial>? SelectedControlMaterial { get; set; }
+
+    partial void OnSelectedControlMaterialChanged(NameValue<ControlMaterial>? value)
     {
-        get => field ??= AppOptions.ControlMaterials.Single(material => material.Value == AppOptions.ControlMaterial.Value);
-        set
+        if (value is not null && AppOptions.ControlMaterial.Value != value.Value)
         {
-            if (SetProperty(ref field, value) && value is not null)
-            {
-                AppOptions.ControlMaterial.Value = value.Value;
-                MaterialTheme.Apply(value.Value);
-                OnPropertyChanged(nameof(ControlMaterialState));
-            }
+            AppOptions.ControlMaterial.Value = value.Value;
+            MaterialTheme.Apply(value.Value);
         }
+    }
+
+    private void OnControlMaterialChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        SelectedControlMaterial = AppOptions.ControlMaterials.Single(material => material.Value == AppOptions.ControlMaterial.Value);
+        OnPropertyChanged(nameof(ControlMaterialState));
+    }
+
+    public void SelectControlMaterial(int index)
+    {
+        if ((uint)index < (uint)AppOptions.ControlMaterials.Length)
+            SelectedControlMaterial = AppOptions.ControlMaterials[index];
+    }
+
+    public override void Dispose()
+    {
+        AppOptions.ControlMaterial.PropertyChanged -= OnControlMaterialChanged;
+        downloadCts?.Cancel();
+        base.Dispose();
     }
 
     // TODO: Replace with IObservableProperty
@@ -219,7 +249,8 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
 
     public bool AgreementUseGrid => CultureOptions.LocaleName.StartsWith("zh", StringComparison.OrdinalIgnoreCase);
 
-    public ObservableCollection<DownloadSummary>? DownloadSummaries { get; set => SetProperty(ref field, value); }
+    [ObservableProperty]
+    public partial ObservableCollection<DownloadSummary>? DownloadSummaries { get; set; }
 
     [ObservableProperty]
     public partial bool IsDownloading { get; set; }
@@ -228,8 +259,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
 
     private void OnAgreementStateChanged()
     {
-        // Read the persisted step without triggering any transition.
-        GuideState current = UnsafeLocalSetting.Get(SettingKeys.GuideState, GuideState.Language);
+        GuideState current = (GuideState)State;
         if (current == GuideState.Document)
         {
             IsNextOrCompleteButtonEnabled = IsTermOfServiceAgreed
@@ -237,10 +267,6 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
                 && IsIssueReportAgreed
                 && IsOpenSourceLicenseAgreed
                 && IsDownStreamAgreed;
-        }
-        else
-        {
-            IsNextOrCompleteButtonEnabled = IsTermOfServiceAgreed && IsPrivacyPolicyAgreed && IsIssueReportAgreed && IsOpenSourceLicenseAgreed;
         }
     }
 
@@ -254,7 +280,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
             return;
         }
 
-        if ((GuideState)State is GuideState.Completed)
+        if (GuideNavigation.IsFinalStep(State))
         {
             UnsafeLocalSetting.Set(SettingKeys.GuideState, GuideState.Completed);
             AppInstance.Restart(string.Empty);
@@ -363,8 +389,9 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
             downloadCts = null;
         }
 
+        if (XamlApplicationLifetime.Exiting) return;
         StaticResource.FulfillAll();
-        UnsafeLocalSetting.Set(SettingKeys.GuideState, GuideState.Material);
+        State = (uint)GuideState.Material;
         AppInstance.Restart(string.Empty);
     }
 
@@ -379,6 +406,8 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
         await taskContext.SwitchToMainThreadAsync();
+        guideReady = true;
+        MaterialTheme.Apply(AppOptions.ControlMaterial.Value);
         ApplyGuideState((GuideState)State);
 
         using (IServiceScope scope = serviceProvider.CreateScope())

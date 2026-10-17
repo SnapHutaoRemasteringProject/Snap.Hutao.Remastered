@@ -3,7 +3,7 @@
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Window;
 
-internal static class LiquidGlassSettingsWindows
+public static class LiquidGlassSettingsWindows
 {
     private static LiquidGlassControlsWindow? controls;
     private static LiquidGlassEffectsWindow? effects;

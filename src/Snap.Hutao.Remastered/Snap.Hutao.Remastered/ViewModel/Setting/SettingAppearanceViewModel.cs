@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
 using Snap.Hutao.Remastered.Factory.Picker;
@@ -19,7 +20,6 @@ namespace Snap.Hutao.Remastered.ViewModel.Setting;
 [Service(ServiceLifetime.Scoped)]
 public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
 {
-    private bool observesControlMaterial;
     [GeneratedConstructor]
     public partial SettingAppearanceViewModel(IServiceProvider serviceProvider);
 
@@ -33,39 +33,32 @@ public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
 
     public int ControlMaterialState => (int)AppOptions.ControlMaterial.Value;
 
-    public NameValue<ControlMaterial>? SelectedControlMaterial
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ControlMaterialState))]
+    public partial NameValue<ControlMaterial>? SelectedControlMaterial { get; set; }
+
+    partial void PostConstruct(IServiceProvider serviceProvider)
     {
-        get
-        {
-            ObserveControlMaterial();
-            return AppOptions.ControlMaterials.Single(material => material.Value == AppOptions.ControlMaterial.Value);
-        }
-        set
-        {
-            if (value is null || AppOptions.ControlMaterial.Value == value.Value) return;
-            ObserveControlMaterial();
-            AppOptions.ControlMaterial.Value = value.Value;
-            MaterialTheme.Apply(value.Value);
-        }
+        SelectedControlMaterial = AppOptions.ControlMaterials.Single(material => material.Value == AppOptions.ControlMaterial.Value);
+        AppOptions.ControlMaterial.PropertyChanged += OnControlMaterialChanged;
     }
 
-    private void ObserveControlMaterial()
+    partial void OnSelectedControlMaterialChanged(NameValue<ControlMaterial>? value)
     {
-        if (observesControlMaterial) return;
-        observesControlMaterial = true;
-        AppOptions.ControlMaterial.PropertyChanged += OnControlMaterialChanged;
+        if (value is null || AppOptions.ControlMaterial.Value == value.Value) return;
+        AppOptions.ControlMaterial.Value = value.Value;
+        MaterialTheme.Apply(value.Value);
     }
 
     private void OnControlMaterialChanged(object? sender, PropertyChangedEventArgs args)
     {
-        OnPropertyChanged(nameof(SelectedControlMaterial));
+        SelectedControlMaterial = AppOptions.ControlMaterials.Single(material => material.Value == AppOptions.ControlMaterial.Value);
         OnPropertyChanged(nameof(ControlMaterialState));
     }
 
     public override void Dispose()
     {
-        if (observesControlMaterial)
-            AppOptions.ControlMaterial.PropertyChanged -= OnControlMaterialChanged;
+        AppOptions.ControlMaterial.PropertyChanged -= OnControlMaterialChanged;
         base.Dispose();
     }
 

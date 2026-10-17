@@ -2,9 +2,10 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.WinUI.Behaviors;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Snap.Hutao.Remastered.UI.Input;
-using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Behavior;
 
@@ -14,8 +15,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Behavior;
 [DependencyProperty<object>("CommandParameter")]
 public sealed partial class PeriodicInvokeCommandOrOnActualThemeChangedBehavior : BehaviorBase<FrameworkElement>
 {
-    private CancellationTokenSource actualThemeChangedCts = new();
-    private CancellationTokenSource periodicTimerStopCts = new();
+    private PeriodicCommandSignal? currentRun;
 
     protected override bool Initialize()
     {
@@ -25,73 +25,54 @@ public sealed partial class PeriodicInvokeCommandOrOnActualThemeChangedBehavior 
 
     protected override bool Uninitialize()
     {
-        periodicTimerStopCts.Cancel();
-        periodicTimerStopCts.Dispose();
-
+        currentRun?.Dispose();
+        currentRun = null;
         AssociatedObject.ActualThemeChanged -= OnActualThemeChanged;
-        actualThemeChangedCts.Dispose();
 
         return true;
     }
 
     protected override void OnAssociatedObjectLoaded()
     {
-        PrivateRunAsync().SafeForget();
+        if (XamlApplicationLifetime.Exiting) return;
+        currentRun?.Dispose();
+        PeriodicCommandSignal run = new(Period);
+        currentRun = run;
+        PrivateRunAsync(run, AssociatedObject.DispatcherQueue).SafeForget();
     }
 
     private void OnActualThemeChanged(FrameworkElement sender, object args)
     {
-        actualThemeChangedCts.Cancel();
+        currentRun?.NotifyThemeChanged();
     }
 
-    private void TryExecuteCommand()
+    private async Task ExecuteCommandAsync(PeriodicCommandSignal run)
     {
-        if (AssociatedObject is null)
+        if (XamlApplicationLifetime.Exiting || !ReferenceEquals(currentRun, run) || !IsAttached || AssociatedObject is not { IsLoaded: true })
         {
             return;
         }
 
-        Command.TryExecute(CommandParameter);
+        if (Command is IAsyncRelayCommand asyncCommand)
+        {
+            if (asyncCommand.CanExecute(CommandParameter)) await asyncCommand.ExecuteAsync(CommandParameter).ConfigureAwait(false);
+        }
+        else
+        {
+            Command.TryExecute(CommandParameter);
+        }
     }
 
     [SuppressMessage("", "SH003")]
-    private async Task PrivateRunAsync()
+    private async Task PrivateRunAsync(PeriodicCommandSignal run, DispatcherQueue dispatcher)
     {
-        using (PeriodicTimer timer = new(Period))
+        using (run)
         {
-            do
+            while (await run.WaitAsync().ConfigureAwait(false))
             {
-                if (!IsAttached)
-                {
-                    break;
-                }
-
-                ITaskContext taskContext = TaskContext.GetForDependencyObject(AssociatedObject);
-                await taskContext.SwitchToBackgroundAsync();
-                try
-                {
-                    using (CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(actualThemeChangedCts.Token, periodicTimerStopCts.Token))
-                    {
-                        await timer.WaitForNextTickAsync(linkedCts.Token).ConfigureAwait(false);
-                    }
-                }
-                catch (OperationCanceledException)
-                {
-                    if (periodicTimerStopCts.IsCancellationRequested)
-                    {
-                        break;
-                    }
-                }
-
-                RuntimeHelpers.EnsureSufficientExecutionStack();
-                await taskContext.InvokeOnMainThreadAsync(TryExecuteCommand).ConfigureAwait(false);
-
-                actualThemeChangedCts.Dispose();
-                actualThemeChangedCts = new();
-                periodicTimerStopCts.Dispose();
-                periodicTimerStopCts = new();
+                if (XamlApplicationLifetime.Exiting) break;
+                if (!dispatcher.TryEnqueue(() => ExecuteCommandAsync(run).SafeForget())) break;
             }
-            while (true);
         }
     }
 }

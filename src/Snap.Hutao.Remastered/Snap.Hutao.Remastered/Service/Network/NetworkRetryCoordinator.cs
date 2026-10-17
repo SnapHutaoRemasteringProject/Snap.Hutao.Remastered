@@ -19,7 +19,9 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
 
         public bool IsPending { get; set; }
 
-        public string? WarningMessage { get; set; }
+        public long Revision { get; set; }
+
+        public bool IsRunning { get; set; }
     }
 
     private readonly IServiceProvider serviceProvider;
@@ -27,18 +29,23 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
     private readonly ITaskContext taskContext;
     private readonly object syncRoot = new();
     private readonly Dictionary<string, RetryJob> jobs = new();
-    private readonly CancellationTokenSource disposeCancellationTokenSource = new();
+    private readonly CancellationTokenSource disposeCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(XamlApplicationLifetime.ShutdownToken);
+    private readonly CancellationToken lifetimeToken;
 
-    private static readonly TimeSpan PeriodicProbeInterval = TimeSpan.FromSeconds(15);
+    private static readonly TimeSpan PeriodicProbeInterval = TimeSpan.FromSeconds(2);
 
     private bool? isInternetAvailable;
     private int hasShownOfflineWarning;
     private int evaluationVersion;
     private int isProcessingEvaluation;
+    private int disposed;
+
+    private bool IsStopping => Volatile.Read(ref disposed) is not 0 || XamlApplicationLifetime.Exiting;
 
     public NetworkRetryCoordinator(IServiceProvider serviceProvider)
     {
         this.serviceProvider = serviceProvider;
+        lifetimeToken = disposeCancellationTokenSource.Token;
         messenger = serviceProvider.GetRequiredService<IMessenger>();
         taskContext = serviceProvider.GetRequiredService<ITaskContext>();
 
@@ -53,18 +60,21 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
         ArgumentNullException.ThrowIfNull(key);
         ArgumentNullException.ThrowIfNull(retryAsync);
 
+        RetryJob job = new(retryAsync);
         lock (syncRoot)
         {
-            jobs[key] = new(retryAsync);
+            ObjectDisposedException.ThrowIf(IsStopping, this);
+            jobs[key] = job;
         }
 
-        return new Registration(this, key);
+        return new Registration(this, key, job);
     }
 
     public void MarkPending(string key, string warningMessage)
     {
         ArgumentNullException.ThrowIfNull(key);
         ArgumentNullException.ThrowIfNull(warningMessage);
+        if (IsStopping) return;
 
         bool shouldWarn = false;
         lock (syncRoot)
@@ -76,18 +86,17 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
 
             shouldWarn = !job.IsPending;
             job.IsPending = true;
-            job.WarningMessage = warningMessage;
+            job.Revision++;
         }
 
-        if (shouldWarn)
+        if (shouldWarn && !string.IsNullOrEmpty(warningMessage))
         {
             MaybeNotifyOfflineWarning(warningMessage);
         }
 
-        if (HasInternetAccess())
-        {
-            ScheduleEvaluationAsync(false).SafeForget();
-        }
+        // The first failure is eligible immediately; repeated failures from the
+        // retry itself must not recursively enqueue another request.
+        if (shouldWarn) ScheduleEvaluationAsync(notifyRecovered: false).SafeForget();
     }
 
     public void ClearPending(string key)
@@ -97,12 +106,14 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
             if (jobs.TryGetValue(key, out RetryJob? job))
             {
                 job.IsPending = false;
+                job.Revision++;
             }
         }
     }
 
     public async ValueTask<bool> HasInternetAccessAsync(CancellationToken token = default)
     {
+        if (IsStopping || token.IsCancellationRequested) return false;
         // NCSI reports InternetAccess → trust it, no HTTP round trip needed.
         if (HasInternetAccess())
         {
@@ -113,12 +124,13 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
         // as captive portal, see issue #268) it may stay stale and never fire NetworkStatusChanged.
         // Fall back to an active probe against the Snap Hutao API so a working network is not
         // mistaken for an offline one.
-        using IServiceScope scope = serviceProvider.CreateScope();
-        using CancellationTokenSource timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(token);
+        using CancellationTokenSource timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(token, lifetimeToken);
         timeoutCts.CancelAfter(TimeSpan.FromSeconds(3));
 
         try
         {
+            if (IsStopping) return false;
+            using IServiceScope scope = serviceProvider.CreateScope();
             HutaoInfrastructureClient infrastructureClient = scope.ServiceProvider.GetRequiredService<HutaoInfrastructureClient>();
             return await infrastructureClient.IsReachableAsync(timeoutCts.Token).ConfigureAwait(false);
         }
@@ -126,32 +138,37 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
         {
             return false;
         }
+        catch (ObjectDisposedException) when (IsStopping)
+        {
+            return false;
+        }
     }
 
     public void Dispose()
     {
-        disposeCancellationTokenSource.Cancel();
+        if (Interlocked.Exchange(ref disposed, 1) is not 0) return;
         NetworkInformation.NetworkStatusChanged -= OnNetworkStatusChanged;
+        lock (syncRoot) jobs.Clear();
+        disposeCancellationTokenSource.Cancel();
         disposeCancellationTokenSource.Dispose();
     }
 
     private void OnNetworkStatusChanged(object? sender)
     {
+        if (IsStopping) return;
         ScheduleEvaluationAsync(true).SafeForget();
     }
 
     private async ValueTask StartPeriodicProbeAsync()
     {
-        // Periodic backstop: when a job is pending and NCSI keeps reporting "no Internet",
-        // Windows may never raise NetworkStatusChanged again (e.g. captive-portal false positive,
-        // issue #268). Re-check periodically so recovery is eventually detected.
+        // Backstop for both stale NCSI reports (#268) and request failures on an
+        // otherwise connected network. This does not delay an initial/manual retry.
         using PeriodicTimer timer = new(PeriodicProbeInterval);
         try
         {
-            while (await timer.WaitForNextTickAsync(disposeCancellationTokenSource.Token).ConfigureAwait(false))
+            while (!IsStopping && await timer.WaitForNextTickAsync(lifetimeToken).ConfigureAwait(false))
             {
-                // If NCSI now reports Internet, rely on the regular event-driven path.
-                if (!HasPendingJob() || HasInternetAccess())
+                if (IsStopping || !HasPendingJob())
                 {
                     continue;
                 }
@@ -174,27 +191,29 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
 
     private async ValueTask ScheduleEvaluationAsync(bool notifyRecovered)
     {
+        if (IsStopping) return;
         int version = Interlocked.Increment(ref evaluationVersion);
 
         try
         {
-            await Task.Delay(500, disposeCancellationTokenSource.Token).ConfigureAwait(false);
+            await Task.Delay(500, lifetimeToken).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {
             return;
         }
 
-        if (version != Volatile.Read(ref evaluationVersion))
+        if (IsStopping || version != Volatile.Read(ref evaluationVersion))
         {
             return;
         }
 
-        await EvaluateAsync(notifyRecovered).ConfigureAwait(false);
+        Evaluate(notifyRecovered);
     }
 
-    private async ValueTask EvaluateAsync(bool notifyRecovered)
+    private void Evaluate(bool notifyRecovered)
     {
+        if (IsStopping) return;
         if (Interlocked.CompareExchange(ref isProcessingEvaluation, 1, 0) is not 0)
         {
             return;
@@ -202,7 +221,10 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
 
         try
         {
-            bool internetAvailable = await HasInternetAccessAsync(disposeCancellationTokenSource.Token).ConfigureAwait(false);
+            // Pending operations test their own endpoint. An unrelated /ip probe
+            // or stale NCSI result must not veto repository-server recovery.
+            bool internetAvailable = HasInternetAccess();
+            if (IsStopping) return;
             bool? previousInternetAvailable = isInternetAvailable;
             isInternetAvailable = internetAvailable;
 
@@ -223,17 +245,12 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
             lock (syncRoot)
             {
                 pendingJobs = jobs
-                    .Where(static pair => pair.Value.IsPending)
+                    .Where(static pair => pair.Value.IsPending && !pair.Value.IsRunning)
                     .Select(static pair => (pair.Key, pair.Value))
                     .ToList();
             }
 
             if (pendingJobs.Count is 0)
-            {
-                return;
-            }
-
-            if (!internetAvailable)
             {
                 return;
             }
@@ -245,37 +262,48 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
 
             foreach ((string key, RetryJob job) in pendingJobs)
             {
-                bool succeeded;
-                try
-                {
-                    succeeded = await job.RetryAsync(disposeCancellationTokenSource.Token).ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                }
-                catch (Exception ex) when (IsNetworkRelatedException(ex))
-                {
-                    succeeded = false;
-                }
-                catch (Exception ex)
-                {
-                    SentrySdk.CaptureException(ex);
-                    succeeded = false;
-                }
-
+                if (IsStopping) break;
+                long revision;
                 lock (syncRoot)
                 {
-                    if (jobs.TryGetValue(key, out RetryJob? currentJob))
-                    {
-                        currentJob.IsPending = !succeeded;
-                    }
+                    if (!jobs.TryGetValue(key, out RetryJob? registered) || !ReferenceEquals(registered, job) || !job.IsPending || job.IsRunning) continue;
+                    job.IsRunning = true;
+                    revision = job.Revision;
                 }
+                RetryJobAsync(key, job, revision).SafeForget();
             }
         }
         finally
         {
             Interlocked.Exchange(ref isProcessingEvaluation, 0);
+        }
+    }
+
+    private async Task RetryJobAsync(string key, RetryJob job, long revision)
+    {
+        // A user/card retry may wait for metadata. It must not hold up the
+        // independent startup retry that produces that metadata.
+        await Task.CompletedTask.ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
+        bool succeeded = false;
+        try
+        {
+            if (!IsStopping) succeeded = await job.RetryAsync(lifetimeToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) { }
+        catch (ObjectDisposedException) when (IsStopping) { }
+        catch (Exception exception) when (IsNetworkRelatedException(exception)) { }
+        catch (Exception exception) { SentrySdk.CaptureException(exception); }
+        finally
+        {
+            lock (syncRoot)
+            {
+                if (jobs.TryGetValue(key, out RetryJob? current) && ReferenceEquals(current, job))
+                {
+                    // Do not erase a new failure reported during this attempt.
+                    if (current.Revision == revision) current.IsPending = !succeeded;
+                    current.IsRunning = false;
+                }
+            }
         }
     }
 
@@ -292,14 +320,18 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
         {
             HttpRequestException httpRequestException => HttpRequestExceptionHandling.HttpRequestExceptionToNetworkError(httpRequestException) is not NetworkError.NULL,
             TimeoutException => true,
-            TaskCanceledException => true,
+            OperationCanceledException => true,
             _ => false,
         };
     }
 
     private void NotifyOnMainThread(InfoBarMessage message)
     {
-        taskContext.BeginInvokeOnMainThread(() => messenger.Send(message));
+        if (IsStopping) return;
+        taskContext.BeginInvokeOnMainThread(() =>
+        {
+            if (!IsStopping) messenger.Send(message);
+        });
     }
 
     private void MaybeNotifyOfflineWarning(string warningMessage)
@@ -320,12 +352,14 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
     {
         private readonly NetworkRetryCoordinator owner;
         private readonly string key;
+        private readonly RetryJob job;
         private bool disposed;
 
-        public Registration(NetworkRetryCoordinator owner, string key)
+        public Registration(NetworkRetryCoordinator owner, string key, RetryJob job)
         {
             this.owner = owner;
             this.key = key;
+            this.job = job;
         }
 
         public void Dispose()
@@ -338,7 +372,7 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
             disposed = true;
             lock (owner.syncRoot)
             {
-                owner.jobs.Remove(key);
+                if (owner.jobs.TryGetValue(key, out RetryJob? current) && ReferenceEquals(current, job)) owner.jobs.Remove(key);
             }
         }
     }

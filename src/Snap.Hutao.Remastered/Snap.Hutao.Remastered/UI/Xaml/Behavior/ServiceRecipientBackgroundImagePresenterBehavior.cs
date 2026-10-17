@@ -1,10 +1,8 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using CommunityToolkit.WinUI.Animations;
 using CommunityToolkit.WinUI.Behaviors;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Property;
@@ -19,7 +17,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Behavior;
 
 public sealed partial class ServiceRecipientBackgroundImagePresenterBehavior : BehaviorBase<Image>, IDisposable
 {
-    private readonly CancellationTokenSource unloadCts = new();
+    private CancellationTokenSource? unloadCts;
     private readonly AsyncLock backgroundImageLock = new();
 
     private IBackgroundImageService? backgroundImageService;
@@ -30,23 +28,32 @@ public sealed partial class ServiceRecipientBackgroundImagePresenterBehavior : B
     public void Dispose()
     {
         BackgroundImageTypeCallback = null;
-        unloadCts.Dispose();
+        unloadCts?.Cancel();
+        unloadCts?.Dispose();
+        unloadCts = null;
     }
 
     protected override void OnAssociatedObjectLoaded()
     {
+        if (XamlApplicationLifetime.Exiting) return;
+        unloadCts?.Cancel();
+        unloadCts?.Dispose();
+        unloadCts = new();
         if (AssociatedObject.XamlRoot.XamlContext()?.ServiceProvider is { } serviceProvider)
         {
             backgroundImageService = serviceProvider.GetRequiredService<IBackgroundImageService>();
             BackgroundImageTypeCallback = serviceProvider.GetRequiredService<AppOptions>().BackgroundImageType
-                .WithValueChangedCallback(static (type, behavior) => behavior.PrivateUpdateBackgroundAsync(true, behavior.unloadCts.Token).SafeForget(), this);
+                .WithValueChangedCallback(static (type, behavior) => behavior.UpdateBackground(true), this);
             PrivateUpdateBackgroundAsync(false, unloadCts.Token).SafeForget();
         }
     }
 
     protected override bool Uninitialize()
     {
-        unloadCts.Cancel();
+        BackgroundImageTypeCallback = null;
+        unloadCts?.Cancel();
+        unloadCts?.Dispose();
+        unloadCts = null;
         return base.Uninitialize();
     }
 
@@ -54,12 +61,18 @@ public sealed partial class ServiceRecipientBackgroundImagePresenterBehavior : B
     private void UpdateBackground()
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Update background image", "ServiceRecipientBackgroundImagePresenterBehavior.Command"));
-        PrivateUpdateBackgroundAsync(false, unloadCts.Token).SafeForget();
+        UpdateBackground(false);
+    }
+
+    private void UpdateBackground(bool forceRefresh)
+    {
+        if (!XamlApplicationLifetime.Exiting && unloadCts is { IsCancellationRequested: false } run)
+            PrivateUpdateBackgroundAsync(forceRefresh, run.Token).SafeForget();
     }
 
     private async ValueTask PrivateUpdateBackgroundAsync(bool forceRefresh, CancellationToken token = default)
     {
-        if (AssociatedObject is not { } backgroundImagePresenter || backgroundImageService is null)
+        if (XamlApplicationLifetime.Exiting || AssociatedObject is not { IsLoaded: true } backgroundImagePresenter || backgroundImageService is null)
         {
             return;
         }
@@ -74,19 +87,13 @@ public sealed partial class ServiceRecipientBackgroundImagePresenterBehavior : B
             if (shouldRefresh || forceRefresh)
             {
                 previousBackgroundImage = backgroundImage;
+                token.ThrowIfCancellationRequested();
                 await taskContext.SwitchToMainThreadAsync();
                 token.ThrowIfCancellationRequested();
 
                 try
                 {
-                    await AnimationBuilder
-                        .Create()
-                        .Opacity(
-                            to: 0D,
-                            duration: Constants.ImageOpacityFadeInOut,
-                            easingType: EasingType.Quartic,
-                            easingMode: EasingMode.EaseInOut)
-                        .StartAsync(backgroundImagePresenter, token)
+                    await OpacityTransition.StartAsync(backgroundImagePresenter, 0D, Constants.ImageOpacityFadeInOut, token)
                         .ConfigureAwait(false);
 
                     if (XamlApplicationLifetime.Exiting)
@@ -104,14 +111,7 @@ public sealed partial class ServiceRecipientBackgroundImagePresenterBehavior : B
                             ? 1 - backgroundImage.Luminance
                             : backgroundImage.Luminance;
 
-                    await AnimationBuilder
-                        .Create()
-                        .Opacity(
-                            to: targetOpacity,
-                            duration: Constants.ImageOpacityFadeInOut,
-                            easingType: EasingType.Quartic,
-                            easingMode: EasingMode.EaseInOut)
-                        .StartAsync(backgroundImagePresenter, token)
+                    await OpacityTransition.StartAsync(backgroundImagePresenter, targetOpacity, Constants.ImageOpacityFadeInOut, token)
                         .ConfigureAwait(false);
                 }
                 catch (COMException)

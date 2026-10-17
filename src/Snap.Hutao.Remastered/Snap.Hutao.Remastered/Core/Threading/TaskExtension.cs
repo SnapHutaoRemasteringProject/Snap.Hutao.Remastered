@@ -13,7 +13,9 @@ public static class TaskExtension
         {
             try
             {
-                await task.ConfigureAwait(true);
+                // This sink only observes/logs failures. Do not post its
+                // continuation to a XAML dispatcher that may be shutting down.
+                await task.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -34,7 +36,7 @@ public static class TaskExtension
         {
             try
             {
-                await task.ConfigureAwait(true);
+                await task.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

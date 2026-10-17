@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Dispatching;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.Property;
 using Snap.Hutao.Remastered.UI.Xaml;
@@ -11,7 +12,9 @@ namespace Snap.Hutao.Remastered.ViewModel.Abstraction;
 
 public abstract partial class ViewModel : ObservableObject, IViewModel, IDisposable
 {
-    private bool initializing;
+    private readonly object initializationGate = new();
+    private readonly DispatcherQueue? viewDispatcher = DispatcherQueue.GetForCurrentThread();
+    private Task? loadingTask;
 
     [ObservableProperty]
     public partial bool IsInitialized { get; protected set; }
@@ -26,7 +29,7 @@ public abstract partial class ViewModel : ObservableObject, IViewModel, IDisposa
     [field: MaybeNull]
     public IProperty<bool> IsViewUnloaded { get => field ??= Property.Create(false); protected set; }
 
-    protected TaskCompletionSource<bool> Initialization { get; set; } = new();
+    protected TaskCompletionSource<bool> Initialization { get; set; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
     public virtual void Dispose()
     {
@@ -35,8 +38,13 @@ public abstract partial class ViewModel : ObservableObject, IViewModel, IDisposa
 
     public void Resurrect()
     {
-        IsViewUnloaded.Value = false;
-        Initialization = new();
+        lock (initializationGate)
+        {
+            Initialization.TrySetResult(false);
+            Initialization = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            loadingTask = null;
+            IsViewUnloaded.Value = false;
+        }
     }
 
     public void Uninitialize()
@@ -55,30 +63,86 @@ public abstract partial class ViewModel : ObservableObject, IViewModel, IDisposa
         UninitializeOverride();
 
         IsViewUnloaded.Value = true;
+        lock (initializationGate) Initialization.TrySetResult(false);
         DeferContentLoader = default;
     }
 
     [Command("LoadCommand")]
-    protected virtual async Task LoadAsync()
+    protected virtual Task LoadAsync()
+    {
+        lock (initializationGate)
+        {
+            if (IsInitialized || XamlApplicationLifetime.Exiting || IsViewUnloaded.Value) return Task.CompletedTask;
+            if (loadingTask is { IsCompleted: false }) return loadingTask;
+            if (Initialization.Task.IsCompleted)
+                Initialization = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+            TaskCompletionSource completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            loadingTask = completion.Task;
+            // Publish before invoking the override, which can synchronously re-enter.
+            RunLoadAsync(completion, Initialization, CancellationToken).SafeForget();
+            return completion.Task;
+        }
+    }
+
+    private async Task RunLoadAsync(TaskCompletionSource completion, TaskCompletionSource<bool> initialization, CancellationToken token)
     {
         try
         {
-            if (Interlocked.Exchange(ref initializing, true))
-            {
-                await Initialization.Task.ConfigureAwait(false);
-                return;
-            }
-
-            IsInitialized = await LoadOverrideAsync(CancellationToken).ConfigureAwait(true);
-            Initialization.TrySetResult(IsInitialized);
+            bool initialized = await LoadOverrideAsync(token).ConfigureAwait(false);
+            await PublishInitializationAsync(initialized, initialization, token).ConfigureAwait(false);
+            completion.TrySetResult();
         }
         catch (OperationCanceledException)
         {
+            completion.TrySetCanceled();
+        }
+        catch (Exception exception)
+        {
+            completion.TrySetException(exception);
         }
         finally
         {
-            Volatile.Write(ref initializing, false);
+            initialization.TrySetResult(false);
         }
+    }
+
+    // Retries must publish the same notification as the initial load. Updating
+    // metadata alone cannot re-enable a page whose first load was canceled.
+    protected Task PublishInitializationAsync(bool initialized, CancellationToken token)
+    {
+        return PublishInitializationAsync(initialized, Initialization, token);
+    }
+
+    private async Task PublishInitializationAsync(bool initialized, TaskCompletionSource<bool> initialization, CancellationToken token)
+    {
+        if (XamlApplicationLifetime.Exiting || token.IsCancellationRequested || IsViewUnloaded.Value) return;
+        DispatcherQueue dispatcher = viewDispatcher
+            ?? throw new InvalidOperationException("View models must be created on their UI dispatcher.");
+        void Publish()
+        {
+            // An old load must not publish into a resurrected view's new generation.
+            if (XamlApplicationLifetime.Exiting || token.IsCancellationRequested || IsViewUnloaded.Value
+                || !ReferenceEquals(initialization, Initialization)) return;
+            IsInitialized = initialized;
+            initialization.TrySetResult(initialized);
+        }
+
+        if (dispatcher.HasThreadAccess)
+        {
+            Publish();
+            return;
+        }
+
+        TaskCompletionSource completion = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        using CancellationTokenSource linked = CancellationTokenSource.CreateLinkedTokenSource(token, XamlApplicationLifetime.ShutdownToken);
+        if (!dispatcher.TryEnqueue(() =>
+        {
+            try { Publish(); completion.TrySetResult(); }
+            catch (Exception exception) { completion.TrySetException(exception); }
+        })) throw new OperationCanceledException("The view dispatcher has shut down.");
+        // Queue shutdown must release the load even if the callback never runs.
+        await completion.Task.WaitAsync(linked.Token).ConfigureAwait(false);
     }
 
     /// <summary>

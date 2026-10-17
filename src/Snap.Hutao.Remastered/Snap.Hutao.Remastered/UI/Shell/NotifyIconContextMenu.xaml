@@ -202,7 +202,7 @@
                 Margin="8"
                 Style="{StaticResource BodyTextBlockStyle}"
                 Text="{Binding Title}"/>
-            <!-- A subtle close action has no resting material surface. -->
+            <!--  A subtle close action has no resting material surface.  -->
             <Button
                 Grid.Column="1"
                 Margin="8"

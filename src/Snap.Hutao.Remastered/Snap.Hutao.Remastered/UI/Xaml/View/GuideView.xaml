@@ -123,8 +123,10 @@
             Source="ms-appx:///Resource/WelcomeView_Background.png"/>
         <cwc:SwitchPresenter
             Grid.Row="0"
+            HorizontalContentAlignment="Stretch"
+            VerticalContentAlignment="Stretch"
             ContentTransitions="{ThemeResource EntranceThemeTransitions}"
-            Value="{Binding State, Mode=OneWay}">
+            Value="{x:Bind shvg:GuideNavigation.VisibleState(((shvg:GuideViewModel)DataContext).State), Mode=OneWay}">
             <!--  Language  -->
             <cwc:Case Value="{shuxm:UInt32 Value=0}">
                 <Grid>
@@ -867,9 +869,12 @@
 
             <!--  Material  -->
             <cwc:Case Value="{shuxm:UInt32 Value=7}">
-                <ScrollViewer>
+                <ScrollViewer
+                    HorizontalScrollBarVisibility="Disabled"
+                    HorizontalScrollMode="Disabled"
+                    VerticalScrollBarVisibility="Auto">
                     <StackPanel
-                        Width="820"
+                        MaxWidth="820"
                         Margin="32"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
@@ -885,72 +890,20 @@
                             Text="{shuxm:ResourceString Name=ViewGuideMaterialDescription}"
                             TextAlignment="Center"
                             TextWrapping="Wrap"/>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_31481"
+                        <ComboBox
+                            MinWidth="220"
                             HorizontalAlignment="Center"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:ComboBox"
-                            Visibility="{x:Bind GlassPresenter_31481_State.Visibility, Mode=OneWay}"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <ComboBox
-                                    x:Name="GlassPresenter_31481_State"
-                                    MinWidth="220"
-                                    HorizontalAlignment="Center"
-                                    DataContext="{x:Bind GlassPresenter_31481.DataContext, Mode=OneWay}"
-                                    DisplayMemberPath="Name"
-                                    Header="{shuxm:ResourceString Name=ViewPageSettingControlMaterialHeader}"
-                                    ItemsSource="{Binding AppOptions.ControlMaterials}"
-                                    RequestedTheme="{x:Bind GlassPresenter_31481.ActualTheme, Mode=OneWay}"
-                                    SelectedItem="{Binding SelectedControlMaterial, Mode=TwoWay}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassComboBox
-                                    x:Name="GlassPresenter_31481_StateGlass"
-                                    Width="{x:Bind GlassPresenter_31481_State.Width, Mode=OneWay}"
-                                    Height="{x:Bind GlassPresenter_31481_State.Height, Mode=OneWay}"
-                                    MinWidth="{x:Bind GlassPresenter_31481_State.MinWidth, Mode=OneWay}"
-                                    MinHeight="{x:Bind GlassPresenter_31481_State.MinHeight, Mode=OneWay}"
-                                    MaxWidth="{x:Bind GlassPresenter_31481_State.MaxWidth, Mode=OneWay}"
-                                    MaxHeight="{x:Bind GlassPresenter_31481_State.MaxHeight, Mode=OneWay}"
-                                    Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(GlassPresenter_31481_State.Padding), Mode=OneWay}"
-                                    HorizontalAlignment="Center"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassPresenter_31481_State, Mode=OneWay}"
-                                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                                    BorderThickness="{x:Bind GlassPresenter_31481_State.BorderThickness, Mode=OneWay}"
-                                    DisplayMemberPath="{x:Bind GlassPresenter_31481_State.DisplayMemberPath, Mode=OneWay}"
-                                    FlowDirection="{x:Bind GlassPresenter_31481_State.FlowDirection, Mode=OneWay}"
-                                    FontFamily="{x:Bind GlassPresenter_31481_State.FontFamily, Mode=OneWay}"
-                                    FontSize="{x:Bind GlassPresenter_31481_State.FontSize, Mode=OneWay}"
-                                    FontStyle="{x:Bind GlassPresenter_31481_State.FontStyle, Mode=OneWay}"
-                                    FontWeight="{x:Bind GlassPresenter_31481_State.FontWeight, Mode=OneWay}"
-                                    Foreground="{x:Bind GlassPresenter_31481_State.Foreground, Mode=OneWay}"
-                                    Header="{x:Bind GlassPresenter_31481_State.Header, Mode=OneWay}"
-                                    HeaderTemplate="{x:Bind GlassPresenter_31481_State.HeaderTemplate, Mode=OneWay}"
-                                    IsDropDownOpen="{x:Bind GlassPresenter_31481_State.IsDropDownOpen, Mode=TwoWay}"
-                                    IsEditable="{x:Bind GlassPresenter_31481_State.IsEditable, Mode=OneWay}"
-                                    IsEnabled="{x:Bind GlassPresenter_31481_State.IsEnabled, Mode=OneWay}"
-                                    IsTextSearchEnabled="{x:Bind GlassPresenter_31481_State.IsTextSearchEnabled, Mode=OneWay}"
-                                    ItemsSource="{x:Bind GlassPresenter_31481_State.ItemsSource, Mode=OneWay}"
-                                    MaxDropDownHeight="{x:Bind GlassPresenter_31481_State.MaxDropDownHeight, Mode=OneWay}"
-                                    PlaceholderText="{x:Bind GlassPresenter_31481_State.PlaceholderText, Mode=OneWay}"
-                                    SelectedIndex="{x:Bind GlassPresenter_31481_State.SelectedIndex, Mode=TwoWay}"
-                                    SelectedValuePath="{x:Bind GlassPresenter_31481_State.SelectedValuePath, Mode=OneWay}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                            Header="{shuxm:ResourceString Name=ViewPageSettingControlMaterialHeader}"
+                            SelectedIndex="{x:Bind ((shvg:GuideViewModel)DataContext).ControlMaterialState, Mode=OneWay}"
+                            SelectionChanged="OnControlMaterialSelectionChanged">
+                            <ComboBoxItem Content="{shuxm:ResourceString Name=ViewPageSettingControlMaterialDefault}"/>
+                            <ComboBoxItem Content="{shuxm:ResourceString Name=ViewPageSettingControlMaterialLiquidGlass}"/>
+                        </ComboBox>
 
                         <Grid
                             Height="300"
                             Margin="0,12,0,0"
+                            cw:UIElementExtensions.ClipToBounds="True"
                             Background="#FF17233D"
                             CornerRadius="20">
                             <Canvas IsHitTestVisible="False">
@@ -982,7 +935,7 @@
                                 <cwc:Case Value="{shuxm:Int32 Value=0}">
                                     <Border
                                         Padding="24"
-                                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                                        Background="{ThemeResource NativeHomeCardBackgroundBrush}"
                                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                         BorderThickness="1"
                                         CornerRadius="16">
@@ -1064,11 +1017,12 @@
                                     <wl:LiquidGlassCard
                                         Padding="24"
                                         shuxcth:ControlMaterialState.IsManaged="True"
-                                        CornerRadius="16">
+                                        CornerRadius="42">
                                         <wl:LiquidGlassCard.GlassBrush>
                                             <hlsl:LiquidGlassBrush
                                                 BlurRadius="0"
                                                 BorderThickness="0"
+                                                CornerRadius="42"
                                                 GlassThickness="10"
                                                 InnerShadowStrength="0.1"
                                                 MagnificationStrength="45"
@@ -1320,9 +1274,6 @@
                 </Grid>
 
             </cwc:Case>
-
-            <!--  Complete - empty case for fallback  -->
-            <cwc:Case Value="{shuxm:UInt32 Value=8}"/>
         </cwc:SwitchPresenter>
         <Grid Grid.Row="1">
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
@@ -1330,7 +1281,8 @@
                     Margin="16"
                     HorizontalAlignment="Center"
                     IsHitTestVisible="False"
-                    SelectedIndex="{Binding StepIndex, Mode=OneWay}">
+                    Loaded="OnGuideProgressLoaded"
+                    SelectedIndex="{x:Bind shvg:GuideNavigation.StepIndex(((shvg:GuideViewModel)DataContext).State), Mode=OneWay}">
                     <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xF2B7;}"/>
                     <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xF28B;}"/>
                     <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xE81E;}"/>
@@ -1363,6 +1315,7 @@
                         </cwc:Case.Value>
                         <wl:LiquidGlassButton
                             shuxcth:ControlMaterialState.IsManaged="True"
+                            BorderThickness="0"
                             Command="{Binding NextOrCompleteCommand}"
                             Content="{Binding NextOrCompleteButtonText}"
                             IsEnabled="{Binding IsNextOrCompleteButtonEnabled}"

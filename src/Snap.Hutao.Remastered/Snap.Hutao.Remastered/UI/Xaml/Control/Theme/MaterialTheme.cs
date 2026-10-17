@@ -21,6 +21,7 @@ public static class MaterialTheme
 
     public static void Apply(ControlMaterial material)
     {
+        if (XamlApplicationLifetime.Exiting) return;
         currentMaterial = material;
         ControlMaterialState.Apply(material);
 

@@ -89,7 +89,12 @@ public sealed partial class GamePackageService : IGamePackageService
             GamePackageOperationWindow window = scope.ServiceProvider.GetRequiredService<GamePackageOperationWindow>();
             IProgress<GamePackageOperationReport> progress = scope.ServiceProvider
                 .GetRequiredService<IProgressFactory>()
-                .CreateForMainThread<GamePackageOperationReport>(window.HandleProgressUpdate);
+                .CreateForMainThread<GamePackageOperationReport>(report =>
+                {
+                    if (XamlApplicationLifetime.Exiting) return;
+                    window.HandleProgressUpdate(report);
+                    operationContext.ProgressChanged?.Invoke(report);
+                });
 
             await taskContext.SwitchToBackgroundAsync();
 

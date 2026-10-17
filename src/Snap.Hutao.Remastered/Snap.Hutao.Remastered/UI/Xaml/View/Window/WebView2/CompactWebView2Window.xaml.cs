@@ -84,7 +84,7 @@ public sealed partial class CompactWebView2Window : Microsoft.UI.Xaml.Window,
 
         InitializeComponent();
 
-        TitleBarPassthrough = [SourceTextBox];
+        TitleBarPassthrough = [GlassPresenter_2769];
 
         RootGrid.DataContext = this;
 
@@ -441,6 +441,11 @@ public sealed partial class CompactWebView2Window : Microsoft.UI.Xaml.Window,
     }
 
     private void OnDocumentTitleSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        XamlWindowRegionRects.Update(this);
+    }
+
+    private void OnAddressPresenterLoaded(object sender, RoutedEventArgs e)
     {
         XamlWindowRegionRects.Update(this);
     }

@@ -41,6 +41,10 @@ public sealed class XamlWindowController
 
     private readonly XamlWindowSubclass subclass;
     private readonly XamlWindowNonRude nonRude;
+    private Task? detachContent;
+    // Accepting a close request does not yet permit native island destruction.
+    private bool closing;
+    private bool readyToClose;
 
     public XamlWindowController(Window window, IServiceProvider serviceProvider)
     {
@@ -104,6 +108,43 @@ public sealed class XamlWindowController
 
     private IObservableProperty<BackdropType>? BackdropTypeCallback { get; }
 
+    public Task DetachContentAsync()
+    {
+        if (detachContent is not null) return detachContent;
+        TaskCompletionSource detached = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        detachContent = detached.Task;
+        if (window.Content is FrameworkElement root && root.IsLoaded)
+        {
+            root.Loading -= OnWindowContentLoading;
+            RoutedEventHandler? unloaded = null;
+            unloaded = (_, _) =>
+            {
+                root.Unloaded -= unloaded;
+                // Parent Unloaded may precede descendant Unloaded. Drain the
+                // entire event cascade before disposing scopes or native players.
+                window.DispatcherQueue.TryEnqueue(() => detached.TrySetResult());
+            };
+            root.Unloaded += unloaded;
+            window.Content = null;
+        }
+        else
+        {
+            window.Content = null;
+            detached.TrySetResult();
+        }
+
+        window.SystemBackdrop = null;
+        return detachContent;
+    }
+
+    private async Task CloseAfterDetachAsync()
+    {
+        await DetachContentAsync().ConfigureAwait(true);
+        readyToClose = true;
+        // Do not recursively close from inside the first native Closed callback.
+        window.DispatcherQueue.TryEnqueue(window.Close);
+    }
+
     public bool TrySetTaskbarProgress(TBPFLAG state, ulong value, ulong maximum)
     {
         try
@@ -148,7 +189,14 @@ public sealed class XamlWindowController
             return;
         }
 
-        if (window is IXamlWindowClosedHandler handler)
+        if (closing && !readyToClose)
+        {
+            // Repeated close requests must not bypass the pending unload phase.
+            args.Handled = true;
+            return;
+        }
+
+        if (!closing && window is IXamlWindowClosedHandler handler)
         {
             handler.OnWindowClosing(out bool cancel);
             if (cancel)
@@ -158,7 +206,7 @@ public sealed class XamlWindowController
             }
         }
 
-        if (!XamlApplicationLifetime.Exiting)
+        if (!closing && !XamlApplicationLifetime.Exiting)
         {
             IServiceProviderIsKeyedService isKeyedService = ServiceProvider.GetRequiredService<IServiceProviderIsKeyedService>();
             ICurrentXamlWindowReference currentXamlWindowReference = isKeyedService.IsKeyedService(typeof(ICurrentXamlWindowReference), windowType)
@@ -177,6 +225,16 @@ public sealed class XamlWindowController
 
                 currentXamlWindowReference.Window = default!;
             }
+        }
+
+        if (!closing)
+        {
+            // Closed is cancelable. Keep the native island/dispatcher alive until
+            // XAML descendants have detached their behaviors and async callbacks.
+            closing = true;
+            args.Handled = true;
+            CloseAfterDetachAsync().SafeForget();
+            return;
         }
 
         // Detach events
@@ -200,6 +258,7 @@ public sealed class XamlWindowController
 
     private bool UpdateSystemBackdrop(BackdropType backdropType)
     {
+        if (closing || detachContent is not null) return false;
         if (hasCustomSystemBackdrop)
         {
             return true;

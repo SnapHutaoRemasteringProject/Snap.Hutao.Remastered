@@ -1,181 +1,135 @@
 // Copyright (c) Snap Hutao RP. All rights reserved.
 // Licensed under the MIT license.
 
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Behavior;
 
 public static class FlyoutOpenStateBinding
 {
-    public static bool GetIsOpen(Flyout obj)
-    {
-        return (bool)obj.GetValue(IsOpenProperty);
-    }
-
-    public static void SetIsOpen(Flyout obj, bool value)
-    {
-        obj.SetValue(IsOpenProperty, value);
-    }
+    private static readonly ConditionalWeakTable<Flyout, PendingSwitch> States = new();
 
     public static readonly DependencyProperty IsOpenProperty = DependencyProperty.RegisterAttached(
-        "IsOpen",
-        typeof(bool),
-        typeof(FlyoutOpenStateBinding),
-        new PropertyMetadata(false));
-
-    public static int GetSwitchDelayMilliseconds(Flyout obj)
-    {
-        return (int)obj.GetValue(SwitchDelayMillisecondsProperty);
-    }
-
-    public static void SetSwitchDelayMilliseconds(Flyout obj, int value)
-    {
-        obj.SetValue(SwitchDelayMillisecondsProperty, value);
-    }
-
+        "IsOpen", typeof(bool), typeof(FlyoutOpenStateBinding), new PropertyMetadata(false));
     public static readonly DependencyProperty SwitchDelayMillisecondsProperty = DependencyProperty.RegisterAttached(
-        "SwitchDelayMilliseconds",
-        typeof(int),
-        typeof(FlyoutOpenStateBinding),
-        new PropertyMetadata(120));
-
-    public static bool GetIsTrackingEnabled(Flyout obj)
-    {
-        return (bool)obj.GetValue(IsTrackingEnabledProperty);
-    }
-
-    public static void SetIsTrackingEnabled(Flyout obj, bool value)
-    {
-        obj.SetValue(IsTrackingEnabledProperty, value);
-    }
-
+        "SwitchDelayMilliseconds", typeof(int), typeof(FlyoutOpenStateBinding), new PropertyMetadata(120));
     public static readonly DependencyProperty IsTrackingEnabledProperty = DependencyProperty.RegisterAttached(
-        "IsTrackingEnabled",
-        typeof(bool),
-        typeof(FlyoutOpenStateBinding),
-        new PropertyMetadata(false, OnIsTrackingEnabledChanged));
+        "IsTrackingEnabled", typeof(bool), typeof(FlyoutOpenStateBinding), new PropertyMetadata(false, OnIsTrackingEnabledChanged));
 
-    private static readonly DependencyProperty IsHookedProperty = DependencyProperty.RegisterAttached(
-        "IsHooked",
-        typeof(bool),
-        typeof(FlyoutOpenStateBinding),
-        new PropertyMetadata(false));
+    public static bool GetIsOpen(Flyout obj) => (bool)obj.GetValue(IsOpenProperty);
+    public static void SetIsOpen(Flyout obj, bool value) => obj.SetValue(IsOpenProperty, value);
+    public static int GetSwitchDelayMilliseconds(Flyout obj) => (int)obj.GetValue(SwitchDelayMillisecondsProperty);
+    public static void SetSwitchDelayMilliseconds(Flyout obj, int value) => obj.SetValue(SwitchDelayMillisecondsProperty, value);
+    public static bool GetIsTrackingEnabled(Flyout obj) => (bool)obj.GetValue(IsTrackingEnabledProperty);
+    public static void SetIsTrackingEnabled(Flyout obj, bool value) => obj.SetValue(IsTrackingEnabledProperty, value);
 
-    private static readonly DependencyProperty PendingSwitchTokenSourceProperty = DependencyProperty.RegisterAttached(
-        "PendingSwitchTokenSource",
-        typeof(CancellationTokenSource),
-        typeof(FlyoutOpenStateBinding),
-        new PropertyMetadata(null));
-
-    private static bool GetIsHooked(Flyout obj)
+    public sealed class PendingSwitch
     {
-        return (bool)obj.GetValue(IsHookedProperty);
+        public object Gate { get; } = new();
+        public CancellationTokenSource? Pending { get; set; }
+        public bool Tracking { get; set; }
     }
 
-    private static void SetIsHooked(Flyout obj, bool value)
+    public static void CancelPendingSwitches()
     {
-        obj.SetValue(IsHookedProperty, value);
+        foreach (KeyValuePair<Flyout, PendingSwitch> pair in States)
+            Stop(pair.Value);
     }
 
-    private static CancellationTokenSource? GetPendingSwitchTokenSource(Flyout obj)
+    private static void Stop(PendingSwitch state)
     {
-        return (CancellationTokenSource?)obj.GetValue(PendingSwitchTokenSourceProperty);
-    }
-
-    private static void SetPendingSwitchTokenSource(Flyout obj, CancellationTokenSource? value)
-    {
-        obj.SetValue(PendingSwitchTokenSourceProperty, value);
+        lock (state.Gate)
+        {
+            state.Tracking = false;
+            state.Pending?.Cancel();
+        }
     }
 
     private static void OnIsTrackingEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        if (d is not Flyout flyout)
-        {
-            return;
-        }
-
+        if (d is not Flyout flyout || XamlApplicationLifetime.Exiting) return;
+        PendingSwitch state = States.GetValue(flyout, static _ => new());
+        flyout.Opened -= OnFlyoutOpened;
+        flyout.Closed -= OnFlyoutClosed;
         if ((bool)e.NewValue)
         {
-            if (!GetIsHooked(flyout))
-            {
-                flyout.Opened += OnFlyoutOpened;
-                flyout.Closed += OnFlyoutClosed;
-                SetIsHooked(flyout, true);
-            }
-
-            return;
+            lock (state.Gate) state.Tracking = true;
+            flyout.Opened += OnFlyoutOpened;
+            flyout.Closed += OnFlyoutClosed;
         }
-
-        if (GetIsHooked(flyout))
-        {
-            flyout.Opened -= OnFlyoutOpened;
-            flyout.Closed -= OnFlyoutClosed;
-            SetIsHooked(flyout, false);
-        }
-
-        GetPendingSwitchTokenSource(flyout)?.Cancel();
-        GetPendingSwitchTokenSource(flyout)?.Dispose();
-        SetPendingSwitchTokenSource(flyout, null);
+        else Stop(state);
     }
 
     private static void OnFlyoutOpened(object? sender, object e)
     {
-        if (sender is Flyout flyout)
-        {
-            _ = SetIsOpenDelayedAsync(flyout, true);
-        }
+        if (sender is Flyout flyout) Schedule(flyout, true);
     }
 
     private static void OnFlyoutClosed(object? sender, object e)
     {
-        if (sender is Flyout flyout)
-        {
-            _ = SetIsOpenDelayedAsync(flyout, false);
-        }
+        if (sender is Flyout flyout) Schedule(flyout, false);
     }
 
-    private static async ValueTask SetIsOpenDelayedAsync(Flyout flyout, bool value)
+    private static void Schedule(Flyout flyout, bool value)
     {
-        GetPendingSwitchTokenSource(flyout)?.Cancel();
-        GetPendingSwitchTokenSource(flyout)?.Dispose();
-
-        CancellationTokenSource tokenSource = new();
-        SetPendingSwitchTokenSource(flyout, tokenSource);
-
-        int delay = Math.Max(0, GetSwitchDelayMilliseconds(flyout));
-
+        if (XamlApplicationLifetime.Exiting || !States.TryGetValue(flyout, out PendingSwitch? state)) return;
         try
         {
-            if (delay > 0)
+            // Capture all XAML values on the UI thread. The delayed worker and its
+            // finally block only use managed state, never DependencyObject.GetValue.
+            int delay = Math.Max(0, GetSwitchDelayMilliseconds(flyout));
+            DispatcherQueue dispatcher = flyout.DispatcherQueue;
+            CancellationTokenSource source;
+            lock (state.Gate)
             {
-                await Task.Delay(delay, tokenSource.Token).ConfigureAwait(false);
+                if (!state.Tracking) return;
+                state.Pending?.Cancel();
+                source = new();
+                state.Pending = source;
             }
-
-            if (tokenSource.IsCancellationRequested)
-            {
-                return;
-            }
-
-            flyout.DispatcherQueue.TryEnqueue(() =>
-            {
-                if (!tokenSource.IsCancellationRequested)
-                {
-                    SetIsOpen(flyout, value);
-                }
-            });
+            RunAsync(new WeakReference<Flyout>(flyout), dispatcher, state, source, value, delay).SafeForget();
         }
-        catch (OperationCanceledException)
+        catch (COMException exception) when (IsClosed(exception)) { Stop(state); }
+    }
+
+    private static bool IsClosed(COMException exception) => exception.HResult is unchecked((int)0x80000013)
+        or unchecked((int)0x8000FFFF) or unchecked((int)0x80004004) or unchecked((int)0x80010108);
+
+    private static async Task RunAsync(WeakReference<Flyout> weak, DispatcherQueue dispatcher, PendingSwitch state, CancellationTokenSource source, bool value, int delay)
+    {
+        CancellationToken token = source.Token;
+        try
         {
+            await Task.Delay(delay, token).ConfigureAwait(false);
+            if (token.IsCancellationRequested || XamlApplicationLifetime.Exiting) return;
+            TaskCompletionSource applied = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            if (!dispatcher.TryEnqueue(() =>
+            {
+                try
+                {
+                    lock (state.Gate)
+                    {
+                        if (state.Tracking && ReferenceEquals(state.Pending, source) && !token.IsCancellationRequested
+                            && !XamlApplicationLifetime.Exiting && weak.TryGetTarget(out Flyout? target))
+                            SetIsOpen(target, value);
+                    }
+                    applied.TrySetResult();
+                }
+                catch (COMException exception) when (IsClosed(exception)) { applied.TrySetResult(); }
+                catch (Exception exception) { applied.TrySetException(exception); }
+            })) return;
+            await applied.Task.WaitAsync(token).ConfigureAwait(false);
         }
+        catch (OperationCanceledException) { }
         finally
         {
-            if (ReferenceEquals(GetPendingSwitchTokenSource(flyout), tokenSource))
-            {
-                SetPendingSwitchTokenSource(flyout, null);
-            }
-
-            tokenSource.Dispose();
+            lock (state.Gate)
+                if (ReferenceEquals(state.Pending, source)) state.Pending = null;
+            source.Dispose();
         }
     }
 }

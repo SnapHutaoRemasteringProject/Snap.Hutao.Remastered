@@ -13,7 +13,7 @@ using Shapes = Microsoft.UI.Xaml.Shapes;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Window;
 
-internal static class LiquidGlassPreview
+public static class LiquidGlassPreview
 {
     public static UIElement Create(LiquidGlassProfile profile, bool forceGlass)
     {

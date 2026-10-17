@@ -50,7 +50,7 @@ public sealed partial class ExceptionHandling
         return exception;
     }
 
-    private static void OnAppUnhandledException(object? sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+    private void OnAppUnhandledException(object? sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
     {
         Exception? exception = e.Exception;
 
@@ -61,6 +61,19 @@ public sealed partial class ExceptionHandling
 
         if (XamlApplicationLifetime.Exiting || XamlApplicationLifetime.Exited)
         {
+            // Do not silently skip the only managed diagnostic for a shutdown
+            // failure. Keep it unhandled, but retain the original exception/stack.
+            Trace.WriteLine($"Unhandled XAML exception during shutdown: {exception}");
+            try
+            {
+                logger.LogCritical(exception, "Unhandled XAML exception during shutdown (HRESULT {HResult:X8})", exception.HResult);
+            }
+            catch (ObjectDisposedException)
+            {
+                // The root logger may already be disposed; Trace above remains available.
+            }
+
+            if (Debugger.IsAttached) Debugger.Break();
             return;
         }
 

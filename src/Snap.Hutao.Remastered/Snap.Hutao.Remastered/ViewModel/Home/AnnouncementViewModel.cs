@@ -13,6 +13,7 @@ using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.Announcement;
 using Snap.Hutao.Remastered.Service.Hutao;
 using Snap.Hutao.Remastered.Service.Network;
+using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.Control.Card;
@@ -28,6 +29,7 @@ using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Response;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 
@@ -44,9 +46,19 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
     private readonly ITaskContext taskContext;
     private readonly AppOptions appOptions;
     private readonly INetworkRetryCoordinator networkRetryCoordinator;
+    private readonly IMetadataService metadataService;
 
-    private IDisposable? homeRetryRegistration;
-    private int shouldRefreshDashboardOnSuccess;
+    private const string InGameRetryKey = "AnnouncementViewModel.InGame";
+    private const string HutaoRetryKey = "AnnouncementViewModel.HutaoAnnouncements";
+    private const string MiyoliveRetryKey = "AnnouncementViewModel.Miyolive";
+    private const string CalendarRetryKey = "AnnouncementViewModel.Calendar";
+    private IDisposable[]? homeRetryRegistrations;
+    private readonly AsyncLoadOperation inGameLoad = new();
+    private readonly AsyncLoadOperation hutaoLoad = new();
+    private readonly AsyncLoadOperation miyoliveLoad = new();
+    private AsyncLoadOperation calendarLoad = new();
+    private (Guid User, string Uid)? calendarUser;
+    private int calendarUserVersion;
 
     [GeneratedConstructor]
     public partial AnnouncementViewModel(IServiceProvider serviceProvider);
@@ -90,6 +102,8 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
 
     public void Receive(UserAndUidChangedMessage message)
     {
+        if (XamlApplicationLifetime.Exiting || IsViewUnloaded.Value) return;
+        Interlocked.Increment(ref calendarUserVersion);
         if (message.UserAndUid is { IsOversea: false } userAndUid)
         {
             RefreshActivityCalendarOnUserChangedAsync(userAndUid).SafeForget();
@@ -98,6 +112,8 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
         {
             taskContext.InvokeOnMainThread(() =>
             {
+                calendarUser = null;
+                calendarLoad = new();
                 ActivityCalendar = default!;
                 DisplayedActivityCards = [];
                 IsActivityCalendarLoading = false;
@@ -110,19 +126,42 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
 
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
-        homeRetryRegistration ??= networkRetryCoordinator.Register("AnnouncementViewModel.LoadHome", RetryHomeAsync);
+        homeRetryRegistrations ??=
+        [
+            networkRetryCoordinator.Register(InGameRetryKey, RetryInGameAsync),
+            networkRetryCoordinator.Register(HutaoRetryKey, RetryHutaoAsync),
+            networkRetryCoordinator.Register(MiyoliveRetryKey, RetryMiyoliveAsync),
+            networkRetryCoordinator.Register(CalendarRetryKey, RetryCalendarAsync),
+        ];
+        // Navigation must not unlock while the metadata/Git prerequisite is pending.
+        await metadataService.InitializeAsync().AsTask().WaitAsync(token).ConfigureAwait(false);
+        token.ThrowIfCancellationRequested();
         await taskContext.SwitchToMainThreadAsync();
+        token.ThrowIfCancellationRequested();
         RefreshDashboard();
         UpdateGreetingText();
 
-        RetryHomeAsync(token).AsTask().SafeForget();
+        // Metadata/Git and the dashboard are the navigation prerequisites.
+        // Slow optional feeds must not keep the whole NavigationView disabled.
+        LoadOptionalContentAsync(token).SafeForget();
         return true;
+    }
+
+    private async Task LoadOptionalContentAsync(CancellationToken token)
+    {
+        await Task.CompletedTask.ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
+        token.ThrowIfCancellationRequested();
+        RetryInGameAsync(token).AsTask().SafeForget();
+        RetryHutaoAsync(token).AsTask().SafeForget();
+        RetryMiyoliveAsync(token).AsTask().SafeForget();
+        RetryCalendarAsync(token).AsTask().SafeForget();
     }
 
     protected override void UninitializeOverride()
     {
-        homeRetryRegistration?.Dispose();
-        homeRetryRegistration = default;
+        if (homeRetryRegistrations is not null)
+            foreach (IDisposable registration in homeRetryRegistrations) registration.Dispose();
+        homeRetryRegistrations = null;
     }
 
     [SuppressMessage("", "SH003")]
@@ -133,21 +172,21 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
             AnnouncementWrapper? announcementWrapper = await announcementService.GetAnnouncementWrapperAsync(cultureOptions.LanguageCode, appOptions.Region.Value, token).ConfigureAwait(false);
             if (announcementWrapper is null)
             {
-                MarkHomePendingForRetry();
                 return false;
             }
 
+            token.ThrowIfCancellationRequested();
             await taskContext.SwitchToMainThreadAsync();
+            token.ThrowIfCancellationRequested();
             Announcement = announcementWrapper;
             return true;
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
         {
             throw;
         }
         catch (Exception ex) when (IsNetworkRelatedException(ex))
         {
-            MarkHomePendingForRetry();
             return false;
         }
     }
@@ -160,22 +199,22 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
             ObservableCollection<Web.Hutao.HutaoAsAService.Announcement>? hutaoAnnouncements = await hutaoAsAService.GetHutaoAnnouncementCollectionAsync(token).ConfigureAwait(false);
             if (hutaoAnnouncements is null)
             {
-                MarkHomePendingForRetry();
                 return false;
             }
 
+            token.ThrowIfCancellationRequested();
             await taskContext.SwitchToMainThreadAsync();
+            token.ThrowIfCancellationRequested();
             HutaoAnnouncements = hutaoAnnouncements;
             DeferContentLoader?.Load("HutaoAnnouncementControl");
             return true;
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
         {
             throw;
         }
         catch (Exception ex) when (IsNetworkRelatedException(ex))
         {
-            MarkHomePendingForRetry();
             return false;
         }
     }
@@ -191,6 +230,7 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
                 return true;
             }
 
+            token.ThrowIfCancellationRequested();
             IHomeClient homeClient = scope.ServiceProvider
                 .GetRequiredService<IOverseaSupportFactory<IHomeClient>>()
                 .CreateFor(userAndUid);
@@ -240,17 +280,18 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
                     return true;
                 }
 
+                token.ThrowIfCancellationRequested();
                 await taskContext.SwitchToMainThreadAsync();
+                token.ThrowIfCancellationRequested();
                 RedeemCodes = wrappers;
                 return true;
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
             {
                 throw;
             }
             catch (Exception ex) when (IsNetworkRelatedException(ex))
             {
-                MarkHomePendingForRetry();
                 return false;
             }
         }
@@ -258,6 +299,7 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
 
     private async ValueTask<bool> InitializeActivityCalendarAsync(CancellationToken token)
     {
+        int userVersion = Volatile.Read(ref calendarUserVersion);
         if (!LocalSetting.Get(SettingKeys.IsHomeAnnouncementActivityCalendarPresented, true))
         {
             return true;
@@ -270,23 +312,23 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
                 IUserService userService = scope.ServiceProvider.GetRequiredService<IUserService>();
                 if (await userService.GetCurrentUserAndUidAsync().ConfigureAwait(false) is not { IsOversea: false } userAndUid)
                 {
+                    token.ThrowIfCancellationRequested();
                     await taskContext.SwitchToMainThreadAsync();
+                    token.ThrowIfCancellationRequested();
                     IsActivityCalendarLoading = false;
                     return true;
                 }
 
-                await RefreshActivityCalendarCoreAsync(userAndUid, token).ConfigureAwait(false);
+                if (userVersion != Volatile.Read(ref calendarUserVersion)) return true;
+                return await RefreshActivityCalendarCoreAsync(userAndUid, token).ConfigureAwait(false);
             }
-
-            return true;
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
         {
             throw;
         }
         catch (Exception ex) when (IsNetworkRelatedException(ex))
         {
-            MarkHomePendingForRetry();
             return false;
         }
     }
@@ -296,26 +338,59 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
     {
         try
         {
-            await RefreshActivityCalendarCoreAsync(userAndUid, CancellationToken.None).ConfigureAwait(false);
+            bool success = await RefreshActivityCalendarCoreAsync(userAndUid, CancellationToken).ConfigureAwait(false);
+            if (success) networkRetryCoordinator.ClearPending(CalendarRetryKey);
+            else MarkCalendarPendingForRetry();
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (CancellationToken.IsCancellationRequested || XamlApplicationLifetime.Exiting)
         {
         }
         catch (Exception ex) when (IsNetworkRelatedException(ex))
         {
+            MarkCalendarPendingForRetry();
         }
     }
 
     [SuppressMessage("", "SH003")]
-    private async ValueTask RefreshActivityCalendarCoreAsync(UserAndUid userAndUid, CancellationToken token)
+    private async ValueTask<bool> RefreshActivityCalendarCoreAsync(UserAndUid userAndUid, CancellationToken token)
     {
         if (!LocalSetting.Get(SettingKeys.IsHomeAnnouncementActivityCalendarPresented, true))
         {
-            return;
+            return true;
         }
 
+        token.ThrowIfCancellationRequested();
         await taskContext.SwitchToMainThreadAsync();
-        IsActivityCalendarLoading = true;
+        token.ThrowIfCancellationRequested();
+        (Guid User, string Uid) key = (userAndUid.User.InnerId, userAndUid.Uid.Value);
+        if (calendarUser != key)
+        {
+            calendarUser = key;
+            calendarLoad = new();
+            ActivityCalendar = default!;
+            DisplayedActivityCards = [];
+        }
+
+        return await calendarLoad.RunAsync(async requestToken =>
+        {
+            IsActivityCalendarLoading = true;
+            try
+            {
+                return await FetchActivityCalendarAsync(userAndUid, key, requestToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (!XamlApplicationLifetime.Exiting && !token.IsCancellationRequested)
+                {
+                    await taskContext.SwitchToMainThreadAsync();
+                    if (calendarUser == key) IsActivityCalendarLoading = false;
+                }
+            }
+        }, token).ConfigureAwait(false);
+    }
+
+    private async Task<bool> FetchActivityCalendarAsync(UserAndUid userAndUid, (Guid User, string Uid) key, CancellationToken token)
+    {
 
         IGameRecordClient gameRecordClient = serviceProvider
             .GetRequiredService<IOverseaSupportFactory<IGameRecordClient>>()
@@ -325,47 +400,66 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
 
         if (ResponseValidator.TryValidateWithoutUINotification(response, out ActCalendar? calendar))
         {
+            token.ThrowIfCancellationRequested();
             await taskContext.SwitchToMainThreadAsync();
+            token.ThrowIfCancellationRequested();
+            if (calendarUser != key) return true;
             ActivityCalendar = calendar;
             UpdateDisplayedActivityCards();
-            IsActivityCalendarLoading = false;
+            return true;
         }
+
+        return false;
     }
 
-    private async ValueTask<bool> RetryHomeAsync(CancellationToken token)
+    private ValueTask<bool> RetryInGameAsync(CancellationToken token) =>
+        RetryOptionalPartAsync(InGameRetryKey, ct => inGameLoad.RunAsync(loadToken => InitializeInGameAnnouncementAsync(loadToken).AsTask(), ct), token);
+
+    private ValueTask<bool> RetryHutaoAsync(CancellationToken token) =>
+        RetryOptionalPartAsync(HutaoRetryKey, ct => hutaoLoad.RunAsync(loadToken => InitializeHutaoAnnouncementAsync(loadToken).AsTask(), ct), token);
+
+    private ValueTask<bool> RetryMiyoliveAsync(CancellationToken token) =>
+        RetryOptionalPartAsync(MiyoliveRetryKey, ct => miyoliveLoad.RunAsync(loadToken => InitializeMiyoliveCodeAsync(loadToken).AsTask(), ct), token);
+
+    private ValueTask<bool> RetryCalendarAsync(CancellationToken token) =>
+        RetryOptionalPartAsync(CalendarRetryKey, ct => InitializeActivityCalendarAsync(ct).AsTask(), token);
+
+    private async ValueTask<bool> RetryOptionalPartAsync(string key, Func<CancellationToken, Task<bool>> load, CancellationToken token)
     {
-        Task<bool> inGameTask = InitializeInGameAnnouncementAsync(token).AsTask();
-        Task<bool> hutaoTask = InitializeHutaoAnnouncementAsync(token).AsTask();
-        Task<bool> miHoYoTask = InitializeMiyoliveCodeAsync(token).AsTask();
-        Task<bool> calendarTask = InitializeActivityCalendarAsync(token).AsTask();
-
-        bool[] results = await Task.WhenAll(inGameTask, hutaoTask, miHoYoTask, calendarTask).ConfigureAwait(false);
-        bool inGameSuccess = results[0];
-        bool hutaoSuccess = results[1];
-        bool miHoYoSuccess = results[2];
-        bool calendarSuccess = results[3];
-
-        bool success = inGameSuccess && hutaoSuccess && miHoYoSuccess && calendarSuccess;
-        if (success)
+        using CancellationTokenSource linked = CancellationTokenSource.CreateLinkedTokenSource(token, CancellationToken, XamlApplicationLifetime.ShutdownToken);
+        token = linked.Token;
+        try
         {
-            if (Interlocked.Exchange(ref shouldRefreshDashboardOnSuccess, 0) is not 0)
-            {
-                RefreshDashboard();
-            }
-
-            networkRetryCoordinator.ClearPending("AnnouncementViewModel.LoadHome");
+            await metadataService.InitializeAsync().AsTask().WaitAsync(token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            bool success = await load(token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            if (success) networkRetryCoordinator.ClearPending(key);
+            else networkRetryCoordinator.MarkPending(key, SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+            return success;
         }
-
-        return success;
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception exception) when (IsNetworkRelatedException(exception))
+        {
+            token.ThrowIfCancellationRequested();
+            networkRetryCoordinator.MarkPending(key, SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+            return false;
+        }
     }
 
     private static bool IsNetworkRelatedException(Exception ex)
     {
         return ex switch
         {
-            HttpRequestException httpRequestException => HttpRequestExceptionHandling.HttpRequestExceptionToNetworkError(httpRequestException) is not NetworkError.NULL,
+            HttpRequestException httpRequestException => HttpRequestExceptionHandling.HttpRequestExceptionToNetworkError(httpRequestException) is not NetworkError.NULL
+                || httpRequestException.StatusCode is System.Net.HttpStatusCode.RequestTimeout
+                || (httpRequestException.StatusCode.HasValue && (int)httpRequestException.StatusCode.Value >= 500),
             TimeoutException => true,
-            TaskCanceledException => true,
+            IOException => true,
+            OperationCanceledException => true,
             _ => false,
         };
     }
@@ -423,10 +517,10 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
         taskContext.InvokeOnMainThread(InitializeDashboard);
     }
 
-    private void MarkHomePendingForRetry()
+    private void MarkCalendarPendingForRetry()
     {
-        Interlocked.Exchange(ref shouldRefreshDashboardOnSuccess, 1);
-        networkRetryCoordinator.MarkPending("AnnouncementViewModel.LoadHome", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+        if (XamlApplicationLifetime.Exiting || CancellationToken.IsCancellationRequested) return;
+        networkRetryCoordinator.MarkPending(CalendarRetryKey, SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
     }
 
     private void UpdateDisplayedActivityCards()

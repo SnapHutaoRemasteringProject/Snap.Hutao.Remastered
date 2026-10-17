@@ -221,7 +221,7 @@
                                     Padding="0"
                                     VerticalAlignment="Center"
                                     Command="{Binding DataContext.RemoveAspectRatioCommand, Source={StaticResource BindingProxy}}"
-                                    CommandParameter="{x:Bind Mode=OneWay}"
+                                    CommandParameter="{Binding Mode=OneWay}"
                                     Content="&#xE711;"
                                     FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                     Style="{ThemeResource SettingButtonStyle}"/>
@@ -237,7 +237,7 @@
                                     VerticalAlignment="Center"
                                     shuxcth:ControlMaterialState.IsManaged="True"
                                     Command="{Binding DataContext.RemoveAspectRatioCommand, Source={StaticResource BindingProxy}}"
-                                    CommandParameter="{x:Bind Mode=OneWay}"
+                                    CommandParameter="{Binding Mode=OneWay}"
                                     Content="&#xE711;"
                                     FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                     Style="{ThemeResource SettingButtonStyle}"/>

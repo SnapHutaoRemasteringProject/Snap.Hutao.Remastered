@@ -6,6 +6,9 @@ namespace Snap.Hutao.Remastered;
 // Place to store critical application state
 public static class XamlApplicationLifetime
 {
+    private static readonly CancellationTokenSource Shutdown = new();
+
+    public static CancellationToken ShutdownToken { get; } = Shutdown.Token;
     public static bool DispatcherQueueInitialized { get => Volatile.Read(ref field); set => Volatile.Write(ref field, value); }
 
     public static bool CultureInfoInitialized { get => Volatile.Read(ref field); set => Volatile.Write(ref field, value); }
@@ -16,7 +19,15 @@ public static class XamlApplicationLifetime
 
     public static bool IsFirstRunAfterUpdate { get => Volatile.Read(ref field); set => Volatile.Write(ref field, value); }
 
-    public static bool Exiting { get => Volatile.Read(ref field); set => Volatile.Write(ref field, value); }
+    public static bool Exiting
+    {
+        get => Volatile.Read(ref field);
+        set
+        {
+            Volatile.Write(ref field, value);
+            if (value) Shutdown.Cancel();
+        }
+    }
 
     public static bool Exited { get => Volatile.Read(ref field); set => Volatile.Write(ref field, value); }
 

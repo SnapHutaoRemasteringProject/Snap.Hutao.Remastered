@@ -28,8 +28,8 @@ public sealed partial class BackgroundMediaPlayerService : IBackgroundMediaPlaye
     private readonly ILogger<BackgroundMediaPlayerService> logger;
     private readonly IServiceProvider serviceProvider;
 
-    // The player owned by the MediaPlayerElement of the current window. It is only accessed from the
-    // UI thread; Stop() detaches it atomically so that it can be disposed exactly once.
+    // Owned by this service and borrowed by MediaPlayerElement. Detach the
+    // element before Stop closes the player; only the UI thread accesses it.
     private MediaPlayer? mediaPlayer;
 
     [GeneratedConstructor]
@@ -51,16 +51,6 @@ public sealed partial class BackgroundMediaPlayerService : IBackgroundMediaPlaye
         if (player is null)
         {
             return;
-        }
-
-        try
-        {
-            player.Source = null;
-        }
-        catch (Exception ex) when (ex is COMException or ObjectDisposedException)
-        {
-            // The window, and with it the player, is already being torn down.
-            logger.LogWarning(ex, "Failed to clear the source of the background media player");
         }
 
         try
@@ -89,13 +79,13 @@ public sealed partial class BackgroundMediaPlayerService : IBackgroundMediaPlaye
         element.AutoPlay = true;
         element.AreTransportControlsEnabled = false;
 
-        if (element.MediaPlayer is not null)
-        {
-            element.MediaPlayer.IsMuted = appOptions.IsBackgroundMediaMuted.Value;
-            element.MediaPlayer.IsLoopingEnabled = appOptions.IsBackgroundMediaLooping.Value;
-        }
-
-        mediaPlayer = element.MediaPlayer;
+        // Own the player explicitly. A MediaPlayerElement-created player may be
+        // closed by the framework before Unloaded calls Stop on that same object.
+        MediaPlayer player = mediaPlayer ??= new MediaPlayer();
+        player.AutoPlay = true;
+        player.IsMuted = appOptions.IsBackgroundMediaMuted.Value;
+        player.IsLoopingEnabled = appOptions.IsBackgroundMediaLooping.Value;
+        element.SetMediaPlayer(player);
 
         Uri? videoUri = appOptions.BackgroundMediaType.Value switch
         {
@@ -107,13 +97,12 @@ public sealed partial class BackgroundMediaPlayerService : IBackgroundMediaPlaye
         await taskContext.SwitchToMainThreadAsync();
         token.ThrowIfCancellationRequested();
 
-        element.Source = videoUri is null ? null : MediaSource.CreateFromUri(videoUri);
+        if (!ReferenceEquals(mediaPlayer, player)) return;
+        player.Source = videoUri is null ? null : MediaSource.CreateFromUri(videoUri);
 
-        // The underlying MediaPlayer is created lazily by the MediaPlayerElement when a source is
-        // assigned, so the player can only be reached after the switch above. A background video
-        // behaves like a wallpaper and must not appear in the system media transport controls
-        // (SMTC) nor react to the hardware media keys.
-        DisableSystemMediaTransportControls(element.MediaPlayer);
+        // Wallpaper playback must not appear in system transport controls or
+        // respond to media keys; keep this on the explicitly owned player.
+        DisableSystemMediaTransportControls(player);
     }
 
     private async ValueTask<Uri?> GetLocalFolderVideoUriAsync(CancellationToken token)

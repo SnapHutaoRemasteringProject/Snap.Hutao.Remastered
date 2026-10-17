@@ -5,6 +5,7 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Snap.Hutao.Remastered.Core.Graphics;
 using Snap.Hutao.Remastered.UI.Windowing.Abstraction;
+using Snap.Hutao.Remastered.UI.Xaml;
 using Windows.Foundation;
 using Windows.Graphics;
 
@@ -14,6 +15,7 @@ public static class XamlWindowRegionRects
 {
     public static void Update(Window window)
     {
+        if (XamlApplicationLifetime.Exiting || window.Content is not FrameworkElement { IsLoaded: true }) return;
         if (window is not IXamlWindowExtendContentIntoTitleBar xamlWindow)
         {
             return;
@@ -30,13 +32,16 @@ public static class XamlWindowRegionRects
             FrameworkElement element = xamlWindow.TitleBarCaptionAccess;
             Point position = element.TransformToVisual(window.Content).TransformPoint(default);
             RectInt32 rect = RectInt32Convert.RectInt32(position, element.ActualSize).Scale(window.RasterizationScale);
-            inputNonClientPointerSource.SetRegionRects(NonClientRegionKind.Caption, [rect]);
+            if (element.Visibility is Visibility.Visible && rect.Size > 0)
+                inputNonClientPointerSource.SetRegionRects(NonClientRegionKind.Caption, [rect]);
+            else
+                inputNonClientPointerSource.ClearRegionRects(NonClientRegionKind.Caption);
         }
 
         List<RectInt32> passthrough = [];
         foreach (FrameworkElement element in xamlWindow.TitleBarPassthrough)
         {
-            if (element.Visibility is not Visibility.Visible)
+            if (!element.IsLoaded || element.Visibility is not Visibility.Visible)
             {
                 continue;
             }
@@ -53,6 +58,10 @@ public static class XamlWindowRegionRects
         if (passthrough.Count > 0)
         {
             inputNonClientPointerSource.SetRegionRects(NonClientRegionKind.Passthrough, [.. passthrough]);
+        }
+        else
+        {
+            inputNonClientPointerSource.ClearRegionRects(NonClientRegionKind.Passthrough);
         }
     }
 }

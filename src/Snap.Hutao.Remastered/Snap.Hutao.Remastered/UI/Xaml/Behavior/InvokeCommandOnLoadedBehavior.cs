@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.WinUI.Behaviors;
+using CommunityToolkit.Mvvm.Input;
 using JetBrains.Annotations;
 using Microsoft.UI.Xaml;
 using Snap.Hutao.Remastered.UI.Input;
@@ -13,7 +14,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Behavior;
 [DependencyProperty<object>("CommandParameter")]
 public sealed partial class InvokeCommandOnLoadedBehavior : BehaviorBase<UIElement>
 {
-    private bool executed;
+    private ICommand? executedCommand;
 
     protected override void OnAttached()
     {
@@ -54,16 +55,29 @@ public sealed partial class InvokeCommandOnLoadedBehavior : BehaviorBase<UIEleme
 
     private void TryExecuteCommand()
     {
-        if (AssociatedObject is null)
+        if (XamlApplicationLifetime.Exiting || AssociatedObject is not FrameworkElement { IsLoaded: true })
         {
             return;
         }
 
-        if (executed)
+        if (ReferenceEquals(executedCommand, Command))
         {
             return;
         }
 
-        executed = Command.TryExecute(CommandParameter);
+        if (Command is IAsyncRelayCommand asyncCommand)
+        {
+            if (asyncCommand.CanExecute(CommandParameter))
+            {
+                executedCommand = Command;
+                // Execute() uses async-void exception dispatch back to XAML.
+                // Observe the task so cancellation during unloading is handled.
+                asyncCommand.ExecuteAsync(CommandParameter).SafeForget();
+            }
+        }
+        else
+        {
+            if (Command.TryExecute(CommandParameter)) executedCommand = Command;
+        }
     }
 }

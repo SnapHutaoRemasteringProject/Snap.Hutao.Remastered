@@ -7,5 +7,5 @@ namespace Snap.Hutao.Remastered.Service.Git;
 
 public interface IGitRepositoryService
 {
-    ValueTask<ValueResult<bool, ValueDirectory>> EnsureRepositoryAsync(string name);
+    ValueTask<ValueResult<bool, ValueDirectory>> EnsureRepositoryAsync(string name, CancellationToken token = default);
 }

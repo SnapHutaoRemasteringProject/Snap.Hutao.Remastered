@@ -600,6 +600,7 @@ public sealed partial class ControlMaterialState : DependencyObject
 
     private static void OnManagedLoaded(object sender, RoutedEventArgs args)
     {
+        if (XamlApplicationLifetime.Exiting) return;
         if (sender is not FrameworkElement element) return;
         // The inactive SwitchPresenter branch need not have been loaded. Resolve
         // its default style before copying layout DPs (notably ComboBox.Padding).
@@ -658,7 +659,7 @@ public sealed partial class ControlMaterialState : DependencyObject
     // Detach without writing composition properties while the brush is disconnecting.
     private static void OnManagedUnloaded(object sender, RoutedEventArgs args)
     {
-        if (sender is LiquidGlassSearchBox search && GetNativeControl(search) is XamlAutoSuggestBox nativeSearch)
+        if (!XamlApplicationLifetime.Exiting && sender is LiquidGlassSearchBox search && GetNativeControl(search) is XamlAutoSuggestBox nativeSearch)
             MoveSearchBehaviors(search.InnerAutoSuggestBox, nativeSearch);
         if (sender is FrameworkElement element) ManagedControls.Remove(element);
     }
