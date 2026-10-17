@@ -34,6 +34,8 @@ namespace Snap.Hutao.Remastered.ViewModel;
 [Service(ServiceLifetime.Transient)]
 public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
 {
+    private const string StartupRetryKey = "MainViewModel.Startup";
+    private const string UpdateRetryKey = "MainViewModel.CheckUpdate";
     private readonly ICurrentXamlWindowReference currentXamlWindowReference;
     private readonly IMetadataService metadataService;
     private readonly IUpdateService updateService;
@@ -43,7 +45,9 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
     private readonly App app;
     private DispatcherTimer? successHideTimer;
     private IDisposable? startupRetryRegistration;
+    private IDisposable? updateRetryRegistration;
     private readonly AsyncLoadOperation startupLoad = new();
+    private readonly AsyncLoadOperation updateLoad = new();
 
     [GeneratedConstructor]
     public partial MainViewModel(IServiceProvider serviceProvider);
@@ -76,6 +80,7 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
             successHideTimer?.Stop();
             BackgroundActivityOptions.MetadataInitialization.PropertyChanged -= OnMetadataInitializationPropertyChanged;
             startupRetryRegistration?.Dispose();
+            updateRetryRegistration?.Dispose();
             Uninitialize();
         }
 
@@ -85,7 +90,8 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
         BackgroundActivityOptions.MetadataInitialization.PropertyChanged += OnMetadataInitializationPropertyChanged;
-        startupRetryRegistration ??= networkRetryCoordinator.Register("MainViewModel.Startup", RetryStartupAsync);
+        startupRetryRegistration ??= networkRetryCoordinator.Register(StartupRetryKey, RetryStartupAsync);
+        updateRetryRegistration ??= networkRetryCoordinator.Register(UpdateRetryKey, RetryUpdateAsync);
 
         ShowUpdateLogWindowAfterUpdate();
         NotifyIfDataFolderHasReparsePoint();
@@ -113,14 +119,17 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
         }
     }
 
-    private async ValueTask CheckUpdateAsync(CancellationToken token)
+    private async ValueTask<bool> CheckUpdateAsync(CancellationToken token)
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Check for update", "MainViewModel.Command"));
 
         using CancellationTokenSource timeout = CancellationTokenSource.CreateLinkedTokenSource(token);
         timeout.CancelAfter(TimeSpan.FromSeconds(3));
         CheckUpdateResult checkUpdateResult = await updateService.CheckUpdateAsync(timeout.Token).ConfigureAwait(false);
+        token.ThrowIfCancellationRequested();
+        if (XamlApplicationLifetime.Exiting || IsViewUnloaded.Value) return false;
         await updateService.TriggerUpdateAsync(checkUpdateResult, token).ConfigureAwait(false);
+        return true;
     }
 
     private void NotifyIfDataFolderHasReparsePoint()
@@ -163,8 +172,49 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
     {
         using CancellationTokenSource linked = CancellationTokenSource.CreateLinkedTokenSource(token, CancellationToken, XamlApplicationLifetime.ShutdownToken);
         bool success = await startupLoad.RunAsync(ct => RetryStartupCoreAsync(ct).AsTask(), linked.Token).ConfigureAwait(false);
-        if (success) await PublishInitializationAsync(true, linked.Token).ConfigureAwait(false);
+        if (success)
+        {
+            await PublishInitializationAsync(true, linked.Token).ConfigureAwait(false);
+            // Optional updates must not hold IsInitialized false and veto X/Alt+F4.
+            if (IsInitialized && !IsViewUnloaded.Value && !XamlApplicationLifetime.Exiting)
+                RetryUpdateAsync(linked.Token).AsTask().SafeForget();
+        }
         return success;
+    }
+
+    private async ValueTask<bool> RetryUpdateAsync(CancellationToken token)
+    {
+        using CancellationTokenSource linked = CancellationTokenSource.CreateLinkedTokenSource(token, CancellationToken, XamlApplicationLifetime.ShutdownToken);
+        token = linked.Token;
+        try
+        {
+            await Task.CompletedTask.ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
+            token.ThrowIfCancellationRequested();
+            if (IsViewUnloaded.Value || XamlApplicationLifetime.Exiting) return true;
+            if (RepositoryCatalog.IsOffline)
+            {
+                networkRetryCoordinator.MarkPending(UpdateRetryKey, string.Empty);
+                return false;
+            }
+
+            bool success = await updateLoad.RunAsync(ct => CheckUpdateAsync(ct).AsTask(), token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            if (IsViewUnloaded.Value || XamlApplicationLifetime.Exiting) return true;
+            if (success) networkRetryCoordinator.ClearPending(UpdateRetryKey);
+            else networkRetryCoordinator.MarkPending(UpdateRetryKey, SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+            return success;
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception exception) when (IsNetworkRelatedException(exception))
+        {
+            token.ThrowIfCancellationRequested();
+            if (!IsViewUnloaded.Value && !XamlApplicationLifetime.Exiting)
+                networkRetryCoordinator.MarkPending(UpdateRetryKey, SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+            return false;
+        }
     }
 
     private async ValueTask<bool> RetryStartupCoreAsync(CancellationToken token)
@@ -173,13 +223,12 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
         {
             if (!await metadataService.InitializepublicAsync(token).ConfigureAwait(false))
             {
-                networkRetryCoordinator.MarkPending("MainViewModel.Startup", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+                networkRetryCoordinator.MarkPending(StartupRetryKey, SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
                 return false;
             }
 
             await userService.RetryResumeUninitializedUsersAsync(token).ConfigureAwait(false);
-            if (!RepositoryCatalog.IsOffline) await CheckUpdateAsync(token).ConfigureAwait(false);
-            networkRetryCoordinator.ClearPending("MainViewModel.Startup");
+            networkRetryCoordinator.ClearPending(StartupRetryKey);
             return true;
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested)
@@ -190,7 +239,7 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
         {
             if (IsNetworkRelatedException(ex))
             {
-                networkRetryCoordinator.MarkPending("MainViewModel.Startup", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
+                networkRetryCoordinator.MarkPending(StartupRetryKey, SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
                 return false;
             }
 

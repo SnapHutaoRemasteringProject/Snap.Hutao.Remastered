@@ -118,3 +118,11 @@ mini dump 显示 `0xC000027B`，内部 stowed HRESULT 为 `0x80004004/E_ABORT`�
 后台只管理已有的集合驱动自动展开/空列表自动收起、首次加载状态、50ms 清空和卸载/退出 Stop/Reset。手动交互不再依赖后台 expanded 缓存，也不由自动动画的迟到完成强制覆盖显隐；自动完成先核对当前 Helper 的 Source/Target。检查已安装 DLL 的 Execute IL，原 StartTransitionAction 的确调用不带令牌的 StartAsync 并丢弃 Task，这个组件原行为保留，不声称手动 Action 获得了与托管自动动画完全相同的任务观察保护。
 
 XML 检查通过四处原 Action 的层级、两个材质的正反向绑定以及无重复 Click 处理器。直接链接生产 InfoBarView 的托管隔离检查通过自动/手动方向替换、卸载停止、迟到结果、清空计时器与布局卸载重入；平台 Action/Helper 为适配模型，不代替真实 XAML Interactivity 执行、原生动画复测或完整解决方案编译。
+
+## Review：慢更新检查阻止关窗
+
+评论有效。MainViewModel.LoadOverrideAsync 返回 RetryStartupAsync 的结果，而 RetryStartupCoreAsync 原先把元数据、用户恢复和更新检查串在同一个成功条件里。更新请求自己的 3 秒期限取消并不代表整个启动令牌取消，会落入网络失败分支返回 false；MainWindow.OnWindowClosing 又拒绝 IsInitialized=false 的窗口，因此首页已可用时仍可能被更新失败阻止 X/Alt+F4。
+
+修复仅分离这两个状态，不删除关窗保护：Startup 重试只负责元数据与用户恢复步骤；完成并在 UI 发布 IsInitialized=true 后，再独立启动可选更新检查。更新使用独立的 MainViewModel.CheckUpdate 注册和请求合并/成功复用，离线或超时只影响该更新任务，不重新标记 Startup 失败，也不把 IsInitialized 改回 false。窗口卸载/退出时迟到结果不能启动更新提示，Dispose 同时释放两个重试注册。更新检查仍保留原 3 秒单次期限。
+
+验证使用实际 MainViewModel 启动/更新方法体、基础 ViewModel 和实际 MainWindow.OnWindowClosing 方法体，外部服务与 WinUI 适配：更新挂起、实际 3 秒截止取消、连续三次超时失败均保持允许关窗；元数据失败和用户恢复异常仍保留必要初始化门槛；元数据恢复后可以关窗；离线更新恢复及成功复用不重复请求/提示；窗口取消卸载后不接受迟到更新提示，均通过。
