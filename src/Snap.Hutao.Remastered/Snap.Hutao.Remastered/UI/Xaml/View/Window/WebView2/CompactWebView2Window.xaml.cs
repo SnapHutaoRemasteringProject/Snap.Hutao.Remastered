@@ -84,7 +84,7 @@ public sealed partial class CompactWebView2Window : Microsoft.UI.Xaml.Window,
 
         InitializeComponent();
 
-        TitleBarPassthrough = [GlassPresenter_2769];
+        TitleBarPassthrough = [SourceTextBox];
 
         RootGrid.DataContext = this;
 

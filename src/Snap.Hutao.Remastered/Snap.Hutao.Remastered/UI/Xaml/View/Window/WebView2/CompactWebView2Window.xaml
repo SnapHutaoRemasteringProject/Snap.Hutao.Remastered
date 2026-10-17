@@ -25,112 +25,22 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <cwc:SwitchPresenter
-                    x:Name="GlassPresenter_1099"
+                <Button
+                    x:Name="GoBackButton"
                     Grid.Column="0"
-                    HorizontalContentAlignment="Stretch"
-                    VerticalContentAlignment="Stretch"
-                    IsTabStop="False"
-                    Tag="LiquidGlass:Button"
-                    Visibility="{x:Bind GoBackButton.Visibility, Mode=OneWay}"
-                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                    <cwc:Case>
-                        <cwc:Case.Value>
-                            <x:Int32>0</x:Int32>
-                        </cwc:Case.Value>
-                        <Button
-                            x:Name="GoBackButton"
-                            Height="48"
-                            MinWidth="48"
-                            Command="{x:Bind GoBackCommand}"
-                            DataContext="{x:Bind GlassPresenter_1099.DataContext, Mode=OneWay}"
-                            FontSize="12"
-                            RequestedTheme="{x:Bind GlassPresenter_1099.ActualTheme, Mode=OneWay}"
-                            Style="{StaticResource NavigationBackButtonSmallStyle}"/>
-                    </cwc:Case>
-                    <cwc:Case>
-                        <cwc:Case.Value>
-                            <x:Int32>1</x:Int32>
-                        </cwc:Case.Value>
-                        <wl:LiquidGlassButton
-                            x:Name="GoBackButtonGlass"
-                            Width="{x:Bind GoBackButton.Width, Mode=OneWay}"
-                            Height="{x:Bind GoBackButton.Height, Mode=OneWay}"
-                            MinWidth="{x:Bind GoBackButton.MinWidth, Mode=OneWay}"
-                            MinHeight="{x:Bind GoBackButton.MinHeight, Mode=OneWay}"
-                            MaxWidth="{x:Bind GoBackButton.MaxWidth, Mode=OneWay}"
-                            MaxHeight="{x:Bind GoBackButton.MaxHeight, Mode=OneWay}"
-                            Padding="{x:Bind GoBackButton.Padding, Mode=OneWay}"
-                            shuxcth:ControlMaterialState.IsManaged="True"
-                            shuxcth:ControlMaterialState.NativeControl="{x:Bind GoBackButton, Mode=OneWay}"
-                            shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                            BorderThickness="{x:Bind GoBackButton.BorderThickness, Mode=OneWay}"
-                            Command="{x:Bind GoBackButton.Command, Mode=OneWay}"
-                            CommandParameter="{x:Bind GoBackButton.CommandParameter, Mode=OneWay}"
-                            Content="{x:Bind GoBackButton.Content, Mode=OneWay}"
-                            FlowDirection="{x:Bind GoBackButton.FlowDirection, Mode=OneWay}"
-                            FontFamily="{x:Bind GoBackButton.FontFamily, Mode=OneWay}"
-                            FontSize="{x:Bind GoBackButton.FontSize, Mode=OneWay}"
-                            FontStyle="{x:Bind GoBackButton.FontStyle, Mode=OneWay}"
-                            FontWeight="{x:Bind GoBackButton.FontWeight, Mode=OneWay}"
-                            Foreground="{x:Bind GoBackButton.Foreground, Mode=OneWay}"
-                            IsEnabled="{x:Bind GoBackButton.IsEnabled, Mode=OneWay}"
-                            Style="{StaticResource NavigationBackButtonSmallStyle}"/>
-                    </cwc:Case>
-                </cwc:SwitchPresenter>
-                <cwc:SwitchPresenter
-                    x:Name="GlassPresenter_1432"
+                    Height="48"
+                    MinWidth="48"
+                    Command="{x:Bind GoBackCommand}"
+                    FontSize="12"
+                    Style="{StaticResource NavigationBackButtonSmallStyle}"/>
+                <Button
+                    x:Name="RefreshButton"
                     Grid.Column="1"
-                    HorizontalContentAlignment="Stretch"
-                    VerticalContentAlignment="Stretch"
-                    IsTabStop="False"
-                    Tag="LiquidGlass:Button"
-                    Visibility="{x:Bind RefreshButton.Visibility, Mode=OneWay}"
-                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                    <cwc:Case>
-                        <cwc:Case.Value>
-                            <x:Int32>0</x:Int32>
-                        </cwc:Case.Value>
-                        <Button
-                            x:Name="RefreshButton"
-                            Height="48"
-                            MinWidth="48"
-                            Content="&#xE72C;"
-                            DataContext="{x:Bind GlassPresenter_1432.DataContext, Mode=OneWay}"
-                            FontSize="12"
-                            RequestedTheme="{x:Bind GlassPresenter_1432.ActualTheme, Mode=OneWay}"
-                            Style="{StaticResource NavigationBackButtonSmallStyle}"/>
-                    </cwc:Case>
-                    <cwc:Case>
-                        <cwc:Case.Value>
-                            <x:Int32>1</x:Int32>
-                        </cwc:Case.Value>
-                        <wl:LiquidGlassButton
-                            x:Name="RefreshButtonGlass"
-                            Width="{x:Bind RefreshButton.Width, Mode=OneWay}"
-                            Height="{x:Bind RefreshButton.Height, Mode=OneWay}"
-                            MinWidth="{x:Bind RefreshButton.MinWidth, Mode=OneWay}"
-                            MinHeight="{x:Bind RefreshButton.MinHeight, Mode=OneWay}"
-                            MaxWidth="{x:Bind RefreshButton.MaxWidth, Mode=OneWay}"
-                            MaxHeight="{x:Bind RefreshButton.MaxHeight, Mode=OneWay}"
-                            Padding="{x:Bind RefreshButton.Padding, Mode=OneWay}"
-                            shuxcth:ControlMaterialState.IsManaged="True"
-                            shuxcth:ControlMaterialState.NativeControl="{x:Bind RefreshButton, Mode=OneWay}"
-                            shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                            BorderThickness="{x:Bind RefreshButton.BorderThickness, Mode=OneWay}"
-                            Command="{x:Bind RefreshButton.Command, Mode=OneWay}"
-                            CommandParameter="{x:Bind RefreshButton.CommandParameter, Mode=OneWay}"
-                            Content="{x:Bind RefreshButton.Content, Mode=OneWay}"
-                            FlowDirection="{x:Bind RefreshButton.FlowDirection, Mode=OneWay}"
-                            FontFamily="{x:Bind RefreshButton.FontFamily, Mode=OneWay}"
-                            FontSize="{x:Bind RefreshButton.FontSize, Mode=OneWay}"
-                            FontStyle="{x:Bind RefreshButton.FontStyle, Mode=OneWay}"
-                            FontWeight="{x:Bind RefreshButton.FontWeight, Mode=OneWay}"
-                            Foreground="{x:Bind RefreshButton.Foreground, Mode=OneWay}"
-                            IsEnabled="{x:Bind RefreshButton.IsEnabled, Mode=OneWay}"
-                            Style="{StaticResource NavigationBackButtonSmallStyle}"/>
-                    </cwc:Case>
-                </cwc:SwitchPresenter>
+                    Height="48"
+                    MinWidth="48"
+                    Content="&#xE72C;"
+                    FontSize="12"
+                    Style="{StaticResource NavigationBackButtonSmallStyle}"/>
                 <ProgressRing
                     x:Name="ProgressRing"
                     Grid.Column="2"
@@ -154,109 +64,25 @@
                         SizeChanged="OnDocumentTitleSizeChanged"
                         TextTrimming="CharacterEllipsis"
                         TextWrapping="NoWrap"/>
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_2769"
+                    <TextBox
+                        x:Name="SourceTextBox"
                         Grid.Column="1"
                         Margin="8"
                         VerticalAlignment="Top"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Loaded="OnAddressPresenterLoaded"
-                        SizeChanged="OnDocumentTitleSizeChanged"
-                        Tag="LiquidGlass:TextBox"
-                        Visibility="{x:Bind SourceTextBox.Visibility, Mode=OneWay}"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <TextBox
-                                x:Name="SourceTextBox"
-                                VerticalAlignment="Top"
-                                DataContext="{x:Bind GlassPresenter_2769.DataContext, Mode=OneWay}"
-                                KeyDown="OnSourceTextBoxKeyDown"
-                                RequestedTheme="{x:Bind GlassPresenter_2769.ActualTheme, Mode=OneWay}"
-                                Text="{x:Bind Source, Mode=TwoWay}"/>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassTextBox
-                                x:Name="SourceTextBoxGlass"
-                                Width="{x:Bind SourceTextBox.Width, Mode=OneWay}"
-                                Height="{x:Bind SourceTextBox.Height, Mode=OneWay}"
-                                MinWidth="{x:Bind SourceTextBox.MinWidth, Mode=OneWay}"
-                                MinHeight="{x:Bind SourceTextBox.MinHeight, Mode=OneWay}"
-                                MaxWidth="{x:Bind SourceTextBox.MaxWidth, Mode=OneWay}"
-                                MaxHeight="{x:Bind SourceTextBox.MaxHeight, Mode=OneWay}"
-                                Padding="{x:Bind SourceTextBox.Padding, Mode=OneWay}"
-                                VerticalAlignment="Top"
-                                shuxcth:ControlMaterialState.IsManaged="True"
-                                shuxcth:ControlMaterialState.NativeControl="{x:Bind SourceTextBox, Mode=OneWay}"
-                                shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                                AcceptsReturn="{x:Bind SourceTextBox.AcceptsReturn, Mode=OneWay}"
-                                BorderThickness="{x:Bind SourceTextBox.BorderThickness, Mode=OneWay}"
-                                CharacterCasing="{x:Bind SourceTextBox.CharacterCasing, Mode=OneWay}"
-                                FlowDirection="{x:Bind SourceTextBox.FlowDirection, Mode=OneWay}"
-                                FontFamily="{x:Bind SourceTextBox.FontFamily, Mode=OneWay}"
-                                FontSize="{x:Bind SourceTextBox.FontSize, Mode=OneWay}"
-                                FontStyle="{x:Bind SourceTextBox.FontStyle, Mode=OneWay}"
-                                FontWeight="{x:Bind SourceTextBox.FontWeight, Mode=OneWay}"
-                                Foreground="{x:Bind SourceTextBox.Foreground, Mode=OneWay}"
-                                Header="{x:Bind SourceTextBox.Header, Mode=OneWay}"
-                                HeaderTemplate="{x:Bind SourceTextBox.HeaderTemplate, Mode=OneWay}"
-                                InputScope="{x:Bind SourceTextBox.InputScope, Mode=OneWay}"
-                                IsEnabled="{x:Bind SourceTextBox.IsEnabled, Mode=OneWay}"
-                                IsReadOnly="{x:Bind SourceTextBox.IsReadOnly, Mode=OneWay}"
-                                KeyDown="OnSourceTextBoxKeyDown"
-                                MaxLength="{x:Bind SourceTextBox.MaxLength, Mode=OneWay}"
-                                PlaceholderText="{x:Bind SourceTextBox.PlaceholderText, Mode=OneWay}"
-                                SelectionHighlightColor="{x:Bind SourceTextBox.SelectionHighlightColor, Mode=OneWay}"
-                                Text="{x:Bind SourceTextBox.Text, Mode=TwoWay}"
-                                TextAlignment="{x:Bind SourceTextBox.TextAlignment, Mode=OneWay}"
-                                TextWrapping="{x:Bind SourceTextBox.TextWrapping, Mode=OneWay}"/>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
+                        KeyDown="OnSourceTextBoxKeyDown"
+                        Text="{x:Bind Source, Mode=TwoWay}"/>
                 </Grid>
                 <StackPanel
                     Grid.Column="4"
                     Margin="48,0,0,0"
                     Orientation="Horizontal">
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_3259"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Tag="LiquidGlass:Button"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <Button
-                                Height="48"
-                                MinWidth="44"
-                                Command="{x:Bind CloseCommand}"
-                                Content="&#xE711;"
-                                FontSize="12"
-                                Style="{StaticResource NavigationBackButtonSmallStyle}"/>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassButton
-                                Height="48"
-                                MinWidth="44"
-                                shuxcth:ControlMaterialState.IsManaged="True"
-                                Command="{x:Bind CloseCommand}"
-                                Content="&#xE711;"
-                                FontSize="12"
-                                Style="{StaticResource NavigationBackButtonSmallStyle}"/>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
+                    <Button
+                        Height="48"
+                        MinWidth="44"
+                        Command="{x:Bind CloseCommand}"
+                        Content="&#xE711;"
+                        FontSize="12"
+                        Style="{StaticResource NavigationBackButtonSmallStyle}"/>
                 </StackPanel>
             </Grid>
             <InfoBar
@@ -280,66 +106,16 @@
                 Margin="0"
                 DefaultBackgroundColor="Transparent"/>
         </Grid>
-        <cwc:SwitchPresenter
-            x:Name="GlassPresenter_4482"
+        <Button
+            x:Name="ToggleLockButton"
+            Height="48"
+            MinWidth="48"
             Margin="0,0,48,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            IsTabStop="False"
-            Tag="LiquidGlass:Button"
-            Visibility="{x:Bind ToggleLockButton.Visibility, Mode=OneWay}"
-            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>0</x:Int32>
-                </cwc:Case.Value>
-                <Button
-                    x:Name="ToggleLockButton"
-                    Height="48"
-                    MinWidth="48"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Command="{x:Bind ToggleLockCommand}"
-                    Content="&#xE785;"
-                    DataContext="{x:Bind GlassPresenter_4482.DataContext, Mode=OneWay}"
-                    FontSize="12"
-                    RequestedTheme="{x:Bind GlassPresenter_4482.ActualTheme, Mode=OneWay}"
-                    Style="{StaticResource NavigationBackButtonSmallStyle}"/>
-            </cwc:Case>
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>1</x:Int32>
-                </cwc:Case.Value>
-                <wl:LiquidGlassButton
-                    x:Name="ToggleLockButtonGlass"
-                    Width="{x:Bind ToggleLockButton.Width, Mode=OneWay}"
-                    Height="{x:Bind ToggleLockButton.Height, Mode=OneWay}"
-                    MinWidth="{x:Bind ToggleLockButton.MinWidth, Mode=OneWay}"
-                    MinHeight="{x:Bind ToggleLockButton.MinHeight, Mode=OneWay}"
-                    MaxWidth="{x:Bind ToggleLockButton.MaxWidth, Mode=OneWay}"
-                    MaxHeight="{x:Bind ToggleLockButton.MaxHeight, Mode=OneWay}"
-                    Padding="{x:Bind ToggleLockButton.Padding, Mode=OneWay}"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    shuxcth:ControlMaterialState.NativeControl="{x:Bind ToggleLockButton, Mode=OneWay}"
-                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                    BorderThickness="{x:Bind ToggleLockButton.BorderThickness, Mode=OneWay}"
-                    Command="{x:Bind ToggleLockButton.Command, Mode=OneWay}"
-                    CommandParameter="{x:Bind ToggleLockButton.CommandParameter, Mode=OneWay}"
-                    Content="{x:Bind ToggleLockButton.Content, Mode=OneWay}"
-                    FlowDirection="{x:Bind ToggleLockButton.FlowDirection, Mode=OneWay}"
-                    FontFamily="{x:Bind ToggleLockButton.FontFamily, Mode=OneWay}"
-                    FontSize="{x:Bind ToggleLockButton.FontSize, Mode=OneWay}"
-                    FontStyle="{x:Bind ToggleLockButton.FontStyle, Mode=OneWay}"
-                    FontWeight="{x:Bind ToggleLockButton.FontWeight, Mode=OneWay}"
-                    Foreground="{x:Bind ToggleLockButton.Foreground, Mode=OneWay}"
-                    IsEnabled="{x:Bind ToggleLockButton.IsEnabled, Mode=OneWay}"
-                    Style="{StaticResource NavigationBackButtonSmallStyle}"/>
-            </cwc:Case>
-        </cwc:SwitchPresenter>
+            Command="{x:Bind ToggleLockCommand}"
+            Content="&#xE785;"
+            FontSize="12"
+            Style="{StaticResource NavigationBackButtonSmallStyle}"/>
     </Grid>
-
 </Window>
