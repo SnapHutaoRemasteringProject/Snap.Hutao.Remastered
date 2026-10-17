@@ -390,7 +390,7 @@
                                         DataContext="{x:Bind SearchPresenter_19087.DataContext, Mode=OneWay}"
                                         PlaceholderText="{shuxm:ResourceString Name=ViewPageAchievementSearchPlaceholder}"
                                         QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
-                                        RequestedTheme="{x:Bind SearchPresenter_19087.ActualTheme, Mode=OneWay}"
+                                        shuxcth:ThemeSynchronization.Source="{x:Bind SearchPresenter_19087}"
                                         Text="{x:Bind ((shva:AchievementViewModel)DataContext).SearchText, Mode=TwoWay}">
                                         <AutoSuggestBox.TextBoxStyle>
                                             <Style BasedOn="{StaticResource AutoSuggestBoxTextBoxStyle}" TargetType="TextBox">
@@ -429,7 +429,7 @@
                                         MaxSuggestionListHeight="{x:Bind NativeSearch_19087.MaxSuggestionListHeight, Mode=OneWay}"
                                         PlaceholderText="{x:Bind NativeSearch_19087.PlaceholderText, Mode=OneWay}"
                                         QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
-                                        RequestedTheme="{x:Bind SearchPresenter_19087.ActualTheme, Mode=OneWay}"
+                                        shuxcth:ThemeSynchronization.Source="{x:Bind SearchPresenter_19087}"
                                         Text="{x:Bind NativeSearch_19087.Text, Mode=TwoWay}"
                                         TextMemberPath="{x:Bind NativeSearch_19087.TextMemberPath, Mode=OneWay}"
                                         UpdateTextOnSelect="{x:Bind NativeSearch_19087.UpdateTextOnSelect, Mode=OneWay}"/>
@@ -456,7 +456,7 @@
                                             DataContext="{x:Bind GlassPresenter_18149.DataContext, Mode=OneWay}"
                                             DisplayMemberPath="Name"
                                             ItemsSource="{x:Bind ((shva:AchievementViewModel)DataContext).Archives, Mode=OneWay}"
-                                            RequestedTheme="{x:Bind GlassPresenter_18149.ActualTheme, Mode=OneWay}"
+                                            shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_18149}"
                                             SelectedItem="{x:Bind ((shva:AchievementViewModel)DataContext).Archives.CurrentItem, Mode=TwoWay}"
                                             Style="{ThemeResource CommandBarComboBoxStyle}"/>
                                     </cwc:Case>

@@ -32,7 +32,7 @@
                     <RadioButton
                         x:Name="GlassNative_1125"
                         DataContext="{x:Bind MaterialSelector_DownloadSourceSelector.DataContext, Mode=OneWay}"
-                        RequestedTheme="{x:Bind MaterialSelector_DownloadSourceSelector.ActualTheme, Mode=OneWay}">
+                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_DownloadSourceSelector}">
                         <StackPanel Spacing="2">
                             <TextBlock FontWeight="SemiBold" Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceOfficial}"/>
                             <TextBlock
@@ -44,7 +44,7 @@
                     <RadioButton
                         x:Name="GlassNative_1616"
                         DataContext="{x:Bind MaterialSelector_DownloadSourceSelector.DataContext, Mode=OneWay}"
-                        RequestedTheme="{x:Bind MaterialSelector_DownloadSourceSelector.ActualTheme, Mode=OneWay}">
+                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_DownloadSourceSelector}">
                         <StackPanel Spacing="2">
                             <TextBlock FontWeight="SemiBold" Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceMirrorChyan}"/>
                             <TextBlock

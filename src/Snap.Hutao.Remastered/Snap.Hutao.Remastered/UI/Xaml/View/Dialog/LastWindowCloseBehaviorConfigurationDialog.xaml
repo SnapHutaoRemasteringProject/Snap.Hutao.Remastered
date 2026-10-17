@@ -38,12 +38,12 @@
                         x:Name="GlassNative_1276"
                         Content="{shuxm:ResourceString Name=ServiceCloseButtonBehaviorTypeMinimize}"
                         DataContext="{x:Bind MaterialSelector_CloseButtonBehaviorSelector.DataContext, Mode=OneWay}"
-                        RequestedTheme="{x:Bind MaterialSelector_CloseButtonBehaviorSelector.ActualTheme, Mode=OneWay}"/>
+                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_CloseButtonBehaviorSelector}"/>
                     <RadioButton
                         x:Name="GlassNative_1380"
                         Content="{shuxm:ResourceString Name=ServiceCloseButtonBehaviorTypeExit}"
                         DataContext="{x:Bind MaterialSelector_CloseButtonBehaviorSelector.DataContext, Mode=OneWay}"
-                        RequestedTheme="{x:Bind MaterialSelector_CloseButtonBehaviorSelector.ActualTheme, Mode=OneWay}"/>
+                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_CloseButtonBehaviorSelector}"/>
                 </RadioButtons>
             </cwc:Case>
             <cwc:Case Value="{shuxm:Int32 Value=1}">

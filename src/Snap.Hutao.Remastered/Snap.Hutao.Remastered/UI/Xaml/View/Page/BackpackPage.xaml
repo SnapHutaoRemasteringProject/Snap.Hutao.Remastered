@@ -626,7 +626,7 @@
                                             DataContext="{x:Bind GlassPresenter_24224.DataContext, Mode=OneWay}"
                                             DisplayMemberPath="Name"
                                             ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Archives, Mode=OneWay}"
-                                            RequestedTheme="{x:Bind GlassPresenter_24224.ActualTheme, Mode=OneWay}"
+                                            shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_24224}"
                                             SelectedItem="{x:Bind ((shv:BackpackViewModel)DataContext).Archives.CurrentItem, Mode=TwoWay}"
                                             Style="{ThemeResource CommandBarComboBoxStyle}"/>
                                     </cwc:Case>

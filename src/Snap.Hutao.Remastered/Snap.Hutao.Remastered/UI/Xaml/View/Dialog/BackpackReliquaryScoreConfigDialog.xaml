@@ -40,7 +40,7 @@
                         DataContext="{x:Bind GlassPresenter_1097.DataContext, Mode=OneWay}"
                         DisplayMemberPath="DisplayName"
                         Header="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigPresetHeader}"
-                        RequestedTheme="{x:Bind GlassPresenter_1097.ActualTheme, Mode=OneWay}"
+                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_1097}"
                         SelectionChanged="OnPresetComboBoxSelectionChanged"/>
                 </cwc:Case>
                 <cwc:Case>
@@ -127,7 +127,7 @@
                             Content="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigDeleteConfig}"
                             DataContext="{x:Bind GlassPresenter_1699.DataContext, Mode=OneWay}"
                             Foreground="White"
-                            RequestedTheme="{x:Bind GlassPresenter_1699.ActualTheme, Mode=OneWay}"
+                            shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_1699}"
                             Visibility="Collapsed"/>
                     </cwc:Case>
                     <cwc:Case>
@@ -180,7 +180,7 @@
                     x:Name="NameTextBox"
                     DataContext="{x:Bind GlassPresenter_2141.DataContext, Mode=OneWay}"
                     Header="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigNameHeader}"
-                    RequestedTheme="{x:Bind GlassPresenter_2141.ActualTheme, Mode=OneWay}"
+                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_2141}"
                     TextChanged="OnNameTextChanged"/>
             </cwc:Case>
             <cwc:Case>
@@ -265,7 +265,7 @@
                         DataContext="{x:Bind GlassPresenter_3360.DataContext, Mode=OneWay}"
                         Maximum="1.0"
                         Minimum="0"
-                        RequestedTheme="{x:Bind GlassPresenter_3360.ActualTheme, Mode=OneWay}"
+                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_3360}"
                         StepFrequency="0.1"
                         ValueChanged="OnSliderValueChanged"/>
                 </cwc:Case>
@@ -339,7 +339,7 @@
                         DataContext="{x:Bind GlassPresenter_4086.DataContext, Mode=OneWay}"
                         Maximum="1.0"
                         Minimum="0"
-                        RequestedTheme="{x:Bind GlassPresenter_4086.ActualTheme, Mode=OneWay}"
+                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_4086}"
                         StepFrequency="0.1"
                         ValueChanged="OnSliderValueChanged"/>
                 </cwc:Case>
@@ -413,7 +413,7 @@
                         DataContext="{x:Bind GlassPresenter_4820.DataContext, Mode=OneWay}"
                         Maximum="1.0"
                         Minimum="0"
-                        RequestedTheme="{x:Bind GlassPresenter_4820.ActualTheme, Mode=OneWay}"
+                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_4820}"
                         StepFrequency="0.1"
                         ValueChanged="OnSliderValueChanged"/>
                 </cwc:Case>
@@ -487,7 +487,7 @@
                         DataContext="{x:Bind GlassPresenter_5565.DataContext, Mode=OneWay}"
                         Maximum="1.0"
                         Minimum="0"
-                        RequestedTheme="{x:Bind GlassPresenter_5565.ActualTheme, Mode=OneWay}"
+                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_5565}"
                         StepFrequency="0.1"
                         ValueChanged="OnSliderValueChanged"/>
                 </cwc:Case>
@@ -561,7 +561,7 @@
                         DataContext="{x:Bind GlassPresenter_6316.DataContext, Mode=OneWay}"
                         Maximum="1.0"
                         Minimum="0"
-                        RequestedTheme="{x:Bind GlassPresenter_6316.ActualTheme, Mode=OneWay}"
+                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_6316}"
                         StepFrequency="0.1"
                         ValueChanged="OnSliderValueChanged"/>
                 </cwc:Case>
@@ -635,7 +635,7 @@
                         DataContext="{x:Bind GlassPresenter_7061.DataContext, Mode=OneWay}"
                         Maximum="1.0"
                         Minimum="0"
-                        RequestedTheme="{x:Bind GlassPresenter_7061.ActualTheme, Mode=OneWay}"
+                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_7061}"
                         StepFrequency="0.1"
                         ValueChanged="OnSliderValueChanged"/>
                 </cwc:Case>
@@ -709,7 +709,7 @@
                         DataContext="{x:Bind GlassPresenter_7798.DataContext, Mode=OneWay}"
                         Maximum="1.0"
                         Minimum="0"
-                        RequestedTheme="{x:Bind GlassPresenter_7798.ActualTheme, Mode=OneWay}"
+                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_7798}"
                         StepFrequency="0.1"
                         ValueChanged="OnSliderValueChanged"/>
                 </cwc:Case>

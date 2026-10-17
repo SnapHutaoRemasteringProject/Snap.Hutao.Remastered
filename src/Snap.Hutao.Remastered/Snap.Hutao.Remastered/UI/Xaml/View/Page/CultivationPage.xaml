@@ -892,7 +892,7 @@
                                         DataContext="{x:Bind GlassPresenter_33449.DataContext, Mode=OneWay}"
                                         DisplayMemberPath="Name"
                                         ItemsSource="{x:Bind ((shvcu:CultivationViewModel)DataContext).Projects, Mode=OneWay}"
-                                        RequestedTheme="{x:Bind GlassPresenter_33449.ActualTheme, Mode=OneWay}"
+                                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_33449}"
                                         SelectedItem="{x:Bind ((shvcu:CultivationViewModel)DataContext).Projects.CurrentItem, Mode=TwoWay}"
                                         Style="{ThemeResource CommandBarComboBoxStyle}"/>
                                 </cwc:Case>
@@ -1097,7 +1097,7 @@
                                                                         DataContext="{x:Bind GlassPresenter_45763.DataContext, Mode=OneWay}"
                                                                         DisplayMemberPath="WorldLevel"
                                                                         ItemsSource="{x:Bind ((shvcu:CultivationViewModel)DataContext).ResinStatistics.DropDistributions, Mode=OneWay}"
-                                                                        RequestedTheme="{x:Bind GlassPresenter_45763.ActualTheme, Mode=OneWay}"
+                                                                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_45763}"
                                                                         SelectedItem="{x:Bind ((shvcu:CultivationViewModel)DataContext).ResinStatistics.SelectedDropDistribution, Mode=TwoWay}"/>
                                                                 </cwc:Case>
                                                                 <cwc:Case>
