@@ -887,6 +887,9 @@
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
     <value>Đang chuẩn bị, nếu lâu không phản hồi hãy thử khởi động lại hoặc kiểm tra mạng và trạng thái máy chủ</value>
   </data>
+  <data name="ServiceBackgroundImageDecodeFailed" xml:space="preserve">
+    <value>Không thể giải mã ảnh nền: hệ thống thiếu thành phần giải mã hình ảnh khả dụng, đã bỏ qua lần chuyển hình nền này</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Hình nền hằng ngày của Bing</value>
   </data>
@@ -3674,6 +3677,30 @@ Dung lượng còn trống: {2}</value>
   <data name="ViewPageSettingThemeHeader" xml:space="preserve">
     <value>Chủ đề màu</value>
   </data>
+  <data name="ViewPageSettingControlMaterialHeader" xml:space="preserve">
+    <value>Chất liệu điều khiển</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDescription" xml:space="preserve">
+    <value>Thay đổi hiệu ứng chất liệu của thẻ và bảng thẻ</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDefault" xml:space="preserve">
+    <value>Mặc định</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialLiquidGlass" xml:space="preserve">
+    <value>Kính lỏng (Bản xem trước thử nghiệm)</value>
+  </data>
+  <data name="ViewGuideMaterialTitle" xml:space="preserve">
+    <value>Chọn chất liệu điều khiển</value>
+  </data>
+  <data name="ViewGuideMaterialDescription" xml:space="preserve">
+    <value>So sánh bề mặt Fluent gốc với kính lỏng, sau đó chọn chất liệu điều khiển dùng chung cho toàn ứng dụng.</value>
+  </data>
+  <data name="ViewGuideMaterialDefaultPreviewDescription" xml:space="preserve">
+    <value>Bề mặt Fluent gốc</value>
+  </data>
+  <data name="ViewGuideMaterialLiquidGlassPreviewDescription" xml:space="preserve">
+    <value>Làm mờ, khúc xạ và điểm sáng viền</value>
+  </data>
   <data name="ViewPageSettingTranslateNavigate" xml:space="preserve">
     <value>Đóng góp bản dịch</value>
   </data>
@@ -4478,6 +4505,21 @@ Dung lượng còn trống: {2}</value>
   <data name="ServicePluginUninstallDescription" xml:space="preserve">
     <value>Bạn có chắc muốn gỡ cài đặt plugin {0} không? Hành động này không thể hoàn tác.</value>
   </data>
+  <data name="ViewPagePluginSettingLoadFailed" xml:space="preserve">
+    <value>Tải cài đặt plugin thất bại</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveSuccess" xml:space="preserve">
+    <value>Đã lưu cài đặt '{0}'</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveFailed" xml:space="preserve">
+    <value>Lưu cài đặt '{0}' thất bại</value>
+  </data>
+  <data name="ViewPagePluginSettingResetSuccess" xml:space="preserve">
+    <value>Đã đặt lại cài đặt '{0}'</value>
+  </data>
+  <data name="ViewPagePluginSettingResetFailed" xml:space="preserve">
+    <value>Đặt lại cài đặt '{0}' thất bại</value>
+  </data>
   <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
     <value>Chuyển đổi nóng tay cầm</value>
   </data>
@@ -5189,5 +5231,335 @@ Dung lượng còn trống: {2}</value>
   </data>
   <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
     <value>2 Sao</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassButton" xml:space="preserve">
+    <value>Nút</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassToggleButton" xml:space="preserve">
+    <value>Nút chuyển đổi</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHyperlinkButton" xml:space="preserve">
+    <value>Nút siêu liên kết</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassCheckBox" xml:space="preserve">
+    <value>Hộp kiểm</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRadioButton" xml:space="preserve">
+    <value>Nút radio</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassSlider" xml:space="preserve">
+    <value>Thanh trượt</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassTextBox" xml:space="preserve">
+    <value>Hộp nhập văn bản</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassPasswordBox" xml:space="preserve">
+    <value>Hộp nhập mật khẩu</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassComboBox" xml:space="preserve">
+    <value>Hộp chọn thả xuống</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassToggleSwitch" xml:space="preserve">
+    <value>Công tắc</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassCard" xml:space="preserve">
+    <value>Thẻ và bề mặt</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassStrength" xml:space="preserve">
+    <value>Cường độ tổng thể (0–2 lần)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBlurScale" xml:space="preserve">
+    <value>Cường độ làm mờ (0–2 lần)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefractionScale" xml:space="preserve">
+    <value>Cường độ khúc xạ (0–2 lần)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDispersionScale" xml:space="preserve">
+    <value>Cường độ tán sắc (0–2 lần)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHighlightScale" xml:space="preserve">
+    <value>Cường độ điểm sáng (0–2 lần)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassMagnificationScale" xml:space="preserve">
+    <value>Cường độ phóng đại (0–2 lần)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHeader" xml:space="preserve">
+    <value>Điều khiển và hiệu ứng kính lỏng</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDescription" xml:space="preserve">
+    <value>Bật hiệu ứng kính theo loại điều khiển. Thay đổi có hiệu lực ngay; hệ số quang học dựa trên cài đặt trước gốc của từng điều khiển.</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassSearchBox" xml:space="preserve">
+    <value>Hộp nhập tìm kiếm</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDispersionRange" xml:space="preserve">
+    <value>Phạm vi tán sắc</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelRange" xml:space="preserve">
+    <value>Phạm vi Fresnel (DIP)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelHardness" xml:space="preserve">
+    <value>Độ cứng Fresnel</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelFactor" xml:space="preserve">
+    <value>Cường độ Fresnel</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareRange" xml:space="preserve">
+    <value>Phạm vi lóa</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareHardness" xml:space="preserve">
+    <value>Độ cứng lóa</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareFactor" xml:space="preserve">
+    <value>Cường độ lóa</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareConvergence" xml:space="preserve">
+    <value>Hội tụ lóa</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareOppositeFactor" xml:space="preserve">
+    <value>Cường độ lóa ngược</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareAngle" xml:space="preserve">
+    <value>Góc chiếu sáng (độ)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassMagnification" xml:space="preserve">
+    <value>Tỷ lệ phóng đại</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBloomAmount" xml:space="preserve">
+    <value>Lượng phát sáng</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBrightness" xml:space="preserve">
+    <value>Độ sáng</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassTemperature" xml:space="preserve">
+    <value>Nhiệt độ màu</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassVibrance" xml:space="preserve">
+    <value>Độ bão hòa tự nhiên</value>
+  </data>
+  <data name="LiquidGlassControlsWindowTitle" xml:space="preserve">
+    <value>Điều khiển kính lỏng</value>
+  </data>
+  <data name="LiquidGlassEffectsWindowTitle" xml:space="preserve">
+    <value>Hiệu ứng kính lỏng</value>
+  </data>
+  <data name="GlassControlsCardDescription" xml:space="preserve">
+    <value>Chọn loại điều khiển bật chất liệu kính và xem bản xem trước tương tác.</value>
+  </data>
+  <data name="GlassEffectsCardDescription" xml:space="preserve">
+    <value>Điều chỉnh tham số riêng theo từng loại điều khiển, hỗ trợ xem trước và khôi phục mặc định.</value>
+  </data>
+  <data name="GlassControlsIntro" xml:space="preserve">
+    <value>Chọn chất liệu áp dụng và từng loại điều khiển. Thay đổi có hiệu lực ngay và tự động lưu. Hiệu ứng kính lỏng có ảnh hưởng nhất định đến hiệu năng.</value>
+  </data>
+  <data name="GlassEffectsIntro" xml:space="preserve">
+    <value>Mỗi loại điều khiển có tham số riêng; thay đổi có hiệu lực ngay và tự động lưu.</value>
+  </data>
+  <data name="GlassNativeMaterial" xml:space="preserve">
+    <value>Chất liệu mặc định</value>
+  </data>
+  <data name="GlassLiquidMaterial" xml:space="preserve">
+    <value>Kính lỏng</value>
+  </data>
+  <data name="GlassPreviewHeading" xml:space="preserve">
+    <value>Xem trước tương tác</value>
+  </data>
+  <data name="GlassControlsPreviewHint" xml:space="preserve">
+    <value>Bản xem trước tuân theo chất liệu ứng dụng và trạng thái bật của loại này. Có thể thử rê chuột, nhấn, lấy nét, nhập và kéo.</value>
+  </data>
+  <data name="GlassEffectsPreviewHint" xml:space="preserve">
+    <value>Bản xem trước này luôn hiển thị kính, ngay cả khi ứng dụng chưa bật loại điều khiển này. Trình chỉnh sửa giữ giao diện gốc.</value>
+  </data>
+  <data name="GlassPresetHint" xml:space="preserve">
+    <value>Giá trị mặc định đến từ thư viện điều khiển. Khôi phục mặc định chỉ ảnh hưởng đến tham số của loại hiện tại, không thay đổi loại khác hoặc công tắc bật.</value>
+  </data>
+  <data name="GlassResetType" xml:space="preserve">
+    <value>Khôi phục hiệu ứng mặc định cho loại này</value>
+  </data>
+  <data name="GlassResetParameter" xml:space="preserve">
+    <value>Đặt lại</value>
+  </data>
+  <data name="GlassDefaultValue" xml:space="preserve">
+    <value>Giá trị mặc định:</value>
+  </data>
+  <data name="GlassPreviewButton" xml:space="preserve">
+    <value>Nút xem trước</value>
+  </data>
+  <data name="GlassPreviewInput" xml:space="preserve">
+    <value>Nhập nội dung để xem trước hiệu ứng lấy nét</value>
+  </data>
+  <data name="GlassPreviewSearch" xml:space="preserve">
+    <value>Xem trước tìm kiếm</value>
+  </data>
+  <data name="GlassPreviewPassword" xml:space="preserve">
+    <value>Xem trước mật khẩu</value>
+  </data>
+  <data name="GlassPreviewSurface" xml:space="preserve">
+    <value>Bề mặt kính — nội dung vẫn dễ đọc</value>
+  </data>
+  <data name="GlassProfileButton" xml:space="preserve">
+    <value>Nút</value>
+  </data>
+  <data name="GlassProfileToggleButton" xml:space="preserve">
+    <value>Nút chuyển đổi</value>
+  </data>
+  <data name="GlassProfileHyperlinkButton" xml:space="preserve">
+    <value>Nút siêu liên kết</value>
+  </data>
+  <data name="GlassProfileCheckBox" xml:space="preserve">
+    <value>Hộp kiểm</value>
+  </data>
+  <data name="GlassProfileRadioButton" xml:space="preserve">
+    <value>Nút radio</value>
+  </data>
+  <data name="GlassProfileSlider" xml:space="preserve">
+    <value>Thanh trượt</value>
+  </data>
+  <data name="GlassProfileTextBox" xml:space="preserve">
+    <value>Hộp nhập văn bản</value>
+  </data>
+  <data name="GlassProfileSearchBox" xml:space="preserve">
+    <value>Hộp nhập tìm kiếm</value>
+  </data>
+  <data name="GlassProfilePasswordBox" xml:space="preserve">
+    <value>Hộp nhập mật khẩu</value>
+  </data>
+  <data name="GlassProfileComboBox" xml:space="preserve">
+    <value>Hộp chọn thả xuống</value>
+  </data>
+  <data name="GlassProfileToggleSwitch" xml:space="preserve">
+    <value>Công tắc</value>
+  </data>
+  <data name="GlassProfileCard" xml:space="preserve">
+    <value>Thẻ và bề mặt</value>
+  </data>
+  <data name="GlassProfileFloatingPanel" xml:space="preserve">
+    <value>Bảng nổi</value>
+  </data>
+  <data name="GlassProfileTabBar" xml:space="preserve">
+    <value>Thanh tab</value>
+  </data>
+  <data name="GlassParameterBlurRadius" xml:space="preserve">
+    <value>Bán kính làm mờ</value>
+  </data>
+  <data name="GlassParameterRefractionStrength" xml:space="preserve">
+    <value>Cường độ khúc xạ</value>
+  </data>
+  <data name="GlassParameterDispersionStrength" xml:space="preserve">
+    <value>Cường độ tán sắc</value>
+  </data>
+  <data name="GlassParameterHighlightStrength" xml:space="preserve">
+    <value>Cường độ điểm sáng</value>
+  </data>
+  <data name="GlassParameterHighlightSharpness" xml:space="preserve">
+    <value>Độ sắc nét điểm sáng</value>
+  </data>
+  <data name="GlassParameterSpecularSaturation" xml:space="preserve">
+    <value>Độ bão hòa gương</value>
+  </data>
+  <data name="GlassParameterSpecularWidth" xml:space="preserve">
+    <value>Chiều rộng gương</value>
+  </data>
+  <data name="GlassParameterRefractiveIndex" xml:space="preserve">
+    <value>Chỉ số khúc xạ</value>
+  </data>
+  <data name="GlassParameterTintOpacity" xml:space="preserve">
+    <value>Độ mờ màu phủ</value>
+  </data>
+  <data name="GlassParameterInnerShadowStrength" xml:space="preserve">
+    <value>Cường độ bóng trong</value>
+  </data>
+  <data name="GlassParameterSaturation" xml:space="preserve">
+    <value>Độ bão hòa</value>
+  </data>
+  <data name="GlassParameterContrast" xml:space="preserve">
+    <value>Độ tương phản</value>
+  </data>
+  <data name="GlassParameterExposure" xml:space="preserve">
+    <value>Phơi sáng</value>
+  </data>
+  <data name="GlassParameterMaterialOpacity" xml:space="preserve">
+    <value>Độ mờ chất liệu</value>
+  </data>
+  <data name="GlassParameterDispersionRange" xml:space="preserve">
+    <value>Phạm vi tán sắc</value>
+  </data>
+  <data name="GlassParameterRefFresnelRange" xml:space="preserve">
+    <value>Phạm vi Fresnel</value>
+  </data>
+  <data name="GlassParameterRefFresnelHardness" xml:space="preserve">
+    <value>Độ cứng Fresnel</value>
+  </data>
+  <data name="GlassParameterRefFresnelFactor" xml:space="preserve">
+    <value>Cường độ Fresnel</value>
+  </data>
+  <data name="GlassParameterGlareRange" xml:space="preserve">
+    <value>Phạm vi lóa</value>
+  </data>
+  <data name="GlassParameterGlareHardness" xml:space="preserve">
+    <value>Độ cứng lóa</value>
+  </data>
+  <data name="GlassParameterGlareFactor" xml:space="preserve">
+    <value>Cường độ lóa</value>
+  </data>
+  <data name="GlassParameterGlareConvergence" xml:space="preserve">
+    <value>Độ hội tụ lóa</value>
+  </data>
+  <data name="GlassParameterGlareOppositeFactor" xml:space="preserve">
+    <value>Tỷ lệ lóa ngược</value>
+  </data>
+  <data name="GlassParameterGlareAngle" xml:space="preserve">
+    <value>Hướng lóa (°)</value>
+  </data>
+  <data name="GlassParameterMagnification" xml:space="preserve">
+    <value>Phóng đại nền tổng thể</value>
+  </data>
+  <data name="GlassParameterMagnificationStrength" xml:space="preserve">
+    <value>Cường độ phóng đại cục bộ</value>
+  </data>
+  <data name="GlassParameterBloomAmount" xml:space="preserve">
+    <value>Tỷ lệ hòa trộn làm mờ</value>
+  </data>
+  <data name="GlassParameterBrightness" xml:space="preserve">
+    <value>Độ sáng</value>
+  </data>
+  <data name="GlassParameterTemperature" xml:space="preserve">
+    <value>Nhiệt độ màu</value>
+  </data>
+  <data name="GlassParameterVibrance" xml:space="preserve">
+    <value>Độ bão hòa tự nhiên</value>
+  </data>
+  <data name="GlassPreviewFirst" xml:space="preserve">
+    <value>Mục thứ nhất</value>
+  </data>
+  <data name="GlassPreviewSecond" xml:space="preserve">
+    <value>Mục thứ hai</value>
+  </data>
+  <data name="GlassPreviewOverview" xml:space="preserve">
+    <value>Tổng quan</value>
+  </data>
+  <data name="GlassPreviewDetails" xml:space="preserve">
+    <value>Chi tiết</value>
+  </data>
+  <data name="GlassPreviewActivity" xml:space="preserve">
+    <value>Hoạt động</value>
+  </data>
+  <data name="RepositoryServerOfflineWarning" xml:space="preserve">
+    <value>Kết nối máy chủ thất bại, đã chuyển sang chế độ ngoại tuyến và sử dụng danh sách kho cục bộ. Các tài nguyên trực tuyến như hình ảnh có thể không tải được; có thể nhấp vào nút bên cạnh tác vụ nền để kết nối lại.</value>
+  </data>
+  <data name="RepositoryServerConnectionRestored" xml:space="preserve">
+    <value>Đã kết nối lại máy chủ, thoát chế độ ngoại tuyến.</value>
+  </data>
+  <data name="RepositoryServerReconnect" xml:space="preserve">
+    <value>Thử kết nối lại máy chủ</value>
+  </data>
+  <data name="RepositoryServerReconnectFailed" xml:space="preserve">
+    <value>Vẫn không thể kết nối máy chủ, tiếp tục sử dụng chế độ ngoại tuyến. Có thể thử lại sau.</value>
+  </data>
+  <data name="RepositoryServerOfflineStatus" xml:space="preserve">
+    <value>Chế độ ngoại tuyến · Kết nối lại</value>
+  </data>
+  <data name="RepositoryServerReconnecting" xml:space="preserve">
+    <value>Chế độ ngoại tuyến · Đang kết nối lại</value>
   </data>
 </root>
