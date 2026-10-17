@@ -97,7 +97,8 @@ public sealed partial class MaterialBackground : DependencyObject
     private static void SetBrush(FrameworkElement element, DependencyProperty property, DependencyProperty appliedProperty, Brush brush)
     {
         object current = element.GetValue(property);
-        if (element.ReadLocalValue(property) != DependencyProperty.UnsetValue && !ReferenceEquals(current, element.GetValue(appliedProperty))) return;
+        object applied = element.GetValue(appliedProperty);
+        if (element.ReadLocalValue(property) != DependencyProperty.UnsetValue && (applied is not Brush || !ReferenceEquals(current, applied))) return;
         if (ReferenceEquals(current, brush)) return;
         element.SetValue(appliedProperty, brush);
         element.SetValue(property, brush);
