@@ -887,6 +887,9 @@
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
     <value>Mempersiapkan, jika tidak ada respons dalam waktu lama, coba mulai ulang atau periksa status jaringan dan server.</value>
   </data>
+  <data name="ServiceBackgroundImageDecodeFailed" xml:space="preserve">
+    <value>Gagal mendekode gambar latar belakang: sistem tidak memiliki komponen dekode gambar yang tersedia, perubahan wallpaper kali ini dilewati</value>
+  </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Wallpaper Harian Bing</value>
   </data>
@@ -3674,6 +3677,30 @@ Ruang Tersedia: {2}</value>
   <data name="ViewPageSettingThemeHeader" xml:space="preserve">
     <value>Tema Warna</value>
   </data>
+  <data name="ViewPageSettingControlMaterialHeader" xml:space="preserve">
+    <value>Material Kontrol</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDescription" xml:space="preserve">
+    <value>Ubah efek material kartu dan panel kartu</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialDefault" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="ViewPageSettingControlMaterialLiquidGlass" xml:space="preserve">
+    <value>Liquid Glass (Pratinjau Eksperimental)</value>
+  </data>
+  <data name="ViewGuideMaterialTitle" xml:space="preserve">
+    <value>Pilih Material Kontrol</value>
+  </data>
+  <data name="ViewGuideMaterialDescription" xml:space="preserve">
+    <value>Bandingkan permukaan Fluent asli dengan Liquid Glass, lalu pilih material kontrol yang dipakai secara global oleh aplikasi.</value>
+  </data>
+  <data name="ViewGuideMaterialDefaultPreviewDescription" xml:space="preserve">
+    <value>Permukaan Fluent Asli</value>
+  </data>
+  <data name="ViewGuideMaterialLiquidGlassPreviewDescription" xml:space="preserve">
+    <value>Blur, refraksi, dan sorotan tepi</value>
+  </data>
   <data name="ViewPageSettingTranslateNavigate" xml:space="preserve">
     <value>Kontribusi penerjemahan</value>
   </data>
@@ -4478,6 +4505,21 @@ Ruang Tersedia: {2}</value>
   <data name="ServicePluginUninstallDescription" xml:space="preserve">
     <value>Anda yakin ingin menghapus instalasi plugin {0}? Tindakan ini tidak dapat dibatalkan.</value>
   </data>
+  <data name="ViewPagePluginSettingLoadFailed" xml:space="preserve">
+    <value>Gagal memuat pengaturan plugin</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveSuccess" xml:space="preserve">
+    <value>Pengaturan '{0}' telah disimpan</value>
+  </data>
+  <data name="ViewPagePluginSettingSaveFailed" xml:space="preserve">
+    <value>Gagal menyimpan pengaturan '{0}'</value>
+  </data>
+  <data name="ViewPagePluginSettingResetSuccess" xml:space="preserve">
+    <value>Pengaturan '{0}' telah direset</value>
+  </data>
+  <data name="ViewPagePluginSettingResetFailed" xml:space="preserve">
+    <value>Gagal mereset pengaturan '{0}'</value>
+  </data>
   <data name="ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader" xml:space="preserve">
     <value>Pergantian gamepad cepat</value>
   </data>
@@ -5189,5 +5231,335 @@ Ruang Tersedia: {2}</value>
   </data>
   <data name="ViewControlStatisticsCardGreenText" xml:space="preserve">
     <value>2 Stars</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassButton" xml:space="preserve">
+    <value>Tombol</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassToggleButton" xml:space="preserve">
+    <value>Tombol Sakelar</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHyperlinkButton" xml:space="preserve">
+    <value>Tombol Hyperlink</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassCheckBox" xml:space="preserve">
+    <value>Kotak Centang</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRadioButton" xml:space="preserve">
+    <value>Tombol Radio</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassSlider" xml:space="preserve">
+    <value>Penggeser</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassTextBox" xml:space="preserve">
+    <value>Kotak Teks</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassPasswordBox" xml:space="preserve">
+    <value>Kotak Sandi</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassComboBox" xml:space="preserve">
+    <value>Kotak Kombo</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassToggleSwitch" xml:space="preserve">
+    <value>Sakelar</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassCard" xml:space="preserve">
+    <value>Kartu dan Permukaan</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassStrength" xml:space="preserve">
+    <value>Intensitas keseluruhan (0–2×)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBlurScale" xml:space="preserve">
+    <value>Intensitas blur (0–2×)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefractionScale" xml:space="preserve">
+    <value>Intensitas refraksi (0–2×)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDispersionScale" xml:space="preserve">
+    <value>Intensitas dispersi (0–2×)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHighlightScale" xml:space="preserve">
+    <value>Intensitas sorotan (0–2×)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassMagnificationScale" xml:space="preserve">
+    <value>Intensitas pembesaran (0–2×)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassHeader" xml:space="preserve">
+    <value>Kontrol dan Efek Liquid Glass</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDescription" xml:space="preserve">
+    <value>Aktifkan efek kaca berdasarkan jenis kontrol. Perubahan langsung berlaku; pengali optik mengikuti preset asli tiap kontrol.</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassSearchBox" xml:space="preserve">
+    <value>Kotak Pencarian</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassDispersionRange" xml:space="preserve">
+    <value>Rentang dispersi</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelRange" xml:space="preserve">
+    <value>Rentang Fresnel (DIP)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelHardness" xml:space="preserve">
+    <value>Kekerasan Fresnel</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassRefFresnelFactor" xml:space="preserve">
+    <value>Intensitas Fresnel</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareRange" xml:space="preserve">
+    <value>Rentang silau</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareHardness" xml:space="preserve">
+    <value>Kekerasan silau</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareFactor" xml:space="preserve">
+    <value>Intensitas silau</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareConvergence" xml:space="preserve">
+    <value>Konvergensi silau</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareOppositeFactor" xml:space="preserve">
+    <value>Intensitas silau berlawanan</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassGlareAngle" xml:space="preserve">
+    <value>Sudut cahaya (derajat)</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassMagnification" xml:space="preserve">
+    <value>Faktor pembesaran</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBloomAmount" xml:space="preserve">
+    <value>Jumlah bloom</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassBrightness" xml:space="preserve">
+    <value>Kecerahan</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassTemperature" xml:space="preserve">
+    <value>Suhu warna</value>
+  </data>
+  <data name="ViewPageSettingLiquidGlassVibrance" xml:space="preserve">
+    <value>Vibransi</value>
+  </data>
+  <data name="LiquidGlassControlsWindowTitle" xml:space="preserve">
+    <value>Kontrol Liquid Glass</value>
+  </data>
+  <data name="LiquidGlassEffectsWindowTitle" xml:space="preserve">
+    <value>Efek Liquid Glass</value>
+  </data>
+  <data name="GlassControlsCardDescription" xml:space="preserve">
+    <value>Pilih jenis kontrol yang mengaktifkan material kaca dan lihat pratinjau interaktifnya.</value>
+  </data>
+  <data name="GlassEffectsCardDescription" xml:space="preserve">
+    <value>Sesuaikan parameter tiap jenis kontrol secara terpisah, lengkap dengan pratinjau dan pemulihan ke default.</value>
+  </data>
+  <data name="GlassControlsIntro" xml:space="preserve">
+    <value>Pilih material aplikasi dan tiap jenis kontrol. Perubahan langsung berlaku dan tersimpan otomatis. Efek Liquid Glass berdampak pada performa.</value>
+  </data>
+  <data name="GlassEffectsIntro" xml:space="preserve">
+    <value>Setiap jenis kontrol memiliki parameter sendiri; perubahan langsung berlaku dan tersimpan otomatis.</value>
+  </data>
+  <data name="GlassNativeMaterial" xml:space="preserve">
+    <value>Material Default</value>
+  </data>
+  <data name="GlassLiquidMaterial" xml:space="preserve">
+    <value>Liquid Glass</value>
+  </data>
+  <data name="GlassPreviewHeading" xml:space="preserve">
+    <value>Pratinjau Interaktif</value>
+  </data>
+  <data name="GlassControlsPreviewHint" xml:space="preserve">
+    <value>Pratinjau mengikuti material aplikasi dan status aktif jenis ini. Coba arahkan kursor, tekan, fokuskan, ketik, dan seret.</value>
+  </data>
+  <data name="GlassEffectsPreviewHint" xml:space="preserve">
+    <value>Pratinjau ini selalu menampilkan kaca, meskipun aplikasi tidak mengaktifkan jenis kontrol ini. Editor tetap tampil native.</value>
+  </data>
+  <data name="GlassPresetHint" xml:space="preserve">
+    <value>Nilai default berasal dari pustaka kontrol. Pemulihan default hanya memengaruhi parameter jenis ini, tanpa mengubah jenis lain atau sakelar aktif.</value>
+  </data>
+  <data name="GlassResetType" xml:space="preserve">
+    <value>Pulihkan efek default jenis ini</value>
+  </data>
+  <data name="GlassResetParameter" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="GlassDefaultValue" xml:space="preserve">
+    <value>Nilai default:</value>
+  </data>
+  <data name="GlassPreviewButton" xml:space="preserve">
+    <value>Pratinjau tombol</value>
+  </data>
+  <data name="GlassPreviewInput" xml:space="preserve">
+    <value>Ketik sesuatu untuk pratinjau efek fokus</value>
+  </data>
+  <data name="GlassPreviewSearch" xml:space="preserve">
+    <value>Pratinjau pencarian</value>
+  </data>
+  <data name="GlassPreviewPassword" xml:space="preserve">
+    <value>Pratinjau sandi</value>
+  </data>
+  <data name="GlassPreviewSurface" xml:space="preserve">
+    <value>Permukaan kaca — konten tetap terbaca</value>
+  </data>
+  <data name="GlassProfileButton" xml:space="preserve">
+    <value>Tombol</value>
+  </data>
+  <data name="GlassProfileToggleButton" xml:space="preserve">
+    <value>Tombol Sakelar</value>
+  </data>
+  <data name="GlassProfileHyperlinkButton" xml:space="preserve">
+    <value>Tombol Hyperlink</value>
+  </data>
+  <data name="GlassProfileCheckBox" xml:space="preserve">
+    <value>Kotak Centang</value>
+  </data>
+  <data name="GlassProfileRadioButton" xml:space="preserve">
+    <value>Tombol Radio</value>
+  </data>
+  <data name="GlassProfileSlider" xml:space="preserve">
+    <value>Penggeser</value>
+  </data>
+  <data name="GlassProfileTextBox" xml:space="preserve">
+    <value>Kotak Teks</value>
+  </data>
+  <data name="GlassProfileSearchBox" xml:space="preserve">
+    <value>Kotak Pencarian</value>
+  </data>
+  <data name="GlassProfilePasswordBox" xml:space="preserve">
+    <value>Kotak Sandi</value>
+  </data>
+  <data name="GlassProfileComboBox" xml:space="preserve">
+    <value>Kotak Kombo</value>
+  </data>
+  <data name="GlassProfileToggleSwitch" xml:space="preserve">
+    <value>Sakelar</value>
+  </data>
+  <data name="GlassProfileCard" xml:space="preserve">
+    <value>Kartu dan Permukaan</value>
+  </data>
+  <data name="GlassProfileFloatingPanel" xml:space="preserve">
+    <value>Panel Mengambang</value>
+  </data>
+  <data name="GlassProfileTabBar" xml:space="preserve">
+    <value>Bilah Tab</value>
+  </data>
+  <data name="GlassParameterBlurRadius" xml:space="preserve">
+    <value>Radius blur</value>
+  </data>
+  <data name="GlassParameterRefractionStrength" xml:space="preserve">
+    <value>Intensitas refraksi</value>
+  </data>
+  <data name="GlassParameterDispersionStrength" xml:space="preserve">
+    <value>Intensitas dispersi</value>
+  </data>
+  <data name="GlassParameterHighlightStrength" xml:space="preserve">
+    <value>Intensitas sorotan</value>
+  </data>
+  <data name="GlassParameterHighlightSharpness" xml:space="preserve">
+    <value>Ketajaman sorotan</value>
+  </data>
+  <data name="GlassParameterSpecularSaturation" xml:space="preserve">
+    <value>Saturasi spekular</value>
+  </data>
+  <data name="GlassParameterSpecularWidth" xml:space="preserve">
+    <value>Lebar spekular</value>
+  </data>
+  <data name="GlassParameterRefractiveIndex" xml:space="preserve">
+    <value>Indeks bias</value>
+  </data>
+  <data name="GlassParameterTintOpacity" xml:space="preserve">
+    <value>Opasitas warna</value>
+  </data>
+  <data name="GlassParameterInnerShadowStrength" xml:space="preserve">
+    <value>Intensitas bayangan dalam</value>
+  </data>
+  <data name="GlassParameterSaturation" xml:space="preserve">
+    <value>Saturasi</value>
+  </data>
+  <data name="GlassParameterContrast" xml:space="preserve">
+    <value>Kontras</value>
+  </data>
+  <data name="GlassParameterExposure" xml:space="preserve">
+    <value>Eksposur</value>
+  </data>
+  <data name="GlassParameterMaterialOpacity" xml:space="preserve">
+    <value>Opasitas material</value>
+  </data>
+  <data name="GlassParameterDispersionRange" xml:space="preserve">
+    <value>Rentang dispersi</value>
+  </data>
+  <data name="GlassParameterRefFresnelRange" xml:space="preserve">
+    <value>Rentang Fresnel</value>
+  </data>
+  <data name="GlassParameterRefFresnelHardness" xml:space="preserve">
+    <value>Kekerasan Fresnel</value>
+  </data>
+  <data name="GlassParameterRefFresnelFactor" xml:space="preserve">
+    <value>Intensitas Fresnel</value>
+  </data>
+  <data name="GlassParameterGlareRange" xml:space="preserve">
+    <value>Rentang silau</value>
+  </data>
+  <data name="GlassParameterGlareHardness" xml:space="preserve">
+    <value>Kekerasan silau</value>
+  </data>
+  <data name="GlassParameterGlareFactor" xml:space="preserve">
+    <value>Intensitas silau</value>
+  </data>
+  <data name="GlassParameterGlareConvergence" xml:space="preserve">
+    <value>Tingkat konvergensi silau</value>
+  </data>
+  <data name="GlassParameterGlareOppositeFactor" xml:space="preserve">
+    <value>Rasio silau berlawanan</value>
+  </data>
+  <data name="GlassParameterGlareAngle" xml:space="preserve">
+    <value>Arah silau (°)</value>
+  </data>
+  <data name="GlassParameterMagnification" xml:space="preserve">
+    <value>Pembesaran latar keseluruhan</value>
+  </data>
+  <data name="GlassParameterMagnificationStrength" xml:space="preserve">
+    <value>Intensitas pembesaran lokal</value>
+  </data>
+  <data name="GlassParameterBloomAmount" xml:space="preserve">
+    <value>Rasio pencampuran blur</value>
+  </data>
+  <data name="GlassParameterBrightness" xml:space="preserve">
+    <value>Kecerahan</value>
+  </data>
+  <data name="GlassParameterTemperature" xml:space="preserve">
+    <value>Suhu warna</value>
+  </data>
+  <data name="GlassParameterVibrance" xml:space="preserve">
+    <value>Vibransi</value>
+  </data>
+  <data name="GlassPreviewFirst" xml:space="preserve">
+    <value>Item pertama</value>
+  </data>
+  <data name="GlassPreviewSecond" xml:space="preserve">
+    <value>Item kedua</value>
+  </data>
+  <data name="GlassPreviewOverview" xml:space="preserve">
+    <value>Ringkasan</value>
+  </data>
+  <data name="GlassPreviewDetails" xml:space="preserve">
+    <value>Rincian</value>
+  </data>
+  <data name="GlassPreviewActivity" xml:space="preserve">
+    <value>Aktivitas</value>
+  </data>
+  <data name="RepositoryServerOfflineWarning" xml:space="preserve">
+    <value>Gagal terhubung ke server; masuk ke mode offline dan menggunakan daftar repositori lokal. Sumber daya online seperti gambar mungkin tidak dapat dimuat. Klik tombol di samping tugas latar belakang untuk menyambung ulang.</value>
+  </data>
+  <data name="RepositoryServerConnectionRestored" xml:space="preserve">
+    <value>Berhasil tersambung kembali ke server; keluar dari mode offline.</value>
+  </data>
+  <data name="RepositoryServerReconnect" xml:space="preserve">
+    <value>Coba sambungkan ulang ke server</value>
+  </data>
+  <data name="RepositoryServerReconnectFailed" xml:space="preserve">
+    <value>Masih tidak dapat terhubung ke server; tetap menggunakan mode offline. Anda dapat mencoba lagi nanti.</value>
+  </data>
+  <data name="RepositoryServerOfflineStatus" xml:space="preserve">
+    <value>Mode offline · Sambung ulang</value>
+  </data>
+  <data name="RepositoryServerReconnecting" xml:space="preserve">
+    <value>Mode offline · Menyambung ulang</value>
   </data>
 </root>
