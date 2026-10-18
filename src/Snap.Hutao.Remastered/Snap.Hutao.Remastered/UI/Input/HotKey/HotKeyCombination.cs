@@ -111,9 +111,12 @@ public sealed partial class HotKeyCombination : ObservableObject, IDisposable
         get => isEnabled;
         set
         {
-            if (!SetProperty(ref isEnabled, value)) return;
+            if (isEnabled == value) return;
             if (native is not null) native.IsEnabled = value;
             LocalSetting.Set($"{settingKey}.IsEnabled", value);
+            // Two-way bindings can synchronously re-enter this setter. Finish
+            // applying this value before publishing it so the newer write wins.
+            SetProperty(ref isEnabled, value);
         }
     }
 
