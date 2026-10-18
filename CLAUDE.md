@@ -212,6 +212,10 @@ the build fails with `CS9275`); write a normal constructor in that case.
 
   Field-style `[ObservableProperty] private bool x;` is **not** used anywhere; new code must use the
   partial-property form (it also lets the setter be `protected`).
+- **Native-backed hotkey settings publish last** — `HotKeyCombination.IsEnabled` applies the native
+  change and saves it before raising `PropertyChanged`. Binding handlers run synchronously and can
+  re-enter the setter; publishing first lets the older invocation overwrite the newer choice in
+  the native action and persisted setting after the handler returns.
 - **Two ViewModel base classes exist** (see TODO #4):
   - [`ViewModel/Abstraction/ViewModel.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/ViewModel/Abstraction/ViewModel.cs)
     — full lifecycle: `Initialization` TCS, `Resurrect()`, `Uninitialize()`, `CriticalSection`,
@@ -429,4 +433,5 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
+| 2026-10-18 | Document native-backed hotkey settings' apply/save/notify order and synchronous binding reentrancy. |
 | 2026-10-11 | Full "spec vs reality" audit (`CODE_REVIEW.md#ENG-10`): .NET 10→11, `[RelayCommand]`→`[Command("…")]`, observable partial properties, both ViewModel base classes, `develop`→`dev`, accurate `RetryHttpHandler` semantics, plugin/ALC section, DI attribute matrix, localization mechanism, build quirks, test-project caveat, visibility rule rewritten, §8 Known drift added. |
