@@ -209,6 +209,7 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
             await taskContext.SwitchToMainThreadAsync();
 
             IAdvancedCollectionView<CultivateEntryView> entriesView = entries.AsAdvancedCollectionView();
+            entriesView.Filter = CultivateEntryViewFilter.Compile(SearchData, context);
             CultivateEntries = entriesView;
 
             await UpdateInventoryItemsAsync().ConfigureAwait(false);

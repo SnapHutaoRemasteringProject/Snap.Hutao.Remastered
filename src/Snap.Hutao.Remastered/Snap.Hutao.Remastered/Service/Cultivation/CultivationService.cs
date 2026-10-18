@@ -170,78 +170,73 @@ public sealed partial class CultivationService : ICultivationService
 
     public async ValueTask<ConsumptionSaveResultKind> SaveConsumptionAsync(InputConsumption inputConsumption)
     {
-        // No selected project
         IAdvancedDbCollectionView<CultivateProject> projects = await GetProjectCollectionAsync().ConfigureAwait(false);
         if (!await EnsureCurrentProjectAsync(projects).ConfigureAwait(false))
         {
             return ConsumptionSaveResultKind.NoProject;
         }
 
-        ArgumentNullException.ThrowIfNull(projects.CurrentItem);
-
+        await taskContext.SwitchToMainThreadAsync();
+        if (projects.CurrentItem is not { } project) return ConsumptionSaveResultKind.NoProject;
+        Guid projectId = project.InnerId;
         await taskContext.SwitchToBackgroundAsync();
 
-        // PreserveExisting or CreateNewEntry, but no item
         if (inputConsumption is { Strategy: not ConsumptionSaveStrategyKind.OverwriteExisting, Items: [] })
         {
             return ConsumptionSaveResultKind.NoItem;
         }
 
-        // PreserveExisting or OverwriteExisting
-        if (inputConsumption.Strategy is not ConsumptionSaveStrategyKind.CreateNewEntry)
+        // Readers use this same lock. Invalidate after the writes, before releasing
+        // it, so a reader cannot repopulate the cache from rows being deleted.
+        using var mutation = await entryCollectionLock.LockAsync().ConfigureAwait(false);
+        bool entriesChanged = false;
+        try
         {
-            // Check for existing entries
-            ImmutableArray<CultivateEntry> entries = cultivationRepository.GetCultivateEntryImmutableArrayByProjectIdAndItemId(projects.CurrentItem.InnerId, inputConsumption.ItemId);
-
-            if (entries.Length > 0)
+            if (inputConsumption.Strategy is not ConsumptionSaveStrategyKind.CreateNewEntry)
             {
-                if (inputConsumption.Strategy is ConsumptionSaveStrategyKind.PreserveExisting)
+                ImmutableArray<CultivateEntry> entries = cultivationRepository.GetCultivateEntryImmutableArrayByProjectIdAndItemId(projectId, inputConsumption.ItemId);
+                if (entries.Length > 0)
                 {
-                    return ConsumptionSaveResultKind.Skipped;
-                }
-
-                if (inputConsumption.Strategy is ConsumptionSaveStrategyKind.OverwriteExisting)
-                {
-                    // The removal-only result below must invalidate cached rows too.
-                    entryCollectionCache.TryRemove(projects.CurrentItem.InnerId, out _);
-                    foreach (CultivateEntry entry in entries)
+                    if (inputConsumption.Strategy is ConsumptionSaveStrategyKind.PreserveExisting)
                     {
-                        cultivationRepository.RemoveLevelInformationByEntryId(entry.InnerId);
-                        cultivationRepository.RemoveCultivateItemRangeByEntryId(entry.InnerId);
-                        cultivationRepository.RemoveCultivateEntryById(entry.InnerId);
+                        return ConsumptionSaveResultKind.Skipped;
                     }
 
-                    if (inputConsumption.Items is [])
+                    if (inputConsumption.Strategy is ConsumptionSaveStrategyKind.OverwriteExisting)
                     {
-                        return ConsumptionSaveResultKind.Removed;
+                        entriesChanged = true;
+                        foreach (CultivateEntry entry in entries)
+                        {
+                            cultivationRepository.RemoveLevelInformationByEntryId(entry.InnerId);
+                            cultivationRepository.RemoveCultivateItemRangeByEntryId(entry.InnerId);
+                            cultivationRepository.RemoveCultivateEntryById(entry.InnerId);
+                        }
+
+                        if (inputConsumption.Items is [])
+                        {
+                            return ConsumptionSaveResultKind.Removed;
+                        }
                     }
                 }
-            }
-            else
-            {
-                if (inputConsumption.Items is [])
+                else if (inputConsumption.Items is [])
                 {
                     return ConsumptionSaveResultKind.NoItem;
                 }
             }
-        }
 
+            entriesChanged = true;
+            CultivateEntry addedEntry = CultivateEntry.From(projectId, inputConsumption.Type, inputConsumption.ItemId);
+            cultivationRepository.AddCultivateEntry(addedEntry);
+            CultivateEntryLevelInformation levelInformation = CultivateEntryLevelInformation.From(addedEntry.InnerId, inputConsumption.Type, inputConsumption.LevelInformation);
+            cultivationRepository.AddLevelInformation(levelInformation);
+            cultivationRepository.AddCultivateItemRange(inputConsumption.Items.Select(item => CultivateItem.From(addedEntry.InnerId, item)));
+            return ConsumptionSaveResultKind.Added;
+        }
+        finally
         {
-            CultivateEntry entry = CultivateEntry.From(projects.CurrentItem.InnerId, inputConsumption.Type, inputConsumption.ItemId);
-            cultivationRepository.AddCultivateEntry(entry);
-
-            CultivateEntryLevelInformation entryLevelInformation = CultivateEntryLevelInformation.From(entry.InnerId, inputConsumption.Type, inputConsumption.LevelInformation);
-            cultivationRepository.AddLevelInformation(entryLevelInformation);
-
-            IEnumerable<CultivateItem> toAdd = inputConsumption.Items.Select(item => CultivateItem.From(entry.InnerId, item));
-            cultivationRepository.AddCultivateItemRange(toAdd);
-
-            // The consumption save operation is always performed outside cultivation page
-            // and without touching the cache. So we have to invalidate the cache manually.
-            entryCollectionCache.TryRemove(projects.CurrentItem.InnerId, out _);
+            // Also invalidate removal-only results and partially failed writes.
+            if (entriesChanged) entryCollectionCache.TryRemove(projectId, out _);
         }
-
-        return ConsumptionSaveResultKind.Added;
     }
 
     public async ValueTask<ProjectAddResultKind> TryAddProjectAsync(CultivateProject project)
