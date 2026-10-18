@@ -433,5 +433,4 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
-| 2026-10-18 | Document native-backed hotkey settings' apply/save/notify order and synchronous binding reentrancy. |
 | 2026-10-11 | Full "spec vs reality" audit (`CODE_REVIEW.md#ENG-10`): .NET 10→11, `[RelayCommand]`→`[Command("…")]`, observable partial properties, both ViewModel base classes, `develop`→`dev`, accurate `RetryHttpHandler` semantics, plugin/ALC section, DI attribute matrix, localization mechanism, build quirks, test-project caveat, visibility rule rewritten, §8 Known drift added. |
