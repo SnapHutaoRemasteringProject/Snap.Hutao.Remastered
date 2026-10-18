@@ -31,18 +31,31 @@ public sealed partial class BackgroundMediaPlayerService : IBackgroundMediaPlaye
     // Owned by this service and borrowed by MediaPlayerElement. Detach the
     // element before Stop closes the player; only the UI thread accesses it.
     private MediaPlayer? mediaPlayer;
+    private BackgroundMediaPlaybackController? playbackController;
+
+    private BackgroundMediaPlaybackController PlaybackController => playbackController ??= new(ApplyPlaybackState);
 
     [GeneratedConstructor]
     public partial BackgroundMediaPlayerService(IServiceProvider serviceProvider);
 
     public void Pause()
     {
-        mediaPlayer?.Pause();
+        PlaybackController.SetPlaybackRequested(false);
     }
 
     public void Play()
     {
-        mediaPlayer?.Play();
+        PlaybackController.SetPlaybackRequested(true);
+    }
+
+    public void SetSessionLocked(bool value) => PlaybackController.SetSessionLocked(value);
+
+    public void SetWindowVisible(bool value) => PlaybackController.SetWindowVisible(value);
+
+    private void ApplyPlaybackState(bool shouldPlay)
+    {
+        if (shouldPlay) mediaPlayer?.Play();
+        else mediaPlayer?.Pause();
     }
 
     public void Stop()
@@ -75,14 +88,17 @@ public sealed partial class BackgroundMediaPlayerService : IBackgroundMediaPlaye
 
         await taskContext.SwitchToMainThreadAsync();
         token.ThrowIfCancellationRequested();
+        if (!PlaybackController.IsWindowVisible) return;
 
-        element.AutoPlay = true;
+        // Only the playback controller may start the player. AutoPlay could
+        // otherwise resume a late source load after the workstation was locked.
+        element.AutoPlay = false;
         element.AreTransportControlsEnabled = false;
 
         // Own the player explicitly. A MediaPlayerElement-created player may be
         // closed by the framework before Unloaded calls Stop on that same object.
         MediaPlayer player = mediaPlayer ??= new MediaPlayer();
-        player.AutoPlay = true;
+        player.AutoPlay = false;
         player.IsMuted = appOptions.IsBackgroundMediaMuted.Value;
         player.IsLoopingEnabled = appOptions.IsBackgroundMediaLooping.Value;
         element.SetMediaPlayer(player);
@@ -103,6 +119,7 @@ public sealed partial class BackgroundMediaPlayerService : IBackgroundMediaPlaye
         // Wallpaper playback must not appear in system transport controls or
         // respond to media keys; keep this on the explicitly owned player.
         DisableSystemMediaTransportControls(player);
+        PlaybackController.Apply();
     }
 
     private async ValueTask<Uri?> GetLocalFolderVideoUriAsync(CancellationToken token)

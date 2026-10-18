@@ -21,6 +21,8 @@ public sealed class HttpRequestMessageBuilder :
     IRequestUriBuilder,
     IHttpMethodBuilder
 {
+    private HttpRequestMessageSnapshot? retrySnapshot;
+
     public HttpRequestMessageBuilder(IServiceProvider serviceProvider, HttpContentSerializer httpContentSerializer, HttpRequestMessage? httpRequestMessage = default)
     {
         ServiceProvider = serviceProvider;
@@ -97,5 +99,19 @@ public sealed class HttpRequestMessageBuilder :
     public override string ToString()
     {
         return HttpRequestMessage.ToString();
+    }
+
+    public async ValueTask PrepareForRetryAsync(CancellationToken token)
+    {
+        // Capture before SendAsync's context disposes the original request.
+        retrySnapshot = await HttpRequestMessageSnapshot.CreateAsync(HttpRequestMessage, token).ConfigureAwait(false);
+    }
+
+    public HttpRequestMessageBuilder RecreateRequest()
+    {
+        HttpRequestMessageSnapshot snapshot = retrySnapshot ?? throw new InvalidOperationException("PrepareForRetryAsync must be called before sending a replayable request.");
+        HttpRequestMessage.Dispose();
+        HttpRequestMessage = snapshot.CreateRequest();
+        return this;
     }
 }

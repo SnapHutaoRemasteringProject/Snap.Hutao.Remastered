@@ -63,6 +63,7 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
     public partial AvatarPropertyViewModel(IServiceProvider serviceProvider);
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FormattedTotalAvatarCount))]
     public partial Summary? Summary { get; set; }
 
     [ObservableProperty]
@@ -122,6 +123,7 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
 
     public override void Dispose()
     {
+        if (attachedAvatars is not null) attachedAvatars.PropertyChanged -= OnAvatarsPropertyChanged;
         AdvancedCollectionViewCurrentChanged.Detach(attachedAvatars, OnAvatarsCurrentChanged);
         attachedAvatars = default;
         refreshTokenProvider.Dispose();
@@ -230,13 +232,24 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
 
     partial void OnSummaryChanged(Summary? value)
     {
+        if (attachedAvatars is not null) attachedAvatars.PropertyChanged -= OnAvatarsPropertyChanged;
         AdvancedCollectionViewCurrentChanged.Detach(attachedAvatars, OnAvatarsCurrentChanged);
         attachedAvatars = value?.Avatars;
         AdvancedCollectionViewCurrentChanged.Attach(attachedAvatars, OnAvatarsCurrentChanged);
+        if (attachedAvatars is not null) attachedAvatars.PropertyChanged += OnAvatarsPropertyChanged;
 
         if (value is not null)
         {
             ApplyCurrentAvatarScoreOption(value);
+        }
+    }
+
+    private void OnAvatarsPropertyChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        // The formatted text depends on both Summary and its live collection.
+        if (string.IsNullOrEmpty(args.PropertyName) || args.PropertyName is "Count")
+        {
+            OnPropertyChanged(nameof(FormattedTotalAvatarCount));
         }
     }
 

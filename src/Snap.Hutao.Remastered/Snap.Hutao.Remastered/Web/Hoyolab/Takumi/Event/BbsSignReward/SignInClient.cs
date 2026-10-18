@@ -87,6 +87,8 @@ public sealed partial class SignInClient : ISignInClient
 
         await builder.SignDataAsync(DataSignAlgorithmVersion.Gen1, SaltType.LK2, true).ConfigureAwait(false);
 
+        await builder.PrepareForRetryAsync(token).ConfigureAwait(false);
+
         Response<SignInResult>? resp = await builder
             .SendAsync<Response<SignInResult>>(httpClient, token)
             .ConfigureAwait(false);
@@ -96,7 +98,7 @@ public sealed partial class SignInClient : ISignInClient
             if (await geetestService.TryVerifyGtChallengeAsync(gt, originChallenge, false, token).ConfigureAwait(false) is { } data)
             {
                 builder
-                    .Resurrect()
+                    .RecreateRequest()
                     .SetHeader("x-rpc-signgame", "hk4e")
                     .SetXrpcChallenge(data.Challenge, data.Validate);
 
@@ -126,6 +128,8 @@ public sealed partial class SignInClient : ISignInClient
 
         await builder.SignDataAsync(DataSignAlgorithmVersion.Gen1, SaltType.LK2, true).ConfigureAwait(false);
 
+        await builder.PrepareForRetryAsync(token).ConfigureAwait(false);
+
         Response<SignInResult>? resp = await builder
             .SendAsync<Response<SignInResult>>(httpClient, token)
             .ConfigureAwait(false);
@@ -135,7 +139,7 @@ public sealed partial class SignInClient : ISignInClient
             if (await geetestService.TryVerifyGtChallengeAsync(gt, originChallenge, false, token).ConfigureAwait(false) is { } data)
             {
                 builder
-                    .Resurrect()
+                    .RecreateRequest()
                     .SetHeader("x-rpc-signgame", "hk4e")
                     .SetXrpcChallenge(data.Challenge, data.Validate);
 

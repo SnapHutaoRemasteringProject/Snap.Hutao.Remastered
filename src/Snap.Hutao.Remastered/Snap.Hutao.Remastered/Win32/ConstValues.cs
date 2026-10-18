@@ -16,4 +16,7 @@ public static class ConstValues
     public const uint WM_SYSKEYDOWN = 0x00000104U;
     public const uint WM_SYSKEYUP = 0x00000105U;
     public const uint WM_MOUSEWHEEL = 0x0000020AU;
+    public const uint WM_WTSSESSION_CHANGE = 0x000002B1U;
+    public const uint WTS_SESSION_LOCK = 0x7U;
+    public const uint WTS_SESSION_UNLOCK = 0x8U;
 }

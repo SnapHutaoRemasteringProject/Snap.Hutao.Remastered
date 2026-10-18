@@ -16,7 +16,6 @@ public sealed partial class StatisticsCard : UserControl
     public StatisticsCard()
     {
         InitializeComponent();
-        CombinedModeToggle.Click += (sender, args) => ShowCombinedTotal = !ShowCombinedTotal;
         RegisterPropertyChangedCallback(ShowCombinedTotalProperty, OnShowCombinedTotalChanged);
         DataContextChanged += OnDataContextChanged;
     }
@@ -32,7 +31,6 @@ public sealed partial class StatisticsCard : UserControl
     private static void OnShowCombinedTotalChanged(DependencyObject sender, DependencyProperty dp)
     {
         StatisticsCard card = Unsafe.As<StatisticsCard>(sender);
-        card.CombinedModeToggle.IsChecked = card.ShowCombinedTotal;
         if (card.DataContext is TypedWishSummary summary)
         {
             summary.ShowCombinedTotal = card.ShowCombinedTotal;
