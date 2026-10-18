@@ -76,6 +76,8 @@ public sealed partial class DownloadSummary : ObservableObject
 
         try
         {
+            await builder.PrepareForRetryAsync(externalToken).ConfigureAwait(false);
+
             using (CancellationTokenSource stallCts = new())
             using (CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(externalToken, stallCts.Token))
             {
@@ -128,7 +130,7 @@ public sealed partial class DownloadSummary : ObservableObject
                 {
                     token.ThrowIfCancellationRequested();
 
-                    builder.Resurrect();
+                    builder.RecreateRequest();
 
                     TimeSpan delay = default;
                     using (HttpRequestMessage message = builder.HttpRequestMessage)

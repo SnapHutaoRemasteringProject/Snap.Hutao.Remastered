@@ -4,6 +4,8 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.Xaml.Interactivity;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
@@ -14,6 +16,16 @@ public sealed class ShowAttachedFlyoutAction : DependencyObject, IAction
     {
         if (sender is FrameworkElement element)
         {
+            // A card's routed pointer event can originate inside its delete
+            // button. Opening the flyout then steals the press before Click.
+            if (parameter is PointerRoutedEventArgs { OriginalSource: DependencyObject source })
+            {
+                for (DependencyObject? current = source; current is not null && current != element; current = VisualTreeHelper.GetParent(current))
+                {
+                    if (current is ButtonBase) return default;
+                }
+            }
+
             ShowAttachedFlyout(element);
         }
 

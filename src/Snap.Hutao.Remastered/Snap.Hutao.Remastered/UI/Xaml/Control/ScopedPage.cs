@@ -122,13 +122,20 @@ public partial class ScopedPage : Page
 
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
+        Unloaded -= OnUnloaded;
         // Cancel all tasks executed by the view model
         viewCts.Cancel();
+        UnloadAsync().SafeForget();
+    }
 
+    private async Task UnloadAsync()
+    {
         if (DataContext is IViewModel viewModel)
         {
-            // Wait to ensure critical viewmodel operation is completed
-            using (viewModel.CriticalSection.Enter())
+            // A critical operation can still be waiting for the UI dispatcher to
+            // close its progress dialog. Keep pumping the UI while it finishes,
+            // and keep its service scope alive until the lock is released.
+            using (await viewModel.CriticalSection.EnterAsync().ConfigureAwait(true))
             {
                 viewModel.Uninitialize();
             }
@@ -151,12 +158,5 @@ public partial class ScopedPage : Page
         // Dispose the scope
         scope?.Dispose();
         scope = default;
-
-        if (this.IsDisposed)
-        {
-            return;
-        }
-
-        Unloaded -= OnUnloaded;
     }
 }

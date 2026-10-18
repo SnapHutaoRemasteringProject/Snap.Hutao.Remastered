@@ -281,7 +281,7 @@
                                         DataContext="{x:Bind SearchPresenter_19969.DataContext, Mode=OneWay}"
                                         PlaceholderText="{shuxm:ResourceString Name=ViewPageFeedbackAutoSuggestBoxPlaceholder}"
                                         QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
-                                        RequestedTheme="{x:Bind SearchPresenter_19969.ActualTheme, Mode=OneWay}"
+                                        shuxcth:ThemeSynchronization.Source="{x:Bind SearchPresenter_19969}"
                                         Style="{StaticResource DefaultAutoSuggestBoxStyle}"
                                         Text="{x:Bind ((shvf:FeedbackViewModel)DataContext).SearchText, Mode=TwoWay}">
                                         <mxi:Interaction.Behaviors>
@@ -313,7 +313,7 @@
                                         MaxSuggestionListHeight="{x:Bind NativeSearch_19969.MaxSuggestionListHeight, Mode=OneWay}"
                                         PlaceholderText="{x:Bind NativeSearch_19969.PlaceholderText, Mode=OneWay}"
                                         QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
-                                        RequestedTheme="{x:Bind SearchPresenter_19969.ActualTheme, Mode=OneWay}"
+                                        shuxcth:ThemeSynchronization.Source="{x:Bind SearchPresenter_19969}"
                                         Text="{x:Bind NativeSearch_19969.Text, Mode=TwoWay}"
                                         TextBoxStyle="{x:Bind NativeSearch_19969.TextBoxStyle, Mode=OneWay}"
                                         TextMemberPath="{x:Bind NativeSearch_19969.TextMemberPath, Mode=OneWay}"

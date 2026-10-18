@@ -7,6 +7,7 @@ using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Factory.Picker;
 using Snap.Hutao.Remastered.Model.InterChange.Achievement;
 using Snap.Hutao.Remastered.Service.Achievement;
+using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.ViewModel.Game;
@@ -111,7 +112,11 @@ public sealed partial class AchievementImporter
         using (await scopeContext.ContentDialogFactory.BlockAsync(dialog).ConfigureAwait(false))
         {
             ImportResult result = await context.AchievementService.ImportFromUIAFAsync(archive, uiaf.List, strategy).ConfigureAwait(false);
-            scopeContext.Messenger.Send(InfoBarMessage.Success(SH.FormatServiceAchievementImportResult(result.Add, result.Update, result.Remove)));
+            AchievementServiceMetadataContext metadata = await context.MetadataService.GetContextAsync<AchievementServiceMetadataContext>().ConfigureAwait(false);
+            // Match the page's completed-achievement count. Raw import rows can
+            // include unfinished entries or IDs not present in this metadata.
+            int completed = context.AchievementService.GetAchievementViewCollection(archive, metadata).Source.Count(static item => item.IsChecked);
+            scopeContext.Messenger.Send(InfoBarMessage.Success(SH.FormatServiceAchievementImportSummary(completed, result.Add, result.Update, result.Remove)));
         }
 
         return true;

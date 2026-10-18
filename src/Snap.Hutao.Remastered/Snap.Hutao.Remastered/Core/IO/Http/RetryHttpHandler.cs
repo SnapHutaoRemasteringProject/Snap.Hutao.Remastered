@@ -34,14 +34,18 @@ public sealed partial class RetryHttpHandler : DelegatingHandler
         // Only idempotent methods may be replayed. Retrying a non idempotent request
         // (sign-in, gacha log upload, ...) can apply the operation twice on the server.
         bool retryable = IsIdempotentMethod(request.Method);
+        HttpRequestMessageSnapshot? snapshot = retryable ? await HttpRequestMessageSnapshot.CreateAsync(request, cancellationToken).ConfigureAwait(false) : null;
 
         ExceptionDispatchInfo? dispatch = default;
         for (int attempt = 0; attempt < MaxAttemptCount; attempt++)
         {
+            using HttpRequestMessage? replay = attempt is 0 ? null : snapshot!.CreateRequest();
+            HttpRequestMessage current = replay ?? request;
+            current.RequestUri = request.RequestUri;
             HttpResponseMessage? response = null;
             try
             {
-                response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+                response = await base.SendAsync(current, cancellationToken).ConfigureAwait(false);
 
                 // Retry on server error status codes (5xx) such as 502 Bad Gateway
                 if ((int)response.StatusCode >= 500)
@@ -100,8 +104,5 @@ public sealed partial class RetryHttpHandler : DelegatingHandler
 
             request.RequestUri = serverDomain.RewriteHostToCurrentMode(request.RequestUri);
         }
-
-        // The message must be marked as not yet sent before it can be sent again
-        request.Resurrect();
     }
 }

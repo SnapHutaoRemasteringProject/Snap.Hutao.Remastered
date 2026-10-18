@@ -60,6 +60,29 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
 
     public partial AppOptions AppOptions { get; }
 
+    partial void PostConstruct(IServiceProvider serviceProvider)
+    {
+        AppOptions.AutoRestartAsAdmin.PropertyChanged += OnStartupOptionChanged;
+        AppOptions.IsStartupEnabled.PropertyChanged += OnStartupOptionChanged;
+        AppOptions.IsStartupAsAdminEnabled.PropertyChanged += OnStartupOptionChanged;
+    }
+
+    private void OnStartupOptionChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(AutoRestartAsAdminEnabled));
+        OnPropertyChanged(nameof(IsStartupEnabled));
+        OnPropertyChanged(nameof(IsStartupAsAdminEnabled));
+        OnPropertyChanged(nameof(IsStartupAsAdminCardEnabled));
+    }
+
+    public override void Dispose()
+    {
+        AppOptions.AutoRestartAsAdmin.PropertyChanged -= OnStartupOptionChanged;
+        AppOptions.IsStartupEnabled.PropertyChanged -= OnStartupOptionChanged;
+        AppOptions.IsStartupAsAdminEnabled.PropertyChanged -= OnStartupOptionChanged;
+        base.Dispose();
+    }
+
     [ObservableProperty]
     public partial string? UpdateInfo { get; set; }
 

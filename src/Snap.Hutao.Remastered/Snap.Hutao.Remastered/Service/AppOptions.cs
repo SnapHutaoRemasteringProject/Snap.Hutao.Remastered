@@ -91,7 +91,40 @@ public sealed partial class AppOptions : DbStoreOptions
     public IObservableProperty<ElementTheme> ElementTheme { get => field ??= CreateProperty(SettingKeys.ElementTheme, Microsoft.UI.Xaml.ElementTheme.Default); }
 
     [field: MaybeNull]
-    public IObservableProperty<ControlMaterial> ControlMaterial { get => field ??= CreateProperty(SettingKeys.ControlMaterial, UI.Xaml.Control.Theme.ControlMaterial.Default); }
+    public IObservableProperty<ControlMaterial> ControlMaterial
+    {
+        get
+        {
+            if (field is null)
+            {
+                field = CreateProperty(SettingKeys.ControlMaterial, UI.Xaml.Control.Theme.ControlMaterial.Default)
+                    .WithValueChangedCallback(OnControlMaterialChanged, this);
+                OnControlMaterialChanged(field.Value, this);
+            }
+
+            return field;
+        }
+    }
+
+    private static void OnControlMaterialChanged(ControlMaterial material, AppOptions appOptions)
+    {
+        // System backdrops leave stale pixels beneath liquid glass. Also
+        // normalize a persisted glass selection before applying it at startup.
+        BackdropOverrideState<BackdropType> previous = new(appOptions.IsGlassBackdropOverrideActive.Value, appOptions.BackdropBeforeGlass.Value, appOptions.BackdropType.Value);
+        BackdropOverrideState<BackdropType> next = previous.Select(material is UI.Xaml.Control.Theme.ControlMaterial.LiquidGlass, UI.Xaml.Media.Backdrop.BackdropType.None);
+        if (next != previous)
+        {
+            appOptions.BackdropBeforeGlass.Value = next.Previous;
+            appOptions.IsGlassBackdropOverrideActive.Value = next.IsActive;
+            appOptions.BackdropType.Value = next.Current;
+        }
+    }
+
+    [field: MaybeNull]
+    private IObservableProperty<bool> IsGlassBackdropOverrideActive { get => field ??= CreateProperty("GlassBackdropOverrideActive", false); }
+
+    [field: MaybeNull]
+    private IObservableProperty<BackdropType> BackdropBeforeGlass { get => field ??= CreateProperty("BackdropBeforeGlass", UI.Xaml.Media.Backdrop.BackdropType.None); }
 
     [field: MaybeNull]
     public IObservableProperty<BackgroundImageType> BackgroundImageType { get => field ??= CreateProperty(SettingKeys.BackgroundImageType, BackgroundImage.BackgroundImageType.None); }

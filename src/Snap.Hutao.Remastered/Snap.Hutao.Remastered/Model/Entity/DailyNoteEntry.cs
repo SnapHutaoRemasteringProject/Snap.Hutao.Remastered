@@ -30,31 +30,36 @@ public sealed partial class DailyNoteEntry : ObservableObject, IAppDbEntity
 
     public DateTimeOffset RefreshTime { get; set; }
 
-    public int ResinNotifyThreshold { get; set; }
+    [ObservableProperty]
+    public partial int ResinNotifyThreshold { get; set; }
 
     public bool ResinNotifySuppressed { get; set; }
 
     public bool ResinDotVisible { get; set; }
 
-    public int HomeCoinNotifyThreshold { get; set; }
+    [ObservableProperty]
+    public partial int HomeCoinNotifyThreshold { get; set; }
 
     public bool HomeCoinNotifySuppressed { get; set; }
 
     public bool HomeCoinDotVisible { get; set; }
 
-    public bool TransformerNotify { get; set; }
+    [ObservableProperty]
+    public partial bool TransformerNotify { get; set; }
 
     public bool TransformerNotifySuppressed { get; set; }
 
     public bool TransformerDotVisible { get; set; }
 
-    public bool DailyTaskNotify { get; set; }
+    [ObservableProperty]
+    public partial bool DailyTaskNotify { get; set; }
 
     public bool DailyTaskNotifySuppressed { get; set; }
 
     public bool DailyTaskDotVisible { get; set; }
 
-    public bool ExpeditionNotify { get; set; }
+    [ObservableProperty]
+    public partial bool ExpeditionNotify { get; set; }
 
     public bool ExpeditionNotifySuppressed { get; set; }
 

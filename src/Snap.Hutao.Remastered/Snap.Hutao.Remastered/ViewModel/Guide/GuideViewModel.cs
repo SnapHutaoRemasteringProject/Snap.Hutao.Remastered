@@ -66,7 +66,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
             return;
         }
 
-        LocalSetting.Set(SettingKeys.GuideState, value);
+        UnsafeLocalSetting.Set(SettingKeys.GuideState, (GuideState)value);
         ApplyGuideState((GuideState)value);
     }
 
@@ -164,8 +164,11 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         {
             if (SetProperty(ref field, value) && value is not null)
             {
-                CultureOptions.CurrentCulture.Value = value.Value;
-                AppInstance.Restart(string.Empty);
+                if (!Equals(CultureOptions.CurrentCulture.Value, value.Value))
+                {
+                    CultureOptions.CurrentCulture.Value = value.Value;
+                    AppInstance.Restart(string.Empty);
+                }
             }
         }
     }
@@ -256,6 +259,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
     public partial bool IsDownloading { get; set; }
 
     private CancellationTokenSource? downloadCts;
+    private bool skipDownloadRequested;
 
     private void OnAgreementStateChanged()
     {
@@ -353,19 +357,20 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
     private void SkipDownload()
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Skip static resource download", "GuideViewModel.Command"));
+        skipDownloadRequested = true;
         downloadCts?.Cancel();
-        IsDownloading = false;
     }
 
     [SuppressMessage("", "SH003")]
     private async Task DownloadStaticResourceAsync()
     {
         DownloadSummaries = GetUnfulfilledCategoryCollection(serviceProvider);
+        skipDownloadRequested = false;
         IsDownloading = true;
 
         try
         {
-            downloadCts = new CancellationTokenSource();
+            downloadCts = CancellationTokenSource.CreateLinkedTokenSource(CancellationToken, XamlApplicationLifetime.ShutdownToken);
             CancellationToken token = downloadCts.Token;
 
             // Pass a collection copy, so that we can remove element in loop
@@ -389,10 +394,21 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
             downloadCts = null;
         }
 
-        if (XamlApplicationLifetime.Exiting) return;
-        StaticResource.FulfillAll();
+        if (XamlApplicationLifetime.Exiting || IsViewUnloaded.Value) return;
+        GuideState nextState = GuideNavigation.StateAfterDownload(skipDownloadRequested, DownloadSummaries.Count);
+        if (nextState is GuideState.StaticResourceSetting)
+        {
+            State = (uint)GuideState.StaticResourceSetting;
+            messenger.Send(InfoBarMessage.Warning(SH.ViewModelGuideResourceDownloadIncomplete));
+            return;
+        }
+
+        // A failed transfer must not mark every archive as downloaded. An
+        // explicit skip is the user's decision to continue without those files.
+        if (skipDownloadRequested) StaticResource.FulfillAll();
+        UnsafeLocalSetting.Set(SettingKeys.GuideState, GuideState.Material);
         State = (uint)GuideState.Material;
-        AppInstance.Restart(string.Empty);
+        // Continue in this window; only the explicit final step restarts the app.
     }
 
     private static ObservableCollection<DownloadSummary> GetUnfulfilledCategoryCollection(IServiceProvider serviceProvider)

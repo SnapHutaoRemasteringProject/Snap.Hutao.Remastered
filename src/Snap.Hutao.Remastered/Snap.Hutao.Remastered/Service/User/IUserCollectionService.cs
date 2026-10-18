@@ -11,6 +11,8 @@ public interface IUserCollectionService
 {
     ValueTask<AdvancedDbCollectionView<BindingUser, EntityUser>> GetUsersAsync();
 
+    ValueTask<AdvancedDbCollectionView<BindingUser, EntityUser>> GetUsersAsync(CancellationToken token) => GetUsersAsync();
+
     ValueTask RemoveUserAsync(BindingUser user);
 
     ValueTask<ValueResult<UserOptionResultKind, string?>> TryCreateAndAddUserFromInputCookieAsync(InputCookie inputCookie);

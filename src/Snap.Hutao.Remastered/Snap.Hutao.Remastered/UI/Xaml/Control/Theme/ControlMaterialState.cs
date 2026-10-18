@@ -259,6 +259,7 @@ public sealed partial class ControlMaterialState : DependencyObject
     internal static void Apply(ControlMaterial material)
     {
         bool changed = currentMaterial != material;
+        if (changed) ComboBoxPopupLifetime.CloseAll();
         currentMaterial = material;
         ForEachState(state => state.UpdateSelection());
         if (changed) LiquidGlassProfiles.NotifySelectionChanged();
@@ -409,12 +410,7 @@ public sealed partial class ControlMaterialState : DependencyObject
         };
         presenter.SwitchCases.Add(new Case { Value = 0, Content = native });
         presenter.SwitchCases.Add(new Case { Value = 1, Content = glass });
-        native.SetBinding(FrameworkElement.RequestedThemeProperty, new Binding
-        {
-            Source = presenter,
-            Path = new PropertyPath(nameof(FrameworkElement.ActualTheme)),
-            Mode = BindingMode.OneWay,
-        });
+        ThemeSynchronization.SetSource(native, presenter);
         ControlMaterialState? settings = null;
         ForEachState(state => settings ??= state);
         if (settings is not null)
@@ -452,6 +448,7 @@ public sealed partial class ControlMaterialState : DependencyObject
     {
         ControlMaterialState source = (ControlMaterialState)sender;
         if (source.isSynchronizing) return;
+        if (args.Property == ComboBoxEnabledProperty) ComboBoxPopupLifetime.CloseAll();
         (double minimum, double maximum) = args.Property switch
         {
             var property when property == DispersionRangeProperty => (0.0, 1.0),
@@ -654,6 +651,7 @@ public sealed partial class ControlMaterialState : DependencyObject
             ManagedControls[element] = defaults;
         }
         ApplyOptics(defaults);
+        ApplyPointerLighting(element);
     }
 
     // Detach without writing composition properties while the brush is disconnecting.
@@ -710,6 +708,20 @@ public sealed partial class ControlMaterialState : DependencyObject
 
     private static void ApplyOptics(BrushDefaults defaults) =>
         LiquidGlassProfiles.Get(defaults.Kind).Apply(defaults.Brush, defaults.Values);
+
+    private static void ApplyPointerLighting(FrameworkElement element)
+    {
+        LiquidGlassProfile profile = LiquidGlassProfiles.Get(LibraryKind(element));
+        LiquidGlassInteraction.SetPointerLightingEnabled(element, profile.PointerLightingEnabled);
+        LiquidGlassInteraction.SetPointerLightInfluence(element, profile.PointerLightInfluence);
+    }
+
+    internal static void RefreshManagedInteractions()
+    {
+        if (XamlApplicationLifetime.Exiting) return;
+        foreach (FrameworkElement element in ManagedControls.Keys.ToArray())
+            if (element.IsLoaded) ApplyPointerLighting(element);
+    }
 
     internal static void RefreshManagedOptics()
     {

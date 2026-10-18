@@ -23,12 +23,14 @@ public sealed partial class HotKeyCombination : ObservableObject, IDisposable
     private GCHandle<HotKeyCombination> handle;
 
     private HutaoNativeHotKeyAction? native;
+    private bool isEnabled;
 
     public HotKeyCombination(IServiceProvider serviceProvider, HutaoNativeHotKeyActionKind kind, string settingKey)
     {
         messenger = serviceProvider.GetRequiredService<IMessenger>();
         this.kind = kind;
         this.settingKey = settingKey;
+        isEnabled = LocalSetting.Get($"{settingKey}.IsEnabled", true);
 
         // Initialize Property backing fields
         {
@@ -106,15 +108,11 @@ public sealed partial class HotKeyCombination : ObservableObject, IDisposable
     /// </summary>
     public bool IsEnabled
     {
-        get => native?.IsEnabled ?? false;
+        get => isEnabled;
         set
         {
-            if (native is not null)
-            {
-                native.IsEnabled = value;
-                OnPropertyChanged();
-            }
-
+            if (!SetProperty(ref isEnabled, value)) return;
+            if (native is not null) native.IsEnabled = value;
             LocalSetting.Set($"{settingKey}.IsEnabled", value);
         }
     }
@@ -131,7 +129,8 @@ public sealed partial class HotKeyCombination : ObservableObject, IDisposable
     public unsafe void Initialize()
     {
         native = HutaoNative.Instance.MakeHotKeyAction(kind, HutaoNativeHotKeyActionCallback.Create(&OnAction), handle);
-        native.IsEnabled = LocalSetting.Get($"{settingKey}.IsEnabled", true);
+        native.IsEnabled = isEnabled;
+        OnPropertyChanged(nameof(IsEnabled));
         SaveAndUpdate();
     }
 

@@ -12,6 +12,7 @@ using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Security.Principal;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.Process;
+using Snap.Hutao.Remastered.Service.Job;
 using Snap.Hutao.Remastered.Win32;
 using System.Diagnostics;
 using System.IO;
@@ -122,8 +123,19 @@ public static partial class Bootstrap
                 // You can delete bin and obj folder and then rebuild.
                 // In a Desktop app this runs a message pump publicly,
                 // and does not return until the application shuts down.
-                Application.Start(AppInitializationCallback);
-                XamlApplicationLifetime.Exited = true;
+                try
+                {
+                    Application.Start(AppInitializationCallback);
+                }
+                finally
+                {
+                    // Also cover natural dispatcher shutdown and restart paths
+                    // which do not pass through App.Exit. Cancel before disposing
+                    // the root container, then join Quartz's bounded shutdown.
+                    XamlApplicationLifetime.Exiting = true;
+                    serviceProvider.GetRequiredService<IQuartzService>().ShutdownAsync().GetAwaiter().GetResult();
+                    XamlApplicationLifetime.Exited = true;
+                }
             }
 
             SentrySdk.Flush();

@@ -197,7 +197,7 @@
                                     DataContext="{x:Bind GlassPresenter_9128.DataContext, Mode=OneWay}"
                                     FontSize="14"
                                     FontWeight="Bold"
-                                    RequestedTheme="{x:Bind GlassPresenter_9128.ActualTheme, Mode=OneWay}"
+                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_9128}"
                                     ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewControlStatisticsCardCombinedModeTooltip}"
                                     Visibility="{x:Bind ShowCombinedModeToggle, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                                     <TextBlock FontSize="14" Text="&#x2605;"/>

@@ -14,6 +14,8 @@ public interface IUserService
 
     ValueTask<AdvancedDbCollectionView<BindingUser, EntityUser>> GetUsersAsync();
 
+    ValueTask<AdvancedDbCollectionView<BindingUser, EntityUser>> GetUsersAsync(CancellationToken token) => GetUsersAsync();
+
     ValueTask<ValueResult<UserOptionResultKind, string?>> ProcessInputCookieAsync(InputCookie inputCookie);
 
     ValueTask<bool> RefreshCookieTokenAsync(EntityUser user);

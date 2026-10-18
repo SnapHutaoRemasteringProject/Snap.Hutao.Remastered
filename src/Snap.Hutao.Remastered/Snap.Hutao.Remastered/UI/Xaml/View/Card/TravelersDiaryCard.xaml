@@ -25,7 +25,8 @@
 
     <shuxcth:MaterialCardButton.Resources>
         <Style x:Key="TravelersDiarySectionBorderStyle" TargetType="Border">
-            <Setter Property="Background" Value="{ThemeResource HutaoSurfaceBrush}"/>
+            <Setter Property="shuxcth:MaterialBackground.NativeBrush" Value="{ThemeResource ControlAltFillColorSecondaryBrush}"/>
+            <Setter Property="shuxcth:MaterialBackground.GlassBrush" Value="{ThemeResource HutaoSurfaceBrush}"/>
             <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}"/>

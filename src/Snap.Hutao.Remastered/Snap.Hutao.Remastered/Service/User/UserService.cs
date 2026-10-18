@@ -41,6 +41,8 @@ public sealed partial class UserService : IUserService
         return userCollectionService.GetUsersAsync();
     }
 
+    public ValueTask<AdvancedDbCollectionView<BindingUser, EntityUser>> GetUsersAsync(CancellationToken token) => userCollectionService.GetUsersAsync(token);
+
     public async ValueTask<ValueResult<UserOptionResultKind, string?>> ProcessInputCookieAsync(InputCookie inputCookie)
     {
         ContentDialog dialog = await contentDialogFactory

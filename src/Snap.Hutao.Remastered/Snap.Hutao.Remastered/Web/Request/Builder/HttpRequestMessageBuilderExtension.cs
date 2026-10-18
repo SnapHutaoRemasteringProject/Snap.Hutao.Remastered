@@ -15,12 +15,6 @@ public static class HttpRequestMessageBuilderExtension
 {
     extension(HttpRequestMessageBuilder builder)
     {
-        public HttpRequestMessageBuilder Resurrect()
-        {
-            builder.HttpRequestMessage.Resurrect();
-            return builder;
-        }
-
         public ValueTask<TypedHttpResponse<TResult>> SendAsync<TResult>(HttpClient httpClient, CancellationToken token)
             where TResult : class
         {

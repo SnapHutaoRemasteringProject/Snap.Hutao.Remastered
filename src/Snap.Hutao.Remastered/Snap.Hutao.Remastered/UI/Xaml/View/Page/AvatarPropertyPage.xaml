@@ -827,7 +827,6 @@
                 <Border
                     MinWidth="480"
                     Padding="16"
-                    Background="{ThemeResource HutaoCardBrush}"
                     Style="{ThemeResource AcrylicBorderCardStyle}">
                     <StackPanel>
                         <shuxci:CachedImage
@@ -857,7 +856,7 @@
             </Grid.RowDefinitions>
 
             <Border Margin="16,16,16,0" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                <Border Background="{ThemeResource HutaoSurfaceBrush}" Style="{ThemeResource AcrylicSecondaryBorderCardStyle}">
+                <Border Style="{ThemeResource AcrylicSecondaryBorderCardStyle}">
                     <CommandBar Grid.Row="0" DefaultLabelPosition="Right">
                         <CommandBar.Content>
                             <StackPanel Orientation="Horizontal">
@@ -878,14 +877,14 @@
                                             <cwc:Case.Value>
                                                 <x:Int32>0</x:Int32>
                                             </cwc:Case.Value>
-                                            <ComboBox
+                                            <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                                 x:Name="GlassPresenter_38063_State"
                                                 Height="32"
                                                 Padding="12,6,0,7"
                                                 DataContext="{x:Bind GlassPresenter_38063.DataContext, Mode=OneWay}"
                                                 DisplayMemberPath="Name"
                                                 ItemsSource="{x:Bind ((shva:AvatarPropertyViewModel)DataContext).SortDescriptionKinds, Mode=OneWay}"
-                                                RequestedTheme="{x:Bind GlassPresenter_38063.ActualTheme, Mode=OneWay}"
+                                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_38063}"
                                                 SelectedItem="{x:Bind ((shva:AvatarPropertyViewModel)DataContext).SortDescriptionKind, Mode=TwoWay}"
                                                 Style="{ThemeResource DefaultComboBoxStyle}"/>
                                         </cwc:Case>
@@ -893,7 +892,7 @@
                                             <cwc:Case.Value>
                                                 <x:Int32>1</x:Int32>
                                             </cwc:Case.Value>
-                                            <wl:LiquidGlassComboBox
+                                            <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                                 x:Name="GlassPresenter_38063_StateGlass"
                                                 Width="{x:Bind GlassPresenter_38063_State.Width, Mode=OneWay}"
                                                 Height="{x:Bind GlassPresenter_38063_State.Height, Mode=OneWay}"
@@ -915,7 +914,6 @@
                                                 Foreground="{x:Bind GlassPresenter_38063_State.Foreground, Mode=OneWay}"
                                                 Header="{x:Bind GlassPresenter_38063_State.Header, Mode=OneWay}"
                                                 HeaderTemplate="{x:Bind GlassPresenter_38063_State.HeaderTemplate, Mode=OneWay}"
-                                                IsDropDownOpen="{x:Bind GlassPresenter_38063_State.IsDropDownOpen, Mode=TwoWay}"
                                                 IsEditable="{x:Bind GlassPresenter_38063_State.IsEditable, Mode=OneWay}"
                                                 IsEnabled="{x:Bind GlassPresenter_38063_State.IsEnabled, Mode=OneWay}"
                                                 IsTextSearchEnabled="{x:Bind GlassPresenter_38063_State.IsTextSearchEnabled, Mode=OneWay}"
@@ -928,7 +926,7 @@
                                     </cwc:SwitchPresenter>
                                 </shuxc:SizeRestrictedContentControl>
                                 <shuxc:SizeRestrictedContentControl Margin="8,8,0,0" MaxWidth="220">
-                                    <ComboBox
+                                    <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                         Height="32"
                                         Padding="12,6,0,7"
                                         DisplayMemberPath="Name"
@@ -1011,7 +1009,7 @@
                 Grid.Row="1"
                 Margin="16,16,16,16"
                 cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                <Border Background="{ThemeResource HutaoCardBrush}" Style="{ThemeResource AcrylicBorderCardStyle}">
+                <Border Style="{ThemeResource AcrylicBorderCardStyle}">
                     <cwc:SwitchPresenter ContentTransitions="{ThemeResource EntranceThemeTransitions}" Value="{x:Bind ItemsPanelSelector.Current, Mode=OneWay}">
                         <cwc:Case Value="Grid">
                             <GridView
@@ -1026,7 +1024,8 @@
                                 DisplayMode="Inline"
                                 IsPaneOpen="True"
                                 OpenPaneLength="{StaticResource CompatSplitViewOpenPaneLength}"
-                                PaneBackground="{ThemeResource HutaoSurfaceBrush}">
+                                shuxcth:MaterialBackground.NativePaneBrush="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                shuxcth:MaterialBackground.GlassPaneBrush="{ThemeResource HutaoSurfaceBrush}">
                                 <SplitView.Pane>
                                     <Grid>
                                         <Grid.RowDefinitions>
@@ -1341,7 +1340,8 @@
                                                         Header="{shuxm:ResourceString Name=ViewPageAvatarPropertyHeader}">
                                                         <Border
                                                             Margin="0,-1,0,0"
-                                                            Background="{ThemeResource HutaoSurfaceBrush}"
+                                                            shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
+                                                            shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                             BorderThickness="0">
                                                             <ItemsControl ItemTemplate="{StaticResource AvatarPropertyTemplate}" ItemsSource="{x:Bind ((shva:AvatarPropertyViewModel)DataContext).Summary.Avatars.CurrentItem.Properties, Mode=OneWay}"/>
                                                         </Border>

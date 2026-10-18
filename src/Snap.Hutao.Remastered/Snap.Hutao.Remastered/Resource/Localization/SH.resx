@@ -5575,4 +5575,22 @@
   <data name="RepositoryServerReconnecting" xml:space="preserve">
     <value>离线模式 · 正在重连</value>
   </data>
+  <data name="ViewModelGuideResourceDownloadIncomplete" xml:space="preserve">
+    <value>部分图片资源未下载成功，请重试或选择跳过下载。</value>
+  </data>
+  <data name="ServiceAchievementImportSummary" xml:space="preserve">
+    <value>当前存档已完成 {0} 项成就。导入记录（包含未完成或未收录项目）：新增 {1}，更新 {2}，移除 {3}。</value>
+  </data>
+  <data name="GlassParameterLightAngle" xml:space="preserve">
+    <value>静态光源角度（弧度）</value>
+  </data>
+  <data name="GlassPointerLighting" xml:space="preserve">
+    <value>高光方向跟随鼠标</value>
+  </data>
+  <data name="GlassPointerLightingDescription" xml:space="preserve">
+    <value>控制玻璃边缘高光的光照方向。高光强度控制亮度，高光饱和度控制色彩；跟随程度为 0 时保持静态光源方向，为 1 时完全跟随鼠标。玻璃自身的局部交互高光仍会保留。</value>
+  </data>
+  <data name="GlassPointerLightInfluence" xml:space="preserve">
+    <value>光源跟随程度</value>
+  </data>
 </root>

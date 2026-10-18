@@ -390,7 +390,7 @@
                                         DataContext="{x:Bind SearchPresenter_19087.DataContext, Mode=OneWay}"
                                         PlaceholderText="{shuxm:ResourceString Name=ViewPageAchievementSearchPlaceholder}"
                                         QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
-                                        RequestedTheme="{x:Bind SearchPresenter_19087.ActualTheme, Mode=OneWay}"
+                                        shuxcth:ThemeSynchronization.Source="{x:Bind SearchPresenter_19087}"
                                         Text="{x:Bind ((shva:AchievementViewModel)DataContext).SearchText, Mode=TwoWay}">
                                         <AutoSuggestBox.TextBoxStyle>
                                             <Style BasedOn="{StaticResource AutoSuggestBoxTextBoxStyle}" TargetType="TextBox">
@@ -429,7 +429,7 @@
                                         MaxSuggestionListHeight="{x:Bind NativeSearch_19087.MaxSuggestionListHeight, Mode=OneWay}"
                                         PlaceholderText="{x:Bind NativeSearch_19087.PlaceholderText, Mode=OneWay}"
                                         QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
-                                        RequestedTheme="{x:Bind SearchPresenter_19087.ActualTheme, Mode=OneWay}"
+                                        shuxcth:ThemeSynchronization.Source="{x:Bind SearchPresenter_19087}"
                                         Text="{x:Bind NativeSearch_19087.Text, Mode=TwoWay}"
                                         TextMemberPath="{x:Bind NativeSearch_19087.TextMemberPath, Mode=OneWay}"
                                         UpdateTextOnSelect="{x:Bind NativeSearch_19087.UpdateTextOnSelect, Mode=OneWay}"/>
@@ -451,12 +451,12 @@
                                         <cwc:Case.Value>
                                             <x:Int32>0</x:Int32>
                                         </cwc:Case.Value>
-                                        <ComboBox
+                                        <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                             x:Name="GlassPresenter_18149_State"
                                             DataContext="{x:Bind GlassPresenter_18149.DataContext, Mode=OneWay}"
                                             DisplayMemberPath="Name"
                                             ItemsSource="{x:Bind ((shva:AchievementViewModel)DataContext).Archives, Mode=OneWay}"
-                                            RequestedTheme="{x:Bind GlassPresenter_18149.ActualTheme, Mode=OneWay}"
+                                            shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_18149}"
                                             SelectedItem="{x:Bind ((shva:AchievementViewModel)DataContext).Archives.CurrentItem, Mode=TwoWay}"
                                             Style="{ThemeResource CommandBarComboBoxStyle}"/>
                                     </cwc:Case>
@@ -464,7 +464,7 @@
                                         <cwc:Case.Value>
                                             <x:Int32>1</x:Int32>
                                         </cwc:Case.Value>
-                                        <wl:LiquidGlassComboBox
+                                        <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                             x:Name="GlassPresenter_18149_StateGlass"
                                             Width="{x:Bind GlassPresenter_18149_State.Width, Mode=OneWay}"
                                             Height="{x:Bind GlassPresenter_18149_State.Height, Mode=OneWay}"
@@ -486,7 +486,6 @@
                                             Foreground="{x:Bind GlassPresenter_18149_State.Foreground, Mode=OneWay}"
                                             Header="{x:Bind GlassPresenter_18149_State.Header, Mode=OneWay}"
                                             HeaderTemplate="{x:Bind GlassPresenter_18149_State.HeaderTemplate, Mode=OneWay}"
-                                            IsDropDownOpen="{x:Bind GlassPresenter_18149_State.IsDropDownOpen, Mode=TwoWay}"
                                             IsEditable="{x:Bind GlassPresenter_18149_State.IsEditable, Mode=OneWay}"
                                             IsEnabled="{x:Bind GlassPresenter_18149_State.IsEnabled, Mode=OneWay}"
                                             IsTextSearchEnabled="{x:Bind GlassPresenter_18149_State.IsTextSearchEnabled, Mode=OneWay}"
@@ -557,7 +556,8 @@
                                 DisplayMode="Inline"
                                 IsPaneOpen="True"
                                 OpenPaneLength="{StaticResource CompatSplitViewOpenPaneLength2}"
-                                PaneBackground="{ThemeResource HutaoSurfaceBrush}">
+                                shuxcth:MaterialBackground.NativePaneBrush="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                shuxcth:MaterialBackground.GlassPaneBrush="{ThemeResource HutaoSurfaceBrush}">
                                 <SplitView.Pane>
                                     <ListView
                                         Padding="{ThemeResource ListViewInSplitPanePadding}"
