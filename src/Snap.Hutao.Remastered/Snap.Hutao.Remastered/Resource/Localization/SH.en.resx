@@ -3935,6 +3935,12 @@ Space Available: {2}</value>
   <data name="ViewTitleUpdatePackageAvailableTitle" xml:space="preserve">
     <value>Snap Hutao {0} is now available</value>
   </data>
+  <data name="ViewTitleUpdatePackageSkipVersionButtonText" xml:space="preserve">
+    <value>跳过此版本</value>
+  </data>
+  <data name="ViewTitleUpdatePackageSkipVersionInfoBarMessage" xml:space="preserve">
+    <value>已跳过版本 {0}，启动时将不再自动提示该版本，你仍可在设置中手动检查更新</value>
+  </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>Tools</value>
   </data>
