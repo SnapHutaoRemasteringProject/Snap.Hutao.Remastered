@@ -47,6 +47,8 @@ public partial class AdvancedCollectionView<T> : IAdvancedCollectionView<T>, INo
 
     public int Count { get => view.Count; }
 
+    public int SourceCount { get => Source.Count; }
+
     public bool IsReadOnly { get => Source.IsReadOnly; }
 
     public IObservableVector<object> CollectionGroups { get => default!; }
@@ -443,6 +445,7 @@ public partial class AdvancedCollectionView<T> : IAdvancedCollectionView<T>, INo
 
         OnVectorChanged(new VectorChangedEventArgs(CollectionChange.Reset));
         MoveCurrentTo(currentItem);
+        OnPropertyChanged(nameof(SourceCount));
     }
 
     private void SourceNotifyCollectionChangedCollectionChanged(NotifyCollectionChangedEventArgs e)
@@ -495,6 +498,8 @@ public partial class AdvancedCollectionView<T> : IAdvancedCollectionView<T>, INo
 
                 break;
         }
+
+        if (deferCounter is 0) OnPropertyChanged(nameof(SourceCount));
     }
 
     private bool HandleSourceItemAdded(int newStartingIndex, T newItem, int? viewIndex = null)

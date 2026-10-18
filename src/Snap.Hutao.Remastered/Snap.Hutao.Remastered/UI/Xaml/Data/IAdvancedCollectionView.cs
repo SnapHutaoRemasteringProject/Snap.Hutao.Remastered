@@ -30,6 +30,8 @@ public interface IAdvancedCollectionView<T> : ICollectionView, INotifyPropertyCh
 
     IList<T> Source { get; set; }
 
+    int SourceCount { get; }
+
     IReadOnlyList<T> View { get; }
 
     object IList<object>.this[int index]

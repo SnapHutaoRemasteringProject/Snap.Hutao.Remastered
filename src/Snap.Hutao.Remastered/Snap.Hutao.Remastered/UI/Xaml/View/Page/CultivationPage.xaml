@@ -974,7 +974,7 @@
             </Pivot.RightHeader>
 
             <PivotItem Header="{shuxm:ResourceString Name=ViewPageCultivationMaterialList}">
-                <shuxc:StandardView HideCondition="{x:Bind ((shvcu:CultivationViewModel)DataContext).EntriesUpdating, Mode=OneWay}" ShowCondition="{x:Bind ((shvcu:CultivationViewModel)DataContext).CultivateEntries.Source.Count, Converter={StaticResource Int32ToBoolConverter}, Mode=OneWay}">
+                <shuxc:StandardView HideCondition="{x:Bind ((shvcu:CultivationViewModel)DataContext).EntriesUpdating, Mode=OneWay}" ShowCondition="{x:Bind ((shvcu:CultivationViewModel)DataContext).CultivateEntries.SourceCount, Converter={StaticResource Int32ToBoolConverter}, Mode=OneWay}">
                     <shuxc:StandardView.EmptyContent>
                         <Border
                             HorizontalAlignment="Center"
