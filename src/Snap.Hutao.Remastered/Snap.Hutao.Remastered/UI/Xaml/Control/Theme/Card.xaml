@@ -31,7 +31,8 @@
         background with translucent fills intended for a separate card behind it.
     -->
     <ControlTemplate x:Key="NativeHomeCardButtonTemplate" TargetType="Button">
-        <Grid x:Name="Root">
+        <!--  The rounded ancestor clips the content too, including full-bleed card headers and footers.  -->
+        <Grid x:Name="Root" CornerRadius="{TemplateBinding CornerRadius}">
             <Border
                 Background="{TemplateBinding Background}"
                 BorderBrush="{TemplateBinding BorderBrush}"

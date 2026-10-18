@@ -723,10 +723,10 @@
                                                     IsEditable="{x:Bind GlassPresenter_23859_State.IsEditable, Mode=OneWay}"
                                                     IsEnabled="{x:Bind GlassPresenter_23859_State.IsEnabled, Mode=OneWay}"
                                                     IsTextSearchEnabled="{x:Bind GlassPresenter_23859_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind GlassPresenter_23859_State.ItemsSource, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind shs:CultureOptions.Cultures}"
                                                     MaxDropDownHeight="{x:Bind GlassPresenter_23859_State.MaxDropDownHeight, Mode=OneWay}"
                                                     PlaceholderText="{x:Bind GlassPresenter_23859_State.PlaceholderText, Mode=OneWay}"
-                                                    SelectedIndex="{x:Bind GlassPresenter_23859_State.SelectedIndex, Mode=TwoWay}"
+                                                    SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.SelectedCulture, Mode=TwoWay}"
                                                     SelectedValuePath="{x:Bind GlassPresenter_23859_State.SelectedValuePath, Mode=OneWay}"/>
                                             </cwc:Case>
                                         </cwc:SwitchPresenter>
@@ -786,10 +786,10 @@
                                                     IsEditable="{x:Bind GlassPresenter_24747_State.IsEditable, Mode=OneWay}"
                                                     IsEnabled="{x:Bind GlassPresenter_24747_State.IsEnabled, Mode=OneWay}"
                                                     IsTextSearchEnabled="{x:Bind GlassPresenter_24747_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind GlassPresenter_24747_State.ItemsSource, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.CultureOptions.DayOfWeeks, Mode=OneWay}"
                                                     MaxDropDownHeight="{x:Bind GlassPresenter_24747_State.MaxDropDownHeight, Mode=OneWay}"
                                                     PlaceholderText="{x:Bind GlassPresenter_24747_State.PlaceholderText, Mode=OneWay}"
-                                                    SelectedIndex="{x:Bind GlassPresenter_24747_State.SelectedIndex, Mode=TwoWay}"
+                                                    SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.SelectedFirstDayOfWeek, Mode=TwoWay}"
                                                     SelectedValuePath="{x:Bind GlassPresenter_24747_State.SelectedValuePath, Mode=OneWay}"/>
                                             </cwc:Case>
                                         </cwc:SwitchPresenter>
@@ -850,10 +850,10 @@
                                                     IsEditable="{x:Bind GlassPresenter_25630_State.IsEditable, Mode=OneWay}"
                                                     IsEnabled="{x:Bind GlassPresenter_25630_State.IsEnabled, Mode=OneWay}"
                                                     IsTextSearchEnabled="{x:Bind GlassPresenter_25630_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind GlassPresenter_25630_State.ItemsSource, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.AppOptions.BackdropTypes, Mode=OneWay}"
                                                     MaxDropDownHeight="{x:Bind GlassPresenter_25630_State.MaxDropDownHeight, Mode=OneWay}"
                                                     PlaceholderText="{x:Bind GlassPresenter_25630_State.PlaceholderText, Mode=OneWay}"
-                                                    SelectedIndex="{x:Bind GlassPresenter_25630_State.SelectedIndex, Mode=TwoWay}"
+                                                    SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.SelectedBackdropType, Mode=TwoWay}"
                                                     SelectedValuePath="{x:Bind GlassPresenter_25630_State.SelectedValuePath, Mode=OneWay}"/>
                                             </cwc:Case>
                                         </cwc:SwitchPresenter>
@@ -913,10 +913,10 @@
                                                     IsEditable="{x:Bind GlassPresenter_26488_State.IsEditable, Mode=OneWay}"
                                                     IsEnabled="{x:Bind GlassPresenter_26488_State.IsEnabled, Mode=OneWay}"
                                                     IsTextSearchEnabled="{x:Bind GlassPresenter_26488_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind GlassPresenter_26488_State.ItemsSource, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.AppOptions.LazyElementThemes.Value, Mode=OneWay}"
                                                     MaxDropDownHeight="{x:Bind GlassPresenter_26488_State.MaxDropDownHeight, Mode=OneWay}"
                                                     PlaceholderText="{x:Bind GlassPresenter_26488_State.PlaceholderText, Mode=OneWay}"
-                                                    SelectedIndex="{x:Bind GlassPresenter_26488_State.SelectedIndex, Mode=TwoWay}"
+                                                    SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.SelectedElementTheme, Mode=TwoWay}"
                                                     SelectedValuePath="{x:Bind GlassPresenter_26488_State.SelectedValuePath, Mode=OneWay}"/>
                                             </cwc:Case>
                                         </cwc:SwitchPresenter>
@@ -1011,10 +1011,10 @@
                                                     IsEditable="{x:Bind GlassPresenter_36087_State.IsEditable, Mode=OneWay}"
                                                     IsEnabled="{x:Bind GlassPresenter_36087_State.IsEnabled, Mode=OneWay}"
                                                     IsTextSearchEnabled="{x:Bind GlassPresenter_36087_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind GlassPresenter_36087_State.ItemsSource, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.AppOptions.BackgroundImageTypes, Mode=OneWay}"
                                                     MaxDropDownHeight="{x:Bind GlassPresenter_36087_State.MaxDropDownHeight, Mode=OneWay}"
                                                     PlaceholderText="{x:Bind GlassPresenter_36087_State.PlaceholderText, Mode=OneWay}"
-                                                    SelectedIndex="{x:Bind GlassPresenter_36087_State.SelectedIndex, Mode=TwoWay}"
+                                                    SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.SelectedBackgroundImageType, Mode=TwoWay}"
                                                     SelectedValuePath="{x:Bind GlassPresenter_36087_State.SelectedValuePath, Mode=OneWay}"/>
                                             </cwc:Case>
                                         </cwc:SwitchPresenter>
@@ -1100,10 +1100,10 @@
                                                     IsEditable="{x:Bind GlassPresenter_39530_State.IsEditable, Mode=OneWay}"
                                                     IsEnabled="{x:Bind GlassPresenter_39530_State.IsEnabled, Mode=OneWay}"
                                                     IsTextSearchEnabled="{x:Bind GlassPresenter_39530_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind GlassPresenter_39530_State.ItemsSource, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.AppOptions.BackgroundMediaTypes, Mode=OneWay}"
                                                     MaxDropDownHeight="{x:Bind GlassPresenter_39530_State.MaxDropDownHeight, Mode=OneWay}"
                                                     PlaceholderText="{x:Bind GlassPresenter_39530_State.PlaceholderText, Mode=OneWay}"
-                                                    SelectedIndex="{x:Bind GlassPresenter_39530_State.SelectedIndex, Mode=TwoWay}"
+                                                    SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.SelectedBackgroundMediaType, Mode=TwoWay}"
                                                     SelectedValuePath="{x:Bind GlassPresenter_39530_State.SelectedValuePath, Mode=OneWay}"/>
                                             </cwc:Case>
                                         </cwc:SwitchPresenter>
@@ -1223,10 +1223,10 @@
                                                     IsEditable="{x:Bind GlassPresenter_42518_State.IsEditable, Mode=OneWay}"
                                                     IsEnabled="{x:Bind GlassPresenter_42518_State.IsEnabled, Mode=OneWay}"
                                                     IsTextSearchEnabled="{x:Bind GlassPresenter_42518_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind GlassPresenter_42518_State.ItemsSource, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.AppOptions.LastWindowCloseBehaviors, Mode=OneWay}"
                                                     MaxDropDownHeight="{x:Bind GlassPresenter_42518_State.MaxDropDownHeight, Mode=OneWay}"
                                                     PlaceholderText="{x:Bind GlassPresenter_42518_State.PlaceholderText, Mode=OneWay}"
-                                                    SelectedIndex="{x:Bind GlassPresenter_42518_State.SelectedIndex, Mode=TwoWay}"
+                                                    SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Appearance.SelectedLastWindowCloseBehavior, Mode=TwoWay}"
                                                     SelectedValuePath="{x:Bind GlassPresenter_42518_State.SelectedValuePath, Mode=OneWay}"/>
                                             </cwc:Case>
                                         </cwc:SwitchPresenter>
@@ -1321,10 +1321,10 @@
                                                     IsEditable="{x:Bind GlassPresenter_44665_State.IsEditable, Mode=OneWay}"
                                                     IsEnabled="{x:Bind GlassPresenter_44665_State.IsEnabled, Mode=OneWay}"
                                                     IsTextSearchEnabled="{x:Bind GlassPresenter_44665_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind GlassPresenter_44665_State.ItemsSource, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).AppOptions.ServerDomainModes, Mode=OneWay}"
                                                     MaxDropDownHeight="{x:Bind GlassPresenter_44665_State.MaxDropDownHeight, Mode=OneWay}"
                                                     PlaceholderText="{x:Bind GlassPresenter_44665_State.PlaceholderText, Mode=OneWay}"
-                                                    SelectedIndex="{x:Bind GlassPresenter_44665_State.SelectedIndex, Mode=TwoWay}"
+                                                    SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).SelectedServerDomainMode, Mode=TwoWay}"
                                                     SelectedValuePath="{x:Bind GlassPresenter_44665_State.SelectedValuePath, Mode=OneWay}"/>
                                             </cwc:Case>
                                         </cwc:SwitchPresenter>
@@ -1928,10 +1928,10 @@
                                                         IsEditable="{x:Bind GlassPresenter_57268_State.IsEditable, Mode=OneWay}"
                                                         IsEnabled="{x:Bind GlassPresenter_57268_State.IsEnabled, Mode=OneWay}"
                                                         IsTextSearchEnabled="{x:Bind GlassPresenter_57268_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                        ItemsSource="{x:Bind GlassPresenter_57268_State.ItemsSource, Mode=OneWay}"
+                                                        ItemsSource="{x:Bind shuih:HotKeyOptions.VirtualKeys}"
                                                         MaxDropDownHeight="{x:Bind GlassPresenter_57268_State.MaxDropDownHeight, Mode=OneWay}"
                                                         PlaceholderText="{x:Bind GlassPresenter_57268_State.PlaceholderText, Mode=OneWay}"
-                                                        SelectedIndex="{x:Bind GlassPresenter_57268_State.SelectedIndex, Mode=TwoWay}"
+                                                        SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).HotKey.HotKeyOptions.MouseClickRepeatForeverKeyCombination.KeyNameValue, Mode=TwoWay}"
                                                         SelectedValuePath="{x:Bind GlassPresenter_57268_State.SelectedValuePath, Mode=OneWay}"/>
                                                 </cwc:Case>
                                             </cwc:SwitchPresenter>
@@ -2371,10 +2371,10 @@
                                                         IsEditable="{x:Bind GlassPresenter_62204_State.IsEditable, Mode=OneWay}"
                                                         IsEnabled="{x:Bind GlassPresenter_62204_State.IsEnabled, Mode=OneWay}"
                                                         IsTextSearchEnabled="{x:Bind GlassPresenter_62204_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                        ItemsSource="{x:Bind GlassPresenter_62204_State.ItemsSource, Mode=OneWay}"
+                                                        ItemsSource="{x:Bind shuih:HotKeyOptions.VirtualKeys}"
                                                         MaxDropDownHeight="{x:Bind GlassPresenter_62204_State.MaxDropDownHeight, Mode=OneWay}"
                                                         PlaceholderText="{x:Bind GlassPresenter_62204_State.PlaceholderText, Mode=OneWay}"
-                                                        SelectedIndex="{x:Bind GlassPresenter_62204_State.SelectedIndex, Mode=TwoWay}"
+                                                        SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).HotKey.HotKeyOptions.KeyPressRepeatForeverKeyCombination.KeyNameValue, Mode=TwoWay}"
                                                         SelectedValuePath="{x:Bind GlassPresenter_62204_State.SelectedValuePath, Mode=OneWay}"/>
                                                 </cwc:Case>
                                             </cwc:SwitchPresenter>
@@ -2479,10 +2479,10 @@
                                                         IsEditable="{x:Bind GlassPresenter_64634_State.IsEditable, Mode=OneWay}"
                                                         IsEnabled="{x:Bind GlassPresenter_64634_State.IsEnabled, Mode=OneWay}"
                                                         IsTextSearchEnabled="{x:Bind GlassPresenter_64634_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                        ItemsSource="{x:Bind GlassPresenter_64634_State.ItemsSource, Mode=OneWay}"
+                                                        ItemsSource="{x:Bind shuil:LowLevelKeyOptions.VirtualKeys}"
                                                         MaxDropDownHeight="{x:Bind GlassPresenter_64634_State.MaxDropDownHeight, Mode=OneWay}"
                                                         PlaceholderText="{x:Bind GlassPresenter_64634_State.PlaceholderText, Mode=OneWay}"
-                                                        SelectedIndex="{x:Bind GlassPresenter_64634_State.SelectedIndex, Mode=TwoWay}"
+                                                        SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).HotKey.LowLevelKeyOptions.WebView2VideoPlayPauseKey, Mode=TwoWay}"
                                                         SelectedValuePath="{x:Bind GlassPresenter_64634_State.SelectedValuePath, Mode=OneWay}"/>
                                                 </cwc:Case>
                                             </cwc:SwitchPresenter>
@@ -2568,10 +2568,10 @@
                                                         IsEditable="{x:Bind GlassPresenter_67550_State.IsEditable, Mode=OneWay}"
                                                         IsEnabled="{x:Bind GlassPresenter_67550_State.IsEnabled, Mode=OneWay}"
                                                         IsTextSearchEnabled="{x:Bind GlassPresenter_67550_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                        ItemsSource="{x:Bind GlassPresenter_67550_State.ItemsSource, Mode=OneWay}"
+                                                        ItemsSource="{x:Bind shuil:LowLevelKeyOptions.VirtualKeys}"
                                                         MaxDropDownHeight="{x:Bind GlassPresenter_67550_State.MaxDropDownHeight, Mode=OneWay}"
                                                         PlaceholderText="{x:Bind GlassPresenter_67550_State.PlaceholderText, Mode=OneWay}"
-                                                        SelectedIndex="{x:Bind GlassPresenter_67550_State.SelectedIndex, Mode=TwoWay}"
+                                                        SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).HotKey.LowLevelKeyOptions.WebView2VideoFastForwardKey, Mode=TwoWay}"
                                                         SelectedValuePath="{x:Bind GlassPresenter_67550_State.SelectedValuePath, Mode=OneWay}"/>
                                                 </cwc:Case>
                                             </cwc:SwitchPresenter>
@@ -2639,10 +2639,10 @@
                                                         IsEditable="{x:Bind GlassPresenter_69008_State.IsEditable, Mode=OneWay}"
                                                         IsEnabled="{x:Bind GlassPresenter_69008_State.IsEnabled, Mode=OneWay}"
                                                         IsTextSearchEnabled="{x:Bind GlassPresenter_69008_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                        ItemsSource="{x:Bind GlassPresenter_69008_State.ItemsSource, Mode=OneWay}"
+                                                        ItemsSource="{x:Bind shuil:LowLevelKeyOptions.VirtualKeys}"
                                                         MaxDropDownHeight="{x:Bind GlassPresenter_69008_State.MaxDropDownHeight, Mode=OneWay}"
                                                         PlaceholderText="{x:Bind GlassPresenter_69008_State.PlaceholderText, Mode=OneWay}"
-                                                        SelectedIndex="{x:Bind GlassPresenter_69008_State.SelectedIndex, Mode=TwoWay}"
+                                                        SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).HotKey.LowLevelKeyOptions.WebView2VideoRewindKey, Mode=TwoWay}"
                                                         SelectedValuePath="{x:Bind GlassPresenter_69008_State.SelectedValuePath, Mode=OneWay}"/>
                                                 </cwc:Case>
                                             </cwc:SwitchPresenter>
@@ -2710,10 +2710,10 @@
                                                         IsEditable="{x:Bind GlassPresenter_70447_State.IsEditable, Mode=OneWay}"
                                                         IsEnabled="{x:Bind GlassPresenter_70447_State.IsEnabled, Mode=OneWay}"
                                                         IsTextSearchEnabled="{x:Bind GlassPresenter_70447_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                        ItemsSource="{x:Bind GlassPresenter_70447_State.ItemsSource, Mode=OneWay}"
+                                                        ItemsSource="{x:Bind shuil:LowLevelKeyOptions.VirtualKeys}"
                                                         MaxDropDownHeight="{x:Bind GlassPresenter_70447_State.MaxDropDownHeight, Mode=OneWay}"
                                                         PlaceholderText="{x:Bind GlassPresenter_70447_State.PlaceholderText, Mode=OneWay}"
-                                                        SelectedIndex="{x:Bind GlassPresenter_70447_State.SelectedIndex, Mode=TwoWay}"
+                                                        SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).HotKey.LowLevelKeyOptions.WebView2HideKey, Mode=TwoWay}"
                                                         SelectedValuePath="{x:Bind GlassPresenter_70447_State.SelectedValuePath, Mode=OneWay}"/>
                                                 </cwc:Case>
                                             </cwc:SwitchPresenter>
@@ -2861,10 +2861,10 @@
                                                     IsEditable="{x:Bind GlassPresenter_76282_State.IsEditable, Mode=OneWay}"
                                                     IsEnabled="{x:Bind GlassPresenter_76282_State.IsEnabled, Mode=OneWay}"
                                                     IsTextSearchEnabled="{x:Bind GlassPresenter_76282_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind GlassPresenter_76282_State.ItemsSource, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Home.AppOptions.LazyCalendarServerTimeZoneOffsets.Value, Mode=OneWay}"
                                                     MaxDropDownHeight="{x:Bind GlassPresenter_76282_State.MaxDropDownHeight, Mode=OneWay}"
                                                     PlaceholderText="{x:Bind GlassPresenter_76282_State.PlaceholderText, Mode=OneWay}"
-                                                    SelectedIndex="{x:Bind GlassPresenter_76282_State.SelectedIndex, Mode=TwoWay}"
+                                                    SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Home.SelectedCalendarServerTimeZoneOffset, Mode=TwoWay}"
                                                     SelectedValuePath="{x:Bind GlassPresenter_76282_State.SelectedValuePath, Mode=OneWay}"/>
                                             </cwc:Case>
                                         </cwc:SwitchPresenter>
@@ -2924,10 +2924,10 @@
                                                     IsEditable="{x:Bind GlassPresenter_77216_State.IsEditable, Mode=OneWay}"
                                                     IsEnabled="{x:Bind GlassPresenter_77216_State.IsEnabled, Mode=OneWay}"
                                                     IsTextSearchEnabled="{x:Bind GlassPresenter_77216_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind GlassPresenter_77216_State.ItemsSource, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).Home.AppOptions.LazyRegions.Value, Mode=OneWay}"
                                                     MaxDropDownHeight="{x:Bind GlassPresenter_77216_State.MaxDropDownHeight, Mode=OneWay}"
                                                     PlaceholderText="{x:Bind GlassPresenter_77216_State.PlaceholderText, Mode=OneWay}"
-                                                    SelectedIndex="{x:Bind GlassPresenter_77216_State.SelectedIndex, Mode=TwoWay}"
+                                                    SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).Home.SelectedRegion, Mode=TwoWay}"
                                                     SelectedValuePath="{x:Bind GlassPresenter_77216_State.SelectedValuePath, Mode=OneWay}"/>
                                             </cwc:Case>
                                         </cwc:SwitchPresenter>
@@ -3264,7 +3264,7 @@
                                                     DataContext="{x:Bind GlassPresenter_87865.DataContext, Mode=OneWay}"
                                                     ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).GachaLog.UIGFVersions, Mode=OneWay}"
                                                     shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_87865}"
-                                                    SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).GachaLog.SelectedUIGFVersion, Mode=TwoWay}">
+                                                    SelectedIndex="{x:Bind ((shvs:SettingViewModel)DataContext).GachaLog.SelectedUIGFVersionIndex, Mode=TwoWay}">
                                                     <ComboBox.ItemTemplate>
                                                         <DataTemplate x:DataType="shsu:UIGFVersion">
                                                             <TextBlock Text="{Binding Converter={StaticResource UIGFVersionToStringConverter}, Mode=OneWay}"/>
@@ -3301,10 +3301,10 @@
                                                     IsEditable="{x:Bind GlassPresenter_87865_State.IsEditable, Mode=OneWay}"
                                                     IsEnabled="{x:Bind GlassPresenter_87865_State.IsEnabled, Mode=OneWay}"
                                                     IsTextSearchEnabled="{x:Bind GlassPresenter_87865_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind GlassPresenter_87865_State.ItemsSource, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).GachaLog.UIGFVersions, Mode=OneWay}"
                                                     MaxDropDownHeight="{x:Bind GlassPresenter_87865_State.MaxDropDownHeight, Mode=OneWay}"
                                                     PlaceholderText="{x:Bind GlassPresenter_87865_State.PlaceholderText, Mode=OneWay}"
-                                                    SelectedIndex="{x:Bind GlassPresenter_87865_State.SelectedIndex, Mode=TwoWay}"
+                                                    SelectedIndex="{x:Bind ((shvs:SettingViewModel)DataContext).GachaLog.SelectedUIGFVersionIndex, Mode=TwoWay}"
                                                     SelectedValuePath="{x:Bind GlassPresenter_87865_State.SelectedValuePath, Mode=OneWay}">
                                                     <wl:LiquidGlassComboBox.ItemTemplate>
                                                         <DataTemplate x:DataType="shsu:UIGFVersion">
@@ -3433,10 +3433,10 @@
                                                     IsEditable="{x:Bind GlassPresenter_90428_State.IsEditable, Mode=OneWay}"
                                                     IsEnabled="{x:Bind GlassPresenter_90428_State.IsEnabled, Mode=OneWay}"
                                                     IsTextSearchEnabled="{x:Bind GlassPresenter_90428_State.IsTextSearchEnabled, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind GlassPresenter_90428_State.ItemsSource, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind ((shvs:SettingViewModel)DataContext).WebView.AppOptions.BridgeShareSaveTypes, Mode=OneWay}"
                                                     MaxDropDownHeight="{x:Bind GlassPresenter_90428_State.MaxDropDownHeight, Mode=OneWay}"
                                                     PlaceholderText="{x:Bind GlassPresenter_90428_State.PlaceholderText, Mode=OneWay}"
-                                                    SelectedIndex="{x:Bind GlassPresenter_90428_State.SelectedIndex, Mode=TwoWay}"
+                                                    SelectedItem="{x:Bind ((shvs:SettingViewModel)DataContext).WebView.SelectedShareSaveType, Mode=TwoWay}"
                                                     SelectedValuePath="{x:Bind GlassPresenter_90428_State.SelectedValuePath, Mode=OneWay}"/>
                                             </cwc:Case>
                                         </cwc:SwitchPresenter>
