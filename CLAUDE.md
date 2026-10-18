@@ -386,7 +386,10 @@ the build fails with `CS9275`); write a normal constructor in that case.
 
 - **Branches** — `dev` is the integration branch and the target for all PRs (local and
   `origin/dev` exist; `alpha.yml` builds `dev` and PRs into `dev`, `canary.yml` builds everything
-  except `main`/`release`/`dependabot/**`). `main` is the default/release branch; do not open PRs
+  except `main`/`release`/`dependabot/**`). Canary uses `scripts/PrepareCanarySource.ps1` to merge
+  the exact triggering commit and other open, non-draft PR branches from this repository into
+  `dev`; it verifies trigger ancestry and records the compiled source commit in the run summary.
+  A feature-branch push is included even before its PR exists. `main` is the default/release branch; do not open PRs
   against `main`. `backup`/`main-backup` are archival.
 - **Ignore build output** — `bin/`, `obj/`, `TestResults/` and the stray
   `src/Snap.Hutao.Remastered/{Snap.Hutao.Plugin.SDK,TestPlugin}/{bin,obj}` directories are
@@ -431,5 +434,6 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
+| 2026-10-18 | Document Canary's explicit trigger-commit merge, ancestry verification and compiled-source summary, including pushes made before a PR exists. |
 | 2026-10-18 | Recounted source-linked production files and test methods after adding account-initialization thread-affinity regression tests; documented their explicit Windows dependency doubles. |
 | 2026-10-11 | Full "spec vs reality" audit (`CODE_REVIEW.md#ENG-10`): .NET 10→11, `[RelayCommand]`→`[Command("…")]`, observable partial properties, both ViewModel base classes, `develop`→`dev`, accurate `RetryHttpHandler` semantics, plugin/ALC section, DI attribute matrix, localization mechanism, build quirks, test-project caveat, visibility rule rewritten, §8 Known drift added. |
