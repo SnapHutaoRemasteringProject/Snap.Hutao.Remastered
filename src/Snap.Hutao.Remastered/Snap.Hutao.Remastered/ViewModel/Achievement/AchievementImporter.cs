@@ -7,6 +7,7 @@ using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Factory.Picker;
 using Snap.Hutao.Remastered.Model.InterChange.Achievement;
 using Snap.Hutao.Remastered.Service.Achievement;
+using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.ViewModel.Game;
