@@ -12,6 +12,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="../Snap.Hutao.Remastered/Service/User/UserInitializationService.cs" Link="Production/UserInitializationService.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/User/IUserInitializationService.cs" Link="Production/IUserInitializationService.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/User/IUserFingerprintService.cs" Link="Production/IUserFingerprintService.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/User/IProfilePictureService.cs" Link="Production/IProfilePictureService.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Model/Entity/Extension/UserExtension.cs" Link="Production/UserExtension.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/Git/RepositoryCatalogRequest.cs" Link="Production/RepositoryCatalogRequest.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Web/Hutao/GitRepository.cs" Link="Production/GitRepository.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Web/Hutao/GitRepositoryType.cs" Link="Production/GitRepositoryType.cs" />

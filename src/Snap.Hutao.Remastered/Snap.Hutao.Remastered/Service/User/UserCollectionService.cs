@@ -48,6 +48,7 @@ public sealed partial class UserCollectionService : IUserCollectionService, IDis
                 foreach (EntityUser entity in entityUsers)
                 {
                     BindingUser user = await userInitializationService.ResumeUserAsync(entity, token).ConfigureAwait(false);
+                    await taskContext.SwitchToBackgroundAsync();
                     token.ThrowIfCancellationRequested();
                     if (user.NeedDbUpdateAfterResume)
                     {
@@ -134,10 +135,14 @@ public sealed partial class UserCollectionService : IUserCollectionService, IDis
 
     private async ValueTask<bool> RetryResumeUninitializedUsersCoreAsync(CancellationToken token)
     {
-        AdvancedDbCollectionView<BindingUser, EntityUser> users = await GetUsersAsync().ConfigureAwait(false);
+        AdvancedDbCollectionView<BindingUser, EntityUser> users = await GetUsersAsync(token).ConfigureAwait(false);
+        await taskContext.SwitchToMainThreadAsync();
+        token.ThrowIfCancellationRequested();
+        BindingUser[] snapshot = [.. users.Source];
+        await taskContext.SwitchToBackgroundAsync();
 
         bool recovered = false;
-        foreach (BindingUser user in users.Source)
+        foreach (BindingUser user in snapshot)
         {
             if (user.IsInitialized)
             {
@@ -145,6 +150,8 @@ public sealed partial class UserCollectionService : IUserCollectionService, IDis
             }
 
             await userInitializationService.ResumeUserAsync(user, token).ConfigureAwait(false);
+            await taskContext.SwitchToBackgroundAsync();
+            token.ThrowIfCancellationRequested();
             if (user.IsInitialized)
             {
                 recovered = true;

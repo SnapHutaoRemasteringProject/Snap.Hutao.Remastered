@@ -26,7 +26,11 @@ public sealed partial class ProfilePictureService : IProfilePictureService
 
     public async ValueTask TryInitializeAsync(ViewModel.User.User user, CancellationToken token = default)
     {
-        foreach (UserGameRole userGameRole in user.UserGameRoles)
+        await taskContext.SwitchToMainThreadAsync();
+        token.ThrowIfCancellationRequested();
+        UserGameRole[] gameRoles = [.. user.UserGameRoles];
+        await taskContext.SwitchToBackgroundAsync();
+        foreach (UserGameRole userGameRole in gameRoles)
         {
             UidProfilePicture? profilePicture;
             lock (syncRoot)

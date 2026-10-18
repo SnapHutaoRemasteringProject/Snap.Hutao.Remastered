@@ -37,13 +37,14 @@ public sealed partial class UserInitializationService : IUserInitializationServi
     {
         if (!await InitializeUserAsync(user, token).ConfigureAwait(false))
         {
+            await taskContext.SwitchToMainThreadAsync();
+            token.ThrowIfCancellationRequested();
             user.UserInfo = new()
             {
                 Uid = SH.ModelBindingUserInitializationFailed,
                 Nickname = SH.ModelBindingUserInitializationFailed,
             };
 
-            await taskContext.SwitchToMainThreadAsync();
             user.UserGameRoles = new AdvancedCollectionView<UserGameRole>([]);
         }
 
@@ -134,7 +135,7 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         return false;
     }
 
-    private static async ValueTask TrySetUserUserInfoAsync(IServiceProvider serviceProvider, ViewModel.User.User user, CancellationToken token)
+    private async ValueTask TrySetUserUserInfoAsync(IServiceProvider serviceProvider, ViewModel.User.User user, CancellationToken token)
     {
         IUserClient userClient = serviceProvider
             .GetRequiredService<IOverseaSupportFactory<IUserClient>>()
@@ -144,6 +145,10 @@ public sealed partial class UserInitializationService : IUserInitializationServi
             .GetUserFullInfoAsync(user.Entity, token)
             .ConfigureAwait(false);
 
+        // An existing account is already bound to UserView. Its PropertyChanged
+        // handlers update XAML controls synchronously on the publishing thread.
+        await taskContext.SwitchToMainThreadAsync();
+        token.ThrowIfCancellationRequested();
         if (ResponseValidator.TryValidate(response, serviceProvider, out UserFullInfoWrapper? wrapper))
         {
             user.UserInfo = wrapper.UserInfo;
@@ -158,7 +163,7 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         }
     }
 
-    private static async ValueTask<bool> TrySetUserUserGameRolesAsync(IServiceProvider serviceProvider, ViewModel.User.User user, CancellationToken token)
+    private async ValueTask<bool> TrySetUserUserGameRolesAsync(IServiceProvider serviceProvider, ViewModel.User.User user, CancellationToken token)
     {
         BindingClient bindingClient = serviceProvider.GetRequiredService<BindingClient>();
 
@@ -168,6 +173,8 @@ public sealed partial class UserInitializationService : IUserInitializationServi
 
         if (ResponseValidator.TryValidate(userGameRolesResponse, serviceProvider, out ListWrapper<UserGameRole>? wrapper))
         {
+            await taskContext.SwitchToMainThreadAsync();
+            token.ThrowIfCancellationRequested();
             user.UserGameRoles = wrapper.List.AsAdvancedCollectionView();
             return true;
         }
@@ -213,13 +220,19 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         await userFingerprintService.TryInitializeAsync(user, token).ConfigureAwait(false);
         await profilePictureService.TryInitializeAsync(user, token).ConfigureAwait(false);
 
-        // 自动签到
-        foreach(UserGameRole gameRole in user.UserGameRoles)
+        // Snapshot the UI-bound view before any sign-in await can leave its thread.
+        await taskContext.SwitchToMainThreadAsync();
+        token.ThrowIfCancellationRequested();
+        UserGameRole[] gameRoles = [.. user.UserGameRoles];
+        await taskContext.SwitchToBackgroundAsync();
+        foreach (UserGameRole gameRole in gameRoles)
         {
             UserAndUid userAndUid = UserAndUid.From(user.Entity, gameRole.GameUid);
-            await autoSignInService.InitializeAsync(userAndUid, token);
+            await autoSignInService.InitializeAsync(userAndUid, token).ConfigureAwait(false);
         }
 
+        await taskContext.SwitchToMainThreadAsync();
+        token.ThrowIfCancellationRequested();
         return user.IsInitialized = true;
     }
 }
