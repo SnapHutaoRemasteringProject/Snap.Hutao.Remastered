@@ -5453,6 +5453,12 @@
   <data name="GlassProfileTabBar" xml:space="preserve">
     <value>Панель вкладок</value>
   </data>
+  <data name="GlassParameterSwitchScale" xml:space="preserve">
+    <value>开关大小比例</value>
+  </data>
+  <data name="GlassParameterSwitchScaleDescription" xml:space="preserve">
+    <value>等比例调整开关图形大小，不改变文字字号。修改立即生效。</value>
+  </data>
   <data name="GlassParameterBlurRadius" xml:space="preserve">
     <value>Радиус размытия</value>
   </data>
