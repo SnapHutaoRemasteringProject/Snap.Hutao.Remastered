@@ -8,6 +8,7 @@ using Snap.Hutao.Remastered.UI.Windowing.Abstraction;
 using Snap.Hutao.Remastered.UI.Xaml.Media.Backdrop;
 using Snap.Hutao.Remastered.Win32;
 using Snap.Hutao.Remastered.Win32.Foundation;
+using Snap.Hutao.Remastered.Win32.System.RemoteDesktop;
 using Snap.Hutao.Remastered.Win32.System.SystemServices;
 using Snap.Hutao.Remastered.Win32.UI.Shell;
 using System.Runtime.CompilerServices;
@@ -24,6 +25,7 @@ public sealed partial class XamlWindowSubclass : IDisposable
 
     private readonly Lock syncRoot = new();
     private bool taskBarInitialized;
+    private bool sessionNotificationsRegistered;
 
     public unsafe XamlWindowSubclass(Window window)
     {
@@ -36,10 +38,26 @@ public sealed partial class XamlWindowSubclass : IDisposable
     public void Initialize()
     {
         native.Attach();
+        if (window is IXamlWindowSessionLockHandler handler)
+        {
+            sessionNotificationsRegistered = WindowsSession.RegisterNotifications(window.GetWindowHandle());
+            if (!sessionNotificationsRegistered)
+            {
+                SentrySdk.CaptureException(new Win32Exception(Marshal.GetLastPInvokeError()));
+            }
+
+            handler.OnSessionLockChanged(WindowsSession.IsCurrentSessionLocked() ?? false);
+        }
     }
 
     public void Dispose()
     {
+        if (sessionNotificationsRegistered)
+        {
+            WindowsSession.UnregisterNotifications(window.GetWindowHandle());
+            sessionNotificationsRegistered = false;
+        }
+
         try
         {
             native.Detach();
@@ -80,6 +98,24 @@ public sealed partial class XamlWindowSubclass : IDisposable
 
         switch (uMsg)
         {
+            case WM_WTSSESSION_CHANGE:
+                {
+                    if (state.window is IXamlWindowSessionLockHandler handler)
+                    {
+                        switch ((uint)wParam)
+                        {
+                            case WTS_SESSION_LOCK:
+                                handler.OnSessionLockChanged(true);
+                                break;
+                            case WTS_SESSION_UNLOCK:
+                                handler.OnSessionLockChanged(false);
+                                break;
+                        }
+                    }
+
+                    break;
+                }
+
             case WM_NCRBUTTONDOWN:
             case WM_NCRBUTTONUP:
                 return BOOL.FALSE;

@@ -26,6 +26,13 @@ public sealed partial class ServiceRecipientMediaPlayerElementPresenterBehavior 
 
     public void Dispose()
     {
+        if (appWindow is not null)
+        {
+            appWindow.Changed -= OnAppWindowChanged;
+            appWindow = null;
+        }
+
+        backgroundMediaPlayerService?.SetWindowVisible(false);
         unloadCts?.Cancel();
         unloadCts?.Dispose();
         unloadCts = null;
@@ -46,23 +53,27 @@ public sealed partial class ServiceRecipientMediaPlayerElementPresenterBehavior 
             messenger?.UnregisterAll(this);
             messenger = serviceProvider.GetRequiredService<IMessenger>();
             messenger.Register<Snap.Hutao.Remastered.Service.BackgroundMediaPlayer.Message.BackgroundMediaOptionsChangedMessage>(this);
-            PrivateUpdateMediaPlayerElementAsync(unloadCts.Token).SafeForget();
         }
 
         if (MainWindow.Instance.AppWindow is { } window)
         {
+            if (appWindow is not null) appWindow.Changed -= OnAppWindowChanged;
             appWindow = window;
             if (window.Presenter is OverlappedPresenter presenter)
             {
                 previousState = presenter.State;
             }
 
+            UpdatePlaybackVisibility(window);
             window.Changed += OnAppWindowChanged;
         }
+
+        PrivateUpdateMediaPlayerElementAsync(unloadCts.Token).SafeForget();
     }
 
     protected override bool Uninitialize()
     {
+        backgroundMediaPlayerService?.SetWindowVisible(false);
         if (appWindow is not null)
         {
             appWindow.Changed -= OnAppWindowChanged;
@@ -92,6 +103,7 @@ public sealed partial class ServiceRecipientMediaPlayerElementPresenterBehavior 
             return;
         }
 
+        UpdatePlaybackVisibility(sender);
         if (sender.Presenter is OverlappedPresenter presenter && presenter.State != previousState)
         {
             previousState = presenter.State;
@@ -113,6 +125,16 @@ public sealed partial class ServiceRecipientMediaPlayerElementPresenterBehavior 
                     break;
             }
         }
+        else if (args.DidVisibilityChange && sender.IsVisible)
+        {
+            UpdateMediaPlayerElement();
+        }
+    }
+
+    private void UpdatePlaybackVisibility(AppWindow window)
+    {
+        bool isVisible = window.IsVisible && window.Presenter is not OverlappedPresenter { State: OverlappedPresenterState.Minimized };
+        backgroundMediaPlayerService?.SetWindowVisible(isVisible);
     }
 
     [Command("UpdateMediaPlayerElementCommand")]

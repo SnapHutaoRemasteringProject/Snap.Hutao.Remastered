@@ -83,13 +83,17 @@ public sealed partial class AutoSignInService : IAutoSignInService
             IUserService userService = scope.ServiceProvider.GetRequiredService<IUserService>();
             AdvancedDbCollectionView<BindingUser, Model.Entity.User> users = await userService.GetUsersAsync().ConfigureAwait(false);
 
-            // Snapshot because the collection can be modified by the user while the job is running.
+            // Copy on the collection's UI thread so account/role edits cannot
+            // invalidate enumeration while the background job takes its snapshot.
+            await userService.TaskContext.SwitchToMainThreadAsync();
+            token.ThrowIfCancellationRequested();
             List<(BindingUser User, List<UserGameRole> GameRoles)> snapshot = new(users.Source.Count);
             foreach (BindingUser user in users.Source)
             {
                 snapshot.Add((user, user.UserGameRoles.Source.ToList()));
             }
 
+            await userService.TaskContext.SwitchToBackgroundAsync();
             foreach ((BindingUser user, List<UserGameRole> gameRoles) in snapshot)
             {
                 if (token.IsCancellationRequested)

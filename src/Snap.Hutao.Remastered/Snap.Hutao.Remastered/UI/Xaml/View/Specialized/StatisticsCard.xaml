@@ -197,6 +197,7 @@
                                     DataContext="{x:Bind GlassPresenter_9122.DataContext, Mode=OneWay}"
                                     FontSize="14"
                                     FontWeight="Bold"
+                                    IsChecked="{x:Bind ShowCombinedTotal, Mode=TwoWay}"
                                     shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_9122}"
                                     ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewControlStatisticsCardCombinedModeTooltip}"
                                     Visibility="{x:Bind ShowCombinedModeToggle, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
@@ -228,7 +229,7 @@
                                     FontStyle="{x:Bind CombinedModeToggle.FontStyle, Mode=OneWay}"
                                     FontWeight="{x:Bind CombinedModeToggle.FontWeight, Mode=OneWay}"
                                     Foreground="{x:Bind CombinedModeToggle.Foreground, Mode=OneWay}"
-                                    IsChecked="{x:Bind CombinedModeToggle.IsChecked, Mode=TwoWay}"
+                                    IsChecked="{x:Bind ShowCombinedTotal, Mode=TwoWay}"
                                     IsEnabled="{x:Bind CombinedModeToggle.IsEnabled, Mode=OneWay}"
                                     ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewControlStatisticsCardCombinedModeTooltip}"
                                     shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True">

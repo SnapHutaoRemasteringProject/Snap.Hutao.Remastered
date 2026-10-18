@@ -41,6 +41,8 @@ public sealed partial class GameRecordClient : IGameRecordClient
 
         await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.X4, false).ConfigureAwait(false);
 
+        await builder.PrepareForRetryAsync(token).ConfigureAwait(false);
+
         Response<DailyNote.DailyNote>? resp = await builder
             .SendAsync<Response<DailyNote.DailyNote>>(httpClient, token)
             .ConfigureAwait(false);
@@ -75,6 +77,8 @@ public sealed partial class GameRecordClient : IGameRecordClient
 
         await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.X4, false).ConfigureAwait(false);
 
+        await builder.PrepareForRetryAsync(token).ConfigureAwait(false);
+
         Response<PlayerInfo>? resp = await builder
             .SendAsync<Response<PlayerInfo>>(httpClient, token)
             .ConfigureAwait(false);
@@ -91,6 +95,8 @@ public sealed partial class GameRecordClient : IGameRecordClient
             .Get();
 
         await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.X4, false).ConfigureAwait(false);
+
+        await builder.PrepareForRetryAsync(token).ConfigureAwait(false);
 
         Response<SpiralAbyss.SpiralAbyss>? resp = await builder
             .SendAsync<Response<SpiralAbyss.SpiralAbyss>>(httpClient, token)
@@ -126,6 +132,8 @@ public sealed partial class GameRecordClient : IGameRecordClient
 
         await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.X4, false).ConfigureAwait(false);
 
+        await builder.PrepareForRetryAsync(token).ConfigureAwait(false);
+
         Response<ListWrapper<Character>>? resp = await builder
             .SendAsync<Response<ListWrapper<Character>>>(httpClient, token)
             .ConfigureAwait(false);
@@ -142,6 +150,8 @@ public sealed partial class GameRecordClient : IGameRecordClient
             .PostJson(new CharacterData(userAndUid.Uid, characterIds));
 
         await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.X4, false).ConfigureAwait(false);
+
+        await builder.PrepareForRetryAsync(token).ConfigureAwait(false);
 
         Response<ListWrapper<DetailedCharacter>>? resp = await builder
             .SendAsync<Response<ListWrapper<DetailedCharacter>>>(httpClient, token)
@@ -160,6 +170,8 @@ public sealed partial class GameRecordClient : IGameRecordClient
 
         await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.X4, false).ConfigureAwait(false);
 
+        await builder.PrepareForRetryAsync(token).ConfigureAwait(false);
+
         Response<RoleCombat.RoleCombat>? resp = await builder
             .SendAsync<Response<RoleCombat.RoleCombat>>(httpClient, token)
             .ConfigureAwait(false);
@@ -176,6 +188,8 @@ public sealed partial class GameRecordClient : IGameRecordClient
             .Get();
 
         await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.X4, false).ConfigureAwait(false);
+
+        await builder.PrepareForRetryAsync(token).ConfigureAwait(false);
 
         Response<HardChallenge.HardChallenge>? resp = await builder
             .SendAsync<Response<HardChallenge.HardChallenge>>(httpClient, token)
@@ -194,6 +208,8 @@ public sealed partial class GameRecordClient : IGameRecordClient
 
         await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.X4, false).ConfigureAwait(false);
 
+        await builder.PrepareForRetryAsync(token).ConfigureAwait(false);
+
         Response<HardChallengePopularity>? resp = await builder
             .SendAsync<Response<HardChallengePopularity>>(httpClient, token)
             .ConfigureAwait(false);
@@ -210,6 +226,8 @@ public sealed partial class GameRecordClient : IGameRecordClient
             .PostJson(new RoleIdServer(userAndUid.Uid));
 
         await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.X4, false).ConfigureAwait(false);
+
+        await builder.PrepareForRetryAsync(token).ConfigureAwait(false);
 
         Response<ActCalendar.ActCalendar>? resp = await builder
             .SendAsync<Response<ActCalendar.ActCalendar>>(httpClient, token)
@@ -232,7 +250,7 @@ public sealed partial class GameRecordClient : IGameRecordClient
 
             if (await geetestService.TryVerifyXrpcChallengeAsync(userAndUid.User, headers, token).ConfigureAwait(false) is { } challenge)
             {
-                builder.Resurrect().SetXrpcChallenge(challenge);
+                builder.RecreateRequest().SetXrpcChallenge(challenge);
                 await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.X4, false).ConfigureAwait(false);
                 response = await builder.SendAsync<TResponse>(httpClient, token).ConfigureAwait(false);
             }

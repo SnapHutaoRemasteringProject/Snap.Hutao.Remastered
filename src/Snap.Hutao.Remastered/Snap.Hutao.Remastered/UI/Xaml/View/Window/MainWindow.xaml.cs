@@ -22,7 +22,8 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View.Window;
 public sealed partial class MainWindow : Microsoft.UI.Xaml.Window,
     IXamlWindowClosedHandler,
     IXamlWindowExtendContentIntoTitleBar,
-    IXamlWindowHasInitSize
+    IXamlWindowHasInitSize,
+    IXamlWindowSessionLockHandler
 {
     // This dependency uses the window's associated scope, established below.
     private LastWindowCloseBehaviorTraits closeBehaviorTraits = default!;
@@ -76,6 +77,11 @@ public sealed partial class MainWindow : Microsoft.UI.Xaml.Window,
     public FrameworkElement TitleBarCaptionAccess { get => MainView.TitleBar; }
 
     public ImmutableArray<FrameworkElement> TitleBarPassthrough { get => []; }
+
+    public void OnSessionLockChanged(bool isLocked)
+    {
+        backgroundMediaPlayerService.SetSessionLocked(isLocked);
+    }
 
     private void RootGrid_PointerPressed(object sender, PointerRoutedEventArgs e)
     {

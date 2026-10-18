@@ -17,6 +17,8 @@
     <Compile Include="../Snap.Hutao.Remastered/Web/Hutao/GitRepositoryType.cs" Link="Production/GitRepositoryType.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Threading/AsyncLoadOperation.cs" Link="Production/AsyncLoadOperation.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/Hutao/StatisticsCache.cs" Link="Production/StatisticsCache.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/BackgroundMediaPlayer/BackgroundMediaPlaybackController.cs" Link="Production/BackgroundMediaPlaybackController.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Web/Request/Builder/HttpRequestMessageSnapshot.cs" Link="Production/HttpRequestMessageSnapshot.cs" />
     <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/DesiredSizeRestriction.cs" Link="Production/DesiredSizeRestriction.cs" />
     <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Theme/LiquidGlassOverrideStore.cs" Link="Production/LiquidGlassOverrideStore.cs" />
     <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Theme/PageResourceScope.cs" Link="Production/PageResourceScope.cs" />

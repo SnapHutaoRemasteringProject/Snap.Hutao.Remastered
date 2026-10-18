@@ -11,4 +11,8 @@ public interface IBackgroundMediaPlayerService
     void Play();
 
     void Stop();
+
+    void SetSessionLocked(bool value);
+
+    void SetWindowVisible(bool value);
 }
