@@ -10,6 +10,7 @@
     xmlns:muxca="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
     xmlns:shhuxcp="using:Snap.Hutao.Remastered.UI.Xaml.Control.Panel"
+    xmlns:shmca="using:Snap.Hutao.Remastered.Model.Calculable"
     xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxba="using:Snap.Hutao.Remastered.UI.Xaml.Behavior.Action"
@@ -54,7 +55,7 @@
             </ResourceDictionary.ThemeDictionaries>
             <shux:BindingProxy x:Key="BindingProxy" DataContext="{x:Bind ((shvcu:CultivationViewModel)DataContext), Mode=OneWay}"/>
 
-            <DataTemplate x:Key="FlyoutSkillTemplate">
+            <DataTemplate x:Key="FlyoutSkillTemplate" x:DataType="shmca:CalculableSkill">
                 <Border Margin="0,2,0,0" Style="{StaticResource BorderCardStyle}">
                     <Grid Margin="8" ColumnSpacing="6">
                         <Grid.ColumnDefinitions>
@@ -70,21 +71,21 @@
                             Width="32"
                             Height="32"
                             ShowAsMonoChrome="True"
-                            Source="{Binding Icon}"/>
+                            Source="{x:Bind Icon, Mode=OneWay}"/>
                         <TextBlock
                             Grid.Column="1"
                             Margin="16,0,0,0"
                             VerticalAlignment="Center"
-                            Text="{Binding Name}"
+                            Text="{x:Bind Name, Mode=OneWay}"
                             TextTrimming="CharacterEllipsis"/>
                         <NumberBox
                             Grid.Column="3"
                             MinWidth="80"
                             VerticalAlignment="Center"
-                            Maximum="{Binding LevelMax}"
-                            Minimum="{Binding LevelMin}"
+                            Maximum="{x:Bind LevelMax, Mode=OneWay}"
+                            Minimum="{x:Bind LevelMin, Mode=OneWay}"
                             SpinButtonPlacementMode="Inline"
-                            Value="{Binding LevelCurrent, Mode=TwoWay}"/>
+                            Value="{x:Bind LevelCurrent, Mode=TwoWay}"/>
                         <FontIcon
                             Grid.Column="4"
                             Margin="4,0"
@@ -94,10 +95,10 @@
                             Grid.Column="5"
                             MinWidth="80"
                             VerticalAlignment="Center"
-                            Maximum="{Binding LevelMax}"
-                            Minimum="{Binding LevelCurrent, Mode=OneWay}"
+                            Maximum="{x:Bind LevelMax, Mode=OneWay}"
+                            Minimum="{x:Bind LevelCurrent, Mode=OneWay}"
                             SpinButtonPlacementMode="Inline"
-                            Value="{Binding LevelTarget, Mode=TwoWay}"/>
+                            Value="{x:Bind LevelTarget, Mode=TwoWay}"/>
                     </Grid>
                 </Border>
             </DataTemplate>
@@ -402,7 +403,6 @@
                 </Flyout.FlyoutPresenterStyle>
                 <ContentControl
                     HorizontalContentAlignment="Stretch"
-                    Content="{Binding}"
                     ContentTemplate="{StaticResource CultivateEntryFlyoutContentTemplate}"/>
             </Flyout>
 
@@ -584,7 +584,7 @@
                 <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                     <mxi:Interaction.Behaviors>
                         <mxi:EventTriggerBehavior EventName="PointerPressed">
-                            <shuxba:ShowAttachedFlyoutAction/>
+                            <shuxba:ShowAttachedFlyoutAction Data="{x:Bind Mode=OneWay}"/>
                         </mxi:EventTriggerBehavior>
                     </mxi:Interaction.Behaviors>
                     <FlyoutBase.AttachedFlyout>

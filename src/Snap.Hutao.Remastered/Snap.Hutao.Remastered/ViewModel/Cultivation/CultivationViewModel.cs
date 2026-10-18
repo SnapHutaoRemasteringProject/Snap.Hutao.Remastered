@@ -186,7 +186,7 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
         Projects?.MoveCurrentToFirst();
     }
 
-    private async ValueTask UpdateEntryCollectionAsync(CultivateProject? project)
+    private async ValueTask UpdateEntryCollectionAsync(CultivateProject? project, bool refresh = false)
     {
         if (project is null)
         {
@@ -203,7 +203,7 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
                 .ConfigureAwait(false);
 
             ObservableCollection<CultivateEntryView> entries = await cultivationService
-                .GetCultivateEntryCollectionAsync(project, context)
+                .GetCultivateEntryCollectionAsync(project, context, refresh)
                 .ConfigureAwait(false);
 
             await taskContext.SwitchToMainThreadAsync();
@@ -229,11 +229,21 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Remove entry", "CultivationViewModel.Command"));
 
-        if (entry is not null)
+        await taskContext.SwitchToMainThreadAsync();
+        if (entry is not null && CultivateEntries is { } entries)
         {
-            ArgumentNullException.ThrowIfNull(CultivateEntries);
-            CultivateEntries.Remove(entry);
-            await cultivationService.RemoveCultivateEntryAsync(entry.EntryId).ConfigureAwait(false);
+            int index = entries.Source.IndexOf(entry);
+            if (index < 0 || !entries.Remove(entry)) return;
+            try
+            {
+                await cultivationService.RemoveCultivateEntryAsync(entry.EntryId).ConfigureAwait(false);
+            }
+            catch
+            {
+                await taskContext.SwitchToMainThreadAsync();
+                entries.Source.Insert(Math.Min(index, entries.Source.Count), entry);
+                throw;
+            }
             await UpdateStatisticsItemsAsync().ConfigureAwait(false);
         }
     }
@@ -243,10 +253,30 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Toggle item finish state", "CultivationViewModel.Command"));
 
-        if (item is not null)
+        await taskContext.SwitchToMainThreadAsync();
+        if (item is not null && CultivateEntries?.Source.Any(entry => entry.Items.Contains(item)) is true)
         {
-            item.IsFinished = !item.IsFinished;
-            cultivationService.SaveCultivateItem(item);
+            bool previous = item.IsFinished;
+            item.IsFinished = !previous;
+            bool saved;
+            try
+            {
+                await taskContext.SwitchToBackgroundAsync();
+                saved = cultivationService.SaveCultivateItem(item);
+            }
+            catch
+            {
+                await taskContext.SwitchToMainThreadAsync();
+                item.IsFinished = previous;
+                throw;
+            }
+            await taskContext.SwitchToMainThreadAsync();
+            if (!saved)
+            {
+                item.IsFinished = previous;
+                await UpdateEntryCollectionAsync(Projects?.CurrentItem, refresh: true).ConfigureAwait(false);
+                return;
+            }
             await UpdateStatisticsItemsAsync().ConfigureAwait(false);
         }
     }

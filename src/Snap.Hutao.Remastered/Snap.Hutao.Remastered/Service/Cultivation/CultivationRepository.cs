@@ -37,9 +37,14 @@ public sealed partial class CultivationRepository : ICultivationRepository
         this.DeleteByInnerId<CultivateEntry>(entryId);
     }
 
-    public void UpdateCultivateItem(CultivateItem item)
+    public bool UpdateCultivateItem(CultivateItem item)
     {
-        this.Update(item);
+        // A pending card command can outlive deletion/replacement of its row.
+        // Update only the finish flag and report a missing row without attaching
+        // the stale entity as Modified or recreating it.
+        return this.Execute<CultivateItem, bool>(dbSet => dbSet
+            .Where(value => value.InnerId == item.InnerId)
+            .ExecuteUpdate(setters => setters.SetProperty(value => value.IsFinished, item.IsFinished)) == 1);
     }
 
     public ImmutableArray<CultivateEntry> GetCultivateEntryImmutableArrayByProjectIdAndItemId(Guid projectId, uint itemId)

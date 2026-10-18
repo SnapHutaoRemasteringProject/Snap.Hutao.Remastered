@@ -33,7 +33,7 @@ public interface ICultivationRepository : IRepository<CultivateEntryLevelInforma
 
     void AddCultivateItemRange(IEnumerable<CultivateItem> toAdd);
 
-    void UpdateCultivateItem(CultivateItem item);
+    bool UpdateCultivateItem(CultivateItem item);
 
     void RemoveLevelInformationByEntryId(Guid entryId);
 

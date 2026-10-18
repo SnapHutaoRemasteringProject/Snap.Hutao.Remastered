@@ -218,6 +218,9 @@ the build fails with `CS9275`); write a normal constructor in that case.
   change and saves it before raising `PropertyChanged`. Binding handlers run synchronously and can
   re-enter the setter; publishing first lets the older invocation overwrite the newer choice in
   the native action and persisted setting after the handler returns.
+- **Collection views expose both notification contracts** — `IAdvancedCollectionView<T>` carries
+  `INotifyCollectionChanged` as well as WinRT vector events. Publish filtered/sorted view indices
+  and the actual removed item; an ItemsRepeater consuming a bindable adapter must observe removals.
 - **Two ViewModel base classes exist** (see TODO #4):
   - [`ViewModel/Abstraction/ViewModel.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/ViewModel/Abstraction/ViewModel.cs)
     — full lifecycle: `Initialization` TCS, `Resurrect()`, `Uninitialize()`, `CriticalSection`,

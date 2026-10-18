@@ -15,7 +15,7 @@ public interface ICultivationService
 
     ValueTask<bool> EnsureCurrentProjectAsync(IAdvancedDbCollectionView<CultivateProject> projects);
 
-    ValueTask<ObservableCollection<CultivateEntryView>> GetCultivateEntryCollectionAsync(CultivateProject cultivateProject, ICultivationMetadataContext context);
+    ValueTask<ObservableCollection<CultivateEntryView>> GetCultivateEntryCollectionAsync(CultivateProject cultivateProject, ICultivationMetadataContext context, bool refresh = false);
 
     ValueTask<StatisticsCultivateItemCollection> GetStatisticsCultivateItemCollectionAsync(CultivateProject cultivateProject, ICultivationMetadataContext context, CancellationToken token);
 
@@ -27,7 +27,7 @@ public interface ICultivationService
 
     ValueTask<ConsumptionSaveResultKind> SaveConsumptionAsync(InputConsumption inputConsumption);
 
-    void SaveCultivateItem(CultivateItemView item);
+    bool SaveCultivateItem(CultivateItemView item);
 
     ValueTask<ProjectAddResultKind> TryAddProjectAsync(CultivateProject project);
 }

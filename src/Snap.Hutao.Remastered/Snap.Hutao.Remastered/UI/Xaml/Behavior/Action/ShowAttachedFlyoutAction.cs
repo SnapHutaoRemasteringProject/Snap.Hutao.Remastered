@@ -10,7 +10,8 @@ using Microsoft.Xaml.Interactivity;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 
-public sealed class ShowAttachedFlyoutAction : DependencyObject, IAction
+[DependencyProperty<object>("Data")]
+public sealed partial class ShowAttachedFlyoutAction : DependencyObject, IAction
 {
     public object? Execute(object? sender, object parameter)
     {
@@ -26,7 +27,7 @@ public sealed class ShowAttachedFlyoutAction : DependencyObject, IAction
                 }
             }
 
-            ShowAttachedFlyout(element);
+            ShowAttachedFlyout(element, Data ?? element.DataContext);
         }
 
         return default;
@@ -34,13 +35,24 @@ public sealed class ShowAttachedFlyoutAction : DependencyObject, IAction
 
     public static void ShowAttachedFlyout(FrameworkElement element)
     {
+        ShowAttachedFlyout(element, element.DataContext);
+    }
+
+    private static void ShowAttachedFlyout(FrameworkElement element, object? data)
+    {
         // The Flyout is shared via StaticResource across all card templates. WinUI's
         // DataContext inheritance doesn't reliably propagate when reparenting a shared
         // flyout between different placement targets. Explicitly set the content's
         // DataContext from the tapped card's DataContext.
         if (FlyoutBase.GetAttachedFlyout(element) is Flyout { Content: FrameworkElement content })
         {
-            content.DataContext = element.DataContext;
+            content.DataContext = data;
+            if (content is ContentControl { ContentTemplate: not null } presenter)
+            {
+                // Pass the template's data root directly; a shared flyout must not
+                // depend on a second inherited/reflection binding to supply it.
+                presenter.Content = data;
+            }
         }
 
         FlyoutBase.ShowAttachedFlyout(element);

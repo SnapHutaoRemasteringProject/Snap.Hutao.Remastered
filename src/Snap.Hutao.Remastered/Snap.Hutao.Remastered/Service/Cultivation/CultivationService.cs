@@ -47,10 +47,11 @@ public sealed partial class CultivationService : ICultivationService
         }
     }
 
-    public async ValueTask<ObservableCollection<CultivateEntryView>> GetCultivateEntryCollectionAsync(CultivateProject cultivateProject, ICultivationMetadataContext context)
+    public async ValueTask<ObservableCollection<CultivateEntryView>> GetCultivateEntryCollectionAsync(CultivateProject cultivateProject, ICultivationMetadataContext context, bool refresh = false)
     {
         using (await entryCollectionLock.LockAsync().ConfigureAwait(false))
         {
+            if (refresh) entryCollectionCache.TryRemove(cultivateProject.InnerId, out _);
             if (entryCollectionCache.TryGetValue(cultivateProject.InnerId, out ObservableCollection<CultivateEntryView>? collection))
             {
                 return collection;
@@ -162,9 +163,9 @@ public sealed partial class CultivationService : ICultivationService
         cultivationRepository.RemoveCultivateEntryById(entryId);
     }
 
-    public void SaveCultivateItem(CultivateItemView item)
+    public bool SaveCultivateItem(CultivateItemView item)
     {
-        cultivationRepository.UpdateCultivateItem(item.Entity);
+        return cultivationRepository.UpdateCultivateItem(item.Entity);
     }
 
     public async ValueTask<ConsumptionSaveResultKind> SaveConsumptionAsync(InputConsumption inputConsumption)
@@ -201,6 +202,8 @@ public sealed partial class CultivationService : ICultivationService
 
                 if (inputConsumption.Strategy is ConsumptionSaveStrategyKind.OverwriteExisting)
                 {
+                    // The removal-only result below must invalidate cached rows too.
+                    entryCollectionCache.TryRemove(projects.CurrentItem.InnerId, out _);
                     foreach (CultivateEntry entry in entries)
                     {
                         cultivationRepository.RemoveLevelInformationByEntryId(entry.InnerId);
