@@ -17,6 +17,7 @@ public sealed partial class QuartzService : IQuartzService, IDisposable
     private readonly ILogger<QuartzService> logger;
     private IScheduler? scheduler;
     private Task? startTask;
+    private Task? configureTask;
     private Task? shutdownTask;
 
     [GeneratedConstructor]
@@ -38,7 +39,8 @@ public sealed partial class QuartzService : IQuartzService, IDisposable
             startupCompleted.TrySetResult();
             // Job registration may await user/metadata initialization in activation
             // phase 2. It must not prevent phase 1 from ever completing.
-            ConfigureJobsAsync(scheduler, lifetime.Token).SafeForget();
+            configureTask = ConfigureJobsAsync(scheduler, lifetime.Token);
+            configureTask.SafeForget();
         }
         finally
         {
@@ -48,11 +50,16 @@ public sealed partial class QuartzService : IQuartzService, IDisposable
 
     private async Task ConfigureJobsAsync(IScheduler current, CancellationToken token)
     {
-        foreach (IJobScheduler jobScheduler in serviceProvider.GetServices<IJobScheduler>())
+        try
         {
             token.ThrowIfCancellationRequested();
-            await jobScheduler.ScheduleAsync(current, token).ConfigureAwait(false);
+            foreach (IJobScheduler jobScheduler in serviceProvider.GetServices<IJobScheduler>())
+            {
+                token.ThrowIfCancellationRequested();
+                await jobScheduler.ScheduleAsync(current, token).ConfigureAwait(false);
+            }
         }
+        catch (OperationCanceledException) when (token.IsCancellationRequested) { }
     }
 
     public async Task UpdateJobAsync(string group, string triggerName, Func<TriggerBuilder<IJob>, TriggerBuilder<IJob>> configure, CancellationToken token = default)
@@ -98,12 +105,23 @@ public sealed partial class QuartzService : IQuartzService, IDisposable
             if (scheduler is not { } current) return;
             try
             {
+                if (configureTask is { } configuring)
+                {
+                    try { await configuring.WaitAsync(timeout.Token).ConfigureAwait(false); }
+                    catch (OperationCanceledException) when (!timeout.IsCancellationRequested) { }
+                    catch (Exception exception) when (!timeout.IsCancellationRequested)
+                    {
+                        logger.LogWarning(exception, "Quartz job registration stopped during shutdown");
+                    }
+                }
                 await current.Interrupt(new(JobIdentity.DailyNoteRefreshJobName, JobIdentity.DailyNoteGroupName), timeout.Token).ConfigureAwait(false);
                 await current.Interrupt(new(JobIdentity.AutoSignInRunJobName, JobIdentity.AutoSignInGroupName), timeout.Token).ConfigureAwait(false);
             }
             finally
             {
-                Task stopping = StopSchedulerAsync(current, timeout.Token);
+                // Start shutdown even when job registration exhausted the wait
+                // budget. Waiting remains bounded by the shared deadline.
+                Task stopping = StopSchedulerAsync(current);
                 stopping.SafeForget();
                 await stopping.WaitAsync(timeout.Token).ConfigureAwait(false);
                 scheduler = null;
@@ -120,8 +138,8 @@ public sealed partial class QuartzService : IQuartzService, IDisposable
         ShutdownAsync().SafeForget();
     }
 
-    private static async Task StopSchedulerAsync(IScheduler current, CancellationToken token)
+    private static async Task StopSchedulerAsync(IScheduler current)
     {
-        await current.Shutdown(false, token).ConfigureAwait(false);
+        await current.Shutdown(false, CancellationToken.None).ConfigureAwait(false);
     }
 }

@@ -38,7 +38,7 @@ public sealed partial class AutoSignInJobScheduler : IJobScheduler
 
     private async ValueTask<TimeSpan> GetCurrentServerOffsetAsync(CancellationToken token)
     {
-        if (await userService.GetCurrentUserAndUidAsync().AsTask().WaitAsync(token).ConfigureAwait(false) is { } userAndUid)
+        if (await userService.GetCurrentUserAndUidAsync(token).AsTask().WaitAsync(token).ConfigureAwait(false) is { } userAndUid)
         {
             return PlayerUid.GetRegionTimeZoneUtcOffsetForRegion(userAndUid.Uid.Region);
         }

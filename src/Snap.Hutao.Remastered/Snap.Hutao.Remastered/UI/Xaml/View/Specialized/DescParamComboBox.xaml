@@ -68,7 +68,7 @@
                         <cwc:Case.Value>
                             <x:Int32>0</x:Int32>
                         </cwc:Case.Value>
-                        <ComboBox
+                        <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                             x:Name="LevelComboBox"
                             DataContext="{x:Bind GlassPresenter_3562.DataContext, Mode=OneWay}"
                             DisplayMemberPath="Level"
@@ -81,7 +81,7 @@
                         <cwc:Case.Value>
                             <x:Int32>1</x:Int32>
                         </cwc:Case.Value>
-                        <wl:LiquidGlassComboBox
+                        <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                             x:Name="LevelComboBoxGlass"
                             Width="{x:Bind LevelComboBox.Width, Mode=OneWay}"
                             Height="{x:Bind LevelComboBox.Height, Mode=OneWay}"
@@ -102,7 +102,6 @@
                             Foreground="{x:Bind LevelComboBox.Foreground, Mode=OneWay}"
                             Header="{x:Bind LevelComboBox.Header, Mode=OneWay}"
                             HeaderTemplate="{x:Bind LevelComboBox.HeaderTemplate, Mode=OneWay}"
-                            IsDropDownOpen="{x:Bind LevelComboBox.IsDropDownOpen, Mode=TwoWay}"
                             IsEditable="{x:Bind LevelComboBox.IsEditable, Mode=OneWay}"
                             IsEnabled="{x:Bind LevelComboBox.IsEnabled, Mode=OneWay}"
                             IsTextSearchEnabled="{x:Bind LevelComboBox.IsTextSearchEnabled, Mode=OneWay}"

@@ -24,7 +24,7 @@
             Spacing="12">
             <TextBlock Text="{shuxm:ResourceString Name=GlassEffectsIntro}" TextWrapping="Wrap"/>
             <StackPanel Orientation="Horizontal" Spacing="16">
-                <ComboBox
+                <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                     x:Name="TypeSelector"
                     MinWidth="230"
                     ItemsSource="{x:Bind Profiles}"
@@ -48,46 +48,59 @@
                 <ColumnDefinition Width="390"/>
             </Grid.ColumnDefinitions>
             <ScrollViewer HorizontalScrollBarVisibility="Disabled" HorizontalScrollMode="Disabled">
-                <ItemsControl ItemsSource="{x:Bind SelectedProfile.Parameters, Mode=OneWay}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="shuxcth:LiquidGlassParameter">
-                            <StackPanel Margin="0,0,12,16" Spacing="4">
-                                <Grid ColumnSpacing="12">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock VerticalAlignment="Center" Text="{x:Bind Label}"/>
-                                    <Button
-                                        Grid.Column="1"
-                                        Click="{x:Bind Reset}"
-                                        Content="{shuxm:ResourceString Name=GlassResetParameter}"/>
-                                </Grid>
-                                <Grid ColumnSpacing="16">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="64"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Slider
-                                        AutomationProperties.Name="{x:Bind Label}"
-                                        Maximum="{x:Bind Maximum}"
-                                        Minimum="{x:Bind Minimum}"
-                                        StepFrequency="{x:Bind Step}"
-                                        Value="{x:Bind Value, Mode=TwoWay}"/>
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        Text="{x:Bind DisplayValue, Mode=OneWay}"/>
-                                </Grid>
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{shuxm:ResourceString Name=GlassDefaultValue}"/>
-                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind DefaultText}"/>
+                <StackPanel Spacing="12">
+                    <ToggleSwitch
+                        Header="{shuxm:ResourceString Name=GlassPointerLighting}"
+                        IsOn="{x:Bind SelectedProfile.PointerLightingEnabled, Mode=TwoWay}"/>
+                    <TextBlock Text="{shuxm:ResourceString Name=GlassPointerLightingDescription}" TextWrapping="Wrap"/>
+                    <TextBlock Text="{shuxm:ResourceString Name=GlassPointerLightInfluence}"/>
+                    <Slider
+                        AutomationProperties.Name="{shuxm:ResourceString Name=GlassPointerLightInfluence}"
+                        Maximum="1"
+                        Minimum="0"
+                        StepFrequency="0.05"
+                        Value="{x:Bind SelectedProfile.PointerLightInfluence, Mode=TwoWay}"/>
+                    <ItemsControl ItemsSource="{x:Bind SelectedProfile.Parameters, Mode=OneWay}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="shuxcth:LiquidGlassParameter">
+                                <StackPanel Margin="0,0,12,16" Spacing="4">
+                                    <Grid ColumnSpacing="12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock VerticalAlignment="Center" Text="{x:Bind Label}"/>
+                                        <Button
+                                            Grid.Column="1"
+                                            Click="{x:Bind Reset}"
+                                            Content="{shuxm:ResourceString Name=GlassResetParameter}"/>
+                                    </Grid>
+                                    <Grid ColumnSpacing="16">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="64"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Slider
+                                            AutomationProperties.Name="{x:Bind Label}"
+                                            Maximum="{x:Bind Maximum}"
+                                            Minimum="{x:Bind Minimum}"
+                                            StepFrequency="{x:Bind Step}"
+                                            Value="{x:Bind Value, Mode=TwoWay}"/>
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Text="{x:Bind DisplayValue, Mode=OneWay}"/>
+                                    </Grid>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{shuxm:ResourceString Name=GlassDefaultValue}"/>
+                                        <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind DefaultText}"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
             </ScrollViewer>
             <StackPanel Grid.Column="1" Spacing="12">
                 <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="{shuxm:ResourceString Name=GlassPreviewHeading}"/>

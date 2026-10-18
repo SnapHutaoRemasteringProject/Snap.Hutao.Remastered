@@ -476,7 +476,7 @@
                             <cwc:Case.Value>
                                 <x:Int32>0</x:Int32>
                             </cwc:Case.Value>
-                            <ComboBox
+                            <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                 x:Name="GlassPresenter_22004_State"
                                 DataContext="{x:Bind GlassPresenter_22004.DataContext, Mode=OneWay}"
                                 DisplayMemberPath="Uid"
@@ -489,7 +489,7 @@
                             <cwc:Case.Value>
                                 <x:Int32>1</x:Int32>
                             </cwc:Case.Value>
-                            <wl:LiquidGlassComboBox
+                            <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                 x:Name="GlassPresenter_22004_StateGlass"
                                 Width="{x:Bind GlassPresenter_22004_State.Width, Mode=OneWay}"
                                 Height="{x:Bind GlassPresenter_22004_State.Height, Mode=OneWay}"
@@ -511,7 +511,6 @@
                                 Foreground="{x:Bind GlassPresenter_22004_State.Foreground, Mode=OneWay}"
                                 Header="{x:Bind GlassPresenter_22004_State.Header, Mode=OneWay}"
                                 HeaderTemplate="{x:Bind GlassPresenter_22004_State.HeaderTemplate, Mode=OneWay}"
-                                IsDropDownOpen="{x:Bind GlassPresenter_22004_State.IsDropDownOpen, Mode=TwoWay}"
                                 IsEditable="{x:Bind GlassPresenter_22004_State.IsEditable, Mode=OneWay}"
                                 IsEnabled="{x:Bind GlassPresenter_22004_State.IsEnabled, Mode=OneWay}"
                                 IsTextSearchEnabled="{x:Bind GlassPresenter_22004_State.IsTextSearchEnabled, Mode=OneWay}"

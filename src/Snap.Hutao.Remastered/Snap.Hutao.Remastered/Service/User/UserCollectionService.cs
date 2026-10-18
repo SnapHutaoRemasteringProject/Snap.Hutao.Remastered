@@ -29,19 +29,26 @@ public sealed partial class UserCollectionService : IUserCollectionService, IDis
     [GeneratedConstructor]
     public partial UserCollectionService(IServiceProvider serviceProvider);
 
-    public async ValueTask<AdvancedDbCollectionView<BindingUser, EntityUser>> GetUsersAsync()
+    public ValueTask<AdvancedDbCollectionView<BindingUser, EntityUser>> GetUsersAsync() => GetUsersAsync(default);
+
+    public async ValueTask<AdvancedDbCollectionView<BindingUser, EntityUser>> GetUsersAsync(CancellationToken token)
     {
+        using CancellationTokenSource linked = CancellationTokenSource.CreateLinkedTokenSource(token, XamlApplicationLifetime.ShutdownToken);
+        token = linked.Token;
         // Force run in background thread, otherwise will cause re-entrance
         await Task.CompletedTask.ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
+        token.ThrowIfCancellationRequested();
         using (await collectionLocker.LockAsync().ConfigureAwait(false))
         {
+            token.ThrowIfCancellationRequested();
             if (users is null)
             {
                 ImmutableArray<EntityUser> entityUsers = userRepository.GetUserImmutableArray();
                 List<BindingUser> bindingUsers = new(entityUsers.Length);
                 foreach (EntityUser entity in entityUsers)
                 {
-                    BindingUser user = await userInitializationService.ResumeUserAsync(entity).ConfigureAwait(false);
+                    BindingUser user = await userInitializationService.ResumeUserAsync(entity, token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
                     if (user.NeedDbUpdateAfterResume)
                     {
                         userRepository.UpdateUser(user.Entity);

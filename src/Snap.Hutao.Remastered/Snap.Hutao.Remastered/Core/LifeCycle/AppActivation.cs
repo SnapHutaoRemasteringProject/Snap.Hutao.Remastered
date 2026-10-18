@@ -108,6 +108,8 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
                     await UnsynchronizedHandleInitializationAsync().ConfigureAwait(false);
                 }
             }
+            catch (OperationCanceledException) when (XamlApplicationLifetime.Exiting) { }
+            catch (ObjectDisposedException) when (XamlApplicationLifetime.Exiting) { }
             catch (Exception ex)
             {
                 // Activation failure is fatal — the process would run without a window.
@@ -236,6 +238,7 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
 
     private async ValueTask UnsynchronizedHandleInitializationAsync()
     {
+        XamlApplicationLifetime.ShutdownToken.ThrowIfCancellationRequested();
         // Sentry IpAddress Traits, should always be configured
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
@@ -284,8 +287,8 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
         // Phase 1: Critical-path initialization — must complete before window is considered ready
         await Task.WhenAll(
         [
-            serviceProvider.GetRequiredService<HotKeyOptions>().InitializeAsync().AsTask(),
-            serviceProvider.GetRequiredService<IQuartzService>().StartAsync(),
+            serviceProvider.GetRequiredService<HotKeyOptions>().InitializeAsync(XamlApplicationLifetime.ShutdownToken).AsTask(),
+            serviceProvider.GetRequiredService<IQuartzService>().StartAsync(XamlApplicationLifetime.ShutdownToken),
         ]).ConfigureAwait(false);
 
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Core initialization completed", "Application"));

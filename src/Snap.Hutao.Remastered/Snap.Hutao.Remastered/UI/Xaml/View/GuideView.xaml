@@ -890,7 +890,7 @@
                             Text="{shuxm:ResourceString Name=ViewGuideMaterialDescription}"
                             TextAlignment="Center"
                             TextWrapping="Wrap"/>
-                        <ComboBox
+                        <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                             MinWidth="220"
                             HorizontalAlignment="Center"
                             Header="{shuxm:ResourceString Name=ViewPageSettingControlMaterialHeader}"

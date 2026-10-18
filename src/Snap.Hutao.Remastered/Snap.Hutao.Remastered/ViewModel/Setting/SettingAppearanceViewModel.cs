@@ -159,8 +159,11 @@ public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
         {
             if (SetProperty(ref field, value) && value is not null)
             {
-                CultureOptions.CurrentCulture.Value = value.Value;
-                AppInstance.Restart(string.Empty);
+                if (!Equals(CultureOptions.CurrentCulture.Value, value.Value))
+                {
+                    CultureOptions.CurrentCulture.Value = value.Value;
+                    AppInstance.Restart(string.Empty);
+                }
             }
         }
     }
