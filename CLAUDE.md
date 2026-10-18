@@ -237,6 +237,10 @@ the build fails with `CS9275`); write a normal constructor in that case.
 
 ### 5.3 Page / window lifetime
 
+- **Material controls own their theme brushes** — a visible liquid-glass control resolves its
+  default `Foreground` through its own style. Do not bind that value to a detached native peer;
+  forwarding a resolved brush bypasses the visible control's theme resource expression. Preserve
+  explicit caller colors separately. `ThemeSynchronization` still synchronizes inactive peers.
 - Pages derive from
   [`UI/Xaml/Control/ScopedPage.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/UI/Xaml/Control/ScopedPage.cs).
   `Loading` creates an `IServiceScope` from `XamlRoot.XamlContext().ServiceProvider`; a page's

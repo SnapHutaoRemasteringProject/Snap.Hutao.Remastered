@@ -304,7 +304,6 @@
                                         shuxcth:ControlMaterialState.NativeControl="{x:Bind NativeSearch_19969, Mode=OneWay}"
                                         shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
                                         Description="{x:Bind NativeSearch_19969.Description, Mode=OneWay}"
-                                        Foreground="{x:Bind NativeSearch_19969.Foreground, Mode=OneWay}"
                                         Header="{x:Bind NativeSearch_19969.Header, Mode=OneWay}"
                                         IsEnabled="{x:Bind NativeSearch_19969.IsEnabled, Mode=OneWay}"
                                         IsSuggestionListOpen="{x:Bind NativeSearch_19969.IsSuggestionListOpen, Mode=TwoWay}"

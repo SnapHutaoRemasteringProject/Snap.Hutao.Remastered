@@ -62,7 +62,6 @@
                     FontSize="{x:Bind ArchiveComboBox.FontSize, Mode=OneWay}"
                     FontStyle="{x:Bind ArchiveComboBox.FontStyle, Mode=OneWay}"
                     FontWeight="{x:Bind ArchiveComboBox.FontWeight, Mode=OneWay}"
-                    Foreground="{x:Bind ArchiveComboBox.Foreground, Mode=OneWay}"
                     Header="{x:Bind ArchiveComboBox.Header, Mode=OneWay}"
                     HeaderTemplate="{x:Bind ArchiveComboBox.HeaderTemplate, Mode=OneWay}"
                     IsEditable="{x:Bind ArchiveComboBox.IsEditable, Mode=OneWay}"

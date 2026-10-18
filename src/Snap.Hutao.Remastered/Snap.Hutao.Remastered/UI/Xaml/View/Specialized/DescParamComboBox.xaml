@@ -99,7 +99,6 @@
                             FontSize="{x:Bind LevelComboBox.FontSize, Mode=OneWay}"
                             FontStyle="{x:Bind LevelComboBox.FontStyle, Mode=OneWay}"
                             FontWeight="{x:Bind LevelComboBox.FontWeight, Mode=OneWay}"
-                            Foreground="{x:Bind LevelComboBox.Foreground, Mode=OneWay}"
                             Header="{x:Bind LevelComboBox.Header, Mode=OneWay}"
                             HeaderTemplate="{x:Bind LevelComboBox.HeaderTemplate, Mode=OneWay}"
                             IsEditable="{x:Bind LevelComboBox.IsEditable, Mode=OneWay}"

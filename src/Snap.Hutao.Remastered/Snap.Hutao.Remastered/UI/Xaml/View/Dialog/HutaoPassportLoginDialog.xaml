@@ -87,7 +87,6 @@
                     FontSize="{x:Bind GlassNative_1047.FontSize, Mode=OneWay}"
                     FontStyle="{x:Bind GlassNative_1047.FontStyle, Mode=OneWay}"
                     FontWeight="{x:Bind GlassNative_1047.FontWeight, Mode=OneWay}"
-                    Foreground="{x:Bind GlassNative_1047.Foreground, Mode=OneWay}"
                     IsEnabled="{x:Bind GlassNative_1047.IsEnabled, Mode=OneWay}"
                     Password="{x:Bind GlassNative_1047.Password, Mode=TwoWay}"
                     PlaceholderText="{x:Bind GlassNative_1047.PlaceholderText, Mode=OneWay}"/>

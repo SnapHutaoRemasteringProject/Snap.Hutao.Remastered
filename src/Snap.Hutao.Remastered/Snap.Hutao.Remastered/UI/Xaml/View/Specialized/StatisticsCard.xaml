@@ -228,7 +228,6 @@
                                     FontSize="{x:Bind CombinedModeToggle.FontSize, Mode=OneWay}"
                                     FontStyle="{x:Bind CombinedModeToggle.FontStyle, Mode=OneWay}"
                                     FontWeight="{x:Bind CombinedModeToggle.FontWeight, Mode=OneWay}"
-                                    Foreground="{x:Bind CombinedModeToggle.Foreground, Mode=OneWay}"
                                     IsChecked="{x:Bind ShowCombinedTotal, Mode=TwoWay}"
                                     IsEnabled="{x:Bind CombinedModeToggle.IsEnabled, Mode=OneWay}"
                                     ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewControlStatisticsCardCombinedModeTooltip}"

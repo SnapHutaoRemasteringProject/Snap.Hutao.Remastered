@@ -120,7 +120,6 @@
                         FontSize="{x:Bind GlassNative_3487.FontSize, Mode=OneWay}"
                         FontStyle="{x:Bind GlassNative_3487.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_3487.FontWeight, Mode=OneWay}"
-                        Foreground="{x:Bind GlassNative_3487.Foreground, Mode=OneWay}"
                         IsEnabled="{x:Bind GlassNative_3487.IsEnabled, Mode=OneWay}"/>
                     <wl:LiquidGlassRadioButton
                         x:Name="GlassNative_3605Glass"
@@ -143,7 +142,6 @@
                         FontSize="{x:Bind GlassNative_3605.FontSize, Mode=OneWay}"
                         FontStyle="{x:Bind GlassNative_3605.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_3605.FontWeight, Mode=OneWay}"
-                        Foreground="{x:Bind GlassNative_3605.Foreground, Mode=OneWay}"
                         IsEnabled="{x:Bind GlassNative_3605.IsEnabled, Mode=OneWay}"/>
                     <wl:LiquidGlassRadioButton
                         x:Name="GlassNative_3717Glass"
@@ -166,7 +164,6 @@
                         FontSize="{x:Bind GlassNative_3717.FontSize, Mode=OneWay}"
                         FontStyle="{x:Bind GlassNative_3717.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_3717.FontWeight, Mode=OneWay}"
-                        Foreground="{x:Bind GlassNative_3717.Foreground, Mode=OneWay}"
                         IsEnabled="{x:Bind GlassNative_3717.IsEnabled, Mode=OneWay}"/>
                 </RadioButtons>
             </cwc:Case>

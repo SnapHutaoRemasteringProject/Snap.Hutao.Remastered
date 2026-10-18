@@ -391,11 +391,11 @@ public sealed partial class ControlMaterialState : DependencyObject
         SetIsManaged(glass, true);
         SetNativeControl(glass, native);
         glass.Click += onClick;
+        // Each material resolves its own theme brushes, even while its peer is detached.
         foreach ((DependencyProperty property, string path) in new[]
         {
             (ContentControl.ContentProperty, nameof(ContentControl.Content)),
             (XamlControl.IsEnabledProperty, nameof(XamlControl.IsEnabled)),
-            (XamlControl.ForegroundProperty, nameof(XamlControl.Foreground)),
             (Button.CommandProperty, nameof(Button.Command)),
             (Button.CommandParameterProperty, nameof(Button.CommandParameter)),
         })

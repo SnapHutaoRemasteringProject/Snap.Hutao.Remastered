@@ -161,7 +161,6 @@
                             FontSize="{x:Bind GlassPresenter_5872_State.FontSize, Mode=OneWay}"
                             FontStyle="{x:Bind GlassPresenter_5872_State.FontStyle, Mode=OneWay}"
                             FontWeight="{x:Bind GlassPresenter_5872_State.FontWeight, Mode=OneWay}"
-                            Foreground="{x:Bind GlassPresenter_5872_State.Foreground, Mode=OneWay}"
                             Header="{x:Bind GlassPresenter_5872_State.Header, Mode=OneWay}"
                             HeaderTemplate="{x:Bind GlassPresenter_5872_State.HeaderTemplate, Mode=OneWay}"
                             IsEditable="{x:Bind GlassPresenter_5872_State.IsEditable, Mode=OneWay}"

@@ -77,7 +77,6 @@
                         FontSize="{x:Bind GlassNative_1125.FontSize, Mode=OneWay}"
                         FontStyle="{x:Bind GlassNative_1125.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_1125.FontWeight, Mode=OneWay}"
-                        Foreground="{x:Bind GlassNative_1125.Foreground, Mode=OneWay}"
                         IsEnabled="{x:Bind GlassNative_1125.IsEnabled, Mode=OneWay}">
                         <StackPanel Spacing="2">
                             <TextBlock FontWeight="SemiBold" Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceOfficial}"/>
@@ -107,7 +106,6 @@
                         FontSize="{x:Bind GlassNative_1616.FontSize, Mode=OneWay}"
                         FontStyle="{x:Bind GlassNative_1616.FontStyle, Mode=OneWay}"
                         FontWeight="{x:Bind GlassNative_1616.FontWeight, Mode=OneWay}"
-                        Foreground="{x:Bind GlassNative_1616.Foreground, Mode=OneWay}"
                         IsEnabled="{x:Bind GlassNative_1616.IsEnabled, Mode=OneWay}">
                         <StackPanel Spacing="2">
                             <TextBlock FontWeight="SemiBold" Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceMirrorChyan}"/>
