@@ -34,8 +34,20 @@ public sealed partial class SettingGachaLogViewModel : Abstraction.ViewModel
     public partial AppOptions AppOptions { get; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SelectedUIGFVersionIndex))]
     public partial UIGFVersion SelectedUIGFVersion { get; set; } = UIGFVersion.UIGF42;
     public ImmutableArray<UIGFVersion> UIGFVersions { get; } = [UIGFVersion.UIGF22, UIGFVersion.UIGF23, UIGFVersion.UIGF24, UIGFVersion.UIGF30, UIGFVersion.UIGF40, UIGFVersion.UIGF41, UIGFVersion.UIGF42];
+
+    public int SelectedUIGFVersionIndex
+    {
+        get => UIGFVersions.IndexOf(SelectedUIGFVersion);
+        set
+        {
+            // A selector can briefly report -1 while its items are attaching.
+            // That visual state must not replace the selected export version.
+            if ((uint)value < (uint)UIGFVersions.Length) SelectedUIGFVersion = UIGFVersions[value];
+        }
+    }
 
     [Command("ImportUIGFJsonCommand")]
     private async Task ImportUIGFJsonAsync()
