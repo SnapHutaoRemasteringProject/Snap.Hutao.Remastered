@@ -7,6 +7,7 @@
     xmlns:cwa="using:CommunityToolkit.WinUI.Animations"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:cwconv="using:CommunityToolkit.WinUI.Converters"
+    xmlns:cwm="using:CommunityToolkit.WinUI.Media"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
@@ -190,7 +191,15 @@
         </DataTemplate>
 
         <DataTemplate x:Key="CardTemplate" x:DataType="shuxcc:CardReference">
-            <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
+            <Border>
+                <cw:Effects.Shadow>
+                    <!--  Keep the shadow host unclipped; its inner cutout must match the card, not the default radius of 4.  -->
+                    <cwm:AttachedCardShadow
+                        BlurRadius="8"
+                        CornerRadius="{x:Bind ((shuxcth:MaterialCardButton)Card).CornerRadius.TopLeft, Mode=OneWay}"
+                        Opacity="{ThemeResource CompatShadowThemeOpacity}"
+                        Offset="0,4,0"/>
+                </cw:Effects.Shadow>
                 <!--  The card owns its sole native/glass surface and corner radius.  -->
                 <ContentControl HorizontalContentAlignment="Stretch" Content="{x:Bind Card, Mode=OneWay}"/>
             </Border>

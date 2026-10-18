@@ -97,9 +97,12 @@ public partial class MaterialCardButton : ContentControl
 
     private void SynchronizeSurfaceCorners()
     {
-        // Both the XAML contour and the shader use the native home-card radius.
-        glassButton.CornerRadius = nativeButton.CornerRadius;
-        glassButton.GlassBrush.CornerRadius = nativeButton.CornerRadius.TopLeft;
+        // The unclipped host exposes the surface radius to the dashboard's shadow.
+        // Keep the shadow cutout, XAML contour and shader on the same geometry.
+        CornerRadius corners = nativeButton.CornerRadius;
+        CornerRadius = corners;
+        glassButton.CornerRadius = corners;
+        glassButton.GlassBrush.CornerRadius = corners.TopLeft;
     }
 
     private static void OnBodyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args) => ((MaterialCardButton)sender).MoveBody();
