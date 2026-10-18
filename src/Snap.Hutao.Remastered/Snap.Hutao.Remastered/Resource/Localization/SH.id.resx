@@ -888,7 +888,7 @@
     <value>Mempersiapkan, jika tidak ada respons dalam waktu lama, coba mulai ulang atau periksa status jaringan dan server.</value>
   </data>
   <data name="ServiceBackgroundImageDecodeFailed" xml:space="preserve">
-    <value>Gagal mendekode gambar latar belakang: sistem tidak memiliki komponen dekode gambar yang tersedia, perubahan wallpaper kali ini dilewati</value>
+    <value>Gagal mendekode gambar latar belakang: sistem tidak memiliki komponen dekoder gambar yang tersedia, perubahan latar belakang kali ini dilewati</value>
   </data>
   <data name="ServiceBackgroundImageTypeBing" xml:space="preserve">
     <value>Wallpaper Harian Bing</value>
@@ -3936,10 +3936,10 @@ Ruang Tersedia: {2}</value>
     <value>Snap Hutao versi {0} sudah tersedia</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionButtonText" xml:space="preserve">
-    <value>跳过此版本</value>
+    <value>Lewati Pembaharuan Versi</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionInfoBarMessage" xml:space="preserve">
-    <value>已跳过版本 {0}，启动时将不再自动提示该版本，你仍可在设置中手动检查更新</value>
+    <value>Pembaharuan telah dilewati {0}, saat masuk tidak akan otomatis muncul notifikasi pembaharuan versi, Anda tetap bisa memeriksa pembaharuan secara manual melalui pengaturan</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>Alat</value>
@@ -4987,40 +4987,40 @@ Ruang Tersedia: {2}</value>
     <value>Pengaturan video latar belakang memiliki prioritas lebih tinggi dari gambar latar belakang</value>
   </data>
   <data name="ModelIntrinsicMainQuestTagNone" xml:space="preserve">
-    <value>无</value>
+    <value>Tidak Ada</value>
   </data>
   <data name="ModelIntrinsicMainQuestTagGuide" xml:space="preserve">
-    <value>地图事件</value>
+    <value>Map Event</value>
   </data>
   <data name="ModelIntrinsicMainQuestTagActivity" xml:space="preserve">
-    <value>活动</value>
+    <value>Aktivitas</value>
   </data>
   <data name="ModelIntrinsicMainQuestTagRankZeroWq" xml:space="preserve">
-    <value>普通世界任务</value>
+    <value>Quest Dunia</value>
   </data>
   <data name="ModelIntrinsicMainQuestTagMainWq" xml:space="preserve">
-    <value>主要世界任务</value>
+    <value>Quest Dunia Utama</value>
   </data>
   <data name="ModelIntrinsicMainQuestTagReputation" xml:space="preserve">
-    <value>声望任务</value>
+    <value>Quest Reputasi</value>
   </data>
   <data name="ModelIntrinsicMainQuestTagNatlanTribal" xml:space="preserve">
-    <value>纳塔部族任务</value>
+    <value>Quest Suku Natlan</value>
   </data>
   <data name="ModelIntrinsicMainQuestTagFlowerland" xml:space="preserve">
-    <value>伴月纪闻</value>
+    <value>Kisah Bulan Pendamping</value>
   </data>
   <data name="ModelIntrinsicMainQuestTagThespia" xml:space="preserve">
-    <value>聚所任务</value>
+    <value>Quest Tempat Berkumpul</value>
   </data>
   <data name="ModelIntrinsicMainQuestTagResidentActivity" xml:space="preserve">
-    <value>常驻活动</value>
+    <value>Event Permanen</value>
   </data>
   <data name="ModelIntrinsicQuestShowTypeShow" xml:space="preserve">
-    <value>显示</value>
+    <value>Tampilkan</value>
   </data>
   <data name="ModelIntrinsicQuestShowTypeHidden" xml:space="preserve">
-    <value>隐藏</value>
+    <value>Sembunyikan</value>
   </data>
   <data name="ViewPageHutaoPassportRegisterAgreement" xml:space="preserve">
     <value>Saya mengerti bahwa layanan ini tidak berbagi data dengan Snap Hutao versi lama</value>
@@ -5242,28 +5242,28 @@ Ruang Tersedia: {2}</value>
     <value>Tombol</value>
   </data>
   <data name="ViewPageSettingLiquidGlassToggleButton" xml:space="preserve">
-    <value>Tombol Sakelar</value>
+    <value>Tombol Alih</value>
   </data>
   <data name="ViewPageSettingLiquidGlassHyperlinkButton" xml:space="preserve">
-    <value>Tombol Hyperlink</value>
+    <value>Tombol Tautan</value>
   </data>
   <data name="ViewPageSettingLiquidGlassCheckBox" xml:space="preserve">
     <value>Kotak Centang</value>
   </data>
   <data name="ViewPageSettingLiquidGlassRadioButton" xml:space="preserve">
-    <value>Tombol Radio</value>
+    <value>Pilihan Tunggal</value>
   </data>
   <data name="ViewPageSettingLiquidGlassSlider" xml:space="preserve">
     <value>Penggeser</value>
   </data>
   <data name="ViewPageSettingLiquidGlassTextBox" xml:space="preserve">
-    <value>Kotak Teks</value>
+    <value>Kolom Teks</value>
   </data>
   <data name="ViewPageSettingLiquidGlassPasswordBox" xml:space="preserve">
-    <value>Kotak Sandi</value>
+    <value>Kolom Kata Sandi</value>
   </data>
   <data name="ViewPageSettingLiquidGlassComboBox" xml:space="preserve">
-    <value>Kotak Kombo</value>
+    <value>Daftar Pilihan</value>
   </data>
   <data name="ViewPageSettingLiquidGlassToggleSwitch" xml:space="preserve">
     <value>Sakelar</value>
@@ -5422,16 +5422,16 @@ Ruang Tersedia: {2}</value>
     <value>Penggeser</value>
   </data>
   <data name="GlassProfileTextBox" xml:space="preserve">
-    <value>Kotak Teks</value>
+    <value>Kolom Teks</value>
   </data>
   <data name="GlassProfileSearchBox" xml:space="preserve">
-    <value>Kotak Pencarian</value>
+    <value>Kolom Pencarian</value>
   </data>
   <data name="GlassProfilePasswordBox" xml:space="preserve">
-    <value>Kotak Sandi</value>
+    <value>Kolom Kata Sandi</value>
   </data>
   <data name="GlassProfileComboBox" xml:space="preserve">
-    <value>Kotak Kombo</value>
+    <value>Daftar Pilihan</value>
   </data>
   <data name="GlassProfileToggleSwitch" xml:space="preserve">
     <value>Sakelar</value>
@@ -5443,7 +5443,7 @@ Ruang Tersedia: {2}</value>
     <value>Panel Mengambang</value>
   </data>
   <data name="GlassProfileTabBar" xml:space="preserve">
-    <value>Bilah Tab</value>
+    <value>Tab</value>
   </data>
   <data name="GlassParameterBlurRadius" xml:space="preserve">
     <value>Radius blur</value>
