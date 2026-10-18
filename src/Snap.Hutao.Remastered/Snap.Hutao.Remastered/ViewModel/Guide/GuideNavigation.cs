@@ -12,4 +12,6 @@ public static class GuideNavigation
     public static int StepIndex(uint state) => (int)VisibleState(state);
 
     public static bool IsFinalStep(uint state) => state >= (uint)GuideState.Material;
+
+    public static GuideState StateAfterDownload(bool skipRequested, int remaining) => skipRequested || remaining == 0 ? GuideState.Material : GuideState.StaticResourceSetting;
 }

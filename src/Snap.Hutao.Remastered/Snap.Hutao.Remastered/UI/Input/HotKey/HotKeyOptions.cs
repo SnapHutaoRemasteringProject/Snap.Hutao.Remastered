@@ -44,15 +44,30 @@ public sealed partial class HotKeyOptions : ObservableObject, IDisposable
     [ObservableProperty]
     public partial HotKeyCombination? KeyPressRepeatForeverKeyCombination { get; set; }
 
-    public async ValueTask InitializeAsync()
+    public async ValueTask InitializeAsync(CancellationToken token = default)
     {
         await taskContext.SwitchToMainThreadAsync();
+        token.ThrowIfCancellationRequested();
+        if (isDisposed) return;
+        if (MouseClickRepeatForeverKeyCombination is not null && KeyPressRepeatForeverKeyCombination is not null) return;
 
-        MouseClickRepeatForeverKeyCombination = new(serviceProvider, HutaoNativeHotKeyActionKind.MouseClickRepeatForever, SettingKeys.HotKeyMouseClickRepeatForever);
-        KeyPressRepeatForeverKeyCombination = new(serviceProvider, HutaoNativeHotKeyActionKind.KeyPressRepeatForever, SettingKeys.HotKeyKeyPressRepeatForever);
-
-        MouseClickRepeatForeverKeyCombination.Initialize();
-        KeyPressRepeatForeverKeyCombination.Initialize();
+        // Publish only initialized actions. Bindings must never observe a native
+        // placeholder and persist its temporary disabled value as user intent.
+        HotKeyCombination mouse = new(serviceProvider, HutaoNativeHotKeyActionKind.MouseClickRepeatForever, SettingKeys.HotKeyMouseClickRepeatForever);
+        HotKeyCombination key = new(serviceProvider, HutaoNativeHotKeyActionKind.KeyPressRepeatForever, SettingKeys.HotKeyKeyPressRepeatForever);
+        try
+        {
+            mouse.Initialize();
+            key.Initialize();
+        }
+        catch
+        {
+            mouse.Dispose();
+            key.Dispose();
+            throw;
+        }
+        MouseClickRepeatForeverKeyCombination = mouse;
+        KeyPressRepeatForeverKeyCombination = key;
     }
 
     public void Dispose()

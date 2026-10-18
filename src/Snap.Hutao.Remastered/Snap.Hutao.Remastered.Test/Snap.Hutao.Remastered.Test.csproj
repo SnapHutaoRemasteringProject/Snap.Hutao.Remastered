@@ -21,6 +21,13 @@
     <Compile Include="../Snap.Hutao.Remastered/Web/Request/Builder/HttpRequestMessageSnapshot.cs" Link="Production/HttpRequestMessageSnapshot.cs" />
     <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/DesiredSizeRestriction.cs" Link="Production/DesiredSizeRestriction.cs" />
     <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Theme/LiquidGlassOverrideStore.cs" Link="Production/LiquidGlassOverrideStore.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Theme/BackdropOverrideState.cs" Link="Production/BackdropOverrideState.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/ViewModel/Guide/GuideNavigation.cs" Link="Production/GuideNavigation.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/ViewModel/Guide/GuideState.cs" Link="Production/GuideState.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/Job/QuartzService.cs" Link="Production/QuartzService.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/Job/IQuartzService.cs" Link="Production/IQuartzService.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/Job/IJobScheduler.cs" Link="Production/IJobScheduler.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/Job/JobIdentity.cs" Link="Production/JobIdentity.cs" />
     <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Theme/PageResourceScope.cs" Link="Production/PageResourceScope.cs" />
     <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Behavior/PeriodicCommandSignal.cs" Link="Production/PeriodicCommandSignal.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/Game/Package/Advanced/PredownloadProgressTracker.cs" Link="Production/PredownloadProgressTracker.cs" />
@@ -38,6 +45,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="4.5.1" />
     <PackageReference Include="MSTest.TestFramework" Version="4.5.1" />
+    <PackageReference Include="Quartz" Version="4.5.1" />
     <PackageReference Include="coverlet.collector" Version="10.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

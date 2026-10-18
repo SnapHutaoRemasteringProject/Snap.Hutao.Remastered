@@ -54,11 +54,14 @@ public static class UserServiceExtension
             return ResolveCurrentUser(users)?.UserGameRoles.CurrentItem?.GameUid;
         }
 
-        public async ValueTask<UserAndUid?> GetCurrentUserAndUidAsync()
+        public ValueTask<UserAndUid?> GetCurrentUserAndUidAsync() => userService.GetCurrentUserAndUidAsync(default);
+
+        public async ValueTask<UserAndUid?> GetCurrentUserAndUidAsync(CancellationToken token)
         {
-            AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync().ConfigureAwait(false);
+            AdvancedDbCollectionView<BindingUser, EntityUser> users = await userService.GetUsersAsync(token).ConfigureAwait(false);
             // Resolving a missing current role moves the UI-bound collection's selection.
             await userService.TaskContext.SwitchToMainThreadAsync();
+            token.ThrowIfCancellationRequested();
             UserAndUid.TryFromUser(ResolveCurrentUser(users), out UserAndUid? userAndUid);
             return userAndUid;
         }

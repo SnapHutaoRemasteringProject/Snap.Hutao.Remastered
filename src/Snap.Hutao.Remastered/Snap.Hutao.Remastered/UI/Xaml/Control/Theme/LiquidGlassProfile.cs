@@ -79,6 +79,30 @@ public sealed partial class LiquidGlassProfile : ObservableObject
     }
 
     public bool IsGlassActive => MaterialBindingSource.Current.Value == 1 && Enabled;
+
+    public bool PointerLightingEnabled
+    {
+        get => LocalSetting.Get(StorageKey + ".PointerLightingEnabled", true);
+        set
+        {
+            if (PointerLightingEnabled == value) return;
+            LocalSetting.Set(StorageKey + ".PointerLightingEnabled", value);
+            OnPropertyChanged();
+            ControlMaterialState.RefreshManagedInteractions();
+        }
+    }
+
+    public double PointerLightInfluence
+    {
+        get => LocalSetting.Get(StorageKey + ".PointerLightInfluence", 1.0);
+        set
+        {
+            if (!double.IsFinite(value) || value < 0 || value > 1 || PointerLightInfluence == value) return;
+            LocalSetting.Set(StorageKey + ".PointerLightInfluence", value);
+            OnPropertyChanged();
+            ControlMaterialState.RefreshManagedInteractions();
+        }
+    }
     internal double ReadOverride(string key) => overrides.Get(key);
     internal void WriteOverride(LiquidGlassParameter parameter, double value)
     {
@@ -93,6 +117,8 @@ public sealed partial class LiquidGlassProfile : ObservableObject
 
     public void Reset()
     {
+        PointerLightingEnabled = true;
+        PointerLightInfluence = 1.0;
         overrides.Reset();
         Save();
         foreach (LiquidGlassParameter parameter in Parameters) parameter.Refresh();

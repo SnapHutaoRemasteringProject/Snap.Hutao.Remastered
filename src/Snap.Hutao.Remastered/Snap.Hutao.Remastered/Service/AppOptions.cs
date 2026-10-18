@@ -110,11 +110,21 @@ public sealed partial class AppOptions : DbStoreOptions
     {
         // System backdrops leave stale pixels beneath liquid glass. Also
         // normalize a persisted glass selection before applying it at startup.
-        if (material is UI.Xaml.Control.Theme.ControlMaterial.LiquidGlass)
+        BackdropOverrideState<BackdropType> previous = new(appOptions.IsGlassBackdropOverrideActive.Value, appOptions.BackdropBeforeGlass.Value, appOptions.BackdropType.Value);
+        BackdropOverrideState<BackdropType> next = previous.Select(material is UI.Xaml.Control.Theme.ControlMaterial.LiquidGlass, UI.Xaml.Media.Backdrop.BackdropType.None);
+        if (next != previous)
         {
-            appOptions.BackdropType.Value = UI.Xaml.Media.Backdrop.BackdropType.None;
+            appOptions.BackdropBeforeGlass.Value = next.Previous;
+            appOptions.IsGlassBackdropOverrideActive.Value = next.IsActive;
+            appOptions.BackdropType.Value = next.Current;
         }
     }
+
+    [field: MaybeNull]
+    private IObservableProperty<bool> IsGlassBackdropOverrideActive { get => field ??= CreateProperty("GlassBackdropOverrideActive", false); }
+
+    [field: MaybeNull]
+    private IObservableProperty<BackdropType> BackdropBeforeGlass { get => field ??= CreateProperty("BackdropBeforeGlass", UI.Xaml.Media.Backdrop.BackdropType.None); }
 
     [field: MaybeNull]
     public IObservableProperty<BackgroundImageType> BackgroundImageType { get => field ??= CreateProperty(SettingKeys.BackgroundImageType, BackgroundImage.BackgroundImageType.None); }

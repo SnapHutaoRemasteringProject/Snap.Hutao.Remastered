@@ -621,7 +621,7 @@
                                         <cwc:Case.Value>
                                             <x:Int32>0</x:Int32>
                                         </cwc:Case.Value>
-                                        <ComboBox
+                                        <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                             x:Name="GlassPresenter_24224_State"
                                             DataContext="{x:Bind GlassPresenter_24224.DataContext, Mode=OneWay}"
                                             DisplayMemberPath="Name"
@@ -634,7 +634,7 @@
                                         <cwc:Case.Value>
                                             <x:Int32>1</x:Int32>
                                         </cwc:Case.Value>
-                                        <wl:LiquidGlassComboBox
+                                        <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                             x:Name="GlassPresenter_24224_StateGlass"
                                             Width="{x:Bind GlassPresenter_24224_State.Width, Mode=OneWay}"
                                             Height="{x:Bind GlassPresenter_24224_State.Height, Mode=OneWay}"
@@ -656,7 +656,6 @@
                                             Foreground="{x:Bind GlassPresenter_24224_State.Foreground, Mode=OneWay}"
                                             Header="{x:Bind GlassPresenter_24224_State.Header, Mode=OneWay}"
                                             HeaderTemplate="{x:Bind GlassPresenter_24224_State.HeaderTemplate, Mode=OneWay}"
-                                            IsDropDownOpen="{x:Bind GlassPresenter_24224_State.IsDropDownOpen, Mode=TwoWay}"
                                             IsEditable="{x:Bind GlassPresenter_24224_State.IsEditable, Mode=OneWay}"
                                             IsEnabled="{x:Bind GlassPresenter_24224_State.IsEnabled, Mode=OneWay}"
                                             IsTextSearchEnabled="{x:Bind GlassPresenter_24224_State.IsTextSearchEnabled, Mode=OneWay}"

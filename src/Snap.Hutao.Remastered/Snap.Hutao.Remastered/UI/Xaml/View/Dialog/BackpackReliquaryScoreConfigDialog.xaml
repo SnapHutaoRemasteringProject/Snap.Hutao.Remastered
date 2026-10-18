@@ -35,7 +35,7 @@
                     <cwc:Case.Value>
                         <x:Int32>0</x:Int32>
                     </cwc:Case.Value>
-                    <ComboBox
+                    <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                         x:Name="PresetComboBox"
                         DataContext="{x:Bind GlassPresenter_1097.DataContext, Mode=OneWay}"
                         DisplayMemberPath="DisplayName"
@@ -47,7 +47,7 @@
                     <cwc:Case.Value>
                         <x:Int32>1</x:Int32>
                     </cwc:Case.Value>
-                    <wl:LiquidGlassComboBox
+                    <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                         x:Name="PresetComboBoxGlass"
                         Width="{x:Bind PresetComboBox.Width, Mode=OneWay}"
                         Height="{x:Bind PresetComboBox.Height, Mode=OneWay}"
@@ -69,7 +69,6 @@
                         Foreground="{x:Bind PresetComboBox.Foreground, Mode=OneWay}"
                         Header="{x:Bind PresetComboBox.Header, Mode=OneWay}"
                         HeaderTemplate="{x:Bind PresetComboBox.HeaderTemplate, Mode=OneWay}"
-                        IsDropDownOpen="{x:Bind PresetComboBox.IsDropDownOpen, Mode=TwoWay}"
                         IsEditable="{x:Bind PresetComboBox.IsEditable, Mode=OneWay}"
                         IsEnabled="{x:Bind PresetComboBox.IsEnabled, Mode=OneWay}"
                         IsTextSearchEnabled="{x:Bind PresetComboBox.IsTextSearchEnabled, Mode=OneWay}"

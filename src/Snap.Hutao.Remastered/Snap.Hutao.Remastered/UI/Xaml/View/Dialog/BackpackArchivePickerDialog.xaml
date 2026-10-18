@@ -30,7 +30,7 @@
                 <cwc:Case.Value>
                     <x:Int32>0</x:Int32>
                 </cwc:Case.Value>
-                <ComboBox
+                <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                     x:Name="ArchiveComboBox"
                     MinWidth="240"
                     VerticalAlignment="Top"
@@ -42,7 +42,7 @@
                 <cwc:Case.Value>
                     <x:Int32>1</x:Int32>
                 </cwc:Case.Value>
-                <wl:LiquidGlassComboBox
+                <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                     x:Name="ArchiveComboBoxGlass"
                     Width="{x:Bind ArchiveComboBox.Width, Mode=OneWay}"
                     Height="{x:Bind ArchiveComboBox.Height, Mode=OneWay}"
@@ -65,7 +65,6 @@
                     Foreground="{x:Bind ArchiveComboBox.Foreground, Mode=OneWay}"
                     Header="{x:Bind ArchiveComboBox.Header, Mode=OneWay}"
                     HeaderTemplate="{x:Bind ArchiveComboBox.HeaderTemplate, Mode=OneWay}"
-                    IsDropDownOpen="{x:Bind ArchiveComboBox.IsDropDownOpen, Mode=TwoWay}"
                     IsEditable="{x:Bind ArchiveComboBox.IsEditable, Mode=OneWay}"
                     IsEnabled="{x:Bind ArchiveComboBox.IsEnabled, Mode=OneWay}"
                     IsTextSearchEnabled="{x:Bind ArchiveComboBox.IsTextSearchEnabled, Mode=OneWay}"
