@@ -236,13 +236,13 @@
                                                     <cwc:Case.Value>
                                                         <x:Int32>0</x:Int32>
                                                     </cwc:Case.Value>
-                                                    <ToggleSwitch IsOn="{x:Bind ((shvs:SettingViewModel)DataContext).AppOptions.AutoRestartAsAdmin.Value, Mode=TwoWay}"/>
+                                                    <ToggleSwitch IsOn="{x:Bind ((shvs:SettingViewModel)DataContext).AutoRestartAsAdminEnabled, Mode=TwoWay}"/>
                                                 </cwc:Case>
                                                 <cwc:Case>
                                                     <cwc:Case.Value>
                                                         <x:Int32>1</x:Int32>
                                                     </cwc:Case.Value>
-                                                    <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind ((shvs:SettingViewModel)DataContext).AppOptions.AutoRestartAsAdmin.Value, Mode=TwoWay}"/>
+                                                    <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind ((shvs:SettingViewModel)DataContext).AutoRestartAsAdminEnabled, Mode=TwoWay}"/>
                                                 </cwc:Case>
                                             </cwc:SwitchPresenter>
                                         </cwc:SettingsCard>
@@ -552,13 +552,13 @@
                                                     <cwc:Case.Value>
                                                         <x:Int32>0</x:Int32>
                                                     </cwc:Case.Value>
-                                                    <ToggleSwitch IsOn="{x:Bind ((shvs:SettingViewModel)DataContext).AppOptions.AutoRestartAsAdmin.Value, Mode=TwoWay}"/>
+                                                    <ToggleSwitch IsOn="{x:Bind ((shvs:SettingViewModel)DataContext).AutoRestartAsAdminEnabled, Mode=TwoWay}"/>
                                                 </cwc:Case>
                                                 <cwc:Case>
                                                     <cwc:Case.Value>
                                                         <x:Int32>1</x:Int32>
                                                     </cwc:Case.Value>
-                                                    <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind ((shvs:SettingViewModel)DataContext).AppOptions.AutoRestartAsAdmin.Value, Mode=TwoWay}"/>
+                                                    <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind ((shvs:SettingViewModel)DataContext).AutoRestartAsAdminEnabled, Mode=TwoWay}"/>
                                                 </cwc:Case>
                                             </cwc:SwitchPresenter>
                                         </cwc:SettingsCard>
