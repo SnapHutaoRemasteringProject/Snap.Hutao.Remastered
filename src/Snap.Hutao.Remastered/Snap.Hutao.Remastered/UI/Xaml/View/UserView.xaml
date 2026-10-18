@@ -38,117 +38,53 @@
                     Background="#FFDAB79B"
                     CornerRadius="{ThemeResource CornerRadiusAll16}"
                     Source="{x:Bind ProfilePictureIcon, Converter={StaticResource AvatarIconCircleConverter}, Mode=OneWay}"/>
-                <cwc:SwitchPresenter
-                    x:Name="GlassPresenter_2197"
+                <Button
                     Grid.Column="0"
+                    Width="32"
+                    Height="32"
                     Margin="2,0"
+                    Padding="0"
                     HorizontalAlignment="Left"
-                    HorizontalContentAlignment="Stretch"
-                    VerticalContentAlignment="Stretch"
-                    IsTabStop="False"
-                    Tag="LiquidGlass:Button"
-                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                    <cwc:Case>
-                        <cwc:Case.Value>
-                            <x:Int32>0</x:Int32>
-                        </cwc:Case.Value>
-                        <Button
-                            Width="32"
-                            Height="32"
-                            Padding="0"
-                            HorizontalAlignment="Left"
-                            Background="Transparent"
-                            BorderBrush="Transparent"
-                            BorderThickness="0"
-                            Command="{x:Bind RefreshProfilePictureCommand, Mode=OneWay}"
-                            CommandParameter="{x:Bind Mode=OneWay}"
-                            CornerRadius="{ThemeResource CornerRadiusAll16}">
-                            <Button.Resources>
-                                <Storyboard x:Key="ShowRefreshIcon">
-                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshIcon" Storyboard.TargetProperty="Visibility">
-                                        <DiscreteObjectKeyFrame KeyTime="0">
-                                            <DiscreteObjectKeyFrame.Value>
-                                                <Visibility>Visible</Visibility>
-                                            </DiscreteObjectKeyFrame.Value>
-                                        </DiscreteObjectKeyFrame>
-                                    </ObjectAnimationUsingKeyFrames>
-                                </Storyboard>
-                                <Storyboard x:Key="HideRefreshIcon">
-                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshIcon" Storyboard.TargetProperty="Visibility">
-                                        <DiscreteObjectKeyFrame KeyTime="0">
-                                            <DiscreteObjectKeyFrame.Value>
-                                                <Visibility>Collapsed</Visibility>
-                                            </DiscreteObjectKeyFrame.Value>
-                                        </DiscreteObjectKeyFrame>
-                                    </ObjectAnimationUsingKeyFrames>
-                                </Storyboard>
-                            </Button.Resources>
-                            <mxi:Interaction.Behaviors>
-                                <mxi:EventTriggerBehavior EventName="PointerEntered">
-                                    <mxi:ControlStoryboardAction Storyboard="{StaticResource ShowRefreshIcon}"/>
-                                </mxi:EventTriggerBehavior>
-                                <mxi:EventTriggerBehavior EventName="PointerExited">
-                                    <mxi:ControlStoryboardAction Storyboard="{StaticResource HideRefreshIcon}"/>
-                                </mxi:EventTriggerBehavior>
-                            </mxi:Interaction.Behaviors>
-                            <FontIcon
-                                x:Name="RefreshIcon"
-                                FontSize="12"
-                                Glyph="&#xE72C;"
-                                Visibility="Collapsed"/>
-                        </Button>
-                    </cwc:Case>
-                    <cwc:Case>
-                        <cwc:Case.Value>
-                            <x:Int32>1</x:Int32>
-                        </cwc:Case.Value>
-                        <wl:LiquidGlassButton
-                            Width="32"
-                            Height="32"
-                            Padding="0"
-                            HorizontalAlignment="Left"
-                            shuxcth:ControlMaterialState.IsManaged="True"
-                            BorderBrush="Transparent"
-                            BorderThickness="0"
-                            Command="{x:Bind RefreshProfilePictureCommand, Mode=OneWay}"
-                            CommandParameter="{x:Bind Mode=OneWay}"
-                            CornerRadius="{ThemeResource CornerRadiusAll16}">
-                            <wl:LiquidGlassButton.Resources>
-                                <Storyboard x:Key="ShowRefreshIcon">
-                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshIconGlass" Storyboard.TargetProperty="Visibility">
-                                        <DiscreteObjectKeyFrame KeyTime="0">
-                                            <DiscreteObjectKeyFrame.Value>
-                                                <Visibility>Visible</Visibility>
-                                            </DiscreteObjectKeyFrame.Value>
-                                        </DiscreteObjectKeyFrame>
-                                    </ObjectAnimationUsingKeyFrames>
-                                </Storyboard>
-                                <Storyboard x:Key="HideRefreshIcon">
-                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshIconGlass" Storyboard.TargetProperty="Visibility">
-                                        <DiscreteObjectKeyFrame KeyTime="0">
-                                            <DiscreteObjectKeyFrame.Value>
-                                                <Visibility>Collapsed</Visibility>
-                                            </DiscreteObjectKeyFrame.Value>
-                                        </DiscreteObjectKeyFrame>
-                                    </ObjectAnimationUsingKeyFrames>
-                                </Storyboard>
-                            </wl:LiquidGlassButton.Resources>
-                            <mxi:Interaction.Behaviors>
-                                <mxi:EventTriggerBehavior EventName="PointerEntered">
-                                    <mxi:ControlStoryboardAction Storyboard="{StaticResource ShowRefreshIcon}"/>
-                                </mxi:EventTriggerBehavior>
-                                <mxi:EventTriggerBehavior EventName="PointerExited">
-                                    <mxi:ControlStoryboardAction Storyboard="{StaticResource HideRefreshIcon}"/>
-                                </mxi:EventTriggerBehavior>
-                            </mxi:Interaction.Behaviors>
-                            <FontIcon
-                                x:Name="RefreshIconGlass"
-                                FontSize="12"
-                                Glyph="&#xE72C;"
-                                Visibility="Collapsed"/>
-                        </wl:LiquidGlassButton>
-                    </cwc:Case>
-                </cwc:SwitchPresenter>
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    Command="{x:Bind RefreshProfilePictureCommand, Mode=OneWay}"
+                    CommandParameter="{x:Bind Mode=OneWay}"
+                    CornerRadius="{ThemeResource CornerRadiusAll16}">
+                    <Button.Resources>
+                        <Storyboard x:Key="ShowRefreshIcon">
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshIcon" Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Visible</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                        <Storyboard x:Key="HideRefreshIcon">
+                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RefreshIcon" Storyboard.TargetProperty="Visibility">
+                                <DiscreteObjectKeyFrame KeyTime="0">
+                                    <DiscreteObjectKeyFrame.Value>
+                                        <Visibility>Collapsed</Visibility>
+                                    </DiscreteObjectKeyFrame.Value>
+                                </DiscreteObjectKeyFrame>
+                            </ObjectAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </Button.Resources>
+                    <mxi:Interaction.Behaviors>
+                        <mxi:EventTriggerBehavior EventName="PointerEntered">
+                            <mxi:ControlStoryboardAction Storyboard="{StaticResource ShowRefreshIcon}"/>
+                        </mxi:EventTriggerBehavior>
+                        <mxi:EventTriggerBehavior EventName="PointerExited">
+                            <mxi:ControlStoryboardAction Storyboard="{StaticResource HideRefreshIcon}"/>
+                        </mxi:EventTriggerBehavior>
+                    </mxi:Interaction.Behaviors>
+                    <FontIcon
+                        x:Name="RefreshIcon"
+                        FontSize="12"
+                        Glyph="&#xE72C;"
+                        Visibility="Collapsed"/>
+                </Button>
                 <StackPanel Grid.Column="1" Margin="12,0">
                     <TextBlock Text="{x:Bind Nickname, Mode=OneWay}"/>
                     <TextBlock
@@ -446,8 +382,8 @@
                                     Grid.Column="0"
                                     Margin="0,0"
                                     Padding="0,2"
-                                    shuxcth:MaterialBackground.NativeBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                     shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoCardBrush}"
+                                    shuxcth:MaterialBackground.NativeBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                     BorderThickness="0,0,1,0">
                                     <!--  米游社 登录  -->
@@ -673,8 +609,8 @@
                                     Grid.Column="0"
                                     Margin="0,0"
                                     Padding="0,2"
-                                    shuxcth:MaterialBackground.NativeBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                     shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoCardBrush}"
+                                    shuxcth:MaterialBackground.NativeBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                     BorderThickness="0,0,1,0">
                                     <!--  米游社 登录  -->
