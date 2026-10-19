@@ -3936,10 +3936,10 @@ Verfügbarer Speicherplatz: {2}</value>
     <value>Hutao Version {0} ist jetzt verfügbar</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionButtonText" xml:space="preserve">
-    <value>跳过此版本</value>
+    <value>Diese Version überspringen</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionInfoBarMessage" xml:space="preserve">
-    <value>已跳过版本 {0}，启动时将不再自动提示该版本，你仍可在设置中手动检查更新</value>
+    <value>Version {0} wurde übersprungen. Beim Start wird diese Version nicht mehr automatisch gemeldet; Sie können in den Einstellungen weiterhin manuell nach Updates suchen</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>Werkzeuge</value>
@@ -4338,10 +4338,10 @@ Verfügbarer Speicherplatz: {2}</value>
     <value>Cooldown nach dem Überspringen von Dialogen entfernen</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineHeader" xml:space="preserve">
-    <value>凯瑟琳重定向</value>
+    <value>Katheryne-Weiterleitung</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineDescription" xml:space="preserve">
-    <value>把冒险之证中跳转凯瑟琳的每日委托入口，改为直接打开凯瑟琳的委托奖励确认弹窗</value>
+    <value>Ändert den Eintrag für tägliche Aufträge im Abenteurerhandbuch, der zu Katheryne führt, sodass direkt das Bestätigungsfenster für Katherynes Auftragsbelohnungen geöffnet wird</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Cooldown beim Dialogüberspringen entfernen</value>
@@ -5448,10 +5448,10 @@ Verfügbarer Speicherplatz: {2}</value>
     <value>Registerleiste</value>
   </data>
   <data name="GlassParameterSwitchScale" xml:space="preserve">
-    <value>开关大小比例</value>
+    <value>Größenverhältnis des Schalters</value>
   </data>
   <data name="GlassParameterSwitchScaleDescription" xml:space="preserve">
-    <value>等比例调整开关图形大小，不改变文字字号。修改立即生效。</value>
+    <value>Passt die Größe der Schaltergrafik proportional an, ohne die Schriftgröße zu ändern. Änderungen werden sofort wirksam.</value>
   </data>
   <data name="GlassParameterBlurRadius" xml:space="preserve">
     <value>Unschärferadius</value>
@@ -5577,21 +5577,21 @@ Verfügbarer Speicherplatz: {2}</value>
     <value>Offline-Modus · Verbindung wird wiederhergestellt</value>
   </data>
   <data name="ViewModelGuideResourceDownloadIncomplete" xml:space="preserve">
-    <value>部分图片资源未下载成功，请重试或选择跳过下载。</value>
+    <value>Einige Bildressourcen konnten nicht heruntergeladen werden. Bitte versuchen Sie es erneut oder wählen Sie aus, den Download zu überspringen.</value>
   </data>
   <data name="ServiceAchievementImportSummary" xml:space="preserve">
-    <value>当前存档已完成 {0} 项成就。导入记录（包含未完成或未收录项目）：新增 {1}，更新 {2}，移除 {3}。</value>
+    <value>Der aktuelle Speicherstand hat {0} Erfolge abgeschlossen. Importierte Einträge (einschließlich unvollständiger oder nicht erfasster Einträge): neu {1}, aktualisiert {2}, entfernt {3}.</value>
   </data>
   <data name="GlassParameterLightAngle" xml:space="preserve">
-    <value>静态光源角度（弧度）</value>
+    <value>Winkel der statischen Lichtquelle (Bogenmaß)</value>
   </data>
   <data name="GlassPointerLighting" xml:space="preserve">
-    <value>高光方向跟随鼠标</value>
+    <value>Glanzlichtrichtung folgt der Maus</value>
   </data>
   <data name="GlassPointerLightingDescription" xml:space="preserve">
-    <value>控制玻璃边缘高光的光照方向。高光强度控制亮度，高光饱和度控制色彩；跟随程度为 0 时保持静态光源方向，为 1 时完全跟随鼠标。玻璃自身的局部交互高光仍会保留。</value>
+    <value>Steuert die Lichtrichtung des Glanzlichts an den Glasrändern. Die Glanzlichtintensität steuert die Helligkeit, die Glanzlichtsättigung die Farbe; bei einer Folgestärke von 0 bleibt die statische Lichtrichtung erhalten, bei 1 folgt sie vollständig der Maus. Das lokale Interaktionsglanzlicht des Glases selbst bleibt weiterhin erhalten.</value>
   </data>
   <data name="GlassPointerLightInfluence" xml:space="preserve">
-    <value>光源跟随程度</value>
+    <value>Folgestärke der Lichtquelle</value>
   </data>
 </root>
