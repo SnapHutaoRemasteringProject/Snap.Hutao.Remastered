@@ -3936,10 +3936,10 @@ Kullanılabilir Alan: {2}</value>
     <value>Hu Tao {0} sürümü şu anda mevcut</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionButtonText" xml:space="preserve">
-    <value>跳过此版本</value>
+    <value>Bu sürümü atla</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionInfoBarMessage" xml:space="preserve">
-    <value>已跳过版本 {0}，启动时将不再自动提示该版本，你仍可在设置中手动检查更新</value>
+    <value>{0} sürümü atlandı; başlangıçta bu sürüm için otomatik olarak hatırlatılmayacak, güncellemeleri ayarlardan el ile yine kontrol edebilirsiniz</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>Araçlar</value>
@@ -4338,10 +4338,10 @@ Kullanılabilir Alan: {2}</value>
     <value>Diyalog atlamadan sonraki bekleme süresini kaldır</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineHeader" xml:space="preserve">
-    <value>凯瑟琳重定向</value>
+    <value>Katheryne Yönlendirmesi</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineDescription" xml:space="preserve">
-    <value>把冒险之证中跳转凯瑟琳的每日委托入口，改为直接打开凯瑟琳的委托奖励确认弹窗</value>
+    <value>Maceracı El Kitabı'ndaki Katheryne'e yönlendiren Günlük Görev girişini, doğrudan Katheryne'in görev ödülü onay penceresini açacak şekilde değiştirir</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Diyalog atlama bekleme süresini kaldır</value>
@@ -5452,10 +5452,10 @@ Kullanılabilir Alan: {2}</value>
     <value>Sekme çubuğu</value>
   </data>
   <data name="GlassParameterSwitchScale" xml:space="preserve">
-    <value>开关大小比例</value>
+    <value>Anahtar boyutu oranı</value>
   </data>
   <data name="GlassParameterSwitchScaleDescription" xml:space="preserve">
-    <value>等比例调整开关图形大小，不改变文字字号。修改立即生效。</value>
+    <value>Anahtar grafiğinin boyutunu orantılı olarak ayarlar, yazı tipi boyutunu değiştirmez. Değişiklikler hemen uygulanır.</value>
   </data>
   <data name="GlassParameterBlurRadius" xml:space="preserve">
     <value>Bulanıklık yarıçapı</value>
@@ -5581,21 +5581,21 @@ Kullanılabilir Alan: {2}</value>
     <value>Çevrimdışı mod · Yeniden bağlanılıyor</value>
   </data>
   <data name="ViewModelGuideResourceDownloadIncomplete" xml:space="preserve">
-    <value>部分图片资源未下载成功，请重试或选择跳过下载。</value>
+    <value>Bazı görsel kaynaklar indirilemedi, lütfen yeniden deneyin veya indirmeyi atlamayı seçin.</value>
   </data>
   <data name="ServiceAchievementImportSummary" xml:space="preserve">
-    <value>当前存档已完成 {0} 项成就。导入记录（包含未完成或未收录项目）：新增 {1}，更新 {2}，移除 {3}。</value>
+    <value>Mevcut kayıt {0} başarım tamamladı. İçe aktarılan kayıt (tamamlanmamış veya kayıtlı olmayan öğeler dahil): yeni {1}, güncellenen {2}, kaldırılan {3}.</value>
   </data>
   <data name="GlassParameterLightAngle" xml:space="preserve">
-    <value>静态光源角度（弧度）</value>
+    <value>Statik ışık kaynağı açısı (radyan)</value>
   </data>
   <data name="GlassPointerLighting" xml:space="preserve">
-    <value>高光方向跟随鼠标</value>
+    <value>Vurgu yönü fareyi izlesin</value>
   </data>
   <data name="GlassPointerLightingDescription" xml:space="preserve">
-    <value>控制玻璃边缘高光的光照方向。高光强度控制亮度，高光饱和度控制色彩；跟随程度为 0 时保持静态光源方向，为 1 时完全跟随鼠标。玻璃自身的局部交互高光仍会保留。</value>
+    <value>Cam kenarı vurgusunun ışık yönünü kontrol eder. Vurgu yoğunluğu parlaklığı, vurgu doygunluğu rengi kontrol eder; izleme derecesi 0 iken statik ışık kaynağı yönü korunur, 1 iken fareyi tamamen izler. Camın kendi yerel etkileşim vurgusu yine de korunur.</value>
   </data>
   <data name="GlassPointerLightInfluence" xml:space="preserve">
-    <value>光源跟随程度</value>
+    <value>Işık kaynağı izleme derecesi</value>
   </data>
 </root>
