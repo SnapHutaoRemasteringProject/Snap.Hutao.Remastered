@@ -3936,10 +3936,10 @@
     <value>เวอร์ชัน {0} ของฮูโตะพร้อมใช้งานแล้ว</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionButtonText" xml:space="preserve">
-    <value>跳过此版本</value>
+    <value>ข้ามเวอร์ชันนี้</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionInfoBarMessage" xml:space="preserve">
-    <value>已跳过版本 {0}，启动时将不再自动提示该版本，你仍可在设置中手动检查更新</value>
+    <value>ข้ามเวอร์ชัน {0} แล้ว ระบบจะไม่แจ้งเตือนเวอร์ชันนี้อัตโนมัติเมื่อเริ่มโปรแกรม คุณยังสามารถตรวจสอบอัปเดตได้ด้วยตนเองในการตั้งค่า</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>เครื่องมือ</value>
@@ -4338,10 +4338,10 @@
     <value>ลบเวลาคูลดาวน์หลังการข้ามบทสนทนา</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineHeader" xml:space="preserve">
-    <value>凯瑟琳重定向</value>
+    <value>เปลี่ยนเส้นทางแคทเธอรีน</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineDescription" xml:space="preserve">
-    <value>把冒险之证中跳转凯瑟琳的每日委托入口，改为直接打开凯瑟琳的委托奖励确认弹窗</value>
+    <value>เปลี่ยนทางเข้าเควสต์ประจำวันของแคทเธอรีนในคู่มือนักผจญภัย ให้เปิดหน้าต่างยืนยันรางวัลเควสต์ของแคทเธอรีนโดยตรง</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>ลบเวลาคูลดาวน์การข้ามบทสนทนา</value>
@@ -5448,10 +5448,10 @@
     <value>แถบแท็บ</value>
   </data>
   <data name="GlassParameterSwitchScale" xml:space="preserve">
-    <value>开关大小比例</value>
+    <value>สัดส่วนขนาดสวิตช์</value>
   </data>
   <data name="GlassParameterSwitchScaleDescription" xml:space="preserve">
-    <value>等比例调整开关图形大小，不改变文字字号。修改立即生效。</value>
+    <value>ปรับขนาดกราฟิกสวิตช์ตามสัดส่วน โดยไม่เปลี่ยนขนาดตัวอักษร การเปลี่ยนแปลงมีผลทันที</value>
   </data>
   <data name="GlassParameterBlurRadius" xml:space="preserve">
     <value>รัศมีความเบลอ</value>
@@ -5577,21 +5577,21 @@
     <value>โหมดออฟไลน์ · กำลังเชื่อมต่อใหม่</value>
   </data>
   <data name="ViewModelGuideResourceDownloadIncomplete" xml:space="preserve">
-    <value>部分图片资源未下载成功，请重试或选择跳过下载。</value>
+    <value>ดาวน์โหลดไฟล์รูปภาพบางส่วนไม่สำเร็จ โปรดลองอีกครั้งหรือเลือกข้ามการดาวน์โหลด</value>
   </data>
   <data name="ServiceAchievementImportSummary" xml:space="preserve">
-    <value>当前存档已完成 {0} 项成就。导入记录（包含未完成或未收录项目）：新增 {1}，更新 {2}，移除 {3}。</value>
+    <value>ข้อมูลบันทึกปัจจุบันสำเร็จความสำเร็จแล้ว {0} รายการ บันทึกการนำเข้า (รวมรายการที่ยังไม่สำเร็จหรือยังไม่ได้บันทึก): เพิ่ม {1} อัปเดต {2} ลบ {3}</value>
   </data>
   <data name="GlassParameterLightAngle" xml:space="preserve">
-    <value>静态光源角度（弧度）</value>
+    <value>มุมของแหล่งกำเนิดแสงแบบคงที่ (เรเดียน)</value>
   </data>
   <data name="GlassPointerLighting" xml:space="preserve">
-    <value>高光方向跟随鼠标</value>
+    <value>ทิศทางไฮไลต์ติดตามเมาส์</value>
   </data>
   <data name="GlassPointerLightingDescription" xml:space="preserve">
-    <value>控制玻璃边缘高光的光照方向。高光强度控制亮度，高光饱和度控制色彩；跟随程度为 0 时保持静态光源方向，为 1 时完全跟随鼠标。玻璃自身的局部交互高光仍会保留。</value>
+    <value>ควบคุมทิศทางแสงของไฮไลต์ขอบกระจก ความเข้มของไฮไลต์ควบคุมความสว่าง ความอิ่มตัวของไฮไลต์ควบคุมสี เมื่อระดับการติดตามเป็น 0 จะคงทิศทางแหล่งกำเนิดแสงแบบคงที่ เมื่อเป็น 1 จะติดตามเมาส์อย่างสมบูรณ์ ไฮไลต์จากการโต้ตอบภายในของกระจกเองยังคงอยู่</value>
   </data>
   <data name="GlassPointerLightInfluence" xml:space="preserve">
-    <value>光源跟随程度</value>
+    <value>ระดับการติดตามแหล่งกำเนิดแสง</value>
   </data>
 </root>
