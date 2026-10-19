@@ -3936,10 +3936,10 @@ Espaço disponível: {2}</value>
     <value>A versão {0} do Snap Hutao está pronta</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionButtonText" xml:space="preserve">
-    <value>跳过此版本</value>
+    <value>Ignorar esta versão</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionInfoBarMessage" xml:space="preserve">
-    <value>已跳过版本 {0}，启动时将不再自动提示该版本，你仍可在设置中手动检查更新</value>
+    <value>A versão {0} foi ignorada. Ela não será mais sugerida automaticamente na inicialização; você ainda pode verificar atualizações manualmente nas configurações</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>Ferramentas</value>
@@ -4338,10 +4338,10 @@ Espaço disponível: {2}</value>
     <value>Remover o tempo de recarga após saltar o diálogo</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineHeader" xml:space="preserve">
-    <value>凯瑟琳重定向</value>
+    <value>Redirecionamento da Katheryne</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineDescription" xml:space="preserve">
-    <value>把冒险之证中跳转凯瑟琳的每日委托入口，改为直接打开凯瑟琳的委托奖励确认弹窗</value>
+    <value>Altera a entrada de Comissões Diárias que leva à Katheryne no Manual do Aventureiro para abrir diretamente a janela de confirmação de recompensas de comissões da Katheryne</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Remover o tempo de recarga do salto de diálogo</value>
@@ -5448,10 +5448,10 @@ Espaço disponível: {2}</value>
     <value>Barra de abas</value>
   </data>
   <data name="GlassParameterSwitchScale" xml:space="preserve">
-    <value>开关大小比例</value>
+    <value>Proporção do tamanho do interruptor</value>
   </data>
   <data name="GlassParameterSwitchScaleDescription" xml:space="preserve">
-    <value>等比例调整开关图形大小，不改变文字字号。修改立即生效。</value>
+    <value>Ajusta proporcionalmente o tamanho do gráfico do interruptor sem alterar o tamanho da fonte do texto. As alterações entram em vigor imediatamente.</value>
   </data>
   <data name="GlassParameterBlurRadius" xml:space="preserve">
     <value>Raio do desfoque</value>
@@ -5577,21 +5577,21 @@ Espaço disponível: {2}</value>
     <value>Modo offline · Reconectando</value>
   </data>
   <data name="ViewModelGuideResourceDownloadIncomplete" xml:space="preserve">
-    <value>部分图片资源未下载成功，请重试或选择跳过下载。</value>
+    <value>Alguns recursos de imagem não foram baixados com êxito. Tente novamente ou escolha pular o download.</value>
   </data>
   <data name="ServiceAchievementImportSummary" xml:space="preserve">
-    <value>当前存档已完成 {0} 项成就。导入记录（包含未完成或未收录项目）：新增 {1}，更新 {2}，移除 {3}。</value>
+    <value>O save atual concluiu {0} conquistas. Registro de importação (incluindo itens não concluídos ou não registrados): {1} adicionados, {2} atualizados, {3} removidos.</value>
   </data>
   <data name="GlassParameterLightAngle" xml:space="preserve">
-    <value>静态光源角度（弧度）</value>
+    <value>Ângulo da luz estática (radianos)</value>
   </data>
   <data name="GlassPointerLighting" xml:space="preserve">
-    <value>高光方向跟随鼠标</value>
+    <value>Direção do realce seguir o mouse</value>
   </data>
   <data name="GlassPointerLightingDescription" xml:space="preserve">
-    <value>控制玻璃边缘高光的光照方向。高光强度控制亮度，高光饱和度控制色彩；跟随程度为 0 时保持静态光源方向，为 1 时完全跟随鼠标。玻璃自身的局部交互高光仍会保留。</value>
+    <value>Controla a direção da iluminação do realce nas bordas do vidro. A intensidade do realce controla o brilho e a saturação do realce controla a cor; com grau de acompanhamento 0, a direção da luz permanece estática, e com 1, ela segue totalmente o mouse. O realce de interação local do próprio vidro ainda é mantido.</value>
   </data>
   <data name="GlassPointerLightInfluence" xml:space="preserve">
-    <value>光源跟随程度</value>
+    <value>Grau de acompanhamento da luz</value>
   </data>
 </root>
