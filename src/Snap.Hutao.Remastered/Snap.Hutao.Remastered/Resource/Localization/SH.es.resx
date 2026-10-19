@@ -3936,10 +3936,10 @@ Espacio disponible: {2}</value>
     <value>La versión {0} de Hutao ya está disponible</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionButtonText" xml:space="preserve">
-    <value>跳过此版本</value>
+    <value>Omitir esta versión</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionInfoBarMessage" xml:space="preserve">
-    <value>已跳过版本 {0}，启动时将不再自动提示该版本，你仍可在设置中手动检查更新</value>
+    <value>Se ha omitido la versión {0}; al iniciar ya no se avisará automáticamente de esta versión. Aún puedes buscar actualizaciones manualmente en los ajustes</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>Herramientas</value>
@@ -4338,10 +4338,10 @@ Espacio disponible: {2}</value>
     <value>Eliminar el tiempo de enfriamiento tras omitir diálogos</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineHeader" xml:space="preserve">
-    <value>凯瑟琳重定向</value>
+    <value>Redirección de Katheryne</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineDescription" xml:space="preserve">
-    <value>把冒险之证中跳转凯瑟琳的每日委托入口，改为直接打开凯瑟琳的委托奖励确认弹窗</value>
+    <value>Cambia la entrada de las comisiones diarias que redirige a Katheryne en el Manual del aventurero para que abra directamente el diálogo de confirmación de recompensas de comisiones de Katheryne</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Eliminar el tiempo de enfriamiento al omitir diálogos</value>
@@ -5448,10 +5448,10 @@ Espacio disponible: {2}</value>
     <value>Barra de pestañas</value>
   </data>
   <data name="GlassParameterSwitchScale" xml:space="preserve">
-    <value>开关大小比例</value>
+    <value>Proporción del tamaño del interruptor</value>
   </data>
   <data name="GlassParameterSwitchScaleDescription" xml:space="preserve">
-    <value>等比例调整开关图形大小，不改变文字字号。修改立即生效。</value>
+    <value>Ajusta proporcionalmente el tamaño del gráfico del interruptor sin cambiar el tamaño de la fuente del texto. Los cambios se aplican de inmediato.</value>
   </data>
   <data name="GlassParameterBlurRadius" xml:space="preserve">
     <value>Radio de desenfoque</value>
@@ -5577,21 +5577,21 @@ Espacio disponible: {2}</value>
     <value>Modo sin conexión · Reconectando</value>
   </data>
   <data name="ViewModelGuideResourceDownloadIncomplete" xml:space="preserve">
-    <value>部分图片资源未下载成功，请重试或选择跳过下载。</value>
+    <value>Algunos recursos de imagen no se han descargado correctamente. Vuelve a intentarlo u opta por omitir la descarga.</value>
   </data>
   <data name="ServiceAchievementImportSummary" xml:space="preserve">
-    <value>当前存档已完成 {0} 项成就。导入记录（包含未完成或未收录项目）：新增 {1}，更新 {2}，移除 {3}。</value>
+    <value>La partida guardada actual ha completado {0} logros. Registro de importación (incluye elementos sin completar o no registrados): añadidos {1}, actualizados {2}, eliminados {3}.</value>
   </data>
   <data name="GlassParameterLightAngle" xml:space="preserve">
-    <value>静态光源角度（弧度）</value>
+    <value>Ángulo de la fuente de luz estática (radianes)</value>
   </data>
   <data name="GlassPointerLighting" xml:space="preserve">
-    <value>高光方向跟随鼠标</value>
+    <value>La dirección del brillo sigue al ratón</value>
   </data>
   <data name="GlassPointerLightingDescription" xml:space="preserve">
-    <value>控制玻璃边缘高光的光照方向。高光强度控制亮度，高光饱和度控制色彩；跟随程度为 0 时保持静态光源方向，为 1 时完全跟随鼠标。玻璃自身的局部交互高光仍会保留。</value>
+    <value>Controla la dirección de la iluminación del brillo del borde del cristal. La intensidad del brillo controla la luminosidad y la saturación del brillo controla el color; con un grado de seguimiento de 0 se mantiene la dirección de la fuente de luz estática, y con 1 sigue completamente al ratón. El brillo de interacción local del propio cristal se conserva.</value>
   </data>
   <data name="GlassPointerLightInfluence" xml:space="preserve">
-    <value>光源跟随程度</value>
+    <value>Grado de seguimiento de la fuente de luz</value>
   </data>
 </root>
