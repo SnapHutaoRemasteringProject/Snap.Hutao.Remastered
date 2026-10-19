@@ -4338,10 +4338,10 @@ Ruang Tersedia: {2}</value>
     <value>Hapus waktu cooldown setelah melewati dialog</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineHeader" xml:space="preserve">
-    <value>凯瑟琳重定向</value>
+    <value>Pengalihan Katheryne</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineDescription" xml:space="preserve">
-    <value>把冒险之证中跳转凯瑟琳的每日委托入口，改为直接打开凯瑟琳的委托奖励确认弹窗</value>
+    <value>Mengubah pintu masuk Komisi Harian yang mengarah ke Katheryne di Buku Petualang menjadi langsung membuka dialog konfirmasi hadiah komisi Katheryne</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Hapus cooldown lewati dialog</value>
@@ -5452,10 +5452,10 @@ Ruang Tersedia: {2}</value>
     <value>Tab</value>
   </data>
   <data name="GlassParameterSwitchScale" xml:space="preserve">
-    <value>开关大小比例</value>
+    <value>Rasio ukuran sakelar</value>
   </data>
   <data name="GlassParameterSwitchScaleDescription" xml:space="preserve">
-    <value>等比例调整开关图形大小，不改变文字字号。修改立即生效。</value>
+    <value>Menyesuaikan ukuran grafik sakelar secara proporsional tanpa mengubah ukuran font teks. Perubahan langsung berlaku.</value>
   </data>
   <data name="GlassParameterBlurRadius" xml:space="preserve">
     <value>Radius blur</value>
@@ -5581,21 +5581,21 @@ Ruang Tersedia: {2}</value>
     <value>Mode offline · Menyambung ulang</value>
   </data>
   <data name="ViewModelGuideResourceDownloadIncomplete" xml:space="preserve">
-    <value>部分图片资源未下载成功，请重试或选择跳过下载。</value>
+    <value>Sebagian sumber daya gambar gagal diunduh, silakan coba lagi atau pilih untuk melewati unduhan.</value>
   </data>
   <data name="ServiceAchievementImportSummary" xml:space="preserve">
-    <value>当前存档已完成 {0} 项成就。导入记录（包含未完成或未收录项目）：新增 {1}，更新 {2}，移除 {3}。</value>
+    <value>Arsip saat ini telah menyelesaikan {0} pencapaian. Catatan impor (termasuk item yang belum selesai atau belum tercatat): baru {1}, diperbarui {2}, dihapus {3}.</value>
   </data>
   <data name="GlassParameterLightAngle" xml:space="preserve">
-    <value>静态光源角度（弧度）</value>
+    <value>Sudut sumber cahaya statis (radian)</value>
   </data>
   <data name="GlassPointerLighting" xml:space="preserve">
-    <value>高光方向跟随鼠标</value>
+    <value>Arah kilau mengikuti mouse</value>
   </data>
   <data name="GlassPointerLightingDescription" xml:space="preserve">
-    <value>控制玻璃边缘高光的光照方向。高光强度控制亮度，高光饱和度控制色彩；跟随程度为 0 时保持静态光源方向，为 1 时完全跟随鼠标。玻璃自身的局部交互高光仍会保留。</value>
+    <value>Mengontrol arah pencahayaan kilau tepi kaca. Intensitas kilau mengontrol kecerahan, saturasi kilau mengontrol warna; saat tingkat pengikutan 0, arah sumber cahaya tetap statis, saat 1 sepenuhnya mengikuti mouse. Kilau interaksi lokal pada kaca itu sendiri tetap dipertahankan.</value>
   </data>
   <data name="GlassPointerLightInfluence" xml:space="preserve">
-    <value>光源跟随程度</value>
+    <value>Tingkat pengikutan sumber cahaya</value>
   </data>
 </root>
