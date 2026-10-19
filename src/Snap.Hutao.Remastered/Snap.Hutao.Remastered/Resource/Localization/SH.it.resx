@@ -4820,6 +4820,9 @@ Spazio disponibile: {2}</value>
   <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
     <value>Avvio automatico</value>
   </data>
+  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
+    <value>无法读取或更新开机自启动计划任务。请确认计划任务服务可用，并以管理员身份运行后重试。</value>
+  </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>Comportamento app</value>
   </data>
