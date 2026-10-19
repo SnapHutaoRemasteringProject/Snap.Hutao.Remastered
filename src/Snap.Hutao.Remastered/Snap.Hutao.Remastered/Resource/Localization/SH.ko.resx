@@ -3936,10 +3936,10 @@
     <value>호두 {0} 버전이 현재 사용 가능합니다</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionButtonText" xml:space="preserve">
-    <value>跳过此版本</value>
+    <value>이 버전 건너뛰기</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionInfoBarMessage" xml:space="preserve">
-    <value>已跳过版本 {0}，启动时将不再自动提示该版本，你仍可在设置中手动检查更新</value>
+    <value>버전 {0} 건너뛰기가 완료되었습니다. 시작 시 해당 버전을 더 이상 자동으로 알리지 않으며, 설정에서 수동으로 업데이트를 확인할 수 있습니다</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>도구</value>
@@ -4338,10 +4338,10 @@
     <value>대화 스킵 후 쿨다운 시간 제거</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineHeader" xml:space="preserve">
-    <value>凯瑟琳重定向</value>
+    <value>캐서린 리디렉션</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineDescription" xml:space="preserve">
-    <value>把冒险之证中跳转凯瑟琳的每日委托入口，改为直接打开凯瑟琳的委托奖励确认弹窗</value>
+    <value>모험가 수첩에서 캐서린으로 이동하는 일일 의뢰 입구를 캐서린의 의뢰 보상 확인 팝업을 바로 여는 것으로 변경합니다</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>대화 스킵 쿨다운 제거</value>
@@ -5448,10 +5448,10 @@
     <value>탭 표시줄</value>
   </data>
   <data name="GlassParameterSwitchScale" xml:space="preserve">
-    <value>开关大小比例</value>
+    <value>스위치 크기 비율</value>
   </data>
   <data name="GlassParameterSwitchScaleDescription" xml:space="preserve">
-    <value>等比例调整开关图形大小，不改变文字字号。修改立即生效。</value>
+    <value>텍스트 글꼴 크기는 변경하지 않고 스위치 그래픽 크기를 비례적으로 조정합니다. 변경 사항은 즉시 적용됩니다.</value>
   </data>
   <data name="GlassParameterBlurRadius" xml:space="preserve">
     <value>블러 반경</value>
@@ -5577,21 +5577,21 @@
     <value>오프라인 모드 · 재연결 중</value>
   </data>
   <data name="ViewModelGuideResourceDownloadIncomplete" xml:space="preserve">
-    <value>部分图片资源未下载成功，请重试或选择跳过下载。</value>
+    <value>일부 이미지 리소스를 다운로드하지 못했습니다. 다시 시도하거나 다운로드 건너뛰기를 선택하세요.</value>
   </data>
   <data name="ServiceAchievementImportSummary" xml:space="preserve">
-    <value>当前存档已完成 {0} 项成就。导入记录（包含未完成或未收录项目）：新增 {1}，更新 {2}，移除 {3}。</value>
+    <value>현재 저장 데이터에서 업적 {0}개를 완료했습니다. 가져온 기록(미완료 또는 미수록 항목 포함): 추가 {1}, 업데이트 {2}, 제거 {3}.</value>
   </data>
   <data name="GlassParameterLightAngle" xml:space="preserve">
-    <value>静态光源角度（弧度）</value>
+    <value>정적 광원 각도(라디안)</value>
   </data>
   <data name="GlassPointerLighting" xml:space="preserve">
-    <value>高光方向跟随鼠标</value>
+    <value>하이라이트 방향이 마우스를 따라가기</value>
   </data>
   <data name="GlassPointerLightingDescription" xml:space="preserve">
-    <value>控制玻璃边缘高光的光照方向。高光强度控制亮度，高光饱和度控制色彩；跟随程度为 0 时保持静态光源方向，为 1 时完全跟随鼠标。玻璃自身的局部交互高光仍会保留。</value>
+    <value>유리 가장자리 하이라이트의 조명 방향을 제어합니다. 하이라이트 강도는 밝기를, 하이라이트 채도는 색상을 제어합니다. 추종 정도가 0이면 정적 광원 방향을 유지하고, 1이면 마우스를 완전히 따라갑니다. 유리 자체의 국부 상호작용 하이라이트는 유지됩니다.</value>
   </data>
   <data name="GlassPointerLightInfluence" xml:space="preserve">
-    <value>光源跟随程度</value>
+    <value>광원 추종 정도</value>
   </data>
 </root>
