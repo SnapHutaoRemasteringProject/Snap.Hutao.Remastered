@@ -3936,10 +3936,10 @@ Espace disponible : {2}</value>
     <value>La version {0} de Hutao est maintenant disponible</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionButtonText" xml:space="preserve">
-    <value>跳过此版本</value>
+    <value>Ignorer cette version</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionInfoBarMessage" xml:space="preserve">
-    <value>已跳过版本 {0}，启动时将不再自动提示该版本，你仍可在设置中手动检查更新</value>
+    <value>Version {0} ignorée. Elle ne sera plus proposée automatiquement au démarrage, mais vous pouvez toujours vérifier les mises à jour manuellement dans les paramètres</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>Outils</value>
@@ -4338,10 +4338,10 @@ Espace disponible : {2}</value>
     <value>Supprime le temps de recharge après le saut d'un dialogue</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineHeader" xml:space="preserve">
-    <value>凯瑟琳重定向</value>
+    <value>Redirection de Catherine</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineDescription" xml:space="preserve">
-    <value>把冒险之证中跳转凯瑟琳的每日委托入口，改为直接打开凯瑟琳的委托奖励确认弹窗</value>
+    <value>Remplace l'entrée de commission quotidienne qui redirige vers Catherine dans le Manuel de l'aventurier par l'ouverture directe de la fenêtre de confirmation des récompenses de commission de Catherine</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Supprimer le temps de recharge du saut de dialogue</value>
@@ -5448,10 +5448,10 @@ Espace disponible : {2}</value>
     <value>Barre d'onglets</value>
   </data>
   <data name="GlassParameterSwitchScale" xml:space="preserve">
-    <value>开关大小比例</value>
+    <value>Échelle de taille de l'interrupteur</value>
   </data>
   <data name="GlassParameterSwitchScaleDescription" xml:space="preserve">
-    <value>等比例调整开关图形大小，不改变文字字号。修改立即生效。</value>
+    <value>Ajuste proportionnellement la taille du graphique de l'interrupteur sans modifier la taille du texte. Les modifications prennent effet immédiatement.</value>
   </data>
   <data name="GlassParameterBlurRadius" xml:space="preserve">
     <value>Rayon de flou</value>
@@ -5577,21 +5577,21 @@ Espace disponible : {2}</value>
     <value>Mode hors ligne · Reconnexion en cours</value>
   </data>
   <data name="ViewModelGuideResourceDownloadIncomplete" xml:space="preserve">
-    <value>部分图片资源未下载成功，请重试或选择跳过下载。</value>
+    <value>Certaines ressources d'images n'ont pas pu être téléchargées. Veuillez réessayer ou choisir d'ignorer le téléchargement.</value>
   </data>
   <data name="ServiceAchievementImportSummary" xml:space="preserve">
-    <value>当前存档已完成 {0} 项成就。导入记录（包含未完成或未收录项目）：新增 {1}，更新 {2}，移除 {3}。</value>
+    <value>La sauvegarde actuelle contient {0} succès terminés. Enregistrements importés, y compris les éléments non terminés ou non répertoriés : {1} ajoutés, {2} mis à jour, {3} supprimés.</value>
   </data>
   <data name="GlassParameterLightAngle" xml:space="preserve">
-    <value>静态光源角度（弧度）</value>
+    <value>Angle de la source lumineuse statique (radians)</value>
   </data>
   <data name="GlassPointerLighting" xml:space="preserve">
-    <value>高光方向跟随鼠标</value>
+    <value>Suivre la souris pour la direction du reflet</value>
   </data>
   <data name="GlassPointerLightingDescription" xml:space="preserve">
-    <value>控制玻璃边缘高光的光照方向。高光强度控制亮度，高光饱和度控制色彩；跟随程度为 0 时保持静态光源方向，为 1 时完全跟随鼠标。玻璃自身的局部交互高光仍会保留。</value>
+    <value>Contrôle la direction de l'éclairage des reflets sur les bords du verre. L'intensité du reflet contrôle la luminosité et sa saturation contrôle la couleur ; un degré de suivi de 0 conserve la direction statique de la source lumineuse, tandis que 1 suit entièrement la souris. Le reflet d'interaction local du verre lui-même est toujours conservé.</value>
   </data>
   <data name="GlassPointerLightInfluence" xml:space="preserve">
-    <value>光源跟随程度</value>
+    <value>Degré de suivi de la source lumineuse</value>
   </data>
 </root>
