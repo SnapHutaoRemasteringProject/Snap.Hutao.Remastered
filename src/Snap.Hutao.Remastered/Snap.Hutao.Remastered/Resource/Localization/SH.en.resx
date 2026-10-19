@@ -3936,10 +3936,10 @@ Space Available: {2}</value>
     <value>Snap Hutao {0} is now available</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionButtonText" xml:space="preserve">
-    <value>跳过此版本</value>
+    <value>Skip this version</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionInfoBarMessage" xml:space="preserve">
-    <value>已跳过版本 {0}，启动时将不再自动提示该版本，你仍可在设置中手动检查更新</value>
+    <value>Version {0} has been skipped. It will no longer be prompted automatically on startup, but you can still check for updates manually in Settings</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>Tools</value>
@@ -4338,10 +4338,10 @@ Space Available: {2}</value>
     <value>Remove the cooldown after skipping dialogue</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineHeader" xml:space="preserve">
-    <value>凯瑟琳重定向</value>
+    <value>Catherine Redirect</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineDescription" xml:space="preserve">
-    <value>把冒险之证中跳转凯瑟琳的每日委托入口，改为直接打开凯瑟琳的委托奖励确认弹窗</value>
+    <value>Change the Catherine entry for Daily Commissions in the Adventurer Handbook to directly open Catherine's commission reward confirmation dialog</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Remove Dialogue Skip Cooldown</value>
@@ -5452,10 +5452,10 @@ Space Available: {2}</value>
     <value>Tab Bar</value>
   </data>
   <data name="GlassParameterSwitchScale" xml:space="preserve">
-    <value>开关大小比例</value>
+    <value>Switch size scale</value>
   </data>
   <data name="GlassParameterSwitchScaleDescription" xml:space="preserve">
-    <value>等比例调整开关图形大小，不改变文字字号。修改立即生效。</value>
+    <value>Proportionally adjusts the size of the switch graphic without changing the font size. Changes take effect immediately.</value>
   </data>
   <data name="GlassParameterBlurRadius" xml:space="preserve">
     <value>Blur radius</value>
@@ -5581,21 +5581,21 @@ Space Available: {2}</value>
     <value>Offline Mode · Reconnecting</value>
   </data>
   <data name="ViewModelGuideResourceDownloadIncomplete" xml:space="preserve">
-    <value>部分图片资源未下载成功，请重试或选择跳过下载。</value>
+    <value>Some image resources failed to download. Please retry or choose to skip the download.</value>
   </data>
   <data name="ServiceAchievementImportSummary" xml:space="preserve">
-    <value>当前存档已完成 {0} 项成就。导入记录（包含未完成或未收录项目）：新增 {1}，更新 {2}，移除 {3}。</value>
+    <value>The current save has completed {0} achievements. Import record (including incomplete or unlisted items): added {1}, updated {2}, removed {3}.</value>
   </data>
   <data name="GlassParameterLightAngle" xml:space="preserve">
-    <value>静态光源角度（弧度）</value>
+    <value>Static light source angle (radians)</value>
   </data>
   <data name="GlassPointerLighting" xml:space="preserve">
-    <value>高光方向跟随鼠标</value>
+    <value>Highlight direction follows mouse</value>
   </data>
   <data name="GlassPointerLightingDescription" xml:space="preserve">
-    <value>控制玻璃边缘高光的光照方向。高光强度控制亮度，高光饱和度控制色彩；跟随程度为 0 时保持静态光源方向，为 1 时完全跟随鼠标。玻璃自身的局部交互高光仍会保留。</value>
+    <value>Controls the light direction of the glass edge highlight. Highlight intensity controls brightness, and highlight saturation controls color; a follow level of 0 keeps the static light source direction, while 1 fully follows the mouse. The glass's own local interaction highlight is still preserved.</value>
   </data>
   <data name="GlassPointerLightInfluence" xml:space="preserve">
-    <value>光源跟随程度</value>
+    <value>Light follow level</value>
   </data>
 </root>
