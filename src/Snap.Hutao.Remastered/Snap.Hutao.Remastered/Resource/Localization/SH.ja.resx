@@ -3936,10 +3936,10 @@
     <value>胡桃バージョン {0} が利用可能です</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionButtonText" xml:space="preserve">
-    <value>跳过此版本</value>
+    <value>このバージョンをスキップ</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionInfoBarMessage" xml:space="preserve">
-    <value>已跳过版本 {0}，启动时将不再自动提示该版本，你仍可在设置中手动检查更新</value>
+    <value>バージョン {0} をスキップしました。起動時にこのバージョンは自動で通知されませんが、設定から手動で更新を確認できます</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>ツールボックス</value>
@@ -4338,10 +4338,10 @@
     <value>会話スキップ後のクールダウン時間を削除</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineHeader" xml:space="preserve">
-    <value>凯瑟琳重定向</value>
+    <value>キャサリンリダイレクト</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineDescription" xml:space="preserve">
-    <value>把冒险之证中跳转凯瑟琳的每日委托入口，改为直接打开凯瑟琳的委托奖励确认弹窗</value>
+    <value>冒険者手帳のキャサリンへ移動するデイリー依頼の入口を、キャサリンの依頼報酬確認ダイアログを直接開くように変更します</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>会話スキップのクールダウンを削除</value>
@@ -5452,10 +5452,10 @@
     <value>タブバー</value>
   </data>
   <data name="GlassParameterSwitchScale" xml:space="preserve">
-    <value>开关大小比例</value>
+    <value>スイッチサイズ比率</value>
   </data>
   <data name="GlassParameterSwitchScaleDescription" xml:space="preserve">
-    <value>等比例调整开关图形大小，不改变文字字号。修改立即生效。</value>
+    <value>スイッチ図形のサイズを等比で調整します。文字のフォントサイズは変更されません。変更はすぐに反映されます。</value>
   </data>
   <data name="GlassParameterBlurRadius" xml:space="preserve">
     <value>ぼかし半径</value>
@@ -5581,21 +5581,21 @@
     <value>オフラインモード · 再接続中</value>
   </data>
   <data name="ViewModelGuideResourceDownloadIncomplete" xml:space="preserve">
-    <value>部分图片资源未下载成功，请重试或选择跳过下载。</value>
+    <value>一部の画像リソースをダウンロードできませんでした。再試行するか、ダウンロードのスキップを選択してください。</value>
   </data>
   <data name="ServiceAchievementImportSummary" xml:space="preserve">
-    <value>当前存档已完成 {0} 项成就。导入记录（包含未完成或未收录项目）：新增 {1}，更新 {2}，移除 {3}。</value>
+    <value>現在のセーブデータは {0} 件の実績を達成済みです。インポート記録（未達成または未収録の項目を含む）：追加 {1}、更新 {2}、削除 {3}。</value>
   </data>
   <data name="GlassParameterLightAngle" xml:space="preserve">
-    <value>静态光源角度（弧度）</value>
+    <value>静的ライト角度（ラジアン）</value>
   </data>
   <data name="GlassPointerLighting" xml:space="preserve">
-    <value>高光方向跟随鼠标</value>
+    <value>ハイライト方向をマウスに追従</value>
   </data>
   <data name="GlassPointerLightingDescription" xml:space="preserve">
-    <value>控制玻璃边缘高光的光照方向。高光强度控制亮度，高光饱和度控制色彩；跟随程度为 0 时保持静态光源方向，为 1 时完全跟随鼠标。玻璃自身的局部交互高光仍会保留。</value>
+    <value>ガラス縁のハイライトの光の方向を制御します。ハイライト強度は明るさ、ハイライト彩度は色を制御します。追従度が 0 のときは静的ライトの方向を維持し、1 のときは完全にマウスに追従します。ガラス自体の局所的なインタラクションハイライトは保持されます。</value>
   </data>
   <data name="GlassPointerLightInfluence" xml:space="preserve">
-    <value>光源跟随程度</value>
+    <value>ライト追従度</value>
   </data>
 </root>
