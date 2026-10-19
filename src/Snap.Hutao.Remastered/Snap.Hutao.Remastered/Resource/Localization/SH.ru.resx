@@ -3942,10 +3942,10 @@
     <value>Версия Snap Hutao {0} теперь доступна</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionButtonText" xml:space="preserve">
-    <value>跳过此版本</value>
+    <value>Пропустить эту версию</value>
   </data>
   <data name="ViewTitleUpdatePackageSkipVersionInfoBarMessage" xml:space="preserve">
-    <value>已跳过版本 {0}，启动时将不再自动提示该版本，你仍可在设置中手动检查更新</value>
+    <value>Версия {0} пропущена. При запуске напоминание о ней больше не будет появляться, но вы по-прежнему можете проверить обновления вручную в настройках</value>
   </data>
   <data name="ViewToolHeader" xml:space="preserve">
     <value>Инструменты</value>
@@ -4344,10 +4344,10 @@
     <value>Убрать задержку после пропуска диалогов</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineHeader" xml:space="preserve">
-    <value>凯瑟琳重定向</value>
+    <value>Перенаправление Кэтрин</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineDescription" xml:space="preserve">
-    <value>把冒险之证中跳转凯瑟琳的每日委托入口，改为直接打开凯瑟琳的委托奖励确认弹窗</value>
+    <value>Пункт перехода к Кэтрин в «Руководстве приключенца» теперь будет напрямую открывать окно подтверждения наград за ежедневные поручения Кэтрин</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Убрать задержку пропуска диалогов</value>
@@ -5454,10 +5454,10 @@
     <value>Панель вкладок</value>
   </data>
   <data name="GlassParameterSwitchScale" xml:space="preserve">
-    <value>开关大小比例</value>
+    <value>Масштаб размера переключателя</value>
   </data>
   <data name="GlassParameterSwitchScaleDescription" xml:space="preserve">
-    <value>等比例调整开关图形大小，不改变文字字号。修改立即生效。</value>
+    <value>Пропорционально изменяет размер графики переключателя, не меняя размер текста. Изменения применяются сразу.</value>
   </data>
   <data name="GlassParameterBlurRadius" xml:space="preserve">
     <value>Радиус размытия</value>
@@ -5583,21 +5583,21 @@
     <value>Автономный режим · Переподключение</value>
   </data>
   <data name="ViewModelGuideResourceDownloadIncomplete" xml:space="preserve">
-    <value>部分图片资源未下载成功，请重试或选择跳过下载。</value>
+    <value>Некоторые ресурсы изображений не удалось загрузить. Повторите попытку или выберите пропуск загрузки.</value>
   </data>
   <data name="ServiceAchievementImportSummary" xml:space="preserve">
-    <value>当前存档已完成 {0} 项成就。导入记录（包含未完成或未收录项目）：新增 {1}，更新 {2}，移除 {3}。</value>
+    <value>В текущем сохранении выполнено достижений: {0}. Импорт записей (включая незавершённые и отсутствующие): добавлено {1}, обновлено {2}, удалено {3}.</value>
   </data>
   <data name="GlassParameterLightAngle" xml:space="preserve">
-    <value>静态光源角度（弧度）</value>
+    <value>Угол статического источника света (радианы)</value>
   </data>
   <data name="GlassPointerLighting" xml:space="preserve">
-    <value>高光方向跟随鼠标</value>
+    <value>Направление блика следует за мышью</value>
   </data>
   <data name="GlassPointerLightingDescription" xml:space="preserve">
-    <value>控制玻璃边缘高光的光照方向。高光强度控制亮度，高光饱和度控制色彩；跟随程度为 0 时保持静态光源方向，为 1 时完全跟随鼠标。玻璃自身的局部交互高光仍会保留。</value>
+    <value>Управляет направлением света блика на краях стекла. Интенсивность блика определяет яркость, насыщенность блика — цвет; при степени следования 0 сохраняется направление статического источника света, при 1 — полностью следует за мышью. Локальный блик стекла при взаимодействии сохраняется.</value>
   </data>
   <data name="GlassPointerLightInfluence" xml:space="preserve">
-    <value>光源跟随程度</value>
+    <value>Степень следования источника света</value>
   </data>
 </root>
