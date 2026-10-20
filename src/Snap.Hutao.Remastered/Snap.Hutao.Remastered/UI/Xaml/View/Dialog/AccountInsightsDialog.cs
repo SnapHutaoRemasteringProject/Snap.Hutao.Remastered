@@ -3,6 +3,9 @@
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Charts;
+using ChartSamples = Microsoft.UI.Xaml.Controls.Charts.Samples;
+using WinUIChart = Microsoft.UI.Xaml.Controls.Charts.Chart;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Service.GachaLog;
@@ -227,27 +230,40 @@ public sealed class AccountInsightsDialog : ContentDialog
             return panel;
         }
 
-        double maximum = Math.Max(1, series.Points.Max(point => point.Value));
-        foreach (InsightPoint point in series.Points)
+        // Experimental Microsoft.UI.Xaml.Controls.Charts is already present in WASDK 2.5.4.
+        // Use independent axis/sample objects for each series to avoid shared control state.
+        ChartSamples periods = new() { ItemsSource = series.Points.Select(point => point.Period).ToArray() };
+        ChartSamples values = new() { ItemsSource = series.Points.Select(point => point.Value).ToArray() };
+        CategoryAxis periodAxis = new()
         {
-            StackPanel row = new() { Orientation = Orientation.Horizontal, Spacing = 8 };
-            row.Children.Add(new TextBlock { Text = point.Period, Width = 110, VerticalAlignment = VerticalAlignment.Center });
-            row.Children.Add(new ProgressBar
-            {
-                Width = 240,
-                Maximum = maximum,
-                Value = point.Value,
-                Height = 12,
-                VerticalAlignment = VerticalAlignment.Center,
-            });
-            row.Children.Add(new TextBlock
-            {
-                Text = point.Value.ToString("0.##", CultureInfo.InvariantCulture) + " " + series.Unit,
-                VerticalAlignment = VerticalAlignment.Center,
-            });
-            panel.Children.Add(row);
-        }
+            Label = "月份 / 周期",
+            SortKey = CategorySortKey.Index,
+            SortOrder = SortOrder.Ascending,
+        };
+        LinearAxis metricAxis = new()
+        {
+            Label = series.Metric + "（" + series.Unit + "）",
+            Minimum = 0,
+            GridLines = GridLines.Major,
+        };
 
+        WinUIChart chart = new() { Height = 300, ShowLegend = false };
+        chart.Data.Add(periods);
+        chart.Data.Add(values);
+        chart.Axes.Add(periodAxis);
+        chart.Axes.Add(metricAxis);
+        chart.Series.Add(new BarSeries
+        {
+            Title = series.Metric,
+            Orientation = BarOrientation.Vertical,
+            XAxis = periodAxis,
+            XValues = periods,
+            YAxis = metricAxis,
+            YValues = values,
+            ShowDataLabels = true,
+        });
+
+        panel.Children.Add(chart);
         return panel;
     }
 
