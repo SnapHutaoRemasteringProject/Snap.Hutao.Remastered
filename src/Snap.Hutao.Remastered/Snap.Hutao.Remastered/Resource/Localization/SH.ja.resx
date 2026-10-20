@@ -5739,4 +5739,7 @@
   <data name="ViewDialogAccountInsightsSummaryPool" xml:space="preserve">
     <value>{0} 種類 · 合計 {1} {2}</value>
   </data>
+  <data name="ViewDialogAccountInsightsPartialError" xml:space="preserve">
+    <value>一部の履歴を読み込めませんでした</value>
+  </data>
 </root>

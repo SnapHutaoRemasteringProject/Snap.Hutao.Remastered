@@ -18,6 +18,7 @@ using Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Event.GachaInfo;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -40,6 +41,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
     private const string ModelSettingKey = "AccountInsightsLlmModel";
 
     private readonly CultureOptions cultureOptions;
+    private readonly ILogger<AccountInsightsDialog> logger;
     private readonly IUserService userService;
     private readonly IGachaLogRepository gachaRepository;
     private readonly ISpiralAbyssRepository abyssRepository;
@@ -53,6 +55,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
     public AccountInsightsDialog(
         IUserService userService,
         CultureOptions cultureOptions,
+        ILogger<AccountInsightsDialog> logger,
         IGachaLogRepository gachaRepository,
         ISpiralAbyssRepository abyssRepository,
         IRoleCombatRepository combatRepository,
@@ -60,6 +63,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
     {
         InitializeComponent();
         this.cultureOptions = cultureOptions;
+        this.logger = logger;
         this.userService = userService;
         this.gachaRepository = gachaRepository;
         this.abyssRepository = abyssRepository;
@@ -85,7 +89,12 @@ public sealed partial class AccountInsightsDialog : ContentDialog
 
     private string L(string name)
     {
-        return SH.ResourceManager.GetString("ViewDialogAccountInsights" + name, cultureOptions.CurrentCulture.Value) ?? name;
+        return Translate(name, cultureOptions.CurrentCulture.Value);
+    }
+
+    private static string Translate(string name, CultureInfo culture)
+    {
+        return SH.ResourceManager.GetString("ViewDialogAccountInsights" + name, culture) ?? name;
     }
 
     private void UpdateGenerateEnabled()
@@ -103,30 +112,46 @@ public sealed partial class AccountInsightsDialog : ContentDialog
                 return;
             }
 
-            // EF repositories are synchronous: keep database reads off the UI dispatcher.
-            List<InsightSeries> series = await Task.Run(() => CreateSeries(userAndUid.Uid.Value), lifetime.Token);
+            // Each repository has its own scope. Preserve healthy datasets if another fails.
+            CultureInfo culture = cultureOptions.CurrentCulture.Value;
+            InsightLoadResult result = await Task.Run(() => CreateSeries(userAndUid.Uid.Value, culture), lifetime.Token);
             lifetime.Token.ThrowIfCancellationRequested();
 
-            hasRecordedData = series.Any(item => item.Points.Count > 0);
-            snapshotJson = CreateAnonymousJson(series);
+            hasRecordedData = result.Series.Any(item => item.Points.Count > 0);
+            snapshotJson = hasRecordedData ? CreateAnonymousJson(result.Series) : null;
+
             ChartsPanel.Children.Clear();
-            foreach (InsightSeries item in series)
+            foreach (InsightSeries item in result.Series.Where(item => item.Points.Count > 0))
             {
-                ChartsPanel.Children.Add(CreateChart(item));
+                try
+                {
+                    ChartsPanel.Children.Add(CreateChart(item));
+                }
+                catch (Exception exception)
+                {
+                    logger.LogWarning(exception, "Failed to render account history chart: {Metric}", item.Metric);
+                    ChartsPanel.Children.Add(CreateFallbackChart(item));
+                }
             }
 
-            StatusText.Text = !hasRecordedData
-                ? L("NoRecords")
-                : L("Ready");
-            CopyButton.IsEnabled = true;
+            string state = hasRecordedData ? L("Ready") : L("NoRecords");
+            if (result.FailedSources.Count > 0)
+            {
+                state += " " + L("PartialError") + ": " +
+                    string.Join(", ", result.FailedSources.Select(source => L(source)));
+            }
+
+            StatusText.Text = state;
+            CopyButton.IsEnabled = hasRecordedData;
             UpdateGenerateEnabled();
         }
         catch (OperationCanceledException)
         {
             // The dialog was closed while the initial load was running.
         }
-        catch (Exception)
+        catch (Exception exception)
         {
+            logger.LogError(exception, "Failed to initialize account insights");
             StatusText.Text = L("ReadError");
         }
     }
@@ -136,46 +161,63 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         return $"{time.Year:D4}-{time.Month:D2}-{time.Day:D2}";
     }
 
-    private List<InsightSeries> CreateSeries(string uid)
+    // A bad saved season must not prevent the other game modes from loading.
+    private List<T> ReadSafely<T>(string source, Func<List<T>> read, List<string> failures)
     {
-        List<GachaItem> gachaItems = gachaRepository.GetGachaArchiveByUid(uid) is { } archive
-            ? gachaRepository.GetGachaItemImmutableArrayByArchiveId(archive.InnerId).ToList()
-            : [];
+        try
+        {
+            return read();
+        }
+        catch (Exception exception)
+        {
+            logger.LogWarning(exception, "Account insights could not load {Source}", source);
+            failures.Add(source);
+            return [];
+        }
+    }
 
-        List<InsightPoint> monthlyWishes = gachaItems
+    private InsightLoadResult CreateSeries(string uid, CultureInfo culture)
+    {
+        List<string> failures = [];
+
+        List<GachaItem> gachaItems = ReadSafely("ChartWish", () =>
+            gachaRepository.GetGachaArchiveByUid(uid) is { } archive
+                ? gachaRepository.GetGachaItemImmutableArrayByArchiveId(archive.InnerId).ToList()
+                : [], failures);
+
+        List<InsightPoint> monthlyWishes = ReadSafely("ChartWish", () => gachaItems
             .GroupBy(item => item.Time.ToString("yyyy-MM", CultureInfo.InvariantCulture))
             .OrderBy(group => group.Key, StringComparer.Ordinal)
             .Select(group => new InsightPoint(group.Key, group.Count()))
             .TakeLast(12)
-            .ToList();
+            .ToList(), failures);
 
-        // QueryType is the actual pool category used by the existing wish statistics.
-        // Do not combine unrelated pity pools, or infer rarity from an item ID.
-        List<InsightPoint> poolWishes = gachaItems
+        List<InsightPoint> poolWishes = ReadSafely("ChartWish", () => gachaItems
             .GroupBy(item => item.QueryType)
             .OrderBy(group => (int)group.Key)
             .Select(group => new InsightPoint(GetWishPoolLabel(group.Key), group.Count()))
-            .ToList();
+            .ToList(), failures);
 
-        List<BeyondGachaItem> beyondItems = gachaRepository.GetGachaArchiveByUid(uid) is { } beyondArchive
-            ? gachaRepository.GetBeyondGachaItemImmutableArrayByArchiveId(beyondArchive.InnerId).ToList()
-            : [];
+        List<BeyondGachaItem> beyondItems = ReadSafely("ChartBeyond", () =>
+            gachaRepository.GetGachaArchiveByUid(uid) is { } beyondArchive
+                ? gachaRepository.GetBeyondGachaItemImmutableArrayByArchiveId(beyondArchive.InnerId).ToList()
+                : [], failures);
 
-        List<InsightPoint> monthlyBeyondWishes = beyondItems
+        List<InsightPoint> monthlyBeyondWishes = ReadSafely("ChartBeyond", () => beyondItems
             .GroupBy(item => item.Time.ToString("yyyy-MM", CultureInfo.InvariantCulture))
             .OrderBy(group => group.Key, StringComparer.Ordinal)
             .Select(group => new InsightPoint(group.Key, group.Count()))
             .TakeLast(12)
-            .ToList();
+            .ToList(), failures);
 
-        List<InsightPoint> beyondPoolWishes = beyondItems
+        List<InsightPoint> beyondPoolWishes = ReadSafely("ChartBeyond", () => beyondItems
             .GroupBy(item => item.QueryType)
             .OrderBy(group => (int)group.Key)
             .Select(group => new InsightPoint(GetWishPoolLabel(group.Key), group.Count()))
-            .ToList();
+            .ToList(), failures);
 
-        List<InsightPoint> abyss = abyssRepository.GetSpiralAbyssEntryMapByUid(uid).Values
-            .Where(entry => entry.SpiralAbyss.IsUnlock)
+        List<InsightPoint> abyss = ReadSafely("ChartAbyss", () => abyssRepository.GetSpiralAbyssEntryMapByUid(uid).Values
+            .Where(entry => entry.SpiralAbyss is { IsUnlock: true })
             .OrderBy(entry => entry.ScheduleId)
             .Select(entry => new InsightPoint(
                 entry.SpiralAbyss.StartTime > 0
@@ -183,37 +225,39 @@ public sealed partial class AccountInsightsDialog : ContentDialog
                     : entry.ScheduleId.ToString(CultureInfo.InvariantCulture),
                 entry.SpiralAbyss.TotalStar))
             .TakeLast(12)
-            .ToList();
+            .ToList(), failures);
 
-        List<InsightPoint> theater = combatRepository.GetRoleCombatEntryMapByUid(uid).Values
-            .Where(entry => entry.RoleCombatData.HasData)
+        List<InsightPoint> theater = ReadSafely("ChartTheater", () => combatRepository.GetRoleCombatEntryMapByUid(uid).Values
+            .Where(entry => entry.RoleCombatData is { HasData: true, Schedule: not null, Stat: not null })
             .OrderBy(entry => entry.ScheduleId)
             .Select(entry => new InsightPoint(
                 FormatScheduleDate(entry.RoleCombatData.Schedule.StartDateTime),
                 entry.RoleCombatData.Stat.MedalNumber))
             .TakeLast(12)
-            .ToList();
+            .ToList(), failures);
 
-        // Solo and multiplayer records have different conditions and must not be compared.
-        List<InsightPoint> challenge = challengeRepository.GetHardChallengeMapByUid(uid).Values
-            .Where(entry => entry.HardChallengeData.SinglePlayer.HasData && entry.HardChallengeData.SinglePlayer.Best is not null)
+        // Solo and multiplayer have different conditions; avoid mixing their records.
+        List<InsightPoint> challenge = ReadSafely("ChartChallenge", () => challengeRepository.GetHardChallengeMapByUid(uid).Values
+            .Where(entry => entry.HardChallengeData?.Schedule is not null
+                && entry.HardChallengeData.SinglePlayer is { HasData: true, Best: not null })
             .OrderBy(entry => entry.ScheduleId)
             .Select(entry => new InsightPoint(
                 FormatScheduleDate(entry.HardChallengeData.Schedule.StartDateTime),
                 entry.HardChallengeData.SinglePlayer.Best!.Seconds))
             .TakeLast(12)
-            .ToList();
+            .ToList(), failures);
 
-        return
+        List<InsightSeries> series =
         [
-            new(L("ChartWish"), L("MetricMonthly"), L("UnitWish"), monthlyWishes, InsightDirection.Neutral),
-            new(L("ChartWish"), L("MetricPool"), L("UnitWish"), poolWishes, InsightDirection.Neutral, false),
-            new(L("ChartBeyond"), L("MetricMonthly"), L("UnitWish"), monthlyBeyondWishes, InsightDirection.Neutral),
-            new(L("ChartBeyond"), L("MetricPool"), L("UnitWish"), beyondPoolWishes, InsightDirection.Neutral, false),
-            new(L("ChartAbyss"), L("MetricAbyss"), L("UnitStar"), abyss, InsightDirection.HigherIsBetter),
-            new(L("ChartTheater"), L("MetricTheater"), L("UnitMedal"), theater, InsightDirection.HigherIsBetter),
-            new(L("ChartChallenge"), L("MetricChallenge"), L("UnitSeconds"), challenge, InsightDirection.LowerIsBetter),
+            new(Translate("ChartWish", culture), Translate("MetricMonthly", culture), Translate("UnitWish", culture), monthlyWishes, InsightDirection.Neutral),
+            new(Translate("ChartWish", culture), Translate("MetricPool", culture), Translate("UnitWish", culture), poolWishes, InsightDirection.Neutral, false),
+            new(Translate("ChartBeyond", culture), Translate("MetricMonthly", culture), Translate("UnitWish", culture), monthlyBeyondWishes, InsightDirection.Neutral),
+            new(Translate("ChartBeyond", culture), Translate("MetricPool", culture), Translate("UnitWish", culture), beyondPoolWishes, InsightDirection.Neutral, false),
+            new(Translate("ChartAbyss", culture), Translate("MetricAbyss", culture), Translate("UnitStar", culture), abyss, InsightDirection.HigherIsBetter),
+            new(Translate("ChartTheater", culture), Translate("MetricTheater", culture), Translate("UnitMedal", culture), theater, InsightDirection.HigherIsBetter),
+            new(Translate("ChartChallenge", culture), Translate("MetricChallenge", culture), Translate("UnitSeconds", culture), challenge, InsightDirection.LowerIsBetter),
         ];
+        return new InsightLoadResult(series, failures.Distinct().ToList());
     }
 
     private static string GetWishPoolLabel(GachaType type)
@@ -242,7 +286,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         panel.Children.Add(new TextBlock
         {
             Text = series.Title + " · " + series.Metric + (series.Direction == InsightDirection.LowerIsBetter ? " (" + L("LowerIsBetter") + ")" : ""),
-            Style = Application.Current.Resources["SubtitleTextBlockStyle"] as Style,
+            FontSize = 18,
         });
 
         if (series.Points.Count == 0)
@@ -273,41 +317,91 @@ public sealed partial class AccountInsightsDialog : ContentDialog
 
         panel.Children.Add(new TextBlock { Text = summary, TextWrapping = TextWrapping.Wrap });
 
-        // Experimental Microsoft.UI.Xaml.Controls.Charts is already present in WASDK 2.5.4.
-        // Use independent axis/sample objects for each series to avoid shared control state.
-        ChartSamples periods = new() { ItemsSource = series.Points.Select(point => point.Period).ToArray() };
-        ChartSamples values = new() { ItemsSource = series.Points.Select(point => point.Value).ToArray() };
-        CategoryAxis periodAxis = new()
+        // Experimental charts can fail at runtime on specific Windows App SDK builds.
+        // A light-weight fallback keeps both the history and LLM feature available.
+        try
         {
-            Label = L("PeriodAxis"),
-            SortKey = CategorySortKey.Index,
-            SortOrder = SortOrder.Ascending,
-        };
-        LinearAxis metricAxis = new()
-        {
-            Label = series.Metric + "（" + series.Unit + "）",
-            Minimum = 0,
-            GridLines = GridLines.Major,
-        };
+            // Experimental Microsoft.UI.Xaml.Controls.Charts is already present in WASDK 2.5.4.
+            // Use independent axis/sample objects for each series to avoid shared control state.
+            ChartSamples periods = new() { ItemsSource = series.Points.Select(point => point.Period).ToArray() };
+            ChartSamples values = new() { ItemsSource = series.Points.Select(point => point.Value).ToArray() };
+            CategoryAxis periodAxis = new()
+            {
+                Label = L("PeriodAxis"),
+                SortKey = CategorySortKey.Index,
+                SortOrder = SortOrder.Ascending,
+            };
+            LinearAxis metricAxis = new()
+            {
+                Label = series.Metric + " (" + series.Unit + ")",
+                Minimum = 0,
+                GridLines = GridLines.Major,
+            };
 
-        WinUIChart chart = new() { Height = 300, ShowLegend = false };
-        chart.Data.Add(periods);
-        chart.Data.Add(values);
-        chart.Axes.Add(periodAxis);
-        chart.Axes.Add(metricAxis);
-        chart.Series.Add(new BarSeries
-        {
-            Title = series.Metric,
-            Orientation = BarOrientation.Vertical,
-            XAxis = periodAxis,
-            XValues = periods,
-            YAxis = metricAxis,
-            YValues = values,
-            ShowDataLabels = true,
-        });
+            WinUIChart chart = new() { Height = 300, ShowLegend = false };
+            chart.Data.Add(periods);
+            chart.Data.Add(values);
+            chart.Axes.Add(periodAxis);
+            chart.Axes.Add(metricAxis);
+            chart.Series.Add(new BarSeries
+            {
+                Title = series.Metric,
+                Orientation = BarOrientation.Vertical,
+                XAxis = periodAxis,
+                XValues = periods,
+                YAxis = metricAxis,
+                YValues = values,
+                ShowDataLabels = true,
+            });
 
-        panel.Children.Add(chart);
+            panel.Children.Add(chart);
+        }
+        catch (Exception exception)
+        {
+            logger.LogWarning(exception, "Native WinUI chart failed: {Metric}", series.Metric);
+            AddFallbackBars(panel, series);
+        }
+
         return panel;
+    }
+
+    private UIElement CreateFallbackChart(InsightSeries series)
+    {
+        StackPanel panel = new() { Spacing = 8 };
+        panel.Children.Add(new TextBlock { Text = series.Title + " · " + series.Metric, FontSize = 18 });
+        AddFallbackBars(panel, series);
+        return panel;
+    }
+
+    private void AddFallbackBars(StackPanel panel, InsightSeries series)
+    {
+        if (series.Points.Count == 0)
+        {
+            panel.Children.Add(new TextBlock { Text = L("NoData") });
+            return;
+        }
+
+        double maximum = Math.Max(1, series.Points.Max(point => point.Value));
+        foreach (InsightPoint point in series.Points)
+        {
+            Grid row = new() { ColumnSpacing = 8 };
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            TextBlock label = new() { Text = point.Period, TextTrimming = TextTrimming.CharacterEllipsis, VerticalAlignment = VerticalAlignment.Center };
+            ProgressBar bar = new() { Maximum = maximum, Value = point.Value, Height = 12, VerticalAlignment = VerticalAlignment.Center };
+            Grid.SetColumn(bar, 1);
+            TextBlock value = new()
+            {
+                Text = point.Value.ToString("0.##", cultureOptions.CurrentCulture.Value) + " " + series.Unit,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+            Grid.SetColumn(value, 2);
+            row.Children.Add(label);
+            row.Children.Add(bar);
+            row.Children.Add(value);
+            panel.Children.Add(row);
+        }
     }
 
     private static string CreateAnonymousJson(IEnumerable<InsightSeries> series)
@@ -352,7 +446,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         return new JsonObject
         {
             ["schema_version"] = 1,
-            ["scope"] = "Saved local history only; the most recent twelve periods are included for time-series ChartsPanel; missing periods are not zero. Direct account identifiers are excluded, but history patterns may remain linkable.",
+            ["scope"] = "Saved local history only; the most recent twelve periods are included for time-series charts; missing periods are not zero. Direct account identifiers are excluded, but history patterns may remain linkable.",
             ["series"] = data,
         }.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
     }
@@ -377,7 +471,14 @@ public sealed partial class AccountInsightsDialog : ContentDialog
             return;
         }
 
-        if (!Uri.TryCreate(EndpointBox.Text.Trim(), UriKind.Absolute, out Uri? endpoint) ||
+        // Accept either the complete Chat Completions endpoint or a provider's API base URL.
+        string configuredEndpoint = EndpointBox.Text.Trim().TrimEnd('/');
+        if (configuredEndpoint.EndsWith("/v1", StringComparison.OrdinalIgnoreCase))
+        {
+            configuredEndpoint += "/chat/completions";
+        }
+
+        if (!Uri.TryCreate(configuredEndpoint, UriKind.Absolute, out Uri? endpoint) ||
             (endpoint.Scheme != Uri.UriSchemeHttps && !(endpoint.Scheme == Uri.UriSchemeHttp && endpoint.IsLoopback)) ||
             !string.IsNullOrEmpty(endpoint.UserInfo) || !string.IsNullOrEmpty(endpoint.Fragment))
         {
@@ -467,6 +568,8 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         HigherIsBetter,
         LowerIsBetter,
     }
+
+    private sealed record InsightLoadResult(List<InsightSeries> Series, List<string> FailedSources);
 
     private sealed record InsightPoint(string Period, double Value);
 

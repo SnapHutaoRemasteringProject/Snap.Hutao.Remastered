@@ -5743,4 +5743,7 @@
   <data name="ViewDialogAccountInsightsSummaryPool" xml:space="preserve">
     <value>已记录 {0} 个祈愿池 · 总计 {1} {2}</value>
   </data>
+  <data name="ViewDialogAccountInsightsPartialError" xml:space="preserve">
+    <value>部分记录无法读取</value>
+  </data>
 </root>

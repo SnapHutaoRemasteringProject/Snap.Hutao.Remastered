@@ -1340,6 +1340,13 @@
                                         </cwc:SwitchPresenter>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
+                                <!--  Account history charts and API analysis  -->
+                                <cwc:SettingsCard
+                                    Command="{x:Bind ((shvs:SettingViewModel)DataContext).OpenAccountInsightsCommand, Mode=OneWay}"
+                                    Description="{shuxm:ResourceString Name=ViewDialogAccountInsightsDescription}"
+                                    Header="{shuxm:ResourceString Name=ViewDialogAccountInsightsOpen}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE9D9;}"
+                                    IsClickEnabled="True"/>
                             </StackPanel>
                         </Border>
                     </Border>
@@ -3127,14 +3134,6 @@
                             </StackPanel>
                         </Border>
                     </Border>
-
-                    <!--  账号历史分析（按所选 UID 只读聚合，不修改记录）  -->
-                    <cwc:SettingsCard
-                        Command="{x:Bind ((shvs:SettingViewModel)DataContext).OpenAccountInsightsCommand, Mode=OneWay}"
-                        Description="{shuxm:ResourceString Name=ViewDialogAccountInsightsDescription}"
-                        Header="{shuxm:ResourceString Name=ViewDialogAccountInsightsOpen}"
-                        HeaderIcon="{shuxm:FontIcon Glyph=&#xE9D9;}"
-                        IsClickEnabled="True"/>
 
                     <!--  祈愿记录  -->
                     <Border

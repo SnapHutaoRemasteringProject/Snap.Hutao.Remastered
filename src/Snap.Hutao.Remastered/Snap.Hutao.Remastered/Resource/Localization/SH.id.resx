@@ -5739,4 +5739,7 @@ Ruang Tersedia: {2}</value>
   <data name="ViewDialogAccountInsightsSummaryPool" xml:space="preserve">
     <value>{0} banners · total {1} {2}</value>
   </data>
+  <data name="ViewDialogAccountInsightsPartialError" xml:space="preserve">
+    <value>Some history categories could not be loaded</value>
+  </data>
 </root>
