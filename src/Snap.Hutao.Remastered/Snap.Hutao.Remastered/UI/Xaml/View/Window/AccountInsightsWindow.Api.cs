@@ -114,7 +114,8 @@ public sealed partial class AccountInsightsWindow
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(ApiKeyBox.Password))
+        string apiKey = ApiKeyBox.Password.Trim();
+        if (string.IsNullOrWhiteSpace(apiKey))
         {
             ResponseText.Text = L("MissingApiKey");
             return;
@@ -185,7 +186,7 @@ public sealed partial class AccountInsightsWindow
             {
                 Content = new StringContent(payload.ToJsonString(), Encoding.UTF8, "application/json"),
             };
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ApiKeyBox.Password);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
 
             using HttpResponseMessage response = await client.SendAsync(request, lifetime.Token);
             string body = await response.Content.ReadAsStringAsync(lifetime.Token);
@@ -215,7 +216,7 @@ public sealed partial class AccountInsightsWindow
             JsonElement choices = parsed.RootElement.GetProperty("choices");
             string? answer = choices[0].GetProperty("message").GetProperty("content").GetString();
 
-            ResponseText.Text = connectionTest ? L("TestSuccess") : string.IsNullOrWhiteSpace(answer) ? L("EmptyReply") : answer;
+            ResponseText.Text = string.IsNullOrWhiteSpace(answer) ? L("EmptyReply") : connectionTest ? L("TestSuccess") : answer;
             LocalSetting.Set(EndpointSettingKey, endpoint.ToString());
             LocalSetting.Set(ModelSettingKey, model);
         }

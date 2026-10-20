@@ -169,11 +169,11 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
 
             StatusText.Text = state;
             CopyButton.IsEnabled = hasRecordedData;
-            UpdateGenerateEnabled();
 
-            // Reuse the same metadata-backed statistics as the Gacha Log page.
-            // The initial charts appear immediately; advanced statistics are optional.
+            // Keep analysis disabled until metadata-backed wish statistics have been
+            // added, so an early click cannot send an incomplete statistics snapshot.
             await LoadHuTaoStatisticsAsync(result);
+            UpdateGenerateEnabled();
         }
         catch (OperationCanceledException)
         {
