@@ -231,11 +231,11 @@ public sealed partial class AccountInsightsDialog : ContentDialog
 
         return
         [
-            new("祈愿记录", "每月抽数", "抽", monthlyWishes, false),
-            new("祈愿记录", "各祈愿池抽数", "抽", poolWishes, false),
-            new("深境螺旋", "每期星数", "星", abyss, false),
-            new("幻想真境剧诗", "每期奖章数", "枚", theater, false),
-            new("幽境危战（单人）", "每期最佳通关用时", "秒", challenge, true),
+            new("祈愿记录", "每月抽数", "抽", monthlyWishes, InsightDirection.Neutral),
+            new("祈愿记录", "各祈愿池抽数", "抽", poolWishes, InsightDirection.Neutral),
+            new("深境螺旋", "每期星数", "星", abyss, InsightDirection.HigherIsBetter),
+            new("幻想真境剧诗", "每期奖章数", "枚", theater, InsightDirection.HigherIsBetter),
+            new("幽境危战（单人）", "每期最佳通关用时", "秒", challenge, InsightDirection.LowerIsBetter),
         ];
     }
 
@@ -258,7 +258,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         StackPanel panel = new() { Spacing = 6 };
         panel.Children.Add(new TextBlock
         {
-            Text = series.Title + " · " + series.Metric + (series.LowerIsBetter ? "（越少越好）" : ""),
+            Text = series.Title + " · " + series.Metric + (series.Direction == InsightDirection.LowerIsBetter ? "（越少越好）" : ""),
             Style = Application.Current.Resources["SubtitleTextBlockStyle"] as Style,
         });
 
@@ -347,7 +347,12 @@ public sealed partial class AccountInsightsDialog : ContentDialog
                 ["category"] = item.Title,
                 ["metric"] = item.Metric,
                 ["unit"] = item.Unit,
-                ["lower_is_better"] = item.LowerIsBetter,
+                ["direction"] = item.Direction switch
+                {
+                    InsightDirection.HigherIsBetter => "higher_is_better",
+                    InsightDirection.LowerIsBetter => "lower_is_better",
+                    _ => "neutral",
+                },
                 ["periods"] = points,
             });
         }
@@ -355,7 +360,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         return new JsonObject
         {
             ["schema_version"] = 1,
-            ["scope"] = "Saved local history only; missing periods are not equivalent to a score of zero.",
+            ["scope"] = "Saved local history only; only the latest twelve periods are included for time-series charts; missing periods are not equivalent to a score of zero.",
             ["series"] = data,
         }.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
     }
@@ -416,7 +421,8 @@ public sealed partial class AccountInsightsDialog : ContentDialog
                 ["stream"] = false,
             };
 
-            using HttpClient client = new() { Timeout = TimeSpan.FromSeconds(60) };
+            using HttpClientHandler handler = new() { AllowAutoRedirect = false };
+            using HttpClient client = new(handler) { Timeout = TimeSpan.FromSeconds(60) };
             using HttpRequestMessage request = new(HttpMethod.Post, endpoint)
             {
                 Content = new StringContent(payload.ToJsonString(), Encoding.UTF8, "application/json"),
@@ -463,6 +469,13 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         }
     }
 
+    private enum InsightDirection
+    {
+        Neutral,
+        HigherIsBetter,
+        LowerIsBetter,
+    }
+
     private sealed record InsightPoint(string Period, double Value);
 
     private sealed record InsightSeries(
@@ -470,5 +483,5 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         string Metric,
         string Unit,
         List<InsightPoint> Points,
-        bool LowerIsBetter);
+        InsightDirection Direction);
 }
