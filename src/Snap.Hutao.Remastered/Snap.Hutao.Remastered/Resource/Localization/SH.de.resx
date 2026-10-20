@@ -5594,4 +5594,145 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="GlassPointerLightInfluence" xml:space="preserve">
     <value>Folgestärke der Lichtquelle</value>
   </data>
+  <data name="ViewDialogAccountInsightsTitle" xml:space="preserve">
+    <value>Account history charts and AI insights</value>
+  </data>
+  <data name="ViewDialogAccountInsightsOpen" xml:space="preserve">
+    <value>History charts and AI insights</value>
+  </data>
+  <data name="ViewDialogAccountInsightsDescription" xml:space="preserve">
+    <value>Wish history, Spiral Abyss, Imaginarium Theater and Stygian Onslaught charts with optional AI analysis</value>
+  </data>
+  <data name="ViewDialogAccountInsightsIntro" xml:space="preserve">
+    <value>Charts use saved local history. Missing periods are not estimated.</value>
+  </data>
+  <data name="ViewDialogAccountInsightsLoading" xml:space="preserve">
+    <value>Loading saved records…</value>
+  </data>
+  <data name="ViewDialogAccountInsightsNoAccount" xml:space="preserve">
+    <value>Select a game account and UID first.</value>
+  </data>
+  <data name="ViewDialogAccountInsightsNoRecords" xml:space="preserve">
+    <value>No saved records available for charting.</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReady" xml:space="preserve">
+    <value>Historical statistics loaded from the selected account. Missing periods are omitted.</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReadError" xml:space="preserve">
+    <value>Unable to read saved history. Check the selected account and local records.</value>
+  </data>
+  <data name="ViewDialogAccountInsightsCopied" xml:space="preserve">
+    <value>De-identified statistics copied to clipboard.</value>
+  </data>
+  <data name="ViewDialogAccountInsightsAnalysisHeading" xml:space="preserve">
+    <value>AI analysis (optional)</value>
+  </data>
+  <data name="ViewDialogAccountInsightsPrivacyTitle" xml:space="preserve">
+    <value>Before using third-party AI</value>
+  </data>
+  <data name="ViewDialogAccountInsightsPrivacyBody" xml:space="preserve">
+    <value>Clicking Generate sends only aggregated historical statistics to your selected API endpoint. UID, cookies, item IDs and database files are not included. Historical patterns may still be identifiable. Review the provider's privacy policy.</value>
+  </data>
+  <data name="ViewDialogAccountInsightsEndpointHeader" xml:space="preserve">
+    <value>Chat Completions API endpoint (HTTPS or local HTTP)</value>
+  </data>
+  <data name="ViewDialogAccountInsightsEndpointPlaceholder" xml:space="preserve">
+    <value>https://example.com/v1/chat/completions</value>
+  </data>
+  <data name="ViewDialogAccountInsightsModelHeader" xml:space="preserve">
+    <value>Model identifier</value>
+  </data>
+  <data name="ViewDialogAccountInsightsModelPlaceholder" xml:space="preserve">
+    <value>Enter a model ID</value>
+  </data>
+  <data name="ViewDialogAccountInsightsApiKeyHeader" xml:space="preserve">
+    <value>API key (for this session only; not saved)</value>
+  </data>
+  <data name="ViewDialogAccountInsightsCopy" xml:space="preserve">
+    <value>Copy de-identified statistics (JSON)</value>
+  </data>
+  <data name="ViewDialogAccountInsightsGenerate" xml:space="preserve">
+    <value>Generate analysis</value>
+  </data>
+  <data name="ViewDialogAccountInsightsInvalidEndpoint" xml:space="preserve">
+    <value>Enter a valid HTTPS API endpoint (HTTP is allowed only for loopback addresses).</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMissingModel" xml:space="preserve">
+    <value>Enter a model identifier.</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSending" xml:space="preserve">
+    <value>Requesting analysis…</value>
+  </data>
+  <data name="ViewDialogAccountInsightsHttpError" xml:space="preserve">
+    <value>AI request failed (HTTP {0}). Check endpoint, model and access permissions.</value>
+  </data>
+  <data name="ViewDialogAccountInsightsEmptyReply" xml:space="preserve">
+    <value>The model returned no text.</value>
+  </data>
+  <data name="ViewDialogAccountInsightsTimeout" xml:space="preserve">
+    <value>Request cancelled or timed out.</value>
+  </data>
+  <data name="ViewDialogAccountInsightsFailure" xml:space="preserve">
+    <value>AI analysis failed because of a network or response-format error. The API key was not saved.</value>
+  </data>
+  <data name="ViewDialogAccountInsightsNoData" xml:space="preserve">
+    <value>No saved records.</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartWish" xml:space="preserve">
+    <value>Wish history</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartBeyond" xml:space="preserve">
+    <value>Miliastra Wonderland wishes</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartAbyss" xml:space="preserve">
+    <value>Spiral Abyss</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartTheater" xml:space="preserve">
+    <value>Imaginarium Theater</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartChallenge" xml:space="preserve">
+    <value>Stygian Onslaught (solo)</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricMonthly" xml:space="preserve">
+    <value>Wishes by month</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricPool" xml:space="preserve">
+    <value>Wishes by banner</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricAbyss" xml:space="preserve">
+    <value>Stars by season</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricTheater" xml:space="preserve">
+    <value>Medals by season</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricChallenge" xml:space="preserve">
+    <value>Best clear time by season</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitWish" xml:space="preserve">
+    <value>wishes</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitStar" xml:space="preserve">
+    <value>stars</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitMedal" xml:space="preserve">
+    <value>medals</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitSeconds" xml:space="preserve">
+    <value>seconds</value>
+  </data>
+  <data name="ViewDialogAccountInsightsPeriodAxis" xml:space="preserve">
+    <value>Month / season</value>
+  </data>
+  <data name="ViewDialogAccountInsightsLowerIsBetter" xml:space="preserve">
+    <value>lower is better</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSummaryTime" xml:space="preserve">
+    <value>{0} periods · average {1} {3} · latest {2} {3}</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSummaryDelta" xml:space="preserve">
+    <value> · change from previous: {0} {1}</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSummaryPool" xml:space="preserve">
+    <value>{0} banners · total {1} {2}</value>
+  </data>
 </root>

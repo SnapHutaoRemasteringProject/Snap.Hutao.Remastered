@@ -2,13 +2,47 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Dialog.AccountInsightsDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:charts="using:Microsoft.UI.Xaml.Controls.Charts">
+    xmlns:charts="using:Microsoft.UI.Xaml.Controls.Charts"
+    xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    Title="{shuxm:ResourceString Name=ViewDialogAccountInsightsTitle}"
+    CloseButtonText="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"
+    DefaultButton="Close"
+    Style="{StaticResource DefaultContentDialogStyle}">
     <ContentDialog.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!-- Charts resources are scoped to this dialog only. -->
                 <charts:XamlChartsResources/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </ContentDialog.Resources>
+    <ScrollViewer Height="540" VerticalScrollBarVisibility="Auto">
+        <StackPanel Padding="4,8" Spacing="14">
+            <TextBlock Text="{shuxm:ResourceString Name=ViewDialogAccountInsightsIntro}" TextWrapping="Wrap"/>
+            <TextBlock x:Name="StatusText" Text="{shuxm:ResourceString Name=ViewDialogAccountInsightsLoading}" TextWrapping="Wrap"/>
+            <StackPanel x:Name="ChartsPanel" Spacing="20"/>
+            <Button x:Name="CopyButton" Content="{shuxm:ResourceString Name=ViewDialogAccountInsightsCopy}" IsEnabled="False"/>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="{shuxm:ResourceString Name=ViewDialogAccountInsightsAnalysisHeading}" VerticalAlignment="Center"/>
+                <Button x:Name="PrivacyInfoButton" Padding="4" VerticalAlignment="Center">
+                    <FontIcon Glyph="&#xE946;" FontSize="12"/>
+                </Button>
+            </StackPanel>
+            <TeachingTip
+                x:Name="PrivacyTeachingTip"
+                Title="{shuxm:ResourceString Name=ViewDialogAccountInsightsPrivacyTitle}"
+                Subtitle="{shuxm:ResourceString Name=ViewDialogAccountInsightsPrivacyBody}"
+                IsLightDismissEnabled="True"
+                Target="{x:Bind PrivacyInfoButton}"/>
+            <TextBox x:Name="EndpointBox" Header="{shuxm:ResourceString Name=ViewDialogAccountInsightsEndpointHeader}"
+                PlaceholderText="{shuxm:ResourceString Name=ViewDialogAccountInsightsEndpointPlaceholder}"/>
+            <TextBox x:Name="ModelBox" Header="{shuxm:ResourceString Name=ViewDialogAccountInsightsModelHeader}"
+                PlaceholderText="{shuxm:ResourceString Name=ViewDialogAccountInsightsModelPlaceholder}"/>
+            <PasswordBox x:Name="ApiKeyBox" Header="{shuxm:ResourceString Name=ViewDialogAccountInsightsApiKeyHeader}"/>
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button x:Name="GenerateButton" Content="{shuxm:ResourceString Name=ViewDialogAccountInsightsGenerate}" IsEnabled="False"/>
+                <ProgressRing x:Name="ActivityRing" IsActive="False" Height="26" Width="26"/>
+            </StackPanel>
+            <TextBlock x:Name="ResponseText" IsTextSelectionEnabled="True" TextWrapping="Wrap"/>
+        </StackPanel>
+    </ScrollViewer>
 </ContentDialog>

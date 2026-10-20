@@ -47,25 +47,6 @@ public sealed partial class AccountInsightsDialog : ContentDialog
     private readonly IHardChallengeRepository challengeRepository;
     private readonly CancellationTokenSource lifetime = new();
 
-    private readonly StackPanel charts = new() { Spacing = 20 };
-    private readonly TextBlock status = new() { Text = "正在读取本地历史记录…", TextWrapping = TextWrapping.Wrap };
-    private readonly TextBlock responseText = new() { TextWrapping = TextWrapping.Wrap, IsTextSelectionEnabled = true };
-    private readonly TextBox endpointBox = new()
-    {
-        Header = "Chat Completions API 地址（仅 HTTPS，或本机 HTTP）",
-        PlaceholderText = "https://example.com/v1/chat/completions",
-    };
-    private readonly TextBox modelBox = new() { Header = "模型名称", PlaceholderText = "模型标识符" };
-    private readonly PasswordBox apiKeyBox = new() { Header = "API Key（仅本次使用，不保存）" };
-    private readonly CheckBox consentBox = new()
-    {
-        Content = "我已了解历史统计可能具有可关联性，同意将去标识化统计发送至上述第三方 API 服务",
-        IsChecked = false,
-    };
-    private readonly Button generateButton = new() { Content = "发送统计并生成分析评价", IsEnabled = false };
-    private readonly Button copyButton = new() { Content = "复制去标识化统计 JSON", IsEnabled = false };
-    private readonly ProgressRing activityRing = new() { IsActive = false, Width = 26, Height = 26 };
-
     private string? snapshotJson;
     private bool hasRecordedData;
 
@@ -85,61 +66,31 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         this.combatRepository = combatRepository;
         this.challengeRepository = challengeRepository;
 
-        Title = "账号历史图表与 AI 分析";
-        CloseButtonText = "关闭";
-        DefaultButton = ContentDialogButton.Close;
         MinWidth = 600;
         MaxWidth = 860;
+        EndpointBox.Text = LocalSetting.Get(EndpointSettingKey, string.Empty);
+        ModelBox.Text = LocalSetting.Get(ModelSettingKey, string.Empty);
 
-        endpointBox.Text = LocalSetting.Get(EndpointSettingKey, string.Empty);
-        modelBox.Text = LocalSetting.Get(ModelSettingKey, string.Empty);
-
-        StackPanel layout = new() { Spacing = 14, Padding = new Thickness(4, 8, 4, 8) };
-        layout.Children.Add(new TextBlock
-        {
-            Text = "图表依据胡桃本地已保存的记录生成。未保存或尚未同步的周期不会被估算。",
-            TextWrapping = TextWrapping.Wrap,
-        });
-        layout.Children.Add(status);
-        layout.Children.Add(charts);
-        layout.Children.Add(copyButton);
-        layout.Children.Add(new TextBlock
-        {
-            Text = "可选 AI 评价：仅发送图表数值摘要，不包含 UID、祈愿物品 ID、Cookie 或数据库文件。历史数值仍可能被用于关联账号，请确认第三方服务的隐私政策。",
-            TextWrapping = TextWrapping.Wrap,
-        });
-        layout.Children.Add(endpointBox);
-        layout.Children.Add(modelBox);
-        layout.Children.Add(apiKeyBox);
-        layout.Children.Add(consentBox);
-        StackPanel actions = new() { Orientation = Orientation.Horizontal, Spacing = 12 };
-        actions.Children.Add(generateButton);
-        actions.Children.Add(activityRing);
-        layout.Children.Add(actions);
-        layout.Children.Add(responseText);
-
-        Content = new ScrollViewer
-        {
-            Height = 540,
-            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-            Content = layout,
-        };
-
-        consentBox.Checked += (_, _) => UpdateGenerateEnabled();
-        consentBox.Unchecked += (_, _) => UpdateGenerateEnabled();
-        copyButton.Click += OnCopyClicked;
-        generateButton.Click += OnGenerateClicked;
+        PrivacyInfoButton.Click += (_, _) => PrivacyTeachingTip.IsOpen = true;
+        CopyButton.Click += OnCopyClicked;
+        GenerateButton.Click += OnGenerateClicked;
         Loaded += OnLoaded;
         Closed += (_, _) =>
         {
             lifetime.Cancel();
-            apiKeyBox.Password = string.Empty;
+            PrivacyTeachingTip.IsOpen = false;
+            ApiKeyBox.Password = string.Empty;
         };
+    }
+
+    private string L(string name)
+    {
+        return SH.ResourceManager.GetString("ViewDialogAccountInsights" + name, cultureOptions.CurrentCulture.Value) ?? name;
     }
 
     private void UpdateGenerateEnabled()
     {
-        generateButton.IsEnabled = hasRecordedData && snapshotJson is not null && consentBox.IsChecked is true && !activityRing.IsActive;
+        GenerateButton.IsEnabled = hasRecordedData && snapshotJson is not null && !ActivityRing.IsActive;
     }
 
     private async void OnLoaded(object sender, RoutedEventArgs args)
@@ -148,7 +99,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         {
             if (await userService.GetCurrentUserAndUidAsync() is not { } userAndUid)
             {
-                status.Text = "请先选择游戏账号及 UID。";
+                StatusText.Text = L("NoAccount");
                 return;
             }
 
@@ -158,16 +109,16 @@ public sealed partial class AccountInsightsDialog : ContentDialog
 
             hasRecordedData = series.Any(item => item.Points.Count > 0);
             snapshotJson = CreateAnonymousJson(series);
-            charts.Children.Clear();
+            ChartsPanel.Children.Clear();
             foreach (InsightSeries item in series)
             {
-                charts.Children.Add(CreateChart(item));
+                ChartsPanel.Children.Add(CreateChart(item));
             }
 
-            status.Text = !hasRecordedData
-                ? "所选账号尚无可绘制的本地记录。"
-                : "已读取四类统计。每条横条代表一个月份或活动周期，数值来源于本地已保存记录。";
-            copyButton.IsEnabled = true;
+            StatusText.Text = !hasRecordedData
+                ? L("NoRecords")
+                : L("Ready");
+            CopyButton.IsEnabled = true;
             UpdateGenerateEnabled();
         }
         catch (OperationCanceledException)
@@ -176,8 +127,13 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         }
         catch (Exception)
         {
-            status.Text = "读取历史记录失败。请检查账号或本地数据是否完整。";
+            StatusText.Text = L("ReadError");
         }
+    }
+
+    private static string FormatScheduleDate(Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.DateTime time)
+    {
+        return $"{time.Year:D4}-{time.Month:D2}-{time.Day:D2}";
     }
 
     private List<InsightSeries> CreateSeries(string uid)
@@ -233,7 +189,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
             .Where(entry => entry.RoleCombatData.HasData)
             .OrderBy(entry => entry.ScheduleId)
             .Select(entry => new InsightPoint(
-                entry.RoleCombatData.Schedule.StartDateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                FormatScheduleDate(entry.RoleCombatData.Schedule.StartDateTime),
                 entry.RoleCombatData.Stat.MedalNumber))
             .TakeLast(12)
             .ToList();
@@ -243,20 +199,20 @@ public sealed partial class AccountInsightsDialog : ContentDialog
             .Where(entry => entry.HardChallengeData.SinglePlayer.HasData && entry.HardChallengeData.SinglePlayer.Best is not null)
             .OrderBy(entry => entry.ScheduleId)
             .Select(entry => new InsightPoint(
-                entry.HardChallengeData.Schedule.StartDateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                FormatScheduleDate(entry.HardChallengeData.Schedule.StartDateTime),
                 entry.HardChallengeData.SinglePlayer.Best!.Seconds))
             .TakeLast(12)
             .ToList();
 
         return
         [
-            new("祈愿记录", "每月抽数", "抽", monthlyWishes, InsightDirection.Neutral),
-            new("祈愿记录", "各祈愿池抽数", "抽", poolWishes, InsightDirection.Neutral, false),
-            new("千星奇域祈愿", "每月抽数", "抽", monthlyBeyondWishes, InsightDirection.Neutral),
-            new("千星奇域祈愿", "各祈愿池抽数", "抽", beyondPoolWishes, InsightDirection.Neutral, false),
-            new("深境螺旋", "每期星数", "星", abyss, InsightDirection.HigherIsBetter),
-            new("幻想真境剧诗", "每期奖章数", "枚", theater, InsightDirection.HigherIsBetter),
-            new("幽境危战（单人）", "每期最佳通关用时", "秒", challenge, InsightDirection.LowerIsBetter),
+            new(L("ChartWish"), L("MetricMonthly"), L("UnitWish"), monthlyWishes, InsightDirection.Neutral),
+            new(L("ChartWish"), L("MetricPool"), L("UnitWish"), poolWishes, InsightDirection.Neutral, false),
+            new(L("ChartBeyond"), L("MetricMonthly"), L("UnitWish"), monthlyBeyondWishes, InsightDirection.Neutral),
+            new(L("ChartBeyond"), L("MetricPool"), L("UnitWish"), beyondPoolWishes, InsightDirection.Neutral, false),
+            new(L("ChartAbyss"), L("MetricAbyss"), L("UnitStar"), abyss, InsightDirection.HigherIsBetter),
+            new(L("ChartTheater"), L("MetricTheater"), L("UnitMedal"), theater, InsightDirection.HigherIsBetter),
+            new(L("ChartChallenge"), L("MetricChallenge"), L("UnitSeconds"), challenge, InsightDirection.LowerIsBetter),
         ];
     }
 
@@ -264,54 +220,55 @@ public sealed partial class AccountInsightsDialog : ContentDialog
     {
         return type switch
         {
-            GachaType.NewBie => "新手祈愿",
-            GachaType.Standard => "常驻祈愿",
-            GachaType.ActivityAvatar => "角色活动祈愿",
-            GachaType.ActivityWeapon => "武器活动祈愿",
-            GachaType.SpecialActivityAvatar => "角色活动祈愿 2",
-            GachaType.ActivityCity => "集录祈愿",
-            GachaType.UGCStandard => "千星奇域常驻祈愿",
-            GachaType.UGCAvatarEventWish => "千星奇域活动祈愿",
-            GachaType.UGCActivityAvatarMaleOne => "千星奇域男性角色 1",
-            GachaType.UGCActivityAvatarMaleTwo => "千星奇域男性角色 2",
-            GachaType.UGCActivityAvatarFemaleOne => "千星奇域女性角色 1",
-            GachaType.UGCActivityAvatarFemaleTwo => "千星奇域女性角色 2",
+            GachaType.NewBie => SH.WebGachaConfigTypeNoviceWish,
+            GachaType.Standard => SH.WebGachaConfigTypePermanentWish,
+            GachaType.ActivityAvatar => SH.WebGachaConfigTypeAvatarEventWish,
+            GachaType.ActivityWeapon => SH.WebGachaConfigTypeWeaponEventWish,
+            GachaType.SpecialActivityAvatar => SH.WebGachaConfigTypeAvatarEventWish2,
+            GachaType.ActivityCity => SH.WebGachaConfigTypeChronicledWish,
+            GachaType.UGCStandard => SH.WebUGCGachaConfigTypePermanentWish,
+            GachaType.UGCAvatarEventWish => SH.WebUGCGachaConfigTypeAvatarEventWish,
+            GachaType.UGCActivityAvatarMaleOne => SH.WebUGCGachaConfigTypeActivityAvatarMaleOne,
+            GachaType.UGCActivityAvatarMaleTwo => SH.WebUGCGachaConfigTypeActivityAvatarMaleTwo,
+            GachaType.UGCActivityAvatarFemaleOne => SH.WebUGCGachaConfigTypeActivityAvatarFemaleOne,
+            GachaType.UGCActivityAvatarFemaleTwo => SH.WebUGCGachaConfigTypeActivityAvatarFemaleTwo,
             _ => type.ToString(),
         };
     }
 
-    private static UIElement CreateChart(InsightSeries series)
+    private UIElement CreateChart(InsightSeries series)
     {
         StackPanel panel = new() { Spacing = 6 };
         panel.Children.Add(new TextBlock
         {
-            Text = series.Title + " · " + series.Metric + (series.Direction == InsightDirection.LowerIsBetter ? "（越少越好）" : ""),
+            Text = series.Title + " · " + series.Metric + (series.Direction == InsightDirection.LowerIsBetter ? " (" + L("LowerIsBetter") + ")" : ""),
             Style = Application.Current.Resources["SubtitleTextBlockStyle"] as Style,
         });
 
         if (series.Points.Count == 0)
         {
-            panel.Children.Add(new TextBlock { Text = "没有已保存的记录。" });
+            panel.Children.Add(new TextBlock { Text = L("NoData") });
             return panel;
         }
 
         double mean = series.Points.Average(point => point.Value);
         InsightPoint newest = series.Points[^1];
+        CultureInfo culture = cultureOptions.CurrentCulture.Value;
         string summary;
         if (series.IsTimeSeries)
         {
-            string deltaDescription = series.Points.Count > 1
-                ? "，较上一期 " + (newest.Value - series.Points[^2].Value).ToString("+0.##;-0.##;0", CultureInfo.CurrentCulture) + series.Unit
-                : string.Empty;
-            summary = "已记录 " + series.Points.Count.ToString(CultureInfo.CurrentCulture) + " 个周期 · 平均 "
-                + mean.ToString("0.##", CultureInfo.CurrentCulture) + series.Unit
-                + " · 最近 " + newest.Value.ToString("0.##", CultureInfo.CurrentCulture) + series.Unit
-                + deltaDescription;
+            summary = string.Format(culture, L("SummaryTime"), series.Points.Count, mean.ToString("0.##", culture),
+                newest.Value.ToString("0.##", culture), series.Unit);
+            if (series.Points.Count > 1)
+            {
+                string change = (newest.Value - series.Points[^2].Value).ToString("+0.##;-0.##;0", culture);
+                summary += string.Format(culture, L("SummaryDelta"), change, series.Unit);
+            }
         }
         else
         {
-            summary = "已记录 " + series.Points.Count.ToString(CultureInfo.CurrentCulture) + " 个祈愿池 · 总计 "
-                + series.Points.Sum(point => point.Value).ToString("0", CultureInfo.CurrentCulture) + series.Unit;
+            summary = string.Format(culture, L("SummaryPool"), series.Points.Count,
+                series.Points.Sum(point => point.Value).ToString("0", culture), series.Unit);
         }
 
         panel.Children.Add(new TextBlock { Text = summary, TextWrapping = TextWrapping.Wrap });
@@ -322,7 +279,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         ChartSamples values = new() { ItemsSource = series.Points.Select(point => point.Value).ToArray() };
         CategoryAxis periodAxis = new()
         {
-            Label = "月份 / 周期",
+            Label = L("PeriodAxis"),
             SortKey = CategorySortKey.Index,
             SortOrder = SortOrder.Ascending,
         };
@@ -395,7 +352,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         return new JsonObject
         {
             ["schema_version"] = 1,
-            ["scope"] = "Saved local history only; the most recent twelve periods are included for time-series charts; missing periods are not zero. Direct account identifiers are excluded, but history patterns may remain linkable.",
+            ["scope"] = "Saved local history only; the most recent twelve periods are included for time-series ChartsPanel; missing periods are not zero. Direct account identifiers are excluded, but history patterns may remain linkable.",
             ["series"] = data,
         }.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
     }
@@ -410,33 +367,33 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         DataPackage package = new();
         package.SetText(snapshotJson);
         Clipboard.SetContent(package);
-        status.Text = "已复制去标识化统计数据。此操作不会修改胡桃数据库。";
+        StatusText.Text = L("Copied");
     }
 
     private async void OnGenerateClicked(object sender, RoutedEventArgs args)
     {
-        if (snapshotJson is null || consentBox.IsChecked is not true)
+        if (snapshotJson is null || !hasRecordedData)
         {
             return;
         }
 
-        if (!Uri.TryCreate(endpointBox.Text.Trim(), UriKind.Absolute, out Uri? endpoint) ||
+        if (!Uri.TryCreate(EndpointBox.Text.Trim(), UriKind.Absolute, out Uri? endpoint) ||
             (endpoint.Scheme != Uri.UriSchemeHttps && !(endpoint.Scheme == Uri.UriSchemeHttp && endpoint.IsLoopback)) ||
             !string.IsNullOrEmpty(endpoint.UserInfo) || !string.IsNullOrEmpty(endpoint.Fragment))
         {
-            responseText.Text = "API 地址必须是完整的 HTTPS URL（仅本机回环地址允许 HTTP）。";
+            ResponseText.Text = L("InvalidEndpoint");
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(modelBox.Text))
+        if (string.IsNullOrWhiteSpace(ModelBox.Text))
         {
-            responseText.Text = "请输入模型名称。";
+            ResponseText.Text = L("MissingModel");
             return;
         }
 
-        activityRing.IsActive = true;
+        ActivityRing.IsActive = true;
         UpdateGenerateEnabled();
-        responseText.Text = "正在请求模型分析…";
+        ResponseText.Text = L("Sending");
         try
         {
             JsonArray messages =
@@ -451,7 +408,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
 
             JsonObject payload = new()
             {
-                ["model"] = modelBox.Text.Trim(),
+                ["model"] = ModelBox.Text.Trim(),
                 ["messages"] = messages,
                 ["stream"] = false,
             };
@@ -463,15 +420,15 @@ public sealed partial class AccountInsightsDialog : ContentDialog
                 Content = new StringContent(payload.ToJsonString(), Encoding.UTF8, "application/json"),
             };
 
-            if (!string.IsNullOrWhiteSpace(apiKeyBox.Password))
+            if (!string.IsNullOrWhiteSpace(ApiKeyBox.Password))
             {
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKeyBox.Password);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", ApiKeyBox.Password);
             }
 
             using HttpResponseMessage response = await client.SendAsync(request, lifetime.Token);
             if (!response.IsSuccessStatusCode)
             {
-                responseText.Text = "API 请求失败，HTTP 状态：" + (int)response.StatusCode + "。请检查地址、模型及权限。";
+                ResponseText.Text = string.Format(cultureOptions.CurrentCulture.Value, L("HttpError"), (int)response.StatusCode);
                 return;
             }
 
@@ -479,26 +436,26 @@ public sealed partial class AccountInsightsDialog : ContentDialog
             using JsonDocument parsed = JsonDocument.Parse(body);
             JsonElement choices = parsed.RootElement.GetProperty("choices");
             string? answer = choices[0].GetProperty("message").GetProperty("content").GetString();
-            responseText.Text = string.IsNullOrWhiteSpace(answer) ? "模型未返回文字内容。" : answer;
+            ResponseText.Text = string.IsNullOrWhiteSpace(answer) ? L("EmptyReply") : answer;
             LocalSetting.Set(EndpointSettingKey, endpoint.ToString());
-            LocalSetting.Set(ModelSettingKey, modelBox.Text.Trim());
+            LocalSetting.Set(ModelSettingKey, ModelBox.Text.Trim());
         }
         catch (OperationCanceledException)
         {
             if (!lifetime.IsCancellationRequested)
             {
-                responseText.Text = "请求已取消或超时。";
+                ResponseText.Text = L("Timeout");
             }
         }
         catch (Exception)
         {
-            responseText.Text = "分析失败：响应格式或网络连接异常。密钥未保存。";
+            ResponseText.Text = L("Failure");
         }
         finally
         {
             if (!lifetime.IsCancellationRequested)
             {
-                activityRing.IsActive = false;
+                ActivityRing.IsActive = false;
                 UpdateGenerateEnabled();
             }
         }

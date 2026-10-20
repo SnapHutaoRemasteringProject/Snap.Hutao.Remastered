@@ -5598,4 +5598,145 @@
   <data name="GlassPointerLightInfluence" xml:space="preserve">
     <value>ライト追従度</value>
   </data>
+  <data name="ViewDialogAccountInsightsTitle" xml:space="preserve">
+    <value>アカウント履歴のグラフとAI分析</value>
+  </data>
+  <data name="ViewDialogAccountInsightsOpen" xml:space="preserve">
+    <value>履歴グラフとAI分析</value>
+  </data>
+  <data name="ViewDialogAccountInsightsDescription" xml:space="preserve">
+    <value>祈願・深境螺旋・幻想シアター・幽境の激戦のグラフとAI分析</value>
+  </data>
+  <data name="ViewDialogAccountInsightsIntro" xml:space="preserve">
+    <value>保存済みのローカル履歴を表示します。記録のない期間は推定しません。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsLoading" xml:space="preserve">
+    <value>保存済みの履歴を読み込み中…</value>
+  </data>
+  <data name="ViewDialogAccountInsightsNoAccount" xml:space="preserve">
+    <value>ゲームアカウントとUIDを選択してください。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsNoRecords" xml:space="preserve">
+    <value>グラフ化できる保存済みの履歴がありません。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReady" xml:space="preserve">
+    <value>選択したアカウントの履歴を読み込みました。未記録の期間は除外されます。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReadError" xml:space="preserve">
+    <value>履歴の読み込みに失敗しました。アカウントとローカル記録を確認してください。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsCopied" xml:space="preserve">
+    <value>個人識別情報を除いた統計をコピーしました。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsAnalysisHeading" xml:space="preserve">
+    <value>AI分析（任意）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsPrivacyTitle" xml:space="preserve">
+    <value>外部AIを利用する前に</value>
+  </data>
+  <data name="ViewDialogAccountInsightsPrivacyBody" xml:space="preserve">
+    <value>「分析を生成」を押すと、集計した履歴データのみが指定したAPIに送信されます。UID、Cookie、アイテムID、データベースファイルは含まれませんが、履歴の傾向から関連付けられる可能性があります。提供元のプライバシーポリシーをご確認ください。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsEndpointHeader" xml:space="preserve">
+    <value>Chat Completions API URL（HTTPSまたはローカルHTTP）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsEndpointPlaceholder" xml:space="preserve">
+    <value>https://example.com/v1/chat/completions</value>
+  </data>
+  <data name="ViewDialogAccountInsightsModelHeader" xml:space="preserve">
+    <value>モデルID</value>
+  </data>
+  <data name="ViewDialogAccountInsightsModelPlaceholder" xml:space="preserve">
+    <value>モデルIDを入力</value>
+  </data>
+  <data name="ViewDialogAccountInsightsApiKeyHeader" xml:space="preserve">
+    <value>APIキー（このセッションのみ・保存しません）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsCopy" xml:space="preserve">
+    <value>識別情報を除いた統計をコピー（JSON）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsGenerate" xml:space="preserve">
+    <value>AI分析を生成</value>
+  </data>
+  <data name="ViewDialogAccountInsightsInvalidEndpoint" xml:space="preserve">
+    <value>有効なHTTPSのAPI URLを入力してください（HTTPはループバックアドレスのみ）。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMissingModel" xml:space="preserve">
+    <value>モデルIDを入力してください。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSending" xml:space="preserve">
+    <value>分析をリクエスト中…</value>
+  </data>
+  <data name="ViewDialogAccountInsightsHttpError" xml:space="preserve">
+    <value>AIリクエストに失敗しました（HTTP {0}）。URL、モデル、アクセス権を確認してください。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsEmptyReply" xml:space="preserve">
+    <value>モデルからテキストが返されませんでした。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsTimeout" xml:space="preserve">
+    <value>リクエストがキャンセルまたはタイムアウトしました。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsFailure" xml:space="preserve">
+    <value>ネットワークまたは応答形式のエラーです。APIキーは保存されていません。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsNoData" xml:space="preserve">
+    <value>保存済みの記録がありません。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartWish" xml:space="preserve">
+    <value>祈願履歴</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartBeyond" xml:space="preserve">
+    <value>千星奇域の祈願</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartAbyss" xml:space="preserve">
+    <value>深境螺旋</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartTheater" xml:space="preserve">
+    <value>幻想シアター</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartChallenge" xml:space="preserve">
+    <value>幽境の激戦（ソロ）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricMonthly" xml:space="preserve">
+    <value>月ごとの祈願回数</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricPool" xml:space="preserve">
+    <value>祈願種類別の回数</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricAbyss" xml:space="preserve">
+    <value>期ごとの星数</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricTheater" xml:space="preserve">
+    <value>期ごとのメダル</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricChallenge" xml:space="preserve">
+    <value>期ごとの最短クリア時間</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitWish" xml:space="preserve">
+    <value>回</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitStar" xml:space="preserve">
+    <value>星</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitMedal" xml:space="preserve">
+    <value>枚</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitSeconds" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="ViewDialogAccountInsightsPeriodAxis" xml:space="preserve">
+    <value>月 / 期</value>
+  </data>
+  <data name="ViewDialogAccountInsightsLowerIsBetter" xml:space="preserve">
+    <value>少ないほど良い</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSummaryTime" xml:space="preserve">
+    <value>{0} 期間 · 平均 {1} {3} · 最新 {2} {3}</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSummaryDelta" xml:space="preserve">
+    <value> · 前回との差：{0} {1}</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSummaryPool" xml:space="preserve">
+    <value>{0} 種類 · 合計 {1} {2}</value>
+  </data>
 </root>

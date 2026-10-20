@@ -5599,4 +5599,145 @@
   <data name="GlassPointerLightInfluence" xml:space="preserve">
     <value>光源跟隨程度</value>
   </data>
+  <data name="ViewDialogAccountInsightsTitle" xml:space="preserve">
+    <value>帳號歷史圖表與 AI 分析</value>
+  </data>
+  <data name="ViewDialogAccountInsightsOpen" xml:space="preserve">
+    <value>歷史圖表與 AI 分析</value>
+  </data>
+  <data name="ViewDialogAccountInsightsDescription" xml:space="preserve">
+    <value>祈願、深境螺旋、幻想真境劇詩、幽境危戰歷史圖表及可選 AI 分析</value>
+  </data>
+  <data name="ViewDialogAccountInsightsIntro" xml:space="preserve">
+    <value>圖表根據已儲存的本機紀錄建立，不推算缺失的週期。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsLoading" xml:space="preserve">
+    <value>正在讀取本機歷史紀錄…</value>
+  </data>
+  <data name="ViewDialogAccountInsightsNoAccount" xml:space="preserve">
+    <value>請先選擇遊戲帳號及 UID。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsNoRecords" xml:space="preserve">
+    <value>所選帳號沒有可顯示的歷史紀錄。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReady" xml:space="preserve">
+    <value>已讀取所選帳號的歷史統計；未記錄的週期不計入。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReadError" xml:space="preserve">
+    <value>讀取歷史紀錄失敗，請檢查帳號與本機紀錄。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsCopied" xml:space="preserve">
+    <value>已複製去識別化統計資料。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsAnalysisHeading" xml:space="preserve">
+    <value>AI 分析（可選）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsPrivacyTitle" xml:space="preserve">
+    <value>使用第三方 AI 前請先了解</value>
+  </data>
+  <data name="ViewDialogAccountInsightsPrivacyBody" xml:space="preserve">
+    <value>點擊生成分析後，僅會將歷史彙總統計傳送至所選 API，不包含 UID、Cookie、物品 ID 或資料庫檔案。歷史模式仍可能具有可關聯性，請查看服務提供者的隱私政策。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsEndpointHeader" xml:space="preserve">
+    <value>Chat Completions API 網址（HTTPS 或本機 HTTP）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsEndpointPlaceholder" xml:space="preserve">
+    <value>https://example.com/v1/chat/completions</value>
+  </data>
+  <data name="ViewDialogAccountInsightsModelHeader" xml:space="preserve">
+    <value>模型識別碼</value>
+  </data>
+  <data name="ViewDialogAccountInsightsModelPlaceholder" xml:space="preserve">
+    <value>輸入模型名稱</value>
+  </data>
+  <data name="ViewDialogAccountInsightsApiKeyHeader" xml:space="preserve">
+    <value>API Key（僅此次使用，不儲存）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsCopy" xml:space="preserve">
+    <value>複製去識別化統計（JSON）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsGenerate" xml:space="preserve">
+    <value>生成分析評價</value>
+  </data>
+  <data name="ViewDialogAccountInsightsInvalidEndpoint" xml:space="preserve">
+    <value>請輸入有效的 HTTPS API 網址（僅回環位址允許 HTTP）。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMissingModel" xml:space="preserve">
+    <value>請輸入模型識別碼。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSending" xml:space="preserve">
+    <value>正在請求模型分析…</value>
+  </data>
+  <data name="ViewDialogAccountInsightsHttpError" xml:space="preserve">
+    <value>模型請求失敗（HTTP {0}），請檢查網址、模型及權限。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsEmptyReply" xml:space="preserve">
+    <value>模型沒有返回文字內容。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsTimeout" xml:space="preserve">
+    <value>請求已取消或逾時。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsFailure" xml:space="preserve">
+    <value>網路連線或回應格式異常，分析失敗。API Key 未儲存。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsNoData" xml:space="preserve">
+    <value>沒有已儲存的紀錄。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartWish" xml:space="preserve">
+    <value>祈願紀錄</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartBeyond" xml:space="preserve">
+    <value>千星奇域祈願</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartAbyss" xml:space="preserve">
+    <value>深境螺旋</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartTheater" xml:space="preserve">
+    <value>幻想真境劇詩</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartChallenge" xml:space="preserve">
+    <value>幽境危戰（單人）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricMonthly" xml:space="preserve">
+    <value>每月抽數</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricPool" xml:space="preserve">
+    <value>各祈願池抽數</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricAbyss" xml:space="preserve">
+    <value>每期星數</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricTheater" xml:space="preserve">
+    <value>每期獎章數</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricChallenge" xml:space="preserve">
+    <value>每期最佳通關用時</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitWish" xml:space="preserve">
+    <value>抽</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitStar" xml:space="preserve">
+    <value>星</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitMedal" xml:space="preserve">
+    <value>枚</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitSeconds" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="ViewDialogAccountInsightsPeriodAxis" xml:space="preserve">
+    <value>月份 / 週期</value>
+  </data>
+  <data name="ViewDialogAccountInsightsLowerIsBetter" xml:space="preserve">
+    <value>越少越好</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSummaryTime" xml:space="preserve">
+    <value>已記錄 {0} 個週期 · 平均 {1} {3} · 最近 {2} {3}</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSummaryDelta" xml:space="preserve">
+    <value> · 較上一期變化：{0} {1}</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSummaryPool" xml:space="preserve">
+    <value>已記錄 {0} 個祈願池 · 總計 {1} {2}</value>
+  </data>
 </root>
