@@ -14,6 +14,7 @@ using Snap.Hutao.Remastered.Service.HardChallenge;
 using Snap.Hutao.Remastered.Service.RoleCombat;
 using Snap.Hutao.Remastered.Service.SpiralAbyss;
 using Snap.Hutao.Remastered.Service.User;
+using Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Event.GachaInfo;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -179,45 +180,77 @@ public sealed partial class AccountInsightsDialog : ContentDialog
 
     private List<InsightSeries> CreateSeries(string uid)
     {
-        List<InsightPoint> wishes = [];
-        if (gachaRepository.GetGachaArchiveByUid(uid) is { } archive)
-        {
-            wishes = gachaRepository.GetGachaItemImmutableArrayByArchiveId(archive.InnerId)
-                .GroupBy(item => item.Time.ToString("yyyy-MM", CultureInfo.InvariantCulture))
-                .OrderBy(group => group.Key, StringComparer.Ordinal)
-                .Select(group => new InsightPoint(group.Key, group.Count()))
-                .TakeLast(24)
-                .ToList();
-        }
+        List<GachaItem> gachaItems = gachaRepository.GetGachaArchiveByUid(uid) is { } archive
+            ? gachaRepository.GetGachaItemImmutableArrayByArchiveId(archive.InnerId).ToList()
+            : [];
+
+        List<InsightPoint> monthlyWishes = gachaItems
+            .GroupBy(item => item.Time.ToString("yyyy-MM", CultureInfo.InvariantCulture))
+            .OrderBy(group => group.Key, StringComparer.Ordinal)
+            .Select(group => new InsightPoint(group.Key, group.Count()))
+            .TakeLast(12)
+            .ToList();
+
+        // QueryType is the actual pool category used by the existing wish statistics.
+        // Do not combine unrelated pity pools, or infer rarity from an item ID.
+        List<InsightPoint> poolWishes = gachaItems
+            .GroupBy(item => item.QueryType)
+            .OrderBy(group => (int)group.Key)
+            .Select(group => new InsightPoint(GetWishPoolLabel(group.Key), group.Count()))
+            .ToList();
 
         List<InsightPoint> abyss = abyssRepository.GetSpiralAbyssEntryMapByUid(uid).Values
+            .Where(entry => entry.SpiralAbyss.IsUnlock)
             .OrderBy(entry => entry.ScheduleId)
-            .Select(entry => new InsightPoint(entry.ScheduleId.ToString(CultureInfo.InvariantCulture), entry.SpiralAbyss.TotalStar))
-            .TakeLast(16)
+            .Select(entry => new InsightPoint(
+                entry.SpiralAbyss.StartTime > 0
+                    ? DateTimeOffset.FromUnixTimeSeconds(entry.SpiralAbyss.StartTime).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+                    : entry.ScheduleId.ToString(CultureInfo.InvariantCulture),
+                entry.SpiralAbyss.TotalStar))
+            .TakeLast(12)
             .ToList();
 
         List<InsightPoint> theater = combatRepository.GetRoleCombatEntryMapByUid(uid).Values
             .Where(entry => entry.RoleCombatData.HasData)
             .OrderBy(entry => entry.ScheduleId)
-            .Select(entry => new InsightPoint(entry.ScheduleId.ToString(CultureInfo.InvariantCulture), entry.RoleCombatData.Stat.MedalNumber))
-            .TakeLast(16)
+            .Select(entry => new InsightPoint(
+                entry.RoleCombatData.Schedule.StartDateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                entry.RoleCombatData.Stat.MedalNumber))
+            .TakeLast(12)
             .ToList();
 
-        // Compare solo results only. Mixing multiplayer and solo times would be misleading.
+        // Solo and multiplayer records have different conditions and must not be compared.
         List<InsightPoint> challenge = challengeRepository.GetHardChallengeMapByUid(uid).Values
             .Where(entry => entry.HardChallengeData.SinglePlayer.HasData && entry.HardChallengeData.SinglePlayer.Best is not null)
             .OrderBy(entry => entry.ScheduleId)
-            .Select(entry => new InsightPoint(entry.ScheduleId.ToString(CultureInfo.InvariantCulture), entry.HardChallengeData.SinglePlayer.Best!.Seconds))
-            .TakeLast(16)
+            .Select(entry => new InsightPoint(
+                entry.HardChallengeData.Schedule.StartDateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                entry.HardChallengeData.SinglePlayer.Best!.Seconds))
+            .TakeLast(12)
             .ToList();
 
         return
         [
-            new("祈愿记录", "每月抽数", "抽", wishes, false),
+            new("祈愿记录", "每月抽数", "抽", monthlyWishes, false),
+            new("祈愿记录", "各祈愿池抽数", "抽", poolWishes, false),
             new("深境螺旋", "每期星数", "星", abyss, false),
             new("幻想真境剧诗", "每期奖章数", "枚", theater, false),
             new("幽境危战（单人）", "每期最佳通关用时", "秒", challenge, true),
         ];
+    }
+
+    private static string GetWishPoolLabel(GachaType type)
+    {
+        return type switch
+        {
+            GachaType.NewBie => "新手祈愿",
+            GachaType.Standard => "常驻祈愿",
+            GachaType.ActivityAvatar => "角色活动祈愿",
+            GachaType.ActivityWeapon => "武器活动祈愿",
+            GachaType.SpecialActivityAvatar => "角色活动祈愿 2",
+            GachaType.ActivityCity => "集录祈愿",
+            _ => type.ToString(),
+        };
     }
 
     private static UIElement CreateChart(InsightSeries series)
@@ -234,6 +267,20 @@ public sealed partial class AccountInsightsDialog : ContentDialog
             panel.Children.Add(new TextBlock { Text = "没有已保存的记录。" });
             return panel;
         }
+
+        double mean = series.Points.Average(point => point.Value);
+        InsightPoint newest = series.Points[^1];
+        string deltaDescription = series.Points.Count > 1
+            ? "，较上一期 " + (newest.Value - series.Points[^2].Value).ToString("+0.##;-0.##;0", CultureInfo.CurrentCulture) + series.Unit
+            : string.Empty;
+        panel.Children.Add(new TextBlock
+        {
+            Text = "已记录 " + series.Points.Count.ToString(CultureInfo.CurrentCulture) + " 个样本 · 平均 "
+                + mean.ToString("0.##", CultureInfo.CurrentCulture) + series.Unit
+                + " · 最近 " + newest.Value.ToString("0.##", CultureInfo.CurrentCulture) + series.Unit
+                + deltaDescription,
+            TextWrapping = TextWrapping.Wrap,
+        });
 
         // Experimental Microsoft.UI.Xaml.Controls.Charts is already present in WASDK 2.5.4.
         // Use independent axis/sample objects for each series to avoid shared control state.
@@ -283,8 +330,20 @@ public sealed partial class AccountInsightsDialog : ContentDialog
                 points.Add(new JsonObject { ["period"] = point.Period, ["value"] = point.Value });
             }
 
+            double[] values = item.Points.Select(point => point.Value).ToArray();
+            JsonObject summary = new()
+            {
+                ["recorded_period_count"] = values.Length,
+                ["latest"] = values.Length > 0 ? JsonValue.Create(values[^1]) : null,
+                ["minimum"] = values.Length > 0 ? JsonValue.Create(values.Min()) : null,
+                ["maximum"] = values.Length > 0 ? JsonValue.Create(values.Max()) : null,
+                ["average"] = values.Length > 0 ? JsonValue.Create(Math.Round(values.Average(), 2)) : null,
+                ["latest_change_from_previous"] = values.Length > 1 ? JsonValue.Create(values[^1] - values[^2]) : null,
+            };
+
             data.Add(new JsonObject
             {
+                ["summary"] = summary,
                 ["category"] = item.Title,
                 ["metric"] = item.Metric,
                 ["unit"] = item.Unit,
