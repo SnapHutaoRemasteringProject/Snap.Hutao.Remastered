@@ -8,14 +8,7 @@
     CloseButtonText="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"
     DefaultButton="Close"
     Style="{StaticResource DefaultContentDialogStyle}">
-    <ContentDialog.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <charts:XamlChartsResources/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </ContentDialog.Resources>
-    <ScrollViewer Height="540" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer MaxHeight="640" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
         <StackPanel Padding="4,8" Spacing="14">
             <TextBlock Text="{shuxm:ResourceString Name=ViewDialogAccountInsightsIntro}" TextWrapping="Wrap"/>
             <TextBlock x:Name="StatusText" Text="{shuxm:ResourceString Name=ViewDialogAccountInsightsLoading}" TextWrapping="Wrap"/>

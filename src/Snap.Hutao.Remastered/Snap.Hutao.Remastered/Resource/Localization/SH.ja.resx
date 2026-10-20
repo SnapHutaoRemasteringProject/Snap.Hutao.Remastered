@@ -5742,4 +5742,7 @@
   <data name="ViewDialogAccountInsightsPartialError" xml:space="preserve">
     <value>一部の履歴を読み込めませんでした</value>
   </data>
+  <data name="ViewDialogAccountInsightsChartRenderError" xml:space="preserve">
+    <value>ネイティブのグラフを表示できませんでした。アプリのログを確認してください。</value>
+  </data>
 </root>

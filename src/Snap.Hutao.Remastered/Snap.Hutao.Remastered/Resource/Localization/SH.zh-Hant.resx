@@ -5743,4 +5743,7 @@
   <data name="ViewDialogAccountInsightsPartialError" xml:space="preserve">
     <value>部分紀錄無法讀取</value>
   </data>
+  <data name="ViewDialogAccountInsightsChartRenderError" xml:space="preserve">
+    <value>原生圖表載入失敗，請查看應用程式紀錄。</value>
+  </data>
 </root>

@@ -5742,4 +5742,7 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewDialogAccountInsightsPartialError" xml:space="preserve">
     <value>Some history categories could not be loaded</value>
   </data>
+  <data name="ViewDialogAccountInsightsChartRenderError" xml:space="preserve">
+    <value>The native chart could not be rendered. See the application log.</value>
+  </data>
 </root>

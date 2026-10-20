@@ -5746,4 +5746,7 @@
   <data name="ViewDialogAccountInsightsPartialError" xml:space="preserve">
     <value>部分记录无法读取</value>
   </data>
+  <data name="ViewDialogAccountInsightsChartRenderError" xml:space="preserve">
+    <value>原生图表加载失败，请查看应用日志</value>
+  </data>
 </root>

@@ -70,8 +70,6 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         this.combatRepository = combatRepository;
         this.challengeRepository = challengeRepository;
 
-        MinWidth = 600;
-        MaxWidth = 860;
         EndpointBox.Text = LocalSetting.Get(EndpointSettingKey, string.Empty);
         ModelBox.Text = LocalSetting.Get(ModelSettingKey, string.Empty);
 
@@ -130,7 +128,11 @@ public sealed partial class AccountInsightsDialog : ContentDialog
                 catch (Exception exception)
                 {
                     logger.LogWarning(exception, "Failed to render account history chart: {Metric}", item.Metric);
-                    ChartsPanel.Children.Add(CreateFallbackChart(item));
+                    ChartsPanel.Children.Add(new TextBlock
+                    {
+                        Text = L("ChartRenderError") + " (" + exception.GetType().Name + ")",
+                        TextWrapping = TextWrapping.Wrap,
+                    });
                 }
             }
 
@@ -282,10 +284,11 @@ public sealed partial class AccountInsightsDialog : ContentDialog
 
     private UIElement CreateChart(InsightSeries series)
     {
-        StackPanel panel = new() { Spacing = 6 };
+        StackPanel panel = new() { Spacing = 8 };
         panel.Children.Add(new TextBlock
         {
-            Text = series.Title + " · " + series.Metric + (series.Direction == InsightDirection.LowerIsBetter ? " (" + L("LowerIsBetter") + ")" : ""),
+            Text = series.Title + " · " + series.Metric
+                + (series.Direction == InsightDirection.LowerIsBetter ? " (" + L("LowerIsBetter") + ")" : ""),
             FontSize = 18,
         });
 
@@ -301,8 +304,8 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         string summary;
         if (series.IsTimeSeries)
         {
-            summary = string.Format(culture, L("SummaryTime"), series.Points.Count, mean.ToString("0.##", culture),
-                newest.Value.ToString("0.##", culture), series.Unit);
+            summary = string.Format(culture, L("SummaryTime"), series.Points.Count,
+                mean.ToString("0.##", culture), newest.Value.ToString("0.##", culture), series.Unit);
             if (series.Points.Count > 1)
             {
                 string change = (newest.Value - series.Points[^2].Value).ToString("+0.##;-0.##;0", culture);
@@ -317,91 +320,70 @@ public sealed partial class AccountInsightsDialog : ContentDialog
 
         panel.Children.Add(new TextBlock { Text = summary, TextWrapping = TextWrapping.Wrap });
 
-        // Experimental charts can fail at runtime on specific Windows App SDK builds.
-        // A light-weight fallback keeps both the history and LLM feature available.
-        try
+        // Follow the WinUI Gallery's native Chart API. XamlChartsResources must be
+        // registered at application scope, immediately after XamlControlsResources.
+        ChartSamples categories = new()
         {
-            // Experimental Microsoft.UI.Xaml.Controls.Charts is already present in WASDK 2.5.4.
-            // Use independent axis/sample objects for each series to avoid shared control state.
-            ChartSamples periods = new() { ItemsSource = series.Points.Select(point => point.Period).ToArray() };
-            ChartSamples values = new() { ItemsSource = series.Points.Select(point => point.Value).ToArray() };
-            CategoryAxis periodAxis = new()
-            {
-                Label = L("PeriodAxis"),
-                SortKey = CategorySortKey.Index,
-                SortOrder = SortOrder.Ascending,
-            };
-            LinearAxis metricAxis = new()
-            {
-                Label = series.Metric + " (" + series.Unit + ")",
-                Minimum = 0,
-                GridLines = GridLines.Major,
-            };
+            ItemsSource = series.Points.Select(point => point.Period).ToArray(),
+        };
+        ChartSamples values = new()
+        {
+            ItemsSource = series.Points.Select(point => point.Value).ToArray(),
+        };
+        CategoryAxis categoryAxis = new()
+        {
+            Label = series.IsTimeSeries ? L("PeriodAxis") : series.Title,
+            SortKey = CategorySortKey.Index,
+            SortOrder = SortOrder.Ascending,
+        };
+        LinearAxis valueAxis = new()
+        {
+            Label = series.Metric + " (" + series.Unit + ")",
+            Minimum = 0,
+            GridLines = GridLines.Major,
+        };
 
-            WinUIChart chart = new() { Height = 300, ShowLegend = false };
-            chart.Data.Add(periods);
-            chart.Data.Add(values);
-            chart.Axes.Add(periodAxis);
-            chart.Axes.Add(metricAxis);
+        WinUIChart chart = new()
+        {
+            Height = 320,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            ShowLegend = false,
+        };
+        chart.Data.Add(categories);
+        chart.Data.Add(values);
+        chart.Axes.Add(categoryAxis);
+        chart.Axes.Add(valueAxis);
+
+        if (series.IsTimeSeries)
+        {
+            chart.Series.Add(new LineSeries
+            {
+                Title = series.Metric,
+                ShowDataMarkers = true,
+                ShowDataLabels = true,
+                StrokeThickness = 2,
+                XAxis = categoryAxis,
+                XValues = categories,
+                YAxis = valueAxis,
+                YValues = values,
+            });
+        }
+        else
+        {
             chart.Series.Add(new BarSeries
             {
                 Title = series.Metric,
                 Orientation = BarOrientation.Vertical,
-                XAxis = periodAxis,
-                XValues = periods,
-                YAxis = metricAxis,
-                YValues = values,
                 ShowDataLabels = true,
+                XAxis = categoryAxis,
+                XValues = categories,
+                YAxis = valueAxis,
+                YValues = values,
             });
-
-            panel.Children.Add(chart);
-        }
-        catch (Exception exception)
-        {
-            logger.LogWarning(exception, "Native WinUI chart failed: {Metric}", series.Metric);
-            AddFallbackBars(panel, series);
         }
 
+        panel.Children.Add(chart);
         return panel;
-    }
-
-    private UIElement CreateFallbackChart(InsightSeries series)
-    {
-        StackPanel panel = new() { Spacing = 8 };
-        panel.Children.Add(new TextBlock { Text = series.Title + " · " + series.Metric, FontSize = 18 });
-        AddFallbackBars(panel, series);
-        return panel;
-    }
-
-    private void AddFallbackBars(StackPanel panel, InsightSeries series)
-    {
-        if (series.Points.Count == 0)
-        {
-            panel.Children.Add(new TextBlock { Text = L("NoData") });
-            return;
-        }
-
-        double maximum = Math.Max(1, series.Points.Max(point => point.Value));
-        foreach (InsightPoint point in series.Points)
-        {
-            Grid row = new() { ColumnSpacing = 8 };
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(2, GridUnitType.Star) });
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            TextBlock label = new() { Text = point.Period, TextTrimming = TextTrimming.CharacterEllipsis, VerticalAlignment = VerticalAlignment.Center };
-            ProgressBar bar = new() { Maximum = maximum, Value = point.Value, Height = 12, VerticalAlignment = VerticalAlignment.Center };
-            Grid.SetColumn(bar, 1);
-            TextBlock value = new()
-            {
-                Text = point.Value.ToString("0.##", cultureOptions.CurrentCulture.Value) + " " + series.Unit,
-                VerticalAlignment = VerticalAlignment.Center,
-            };
-            Grid.SetColumn(value, 2);
-            row.Children.Add(label);
-            row.Children.Add(bar);
-            row.Children.Add(value);
-            panel.Children.Add(row);
-        }
     }
 
     private static string CreateAnonymousJson(IEnumerable<InsightSeries> series)
