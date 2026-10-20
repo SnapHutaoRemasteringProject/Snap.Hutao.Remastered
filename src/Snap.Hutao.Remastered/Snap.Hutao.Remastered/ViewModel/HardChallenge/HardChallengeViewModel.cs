@@ -11,6 +11,7 @@ using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
+using Snap.Hutao.Remastered.UI.Xaml.View.Window;
 using Snap.Hutao.Remastered.ViewModel.User;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
@@ -32,10 +33,9 @@ public sealed partial class HardChallengeViewModel : Abstraction.ViewModel, IRec
     private HardChallengeMetadataContext? metadataContext;
 
     [Command("OpenAccountInsightsCommand")]
-    private async Task OpenAccountInsightsAsync()
+    private void OpenAccountInsights()
     {
-        AccountInsightsDialog dialog = await contentDialogFactory.CreateInstanceAsync<AccountInsightsDialog>(serviceProvider);
-        await contentDialogFactory.EnqueueAndShowAsync(dialog).ShowTask;
+        AccountInsightsWindows.Open();
     }
 
     [GeneratedConstructor]

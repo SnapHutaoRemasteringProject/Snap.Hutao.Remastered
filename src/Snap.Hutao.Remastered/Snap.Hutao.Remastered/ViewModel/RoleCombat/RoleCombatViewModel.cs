@@ -12,6 +12,7 @@ using Snap.Hutao.Remastered.Service.RoleCombat;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
+using Snap.Hutao.Remastered.UI.Xaml.View.Window;
 using Snap.Hutao.Remastered.ViewModel.Complex;
 using Snap.Hutao.Remastered.ViewModel.User;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
@@ -35,10 +36,9 @@ public sealed partial class RoleCombatViewModel : Abstraction.ViewModel, IRecipi
     private RoleCombatMetadataContext? metadataContext;
 
     [Command("OpenAccountInsightsCommand")]
-    private async Task OpenAccountInsightsAsync()
+    private void OpenAccountInsights()
     {
-        AccountInsightsDialog dialog = await contentDialogFactory.CreateInstanceAsync<AccountInsightsDialog>(serviceProvider);
-        await contentDialogFactory.EnqueueAndShowAsync(dialog).ShowTask;
+        AccountInsightsWindows.Open();
     }
 
     [GeneratedConstructor]

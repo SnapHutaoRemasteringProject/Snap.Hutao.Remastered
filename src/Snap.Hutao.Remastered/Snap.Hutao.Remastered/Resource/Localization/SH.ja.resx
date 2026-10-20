@@ -5745,4 +5745,10 @@
   <data name="ViewDialogAccountInsightsChartRenderError" xml:space="preserve">
     <value>ネイティブのグラフを表示できませんでした。アプリのログを確認してください。</value>
   </data>
+  <data name="ViewDialogAccountInsightsTestConnection" xml:space="preserve"><value>API 接続テスト</value></data>
+  <data name="ViewDialogAccountInsightsTestSuccess" xml:space="preserve"><value>接続成功。ゲーム記録は送信されていません。</value></data>
+  <data name="ViewDialogAccountInsightsMissingApiKey" xml:space="preserve"><value>API キーを入力してください。</value></data>
+  <data name="ViewDialogAccountInsightsApiUnauthorizedHint" xml:space="preserve"><value>キー、リージョン、ワークスペース、モデルの権限を確認してください。</value></data>
+  <data name="ViewDialogAccountInsightsMetricFeaturedCharacters" xml:space="preserve"><value>獲得済みのピックアップ星5キャラクター</value></data>
+  <data name="ViewDialogAccountInsightsGachaDetailsUnavailable" xml:space="preserve"><value>詳細な祈願統計を利用できません。</value></data>
 </root>

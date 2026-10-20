@@ -5749,4 +5749,10 @@
   <data name="ViewDialogAccountInsightsChartRenderError" xml:space="preserve">
     <value>原生图表加载失败，请查看应用日志</value>
   </data>
+  <data name="ViewDialogAccountInsightsTestConnection" xml:space="preserve"><value>测试 API 连接</value></data>
+  <data name="ViewDialogAccountInsightsTestSuccess" xml:space="preserve"><value>连接成功，未发送游戏记录。</value></data>
+  <data name="ViewDialogAccountInsightsMissingApiKey" xml:space="preserve"><value>请输入 API Key。</value></data>
+  <data name="ViewDialogAccountInsightsApiUnauthorizedHint" xml:space="preserve"><value>请检查密钥、地域、业务空间和模型权限。</value></data>
+  <data name="ViewDialogAccountInsightsMetricFeaturedCharacters" xml:space="preserve"><value>已获得的 UP 五星角色</value></data>
+  <data name="ViewDialogAccountInsightsGachaDetailsUnavailable" xml:space="preserve"><value>祈愿详细统计暂时不可用。</value></data>
 </root>

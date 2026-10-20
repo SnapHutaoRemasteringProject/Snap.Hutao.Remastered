@@ -5741,4 +5741,10 @@ Espacio disponible: {2}</value>
   <data name="ViewDialogAccountInsightsChartRenderError" xml:space="preserve">
     <value>The native chart could not be rendered. See the application log.</value>
   </data>
+  <data name="ViewDialogAccountInsightsTestConnection" xml:space="preserve"><value>Test connection</value></data>
+  <data name="ViewDialogAccountInsightsTestSuccess" xml:space="preserve"><value>Connection succeeded. No game records were sent.</value></data>
+  <data name="ViewDialogAccountInsightsMissingApiKey" xml:space="preserve"><value>Enter an API key.</value></data>
+  <data name="ViewDialogAccountInsightsApiUnauthorizedHint" xml:space="preserve"><value>Check your API key, workspace, region and model authorization.</value></data>
+  <data name="ViewDialogAccountInsightsMetricFeaturedCharacters" xml:space="preserve"><value>Acquired featured five-star characters</value></data>
+  <data name="ViewDialogAccountInsightsGachaDetailsUnavailable" xml:space="preserve"><value>Detailed gacha statistics are unavailable.</value></data>
 </root>

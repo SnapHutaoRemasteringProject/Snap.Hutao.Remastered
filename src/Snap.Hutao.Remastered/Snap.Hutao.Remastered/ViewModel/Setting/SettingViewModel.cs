@@ -19,6 +19,7 @@ using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.Update;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
+using Snap.Hutao.Remastered.UI.Xaml.View.Window;
 using Snap.Hutao.Remastered.Web;
 using Snap.Hutao.Remastered.Win32;
 using Snap.Hutao.Remastered.Win32.Foundation;
@@ -36,10 +37,9 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
     private readonly IServiceProvider serviceProvider;
 
     [Command("OpenAccountInsightsCommand")]
-    private async Task OpenAccountInsightsAsync()
+    private void OpenAccountInsights()
     {
-        AccountInsightsDialog dialog = await contentDialogFactory.CreateInstanceAsync<AccountInsightsDialog>(serviceProvider);
-        await contentDialogFactory.EnqueueAndShowAsync(dialog).ShowTask;
+        AccountInsightsWindows.Open();
     }
 
     private readonly IShellLinkInterop shellLinkInterop;
