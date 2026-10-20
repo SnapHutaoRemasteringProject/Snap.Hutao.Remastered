@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls.Charts;
 using ChartSamples = Microsoft.UI.Xaml.Controls.Charts.Samples;
 using WinUIChart = Microsoft.UI.Xaml.Controls.Charts.Chart;
 using Snap.Hutao.Remastered.Core.Setting;
+using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Service.GachaLog;
 using Snap.Hutao.Remastered.Service.HardChallenge;
@@ -32,11 +33,12 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 /// Displays read-only, per-account historical aggregates. Only anonymous aggregates can
 /// enter the optional user-initiated LLM request; repositories are never exposed to the model.
 /// </summary>
-public sealed class AccountInsightsDialog : ContentDialog
+public sealed partial class AccountInsightsDialog : ContentDialog
 {
     private const string EndpointSettingKey = "AccountInsightsLlmEndpoint";
     private const string ModelSettingKey = "AccountInsightsLlmModel";
 
+    private readonly CultureOptions cultureOptions;
     private readonly IUserService userService;
     private readonly IGachaLogRepository gachaRepository;
     private readonly ISpiralAbyssRepository abyssRepository;
@@ -67,11 +69,14 @@ public sealed class AccountInsightsDialog : ContentDialog
 
     public AccountInsightsDialog(
         IUserService userService,
+        CultureOptions cultureOptions,
         IGachaLogRepository gachaRepository,
         ISpiralAbyssRepository abyssRepository,
         IRoleCombatRepository combatRepository,
         IHardChallengeRepository challengeRepository)
     {
+        InitializeComponent();
+        this.cultureOptions = cultureOptions;
         this.userService = userService;
         this.gachaRepository = gachaRepository;
         this.abyssRepository = abyssRepository;
@@ -340,7 +345,7 @@ public sealed class AccountInsightsDialog : ContentDialog
                 new JsonObject
                 {
                     ["role"] = "system",
-                    ["content"] = "你是游戏记录分析助手。只根据给出的匿名历史统计评价趋势；必须区分观察事实和建议。不可推测用户身份、角色培养、装备或运气好坏，不可假定未记录周期为零分。特别注意不同指标方向，以及样本量较小时的不确定性。使用中文，简洁而具体。",
+                    ["content"] = $"You analyze Genshin Impact history data. Reply exclusively in the application interface language: {cultureOptions.CurrentCulture.Value.EnglishName} (BCP 47: {cultureOptions.CurrentCulture.Value.Name}). Use only the supplied anonymized historical aggregates. Separate observations, limitations and suggestions. Never invent missing periods or player data and never treat absent periods as zero. Take account of units, direction of improvements and sample sizes. Do not infer identity, spending, builds, weapon ownership or character strength from counts alone. Keep the assessment concise and actionable.",
                 },
                 new JsonObject { ["role"] = "user", ["content"] = snapshotJson },
             ];
