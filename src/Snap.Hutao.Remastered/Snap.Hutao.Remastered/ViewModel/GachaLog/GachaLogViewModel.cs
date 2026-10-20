@@ -41,6 +41,13 @@ public sealed partial class GachaLogViewModel : Abstraction.ViewModel
     private GachaLogServiceMetadataContext? metadataContext;
     private AppOptions? appOptions;
 
+    [Command("OpenAccountInsightsCommand")]
+    private async Task OpenAccountInsightsAsync()
+    {
+        AccountInsightsDialog dialog = await contentDialogFactory.CreateInstanceAsync<AccountInsightsDialog>(serviceProvider);
+        await contentDialogFactory.EnqueueAndShowAsync(dialog).ShowTask;
+    }
+
     [GeneratedConstructor]
     public partial GachaLogViewModel(IServiceProvider serviceProvider);
 
