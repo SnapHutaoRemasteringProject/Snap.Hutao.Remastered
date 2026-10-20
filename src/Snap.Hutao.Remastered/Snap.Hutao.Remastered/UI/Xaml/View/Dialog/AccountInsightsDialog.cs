@@ -251,9 +251,9 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         return
         [
             new("祈愿记录", "每月抽数", "抽", monthlyWishes, InsightDirection.Neutral),
-            new("祈愿记录", "各祈愿池抽数", "抽", poolWishes, InsightDirection.Neutral),
+            new("祈愿记录", "各祈愿池抽数", "抽", poolWishes, InsightDirection.Neutral, false),
             new("千星奇域祈愿", "每月抽数", "抽", monthlyBeyondWishes, InsightDirection.Neutral),
-            new("千星奇域祈愿", "各祈愿池抽数", "抽", beyondPoolWishes, InsightDirection.Neutral),
+            new("千星奇域祈愿", "各祈愿池抽数", "抽", beyondPoolWishes, InsightDirection.Neutral, false),
             new("深境螺旋", "每期星数", "星", abyss, InsightDirection.HigherIsBetter),
             new("幻想真境剧诗", "每期奖章数", "枚", theater, InsightDirection.HigherIsBetter),
             new("幽境危战（单人）", "每期最佳通关用时", "秒", challenge, InsightDirection.LowerIsBetter),
@@ -297,17 +297,24 @@ public sealed partial class AccountInsightsDialog : ContentDialog
 
         double mean = series.Points.Average(point => point.Value);
         InsightPoint newest = series.Points[^1];
-        string deltaDescription = series.Points.Count > 1
-            ? "，较上一期 " + (newest.Value - series.Points[^2].Value).ToString("+0.##;-0.##;0", CultureInfo.CurrentCulture) + series.Unit
-            : string.Empty;
-        panel.Children.Add(new TextBlock
+        string summary;
+        if (series.IsTimeSeries)
         {
-            Text = "已记录 " + series.Points.Count.ToString(CultureInfo.CurrentCulture) + " 个样本 · 平均 "
+            string deltaDescription = series.Points.Count > 1
+                ? "，较上一期 " + (newest.Value - series.Points[^2].Value).ToString("+0.##;-0.##;0", CultureInfo.CurrentCulture) + series.Unit
+                : string.Empty;
+            summary = "已记录 " + series.Points.Count.ToString(CultureInfo.CurrentCulture) + " 个周期 · 平均 "
                 + mean.ToString("0.##", CultureInfo.CurrentCulture) + series.Unit
                 + " · 最近 " + newest.Value.ToString("0.##", CultureInfo.CurrentCulture) + series.Unit
-                + deltaDescription,
-            TextWrapping = TextWrapping.Wrap,
-        });
+                + deltaDescription;
+        }
+        else
+        {
+            summary = "已记录 " + series.Points.Count.ToString(CultureInfo.CurrentCulture) + " 个祈愿池 · 总计 "
+                + series.Points.Sum(point => point.Value).ToString("0", CultureInfo.CurrentCulture) + series.Unit;
+        }
+
+        panel.Children.Add(new TextBlock { Text = summary, TextWrapping = TextWrapping.Wrap });
 
         // Experimental Microsoft.UI.Xaml.Controls.Charts is already present in WASDK 2.5.4.
         // Use independent axis/sample objects for each series to avoid shared control state.
@@ -361,16 +368,17 @@ public sealed partial class AccountInsightsDialog : ContentDialog
             JsonObject summary = new()
             {
                 ["recorded_period_count"] = values.Length,
-                ["latest"] = values.Length > 0 ? JsonValue.Create(values[^1]) : null,
+                ["latest"] = item.IsTimeSeries && values.Length > 0 ? JsonValue.Create(values[^1]) : null,
                 ["minimum"] = values.Length > 0 ? JsonValue.Create(values.Min()) : null,
                 ["maximum"] = values.Length > 0 ? JsonValue.Create(values.Max()) : null,
                 ["average"] = values.Length > 0 ? JsonValue.Create(Math.Round(values.Average(), 2)) : null,
-                ["latest_change_from_previous"] = values.Length > 1 ? JsonValue.Create(values[^1] - values[^2]) : null,
+                ["latest_change_from_previous"] = item.IsTimeSeries && values.Length > 1 ? JsonValue.Create(values[^1] - values[^2]) : null,
             };
 
             data.Add(new JsonObject
             {
                 ["summary"] = summary,
+                ["kind"] = item.IsTimeSeries ? "time_series" : "category_distribution",
                 ["category"] = item.Title,
                 ["metric"] = item.Metric,
                 ["unit"] = item.Unit,
@@ -436,7 +444,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
                 new JsonObject
                 {
                     ["role"] = "system",
-                    ["content"] = $"You analyze Genshin Impact history data. Reply exclusively in the application interface language: {cultureOptions.CurrentCulture.Value.EnglishName} (BCP 47: {cultureOptions.CurrentCulture.Value.Name}). Use only the supplied anonymized historical aggregates. Separate observations, limitations and suggestions. Never invent missing periods or player data and never treat absent periods as zero. Take account of units, direction of improvements and sample sizes. Do not infer identity, spending, builds, weapon ownership or character strength from counts alone. Keep the assessment concise and actionable.",
+                    ["content"] = $"You analyze Genshin Impact history data. Reply exclusively in the application interface language: {cultureOptions.CurrentCulture.Value.EnglishName} (BCP 47: {cultureOptions.CurrentCulture.Value.Name}). Use only the supplied anonymized historical aggregates. Separate observations, limitations and suggestions. Never invent missing periods or player data and never treat absent periods as zero. Take account of units, direction of improvements and sample sizes. Do not infer identity, spending, builds, weapon ownership or character strength from counts alone. Do not compare neighboring category labels as chronological periods. Keep the assessment concise and actionable.",
                 },
                 new JsonObject { ["role"] = "user", ["content"] = snapshotJson },
             ];
@@ -510,5 +518,6 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         string Metric,
         string Unit,
         List<InsightPoint> Points,
-        InsightDirection Direction);
+        InsightDirection Direction,
+        bool IsTimeSeries = true);
 }
