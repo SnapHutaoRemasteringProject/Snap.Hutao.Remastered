@@ -148,6 +148,14 @@
         <Setter Property="shuxcth:MaterialBackground.NativeBrush" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
     </Style>
 
+    <Style x:Key="StackPanelCardStyle" TargetType="StackPanel">
+        <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}"/>
+        <Setter Property="shuxcth:MaterialBackground.GlassBrush" Value="{ThemeResource HutaoCardBrush}"/>
+        <Setter Property="shuxcth:MaterialBackground.NativeBrush" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
+    </Style>
+
     <Style x:Key="GridShimmerStyle" TargetType="Grid">
         <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
@@ -177,6 +185,15 @@
         x:Key="AcrylicGridCardStyle"
         BasedOn="{StaticResource GridCardStyle}"
         TargetType="Grid">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="shuxcth:MaterialBackground.GlassBrush" Value="{ThemeResource HutaoCardBrush}"/>
+        <Setter Property="shuxcth:MaterialBackground.NativeBrush" Value="{ThemeResource SystemControlAcrylicElementBrush}"/>
+    </Style>
+
+    <Style
+        x:Key="AcrylicStackPanelCardStyle"
+        BasedOn="{StaticResource StackPanelCardStyle}"
+        TargetType="StackPanel">
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="shuxcth:MaterialBackground.GlassBrush" Value="{ThemeResource HutaoCardBrush}"/>
         <Setter Property="shuxcth:MaterialBackground.NativeBrush" Value="{ThemeResource SystemControlAcrylicElementBrush}"/>

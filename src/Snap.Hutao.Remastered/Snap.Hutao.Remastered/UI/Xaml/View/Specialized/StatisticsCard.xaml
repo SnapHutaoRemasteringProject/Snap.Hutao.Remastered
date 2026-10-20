@@ -129,13 +129,11 @@
 
     </UserControl.Resources>
 
-    <Grid Style="{ThemeResource AcrylicGridCardStyle}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-
+    <StackPanel Style="{ThemeResource AcrylicStackPanelCardStyle}">
+        <StackPanel.ChildrenTransitions>
+            <EntranceThemeTransition FromVerticalOffset="50"/>
+            <RepositionThemeTransition IsStaggeringEnabled="False"/>
+        </StackPanel.ChildrenTransitions>
         <Expander
             x:Name="DetailExpander"
             Padding="12,0,12,0"
@@ -194,11 +192,11 @@
                                 <ToggleButton
                                     x:Name="CombinedModeToggle"
                                     VerticalAlignment="Center"
+                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_9122}"
                                     DataContext="{x:Bind GlassPresenter_9122.DataContext, Mode=OneWay}"
                                     FontSize="14"
                                     FontWeight="Bold"
                                     IsChecked="{x:Bind ShowCombinedTotal, Mode=TwoWay}"
-                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_9122}"
                                     ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewControlStatisticsCardCombinedModeTooltip}"
                                     Visibility="{x:Bind ShowCombinedModeToggle, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                                     <TextBlock FontSize="14" Text="&#x2605;"/>
@@ -220,6 +218,7 @@
                                     VerticalAlignment="Center"
                                     shuxcth:ControlMaterialState.IsManaged="True"
                                     shuxcth:ControlMaterialState.NativeControl="{x:Bind CombinedModeToggle, Mode=OneWay}"
+                                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
                                     BorderThickness="{x:Bind CombinedModeToggle.BorderThickness, Mode=OneWay}"
                                     Command="{x:Bind CombinedModeToggle.Command, Mode=OneWay}"
                                     CommandParameter="{x:Bind CombinedModeToggle.CommandParameter, Mode=OneWay}"
@@ -230,8 +229,7 @@
                                     FontWeight="{x:Bind CombinedModeToggle.FontWeight, Mode=OneWay}"
                                     IsChecked="{x:Bind ShowCombinedTotal, Mode=TwoWay}"
                                     IsEnabled="{x:Bind CombinedModeToggle.IsEnabled, Mode=OneWay}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewControlStatisticsCardCombinedModeTooltip}"
-                                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True">
+                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewControlStatisticsCardCombinedModeTooltip}">
                                     <TextBlock FontSize="14" Text="&#x2605;"/>
                                 </wl:LiquidGlassToggleButton>
                             </cwc:Case>
@@ -490,6 +488,6 @@
             </cwc:Case>
         </cwc:SwitchPresenter>
 
-    </Grid>
+    </StackPanel>
 
 </UserControl>
