@@ -38,6 +38,13 @@ public sealed partial class SpiralAbyssViewModel : Abstraction.ViewModel, IRecip
 
     private SpiralAbyssMetadataContext? metadataContext;
 
+    [Command("OpenAccountInsightsCommand")]
+    private async Task OpenAccountInsightsAsync()
+    {
+        AccountInsightsDialog dialog = await contentDialogFactory.CreateInstanceAsync<AccountInsightsDialog>(serviceProvider);
+        await contentDialogFactory.EnqueueAndShowAsync(dialog).ShowTask;
+    }
+
     [GeneratedConstructor]
     public partial SpiralAbyssViewModel(IServiceProvider serviceProvider);
 
