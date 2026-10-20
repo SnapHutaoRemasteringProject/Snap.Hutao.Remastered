@@ -4825,7 +4825,7 @@ Ruang Tersedia: {2}</value>
     <value>Mulai otomatis saat startup</value>
   </data>
   <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
-    <value>无法读取或更新开机自启动计划任务。请确认计划任务服务可用，并以管理员身份运行后重试。</value>
+    <value>Gagal membaca atau memperbaharui tugas terjadwal saat startup. Mohon periksa layanan tugas terjadwal, lalu coba lagi dengan menjalankan aplikasi sebagai administrator.</value>
   </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>Perilaku aplikasi</value>
