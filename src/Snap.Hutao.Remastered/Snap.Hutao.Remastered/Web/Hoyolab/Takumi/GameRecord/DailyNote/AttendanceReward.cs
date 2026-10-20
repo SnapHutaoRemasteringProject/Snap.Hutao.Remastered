@@ -8,7 +8,7 @@ namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.DailyNote;
 public sealed class AttendanceReward
 {
     [JsonPropertyName("status")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter<AttendanceRewardStatus>))]
     public AttendanceRewardStatus Status { get; set; }
 
     public string? StatusFormatted { get => Status.GetLocalizedDescription(SH.ResourceManager, CultureInfo.CurrentCulture); }

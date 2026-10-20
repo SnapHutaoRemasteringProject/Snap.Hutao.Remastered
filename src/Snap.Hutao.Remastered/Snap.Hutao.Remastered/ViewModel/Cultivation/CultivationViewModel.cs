@@ -812,8 +812,13 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
 
         if (typeString is not null)
         {
-            Type? pageType = Type.GetType(typeString);
-            ArgumentNullException.ThrowIfNull(pageType);
+            Type pageType = typeString switch
+            {
+                "Snap.Hutao.Remastered.UI.Xaml.View.Page.WikiAvatarPage" => typeof(UI.Xaml.View.Page.WikiAvatarPage),
+                "Snap.Hutao.Remastered.UI.Xaml.View.Page.WikiWeaponPage" => typeof(UI.Xaml.View.Page.WikiWeaponPage),
+                "Snap.Hutao.Remastered.UI.Xaml.View.Page.AvatarPropertyPage" => typeof(UI.Xaml.View.Page.AvatarPropertyPage),
+                _ => throw new ArgumentException("Unknown cultivation navigation target.", nameof(typeString)),
+            };
             navigationService.Navigate(pageType, NavigationExtraData.Default, true);
         }
     }

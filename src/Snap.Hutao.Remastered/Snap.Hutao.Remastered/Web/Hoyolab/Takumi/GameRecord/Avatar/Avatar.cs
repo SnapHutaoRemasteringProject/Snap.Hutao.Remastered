@@ -16,7 +16,7 @@ public class Avatar
     public string Name { get; set; } = default!;
 
     [JsonPropertyName("element")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter<ElementName>))]
     public ElementName Element { get; set; }
 
     [JsonPropertyName("fetter")]

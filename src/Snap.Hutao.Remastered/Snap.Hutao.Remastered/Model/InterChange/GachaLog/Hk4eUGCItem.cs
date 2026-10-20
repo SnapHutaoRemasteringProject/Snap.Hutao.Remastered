@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Core.Text.Json.Annotation;
 using Snap.Hutao.Remastered.Core.Text.Json.Converter;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Event.GachaInfo;
@@ -39,7 +38,7 @@ public sealed class Hk4eUGCItem : IJsonOnDeserialized
     public required DateTime Time { get; init; }
 
     [JsonPropertyName("op_gacha_type")]
-    [JsonEnumHandling(JsonEnumHandling.NumberString)]
+    [JsonConverter(typeof(NumberStringEnumConverter<GachaType>))]
     public required GachaType GachaType { get; init; }
 
     public static Hk4eUGCItem From(BeyondGachaItem item, string name, string itemType, string rankType, int timezone)

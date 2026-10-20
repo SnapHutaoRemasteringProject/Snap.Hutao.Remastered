@@ -1,7 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Core.Text.Json.Annotation;
+using Snap.Hutao.Remastered.Core.Text.Json.Converter;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Passport;
@@ -9,7 +9,7 @@ namespace Snap.Hutao.Remastered.Web.Hoyolab.Passport;
 public sealed class VerifyInfo
 {
     [JsonPropertyName("status")]
-    [JsonEnumHandling(JsonEnumHandling.String)]
+    [JsonConverter(typeof(NameEnumConverter<VerifyStatus>))]
     public required VerifyStatus Status { get; set; }
 
     [JsonPropertyName("verify_method_combinations")]

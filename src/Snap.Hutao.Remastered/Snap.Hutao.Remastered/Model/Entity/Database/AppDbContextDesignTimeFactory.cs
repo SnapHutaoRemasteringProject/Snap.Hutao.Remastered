@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore;
 
 namespace Snap.Hutao.Remastered.Model.Entity.Database;
 
@@ -15,12 +16,7 @@ public sealed class AppDbContextDesignTimeFactory : IDesignTimeDbContextFactory<
     [EditorBrowsable(EditorBrowsableState.Never)]
     public AppDbContext CreateDbContext(string[] args)
     {
-#if DEBUG
-        // TODO: replace with your own database file path.
-        string userdataDbName = @"D:\Hutao\Userdata.db";
-        return AppDbContext.Create(default!, $"Data Source={userdataDbName}");
-#else
-        throw Core.ExceptionService.HutaoException.NotSupported();
-#endif
+        // Design-time model generation must not inspect a developer's live database.
+        return new(new DbContextOptionsBuilder<AppDbContext>().UseSqlite("Data Source=:memory:").Options);
     }
 }

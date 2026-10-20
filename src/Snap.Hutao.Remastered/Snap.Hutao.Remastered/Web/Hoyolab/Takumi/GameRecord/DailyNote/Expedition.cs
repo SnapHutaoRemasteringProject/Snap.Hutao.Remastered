@@ -19,7 +19,7 @@ public sealed class Expedition
     public Uri AvatarSideIcon { get; set; } = default!;
 
     [JsonPropertyName("status")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter<ExpeditionStatus>))]
     public ExpeditionStatus Status { get; set; }
 
     [JsonPropertyName("remained_time")]

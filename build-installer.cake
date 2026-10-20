@@ -1,5 +1,4 @@
 #tool "nuget:?package=nuget.commandline&version=6.9.1"
-#addin nuget:?package=Cake.Http&version=4.0.0
 
 var target = Argument("target", "Build");
 var configuration = Argument("configuration", "Release");
@@ -32,7 +31,7 @@ string runtimeIdentifier
 }
 string binPath
 {
-    get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier);
+    get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, "publish");
 }
 string installerPublishDir
 {
@@ -142,7 +141,7 @@ Task("Build binary package")
 {
     Information("Building binary package...");
 
-    var settings = new DotNetBuildSettings
+    var settings = new DotNetPublishSettings
     {
         Configuration = configuration
     };
@@ -154,7 +153,7 @@ Task("Build binary package")
                                             .Append("/p:AppxBundle=Never")
     };
 
-    DotNetBuild(project, settings);
+    DotNetPublish(project, settings);
 });
 
 Task("Copy files")

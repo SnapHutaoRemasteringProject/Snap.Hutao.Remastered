@@ -1,7 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Core.Text.Json.Annotation;
+using Snap.Hutao.Remastered.Core.Text.Json.Converter;
 
 namespace Snap.Hutao.Remastered.Web.Hutao;
 
@@ -13,7 +13,7 @@ public sealed class HutaoPackageMirror
     [JsonPropertyName("mirror_name")]
     public string MirrorName { get; set; } = default!;
 
-    [JsonEnumHandling(JsonEnumHandling.String)]
+    [JsonConverter(typeof(NameEnumConverter<HutaoPackageMirrorType>))]
     [JsonPropertyName("mirror_type")]
     public HutaoPackageMirrorType MirrorType { get; set; }
 }

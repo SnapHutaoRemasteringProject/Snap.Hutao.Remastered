@@ -20,7 +20,7 @@ public sealed class GitRepository
     public Uri? SshUrl { get; set; }
 
     [JsonPropertyName("type")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter<GitRepositoryType>))]
     public required GitRepositoryType Type { get; set; }
 
     [JsonPropertyName("token")]
