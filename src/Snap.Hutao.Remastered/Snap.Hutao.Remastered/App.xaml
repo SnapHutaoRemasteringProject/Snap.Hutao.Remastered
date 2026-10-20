@@ -96,7 +96,7 @@
             <Style BasedOn="{StaticResource DefaultCommandBarStyle}" TargetType="CommandBar">
                 <Setter Property="essential:CommandBarHelper.AcrylicWorkaround" Value="True"/>
             </Style>
-            <Style BasedOn="{StaticResource DefaultFlyoutStyle}" TargetType="Flyout">
+            <Style TargetType="Flyout">
                 <Setter Property="essential:FlyoutHelper.AcrylicWorkaround" Value="True"/>
             </Style>
             <Style BasedOn="{StaticResource DefaultSliderStyle}" TargetType="Slider">

@@ -5751,4 +5751,22 @@
   <data name="ViewDialogAccountInsightsApiUnauthorizedHint" xml:space="preserve"><value>キー、リージョン、ワークスペース、モデルの権限を確認してください。</value></data>
   <data name="ViewDialogAccountInsightsMetricFeaturedCharacters" xml:space="preserve"><value>獲得済みのピックアップ星5キャラクター</value></data>
   <data name="ViewDialogAccountInsightsGachaDetailsUnavailable" xml:space="preserve"><value>詳細な祈願統計を利用できません。</value></data>
+  <data name="ViewDialogAccountInsightsAssistantLabel" xml:space="preserve">
+    <value>AI アシスタント</value>
+  </data>
+  <data name="ViewDialogAccountInsightsCopyResponse" xml:space="preserve">
+    <value>回答をコピー</value>
+  </data>
+  <data name="ViewDialogAccountInsightsStopGeneration" xml:space="preserve">
+    <value>生成を停止</value>
+  </data>
+  <data name="ViewDialogAccountInsightsGenerationStopped" xml:space="preserve">
+    <value>生成を停止しました。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsTokenUsage" xml:space="preserve">
+    <value>入力 {0} トークン · 出力 {1} トークン</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReasoningInProgress" xml:space="preserve">
+    <value>モデルが推論中です。回答をお待ちください…</value>
+  </data>
 </root>

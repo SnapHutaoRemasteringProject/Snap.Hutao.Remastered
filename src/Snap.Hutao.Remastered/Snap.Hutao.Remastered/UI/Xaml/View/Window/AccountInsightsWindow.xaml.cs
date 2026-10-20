@@ -89,6 +89,7 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
         CopyButton.Click += OnCopyClicked;
         GenerateButton.Click += OnGenerateClicked;
         TestButton.Click += OnTestClicked;
+        StopButton.Click += OnStopClicked;
         RootGrid.Loaded += OnLoaded;
 
         this.InitializeController(scoped);
@@ -104,6 +105,7 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
 
     public void OnWindowClosed()
     {
+        activeRequest?.Cancel();
         lifetime.Cancel();
         ApiKeyBox.Password = string.Empty;
         lifetime.Dispose();

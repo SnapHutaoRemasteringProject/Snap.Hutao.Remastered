@@ -5755,4 +5755,22 @@
   <data name="ViewDialogAccountInsightsApiUnauthorizedHint" xml:space="preserve"><value>请检查密钥、地域、业务空间和模型权限。</value></data>
   <data name="ViewDialogAccountInsightsMetricFeaturedCharacters" xml:space="preserve"><value>已获得的 UP 五星角色</value></data>
   <data name="ViewDialogAccountInsightsGachaDetailsUnavailable" xml:space="preserve"><value>祈愿详细统计暂时不可用。</value></data>
+  <data name="ViewDialogAccountInsightsAssistantLabel" xml:space="preserve">
+    <value>AI 助手</value>
+  </data>
+  <data name="ViewDialogAccountInsightsCopyResponse" xml:space="preserve">
+    <value>复制回答</value>
+  </data>
+  <data name="ViewDialogAccountInsightsStopGeneration" xml:space="preserve">
+    <value>停止生成</value>
+  </data>
+  <data name="ViewDialogAccountInsightsGenerationStopped" xml:space="preserve">
+    <value>已停止生成。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsTokenUsage" xml:space="preserve">
+    <value>输入 {0} Tokens · 输出 {1} Tokens</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReasoningInProgress" xml:space="preserve">
+    <value>模型正在思考，等待回答内容…</value>
+  </data>
 </root>

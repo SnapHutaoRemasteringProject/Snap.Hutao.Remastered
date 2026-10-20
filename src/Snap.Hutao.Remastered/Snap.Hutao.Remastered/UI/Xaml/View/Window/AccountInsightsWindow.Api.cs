@@ -6,9 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
@@ -91,8 +93,22 @@ public sealed partial class AccountInsightsWindow
         }
     }
 
+    private CancellationTokenSource? activeRequest;
+    private bool stopRequested;
+
+    private void OnStopClicked(object sender, RoutedEventArgs args)
+    {
+        stopRequested = true;
+        activeRequest?.Cancel();
+    }
+
     private async Task RequestAnalysisAsync(string userMessage, bool connectionTest)
     {
+        if (activeRequest is not null)
+        {
+            return;
+        }
+
         string configuredEndpoint = EndpointBox.Text.Trim().TrimEnd('/');
         if (configuredEndpoint.EndsWith("/v1", StringComparison.OrdinalIgnoreCase))
         {
@@ -121,10 +137,20 @@ public sealed partial class AccountInsightsWindow
             return;
         }
 
+        stopRequested = false;
+        using CancellationTokenSource requestCts = CancellationTokenSource.CreateLinkedTokenSource(lifetime.Token);
+        // Long AI analyses can take minutes, especially when extended reasoning is enabled.
+        // Inactivity is checked separately below; never abort simply because the answer
+        // exceeds the old 90-second fixed HttpClient timeout.
+        requestCts.CancelAfter(TimeSpan.FromMinutes(15));
+        activeRequest = requestCts;
+
         ActivityRing.IsActive = true;
+        StopButton.IsEnabled = true;
         UpdateGenerateEnabled();
         TestButton.IsEnabled = false;
         ResponseText.Text = L("Sending");
+        BeginConversationMessage(connectionTest);
 
         try
         {
@@ -172,7 +198,7 @@ public sealed partial class AccountInsightsWindow
             JsonObject payload = new()
             {
                 ["model"] = model,
-                ["stream"] = false,
+                ["stream"] = true,
                 ["messages"] = new JsonArray
                 {
                     new JsonObject { ["role"] = "system", ["content"] = prompt },
@@ -181,18 +207,20 @@ public sealed partial class AccountInsightsWindow
             };
 
             using HttpClientHandler handler = new() { AllowAutoRedirect = false };
-            using HttpClient client = new(handler) { Timeout = TimeSpan.FromSeconds(90) };
+            using HttpClient client = new(handler) { Timeout = Timeout.InfiniteTimeSpan };
             using HttpRequestMessage request = new(HttpMethod.Post, endpoint)
             {
                 Content = new StringContent(payload.ToJsonString(), Encoding.UTF8, "application/json"),
             };
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
 
-            using HttpResponseMessage response = await client.SendAsync(request, lifetime.Token);
-            string body = await response.Content.ReadAsStringAsync(lifetime.Token);
+            using HttpResponseMessage response = await client.SendAsync(
+                request, HttpCompletionOption.ResponseHeadersRead, requestCts.Token);
             if (!response.IsSuccessStatusCode)
             {
-                string errorCode = ExtractApiErrorCode(body);
+                string errorBody = await response.Content.ReadAsStringAsync(requestCts.Token);
+                string errorCode = ExtractApiErrorCode(errorBody);
                 logger.LogWarning("Account insights API returned HTTP {Status} (provider code: {ProviderCode})",
                     (int)response.StatusCode, errorCode);
 
@@ -209,21 +237,85 @@ public sealed partial class AccountInsightsWindow
                 }
 
                 ResponseText.Text = display;
+                ShowResponseError(display);
                 return;
             }
 
-            using JsonDocument parsed = JsonDocument.Parse(body);
-            JsonElement choices = parsed.RootElement.GetProperty("choices");
-            string? answer = choices[0].GetProperty("message").GetProperty("content").GetString();
+            int? inputTokens = null;
+            int? outputTokens = null;
+            string? mediaType = response.Content.Headers.ContentType?.MediaType;
+            if (string.Equals(mediaType, "text/event-stream", StringComparison.OrdinalIgnoreCase))
+            {
+                await ReadStreamingResponseAsync(response, requestCts.Token, (promptCount, completionCount) =>
+                {
+                    inputTokens = promptCount ?? inputTokens;
+                    outputTokens = completionCount ?? outputTokens;
+                });
+            }
+            else
+            {
+                // Some OpenAI-compatible providers ignore stream=true. Support normal JSON too.
+                string body = await response.Content.ReadAsStringAsync(requestCts.Token);
+                using JsonDocument parsed = JsonDocument.Parse(body);
+                JsonElement root = parsed.RootElement;
+                if (root.TryGetProperty("choices", out JsonElement choices) &&
+                    choices.ValueKind == JsonValueKind.Array && choices.GetArrayLength() > 0 &&
+                    choices[0].TryGetProperty("message", out JsonElement message) &&
+                    message.TryGetProperty("content", out JsonElement content) &&
+                    content.ValueKind == JsonValueKind.String)
+                {
+                    AppendResponse(content.GetString() ?? string.Empty);
+                }
 
-            ResponseText.Text = string.IsNullOrWhiteSpace(answer) ? L("EmptyReply") : connectionTest ? L("TestSuccess") : answer;
+                ReadTokenUsage(root, (promptCount, completionCount) =>
+                {
+                    inputTokens = promptCount;
+                    outputTokens = completionCount;
+                });
+            }
+
+            if (responseBuffer.Length == 0)
+            {
+                ResponseText.Text = L("EmptyReply");
+                ShowResponseError(L("EmptyReply"));
+                return;
+            }
+
+            string? usage = inputTokens.HasValue || outputTokens.HasValue
+                ? string.Format(cultureOptions.CurrentCulture.Value, L("TokenUsage"),
+                    inputTokens?.ToString(cultureOptions.CurrentCulture.Value) ?? "–",
+                    outputTokens?.ToString(cultureOptions.CurrentCulture.Value) ?? "–")
+                : null;
+            CompleteResponse(usage);
+            ResponseText.Text = connectionTest ? L("TestSuccess") : string.Empty;
             LocalSetting.Set(EndpointSettingKey, endpoint.ToString());
             LocalSetting.Set(ModelSettingKey, model);
+        }
+        catch (OperationCanceledException) when (lifetime.IsCancellationRequested)
+        {
+            // Window is closing; do not update its visual tree.
+        }
+        catch (OperationCanceledException) when (stopRequested)
+        {
+            if (!lifetime.IsCancellationRequested)
+            {
+                CompleteResponse();
+                ResponseText.Text = L("GenerationStopped");
+            }
         }
         catch (OperationCanceledException)
         {
             if (!lifetime.IsCancellationRequested)
             {
+                CompleteResponse();
+                ResponseText.Text = L("Timeout");
+            }
+        }
+        catch (TimeoutException)
+        {
+            if (!lifetime.IsCancellationRequested)
+            {
+                CompleteResponse();
                 ResponseText.Text = L("Timeout");
             }
         }
@@ -232,18 +324,117 @@ public sealed partial class AccountInsightsWindow
             logger.LogWarning(exception, "Account insights API request failed");
             if (!lifetime.IsCancellationRequested)
             {
+                CompleteResponse();
                 ResponseText.Text = L("Failure");
             }
         }
         finally
         {
+            activeRequest = null;
             if (!lifetime.IsCancellationRequested)
             {
                 ActivityRing.IsActive = false;
+                StopButton.IsEnabled = false;
                 UpdateGenerateEnabled();
                 TestButton.IsEnabled = true;
             }
         }
+    }
+
+    private async Task ReadStreamingResponseAsync(
+        HttpResponseMessage response, CancellationToken cancellationToken, Action<int?, int?> onUsage)
+    {
+        await using Stream stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+        using StreamReader reader = new(stream, Encoding.UTF8);
+        StringBuilder eventBody = new();
+
+        while (true)
+        {
+            // Timeout means no bytes arrived for three minutes, not that the full
+            // generation has taken longer than 90 seconds.
+            string? line = await reader.ReadLineAsync(cancellationToken).AsTask()
+                .WaitAsync(TimeSpan.FromMinutes(3), cancellationToken);
+            if (line is null)
+            {
+                if (eventBody.Length > 0)
+                {
+                    ProcessStreamEvent(eventBody.ToString(), onUsage);
+                }
+                break;
+            }
+
+            if (line.Length == 0)
+            {
+                if (eventBody.Length > 0)
+                {
+                    if (ProcessStreamEvent(eventBody.ToString(), onUsage))
+                    {
+                        break;
+                    }
+                    eventBody.Clear();
+                }
+                continue;
+            }
+
+            if (line.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+            {
+                eventBody.Append(line.AsSpan(5).Trim());
+            }
+        }
+        FlushResponse();
+    }
+
+    private bool ProcessStreamEvent(string eventText, Action<int?, int?> onUsage)
+    {
+        if (eventText.Equals("[DONE]", StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        try
+        {
+            using JsonDocument parsed = JsonDocument.Parse(eventText);
+            JsonElement root = parsed.RootElement;
+            ReadTokenUsage(root, onUsage);
+
+            if (root.TryGetProperty("choices", out JsonElement choices) &&
+                choices.ValueKind == JsonValueKind.Array && choices.GetArrayLength() > 0 &&
+                choices[0].TryGetProperty("delta", out JsonElement delta))
+            {
+                if (delta.TryGetProperty("content", out JsonElement content) &&
+                    content.ValueKind == JsonValueKind.String)
+                {
+                    AppendResponse(content.GetString() ?? string.Empty);
+                }
+                else if (responseBuffer.Length == 0 &&
+                    delta.TryGetProperty("reasoning_content", out JsonElement reasoning) &&
+                    reasoning.ValueKind == JsonValueKind.String &&
+                    reasoning.GetString()?.Length > 0)
+                {
+                    ResponseText.Text = L("ReasoningInProgress");
+                }
+            }
+        }
+        catch (JsonException)
+        {
+            // A malformed provider event must not erase the text already streamed.
+            logger.LogDebug("Skipped a malformed Chat Completions stream event.");
+        }
+        return false;
+    }
+
+    private static void ReadTokenUsage(JsonElement root, Action<int?, int?> onUsage)
+    {
+        if (!root.TryGetProperty("usage", out JsonElement usage) || usage.ValueKind != JsonValueKind.Object)
+        {
+            return;
+        }
+
+        int? input = usage.TryGetProperty("prompt_tokens", out JsonElement p) &&
+            p.ValueKind == JsonValueKind.Number && p.TryGetInt32(out int i) ? i : null;
+        int? output = usage.TryGetProperty("completion_tokens", out JsonElement c) &&
+            c.ValueKind == JsonValueKind.Number && c.TryGetInt32(out int o) ? o : null;
+        onUsage(input, output);
     }
 
     // Provider error codes are useful for diagnosis, but full HTTP response bodies

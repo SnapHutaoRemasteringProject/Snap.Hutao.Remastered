@@ -5751,4 +5751,22 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewDialogAccountInsightsApiUnauthorizedHint" xml:space="preserve"><value>Check your API key, workspace, region and model authorization.</value></data>
   <data name="ViewDialogAccountInsightsMetricFeaturedCharacters" xml:space="preserve"><value>Acquired featured five-star characters</value></data>
   <data name="ViewDialogAccountInsightsGachaDetailsUnavailable" xml:space="preserve"><value>Detailed gacha statistics are unavailable.</value></data>
+  <data name="ViewDialogAccountInsightsAssistantLabel" xml:space="preserve">
+    <value>AI assistant</value>
+  </data>
+  <data name="ViewDialogAccountInsightsCopyResponse" xml:space="preserve">
+    <value>Copy response</value>
+  </data>
+  <data name="ViewDialogAccountInsightsStopGeneration" xml:space="preserve">
+    <value>Stop generation</value>
+  </data>
+  <data name="ViewDialogAccountInsightsGenerationStopped" xml:space="preserve">
+    <value>Generation stopped.</value>
+  </data>
+  <data name="ViewDialogAccountInsightsTokenUsage" xml:space="preserve">
+    <value>Input {0} tokens · Output {1} tokens</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReasoningInProgress" xml:space="preserve">
+    <value>The model is reasoning; waiting for its answer…</value>
+  </data>
 </root>
