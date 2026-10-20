@@ -13,7 +13,7 @@ var manifest = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "
 
 var targetFramework = XmlPeek(project, "/Project/PropertyGroup/TargetFramework/text()").Trim();
 var runtimeIdentifier = XmlPeek(project, "/Project/PropertyGroup/RuntimeIdentifier/text()").Trim();
-var binPath = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, "publish");
+var binPath = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier);
 var outputPath = System.IO.Path.Combine(repoDir, "src", "output");
 
 // Version: read from Package.appxmanifest
@@ -72,7 +72,7 @@ Task("Build binary package")
 {
     Information("Building...");
 
-    var settings = new DotNetPublishSettings
+    var settings = new DotNetBuildSettings
     {
         Configuration = configuration
     };
@@ -86,7 +86,7 @@ Task("Build binary package")
                                             .Append("/p:AppxPackageOutput=" + outputPath)
     };
 
-    DotNetPublish(project, settings);
+    DotNetBuild(project, settings);
 });
 
 Task("Copy files")

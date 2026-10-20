@@ -31,7 +31,7 @@ string runtimeIdentifier
 }
 string binPath
 {
-    get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, "publish");
+    get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier);
 }
 string installerPublishDir
 {
@@ -141,7 +141,7 @@ Task("Build binary package")
 {
     Information("Building binary package...");
 
-    var settings = new DotNetPublishSettings
+    var settings = new DotNetBuildSettings
     {
         Configuration = configuration
     };
@@ -153,7 +153,7 @@ Task("Build binary package")
                                             .Append("/p:AppxBundle=Never")
     };
 
-    DotNetPublish(project, settings);
+    DotNetBuild(project, settings);
 });
 
 Task("Copy files")

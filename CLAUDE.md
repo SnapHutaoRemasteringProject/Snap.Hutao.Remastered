@@ -65,11 +65,6 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
 - **Plugin SDK** — has its own solution,
   [`src/Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.slnx`](src/Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.slnx),
   which pulls in the main app project, the SDK project and the `TestPlugin` sample.
-- **Publishing** — ReadyToRun is enabled by default for all configurations, including Debug.
-  x64 is selected by the solution/project platform declarations; do not add an AnyCPU-to-x64 mapping. All four Cake
-  packaging entry points use `DotNetPublish` and package its `publish` directory. Plugins and runtime
-  scripts remain enabled. See [JSON/EF Native AOT preparation](docs/aot-readiness.md); this is not
-  a claim that the full application can already publish as Native AOT.
 - **Build quirks (do not "clean up" blindly)**
   - The app csproj contains a `UsePatchedXamlCompiler` target that byte-patches
     `XamlCompiler.exe` on `dotnet build` (MSBuild Core) to work around
@@ -450,8 +445,8 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
-| 2026-10-20 | Kept unconditional R2R including Debug, removed redundant output configuration and stale Release/experiment outputs. Separated JSON wire policy from reflection, added generated infrastructure/metadata collection contracts, static enum converters, typed ID/HTTP metadata APIs, and finite cultivation navigation. |
-| 2026-10-20 | Enabled default Release R2R in all packaging flows, adopted source-generated settings/database JSON and EF's compiled model; preserved plugin/script support, storage formats, and migrations. Removed extra experiment scripts; retained optional AOT diagnostics. |
+| 2026-10-20 | Separated JSON wire policy from reflection, added generated infrastructure/metadata collection contracts, static enum converters, typed ID/HTTP metadata APIs, and finite cultivation navigation. |
+| 2026-10-20 | Adopted source-generated settings/database JSON and EF's compiled model; preserved plugin/script support, storage formats, and migrations. Removed extra experiment scripts; retained optional AOT diagnostics. |
 | 2026-10-18 | Document Canary's explicit trigger-commit merge, ancestry verification and compiled-source summary, including pushes made before a PR exists. |
 | 2026-10-18 | Recounted source-linked production files and test methods after adding account-initialization thread-affinity regression tests; documented their explicit Windows dependency doubles. |
 | 2026-10-11 | Full "spec vs reality" audit (`CODE_REVIEW.md#ENG-10`): .NET 10→11, `[RelayCommand]`→`[Command("…")]`, observable partial properties, both ViewModel base classes, `develop`→`dev`, accurate `RetryHttpHandler` semantics, plugin/ALC section, DI attribute matrix, localization mechanism, build quirks, test-project caveat, visibility rule rewritten, §8 Known drift added. |

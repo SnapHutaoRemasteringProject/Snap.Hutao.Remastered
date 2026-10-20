@@ -1,19 +1,17 @@
-# R2R 与 Native AOT 准备
+# Native AOT 兼容性准备
 
-## 日常构建和发布
+## 构建与 AOT 验证
 
-所有配置（含 Debug）默认开启 ReadyToRun，不按配置判断开关，也不另建实验构建目录。
-本机验证只使用 Debug；`dotnet build`/`dotnet publish` 和现有 Cake 入口沿用项目设置。
-插件、运行时 C# 脚本及普通 CoreCLR/JIT 功能保留，不启用裁剪或单文件发布。
+当前打包流程恢复为原有的 `DotNetBuild`，基于 `bin/x64/<Configuration>/<TargetFramework>/win-x64` 产物生成 MSIX 和安装程序，不改动打包格式与签名流程。
+本轮未启用 ReadyToRun、Native AOT、裁剪或单文件发布；插件、运行时 C# 脚本和 CoreCLR/JIT 功能保持不变。
+仅保留通过 `-p:AotAnalysis=true` 按需开启的 AOT/裁剪诊断，以及 JSON、EF 等静态化兼容准备。
 
 ```powershell
 dotnet build src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx -c Debug
 ```
 
 应用及解决方案只声明 x64，不在 csproj 中添加 AnyCPU 映射。
-打包入口消费所选配置的 `publish` 产物；日常开发不需要生成安装包或其他配置的输出。
-四个入口已移除未使用的 Cake.Http addin；原有下载操作使用 Cake.Common 自带的 DownloadFile，避免旧 addin 框架识别阻断脚本加载。
-需要临时对照 IL 时可显式指定 `-p:PublishReadyToRun=false`；不再维护多个实验构建模式。
+四个 Cake 入口继续使用 `DotNetBuild`；移除原本已不需要的 Cake.Http addin，现有下载功能使用 Cake.Common 自带的 DownloadFile。
 
 ## 已接入的 JSON 路径
 
@@ -62,6 +60,6 @@ dotnet build src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx -c Debug
 相关 Debug 回归测试 21 项通过。生产设置/ID/枚举编码器作为 Debug Native AOT 程序在关闭 JSON 反射时运行通过。
 未执行正式签名/安装和交互 UI 测试，也未读取真实历史用户数据。
 
-这些验证不是实际 WinUI 启动、退出、导航或性能实测；R2R 不保证体积更小或自动解决 UI 生命周期问题。
+这些验证不是实际 WinUI 启动、退出、导航或性能实测；本轮也没有生成 ReadyToRun 产物。
 完整 Native AOT 仍需继续处理网络 JSON、动态转换器、查询预编译、迁移执行以及 WinRT 封送；未来纯 Native AOT 版才按授权禁用插件/脚本入口。
 需要查看剩余编译器诊断时，Debug 构建添加 `-p:AotAnalysis=true`；不额外导出生成源码副本，也不改变运行功能。

@@ -42,7 +42,6 @@
     -->
     <SelfContained>true</SelfContained>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
-    <PublishReadyToRun>true</PublishReadyToRun>
     <MvvmToolkitEnableINotifyPropertyChangingSupport>false</MvvmToolkitEnableINotifyPropertyChangingSupport>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -78,17 +77,6 @@
     <Copy SourceFiles="@(_ResourceFiles)" DestinationFolder="$(OutDir)Resource\%(RecursiveDir)" SkipUnchangedFiles="true" />
     <Copy SourceFiles="@(_AssetFiles)" DestinationFolder="$(OutDir)Assets\%(RecursiveDir)" SkipUnchangedFiles="true" />
     <Message Text="Copying @(_ResourceFiles-&gt;Count()) resource files and @(_AssetFiles-&gt;Count()) asset files to $(OutDir)" Importance="high" />
-  </Target>
-
-  <!-- CopyContentForUnpackaged populates bin, not the SDK's publish item list. -->
-  <Target Name="IncludeUnpackagedContentInPublish" AfterTargets="ComputeFilesToPublish">
-    <ItemGroup>
-      <_UnpackagedPublishContent Include="Resource\**\*;Assets\**\*" Exclude="Resource\Localization\**\*;Resource\Font\**\*" />
-      <ResolvedFileToPublish Include="@(_UnpackagedPublishContent)">
-        <RelativePath>%(_UnpackagedPublishContent.Identity)</RelativePath>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </ResolvedFileToPublish>
-    </ItemGroup>
   </Target>
 
   <!--

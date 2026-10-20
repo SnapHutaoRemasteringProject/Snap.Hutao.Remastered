@@ -40,7 +40,7 @@ string runtimeIdentifier
 }
 string binPath
 {
-    get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, "publish");
+    get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier);
 }
 string manifest
 {
@@ -199,7 +199,7 @@ Task("Build binary package")
 {
     Information("Building binary package...");
 
-    var settings = new DotNetPublishSettings
+    var settings = new DotNetBuildSettings
     {
         Configuration = configuration
     };
@@ -215,7 +215,7 @@ Task("Build binary package")
                                             .AppendIf("/p:CanaryConstants=IS_CANARY_BUILD", GitHubActions.IsRunningOnGitHubActions && GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Canary")
     };
 
-    DotNetPublish(project, settings);
+    DotNetBuild(project, settings);
 });
 
 Task("Copy files")
