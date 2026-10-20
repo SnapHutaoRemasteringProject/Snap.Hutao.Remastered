@@ -57,7 +57,10 @@ dotnet build src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx -c Debug
 
 2026-10-20 本轮只验证 Debug：真实仓库响应及 UTF-16 HTTP 字符集、五种元数据集合、插件泛型兼容路径、
 124 类型旧 JSON、25 实体设计模型一致性及五个实际 JSON 列的临时库读写均通过。
-相关 Debug 回归测试 21 项通过。生产设置/ID/枚举编码器作为 Debug Native AOT 程序在关闭 JSON 反射时运行通过。
+相关 Debug 回归测试 21 项通过；Debug 扩展回归 167 项通过（显式排除既有的注册表与外网 HTTPS 环境依赖项）。
+生产设置/ID/枚举编码器作为 Debug Native AOT 程序在关闭 JSON 反射时运行通过。
+已检查本轮 Debug 生成 DLL 的 R2R 头，并直接加载 obj 中本轮的 R2R 程序集完成上述运行检查；普通 bin 的 IL 编译输入不被手动替换。
+AppX 目录要在部署时才会刷新，不能把其中旧部署副本的验证当作本轮构建验证。
 未执行正式签名/安装和交互 UI 测试，也未读取真实历史用户数据。
 
 这些验证不是实际 WinUI 启动、退出、导航或性能实测；本轮也没有生成 ReadyToRun 产物。

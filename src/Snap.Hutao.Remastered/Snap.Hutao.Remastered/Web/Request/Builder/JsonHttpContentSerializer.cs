@@ -22,7 +22,7 @@ public sealed class JsonHttpContentSerializer : HttpContentSerializer
         generatedContext = new(new JsonSerializerOptions(jsonSerializerOptions) { TypeInfoResolver = null });
     }
 
-    public JsonSerializerOptions? JsonSerializerOptions { get; }
+    public JsonSerializerOptions JsonSerializerOptions { get; }
 
     protected override HttpContent? SerializeOverride(object? content, Type contentType, Encoding encoding)
     {
@@ -85,6 +85,6 @@ public sealed class JsonHttpContentSerializer : HttpContentSerializer
     {
         // Known generated contracts never fall back within their object graph. Other clients retain their existing options.
         return generatedContext.GetTypeInfo(contentType)
-            ?? (JsonSerializerOptions ?? System.Text.Json.JsonSerializerOptions.Default).GetTypeInfo(contentType);
+            ?? JsonSerializerOptions.GetTypeInfo(contentType);
     }
 }
