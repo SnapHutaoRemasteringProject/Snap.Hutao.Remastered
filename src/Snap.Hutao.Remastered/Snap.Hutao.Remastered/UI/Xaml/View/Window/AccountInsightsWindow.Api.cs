@@ -1,6 +1,7 @@
 // Copyright (c) Snap Hutao RP. All rights reserved.
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml;
+using Snap.Hutao.Remastered.Core.Setting;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
