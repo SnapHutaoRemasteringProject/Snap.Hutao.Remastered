@@ -3128,6 +3128,14 @@
                         </Border>
                     </Border>
 
+                    <!--  账号历史分析（按所选 UID 只读聚合，不修改记录）  -->
+                    <cwc:SettingsCard
+                        Command="{x:Bind ((shvs:SettingViewModel)DataContext).OpenAccountInsightsCommand, Mode=OneWay}"
+                        Description="祈愿、深境螺旋、幻想真境剧诗、幽境危战历史图表与可选 AI 分析"
+                        Header="账号历史数据分析"
+                        HeaderIcon="{shuxm:FontIcon Glyph=&#xE9D9;}"
+                        IsClickEnabled="True"/>
+
                     <!--  祈愿记录  -->
                     <Border
                         x:Name="GachaLogBorder"
