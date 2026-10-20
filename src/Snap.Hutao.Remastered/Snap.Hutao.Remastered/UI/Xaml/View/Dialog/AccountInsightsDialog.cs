@@ -31,7 +31,7 @@ using Windows.ApplicationModel.DataTransfer;
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 
 /// <summary>
-/// Displays read-only, per-account historical aggregates. Only anonymous aggregates can
+/// Displays read-only, per-account historical aggregates. Only de-identified aggregates can
 /// enter the optional user-initiated LLM request; repositories are never exposed to the model.
 /// </summary>
 public sealed partial class AccountInsightsDialog : ContentDialog
@@ -59,11 +59,11 @@ public sealed partial class AccountInsightsDialog : ContentDialog
     private readonly PasswordBox apiKeyBox = new() { Header = "API Key（仅本次使用，不保存）" };
     private readonly CheckBox consentBox = new()
     {
-        Content = "我同意将下方匿名汇总统计发送到上述第三方 API 服务",
+        Content = "我已了解历史统计可能具有可关联性，同意将去标识化统计发送至上述第三方 API 服务",
         IsChecked = false,
     };
     private readonly Button generateButton = new() { Content = "发送统计并生成分析评价", IsEnabled = false };
-    private readonly Button copyButton = new() { Content = "复制匿名统计 JSON", IsEnabled = false };
+    private readonly Button copyButton = new() { Content = "复制去标识化统计 JSON", IsEnabled = false };
     private readonly ProgressRing activityRing = new() { IsActive = false, Width = 26, Height = 26 };
 
     private string? snapshotJson;
@@ -105,7 +105,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         layout.Children.Add(copyButton);
         layout.Children.Add(new TextBlock
         {
-            Text = "可选 AI 评价：只发送以下图表的数值摘要，不发送 UID、祈愿物品 ID、Cookie 或数据库文件。",
+            Text = "可选 AI 评价：仅发送图表数值摘要，不包含 UID、祈愿物品 ID、Cookie 或数据库文件。历史数值仍可能被用于关联账号，请确认第三方服务的隐私政策。",
             TextWrapping = TextWrapping.Wrap,
         });
         layout.Children.Add(endpointBox);
@@ -395,7 +395,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         return new JsonObject
         {
             ["schema_version"] = 1,
-            ["scope"] = "Saved local history only; only the latest twelve periods are included for time-series charts; missing periods are not equivalent to a score of zero.",
+            ["scope"] = "Saved local history only; the most recent twelve periods are included for time-series charts; missing periods are not zero. Direct account identifiers are excluded, but history patterns may remain linkable.",
             ["series"] = data,
         }.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
     }
@@ -410,7 +410,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         DataPackage package = new();
         package.SetText(snapshotJson);
         Clipboard.SetContent(package);
-        status.Text = "已复制匿名统计数据。此操作不会修改胡桃数据库。";
+        status.Text = "已复制去标识化统计数据。此操作不会修改胡桃数据库。";
     }
 
     private async void OnGenerateClicked(object sender, RoutedEventArgs args)
