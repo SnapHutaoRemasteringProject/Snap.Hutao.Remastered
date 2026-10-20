@@ -67,6 +67,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
     private readonly ProgressRing activityRing = new() { IsActive = false, Width = 26, Height = 26 };
 
     private string? snapshotJson;
+    private bool hasRecordedData;
 
     public AccountInsightsDialog(
         IUserService userService,
@@ -138,7 +139,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
 
     private void UpdateGenerateEnabled()
     {
-        generateButton.IsEnabled = snapshotJson is not null && consentBox.IsChecked is true && !activityRing.IsActive;
+        generateButton.IsEnabled = hasRecordedData && snapshotJson is not null && consentBox.IsChecked is true && !activityRing.IsActive;
     }
 
     private async void OnLoaded(object sender, RoutedEventArgs args)
@@ -155,6 +156,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
             List<InsightSeries> series = await Task.Run(() => CreateSeries(userAndUid.Uid.Value), lifetime.Token);
             lifetime.Token.ThrowIfCancellationRequested();
 
+            hasRecordedData = series.Any(item => item.Points.Count > 0);
             snapshotJson = CreateAnonymousJson(series);
             charts.Children.Clear();
             foreach (InsightSeries item in series)
@@ -162,7 +164,7 @@ public sealed partial class AccountInsightsDialog : ContentDialog
                 charts.Children.Add(CreateChart(item));
             }
 
-            status.Text = series.All(item => item.Points.Count == 0)
+            status.Text = !hasRecordedData
                 ? "所选账号尚无可绘制的本地记录。"
                 : "已读取四类统计。每条横条代表一个月份或活动周期，数值来源于本地已保存记录。";
             copyButton.IsEnabled = true;
@@ -194,6 +196,23 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         // QueryType is the actual pool category used by the existing wish statistics.
         // Do not combine unrelated pity pools, or infer rarity from an item ID.
         List<InsightPoint> poolWishes = gachaItems
+            .GroupBy(item => item.QueryType)
+            .OrderBy(group => (int)group.Key)
+            .Select(group => new InsightPoint(GetWishPoolLabel(group.Key), group.Count()))
+            .ToList();
+
+        List<BeyondGachaItem> beyondItems = gachaRepository.GetGachaArchiveByUid(uid) is { } beyondArchive
+            ? gachaRepository.GetBeyondGachaItemImmutableArrayByArchiveId(beyondArchive.InnerId).ToList()
+            : [];
+
+        List<InsightPoint> monthlyBeyondWishes = beyondItems
+            .GroupBy(item => item.Time.ToString("yyyy-MM", CultureInfo.InvariantCulture))
+            .OrderBy(group => group.Key, StringComparer.Ordinal)
+            .Select(group => new InsightPoint(group.Key, group.Count()))
+            .TakeLast(12)
+            .ToList();
+
+        List<InsightPoint> beyondPoolWishes = beyondItems
             .GroupBy(item => item.QueryType)
             .OrderBy(group => (int)group.Key)
             .Select(group => new InsightPoint(GetWishPoolLabel(group.Key), group.Count()))
@@ -233,6 +252,8 @@ public sealed partial class AccountInsightsDialog : ContentDialog
         [
             new("祈愿记录", "每月抽数", "抽", monthlyWishes, InsightDirection.Neutral),
             new("祈愿记录", "各祈愿池抽数", "抽", poolWishes, InsightDirection.Neutral),
+            new("千星奇域祈愿", "每月抽数", "抽", monthlyBeyondWishes, InsightDirection.Neutral),
+            new("千星奇域祈愿", "各祈愿池抽数", "抽", beyondPoolWishes, InsightDirection.Neutral),
             new("深境螺旋", "每期星数", "星", abyss, InsightDirection.HigherIsBetter),
             new("幻想真境剧诗", "每期奖章数", "枚", theater, InsightDirection.HigherIsBetter),
             new("幽境危战（单人）", "每期最佳通关用时", "秒", challenge, InsightDirection.LowerIsBetter),
@@ -249,6 +270,12 @@ public sealed partial class AccountInsightsDialog : ContentDialog
             GachaType.ActivityWeapon => "武器活动祈愿",
             GachaType.SpecialActivityAvatar => "角色活动祈愿 2",
             GachaType.ActivityCity => "集录祈愿",
+            GachaType.UGCStandard => "千星奇域常驻祈愿",
+            GachaType.UGCAvatarEventWish => "千星奇域活动祈愿",
+            GachaType.UGCActivityAvatarMaleOne => "千星奇域男性角色 1",
+            GachaType.UGCActivityAvatarMaleTwo => "千星奇域男性角色 2",
+            GachaType.UGCActivityAvatarFemaleOne => "千星奇域女性角色 1",
+            GachaType.UGCActivityAvatarFemaleTwo => "千星奇域女性角色 2",
             _ => type.ToString(),
         };
     }
