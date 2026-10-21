@@ -4826,7 +4826,7 @@
     <value>開機自啟動</value>
   </data>
   <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
-    <value>无法读取或更新开机自启动计划任务。请确认计划任务服务可用，并以管理员身份运行后重试。</value>
+    <value>無法讀取或更新開機自啟動排程工作。請確認排程工作服務可用，並以管理員身分執行後重試。</value>
   </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>應用行為</value>
@@ -5825,7 +5825,7 @@
     <value>最大輸出 Token 數（可留空；Anthropic 預設 8192）</value>
   </data>
   <data name="ViewDialogAccountInsightsModelProfile" xml:space="preserve">
-    <value>模型配置</value>
+    <value>模型設定</value>
   </data>
   <data name="ViewDialogAccountInsightsModelSettings" xml:space="preserve">
     <value>模型?置</value>
@@ -5834,7 +5834,7 @@
     <value>新??</value>
   </data>
   <data name="ViewDialogAccountInsightsNewProfile" xml:space="preserve">
-    <value>新配置</value>
+    <value>新設定</value>
   </data>
   <data name="ViewDialogAccountInsightsProfileName" xml:space="preserve">
     <value>配置名?</value>
@@ -5861,7 +5861,7 @@
     <value>??并重?</value>
   </data>
   <data name="ViewDialogAccountInsightsSaveProfile" xml:space="preserve">
-    <value>保存配置</value>
+    <value>儲存設定</value>
   </data>
   <data name="ViewDialogAccountInsightsSend" xml:space="preserve">
     <value>?送</value>
@@ -5933,13 +5933,13 @@
     <value>?入 Token</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelMessages" xml:space="preserve">
-    <value>消息</value>
+    <value>訊息</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelModelProfile" xml:space="preserve">
     <value>模型</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelModelProviderProfile" xml:space="preserve">
-    <value>模型提供商配置</value>
+    <value>模型提供者設定</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelNewConversation" xml:space="preserve">
     <value>新??</value>
@@ -5999,13 +5999,13 @@
     <value>???左?的模型提供商配置?行??</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelAddModel" xml:space="preserve">
-    <value>添加模型</value>
+    <value>新增模型</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelAddProfile" xml:space="preserve">
-    <value>添加</value>
+    <value>新增</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelAgentGlobalOptions" xml:space="preserve">
-    <value>全局配置</value>
+    <value>全域設定</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelAgentMaximumIterationsPerRequest" xml:space="preserve">
     <value>最大工具?用次?</value>
@@ -6056,7 +6056,7 @@
     <value>思考推理???省略推理?度</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelProviderProfiles" xml:space="preserve">
-    <value>模型配置</value>
+    <value>模型設定</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelReasoningEffort" xml:space="preserve">
     <value>推理?度</value>
