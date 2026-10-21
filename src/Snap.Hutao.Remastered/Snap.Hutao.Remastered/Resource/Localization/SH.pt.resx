@@ -4821,7 +4821,7 @@ Espaço disponível: {2}</value>
     <value>Iniciar com o sistema</value>
   </data>
   <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
-    <value>无法读取或更新开机自启动计划任务。请确认计划任务服务可用，并以管理员身份运行后重试。</value>
+    <value>Não foi possível ler ou atualizar a tarefa agendada de inicialização automática. Verifique se o serviço de Tarefas Agendadas está disponível e execute como administrador antes de tentar novamente.</value>
   </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>Comportamento do aplicativo</value>
@@ -5871,7 +5871,7 @@ Espaço disponível: {2}</value>
     <value>Copy Text</value>
   </data>
   <data name="UIXamlControlsChatMessageViewLabelAssistant" xml:space="preserve">
-    <value>AI</value>
+    <value>IA</value>
   </data>
   <data name="UIXamlControlsChatMessageViewLabelReasoningCompleted" xml:space="preserve">
     <value>Thought</value>
@@ -6066,7 +6066,7 @@ Espaço disponível: {2}</value>
     <value>Top P</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileApiKey" xml:space="preserve">
-    <value>API Key</value>
+    <value>Chave de API</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileEndpoint" xml:space="preserve">
     <value>Endpoint URL</value>
@@ -6135,7 +6135,7 @@ Espaço disponível: {2}</value>
     <value>None</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderAgentUserName" xml:space="preserve">
-    <value>You</value>
+    <value>Você</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
     <value>Provider default</value>
