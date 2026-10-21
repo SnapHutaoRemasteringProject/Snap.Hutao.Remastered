@@ -42,6 +42,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 
+using Snap.Hutao.Remastered.Service.AccountInsights;
+
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Window;
 
 /// <summary>
@@ -58,10 +60,7 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
     private readonly IMetadataService metadataService;
     private readonly IGachaStatisticsFactory statisticsFactory;
     private readonly IUserService userService;
-    private readonly IGachaLogRepository gachaRepository;
-    private readonly ISpiralAbyssRepository abyssRepository;
-    private readonly IRoleCombatRepository combatRepository;
-    private readonly IHardChallengeRepository challengeRepository;
+    private readonly AccountInsightsHistoryService historyService;
     private readonly CancellationTokenSource lifetime = new();
     private readonly IServiceScope windowScope;
     private bool initializationStarted;
@@ -83,10 +82,7 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
         cultureOptions = scoped.GetRequiredService<CultureOptions>();
         logger = scoped.GetRequiredService<ILogger<AccountInsightsWindow>>();
         userService = scoped.GetRequiredService<IUserService>();
-        gachaRepository = scoped.GetRequiredService<IGachaLogRepository>();
-        abyssRepository = scoped.GetRequiredService<ISpiralAbyssRepository>();
-        combatRepository = scoped.GetRequiredService<IRoleCombatRepository>();
-        challengeRepository = scoped.GetRequiredService<IHardChallengeRepository>();
+        historyService = scoped.GetRequiredService<AccountInsightsHistoryService>();
         metadataService = scoped.GetRequiredService<IMetadataService>();
         statisticsFactory = scoped.GetRequiredService<IGachaStatisticsFactory>();
 
@@ -157,16 +153,17 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
                 return;
             }
 
+            lifetime.Token.ThrowIfCancellationRequested();
             agentViewModel.Initialize(agentAccountContext, userAndUid.Uid.Value.ToString(CultureInfo.InvariantCulture), windowScope.ServiceProvider.GetRequiredService<SettingsModelConfigurationViewModel>());
             AgentSettingsEditor.DataContext = agentViewModel;
 
             // Each repository has its own scope. Preserve healthy datasets if another fails.
             CultureInfo culture = cultureOptions.CurrentCulture.Value;
-            InsightLoadResult result = await Task.Run(() => CreateSeries(userAndUid.Uid.Value, culture), lifetime.Token);
+            InsightLoadResult result = await Task.Run(() => historyService.CreateSeries(userAndUid.Uid.Value, culture), lifetime.Token);
             lifetime.Token.ThrowIfCancellationRequested();
 
             hasRecordedData = result.Series.Any(item => item.Points.Count > 0);
-            snapshotJson = hasRecordedData ? CreateAnonymousJson(result.Series) : null;
+            snapshotJson = hasRecordedData ? AccountInsightsHistoryService.CreateAnonymousJson(result.Series) : null;
 
             ChartsPanel.Children.Clear();
             foreach (InsightSeries item in result.Series.Where(item => item.Points.Count > 0))

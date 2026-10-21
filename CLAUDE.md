@@ -193,8 +193,11 @@ the build fails with `CS9275`); write a normal constructor in that case.
 
 ### 5.2 Commands and observable properties (MVVM)
 
-- **Commands are `[Command("XxxCommand")]`, never `[RelayCommand]`** (`[RelayCommand]` appears **0**
-  times in this repo; CommunityToolkit's generator is not what produces them). The attribute is
+- **Use `[Command("XxxCommand")]` for commands supported by the repository generator.**
+  The migrated AI commands may retain `[RelayCommand]` when they need `CanExecute` notification
+  or cancellation tokens: the current repository generator has no can-execute option and treats
+  the first parameter, including `CancellationToken`, as a command argument. Do not replace these
+  attributes without preserving command gating and cancellation. The attribute is
   `Snap.Hutao.Remastered.Core.Annotation.CommandAttribute` and the string argument is the
   authoritative generated property name:
 

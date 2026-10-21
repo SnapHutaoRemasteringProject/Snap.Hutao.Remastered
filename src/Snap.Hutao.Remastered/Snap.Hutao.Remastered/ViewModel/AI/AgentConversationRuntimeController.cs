@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Snap.Hutao.Remastered.ViewModel.AI;
 
+[Service(ServiceLifetime.Scoped)]
 internal sealed class AgentConversationRuntimeController(IServiceProvider serviceProvider)
 {
     private readonly IAgentService agentService = serviceProvider.GetRequiredService<IAgentService>();

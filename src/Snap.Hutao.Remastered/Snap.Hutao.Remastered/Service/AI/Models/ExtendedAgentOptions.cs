@@ -145,6 +145,9 @@ internal sealed record ExtendedAgentOptions
             DisableAgentModeProvider = true,
             DisableAgentSkillsProvider = true,
             DisableOpenTelemetry = true,
+            // The workspace collects explicit decisions for every pending tool.
+            // It does not expose the harness's automatic approval rules.
+            DisableToolAutoApproval = true,
         };
     }
 

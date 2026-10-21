@@ -12,36 +12,14 @@ using System.Linq;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.Markdown;
 
+[DependencyProperty<IReadOnlyList<IReadOnlyList<string>>>("Rows", PropertyChangedCallbackName = nameof(OnTableChanged))]
+[DependencyProperty<IReadOnlyList<global::Microsoft.UI.Xaml.TextAlignment>>("ColumnAlignments", PropertyChangedCallbackName = nameof(OnTableChanged))]
 internal sealed partial class MarkdownTableView : UserControl
 {
     public MarkdownTableView()
     {
         InitializeComponent();
     }
-
-    public IReadOnlyList<IReadOnlyList<string>>? Rows
-    {
-        get => (IReadOnlyList<IReadOnlyList<string>>?)GetValue(RowsProperty);
-        set => SetValue(RowsProperty, value);
-    }
-
-    public static readonly DependencyProperty RowsProperty = DependencyProperty.Register(
-        nameof(Rows),
-        typeof(IReadOnlyList<IReadOnlyList<string>>),
-        typeof(MarkdownTableView),
-        new PropertyMetadata(null, OnTableChanged));
-
-    public IReadOnlyList<global::Microsoft.UI.Xaml.TextAlignment>? ColumnAlignments
-    {
-        get => (IReadOnlyList<global::Microsoft.UI.Xaml.TextAlignment>?)GetValue(ColumnAlignmentsProperty);
-        set => SetValue(ColumnAlignmentsProperty, value);
-    }
-
-    public static readonly DependencyProperty ColumnAlignmentsProperty = DependencyProperty.Register(
-        nameof(ColumnAlignments),
-        typeof(IReadOnlyList<global::Microsoft.UI.Xaml.TextAlignment>),
-        typeof(MarkdownTableView),
-        new PropertyMetadata(null, OnTableChanged));
 
     private static void OnTableChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {

@@ -35,10 +35,12 @@ public sealed partial class RoleCombatViewModel : Abstraction.ViewModel, IRecipi
 
     private RoleCombatMetadataContext? metadataContext;
 
+    private readonly AccountInsightsWindows accountInsightsWindows;
+
     [Command("OpenAccountInsightsCommand")]
-    private void OpenAccountInsights()
+    private Task OpenAccountInsights()
     {
-        AccountInsightsWindows.Open();
+        return accountInsightsWindows.OpenAsync();
     }
 
     [GeneratedConstructor]

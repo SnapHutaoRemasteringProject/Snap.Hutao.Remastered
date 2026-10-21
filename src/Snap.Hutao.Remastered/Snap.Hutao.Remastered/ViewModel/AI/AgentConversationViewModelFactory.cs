@@ -3,9 +3,11 @@
 // Adapted from Snap.Nicole.
 
 using Snap.Hutao.Remastered.Service.AI.Models;
+using System.Linq;
 
 namespace Snap.Hutao.Remastered.ViewModel.AI;
 
+[Service(ServiceLifetime.Scoped)]
 internal sealed class AgentConversationViewModelFactory(AgentConversationTurnController conversationTurnController)
 {
     private readonly AgentConversationTurnController conversationTurnController = conversationTurnController;
@@ -28,7 +30,12 @@ internal sealed class AgentConversationViewModelFactory(AgentConversationTurnCon
         conversation.LastTurnCheckpoint = data.LastTurnCheckpoint;
         conversation.InputText = data.InputText;
         conversation.Messages = new(data.Messages);
-        conversation.ToolApprovalRequest = data.ToolApprovalRequest;
+        conversation.ToolApprovalRequests.AddRange(data.ToolApprovalRequests);
+        if (conversation.ToolApprovalRequests.Count == 0 && data.ToolApprovalRequest is { } legacyRequest)
+        {
+            conversation.ToolApprovalRequests.Add(legacyRequest);
+        }
+        conversation.ToolApprovalRequest = conversation.ToolApprovalRequests.FirstOrDefault(static request => request.CanRespond);
         conversation.UpdateConversationStatistics();
         return conversation;
     }

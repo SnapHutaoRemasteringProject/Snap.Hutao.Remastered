@@ -14,9 +14,9 @@ internal sealed class ExtendedAgentResponseUpdate
 {
     public List<ObservableAIContent> ObservableContents { get; } = [];
 
-    public ObservableToolApprovalRequestContent? ToolApprovalRequest { get; set; }
+    public List<ObservableToolApprovalRequestContent> ToolApprovalRequests { get; } = [];
 
-    public bool IsEmpty { get => ObservableContents.Count <= 0 && ToolApprovalRequest is null; }
+    public bool IsEmpty { get => ObservableContents.Count <= 0 && ToolApprovalRequests.Count == 0; }
 
     public static ExtendedAgentResponseUpdate Create(AgentResponseUpdate update, JsonSerializerOptions jsonOptions)
     {
@@ -30,7 +30,7 @@ internal sealed class ExtendedAgentResponseUpdate
 
             if (observableContent is ObservableToolApprovalRequestContent request)
             {
-                extendedUpdate.ToolApprovalRequest = request;
+                extendedUpdate.ToolApprovalRequests.Add(request);
             }
             else
             {

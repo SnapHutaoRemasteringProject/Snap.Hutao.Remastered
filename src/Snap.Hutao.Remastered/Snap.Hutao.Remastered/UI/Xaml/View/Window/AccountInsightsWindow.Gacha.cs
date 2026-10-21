@@ -13,6 +13,8 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
+using Snap.Hutao.Remastered.Service.AccountInsights;
+
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Window;
 
 public sealed partial class AccountInsightsWindow

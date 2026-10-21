@@ -24,6 +24,7 @@ internal static class AgentConversationFactory
             LastTurnCheckpoint = conversation.LastTurnCheckpoint,
             SerializedSessionState = conversation.Runtime.SerializedSessionState?.Clone(),
             ToolApprovalRequest = conversation.ToolApprovalRequest,
+            ToolApprovalRequests = [.. conversation.ToolApprovalRequests],
             Messages = new(conversation.Messages),
         };
     }

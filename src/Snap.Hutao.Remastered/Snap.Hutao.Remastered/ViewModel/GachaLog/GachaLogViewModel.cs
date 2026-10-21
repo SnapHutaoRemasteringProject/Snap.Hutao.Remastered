@@ -42,10 +42,12 @@ public sealed partial class GachaLogViewModel : Abstraction.ViewModel
     private GachaLogServiceMetadataContext? metadataContext;
     private AppOptions? appOptions;
 
+    private readonly AccountInsightsWindows accountInsightsWindows;
+
     [Command("OpenAccountInsightsCommand")]
-    private void OpenAccountInsights()
+    private Task OpenAccountInsights()
     {
-        AccountInsightsWindows.Open();
+        return accountInsightsWindows.OpenAsync();
     }
 
     [GeneratedConstructor]

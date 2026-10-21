@@ -31,6 +31,8 @@ internal sealed class AgentConversation
 
     public JsonElement? SerializedSessionState { get; set; }
 
+    public List<ObservableToolApprovalRequestContent> ToolApprovalRequests { get; set; } = [];
+
     public ObservableToolApprovalRequestContent? ToolApprovalRequest { get; set; }
 
     public ObservableChatMessageCollection Messages { get; set; } = [];

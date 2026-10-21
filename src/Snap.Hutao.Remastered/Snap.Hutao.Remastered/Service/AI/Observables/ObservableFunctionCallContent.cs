@@ -53,8 +53,9 @@ internal sealed partial class ObservableFunctionCallContent : ObservableToolCall
         {
             return JsonSerializer.Serialize(value, jsonOptions);
         }
-        catch
+        catch (Exception exception)
         {
+            System.Diagnostics.Trace.TraceError("AI tool content serialization failed: {0}", exception);
             return value?.ToString();
         }
     }

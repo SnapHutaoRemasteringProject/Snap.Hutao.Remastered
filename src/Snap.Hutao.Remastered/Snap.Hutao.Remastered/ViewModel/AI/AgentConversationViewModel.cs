@@ -5,6 +5,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.AI;
+using System.Collections.Generic;
+using System.Linq;
 using Snap.Hutao.Remastered.Core.AI.Diagnostics;
 using Snap.Hutao.Remastered.Resource.Localization.AI;
 using Snap.Hutao.Remastered.Service.AI.Models;
@@ -21,6 +23,8 @@ internal sealed partial class AgentConversationViewModel(IAgentConversationDelet
     private readonly IAgentConversationDeleteHandler conversationDeleteHandler = conversationDeleteHandler;
     private readonly AgentConversationTurnController conversationTurnController = conversationTurnController;
 
+    public List<ObservableToolApprovalRequestContent> ToolApprovalRequests { get; } = [];
+
     private bool disposed;
     private Task? pendingOperationOnDispose;
 
@@ -34,7 +38,7 @@ internal sealed partial class AgentConversationViewModel(IAgentConversationDelet
     [NotifyCanExecuteChangedFor(nameof(RegenerateCommand))]
     public partial AgentTurnCheckpoint? LastTurnCheckpoint { get; set; }
 
-    private bool CanRegenerate { get => !disposed && !IsBusy && GenerationCommand is null && LastTurnCheckpoint is not null && AgentConversationProfileController.CanCreateRequestOptions(ModelProviderProfile, ModelProfile); }
+    private bool CanRegenerate { get => !disposed && !IsBusy && ToolApprovalRequests.Count == 0 && GenerationCommand is null && LastTurnCheckpoint is not null && AgentConversationProfileController.CanCreateRequestOptions(ModelProviderProfile, ModelProfile); }
 
     public Task? PendingOperation { get => GenerationCommand?.ExecutionTask ?? pendingOperationOnDispose; }
 
@@ -94,7 +98,7 @@ internal sealed partial class AgentConversationViewModel(IAgentConversationDelet
     public partial ObservableChatMessageCollection Messages { get; set; } = [];
 
     [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(SendMessageCommand), nameof(ApproveToolApprovalCommand), nameof(DenyToolApprovalCommand))]
+    [NotifyCanExecuteChangedFor(nameof(SendMessageCommand), nameof(RegenerateCommand), nameof(ApproveToolApprovalCommand), nameof(DenyToolApprovalCommand))]
     public partial ObservableToolApprovalRequestContent? ToolApprovalRequest { get; set; }
 
     [ObservableProperty]
@@ -226,9 +230,23 @@ internal sealed partial class AgentConversationViewModel(IAgentConversationDelet
             return;
         }
 
-        ToolApprovalRequestContent runtimeContent = request.RawRepresentation ?? throw new InvalidOperationException("Tool approval request content is unavailable.");
-        ToolApprovalResponseContent responseContent = reason is null ? runtimeContent.CreateResponse(approved) : runtimeContent.CreateResponse(approved, reason);
-        ChatMessage responseMessage = new(ChatRole.User, [responseContent])
+        request.Approved = approved;
+        request.Reason = reason;
+        request.IsHandled = true;
+        ToolApprovalRequest = ToolApprovalRequests.FirstOrDefault(static pending => pending.CanRespond);
+        if (ToolApprovalRequest is not null)
+        {
+            conversationTurnController.SaveApprovalProgress(this);
+            return;
+        }
+        // Keep the final decision retryable until the agent accepts the responses.
+        request.IsHandled = false;
+        ToolApprovalRequest = request;
+
+        List<AIContent> responses = ToolApprovalRequests.Select(static pending => (AIContent)(pending.RawRepresentation
+            ?? throw new InvalidOperationException("Tool approval request content is unavailable."))
+            .CreateResponse(pending.Approved == true, pending.Reason)).ToList();
+        ChatMessage responseMessage = new(ChatRole.User, responses)
         {
             CreatedAt = DateTimeOffset.Now,
             AuthorName = conversationTurnController.UserName,

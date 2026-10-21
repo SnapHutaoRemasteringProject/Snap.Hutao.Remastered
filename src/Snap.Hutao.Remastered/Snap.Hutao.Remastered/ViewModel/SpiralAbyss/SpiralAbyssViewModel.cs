@@ -39,10 +39,12 @@ public sealed partial class SpiralAbyssViewModel : Abstraction.ViewModel, IRecip
 
     private SpiralAbyssMetadataContext? metadataContext;
 
+    private readonly AccountInsightsWindows accountInsightsWindows;
+
     [Command("OpenAccountInsightsCommand")]
-    private void OpenAccountInsights()
+    private Task OpenAccountInsights()
     {
-        AccountInsightsWindows.Open();
+        return accountInsightsWindows.OpenAsync();
     }
 
     [GeneratedConstructor]

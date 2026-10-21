@@ -1,30 +1,58 @@
 // Copyright (c) Snap Hutao RP. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Service.User;
+using Snap.Hutao.Remastered.ViewModel.User;
+
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Window;
 
-/// <summary>
-/// Opens a single reusable account insights window. The repository and metadata
-/// services are scoped to the window and are released by XamlWindowController.
-/// </summary>
-public static class AccountInsightsWindows
+[Service(ServiceLifetime.Singleton)]
+public sealed class AccountInsightsWindows : IRecipient<UserAndUidChangedMessage>
 {
-    private static AccountInsightsWindow? current;
+    private readonly IServiceProvider serviceProvider;
+    private AccountInsightsWindow? current;
+    private string? currentUid;
 
-    public static void Open()
+    public AccountInsightsWindows(IServiceProvider serviceProvider, IMessenger messenger)
     {
+        this.serviceProvider = serviceProvider;
+        messenger.Register(this);
+    }
+
+    public async Task OpenAsync()
+    {
+        using IServiceScope scope = serviceProvider.CreateScope();
+        var selected = await scope.ServiceProvider.GetRequiredService<IUserService>().GetCurrentUserAndUidAsync();
+        string? uid = selected?.Uid.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        if (current is not null && currentUid != uid) { CloseCurrent(); }
         if (current is null)
         {
-            current = Ioc.Default.GetRequiredService<AccountInsightsWindow>();
-            current.Closed += static (_, args) =>
+            AccountInsightsWindow window = serviceProvider.GetRequiredService<AccountInsightsWindow>();
+            current = window;
+            currentUid = uid;
+            window.Closed += (_, args) =>
             {
-                if (!args.Handled)
+                if (!args.Handled && ReferenceEquals(current, window))
                 {
                     current = null;
+                    currentUid = null;
                 }
             };
         }
-
         current.Activate();
+    }
+
+    public void Receive(UserAndUidChangedMessage message)
+    {
+        string? uid = message.UserAndUid?.Uid.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        if (current is not null && currentUid != uid) { CloseCurrent(); }
+    }
+
+    private void CloseCurrent()
+    {
+        AccountInsightsWindow? window = current;
+        current = null;
+        currentUid = null;
+        window?.Close();
     }
 }

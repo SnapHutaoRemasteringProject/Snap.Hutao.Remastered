@@ -14,6 +14,7 @@ using System.Text.Json;
 
 namespace Snap.Hutao.Remastered.Service.AI;
 
+[Service(ServiceLifetime.Scoped, typeof(IAgentConversationProvider))]
 internal sealed class AgentConversationFileProvider(IServiceProvider serviceProvider) : IAgentConversationProvider
 {
     private readonly AgentAccountContext accountContext = serviceProvider.GetRequiredService<AgentAccountContext>();

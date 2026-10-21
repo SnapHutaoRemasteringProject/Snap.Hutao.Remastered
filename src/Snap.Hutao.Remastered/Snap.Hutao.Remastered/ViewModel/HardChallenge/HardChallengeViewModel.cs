@@ -32,10 +32,12 @@ public sealed partial class HardChallengeViewModel : Abstraction.ViewModel, IRec
 
     private HardChallengeMetadataContext? metadataContext;
 
+    private readonly AccountInsightsWindows accountInsightsWindows;
+
     [Command("OpenAccountInsightsCommand")]
-    private void OpenAccountInsights()
+    private Task OpenAccountInsights()
     {
-        AccountInsightsWindows.Open();
+        return accountInsightsWindows.OpenAsync();
     }
 
     [GeneratedConstructor]

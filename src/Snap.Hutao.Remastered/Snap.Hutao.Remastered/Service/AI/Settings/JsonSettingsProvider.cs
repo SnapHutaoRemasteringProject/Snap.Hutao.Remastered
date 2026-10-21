@@ -21,7 +21,7 @@ namespace Snap.Hutao.Remastered.Service.AI.Settings;
 
 // A single change in the options can trigger the whole object graph to be serialized and written to disk,
 // so it's recommended to use this provider only for relatively small options objects and avoid putting large data in them.
-internal sealed class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, IDisposable
+internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, IDisposable
     where TSettings : class, INotifyPropertyChanged, ICopyFrom<TSettings>, new()
 {
     private const int LoadRetryCount = 3;
@@ -39,6 +39,8 @@ internal sealed class JsonSettingsProvider<TSettings> : ISettingsProvider<TSetti
     private IDisposable? watchRegistration;
 
     private volatile bool disposed;
+    private bool writesEnabled;
+    private long loadRevision;
 
     public JsonSettingsProvider(string fileNameWithoutExtension, JsonSerializerOptions jsonOptions)
     {
@@ -50,14 +52,18 @@ internal sealed class JsonSettingsProvider<TSettings> : ISettingsProvider<TSetti
         fileName = $"{fileNameWithoutExtension}.json";
         filePath = Path.Combine(directory, fileName);
 
-        if (!TryLoadCore(newWhenMissing: true, out TSettings? value))
+        if (TryLoadCore(newWhenMissing: true, out TSettings? value))
+        {
+            writesEnabled = true;
+        }
+        else
         {
             value = new TSettings();
         }
 
         if (value is AgentSettings settings)
         {
-            if (!File.Exists(filePath))
+            if (writesEnabled && !File.Exists(filePath))
             {
                 AgentLegacyMigration.ImportProfiles(Path.Combine(WellKnownLocations.Settings, ".."), settings,
                     LocalSetting.Get("AccountInsightsLlmEndpoint", string.Empty), LocalSetting.Get("AccountInsightsLlmModel", string.Empty));
@@ -71,7 +77,7 @@ internal sealed class JsonSettingsProvider<TSettings> : ISettingsProvider<TSetti
             {
                 lock (self.syncRoot)
                 {
-                    if (!self.disposed)
+                    if (!self.disposed && self.writesEnabled)
                     {
                         self.SaveCore(root);
                     }
@@ -101,11 +107,16 @@ internal sealed class JsonSettingsProvider<TSettings> : ISettingsProvider<TSetti
             return;
         }
 
+        IDisposable? registration;
         lock (syncRoot)
         {
-            watchRegistration?.Dispose();
-            fileProvider.Dispose();
+            registration = watchRegistration;
+            watchRegistration = null;
         }
+
+        // Disposing a registration can wait for a callback that needs syncRoot.
+        registration?.Dispose();
+        fileProvider.Dispose();
 
         changeObserver.Dispose();
     }
@@ -130,15 +141,19 @@ internal sealed class JsonSettingsProvider<TSettings> : ISettingsProvider<TSetti
         {
             TSettings? newValue;
             bool loaded;
+            long revision;
 
             lock (self.syncRoot)
             {
+                revision = ++self.loadRevision;
                 loaded = self.TryLoadCore(newWhenMissing: false, out newValue);
+                // Do not overwrite a file we could not read, or prune its credentials.
+                self.writesEnabled = false;
             }
 
             if (loaded)
             {
-                self.BeginApplyExternalChangeOnMainThread(newValue!);
+                self.BeginApplyExternalChangeOnMainThread(newValue!, revision);
             }
             else
             {
@@ -172,37 +187,40 @@ internal sealed class JsonSettingsProvider<TSettings> : ISettingsProvider<TSetti
             return;
         }
 
+        IDisposable? previous;
         lock (syncRoot)
         {
             if (disposed)
             {
-                registration.Dispose();
-                return;
+                previous = registration;
             }
-
-            watchRegistration?.Dispose();
-            watchRegistration = registration;
+            else
+            {
+                previous = watchRegistration;
+                watchRegistration = registration;
+            }
         }
+        previous?.Dispose();
     }
 
-    private void BeginApplyExternalChangeOnMainThread(TSettings value)
+    private void BeginApplyExternalChangeOnMainThread(TSettings value, long revision)
     {
         if (ReferenceEquals(SynchronizationContext.Current, AgentThreadingContext.Current.SynchronizationContext))
         {
-            ApplyExternalChange(value);
+            ApplyExternalChange(value, revision);
             return;
         }
 
         AgentThreadingContext.Current.SynchronizationContext.Post(static state =>
         {
-            if (state is (JsonSettingsProvider<TSettings> provider, TSettings change))
+            if (state is (JsonSettingsProvider<TSettings> provider, TSettings change, long revision))
             {
-                provider.ApplyExternalChange(change);
+                provider.ApplyExternalChange(change, revision);
             }
-        }, Tuple.Create(this, value));
+        }, Tuple.Create(this, value, revision));
     }
 
-    private void ApplyExternalChange(TSettings value)
+    private void ApplyExternalChange(TSettings value, long revision)
     {
         using SentryDiagnosticSpan span = SentryDiagnostics.StartSpan(SentryOperations.SettingsJsonApplyExternalChange, $"Apply {fileName}");
         span.SetTag(SentryTags.SettingsOptions, typeof(TSettings).Name);
@@ -215,11 +233,16 @@ internal sealed class JsonSettingsProvider<TSettings> : ISettingsProvider<TSetti
 
         try
         {
-            using (BooleanTrueScope.Create(ref changeObserver.Suppressed))
+            lock (syncRoot)
             {
-                if (value is AgentSettings settings) { AgentCredentialStore.Load(settings); }
-                changeObserver.Root.CopyFrom(value);
-                changeObserver.Refresh();
+                if (disposed || revision != loadRevision) { return; }
+                using (BooleanTrueScope.Create(ref changeObserver.Suppressed))
+                {
+                    if (value is AgentSettings settings) { AgentCredentialStore.Load(settings); }
+                    changeObserver.Root.CopyFrom(value);
+                    changeObserver.Refresh();
+                }
+                writesEnabled = true;
             }
         }
         catch (Exception ex)
@@ -242,7 +265,16 @@ internal sealed class JsonSettingsProvider<TSettings> : ISettingsProvider<TSetti
             {
                 try
                 {
-                    if (!File.Exists(filePath))
+                    bool missing;
+                    try
+                    {
+                        File.GetAttributes(filePath);
+                        missing = false;
+                    }
+                    catch (FileNotFoundException) { missing = true; }
+                    catch (DirectoryNotFoundException) { missing = true; }
+
+                    if (missing)
                     {
                         span.SetTag(SentryTags.SettingsFileExists, false);
 
@@ -267,7 +299,8 @@ internal sealed class JsonSettingsProvider<TSettings> : ISettingsProvider<TSetti
                     span.SetTag(SentryTags.SettingsFileExists, true);
                     using (FileStream stream = File.OpenRead(filePath))
                     {
-                        value = JsonSerializer.Deserialize<TSettings>(stream, jsonOptions) ?? new TSettings();
+                        value = JsonSerializer.Deserialize<TSettings>(stream, jsonOptions)
+                            ?? throw new JsonException("Settings root must not be null.");
                         return true;
                     }
                 }

@@ -88,7 +88,7 @@
                                         Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
                                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                         BorderThickness="1,1,0,1"
-                                        CornerRadius="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource LeftCornerRadiusFilterConverter}}">
+                                        CornerRadius="4,0,0,4">
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
@@ -152,7 +152,7 @@
                                         Background="{ThemeResource CardBackgroundFillColorTertiaryBrush}"
                                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                         BorderThickness="0,1,1,1"
-                                        CornerRadius="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource RightCornerRadiusFilterConverter}}">
+                                        CornerRadius="0,4,4,0">
                                         <ScrollViewer MaxHeight="640">
                                             <Grid Margin="16">
                                                 <StackPanel Spacing="16" Visibility="{Binding Settings.ModelProviderProfiles.CurrentItem, Converter={StaticResource ModelProviderProfileEditorVisibilityConverter}}">

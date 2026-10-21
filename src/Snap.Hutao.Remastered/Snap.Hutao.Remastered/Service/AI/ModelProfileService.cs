@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 
 namespace Snap.Hutao.Remastered.Service.AI;
 
+[Service(ServiceLifetime.Scoped, typeof(IModelProfileService))]
 internal sealed class ModelProfileService : IModelProfileService
 {
     public Task<IReadOnlyList<ModelProfile>> GetModelsAsync(ModelProviderProfile providerProfile, CancellationToken cancellationToken)
@@ -62,7 +63,7 @@ internal sealed class ModelProfileService : IModelProfileService
         ApiKeyCredential apiKeyCredential = new(providerProfile.ApiKey!);
         OpenAIClientOptions options = new()
         {
-            Endpoint = string.IsNullOrWhiteSpace(providerProfile.Endpoint) ? null : new Uri(providerProfile.Endpoint, UriKind.Absolute),
+            Endpoint = AgentEndpoint.Validate(providerProfile.Endpoint),
         };
 
         OpenAIModelClient client = new OpenAIClient(apiKeyCredential, options).GetOpenAIModelClient();
@@ -93,7 +94,7 @@ internal sealed class ModelProfileService : IModelProfileService
         ClientOptions clientOptions = new()
         {
             ApiKey = providerProfile.ApiKey,
-            BaseUrl = string.IsNullOrWhiteSpace(providerProfile.Endpoint) ? EnvironmentUrl.Production : providerProfile.Endpoint,
+            BaseUrl = AgentEndpoint.Validate(providerProfile.Endpoint)?.AbsoluteUri ?? EnvironmentUrl.Production,
         };
 
         using (AnthropicClient client = new(clientOptions))

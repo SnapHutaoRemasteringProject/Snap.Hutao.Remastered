@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 
 namespace Snap.Hutao.Remastered.ViewModel.AI.Settings;
 
+[Service(ServiceLifetime.Scoped)]
 internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvider serviceProvider) : ObservableObject
 {
     private const string RemovedModelNameSuffix = " [Removed]";
@@ -138,7 +139,7 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
         return $"{name}{RemovedModelNameSuffix}";
     }
 
-    [RelayCommand]
+    [Command("AddProfileCommand")]
     private void AddProfile()
     {
         SentryDiagnostics.AddBreadcrumb("Add provider profile", SentryBreadcrumbCategories.SettingsModelProfiles, SentryBreadcrumbTypes.UI);
@@ -153,7 +154,7 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
         Settings.ModelProviderProfiles.CurrentItem = providerProfile;
     }
 
-    [RelayCommand]
+    [Command("CopyProfileCommand")]
     private void CopyProfile()
     {
         if (Settings.ModelProviderProfiles.CurrentItem is not { } selected)
@@ -183,7 +184,7 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
         Settings.ModelProviderProfiles.CurrentItem = copy;
     }
 
-    [RelayCommand]
+    [Command("DeleteProfileCommand")]
     private void DeleteProfile()
     {
         if (Settings.ModelProviderProfiles.CurrentItem is not { } selected)
@@ -195,7 +196,7 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
         Settings.ModelProviderProfiles.Remove(selected);
     }
 
-    [RelayCommand]
+    [Command("AddModelCommand")]
     private void AddModel()
     {
         if (Settings.ModelProviderProfiles.CurrentItem is not { } providerProfile)
@@ -210,7 +211,7 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
         providerProfile.ModelProfiles.CurrentItem = modelProfile;
     }
 
-    [RelayCommand]
+    [Command("DeleteModelCommand")]
     private void DeleteModel()
     {
         if (Settings.ModelProviderProfiles.CurrentItem?.ModelProfiles is not { } modelProfiles)
@@ -227,7 +228,7 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
         modelProfiles.Remove(selected);
     }
 
-    [RelayCommand]
+    [Command("ClearModelsCommand")]
     private void ClearModels()
     {
         SentryDiagnostics.AddBreadcrumb("Clear model profiles", SentryBreadcrumbCategories.SettingsModelProfiles, SentryBreadcrumbTypes.UI);

@@ -3,6 +3,7 @@
 
 namespace Snap.Hutao.Remastered.Service.AI;
 
+[Service(ServiceLifetime.Scoped)]
 internal sealed class AgentAccountContext
 {
     public string AccountKey { get; set; } = string.Empty;

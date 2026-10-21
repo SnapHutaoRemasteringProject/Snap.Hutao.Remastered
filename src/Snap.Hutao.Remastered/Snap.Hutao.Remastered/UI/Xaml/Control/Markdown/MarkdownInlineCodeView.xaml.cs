@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.Markdown;
 
+[DependencyProperty<string>("Text")]
 internal sealed partial class MarkdownInlineCodeView : UserControl
 {
     public MarkdownInlineCodeView()
@@ -14,15 +15,4 @@ internal sealed partial class MarkdownInlineCodeView : UserControl
         InitializeComponent();
     }
 
-    public string? Text
-    {
-        get => (string?)GetValue(TextProperty);
-        set => SetValue(TextProperty, value);
-    }
-
-    public static readonly DependencyProperty TextProperty = DependencyProperty.Register(
-        nameof(Text),
-        typeof(string),
-        typeof(MarkdownInlineCodeView),
-        new PropertyMetadata(null));
 }

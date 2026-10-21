@@ -123,6 +123,89 @@ public sealed class AgentHarnessTest
         Assert.AreNotSame(source.ModelProfiles[0], destination.ModelProfiles[0]);
     }
 
+    [TestMethod]
+    public void MultipleTextPartsRetainTheirTrailingBuffer()
+    {
+        var pool = new DefaultObjectPool<StringBuilder>(new StringBuilderPooledObjectPolicy());
+        var provider = new Snap.Hutao.Remastered.Service.AI.Compatibility.OpenAIChatCompletion.RoundTripInMemoryChatHistoryProvider(pool);
+        OpenAI.Chat.AssistantChatMessage raw = new([
+            OpenAI.Chat.ChatMessageContentPart.CreateTextPart("first"),
+            OpenAI.Chat.ChatMessageContentPart.CreateTextPart("second")]);
+        typeof(Snap.Hutao.Remastered.Service.AI.Compatibility.OpenAIChatCompletion.RoundTripInMemoryChatHistoryProvider)
+            .GetMethod("WorkaroundContentRoundTrip", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!
+            .Invoke(provider, [raw]);
+        Assert.AreEqual("firstsecond", raw.Content.Single().Text);
+    }
+
+    [TestMethod]
+    public void MultipleApprovalRequestsAreRetainedAndPersisted()
+    {
+        JsonSerializerOptions options = new(AIJsonUtilities.DefaultOptions);
+        AgentResponseUpdate update = new()
+        {
+            Contents = [new ToolApprovalRequestContent("approval-1", new FunctionCallContent("call-1", "GetCurrentTime", null)),
+                new ToolApprovalRequestContent("approval-2", new FunctionCallContent("call-2", "ShowSummary", null))]
+        };
+        var extended = Snap.Hutao.Remastered.Service.AI.ExtendedAgentResponseUpdate.Create(update, options);
+        Assert.HasCount(2, extended.ToolApprovalRequests);
+        extended.ToolApprovalRequests[0].IsHandled = true;
+        extended.ToolApprovalRequests[0].Approved = false;
+        AgentConversation conversation = new() { ToolApprovalRequests = extended.ToolApprovalRequests };
+        AgentConversation restored = JsonSerializer.Deserialize<AgentConversation>(JsonSerializer.Serialize(conversation, options), options)!;
+        Assert.HasCount(2, restored.ToolApprovalRequests);
+        Assert.IsFalse(restored.ToolApprovalRequests[0].Approved);
+        Assert.IsTrue(restored.ToolApprovalRequests[1].CanRespond);
+        Assert.AreEqual("approval-2", restored.ToolApprovalRequests[1].RawRepresentation!.CreateResponse(true).RequestId);
+    }
+
+    [TestMethod]
+    [DataRow("https://example.com/v1", true)]
+    [DataRow("http://localhost:8080/v1", true)]
+    [DataRow("http://127.0.0.1:8080/v1", true)]
+    [DataRow("http://[::1]:8080/v1", true)]
+    [DataRow("http://example.com/v1", false)]
+    [DataRow("file:///C:/test", false)]
+    [DataRow("https://user:password@example.com/v1", false)]
+    public void EndpointPolicyRejectsUnencryptedRemoteHosts(string endpoint, bool allowed)
+    {
+        if (allowed) { Assert.IsNotNull(Snap.Hutao.Remastered.Service.AI.AgentEndpoint.Validate(endpoint)); }
+        else { Assert.Throws<ArgumentException>(() => Snap.Hutao.Remastered.Service.AI.AgentEndpoint.Validate(endpoint)); }
+    }
+
+    [TestMethod]
+    public async Task MultipleToolsResumeWithBothDecisionsAfterRestoringSession()
+    {
+        int approvedCalls = 0;
+        int deniedCalls = 0;
+        using ServiceProvider services = new ServiceCollection().AddLogging()
+            .AddSingleton<ObjectPool<StringBuilder>>(new DefaultObjectPool<StringBuilder>(new StringBuilderPooledObjectPolicy())).BuildServiceProvider();
+        ScriptedClient client = new() { TwoTools = true };
+        ExtendedAgentOptions options = new() { ProviderType = ModelProviderType.OpenAIChatCompletion, ModelId = "test", MaxOutputTokens = 256, MaxContextWindowTokens = 4096, MaximumIterationsPerRequest = 4 };
+        AITool[] tools = [new ApprovalRequiredAIFunction(AIFunctionFactory.Create(() => { approvedCalls++; return "time"; }, "GetCurrentTime")),
+            new ApprovalRequiredAIFunction(AIFunctionFactory.Create(() => { deniedCalls++; return "summary"; }, "ShowSummary"))];
+        HarnessAgent agent = options.CreateHarnessAgent(client, tools, services);
+        AgentSession session = await agent.CreateSessionAsync();
+        JsonSerializerOptions jsonOptions = new(AIJsonUtilities.DefaultOptions);
+        List<ObservableToolApprovalRequestContent> pending = [];
+        await foreach (AgentResponseUpdate update in agent.RunStreamingAsync([new ChatMessage(ChatRole.User, "both tools")], session))
+        {
+            pending.AddRange(Snap.Hutao.Remastered.Service.AI.ExtendedAgentResponseUpdate.Create(update, jsonOptions).ToolApprovalRequests);
+        }
+        Assert.HasCount(2, pending);
+        Assert.AreEqual(0, approvedCalls + deniedCalls);
+        pending[0].IsHandled = true;
+        pending[0].Approved = true;
+        AgentConversation stored = new() { ToolApprovalRequests = pending };
+        stored = JsonSerializer.Deserialize<AgentConversation>(JsonSerializer.Serialize(stored, jsonOptions), jsonOptions)!;
+        stored.ToolApprovalRequests[1].Approved = false;
+        AgentSession restored = await agent.DeserializeSessionAsync(await agent.SerializeSessionAsync(session, jsonOptions), jsonOptions);
+        List<AIContent> responses = stored.ToolApprovalRequests.Select(static request => (AIContent)request.RawRepresentation!.CreateResponse(request.Approved == true)).ToList();
+        await foreach (AgentResponseUpdate update in agent.RunStreamingAsync([new ChatMessage(ChatRole.User, responses)], restored)) { }
+        Assert.AreEqual(1, approvedCalls);
+        Assert.AreEqual(0, deniedCalls);
+        Assert.AreEqual(2, client.Requests);
+    }
+
     private static async Task VerifyApprovalAsync(AITool tool, bool approved, ModelProviderType provider = ModelProviderType.OpenAIResponses)
     {
         using ServiceProvider services = new ServiceCollection().AddLogging()
@@ -160,6 +243,7 @@ public sealed class AgentHarnessTest
     {
         public int Requests { get; private set; }
         public bool ReasoningMode { get; init; }
+        public bool TwoTools { get; init; }
         public IReadOnlyList<ChatMessage> LastMessages { get; private set; } = [];
 
         public object? GetService(Type serviceType, object? serviceKey = null)
@@ -198,6 +282,15 @@ public sealed class AgentHarnessTest
                 update.FinishReason = ChatFinishReason.Stop;
             }
             yield return update;
+            if (TwoTools && Requests == 1)
+            {
+                yield return new ChatResponseUpdate
+                {
+                    Role = ChatRole.Assistant, MessageId = update.MessageId, ResponseId = update.ResponseId,
+                    Contents = [new FunctionCallContent("call-2", "ShowSummary", new Dictionary<string, object?>())],
+                    FinishReason = ChatFinishReason.ToolCalls,
+                };
+            }
         }
     }
 }

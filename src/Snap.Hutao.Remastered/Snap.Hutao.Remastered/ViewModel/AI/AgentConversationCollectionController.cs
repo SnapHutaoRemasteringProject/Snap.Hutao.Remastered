@@ -10,6 +10,7 @@ using System.Threading;
 
 namespace Snap.Hutao.Remastered.ViewModel.AI;
 
+[Service(ServiceLifetime.Scoped)]
 internal sealed class AgentConversationCollectionController(IServiceProvider serviceProvider)
     : IAgentConversationDeleteHandler, IDisposable
 {

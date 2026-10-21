@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 
 namespace Snap.Hutao.Remastered.Service.AI;
 
+[Service(ServiceLifetime.Scoped, typeof(IAgentService))]
 internal sealed class AgentService(IServiceProvider serviceProvider) : IAgentService, IDisposable
 {
     private readonly List<IChatClient> clients = [];
@@ -84,12 +85,16 @@ internal sealed class AgentService(IServiceProvider serviceProvider) : IAgentSer
 
     private static void ProcessPendingUpdate(AgentRunStreamingContext context, ExtendedAgentResponseUpdate pendingUpdate)
     {
-        if (pendingUpdate.ToolApprovalRequest is { } toolApprovalRequest)
+        foreach (ObservableToolApprovalRequestContent toolApprovalRequest in pendingUpdate.ToolApprovalRequests)
         {
             // Certain updates may only contains a single tool approval request without any content.
             // For example, when the reasoning_effort is set to none.
             toolApprovalRequest.TargetMessageId = context.EnsureTargetResponseMessage().Id;
-            context.Conversation.ToolApprovalRequest = toolApprovalRequest;
+            if (!context.Conversation.ToolApprovalRequests.Any(request => request.RequestId == toolApprovalRequest.RequestId))
+            {
+                context.Conversation.ToolApprovalRequests.Add(toolApprovalRequest);
+            }
+            context.Conversation.ToolApprovalRequest = context.Conversation.ToolApprovalRequests.FirstOrDefault(static request => request.CanRespond);
         }
 
         if (pendingUpdate.ObservableContents.Count is 0)

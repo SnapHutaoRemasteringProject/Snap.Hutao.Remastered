@@ -10,6 +10,7 @@ using System.Linq;
 
 namespace Snap.Hutao.Remastered.ViewModel.AI;
 
+[Service(ServiceLifetime.Scoped)]
 internal sealed class AgentConversationProfileController(ISettingsProvider<AgentSettings> settingsProvider)
 {
     private readonly AgentSettings settings = settingsProvider.CurrentValue;

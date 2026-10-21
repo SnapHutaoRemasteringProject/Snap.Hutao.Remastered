@@ -13,9 +13,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="../Snap.Hutao.Remastered/Service/AI/Settings/JsonSettingsProvider.cs" Link="Production/Agent/SettingsTests/JsonSettingsProvider.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/AI/Settings/ISettingsProvider.cs" Link="Production/Agent/SettingsTests/ISettingsProvider.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/AI/Settings/ObservableObjectHierarchyObserver.cs" Link="Production/Agent/SettingsTests/ObservableObjectHierarchyObserver.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/AI/BooleanTrueScope.cs" Link="Production/Agent/SettingsTests/BooleanTrueScope.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/AI/IO/FileExtensions.cs" Link="Production/Agent/SettingsTests/FileExtensions.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/AI/Threading/AgentThreadingContext.cs" Link="Production/Agent/SettingsTests/AgentThreadingContext.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/AI/Diagnostics/SentryOperations.cs" Link="Production/Agent/SettingsTests/SentryOperations.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/AI/Diagnostics/SentryTags.cs" Link="Production/Agent/SettingsTests/SentryTags.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/AI/Diagnostics/SentryData.cs" Link="Production/Agent/SettingsTests/SentryData.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/AI/Diagnostics/SentryBreadcrumbCategories.cs" Link="Production/Agent/SettingsTests/SentryBreadcrumbCategories.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/AI/Diagnostics/SentryBreadcrumbTypes.cs" Link="Production/Agent/SettingsTests/SentryBreadcrumbTypes.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/AI/Models/*.cs" Link="Production/Agent/Models/%(Filename)%(Extension)" />
     <Compile Include="../Snap.Hutao.Remastered/Service/AI/Observables/*.cs" Link="Production/Agent/Observables/%(Filename)%(Extension)" />
     <Compile Include="../Snap.Hutao.Remastered/Service/AI/Compatibility/**/*.cs" Link="Production/Agent/Compatibility/%(Filename)%(Extension)" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/AI/AgentEndpoint.cs" Link="Production/Agent/AgentEndpoint.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/AI/ExtendedAgentResponseUpdate.cs" Link="Production/Agent/ExtendedAgentResponseUpdate.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/AI/Settings/ObservableSettingsCollection.cs" Link="Production/Agent/ObservableSettingsCollection.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/AI/Settings/IObservableChildrenProvider.cs" Link="Production/Agent/IObservableChildrenProvider.cs" />
@@ -77,6 +89,7 @@
     <PackageReference Include="Microsoft.Agents.AI.Anthropic" Version="1.25.0" />
     <PackageReference Include="Microsoft.Agents.AI.Harness" Version="1.25.0" />
     <PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.25.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="11.0.0-rc.2.26504.105" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="11.0.0-rc.2.26504.105" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-rc.2.26504.105" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="11.0.0-rc.2.26504.105" />

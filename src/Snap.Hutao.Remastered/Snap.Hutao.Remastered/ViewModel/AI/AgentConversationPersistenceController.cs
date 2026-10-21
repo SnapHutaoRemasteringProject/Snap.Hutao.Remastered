@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 namespace Snap.Hutao.Remastered.ViewModel.AI;
 
+[Service(ServiceLifetime.Scoped)]
 internal sealed class AgentConversationPersistenceController(IAgentConversationProvider conversationProvider)
 {
     private readonly IAgentConversationProvider conversationProvider = conversationProvider;

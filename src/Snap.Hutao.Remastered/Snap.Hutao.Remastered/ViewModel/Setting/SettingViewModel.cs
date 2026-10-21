@@ -36,10 +36,12 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
     private readonly IContentDialogFactory contentDialogFactory;
     private readonly IServiceProvider serviceProvider;
 
+    private readonly AccountInsightsWindows accountInsightsWindows;
+
     [Command("OpenAccountInsightsCommand")]
-    private void OpenAccountInsights()
+    private Task OpenAccountInsights()
     {
-        AccountInsightsWindows.Open();
+        return accountInsightsWindows.OpenAsync();
     }
 
     private readonly IShellLinkInterop shellLinkInterop;

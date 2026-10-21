@@ -16,6 +16,7 @@ using Snap.Hutao.Remastered.Resource.Localization.AI;
 
 namespace Snap.Hutao.Remastered.ViewModel.AI;
 
+[Service(ServiceLifetime.Scoped)]
 internal sealed partial class AgentViewModel : ObservableObject, IDisposable
 {
     private readonly AgentConversationCollectionController conversationCollectionController;
@@ -63,7 +64,7 @@ internal sealed partial class AgentViewModel : ObservableObject, IDisposable
 
     public AdvancedObservableCollection<AgentConversationViewModel> Conversations { get => conversationCollectionController.Conversations; }
 
-    [RelayCommand]
+    [Command("CreateConversationCommand")]
     private void CreateConversation()
     {
         if (disposed)
@@ -74,7 +75,7 @@ internal sealed partial class AgentViewModel : ObservableObject, IDisposable
         conversationCollectionController.CreateConversation();
     }
 
-    [RelayCommand]
+    [Command("GenerateAnalysisCommand")]
     private async Task GenerateAnalysisAsync()
     {
         if (disposed || accountContext.Snapshot is null) { return; }
@@ -86,7 +87,7 @@ internal sealed partial class AgentViewModel : ObservableObject, IDisposable
         }
     }
 
-    [RelayCommand]
+    [Command("CopyConversationCommand")]
     private void CopyConversation()
     {
         if (Conversations.CurrentItem is not { } conversation) { return; }

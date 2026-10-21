@@ -148,6 +148,11 @@ internal sealed class RoundTripInMemoryChatHistoryProvider(ObjectPool<StringBuil
             }
         }
 
+        if (contentBuilderLease.Value.Length > 0)
+        {
+            normalizedParts.Add(OpenAI.Chat.ChatMessageContentPart.CreateTextPart(contentBuilderLease.Value.ToStringAndClear()));
+        }
+
         assistantChatMessage.Content.Clear();
         foreach (OpenAI.Chat.ChatMessageContentPart part in normalizedParts)
         {

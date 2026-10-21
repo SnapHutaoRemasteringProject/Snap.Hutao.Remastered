@@ -664,27 +664,8 @@ internal static partial class MarkdownHelper
             return;
         }
 
-        Microsoft.UI.Xaml.Controls.Image image = new()
-        {
-            MaxHeight = 240,
-            MaxWidth = 360,
-            Source = new BitmapImage
-            {
-                UriSource = uri,
-            },
-            Stretch = Stretch.Uniform,
-        };
-
-        string tooltip = string.IsNullOrEmpty(title) ? altText : title;
-        if (!string.IsNullOrEmpty(tooltip))
-        {
-            ToolTipService.SetToolTip(image, tooltip);
-        }
-
-        inlines.Add(new InlineUIContainer
-        {
-            Child = image,
-        });
+        // Model output must not initiate requests to arbitrary image hosts.
+        AddLink(inlines, string.IsNullOrWhiteSpace(altText) ? url : altText, url, title);
     }
 
     private static void AddImageFallback(InlineCollection inlines, string altText, string url, string title)
