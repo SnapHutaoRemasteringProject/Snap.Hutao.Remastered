@@ -5868,7 +5868,7 @@ Verfügbarer Speicherplatz: {2}</value>
     <value>Copy Text</value>
   </data>
   <data name="UIXamlControlsChatMessageViewLabelAssistant" xml:space="preserve">
-    <value>AI</value>
+    <value>KI</value>
   </data>
   <data name="UIXamlControlsChatMessageViewLabelReasoningCompleted" xml:space="preserve">
     <value>Thought</value>
@@ -6063,7 +6063,7 @@ Verfügbarer Speicherplatz: {2}</value>
     <value>Top P</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileApiKey" xml:space="preserve">
-    <value>API Key</value>
+    <value>API-Schlüssel</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileEndpoint" xml:space="preserve">
     <value>Endpoint URL</value>
@@ -6132,9 +6132,12 @@ Verfügbarer Speicherplatz: {2}</value>
     <value>None</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderAgentUserName" xml:space="preserve">
-    <value>You</value>
+    <value>Du</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
     <value>Provider default</value>
+  </data>
+  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
+    <value>Die geplante Aufgabe für den Autostart konnte nicht gelesen oder aktualisiert werden. Bitte stellen Sie sicher, dass der Dienst für geplante Aufgaben verfügbar ist, und starten Sie die App als Administrator neu.</value>
   </data>
 </root>

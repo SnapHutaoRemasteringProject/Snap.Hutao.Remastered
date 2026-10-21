@@ -5868,7 +5868,7 @@ Spazio disponibile: {2}</value>
     <value>Copy Text</value>
   </data>
   <data name="UIXamlControlsChatMessageViewLabelAssistant" xml:space="preserve">
-    <value>AI</value>
+    <value>IA</value>
   </data>
   <data name="UIXamlControlsChatMessageViewLabelReasoningCompleted" xml:space="preserve">
     <value>Thought</value>
@@ -6063,7 +6063,7 @@ Spazio disponibile: {2}</value>
     <value>Top P</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileApiKey" xml:space="preserve">
-    <value>API Key</value>
+    <value>Chiave API</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileEndpoint" xml:space="preserve">
     <value>Endpoint URL</value>
@@ -6132,9 +6132,12 @@ Spazio disponibile: {2}</value>
     <value>None</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderAgentUserName" xml:space="preserve">
-    <value>You</value>
+    <value>Tu</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
     <value>Provider default</value>
+  </data>
+  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
+    <value>Impossibile leggere o aggiornare l'attività pianificata di avvio automatico. Verifica che il servizio Utilità di pianificazione sia disponibile e riprova eseguendo l'app come amministratore.</value>
   </data>
 </root>

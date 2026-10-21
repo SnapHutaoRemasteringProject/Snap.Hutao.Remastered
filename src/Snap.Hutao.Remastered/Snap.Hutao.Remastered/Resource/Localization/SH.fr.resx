@@ -5868,7 +5868,7 @@ Espace disponible : {2}</value>
     <value>Copy Text</value>
   </data>
   <data name="UIXamlControlsChatMessageViewLabelAssistant" xml:space="preserve">
-    <value>AI</value>
+    <value>IA</value>
   </data>
   <data name="UIXamlControlsChatMessageViewLabelReasoningCompleted" xml:space="preserve">
     <value>Thought</value>
@@ -6063,7 +6063,7 @@ Espace disponible : {2}</value>
     <value>Top P</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileApiKey" xml:space="preserve">
-    <value>API Key</value>
+    <value>Clé API</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileEndpoint" xml:space="preserve">
     <value>Endpoint URL</value>
@@ -6132,9 +6132,12 @@ Espace disponible : {2}</value>
     <value>None</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderAgentUserName" xml:space="preserve">
-    <value>You</value>
+    <value>Vous</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
     <value>Provider default</value>
+  </data>
+  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
+    <value>Impossible de lire ou de mettre à jour la tâche planifiée de démarrage automatique. Vérifiez que le service de tâches planifiées est disponible, puis exécutez l'application en tant qu'administrateur et réessayez.</value>
   </data>
 </root>

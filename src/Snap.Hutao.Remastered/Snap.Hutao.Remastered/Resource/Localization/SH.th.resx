@@ -6063,7 +6063,7 @@
     <value>Top P</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileApiKey" xml:space="preserve">
-    <value>API Key</value>
+    <value>คีย์ API</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileEndpoint" xml:space="preserve">
     <value>Endpoint URL</value>
@@ -6132,9 +6132,12 @@
     <value>None</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderAgentUserName" xml:space="preserve">
-    <value>You</value>
+    <value>คุณ</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
     <value>Provider default</value>
+  </data>
+  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
+    <value>ไม่สามารถอ่านหรืออัปเดตงานที่กำหนดเวลาไว้สำหรับเริ่มทำงานอัตโนมัติเมื่อเปิดเครื่องได้ โปรดตรวจสอบว่าบริการงานที่กำหนดเวลาไว้พร้อมใช้งาน และเรียกใช้ในฐานะผู้ดูแลระบบแล้วลองอีกครั้ง</value>
   </data>
 </root>

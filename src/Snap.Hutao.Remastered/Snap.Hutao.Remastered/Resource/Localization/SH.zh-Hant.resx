@@ -5783,88 +5783,88 @@
     <value>模型正在推理，等待回答內容…</value>
   </data>
   <data name="ViewDialogAccountInsightsAnalysisPrompt" xml:space="preserve">
-    <value>?根據本??中的?史???據，完整分析我的??表?、祈愿?氣和后??劃。</value>
+    <value>請根據本對話中的歷史統計數據，完整分析我的賬號表現、祈願運氣和後續規劃。</value>
   </data>
   <data name="ViewDialogAccountInsightsApiError" xml:space="preserve">
-    <value>?求失?或??未完整?束，可?查接口配置后重新生成。</value>
+    <value>請求失敗或響應未完整結束，可檢查接口配置後重新生成。</value>
   </data>
   <data name="ViewDialogAccountInsightsChatPrivacyBody" xml:space="preserve">
-    <value>生成分析或?送消息?，?????容和???史???送至所?接口。不?附加 UID、Cookie、原始物品 ID 或?據?文件。??、框架????和??快照保存在本機?據目?；API 密?由 Windows ?據管理器保存。工具?行前可??批準或拒?。?史模式仍可能具有可??性，?查?服?商?私政策。</value>
+    <value>生成分析或發送消息時，會將對話內容和彙總歷史統計發送至所選接口。不會附加 UID、Cookie、原始物品 ID 或數據庫文件。對話、框架會話狀態和統計快照保存在本機數據目錄；API 密鑰由 Windows 憑據管理器保存。工具執行前可選擇批准或拒絕。歷史模式仍可能具有可識別性，請查閱服務商隱私政策。</value>
   </data>
   <data name="ViewDialogAccountInsightsConversationHint" xml:space="preserve">
-    <value>生成??分析，或?入???始??。每???使用?立的??快照。</value>
+    <value>生成賬號分析，或輸入問題開始對話。每個對話使用獨立的統計快照。</value>
   </data>
   <data name="ViewDialogAccountInsightsConversationStatistics" xml:space="preserve">
-    <value>{0} ?消息 · ?入 {1} · ?出 {2} · 推理 {3} · ?存命中 {4} Token</value>
+    <value>{0} 條消息 · 輸入 {1} · 輸出 {2} · 推理 {3} · 緩存命中 {4} Token</value>
   </data>
   <data name="ViewDialogAccountInsightsCopyConversation" xml:space="preserve">
-    <value>復制??</value>
+    <value>複製對話</value>
   </data>
   <data name="ViewDialogAccountInsightsDefaultProfile" xml:space="preserve">
-    <value>默?配置</value>
+    <value>默認配置</value>
   </data>
   <data name="ViewDialogAccountInsightsDelete" xml:space="preserve">
-    <value>?除</value>
+    <value>刪除</value>
   </data>
   <data name="ViewDialogAccountInsightsDetailedTokenUsage" xml:space="preserve">
-    <value>?入 {0} · ?出 {1} · 推理 {2} · ?存命中 {3} Token</value>
+    <value>輸入 {0} · 輸出 {1} · 推理 {2} · 緩存命中 {3} Token</value>
   </data>
   <data name="ViewDialogAccountInsightsHistoryLoadError" xml:space="preserve">
-    <value>?法?取本地??或配置，原文件已保留，本次不?覆?。</value>
+    <value>無法讀取本地對話或配置，原文件已保留，本次不會覆蓋。</value>
   </data>
   <data name="ViewDialogAccountInsightsHistorySaveError" xml:space="preserve">
-    <value>?法保存本地??或配置，??查?據目?的???限。</value>
+    <value>無法保存本地對話或配置，請檢查數據目錄的訪問權限。</value>
   </data>
   <data name="ViewDialogAccountInsightsInputPlaceholder" xml:space="preserve">
-    <value>?入??或??追?；Enter ?送，Shift / Ctrl + Enter ?行</value>
+    <value>輸入問題或繼續追問；Enter 發送，Shift / Ctrl + Enter 換行</value>
   </data>
   <data name="ViewDialogAccountInsightsMaxTokens" xml:space="preserve">
     <value>最大輸出 Token 數（可留空；Anthropic 預設 8192）</value>
   </data>
   <data name="ViewDialogAccountInsightsModelProfile" xml:space="preserve">
-    <value>模型配置</value>
+    <value>模型設定</value>
   </data>
   <data name="ViewDialogAccountInsightsModelSettings" xml:space="preserve">
-    <value>模型?置</value>
+    <value>模型設置</value>
   </data>
   <data name="ViewDialogAccountInsightsNewConversation" xml:space="preserve">
-    <value>新??</value>
+    <value>新對話</value>
   </data>
   <data name="ViewDialogAccountInsightsNewProfile" xml:space="preserve">
-    <value>新配置</value>
+    <value>新設定</value>
   </data>
   <data name="ViewDialogAccountInsightsProfileName" xml:space="preserve">
-    <value>配置名?</value>
+    <value>配置名稱</value>
   </data>
   <data name="ViewDialogAccountInsightsProvider" xml:space="preserve">
-    <value>接口?型</value>
+    <value>接口類型</value>
   </data>
   <data name="ViewDialogAccountInsightsProviderDefault" xml:space="preserve">
-    <value>服?商默?</value>
+    <value>服務商默認</value>
   </data>
   <data name="ViewDialogAccountInsightsProviderEndpointHeader" xml:space="preserve">
-    <value>API 地址（HTTPS 或本機 HTTP，支持基?地址或完整接口地址）</value>
+    <value>API 地址（HTTPS 或本機 HTTP，支持基礎地址或完整接口地址）</value>
   </data>
   <data name="ViewDialogAccountInsightsReasoningCompleted" xml:space="preserve">
-    <value>思考?程</value>
+    <value>思考過程</value>
   </data>
   <data name="ViewDialogAccountInsightsReasoningEffort" xml:space="preserve">
-    <value>推理?度（? OpenAI 兼容接口）</value>
+    <value>推理強度（僅 OpenAI 兼容接口）</value>
   </data>
   <data name="ViewDialogAccountInsightsRegenerate" xml:space="preserve">
     <value>重新生成</value>
   </data>
   <data name="ViewDialogAccountInsightsReuseMessage" xml:space="preserve">
-    <value>??并重?</value>
+    <value>編輯並重發</value>
   </data>
   <data name="ViewDialogAccountInsightsSaveProfile" xml:space="preserve">
-    <value>保存配置</value>
+    <value>儲存設定</value>
   </data>
   <data name="ViewDialogAccountInsightsSend" xml:space="preserve">
-    <value>?送</value>
+    <value>發送</value>
   </data>
   <data name="ViewDialogAccountInsightsTemperature" xml:space="preserve">
-    <value>?度（留空使用服?商默?值）</value>
+    <value>溫度（留空使用服務商默認值）</value>
   </data>
   <data name="ViewDialogAccountInsightsUserLabel" xml:space="preserve">
     <value>你</value>
@@ -5885,133 +5885,133 @@
     <value>你</value>
   </data>
   <data name="UIXamlControlsChatMessageViewToolTipCachedInputTokenCount" xml:space="preserve">
-    <value>?存?入 / ?存命中率</value>
+    <value>緩存輸入 / 緩存命中率</value>
   </data>
   <data name="UIXamlControlsChatMessageViewToolTipInputTokenCount" xml:space="preserve">
-    <value>?入</value>
+    <value>輸入</value>
   </data>
   <data name="UIXamlControlsChatMessageViewToolTipOutputTokenCount" xml:space="preserve">
-    <value>?出</value>
+    <value>輸出</value>
   </data>
   <data name="UIXamlControlsChatMessageViewToolTipReasoningTokenCount" xml:space="preserve">
     <value>思考</value>
   </data>
   <data name="UIXamlControlsChatMessageViewToolTipTotalTokenCount" xml:space="preserve">
-    <value>??</value>
+    <value>總計</value>
   </data>
   <data name="UIXamlControlsChatToolApprovalRequestSegmentViewLabelAllow" xml:space="preserve">
-    <value>允?</value>
+    <value>允許</value>
   </data>
   <data name="UIXamlControlsChatToolApprovalRequestSegmentViewLabelDeny" xml:space="preserve">
-    <value>拒?</value>
+    <value>拒絕</value>
   </data>
   <data name="UIXamlControlsChatToolApprovalRequestSegmentViewLabelPending" xml:space="preserve">
     <value>等待批準</value>
   </data>
   <data name="UIXamlControlsChatToolApprovalRequestSegmentViewLabelTitle" xml:space="preserve">
-    <value>需要批準工具?用</value>
+    <value>需要批准工具調用</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelAttachment" xml:space="preserve">
     <value>附件</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelCachedInputTokens" xml:space="preserve">
-    <value>?存?入 Token</value>
+    <value>緩存輸入 Token</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelContents" xml:space="preserve">
-    <value>?容</value>
+    <value>內容</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelContext" xml:space="preserve">
     <value>上下文</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelDeleteConversation" xml:space="preserve">
-    <value>?除??</value>
+    <value>刪除會話</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelInputTokens" xml:space="preserve">
-    <value>?入 Token</value>
+    <value>輸入 Token</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelMessages" xml:space="preserve">
-    <value>消息</value>
+    <value>訊息</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelModelProfile" xml:space="preserve">
     <value>模型</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelModelProviderProfile" xml:space="preserve">
-    <value>模型提供商配置</value>
+    <value>模型提供者設定</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelNewConversation" xml:space="preserve">
-    <value>新??</value>
+    <value>新會話</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelOutputTokens" xml:space="preserve">
-    <value>?出 Token</value>
+    <value>輸出 Token</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelPlaceholder" xml:space="preserve">
-    <value>?入消息...</value>
+    <value>輸入消息...</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelReasoningContents" xml:space="preserve">
-    <value>推理?容</value>
+    <value>推理內容</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelReasoningTokens" xml:space="preserve">
     <value>推理 Token</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelSend" xml:space="preserve">
-    <value>?送</value>
+    <value>發送</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelStopGeneration" xml:space="preserve">
     <value>停止生成</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelSwitchModel" xml:space="preserve">
-    <value>切?模型</value>
+    <value>切換模型</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelTextContents" xml:space="preserve">
-    <value>文本?容</value>
+    <value>文本內容</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelToolCalls" xml:space="preserve">
-    <value>工具?用</value>
+    <value>工具調用</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelToolResults" xml:space="preserve">
-    <value>工具?果</value>
+    <value>工具結果</value>
   </data>
   <data name="UIXamlPagesAgentPageLabelTotalTokens" xml:space="preserve">
-    <value>? Token</value>
+    <value>總 Token</value>
   </data>
   <data name="UIXamlPagesAgentPageMessageConfigureApiKey" xml:space="preserve">
-    <value>?先在?置中配置模型供?商</value>
+    <value>請先在設置中配置模型供應商</value>
   </data>
   <data name="UIXamlPagesSettingsPageDescriptionAddModelProviderProfileToEdit" xml:space="preserve">
-    <value>?先添加一?模型提供商配置</value>
+    <value>請先添加一個模型提供商配置</value>
   </data>
   <data name="UIXamlPagesSettingsPageDescriptionAgentMaximumIterationsPerRequest" xml:space="preserve">
-    <value>限制智能體在??用?消息?次中的工具?用次?，防止?限循?</value>
+    <value>限制智能體在單個用戶消息輪次中的工具調用次數，防止無限循環</value>
   </data>
   <data name="UIXamlPagesSettingsPageDescriptionAgentUserName" xml:space="preserve">
-    <value>用于??你?送的消息</value>
+    <value>用於標記你發送的消息</value>
   </data>
   <data name="UIXamlPagesSettingsPageDescriptionModelListDocumentationLink" xml:space="preserve">
-    <value>某些模型供?商可能不?提供模型列表接口，填入文??接以覆?默?的?取模型行?</value>
+    <value>某些模型供應商可能不會提供模型列表接口，填入文檔鏈接以覆蓋默認的獲取模型行爲</value>
   </data>
   <data name="UIXamlPagesSettingsPageDescriptionProfileApiKey" xml:space="preserve">
-    <value>API 密?由 Windows ?據管理器保存，不?入 JSON 配置文件</value>
+    <value>API 密鑰由 Windows 憑據管理器保存，不寫入 JSON 配置文件</value>
   </data>
   <data name="UIXamlPagesSettingsPageDescriptionSelectModelProviderProfileToEdit" xml:space="preserve">
-    <value>???左?的模型提供商配置?行??</value>
+    <value>請選擇左側的模型提供商配置進行編輯</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelAddModel" xml:space="preserve">
-    <value>添加模型</value>
+    <value>新增模型</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelAddProfile" xml:space="preserve">
-    <value>添加</value>
+    <value>新增</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelAgentGlobalOptions" xml:space="preserve">
-    <value>全局配置</value>
+    <value>全域設定</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelAgentMaximumIterationsPerRequest" xml:space="preserve">
-    <value>最大工具?用次?</value>
+    <value>最大工具調用次數</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelAgentSystemPrompt" xml:space="preserve">
-    <value>系?提示?</value>
+    <value>系統提示詞</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelAgentUserName" xml:space="preserve">
-    <value>用?名?</value>
+    <value>用戶名稱</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelClearModels" xml:space="preserve">
     <value>清空模型</value>
@@ -6020,106 +6020,106 @@
     <value>復制</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelDeleteModel" xml:space="preserve">
-    <value>?除模型</value>
+    <value>刪除模型</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelDeleteProfile" xml:space="preserve">
-    <value>?除</value>
+    <value>刪除</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelFetchModels" xml:space="preserve">
-    <value>?取</value>
+    <value>獲取</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelAgentOptions" xml:space="preserve">
-    <value>模型??</value>
+    <value>模型參數</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelListActions" xml:space="preserve">
     <value>操作</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelListDocumentationLink" xml:space="preserve">
-    <value>模型列表文??接</value>
+    <value>模型列表文檔鏈接</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelMaxContextWindowTokens" xml:space="preserve">
-    <value>上下文窗口?度</value>
+    <value>上下文窗口長度</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelMaxInputTokens" xml:space="preserve">
-    <value>最大?入?度</value>
+    <value>最大輸入長度</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelMaxOutputTokens" xml:space="preserve">
-    <value>最大?出?度</value>
+    <value>最大輸出長度</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelName" xml:space="preserve">
-    <value>模型名?</value>
+    <value>模型名稱</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelOmitReasoningEffortWhenThinkingDisabled" xml:space="preserve">
-    <value>思考推理???省略推理?度</value>
+    <value>思考推理關閉時省略推理強度</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelProviderProfiles" xml:space="preserve">
-    <value>模型配置</value>
+    <value>模型設定</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelReasoningEffort" xml:space="preserve">
-    <value>推理?度</value>
+    <value>推理強度</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelTemperature" xml:space="preserve">
-    <value>?度采?</value>
+    <value>溫度採樣</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelThinkingEnabled" xml:space="preserve">
-    <value>?用思考推理</value>
+    <value>啓用思考推理</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelModelTopP" xml:space="preserve">
-    <value>核采? Top P</value>
+    <value>核採樣 Top P</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileApiKey" xml:space="preserve">
     <value>API Key</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileEndpoint" xml:space="preserve">
-    <value>端? URL</value>
+    <value>端點 URL</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileModelId" xml:space="preserve">
     <value>模型 ID</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileName" xml:space="preserve">
-    <value>配置名?</value>
+    <value>配置名稱</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileProviderType" xml:space="preserve">
-    <value>提供商?型</value>
+    <value>提供商類型</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelSelectedModel" xml:space="preserve">
-    <value>?前模型</value>
+    <value>當前模型</value>
   </data>
   <data name="UIXamlPagesSettingsPageModelListStatusApiKeyMissingMessage" xml:space="preserve">
-    <value>?取模型前?先?入 API Key</value>
+    <value>獲取模型前請先輸入 API Key</value>
   </data>
   <data name="UIXamlPagesSettingsPageModelListStatusCanceledMessage" xml:space="preserve">
-    <value>模型?取已取消</value>
+    <value>模型獲取已取消</value>
   </data>
   <data name="UIXamlPagesSettingsPageModelListStatusDocumentationOpenedMessage" xml:space="preserve">
-    <value>已在??器中打?提供商模型文?。?在下方列表中手?管理模型</value>
+    <value>已在瀏覽器中打開提供商模型文檔。請在下方列表中手動管理模型</value>
   </data>
   <data name="UIXamlPagesSettingsPageModelListStatusDocumentationOpenedTitle" xml:space="preserve">
-    <value>已打?文?</value>
+    <value>已打開文檔</value>
   </data>
   <data name="UIXamlPagesSettingsPageModelListStatusFailedTitle" xml:space="preserve">
-    <value>?取模型失?</value>
+    <value>獲取模型失敗</value>
   </data>
   <data name="UIXamlPagesSettingsPageModelListStatusFetchingMessage" xml:space="preserve">
-    <value>正在?所?提供商?求模型列表</value>
+    <value>正在從所選提供商請求模型列表</value>
   </data>
   <data name="UIXamlPagesSettingsPageModelListStatusFetchingTitle" xml:space="preserve">
-    <value>正在?取模型</value>
+    <value>正在獲取模型</value>
   </data>
   <data name="UIXamlPagesSettingsPageModelListStatusInvalidDocumentationLinkMessage" xml:space="preserve">
-    <value>??入有效的 http 或 https 文??接</value>
+    <value>請輸入有效的 http 或 https 文檔鏈接</value>
   </data>
   <data name="UIXamlPagesSettingsPageModelListStatusNoProviderMessage" xml:space="preserve">
-    <value>?先??一?模型提供商配置</value>
+    <value>請先選擇一個模型提供商配置</value>
   </data>
   <data name="UIXamlPagesSettingsPageModelListStatusSuccessMessage" xml:space="preserve">
-    <value>已?取 {0} ?模型</value>
+    <value>已獲取 {0} 個模型</value>
   </data>
   <data name="UIXamlPagesSettingsPageModelListStatusSuccessTitle" xml:space="preserve">
     <value>模型已更新</value>
   </data>
   <data name="UIXamlPagesSettingsPageOptionProviderDefault" xml:space="preserve">
-    <value>提供商默?值</value>
+    <value>提供商默認值</value>
   </data>
   <data name="UIXamlPagesSettingsPageOptionReasoningEffortExtraHigh" xml:space="preserve">
     <value>極高</value>
@@ -6134,12 +6134,15 @@
     <value>中</value>
   </data>
   <data name="UIXamlPagesSettingsPageOptionReasoningEffortNone" xml:space="preserve">
-    <value>?</value>
+    <value>無</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderAgentUserName" xml:space="preserve">
     <value>You</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
-    <value>提供商默?值</value>
+    <value>提供商默認值</value>
+  </data>
+  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
+    <value>無法讀取或更新開機自啟動排程工作。請確認排程工作服務可用，並以管理員身分執行後重試。</value>
   </data>
 </root>

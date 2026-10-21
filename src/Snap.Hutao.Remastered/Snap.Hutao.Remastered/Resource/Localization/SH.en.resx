@@ -1036,7 +1036,7 @@
     <value>Failed to get local game version, unable to obtain injection configuration information</value>
   </data>
   <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
-    <value>Island enhancements are not available for this game version. Disable Island to launch the game normally</value>
+    <value>The current game version is not yet supported</value>
   </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI launched</value>
@@ -6185,5 +6185,8 @@ Space Available: {2}</value>
   </data>
   <data name="ServiceGameIslandVersionConflict" xml:space="preserve">
     <value>The version sources disagree, so Island compatibility cannot be determined. Verify the game, or disable Island for ordinary launch</value>
+  </data>
+  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
+    <value>Unable to read or update the startup scheduled task. Please make sure the Task Scheduler service is available, then run the app as administrator and try again.</value>
   </data>
 </root>

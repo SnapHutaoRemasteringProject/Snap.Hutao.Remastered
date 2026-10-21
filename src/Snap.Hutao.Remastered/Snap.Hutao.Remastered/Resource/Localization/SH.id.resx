@@ -6067,7 +6067,7 @@ Ruang Tersedia: {2}</value>
     <value>Top P</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileApiKey" xml:space="preserve">
-    <value>API Key</value>
+    <value>Kunci API</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileEndpoint" xml:space="preserve">
     <value>Endpoint URL</value>
@@ -6136,9 +6136,12 @@ Ruang Tersedia: {2}</value>
     <value>None</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderAgentUserName" xml:space="preserve">
-    <value>You</value>
+    <value>Anda</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
     <value>Provider default</value>
+  </data>
+  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
+    <value>Gagal membaca atau memperbaharui tugas terjadwal saat startup. Mohon periksa layanan tugas terjadwal, lalu coba lagi dengan menjalankan aplikasi sebagai administrator.</value>
   </data>
 </root>
