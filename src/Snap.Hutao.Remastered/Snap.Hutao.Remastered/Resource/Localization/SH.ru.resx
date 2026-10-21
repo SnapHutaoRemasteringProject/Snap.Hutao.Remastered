@@ -4827,7 +4827,7 @@
     <value>Автозапуск с Windows</value>
   </data>
   <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
-    <value>无法读取或更新开机自启动计划任务。请确认计划任务服务可用，并以管理员身份运行后重试。</value>
+    <value>Не удалось прочитать или обновить задачу планировщика для автозапуска при загрузке. Убедитесь, что служба планировщика заданий доступна, и повторите попытку, запустив приложение от имени администратора.</value>
   </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>Поведение приложения</value>
@@ -5877,7 +5877,7 @@
     <value>Copy Text</value>
   </data>
   <data name="UIXamlControlsChatMessageViewLabelAssistant" xml:space="preserve">
-    <value>AI</value>
+    <value>ИИ</value>
   </data>
   <data name="UIXamlControlsChatMessageViewLabelReasoningCompleted" xml:space="preserve">
     <value>Thought</value>
@@ -6072,7 +6072,7 @@
     <value>Top P</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileApiKey" xml:space="preserve">
-    <value>API Key</value>
+    <value>Ключ API</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileEndpoint" xml:space="preserve">
     <value>Endpoint URL</value>
@@ -6141,7 +6141,7 @@
     <value>None</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderAgentUserName" xml:space="preserve">
-    <value>You</value>
+    <value>Вы</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
     <value>Provider default</value>
