@@ -7,18 +7,18 @@
     <Grid x:Name="RootGrid" Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
         <Grid.Resources>
             <Style x:Key="InsightAssistantCardStyle" TargetType="Border">
-                <Setter Property="Padding" Value="14"/>
-                <Setter Property="Margin" Value="0,0,0,8"/>
                 <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
                 <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="Margin" Value="0,0,0,8"/>
+                <Setter Property="Padding" Value="14"/>
             </Style>
             <Style x:Key="InsightUserCardStyle" TargetType="Border">
-                <Setter Property="Padding" Value="12,10"/>
-                <Setter Property="Margin" Value="0,0,0,8"/>
                 <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorSecondaryBrush}"/>
                 <Setter Property="CornerRadius" Value="8"/>
+                <Setter Property="Margin" Value="0,0,0,8"/>
+                <Setter Property="Padding" Value="12,10"/>
             </Style>
         </Grid.Resources>
         <Grid.RowDefinitions>
@@ -34,18 +34,22 @@
                 Text="{shuxm:ResourceString Name=ViewDialogAccountInsightsTitle}"/>
         </Grid>
 
-        <Grid Grid.Row="1" Padding="18,10,18,18" ColumnSpacing="18">
+        <Grid
+            Grid.Row="1"
+            Padding="18,10,18,18"
+            ColumnSpacing="18">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="3*"/>
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Native Charts: scroll independently of API configuration. -->
-            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <!--  Native Charts: scroll independently of API configuration.  -->
+            <ScrollViewer
+                Grid.Column="0"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
                 <StackPanel Spacing="16">
-                    <TextBlock
-                        Text="{shuxm:ResourceString Name=ViewDialogAccountInsightsIntro}"
-                        TextWrapping="Wrap"/>
+                    <TextBlock Text="{shuxm:ResourceString Name=ViewDialogAccountInsightsIntro}" TextWrapping="Wrap"/>
                     <TextBlock
                         x:Name="StatusText"
                         Text="{shuxm:ResourceString Name=ViewDialogAccountInsightsLoading}"
@@ -61,26 +65,29 @@
             <Border
                 Grid.Column="1"
                 Padding="16"
-                CornerRadius="8"
                 Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="1">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                BorderThickness="1"
+                CornerRadius="8">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <StackPanel Spacing="14">
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <TextBlock
                                 VerticalAlignment="Center"
                                 Style="{StaticResource SubtitleTextBlockStyle}"
                                 Text="{shuxm:ResourceString Name=ViewDialogAccountInsightsAnalysisHeading}"/>
-                            <Button x:Name="PrivacyInfoButton" Padding="4" VerticalAlignment="Center">
-                                <FontIcon Glyph="&#xE946;" FontSize="12"/>
+                            <Button
+                                x:Name="PrivacyInfoButton"
+                                Padding="4"
+                                VerticalAlignment="Center">
+                                <FontIcon FontSize="12" Glyph="&#xE946;"/>
                             </Button>
                         </StackPanel>
                         <TeachingTip
                             x:Name="PrivacyTeachingTip"
                             Title="{shuxm:ResourceString Name=ViewDialogAccountInsightsPrivacyTitle}"
-                            Subtitle="{shuxm:ResourceString Name=ViewDialogAccountInsightsPrivacyBody}"
                             IsLightDismissEnabled="True"
+                            Subtitle="{shuxm:ResourceString Name=ViewDialogAccountInsightsPrivacyBody}"
                             Target="{x:Bind PrivacyInfoButton}"/>
                         <TextBox
                             x:Name="EndpointBox"
@@ -90,31 +97,33 @@
                             x:Name="ModelBox"
                             Header="{shuxm:ResourceString Name=ViewDialogAccountInsightsModelHeader}"
                             PlaceholderText="{shuxm:ResourceString Name=ViewDialogAccountInsightsModelPlaceholder}"/>
-                        <PasswordBox
-                            x:Name="ApiKeyBox"
-                            Header="{shuxm:ResourceString Name=ViewDialogAccountInsightsApiKeyHeader}"/>
+                        <PasswordBox x:Name="ApiKeyBox" Header="{shuxm:ResourceString Name=ViewDialogAccountInsightsApiKeyHeader}"/>
                         <StackPanel Orientation="Horizontal" Spacing="10">
-                            <Button
-                                x:Name="TestButton"
-                                Content="{shuxm:ResourceString Name=ViewDialogAccountInsightsTestConnection}"/>
+                            <Button x:Name="TestButton" Content="{shuxm:ResourceString Name=ViewDialogAccountInsightsTestConnection}"/>
                             <Button
                                 x:Name="GenerateButton"
                                 Content="{shuxm:ResourceString Name=ViewDialogAccountInsightsGenerate}"
                                 IsEnabled="False"/>
-                            <Button x:Name="StopButton" Content="{shuxm:ResourceString Name=ViewDialogAccountInsightsStopGeneration}" IsEnabled="False"/>
-                            <ProgressRing x:Name="ActivityRing" IsActive="False" Height="24" Width="24"/>
+                            <Button
+                                x:Name="StopButton"
+                                Content="{shuxm:ResourceString Name=ViewDialogAccountInsightsStopGeneration}"
+                                IsEnabled="False"/>
+                            <ProgressRing
+                                x:Name="ActivityRing"
+                                Width="24"
+                                Height="24"
+                                IsActive="False"/>
                         </StackPanel>
                         <TextBlock
                             x:Name="ResponseText"
-                            TextWrapping="Wrap"
                             IsTextSelectionEnabled="True"
-                            Style="{StaticResource CaptionTextBlockStyle}"/>
-                        <!-- Message cards and streamed assistant tokens, following Nicole AgentPage. -->
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            TextWrapping="Wrap"/>
+                        <!--  Message cards and streamed assistant tokens, following Nicole AgentPage.  -->
                         <ScrollViewer
                             x:Name="ConversationScrollViewer"
-                            MaxHeight="490"
-                            VerticalScrollBarVisibility="Auto"
-                            HorizontalScrollBarVisibility="Disabled">
+                            HorizontalScrollBarVisibility="Disabled"
+                            VerticalScrollBarVisibility="Auto">
                             <StackPanel x:Name="ConversationPanel" Spacing="6"/>
                         </ScrollViewer>
                     </StackPanel>
