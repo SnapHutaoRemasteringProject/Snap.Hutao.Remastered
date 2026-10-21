@@ -106,6 +106,8 @@ public static partial class Bootstrap
 
             ComWrappersSupport.InitializeComWrappers();
 
+            using IDisposable telemetry = LoggerFactoryExtension.InitializeSentry();
+
             // By adding the using statement, we can dispose the injected services when closing
             using (ServiceProvider serviceProvider = DependencyInjection.Initialize(true))
             {

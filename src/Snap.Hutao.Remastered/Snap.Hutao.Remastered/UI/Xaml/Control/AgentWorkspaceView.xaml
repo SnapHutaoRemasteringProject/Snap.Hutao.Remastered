@@ -1,0 +1,566 @@
+<UserControl
+    x:Class="Snap.Hutao.Remastered.UI.Xaml.Control.AgentWorkspaceView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cw="using:CommunityToolkit.WinUI"
+    xmlns:cwc="using:CommunityToolkit.WinUI.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mxi="using:Microsoft.Xaml.Interactivity"
+    xmlns:snux="using:Snap.Hutao.Remastered.UI.Xaml"
+    xmlns:snuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior.AI"
+    xmlns:snuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
+    xmlns:snuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.ChatElements"
+    xmlns:snuxd="using:Snap.Hutao.Remastered.UI.Xaml.Data.AI"
+    xmlns:snuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    xmlns:snv="using:Snap.Hutao.Remastered.ViewModel.AI"
+    d:DataContext="{d:DesignInstance snv:AgentViewModel}"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <cwc:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <snuxd:EmptyObjectToVisibilityConverter x:Key="ToolApprovalRequestVisibilityConverter" />
+
+        <DataTemplate x:Key="ToolApprovalRequestTemplate" x:DataType="snv:AgentConversationViewModel">
+            <snuxcc:ChatToolApprovalRequestSegmentView
+                ApproveCommand="{Binding ApproveToolApprovalCommand}"
+                DenyCommand="{Binding DenyToolApprovalCommand}"
+                ToolApprovalRequest="{Binding ToolApprovalRequest}" />
+        </DataTemplate>
+
+        <Style
+            x:Key="AgentInputToolbarButtonStyle"
+            BasedOn="{StaticResource DefaultButtonStyle}"
+            TargetType="Button">
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Padding" Value="8,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style
+            x:Key="AgentInputSendButtonStyle"
+            BasedOn="{StaticResource AgentInputToolbarButtonStyle}"
+            TargetType="Button">
+            <Setter Property="Width" Value="32" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+
+        <Style x:Key="AgentInputTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+            <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+            <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+            <Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
+            <Setter Property="ScrollViewer.VerticalScrollMode" Value="Auto" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="False" />
+            <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}" />
+            <Setter Property="Padding" Value="12,10,12,8" />
+            <Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
+            <Setter Property="ContextFlyout" Value="{StaticResource TextControlCommandBarContextFlyout}" />
+            <Setter Property="SelectionFlyout" Value="{StaticResource TextControlCommandBarSelectionFlyout}" />
+            <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+            <Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid d:DataContext="{d:DesignInstance snv:AgentViewModel}" DataContext="{Binding DataContext, RelativeSource={RelativeSource TemplatedParent}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <ContentPresenter
+                                x:Name="HeaderContentPresenter"
+                                Grid.Row="0"
+                                Margin="{ThemeResource TextBoxTopHeaderMargin}"
+                                VerticalAlignment="Top"
+                                x:DeferLoadStrategy="Lazy"
+                                Content="{TemplateBinding Header}"
+                                ContentTemplate="{TemplateBinding HeaderTemplate}"
+                                FontWeight="Normal"
+                                Foreground="{ThemeResource TextControlHeaderForeground}"
+                                TextWrapping="Wrap"
+                                Visibility="Collapsed" />
+
+                            <Border
+                                x:Name="BorderElement"
+                                Grid.Row="1"
+                                MinWidth="{TemplateBinding MinWidth}"
+                                MinHeight="{TemplateBinding MinHeight}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Control.IsTemplateFocusTarget="True"
+                                CornerRadius="{TemplateBinding CornerRadius}" />
+
+                            <Grid
+                                Grid.Row="1"
+                                Margin="{TemplateBinding BorderThickness}"
+                                RowSpacing="4">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <ScrollViewer
+                                    x:Name="ContentElement"
+                                    Grid.Row="0"
+                                    Padding="{TemplateBinding Padding}"
+                                    AutomationProperties.AccessibilityView="Raw"
+                                    Foreground="{TemplateBinding Foreground}"
+                                    HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                    HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+                                    IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                                    IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+                                    IsTabStop="False"
+                                    IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+                                    VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                    VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+                                    ZoomMode="Disabled" />
+
+                                <TextBlock
+                                    x:Name="PlaceholderTextContentPresenter"
+                                    Grid.Row="0"
+                                    Padding="{TemplateBinding Padding}"
+                                    Foreground="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForeground}}"
+                                    IsHitTestVisible="False"
+                                    Text="{TemplateBinding PlaceholderText}"
+                                    TextAlignment="{TemplateBinding TextAlignment}"
+                                    TextWrapping="{TemplateBinding TextWrapping}" />
+
+                                <Grid
+                                    Grid.Row="1"
+                                    Padding="8,0,8,8"
+                                    ColumnSpacing="8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel
+                                        Grid.Column="0"
+                                        HorizontalAlignment="Left"
+                                        Orientation="Horizontal"
+                                        Spacing="6">
+                                        <Button
+                                            AutomationProperties.Name="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelAttachment}"
+                                            IsEnabled="False"
+                                            Style="{StaticResource AgentInputToolbarButtonStyle}"
+                                            ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelAttachment}">
+                                            <FontIcon FontSize="16" Glyph="&#xE723;" />
+                                        </Button>
+                                    </StackPanel>
+
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        HorizontalAlignment="Right"
+                                        Orientation="Horizontal"
+                                        Spacing="6">
+                                        <Button
+                                            Padding="12,5,12,7"
+                                            Style="{StaticResource AgentInputToolbarButtonStyle}"
+                                            ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelSwitchModel}">
+                                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                                <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
+                                                    <TextBlock.Inlines>
+                                                        <Run Text="{Binding Conversations.CurrentItem.ModelProviderProfile.Name}" />
+                                                        <Run Text="|" />
+                                                        <Run Text="{Binding Conversations.CurrentItem.ModelProfile.DisplayName}" />
+                                                    </TextBlock.Inlines>
+                                                </TextBlock>
+                                                <FontIcon
+                                                    Margin="0,2,0,0"
+                                                    FontSize="10"
+                                                    Glyph="&#xE70D;"
+                                                    Opacity="0.7" />
+                                            </StackPanel>
+                                            <Button.Flyout>
+                                                <Flyout Placement="TopEdgeAlignedRight">
+                                                    <Flyout.FlyoutPresenterStyle>
+                                                        <Style BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" TargetType="FlyoutPresenter">
+                                                            <Setter Property="MinWidth" Value="320" />
+                                                        </Style>
+                                                    </Flyout.FlyoutPresenterStyle>
+                                                    <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource TemplatedParent}}" Spacing="12">
+                                                        <snuxc:SizeRestrictedContentControl>
+                                                            <ComboBox
+                                                                HorizontalAlignment="Stretch"
+                                                                DisplayMemberPath="Name"
+                                                                Header="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelModelProviderProfile}">
+                                                                <mxi:Interaction.Behaviors>
+                                                                    <snuxb:SelectorSelectedItemBindingWorkaroundBehavior ItemsSource="{Binding Settings.ModelProviderProfiles}" SelectedItem="{Binding Conversations.CurrentItem.ModelProviderProfile, Mode=TwoWay}" />
+                                                                </mxi:Interaction.Behaviors>
+                                                            </ComboBox>
+                                                        </snuxc:SizeRestrictedContentControl>
+
+                                                        <snuxc:SizeRestrictedContentControl>
+                                                            <ComboBox
+                                                                HorizontalAlignment="Stretch"
+                                                                DisplayMemberPath="DisplayName"
+                                                                Header="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelModelProfile}">
+                                                                <mxi:Interaction.Behaviors>
+                                                                    <snuxb:SelectorSelectedItemBindingWorkaroundBehavior ItemsSource="{Binding Conversations.CurrentItem.ModelProviderProfile.ModelProfiles, Mode=OneWay}" SelectedItem="{Binding Conversations.CurrentItem.ModelProfile, Mode=TwoWay}" />
+                                                                </mxi:Interaction.Behaviors>
+                                                            </ComboBox>
+                                                        </snuxc:SizeRestrictedContentControl>
+                                                    </StackPanel>
+                                                </Flyout>
+                                            </Button.Flyout>
+                                        </Button>
+
+                                        <Button
+                                            Command="{Binding Conversations.CurrentItem.SendMessageCommand}"
+                                            Style="{StaticResource AgentInputSendButtonStyle}"
+                                            ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelSend}"
+                                            Visibility="{Binding Conversations.CurrentItem.CanStopGeneration, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
+                                            <FontIcon FontSize="14" Glyph="&#xE74A;" />
+                                        </Button>
+
+                                        <Button
+                                            Command="{Binding Conversations.CurrentItem.StopGenerationCommand}"
+                                            Style="{StaticResource AgentInputSendButtonStyle}"
+                                            ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelStopGeneration}"
+                                            Visibility="{Binding Conversations.CurrentItem.CanStopGeneration, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <FontIcon FontSize="12" Glyph="&#xE71A;" />
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+
+                            <ContentPresenter
+                                x:Name="DescriptionPresenter"
+                                Grid.Row="2"
+                                x:Load="False"
+                                AutomationProperties.AccessibilityView="Raw"
+                                Content="{TemplateBinding Description}"
+                                Foreground="{ThemeResource SystemControlDescriptionTextForegroundBrush}" />
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlHeaderForegroundDisabled}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundDisabled}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushDisabled}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundDisabled}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundDisabled}}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+
+                                    <VisualState x:Name="PointerOver">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushPointerOver}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundPointerOver}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundPointerOver}}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundPointerOver}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+
+                                    <VisualState x:Name="Focused">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundFocused}}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundFocused}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushFocused}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderThickness">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderThemeThicknessFocused}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundFocused}" />
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+
+    <SplitView
+        DisplayMode="Inline"
+        IsPaneOpen="True"
+        OpenPaneLength="280"
+        PaneBackground="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+        <SplitView.Pane>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Button
+                    Grid.Row="0"
+                    Margin="8"
+                    HorizontalAlignment="Stretch"
+                    Command="{x:Bind ViewModel.CreateConversationCommand}"
+                    ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelNewConversation}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon FontSize="16" Glyph="&#xE710;" />
+                        <TextBlock Text="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelNewConversation}" />
+                    </StackPanel>
+                </Button>
+
+                <ListView
+                    Grid.Row="1"
+                    ItemContainerTransitions="{ThemeResource ListViewLikeThemeTransitions}"
+                    ItemsSource="{x:Bind ViewModel.Conversations, Mode=OneWay}"
+                    SelectedItem="{Binding Conversations.CurrentItem, Mode=TwoWay}"
+                    SelectionMode="Single">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid
+                                MinHeight="68"
+                                Padding="12,8"
+                                Background="Transparent"
+                                RowSpacing="4">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+
+                                <Grid.ContextFlyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem Command="{Binding DeleteConversationCommand}" Text="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelDeleteConversation}">
+                                            <MenuFlyoutItem.Icon>
+                                                <FontIcon Glyph="&#xE74D;" />
+                                            </MenuFlyoutItem.Icon>
+                                        </MenuFlyoutItem>
+                                    </MenuFlyout>
+                                </Grid.ContextFlyout>
+
+                                <TextBlock
+                                    Grid.Row="0"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding TitleDisplay.Value}"
+                                    TextTrimming="CharacterEllipsis" />
+
+                                <StackPanel
+                                    Grid.Row="1"
+                                    Orientation="Horizontal"
+                                    Spacing="8">
+                                    <TextBlock
+                                        Opacity="0.7"
+                                        Style="{ThemeResource CaptionTextBlockStyle}"
+                                        Text="{Binding Messages.Count}" />
+                                </StackPanel>
+
+                                <TextBlock
+                                    Grid.Row="2"
+                                    Opacity="0.7"
+                                    Style="{ThemeResource CaptionTextBlockStyle}"
+                                    Text="{Binding UpdatedAtDisplay}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </SplitView.Pane>
+        <SplitView.Content>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Border
+                    Grid.Row="0"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="0,0,0,1">
+                    <CommandBar DefaultLabelPosition="Right">
+                        <AppBarButton Label="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelContext}" ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelContext}">
+                            <AppBarButton.Icon>
+                                <FontIcon Glyph="&#xE8A5;" />
+                            </AppBarButton.Icon>
+                            <AppBarButton.Flyout>
+                                <Flyout>
+                                    <Flyout.FlyoutPresenterStyle>
+                                        <Style BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" TargetType="FlyoutPresenter">
+                                            <Setter Property="MinWidth" Value="360" />
+                                        </Style>
+                                    </Flyout.FlyoutPresenterStyle>
+                                    <Grid
+                                        ColumnSpacing="12"
+                                        DataContext="{x:Bind ViewModel}"
+                                        RowSpacing="8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Grid.Row="0" Grid.Column="0">
+                                            <TextBlock
+                                                Opacity="0.7"
+                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                Text="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelMessages}" />
+                                            <TextBlock Text="{Binding Conversations.CurrentItem.ConversationStatistics.MessageCount}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="0" Grid.Column="1">
+                                            <TextBlock
+                                                Opacity="0.7"
+                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                Text="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelContents}" />
+                                            <TextBlock Text="{Binding Conversations.CurrentItem.ConversationStatistics.ContentCount}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" Grid.Column="0">
+                                            <TextBlock
+                                                Opacity="0.7"
+                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                Text="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelTextContents}" />
+                                            <TextBlock Text="{Binding Conversations.CurrentItem.ConversationStatistics.TextContentCount}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" Grid.Column="1">
+                                            <TextBlock
+                                                Opacity="0.7"
+                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                Text="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelReasoningContents}" />
+                                            <TextBlock Text="{Binding Conversations.CurrentItem.ConversationStatistics.ReasoningContentCount}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="2" Grid.Column="0">
+                                            <TextBlock
+                                                Opacity="0.7"
+                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                Text="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelToolCalls}" />
+                                            <TextBlock Text="{Binding Conversations.CurrentItem.ConversationStatistics.ToolCallCount}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="2" Grid.Column="1">
+                                            <TextBlock
+                                                Opacity="0.7"
+                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                Text="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelToolResults}" />
+                                            <TextBlock Text="{Binding Conversations.CurrentItem.ConversationStatistics.ToolResultCount}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="3" Grid.Column="0">
+                                            <TextBlock
+                                                Opacity="0.7"
+                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                Text="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelTotalTokens}" />
+                                            <TextBlock Text="{Binding Conversations.CurrentItem.ConversationStatistics.TotalTokenCount}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="3" Grid.Column="1">
+                                            <TextBlock
+                                                Opacity="0.7"
+                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                Text="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelInputTokens}" />
+                                            <TextBlock Text="{Binding Conversations.CurrentItem.ConversationStatistics.InputTokenCount}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="4" Grid.Column="0">
+                                            <TextBlock
+                                                Opacity="0.7"
+                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                Text="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelOutputTokens}" />
+                                            <TextBlock Text="{Binding Conversations.CurrentItem.ConversationStatistics.OutputTokenCount}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="4" Grid.Column="1">
+                                            <TextBlock
+                                                Opacity="0.7"
+                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                Text="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelReasoningTokens}" />
+                                            <TextBlock Text="{Binding Conversations.CurrentItem.ConversationStatistics.ReasoningTokenCount}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="5" Grid.Column="0">
+                                            <TextBlock
+                                                Opacity="0.7"
+                                                Style="{ThemeResource CaptionTextBlockStyle}"
+                                                Text="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelCachedInputTokens}" />
+                                            <TextBlock Text="{Binding Conversations.CurrentItem.ConversationStatistics.CachedInputTokenCount}" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Flyout>
+                            </AppBarButton.Flyout>
+                        </AppBarButton>
+                        <AppBarButton Icon="Refresh" Label="{snuxm:ResourceString Name=ViewDialogAccountInsightsRegenerate}" Command="{Binding Conversations.CurrentItem.RegenerateCommand}"/>
+                        <AppBarButton Icon="Copy" Label="{snuxm:ResourceString Name=ViewDialogAccountInsightsCopyConversation}" Command="{Binding CopyConversationCommand}"/>
+                    </CommandBar>
+                </Border>
+
+                <ScrollViewer Grid.Row="1">
+                    <ItemsControl
+                        Margin="16,16,16,8"
+                        ItemContainerTransitions="{ThemeResource AddDeleteThemeTransitions}"
+                        ItemsSource="{Binding Conversations.CurrentItem.Messages}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <snuxcc:ChatMessageView Margin="0,0,0,8" Message="{Binding}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <ItemsStackPanel ItemsUpdatingScrollMode="KeepLastItemInView" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <StackPanel
+                    Grid.Row="2"
+                    Margin="16,0,16,16"
+                    Spacing="8">
+                    <ContentControl
+                        HorizontalContentAlignment="Stretch"
+                        Content="{Binding Conversations.CurrentItem}"
+                        ContentTemplate="{StaticResource ToolApprovalRequestTemplate}"
+                        Visibility="{Binding Conversations.CurrentItem.ToolApprovalRequest, Converter={StaticResource ToolApprovalRequestVisibilityConverter}}" />
+
+                    <TextBox
+                        MaxHeight="240"
+                        AcceptsReturn="True"
+                        IsSpellCheckEnabled="False"
+                        PlaceholderText="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelPlaceholder}"
+                        Style="{StaticResource AgentInputTextBoxStyle}"
+                        Text="{Binding Conversations.CurrentItem.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextWrapping="Wrap">
+                        <mxi:Interaction.Behaviors>
+                            <snuxb:SubmitOnEnterTextBoxBehavior Command="{Binding Conversations.CurrentItem.SendMessageCommand}" />
+                        </mxi:Interaction.Behaviors>
+                    </TextBox>
+                </StackPanel>
+            </Grid>
+        </SplitView.Content>
+    </SplitView>
+</UserControl>

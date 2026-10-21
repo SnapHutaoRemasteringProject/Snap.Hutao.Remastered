@@ -8,10 +8,29 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <NoWarn>$(NoWarn);MAAI001;SCME0001;MEAI001;OPENAI001</NoWarn>
     <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="../Snap.Hutao.Remastered/Service/AI/Models/*.cs" Link="Production/Agent/Models/%(Filename)%(Extension)" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/AI/Observables/*.cs" Link="Production/Agent/Observables/%(Filename)%(Extension)" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/AI/Compatibility/**/*.cs" Link="Production/Agent/Compatibility/%(Filename)%(Extension)" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/AI/ExtendedAgentResponseUpdate.cs" Link="Production/Agent/ExtendedAgentResponseUpdate.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/AI/Settings/ObservableSettingsCollection.cs" Link="Production/Agent/ObservableSettingsCollection.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/AI/Settings/IObservableChildrenProvider.cs" Link="Production/Agent/IObservableChildrenProvider.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/AI/Settings/AgentSettings.cs" Link="Production/Agent/AgentSettings.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/AI/Migration/*.cs" Link="Production/Agent/Migration/%(Filename)%(Extension)" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/AI/ICopyFrom.cs" Link="Production/Agent/ICopyFrom.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/AI/IIdentifiable.cs" Link="Production/Agent/IIdentifiable.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/AI/EnumBox.cs" Link="Production/Agent/EnumBox.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/AI/StringBuilderExtensions.cs" Link="Production/Agent/StringBuilderExtensions.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/AI/ObjectPool/*.cs" Link="Production/Agent/ObjectPool/%(Filename)%(Extension)" />
+    <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Markdown/MarkdownSyntax.cs" Link="Production/Markdown/MarkdownSyntax.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Markdown/MarkdownBlockPartitioner.cs" Link="Production/Markdown/MarkdownBlockPartitioner.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Markdown/MarkdownLine.cs" Link="Production/Markdown/MarkdownLine.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Markdown/MarkdownCodeFenceLine.cs" Link="Production/Markdown/MarkdownCodeFenceLine.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Markdown/MarkdownCodeFenceSegment.cs" Link="Production/Markdown/MarkdownCodeFenceSegment.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/JsonWireOptions.cs" Link="Production/JsonWireOptions.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/Converter/InternStringConverter.cs" Link="Production/InternStringConverter.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/Converter/UnsafeEnumConverter.cs" Link="Production/UnsafeEnumConverter.cs" />
@@ -55,6 +74,10 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.Agents.AI.Anthropic" Version="1.25.0" />
+    <PackageReference Include="Microsoft.Agents.AI.Harness" Version="1.25.0" />
+    <PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.25.0" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="11.0.0-rc.2.26504.105" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-rc.2.26504.105" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="11.0.0-rc.2.26504.105" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />

@@ -2,6 +2,10 @@
 // Licensed under the MIT license.
 
 using Microsoft.UI.Xaml;
+using Snap.Hutao.Remastered.Core.AI.Threading;
+using Snap.Hutao.Remastered.Service.AI;
+using Snap.Hutao.Remastered.ViewModel.AI;
+using Snap.Hutao.Remastered.ViewModel.AI.Settings;
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.UI.Windowing;
 using Snap.Hutao.Remastered.UI.Windowing.Abstraction;
@@ -48,8 +52,6 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View.Window;
 public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
     IXamlWindowExtendContentIntoTitleBar, IXamlWindowHasInitSize, IXamlWindowClosedHandler
 {
-    private const string EndpointSettingKey = "AccountInsightsLlmEndpoint";
-    private const string ModelSettingKey = "AccountInsightsLlmModel";
 
     private readonly CultureOptions cultureOptions;
     private readonly ILogger<AccountInsightsWindow> logger;
@@ -61,6 +63,13 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
     private readonly IRoleCombatRepository combatRepository;
     private readonly IHardChallengeRepository challengeRepository;
     private readonly CancellationTokenSource lifetime = new();
+    private readonly IServiceScope windowScope;
+    private bool initializationStarted;
+    private bool initializationCompleted;
+    private bool closedResourcesDisposed;
+    private bool waitingForAgentShutdown;
+    private readonly AgentViewModel agentViewModel;
+    private readonly AgentAccountContext agentAccountContext;
 
     private string? snapshotJson;
     private bool hasRecordedData;
@@ -68,8 +77,8 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
     public AccountInsightsWindow(IServiceProvider serviceProvider)
     {
         InitializeComponent();
-        IServiceScope scope = serviceProvider.CreateScope();
-        IServiceProvider scoped = scope.ServiceProvider;
+        windowScope = serviceProvider.CreateScope();
+        IServiceProvider scoped = windowScope.ServiceProvider;
 
         cultureOptions = scoped.GetRequiredService<CultureOptions>();
         logger = scoped.GetRequiredService<ILogger<AccountInsightsWindow>>();
@@ -82,14 +91,17 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
         statisticsFactory = scoped.GetRequiredService<IGachaStatisticsFactory>();
 
         Title = L("Title");
-        EndpointBox.Text = LocalSetting.Get(EndpointSettingKey, string.Empty);
-        ModelBox.Text = LocalSetting.Get(ModelSettingKey, string.Empty);
+        AgentThreadingContext.Initialize();
+        Snap.Hutao.Remastered.Resource.Localization.AI.StringResourceProxy.Default.CurrentCulture = cultureOptions.CurrentCulture.Value;
+        agentAccountContext = scoped.GetRequiredService<AgentAccountContext>();
+        agentAccountContext.SystemPrompt = CreateSystemPrompt();
+        agentViewModel = scoped.GetRequiredService<AgentViewModel>();
+        AgentWorkspace.ViewModel = agentViewModel;
+        AgentSettingsEditor.DataContext = agentViewModel;
 
         PrivacyInfoButton.Click += (_, _) => PrivacyTeachingTip.IsOpen = true;
         CopyButton.Click += OnCopyClicked;
-        GenerateButton.Click += OnGenerateClicked;
-        TestButton.Click += OnTestClicked;
-        StopButton.Click += OnStopClicked;
+        GenerateButton.Command = agentViewModel.GenerateAnalysisCommand;
         RootGrid.Loaded += OnLoaded;
 
         this.InitializeController(scoped);
@@ -99,16 +111,21 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
 
     public ImmutableArray<FrameworkElement> TitleBarPassthrough => [];
 
-    public SizeInt32 InitSize => ScaledSizeInt32.CreateForWindow(1200, 800, this);
+    public SizeInt32 InitSize => ScaledSizeInt32.CreateForWindow(1400, 900, this);
 
     public void OnWindowClosing(out bool cancel) => cancel = false;
 
     public void OnWindowClosed()
     {
-        activeRequest?.Cancel();
-        lifetime.Cancel();
-        ApiKeyBox.Password = string.Empty;
-        lifetime.Dispose();
+        RootGrid.Loaded -= OnLoaded;
+        try { agentViewModel.SaveConversations(); }
+        catch (Exception exception) { logger.LogWarning(exception, "Could not save agent conversations on close"); }
+        finally
+        {
+            agentViewModel.Dispose();
+            lifetime.Cancel();
+            DisposeClosedResources();
+        }
     }
 
     private string L(string name)
@@ -123,18 +140,25 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
 
     private void UpdateGenerateEnabled()
     {
-        GenerateButton.IsEnabled = hasRecordedData && snapshotJson is not null && !ActivityRing.IsActive;
+        agentAccountContext.Snapshot = snapshotJson;
+        AgentWorkspace.IsEnabled = true;
+        GenerateButton.IsEnabled = hasRecordedData && snapshotJson is not null;
     }
 
     private async void OnLoaded(object sender, RoutedEventArgs args)
     {
+        initializationStarted = true;
         try
         {
+            RootGrid.Loaded -= OnLoaded;
             if (await userService.GetCurrentUserAndUidAsync() is not { } userAndUid)
             {
                 StatusText.Text = L("NoAccount");
                 return;
             }
+
+            agentViewModel.Initialize(agentAccountContext, userAndUid.Uid.Value.ToString(CultureInfo.InvariantCulture), windowScope.ServiceProvider.GetRequiredService<SettingsModelConfigurationViewModel>());
+            AgentSettingsEditor.DataContext = agentViewModel;
 
             // Each repository has its own scope. Preserve healthy datasets if another fails.
             CultureInfo culture = cultureOptions.CurrentCulture.Value;
@@ -184,9 +208,45 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
         catch (Exception exception)
         {
             logger.LogError(exception, "Failed to initialize account insights");
-            StatusText.Text = L("ReadError");
+            if (!lifetime.IsCancellationRequested)
+            {
+                StatusText.Text = L("ReadError");
+            }
+        }
+        finally
+        {
+            initializationCompleted = true;
+            DisposeClosedResources();
         }
     }
 
+    private void DisposeClosedResources()
+    {
+        if (closedResourcesDisposed || !lifetime.IsCancellationRequested || (initializationStarted && !initializationCompleted))
+        {
+            return;
+        }
+        Task[] operations = agentViewModel.GetPendingOperations();
+        if (operations.Length > 0)
+        {
+            if (!waitingForAgentShutdown)
+            {
+                waitingForAgentShutdown = true;
+                _ = WaitForAgentShutdownAsync(operations);
+            }
+            return;
+        }
+        closedResourcesDisposed = true;
+        windowScope.Dispose();
+        lifetime.Dispose();
+    }
+
+
+    private async Task WaitForAgentShutdownAsync(Task[] operations)
+    {
+        try { await Task.WhenAll(operations); }
+        catch (Exception exception) { logger.LogDebug("Agent shutdown completed with {ErrorType}", exception.GetType().Name); }
+        finally { DisposeClosedResources(); }
+    }
 
 }
