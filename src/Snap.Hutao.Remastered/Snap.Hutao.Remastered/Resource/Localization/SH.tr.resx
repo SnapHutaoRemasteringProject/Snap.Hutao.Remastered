@@ -4825,7 +4825,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Sistemle Başlat</value>
   </data>
   <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
-    <value>无法读取或更新开机自启动计划任务。请确认计划任务服务可用，并以管理员身份运行后重试。</value>
+    <value>Başlangıçta otomatik başlatma zamanlanmış görevi okunamadı veya güncellenemedi. Lütfen zamanlanmış görev hizmetinin kullanılabilir olduğundan emin olun ve yönetici olarak çalıştırıp yeniden deneyin.</value>
   </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>Uygulama Davranışı</value>
@@ -6070,7 +6070,7 @@ Kullanılabilir Alan: {2}</value>
     <value>Top P</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileApiKey" xml:space="preserve">
-    <value>API Key</value>
+    <value>API Anahtarı</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileEndpoint" xml:space="preserve">
     <value>Endpoint URL</value>
@@ -6139,7 +6139,7 @@ Kullanılabilir Alan: {2}</value>
     <value>None</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderAgentUserName" xml:space="preserve">
-    <value>You</value>
+    <value>Siz</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
     <value>Provider default</value>
