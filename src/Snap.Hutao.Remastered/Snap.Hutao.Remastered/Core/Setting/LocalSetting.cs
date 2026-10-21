@@ -213,7 +213,7 @@ public static class LocalSetting
                 if (File.Exists(SettingsFilePath))
                 {
                     string json = File.ReadAllText(SettingsFilePath);
-                    Dictionary<string, JsonElement>? raw = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
+                    Dictionary<string, JsonElement>? raw = JsonSerializer.Deserialize(json, LocalSettingsJsonContext.Default.DictionaryStringJsonElement);
                     if (raw is null)
                     {
                         return [];
@@ -241,7 +241,7 @@ public static class LocalSetting
             string tempFile = SettingsFilePath + ".tmp";
             try
             {
-                string json = JsonSerializer.Serialize(cache, new JsonSerializerOptions { WriteIndented = false });
+                string json = LocalSettingsJson.Serialize(cache, LocalSettingPlatformJson.Write);
                 File.WriteAllText(tempFile, json);
                 File.Move(tempFile, SettingsFilePath, overwrite: true);
             }

@@ -14,6 +14,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 public sealed partial class LaunchGamePage : ScopedPage
 {
     private bool isInitializing;
+    private bool isFastSkipTalkConfirmationPending;
 
     public LaunchGamePage()
     {
@@ -48,12 +49,17 @@ public sealed partial class LaunchGamePage : ScopedPage
     // 因此在此处"事后裁决"：未确认则回拨 toggleSwitch.IsOn，使绑定把值回写为 false。
     private async void FastSkipTalkToggleSwitch_Toggled(object sender, RoutedEventArgs e)
     {
-        if (isInitializing)
+        if (isInitializing || isFastSkipTalkConfirmationPending)
         {
             return;
         }
 
         if (sender is not ToggleSwitch { IsOn: true } toggleSwitch)
+        {
+            return;
+        }
+
+        if (DataContext is not LaunchGameViewModel { LaunchOptions: { } launchOptions })
         {
             return;
         }
@@ -64,19 +70,34 @@ public sealed partial class LaunchGamePage : ScopedPage
         using (IServiceScope scope = context.ServiceProvider.CreateScope())
         {
             IContentDialogFactory contentDialogFactory = scope.ServiceProvider.GetRequiredService<IContentDialogFactory>();
-            CountdownConfirmDialog dialog = await contentDialogFactory
-                .CreateInstanceAsync<CountdownConfirmDialog>(
-                    scope.ServiceProvider,
-                    SH.ViewDialogFastSkipTalkConfirmTitle,
-                    SH.ViewDialogFastSkipTalkConfirmHint,
-                    InfoBarSeverity.Error)
-                .ConfigureAwait(false);
+            // Both material peers can report the same change. Coalesce them before
+            // the first await so closing one dialog cannot reveal another queued copy.
+            isFastSkipTalkConfirmationPending = true;
+            try
+            {
+                CountdownConfirmDialog dialog = await contentDialogFactory
+                    .CreateInstanceAsync<CountdownConfirmDialog>(
+                        scope.ServiceProvider,
+                        SH.ViewDialogFastSkipTalkConfirmTitle,
+                        SH.ViewDialogFastSkipTalkConfirmHint,
+                        InfoBarSeverity.Error)
+                    .ConfigureAwait(false);
 
-            bool confirmed = await dialog.ConfirmAsync().ConfigureAwait(false);
-            if (!confirmed)
+                bool confirmed = await dialog.ConfirmAsync().ConfigureAwait(false);
+                if (!confirmed)
+                {
+                    await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
+                    // Restore the authoritative setting as well as both material peers;
+                    // keep the guard active throughout the TwoWay binding callbacks.
+                    launchOptions.FastSkipTalk.Value = false;
+                    toggleSwitch.IsOn = false;
+                    FastSkipTalkToggleSwitchGlass.IsOn = false;
+                }
+            }
+            finally
             {
                 await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
-                toggleSwitch.IsOn = false;
+                isFastSkipTalkConfirmationPending = false;
             }
         }
     }

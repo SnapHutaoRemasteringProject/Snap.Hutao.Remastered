@@ -367,35 +367,42 @@
                                                 <RowDefinition Height="auto"/>
                                                 <RowDefinition/>
                                             </Grid.RowDefinitions>
-                                            <StackPanel
+                                            <Grid
                                                 Padding="16"
                                                 Background="{ThemeResource LayerOnAcrylicFillColorDefaultBrush}"
                                                 BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                                 BorderThickness="0,0,0,1"
-                                                Orientation="Horizontal"
-                                                Spacing="16">
+                                                ColumnSpacing="16">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
                                                 <shuxci:CachedImage
                                                     shux:FrameworkElementHelper.SquareLength="48"
                                                     CornerRadius="{ThemeResource ControlCornerRadius}"
                                                     Source="{StaticResource IconGame}"/>
-                                                <StackPanel
+                                                <StackPanel Grid.Column="1"
                                                     VerticalAlignment="Center"
                                                     Orientation="Vertical"
                                                     Spacing="{ThemeResource SettingsCardSpacing}">
                                                     <TextBlock Text="{x:Bind ((shvg:LaunchGameViewModel)DataContext).GamePackageViewModel.LocalVersionText, Mode=OneWay}"/>
                                                     <TextBlock Text="{x:Bind ((shvg:LaunchGameViewModel)DataContext).GamePackageViewModel.RemoteVersionText, Mode=OneWay}"/>
+                                                    <TextBlock FontSize="12" Opacity="0.7" TextWrapping="Wrap" Text="{x:Bind ((shvg:LaunchGameViewModel)DataContext).GamePackageViewModel.VersionSourcesText, Mode=OneWay}" />
+                                                    <InfoBar IsClosable="False" Severity="Warning" IsOpen="{x:Bind ((shvg:LaunchGameViewModel)DataContext).GamePackageViewModel.HasInstallationWarning, Mode=OneWay}" Message="{x:Bind ((shvg:LaunchGameViewModel)DataContext).GamePackageViewModel.InstallationStatusText, Mode=OneWay}" />
                                                 </StackPanel>
-                                            </StackPanel>
+                                            </Grid>
                                             <StackPanel
                                                 Grid.Row="1"
                                                 Margin="-2,-6"
                                                 Padding="16"
                                                 Orientation="Horizontal">
+                                                <AppBarButton Command="{x:Bind ((shvg:LaunchGameViewModel)DataContext).GamePackageViewModel.RefreshInstallationCommand, Mode=OneWay}" Icon="Refresh" Label="{shuxm:ResourceString Name=ViewPageGameRefreshInstallation}" IsEnabled="{x:Bind ((shvg:LaunchGameViewModel)DataContext).GamePackageViewModel.IsNotRefreshing, Mode=OneWay}" />
                                                 <AppBarButton
+                                                    IsEnabled="{x:Bind ((shvg:LaunchGameViewModel)DataContext).GamePackageViewModel.CanOperate, Mode=OneWay}"
                                                     Command="{x:Bind ((shvg:LaunchGameViewModel)DataContext).GamePackageViewModel.StartCommand, Mode=OneWay}"
                                                     CommandParameter="Verify"
                                                     Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentDeveloperTools}}"
-                                                    Label="{shuxm:ResourceString Name=ViewPageLaunchGamePackageOperationVerify}"
+                                                    Label="{x:Bind ((shvg:LaunchGameViewModel)DataContext).GamePackageViewModel.VerifyOperationLabel, Mode=OneWay}"
                                                     Style="{StaticResource DefaultAppBarButtonStyle}"/>
                                                 <AppBarButton
                                                     Command="{x:Bind ((shvg:LaunchGameViewModel)DataContext).GamePackageViewModel.StartCommand, Mode=OneWay}"

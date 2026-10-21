@@ -12,6 +12,7 @@ public sealed class AsyncKeyedLock<TKey>
     private static readonly Func<Task, object?, Releaser> Continuation = RunContinuation;
 
     private readonly ConcurrentDictionary<TKey, AsyncSemaphore> semaphores;
+    private readonly Lock syncRoot = new();
 
     public AsyncKeyedLock()
     {
@@ -25,7 +26,7 @@ public sealed class AsyncKeyedLock<TKey>
 
     public Task<Releaser> LockAsync(TKey key)
     {
-        lock (semaphores)
+        lock (syncRoot)
         {
             Task wait = semaphores.GetOrAdd(key, _ => new(1, 1)).WaitAsync();
             State stateObj = new(this, key);
@@ -50,7 +51,7 @@ public sealed class AsyncKeyedLock<TKey>
 
         public void Dispose()
         {
-            lock (state.ToRelease.semaphores)
+            lock (state.ToRelease.syncRoot)
             {
                 if (state.ToRelease.semaphores.TryGetValue(state.Key, out AsyncSemaphore? semaphore))
                 {

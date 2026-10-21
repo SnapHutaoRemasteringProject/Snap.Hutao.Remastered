@@ -10,64 +10,69 @@ namespace Snap.Hutao.Remastered.Core.Logging;
 
 public static class LoggerFactoryExtension
 {
+    public static IDisposable InitializeSentry()
+    {
+        IDisposable sdk = SentrySdk.Init(options =>
+        {
+            options.HttpProxy = HttpProxyUsingSystemProxy.Instance;
+
+#if DEBUG || IS_ALPHA_BUILD || IS_CANARY_BUILD
+            // Alpha and Canary produces noisy events
+            options.Dsn = "https://87c60195ae5a60f0038387547f7cd034@o4510769861820416.ingest.us.sentry.io/4510844382871552";
+#else
+            options.Dsn = "https://87c60195ae5a60f0038387547f7cd034@o4510769861820416.ingest.us.sentry.io/4510844382871552";
+#endif
+
+#if DEBUG
+            options.Debug = true;
+#endif
+
+            options.AutoSessionTracking = true;
+            options.IsGlobalModeEnabled = true;
+            options.EnableBackpressureHandling = true;
+            options.Release = $"{HutaoRuntime.Version}";
+            options.Environment = GetBuildEnvironment();
+
+            // Structured logs are enabled by default in v7. Preserve the existing policy.
+            options.SetBeforeSendLog(static _ => null);
+
+            options.ProfilesSampleRate = 1.0D;
+            options.TracesSampleRate = 1.0D;
+
+            // Use our own exception handling
+            options.DisableWinUiUnhandledExceptionIntegration();
+
+            options.AddExceptionProcessor(new SentryExceptionProcessor());
+
+            options.SetBeforeSend(@event =>
+            {
+                Sentry.Protocol.OperatingSystem operatingSystem = @event.Contexts.OperatingSystem;
+                HutaoPrivateWindowsVersion windowsVersion = HutaoNative.Instance.GetCurrentWindowsVersion();
+                operatingSystem.Build = $"{windowsVersion.Build}";
+                operatingSystem.Name = "Windows";
+                operatingSystem.Version = $"{windowsVersion}";
+
+                return @event;
+            });
+        });
+
+        SentrySdk.ConfigureScope(static scope =>
+        {
+            scope.User = new() { Id = HutaoRuntime.DeviceId };
+            scope.SetTag("elevated", HutaoRuntime.IsProcessElevated ? "yes" : "no");
+            scope.SetWebView2Version();
+        });
+        return sdk;
+    }
+
     extension(ILoggingBuilder builder)
     {
         public ILoggingBuilder AddSentryTelemetry()
         {
-            return builder.AddSentry(options =>
+            return builder.AddSentry(static options =>
             {
-                options.HttpProxy = HttpProxyUsingSystemProxy.Instance;
-
-#if DEBUG || IS_ALPHA_BUILD || IS_CANARY_BUILD
-                // Alpha and Canary produces noisy events
-                options.Dsn = "https://87c60195ae5a60f0038387547f7cd034@o4510769861820416.ingest.us.sentry.io/4510844382871552";
-#else
-                options.Dsn = "https://87c60195ae5a60f0038387547f7cd034@o4510769861820416.ingest.us.sentry.io/4510844382871552";
-#endif
-
-#if DEBUG
-                options.Debug = true;
-#endif
-
-                options.AutoSessionTracking = true;
-                options.IsGlobalModeEnabled = true;
-                options.EnableBackpressureHandling = true;
-                options.Release = $"{HutaoRuntime.Version}";
-                options.Environment = GetBuildEnvironment();
-
-                // Suppress logs to generate events and breadcrumbs
                 options.MinimumBreadcrumbLevel = LogLevel.None;
                 options.MinimumEventLevel = LogLevel.None;
-
-                options.ProfilesSampleRate = 1.0D;
-                options.TracesSampleRate = 1.0D;
-
-                // Use our own exception handling
-                options.DisableWinUiUnhandledExceptionIntegration();
-
-                options.ConfigureScope(scope =>
-                {
-                    scope.User = new()
-                    {
-                        Id = HutaoRuntime.DeviceId,
-                    };
-
-                    scope.SetTag("elevated", HutaoRuntime.IsProcessElevated ? "yes" : "no");
-                    scope.SetWebView2Version();
-                });
-
-                options.AddExceptionProcessor(new SentryExceptionProcessor());
-
-                options.SetBeforeSend(@event =>
-                {
-                    Sentry.Protocol.OperatingSystem operatingSystem = @event.Contexts.OperatingSystem;
-                    HutaoPrivateWindowsVersion windowsVersion = HutaoNative.Instance.GetCurrentWindowsVersion();
-                    operatingSystem.Build = $"{windowsVersion.Build}";
-                    operatingSystem.Name = "Windows";
-                    operatingSystem.Version = $"{windowsVersion}";
-
-                    return @event;
-                });
             });
         }
     }

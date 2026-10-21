@@ -570,6 +570,10 @@
                     <AppBarSeparator/>
                     <CommandBar.SecondaryCommands>
                         <AppBarButton
+                            Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).OpenAccountInsightsCommand, Mode=OneWay}"
+                            Icon="{shuxm:FontIcon Glyph=&#xE9D9;}"
+                            Label="{shuxm:ResourceString Name=ViewDialogAccountInsightsOpen}"/>
+                        <AppBarButton
                             Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).ImportExportCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE8C9;}"
                             Label="{shuxm:ResourceString Name=ViewPageGachaLogImportExportAction}"/>

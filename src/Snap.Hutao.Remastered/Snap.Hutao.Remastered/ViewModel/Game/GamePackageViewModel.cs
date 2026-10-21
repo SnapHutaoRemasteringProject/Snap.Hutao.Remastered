@@ -7,6 +7,7 @@ using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Service.Game;
+using Snap.Hutao.Remastered.Service.Game.Configuration;
 using Snap.Hutao.Remastered.Service.Game.FileSystem;
 using Snap.Hutao.Remastered.Service.Game.Package;
 using Snap.Hutao.Remastered.Service.Game.Package.Advanced;
@@ -24,6 +25,8 @@ namespace Snap.Hutao.Remastered.ViewModel.Game;
 public sealed partial class GamePackageViewModel : Abstraction.ViewModel
 {
     private readonly IContentDialogFactory contentDialogFactory;
+    private readonly GameInstallationService gameInstallationService;
+    private readonly AsyncLock reloadLock = new();
     private readonly IGamePackageService gamePackageService;
     private readonly JsonSerializerOptions jsonOptions;
     private readonly LaunchGameShared launchGameShared;
@@ -37,6 +40,46 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
 
     [GeneratedConstructor]
     public partial GamePackageViewModel(IServiceProvider serviceProvider);
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(VersionSourcesText), nameof(InstallationStatusText), nameof(HasInstallationWarning), nameof(VerifyOperationLabel), nameof(CanOperate))]
+    public partial GameInstallationInfo? InstallationInfo { get; private set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsNotRefreshing), nameof(IsUpdateAvailable), nameof(IsPredownloadButtonEnabled), nameof(HasInstallationWarning), nameof(CanOperate))]
+    public partial bool IsRefreshing { get; private set; }
+
+    public bool IsNotRefreshing { get => !IsRefreshing; }
+    public bool CanOperate { get => !IsRefreshing && InstallationInfo is { Channel.ErrorKind: ChannelOptionsErrorKind.None }; }
+    public string VerifyOperationLabel { get => InstallationInfo is { InstalledVersion: null } ? SH.ViewPageGameVerifyAndRepairLatest : SH.ViewPageLaunchGamePackageOperationVerify; }
+    public bool HasInstallationWarning { get => !IsRefreshing && InstallationInfo is { HasVersionProblem: true }; }
+    public string VersionSourcesText { get => InstallationInfo is { } info ? SH.FormatViewModelGameInstallationSources(FormatVersion(info.ConfigVersion, info.ConfigStatus), FormatVersion(info.ScriptVersion, info.ScriptStatus)) : string.Empty; }
+    public string InstallationStatusText
+    {
+        get => InstallationInfo switch
+        {
+            { HasVersionConflict: true } => SH.ViewModelGameInstallationConflict,
+            { ConfigStatus: GameVersionFileStatus.Invalid or GameVersionFileStatus.Unreadable } or { ScriptStatus: GameVersionFileStatus.Invalid or GameVersionFileStatus.Unreadable } => SH.ViewModelGameInstallationInvalid,
+            { HasVersionProblem: true } => SH.ViewModelGameInstallationMissingSource,
+            _ => string.Empty,
+        };
+    }
+
+    private static string FormatVersion(Version? version, GameVersionFileStatus status)
+    {
+        return version?.ToString() ?? (status switch
+        {
+            GameVersionFileStatus.Missing => SH.ViewModelGameInstallationSourceMissing,
+            GameVersionFileStatus.Unreadable => SH.ViewModelGameInstallationSourceUnreadable,
+            _ => SH.ViewModelGameInstallationSourceInvalid,
+        });
+    }
+
+    private void ApplyInstallation(GameInstallationInfo? info)
+    {
+        InstallationInfo = info;
+        LocalVersion = info?.InstalledVersion;
+    }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(LocalVersionText), nameof(IsUpdateAvailable))]
@@ -56,13 +99,13 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
 
     public string PreVersionText { get => SH.FormatViewModelGamePackagePreVersion(PreVersion); }
 
-    public bool IsUpdateAvailable { get => LocalVersion < RemoteVersion; }
+    public bool IsUpdateAvailable { get => !IsRefreshing && LocalVersion is not null && RemoteVersion is not null && LocalVersion < RemoteVersion; }
 
     public bool IsPredownloadButtonEnabled
     {
         get
         {
-            if (PreVersion is null)
+            if (IsRefreshing || LocalVersion is null || PreVersion is null)
             {
                 return false;
             }
@@ -118,56 +161,69 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
         IsInitialized = result;
     }
 
+    [Command("RefreshInstallationCommand")]
+    private async Task RefreshInstallationAsync()
+    {
+        try { await ReloadAsync().ConfigureAwait(false); }
+        catch (OperationCanceledException) when (CancellationToken.IsCancellationRequested) { }
+        catch (Exception ex) { messenger.Send(InfoBarMessage.Error(ex)); }
+    }
+
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
-        if (launchGameShared.GetCurrentLaunchSchemeFromConfigurationFile() is not { } launchScheme)
+        using (await reloadLock.LockAsync().ConfigureAwait(false))
         {
-            return false;
-        }
-
-        if (await GetCurrentGameBranchAsync(launchScheme).ConfigureAwait(false) is not { } branch)
-        {
-            return false;
-        }
-
-        await taskContext.SwitchToMainThreadAsync();
-
-        (BranchWrapper remote, BranchWrapper? pre) = LocalSetting.Get(SettingKeys.TreatPredownloadAsMain, false)
-            ? (branch.PreDownload ?? branch.Main, default)
-            : (branch.Main, branch.PreDownload);
-
-        (RemoteVersion, PreVersion) = (new(remote.Tag), pre is { Tag: { } preTag } ? new(preTag) : default);
-
-        const string LockTrace = $"{nameof(GamePackageViewModel)}.{nameof(LoadOverrideAsync)}";
-        if (launchOptions.TryGetGameFileSystem(LockTrace, out IGameFileSystem? gameFileSystem) is not GameFileSystemErrorKind.None)
-        {
-            return false;
-        }
-
-        ArgumentNullException.ThrowIfNull(gameFileSystem);
-        using (gameFileSystem)
-        {
-            if (gameFileSystem.TryGetGameVersion(out string? localVersion))
+            await taskContext.SwitchToMainThreadAsync();
+            IsRefreshing = true;
+            ApplyInstallation(null);
+            RemoteVersion = null;
+            PreVersion = null;
+            try
             {
-                _ = Version.TryParse(localVersion, out Version? version);
-                LocalVersion = version;
+                GameInstallationInfo? installation = await gameInstallationService.RefreshAsync(token).ConfigureAwait(false);
+                await taskContext.SwitchToMainThreadAsync();
+                token.ThrowIfCancellationRequested();
+                ApplyInstallation(installation);
+                if (installation is null) { return false; }
+                LaunchScheme? scheme = launchGameShared.GetCurrentLaunchSchemeFromConfigurationFile();
+                if (scheme is null) { return false; }
+                GameBranch? branch = await GetCurrentGameBranchAsync(scheme).ConfigureAwait(false);
+                await taskContext.SwitchToMainThreadAsync();
+                token.ThrowIfCancellationRequested();
+                if (!string.Equals(installation.GamePath, launchOptions.GamePathEntry.Value?.Path, StringComparison.OrdinalIgnoreCase)) { ApplyInstallation(null); return false; }
+                if (branch is null) { return true; } // Local inspection does not depend on the network.
+                (BranchWrapper remote, BranchWrapper? pre) = LocalSetting.Get(SettingKeys.TreatPredownloadAsMain, false)
+                    ? (branch.PreDownload ?? branch.Main, null) : (branch.Main, branch.PreDownload);
+                RemoteVersion = Version.TryParse(remote.Tag, out Version? latest) ? latest : null;
+                PreVersion = Version.TryParse(pre?.Tag, out Version? next) ? next : null;
+                return true;
             }
-
-            if (!IsUpdateAvailable && PreVersion is null && File.Exists(gameFileSystem.PredownloadStatusFilePath))
+            finally
             {
-                File.Delete(gameFileSystem.PredownloadStatusFilePath);
+                await taskContext.SwitchToMainThreadAsync();
+                IsRefreshing = false;
             }
         }
-
-        return true;
     }
 
     [Command("StartCommand")]
     private async Task StartAsync(string? operation)
     {
+        if (!CanOperate) { return; }
+        try { await StartCoreAsync(operation).ConfigureAwait(false); }
+        catch (OperationCanceledException) when (CancellationToken.IsCancellationRequested) { }
+        catch (Exception ex) { messenger.Send(InfoBarMessage.Error(ex)); }
+        finally
+        {
+            await RefreshInstallationAsync().ConfigureAwait(false);
+        }
+    }
+
+    private async Task StartCoreAsync(string? operation)
+    {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Start operation", "GamePackageViewModel.Command", [("operation", operation ?? "<null>")]));
 
-        if (!IsInitialized)
+        if (!IsInitialized || IsRefreshing)
         {
             return;
         }
@@ -191,17 +247,33 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
         ArgumentNullException.ThrowIfNull(gameFileSystem);
         using (gameFileSystem)
         {
+            GameInstallationInfo installation = gameInstallationService.Read(gameFileSystem);
+            await taskContext.SwitchToMainThreadAsync();
+            ApplyInstallation(installation);
             if (await GetCurrentGameBranchAsync(currentScheme).ConfigureAwait(false) is not { } branch)
             {
                 return;
             }
 
-            SophonDecodedBuilds? builds = await GetSophonDecodedBuildsAsync(operationKind, branch, gameFileSystem).ConfigureAwait(false);
+            Version? manifestVersion = installation.InstalledVersion;
+            if (manifestVersion is null && operationKind is GamePackageOperationKind.Verify)
+            {
+                BranchWrapper repairTarget = LocalSetting.Get(SettingKeys.TreatPredownloadAsMain, false) ? branch.PreDownload ?? branch.Main : branch.Main;
+                Version.TryParse(repairTarget.Tag, out manifestVersion);
+            }
+            if (manifestVersion is null)
+            {
+                messenger.Send(InfoBarMessage.Warning(installation.HasVersionConflict ? SH.ViewModelGameInstallationConflict : SH.ViewModelGameInstallationInvalid));
+                return;
+            }
+            SophonDecodedBuilds? builds = await GetSophonDecodedBuildsAsync(operationKind, branch, gameFileSystem, manifestVersion).ConfigureAwait(false);
+            if (builds is null) { return; }
             GameChannelSDK? sdk = await GetCurrentGameChannelSDKAsync(currentScheme).ConfigureAwait(false);
             PredownloadProgressTracker? tracker = operationKind is GamePackageOperationKind.Predownload ? new() : null;
             GamePackageOperationContext context = new(serviceProvider, operationKind, gameFileSystem)
             {
-                LocalBuild = builds?.LocalBuild,
+                InstallationAtPreparation = installation,
+                LocalBuild = builds.LocalBuild,
                 RemoteBuild = builds?.RemoteBuild,
                 PatchBuild = builds?.PatchBuild,
                 GameChannelSDK = sdk,
@@ -220,6 +292,11 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
                 {
                     return;
                 }
+                if (operationKind is GamePackageOperationKind.Verify && installation.HasVersionProblem)
+                {
+                    // The chosen manifest has now been fully checked/repaired.
+                    GameInstallationMetadataRepair.Commit(gameFileSystem.GameConfigurationFilePath, gameFileSystem.ScriptVersionFilePath, manifestVersion);
+                }
             }
             finally
             {
@@ -236,19 +313,6 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
             }
         }
 
-        await taskContext.SwitchToMainThreadAsync();
-
-        switch (operationKind)
-        {
-            case GamePackageOperationKind.Verify:
-                break;
-            case GamePackageOperationKind.Update:
-                LocalVersion = RemoteVersion;
-                break;
-            case GamePackageOperationKind.Predownload:
-                NotifyPredownloadStatusChanged();
-                break;
-        }
     }
 
     private void OnPredownloadProgress(PredownloadProgressTracker tracker, GamePackageOperationReport report)
@@ -321,9 +385,8 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
         OnPropertyChanged(nameof(PredownloadProgressText));
     }
 
-    private async ValueTask<SophonDecodedBuilds?> GetSophonDecodedBuildsAsync(GamePackageOperationKind operationKind, GameBranch branch, IGameFileSystem gameFileSystem)
+    private async ValueTask<SophonDecodedBuilds?> GetSophonDecodedBuildsAsync(GamePackageOperationKind operationKind, GameBranch branch, IGameFileSystem gameFileSystem, Version manifestVersion)
     {
-        ArgumentNullException.ThrowIfNull(LocalVersion);
 
         SophonDecodedBuild? localBuild;
         SophonDecodedBuild? remoteBuild;
@@ -337,8 +400,8 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
             try
             {
                 BranchWrapper localBranch = operationKind is GamePackageOperationKind.Verify && LocalSetting.Get(SettingKeys.TreatPredownloadAsMain, false)
-                    ? branch.PreDownload?.GetTaggedCopy(LocalVersion.ToString()) ?? branch.Main.GetTaggedCopy(LocalVersion.ToString())
-                    : branch.Main.GetTaggedCopy(LocalVersion.ToString());
+                    ? branch.PreDownload?.GetTaggedCopy(manifestVersion.ToString()) ?? branch.Main.GetTaggedCopy(manifestVersion.ToString())
+                    : branch.Main.GetTaggedCopy(manifestVersion.ToString());
                 localBuild = await gamePackageService.DecodeManifestsAsync(gameFileSystem, localBranch).ConfigureAwait(false);
 
                 BranchWrapper? remoteBranch = operationKind is GamePackageOperationKind.Update && LocalSetting.Get(SettingKeys.TreatPredownloadAsMain, false)

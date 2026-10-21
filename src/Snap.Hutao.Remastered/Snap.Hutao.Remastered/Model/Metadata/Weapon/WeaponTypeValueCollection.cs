@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using System.Collections.Immutable;
+using Snap.Hutao.Remastered.Core.Text.Json;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Weapon;
 
@@ -34,7 +35,7 @@ file sealed class Converter : JsonConverter<WeaponTypeValueCollection>
 {
     public override WeaponTypeValueCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        return new(JsonSerializer.Deserialize<ImmutableArray<WeaponTypeValue>>(ref reader, options));
+        return new(MetadataCollectionJson.Deserialize<ImmutableArray<WeaponTypeValue>>(ref reader, options));
     }
 
     public override void Write(Utf8JsonWriter writer, WeaponTypeValueCollection value, JsonSerializerOptions options)

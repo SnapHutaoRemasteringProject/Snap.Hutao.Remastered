@@ -1340,6 +1340,13 @@
                                         </cwc:SwitchPresenter>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
+                                <!--  Account history charts and API analysis  -->
+                                <cwc:SettingsCard
+                                    Command="{x:Bind ((shvs:SettingViewModel)DataContext).OpenAccountInsightsCommand, Mode=OneWay}"
+                                    Description="{shuxm:ResourceString Name=ViewDialogAccountInsightsDescription}"
+                                    Header="{shuxm:ResourceString Name=ViewDialogAccountInsightsOpen}"
+                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE9D9;}"
+                                    IsClickEnabled="True"/>
                             </StackPanel>
                         </Border>
                     </Border>

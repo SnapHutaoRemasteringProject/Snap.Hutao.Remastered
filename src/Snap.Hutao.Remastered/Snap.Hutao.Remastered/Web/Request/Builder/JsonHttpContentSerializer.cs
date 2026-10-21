@@ -5,18 +5,24 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text;
+using System.Text.Json.Serialization.Metadata;
+using Snap.Hutao.Remastered.Web.Hutao;
 
 namespace Snap.Hutao.Remastered.Web.Request.Builder;
 
 [Service(ServiceLifetime.Singleton)]
 public sealed class JsonHttpContentSerializer : HttpContentSerializer
 {
+    private readonly InfrastructureJsonContext generatedContext;
+
     public JsonHttpContentSerializer(JsonSerializerOptions jsonSerializerOptions)
     {
+        ArgumentNullException.ThrowIfNull(jsonSerializerOptions);
         JsonSerializerOptions = jsonSerializerOptions;
+        generatedContext = new(new JsonSerializerOptions(jsonSerializerOptions) { TypeInfoResolver = null });
     }
 
-    public JsonSerializerOptions? JsonSerializerOptions { get; }
+    public JsonSerializerOptions JsonSerializerOptions { get; }
 
     protected override HttpContent? SerializeOverride(object? content, Type contentType, Encoding encoding)
     {
@@ -53,12 +59,12 @@ public sealed class JsonHttpContentSerializer : HttpContentSerializer
         // if required.
         // If this is an absolute must, people can still derive from this class and override the method.
         string? json = httpContent is null ? default : await httpContent.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-        return string.IsNullOrEmpty(json) ? default : JsonSerializer.Deserialize(json, contentType, JsonSerializerOptions);
+        return string.IsNullOrEmpty(json) ? default : JsonSerializer.Deserialize(json, GetTypeInfo(contentType));
     }
 
     private ByteArrayContent? SerializeUtf8(object? content, Type contentType)
     {
-        byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(content, contentType, JsonSerializerOptions);
+        byte[] bytes = JsonSerializer.SerializeToUtf8Bytes(content, GetTypeInfo(contentType));
         ByteArrayContent httpContent = new(bytes);
         MediaTypeHeaderValue contentTypeHeader = new(MediaTypeNames.Application.Json)
         {
@@ -71,7 +77,14 @@ public sealed class JsonHttpContentSerializer : HttpContentSerializer
 
     private StringContent? SerializeOtherEncoding(object? content, Type contentType, Encoding encoding)
     {
-        string str = JsonSerializer.Serialize(content, contentType, JsonSerializerOptions);
+        string str = JsonSerializer.Serialize(content, GetTypeInfo(contentType));
         return new StringContent(str, encoding, MediaTypeNames.Application.Json);
+    }
+
+    private JsonTypeInfo GetTypeInfo(Type contentType)
+    {
+        // Known generated contracts never fall back within their object graph. Other clients retain their existing options.
+        return generatedContext.GetTypeInfo(contentType)
+            ?? JsonSerializerOptions.GetTypeInfo(contentType);
     }
 }

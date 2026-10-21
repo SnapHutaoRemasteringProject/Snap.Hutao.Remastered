@@ -1,4 +1,3 @@
-#addin nuget:?package=Cake.Http&version=4.0.0
 
 var target = Argument("target", "BuildAndZip");
 var configuration = Argument("configuration", "Release");
@@ -14,7 +13,7 @@ var manifest = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "
 
 var targetFramework = XmlPeek(project, "/Project/PropertyGroup/TargetFramework/text()").Trim();
 var runtimeIdentifier = XmlPeek(project, "/Project/PropertyGroup/RuntimeIdentifier/text()").Trim();
-var binPath = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier);
+var binPath = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, "publish");
 var outputPath = System.IO.Path.Combine(repoDir, "src", "output");
 
 // Version: read from Package.appxmanifest
@@ -55,7 +54,7 @@ Task("Build binary package")
 {
     Information("Building...");
 
-    var settings = new DotNetBuildSettings
+    var settings = new DotNetPublishSettings
     {
         Configuration = configuration
     };
@@ -69,13 +68,14 @@ Task("Build binary package")
                                             .Append("/p:AppxPackageOutput=" + outputPath)
     };
 
-    DotNetBuild(project, settings);
+    DotNetPublish(project, settings);
 });
 
 Task("Copy files")
     .IsDependentOn("Build binary package")
     .Does(() =>
 {
+    CopyFileToDirectory(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(binPath), "AppxManifest.xml"), binPath);
     CopyDirectory(
         System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "Assets"),
         System.IO.Path.Combine(binPath, "Assets"));

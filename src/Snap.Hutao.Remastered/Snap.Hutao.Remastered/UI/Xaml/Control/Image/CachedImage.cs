@@ -238,7 +238,7 @@ public sealed partial class CachedImage : Microsoft.UI.Xaml.Controls.Control
 
     }
 
-    private async Task<Uri?> ProvideCachedResourceAsync(Uri imageUri, ElementTheme theme, CancellationToken token)
+    private async Task<Uri?> ProvideCachedResourceAsync(Uri imageUri, ElementTheme theme, CancellationToken token, ITaskContext taskContext)
     {
         // IImageCache is process-wide, not window-scoped. The ContentIsland's
         // AppData is only assigned during root Loading; cache hits must not turn
@@ -248,6 +248,10 @@ public sealed partial class CachedImage : Microsoft.UI.Xaml.Controls.Control
         try
         {
             HutaoException.ThrowIf(string.IsNullOrEmpty(imageUri.Host), SH.ControlImageCachedImageInvalidResourceUri);
+            // Even a disk-cache hit can synchronously contend with another image.
+            // Do not enter a pumping STA wait from a XAML property/layout callback.
+            await taskContext.SwitchToBackgroundAsync();
+            token.ThrowIfCancellationRequested();
             string file = await imageCache.GetFileFromCacheAsync(imageUri, theme).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             return file.ToUri();
@@ -325,7 +329,7 @@ public sealed partial class CachedImage : Microsoft.UI.Xaml.Controls.Control
                         uri = new("ms-appx:///" + uri.OriginalString.TrimStart('/'));
                     }
 
-                    Uri? targetUri = uri.Scheme is "ms-appx" ? ResolveAppxUriForUnpackaged(uri) : await ProvideCachedResourceAsync(uri, theme, token).ConfigureAwait(false);
+                    Uri? targetUri = uri.Scheme is "ms-appx" ? ResolveAppxUriForUnpackaged(uri) : await ProvideCachedResourceAsync(uri, theme, token, taskContext).ConfigureAwait(false);
                     // Do not post a completed download back into a closing XAML
                     // dispatcher. Only live requests are allowed to touch UI DPs.
                     token.ThrowIfCancellationRequested();

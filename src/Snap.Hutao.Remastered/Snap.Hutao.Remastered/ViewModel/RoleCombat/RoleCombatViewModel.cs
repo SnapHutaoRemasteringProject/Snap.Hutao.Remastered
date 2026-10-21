@@ -4,12 +4,15 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Core.Logging;
+using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.RoleCombat;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
+using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
+using Snap.Hutao.Remastered.UI.Xaml.View.Window;
 using Snap.Hutao.Remastered.ViewModel.Complex;
 using Snap.Hutao.Remastered.ViewModel.User;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
@@ -22,6 +25,7 @@ namespace Snap.Hutao.Remastered.ViewModel.RoleCombat;
 [Service(ServiceLifetime.Scoped)]
 public sealed partial class RoleCombatViewModel : Abstraction.ViewModel, IRecipient<UserAndUidChangedMessage>
 {
+    private readonly IContentDialogFactory contentDialogFactory;
     private readonly IRoleCombatService roleCombatService;
     private readonly IServiceProvider serviceProvider;
     private readonly IMetadataService metadataService;
@@ -30,6 +34,14 @@ public sealed partial class RoleCombatViewModel : Abstraction.ViewModel, IRecipi
     private readonly IMessenger messenger;
 
     private RoleCombatMetadataContext? metadataContext;
+
+    private readonly AccountInsightsWindows accountInsightsWindows;
+
+    [Command("OpenAccountInsightsCommand")]
+    private Task OpenAccountInsights()
+    {
+        return accountInsightsWindows.OpenAsync();
+    }
 
     [GeneratedConstructor]
     public partial RoleCombatViewModel(IServiceProvider serviceProvider);

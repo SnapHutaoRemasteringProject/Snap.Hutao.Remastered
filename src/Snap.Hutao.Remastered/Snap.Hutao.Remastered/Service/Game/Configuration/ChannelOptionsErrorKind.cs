@@ -12,4 +12,5 @@ public enum ChannelOptionsErrorKind
     SharingViolation = 32, // ERROR_SHARING_VIOLATION
     DeviceNotFound = 433,  // ERROR_NO_SUCH_DEVICE ERROR_NOT_READY
     GamePathLocked,
+    ConfigurationFileReadFailed,
 }

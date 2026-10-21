@@ -9,7 +9,6 @@ namespace Snap.Hutao.Remastered.Service.Game.Configuration;
 [Service(ServiceLifetime.Singleton, typeof(IGameChannelOptionsService))]
 public sealed partial class GameChannelOptionsService : IGameChannelOptionsService
 {
-    private readonly IGameConfigurationFileService gameConfigurationFileService;
     private readonly LaunchOptions launchOptions;
 
     [GeneratedConstructor]
@@ -30,33 +29,18 @@ public sealed partial class GameChannelOptionsService : IGameChannelOptionsServi
         ArgumentNullException.ThrowIfNull(gameFileSystem);
         using (gameFileSystem)
         {
-            string configFilePath = gameFileSystem.GameConfigurationFilePath;
-
-            if (!File.Exists(configFilePath))
+            // Channel detection reads only config.ini; version metadata and module
+            // compatibility are independent concerns, and inspection never repairs files.
+            try { return GameConfiguration.Read(gameFileSystem); }
+            catch (Exception ex) when (ex is FileNotFoundException or DirectoryNotFoundException)
             {
-                // Try restore the configuration file if it does not exist
-                // The configuration file may be deleted by an incompatible launcher(e.g., CN client but OS launcher and vice versa)
-                gameConfigurationFileService.Restore(configFilePath, gameFileSystem.IsExecutableOversea);
-
-                if (!File.Exists(configFilePath))
-                {
-                    return ChannelOptions.ConfigurationFileNotFound(configFilePath);
-                }
+                return ChannelOptions.ConfigurationFileNotFound(gameFileSystem.GameConfigurationFilePath);
             }
-
-            string scriptVersionFilePath = gameFileSystem.ScriptVersionFilePath;
-
-            if (!File.Exists(scriptVersionFilePath))
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
-                // Try to fix ScriptVersion by reading game_version from the configuration file
-                // If the configuration file and ScriptVersion file are both missing, the game content is corrupted
-                if (!GameScriptVersion.Patch(configFilePath, scriptVersionFilePath))
-                {
-                    return ChannelOptions.GameContentCorrupted(gameFileSystem.GameDirectory);
-                }
+                System.Diagnostics.Trace.TraceWarning("Could not read game channel configuration: {0}", ex);
+                return ChannelOptions.ConfigurationFileReadFailed(gameFileSystem.GameConfigurationFilePath);
             }
-
-            return GameConfiguration.Read(gameFileSystem);
         }
     }
 }

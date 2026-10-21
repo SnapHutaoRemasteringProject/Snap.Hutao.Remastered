@@ -1,0 +1,16 @@
+<UserControl
+    x:Class="Snap.Hutao.Remastered.UI.Xaml.Control.Markdown.MarkdownTableView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Margin="0,6,0,6">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Auto">
+        <Border
+            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="4">
+            <Grid x:Name="TableGrid" />
+        </Border>
+    </ScrollViewer>
+</UserControl>

@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 
@@ -30,6 +31,8 @@ public sealed partial class CountdownConfirmDialog : ContentDialog
         IsPrimaryButtonEnabled = false;
         UpdatePrimaryButtonText();
         Opened += OnDialogOpened;
+        Closed += OnDialogClosed;
+        Unloaded += OnDialogUnloaded;
     }
 
     public async ValueTask<bool> ConfirmAsync()
@@ -46,29 +49,55 @@ public sealed partial class CountdownConfirmDialog : ContentDialog
 
     private void StartCountdown()
     {
+        StopCountdown();
         remainingSeconds = CountdownSeconds;
         IsPrimaryButtonEnabled = false;
         UpdatePrimaryButtonText();
 
-        countdownTimer ??= DispatcherQueue.CreateTimer();
+        countdownTimer = DispatcherQueue.CreateTimer();
         countdownTimer.Interval = TimeSpan.FromSeconds(1);
-        countdownTimer.Tick -= OnCountdownTimerTick;
         countdownTimer.Tick += OnCountdownTimerTick;
-        countdownTimer.Stop();
         countdownTimer.Start();
     }
 
     private void OnCountdownTimerTick(DispatcherQueueTimer sender, object args)
     {
+        if (countdownTimer is null)
+        {
+            return;
+        }
+
         if (--remainingSeconds <= 0)
         {
-            countdownTimer?.Stop();
+            StopCountdown();
             IsPrimaryButtonEnabled = true;
             PrimaryButtonText = SH.ViewDialogFastSkipTalkConfirmPrimaryButtonText;
             return;
         }
 
         UpdatePrimaryButtonText();
+    }
+
+    private void OnDialogClosed(ContentDialog sender, ContentDialogClosedEventArgs args)
+    {
+        StopCountdown();
+    }
+
+    private void OnDialogUnloaded(object sender, RoutedEventArgs args)
+    {
+        StopCountdown();
+    }
+
+    private void StopCountdown()
+    {
+        if (countdownTimer is not { } timer)
+        {
+            return;
+        }
+
+        countdownTimer = null;
+        timer.Stop();
+        timer.Tick -= OnCountdownTimerTick;
     }
 
     private void UpdatePrimaryButtonText()

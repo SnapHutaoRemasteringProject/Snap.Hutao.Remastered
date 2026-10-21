@@ -40,7 +40,7 @@ public sealed class GameConfigurationFileService : IGameConfigurationFileService
         // If target directory does not exist, do not copy the file
         // This often means user has moved the game folder away.
         string? directory = Path.GetDirectoryName(destination);
-        if (Directory.Exists(directory))
+        if (!Directory.Exists(directory))
         {
             return;
         }

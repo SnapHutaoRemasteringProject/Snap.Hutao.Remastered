@@ -8,7 +8,7 @@ public sealed unsafe class IdentityConverter<TWrapper> : JsonConverter<TWrapper>
 {
     public override TWrapper Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        uint value = JsonSerializer.Deserialize<uint>(ref reader, options);
+        uint value = JsonSerializer.Deserialize(ref reader, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<uint>)options.GetTypeInfo(typeof(uint)));
         return *(TWrapper*)&value;
     }
 
@@ -26,7 +26,7 @@ public sealed unsafe class IdentityConverter<TWrapper> : JsonConverter<TWrapper>
 
     public override void Write(Utf8JsonWriter writer, TWrapper value, JsonSerializerOptions options)
     {
-        JsonSerializer.Serialize(writer, *(uint*)&value, options);
+        JsonSerializer.Serialize(writer, *(uint*)&value, (System.Text.Json.Serialization.Metadata.JsonTypeInfo<uint>)options.GetTypeInfo(typeof(uint)));
     }
 
     public override void WriteAsPropertyName(Utf8JsonWriter writer, TWrapper value, JsonSerializerOptions options)

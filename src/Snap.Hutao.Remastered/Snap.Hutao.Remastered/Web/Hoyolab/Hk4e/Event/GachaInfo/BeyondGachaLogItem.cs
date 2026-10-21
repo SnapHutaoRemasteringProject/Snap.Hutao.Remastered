@@ -30,7 +30,7 @@ public class BeyondGachaLogItem
     public string ItemName { get; set; } = default!;
 
     [JsonPropertyName("rank_type")]
-    [JsonEnumHandling(JsonEnumHandling.NumberString)]
+    [JsonConverter(typeof(NumberStringEnumConverter<QualityType>))]
     public QualityType RankType { get; set; } = default!;
 
     [JsonPropertyName("is_up")]
@@ -42,6 +42,6 @@ public class BeyondGachaLogItem
     public DateTimeOffset Time { get; set; }
 
     [JsonPropertyName("op_gacha_type")]
-    [JsonEnumHandling(JsonEnumHandling.NumberString)]
+    [JsonConverter(typeof(NumberStringEnumConverter<GachaType>))]
     public GachaType GachaType { get; set; } = default!;
 }

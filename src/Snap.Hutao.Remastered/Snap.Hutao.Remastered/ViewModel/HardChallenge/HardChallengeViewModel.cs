@@ -3,12 +3,15 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Core.Logging;
+using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Service.HardChallenge;
 using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
+using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
+using Snap.Hutao.Remastered.UI.Xaml.View.Window;
 using Snap.Hutao.Remastered.ViewModel.User;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
@@ -19,6 +22,8 @@ namespace Snap.Hutao.Remastered.ViewModel.HardChallenge;
 [Service(ServiceLifetime.Scoped)]
 public sealed partial class HardChallengeViewModel : Abstraction.ViewModel, IRecipient<UserAndUidChangedMessage>
 {
+    private readonly IServiceProvider serviceProvider;
+    private readonly IContentDialogFactory contentDialogFactory;
     private readonly IHardChallengeService hardChallengeService;
     private readonly IMetadataService metadataService;
     private readonly ITaskContext taskContext;
@@ -26,6 +31,14 @@ public sealed partial class HardChallengeViewModel : Abstraction.ViewModel, IRec
     private readonly IMessenger messenger;
 
     private HardChallengeMetadataContext? metadataContext;
+
+    private readonly AccountInsightsWindows accountInsightsWindows;
+
+    [Command("OpenAccountInsightsCommand")]
+    private Task OpenAccountInsights()
+    {
+        return accountInsightsWindows.OpenAsync();
+    }
 
     [GeneratedConstructor]
     public partial HardChallengeViewModel(IServiceProvider serviceProvider);

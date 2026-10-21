@@ -41,7 +41,7 @@ public sealed class GamePackageUpdateOperation : GamePackageOperation
 
         await PrivateVerifyAndRepairAsync(context, remoteBuild, remoteBuild.UncompressedTotalBytes, remoteBuild.TotalChunks).ConfigureAwait(false);
 
-        GameConfiguration.UpdateVersion(context.Operation.GameFileSystem.GameConfigurationFilePath, remoteBuild.Tag);
+        GameInstallationMetadataRepair.Commit(context.Operation.GameFileSystem.GameConfigurationFilePath, context.Operation.GameFileSystem.ScriptVersionFilePath, Version.Parse(remoteBuild.Tag));
 
         if (Directory.Exists(context.Operation.EffectiveChunksDirectory))
         {

@@ -18,7 +18,7 @@ public sealed class RoleCombatAvatar
     public required string Name { get; init; }
 
     [JsonPropertyName("element")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter<ElementName>))]
     public required ElementName Element { get; init; }
 
     [JsonPropertyName("image")]

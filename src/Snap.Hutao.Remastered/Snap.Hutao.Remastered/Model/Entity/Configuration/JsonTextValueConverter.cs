@@ -11,8 +11,8 @@ public sealed class JsonTextValueConverter<TPropertyType> : ValueConverter<TProp
     [SuppressMessage("", "SH007")]
     public JsonTextValueConverter()
         : base(
-            static obj => JsonSerializer.Serialize(obj, JsonOptions.Default),
-            static str => string.IsNullOrEmpty(str) ? default! : JsonSerializer.Deserialize<TPropertyType>(str, JsonOptions.Default)!)
+            static obj => PersistenceJson.Serialize(obj),
+            static str => string.IsNullOrEmpty(str) ? default! : PersistenceJson.Deserialize<TPropertyType>(str)!)
     {
     }
 }

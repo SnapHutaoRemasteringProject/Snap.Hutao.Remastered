@@ -14,7 +14,7 @@
   <Identity
     Name="E8B6E2B3-D2A0-4435-A81D-2A16AAF405C8"
     Publisher="CN=SnapHutaoRemasteringProject"
-    Version="2.0.0.0" />
+    Version="2.0.1.0" />
 
   <Properties>
     <DisplayName>Snap Hutao Remastered</DisplayName>

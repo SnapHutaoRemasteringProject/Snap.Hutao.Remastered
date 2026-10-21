@@ -6,6 +6,6 @@ namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.DailyNote;
 public sealed class TaskReward
 {
     [JsonPropertyName("status")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter<TaskRewardStatus>))]
     public TaskRewardStatus Status { get; set; }
 }

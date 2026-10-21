@@ -33,6 +33,11 @@ public readonly struct ChannelOptions
         FilePath = filePath;
     }
 
+    public static ChannelOptions ConfigurationFileReadFailed(string filePath)
+    {
+        return new(ChannelOptionsErrorKind.ConfigurationFileReadFailed, filePath);
+    }
+
     public static ChannelOptions GamePathLocked(string filePath)
     {
         return new(ChannelOptionsErrorKind.GamePathLocked, filePath);

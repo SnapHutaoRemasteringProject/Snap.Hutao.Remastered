@@ -11,12 +11,15 @@ using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Core.Shell;
+using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.Update;
+using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
+using Snap.Hutao.Remastered.UI.Xaml.View.Window;
 using Snap.Hutao.Remastered.Web;
 using Snap.Hutao.Remastered.Win32;
 using Snap.Hutao.Remastered.Win32.Foundation;
@@ -29,6 +32,17 @@ namespace Snap.Hutao.Remastered.ViewModel.Setting;
 public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigationRecipient
 {
     public const string UIGFImportExport = nameof(UIGFImportExport);
+
+    private readonly IContentDialogFactory contentDialogFactory;
+    private readonly IServiceProvider serviceProvider;
+
+    private readonly AccountInsightsWindows accountInsightsWindows;
+
+    [Command("OpenAccountInsightsCommand")]
+    private Task OpenAccountInsights()
+    {
+        return accountInsightsWindows.OpenAsync();
+    }
 
     private readonly IShellLinkInterop shellLinkInterop;
     private readonly IUpdateService updateService;

@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Core.Text.Json.Annotation;
 using Snap.Hutao.Remastered.Core.Text.Json.Converter;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 
@@ -13,7 +12,7 @@ public class GachaLogItem
     public string Uid { get; set; } = default!;
 
     [JsonPropertyName("gacha_type")]
-    [JsonEnumHandling(JsonEnumHandling.NumberString)]
+    [JsonConverter(typeof(NumberStringEnumConverter<GachaType>))]
     public GachaType GachaType { get; set; } = default!;
 
     [JsonPropertyName("item_id")]
@@ -37,7 +36,7 @@ public class GachaLogItem
     public string ItemType { get; set; } = default!;
 
     [JsonPropertyName("rank_type")]
-    [JsonEnumHandling(JsonEnumHandling.NumberString)]
+    [JsonConverter(typeof(NumberStringEnumConverter<QualityType>))]
     public QualityType RankType { get; set; } = default!;
 
     [JsonPropertyName("id")]

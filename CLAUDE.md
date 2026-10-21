@@ -65,6 +65,12 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
 - **Plugin SDK** — has its own solution,
   [`src/Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.slnx`](src/Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.slnx),
   which pulls in the main app project, the SDK project and the `TestPlugin` sample.
+- **ReadyToRun** — enabled by default for every configuration, including Debug. The SDK keeps
+  the IL compiler input in `obj`; `Build/ReadyToRun.targets` delivers the selected R2R images to
+  the runnable bin output. VS MSIX deployment consumes the WinUI SDK's publish-item list. All four
+  Cake entry points use `DotNetPublish` and package its `publish` tree, with final-image validation.
+  See [deployment details and debugger limits](docs/aot-readiness.md). Do not add AnyCPU mappings,
+  force Debug optimization, or mistake a stale `obj/R2R` file for the actual deployed image.
 - **Build quirks (do not "clean up" blindly)**
   - The app csproj contains a `UsePatchedXamlCompiler` target that byte-patches
     `XamlCompiler.exe` on `dotnet build` (MSBuild Core) to work around
@@ -75,8 +81,8 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
     `CopyContentForUnpackaged` target copies `Resource/` and `Assets/` next to the exe for the
     unpackaged mode.
 - **Test caveat (important)** — the test project has **no `ProjectReference` to the app**
-  (`CODE_REVIEW.md#BUG-02`). It compiles a hand-picked set of 29 production files through
-  `<Compile Include="..\Snap.Hutao.Remastered\...">` links and holds 125 `[TestMethod]`s across
+  (`CODE_REVIEW.md#BUG-02`). It compiles a hand-picked set of 39 production files through
+  `<Compile Include="..\Snap.Hutao.Remastered\...">` links and holds 167 `[TestMethod]`s across
   `BaseClassLibrary/`, `RuntimeBehavior/`, `IncomingFeature/` and `PlatformExtensions/`.
   Consequence: **a new test can only touch code that is already source-linked**; anything else
   needs another `<Compile Include>` link. Windows dependencies must either be absent or supplied
@@ -187,8 +193,11 @@ the build fails with `CS9275`); write a normal constructor in that case.
 
 ### 5.2 Commands and observable properties (MVVM)
 
-- **Commands are `[Command("XxxCommand")]`, never `[RelayCommand]`** (`[RelayCommand]` appears **0**
-  times in this repo; CommunityToolkit's generator is not what produces them). The attribute is
+- **Use `[Command("XxxCommand")]` for commands supported by the repository generator.**
+  The migrated AI commands may retain `[RelayCommand]` when they need `CanExecute` notification
+  or cancellation tokens: the current repository generator has no can-execute option and treats
+  the first parameter, including `CancellationToken`, as a command argument. Do not replace these
+  attributes without preserving command gating and cancellation. The attribute is
   `Snap.Hutao.Remastered.Core.Annotation.CommandAttribute` and the string argument is the
   authoritative generated property name:
 
@@ -427,13 +436,13 @@ ID — do not "fix" these by documenting them as if they were intended.
 | 3 | Repository-wide `internal` removal (0 occurrences left) + 12 `SH001` suppressions; `public` was mandated uniformly, which is what caused #1/#2 | whole repo | BUG-10 |
 | 4 | Two ViewModel lifecycle state machines (`ViewModel` vs `ViewModelSlim`), derived classes assign `IsInitialized` on their own | `ViewModel/Abstraction/*` | ARCH-03 |
 | 5 | Analyzer severities are advisory: 54 `suggestion`, 18 `none`, 2 `warning`, **0** `error`; no `TreatWarningsAsErrors`/`AnalysisLevel`; `NoWarn` swallows `CA2012`; `SA1404` disabled | `src/Snap.Hutao.Remastered/.editorconfig`, app csproj | ENG-01, ENG-02 |
-| 6 | Test project cannot reference the app (0 `ProjectReference`, 29 source links, TFM `net11.0` vs `net11.0-windows…`) | `Snap.Hutao.Remastered.Test.csproj` | BUG-02 |
+| 6 | Test project cannot reference the app (0 `ProjectReference`, 39 source links, TFM `net11.0` vs `net11.0-windows…`) | `Snap.Hutao.Remastered.Test.csproj` | BUG-02 |
 | 7 | Manifest allows Windows 10 `10.0.19041.0` while the public support statement says Windows 10 22H2 (Jan-2025) / Windows 11 22H2 — reconcile one of the two | `Package*.appxmanifest`, project docs site | — |
 | 8 | No CI quality gate: none of the 8 workflows runs `dotnet test` or `dotnet format --verify-no-changes` | `.github/workflows/` | ENG-05 |
 | 9 | No central package management (`Directory.Build.props` / `Directory.Packages.props` absent, 61 `PackageReference`s across the 4 csproj files carry inline versions) | `src/**/*.csproj` | ENG-04 |
 | 10 | `dependabot.yml` NuGet entry still points at the pre-rename path `/src/Snap.Hutao` → no NuGet updates since the rename | `.github/dependabot.yml` | ENG-06 |
 | 11 | Dead code / stale config: `LegacyMetadataService` (396 lines, `[Service]` commented out), `build.cake` targets a non-existent `.sln`, commented-out `#pragma` block | `Service/Metadata/LegacyMetadataService.cs`, `build.cake`, `Web/Hoyolab/SaltConstants.cs` | ENG-08 |
-| 12 | Generated sources are not emitted (`EmitCompilerGeneratedFiles` unset), so generator output cannot be reviewed in CI | app csproj | ENG-09 |
+| 12 | Normal builds do not emit generator source copies; `AotAnalysis=true` enables diagnostics only, without another generated-source output tree | app csproj | ENG-09 |
 | 13 | 171 `[SuppressMessage]` + 90 `#pragma warning disable`, several without `Justification` | repo-wide | ENG-03 |
 | 14 | Hard-coded Chinese UI text still present in `.cs` string literals and XAML attribute values (`TestPage`, `LaunchGamePage` worst) and no gate against new ones | repo-wide | LOC-01/02/03 |
 | 15 | `ScopedPage` creates its `IServiceScope` only on the first `Loading` (handler unsubscribed) and disposes a `CancellationTokenSource` field it keeps handing out — a second activation throws | `UI/Xaml/Control/ScopedPage.cs` | BUG-05 |
@@ -445,6 +454,9 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
+| 2026-10-20 | Enabled default R2R for Debug and Release; connected the SDK-selected images to local runnable output and MSIX deployment, switched all Cake packaging inputs to publish output, and added final-image header validation. |
+| 2026-10-20 | Separated JSON wire policy from reflection, added generated infrastructure/metadata collection contracts, static enum converters, typed ID/HTTP metadata APIs, and finite cultivation navigation. |
+| 2026-10-20 | Adopted source-generated settings/database JSON and EF's compiled model; preserved plugin/script support, storage formats, and migrations. Removed extra experiment scripts; retained optional AOT diagnostics. |
 | 2026-10-18 | Document Canary's explicit trigger-commit merge, ancestry verification and compiled-source summary, including pushes made before a PR exists. |
 | 2026-10-18 | Recounted source-linked production files and test methods after adding account-initialization thread-affinity regression tests; documented their explicit Windows dependency doubles. |
 | 2026-10-11 | Full "spec vs reality" audit (`CODE_REVIEW.md#ENG-10`): .NET 10→11, `[RelayCommand]`→`[Command("…")]`, observable partial properties, both ViewModel base classes, `develop`→`dev`, accurate `RetryHttpHandler` semantics, plugin/ALC section, DI attribute matrix, localization mechanism, build quirks, test-project caveat, visibility rule rewritten, §8 Known drift added. |

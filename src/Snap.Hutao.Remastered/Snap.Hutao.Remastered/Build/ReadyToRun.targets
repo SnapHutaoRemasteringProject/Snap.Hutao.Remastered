@@ -1,0 +1,88 @@
+<Project>
+  <!-- MSIX already consumes ComputeFilesToPublish. Also deliver the same current
+       R2R images to bin for the unpackaged F5 profile and directly launched exe.
+       Never overwrite IntermediateAssembly in obj: it remains the IL compiler input. -->
+  <Target Name="CopyReadyToRunToBuildOutput"
+          AfterTargets="Build"
+          DependsOnTargets="ComputeFilesToPublish"
+          Condition="'$(DesignTimeBuild)' != 'true' and '$(PublishReadyToRun)' == 'true'">
+    <Error Condition="'@(_ReadyToRunFilesToPublish)' == ''" Text="ReadyToRun is enabled, but the SDK produced no ReadyToRun build outputs." />
+    <Copy SourceFiles="@(_ReadyToRunFilesToPublish)"
+          DestinationFiles="@(_ReadyToRunFilesToPublish->'$(OutDir)%(RelativePath)')"
+          SkipUnchangedFiles="true">
+      <Output TaskParameter="CopiedFiles" ItemName="FileWrites" />
+    </Copy>
+    <VerifyHutaoReadyToRunImage FilePath="$(TargetPath)" />
+  </Target>
+
+  <Target Name="VerifyReadyToRunPublishOutput"
+          AfterTargets="Publish"
+          Condition="'$(DesignTimeBuild)' != 'true' and '$(PublishReadyToRun)' == 'true'">
+    <VerifyHutaoReadyToRunImage FilePath="$(PublishDir)$(TargetFileName)" />
+  </Target>
+
+  <!-- Pure PE validation works in both VS MSBuild and dotnet MSBuild without
+       restoring a verification tool or loading the application/runtime. -->
+  <UsingTask TaskName="VerifyHutaoReadyToRunImage" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <FilePath ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="Microsoft.Build.Framework" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        try
+        {
+            using (var stream = File.OpenRead(FilePath))
+            using (var reader = new BinaryReader(stream))
+            {
+                stream.Position = 0x3C;
+                uint peOffset = reader.ReadUInt32();
+                stream.Position = peOffset;
+                if (reader.ReadUInt32() != 0x00004550) throw new InvalidDataException("Invalid PE signature.");
+                stream.Position = peOffset + 6;
+                ushort sectionCount = reader.ReadUInt16();
+                stream.Position = peOffset + 20;
+                ushort optionalHeaderSize = reader.ReadUInt16();
+                long optionalHeader = peOffset + 24;
+                stream.Position = optionalHeader;
+                ushort magic = reader.ReadUInt16();
+                if (magic != 0x10B && magic != 0x20B) throw new InvalidDataException("Invalid PE optional header.");
+                stream.Position = optionalHeader + (magic == 0x20B ? 112 : 96) + 14 * 8;
+                uint clrRva = reader.ReadUInt32();
+                if (clrRva == 0 || reader.ReadUInt32() < 72) throw new InvalidDataException("Missing CLR header.");
+                var virtualAddresses = new uint[sectionCount];
+                var sizes = new uint[sectionCount];
+                var rawOffsets = new uint[sectionCount];
+                for (int index = 0; index < sectionCount; index++)
+                {
+                    stream.Position = optionalHeader + optionalHeaderSize + index * 40 + 8;
+                    uint virtualSize = reader.ReadUInt32();
+                    virtualAddresses[index] = reader.ReadUInt32();
+                    sizes[index] = Math.Max(virtualSize, reader.ReadUInt32());
+                    rawOffsets[index] = reader.ReadUInt32();
+                }
+                Func<uint, long> fileOffset = rva =>
+                {
+                    for (int index = 0; index < sectionCount; index++)
+                        if (rva >= virtualAddresses[index] && rva - virtualAddresses[index] < sizes[index])
+                            return (long)rawOffsets[index] + rva - virtualAddresses[index];
+                    throw new InvalidDataException("RVA outside PE sections.");
+                };
+                stream.Position = fileOffset(clrRva) + 64;
+                uint nativeRva = reader.ReadUInt32();
+                if (nativeRva == 0 || reader.ReadUInt32() < 4) throw new InvalidDataException("Missing ReadyToRun header.");
+                stream.Position = fileOffset(nativeRva);
+                if (reader.ReadUInt32() != 0x00525452) throw new InvalidDataException("Invalid ReadyToRun signature.");
+            }
+            Log.LogMessage(MessageImportance.Normal, "Verified ReadyToRun image: {0}", FilePath);
+        }
+        catch (Exception exception)
+        {
+            Log.LogError("ReadyToRun verification failed for '{0}': {1}", FilePath, exception.Message);
+        }
+      ]]></Code>
+    </Task>
+  </UsingTask>
+</Project>

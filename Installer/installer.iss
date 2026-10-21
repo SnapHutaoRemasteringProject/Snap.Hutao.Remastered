@@ -2,8 +2,8 @@
 ; 从 Snap.Hutao.Remastered 仓库根目录执行以下命令:
 ;
 ; 1. 构建并发布到 Installer\Publish:
-;   dotnet build "src\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Snap.Hutao.Remastered.csproj" -c Release --self-contained true -p:Platform=x64 -p:WindowsAppSDKSelfContained=true
-;   (然后复制 bin\x64\Release\net10.0-windows10.0.26100.0\win-x64\* 到 Installer\Publish\)
+;   dotnet publish "src\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Snap.Hutao.Remastered.csproj" -c Release --self-contained true -p:Platform=x64 -p:WindowsAppSDKSelfContained=true
+;   (然后复制 bin\x64\Release\<TargetFramework>\win-x64\publish\* 到 Installer\Publish\)
 ;
 ; 2. 编译安装程序:
 ;   iscc Installer\installer.iss

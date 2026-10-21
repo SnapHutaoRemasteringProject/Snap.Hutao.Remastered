@@ -1036,7 +1036,7 @@
     <value>获取本地游戏版本失败，无法获取注入配置信息</value>
   </data>
   <data name="ServiceGameIslandTargetVersionFileNotExists" xml:space="preserve">
-    <value>尚未支持当前游戏版本</value>
+    <value>当前游戏版本暂不支持 Island 增强功能，请关闭 Island 后正常启动游戏</value>
   </data>
   <data name="ServiceGameLaunchExecutionBetterGenshinImpactStarted" xml:space="preserve">
     <value>BetterGI 已启动</value>
@@ -5601,5 +5601,593 @@
   </data>
   <data name="GlassPointerLightInfluence" xml:space="preserve">
     <value>光源跟随程度</value>
+  </data>
+  <data name="ViewDialogAccountInsightsTitle" xml:space="preserve">
+    <value>账号历史图表与 AI 分析</value>
+  </data>
+  <data name="ViewDialogAccountInsightsOpen" xml:space="preserve">
+    <value>历史图表与 AI 分析</value>
+  </data>
+  <data name="ViewDialogAccountInsightsDescription" xml:space="preserve">
+    <value>祈愿、深境螺旋、幻想真境剧诗、幽境危战历史图表与可选 AI 分析</value>
+  </data>
+  <data name="ViewDialogAccountInsightsIntro" xml:space="preserve">
+    <value>图表基于已保存的本地历史记录，缺失的周期不会被推算。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsLoading" xml:space="preserve">
+    <value>正在读取本地历史记录…</value>
+  </data>
+  <data name="ViewDialogAccountInsightsNoAccount" xml:space="preserve">
+    <value>请先选择游戏账号及 UID。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsNoRecords" xml:space="preserve">
+    <value>所选账号没有可绘制的本地记录。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReady" xml:space="preserve">
+    <value>已读取所选账号的历史统计；未记录的周期不会计入。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReadError" xml:space="preserve">
+    <value>读取历史记录失败，请检查所选账号和本地记录。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsCopied" xml:space="preserve">
+    <value>已复制去标识化统计数据。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsAnalysisHeading" xml:space="preserve">
+    <value>AI 分析（可选）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsPrivacyTitle" xml:space="preserve">
+    <value>使用第三方 AI 前请了解</value>
+  </data>
+  <data name="ViewDialogAccountInsightsPrivacyBody" xml:space="preserve">
+    <value>点击生成分析后，仅向所选 API 地址发送历史汇总统计，不包含 UID、Cookie、祈愿物品 ID 或数据库文件。历史模式仍可能存在关联性，请自行查看服务提供商的隐私政策。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsEndpointHeader" xml:space="preserve">
+    <value>Chat Completions API 地址（HTTPS 或本机 HTTP）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsEndpointPlaceholder" xml:space="preserve">
+    <value>https://example.com/v1/chat/completions</value>
+  </data>
+  <data name="ViewDialogAccountInsightsModelHeader" xml:space="preserve">
+    <value>模型标识符</value>
+  </data>
+  <data name="ViewDialogAccountInsightsModelPlaceholder" xml:space="preserve">
+    <value>输入模型名称</value>
+  </data>
+  <data name="ViewDialogAccountInsightsApiKeyHeader" xml:space="preserve">
+    <value>API Key（仅本次会话使用，不保存）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsCopy" xml:space="preserve">
+    <value>复制去标识化统计（JSON）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsGenerate" xml:space="preserve">
+    <value>生成分析评价</value>
+  </data>
+  <data name="ViewDialogAccountInsightsInvalidEndpoint" xml:space="preserve">
+    <value>请输入有效的 HTTPS API 地址（仅回环地址允许 HTTP）。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMissingModel" xml:space="preserve">
+    <value>请输入模型标识符。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSending" xml:space="preserve">
+    <value>正在请求模型分析…</value>
+  </data>
+  <data name="ViewDialogAccountInsightsHttpError" xml:space="preserve">
+    <value>模型请求失败（HTTP {0}），请检查地址、模型和权限。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsEmptyReply" xml:space="preserve">
+    <value>模型没有返回文字内容。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsTimeout" xml:space="preserve">
+    <value>请求已取消或超时。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsFailure" xml:space="preserve">
+    <value>网络连接或响应格式异常，分析失败。API Key 未保存。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsNoData" xml:space="preserve">
+    <value>没有已保存的记录。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartWish" xml:space="preserve">
+    <value>祈愿记录</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartBeyond" xml:space="preserve">
+    <value>千星奇域祈愿</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartAbyss" xml:space="preserve">
+    <value>深境螺旋</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartTheater" xml:space="preserve">
+    <value>幻想真境剧诗</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartChallenge" xml:space="preserve">
+    <value>幽境危战（单人）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricMonthly" xml:space="preserve">
+    <value>每月抽数</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricPool" xml:space="preserve">
+    <value>各祈愿池抽数</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricAbyss" xml:space="preserve">
+    <value>每期星数</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricTheater" xml:space="preserve">
+    <value>每期奖章数</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricChallenge" xml:space="preserve">
+    <value>每期最佳通关用时</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitWish" xml:space="preserve">
+    <value>抽</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitStar" xml:space="preserve">
+    <value>星</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitMedal" xml:space="preserve">
+    <value>枚</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUnitSeconds" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="ViewDialogAccountInsightsPeriodAxis" xml:space="preserve">
+    <value>月份 / 周期</value>
+  </data>
+  <data name="ViewDialogAccountInsightsLowerIsBetter" xml:space="preserve">
+    <value>越少越好</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSummaryTime" xml:space="preserve">
+    <value>已记录 {0} 个周期 · 平均 {1} {3} · 最近 {2} {3}</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSummaryDelta" xml:space="preserve">
+    <value> · 较上一期变化：{0} {1}</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSummaryPool" xml:space="preserve">
+    <value>已记录 {0} 个祈愿池 · 总计 {1} {2}</value>
+  </data>
+  <data name="ViewDialogAccountInsightsPartialError" xml:space="preserve">
+    <value>部分记录无法读取</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChartRenderError" xml:space="preserve">
+    <value>原生图表加载失败，请查看应用日志</value>
+  </data>
+  <data name="ViewDialogAccountInsightsTestConnection" xml:space="preserve">
+    <value>测试 API 连接</value>
+  </data>
+  <data name="ViewDialogAccountInsightsTestSuccess" xml:space="preserve">
+    <value>连接成功，未发送游戏记录。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMissingApiKey" xml:space="preserve">
+    <value>请输入 API Key。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsApiUnauthorizedHint" xml:space="preserve">
+    <value>请检查密钥、地域、业务空间和模型权限。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMetricFeaturedCharacters" xml:space="preserve">
+    <value>已获得的 UP 五星角色</value>
+  </data>
+  <data name="ViewDialogAccountInsightsGachaDetailsUnavailable" xml:space="preserve">
+    <value>祈愿详细统计暂时不可用。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsAssistantLabel" xml:space="preserve">
+    <value>AI 助手</value>
+  </data>
+  <data name="ViewDialogAccountInsightsCopyResponse" xml:space="preserve">
+    <value>复制回答</value>
+  </data>
+  <data name="ViewDialogAccountInsightsStopGeneration" xml:space="preserve">
+    <value>停止生成</value>
+  </data>
+  <data name="ViewDialogAccountInsightsGenerationStopped" xml:space="preserve">
+    <value>已停止生成。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsTokenUsage" xml:space="preserve">
+    <value>输入 {0} Tokens · 输出 {1} Tokens</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReasoningInProgress" xml:space="preserve">
+    <value>模型正在思考，等待回答内容…</value>
+  </data>
+  <data name="ViewDialogAccountInsightsAnalysisPrompt" xml:space="preserve">
+    <value>请根据本对话中的历史统计数据，完整分析我的账号表现、祈愿运气和后续规划。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsApiError" xml:space="preserve">
+    <value>请求失败或响应未完整结束，可检查接口配置后重新生成。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsChatPrivacyBody" xml:space="preserve">
+    <value>生成分析或发送消息时，会将对话内容和汇总历史统计发送至所选接口。不会附加 UID、Cookie、原始物品 ID 或数据库文件。对话、框架会话状态和统计快照保存在本机数据目录；API 密钥由 Windows 凭据管理器保存。工具执行前可选择批准或拒绝。历史模式仍可能具有可识别性，请查阅服务商隐私政策。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsConversationHint" xml:space="preserve">
+    <value>生成账号分析，或输入问题开始对话。每个对话使用独立的统计快照。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsConversationStatistics" xml:space="preserve">
+    <value>{0} 条消息 · 输入 {1} · 输出 {2} · 推理 {3} · 缓存命中 {4} Token</value>
+  </data>
+  <data name="ViewDialogAccountInsightsCopyConversation" xml:space="preserve">
+    <value>复制对话</value>
+  </data>
+  <data name="ViewDialogAccountInsightsDefaultProfile" xml:space="preserve">
+    <value>默认配置</value>
+  </data>
+  <data name="ViewDialogAccountInsightsDelete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="ViewDialogAccountInsightsDetailedTokenUsage" xml:space="preserve">
+    <value>输入 {0} · 输出 {1} · 推理 {2} · 缓存命中 {3} Token</value>
+  </data>
+  <data name="ViewDialogAccountInsightsHistoryLoadError" xml:space="preserve">
+    <value>无法读取本地对话或配置，原文件已保留，本次不会覆盖。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsHistorySaveError" xml:space="preserve">
+    <value>无法保存本地对话或配置，请检查数据目录的访问权限。</value>
+  </data>
+  <data name="ViewDialogAccountInsightsInputPlaceholder" xml:space="preserve">
+    <value>输入问题或继续追问；Enter 发送，Shift / Ctrl + Enter 换行</value>
+  </data>
+  <data name="ViewDialogAccountInsightsMaxTokens" xml:space="preserve">
+    <value>最大输出 Token 数（可留空；Anthropic 默认 8192）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsModelProfile" xml:space="preserve">
+    <value>模型配置</value>
+  </data>
+  <data name="ViewDialogAccountInsightsModelSettings" xml:space="preserve">
+    <value>模型设置</value>
+  </data>
+  <data name="ViewDialogAccountInsightsNewConversation" xml:space="preserve">
+    <value>新对话</value>
+  </data>
+  <data name="ViewDialogAccountInsightsNewProfile" xml:space="preserve">
+    <value>新配置</value>
+  </data>
+  <data name="ViewDialogAccountInsightsProfileName" xml:space="preserve">
+    <value>配置名称</value>
+  </data>
+  <data name="ViewDialogAccountInsightsProvider" xml:space="preserve">
+    <value>接口类型</value>
+  </data>
+  <data name="ViewDialogAccountInsightsProviderDefault" xml:space="preserve">
+    <value>服务商默认</value>
+  </data>
+  <data name="ViewDialogAccountInsightsProviderEndpointHeader" xml:space="preserve">
+    <value>API 地址（HTTPS 或本机 HTTP，支持基础地址或完整接口地址）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReasoningCompleted" xml:space="preserve">
+    <value>思考过程</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReasoningEffort" xml:space="preserve">
+    <value>推理强度（仅 OpenAI 兼容接口）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsRegenerate" xml:space="preserve">
+    <value>重新生成</value>
+  </data>
+  <data name="ViewDialogAccountInsightsReuseMessage" xml:space="preserve">
+    <value>编辑并重发</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSaveProfile" xml:space="preserve">
+    <value>保存配置</value>
+  </data>
+  <data name="ViewDialogAccountInsightsSend" xml:space="preserve">
+    <value>发送</value>
+  </data>
+  <data name="ViewDialogAccountInsightsTemperature" xml:space="preserve">
+    <value>温度（留空使用服务商默认值）</value>
+  </data>
+  <data name="ViewDialogAccountInsightsUserLabel" xml:space="preserve">
+    <value>你</value>
+  </data>
+  <data name="UIXamlControlsChatMarkdownSegmentViewToolTipCopyText" xml:space="preserve">
+    <value>复制文本</value>
+  </data>
+  <data name="UIXamlControlsChatMessageViewLabelAssistant" xml:space="preserve">
+    <value>AI</value>
+  </data>
+  <data name="UIXamlControlsChatMessageViewLabelReasoningCompleted" xml:space="preserve">
+    <value>已思考</value>
+  </data>
+  <data name="UIXamlControlsChatMessageViewLabelReasoningInProgress" xml:space="preserve">
+    <value>思考中</value>
+  </data>
+  <data name="UIXamlControlsChatMessageViewLabelUser" xml:space="preserve">
+    <value>你</value>
+  </data>
+  <data name="UIXamlControlsChatMessageViewToolTipCachedInputTokenCount" xml:space="preserve">
+    <value>缓存输入 / 缓存命中率</value>
+  </data>
+  <data name="UIXamlControlsChatMessageViewToolTipInputTokenCount" xml:space="preserve">
+    <value>输入</value>
+  </data>
+  <data name="UIXamlControlsChatMessageViewToolTipOutputTokenCount" xml:space="preserve">
+    <value>输出</value>
+  </data>
+  <data name="UIXamlControlsChatMessageViewToolTipReasoningTokenCount" xml:space="preserve">
+    <value>思考</value>
+  </data>
+  <data name="UIXamlControlsChatMessageViewToolTipTotalTokenCount" xml:space="preserve">
+    <value>总计</value>
+  </data>
+  <data name="UIXamlControlsChatToolApprovalRequestSegmentViewLabelAllow" xml:space="preserve">
+    <value>允许</value>
+  </data>
+  <data name="UIXamlControlsChatToolApprovalRequestSegmentViewLabelDeny" xml:space="preserve">
+    <value>拒绝</value>
+  </data>
+  <data name="UIXamlControlsChatToolApprovalRequestSegmentViewLabelPending" xml:space="preserve">
+    <value>等待批准</value>
+  </data>
+  <data name="UIXamlControlsChatToolApprovalRequestSegmentViewLabelTitle" xml:space="preserve">
+    <value>需要批准工具调用</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelAttachment" xml:space="preserve">
+    <value>附件</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelCachedInputTokens" xml:space="preserve">
+    <value>缓存输入 Token</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelContents" xml:space="preserve">
+    <value>内容</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelContext" xml:space="preserve">
+    <value>上下文</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelDeleteConversation" xml:space="preserve">
+    <value>删除会话</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelInputTokens" xml:space="preserve">
+    <value>输入 Token</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelMessages" xml:space="preserve">
+    <value>消息</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelModelProfile" xml:space="preserve">
+    <value>模型</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelModelProviderProfile" xml:space="preserve">
+    <value>模型提供商配置</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelNewConversation" xml:space="preserve">
+    <value>新会话</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelOutputTokens" xml:space="preserve">
+    <value>输出 Token</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelPlaceholder" xml:space="preserve">
+    <value>输入消息...</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelReasoningContents" xml:space="preserve">
+    <value>推理内容</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelReasoningTokens" xml:space="preserve">
+    <value>推理 Token</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelSend" xml:space="preserve">
+    <value>发送</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelStopGeneration" xml:space="preserve">
+    <value>停止生成</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelSwitchModel" xml:space="preserve">
+    <value>切换模型</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelTextContents" xml:space="preserve">
+    <value>文本内容</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelToolCalls" xml:space="preserve">
+    <value>工具调用</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelToolResults" xml:space="preserve">
+    <value>工具结果</value>
+  </data>
+  <data name="UIXamlPagesAgentPageLabelTotalTokens" xml:space="preserve">
+    <value>总 Token</value>
+  </data>
+  <data name="UIXamlPagesAgentPageMessageConfigureApiKey" xml:space="preserve">
+    <value>请先在设置中配置模型供应商</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageDescriptionAddModelProviderProfileToEdit" xml:space="preserve">
+    <value>请先添加一个模型提供商配置</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageDescriptionAgentMaximumIterationsPerRequest" xml:space="preserve">
+    <value>限制智能体在单个用户消息轮次中的工具调用次数，防止无限循环</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageDescriptionAgentUserName" xml:space="preserve">
+    <value>用于标记你发送的消息</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageDescriptionModelListDocumentationLink" xml:space="preserve">
+    <value>某些模型供应商可能不会提供模型列表接口，填入文档链接以覆盖默认的获取模型行为</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageDescriptionProfileApiKey" xml:space="preserve">
+    <value>API 密钥由 Windows 凭据管理器保存，不写入 JSON 配置文件</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageDescriptionSelectModelProviderProfileToEdit" xml:space="preserve">
+    <value>请选择左侧的模型提供商配置进行编辑</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelAddModel" xml:space="preserve">
+    <value>添加模型</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelAddProfile" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelAgentGlobalOptions" xml:space="preserve">
+    <value>全局配置</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelAgentMaximumIterationsPerRequest" xml:space="preserve">
+    <value>最大工具调用次数</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelAgentSystemPrompt" xml:space="preserve">
+    <value>系统提示词</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelAgentUserName" xml:space="preserve">
+    <value>用户名称</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelClearModels" xml:space="preserve">
+    <value>清空模型</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelCopyProfile" xml:space="preserve">
+    <value>复制</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelDeleteModel" xml:space="preserve">
+    <value>删除模型</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelDeleteProfile" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelFetchModels" xml:space="preserve">
+    <value>获取</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelModelAgentOptions" xml:space="preserve">
+    <value>模型参数</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelModelListActions" xml:space="preserve">
+    <value>操作</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelModelListDocumentationLink" xml:space="preserve">
+    <value>模型列表文档链接</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelModelMaxContextWindowTokens" xml:space="preserve">
+    <value>上下文窗口长度</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelModelMaxInputTokens" xml:space="preserve">
+    <value>最大输入长度</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelModelMaxOutputTokens" xml:space="preserve">
+    <value>最大输出长度</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelModelName" xml:space="preserve">
+    <value>模型名称</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelModelOmitReasoningEffortWhenThinkingDisabled" xml:space="preserve">
+    <value>思考推理关闭时省略推理强度</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelModelProviderProfiles" xml:space="preserve">
+    <value>模型配置</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelModelReasoningEffort" xml:space="preserve">
+    <value>推理强度</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelModelTemperature" xml:space="preserve">
+    <value>温度采样</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelModelThinkingEnabled" xml:space="preserve">
+    <value>启用思考推理</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelModelTopP" xml:space="preserve">
+    <value>核采样 Top P</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelProfileApiKey" xml:space="preserve">
+    <value>API Key</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelProfileEndpoint" xml:space="preserve">
+    <value>端点 URL</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelProfileModelId" xml:space="preserve">
+    <value>模型 ID</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelProfileName" xml:space="preserve">
+    <value>配置名称</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelProfileProviderType" xml:space="preserve">
+    <value>提供商类型</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageLabelSelectedModel" xml:space="preserve">
+    <value>当前模型</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageModelListStatusApiKeyMissingMessage" xml:space="preserve">
+    <value>获取模型前请先输入 API Key</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageModelListStatusCanceledMessage" xml:space="preserve">
+    <value>模型获取已取消</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageModelListStatusDocumentationOpenedMessage" xml:space="preserve">
+    <value>已在浏览器中打开提供商模型文档。请在下方列表中手动管理模型</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageModelListStatusDocumentationOpenedTitle" xml:space="preserve">
+    <value>已打开文档</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageModelListStatusFailedTitle" xml:space="preserve">
+    <value>获取模型失败</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageModelListStatusFetchingMessage" xml:space="preserve">
+    <value>正在从所选提供商请求模型列表</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageModelListStatusFetchingTitle" xml:space="preserve">
+    <value>正在获取模型</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageModelListStatusInvalidDocumentationLinkMessage" xml:space="preserve">
+    <value>请输入有效的 http 或 https 文档链接</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageModelListStatusNoProviderMessage" xml:space="preserve">
+    <value>请先选择一个模型提供商配置</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageModelListStatusSuccessMessage" xml:space="preserve">
+    <value>已获取 {0} 个模型</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageModelListStatusSuccessTitle" xml:space="preserve">
+    <value>模型已更新</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageOptionProviderDefault" xml:space="preserve">
+    <value>提供商默认值</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageOptionReasoningEffortExtraHigh" xml:space="preserve">
+    <value>极高</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageOptionReasoningEffortHigh" xml:space="preserve">
+    <value>高</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageOptionReasoningEffortLow" xml:space="preserve">
+    <value>低</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageOptionReasoningEffortMedium" xml:space="preserve">
+    <value>中</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageOptionReasoningEffortNone" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="UIXamlPagesSettingsPagePlaceholderAgentUserName" xml:space="preserve">
+    <value>You</value>
+  </data>
+  <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
+    <value>提供商默认值</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageDescriptionProfileModelId" xml:space="preserve">
+    <value>必填，填写服务商提供的精确模型标识。请求接口时使用此值</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageDescriptionModelDisplayName" xml:space="preserve">
+    <value>可选，仅用于列表显示，不会发送给服务商；留空时显示模型 ID</value>
+  </data>
+  <data name="UIXamlPagesSettingsPagePlaceholderProfileModelId" xml:space="preserve">
+    <value>例如 qwen3.8-flash</value>
+  </data>
+  <data name="UIXamlPagesSettingsPagePlaceholderModelDisplayName" xml:space="preserve">
+    <value>例如 千问快速模型（可留空）</value>
+  </data>
+  <data name="ViewPageGameRefreshInstallation" xml:space="preserve">
+    <value>刷新版本</value>
+  </data>
+  <data name="ViewPageGameVerifyAndRepairLatest" xml:space="preserve">
+    <value>按最新版本校验修复</value>
+  </data>
+  <data name="ViewModelGameInstallationSources" xml:space="preserve">
+    <value>config.ini：{0} · ScriptVersion：{1}</value>
+  </data>
+  <data name="ViewModelGameInstallationConflict" xml:space="preserve">
+    <value>两个版本来源不一致，未推断安装版本。请先刷新，或按显示的目标版本进行完整校验和修复；普通启动不受此提示限制</value>
+  </data>
+  <data name="ViewModelGameInstallationInvalid" xml:space="preserve">
+    <value>版本文件无效或无法读取。请检查文件占用和权限后刷新；可读取渠道时也可按显示的目标版本校验修复</value>
+  </data>
+  <data name="ViewModelGameInstallationMissingSource" xml:space="preserve">
+    <value>缺少一个版本来源，当前显示另一个有效来源。未自动补写文件；完成校验修复后才会同步版本信息</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceMissing" xml:space="preserve">
+    <value>缺失</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceInvalid" xml:space="preserve">
+    <value>无效</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceUnreadable" xml:space="preserve">
+    <value>无法读取</value>
+  </data>
+  <data name="ViewModelGameInstallationChanged" xml:space="preserve">
+    <value>游戏安装信息在准备操作期间发生了变化。为避免使用过期版本，已停止本次操作，请刷新后重试</value>
+  </data>
+  <data name="ServiceGameIslandVersionConflict" xml:space="preserve">
+    <value>游戏版本来源不一致，无法确定 Island 兼容版本。请先校验游戏，或关闭 Island 后正常启动</value>
   </data>
 </root>

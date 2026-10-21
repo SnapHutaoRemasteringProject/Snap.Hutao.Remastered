@@ -8,6 +8,7 @@ using Snap.Hutao.Remastered.Core.Threading.RateLimiting;
 using Snap.Hutao.Remastered.Factory.IO;
 using Snap.Hutao.Remastered.Factory.Progress;
 using Snap.Hutao.Remastered.Service.Game.FileSystem;
+using Snap.Hutao.Remastered.Service.Game.Configuration;
 using Snap.Hutao.Remastered.Service.Game.Package.Advanced.Model;
 using Snap.Hutao.Remastered.Service.Game.Package.Advanced.PackageOperation;
 using Snap.Hutao.Remastered.Service.Notification;
@@ -52,6 +53,16 @@ public sealed partial class GamePackageService : IGamePackageService
 
     public async ValueTask<bool> ExecuteOperationAsync(GamePackageOperationContext operationContext)
     {
+        if (operationContext.InstallationAtPreparation is { } prepared)
+        {
+            IGameFileSystemView fs = operationContext.GameFileSystem;
+            GameInstallationInfo current = GameInstallationReader.Read(fs.GameFilePath, fs.GameConfigurationFilePath, fs.ScriptVersionFilePath, fs.IsExecutableOversea);
+            if (!prepared.MatchesVersionFiles(current))
+            {
+                serviceProvider.GetRequiredService<IMessenger>().Send(InfoBarMessage.Warning(SH.ViewModelGameInstallationChanged));
+                return false;
+            }
+        }
         await StopOperationAsync().ConfigureAwait(false);
 
         CancellationTokenSource operationCtsLocal = new();

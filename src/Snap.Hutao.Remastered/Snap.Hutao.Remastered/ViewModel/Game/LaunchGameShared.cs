@@ -70,6 +70,7 @@ public sealed partial class LaunchGameShared
                 SH.FormatViewModelLaunchGameConfigurationFileNotFound(options.FilePath),
                 SH.ViewModelLaunchGameFixConfigurationFileButtonText,
                 HandleConfigurationFileNotFoundCommand),
+            ChannelOptionsErrorKind.ConfigurationFileReadFailed or ChannelOptionsErrorKind.SharingViolation => InfoBarMessage.Warning(SH.ViewModelGameInstallationInvalid),
             ChannelOptionsErrorKind.GamePathNullOrEmpty => InfoBarMessage.Warning(
                 SH.FormatViewModelLaunchGameConfigurationFailed(options.ErrorKind),
                 SH.ViewModelLaunchGameGamePathNullOrEmpty,

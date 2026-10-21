@@ -1,35 +1,24 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Core.Text.Json.Converter;
-using System.Text.Encodings.Web;
 using System.Text.Json.Serialization.Metadata;
 
 namespace Snap.Hutao.Remastered.Core.Text.Json;
 
 public static class JsonOptions
 {
-    public static readonly JsonSerializerOptions Default = new()
+    public static readonly JsonSerializerOptions Default = CreateDefault();
+
+    private static JsonSerializerOptions CreateDefault()
     {
-        AllowOutOfOrderMetadataProperties = true,
-        AllowTrailingCommas = true,
-        Converters =
-        {
-            new InternStringConverter(),
-        },
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-        NumberHandling = JsonNumberHandling.AllowReadingFromString,
-        PropertyNameCaseInsensitive = true,
-        ReadCommentHandling = JsonCommentHandling.Skip,
-        TypeInfoResolver = new DefaultJsonTypeInfoResolver
+        JsonSerializerOptions options = JsonWireOptions.Create();
+        options.TypeInfoResolver = new DefaultJsonTypeInfoResolver
         {
             Modifiers =
             {
                 JsonTypeInfoResolvers.ResolveEnumType,
             },
-        },
-        UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip,
-        WriteIndented = true,
-    };
+        };
+        return options;
+    }
 }

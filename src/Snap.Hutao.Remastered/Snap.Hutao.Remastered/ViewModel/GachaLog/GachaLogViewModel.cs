@@ -18,6 +18,7 @@ using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
+using Snap.Hutao.Remastered.UI.Xaml.View.Window;
 using Snap.Hutao.Remastered.UI.Xaml.View.Page;
 using Snap.Hutao.Remastered.ViewModel.Setting;
 using Snap.Hutao.Remastered.Win32.Foundation;
@@ -40,6 +41,14 @@ public sealed partial class GachaLogViewModel : Abstraction.ViewModel
     private bool suppressCurrentItemChangedHandling;
     private GachaLogServiceMetadataContext? metadataContext;
     private AppOptions? appOptions;
+
+    private readonly AccountInsightsWindows accountInsightsWindows;
+
+    [Command("OpenAccountInsightsCommand")]
+    private Task OpenAccountInsights()
+    {
+        return accountInsightsWindows.OpenAsync();
+    }
 
     [GeneratedConstructor]
     public partial GachaLogViewModel(IServiceProvider serviceProvider);

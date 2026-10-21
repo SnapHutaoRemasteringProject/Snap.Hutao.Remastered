@@ -13,6 +13,7 @@ using Snap.Hutao.Remastered.Service.SpiralAbyss;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.Data;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
+using Snap.Hutao.Remastered.UI.Xaml.View.Window;
 using Snap.Hutao.Remastered.UI.Xaml.View.Page;
 using Snap.Hutao.Remastered.ViewModel.Complex;
 using Snap.Hutao.Remastered.ViewModel.User;
@@ -37,6 +38,14 @@ public sealed partial class SpiralAbyssViewModel : Abstraction.ViewModel, IRecip
     private readonly IMessenger messenger;
 
     private SpiralAbyssMetadataContext? metadataContext;
+
+    private readonly AccountInsightsWindows accountInsightsWindows;
+
+    [Command("OpenAccountInsightsCommand")]
+    private Task OpenAccountInsights()
+    {
+        return accountInsightsWindows.OpenAsync();
+    }
 
     [GeneratedConstructor]
     public partial SpiralAbyssViewModel(IServiceProvider serviceProvider);

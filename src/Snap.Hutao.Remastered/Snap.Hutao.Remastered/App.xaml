@@ -7,6 +7,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <XamlControlsResources/>
+                <!--  WinUI Charts requires application-scoped styles; keep the namespace local to this element.  -->
+                <XamlChartsResources xmlns="using:Microsoft.UI.Xaml.Controls.Charts"/>
                 <ResourceDictionary Source="ms-appx:///CommunityToolkit.WinUI.Controls.SettingsControls/SettingsCard/SettingsCard.xaml"/>
                 <ResourceDictionary Source="ms-appx:///CommunityToolkit.Labs.WinUI.TokenView/TokenItem/TokenItem.xaml"/>
                 <ResourceDictionary Source="ms-appx:///DevWinUI/Themes/Generic.xaml"/>
@@ -94,7 +96,7 @@
             <Style BasedOn="{StaticResource DefaultCommandBarStyle}" TargetType="CommandBar">
                 <Setter Property="essential:CommandBarHelper.AcrylicWorkaround" Value="True"/>
             </Style>
-            <Style BasedOn="{StaticResource DefaultFlyoutStyle}" TargetType="Flyout">
+            <Style BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" TargetType="FlyoutPresenter">
                 <Setter Property="essential:FlyoutHelper.AcrylicWorkaround" Value="True"/>
             </Style>
             <Style BasedOn="{StaticResource DefaultSliderStyle}" TargetType="Slider">

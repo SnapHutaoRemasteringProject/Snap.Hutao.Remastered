@@ -281,6 +281,10 @@
                         Icon="{shuxm:FontIcon Glyph=&#xE898;}"
                         Label="{shuxm:ResourceString Name=ViewSpiralAbyssUploadRecord}"/>
                     <AppBarButton
+                        Command="{x:Bind ((shvr:RoleCombatViewModel)DataContext).OpenAccountInsightsCommand, Mode=OneWay}"
+                        Icon="{shuxm:FontIcon Glyph=&#xE9D9;}"
+                        Label="{shuxm:ResourceString Name=ViewDialogAccountInsightsOpen}"/>
+                    <AppBarButton
                         Command="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RefreshCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph=&#xE72C;}"
                         Label="{shuxm:ResourceString Name=ViewSpiralAbyssRefresh}"/>

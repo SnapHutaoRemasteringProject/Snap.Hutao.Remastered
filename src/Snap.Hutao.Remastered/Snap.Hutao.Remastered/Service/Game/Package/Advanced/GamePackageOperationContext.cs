@@ -8,10 +8,14 @@ using Snap.Hutao.Remastered.Service.Game.Package.Advanced.Model;
 using Snap.Hutao.Remastered.Web.Hoyolab.HoyoPlay.Connect.ChannelSDK;
 using System.IO;
 
+using Snap.Hutao.Remastered.Service.Game.Configuration;
+
 namespace Snap.Hutao.Remastered.Service.Game.Package.Advanced;
 
 public sealed class GamePackageOperationContext
 {
+    public GameInstallationInfo? InstallationAtPreparation { get; init; }
+
     public GamePackageOperationContext(IServiceProvider serviceProvider, GamePackageOperationKind kind, IGameFileSystem gameFileSystem, string? extractDirectory = default)
     {
         Kind = kind;

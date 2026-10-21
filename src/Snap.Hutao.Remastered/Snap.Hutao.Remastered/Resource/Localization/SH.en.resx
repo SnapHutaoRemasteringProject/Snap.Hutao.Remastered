@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -1075,7 +1075,7 @@
     <value>Snap Hutao should be run in administrator privilege before using Embedded Yae</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeErrorSystemIntegrityPolicyViolation" xml:space="preserve">
-    <value>Injection failed, possibly due to Windows Defender App &amp; Browser Control > Smart App Control policy blocking the operation. Please try turning it off.</value>
+    <value>Injection failed, possibly due to Windows Defender App &amp; Browser Control &gt; Smart App Control policy blocking the operation. Please try turning it off.</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>You should know about the related risks and turn on the embedding function in Launch Game page before using Embedded Yae</value>
@@ -4824,9 +4824,6 @@ Space Available: {2}</value>
   <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
     <value>Auto-start with Windows</value>
   </data>
-  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
-    <value>Unable to read or update the startup scheduled task. Please make sure the Task Scheduler service is available, then run the app as administrator and try again.</value>
-  </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>App behavior</value>
   </data>
@@ -6143,5 +6140,53 @@ Space Available: {2}</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
     <value>Provider default</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageDescriptionProfileModelId" xml:space="preserve">
+    <value>Required: the exact model identifier supplied by your provider. This value is sent in API requests</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageDescriptionModelDisplayName" xml:space="preserve">
+    <value>Optional display label, never sent to the provider. Leave blank to show the model ID</value>
+  </data>
+  <data name="UIXamlPagesSettingsPagePlaceholderProfileModelId" xml:space="preserve">
+    <value>For example, qwen3.8-flash</value>
+  </data>
+  <data name="UIXamlPagesSettingsPagePlaceholderModelDisplayName" xml:space="preserve">
+    <value>For example, My fast Qwen model (optional)</value>
+  </data>
+  <data name="ViewPageGameRefreshInstallation" xml:space="preserve">
+    <value>Refresh installation</value>
+  </data>
+  <data name="ViewPageGameVerifyAndRepairLatest" xml:space="preserve">
+    <value>Verify and repair to the latest version</value>
+  </data>
+  <data name="ViewModelGameInstallationSources" xml:space="preserve">
+    <value>config.ini: {0} · ScriptVersion: {1}</value>
+  </data>
+  <data name="ViewModelGameInstallationConflict" xml:space="preserve">
+    <value>The version sources disagree. No installed version was inferred. Refresh, or fully verify and repair against the displayed target version. This warning does not restrict ordinary launch</value>
+  </data>
+  <data name="ViewModelGameInstallationInvalid" xml:space="preserve">
+    <value>A version file is invalid or unreadable. Check file access and refresh. If the channel is readable, verification can repair against the displayed target version</value>
+  </data>
+  <data name="ViewModelGameInstallationMissingSource" xml:space="preserve">
+    <value>One version source is missing; the remaining valid source is displayed. No file was patched automatically. Version metadata is synchronized only after successful verification and repair</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceMissing" xml:space="preserve">
+    <value>Missing</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceInvalid" xml:space="preserve">
+    <value>Invalid</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceUnreadable" xml:space="preserve">
+    <value>Unreadable</value>
+  </data>
+  <data name="ViewModelGameInstallationChanged" xml:space="preserve">
+    <value>Installation metadata changed while preparing this operation. The operation was stopped to avoid using a stale version. Refresh and try again</value>
+  </data>
+  <data name="ServiceGameIslandVersionConflict" xml:space="preserve">
+    <value>The version sources disagree, so Island compatibility cannot be determined. Verify the game, or disable Island for ordinary launch</value>
+  </data>
+  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
+    <value>Unable to read or update the startup scheduled task. Please make sure the Task Scheduler service is available, then run the app as administrator and try again.</value>
   </data>
 </root>

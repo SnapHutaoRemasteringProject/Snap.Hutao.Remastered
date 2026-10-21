@@ -6,6 +6,7 @@ using Microsoft.Windows.Globalization;
 using Quartz;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Service;
+using Snap.Hutao.Remastered.Service.AI;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Web.Response;
 using System.Globalization;
@@ -39,6 +40,7 @@ public static class DependencyInjection
             .AddJsonOptions()
             .AddDatabase()
             .AddServices()
+            .AddAccountInsightsAgent()
             .AddResponseValidation()
             .AddConfiguredHttpClients()
 

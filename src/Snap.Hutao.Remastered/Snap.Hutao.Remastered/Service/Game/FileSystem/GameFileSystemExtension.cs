@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.IO.Ini;
+using Snap.Hutao.Remastered.Service.Game.Configuration;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -196,28 +197,9 @@ public static class GameFileSystemExtension
 
         public bool TryGetGameVersion([NotNullWhen(true)] out string? version)
         {
-            version = default!;
-            string configFilePath = gameFileSystem.GameConfigurationFilePath;
-            if (File.Exists(configFilePath))
-            {
-                foreach (ref readonly IniElement element in IniSerializer.DeserializeFromFile(configFilePath).AsSpan())
-                {
-                    if (element is IniParameter { Key: GameConstants.GameVersion, Value: { Length: > 0 } value })
-                    {
-                        version = value;
-                        return true;
-                    }
-                }
-            }
-
-            string scriptVersionFilePath = gameFileSystem.ScriptVersionFilePath;
-            if (File.Exists(scriptVersionFilePath))
-            {
-                version = File.ReadAllText(scriptVersionFilePath);
-                return true;
-            }
-
-            return false;
+            GameInstallationInfo installation = GameInstallationReader.Read(gameFileSystem.GameFilePath, gameFileSystem.GameConfigurationFilePath, gameFileSystem.ScriptVersionFilePath, gameFileSystem.IsExecutableOversea);
+            version = installation.InstalledVersion?.ToString();
+            return version is not null;
         }
     }
 }

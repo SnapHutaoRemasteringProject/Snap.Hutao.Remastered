@@ -28,7 +28,9 @@ public sealed class AsyncSemaphore
                 return Task.CompletedTask;
             }
 
-            TaskCompletionSource waiter = new();
+            // A release may happen while an outer keyed lock is held. Never run
+            // a waiter's user code inline on the releasing thread.
+            TaskCompletionSource waiter = new(TaskCreationOptions.RunContinuationsAsynchronously);
             waiters.Enqueue(waiter);
             return waiter.Task;
         }

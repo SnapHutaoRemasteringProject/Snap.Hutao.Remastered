@@ -2,6 +2,9 @@
 // Licensed under the MIT license.
 
 using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
+using Snap.Hutao.Remastered.Core.Text.Json;
+using Snap.Hutao.Remastered.Model.Intrinsic;
 
 namespace Snap.Hutao.Remastered.Model.Metadata;
 
@@ -42,6 +45,10 @@ file sealed class ConverterFactory : JsonConverterFactory
 
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
+        if (typeToConvert == typeof(TypeValueCollection<FightProperty, float>)) return new Converter<FightProperty, float>();
+        if (typeToConvert == typeof(TypeValueCollection<FightProperty, GrowCurveType>)) return new Converter<FightProperty, GrowCurveType>();
+        if (typeToConvert == typeof(TypeValueCollection<GrowCurveType, float>)) return new Converter<GrowCurveType, float>();
+        if (!RuntimeFeature.IsDynamicCodeSupported) throw new NotSupportedException("Unregistered Native AOT metadata collection type.");
         return Activator.CreateInstance(ConverterType.MakeGenericType(typeToConvert.GetGenericArguments())) as JsonConverter;
     }
 }
@@ -52,7 +59,10 @@ file sealed class Converter<TType, TValue> : JsonConverter<TypeValueCollection<T
 {
     public override TypeValueCollection<TType, TValue> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        return new(JsonSerializer.Deserialize<ImmutableArray<TypeValue<TType, TValue>>>(ref reader, options));
+        return typeof(TType) == typeof(FightProperty) && (typeof(TValue) == typeof(float) || typeof(TValue) == typeof(GrowCurveType))
+            || typeof(TType) == typeof(GrowCurveType) && typeof(TValue) == typeof(float)
+            ? new(MetadataCollectionJson.Deserialize<ImmutableArray<TypeValue<TType, TValue>>>(ref reader, options))
+            : new(JsonSerializer.Deserialize<ImmutableArray<TypeValue<TType, TValue>>>(ref reader, options));
     }
 
     public override void Write(Utf8JsonWriter writer, TypeValueCollection<TType, TValue> value, JsonSerializerOptions options)

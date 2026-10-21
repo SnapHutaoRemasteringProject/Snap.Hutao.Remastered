@@ -83,7 +83,10 @@
 
     <Grid>
         <Grid Visibility="{x:Bind ((shvs:SignInViewModel)DataContext).IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-            <Grid Padding="12" RowSpacing="6">
+            <Grid
+                Padding="12"
+                CornerRadius="8"
+                RowSpacing="6">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition/>
@@ -93,8 +96,8 @@
                     Grid.Row="0"
                     Margin="-12"
                     Padding="12"
-                    Background="{ThemeResource SystemControlChromeMediumAcrylicElementMediumBrush}"
-                    Canvas.ZIndex="1">
+                    Canvas.ZIndex="1"
+                    Style="{ThemeResource HomeCardOverlayGridStyle}">
                     <Grid
                         Height="48"
                         Padding="12"
@@ -130,7 +133,7 @@
                 <ScrollViewer
                     x:Name="AwardScrollViewer"
                     Grid.Row="1"
-                    Padding="0,18"
+                    Padding="0"
                     cw:UIElementExtensions.ClipToBounds="True"
                     CanContentRenderOutsideBounds="False">
                     <ItemsControl ItemTemplate="{StaticResource AwardTemplate}" ItemsSource="{x:Bind ((shvs:SignInViewModel)DataContext).Awards, Mode=OneWay}">
@@ -152,9 +155,9 @@
                     Grid.Row="2"
                     Margin="-12"
                     Padding="12"
-                    Background="{ThemeResource SystemControlChromeMediumAcrylicElementMediumBrush}"
                     Canvas.ZIndex="1"
-                    ColumnSpacing="6">
+                    ColumnSpacing="6"
+                    Style="{ThemeResource HomeCardOverlayGridStyle}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>

@@ -3,7 +3,6 @@
 
 using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation.HttpClient;
 using Snap.Hutao.Remastered.Core.IO.Http;
-using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
 using Snap.Hutao.Remastered.Web.Request.Builder;
@@ -106,7 +105,7 @@ public sealed partial class HutaoInfrastructureClient
         if (document.RootElement.TryGetProperty("code", out JsonElement code) && code.ValueKind is JsonValueKind.Number && code.GetInt32() != 0)
             throw new InvalidOperationException("Repository endpoint returned an unsuccessful business status.");
         HutaoResponse<ImmutableArray<GitRepository>>? result = document.RootElement
-            .Deserialize<HutaoResponse<ImmutableArray<GitRepository>>>(JsonOptions.Default);
+            .Deserialize(InfrastructureJsonContext.Wire.GitRepositoriesResponse);
         if (result is null || result.ReturnCode != 0 || result.Data.IsDefaultOrEmpty)
             throw new InvalidOperationException("Repository endpoint returned an invalid or unsuccessful catalogue response.");
         return result.Data;

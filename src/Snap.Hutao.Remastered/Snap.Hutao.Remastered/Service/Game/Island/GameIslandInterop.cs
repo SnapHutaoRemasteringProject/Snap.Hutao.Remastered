@@ -9,6 +9,7 @@ using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.FullTrust;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Service.Game.FileSystem;
+using Snap.Hutao.Remastered.Service.Game.Configuration;
 using Snap.Hutao.Remastered.Service.Game.Launching.Context;
 using Snap.Hutao.Remastered.Service.Plugin;
 using Snap.Hutao.Remastered.Web.Hutao;
@@ -42,13 +43,23 @@ public sealed class GameIslandInterop : IGameIslandInterop
             return ValueTask.CompletedTask;
         }
 
-        if (!context.FileSystem.TryGetGameVersion(out string? gameVersion))
+        GameInstallationInfo installation = GameInstallationReader.Read(context.FileSystem.GameFilePath, context.FileSystem.GameConfigurationFilePath, context.FileSystem.ScriptVersionFilePath, context.FileSystem.IsExecutableOversea);
+        if (installation.HasVersionConflict)
+        {
+            throw HutaoException.NotSupported(SH.ServiceGameIslandVersionConflict);
+        }
+        if (installation.InstalledVersion is not { } gameVersion)
         {
             throw HutaoException.NotSupported(SH.ServiceGameIslandFileSystemGetGameVersionFailed);
         }
-
         string repoPath = Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), "Snap.ContentDelivery");
         islandPath = Path.Combine(repoPath, $"Snap.Hutao.Remastered.UnlockerIsland_{gameVersion}.dll");
+        // All BeforeAsync handlers run before CreateProcess. Leave the later check
+        // as well, in case the module is removed after this preflight.
+        if (!File.Exists(islandPath))
+        {
+            throw HutaoException.InvalidOperation(SH.ServiceGameIslandTargetVersionFileNotExists);
+        }
         return ValueTask.CompletedTask;
     }
 

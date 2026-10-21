@@ -126,6 +126,10 @@
             <Pivot.RightHeader>
                 <CommandBar Grid.Row="0" DefaultLabelPosition="Right">
                     <AppBarButton
+                        Command="{x:Bind ((shvh:HardChallengeViewModel)DataContext).OpenAccountInsightsCommand, Mode=OneWay}"
+                        Icon="{shuxm:FontIcon Glyph=&#xE9D9;}"
+                        Label="{shuxm:ResourceString Name=ViewDialogAccountInsightsOpen}"/>
+                    <AppBarButton
                         Command="{x:Bind ((shvh:HardChallengeViewModel)DataContext).RefreshCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph=&#xE72C;}"
                         Label="{shuxm:ResourceString Name=ViewSpiralAbyssRefresh}"/>
