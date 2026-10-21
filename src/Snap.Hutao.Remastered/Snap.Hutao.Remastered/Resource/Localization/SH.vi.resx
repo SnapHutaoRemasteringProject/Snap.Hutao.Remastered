@@ -4825,7 +4825,7 @@ Dung lượng còn trống: {2}</value>
     <value>Tự khởi động khi bật máy</value>
   </data>
   <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
-    <value>无法读取或更新开机自启动计划任务。请确认计划任务服务可用，并以管理员身份运行后重试。</value>
+    <value>Không thể đọc hoặc cập nhật tác vụ theo lịch khởi động cùng hệ thống. Vui lòng xác nhận dịch vụ tác vụ theo lịch khả dụng và chạy lại với quyền quản trị viên.</value>
   </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>Hành vi ứng dụng</value>
@@ -6070,7 +6070,7 @@ Dung lượng còn trống: {2}</value>
     <value>Top P</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileApiKey" xml:space="preserve">
-    <value>API Key</value>
+    <value>Khóa API</value>
   </data>
   <data name="UIXamlPagesSettingsPageLabelProfileEndpoint" xml:space="preserve">
     <value>Endpoint URL</value>
@@ -6139,7 +6139,7 @@ Dung lượng còn trống: {2}</value>
     <value>None</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderAgentUserName" xml:space="preserve">
-    <value>You</value>
+    <value>Bạn</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
     <value>Provider default</value>
