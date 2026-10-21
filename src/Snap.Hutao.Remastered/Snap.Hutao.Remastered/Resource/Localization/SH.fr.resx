@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -4820,6 +4820,9 @@ Espace disponible : {2}</value>
   <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
     <value>Démarrer avec Windows</value>
   </data>
+  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
+    <value>Impossible de lire ou de mettre à jour la tâche planifiée de démarrage automatique. Vérifiez que le service de tâches planifiées est disponible, puis exécutez l'application en tant qu'administrateur et réessayez.</value>
+  </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>Comportement de l'application</value>
   </data>
@@ -6137,7 +6140,49 @@ Espace disponible : {2}</value>
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
     <value>Provider default</value>
   </data>
-  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
-    <value>Impossible de lire ou de mettre à jour la tâche planifiée de démarrage automatique. Vérifiez que le service de tâches planifiées est disponible, puis exécutez l'application en tant qu'administrateur et réessayez.</value>
+  <data name="UIXamlPagesSettingsPageDescriptionProfileModelId" xml:space="preserve">
+    <value>必填，填写服务商提供的精确模型标识。请求接口时使用此值</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageDescriptionModelDisplayName" xml:space="preserve">
+    <value>可选，仅用于列表显示，不会发送给服务商；留空时显示模型 ID</value>
+  </data>
+  <data name="UIXamlPagesSettingsPagePlaceholderProfileModelId" xml:space="preserve">
+    <value>例如 qwen3.8-flash</value>
+  </data>
+  <data name="UIXamlPagesSettingsPagePlaceholderModelDisplayName" xml:space="preserve">
+    <value>例如 千问快速模型（可留空）</value>
+  </data>
+  <data name="ViewPageGameRefreshInstallation" xml:space="preserve">
+    <value>刷新版本</value>
+  </data>
+  <data name="ViewPageGameVerifyAndRepairLatest" xml:space="preserve">
+    <value>按最新版本校验修复</value>
+  </data>
+  <data name="ViewModelGameInstallationSources" xml:space="preserve">
+    <value>config.ini：{0} · ScriptVersion：{1}</value>
+  </data>
+  <data name="ViewModelGameInstallationConflict" xml:space="preserve">
+    <value>两个版本来源不一致，未推断安装版本。请先刷新，或按显示的目标版本进行完整校验和修复；普通启动不受此提示限制</value>
+  </data>
+  <data name="ViewModelGameInstallationInvalid" xml:space="preserve">
+    <value>版本文件无效或无法读取。请检查文件占用和权限后刷新；可读取渠道时也可按显示的目标版本校验修复</value>
+  </data>
+  <data name="ViewModelGameInstallationMissingSource" xml:space="preserve">
+    <value>缺少一个版本来源，当前显示另一个有效来源。未自动补写文件；完成校验修复后才会同步版本信息</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceMissing" xml:space="preserve">
+    <value>缺失</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceInvalid" xml:space="preserve">
+    <value>无效</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceUnreadable" xml:space="preserve">
+    <value>无法读取</value>
+  </data>
+  <data name="ViewModelGameInstallationChanged" xml:space="preserve">
+    <value>游戏安装信息在准备操作期间发生了变化。为避免使用过期版本，已停止本次操作，请刷新后重试</value>
+  </data>
+  <data name="ServiceGameIslandVersionConflict" xml:space="preserve">
+    <value>游戏版本来源不一致，无法确定 Island 兼容版本。请先校验游戏，或关闭 Island 后正常启动</value>
   </data>
 </root>
