@@ -6163,7 +6163,7 @@ Space Available: {2}</value>
     <value>Verify and repair to the latest version</value>
   </data>
   <data name="ViewModelGameInstallationSources" xml:space="preserve">
-    <value>config.ini: {0} · ScriptVersion: {1}</value>
+    <value>Installation config version: {0} · Game script version: {1}</value>
   </data>
   <data name="ViewModelGameInstallationConflict" xml:space="preserve">
     <value>The version sources disagree. No installed version was inferred. Refresh, or fully verify and repair against the displayed target version. This warning does not restrict ordinary launch</value>
@@ -6188,5 +6188,15 @@ Space Available: {2}</value>
   </data>
   <data name="ServiceGameIslandVersionConflict" xml:space="preserve">
     <value>The version sources disagree, so Island compatibility cannot be determined. Verify the game, or disable Island for ordinary launch</value>
+  </data>
+  <data name="ViewPageGameInstallationInfoTitle" xml:space="preserve">
+    <value>Game version information</value>
+  </data>
+  <data name="ViewPageGameInstallationInfoDescription" xml:space="preserve">
+    <value>The installation config version comes from config.ini; the game script version comes from ScriptVersion. These describe the installation but do not confirm that its resources have been verified.
+
+After updating through another launcher, select Refresh installation to read the files again without changing them. If the versions differ, finish the game update or fully verify and repair against the displayed target version.
+
+Ordinary launch does not require Island support. Compatibility is checked separately when Island enhancements are enabled.</value>
   </data>
 </root>
