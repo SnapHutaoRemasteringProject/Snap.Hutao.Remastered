@@ -6164,7 +6164,7 @@
     <value>按最新版本校验修复</value>
   </data>
   <data name="ViewModelGameInstallationSources" xml:space="preserve">
-    <value>config.ini：{0} · ScriptVersion：{1}</value>
+    <value>安装配置版本：{0} · 游戏脚本版本：{1}</value>
   </data>
   <data name="ViewModelGameInstallationConflict" xml:space="preserve">
     <value>两个版本来源不一致，未推断安装版本。请先刷新，或按显示的目标版本进行完整校验和修复；普通启动不受此提示限制</value>
@@ -6189,5 +6189,15 @@
   </data>
   <data name="ServiceGameIslandVersionConflict" xml:space="preserve">
     <value>游戏版本来源不一致，无法确定 Island 兼容版本。请先校验游戏，或关闭 Island 后正常启动</value>
+  </data>
+  <data name="ViewPageGameInstallationInfoTitle" xml:space="preserve">
+    <value>游戏版本信息</value>
+  </data>
+  <data name="ViewPageGameInstallationInfoDescription" xml:space="preserve">
+    <value>安装配置版本来自 config.ini，游戏脚本版本来自 ScriptVersion。它们记录安装信息，不代表游戏资源已经校验。
+
+使用其他启动器更新游戏后，可点击“刷新版本”重新读取，刷新不会修改文件。版本不一致时，请先完成游戏更新，或按显示的目标版本完整校验修复。
+
+普通启动不受 Island 版本支持限制；启用 Island 增强功能时会单独检查兼容性。</value>
   </data>
 </root>
