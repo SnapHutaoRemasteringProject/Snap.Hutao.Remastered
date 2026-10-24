@@ -17,4 +17,6 @@ public sealed partial class TestPage : ScopedPage
     {
         InitializeDataContext<TestViewModel>();
     }
+
+    public new TestViewModel DataContext { get => (TestViewModel)base.DataContext; set => base.DataContext = value; }
 }

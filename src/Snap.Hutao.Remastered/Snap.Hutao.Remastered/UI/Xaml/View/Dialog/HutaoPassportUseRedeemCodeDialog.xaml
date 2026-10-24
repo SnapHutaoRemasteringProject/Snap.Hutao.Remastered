@@ -19,32 +19,10 @@
         Margin="0,8,0,0"
         HorizontalAlignment="Stretch"
         Spacing="16">
-        <cwc:SwitchPresenter
-            x:Name="GlassPresenter_906"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            IsTabStop="False"
-            Tag="LiquidGlass:TextBox"
-            Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>0</x:Int32>
-                </cwc:Case.Value>
-                <TextBox
-                    IsSpellCheckEnabled="False"
-                    PlaceholderText="{shuxm:ResourceString Name=ViewPageHutaoPassportRedeemCodeHint}"
-                    Text="{x:Bind RedeemCode, Mode=TwoWay}"/>
-            </cwc:Case>
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>1</x:Int32>
-                </cwc:Case.Value>
-                <wl:LiquidGlassTextBox
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    IsSpellCheckEnabled="False"
-                    PlaceholderText="{shuxm:ResourceString Name=ViewPageHutaoPassportRedeemCodeHint}"
-                    Text="{x:Bind RedeemCode, Mode=TwoWay}"/>
-            </cwc:Case>
-        </cwc:SwitchPresenter>
+        <wl:LiquidGlassTextBox
+            shuxcth:ControlMaterialState.IsManaged="True"
+            IsSpellCheckEnabled="False"
+            PlaceholderText="{shuxm:ResourceString Name=ViewPageHutaoPassportRedeemCodeHint}"
+            Text="{x:Bind RedeemCode, Mode=TwoWay}"/>
     </StackPanel>
 </ContentDialog>

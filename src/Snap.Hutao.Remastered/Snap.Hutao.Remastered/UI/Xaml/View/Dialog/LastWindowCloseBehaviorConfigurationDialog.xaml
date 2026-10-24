@@ -21,84 +21,18 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Text="{shuxm:ResourceString Name=ViewDialogCloseButtonBehaviorSetDialogHint}"/>
-        <cwc:SwitchPresenter
-            x:Name="MaterialSelector_CloseButtonBehaviorSelector"
+        <RadioButtons
+            x:Name="CloseButtonBehaviorSelector"
             Grid.Row="1"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            IsTabStop="False"
-            Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
-            <cwc:Case Value="{shuxm:Int32 Value=0}">
-                <RadioButtons
-                    x:Name="CloseButtonBehaviorSelector"
-                    Grid.Row="1"
-                    Margin="0,8,0,16"
-                    SelectedIndex="0">
-                    <RadioButton
-                        x:Name="GlassNative_1276"
-                        Content="{shuxm:ResourceString Name=ServiceCloseButtonBehaviorTypeMinimize}"
-                        DataContext="{x:Bind MaterialSelector_CloseButtonBehaviorSelector.DataContext, Mode=OneWay}"
-                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_CloseButtonBehaviorSelector}"/>
-                    <RadioButton
-                        x:Name="GlassNative_1380"
-                        Content="{shuxm:ResourceString Name=ServiceCloseButtonBehaviorTypeExit}"
-                        DataContext="{x:Bind MaterialSelector_CloseButtonBehaviorSelector.DataContext, Mode=OneWay}"
-                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_CloseButtonBehaviorSelector}"/>
-                </RadioButtons>
-            </cwc:Case>
-            <cwc:Case Value="{shuxm:Int32 Value=1}">
-                <RadioButtons
-                    x:Name="CloseButtonBehaviorSelectorGlass"
-                    Grid.Row="1"
-                    Margin="0,8,0,16"
-                    SelectedIndex="{x:Bind CloseButtonBehaviorSelector.SelectedIndex, Mode=TwoWay}">
-                    <wl:LiquidGlassRadioButton
-                        x:Name="GlassNative_1276Glass"
-                        Width="{x:Bind GlassNative_1276.Width, Mode=OneWay}"
-                        Height="{x:Bind GlassNative_1276.Height, Mode=OneWay}"
-                        MinWidth="{x:Bind GlassNative_1276.MinWidth, Mode=OneWay}"
-                        MinHeight="{x:Bind GlassNative_1276.MinHeight, Mode=OneWay}"
-                        MaxWidth="{x:Bind GlassNative_1276.MaxWidth, Mode=OneWay}"
-                        MaxHeight="{x:Bind GlassNative_1276.MaxHeight, Mode=OneWay}"
-                        Padding="{x:Bind GlassNative_1276.Padding, Mode=OneWay}"
-                        shuxcth:ControlMaterialState.IsManaged="True"
-                        shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassNative_1276, Mode=OneWay}"
-                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                        BorderThickness="{x:Bind GlassNative_1276.BorderThickness, Mode=OneWay}"
-                        Command="{x:Bind GlassNative_1276.Command, Mode=OneWay}"
-                        CommandParameter="{x:Bind GlassNative_1276.CommandParameter, Mode=OneWay}"
-                        Content="{x:Bind GlassNative_1276.Content, Mode=OneWay}"
-                        FlowDirection="{x:Bind GlassNative_1276.FlowDirection, Mode=OneWay}"
-                        FontFamily="{x:Bind GlassNative_1276.FontFamily, Mode=OneWay}"
-                        FontSize="{x:Bind GlassNative_1276.FontSize, Mode=OneWay}"
-                        FontStyle="{x:Bind GlassNative_1276.FontStyle, Mode=OneWay}"
-                        FontWeight="{x:Bind GlassNative_1276.FontWeight, Mode=OneWay}"
-                        IsEnabled="{x:Bind GlassNative_1276.IsEnabled, Mode=OneWay}"/>
-                    <wl:LiquidGlassRadioButton
-                        x:Name="GlassNative_1380Glass"
-                        Width="{x:Bind GlassNative_1380.Width, Mode=OneWay}"
-                        Height="{x:Bind GlassNative_1380.Height, Mode=OneWay}"
-                        MinWidth="{x:Bind GlassNative_1380.MinWidth, Mode=OneWay}"
-                        MinHeight="{x:Bind GlassNative_1380.MinHeight, Mode=OneWay}"
-                        MaxWidth="{x:Bind GlassNative_1380.MaxWidth, Mode=OneWay}"
-                        MaxHeight="{x:Bind GlassNative_1380.MaxHeight, Mode=OneWay}"
-                        Padding="{x:Bind GlassNative_1380.Padding, Mode=OneWay}"
-                        shuxcth:ControlMaterialState.IsManaged="True"
-                        shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassNative_1380, Mode=OneWay}"
-                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                        BorderThickness="{x:Bind GlassNative_1380.BorderThickness, Mode=OneWay}"
-                        Command="{x:Bind GlassNative_1380.Command, Mode=OneWay}"
-                        CommandParameter="{x:Bind GlassNative_1380.CommandParameter, Mode=OneWay}"
-                        Content="{x:Bind GlassNative_1380.Content, Mode=OneWay}"
-                        FlowDirection="{x:Bind GlassNative_1380.FlowDirection, Mode=OneWay}"
-                        FontFamily="{x:Bind GlassNative_1380.FontFamily, Mode=OneWay}"
-                        FontSize="{x:Bind GlassNative_1380.FontSize, Mode=OneWay}"
-                        FontStyle="{x:Bind GlassNative_1380.FontStyle, Mode=OneWay}"
-                        FontWeight="{x:Bind GlassNative_1380.FontWeight, Mode=OneWay}"
-                        IsEnabled="{x:Bind GlassNative_1380.IsEnabled, Mode=OneWay}"/>
-                </RadioButtons>
-            </cwc:Case>
-        </cwc:SwitchPresenter>
+            Margin="0,8,0,16"
+            SelectedIndex="0">
+            <wl:LiquidGlassRadioButton
+                shuxcth:ControlMaterialState.IsManaged="True"
+                Content="{shuxm:ResourceString Name=ServiceCloseButtonBehaviorTypeMinimize}"/>
+            <wl:LiquidGlassRadioButton
+                shuxcth:ControlMaterialState.IsManaged="True"
+                Content="{shuxm:ResourceString Name=ServiceCloseButtonBehaviorTypeExit}"/>
+        </RadioButtons>
         <TextBlock
             Grid.Row="2"
             Opacity="0.8"

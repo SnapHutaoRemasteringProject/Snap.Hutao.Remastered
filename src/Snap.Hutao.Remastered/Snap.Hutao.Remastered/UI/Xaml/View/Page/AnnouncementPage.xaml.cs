@@ -17,4 +17,6 @@ public sealed partial class AnnouncementPage : ScopedPage
     {
         InitializeDataContext<AnnouncementViewModel>();
     }
+
+    public new AnnouncementViewModel DataContext { get => (AnnouncementViewModel)base.DataContext; set => base.DataContext = value; }
 }

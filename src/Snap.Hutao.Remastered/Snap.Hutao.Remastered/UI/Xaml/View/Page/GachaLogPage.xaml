@@ -26,7 +26,7 @@
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Page.Resources>
@@ -56,9 +56,9 @@
             </Flyout.FlyoutPresenterStyle>
             <Grid>
                 <mxi:Interaction.Behaviors>
-                    <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudViewModel.LoadCommand, Mode=OneWay}"/>
+                    <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.HutaoCloudViewModel.LoadCommand, Mode=OneWay}"/>
                 </mxi:Interaction.Behaviors>
-                <shuxc:StandardView ShowCondition="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudViewModel.Options.IsHutaoCloudAllowed, Mode=OneWay}" Visibility="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudViewModel.IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                <shuxc:StandardView ShowCondition="{x:Bind DataContext.HutaoCloudViewModel.Options.IsHutaoCloudAllowed, Mode=OneWay}" Visibility="{x:Bind DataContext.HutaoCloudViewModel.IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                     <shuxc:StandardView.EmptyContent>
                         <StackPanel Padding="16" Spacing="{StaticResource SettingsCardSpacing}">
                             <StackPanel.Resources>
@@ -76,12 +76,12 @@
                                 Text="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudNotAllowed}"
                                 TextAlignment="Center"/>
                             <cwc:SettingsCard
-                                Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudViewModel.NavigateToSpiralAbyssRecordCommand, Mode=OneWay}"
+                                Command="{x:Bind DataContext.HutaoCloudViewModel.NavigateToSpiralAbyssRecordCommand, Mode=OneWay}"
                                 Description="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudSpiralAbyssActivityDescription}"
                                 Header="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudSpiralAbyssActivityHeader}"
                                 IsClickEnabled="True"/>
                             <cwc:SettingsCard
-                                Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudViewModel.NavigateToAfdianSkuCommand, Mode=OneWay}"
+                                Command="{x:Bind DataContext.HutaoCloudViewModel.NavigateToAfdianSkuCommand, Mode=OneWay}"
                                 Description="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudAfdianPurchaseDescription}"
                                 Header="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudAfdianPurchaseHeader}"
                                 IsClickEnabled="True"/>
@@ -108,13 +108,13 @@
                                 <TextBlock
                                     Margin="16,0,16,8"
                                     HorizontalTextAlignment="Center"
-                                    Text="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudViewModel.Options.CloudExpireAt, Mode=OneWay}"
+                                    Text="{x:Bind DataContext.HutaoCloudViewModel.Options.CloudExpireAt, Mode=OneWay}"
                                     TextAlignment="Center"/>
                                 <Border
                                     Padding="8"
                                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                                     BorderThickness="0,1,0,0"
-                                    Visibility="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudViewModel.Options.IsDeveloper, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                    Visibility="{x:Bind DataContext.HutaoCloudViewModel.Options.IsDeveloper, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                                     <TextBlock
                                         HorizontalTextAlignment="Center"
                                         Style="{StaticResource CaptionTextBlockStyle}"
@@ -127,12 +127,12 @@
                             Margin="16"
                             HorizontalAlignment="Center"
                             Text="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudNoEntryHint}"
-                            Visibility="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudViewModel.UidOperations.Count, Converter={StaticResource Int32ToVisibilityRevertConverter}, Mode=OneWay}"/>
+                            Visibility="{x:Bind DataContext.HutaoCloudViewModel.UidOperations.Count, Converter={StaticResource Int32ToVisibilityRevertConverter}, Mode=OneWay}"/>
                         <ScrollViewer
                             Grid.Row="1"
                             Margin="16,0"
                             VerticalScrollBarVisibility="Auto"
-                            Visibility="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudViewModel.UidOperations.Count, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
+                            Visibility="{x:Bind DataContext.HutaoCloudViewModel.UidOperations.Count, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
                             <ScrollViewer.Resources>
                                 <DataTemplate x:Key="UidOperationTemplate" x:DataType="shvg:HutaoCloudEntryOperationViewModel">
                                     <Grid>
@@ -152,93 +152,33 @@
                                             Grid.Column="1"
                                             Margin="6,0,0,0"
                                             Orientation="Horizontal">
-                                            <cwc:SwitchPresenter
-                                                x:Name="GlassPresenter_9277"
+                                            <wl:LiquidGlassButton
                                                 Margin="6,0,0,0"
+                                                shuxcth:ControlMaterialState.IsManaged="True"
                                                 VerticalAlignment="Stretch"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Stretch"
-                                                IsTabStop="False"
-                                                Tag="LiquidGlass:Button"
-                                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                                                <cwc:Case>
-                                                    <cwc:Case.Value>
-                                                        <x:Int32>0</x:Int32>
-                                                    </cwc:Case.Value>
-                                                    <Button
-                                                        VerticalAlignment="Stretch"
-                                                        Background="Transparent"
-                                                        Command="{x:Bind RetrieveCommand, Mode=OneWay}"
-                                                        CommandParameter="{x:Bind Uid, Mode=OneWay}"
-                                                        Content="&#xE896;"
-                                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                                        Style="{StaticResource ButtonRevealStyle}"
-                                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudRetrieve}"/>
-                                                </cwc:Case>
-                                                <cwc:Case>
-                                                    <cwc:Case.Value>
-                                                        <x:Int32>1</x:Int32>
-                                                    </cwc:Case.Value>
-                                                    <wl:LiquidGlassButton
-                                                        VerticalAlignment="Stretch"
-                                                        shuxcth:ControlMaterialState.IsManaged="True"
-                                                        Command="{x:Bind RetrieveCommand, Mode=OneWay}"
-                                                        CommandParameter="{x:Bind Uid, Mode=OneWay}"
-                                                        Content="&#xE896;"
-                                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                                        Style="{StaticResource ButtonRevealStyle}"
-                                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudRetrieve}"/>
-                                                </cwc:Case>
-                                            </cwc:SwitchPresenter>
-                                            <cwc:SwitchPresenter
-                                                x:Name="GlassPresenter_10104"
+                                                Background="Transparent"
+                                                Command="{x:Bind RetrieveCommand, Mode=OneWay}"
+                                                CommandParameter="{x:Bind Uid, Mode=OneWay}"
+                                                Content="&#xE896;"
+                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                Style="{StaticResource ButtonRevealStyle}"
+                                                ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudRetrieve}"/>
+                                            <wl:LiquidGlassButton
                                                 Margin="6,0,0,0"
+                                                shuxcth:ControlMaterialState.IsManaged="True"
                                                 HorizontalAlignment="Right"
                                                 VerticalAlignment="Stretch"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Stretch"
-                                                IsTabStop="False"
-                                                Tag="LiquidGlass:Button"
-                                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                                                <cwc:Case>
-                                                    <cwc:Case.Value>
-                                                        <x:Int32>0</x:Int32>
-                                                    </cwc:Case.Value>
-                                                    <Button
-                                                        HorizontalAlignment="Right"
-                                                        VerticalAlignment="Stretch"
-                                                        Background="Transparent"
-                                                        Command="{x:Bind DeleteCommand, Mode=OneWay}"
-                                                        CommandParameter="{x:Bind Uid, Mode=OneWay}"
-                                                        Style="{StaticResource ButtonRevealStyle}"
-                                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudDelete}">
-                                                        <TextBlock
-                                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                                            FontWeight="Bold"
-                                                            Foreground="Red"
-                                                            Text="&#xE74D;"/>
-                                                    </Button>
-                                                </cwc:Case>
-                                                <cwc:Case>
-                                                    <cwc:Case.Value>
-                                                        <x:Int32>1</x:Int32>
-                                                    </cwc:Case.Value>
-                                                    <wl:LiquidGlassButton
-                                                        HorizontalAlignment="Right"
-                                                        VerticalAlignment="Stretch"
-                                                        shuxcth:ControlMaterialState.IsManaged="True"
-                                                        Command="{x:Bind DeleteCommand, Mode=OneWay}"
-                                                        CommandParameter="{x:Bind Uid, Mode=OneWay}"
-                                                        Style="{StaticResource ButtonRevealStyle}"
-                                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudDelete}">
-                                                        <TextBlock
-                                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                                            FontWeight="Bold"
-                                                            Foreground="Red"
-                                                            Text="&#xE74D;"/>
-                                                    </wl:LiquidGlassButton>
-                                                </cwc:Case>
-                                            </cwc:SwitchPresenter>
+                                                Background="Transparent"
+                                                Command="{x:Bind DeleteCommand, Mode=OneWay}"
+                                                CommandParameter="{x:Bind Uid, Mode=OneWay}"
+                                                Style="{StaticResource ButtonRevealStyle}"
+                                                ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudDelete}">
+                                                <TextBlock
+                                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                    FontWeight="Bold"
+                                                    Foreground="Red"
+                                                    Text="&#xE74D;"/>
+                                            </wl:LiquidGlassButton>
                                         </StackPanel>
                                     </Grid>
                                 </DataTemplate>
@@ -247,7 +187,7 @@
                                 Margin="0,16"
                                 ItemTemplate="{StaticResource UidOperationTemplate}"
                                 ItemsPanel="{StaticResource StackPanelSpacing8Template}"
-                                ItemsSource="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudViewModel.UidOperations, Mode=OneWay}"/>
+                                ItemsSource="{x:Bind DataContext.HutaoCloudViewModel.UidOperations, Mode=OneWay}"/>
                         </ScrollViewer>
                         <Border
                             Grid.Row="2"
@@ -257,56 +197,25 @@
                             shuxcth:MaterialBackground.NativeBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                             BorderThickness="0,1,0,0">
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_12223"
+                            <wl:LiquidGlassButton
+                                shuxcth:ControlMaterialState.IsManaged="True"
                                 HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:Button"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <Button
-                                        HorizontalAlignment="Stretch"
-                                        Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudViewModel.UploadCommand, Mode=OneWay}"
-                                        CommandParameter="{x:Bind ((shvg:GachaLogViewModel)DataContext).Archives.CurrentItem, Mode=OneWay}">
-                                        <StackPanel Orientation="Horizontal" Spacing="4">
-                                            <FontIcon
-                                                VerticalAlignment="Center"
-                                                FontSize="15"
-                                                Glyph="&#xE898;"/>
-                                            <TextBlock VerticalAlignment="Center" Text="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudUpload}"/>
-                                        </StackPanel>
-                                    </Button>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassButton
-                                        HorizontalAlignment="Stretch"
-                                        shuxcth:ControlMaterialState.IsManaged="True"
-                                        Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudViewModel.UploadCommand, Mode=OneWay}"
-                                        CommandParameter="{x:Bind ((shvg:GachaLogViewModel)DataContext).Archives.CurrentItem, Mode=OneWay}">
-                                        <StackPanel Orientation="Horizontal" Spacing="4">
-                                            <FontIcon
-                                                VerticalAlignment="Center"
-                                                FontSize="15"
-                                                Glyph="&#xE898;"/>
-                                            <TextBlock VerticalAlignment="Center" Text="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudUpload}"/>
-                                        </StackPanel>
-                                    </wl:LiquidGlassButton>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                                Command="{x:Bind DataContext.HutaoCloudViewModel.UploadCommand, Mode=OneWay}"
+                                CommandParameter="{x:Bind DataContext.Archives.CurrentItem, Mode=OneWay}">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <FontIcon
+                                        VerticalAlignment="Center"
+                                        FontSize="15"
+                                        Glyph="&#xE898;"/>
+                                    <TextBlock VerticalAlignment="Center" Text="{shuxm:ResourceString Name=ViewPageGachaLogHutaoCloudUpload}"/>
+                                </StackPanel>
+                            </wl:LiquidGlassButton>
                         </Border>
                     </Grid>
                 </shuxc:StandardView>
                 <shuxc:Loading
                     MinWidth="240"
-                    IsLoading="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudViewModel.IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
+                    IsLoading="{x:Bind DataContext.HutaoCloudViewModel.IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
                     Style="{ThemeResource DefaultLoadingCardStyle}"/>
             </Grid>
         </Flyout>
@@ -398,7 +307,7 @@
         </DataTemplate>
     </Page.Resources>
 
-    <shuxc:StandardView HideCondition="{x:Bind ((shvg:GachaLogViewModel)DataContext).IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" ShowCondition="{x:Bind ((shvg:GachaLogViewModel)DataContext).Archives.CurrentItem, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
+    <shuxc:StandardView HideCondition="{x:Bind DataContext.IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" ShowCondition="{x:Bind DataContext.Archives.CurrentItem, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
         <shuxc:StandardView.EmptyContent>
             <Border
                 HorizontalAlignment="Center"
@@ -418,28 +327,28 @@
                         <StackPanel Margin="0,24,0,0" Spacing="{StaticResource SettingsCardSpacing}">
                             <cwc:SettingsCard
                                 ActionIconToolTip="{shuxm:ResourceString Name=ViewPageGachaLogRefreshAction}"
-                                Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).RefreshBySTokenCommand, Mode=OneWay}"
+                                Command="{x:Bind DataContext.RefreshBySTokenCommand, Mode=OneWay}"
                                 Description="{shuxm:ResourceString Name=ViewPageGachaLogRefreshBySTokenDescription}"
                                 Header="{shuxm:ResourceString Name=ViewPageGachaLogRefreshBySToken}"
                                 HeaderIcon="{shuxm:FontIcon Glyph=&#xE192;}"
                                 IsClickEnabled="True"/>
                             <cwc:SettingsCard
                                 ActionIconToolTip="{shuxm:ResourceString Name=ViewPageGachaLogRefreshAction}"
-                                Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).RefreshByWebCacheCommand, Mode=OneWay}"
+                                Command="{x:Bind DataContext.RefreshByWebCacheCommand, Mode=OneWay}"
                                 Description="{shuxm:ResourceString Name=ViewPageGachaLogRefreshByWebCacheDescription}"
                                 Header="{shuxm:ResourceString Name=ViewPageGachaLogRefreshByWebCache}"
                                 HeaderIcon="{shuxm:FontIcon Glyph=&#xE81E;}"
                                 IsClickEnabled="True"/>
                             <cwc:SettingsCard
                                 ActionIconToolTip="{shuxm:ResourceString Name=ViewPageGachaLogInputAction}"
-                                Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).RefreshByManualInputCommand, Mode=OneWay}"
+                                Command="{x:Bind DataContext.RefreshByManualInputCommand, Mode=OneWay}"
                                 Description="{shuxm:ResourceString Name=ViewPageGachaLogRefreshByManualInputDescription}"
                                 Header="{shuxm:ResourceString Name=ViewPageGachaLogRefreshByManualInput}"
                                 HeaderIcon="{shuxm:FontIcon Glyph=&#xE765;}"
                                 IsClickEnabled="True"/>
                             <cwc:SettingsCard
                                 ActionIconToolTip="{shuxm:ResourceString Name=ViewPageGachaLogImportAction}"
-                                Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).ImportExportCommand, Mode=OneWay}"
+                                Command="{x:Bind DataContext.ImportExportCommand, Mode=OneWay}"
                                 Description="{shuxm:ResourceString Name=ViewPageGachaLogImportDescription}"
                                 Header="{shuxm:ResourceString Name=ViewPageGachaLogImportHeader}"
                                 HeaderIcon="{shuxm:FontIcon Glyph=&#xE8B5;}"
@@ -463,68 +372,17 @@
         </shuxc:StandardView.EmptyContent>
         <Pivot x:Name="Pivot" Style="{ThemeResource CardPivotStyle}">
             <mxi:Interaction.Behaviors>
-                <shuxb:PivotBeyondModeBehavior IsBeyondMode="{x:Bind ((shvg:GachaLogViewModel)DataContext).IsBeyondMode, Mode=OneWay}"/>
+                <shuxb:PivotBeyondModeBehavior IsBeyondMode="{x:Bind DataContext.IsBeyondMode, Mode=OneWay}"/>
             </mxi:Interaction.Behaviors>
             <Pivot.LeftHeader>
                 <shuxc:SizeRestrictedContentControl Margin="6,6,0,6">
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_22004"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Tag="LiquidGlass:ComboBox"
-                        Visibility="{x:Bind GlassPresenter_22004_State.Visibility, Mode=OneWay}"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <ComboBox
-                                x:Name="GlassPresenter_22004_State"
-                                shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_22004}"
-                                DataContext="{x:Bind GlassPresenter_22004.DataContext, Mode=OneWay}"
-                                DisplayMemberPath="Uid"
-                                ItemsSource="{x:Bind ((shvg:GachaLogViewModel)DataContext).Archives, Mode=OneWay}"
-                                SelectedItem="{x:Bind ((shvg:GachaLogViewModel)DataContext).Archives.CurrentItem, Mode=TwoWay}"
-                                Style="{ThemeResource CommandBarComboBoxStyle}"/>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassComboBox
-                                x:Name="GlassPresenter_22004_StateGlass"
-                                Width="{x:Bind GlassPresenter_22004_State.Width, Mode=OneWay}"
-                                Height="{x:Bind GlassPresenter_22004_State.Height, Mode=OneWay}"
-                                MinWidth="{x:Bind GlassPresenter_22004_State.MinWidth, Mode=OneWay}"
-                                MinHeight="{x:Bind GlassPresenter_22004_State.MinHeight, Mode=OneWay}"
-                                MaxWidth="{x:Bind GlassPresenter_22004_State.MaxWidth, Mode=OneWay}"
-                                MaxHeight="{x:Bind GlassPresenter_22004_State.MaxHeight, Mode=OneWay}"
-                                Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(GlassPresenter_22004_State.Padding), Mode=OneWay}"
-                                shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                shuxcth:ControlMaterialState.IsManaged="True"
-                                shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassPresenter_22004_State, Mode=OneWay}"
-                                shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                                BorderThickness="{x:Bind GlassPresenter_22004_State.BorderThickness, Mode=OneWay}"
-                                DisplayMemberPath="{x:Bind GlassPresenter_22004_State.DisplayMemberPath, Mode=OneWay}"
-                                FlowDirection="{x:Bind GlassPresenter_22004_State.FlowDirection, Mode=OneWay}"
-                                FontFamily="{x:Bind GlassPresenter_22004_State.FontFamily, Mode=OneWay}"
-                                FontSize="{x:Bind GlassPresenter_22004_State.FontSize, Mode=OneWay}"
-                                FontStyle="{x:Bind GlassPresenter_22004_State.FontStyle, Mode=OneWay}"
-                                FontWeight="{x:Bind GlassPresenter_22004_State.FontWeight, Mode=OneWay}"
-                                Header="{x:Bind GlassPresenter_22004_State.Header, Mode=OneWay}"
-                                HeaderTemplate="{x:Bind GlassPresenter_22004_State.HeaderTemplate, Mode=OneWay}"
-                                IsEditable="{x:Bind GlassPresenter_22004_State.IsEditable, Mode=OneWay}"
-                                IsEnabled="{x:Bind GlassPresenter_22004_State.IsEnabled, Mode=OneWay}"
-                                IsTextSearchEnabled="{x:Bind GlassPresenter_22004_State.IsTextSearchEnabled, Mode=OneWay}"
-                                ItemsSource="{x:Bind GlassPresenter_22004_State.ItemsSource, Mode=OneWay}"
-                                MaxDropDownHeight="{x:Bind GlassPresenter_22004_State.MaxDropDownHeight, Mode=OneWay}"
-                                PlaceholderText="{x:Bind GlassPresenter_22004_State.PlaceholderText, Mode=OneWay}"
-                                SelectedIndex="{x:Bind GlassPresenter_22004_State.SelectedIndex, Mode=TwoWay}"
-                                SelectedValuePath="{x:Bind GlassPresenter_22004_State.SelectedValuePath, Mode=OneWay}"/>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
+                    <wl:LiquidGlassComboBox
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        shuxcth:ComboBoxPopupLifetime.IsManaged="True"
+                        DisplayMemberPath="Uid"
+                        ItemsSource="{x:Bind DataContext.Archives, Mode=OneWay}"
+                        SelectedItem="{x:Bind DataContext.Archives.CurrentItem, Mode=TwoWay}"
+                        Style="{ThemeResource CommandBarComboBoxStyle}"/>
                 </shuxc:SizeRestrictedContentControl>
             </Pivot.LeftHeader>
             <Pivot.RightHeader>
@@ -538,20 +396,20 @@
                         <AppBarButton.Flyout>
                             <MenuFlyout Placement="Bottom">
                                 <MenuFlyoutItem
-                                    Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).RefreshBySTokenCommand, Mode=OneWay}"
+                                    Command="{x:Bind DataContext.RefreshBySTokenCommand, Mode=OneWay}"
                                     Icon="{shuxm:FontIcon Glyph=&#xE192;}"
                                     Text="{shuxm:ResourceString Name=ViewPageGachaLogRefreshBySToken}"/>
                                 <MenuFlyoutItem
-                                    Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).RefreshByWebCacheCommand, Mode=OneWay}"
+                                    Command="{x:Bind DataContext.RefreshByWebCacheCommand, Mode=OneWay}"
                                     Icon="{shuxm:FontIcon Glyph=&#xE81E;}"
                                     Text="{shuxm:ResourceString Name=ViewPageGachaLogRefreshByWebCache}"/>
                                 <MenuFlyoutItem
-                                    Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).RefreshByManualInputCommand, Mode=OneWay}"
+                                    Command="{x:Bind DataContext.RefreshByManualInputCommand, Mode=OneWay}"
                                     Icon="{shuxm:FontIcon Glyph=&#xE765;}"
                                     Text="{shuxm:ResourceString Name=ViewPageGachaLogRefreshByManualInput}"/>
                                 <ToggleMenuFlyoutItem
                                     Icon="{shuxm:FontIcon Glyph=&#xE1CD;}"
-                                    IsChecked="{x:Bind ((shvg:GachaLogViewModel)DataContext).IsAggressiveRefresh, Mode=TwoWay}"
+                                    IsChecked="{x:Bind DataContext.IsAggressiveRefresh, Mode=TwoWay}"
                                     Text="{shuxm:ResourceString Name=ViewPageGachaLogAggressiveRefresh}"/>
                             </MenuFlyout>
                         </AppBarButton.Flyout>
@@ -559,7 +417,7 @@
                     <AppBarSeparator/>
                     <AppBarToggleButton
                         Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Icon/UI_ItemIcon_231.png}"
-                        IsChecked="{x:Bind ((shvg:GachaLogViewModel)DataContext).IsBeyondMode, Mode=TwoWay}"
+                        IsChecked="{x:Bind DataContext.IsBeyondMode, Mode=TwoWay}"
                         Label="{shuxm:ResourceString Name=ViewPageGachaLogSwitchToBeyondGachaModeHeader}">
                         <AppBarToggleButton.Resources>
                             <Style BasedOn="{StaticResource DefaultAppBarToggleButtonStyle}" TargetType="AppBarToggleButton">
@@ -575,15 +433,15 @@
                     <AppBarSeparator/>
                     <CommandBar.SecondaryCommands>
                         <AppBarButton
-                            Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).OpenAccountInsightsCommand, Mode=OneWay}"
+                            Command="{x:Bind DataContext.OpenAccountInsightsCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE9D9;}"
                             Label="{shuxm:ResourceString Name=ViewDialogAccountInsightsOpen}"/>
                         <AppBarButton
-                            Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).ImportExportCommand, Mode=OneWay}"
+                            Command="{x:Bind DataContext.ImportExportCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE8C9;}"
                             Label="{shuxm:ResourceString Name=ViewPageGachaLogImportExportAction}"/>
                         <AppBarButton
-                            Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).RemoveArchiveCommand, Mode=OneWay}"
+                            Command="{x:Bind DataContext.RemoveArchiveCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE74D;}"
                             Label="{shuxm:ResourceString Name=ViewPageGachaLogRemoveArchiveAction}"/>
                     </CommandBar.SecondaryCommands>
@@ -600,33 +458,33 @@
                         Margin="0,16"
                         MinItemWidth="302"
                         Spacing="16">
-                        <shuxvs:StatisticsCard DataContext="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.AvatarWish, Mode=OneWay}" Visibility="{Binding DataContext.IsAvatarWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <shuxvs:StatisticsCard DataContext="{x:Bind DataContext.Statistics.AvatarWish, Mode=OneWay}" Visibility="{Binding DataContext.IsAvatarWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <shuxvs:StatisticsCard
-                            DataContext="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.WeaponWish, Mode=OneWay}"
+                            DataContext="{x:Bind DataContext.Statistics.WeaponWish, Mode=OneWay}"
                             ShowCombinedModeToggle="False"
                             Visibility="{Binding DataContext.IsWeaponWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <shuxvs:StatisticsCard
-                            DataContext="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.StandardWish, Mode=OneWay}"
+                            DataContext="{x:Bind DataContext.Statistics.StandardWish, Mode=OneWay}"
                             ShowCombinedModeToggle="False"
                             ShowUpPull="False"
                             Visibility="{Binding DataContext.IsStandardWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <shuxvs:StatisticsCard
-                            DataContext="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.ChronicledWish, Mode=OneWay}"
+                            DataContext="{x:Bind DataContext.Statistics.ChronicledWish, Mode=OneWay}"
                             ShowCombinedModeToggle="False"
                             ShowUpPull="False"
                             Visibility="{Binding DataContext.IsChronicledWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <shuxvs:StatisticsCard
-                            DataContext="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.NoviceWish, Mode=OneWay}"
+                            DataContext="{x:Bind DataContext.Statistics.NoviceWish, Mode=OneWay}"
                             ShowCombinedModeToggle="False"
                             ShowUpPull="False"
                             Visibility="{Binding DataContext.IsNoviceWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <shuxvs:BeyondStatisticsCard
-                            DataContext="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.BeyondStandardWish, Mode=OneWay}"
+                            DataContext="{x:Bind DataContext.Statistics.BeyondStandardWish, Mode=OneWay}"
                             ShowCombinedModeToggle="False"
                             ShowUpPull="False"
                             Visibility="{Binding DataContext.IsBeyondStandardWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <shuxvs:StatisticsCard
-                            DataContext="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.BeyondEventWish, Mode=OneWay}"
+                            DataContext="{x:Bind DataContext.Statistics.BeyondEventWish, Mode=OneWay}"
                             ShowCombinedModeToggle="False"
                             ShowUpPull="True"
                             Visibility="{Binding DataContext.IsBeyondEventWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
@@ -647,8 +505,8 @@
                                 <ListView
                                     Padding="{ThemeResource ListViewInSplitPanePadding}"
                                     ItemTemplate="{StaticResource HistoryWishListTemplate}"
-                                    ItemsSource="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.HistoryWishes, Mode=OneWay}"
-                                    SelectedItem="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.HistoryWishes.CurrentItem, Mode=TwoWay}"/>
+                                    ItemsSource="{x:Bind DataContext.Statistics.HistoryWishes, Mode=OneWay}"
+                                    SelectedItem="{x:Bind DataContext.Statistics.HistoryWishes.CurrentItem, Mode=TwoWay}"/>
                             </SplitView.Pane>
                             <SplitView.Content>
                                 <ScrollViewer>
@@ -663,7 +521,7 @@
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
                                                         CornerRadius="{ThemeResource ControlCornerRadius}"
-                                                        Source="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.HistoryWishes.CurrentItem.BannerImage, Mode=OneWay}"
+                                                        Source="{x:Bind DataContext.Statistics.HistoryWishes.CurrentItem.BannerImage, Mode=OneWay}"
                                                         Stretch="UniformToFill"/>
                                                 </cwc:ConstrainedBox>
                                                 <Border
@@ -678,30 +536,30 @@
                                                 Margin="0,8,0,0"
                                                 Style="{StaticResource BaseTextBlockStyle}"
                                                 Text="{shuxm:ResourceString Name=ViewControlStatisticsCardOrangeText}"
-                                                Visibility="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.HistoryWishes.CurrentItem.SummaryList.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
+                                                Visibility="{x:Bind DataContext.Statistics.HistoryWishes.CurrentItem.SummaryList.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
                                             <GridView
                                                 ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                                ItemsSource="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.HistoryWishes.CurrentItem.SummaryList, Mode=OneWay}"
+                                                ItemsSource="{x:Bind DataContext.Statistics.HistoryWishes.CurrentItem.SummaryList, Mode=OneWay}"
                                                 SelectionMode="None"/>
 
                                             <TextBlock
                                                 Margin="0,8,0,0"
                                                 Style="{StaticResource BaseTextBlockStyle}"
                                                 Text="{shuxm:ResourceString Name=ViewControlStatisticsCardPurpleText}"
-                                                Visibility="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.HistoryWishes.CurrentItem.PurpleList.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
+                                                Visibility="{x:Bind DataContext.Statistics.HistoryWishes.CurrentItem.PurpleList.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
                                             <GridView
                                                 ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                                ItemsSource="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.HistoryWishes.CurrentItem.PurpleList, Mode=OneWay}"
+                                                ItemsSource="{x:Bind DataContext.Statistics.HistoryWishes.CurrentItem.PurpleList, Mode=OneWay}"
                                                 SelectionMode="None"/>
 
                                             <TextBlock
                                                 Margin="0,8,0,0"
                                                 Style="{StaticResource BaseTextBlockStyle}"
                                                 Text="{shuxm:ResourceString Name=ViewControlStatisticsCardBlueText}"
-                                                Visibility="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.HistoryWishes.CurrentItem.BlueList.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
+                                                Visibility="{x:Bind DataContext.Statistics.HistoryWishes.CurrentItem.BlueList.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
                                             <GridView
                                                 ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                                ItemsSource="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.HistoryWishes.CurrentItem.BlueList, Mode=OneWay}"
+                                                ItemsSource="{x:Bind DataContext.Statistics.HistoryWishes.CurrentItem.BlueList, Mode=OneWay}"
                                                 SelectionMode="None"/>
                                         </StackPanel>
 
@@ -724,7 +582,7 @@
                                         Text="{shuxm:ResourceString Name=ViewControlStatisticsCardOrangeText}"/>
                                     <GridView
                                         ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                        ItemsSource="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.OrangeAvatars, Mode=OneWay}"
+                                        ItemsSource="{x:Bind DataContext.Statistics.OrangeAvatars, Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </StackPanel>
                             </Border>
@@ -739,7 +597,7 @@
                                         Text="{shuxm:ResourceString Name=ViewControlStatisticsCardPurpleText}"/>
                                     <GridView
                                         ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                        ItemsSource="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.PurpleAvatars, Mode=OneWay}"
+                                        ItemsSource="{x:Bind DataContext.Statistics.PurpleAvatars, Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </StackPanel>
                             </Border>
@@ -759,7 +617,7 @@
                                         Text="{shuxm:ResourceString Name=ViewControlStatisticsCardOrangeText}"/>
                                     <GridView
                                         ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                        ItemsSource="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.OrangeWeapons, Mode=OneWay}"
+                                        ItemsSource="{x:Bind DataContext.Statistics.OrangeWeapons, Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </StackPanel>
                             </Border>
@@ -773,7 +631,7 @@
                                         Text="{shuxm:ResourceString Name=ViewControlStatisticsCardPurpleText}"/>
                                     <GridView
                                         ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                        ItemsSource="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.PurpleWeapons, Mode=OneWay}"
+                                        ItemsSource="{x:Bind DataContext.Statistics.PurpleWeapons, Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </StackPanel>
                             </Border>
@@ -787,7 +645,7 @@
                                         Text="{shuxm:ResourceString Name=ViewControlStatisticsCardBlueText}"/>
                                     <GridView
                                         ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                        ItemsSource="{x:Bind ((shvg:GachaLogViewModel)DataContext).Statistics.BlueWeapons, Mode=OneWay}"
+                                        ItemsSource="{x:Bind DataContext.Statistics.BlueWeapons, Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </StackPanel>
                             </Border>
@@ -800,7 +658,7 @@
                     <shuxc:Loading
                         Margin="16"
                         CornerRadius="{ThemeResource ControlCornerRadius}"
-                        IsLoading="{x:Bind ((shvg:GachaLogViewModel)DataContext).WishCountdownViewModel.IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
+                        IsLoading="{x:Bind DataContext.WishCountdownViewModel.IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
                         Style="{ThemeResource DefaultLoadingViewStyle}"/>
                     <ScrollViewer
                         Margin="16,0"
@@ -814,12 +672,12 @@
                             MinItemWidth="320"
                             Spacing="16">
                             <mxi:Interaction.Behaviors>
-                                <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).WishCountdownViewModel.LoadCommand, Mode=OneWay}"/>
+                                <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.WishCountdownViewModel.LoadCommand, Mode=OneWay}"/>
                             </mxi:Interaction.Behaviors>
-                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogOrangeAvatarCountdown}" Countdowns="{x:Bind ((shvg:GachaLogViewModel)DataContext).WishCountdownViewModel.WishCountdowns.OrangeAvatars, Mode=OneWay}"/>
-                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogPurpleAvatarCountdown}" Countdowns="{x:Bind ((shvg:GachaLogViewModel)DataContext).WishCountdownViewModel.WishCountdowns.PurpleAvatars, Mode=OneWay}"/>
-                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogOrangeWeaponCountdown}" Countdowns="{x:Bind ((shvg:GachaLogViewModel)DataContext).WishCountdownViewModel.WishCountdowns.OrangeWeapons, Mode=OneWay}"/>
-                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogPurpleWeaponCountdown}" Countdowns="{x:Bind ((shvg:GachaLogViewModel)DataContext).WishCountdownViewModel.WishCountdowns.PurpleWeapons, Mode=OneWay}"/>
+                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogOrangeAvatarCountdown}" Countdowns="{x:Bind DataContext.WishCountdownViewModel.WishCountdowns.OrangeAvatars, Mode=OneWay}"/>
+                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogPurpleAvatarCountdown}" Countdowns="{x:Bind DataContext.WishCountdownViewModel.WishCountdowns.PurpleAvatars, Mode=OneWay}"/>
+                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogOrangeWeaponCountdown}" Countdowns="{x:Bind DataContext.WishCountdownViewModel.WishCountdowns.OrangeWeapons, Mode=OneWay}"/>
+                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogPurpleWeaponCountdown}" Countdowns="{x:Bind DataContext.WishCountdownViewModel.WishCountdowns.PurpleWeapons, Mode=OneWay}"/>
                         </shuxcp:HorizontalEqualPanel>
                     </ScrollViewer>
                 </Grid>
@@ -830,19 +688,19 @@
                     <shuxc:Loading
                         Margin="16"
                         CornerRadius="{ThemeResource ControlCornerRadius}"
-                        IsLoading="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudStatisticsViewModel.IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
+                        IsLoading="{x:Bind DataContext.HutaoCloudStatisticsViewModel.IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
                         Style="{ThemeResource DefaultLoadingViewStyle}"/>
                     <shuxcp:EqualPanel
                         Margin="16"
                         Spacing="16"
-                        Visibility="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudStatisticsViewModel.IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                        Visibility="{x:Bind DataContext.HutaoCloudStatisticsViewModel.IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                         <mxi:Interaction.Behaviors>
-                            <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudStatisticsViewModel.LoadCommand, Mode=OneWay}"/>
+                            <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.HutaoCloudStatisticsViewModel.LoadCommand, Mode=OneWay}"/>
                         </mxi:Interaction.Behaviors>
-                        <shuxvs:HutaoStatisticsCard DataContext="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudStatisticsViewModel.Statistics.AvatarEvent, Mode=OneWay}"/>
-                        <shuxvs:HutaoStatisticsCard DataContext="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudStatisticsViewModel.Statistics.AvatarEvent2, Mode=OneWay}"/>
-                        <shuxvs:HutaoStatisticsCard DataContext="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudStatisticsViewModel.Statistics.WeaponEvent, Mode=OneWay}"/>
-                        <shuxvs:HutaoStatisticsCard DataContext="{x:Bind ((shvg:GachaLogViewModel)DataContext).HutaoCloudStatisticsViewModel.Statistics.Chronicled, Mode=OneWay}" Visibility="{Binding Converter={StaticResource EmptyObjectToVisibilityConverter}, FallbackValue=Collapsed}"/>
+                        <shuxvs:HutaoStatisticsCard DataContext="{x:Bind DataContext.HutaoCloudStatisticsViewModel.Statistics.AvatarEvent, Mode=OneWay}"/>
+                        <shuxvs:HutaoStatisticsCard DataContext="{x:Bind DataContext.HutaoCloudStatisticsViewModel.Statistics.AvatarEvent2, Mode=OneWay}"/>
+                        <shuxvs:HutaoStatisticsCard DataContext="{x:Bind DataContext.HutaoCloudStatisticsViewModel.Statistics.WeaponEvent, Mode=OneWay}"/>
+                        <shuxvs:HutaoStatisticsCard DataContext="{x:Bind DataContext.HutaoCloudStatisticsViewModel.Statistics.Chronicled, Mode=OneWay}" Visibility="{Binding Converter={StaticResource EmptyObjectToVisibilityConverter}, FallbackValue=Collapsed}"/>
                     </shuxcp:EqualPanel>
                 </Grid>
             </PivotItem>

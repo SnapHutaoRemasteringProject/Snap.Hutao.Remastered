@@ -16,35 +16,12 @@
     mc:Ignorable="d">
 
     <StackPanel>
-        <cwc:SwitchPresenter
-            x:Name="GlassPresenter_832"
+        <wl:LiquidGlassTextBox
             Margin="0,0,0,8"
             VerticalAlignment="Top"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            IsTabStop="False"
-            Tag="LiquidGlass:TextBox"
-            Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>0</x:Int32>
-                </cwc:Case.Value>
-                <TextBox
-                    VerticalAlignment="Top"
-                    PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserInputPlaceholder}"
-                    Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            </cwc:Case>
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>1</x:Int32>
-                </cwc:Case.Value>
-                <wl:LiquidGlassTextBox
-                    VerticalAlignment="Top"
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserInputPlaceholder}"
-                    Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            </cwc:Case>
-        </cwc:SwitchPresenter>
+            shuxcth:ControlMaterialState.IsManaged="True"
+            PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserInputPlaceholder}"
+            Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         <StackPanel Margin="0,0,0,0">
             <StackPanel.Resources>
                 <x:Double x:Key="SettingsCardWrapThreshold">0</x:Double>
@@ -56,34 +33,12 @@
                 Description="{shuxm:ResourceString Name=ViewDialogUserDocumentDescription}"
                 Header="{shuxm:ResourceString Name=ViewDialogUserDocumentHeader}"
                 HeaderIcon="{shuxm:FontIcon Glyph=&#xEB41;}">
-                <cwc:SwitchPresenter
-                    x:Name="GlassPresenter_1738"
+                <wl:LiquidGlassHyperlinkButton
                     Margin="12,0,0,0"
-                    HorizontalContentAlignment="Stretch"
-                    VerticalContentAlignment="Stretch"
-                    IsTabStop="False"
-                    Tag="LiquidGlass:HyperlinkButton"
-                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.HyperlinkButtonMaterial, Mode=OneWay}">
-                    <cwc:Case>
-                        <cwc:Case.Value>
-                            <x:Int32>0</x:Int32>
-                        </cwc:Case.Value>
-                        <HyperlinkButton
-                            Padding="6"
-                            Content="{shuxm:ResourceString Name=ViewDialogUserDocumentAction}"
-                            NavigateUri="{StaticResource DocumentLink_MhyAccountSwitch}"/>
-                    </cwc:Case>
-                    <cwc:Case>
-                        <cwc:Case.Value>
-                            <x:Int32>1</x:Int32>
-                        </cwc:Case.Value>
-                        <wl:LiquidGlassHyperlinkButton
-                            Padding="6"
-                            shuxcth:ControlMaterialState.IsManaged="True"
-                            Content="{shuxm:ResourceString Name=ViewDialogUserDocumentAction}"
-                            NavigateUri="{StaticResource DocumentLink_MhyAccountSwitch}"/>
-                    </cwc:Case>
-                </cwc:SwitchPresenter>
+                    shuxcth:ControlMaterialState.IsManaged="True"
+                    Padding="6"
+                    Content="{shuxm:ResourceString Name=ViewDialogUserDocumentAction}"
+                    NavigateUri="{StaticResource DocumentLink_MhyAccountSwitch}"/>
             </cwc:SettingsCard>
         </StackPanel>
     </StackPanel>

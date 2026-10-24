@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using Snap.Hutao.Remastered.ViewModel.Abstraction;
+using Snap.Hutao.Remastered.ViewModel.Calendar;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Card;
 
@@ -13,4 +14,6 @@ public sealed partial class CalendarCard : MaterialCardButton
         InitializeComponent();
         this.InitializeViewModelSlim<ViewModel.Calendar.CalendarViewModel>(serviceProvider);
     }
+
+    public new CalendarViewModel DataContext { get => (CalendarViewModel)base.DataContext; set => base.DataContext = value; }
 }

@@ -2,17 +2,12 @@
 // Licensed under the MIT license.
 
 using Microsoft.UI.Xaml;
-using CommunityToolkit.WinUI.Controls;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
-using Microsoft.Xaml.Interactivity;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Core.Property;
+using System.Runtime.CompilerServices;
 using WinUI.Composition.Hlsl;
 using WinUI.LiquidGlass;
-using System.Runtime.CompilerServices;
-using XamlControl = Microsoft.UI.Xaml.Controls.Control;
-using XamlAutoSuggestBox = Microsoft.UI.Xaml.Controls.AutoSuggestBox;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 
@@ -125,49 +120,25 @@ public sealed partial class ControlMaterialState : DependencyObject
         nameof(ButtonEnabled), typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(true, OnOptionChanged));
     public bool ButtonEnabled { get => (bool)GetValue(ButtonEnabledProperty); set => SetValue(ButtonEnabledProperty, value); }
 
-    public static readonly DependencyProperty ButtonMaterialProperty = DependencyProperty.Register(
-        nameof(ButtonMaterial), typeof(int), typeof(ControlMaterialState), new PropertyMetadata(0));
-    public int ButtonMaterial { get => (int)GetValue(ButtonMaterialProperty); private set => SetValue(ButtonMaterialProperty, value); }
-
     public static readonly DependencyProperty ToggleButtonEnabledProperty = DependencyProperty.Register(
         nameof(ToggleButtonEnabled), typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(true, OnOptionChanged));
     public bool ToggleButtonEnabled { get => (bool)GetValue(ToggleButtonEnabledProperty); set => SetValue(ToggleButtonEnabledProperty, value); }
-
-    public static readonly DependencyProperty ToggleButtonMaterialProperty = DependencyProperty.Register(
-        nameof(ToggleButtonMaterial), typeof(int), typeof(ControlMaterialState), new PropertyMetadata(0));
-    public int ToggleButtonMaterial { get => (int)GetValue(ToggleButtonMaterialProperty); private set => SetValue(ToggleButtonMaterialProperty, value); }
 
     public static readonly DependencyProperty HyperlinkButtonEnabledProperty = DependencyProperty.Register(
         nameof(HyperlinkButtonEnabled), typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(true, OnOptionChanged));
     public bool HyperlinkButtonEnabled { get => (bool)GetValue(HyperlinkButtonEnabledProperty); set => SetValue(HyperlinkButtonEnabledProperty, value); }
 
-    public static readonly DependencyProperty HyperlinkButtonMaterialProperty = DependencyProperty.Register(
-        nameof(HyperlinkButtonMaterial), typeof(int), typeof(ControlMaterialState), new PropertyMetadata(0));
-    public int HyperlinkButtonMaterial { get => (int)GetValue(HyperlinkButtonMaterialProperty); private set => SetValue(HyperlinkButtonMaterialProperty, value); }
-
     public static readonly DependencyProperty CheckBoxEnabledProperty = DependencyProperty.Register(
         nameof(CheckBoxEnabled), typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(true, OnOptionChanged));
     public bool CheckBoxEnabled { get => (bool)GetValue(CheckBoxEnabledProperty); set => SetValue(CheckBoxEnabledProperty, value); }
-
-    public static readonly DependencyProperty CheckBoxMaterialProperty = DependencyProperty.Register(
-        nameof(CheckBoxMaterial), typeof(int), typeof(ControlMaterialState), new PropertyMetadata(0));
-    public int CheckBoxMaterial { get => (int)GetValue(CheckBoxMaterialProperty); private set => SetValue(CheckBoxMaterialProperty, value); }
 
     public static readonly DependencyProperty RadioButtonEnabledProperty = DependencyProperty.Register(
         nameof(RadioButtonEnabled), typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(true, OnOptionChanged));
     public bool RadioButtonEnabled { get => (bool)GetValue(RadioButtonEnabledProperty); set => SetValue(RadioButtonEnabledProperty, value); }
 
-    public static readonly DependencyProperty RadioButtonMaterialProperty = DependencyProperty.Register(
-        nameof(RadioButtonMaterial), typeof(int), typeof(ControlMaterialState), new PropertyMetadata(0));
-    public int RadioButtonMaterial { get => (int)GetValue(RadioButtonMaterialProperty); private set => SetValue(RadioButtonMaterialProperty, value); }
-
     public static readonly DependencyProperty SliderEnabledProperty = DependencyProperty.Register(
         nameof(SliderEnabled), typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(true, OnOptionChanged));
     public bool SliderEnabled { get => (bool)GetValue(SliderEnabledProperty); set => SetValue(SliderEnabledProperty, value); }
-
-    public static readonly DependencyProperty SliderMaterialProperty = DependencyProperty.Register(
-        nameof(SliderMaterial), typeof(int), typeof(ControlMaterialState), new PropertyMetadata(0));
-    public int SliderMaterial { get => (int)GetValue(SliderMaterialProperty); private set => SetValue(SliderMaterialProperty, value); }
 
     public static readonly DependencyProperty TextBoxEnabledProperty = DependencyProperty.Register(
         nameof(TextBoxEnabled), typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(true, OnOptionChanged));
@@ -176,61 +147,29 @@ public sealed partial class ControlMaterialState : DependencyObject
     public static readonly DependencyProperty SearchBoxEnabledProperty = DependencyProperty.Register(
         nameof(SearchBoxEnabled), typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(true, OnOptionChanged));
     public bool SearchBoxEnabled { get => (bool)GetValue(SearchBoxEnabledProperty); set => SetValue(SearchBoxEnabledProperty, value); }
-    public static readonly DependencyProperty SearchBoxMaterialProperty = DependencyProperty.Register(
-        nameof(SearchBoxMaterial), typeof(int), typeof(ControlMaterialState), new PropertyMetadata(0));
-    public int SearchBoxMaterial { get => (int)GetValue(SearchBoxMaterialProperty); private set => SetValue(SearchBoxMaterialProperty, value); }
-
-    public static readonly DependencyProperty TextBoxMaterialProperty = DependencyProperty.Register(
-        nameof(TextBoxMaterial), typeof(int), typeof(ControlMaterialState), new PropertyMetadata(0));
-    public int TextBoxMaterial { get => (int)GetValue(TextBoxMaterialProperty); private set => SetValue(TextBoxMaterialProperty, value); }
-
     public static readonly DependencyProperty PasswordBoxEnabledProperty = DependencyProperty.Register(
         nameof(PasswordBoxEnabled), typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(true, OnOptionChanged));
     public bool PasswordBoxEnabled { get => (bool)GetValue(PasswordBoxEnabledProperty); set => SetValue(PasswordBoxEnabledProperty, value); }
-
-    public static readonly DependencyProperty PasswordBoxMaterialProperty = DependencyProperty.Register(
-        nameof(PasswordBoxMaterial), typeof(int), typeof(ControlMaterialState), new PropertyMetadata(0));
-    public int PasswordBoxMaterial { get => (int)GetValue(PasswordBoxMaterialProperty); private set => SetValue(PasswordBoxMaterialProperty, value); }
 
     public static readonly DependencyProperty ComboBoxEnabledProperty = DependencyProperty.Register(
         nameof(ComboBoxEnabled), typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(true, OnOptionChanged));
     public bool ComboBoxEnabled { get => (bool)GetValue(ComboBoxEnabledProperty); set => SetValue(ComboBoxEnabledProperty, value); }
 
-    public static readonly DependencyProperty ComboBoxMaterialProperty = DependencyProperty.Register(
-        nameof(ComboBoxMaterial), typeof(int), typeof(ControlMaterialState), new PropertyMetadata(0));
-    public int ComboBoxMaterial { get => (int)GetValue(ComboBoxMaterialProperty); private set => SetValue(ComboBoxMaterialProperty, value); }
-
     public static readonly DependencyProperty ToggleSwitchEnabledProperty = DependencyProperty.Register(
         nameof(ToggleSwitchEnabled), typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(true, OnOptionChanged));
     public bool ToggleSwitchEnabled { get => (bool)GetValue(ToggleSwitchEnabledProperty); set => SetValue(ToggleSwitchEnabledProperty, value); }
-
-    public static readonly DependencyProperty ToggleSwitchMaterialProperty = DependencyProperty.Register(
-        nameof(ToggleSwitchMaterial), typeof(int), typeof(ControlMaterialState), new PropertyMetadata(0));
-    public int ToggleSwitchMaterial { get => (int)GetValue(ToggleSwitchMaterialProperty); private set => SetValue(ToggleSwitchMaterialProperty, value); }
 
     public static readonly DependencyProperty CardEnabledProperty = DependencyProperty.Register(
         nameof(CardEnabled), typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(true, OnOptionChanged));
     public bool CardEnabled { get => (bool)GetValue(CardEnabledProperty); set => SetValue(CardEnabledProperty, value); }
 
-    public static readonly DependencyProperty CardMaterialProperty = DependencyProperty.Register(
-        nameof(CardMaterial), typeof(int), typeof(ControlMaterialState), new PropertyMetadata(0));
-    public int CardMaterial { get => (int)GetValue(CardMaterialProperty); private set => SetValue(CardMaterialProperty, value); }
-
     public static readonly DependencyProperty FloatingPanelEnabledProperty = DependencyProperty.Register(
         nameof(FloatingPanelEnabled), typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(true, OnOptionChanged));
     public bool FloatingPanelEnabled { get => (bool)GetValue(FloatingPanelEnabledProperty); set => SetValue(FloatingPanelEnabledProperty, value); }
 
-    public static readonly DependencyProperty FloatingPanelMaterialProperty = DependencyProperty.Register(
-        nameof(FloatingPanelMaterial), typeof(int), typeof(ControlMaterialState), new PropertyMetadata(0));
-    public int FloatingPanelMaterial { get => (int)GetValue(FloatingPanelMaterialProperty); private set => SetValue(FloatingPanelMaterialProperty, value); }
-
     public static readonly DependencyProperty TabBarEnabledProperty = DependencyProperty.Register(
         nameof(TabBarEnabled), typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(true, OnOptionChanged));
     public bool TabBarEnabled { get => (bool)GetValue(TabBarEnabledProperty); set => SetValue(TabBarEnabledProperty, value); }
-
-    public static readonly DependencyProperty TabBarMaterialProperty = DependencyProperty.Register(
-        nameof(TabBarMaterial), typeof(int), typeof(ControlMaterialState), new PropertyMetadata(0));
-    public int TabBarMaterial { get => (int)GetValue(TabBarMaterialProperty); private set => SetValue(TabBarMaterialProperty, value); }
 
     public static readonly DependencyProperty StrengthProperty = DependencyProperty.Register(
         nameof(Strength), typeof(double), typeof(ControlMaterialState), new PropertyMetadata(1.0, OnOptionChanged));
@@ -256,6 +195,10 @@ public sealed partial class ControlMaterialState : DependencyObject
         nameof(MagnificationScale), typeof(double), typeof(ControlMaterialState), new PropertyMetadata(1.0, OnOptionChanged));
     public double MagnificationScale { get => (double)GetValue(MagnificationScaleProperty); set => SetValue(MagnificationScaleProperty, double.IsFinite(value) ? Math.Clamp(value, 0.0, 2.0) : 1.0); }
 
+    internal static bool IsGlassMaterial => currentMaterial is ControlMaterial.LiquidGlass;
+
+    internal static event Action? MaterialChanged;
+
     internal static void Apply(ControlMaterial material)
     {
         bool changed = currentMaterial != material;
@@ -263,6 +206,8 @@ public sealed partial class ControlMaterialState : DependencyObject
         currentMaterial = material;
         ForEachState(state => state.UpdateSelection());
         if (changed) LiquidGlassProfiles.NotifySelectionChanged();
+        MaterialAppearance.RefreshAll();
+        MaterialChanged?.Invoke();
     }
 
     public static readonly DependencyProperty DispersionRangeProperty = DependencyProperty.Register(
@@ -385,63 +330,10 @@ public sealed partial class ControlMaterialState : DependencyObject
         set => SetValue(VibranceProperty, double.IsFinite(value) ? Math.Clamp(value, 0.0, 1.0) : 0.0);
     }
 
-    public static FrameworkElement CreateButtonPresenter(Button native, RoutedEventHandler onClick)
-    {
-        LiquidGlassButton glass = new();
-        SetIsManaged(glass, true);
-        SetNativeControl(glass, native);
-        glass.Click += onClick;
-        // Each material resolves its own theme brushes, even while its peer is detached.
-        foreach ((DependencyProperty property, string path) in new[]
-        {
-            (ContentControl.ContentProperty, nameof(ContentControl.Content)),
-            (XamlControl.IsEnabledProperty, nameof(XamlControl.IsEnabled)),
-            (Button.CommandProperty, nameof(Button.Command)),
-            (Button.CommandParameterProperty, nameof(Button.CommandParameter)),
-        })
-        {
-            glass.SetBinding(property, new Binding { Source = native, Path = new PropertyPath(path), Mode = BindingMode.OneWay });
-        }
-        SwitchPresenter presenter = new()
-        {
-            IsTabStop = false,
-            HorizontalContentAlignment = HorizontalAlignment.Stretch,
-            VerticalContentAlignment = VerticalAlignment.Stretch,
-        };
-        presenter.SwitchCases.Add(new Case { Value = 0, Content = native });
-        presenter.SwitchCases.Add(new Case { Value = 1, Content = glass });
-        ThemeSynchronization.SetSource(native, presenter);
-        ControlMaterialState? settings = null;
-        ForEachState(state => settings ??= state);
-        if (settings is not null)
-        {
-            presenter.SetBinding(SwitchPresenter.ValueProperty, new Binding
-            {
-                Source = settings,
-                Path = new PropertyPath(nameof(ButtonMaterial)),
-                Mode = BindingMode.OneWay,
-            });
-        }
-        return presenter;
-    }
-
     private void UpdateSelection()
     {
         Value = (int)currentMaterial;
-        ButtonMaterial = currentMaterial is ControlMaterial.LiquidGlass && ButtonEnabled ? 1 : 0;
-        ToggleButtonMaterial = currentMaterial is ControlMaterial.LiquidGlass && ToggleButtonEnabled ? 1 : 0;
-        HyperlinkButtonMaterial = currentMaterial is ControlMaterial.LiquidGlass && HyperlinkButtonEnabled ? 1 : 0;
-        CheckBoxMaterial = currentMaterial is ControlMaterial.LiquidGlass && CheckBoxEnabled ? 1 : 0;
-        RadioButtonMaterial = currentMaterial is ControlMaterial.LiquidGlass && RadioButtonEnabled ? 1 : 0;
-        SliderMaterial = currentMaterial is ControlMaterial.LiquidGlass && SliderEnabled ? 1 : 0;
-        TextBoxMaterial = currentMaterial is ControlMaterial.LiquidGlass && TextBoxEnabled ? 1 : 0;
-        SearchBoxMaterial = currentMaterial is ControlMaterial.LiquidGlass && SearchBoxEnabled ? 1 : 0;
-        PasswordBoxMaterial = currentMaterial is ControlMaterial.LiquidGlass && PasswordBoxEnabled ? 1 : 0;
-        ComboBoxMaterial = currentMaterial is ControlMaterial.LiquidGlass && ComboBoxEnabled ? 1 : 0;
-        ToggleSwitchMaterial = currentMaterial is ControlMaterial.LiquidGlass && ToggleSwitchEnabled ? 1 : 0;
-        CardMaterial = currentMaterial is ControlMaterial.LiquidGlass && CardEnabled ? 1 : 0;
-        FloatingPanelMaterial = currentMaterial is ControlMaterial.LiquidGlass && FloatingPanelEnabled ? 1 : 0;
-        TabBarMaterial = currentMaterial is ControlMaterial.LiquidGlass && TabBarEnabled ? 1 : 0;
+
     }
 
     private static void OnOptionChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -571,16 +463,6 @@ public sealed partial class ControlMaterialState : DependencyObject
     public static bool GetIsManaged(DependencyObject target) => (bool)target.GetValue(IsManagedProperty);
     public static void SetIsManaged(DependencyObject target, bool value) => target.SetValue(IsManagedProperty, value);
 
-    public static readonly DependencyProperty UsesCompiledEnabledBindingProperty = DependencyProperty.RegisterAttached(
-        "UsesCompiledEnabledBinding", typeof(bool), typeof(ControlMaterialState), new PropertyMetadata(false));
-    public static bool GetUsesCompiledEnabledBinding(DependencyObject target) => (bool)target.GetValue(UsesCompiledEnabledBindingProperty);
-    public static void SetUsesCompiledEnabledBinding(DependencyObject target, bool value) => target.SetValue(UsesCompiledEnabledBindingProperty, value);
-
-    public static readonly DependencyProperty NativeControlProperty = DependencyProperty.RegisterAttached(
-        "NativeControl", typeof(DependencyObject), typeof(ControlMaterialState), new PropertyMetadata(null));
-    public static DependencyObject? GetNativeControl(DependencyObject target) => (DependencyObject?)target.GetValue(NativeControlProperty);
-    public static void SetNativeControl(DependencyObject target, DependencyObject value) => target.SetValue(NativeControlProperty, value);
-
     private static void OnIsManagedChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
     {
         if (target is not FrameworkElement element) return;
@@ -599,32 +481,7 @@ public sealed partial class ControlMaterialState : DependencyObject
     {
         if (XamlApplicationLifetime.Exiting) return;
         if (sender is not FrameworkElement element) return;
-        // The inactive SwitchPresenter branch need not have been loaded. Resolve
-        // its default style before copying layout DPs (notably ComboBox.Padding).
-        if (GetNativeControl(element) is XamlControl nativeControl) nativeControl.ApplyTemplate();
-        // IsEnabled belongs to the business control. Never write a transient
-        // coerced false from an attaching glass visual back into its source.
-        if (!GetUsesCompiledEnabledBinding(element) && GetNativeControl(element) is XamlControl enabledSource)
-        {
-            element.SetBinding(XamlControl.IsEnabledProperty, new Binding
-            {
-                Source = enabledSource,
-                Path = new PropertyPath(nameof(XamlControl.IsEnabled)),
-                Mode = BindingMode.OneWay,
-            });
-        }
-        if (element is XamlControl control) control.ApplyTemplate();
-        if (element is LiquidGlassSearchBox search && GetNativeControl(element) is XamlAutoSuggestBox nativeSearch)
-        {
-            MoveSearchBehaviors(nativeSearch, search.InnerAutoSuggestBox);
-        }
-        if (element is LiquidGlassPasswordBox password && GetNativeControl(element) is PasswordBox native)
-        {
-            password.InnerPasswordBox.Header = native.Header;
-            password.InnerPasswordBox.HeaderTemplate = native.HeaderTemplate;
-            password.InnerPasswordBox.PasswordRevealMode = native.PasswordRevealMode;
-            password.InnerPasswordBox.MaxLength = native.MaxLength;
-        }
+        MaterialAppearance.Track(element);
         LiquidGlassBrush? brush = element switch
         {
             LiquidGlassSearchBox value => value.GlassBrush,
@@ -657,32 +514,14 @@ public sealed partial class ControlMaterialState : DependencyObject
     // Detach without writing composition properties while the brush is disconnecting.
     private static void OnManagedUnloaded(object sender, RoutedEventArgs args)
     {
-        if (!XamlApplicationLifetime.Exiting && sender is LiquidGlassSearchBox search && GetNativeControl(search) is XamlAutoSuggestBox nativeSearch)
-            MoveSearchBehaviors(search.InnerAutoSuggestBox, nativeSearch);
-        if (sender is FrameworkElement element) ManagedControls.Remove(element);
-    }
-
-    // Rounded glass edges need an inset even while an inactive source control
-    // still reports the dependency property's zero default. Preserve larger
-    // caller-provided insets and the native vertical measurements.
-    public static Thickness ComboBoxPadding(Thickness padding)
-    {
-        return new(Math.Max(12, padding.Left), padding.Top, Math.Max(4, padding.Right), padding.Bottom);
-    }
-
-    private static void MoveSearchBehaviors(DependencyObject source, DependencyObject target)
-    {
-        BehaviorCollection from = Interaction.GetBehaviors(source);
-        BehaviorCollection to = Interaction.GetBehaviors(target);
-        while (from.Count > 0)
+        if (sender is FrameworkElement element)
         {
-            DependencyObject behavior = from[0];
-            from.RemoveAt(0);
-            to.Add(behavior);
+            ManagedControls.Remove(element);
+            MaterialAppearance.Release(element);
         }
     }
 
-    private static string LibraryKind(FrameworkElement element)
+    internal static string LibraryKind(FrameworkElement element)
     {
         string explicitKind = GetProfileKind(element);
         if (!string.IsNullOrEmpty(explicitKind)) return explicitKind;
@@ -745,15 +584,6 @@ public sealed partial class ControlMaterialState : DependencyObject
     private sealed record BrushDefaults(string Kind, LiquidGlassBrush Brush, double[] Values);
 }
 
-/// <summary>Selects control instances for strongly typed slots such as InfoBar.ActionButton.</summary>
-public sealed partial class ControlMaterialSelector : IValueConverter
-{
-    public object? Native { get; set; }
-    public object? Glass { get; set; }
-
-    public object Convert(object value, Type targetType, object parameter, string language) => (value is 1 ? Glass : Native)!;
-    public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException();
-}
 
 
 /// <summary>Typed access to the existing application settings resource for compiled bindings.</summary>

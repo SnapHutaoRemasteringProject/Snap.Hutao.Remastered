@@ -105,13 +105,13 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
     {
         isUpdating = true;
 
-        CritSlider.Value = currentConfig.CritWeight;
-        CritHurtSlider.Value = currentConfig.CritHurtWeight;
-        AttackPercentSlider.Value = currentConfig.AttackPercentWeight;
-        ChargeEfficiencySlider.Value = currentConfig.ChargeEfficiencyWeight;
-        ElementalMasterySlider.Value = currentConfig.ElementalMasteryWeight;
-        HpPercentSlider.Value = currentConfig.HpPercentWeight;
-        DefensePercentSlider.Value = currentConfig.DefensePercentWeight;
+        SetSliderValue(CritSlider, CritSliderGlass, currentConfig.CritWeight);
+        SetSliderValue(CritHurtSlider, CritHurtSliderGlass, currentConfig.CritHurtWeight);
+        SetSliderValue(AttackPercentSlider, AttackPercentSliderGlass, currentConfig.AttackPercentWeight);
+        SetSliderValue(ChargeEfficiencySlider, ChargeEfficiencySliderGlass, currentConfig.ChargeEfficiencyWeight);
+        SetSliderValue(ElementalMasterySlider, ElementalMasterySliderGlass, currentConfig.ElementalMasteryWeight);
+        SetSliderValue(HpPercentSlider, HpPercentSliderGlass, currentConfig.HpPercentWeight);
+        SetSliderValue(DefensePercentSlider, DefensePercentSliderGlass, currentConfig.DefensePercentWeight);
 
         UpdateAllLabels();
 
@@ -133,6 +133,12 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
         DeleteButton.Visibility = match?.ConfigId.HasValue == true ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
         PresetComboBox.SelectedItem = match;
         isUpdating = false;
+    }
+
+    private static void SetSliderValue(Slider native, Slider glass, double value)
+    {
+        native.Value = value;
+        glass.Value = value;
     }
 
     /// <summary>
@@ -202,13 +208,13 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
     {
         return sender switch
         {
-            _ when ReferenceEquals(sender, CritSlider) => (CritLabel, v => currentConfig.CritWeight = v),
-            _ when ReferenceEquals(sender, CritHurtSlider) => (CritHurtLabel, v => currentConfig.CritHurtWeight = v),
-            _ when ReferenceEquals(sender, AttackPercentSlider) => (AttackPercentLabel, v => currentConfig.AttackPercentWeight = v),
-            _ when ReferenceEquals(sender, ChargeEfficiencySlider) => (ChargeEfficiencyLabel, v => currentConfig.ChargeEfficiencyWeight = v),
-            _ when ReferenceEquals(sender, ElementalMasterySlider) => (ElementalMasteryLabel, v => currentConfig.ElementalMasteryWeight = v),
-            _ when ReferenceEquals(sender, HpPercentSlider) => (HpPercentLabel, v => currentConfig.HpPercentWeight = v),
-            _ when ReferenceEquals(sender, DefensePercentSlider) => (DefensePercentLabel, v => currentConfig.DefensePercentWeight = v),
+            _ when ReferenceEquals(sender, CritSlider) || ReferenceEquals(sender, CritSliderGlass) => (CritLabel, v => currentConfig.CritWeight = v),
+            _ when ReferenceEquals(sender, CritHurtSlider) || ReferenceEquals(sender, CritHurtSliderGlass) => (CritHurtLabel, v => currentConfig.CritHurtWeight = v),
+            _ when ReferenceEquals(sender, AttackPercentSlider) || ReferenceEquals(sender, AttackPercentSliderGlass) => (AttackPercentLabel, v => currentConfig.AttackPercentWeight = v),
+            _ when ReferenceEquals(sender, ChargeEfficiencySlider) || ReferenceEquals(sender, ChargeEfficiencySliderGlass) => (ChargeEfficiencyLabel, v => currentConfig.ChargeEfficiencyWeight = v),
+            _ when ReferenceEquals(sender, ElementalMasterySlider) || ReferenceEquals(sender, ElementalMasterySliderGlass) => (ElementalMasteryLabel, v => currentConfig.ElementalMasteryWeight = v),
+            _ when ReferenceEquals(sender, HpPercentSlider) || ReferenceEquals(sender, HpPercentSliderGlass) => (HpPercentLabel, v => currentConfig.HpPercentWeight = v),
+            _ when ReferenceEquals(sender, DefensePercentSlider) || ReferenceEquals(sender, DefensePercentSliderGlass) => (DefensePercentLabel, v => currentConfig.DefensePercentWeight = v),
             _ => throw new ArgumentException("Unknown slider", nameof(sender)),
         };
     }

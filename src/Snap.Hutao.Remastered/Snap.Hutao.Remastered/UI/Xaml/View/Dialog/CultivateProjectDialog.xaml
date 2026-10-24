@@ -16,92 +16,18 @@
     mc:Ignorable="d">
 
     <StackPanel Spacing="16">
-        <cwc:SwitchPresenter
-            x:Name="GlassPresenter_815"
+        <wl:LiquidGlassTextBox
             VerticalAlignment="Top"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            IsTabStop="False"
-            Tag="LiquidGlass:TextBox"
-            Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>0</x:Int32>
-                </cwc:Case.Value>
-                <TextBox
-                    VerticalAlignment="Top"
-                    PlaceholderText="{shuxm:ResourceString Name=ViewDialogCultivateProjectInputPlaceholder}"
-                    Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            </cwc:Case>
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>1</x:Int32>
-                </cwc:Case.Value>
-                <wl:LiquidGlassTextBox
-                    VerticalAlignment="Top"
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    PlaceholderText="{shuxm:ResourceString Name=ViewDialogCultivateProjectInputPlaceholder}"
-                    Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            </cwc:Case>
-        </cwc:SwitchPresenter>
+            shuxcth:ControlMaterialState.IsManaged="True"
+            PlaceholderText="{shuxm:ResourceString Name=ViewDialogCultivateProjectInputPlaceholder}"
+            Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <cwc:SwitchPresenter
-            x:Name="GlassPresenter_1055"
+        <wl:LiquidGlassComboBox
+            shuxcth:ControlMaterialState.IsManaged="True"
+            shuxcth:ComboBoxPopupLifetime.IsManaged="True"
             HorizontalAlignment="Stretch"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            IsTabStop="False"
-            Tag="LiquidGlass:ComboBox"
-            Visibility="{x:Bind GlassPresenter_1055_State.Visibility, Mode=OneWay}"
-            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>0</x:Int32>
-                </cwc:Case.Value>
-                <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                    x:Name="GlassPresenter_1055_State"
-                    HorizontalAlignment="Stretch"
-                    DataContext="{x:Bind GlassPresenter_1055.DataContext, Mode=OneWay}"
-                    DisplayMemberPath="Name"
-                    ItemsSource="{x:Bind ServerTimeZoneOffsets}"
-                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_1055}"
-                    SelectedItem="{x:Bind SelectedServerTimeZoneOffset, Mode=TwoWay}"/>
-            </cwc:Case>
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>1</x:Int32>
-                </cwc:Case.Value>
-                <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                    x:Name="GlassPresenter_1055_StateGlass"
-                    Width="{x:Bind GlassPresenter_1055_State.Width, Mode=OneWay}"
-                    Height="{x:Bind GlassPresenter_1055_State.Height, Mode=OneWay}"
-                    MinWidth="{x:Bind GlassPresenter_1055_State.MinWidth, Mode=OneWay}"
-                    MinHeight="{x:Bind GlassPresenter_1055_State.MinHeight, Mode=OneWay}"
-                    MaxWidth="{x:Bind GlassPresenter_1055_State.MaxWidth, Mode=OneWay}"
-                    MaxHeight="{x:Bind GlassPresenter_1055_State.MaxHeight, Mode=OneWay}"
-                    Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(GlassPresenter_1055_State.Padding), Mode=OneWay}"
-                    HorizontalAlignment="Stretch"
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassPresenter_1055_State, Mode=OneWay}"
-                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                    BorderThickness="{x:Bind GlassPresenter_1055_State.BorderThickness, Mode=OneWay}"
-                    DisplayMemberPath="{x:Bind GlassPresenter_1055_State.DisplayMemberPath, Mode=OneWay}"
-                    FlowDirection="{x:Bind GlassPresenter_1055_State.FlowDirection, Mode=OneWay}"
-                    FontFamily="{x:Bind GlassPresenter_1055_State.FontFamily, Mode=OneWay}"
-                    FontSize="{x:Bind GlassPresenter_1055_State.FontSize, Mode=OneWay}"
-                    FontStyle="{x:Bind GlassPresenter_1055_State.FontStyle, Mode=OneWay}"
-                    FontWeight="{x:Bind GlassPresenter_1055_State.FontWeight, Mode=OneWay}"
-                    Header="{x:Bind GlassPresenter_1055_State.Header, Mode=OneWay}"
-                    HeaderTemplate="{x:Bind GlassPresenter_1055_State.HeaderTemplate, Mode=OneWay}"
-                    IsEditable="{x:Bind GlassPresenter_1055_State.IsEditable, Mode=OneWay}"
-                    IsEnabled="{x:Bind GlassPresenter_1055_State.IsEnabled, Mode=OneWay}"
-                    IsTextSearchEnabled="{x:Bind GlassPresenter_1055_State.IsTextSearchEnabled, Mode=OneWay}"
-                    ItemsSource="{x:Bind GlassPresenter_1055_State.ItemsSource, Mode=OneWay}"
-                    MaxDropDownHeight="{x:Bind GlassPresenter_1055_State.MaxDropDownHeight, Mode=OneWay}"
-                    PlaceholderText="{x:Bind GlassPresenter_1055_State.PlaceholderText, Mode=OneWay}"
-                    SelectedIndex="{x:Bind GlassPresenter_1055_State.SelectedIndex, Mode=TwoWay}"
-                    SelectedValuePath="{x:Bind GlassPresenter_1055_State.SelectedValuePath, Mode=OneWay}"/>
-            </cwc:Case>
-        </cwc:SwitchPresenter>
+            DisplayMemberPath="Name"
+            ItemsSource="{x:Bind ServerTimeZoneOffsets}"
+            SelectedItem="{x:Bind SelectedServerTimeZoneOffset, Mode=TwoWay}"/>
     </StackPanel>
 </ContentDialog>

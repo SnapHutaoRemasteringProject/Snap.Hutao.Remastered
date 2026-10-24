@@ -136,150 +136,60 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_6772"
-                        Grid.Column="0"
+                    <wl:LiquidGlassToggleButton
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        Padding="2"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Tag="LiquidGlass:ToggleButton"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleButtonMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <ToggleButton
-                                Padding="2"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                BorderThickness="0"
-                                IsChecked="{Binding HotKeyOptions.MouseClickRepeatForeverKeyCombination.IsOn, Mode=OneWay}"
-                                IsEnabled="{Binding HotKeyOptions.MouseClickRepeatForeverKeyCombination.IsEnabled, Mode=OneWay}"
-                                IsHitTestVisible="False">
-                                <Grid RowSpacing="4">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition Height="auto"/>
-                                    </Grid.RowDefinitions>
-                                    <TextBlock
-                                        Grid.Row="0"
-                                        HorizontalAlignment="Center"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{shuxm:ResourceString Name=ViewTitleAutoClicking}"/>
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        HorizontalAlignment="Center"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{Binding HotKeyOptions.MouseClickRepeatForeverKeyCombination.DisplayName, Mode=OneWay}"/>
-                                </Grid>
-                            </ToggleButton>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassToggleButton
-                                Padding="2"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                shuxcth:ControlMaterialState.IsManaged="True"
-                                BorderThickness="0"
-                                IsChecked="{Binding HotKeyOptions.MouseClickRepeatForeverKeyCombination.IsOn, Mode=OneWay}"
-                                IsEnabled="{Binding HotKeyOptions.MouseClickRepeatForeverKeyCombination.IsEnabled, Mode=OneWay}"
-                                IsHitTestVisible="False">
-                                <Grid RowSpacing="4">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition Height="auto"/>
-                                    </Grid.RowDefinitions>
-                                    <TextBlock
-                                        Grid.Row="0"
-                                        HorizontalAlignment="Center"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{shuxm:ResourceString Name=ViewTitleAutoClicking}"/>
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        HorizontalAlignment="Center"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{Binding HotKeyOptions.MouseClickRepeatForeverKeyCombination.DisplayName, Mode=OneWay}"/>
-                                </Grid>
-                            </wl:LiquidGlassToggleButton>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_8313"
-                        Grid.Column="1"
+                        BorderThickness="0"
+                        IsChecked="{Binding HotKeyOptions.MouseClickRepeatForeverKeyCombination.IsOn, Mode=OneWay}"
+                        IsEnabled="{Binding HotKeyOptions.MouseClickRepeatForeverKeyCombination.IsEnabled, Mode=OneWay}"
+                        IsHitTestVisible="False"
+                        Grid.Column="0">
+                        <Grid RowSpacing="4">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                HorizontalAlignment="Center"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{shuxm:ResourceString Name=ViewTitleAutoClicking}"/>
+                            <TextBlock
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{Binding HotKeyOptions.MouseClickRepeatForeverKeyCombination.DisplayName, Mode=OneWay}"/>
+                        </Grid>
+                    </wl:LiquidGlassToggleButton>
+                    <wl:LiquidGlassToggleButton
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        Padding="2"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Tag="LiquidGlass:ToggleButton"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleButtonMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <ToggleButton
-                                Padding="2"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                BorderThickness="0"
-                                IsChecked="{Binding HotKeyOptions.KeyPressRepeatForeverKeyCombination.IsOn, Mode=OneWay}"
-                                IsEnabled="{Binding HotKeyOptions.KeyPressRepeatForeverKeyCombination.IsEnabled, Mode=OneWay}"
-                                IsHitTestVisible="False">
-                                <Grid RowSpacing="4">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition Height="auto"/>
-                                    </Grid.RowDefinitions>
-                                    <TextBlock
-                                        Grid.Row="0"
-                                        HorizontalAlignment="Center"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{shuxm:ResourceString Name=ViewTitleAutoPressing}"/>
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        HorizontalAlignment="Center"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{Binding HotKeyOptions.KeyPressRepeatForeverKeyCombination.DisplayName, Mode=OneWay}"/>
-                                </Grid>
-                            </ToggleButton>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassToggleButton
-                                Padding="2"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Stretch"
-                                shuxcth:ControlMaterialState.IsManaged="True"
-                                BorderThickness="0"
-                                IsChecked="{Binding HotKeyOptions.KeyPressRepeatForeverKeyCombination.IsOn, Mode=OneWay}"
-                                IsEnabled="{Binding HotKeyOptions.KeyPressRepeatForeverKeyCombination.IsEnabled, Mode=OneWay}"
-                                IsHitTestVisible="False">
-                                <Grid RowSpacing="4">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition Height="auto"/>
-                                    </Grid.RowDefinitions>
-                                    <TextBlock
-                                        Grid.Row="0"
-                                        HorizontalAlignment="Center"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{shuxm:ResourceString Name=ViewTitleAutoPressing}"/>
-                                    <TextBlock
-                                        Grid.Row="1"
-                                        HorizontalAlignment="Center"
-                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{Binding HotKeyOptions.KeyPressRepeatForeverKeyCombination.DisplayName, Mode=OneWay}"/>
-                                </Grid>
-                            </wl:LiquidGlassToggleButton>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
+                        BorderThickness="0"
+                        IsChecked="{Binding HotKeyOptions.KeyPressRepeatForeverKeyCombination.IsOn, Mode=OneWay}"
+                        IsEnabled="{Binding HotKeyOptions.KeyPressRepeatForeverKeyCombination.IsEnabled, Mode=OneWay}"
+                        IsHitTestVisible="False"
+                        Grid.Column="1">
+                        <Grid RowSpacing="4">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                HorizontalAlignment="Center"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{shuxm:ResourceString Name=ViewTitleAutoPressing}"/>
+                            <TextBlock
+                                Grid.Row="1"
+                                HorizontalAlignment="Center"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="{Binding HotKeyOptions.KeyPressRepeatForeverKeyCombination.DisplayName, Mode=OneWay}"/>
+                        </Grid>
+                    </wl:LiquidGlassToggleButton>
                 </Grid>
             </cwc:Case>
             <cwc:Case Value="Island">
@@ -303,19 +213,8 @@
                                     ShouldConstrainToRootBounds="False">
                                     <ContentControl IsEnabled="{Binding LaunchOptions.IsSetTargetFrameRateEnabled.Value}">
                                         <StackPanel Orientation="Horizontal" Spacing="4">
-                                            <cwc:SwitchPresenter
-                                                x:Name="GlassPresenter_11178"
-                                                Margin="12,0"
-                                                VerticalAlignment="Center"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Stretch"
-                                                IsTabStop="False"
-                                                Tag="LiquidGlass:Slider"
-                                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.SliderMaterial, Mode=OneWay}">
-                                                <cwc:Case>
-                                                    <cwc:Case.Value>
-                                                        <x:Int32>0</x:Int32>
-                                                    </cwc:Case.Value>
+                                            <shuxcth:MaterialSwap Margin="12,0" VerticalAlignment="Center">
+                                                <shuxcth:MaterialSwap.Native>
                                                     <Slider
                                                         Width="240"
                                                         VerticalAlignment="Center"
@@ -324,22 +223,19 @@
                                                         Minimum="1"
                                                         SmallChange="1"
                                                         Value="{Binding LaunchOptions.TargetFps.Value, Mode=TwoWay}"/>
-                                                </cwc:Case>
-                                                <cwc:Case>
-                                                    <cwc:Case.Value>
-                                                        <x:Int32>1</x:Int32>
-                                                    </cwc:Case.Value>
+                                                </shuxcth:MaterialSwap.Native>
+                                                <shuxcth:MaterialSwap.Glass>
                                                     <wl:LiquidGlassSlider
+                                                        shuxcth:ControlMaterialState.IsManaged="True"
                                                         Width="240"
                                                         VerticalAlignment="Center"
-                                                        shuxcth:ControlMaterialState.IsManaged="True"
                                                         LargeChange="10"
                                                         Maximum="160"
                                                         Minimum="1"
                                                         SmallChange="1"
                                                         Value="{Binding LaunchOptions.TargetFps.Value, Mode=TwoWay}"/>
-                                                </cwc:Case>
-                                            </cwc:SwitchPresenter>
+                                                </shuxcth:MaterialSwap.Glass>
+                                            </shuxcth:MaterialSwap>
                                         </StackPanel>
                                     </ContentControl>
 
@@ -371,19 +267,8 @@
                                     ShouldConstrainToRootBounds="False">
                                     <ContentControl IsEnabled="{Binding LaunchOptions.IsSetFieldOfViewEnabled.Value}">
                                         <StackPanel Orientation="Horizontal" Spacing="4">
-                                            <cwc:SwitchPresenter
-                                                x:Name="GlassPresenter_13579"
-                                                Margin="12,0"
-                                                VerticalAlignment="Center"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Stretch"
-                                                IsTabStop="False"
-                                                Tag="LiquidGlass:Slider"
-                                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.SliderMaterial, Mode=OneWay}">
-                                                <cwc:Case>
-                                                    <cwc:Case.Value>
-                                                        <x:Int32>0</x:Int32>
-                                                    </cwc:Case.Value>
+                                            <shuxcth:MaterialSwap Margin="12,0" VerticalAlignment="Center">
+                                                <shuxcth:MaterialSwap.Native>
                                                     <Slider
                                                         Width="120"
                                                         VerticalAlignment="Center"
@@ -392,94 +277,37 @@
                                                         Minimum="0"
                                                         SmallChange="1"
                                                         Value="{Binding LaunchOptions.TargetFov.Value, Mode=TwoWay}"/>
-                                                </cwc:Case>
-                                                <cwc:Case>
-                                                    <cwc:Case.Value>
-                                                        <x:Int32>1</x:Int32>
-                                                    </cwc:Case.Value>
+                                                </shuxcth:MaterialSwap.Native>
+                                                <shuxcth:MaterialSwap.Glass>
                                                     <wl:LiquidGlassSlider
+                                                        shuxcth:ControlMaterialState.IsManaged="True"
                                                         Width="120"
                                                         VerticalAlignment="Center"
-                                                        shuxcth:ControlMaterialState.IsManaged="True"
                                                         LargeChange="10"
                                                         Maximum="100"
                                                         Minimum="0"
                                                         SmallChange="1"
                                                         Value="{Binding LaunchOptions.TargetFov.Value, Mode=TwoWay}"/>
-                                                </cwc:Case>
-                                            </cwc:SwitchPresenter>
-                                            <cwc:SwitchPresenter
-                                                x:Name="GlassPresenter_14190"
+                                                </shuxcth:MaterialSwap.Glass>
+                                            </shuxcth:MaterialSwap>
+                                            <wl:LiquidGlassToggleButton
+                                                shuxcth:ControlMaterialState.IsManaged="True"
+                                                Padding="8"
                                                 VerticalAlignment="Stretch"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Stretch"
-                                                IsTabStop="False"
-                                                Tag="LiquidGlass:ToggleButton"
-                                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleButtonMaterial, Mode=OneWay}">
-                                                <cwc:Case>
-                                                    <cwc:Case.Value>
-                                                        <x:Int32>0</x:Int32>
-                                                    </cwc:Case.Value>
-                                                    <ToggleButton
-                                                        Padding="8"
-                                                        VerticalAlignment="Stretch"
-                                                        IsChecked="{Binding LaunchOptions.DisablePlayerPerspective.Value, Mode=TwoWay}"
-                                                        Style="{ThemeResource DefaultToggleButtonStyle}"
-                                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameDisablePlayerPerspectiveDescription}">
-                                                        <FontIcon FontSize="16" Glyph="&#xF19D;"/>
-                                                    </ToggleButton>
-                                                </cwc:Case>
-                                                <cwc:Case>
-                                                    <cwc:Case.Value>
-                                                        <x:Int32>1</x:Int32>
-                                                    </cwc:Case.Value>
-                                                    <wl:LiquidGlassToggleButton
-                                                        Padding="8"
-                                                        VerticalAlignment="Stretch"
-                                                        shuxcth:ControlMaterialState.IsManaged="True"
-                                                        IsChecked="{Binding LaunchOptions.DisablePlayerPerspective.Value, Mode=TwoWay}"
-                                                        Style="{ThemeResource DefaultToggleButtonStyle}"
-                                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameDisablePlayerPerspectiveDescription}">
-                                                        <FontIcon FontSize="16" Glyph="&#xF19D;"/>
-                                                    </wl:LiquidGlassToggleButton>
-                                                </cwc:Case>
-                                            </cwc:SwitchPresenter>
-                                            <cwc:SwitchPresenter
-                                                x:Name="GlassPresenter_14916"
+                                                IsChecked="{Binding LaunchOptions.DisablePlayerPerspective.Value, Mode=TwoWay}"
+                                                Style="{ThemeResource DefaultToggleButtonStyle}"
+                                                ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameDisablePlayerPerspectiveDescription}">
+                                                <FontIcon FontSize="16" Glyph="&#xF19D;"/>
+                                            </wl:LiquidGlassToggleButton>
+                                            <wl:LiquidGlassToggleButton
+                                                shuxcth:ControlMaterialState.IsManaged="True"
+                                                Padding="8"
                                                 VerticalAlignment="Stretch"
-                                                HorizontalContentAlignment="Stretch"
-                                                VerticalContentAlignment="Stretch"
-                                                IsTabStop="False"
-                                                Tag="LiquidGlass:ToggleButton"
-                                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleButtonMaterial, Mode=OneWay}">
-                                                <cwc:Case>
-                                                    <cwc:Case.Value>
-                                                        <x:Int32>0</x:Int32>
-                                                    </cwc:Case.Value>
-                                                    <ToggleButton
-                                                        Padding="8"
-                                                        VerticalAlignment="Stretch"
-                                                        IsChecked="{Binding LaunchOptions.DisableFog.Value, Mode=TwoWay}"
-                                                        Style="{ThemeResource DefaultToggleButtonStyle}"
-                                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameDisableFogHeader}">
-                                                        <FontIcon FontSize="16" Glyph="&#xEC9C;"/>
-                                                    </ToggleButton>
-                                                </cwc:Case>
-                                                <cwc:Case>
-                                                    <cwc:Case.Value>
-                                                        <x:Int32>1</x:Int32>
-                                                    </cwc:Case.Value>
-                                                    <wl:LiquidGlassToggleButton
-                                                        Padding="8"
-                                                        VerticalAlignment="Stretch"
-                                                        shuxcth:ControlMaterialState.IsManaged="True"
-                                                        IsChecked="{Binding LaunchOptions.DisableFog.Value, Mode=TwoWay}"
-                                                        Style="{ThemeResource DefaultToggleButtonStyle}"
-                                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameDisableFogHeader}">
-                                                        <FontIcon FontSize="16" Glyph="&#xEC9C;"/>
-                                                    </wl:LiquidGlassToggleButton>
-                                                </cwc:Case>
-                                            </cwc:SwitchPresenter>
+                                                IsChecked="{Binding LaunchOptions.DisableFog.Value, Mode=TwoWay}"
+                                                Style="{ThemeResource DefaultToggleButtonStyle}"
+                                                ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameDisableFogHeader}">
+                                                <FontIcon FontSize="16" Glyph="&#xEC9C;"/>
+                                            </wl:LiquidGlassToggleButton>
                                         </StackPanel>
                                     </ContentControl>
                                 </Flyout>
@@ -496,276 +324,87 @@
                             </StackPanel>
                         </ToggleSplitButton>
 
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_16423"
+                        <wl:LiquidGlassToggleButton
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Padding="8"
                             VerticalAlignment="Stretch"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:ToggleButton"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <ToggleButton
-                                    Padding="8"
-                                    VerticalAlignment="Stretch"
-                                    BorderThickness="0"
-                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
-                                    IsChecked="{Binding LaunchOptions.RemoveOpenTeamProgress.Value, Mode=TwoWay}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameRemoveOpenTeamProgressHeader}">
-                                    <Grid>
-                                        <FontIcon FontSize="16" Glyph="&#xE805;"/>
-                                        <FontIcon FontSize="16" Glyph="&#xE894;"/>
-                                    </Grid>
-                                </ToggleButton>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassToggleButton
-                                    Padding="8"
-                                    VerticalAlignment="Stretch"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    BorderThickness="0"
-                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
-                                    IsChecked="{Binding LaunchOptions.RemoveOpenTeamProgress.Value, Mode=TwoWay}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameRemoveOpenTeamProgressHeader}">
-                                    <Grid>
-                                        <FontIcon FontSize="16" Glyph="&#xE805;"/>
-                                        <FontIcon FontSize="16" Glyph="&#xE894;"/>
-                                    </Grid>
-                                </wl:LiquidGlassToggleButton>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_17184"
+                            BorderThickness="0"
+                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                            IsChecked="{Binding LaunchOptions.RemoveOpenTeamProgress.Value, Mode=TwoWay}"
+                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameRemoveOpenTeamProgressHeader}">
+                            <Grid>
+                                <FontIcon FontSize="16" Glyph="&#xE805;"/>
+                                <FontIcon FontSize="16" Glyph="&#xE894;"/>
+                            </Grid>
+                        </wl:LiquidGlassToggleButton>
+                        <wl:LiquidGlassToggleButton
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Padding="8"
                             VerticalAlignment="Stretch"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:ToggleButton"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <ToggleButton
-                                    Padding="8"
-                                    VerticalAlignment="Stretch"
-                                    BorderThickness="0"
-                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
-                                    IsChecked="{Binding LaunchOptions.HideQuestBanner.Value, Mode=TwoWay}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewOverlayLaunchGameHideQuestBannerToolTip}">
-                                    <Grid>
-                                        <FontIcon FontSize="16" Glyph="&#xE81E;"/>
-                                        <FontIcon FontSize="16" Glyph="&#xE894;"/>
-                                    </Grid>
-                                </ToggleButton>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassToggleButton
-                                    Padding="8"
-                                    VerticalAlignment="Stretch"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    BorderThickness="0"
-                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
-                                    IsChecked="{Binding LaunchOptions.HideQuestBanner.Value, Mode=TwoWay}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewOverlayLaunchGameHideQuestBannerToolTip}">
-                                    <Grid>
-                                        <FontIcon FontSize="16" Glyph="&#xE81E;"/>
-                                        <FontIcon FontSize="16" Glyph="&#xE894;"/>
-                                    </Grid>
-                                </wl:LiquidGlassToggleButton>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_17935"
+                            BorderThickness="0"
+                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                            IsChecked="{Binding LaunchOptions.HideQuestBanner.Value, Mode=TwoWay}"
+                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewOverlayLaunchGameHideQuestBannerToolTip}">
+                            <Grid>
+                                <FontIcon FontSize="16" Glyph="&#xE81E;"/>
+                                <FontIcon FontSize="16" Glyph="&#xE894;"/>
+                            </Grid>
+                        </wl:LiquidGlassToggleButton>
+                        <wl:LiquidGlassToggleButton
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Padding="8"
                             VerticalAlignment="Stretch"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:ToggleButton"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <ToggleButton
-                                    Padding="8"
-                                    VerticalAlignment="Stretch"
-                                    BorderThickness="0"
-                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
-                                    IsChecked="{Binding LaunchOptions.DisableEventCameraMove.Value, Mode=TwoWay}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameEventCameraMoveHotSwitchHeader}">
-                                    <Grid>
-                                        <FontIcon FontSize="16" Glyph="&#xE89E;"/>
-                                        <FontIcon FontSize="16" Glyph="&#xE894;"/>
-                                    </Grid>
-                                </ToggleButton>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassToggleButton
-                                    Padding="8"
-                                    VerticalAlignment="Stretch"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    BorderThickness="0"
-                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
-                                    IsChecked="{Binding LaunchOptions.DisableEventCameraMove.Value, Mode=TwoWay}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameEventCameraMoveHotSwitchHeader}">
-                                    <Grid>
-                                        <FontIcon FontSize="16" Glyph="&#xE89E;"/>
-                                        <FontIcon FontSize="16" Glyph="&#xE894;"/>
-                                    </Grid>
-                                </wl:LiquidGlassToggleButton>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_18698"
+                            BorderThickness="0"
+                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                            IsChecked="{Binding LaunchOptions.DisableEventCameraMove.Value, Mode=TwoWay}"
+                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameEventCameraMoveHotSwitchHeader}">
+                            <Grid>
+                                <FontIcon FontSize="16" Glyph="&#xE89E;"/>
+                                <FontIcon FontSize="16" Glyph="&#xE894;"/>
+                            </Grid>
+                        </wl:LiquidGlassToggleButton>
+                        <wl:LiquidGlassToggleButton
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Padding="8"
                             VerticalAlignment="Stretch"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:ToggleButton"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <ToggleButton
-                                    Padding="8"
-                                    VerticalAlignment="Stretch"
-                                    BorderThickness="0"
-                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
-                                    IsChecked="{Binding LaunchOptions.DisableShowDamageText.Value, Mode=TwoWay}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewOverlayDisableShowDamageTextToolTip}">
-                                    <Grid>
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            FontWeight="Bold"
-                                            Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="99"/>
-                                        <FontIcon FontSize="16" Glyph="&#xE894;"/>
-                                    </Grid>
-                                </ToggleButton>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassToggleButton
-                                    Padding="8"
-                                    VerticalAlignment="Stretch"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    BorderThickness="0"
-                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
-                                    IsChecked="{Binding LaunchOptions.DisableShowDamageText.Value, Mode=TwoWay}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewOverlayDisableShowDamageTextToolTip}">
-                                    <Grid>
-                                        <TextBlock
-                                            HorizontalAlignment="Center"
-                                            FontWeight="Bold"
-                                            Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="99"/>
-                                        <FontIcon FontSize="16" Glyph="&#xE894;"/>
-                                    </Grid>
-                                </wl:LiquidGlassToggleButton>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_19668"
+                            BorderThickness="0"
+                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                            IsChecked="{Binding LaunchOptions.DisableShowDamageText.Value, Mode=TwoWay}"
+                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewOverlayDisableShowDamageTextToolTip}">
+                            <Grid>
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    FontWeight="Bold"
+                                    Style="{ThemeResource CaptionTextBlockStyle}"
+                                    Text="99"/>
+                                <FontIcon FontSize="16" Glyph="&#xE894;"/>
+                            </Grid>
+                        </wl:LiquidGlassToggleButton>
+                        <wl:LiquidGlassToggleButton
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Padding="8"
                             VerticalAlignment="Stretch"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:ToggleButton"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <ToggleButton
-                                    Padding="8"
-                                    VerticalAlignment="Stretch"
-                                    BorderThickness="0"
-                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
-                                    IsChecked="{Binding LaunchOptions.DisplayPaimon.Value, Mode=TwoWay}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewOverlayDisplayPaimonToolTip}">
-                                    <Grid>
-                                        <ImageIcon Source="ms-appx:///Resource/Icon/UI_Icon_Paimon.png"/>
-                                    </Grid>
-                                </ToggleButton>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassToggleButton
-                                    Padding="8"
-                                    VerticalAlignment="Stretch"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    BorderThickness="0"
-                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
-                                    IsChecked="{Binding LaunchOptions.DisplayPaimon.Value, Mode=TwoWay}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewOverlayDisplayPaimonToolTip}">
-                                    <Grid>
-                                        <ImageIcon Source="ms-appx:///Resource/Icon/UI_Icon_Paimon.png"/>
-                                    </Grid>
-                                </wl:LiquidGlassToggleButton>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_20353"
+                            BorderThickness="0"
+                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                            IsChecked="{Binding LaunchOptions.DisplayPaimon.Value, Mode=TwoWay}"
+                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewOverlayDisplayPaimonToolTip}">
+                            <Grid>
+                                <ImageIcon Source="ms-appx:///Resource/Icon/UI_Icon_Paimon.png"/>
+                            </Grid>
+                        </wl:LiquidGlassToggleButton>
+                        <wl:LiquidGlassToggleButton
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Padding="8"
                             VerticalAlignment="Stretch"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:ToggleButton"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <ToggleButton
-                                    Padding="8"
-                                    VerticalAlignment="Stretch"
-                                    BorderThickness="0"
-                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
-                                    IsChecked="{Binding LaunchOptions.HideGrass.Value, Mode=TwoWay}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewOverlayHideGrassToolTip}">
-                                    <Grid>
-                                        <ImageIcon Source="ms-appx:///Resource/Icon/UI_Gcg_Buff_Common_Element_Grass.png"/>
-                                        <FontIcon FontSize="26" Glyph="&#xE894;"/>
-                                    </Grid>
-                                </ToggleButton>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassToggleButton
-                                    Padding="8"
-                                    VerticalAlignment="Stretch"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    BorderThickness="0"
-                                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
-                                    IsChecked="{Binding LaunchOptions.HideGrass.Value, Mode=TwoWay}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewOverlayHideGrassToolTip}">
-                                    <Grid>
-                                        <ImageIcon Source="ms-appx:///Resource/Icon/UI_Gcg_Buff_Common_Element_Grass.png"/>
-                                        <FontIcon FontSize="26" Glyph="&#xE894;"/>
-                                    </Grid>
-                                </wl:LiquidGlassToggleButton>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                            BorderThickness="0"
+                            Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                            IsChecked="{Binding LaunchOptions.HideGrass.Value, Mode=TwoWay}"
+                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewOverlayHideGrassToolTip}">
+                            <Grid>
+                                <ImageIcon Source="ms-appx:///Resource/Icon/UI_Gcg_Buff_Common_Element_Grass.png"/>
+                                <FontIcon FontSize="26" Glyph="&#xE894;"/>
+                            </Grid>
+                        </wl:LiquidGlassToggleButton>
                     </StackPanel>
                 </ContentControl>
             </cwc:Case>

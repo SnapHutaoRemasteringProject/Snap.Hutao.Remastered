@@ -17,4 +17,6 @@ public sealed partial class GachaLogPage : ScopedPage
     {
         InitializeDataContext<GachaLogViewModel>();
     }
+
+    public new GachaLogViewModel DataContext { get => (GachaLogViewModel)base.DataContext; set => base.DataContext = value; }
 }
