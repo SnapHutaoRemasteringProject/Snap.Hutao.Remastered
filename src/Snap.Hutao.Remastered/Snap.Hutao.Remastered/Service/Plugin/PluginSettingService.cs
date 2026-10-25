@@ -230,7 +230,8 @@ public partial class PluginSettingService : IPluginSettingService
         try
         {
             string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
-            return JsonSerializer.Deserialize<T>(json, ReadOptions);
+            // A null write uses an empty file to represent a cleared setting.
+            return json.Length == 0 ? defaultValue : JsonSerializer.Deserialize<T>(json, ReadOptions);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or NotSupportedException)
         {
@@ -251,7 +252,7 @@ public partial class PluginSettingService : IPluginSettingService
         try
         {
             string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
-            return JsonSerializer.Deserialize(json, type, ReadOptions);
+            return json.Length == 0 ? defaultValue : JsonSerializer.Deserialize(json, type, ReadOptions);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or NotSupportedException)
         {
@@ -293,7 +294,8 @@ public partial class PluginSettingService : IPluginSettingService
 
         try
         {
-            return JsonSerializer.Deserialize<T>(File.ReadAllText(filePath), ReadOptions);
+            string json = File.ReadAllText(filePath);
+            return json.Length == 0 ? null : JsonSerializer.Deserialize<T>(json, ReadOptions);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or NotSupportedException)
         {

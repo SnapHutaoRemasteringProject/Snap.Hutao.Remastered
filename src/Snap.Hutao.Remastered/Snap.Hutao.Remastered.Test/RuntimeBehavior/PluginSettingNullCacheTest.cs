@@ -1,6 +1,5 @@
 using System.IO;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Snap.Hutao.Remastered.Service.Plugin;
 
 namespace Snap.Hutao.Remastered.Test.RuntimeBehavior;
@@ -48,6 +47,84 @@ public sealed class PluginSettingNullCacheTest
             : await reopened.GetSettingAsync("plugin", "name", defaultValue);
         Assert.AreEqual(defaultValue, persisted);
         Assert.AreEqual(persisted, current);
+        Assert.HasCount(0, fixture.Logger.Errors);
+    }
+
+    [TestMethod]
+    public async Task RegisteringClearedSettingUsesDefaultWithoutReportingCorruption()
+    {
+        using SyntheticSettings fixture = new();
+        PluginSettingService service = fixture.CreateService();
+        await service.SetSettingAsync<string>("plugin", "name", null);
+
+        PluginSettingService reopened = fixture.CreateService();
+        reopened.RegisterSetting("plugin", "name", "fallback");
+
+        Assert.IsTrue(reopened.TryGetCachedSetting<string>("plugin", "name", out string? cached));
+        Assert.AreEqual("fallback", cached);
+        Assert.HasCount(0, fixture.Logger.Errors);
+    }
+
+    [TestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public async Task EmptyStringValueRemainsDistinctFromClearedSetting(bool runtimeGetter)
+    {
+        using SyntheticSettings fixture = new();
+        await fixture.CreateService().SetSettingAsync("plugin", "name", string.Empty);
+        PluginSettingService reopened = fixture.CreateService();
+
+        object? actual = runtimeGetter
+            ? await reopened.GetSettingAsync(typeof(string), "plugin", "name", "fallback")
+            : await reopened.GetSettingAsync("plugin", "name", "fallback");
+
+        Assert.AreEqual(string.Empty, actual);
+        Assert.AreEqual("\"\"", File.ReadAllText(Path.Combine(fixture.Directory, "plugin", "name.json")));
+        Assert.HasCount(0, fixture.Logger.Errors);
+    }
+
+    [TestMethod]
+    [DataRow(false, "{")]
+    [DataRow(true, "{")]
+    [DataRow(false, " ")]
+    [DataRow(true, " ")]
+    public async Task NonemptyMalformedSettingStillReportsReadFailure(bool runtimeGetter, string json)
+    {
+        using SyntheticSettings fixture = new();
+        string folder = Path.Combine(fixture.Directory, "plugin");
+        System.IO.Directory.CreateDirectory(folder);
+        File.WriteAllText(Path.Combine(folder, "name.json"), json);
+        PluginSettingService service = fixture.CreateService();
+
+        object? actual = runtimeGetter
+            ? await service.GetSettingAsync(typeof(string), "plugin", "name", "fallback")
+            : await service.GetSettingAsync("plugin", "name", "fallback");
+
+        Assert.AreEqual("fallback", actual);
+        Assert.HasCount(1, fixture.Logger.Errors);
+        Assert.IsInstanceOfType<JsonException>(fixture.Logger.Errors[0]);
+    }
+
+    [TestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public async Task LockedSettingStillReportsReadFailure(bool runtimeGetter)
+    {
+        using SyntheticSettings fixture = new();
+        string folder = Path.Combine(fixture.Directory, "plugin");
+        System.IO.Directory.CreateDirectory(folder);
+        string path = Path.Combine(folder, "name.json");
+        File.WriteAllText(path, "\"old\"");
+        PluginSettingService service = fixture.CreateService();
+        using FileStream locked = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+
+        object? actual = runtimeGetter
+            ? await service.GetSettingAsync(typeof(string), "plugin", "name", "fallback")
+            : await service.GetSettingAsync("plugin", "name", "fallback");
+
+        Assert.AreEqual("fallback", actual);
+        Assert.HasCount(1, fixture.Logger.Errors);
+        Assert.IsInstanceOfType<IOException>(fixture.Logger.Errors[0]);
     }
 
     [TestMethod]
@@ -74,13 +151,15 @@ public sealed class PluginSettingNullCacheTest
     {
         public string Directory { get; } = Path.Combine(Path.GetTempPath(), "HutaoPluginSettingTests", Guid.NewGuid().ToString("N"));
 
+        public RecordingLogger Logger { get; } = new();
+
         public string GetPluginsDirectory() => Directory;
 
         public PluginSettingService CreateService()
         {
             using ServiceProvider services = new ServiceCollection()
                 .AddSingleton<IPluginService>(this)
-                .AddSingleton<ILogger<PluginSettingService>>(NullLogger<PluginSettingService>.Instance)
+                .AddSingleton<ILogger<PluginSettingService>>(Logger)
                 .BuildServiceProvider();
             return new PluginSettingService(services);
         }
@@ -90,6 +169,23 @@ public sealed class PluginSettingNullCacheTest
             if (System.IO.Directory.Exists(Directory))
             {
                 System.IO.Directory.Delete(Directory, true);
+            }
+        }
+    }
+
+    private sealed class RecordingLogger : ILogger<PluginSettingService>
+    {
+        public List<Exception> Errors { get; } = [];
+
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+
+        public bool IsEnabled(LogLevel logLevel) => true;
+
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        {
+            if (logLevel == LogLevel.Error && exception is not null)
+            {
+                Errors.Add(exception);
             }
         }
     }
