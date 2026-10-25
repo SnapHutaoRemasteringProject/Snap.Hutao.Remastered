@@ -4,11 +4,8 @@
 using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Factory.IO;
 using Snap.Hutao.Remastered.Service.Game;
-using System.Buffers;
 using System.Collections.Specialized;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
@@ -99,34 +96,6 @@ public sealed partial class GachaLogQueryWebCacheProvider : IGachaLogQueryProvid
 
                 return new(true, new(result));
             }
-        }
-    }
-
-    private static unsafe string? Match(MemoryStream stream, bool isOversea)
-    {
-        using (IMemoryOwner<byte> memoryOwner = MemoryPool<byte>.Shared.RentExactly((int)stream.Length))
-        {
-            Span<byte> span = memoryOwner.Memory.Span;
-            stream.ReadExactly(span);
-
-            ReadOnlySpan<byte> match = isOversea
-                ? "https://gs.hoyoverse.com/genshin/event/e20190909gacha"u8
-                : "https://webstatic.mihoyo.com/hk4e/event/e20190909gacha"u8;
-
-            int index = span.LastIndexOf(match);
-            if (index >= 0)
-            {
-                index += match.Length;
-
-                ref byte reference = ref span[index];
-                fixed (byte* ptr = &reference)
-                {
-                    ReadOnlySpan<byte> target = MemoryMarshal.CreateReadOnlySpanFromNullTerminated(ptr);
-                    return Encoding.UTF8.GetString(target);
-                }
-            }
-
-            return null;
         }
     }
 }
