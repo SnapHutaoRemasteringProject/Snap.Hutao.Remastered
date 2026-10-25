@@ -304,14 +304,20 @@ public partial class PluginSettingService : IPluginSettingService
 
     private void SeedCache(string pluginId, string settingName, object? value)
     {
-        if (value is null)
-        {
-            return;
-        }
-
         lock (lockObject)
         {
-            SeedCacheLocked(pluginId, settingName, value);
+            if (value is null)
+            {
+                // A cleared setting must not keep serving its previous cached value.
+                if (settingsCache.TryGetValue(pluginId, out Dictionary<string, object>? cache))
+                {
+                    cache.Remove(settingName);
+                }
+            }
+            else
+            {
+                SeedCacheLocked(pluginId, settingName, value);
+            }
         }
     }
 
