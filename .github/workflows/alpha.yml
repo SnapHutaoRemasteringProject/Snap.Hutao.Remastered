@@ -23,6 +23,7 @@ jobs:
   test:
     name: Full test suite (${{ matrix.configuration }})
     runs-on: windows-latest
+    needs: build
     timeout-minutes: 25
     permissions:
       contents: read
