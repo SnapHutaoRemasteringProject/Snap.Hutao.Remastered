@@ -463,7 +463,7 @@ ID — do not "fix" these by documenting them as if they were intended.
 | 5 | Analyzer severities are advisory: 54 `suggestion`, 18 `none`, 2 `warning`, **0** `error`; no `TreatWarningsAsErrors`/`AnalysisLevel`; `NoWarn` swallows `CA2012`; `SA1404` disabled | `src/Snap.Hutao.Remastered/.editorconfig`, app csproj | ENG-01, ENG-02 |
 | 6 | Test project cannot reference the app (0 `ProjectReference`, 39 source links, TFM `net11.0` vs `net11.0-windows…`) | `Snap.Hutao.Remastered.Test.csproj` | BUG-02 |
 | 7 | Manifest allows Windows 10 `10.0.19041.0` while the public support statement says Windows 10 22H2 (Jan-2025) / Windows 11 22H2 — reconcile one of the two | `Package*.appxmanifest`, project docs site | — |
-| 8 | No CI quality gate: none of the 8 workflows runs `dotnet test` or `dotnet format --verify-no-changes` | `.github/workflows/` | ENG-05 |
+| 8 | Partial CI quality gate: Alpha runs the full MSTest project in Debug and Release on `dev` pushes/PRs, but Canary/Publish do not run it and none of the workflows enforce `dotnet format --verify-no-changes` | `.github/workflows/alpha.yml` | ENG-05 (partial) |
 | 9 | No central package management (`Directory.Build.props` / `Directory.Packages.props` absent, 61 `PackageReference`s across the 4 csproj files carry inline versions) | `src/**/*.csproj` | ENG-04 |
 | 10 | `dependabot.yml` NuGet entry still points at the pre-rename path `/src/Snap.Hutao` → no NuGet updates since the rename | `.github/dependabot.yml` | ENG-06 |
 | 11 | Dead code / stale config: `LegacyMetadataService` (396 lines, `[Service]` commented out), `build.cake` targets a non-existent `.sln`, commented-out `#pragma` block | `Service/Metadata/LegacyMetadataService.cs`, `build.cake`, `Web/Hoyolab/SaltConstants.cs` | ENG-08 |
