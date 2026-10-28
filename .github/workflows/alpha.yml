@@ -21,11 +21,15 @@ on:
 
 jobs:
   test:
-    name: Runtime behavior regression tests
+    name: Full test suite (${{ matrix.configuration }})
     runs-on: windows-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -43,22 +47,36 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      # Exploratory IncomingFeature tests and the live-HTTP probe are not CI-safe.
-      - name: Run runtime behavior regression tests
+      - name: Build test project
+        shell: pwsh
+        run: |
+          dotnet build src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.Test/Snap.Hutao.Remastered.Test.csproj -c ${{ matrix.configuration }}
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Discover complete test suite
+        shell: pwsh
+        run: |
+          dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.Test/Snap.Hutao.Remastered.Test.csproj -c ${{ matrix.configuration }} --no-build --list-tests | Tee-Object -FilePath "$env:RUNNER_TEMP/test-discovery.txt"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Run complete test suite
         id: tests
         shell: pwsh
         run: |
-          dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.Test/Snap.Hutao.Remastered.Test.csproj -c Release --filter "FullyQualifiedName~Snap.Hutao.Remastered.Test.RuntimeBehavior" --logger "trx;LogFileName=regression-tests.trx" --results-directory "$env:RUNNER_TEMP/test-results"
+          dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.Test/Snap.Hutao.Remastered.Test.csproj -c ${{ matrix.configuration }} --no-build --logger "trx;LogFileName=full-tests.trx" --results-directory "$env:RUNNER_TEMP/test-results" -- RunConfiguration.TreatNoTestsAsError=true
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-      - name: Upload test results
-        if: ${{ always() && steps.tests.outcome != 'skipped' }}
+      - name: Upload test discovery and results
+        if: ${{ always() }}
         uses: actions/upload-artifact@v7
         with:
-          name: alpha-runtime-regression-results
-          path: ${{ runner.temp }}/test-results/*.trx
+          name: alpha-full-test-results-${{ matrix.configuration }}
+          path: |
+            ${{ runner.temp }}/test-results/*.trx
+            ${{ runner.temp }}/test-discovery.txt
           if-no-files-found: warn
-          retention-days: 7
+          retention-days: 14
+
   build:
     runs-on: windows-latest
     steps:
