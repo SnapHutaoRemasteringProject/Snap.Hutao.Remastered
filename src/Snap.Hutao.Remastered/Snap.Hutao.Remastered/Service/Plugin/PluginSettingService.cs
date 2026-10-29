@@ -230,7 +230,8 @@ public partial class PluginSettingService : IPluginSettingService
         try
         {
             string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
-            return JsonSerializer.Deserialize<T>(json, ReadOptions);
+            // A null write uses an empty file to represent a cleared setting.
+            return json.Length == 0 ? defaultValue : JsonSerializer.Deserialize<T>(json, ReadOptions);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or NotSupportedException)
         {
@@ -251,7 +252,7 @@ public partial class PluginSettingService : IPluginSettingService
         try
         {
             string json = await File.ReadAllTextAsync(filePath).ConfigureAwait(false);
-            return JsonSerializer.Deserialize(json, type, ReadOptions);
+            return json.Length == 0 ? defaultValue : JsonSerializer.Deserialize(json, type, ReadOptions);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or NotSupportedException)
         {
@@ -293,7 +294,8 @@ public partial class PluginSettingService : IPluginSettingService
 
         try
         {
-            return JsonSerializer.Deserialize<T>(File.ReadAllText(filePath), ReadOptions);
+            string json = File.ReadAllText(filePath);
+            return json.Length == 0 ? null : JsonSerializer.Deserialize<T>(json, ReadOptions);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or NotSupportedException)
         {
@@ -304,14 +306,20 @@ public partial class PluginSettingService : IPluginSettingService
 
     private void SeedCache(string pluginId, string settingName, object? value)
     {
-        if (value is null)
-        {
-            return;
-        }
-
         lock (lockObject)
         {
-            SeedCacheLocked(pluginId, settingName, value);
+            if (value is null)
+            {
+                // A cleared setting must not keep serving its previous cached value.
+                if (settingsCache.TryGetValue(pluginId, out Dictionary<string, object>? cache))
+                {
+                    cache.Remove(settingName);
+                }
+            }
+            else
+            {
+                SeedCacheLocked(pluginId, settingName, value);
+            }
         }
     }
 
