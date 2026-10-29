@@ -18,17 +18,24 @@ public class GameRegistryContentTest
     [SupportedOSPlatform("windows")]
     public void GetRegistryContent()
     {
-        TestGetRegistryContent(@"Software\miHoYo\原神");
-        TestGetRegistryContent(@"Software\miHoYo\Genshin Impact");
+        bool chineseFound = TestGetRegistryContent(@"Software\miHoYo\原神");
+        bool overseaFound = TestGetRegistryContent(@"Software\miHoYo\Genshin Impact");
+        if (!chineseFound && !overseaFound)
+        {
+            Assert.Inconclusive("Requires an installed and registered Genshin Impact or 原神 instance; none is available on this test machine.");
+        }
     }
 
     [SupportedOSPlatform("windows")]
-    private static void TestGetRegistryContent(string subkey)
+    private static bool TestGetRegistryContent(string subkey)
     {
         using (RegistryKey key = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64))
+        using (RegistryKey? gameKey = key.OpenSubKey(subkey))
         {
-            RegistryKey? gameKey = key.OpenSubKey(subkey);
-            Assert.IsNotNull(gameKey);
+            if (gameKey is null)
+            {
+                return false;
+            }
 
             Dictionary<string, object> data = [];
             foreach (string valueName in gameKey.GetValueNames())
@@ -44,6 +51,7 @@ public class GameRegistryContentTest
 
             Console.WriteLine($"Subkey: {subkey}");
             Console.WriteLine(JsonSerializer.Serialize(data, RegistryContentSerializerOptions));
+            return true;
         }
     }
 

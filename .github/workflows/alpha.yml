@@ -24,6 +24,63 @@ on:
       - '**.resx'
 
 jobs:
+  test:
+    name: Full test suite (${{ matrix.configuration }})
+    runs-on: windows-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [Debug, Release]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 11
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/Snap.Hutao.Remastered.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Build test project
+        shell: pwsh
+        run: |
+          dotnet build src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.Test/Snap.Hutao.Remastered.Test.csproj -c ${{ matrix.configuration }}
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Discover complete test suite
+        shell: pwsh
+        run: |
+          dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.Test/Snap.Hutao.Remastered.Test.csproj -c ${{ matrix.configuration }} --no-build --list-tests | Tee-Object -FilePath "$env:RUNNER_TEMP/test-discovery.txt"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Run complete test suite
+        id: tests
+        shell: pwsh
+        run: |
+          dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.Test/Snap.Hutao.Remastered.Test.csproj -c ${{ matrix.configuration }} --no-build --logger "trx;LogFileName=full-tests.trx" --results-directory "$env:RUNNER_TEMP/test-results" -- RunConfiguration.TreatNoTestsAsError=true
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Upload test discovery and results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: alpha-full-test-results-${{ matrix.configuration }}
+          path: |
+            ${{ runner.temp }}/test-results/*.trx
+            ${{ runner.temp }}/test-discovery.txt
+          if-no-files-found: warn
+          retention-days: 14
+
   build:
     runs-on: windows-latest
     steps:
