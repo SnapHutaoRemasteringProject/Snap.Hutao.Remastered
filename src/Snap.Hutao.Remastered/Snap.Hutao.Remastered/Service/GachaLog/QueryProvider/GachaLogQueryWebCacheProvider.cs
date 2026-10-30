@@ -7,7 +7,6 @@ using Snap.Hutao.Remastered.Service.Game;
 using System.Buffers;
 using System.Collections.Specialized;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -102,7 +101,7 @@ public sealed partial class GachaLogQueryWebCacheProvider : IGachaLogQueryProvid
         }
     }
 
-    private static unsafe string? Match(MemoryStream stream, bool isOversea)
+    private static string? Match(MemoryStream stream, bool isOversea)
     {
         using (IMemoryOwner<byte> memoryOwner = MemoryPool<byte>.Shared.RentExactly((int)stream.Length))
         {
@@ -116,16 +115,10 @@ public sealed partial class GachaLogQueryWebCacheProvider : IGachaLogQueryProvid
             int index = span.LastIndexOf(match);
             if (index >= 0)
             {
-                index += match.Length;
-
-                ref byte reference = ref span[index];
-                fixed (byte* ptr = &reference)
-                {
-                    ReadOnlySpan<byte> target = MemoryMarshal.CreateReadOnlySpanFromNullTerminated(ptr);
-                    return Encoding.UTF8.GetString(target);
-                }
+                ReadOnlySpan<byte> target = span[(index + match.Length)..];
+                int terminator = target.IndexOf((byte)0);
+                return terminator < 0 ? null : Encoding.UTF8.GetString(target[..terminator]);
             }
-
             return null;
         }
     }

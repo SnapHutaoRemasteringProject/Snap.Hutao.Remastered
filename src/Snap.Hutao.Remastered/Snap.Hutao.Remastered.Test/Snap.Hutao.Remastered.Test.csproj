@@ -113,6 +113,8 @@
     <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Theme/PageResourceScope.cs" Link="Production/PageResourceScope.cs" />
     <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Behavior/PeriodicCommandSignal.cs" Link="Production/PeriodicCommandSignal.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/Game/Package/Advanced/PredownloadProgressTracker.cs" Link="Production/PredownloadProgressTracker.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/GachaLog/QueryProvider/GachaLogQueryWebCacheProvider.cs" Link="Production/GachaLogQueryWebCacheProvider.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Extension/MemoryPoolExtension.cs" Link="Production/MemoryPoolExtension.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Model/NameDescription.cs" Link="Production/NameDescription.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Model/INameIcon.cs" Link="Production/INameIcon.cs" />
     <Compile Include="../Snap.Hutao.Remastered/ViewModel/AvatarProperty/NameIconDescription.cs" Link="Production/NameIconDescription.cs" />
