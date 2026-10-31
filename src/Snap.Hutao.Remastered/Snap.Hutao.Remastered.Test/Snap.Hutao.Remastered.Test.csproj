@@ -124,9 +124,9 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <PackageReference Include="Microsoft.Agents.AI.Anthropic" Version="1.26.0" />
-    <PackageReference Include="Microsoft.Agents.AI.Harness" Version="1.26.0" />
-    <PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.26.0" />
+    <PackageReference Include="Microsoft.Agents.AI.Anthropic" Version="1.27.0" />
+    <PackageReference Include="Microsoft.Agents.AI.Harness" Version="1.27.0" />
+    <PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.27.0" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="11.0.0-rc.3.26522.148" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="11.0.0-rc.3.26522.148" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-rc.3.26522.148" />

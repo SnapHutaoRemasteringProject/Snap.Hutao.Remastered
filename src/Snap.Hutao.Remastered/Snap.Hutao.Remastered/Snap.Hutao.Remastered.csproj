@@ -389,13 +389,13 @@
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.3.261026-build.1872" />
     <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="8.3.261026-build.1872" />
     <PackageReference Include="CommunityToolkit.WinUI.Media" Version="8.3.261026-build.1872" />
-    <PackageReference Include="DevWinUI" Version="10.8.0" />
+    <PackageReference Include="DevWinUI" Version="10.9.1" />
     <PackageReference Include="Google.Protobuf" Version="3.36.2" />
     <PackageReference Include="JetBrains.Annotations" Version="2026.2.0" />
-    <PackageReference Include="Lib.Harmony" Version="3.0.0-rc.3" />
-    <PackageReference Include="Microsoft.Agents.AI.Anthropic" Version="1.26.0" />
-    <PackageReference Include="Microsoft.Agents.AI.Harness" Version="1.26.0" />
-    <PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.26.0" />
+    <PackageReference Include="Lib.Harmony" Version="3.0.0-rc.4" />
+    <PackageReference Include="Microsoft.Agents.AI.Anthropic" Version="1.27.0" />
+    <PackageReference Include="Microsoft.Agents.AI.Harness" Version="1.27.0" />
+    <PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.27.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="5.6.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -415,7 +415,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0-rc.3.26522.148" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="11.0.0-rc.3.26522.148" />
     <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
-    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="4.0.1-preview" />
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="4.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Validation" Version="17.13.22" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4314.35" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.3.1" />
@@ -425,7 +425,7 @@
     <PackageReference Include="QRCoder" Version="1.8.1" />
     <PackageReference Include="Quartz" Version="4.6.2" />
     <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="4.6.2" />
-    <PackageReference Include="Sentry.Extensions.Logging" Version="7.0.0-rc.2" />
+    <PackageReference Include="Sentry.Extensions.Logging" Version="7.0.0-rc.3" />
     <PackageReference Include="Snap.HPatch" Version="0.0.2" Publish="true">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
