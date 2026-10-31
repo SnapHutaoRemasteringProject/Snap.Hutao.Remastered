@@ -271,6 +271,12 @@ the build fails with `CS9275`); write a normal constructor in that case.
   framework default style and must not set `FontFamily`. The glass default styles use the framework
   font, so forcing `MiSans` only in the native material changed control content fonts when the
   material switched. A caller style that genuinely wants another font still sets it locally.
+  **The framework font is MiSans, and only `FontStyle.xaml` makes it so:** its
+  `ContentControlThemeFontFamily` / `PivotHeaderItemFontFamily` aliases are what every framework
+  template (button, ComboBox, NavigationViewItem, MenuFlyoutItem, `TitleBar`) reads. Deleting those
+  aliases (as the 2026-10-24 material rewrite did) leaves the `TextBlock` styles on MiSans but
+  silently switches *control content* to Segoe UI / Microsoft YaHei UI — both materials inherit the
+  mismatch, so it is a global font regression, not a material bug.
 - **Glass pointer motion lives on the control, not the template** — `PointerMotionHelper` writes
   `Scale`/`Translation` on the control element itself, so swapping in a native style does not stop a
   glass button's float/sway. `MaterialAppearance` neutralizes `RestScale`, `PointerOverScale`,
@@ -525,6 +531,7 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
+| 2026-10-31 | Restored the `ContentControlThemeFontFamily` / `PivotHeaderItemFontFamily` → `MiSans` aliases and the MiSans fallback in `CascadiaMonoAndMiSans` that the 2026-10-24 material rewrite deleted; documented in §5.3 that those aliases are the only thing that makes framework control content MiSans. |
 | 2026-10-25 | Kept captured material appearance across unload/reload (`ConditionalWeakTable`) and ignored stale `Unloaded` events; removed the ToggleButton border/padding from the native toggle-switch template and bound its header through the control's Content alias; gave the native toggle its own element names and restored the knob `TranslateTransform` slide animation; made native styles stop overriding `FontFamily`; synchronized both `MaterialSwap` slider instances in the reliquary score dialog; neutralized `PointerMotionHelper` scale/translation and pointer lighting in the native material and restored them on glass; documented all of it in §5.3. |
 | 2026-10-24 | Replaced the cwc:SwitchPresenter material trees (317 blocks) with single glass instances plus MaterialAppearance/MaterialNative.xaml style-and-background switching; MaterialSwap for slider/password/search; documented the glass-brush, caller-background and ToggleSwitch/behavior rules in §5.3. |
 | 2026-10-24 | Removed the 921 `x:Bind ((vm:Type)DataContext)` casts: every binding view now declares one typed `DataContext` shadow property (§6); documented that `DataContext` stays a dependency property so one-way tracking is unchanged. |
