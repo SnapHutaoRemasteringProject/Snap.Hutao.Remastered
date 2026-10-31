@@ -17,7 +17,7 @@
   **remastered** fork of DGP Studio's upstream (`SnapHutaoRemasteringProject/Snap.Hutao.Remastered`).
 - **Runtime** — **.NET 11**. [`global.json`](global.json) pins SDK `11.0.100-rc.2`
   (`rollForward: latestFeature`, `allowPrerelease: true`). ⚠️ that file is currently only in the
-  working tree, **not committed** to `dev` (TODO #18) — until it is, a clean clone builds with
+  working tree, **not committed** to `dev` (TODO #16) — until it is, a clean clone builds with
   whatever SDK is installed.
 - **Target frameworks** — main app
   [`net11.0-windows10.0.26100.0`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj)
@@ -28,7 +28,7 @@
   ([`Package.appxmanifest`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Package.appxmanifest),
   [`Package.development.appxmanifest`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Package.development.appxmanifest)).
   The public *support statement* (Windows 11 22H2+, Windows 10 22H2 with the Jan-2025 update) is
-  policy, not enforced by the manifest — see TODO #7.
+  policy, not enforced by the manifest — see TODO #5.
 - **Packaging** — MSIX (`Package.appxmanifest` for Release, `Package.development.appxmanifest` for
   Debug; single-project MSIX tooling). The app also runs **unpackaged**, detected at runtime
   (`App.xaml.cs`: `TryRegisterUnpackagedNotification`, `TryDetectUnpackagedActivation`). Any
@@ -148,7 +148,7 @@ src/
   shared imports may be declared (`ImplicitUsings` is disabled).
 - [`src/Snap.Hutao.Remastered/.editorconfig`](src/Snap.Hutao.Remastered/.editorconfig) — one level
   **above** the app project, so it also applies to the test project. 200 lines, all severities
-  `suggestion`/`none` (no `error`, no `warning` for StyleCop) — see TODO #5.
+  `suggestion`/`none` (no `error`, no `warning` for StyleCop) — see TODO #3.
 - [`settings.xamlstyler`](src/Snap.Hutao.Remastered/settings.xamlstyler) — XAML formatting rules.
 - [`BannedSymbols.txt`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/BannedSymbols.txt) — banned
   APIs (`List<T>.ForEach`, `ContentDialog.ShowAsync`, `UIElement.RasterizationScale`).
@@ -239,7 +239,7 @@ the build fails with `CS9275`); write a normal constructor in that case.
 - **Collection views expose both notification contracts** — `IAdvancedCollectionView<T>` carries
   `INotifyCollectionChanged` as well as WinRT vector events. Publish filtered/sorted view indices
   and the actual removed item; an ItemsRepeater consuming a bindable adapter must observe removals.
-- **Two ViewModel base classes exist** (see TODO #4):
+- **Two ViewModel base classes exist** (see TODO #2):
   - [`ViewModel/Abstraction/ViewModel.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/ViewModel/Abstraction/ViewModel.cs)
     — full lifecycle: `Initialization` TCS, `Resurrect()`, `Uninitialize()`, `CriticalSection`,
     `CancellationToken`, `IsViewUnloaded`, `DeferContentLoader`, `[Command("LoadCommand")] LoadAsync`
@@ -307,7 +307,7 @@ the build fails with `CS9275`); write a normal constructor in that case.
   — singleton (`[Service(ServiceLifetime.Singleton, typeof(IMetadataService))]`), exposes
   `InitializeAsync()`, `FromCacheOrFileAsync<T>(MetadataFileStrategy, CancellationToken)` and the
   underlying `IMemoryCache`.
-- `serviceProvider.GetRequiredService<IMetadataService>().InitializeAsync()` at startup; pages then
+- `serviceProvider.GetRequiredService<IMetadataService>().InitializeInternalAsync()` at startup; pages then
   read through the `GetContextAsync` extensions
   (`Service/Metadata/ContextAbstraction/MetadataServiceContextExtension.cs`, dictionary/list caches —
   see the PERF items in `CODE_REVIEW.md`).
@@ -317,8 +317,6 @@ the build fails with `CS9275`); write a normal constructor in that case.
   [`Service/Network/NetworkRetryCoordinator.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Network/NetworkRetryCoordinator.cs)
   (re-runs startup work after the network recovers — this one is the best-quality recent code in
   the repo and a good template).
-- ⚠️ `IMetadataServiceInitialization` still exposes the mechanically renamed
-  **`InitializepublicAsync`** — a defect, not a convention (TODO #1).
 
 ### 5.6 Plugin system
 
@@ -419,13 +417,15 @@ the build fails with `CS9275`); write a normal constructor in that case.
   XAML. For implementation details, `internal`/`private` are acceptable and preferred (the
   generator's `SH001` even demands `internal` for non-contract types).
   **Never perform a repository-wide visibility rewrite** — the last one (a single commit touching
-  2017 files) is what produced `InitializepublicAsync` and 12 `SH001` suppressions
-  (`CODE_REVIEW.md#BUG-10`).
+  2017 files) produced the rename damage tracked by `CODE_REVIEW.md#BUG-10` and 12 `SH001`
+  suppressions.
 - **`unsafe`** is allowed for Win32 interop and hot paths only; keep it inside a small, documented
   API surface.
 - **Public API naming** — identifiers must read as English words. `public` must never appear inside
-  an identifier (`Readpublic`, `WritepublicAsync`, `InitializepublicAsync` are all rename damage,
-  `BUG-10`). When refactoring, prefer `Core`/`Async` suffixes.
+  an identifier; that is the `BUG-10` rename damage (the former `Readpublic`/`WritepublicAsync`/
+  `InitializepublicAsync` names now read `ReadInternal`/`WriteInternalAsync`/
+  `InitializeInternalAsync`). When refactoring implementation helpers, prefer a descriptive suffix
+  (`Internal`, `Core`, `Async`) over a visibility keyword.
 
 ## 7. Working in This Repo
 
@@ -456,30 +456,29 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | # | Drift | Where | ID |
 |---|---|---|---|
-| 1 | `IMetadataServiceInitialization.InitializepublicAsync` is a mechanical-rename artifact; the target name is `InitializeAsync` (public API change → next major) | `Service/Metadata/IMetadataServiceInitialization.cs`, callers in `MetadataService`, `LegacyMetadataService`, `AppActivation`, `MainViewModel` | BUG-10 |
-| 2 | Same rename damage in the Zstandard streams: `Readpublic`, `ReadpublicAsync`, `Writepublic`, `WritepublicAsync`, `Flushpublic`, `FlushpublicAsync` → `*Core`/`*Async` | `Core/IO/Compression/Zstandard/*` | BUG-10 |
-| 3 | Repository-wide `internal` removal (0 occurrences left) + 12 `SH001` suppressions; `public` was mandated uniformly, which is what caused #1/#2 | whole repo | BUG-10 |
-| 4 | Two ViewModel lifecycle state machines (`ViewModel` vs `ViewModelSlim`), derived classes assign `IsInitialized` on their own | `ViewModel/Abstraction/*` | ARCH-03 |
-| 5 | Analyzer severities are advisory: 54 `suggestion`, 18 `none`, 2 `warning`, **0** `error`; no `TreatWarningsAsErrors`/`AnalysisLevel`; `NoWarn` swallows `CA2012`; `SA1404` disabled | `src/Snap.Hutao.Remastered/.editorconfig`, app csproj | ENG-01, ENG-02 |
-| 6 | Test project cannot reference the app (0 `ProjectReference`, 39 source links, TFM `net11.0` vs `net11.0-windows…`) | `Snap.Hutao.Remastered.Test.csproj` | BUG-02 |
-| 7 | Manifest allows Windows 10 `10.0.19041.0` while the public support statement says Windows 10 22H2 (Jan-2025) / Windows 11 22H2 — reconcile one of the two | `Package*.appxmanifest`, project docs site | — |
-| 8 | Partial CI quality gate: Alpha runs the full MSTest project in Debug and Release on `dev` pushes/PRs, but Canary/Publish do not run it and none of the workflows enforce `dotnet format --verify-no-changes` | `.github/workflows/alpha.yml` | ENG-05 (partial) |
-| 9 | No central package management (`Directory.Build.props` / `Directory.Packages.props` absent, 61 `PackageReference`s across the 4 csproj files carry inline versions) | `src/**/*.csproj` | ENG-04 |
-| 10 | `dependabot.yml` NuGet entry still points at the pre-rename path `/src/Snap.Hutao` → no NuGet updates since the rename | `.github/dependabot.yml` | ENG-06 |
-| 11 | Dead code / stale config: `LegacyMetadataService` (396 lines, `[Service]` commented out), `build.cake` targets a non-existent `.sln`, commented-out `#pragma` block | `Service/Metadata/LegacyMetadataService.cs`, `build.cake`, `Web/Hoyolab/SaltConstants.cs` | ENG-08 |
-| 12 | Normal builds do not emit generator source copies; `AotAnalysis=true` enables diagnostics only, without another generated-source output tree | app csproj | ENG-09 |
-| 13 | 171 `[SuppressMessage]` + 90 `#pragma warning disable`, several without `Justification` | repo-wide | ENG-03 |
-| 14 | Hard-coded Chinese UI text still present in `.cs` string literals and XAML attribute values (`TestPage`, `LaunchGamePage` worst) and no gate against new ones | repo-wide | LOC-01/02/03 |
-| 15 | `ScopedPage` creates its `IServiceScope` only on the first `Loading` (handler unsubscribed) and disposes a `CancellationTokenSource` field it keeps handing out — a second activation throws | `UI/Xaml/Control/ScopedPage.cs` | BUG-05 |
-| 16 | Legacy scope plumbing: 272 constructors/partial ctors take `IServiceProvider`, 171 `CreateScope()` calls, 4 `*ScopeContext` bags, 12 `Ioc.Default` uses | repo-wide | ARCH-01, ARCH-02 |
-| 17 | `.github/copilot-instructions.md` and `CONTRIBUTING.md` had pre-rename paths / wrong branch names (`src/Snap.Hutao`, `Snap.Hutao.sln`, `develop`, `dev-master`); corrected on 2026-10-11, keep them in sync | `.github/copilot-instructions.md`, `CONTRIBUTING.md` | ENG-10 |
-| 18 | `global.json` (the SDK pin referenced in §1) and `CODE_REVIEW.md` exist only as untracked files in the working tree — commit them, otherwise the pin and this review trail do not exist for a clean clone | `global.json`, `CODE_REVIEW.md` | — |
-| 19 | Inventory refresh still replaces its rows through two separate repository calls (`RemoveInventoryItemRangeByProjectId` then `AddInventoryItemRangeByProjectId`, no transaction) and treats only a parse *exception* as failure, not a zero-item parse — the backpack path was fixed for N3, inventory was not | `Service/Inventory/InventoryService.cs` | N3 |
+| 1 | Repository-wide `internal` removal (0 occurrences left) + 12 `SH001` suppressions; `public` was mandated uniformly, which produced the historical rename damage (BUG-10) | whole repo | BUG-10 |
+| 2 | Two ViewModel lifecycle state machines (`ViewModel` vs `ViewModelSlim`), derived classes assign `IsInitialized` on their own | `ViewModel/Abstraction/*` | ARCH-03 |
+| 3 | Analyzer severities are advisory: 54 `suggestion`, 18 `none`, 2 `warning`, **0** `error`; no `TreatWarningsAsErrors`/`AnalysisLevel`; `NoWarn` swallows `CA2012`; `SA1404` disabled | `src/Snap.Hutao.Remastered/.editorconfig`, app csproj | ENG-01, ENG-02 |
+| 4 | Test project cannot reference the app (0 `ProjectReference`, 39 source links, TFM `net11.0` vs `net11.0-windows…`) | `Snap.Hutao.Remastered.Test.csproj` | BUG-02 |
+| 5 | Manifest allows Windows 10 `10.0.19041.0` while the public support statement says Windows 10 22H2 (Jan-2025) / Windows 11 22H2 — reconcile one of the two | `Package*.appxmanifest`, project docs site | — |
+| 6 | Partial CI quality gate: Alpha runs the full MSTest project in Debug and Release on `dev` pushes/PRs, but Canary/Publish do not run it and none of the workflows enforce `dotnet format --verify-no-changes` | `.github/workflows/alpha.yml` | ENG-05 (partial) |
+| 7 | No central package management (`Directory.Build.props` / `Directory.Packages.props` absent, 61 `PackageReference`s across the 4 csproj files carry inline versions) | `src/**/*.csproj` | ENG-04 |
+| 8 | `dependabot.yml` NuGet entry still points at the pre-rename path `/src/Snap.Hutao` → no NuGet updates since the rename | `.github/dependabot.yml` | ENG-06 |
+| 9 | Dead code / stale config: `LegacyMetadataService` (396 lines, `[Service]` commented out), `build.cake` targets a non-existent `.sln`, commented-out `#pragma` block | `Service/Metadata/LegacyMetadataService.cs`, `build.cake`, `Web/Hoyolab/SaltConstants.cs` | ENG-08 |
+| 10 | Normal builds do not emit generator source copies; `AotAnalysis=true` enables diagnostics only, without another generated-source output tree | app csproj | ENG-09 |
+| 11 | 171 `[SuppressMessage]` + 90 `#pragma warning disable`, several without `Justification` | repo-wide | ENG-03 |
+| 12 | Hard-coded Chinese UI text still present in `.cs` string literals and XAML attribute values (`TestPage`, `LaunchGamePage` worst) and no gate against new ones | repo-wide | LOC-01/02/03 |
+| 13 | `ScopedPage` creates its `IServiceScope` only on the first `Loading` (handler unsubscribed) and disposes a `CancellationTokenSource` field it keeps handing out — a second activation throws | `UI/Xaml/Control/ScopedPage.cs` | BUG-05 |
+| 14 | Legacy scope plumbing: 272 constructors/partial ctors take `IServiceProvider`, 171 `CreateScope()` calls, 4 `*ScopeContext` bags, 12 `Ioc.Default` uses | repo-wide | ARCH-01, ARCH-02 |
+| 15 | `.github/copilot-instructions.md` and `CONTRIBUTING.md` had pre-rename paths / wrong branch names (`src/Snap.Hutao`, `Snap.Hutao.sln`, `develop`, `dev-master`); corrected on 2026-10-11, keep them in sync | `.github/copilot-instructions.md`, `CONTRIBUTING.md` | ENG-10 |
+| 16 | `global.json` (the SDK pin referenced in §1) and `CODE_REVIEW.md` exist only as untracked files in the working tree — commit them, otherwise the pin and this review trail do not exist for a clean clone | `global.json`, `CODE_REVIEW.md` | — |
+| 17 | Inventory refresh still replaces its rows through two separate repository calls (`RemoveInventoryItemRangeByProjectId` then `AddInventoryItemRangeByProjectId`, no transaction) and treats only a parse *exception* as failure, not a zero-item parse — the backpack path was fixed for N3, inventory was not | `Service/Inventory/InventoryService.cs` | N3 |
 
 ## 9. Changelog of this document
 
 | Date | Change |
 |---|---|
+| 2026-10-31 | Restored the pre-rename names `InitializeInternalAsync` (metadata initialization) and `ReadInternal`/`WriteInternal`/`FlushInternal` (Zstandard streams), removed TODOs #1/#2 and renumbered the drift table; §5.5 no longer records the rename defect. |
 | 2026-10-24 | Backpack refresh now parses before it writes, reports a parse failure as `false` (warning + untouched archive) instead of success, and replaces stored items in one transaction; documented the parse-first/transactional rule in §6 (review N3). |
 | 2026-10-24 | Plugin enable/disable now commits after the plugin hook (`OnEnable`/`OnDisable` → package move → `IsEnabled`), and every `PluginInfo` observable write goes through a main-thread helper; documented the contract in §5.6 (review N1). |
 | 2026-10-24 | Replaced the cwc:SwitchPresenter material trees (317 blocks) with single glass instances plus MaterialAppearance/MaterialNative.xaml style-and-background switching; MaterialSwap for slider/password/search; documented the glass-brush, caller-background and ToggleSwitch/behavior rules in §5.3. |

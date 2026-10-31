@@ -301,7 +301,7 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
             await Task.WhenAll(
             [
                 serviceProvider.GetRequiredService<HutaoUserOptions>().InitializeAsync().AsTask(),
-                serviceProvider.GetRequiredService<IMetadataService>().InitializepublicAsync().AsTask(),
+                serviceProvider.GetRequiredService<IMetadataService>().InitializeInternalAsync().AsTask(),
                 serviceProvider.GetRequiredService<IPluginService>().LoadAllPluginsAsync()
             ]).ConfigureAwait(false);
 

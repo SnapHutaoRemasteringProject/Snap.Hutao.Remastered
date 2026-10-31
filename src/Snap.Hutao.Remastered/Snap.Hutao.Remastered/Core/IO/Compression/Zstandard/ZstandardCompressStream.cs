@@ -92,39 +92,39 @@ public sealed partial class ZstandardCompressStream : Stream
     public override unsafe void Flush()
     {
         ObjectDisposedException.ThrowIf(compressStreamContext is null, this);
-        Flushpublic(ZSTD_EndDirective.ZSTD_e_flush);
+        FlushInternal(ZSTD_EndDirective.ZSTD_e_flush);
     }
 
     public override unsafe Task FlushAsync(CancellationToken cancellationToken)
     {
         ObjectDisposedException.ThrowIf(compressStreamContext is null, this);
-        return FlushpublicAsync(ZSTD_EndDirective.ZSTD_e_flush, cancellationToken).AsTask();
+        return FlushInternalAsync(ZSTD_EndDirective.ZSTD_e_flush, cancellationToken).AsTask();
     }
 
     public override unsafe void Write(ReadOnlySpan<byte> buffer)
     {
         ObjectDisposedException.ThrowIf(compressStreamContext is null, this);
-        Writepublic(buffer);
+        WriteInternal(buffer);
     }
 
     public override unsafe void Write(byte[] buffer, int offset, int count)
     {
         CheckParamsValid(buffer, offset, count);
         ObjectDisposedException.ThrowIf(compressStreamContext is null, this);
-        Writepublic(new Span<byte>(buffer, offset, count));
+        WriteInternal(new Span<byte>(buffer, offset, count));
     }
 
     public override unsafe ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(compressStreamContext is null, this);
-        return WritepublicAsync(buffer, cancellationToken);
+        return WriteInternalAsync(buffer, cancellationToken);
     }
 
     public override unsafe Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
         CheckParamsValid(buffer, offset, count);
         ObjectDisposedException.ThrowIf(compressStreamContext is null, this);
-        return WritepublicAsync(new(buffer, offset, count), cancellationToken).AsTask();
+        return WriteInternalAsync(new(buffer, offset, count), cancellationToken).AsTask();
     }
 
     protected override unsafe void Dispose(bool disposing)
@@ -143,7 +143,7 @@ public sealed partial class ZstandardCompressStream : Stream
                 return;
             }
 
-            Flushpublic(ZSTD_EndDirective.ZSTD_e_end);
+            FlushInternal(ZSTD_EndDirective.ZSTD_e_end);
         }
         finally
         {
@@ -166,7 +166,7 @@ public sealed partial class ZstandardCompressStream : Stream
         }
     }
 
-    private void Writepublic(ReadOnlySpan<byte> buffer)
+    private void WriteInternal(ReadOnlySpan<byte> buffer)
     {
         if (buffer.Length == 0)
         {
@@ -197,7 +197,7 @@ public sealed partial class ZstandardCompressStream : Stream
         position = output.pos;
     }
 
-    private async ValueTask WritepublicAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken)
+    private async ValueTask WriteInternalAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken)
     {
         if (buffer.Length == 0)
         {
@@ -226,7 +226,7 @@ public sealed partial class ZstandardCompressStream : Stream
         position = output.pos;
     }
 
-    private void Flushpublic(ZSTD_EndDirective directive)
+    private void FlushInternal(ZSTD_EndDirective directive)
     {
         ZSTD_inBuffer_s input = default;
         input.size = 0;
@@ -255,7 +255,7 @@ public sealed partial class ZstandardCompressStream : Stream
         position = 0;
     }
 
-    private async ValueTask FlushpublicAsync(ZSTD_EndDirective directive, CancellationToken cancellationToken)
+    private async ValueTask FlushInternalAsync(ZSTD_EndDirective directive, CancellationToken cancellationToken)
     {
         ZSTD_inBuffer_s input = default;
         input.size = 0;

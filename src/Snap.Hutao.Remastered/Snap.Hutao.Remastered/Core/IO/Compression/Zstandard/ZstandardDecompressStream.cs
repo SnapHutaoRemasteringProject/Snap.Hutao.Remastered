@@ -98,27 +98,27 @@ public sealed partial class ZstandardDecompressStream : Stream
     public override unsafe int Read(Span<byte> buffer)
     {
         ObjectDisposedException.ThrowIf(decompressStreamContext is null, this);
-        return Readpublic(buffer);
+        return ReadInternal(buffer);
     }
 
     public override unsafe int Read(byte[] buffer, int offset, int count)
     {
         CheckParamsValid(buffer, offset, count);
         ObjectDisposedException.ThrowIf(decompressStreamContext is null, this);
-        return Readpublic(buffer.AsSpan(offset, count));
+        return ReadInternal(buffer.AsSpan(offset, count));
     }
 
     public override unsafe ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken token = default)
     {
         ObjectDisposedException.ThrowIf(decompressStreamContext is null, this);
-        return ReadpublicAsync(buffer, token);
+        return ReadInternalAsync(buffer, token);
     }
 
     public override unsafe Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken token)
     {
         CheckParamsValid(buffer, offset, count);
         ObjectDisposedException.ThrowIf(decompressStreamContext is null, this);
-        return ReadpublicAsync(buffer.AsMemory(offset, count), token).AsTask();
+        return ReadInternalAsync(buffer.AsMemory(offset, count), token).AsTask();
     }
 
     protected override unsafe void Dispose(bool disposing)
@@ -149,7 +149,7 @@ public sealed partial class ZstandardDecompressStream : Stream
         }
     }
 
-    private int Readpublic(Span<byte> buffer)
+    private int ReadInternal(Span<byte> buffer)
     {
         ZSTD_inBuffer_s input = default;
         input.size = size;
@@ -181,7 +181,7 @@ public sealed partial class ZstandardDecompressStream : Stream
         return (int)output.pos;
     }
 
-    private async ValueTask<int> ReadpublicAsync(Memory<byte> buffer, CancellationToken token)
+    private async ValueTask<int> ReadInternalAsync(Memory<byte> buffer, CancellationToken token)
     {
         ZSTD_inBuffer_s input = default;
         input.size = size;

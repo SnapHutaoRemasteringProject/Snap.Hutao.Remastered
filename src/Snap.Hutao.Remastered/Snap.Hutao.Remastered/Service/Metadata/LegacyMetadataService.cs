@@ -51,7 +51,7 @@ public sealed partial class LegacyMetadataService : IMetadataService
         return isInitialized;
     }
 
-    public async ValueTask<bool> InitializepublicAsync(CancellationToken token = default)
+    public async ValueTask<bool> InitializeInternalAsync(CancellationToken token = default)
     {
         if (isInitialized)
         {
