@@ -54,12 +54,23 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <wl:LiquidGlassHyperlinkButton
-                    VerticalAlignment="Stretch"
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    Content="&#xE946;"
-                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                    NavigateUri="https://github.com/DGP-Studio/Snap.Hutao.Remastered/blob/main/src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Core/Scripting/ScriptContext.cs"/>
+                <shuxcth:MaterialSwap VerticalAlignment="Stretch">
+                    <shuxcth:MaterialSwap.Native>
+                        <HyperlinkButton
+                            VerticalAlignment="Stretch"
+                            Content="&#xE946;"
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            NavigateUri="https://github.com/DGP-Studio/Snap.Hutao.Remastered/blob/main/src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Core/Scripting/ScriptContext.cs"/>
+                    </shuxcth:MaterialSwap.Native>
+                    <shuxcth:MaterialSwap.Glass>
+                        <wl:LiquidGlassHyperlinkButton
+                            VerticalAlignment="Stretch"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Content="&#xE946;"
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            NavigateUri="https://github.com/DGP-Studio/Snap.Hutao.Remastered/blob/main/src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Core/Scripting/ScriptContext.cs"/>
+                    </shuxcth:MaterialSwap.Glass>
+                </shuxcth:MaterialSwap>
                 <wl:LiquidGlassButton
                     Grid.Column="1"
                     HorizontalAlignment="Stretch"

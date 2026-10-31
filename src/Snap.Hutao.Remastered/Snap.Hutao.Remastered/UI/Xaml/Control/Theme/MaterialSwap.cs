@@ -67,6 +67,7 @@ public sealed partial class MaterialSwap : ContentControl
 
     private void OnLoaded(object sender, RoutedEventArgs args)
     {
+        ControlMaterialState.MaterialChanged -= OnMaterialChanged;
         ControlMaterialState.MaterialChanged += OnMaterialChanged;
         UpdateContent();
     }
