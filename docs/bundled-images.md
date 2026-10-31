@@ -113,12 +113,17 @@ configuration fails rather than silently publishing a different payload.
 Uploads/signing include both installer variants. The remote SignPath installer
 artifact configuration must accept the two installer EXEs when the snapshot is enabled.
 
-## Server version API (future, not required for this feature)
+## Server quality selection and version API
 
-Current category ZIPs have no version in their URLs. Sample HEAD checks on Bg.zip
-returned identical lengths/ETags for Original/Full and High/Minimum; this is not
-proof that every category implements the same policy. This client does not assign
-freshness based on those headers or on the game's version number.
+Category ZIPs are requested through the API (`{api}/static/zip/<category>.zip`) so the server
+can select the variant from `x-hutao-quality` and answer with a 302 to the static host:
+original quality stays under `static/zip` and `static/raw`, compressed ("高质量") files live
+under `static/low_zip` and `static/low`. Direct static URLs ignore that header, and old
+clients that do not send it keep receiving the original files. `/static/size` returns the
+four-field size manifest (`size.json`) that `StaticResourceBuilder` generates.
+
+Category ZIPs still have no version in their URLs, so this client does not assign freshness
+based on their headers or on the game's version number.
 
 For reliable same-name updates, publish an atomic versioned manifest such as
 `/static/manifests/7.2.json` and immutable image URLs (or content-addressed files).
