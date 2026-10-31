@@ -98,6 +98,7 @@ public sealed partial class App : Application
         try
         {
             AppActivationArguments? activatedEventArgs;
+            HutaoActivationArguments? resolvedActivation = null;
 
             if (RuntimeEnvironment.IsPackaged)
             {
@@ -109,14 +110,31 @@ public sealed partial class App : Application
                 // E_INVALIDARG E_OUTOFMEMORY
                 activatedEventArgs = AppInstance.GetCurrent().GetActivatedEventArgs();
 
-                if (serviceProvider.GetRequiredService<PrivateNamedPipeClient>().TryRedirectActivationTo(activatedEventArgs))
+                // An administrator restart can carry the URI through its command line rather than
+                // native protocol activation. Resolve it before redirecting or handling this launch.
+                resolvedActivation = HutaoActivationArguments.ResolveFromAppActivationArguments(activatedEventArgs, Environment.GetCommandLineArgs()[1..]);
+                resolvedActivation.IsRedirectTo = true;
+
+                if (serviceProvider.GetRequiredService<PrivateNamedPipeClient>().TryRedirectActivationTo(resolvedActivation))
                 {
                     SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Application exiting on RedirectActivationTo", "Hutao"));
                     XamlApplicationLifetime.ActivationAndInitializationCompleted = true;
                     Exit();
 
-                    // base.Exit() may not fully terminate the process in unpackaged mode,
-                    // so force exit to guarantee the new instance terminates completely.
+                    // Release the notification COM server before terminating the redirecting process.
+                    AppNotificationManager.Default.Unregister();
+                    AppNotificationManager.Default.NotificationInvoked -= activation.NotificationInvoked;
+                    SentrySdk.Flush();
+                    Environment.Exit(0);
+                    return;
+                }
+
+                resolvedActivation.IsRedirectTo = false;
+
+                if (Bootstrap.TryRestartAsAdministrator(resolvedActivation))
+                {
+                    AppNotificationManager.Default.Unregister();
+                    AppNotificationManager.Default.NotificationInvoked -= activation.NotificationInvoked;
                     SentrySdk.Flush();
                     Environment.Exit(0);
                     return;
@@ -200,7 +218,7 @@ public sealed partial class App : Application
 
             // Manually invoke
             SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Activate and Initialize", "Application"));
-            activation.ActivateAndInitialize(HutaoActivationArguments.FromAppActivationArguments(activatedEventArgs));
+            activation.ActivateAndInitialize(resolvedActivation ?? HutaoActivationArguments.FromAppActivationArguments(activatedEventArgs));
         }
         catch (Exception ex)
         {
@@ -233,29 +251,18 @@ public sealed partial class App : Application
     private static HutaoActivationArguments? TryDetectUnpackagedActivation()
     {
         string[] cmdArgs = Environment.GetCommandLineArgs();
-        string? arg = cmdArgs.Length > 1 ? cmdArgs[1] : null;
-
-        if (arg is null)
+        if (cmdArgs.Length <= 1)
         {
             return null;
         }
 
-        if (arg.StartsWith("hutao://", StringComparison.OrdinalIgnoreCase))
+        HutaoActivationArguments? args = HutaoActivationArguments.TryCreateFromCommandLineArguments(cmdArgs[1..]);
+        if (args is not null)
         {
-            return new()
-            {
-                Kind = HutaoActivationKind.Protocol,
-                ProtocolActivatedUri = new Uri(arg),
-                IsRedirectTo = true,
-            };
+            args.IsRedirectTo = true;
         }
 
-        return new()
-        {
-            Kind = HutaoActivationKind.Launch,
-            LaunchActivatedArguments = arg,
-            IsRedirectTo = true,
-        };
+        return args;
     }
 
     /// <summary>

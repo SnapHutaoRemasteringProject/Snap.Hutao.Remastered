@@ -66,4 +66,86 @@ public sealed class HutaoActivationArguments
 
         return result;
     }
+
+    /// <summary>
+    /// Reads the activation carried by the command line. The administrator restart forwards the
+    /// activation as an argument, see <c>Bootstrap.TryRestartAsAdministrator</c>.
+    /// </summary>
+    internal static HutaoActivationArguments? TryCreateFromCommandLineArguments(IReadOnlyList<string> args)
+    {
+        if (args.Count is 0)
+        {
+            return null;
+        }
+
+        string? argument = args[0];
+        if (string.IsNullOrEmpty(argument))
+        {
+            return null;
+        }
+
+        if (argument.StartsWith("hutao://", StringComparison.OrdinalIgnoreCase)
+            && Uri.TryCreate(argument, UriKind.Absolute, out Uri? uri))
+        {
+            return new()
+            {
+                Kind = HutaoActivationKind.Protocol,
+                ProtocolActivatedUri = uri,
+            };
+        }
+
+        return new()
+        {
+            Kind = HutaoActivationKind.Launch,
+            LaunchActivatedArguments = argument,
+        };
+    }
+
+    /// <summary>
+    /// Preserves native activation and, for Launch events, restores a <c>hutao://</c> URI carried
+    /// by the parsed process arguments, including arguments forwarded by an administrator restart.
+    /// </summary>
+    internal static HutaoActivationArguments ResolveFromAppActivationArguments(AppActivationArguments args, IReadOnlyList<string> commandLineArguments, bool isRedirected = false)
+    {
+        HutaoActivationArguments result = FromAppActivationArguments(args, isRedirected);
+
+        if (result.Kind is not HutaoActivationKind.Launch)
+        {
+            return result;
+        }
+
+        // Main's arguments (or Environment.GetCommandLineArgs()[1..]) have already been split
+        // and unquoted by the runtime. Use those to restore the protocol activation without
+        // assuming the app-model launch payload has the same shape as the process command line.
+        HutaoActivationArguments? forwarded = TryCreateFromCommandLineArguments(commandLineArguments);
+        if (forwarded is not { Kind: HutaoActivationKind.Protocol })
+        {
+            // Keep supporting an app-model launch payload that is itself a bare URI.
+            forwarded = TryCreateFromCommandLineArguments([result.LaunchActivatedArguments ?? string.Empty]);
+        }
+
+        if (forwarded is not { Kind: HutaoActivationKind.Protocol })
+        {
+            return result;
+        }
+
+        forwarded.IsRedirectTo = isRedirected;
+        return forwarded;
+    }
+
+    /// <summary>
+    /// Serializes an already resolved activation for an administrator restart. Other activation
+    /// kinds must stay in this process so their payload and user input are not discarded.
+    /// </summary>
+    internal bool TryGetAdministratorRestartArguments(out string arguments)
+    {
+        arguments = string.Empty;
+        if (Kind is HutaoActivationKind.Protocol && ProtocolActivatedUri is { } uri)
+        {
+            arguments = $"\"{uri.OriginalString}\"";
+            return true;
+        }
+
+        return Kind is HutaoActivationKind.Launch;
+    }
 }

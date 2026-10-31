@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using Microsoft.UI.Xaml;
-using Microsoft.Windows.AppLifecycle;
 using Microsoft.Windows.AppNotifications;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.LifeCycle;
@@ -52,7 +51,8 @@ public static partial class Bootstrap
 
         bool hasRunningInstance = HasRunningInstance();
 
-        // 1. Another instance is already running, hand this activation over to it.
+        // 1. Unpackaged instances can redirect without notification setup. Packaged instances
+        // defer to OnLaunched so notification registration precedes reading their activation.
         // If the redirect fails, fall through to full startup: the pipe server may not be ready yet
         // during first instance init.
         if (hasRunningInstance && PrivateNamedPipeClient.TryLightweightRedirect(args))
@@ -60,17 +60,16 @@ public static partial class Bootstrap
             return;
         }
 
-        // 2. Check if we should restart as administrator. The command-line arguments carry the
-        // activation (hutao:// URI, notification arguments, ...) and are passed on to the restarted
-        // instance, so it continues what this process was started for.
-        if (ShouldRestartAsAdmin())
+        // 2. Unpackaged activation is carried by argv. Packaged activation is resolved in
+        // OnLaunched after notification registration, before deciding whether to elevate.
+        if (RuntimeEnvironment.IsUnpackaged && ShouldRestartAsAdmin()
+            && TryRestartAsAdministrator(GetForwardedArguments(args)))
         {
-            RestartAsAdministrator(args);
             return;
         }
 
-        // 3. Without an instance to hand over to, this process becomes the single instance. Its own
-        // activation is read from the command-line arguments by the application.
+        // 3. Without an instance to hand over to, this process becomes the single instance.
+        // The application resolves its activation after notification setup.
         if (!hasRunningInstance)
         {
             try
@@ -199,49 +198,35 @@ public static partial class Bootstrap
         }
     }
 
-    private static void RestartAsAdministrator(string[] args)
+    internal static bool TryRestartAsAdministrator(HutaoActivationArguments activation)
+    {
+        // Rich notification payloads cannot be forwarded through a protocol-only restart,
+        // and notifications are unsupported in elevated processes. Handle them in this process.
+        return activation.TryGetAdministratorRestartArguments(out string arguments)
+            && ShouldRestartAsAdmin()
+            && TryRestartAsAdministrator(arguments);
+    }
+
+    private static bool TryRestartAsAdministrator(string forwardedArguments)
     {
         try
         {
             string? currentProcessPath = Environment.ProcessPath ?? Process.GetCurrentProcess().MainModule?.FileName;
             ArgumentNullException.ThrowIfNull(currentProcessPath);
 
-            string forwardedArguments = RuntimeEnvironment.IsUnpackaged
-                ? GetForwardedArguments(args)
-                : GetAppModelForwardedArguments();
-
             ProcessFactory.StartUsingShellExecuteRunAs(currentProcessPath, forwardedArguments);
-            Environment.Exit(0);
+            return true;
         }
         catch (Exception ex)
         {
             SentrySdk.CaptureException(ex);
+            return false;
         }
     }
 
     private static string GetForwardedArguments(string[] args)
     {
         return string.Join(' ', args.Select(static arg => arg.Contains(' ') ? $"\"{arg}\"" : arg));
-    }
-
-    private static string GetAppModelForwardedArguments()
-    {
-        try
-        {
-            ComWrappersSupport.InitializeComWrappers();
-
-            HutaoActivationArguments activation = HutaoActivationArguments.FromAppActivationArguments(AppInstance.GetCurrent().GetActivatedEventArgs());
-            return activation switch
-            {
-                { Kind: HutaoActivationKind.Protocol, ProtocolActivatedUri: { } uri } => $"\"{uri.OriginalString}\"",
-                _ => string.Empty,
-            };
-        }
-        catch (Exception ex)
-        {
-            SentrySdk.CaptureException(ex);
-            return string.Empty;
-        }
     }
 
     private static bool TryHandleToastNotificationHelper()

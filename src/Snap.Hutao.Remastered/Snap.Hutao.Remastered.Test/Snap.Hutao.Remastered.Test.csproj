@@ -13,6 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="../Snap.Hutao.Remastered/Core/LifeCycle/HutaoActivationArguments.cs" Link="Production/Activation/HutaoActivationArguments.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/LifeCycle/HutaoActivationKind.cs" Link="Production/Activation/HutaoActivationKind.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Caching/ImageResourceBundle.cs" Link="Production/ImageResourceBundle.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/Game/GameLifeCycle.cs" Link="Production/Game/GameLifeCycle.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/Game/GameConstants.cs" Link="Production/Game/GameConstants.cs" />

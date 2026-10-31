@@ -60,49 +60,29 @@ public sealed partial class PrivateNamedPipeClient : IDisposable
     }
 
     /// <summary>
-    /// Lightweight one-shot redirect from the second instance to the first,
+    /// Lightweight one-shot redirect from an unpackaged second instance to the first,
     /// without needing DI or the singleton pipe client. Called from <see cref="Bootstrap.Main"/>.
     /// </summary>
     /// <param name="args">The command-line arguments from Main().</param>
-    /// <returns>true if a redirect was sent; false if pipe unavailable.</returns>
+    /// <returns>true if a redirect was sent; false if packaged or the pipe is unavailable.</returns>
     public static bool TryLightweightRedirect(string[] args)
     {
-        HutaoActivationArguments hutaoArgs;
-
-        // Determine activation kind from command-line arguments
-        if (args.Length > 0)
+        // Packaged activation may need the notification COM server. Defer to OnLaunched,
+        // which subscribes and registers before reading and redirecting the activation.
+        if (RuntimeEnvironment.IsPackaged)
         {
-            string? arg = args[0];
-            if (arg is not null && arg.StartsWith("hutao://", StringComparison.OrdinalIgnoreCase))
-            {
-                hutaoArgs = new()
-                {
-                    Kind = HutaoActivationKind.Protocol,
-                    ProtocolActivatedUri = new Uri(arg),
-                    IsRedirectTo = true,
-                };
-            }
-            else
-            {
-                // Regular launch with arguments
-                hutaoArgs = new()
-                {
-                    Kind = HutaoActivationKind.Launch,
-                    LaunchActivatedArguments = arg,
-                    IsRedirectTo = true,
-                };
-            }
+            return false;
         }
-        else
-        {
-            // No arguments, treat as a regular launch to bring existing instance to foreground
-            hutaoArgs = new()
+
+        HutaoActivationArguments hutaoArgs = HutaoActivationArguments.TryCreateFromCommandLineArguments(args)
+            ?? new()
             {
+                // No arguments, treat as a regular launch to bring existing instance to foreground
                 Kind = HutaoActivationKind.Launch,
                 LaunchActivatedArguments = string.Empty,
-                IsRedirectTo = true,
             };
-        }
+
+        hutaoArgs.IsRedirectTo = true;
 
         using NamedPipeClientStream clientStream = new(".", PrivateNamedPipe.PrivateName, PipeDirection.InOut, PipeOptions.Asynchronous | PipeOptions.WriteThrough);
 
