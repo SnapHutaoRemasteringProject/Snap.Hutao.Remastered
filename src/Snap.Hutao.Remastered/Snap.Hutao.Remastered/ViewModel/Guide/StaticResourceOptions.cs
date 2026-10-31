@@ -7,6 +7,7 @@ using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Caching;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Model;
+using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 using Snap.Hutao.Remastered.Web.Hutao;
 using System.Collections.Immutable;
 using System.Globalization;

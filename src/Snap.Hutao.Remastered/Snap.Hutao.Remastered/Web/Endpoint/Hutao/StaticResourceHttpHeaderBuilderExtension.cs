@@ -2,12 +2,11 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.Setting;
-using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
 using System.Net.Http.Headers;
 
-namespace Snap.Hutao.Remastered.ViewModel.Guide;
+namespace Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 
 public static class StaticResourceHttpHeaderBuilderExtension
 {
