@@ -253,7 +253,8 @@ public sealed partial class ImageCache : IImageCache
         }
         catch (IOException ex)
         {
-            throw publicImageCacheException.Throw("Failed to convert image", ex);
+            throw InternalImageCacheException.Throw("Failed to convert image", ex);
         }
     }
 }
+

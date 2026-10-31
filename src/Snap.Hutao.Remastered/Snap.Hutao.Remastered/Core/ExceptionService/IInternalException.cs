@@ -3,4 +3,4 @@
 
 namespace Snap.Hutao.Remastered.Core.ExceptionService;
 
-public interface IpublicException;
+internal interface IInternalException;
