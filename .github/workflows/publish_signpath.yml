@@ -120,6 +120,30 @@ jobs:
           name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-signed-installer
           path: ${{ github.workspace }}/src/output/signed-installer
 
+      - name: Install rclone
+        shell: pwsh
+        run: |
+          choco install rclone --yes --no-progress
+          if ($LASTEXITCODE -ne 0) { throw 'rclone installation failed.' }
+
+      - name: Publish default installer to R2
+        id: r2
+        shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ steps.build.outputs.version }}
+          RCLONE_CONFIG_R2_TYPE: s3
+          RCLONE_CONFIG_R2_PROVIDER: Cloudflare
+          RCLONE_CONFIG_R2_REGION: auto
+          RCLONE_CONFIG_R2_NO_CHECK_BUCKET: 'true'
+          RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+        run: |
+          $filename = "Snap.Hutao.Remastered-$env:RELEASE_VERSION-Setup.exe"
+          $installers = @(Get-ChildItem 'src/output/signed-installer' -Recurse -File -Filter $filename)
+          if ($installers.Count -ne 1) { throw "Expected exactly one signed default installer: $filename" }
+          ./scripts/Publish-InstallerToR2.ps1 -InstallerPath $installers[0].FullName
+
       - name: Add summary
         shell: pwsh
         run: |

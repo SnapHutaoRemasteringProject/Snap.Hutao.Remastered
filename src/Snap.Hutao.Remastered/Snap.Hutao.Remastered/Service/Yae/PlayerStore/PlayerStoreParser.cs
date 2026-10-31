@@ -13,12 +13,7 @@ public static class PlayerStoreParser
 {
     public static UIIF? Parse(ByteString bytes)
     {
-        List<Item> items = [];
-        try
-        {
-            ParseItems(bytes, items);
-        }
-        catch (InvalidProtocolBufferException)
+        if (!TryParseItems(bytes, out List<Item>? items))
         {
             return default;
         }
@@ -30,16 +25,23 @@ public static class PlayerStoreParser
         };
     }
 
-    public static ImmutableArray<BackpackItem> ParseToBackpackItems(ByteString bytes, Guid archiveId, ImmutableDictionary<ulong, uint> equippedItemOwners)
+    // Returns false when the packet could not be read as a complete item list. Callers that persist
+    // the result must treat false as "keep what is already stored": a truncated or schema-shifted
+    // packet yields a partial list, and storing it would drop the items that were never reached.
+    public static bool TryParseToBackpackItems(ByteString bytes, Guid archiveId, ImmutableDictionary<ulong, uint> equippedItemOwners, out ImmutableArray<BackpackItem> backpackItems)
     {
-        List<Item> items = [];
-        try
+        backpackItems = default;
+
+        if (!TryParseItems(bytes, out List<Item>? items))
         {
-            ParseItems(bytes, items);
+            return false;
         }
-        catch (InvalidProtocolBufferException)
+
+        // A real bag always has entries, so an empty result means the packet layout changed and
+        // nothing matched, not that the player owns nothing.
+        if (items.Count is 0)
         {
-            // Partial read is acceptable - return what we have
+            return false;
         }
 
         ImmutableArray<BackpackItem>.Builder builder = ImmutableArray.CreateBuilder<BackpackItem>(items.Count);
@@ -52,38 +54,51 @@ public static class PlayerStoreParser
             }
         }
 
-        return builder.ToImmutable();
+        backpackItems = builder.ToImmutable();
+        return true;
     }
 
-    private static void ParseItems(ByteString bytes, List<Item> items)
+    private static bool TryParseItems(ByteString bytes, [NotNullWhen(true)] out List<Item>? items)
     {
-        using (CodedInputStream stream = bytes.CreateCodedInput())
+        List<Item> parsed = [];
+        try
         {
-            while (stream.TryReadTag(out uint tag))
+            using (CodedInputStream stream = bytes.CreateCodedInput())
             {
-                switch (WireFormat.GetTagWireType(tag))
+                while (stream.TryReadTag(out uint tag))
                 {
-                    case WireFormat.WireType.Varint:
-                        {
-                            _ = stream.ReadUInt32();
-                            continue;
-                        }
-
-                    case WireFormat.WireType.LengthDelimited:
-                        {
-                            using (CodedInputStream inputStream = stream.UnsafeReadLengthDelimitedStream())
+                    switch (WireFormat.GetTagWireType(tag))
+                    {
+                        case WireFormat.WireType.Varint:
                             {
-                                while (inputStream.TryPeekTag(out _))
-                                {
-                                    items.Add(Item.Parser.ParseFrom(inputStream));
-                                }
+                                _ = stream.ReadUInt32();
+                                continue;
                             }
 
-                            break;
-                        }
+                        case WireFormat.WireType.LengthDelimited:
+                            {
+                                using (CodedInputStream inputStream = stream.UnsafeReadLengthDelimitedStream())
+                                {
+                                    while (inputStream.TryPeekTag(out _))
+                                    {
+                                        parsed.Add(Item.Parser.ParseFrom(inputStream));
+                                    }
+                                }
+
+                                break;
+                            }
+                    }
                 }
             }
         }
+        catch (InvalidProtocolBufferException)
+        {
+            items = default;
+            return false;
+        }
+
+        items = parsed;
+        return true;
     }
 
     private static BackpackItem? ConvertToBackpackItem(Item item, Guid archiveId)

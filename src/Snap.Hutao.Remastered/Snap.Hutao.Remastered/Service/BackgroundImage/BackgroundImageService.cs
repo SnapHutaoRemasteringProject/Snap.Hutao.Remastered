@@ -198,7 +198,7 @@ public sealed partial class BackgroundImageService : IBackgroundImageService
                         ValueFile file = await scope.ServiceProvider.GetRequiredService<IImageCache>().GetFileFromCacheAsync(url).ConfigureAwait(false);
                         availableBackgroundPathSet = [file];
                     }
-                    catch (publicImageCacheException ex)
+                    catch (InternalImageCacheException ex)
                     {
                         logger.LogWarning(ex, "Failed to download the background image '{Url}'", url);
                         availableBackgroundPathSet = [];
@@ -229,3 +229,4 @@ public sealed partial class BackgroundImageService : IBackgroundImageService
         messenger.Send(InfoBarMessage.Warning(SH.ServiceBackgroundImageDecodeFailed));
     }
 }
+

@@ -31,7 +31,7 @@
   ([`Package.appxmanifest`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Package.appxmanifest),
   [`Package.development.appxmanifest`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Package.development.appxmanifest)).
   The public *support statement* (Windows 11 22H2+, Windows 10 22H2 with the Jan-2025 update) is
-  policy, not enforced by the manifest — see TODO #7.
+  policy, not enforced by the manifest — see TODO #5.
 - **Packaging** — MSIX (`Package.appxmanifest` for Release, `Package.development.appxmanifest` for
   Debug; single-project MSIX tooling). The app also runs **unpackaged**, detected at runtime
   (`App.xaml.cs`: `TryRegisterUnpackagedNotification`, `TryDetectUnpackagedActivation`). Any
@@ -152,7 +152,7 @@ src/
   shared imports may be declared (`ImplicitUsings` is disabled).
 - [`src/Snap.Hutao.Remastered/.editorconfig`](src/Snap.Hutao.Remastered/.editorconfig) — one level
   **above** the app project, so it also applies to the test project. 200 lines, all severities
-  `suggestion`/`none` (no `error`, no `warning` for StyleCop) — see TODO #5.
+  `suggestion`/`none` (no `error`, no `warning` for StyleCop) — see TODO #3.
 - [`settings.xamlstyler`](src/Snap.Hutao.Remastered/settings.xamlstyler) — XAML formatting rules.
 - [`BannedSymbols.txt`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/BannedSymbols.txt) — banned
   APIs (`List<T>.ForEach`, `ContentDialog.ShowAsync`, `UIElement.RasterizationScale`).
@@ -243,7 +243,7 @@ the build fails with `CS9275`); write a normal constructor in that case.
 - **Collection views expose both notification contracts** — `IAdvancedCollectionView<T>` carries
   `INotifyCollectionChanged` as well as WinRT vector events. Publish filtered/sorted view indices
   and the actual removed item; an ItemsRepeater consuming a bindable adapter must observe removals.
-- **Two ViewModel base classes exist** (see TODO #4):
+- **Two ViewModel base classes exist** (see TODO #2):
   - [`ViewModel/Abstraction/ViewModel.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/ViewModel/Abstraction/ViewModel.cs)
     — full lifecycle: `Initialization` TCS, `Resurrect()`, `Uninitialize()`, `CriticalSection`,
     `CancellationToken`, `IsViewUnloaded`, `DeferContentLoader`, `[Command("LoadCommand")] LoadAsync`
@@ -361,7 +361,7 @@ the build fails with `CS9275`); write a normal constructor in that case.
   — singleton (`[Service(ServiceLifetime.Singleton, typeof(IMetadataService))]`), exposes
   `InitializeAsync()`, `FromCacheOrFileAsync<T>(MetadataFileStrategy, CancellationToken)` and the
   underlying `IMemoryCache`.
-- `serviceProvider.GetRequiredService<IMetadataService>().InitializeAsync()` at startup; pages then
+- `serviceProvider.GetRequiredService<IMetadataService>().InitializeInternalAsync()` at startup; pages then
   read through the `GetContextAsync` extensions
   (`Service/Metadata/ContextAbstraction/MetadataServiceContextExtension.cs`, dictionary/list caches —
   see the PERF items in `CODE_REVIEW.md`).
@@ -371,8 +371,6 @@ the build fails with `CS9275`); write a normal constructor in that case.
   [`Service/Network/NetworkRetryCoordinator.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Network/NetworkRetryCoordinator.cs)
   (re-runs startup work after the network recovers — this one is the best-quality recent code in
   the repo and a good template).
-- ⚠️ `IMetadataServiceInitialization` still exposes the mechanically renamed
-  **`InitializepublicAsync`** — a defect, not a convention (TODO #1).
 
 ### 5.6 Plugin system
 
@@ -393,6 +391,14 @@ the build fails with `CS9275`); write a normal constructor in that case.
   `PluginsChanged` event (raised on the UI thread), because a page may be open before the background
   scan finishes. `GetAllPluginInfos()` = installed (enabled and disabled);
   `GetAllPlugins()` = live instances only.
+- **Enable/disable commits after the plugin hook** — `OnEnable`/`OnDisable` run *before* the package
+  move and before `PluginInfo.IsEnabled` changes, so a hook that throws leaves the plugin exactly as
+  the manager describes it (enabled and loaded) instead of half-applied. `PluginInfo` is an
+  `ObservableObject` bound by `PluginPage`, so its observable properties (`IsEnabled`, `IconPath`)
+  are only written on the main thread — `SetPluginEnabledAsync`/`SetPluginIconPathAsync` — because
+  enabling runs past `await … ConfigureAwait(false)`; assigning them there raised `PropertyChanged`
+  on a pool thread and faulted the binding (review N1 in
+  [`docs/code-review-contributors-2026-10.md`](docs/code-review-contributors-2026-10.md)).
 - Plugins receive the **root** service provider through `PluginContext` (full trust — document it
   when writing plugin docs).
 - The SDK ships as a NuGet package built from
@@ -450,6 +456,14 @@ the build fails with `CS9275`); write a normal constructor in that case.
   throwaway WinUI project; a build-time `*.g.cs` written into `obj` and added to `@(Compile)` does
   work, but that extra build step was judged not worth it — the 30 hand-written lines stay).
 - **Async for I/O**, no UI-thread blocking, no `.Result`/`.Wait()` without a timeout.
+- **Replacing a persisted collection is parse-first and transactional** — build the complete new
+  row set first, then swap it in one transaction
+  ([`BackpackRepository.ReplaceBackpackItemRangeByArchiveId`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Backpack/BackpackRepository.cs)
+  is the template). Never delete and insert through separate scopes: a failure in between leaves the
+  user with an empty or partial collection and no error. A refresh that replaces stored data must
+  also return a truthful result when its source cannot be read — `RefreshByEmbeddedYae` parses the
+  Yae packet first and returns `false` (UI warning, old archive intact) instead of persisting a
+  partial parse (review N3).
 - **Guard clauses** — `ArgumentNullException.ThrowIfNull(x)` (237 uses) and
   `Verify.Operation(condition, "why")` (14 uses; `Verify`/`Requires` come from
   `Microsoft.VisualStudio.Validation` via `global using Microsoft;`). Prefer these over `!`,
@@ -475,13 +489,15 @@ the build fails with `CS9275`); write a normal constructor in that case.
   XAML. For implementation details, `internal`/`private` are acceptable and preferred (the
   generator's `SH001` even demands `internal` for non-contract types).
   **Never perform a repository-wide visibility rewrite** — the last one (a single commit touching
-  2017 files) is what produced `InitializepublicAsync` and 12 `SH001` suppressions
-  (`CODE_REVIEW.md#BUG-10`).
+  2017 files) produced the rename damage tracked by `CODE_REVIEW.md#BUG-10` and 12 `SH001`
+  suppressions.
 - **`unsafe`** is allowed for Win32 interop and hot paths only; keep it inside a small, documented
   API surface.
 - **Public API naming** — identifiers must read as English words. `public` must never appear inside
-  an identifier (`Readpublic`, `WritepublicAsync`, `InitializepublicAsync` are all rename damage,
-  `BUG-10`). When refactoring, prefer `Core`/`Async` suffixes.
+  an identifier; that is the `BUG-10` rename damage (the former `Readpublic`/`WritepublicAsync`/
+  `InitializepublicAsync` names now read `ReadInternal`/`WriteInternalAsync`/
+  `InitializeInternalAsync`). When refactoring implementation helpers, prefer a descriptive suffix
+  (`Internal`, `Core`, `Async`) over a visibility keyword.
 
 ## 7. Working in This Repo
 
@@ -535,8 +551,11 @@ ID — do not "fix" these by documenting them as if they were intended.
 | Date | Change |
 |---|---|
 | 2026-10-31 | Removed the `global.json` SDK pin (`chore: do not use global.json to control dotnet version`) and dropped TODO #18: the build uses the installed .NET 11 SDK, CI installs major `11`, and §1/§2/§7 now forbid reintroducing a pin. |
+| 2026-10-31 | Restored the pre-rename names `InitializeInternalAsync` (metadata initialization) and `ReadInternal`/`WriteInternal`/`FlushInternal` (Zstandard streams), removed TODOs #1/#2 and renumbered the drift table; §5.5 no longer records the rename defect. |
 | 2026-10-31 | Restored the `ContentControlThemeFontFamily` / `PivotHeaderItemFontFamily` → `MiSans` aliases and the MiSans fallback in `CascadiaMonoAndMiSans` that the 2026-10-24 material rewrite deleted; documented in §5.3 that those aliases are the only thing that makes framework control content MiSans. |
 | 2026-10-25 | Kept captured material appearance across unload/reload (`ConditionalWeakTable`) and ignored stale `Unloaded` events; removed the ToggleButton border/padding from the native toggle-switch template and bound its header through the control's Content alias; gave the native toggle its own element names and restored the knob `TranslateTransform` slide animation; made native styles stop overriding `FontFamily`; synchronized both `MaterialSwap` slider instances in the reliquary score dialog; neutralized `PointerMotionHelper` scale/translation and pointer lighting in the native material and restored them on glass; documented all of it in §5.3. |
+| 2026-10-24 | Backpack refresh now parses before it writes, reports a parse failure as `false` (warning + untouched archive) instead of success, and replaces stored items in one transaction; documented the parse-first/transactional rule in §6 (review N3). |
+| 2026-10-24 | Plugin enable/disable now commits after the plugin hook (`OnEnable`/`OnDisable` → package move → `IsEnabled`), and every `PluginInfo` observable write goes through a main-thread helper; documented the contract in §5.6 (review N1). |
 | 2026-10-24 | Replaced the cwc:SwitchPresenter material trees (317 blocks) with single glass instances plus MaterialAppearance/MaterialNative.xaml style-and-background switching; MaterialSwap for slider/password/search; documented the glass-brush, caller-background and ToggleSwitch/behavior rules in §5.3. |
 | 2026-10-24 | Removed the 921 `x:Bind ((vm:Type)DataContext)` casts: every binding view now declares one typed `DataContext` shadow property (§6); documented that `DataContext` stays a dependency property so one-way tracking is unchanged. |
 | 2026-10-20 | Enabled default R2R for Debug and Release; connected the SDK-selected images to local runnable output and MSIX deployment, switched all Cake packaging inputs to publish output, and added final-image header validation. |

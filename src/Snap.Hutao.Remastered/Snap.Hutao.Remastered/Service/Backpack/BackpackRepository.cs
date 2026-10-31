@@ -54,9 +54,24 @@ public sealed partial class BackpackRepository : IBackpackRepository
         return this.SingleOrDefault<BackpackArchive>(a => a.Name == name);
     }
 
-    public void AddBackpackItemRange(IEnumerable<BackpackItem> items)
+    public void ReplaceBackpackItemRangeByArchiveId(Guid archiveId, IEnumerable<BackpackItem> items)
     {
-        this.AddRange(items);
+        using (IServiceScope scope = ServiceProvider.CreateScope())
+        {
+            AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            using (IDbContextTransaction transaction = appDbContext.Database.BeginTransaction())
+            {
+                appDbContext.BackpackItems
+                    .Where(i => i.ArchiveId == archiveId)
+                    .ExecuteDelete();
+
+                appDbContext.BackpackItems.AddRange(items);
+                appDbContext.SaveChanges();
+
+                transaction.Commit();
+            }
+        }
     }
 
     public void RemoveBackpackItemRangeByArchiveId(Guid archiveId)

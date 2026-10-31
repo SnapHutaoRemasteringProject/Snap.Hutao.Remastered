@@ -3,7 +3,7 @@
 
 using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation.HttpClient;
 using Snap.Hutao.Remastered.Core.IO;
-using Snap.Hutao.Remastered.ViewModel.Guide;
+using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
 using System.IO;
@@ -40,7 +40,7 @@ public sealed partial class ImageCacheDownloadOperation : IImageCacheDownloadOpe
 
         if (!File.Exists(baseFile))
         {
-            throw publicImageCacheException.Throw($"'{uri.OriginalString}': File not exists after download attempt.");
+            throw InternalImageCacheException.Throw($"'{uri.OriginalString}': File not exists after download attempt.");
         }
     }
 
@@ -60,14 +60,14 @@ public sealed partial class ImageCacheDownloadOperation : IImageCacheDownloadOpe
                 {
                     throw responseMessage.StatusCode switch
                     {
-                        HttpStatusCode.NotFound => publicImageCacheException.Throw($"Unable to download file from '{uri.OriginalString}': 404 Not Found"),
-                        _ => publicImageCacheException.Throw($"Unexpected HTTP status code {responseMessage.StatusCode}"),
+                        HttpStatusCode.NotFound => InternalImageCacheException.Throw($"Unable to download file from '{uri.OriginalString}': 404 Not Found"),
+                        _ => InternalImageCacheException.Throw($"Unexpected HTTP status code {responseMessage.StatusCode}"),
                     };
                 }
 
                 if (responseMessage.Content.Headers.ContentType?.MediaType is MediaTypeNames.Application.Json)
                 {
-                    publicImageCacheException.Throw($"Unexpected content type: {MediaTypeNames.Application.Json}");
+                    InternalImageCacheException.Throw($"Unexpected content type: {MediaTypeNames.Application.Json}");
                 }
 
                 using (Stream httpStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
@@ -81,7 +81,7 @@ public sealed partial class ImageCacheDownloadOperation : IImageCacheDownloadOpe
                     }
                     catch (DirectoryNotFoundException dnfEx)
                     {
-                        throw publicImageCacheException.Throw($"Unable to create folder at '{directoryName}'", dnfEx);
+                        throw InternalImageCacheException.Throw($"Unable to create folder at '{directoryName}'", dnfEx);
                     }
 
                     FileStream fileStream;
@@ -92,7 +92,7 @@ public sealed partial class ImageCacheDownloadOperation : IImageCacheDownloadOpe
                     catch (IOException ex)
                     {
                         // The process cannot access the file '?' because it is being used by another process.
-                        throw publicImageCacheException.Throw($"Unable to create file at '{baseFile}'", ex);
+                        throw InternalImageCacheException.Throw($"Unable to create file at '{baseFile}'", ex);
                     }
 
                     try
@@ -105,14 +105,15 @@ public sealed partial class ImageCacheDownloadOperation : IImageCacheDownloadOpe
                     catch (IOException ex)
                     {
                         // Received an unexpected EOF or 0 bytes from the transport stream.
-                        // Unable to read data from the transport connection: 远程主机强迫关闭了一个现有的连接。. SocketException: ConnectionReset
-                        // Unable to read data from the transport connection: 你的主机中的软件中止了一个已建立的连接。. SocketException: ConnectionAborted
+                        // Unable to read data from the transport connection: 杩滅▼涓绘満寮鸿揩鍏抽棴浜嗕竴涓幇鏈夌殑杩炴帴銆? SocketException: ConnectionReset
+                        // Unable to read data from the transport connection: 浣犵殑涓绘満涓殑杞欢涓浜嗕竴涓凡寤虹珛鐨勮繛鎺ャ€? SocketException: ConnectionAborted
                         // HttpIOException: The response ended prematurely. (ResponseEnded)
-                        // 磁盘空间不足。 : '?'.
-                        throw publicImageCacheException.Throw("Unable to copy stream content to file", ex);
+                        // 纾佺洏绌洪棿涓嶈冻銆?: '?'.
+                        throw InternalImageCacheException.Throw("Unable to copy stream content to file", ex);
                     }
                 }
             }
         }
     }
 }
+

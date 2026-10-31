@@ -2,28 +2,36 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.ExceptionService;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.Core.Caching;
 
-public class publicImageCacheException : Exception, IpublicException
+internal sealed class InternalImageCacheException : Exception, IInternalException
 {
-    private publicImageCacheException(string message, Exception innerException)
+    private InternalImageCacheException(string message, Exception innerException)
         : base(message, innerException)
     {
     }
 
-    private publicImageCacheException(string message)
+    private InternalImageCacheException(string message)
         : base(message)
     {
     }
 
-    public static publicImageCacheException Throw(string message, Exception innerException)
+    [StackTraceHidden]
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static InternalImageCacheException Throw(string message, Exception innerException)
     {
-        throw new publicImageCacheException(message, innerException);
+        throw new InternalImageCacheException(message, innerException);
     }
 
-    public static publicImageCacheException Throw(string message)
+    [StackTraceHidden]
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static InternalImageCacheException Throw(string message)
     {
-        throw new publicImageCacheException(message);
+        throw new InternalImageCacheException(message);
     }
 }

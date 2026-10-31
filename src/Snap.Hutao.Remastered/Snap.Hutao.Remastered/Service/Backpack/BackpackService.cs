@@ -51,14 +51,16 @@ public sealed partial class BackpackService : IBackpackService
             ? AvatarDataParser.ParseEquippedItemOwners(avatarDataBytes)
             : ImmutableDictionary<ulong, uint>.Empty;
 
-        ImmutableArray<BackpackItem> items = PlayerStoreParser.ParseToBackpackItems(storeResult.StoreBytes, archive.InnerId, equippedItemOwners);
+        if (!PlayerStoreParser.TryParseToBackpackItems(storeResult.StoreBytes, archive.InnerId, equippedItemOwners, out ImmutableArray<BackpackItem> items))
+        {
+            return false;
+        }
 
         // Add virtual currency items from player properties
         ImmutableArray<BackpackItem> virtualItems = CreateVirtualItems(archive.InnerId, storeResult.PropMap);
 
-        backpackRepository.RemoveBackpackItemRangeByArchiveId(archive.InnerId);
-        backpackRepository.AddBackpackItemRange(items);
-        backpackRepository.AddBackpackItemRange(virtualItems);
+        ImmutableArray<BackpackItem> allItems = [.. items, .. virtualItems];
+        backpackRepository.ReplaceBackpackItemRangeByArchiveId(archive.InnerId, allItems);
 
         return true;
     }

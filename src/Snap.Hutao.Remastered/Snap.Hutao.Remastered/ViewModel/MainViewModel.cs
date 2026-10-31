@@ -221,7 +221,7 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
     {
         try
         {
-            if (!await metadataService.InitializepublicAsync(token).ConfigureAwait(false))
+            if (!await metadataService.InitializeInternalAsync(token).ConfigureAwait(false))
             {
                 networkRetryCoordinator.MarkPending(StartupRetryKey, SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
                 return false;

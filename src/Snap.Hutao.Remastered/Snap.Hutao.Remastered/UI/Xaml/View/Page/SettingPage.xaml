@@ -48,6 +48,10 @@
                     <Grid Style="{ThemeResource AcrylicGridCardStyle}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel Padding="16" Spacing="{ThemeResource SettingsCardSpacing}">
+                                <StackPanel.ChildrenTransitions>
+                                    <EntranceThemeTransition FromVerticalOffset="50"/>
+                                    <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                                </StackPanel.ChildrenTransitions>
 
                                 <Grid Style="{ThemeResource GridCardStyle}">
                                     <Grid.RowDefinitions>
@@ -190,11 +194,19 @@
                     Grid.Column="0"
                     Padding="16"
                     Spacing="16">
+                    <StackPanel.ChildrenTransitions>
+                        <EntranceThemeTransition FromVerticalOffset="50"/>
+                        <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                    </StackPanel.ChildrenTransitions>
 
                     <!--  关于  -->
                     <Border x:Name="ScrollViewerTopPanel" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                         <Border Padding="16" Style="{ThemeResource AcrylicBorderCardStyle}">
                             <StackPanel Spacing="{StaticResource SettingsCardSpacing}" Visibility="Visible">
+                                <StackPanel.ChildrenTransitions>
+                                    <EntranceThemeTransition FromVerticalOffset="50"/>
+                                    <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                                </StackPanel.ChildrenTransitions>
                                 <Grid MaxHeight="176" Style="{ThemeResource GridCardStyle}">
                                     <Grid Padding="48,28,48,28" ColumnSpacing="48">
                                         <Grid.ColumnDefinitions>
@@ -344,6 +356,10 @@
                     <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}" DataContext="{x:Bind DataContext.Appearance, Mode=OneWay}">
                         <Border Padding="16" Style="{ThemeResource AcrylicBorderCardStyle}">
                             <StackPanel Spacing="{ThemeResource SettingsCardSpacing}">
+                                <StackPanel.ChildrenTransitions>
+                                    <EntranceThemeTransition FromVerticalOffset="50"/>
+                                    <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                                </StackPanel.ChildrenTransitions>
                                 <TextBlock Style="{StaticResource SettingsCardHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageSettingApperanceHeader}"/>
                                 <cwc:SettingsCard
                                     Description="{shuxm:ResourceString Name=ViewPageSettingApperanceLanguageDescription}"
@@ -555,6 +571,10 @@
                     <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}" DataContext="{x:Bind DataContext.Storage, Mode=OneWay}">
                         <Border Padding="16" Style="{ThemeResource AcrylicBorderCardStyle}">
                             <StackPanel Spacing="{ThemeResource SettingsCardSpacing}">
+                                <StackPanel.ChildrenTransitions>
+                                    <EntranceThemeTransition FromVerticalOffset="50"/>
+                                    <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                                </StackPanel.ChildrenTransitions>
                                 <TextBlock Style="{StaticResource SettingsCardHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageSettingStorageHeader}"/>
                                 <cwc:SettingsExpander
                                     Description="{x:Bind DataContext.Storage.DataFolderView.Size, Mode=OneWay}"
@@ -932,6 +952,10 @@
                     <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}" DataContext="{x:Bind DataContext.Home, Mode=OneWay}">
                         <Border Padding="16" Style="{ThemeResource AcrylicBorderCardStyle}">
                             <StackPanel Spacing="{ThemeResource SettingsCardSpacing}">
+                                <StackPanel.ChildrenTransitions>
+                                    <EntranceThemeTransition FromVerticalOffset="50"/>
+                                    <RepositionThemeTransition IsStaggeringEnabled="False"/>
+                                </StackPanel.ChildrenTransitions>
                                 <TextBlock Style="{StaticResource SettingsCardHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageSettingHomeHeader}"/>
                                 <cwc:SettingsCard
                                     Description="{shuxm:ResourceString Name=ViewPageSettingHomeCardDescription}"

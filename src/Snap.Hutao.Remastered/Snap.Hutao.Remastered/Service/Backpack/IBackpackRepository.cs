@@ -20,7 +20,7 @@ public interface IBackpackRepository : IRepository<BackpackArchive>, IRepository
 
     ObservableCollection<BackpackArchive> GetBackpackArchiveCollection();
 
-    void AddBackpackItemRange(IEnumerable<BackpackItem> items);
+    void ReplaceBackpackItemRangeByArchiveId(Guid archiveId, IEnumerable<BackpackItem> items);
 
     void RemoveBackpackItemRangeByArchiveId(Guid archiveId);
 

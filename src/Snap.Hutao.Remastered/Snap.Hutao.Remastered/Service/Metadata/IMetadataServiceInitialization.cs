@@ -5,5 +5,5 @@ namespace Snap.Hutao.Remastered.Service.Metadata;
 
 public interface IMetadataServiceInitialization
 {
-    ValueTask<bool> InitializepublicAsync(CancellationToken token = default);
+    ValueTask<bool> InitializeInternalAsync(CancellationToken token = default);
 }

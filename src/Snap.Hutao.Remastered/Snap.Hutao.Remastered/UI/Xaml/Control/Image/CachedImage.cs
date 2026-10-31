@@ -261,7 +261,7 @@ public sealed partial class CachedImage : Microsoft.UI.Xaml.Controls.Control
             // Ignored
             throw;
         }
-        catch (publicImageCacheException)
+        catch (InternalImageCacheException)
         {
             // Ignored
             throw;
@@ -406,3 +406,4 @@ public sealed partial class CachedImage : Microsoft.UI.Xaml.Controls.Control
         }
     }
 }
+

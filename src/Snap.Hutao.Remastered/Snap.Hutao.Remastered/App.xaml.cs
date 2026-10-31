@@ -48,6 +48,7 @@ public sealed partial class App : Application
     private readonly IAppActivation activation;
     private readonly ILogger<App> logger;
     private bool exitRequested;
+    private DateTime firstShouldExitChecked;
 
     [GeneratedConstructor(InitializeComponent = true)]
     public partial App(IServiceProvider serviceProvider);
@@ -77,11 +78,9 @@ public sealed partial class App : Application
         XamlApplicationLifetime.Exiting = true;
         FlyoutOpenStateBinding.CancelPendingSwitches();
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Application exiting", "Hutao"));
-        // #114
-        //SpinWait.SpinUntil(static () => XamlApplicationLifetime.ActivationAndInitializationCompleted);
+        SpinWait.SpinUntil(ShouldExitNow);
         ExitAfterContentDetachedAsync().SafeForget();
     }
-
     private async Task ExitAfterContentDetachedAsync()
     {
         // Shutdown must happen before Application.Start returns. Quartz job setup
@@ -210,6 +209,21 @@ public sealed partial class App : Application
 
             ProcessFactory.KillCurrent();
         }
+    }
+
+    private bool ShouldExitNow()
+    {
+        if (firstShouldExitChecked == default)
+        {
+            firstShouldExitChecked = DateTime.UtcNow;
+        }
+
+        if (XamlApplicationLifetime.ActivationAndInitializationCompleted && DateTime.UtcNow >= firstShouldExitChecked.AddSeconds(5))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>

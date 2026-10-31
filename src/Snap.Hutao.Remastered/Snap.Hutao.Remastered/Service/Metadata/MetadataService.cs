@@ -37,7 +37,7 @@ public sealed partial class MetadataService : IMetadataService
         return isInitialized;
     }
 
-    public async ValueTask<bool> InitializepublicAsync(CancellationToken token = default)
+    public async ValueTask<bool> InitializeInternalAsync(CancellationToken token = default)
     {
         using CancellationTokenSource linked = CancellationTokenSource.CreateLinkedTokenSource(token, XamlApplicationLifetime.ShutdownToken);
         token = linked.Token;

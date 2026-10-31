@@ -23,24 +23,26 @@ if ($uri.AbsolutePath.TrimEnd('/') -eq '/static/raw') {
     $uri = $resolved.Uri
     Write-Warning "BUNDLED_IMAGES_URL points to a directory; resolved snapshot URL: $($uri.AbsoluteUri)"
 }
+$archiveExtension = [IO.Path]::GetExtension($uri.AbsolutePath).ToLowerInvariant()
+if ($archiveExtension -notin @('.7z', '.zip')) { throw 'The snapshot URL must end in .7z or .zip.' }
 $repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $stage = Join-Path $repoRoot ('artifacts/image-snapshot-' + [Guid]::NewGuid().ToString('N'))
-$archive = Join-Path $stage 'snapshot.7z'
+$archive = Join-Path $stage "snapshot$archiveExtension"
 $extract = Join-Path $stage 'extracted'
 $output = Join-Path $stage 'prepared'
 [IO.Directory]::CreateDirectory($extract) | Out-Null
 try {
     Invoke-WebRequest -Uri $uri -OutFile $archive
 } catch {
-    throw "Snapshot download failed. BUNDLED_IMAGES_URL must resolve to a downloadable archive, e.g. https://static.snaphutaorp.org/static/raw/$ResourceVersion.7z. $($_.Exception.Message)"
+    throw "Snapshot download failed. BUNDLED_IMAGES_URL must resolve to a downloadable .7z or .zip archive. $($_.Exception.Message)"
 }
 if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash -ne $Sha256) { throw 'Snapshot SHA256 mismatch.' }
 & 7z x $archive "-o$extract" -y | Out-Host
 if ($LASTEXITCODE -ne 0) { throw 'Failed to extract bundled image snapshot.' }
-$rawDirectories = @(Get-ChildItem -LiteralPath $extract -Directory -Recurse -Filter raw)
-if ($rawDirectories.Count -gt 1) { throw 'Ambiguous archive layout: multiple raw directories.' }
-$rawRoot = if ($rawDirectories.Count -eq 1) { $rawDirectories[0].FullName } else { $extract }
-& (Join-Path $PSScriptRoot 'Prepare-BundledImages.ps1') -SourceDirectory $rawRoot -ResourceVersion $ResourceVersion -OutputDirectory $output
+$imageRoots = @(Get-ChildItem -LiteralPath $extract -Directory -Recurse | Where-Object { $_.Name -in @('raw', 'BundledImages') })
+if ($imageRoots.Count -gt 1) { throw 'Ambiguous archive layout: multiple raw/BundledImages directories.' }
+$imageRoot = if ($imageRoots.Count -eq 1) { $imageRoots[0].FullName } else { $extract }
+& (Join-Path $PSScriptRoot 'Prepare-BundledImages.ps1') -SourceDirectory $imageRoot -ResourceVersion $ResourceVersion -OutputDirectory $output
 # MSBuild imports environment variables as properties. Every Cake entry point consumes this.
 $env:BundledImagesSource = $output
 if ($env:GITHUB_ENV) { "BundledImagesSource=$output" | Out-File -LiteralPath $env:GITHUB_ENV -Append -Encoding utf8 }

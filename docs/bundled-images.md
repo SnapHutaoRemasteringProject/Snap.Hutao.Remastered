@@ -46,8 +46,8 @@ Only the optional installer filename ends in `-Setup-cache.exe`.
   theme images. Locked/unreadable files are reported to diagnostics and retained.
 - MSIX and Setup with a valid bundle skip both resource guide steps. Only Setup
   without a bundle retains category ZIP preloading. Skipping these steps does not
-  mark the unversioned ZIP contracts as fulfilled. The data-folder guide step
-  explains the installed image version and fallback behavior.
+  mark the unversioned ZIP contracts as fulfilled. The image-resource guide page
+  contains the snapshot explanation card; it is subject to the same page-skipping rules.
 
 The resource snapshot version is separate from the application/game version. It
 is descriptive metadata, not a claim that unversioned server files are up to date.

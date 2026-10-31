@@ -65,8 +65,7 @@ public static class IniSerializer
 
                 currentSectionBuilder = new(lineSpan[1..^1].ToString());
             }
-
-            if (lineSpan[0] is ';')
+            else if (lineSpan[0] is ';')
             {
                 IniComment comment = new(lineSpan[1..].ToString());
                 if (currentSectionBuilder is null)
@@ -78,8 +77,7 @@ public static class IniSerializer
                     currentSectionBuilder.Add(comment);
                 }
             }
-
-            if (lineSpan.TrySplitIntoTwo('=', out ReadOnlySpan<char> left, out ReadOnlySpan<char> right))
+            else if (lineSpan.TrySplitIntoTwo('=', out ReadOnlySpan<char> left, out ReadOnlySpan<char> right))
             {
                 IniParameter parameter = new(left.Trim().ToString(), right.Trim().ToString());
                 if (currentSectionBuilder is null)

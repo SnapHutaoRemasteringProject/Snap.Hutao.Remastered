@@ -21,6 +21,16 @@ public static class TaskExtension
             {
                 // Do nothing
             }
+            catch (ObjectDisposedException ex)
+            {
+                // When the application is shutting down, the serviceProvider may be disposed before it completes.
+                if (ex.Message.Contains("IServiceProvider"))
+                {
+                    return;
+                }
+
+                throw;
+            }
             catch (Exception ex)
             {
                 ExceptionHandling.KillProcessOnDbExceptionNoThrow(ex);
