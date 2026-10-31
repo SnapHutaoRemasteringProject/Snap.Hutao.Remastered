@@ -23,7 +23,7 @@
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvm:MainViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <UserControl.Resources>
@@ -36,7 +36,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <Border Background="{ThemeResource SolidBackgroundFillColorBaseBrush}" Opacity="{x:Bind ((shvm:MainViewModel)DataContext).AppOptions.BackdropType.Value, Converter={StaticResource BackdropTypeToOpacityConverter}, Mode=OneWay}">
+        <Border Background="{ThemeResource SolidBackgroundFillColorBaseBrush}" Opacity="{x:Bind DataContext.AppOptions.BackdropType.Value, Converter={StaticResource BackdropTypeToOpacityConverter}, Mode=OneWay}">
             <Border.OpacityTransition>
                 <ScalarTransition Duration="0:0:1"/>
             </Border.OpacityTransition>
@@ -94,407 +94,183 @@
                         Orientation="Horizontal"
                         Spacing="6">
 
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_4591"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:Button"
-                            Visibility="{x:Bind shvm:MainViewModel.IsDebug}"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <Button
-                                    Padding="6"
-                                    Command="{x:Bind ((shvm:MainViewModel)DataContext).InvertAppThemeCommand, Mode=OneWay}"
-                                    Content="[Dev] Invert Theme"
-                                    Style="{ThemeResource SettingButtonStyle}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassButton
-                                    Padding="6"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Command="{x:Bind ((shvm:MainViewModel)DataContext).InvertAppThemeCommand, Mode=OneWay}"
-                                    Content="[Dev] Invert Theme"
-                                    Style="{ThemeResource SettingButtonStyle}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                        <wl:LiquidGlassButton
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Padding="6"
+                            Command="{x:Bind DataContext.InvertAppThemeCommand, Mode=OneWay}"
+                            Content="[Dev] Invert Theme"
+                            Style="{ThemeResource SettingButtonStyle}"
+                            Visibility="{x:Bind shvm:MainViewModel.IsDebug}"/>
 
-                        <cwc:SwitchPresenter
+                        <wl:LiquidGlassButton
                             x:Name="OfflineConnectionPresenter"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Padding="10,6"
+                            AutomationProperties.Name="{shuxm:ResourceString Name=RepositoryServerReconnect}"
+                            Command="{x:Bind DataContext.RepositoryCatalog.ReconnectCommand, Mode=OneWay}"
+                            IsEnabled="{x:Bind DataContext.RepositoryCatalog.CanReconnect, Mode=OneWay}"
+                            Style="{ThemeResource SettingButtonStyle}"
+                            ToolTipService.ToolTip="{shuxm:ResourceString Name=RepositoryServerReconnect}"
+                            Visibility="{x:Bind DataContext.RepositoryCatalog.IsOffline, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <FontIcon FontSize="14" Glyph="&#xE72C;"/>
+                                <TextBlock Text="{x:Bind DataContext.RepositoryCatalog.ConnectionStatus, Mode=OneWay}"/>
+                            </StackPanel>
+                        </wl:LiquidGlassButton>
+                        <wl:LiquidGlassButton
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Padding="0"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:Button"
-                            Visibility="{x:Bind ((shvm:MainViewModel)DataContext).RepositoryCatalog.IsOffline, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <Button
-                                    Padding="10,6"
-                                    AutomationProperties.Name="{shuxm:ResourceString Name=RepositoryServerReconnect}"
-                                    Command="{x:Bind ((shvm:MainViewModel)DataContext).RepositoryCatalog.ReconnectCommand, Mode=OneWay}"
-                                    IsEnabled="{x:Bind ((shvm:MainViewModel)DataContext).RepositoryCatalog.CanReconnect, Mode=OneWay}"
-                                    Style="{ThemeResource SettingButtonStyle}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=RepositoryServerReconnect}">
-                                    <StackPanel Orientation="Horizontal" Spacing="6">
-                                        <FontIcon FontSize="14" Glyph="&#xE72C;"/>
-                                        <TextBlock Text="{x:Bind ((shvm:MainViewModel)DataContext).RepositoryCatalog.ConnectionStatus, Mode=OneWay}"/>
+                            PointerEntered="OnBackgroundActivityButtonPointerEntered"
+                            PointerExited="OnBackgroundActivityButtonPointerExited"
+                            Style="{ThemeResource SettingButtonStyle}">
+                            <wl:LiquidGlassButton.Resources>
+                                <SineEase x:Key="EasingFunction" EasingMode="EaseInOut"/>
+                                <Storyboard x:Name="FocusStoryBoard">
+                                    <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)">
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:0"
+                                            Value="{ThemeResource ControlFillColorTransparent}"/>
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:0.5"
+                                            Value="{ThemeResource SystemFillColorCautionBackground}"/>
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:1"
+                                            Value="{ThemeResource ControlFillColorTransparent}"/>
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:1.5"
+                                            Value="{ThemeResource SystemFillColorCautionBackground}"/>
+                                        <EasingColorKeyFrame
+                                            EasingFunction="{StaticResource EasingFunction}"
+                                            KeyTime="0:0:2"
+                                            Value="{ThemeResource ControlFillColorTransparent}"/>
+                                    </ColorAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </wl:LiquidGlassButton.Resources>
+                            <wl:LiquidGlassButton.Content>
+                                <Border Padding="16,6">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="{ThemeResource ControlFillColorTransparent}"/>
+                                    </Border.Background>
+                                    <mxi:Interaction.Behaviors>
+                                        <shuxb:FocusAnimationBehavior Storyboard="{StaticResource FocusStoryBoard}" Watch="{x:Bind DataContext.BackgroundActivityOptions.MetadataInitialization.NotifyToken, Mode=OneWay}"/>
+                                        <shuxb:FocusAnimationBehavior Storyboard="{StaticResource FocusStoryBoard}" Watch="{x:Bind DataContext.BackgroundActivityOptions.FullTrustInitialization.NotifyToken, Mode=OneWay}"/>
+                                    </mxi:Interaction.Behaviors>
+                                    <Grid ColumnSpacing="4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+                                            <ProgressRing
+                                                Width="16"
+                                                Height="16"
+                                                IsIndeterminate="{x:Bind DataContext.BackgroundActivityOptions.MetadataInitialization.IsIndeterminate, Mode=OneWay}"
+                                                Visibility="{x:Bind DataContext.BackgroundActivityOptions.MetadataInitialization.HasProgress, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                Value="{x:Bind DataContext.BackgroundActivityOptions.MetadataInitialization.ProgressValue, Mode=OneWay}"/>
+                                            <InfoBadge
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Background="#C42B1C"
+                                                Visibility="{x:Bind DataContext.BackgroundActivityOptions.MetadataInitialization.IsFaulted, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                <InfoBadge.IconSource>
+                                                    <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xF13C;"/>
+                                                </InfoBadge.IconSource>
+                                            </InfoBadge>
+                                            <InfoBadge
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Style="{StaticResource SuccessIconInfoBadgeStyle}"
+                                                Visibility="{x:Bind DataContext.BackgroundActivityOptions.MetadataInitialization.IsCompletedSuccessfully, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                        </Grid>
+
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Text="{shuxm:ResourceString Name=UIViewMainTitleBarBackgroundActivityAction}"/>
+
+                                        <cwc:SwitchPresenter
+                                            Grid.Column="2"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            TargetType="x:Boolean"
+                                            Value="{x:Bind DataContext.IsFlyoutOpen, Mode=OneWay}">
+                                            <cwc:Case Value="True">
+                                                <AnimatedIcon
+                                                    x:Name="OpenedChevronAnimatedIcon"
+                                                    Width="16"
+                                                    Height="16">
+                                                    <AnimatedIcon.Source>
+                                                        <animatedvisuals:AnimatedChevronUpDownSmallVisualSource/>
+                                                    </AnimatedIcon.Source>
+                                                    <AnimatedIcon.FallbackIconSource>
+                                                        <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE70D;"/>
+                                                    </AnimatedIcon.FallbackIconSource>
+                                                </AnimatedIcon>
+                                            </cwc:Case>
+                                            <cwc:Case Value="False">
+                                                <AnimatedIcon
+                                                    x:Name="ClosedChevronAnimatedIcon"
+                                                    Width="16"
+                                                    Height="16">
+                                                    <AnimatedIcon.Source>
+                                                        <animatedvisuals:AnimatedChevronDownSmallVisualSource/>
+                                                    </AnimatedIcon.Source>
+                                                    <AnimatedIcon.FallbackIconSource>
+                                                        <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE70E;"/>
+                                                    </AnimatedIcon.FallbackIconSource>
+                                                </AnimatedIcon>
+                                            </cwc:Case>
+                                        </cwc:SwitchPresenter>
+                                    </Grid>
+                                </Border>
+                            </wl:LiquidGlassButton.Content>
+                            <wl:LiquidGlassButton.Flyout>
+                                <Flyout
+                                    essential:FlyoutHelper.AcrylicWorkaround="True"
+                                    shuxb:FlyoutOpenStateBinding.IsOpen="{x:Bind DataContext.IsFlyoutOpen, Mode=TwoWay}"
+                                    shuxb:FlyoutOpenStateBinding.IsTrackingEnabled="True"
+                                    shuxb:FlyoutOpenStateBinding.SwitchDelayMilliseconds="120"
+                                    FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding8Style}"
+                                    Placement="Bottom"
+                                    ShouldConstrainToRootBounds="True">
+                                    <StackPanel
+                                        Width="320"
+                                        DataContext="{x:Bind DataContext.BackgroundActivityOptions, Mode=OneWay}"
+                                        Spacing="4">
+                                        <sshuxcc:CardProgressBar
+                                            MinHeight="58"
+                                            Description="{x:Bind DataContext.BackgroundActivityOptions.MetadataInitialization.Description, Mode=OneWay}"
+                                            Header="{x:Bind DataContext.BackgroundActivityOptions.MetadataInitialization.Title, Mode=OneWay}"
+                                            IsIndeterminate="{x:Bind DataContext.BackgroundActivityOptions.MetadataInitialization.IsIndeterminate, Mode=OneWay}"
+                                            Maximum="1"
+                                            ProgressForeground="{ThemeResource SystemControlForegroundAccentBrush}"
+                                            Style="{ThemeResource CompactCardProgressBarStyle}"
+                                            Value="{x:Bind DataContext.BackgroundActivityOptions.MetadataInitialization.ProgressValue, Mode=OneWay}"/>
+                                        <sshuxcc:CardProgressBar
+                                            MinHeight="58"
+                                            Description="{x:Bind DataContext.BackgroundActivityOptions.FullTrustInitialization.Description, Mode=OneWay}"
+                                            Header="{x:Bind DataContext.BackgroundActivityOptions.FullTrustInitialization.Title, Mode=OneWay}"
+                                            IsIndeterminate="{x:Bind DataContext.BackgroundActivityOptions.FullTrustInitialization.IsIndeterminate, Mode=OneWay}"
+                                            Maximum="1"
+                                            ProgressForeground="{ThemeResource SystemControlForegroundAccentBrush}"
+                                            Style="{ThemeResource CompactCardProgressBarStyle}"
+                                            Value="{x:Bind DataContext.BackgroundActivityOptions.FullTrustInitialization.ProgressValue, Mode=OneWay}"/>
                                     </StackPanel>
-                                </Button>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassButton
-                                    Padding="10,6"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                                    AutomationProperties.Name="{shuxm:ResourceString Name=RepositoryServerReconnect}"
-                                    Command="{x:Bind ((shvm:MainViewModel)DataContext).RepositoryCatalog.ReconnectCommand, Mode=OneWay}"
-                                    IsEnabled="{x:Bind ((shvm:MainViewModel)DataContext).RepositoryCatalog.CanReconnect, Mode=OneWay}"
-                                    Style="{ThemeResource SettingButtonStyle}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=RepositoryServerReconnect}">
-                                    <StackPanel Orientation="Horizontal" Spacing="6">
-                                        <FontIcon FontSize="14" Glyph="&#xE72C;"/>
-                                        <TextBlock Text="{x:Bind ((shvm:MainViewModel)DataContext).RepositoryCatalog.ConnectionStatus, Mode=OneWay}"/>
-                                    </StackPanel>
-                                </wl:LiquidGlassButton>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_6177"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:Button"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <Button
-                                    Padding="0"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    PointerEntered="OnBackgroundActivityButtonPointerEntered"
-                                    PointerExited="OnBackgroundActivityButtonPointerExited"
-                                    Style="{ThemeResource SettingButtonStyle}">
-                                    <Button.Resources>
-                                        <SineEase x:Key="EasingFunction" EasingMode="EaseInOut"/>
-                                        <Storyboard x:Name="FocusStoryBoard">
-                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)">
-                                                <EasingColorKeyFrame
-                                                    EasingFunction="{StaticResource EasingFunction}"
-                                                    KeyTime="0:0:0"
-                                                    Value="{ThemeResource ControlFillColorTransparent}"/>
-                                                <EasingColorKeyFrame
-                                                    EasingFunction="{StaticResource EasingFunction}"
-                                                    KeyTime="0:0:0.5"
-                                                    Value="{ThemeResource SystemFillColorCautionBackground}"/>
-                                                <EasingColorKeyFrame
-                                                    EasingFunction="{StaticResource EasingFunction}"
-                                                    KeyTime="0:0:1"
-                                                    Value="{ThemeResource ControlFillColorTransparent}"/>
-                                                <EasingColorKeyFrame
-                                                    EasingFunction="{StaticResource EasingFunction}"
-                                                    KeyTime="0:0:1.5"
-                                                    Value="{ThemeResource SystemFillColorCautionBackground}"/>
-                                                <EasingColorKeyFrame
-                                                    EasingFunction="{StaticResource EasingFunction}"
-                                                    KeyTime="0:0:2"
-                                                    Value="{ThemeResource ControlFillColorTransparent}"/>
-                                            </ColorAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </Button.Resources>
-                                    <Button.Content>
-                                        <Border Padding="16,6">
-                                            <Border.Background>
-                                                <SolidColorBrush Color="{ThemeResource ControlFillColorTransparent}"/>
-                                            </Border.Background>
-                                            <mxi:Interaction.Behaviors>
-                                                <shuxb:FocusAnimationBehavior Storyboard="{StaticResource FocusStoryBoard}" Watch="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.NotifyToken, Mode=OneWay}"/>
-                                                <shuxb:FocusAnimationBehavior Storyboard="{StaticResource FocusStoryBoard}" Watch="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.FullTrustInitialization.NotifyToken, Mode=OneWay}"/>
-                                            </mxi:Interaction.Behaviors>
-                                            <Grid ColumnSpacing="4">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-
-                                                <Grid
-                                                    Grid.Column="0"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center">
-                                                    <ProgressRing
-                                                        Width="16"
-                                                        Height="16"
-                                                        IsIndeterminate="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.IsIndeterminate, Mode=OneWay}"
-                                                        Visibility="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.HasProgress, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
-                                                        Value="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.ProgressValue, Mode=OneWay}"/>
-                                                    <InfoBadge
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center"
-                                                        Background="#C42B1C"
-                                                        Visibility="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.IsFaulted, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                                        <InfoBadge.IconSource>
-                                                            <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xF13C;"/>
-                                                        </InfoBadge.IconSource>
-                                                    </InfoBadge>
-                                                    <InfoBadge
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center"
-                                                        Style="{StaticResource SuccessIconInfoBadgeStyle}"
-                                                        Visibility="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.IsCompletedSuccessfully, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                                </Grid>
-
-                                                <TextBlock
-                                                    Grid.Column="1"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    Text="{shuxm:ResourceString Name=UIViewMainTitleBarBackgroundActivityAction}"/>
-
-                                                <cwc:SwitchPresenter
-                                                    Grid.Column="2"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    TargetType="x:Boolean"
-                                                    Value="{x:Bind ((shvm:MainViewModel)DataContext).IsFlyoutOpen, Mode=OneWay}">
-                                                    <cwc:Case Value="True">
-                                                        <AnimatedIcon
-                                                            x:Name="OpenedChevronAnimatedIcon"
-                                                            Width="16"
-                                                            Height="16">
-                                                            <AnimatedIcon.Source>
-                                                                <animatedvisuals:AnimatedChevronUpDownSmallVisualSource/>
-                                                            </AnimatedIcon.Source>
-                                                            <AnimatedIcon.FallbackIconSource>
-                                                                <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE70D;"/>
-                                                            </AnimatedIcon.FallbackIconSource>
-                                                        </AnimatedIcon>
-                                                    </cwc:Case>
-                                                    <cwc:Case Value="False">
-                                                        <AnimatedIcon
-                                                            x:Name="ClosedChevronAnimatedIcon"
-                                                            Width="16"
-                                                            Height="16">
-                                                            <AnimatedIcon.Source>
-                                                                <animatedvisuals:AnimatedChevronDownSmallVisualSource/>
-                                                            </AnimatedIcon.Source>
-                                                            <AnimatedIcon.FallbackIconSource>
-                                                                <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE70E;"/>
-                                                            </AnimatedIcon.FallbackIconSource>
-                                                        </AnimatedIcon>
-                                                    </cwc:Case>
-                                                </cwc:SwitchPresenter>
-                                            </Grid>
-                                        </Border>
-                                    </Button.Content>
-                                    <Button.Flyout>
-                                        <Flyout
-                                            essential:FlyoutHelper.AcrylicWorkaround="True"
-                                            shuxb:FlyoutOpenStateBinding.IsOpen="{x:Bind ((shvm:MainViewModel)DataContext).IsFlyoutOpen, Mode=TwoWay}"
-                                            shuxb:FlyoutOpenStateBinding.IsTrackingEnabled="True"
-                                            shuxb:FlyoutOpenStateBinding.SwitchDelayMilliseconds="120"
-                                            FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding8Style}"
-                                            Placement="Bottom"
-                                            ShouldConstrainToRootBounds="True">
-                                            <StackPanel
-                                                Width="320"
-                                                DataContext="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions, Mode=OneWay}"
-                                                Spacing="4">
-                                                <sshuxcc:CardProgressBar
-                                                    MinHeight="58"
-                                                    Description="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.Description, Mode=OneWay}"
-                                                    Header="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.Title, Mode=OneWay}"
-                                                    IsIndeterminate="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.IsIndeterminate, Mode=OneWay}"
-                                                    Maximum="1"
-                                                    ProgressForeground="{ThemeResource SystemControlForegroundAccentBrush}"
-                                                    Style="{ThemeResource CompactCardProgressBarStyle}"
-                                                    Value="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.ProgressValue, Mode=OneWay}"/>
-                                                <sshuxcc:CardProgressBar
-                                                    MinHeight="58"
-                                                    Description="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.FullTrustInitialization.Description, Mode=OneWay}"
-                                                    Header="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.FullTrustInitialization.Title, Mode=OneWay}"
-                                                    IsIndeterminate="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.FullTrustInitialization.IsIndeterminate, Mode=OneWay}"
-                                                    Maximum="1"
-                                                    ProgressForeground="{ThemeResource SystemControlForegroundAccentBrush}"
-                                                    Style="{ThemeResource CompactCardProgressBarStyle}"
-                                                    Value="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.FullTrustInitialization.ProgressValue, Mode=OneWay}"/>
-                                            </StackPanel>
-                                        </Flyout>
-                                    </Button.Flyout>
-                                </Button>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassButton
-                                    Padding="0"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    PointerEntered="OnBackgroundActivityButtonPointerEntered"
-                                    PointerExited="OnBackgroundActivityButtonPointerExited"
-                                    Style="{ThemeResource SettingButtonStyle}">
-                                    <wl:LiquidGlassButton.Resources>
-                                        <SineEase x:Key="EasingFunction" EasingMode="EaseInOut"/>
-                                        <Storyboard x:Key="FocusStoryBoard" x:Name="FocusStoryBoardGlass">
-                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)">
-                                                <EasingColorKeyFrame
-                                                    EasingFunction="{StaticResource EasingFunction}"
-                                                    KeyTime="0:0:0"
-                                                    Value="{ThemeResource ControlFillColorTransparent}"/>
-                                                <EasingColorKeyFrame
-                                                    EasingFunction="{StaticResource EasingFunction}"
-                                                    KeyTime="0:0:0.5"
-                                                    Value="{ThemeResource SystemFillColorCautionBackground}"/>
-                                                <EasingColorKeyFrame
-                                                    EasingFunction="{StaticResource EasingFunction}"
-                                                    KeyTime="0:0:1"
-                                                    Value="{ThemeResource ControlFillColorTransparent}"/>
-                                                <EasingColorKeyFrame
-                                                    EasingFunction="{StaticResource EasingFunction}"
-                                                    KeyTime="0:0:1.5"
-                                                    Value="{ThemeResource SystemFillColorCautionBackground}"/>
-                                                <EasingColorKeyFrame
-                                                    EasingFunction="{StaticResource EasingFunction}"
-                                                    KeyTime="0:0:2"
-                                                    Value="{ThemeResource ControlFillColorTransparent}"/>
-                                            </ColorAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </wl:LiquidGlassButton.Resources>
-                                    <wl:LiquidGlassButton.Content>
-                                        <Border Padding="16,6">
-                                            <Border.Background>
-                                                <SolidColorBrush Color="{ThemeResource ControlFillColorTransparent}"/>
-                                            </Border.Background>
-                                            <mxi:Interaction.Behaviors>
-                                                <shuxb:FocusAnimationBehavior Storyboard="{StaticResource FocusStoryBoard}" Watch="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.NotifyToken, Mode=OneWay}"/>
-                                                <shuxb:FocusAnimationBehavior Storyboard="{StaticResource FocusStoryBoard}" Watch="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.FullTrustInitialization.NotifyToken, Mode=OneWay}"/>
-                                            </mxi:Interaction.Behaviors>
-                                            <Grid ColumnSpacing="4">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-
-                                                <Grid
-                                                    Grid.Column="0"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center">
-                                                    <ProgressRing
-                                                        Width="16"
-                                                        Height="16"
-                                                        IsIndeterminate="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.IsIndeterminate, Mode=OneWay}"
-                                                        Visibility="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.HasProgress, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"
-                                                        Value="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.ProgressValue, Mode=OneWay}"/>
-                                                    <InfoBadge
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center"
-                                                        Background="#C42B1C"
-                                                        Visibility="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.IsFaulted, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                                        <InfoBadge.IconSource>
-                                                            <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xF13C;"/>
-                                                        </InfoBadge.IconSource>
-                                                    </InfoBadge>
-                                                    <InfoBadge
-                                                        HorizontalAlignment="Center"
-                                                        VerticalAlignment="Center"
-                                                        Style="{StaticResource SuccessIconInfoBadgeStyle}"
-                                                        Visibility="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.IsCompletedSuccessfully, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                                </Grid>
-
-                                                <TextBlock
-                                                    Grid.Column="1"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    Text="{shuxm:ResourceString Name=UIViewMainTitleBarBackgroundActivityAction}"/>
-
-                                                <cwc:SwitchPresenter
-                                                    Grid.Column="2"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    TargetType="x:Boolean"
-                                                    Value="{x:Bind ((shvm:MainViewModel)DataContext).IsFlyoutOpen, Mode=OneWay}">
-                                                    <cwc:Case Value="True">
-                                                        <AnimatedIcon
-                                                            x:Name="OpenedChevronAnimatedIconGlass"
-                                                            Width="16"
-                                                            Height="16">
-                                                            <AnimatedIcon.Source>
-                                                                <animatedvisuals:AnimatedChevronUpDownSmallVisualSource/>
-                                                            </AnimatedIcon.Source>
-                                                            <AnimatedIcon.FallbackIconSource>
-                                                                <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE70D;"/>
-                                                            </AnimatedIcon.FallbackIconSource>
-                                                        </AnimatedIcon>
-                                                    </cwc:Case>
-                                                    <cwc:Case Value="False">
-                                                        <AnimatedIcon
-                                                            x:Name="ClosedChevronAnimatedIconGlass"
-                                                            Width="16"
-                                                            Height="16">
-                                                            <AnimatedIcon.Source>
-                                                                <animatedvisuals:AnimatedChevronDownSmallVisualSource/>
-                                                            </AnimatedIcon.Source>
-                                                            <AnimatedIcon.FallbackIconSource>
-                                                                <FontIconSource FontFamily="{StaticResource SymbolThemeFontFamily}" Glyph="&#xE70E;"/>
-                                                            </AnimatedIcon.FallbackIconSource>
-                                                        </AnimatedIcon>
-                                                    </cwc:Case>
-                                                </cwc:SwitchPresenter>
-                                            </Grid>
-                                        </Border>
-                                    </wl:LiquidGlassButton.Content>
-                                    <wl:LiquidGlassButton.Flyout>
-                                        <Flyout
-                                            essential:FlyoutHelper.AcrylicWorkaround="True"
-                                            shuxb:FlyoutOpenStateBinding.IsOpen="{x:Bind ((shvm:MainViewModel)DataContext).IsFlyoutOpen, Mode=TwoWay}"
-                                            shuxb:FlyoutOpenStateBinding.IsTrackingEnabled="True"
-                                            shuxb:FlyoutOpenStateBinding.SwitchDelayMilliseconds="120"
-                                            FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding8Style}"
-                                            Placement="Bottom"
-                                            ShouldConstrainToRootBounds="True">
-                                            <StackPanel
-                                                Width="320"
-                                                DataContext="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions, Mode=OneWay}"
-                                                Spacing="4">
-                                                <sshuxcc:CardProgressBar
-                                                    MinHeight="58"
-                                                    Description="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.Description, Mode=OneWay}"
-                                                    Header="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.Title, Mode=OneWay}"
-                                                    IsIndeterminate="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.IsIndeterminate, Mode=OneWay}"
-                                                    Maximum="1"
-                                                    ProgressForeground="{ThemeResource SystemControlForegroundAccentBrush}"
-                                                    Style="{ThemeResource CompactCardProgressBarStyle}"
-                                                    Value="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.MetadataInitialization.ProgressValue, Mode=OneWay}"/>
-                                                <sshuxcc:CardProgressBar
-                                                    MinHeight="58"
-                                                    Description="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.FullTrustInitialization.Description, Mode=OneWay}"
-                                                    Header="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.FullTrustInitialization.Title, Mode=OneWay}"
-                                                    IsIndeterminate="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.FullTrustInitialization.IsIndeterminate, Mode=OneWay}"
-                                                    Maximum="1"
-                                                    ProgressForeground="{ThemeResource SystemControlForegroundAccentBrush}"
-                                                    Style="{ThemeResource CompactCardProgressBarStyle}"
-                                                    Value="{x:Bind ((shvm:MainViewModel)DataContext).BackgroundActivityOptions.FullTrustInitialization.ProgressValue, Mode=OneWay}"/>
-                                            </StackPanel>
-                                        </Flyout>
-                                    </wl:LiquidGlassButton.Flyout>
-                                </wl:LiquidGlassButton>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                                </Flyout>
+                            </wl:LiquidGlassButton.Flyout>
+                        </wl:LiquidGlassButton>
                     </StackPanel>
                 </TitleBar.RightHeader>
             </TitleBar>

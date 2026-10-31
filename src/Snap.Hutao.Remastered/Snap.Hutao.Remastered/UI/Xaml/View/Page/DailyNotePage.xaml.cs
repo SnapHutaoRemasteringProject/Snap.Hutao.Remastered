@@ -17,4 +17,6 @@ public sealed partial class DailyNotePage : ScopedPage
     {
         InitializeDataContext<DailyNoteViewModel>();
     }
+
+    public new DailyNoteViewModel DataContext { get => (DailyNoteViewModel)base.DataContext; set => base.DataContext = value; }
 }

@@ -16,63 +16,13 @@
     mc:Ignorable="d">
 
     <Grid>
-        <cwc:SwitchPresenter
-            x:Name="GlassPresenter_806"
+        <wl:LiquidGlassComboBox
+            x:Name="ArchiveComboBox"
             Margin="0,0,0,8"
             VerticalAlignment="Top"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            IsTabStop="False"
-            Tag="LiquidGlass:ComboBox"
-            Visibility="{x:Bind ArchiveComboBox.Visibility, Mode=OneWay}"
-            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>0</x:Int32>
-                </cwc:Case.Value>
-                <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                    x:Name="ArchiveComboBox"
-                    MinWidth="240"
-                    VerticalAlignment="Top"
-                    DataContext="{x:Bind GlassPresenter_806.DataContext, Mode=OneWay}"
-                    DisplayMemberPath="Name"
-                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_806}"/>
-            </cwc:Case>
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>1</x:Int32>
-                </cwc:Case.Value>
-                <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                    x:Name="ArchiveComboBoxGlass"
-                    Width="{x:Bind ArchiveComboBox.Width, Mode=OneWay}"
-                    Height="{x:Bind ArchiveComboBox.Height, Mode=OneWay}"
-                    MinWidth="{x:Bind ArchiveComboBox.MinWidth, Mode=OneWay}"
-                    MinHeight="{x:Bind ArchiveComboBox.MinHeight, Mode=OneWay}"
-                    MaxWidth="{x:Bind ArchiveComboBox.MaxWidth, Mode=OneWay}"
-                    MaxHeight="{x:Bind ArchiveComboBox.MaxHeight, Mode=OneWay}"
-                    Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(ArchiveComboBox.Padding), Mode=OneWay}"
-                    VerticalAlignment="Top"
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    shuxcth:ControlMaterialState.NativeControl="{x:Bind ArchiveComboBox, Mode=OneWay}"
-                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                    BorderThickness="{x:Bind ArchiveComboBox.BorderThickness, Mode=OneWay}"
-                    DisplayMemberPath="{x:Bind ArchiveComboBox.DisplayMemberPath, Mode=OneWay}"
-                    FlowDirection="{x:Bind ArchiveComboBox.FlowDirection, Mode=OneWay}"
-                    FontFamily="{x:Bind ArchiveComboBox.FontFamily, Mode=OneWay}"
-                    FontSize="{x:Bind ArchiveComboBox.FontSize, Mode=OneWay}"
-                    FontStyle="{x:Bind ArchiveComboBox.FontStyle, Mode=OneWay}"
-                    FontWeight="{x:Bind ArchiveComboBox.FontWeight, Mode=OneWay}"
-                    Header="{x:Bind ArchiveComboBox.Header, Mode=OneWay}"
-                    HeaderTemplate="{x:Bind ArchiveComboBox.HeaderTemplate, Mode=OneWay}"
-                    IsEditable="{x:Bind ArchiveComboBox.IsEditable, Mode=OneWay}"
-                    IsEnabled="{x:Bind ArchiveComboBox.IsEnabled, Mode=OneWay}"
-                    IsTextSearchEnabled="{x:Bind ArchiveComboBox.IsTextSearchEnabled, Mode=OneWay}"
-                    ItemsSource="{x:Bind ArchiveComboBox.ItemsSource, Mode=OneWay}"
-                    MaxDropDownHeight="{x:Bind ArchiveComboBox.MaxDropDownHeight, Mode=OneWay}"
-                    PlaceholderText="{x:Bind ArchiveComboBox.PlaceholderText, Mode=OneWay}"
-                    SelectedIndex="{x:Bind ArchiveComboBox.SelectedIndex, Mode=TwoWay}"
-                    SelectedValuePath="{x:Bind ArchiveComboBox.SelectedValuePath, Mode=OneWay}"/>
-            </cwc:Case>
-        </cwc:SwitchPresenter>
+            shuxcth:ControlMaterialState.IsManaged="True"
+            shuxcth:ComboBoxPopupLifetime.IsManaged="True"
+            MinWidth="240"
+            DisplayMemberPath="Name"/>
     </Grid>
 </ContentDialog>

@@ -15,4 +15,6 @@ public sealed partial class SignInCard : MaterialCardButton
         this.InitializeViewModelSlim<SignInViewModel>(serviceProvider);
         this.DataContext<SignInViewModel>()?.AttachXamlElement(AwardScrollViewer);
     }
+
+    public new SignInViewModel DataContext { get => (SignInViewModel)base.DataContext; set => base.DataContext = value; }
 }

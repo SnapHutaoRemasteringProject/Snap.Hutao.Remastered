@@ -16,28 +16,9 @@
     mc:Ignorable="d">
 
     <Grid>
-        <cwc:SwitchPresenter
-            x:Name="GlassPresenter_799"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            IsTabStop="False"
-            Tag="LiquidGlass:TextBox"
-            Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>0</x:Int32>
-                </cwc:Case.Value>
-                <TextBox PlaceholderText="{shuxm:ResourceString Name=ViewDialogDailyNoteWebhookUrlInputPlaceholder}" Text="{x:Bind Text, Mode=TwoWay}"/>
-            </cwc:Case>
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>1</x:Int32>
-                </cwc:Case.Value>
-                <wl:LiquidGlassTextBox
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    PlaceholderText="{shuxm:ResourceString Name=ViewDialogDailyNoteWebhookUrlInputPlaceholder}"
-                    Text="{x:Bind Text, Mode=TwoWay}"/>
-            </cwc:Case>
-        </cwc:SwitchPresenter>
+        <wl:LiquidGlassTextBox
+            shuxcth:ControlMaterialState.IsManaged="True"
+            PlaceholderText="{shuxm:ResourceString Name=ViewDialogDailyNoteWebhookUrlInputPlaceholder}"
+            Text="{x:Bind Text, Mode=TwoWay}"/>
     </Grid>
 </ContentDialog>

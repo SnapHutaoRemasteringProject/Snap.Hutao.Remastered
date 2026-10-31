@@ -25,7 +25,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Page.Resources>
@@ -122,9 +122,9 @@
         </DataTemplate>
     </Page.Resources>
 
-    <shuxc:StandardView ShowCondition="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
+    <shuxc:StandardView ShowCondition="{x:Bind DataContext.Monsters, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
         <shuxc:StandardView.EmptyContent>
-            <shuxc:Loading IsLoading="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters, Converter={StaticResource EmptyObjectToBoolRevertConverter}, Mode=OneWay}" Style="{ThemeResource DefaultLoadingViewStyle}"/>
+            <shuxc:Loading IsLoading="{x:Bind DataContext.Monsters, Converter={StaticResource EmptyObjectToBoolRevertConverter}, Mode=OneWay}" Style="{ThemeResource DefaultLoadingViewStyle}"/>
         </shuxc:StandardView.EmptyContent>
         <Grid>
             <Grid.RowDefinitions>
@@ -150,16 +150,16 @@
                                 Margin="6,-2,6,6"
                                 HorizontalAlignment="Right"
                                 VerticalContentAlignment="Center"
-                                AvailableTokens="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).SearchData.AvailableTokens, Mode=OneWay}"
-                                FilterCommand="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).FilterCommand, Mode=OneWay}"
-                                ItemsSource="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).SearchData.FilterTokens, Mode=OneWay}"
+                                AvailableTokens="{x:Bind DataContext.SearchData.AvailableTokens, Mode=OneWay}"
+                                FilterCommand="{x:Bind DataContext.FilterCommand, Mode=OneWay}"
+                                ItemsSource="{x:Bind DataContext.SearchData.FilterTokens, Mode=OneWay}"
                                 MaximumTokens="5"
                                 PlaceholderText="{shuxm:ResourceString Name=ViewPageWiKiMonsterAutoSuggestBoxPlaceHolder}"
                                 QueryIcon="{cw:FontIconSource Glyph=&#xE721;}"
                                 Style="{StaticResource DefaultAutoSuggestTokenBoxStyle}"
                                 SuggestedItemTemplate="{StaticResource TokenTemplate}"
-                                SuggestedItemsSource="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).SearchData.AvailableTokens.Values, Mode=OneWay}"
-                                Text="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).SearchData.FilterToken, Mode=TwoWay}"
+                                SuggestedItemsSource="{x:Bind DataContext.SearchData.AvailableTokens.Values, Mode=OneWay}"
+                                Text="{x:Bind DataContext.SearchData.FilterToken, Mode=TwoWay}"
                                 TokenItemTemplate="{StaticResource TokenTemplate}"/>
                         </AppBarElementContainer>
                     </CommandBar>
@@ -184,8 +184,8 @@
                                         Grid.Row="1"
                                         Padding="{ThemeResource ListViewInSplitPanePadding}"
                                         ItemTemplate="{StaticResource MonsterListTemplate}"
-                                        ItemsSource="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters, Mode=OneWay}"
-                                        SelectedItem="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem, Mode=TwoWay}"
+                                        ItemsSource="{x:Bind DataContext.Monsters, Mode=OneWay}"
+                                        SelectedItem="{x:Bind DataContext.Monsters.CurrentItem, Mode=TwoWay}"
                                         SelectionMode="Single">
                                         <mxi:Interaction.Behaviors>
                                             <shuxb:SelectedItemInViewBehavior/>
@@ -193,7 +193,7 @@
                                     </ListView>
                                 </SplitView.Pane>
                                 <SplitView.Content>
-                                    <ScrollViewer shuxc:ScrollViewerHelper.ScrollToTopAssociatedObject="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem, Mode=OneWay}">
+                                    <ScrollViewer shuxc:ScrollViewerHelper.ScrollToTopAssociatedObject="{x:Bind DataContext.Monsters.CurrentItem, Mode=OneWay}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition MaxWidth="800"/>
@@ -209,24 +209,24 @@
                                                     HorizontalAlignment="Stretch"
                                                     VerticalAlignment="Center"
                                                     Style="{StaticResource SubtitleTextBlockStyle}"
-                                                    Text="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem.Title, Mode=OneWay}"/>
+                                                    Text="{x:Bind DataContext.Monsters.CurrentItem.Title, Mode=OneWay}"/>
                                                 <shuxct:DescriptionTextBlock
                                                     Margin="1,0,0,0"
                                                     HorizontalAlignment="Stretch"
                                                     VerticalAlignment="Center"
-                                                    Description="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem.Description, Mode=OneWay}"
+                                                    Description="{x:Bind DataContext.Monsters.CurrentItem.Description, Mode=OneWay}"
                                                     Opacity="0.7"
                                                     TextStyle="{StaticResource CaptionTextBlockStyle}"/>
-                                                <clw:TokenView ItemsSource="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem.Affixes, Mode=OneWay}" SelectionMode="None"/>
+                                                <clw:TokenView ItemsSource="{x:Bind DataContext.Monsters.CurrentItem.Affixes, Mode=OneWay}" SelectionMode="None"/>
                                                 <shuxvs:BaseValueSlider
                                                     HorizontalAlignment="Stretch"
                                                     HorizontalContentAlignment="Stretch"
-                                                    BaseValueInfo="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).BaseValueInfo, Mode=OneWay}"
+                                                    BaseValueInfo="{x:Bind DataContext.BaseValueInfo, Mode=OneWay}"
                                                     IsPromoteVisible="False"/>
                                                 <ItemsControl
                                                     ItemTemplate="{StaticResource MonsterBaseValueTemplate}"
                                                     ItemsPanel="{StaticResource UniformGridColumns2Spacing4Template}"
-                                                    ItemsSource="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem.BaseValue.SubHurts, Mode=OneWay}">
+                                                    ItemsSource="{x:Bind DataContext.Monsters.CurrentItem.BaseValue.SubHurts, Mode=OneWay}">
                                                     <ItemsControl.Resources>
                                                         <!--  ReSharper disable Xaml.RedundantResource  -->
                                                         <x:Double x:Key="SettingsCardMinHeight">0</x:Double>
@@ -240,11 +240,11 @@
                                                         <TextBlock
                                                             Style="{StaticResource BaseTextBlockStyle}"
                                                             Text="{shuxm:ResourceString Name=ViewPageWikiMonsterDropItems}"
-                                                            Visibility="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem.DropsView, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}"/>
+                                                            Visibility="{x:Bind DataContext.Monsters.CurrentItem.DropsView, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}"/>
                                                         <ItemsControl
                                                             ItemTemplate="{StaticResource MonsterDropTemplate}"
-                                                            ItemsSource="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem.DropsView, Mode=OneWay}"
-                                                            Visibility="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem.DropsView, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
+                                                            ItemsSource="{x:Bind DataContext.Monsters.CurrentItem.DropsView, Mode=OneWay}"
+                                                            Visibility="{x:Bind DataContext.Monsters.CurrentItem.DropsView, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                                                             <ItemsControl.ItemsPanel>
                                                                 <ItemsPanelTemplate>
                                                                     <cwc:UniformGrid
@@ -273,8 +273,8 @@
                                 HorizontalContentAlignment="Left"
                                 ItemContainerStyle="{StaticResource LargeGridViewItemStyle}"
                                 ItemTemplate="{StaticResource MonsterGridTemplate}"
-                                ItemsSource="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters, Mode=OneWay}"
-                                SelectedItem="{x:Bind ((shvw:WikiMonsterViewModel)DataContext).Monsters.CurrentItem, Mode=TwoWay}"
+                                ItemsSource="{x:Bind DataContext.Monsters, Mode=OneWay}"
+                                SelectedItem="{x:Bind DataContext.Monsters.CurrentItem, Mode=TwoWay}"
                                 SelectionMode="Single">
                                 <mxi:Interaction.Behaviors>
                                     <shuxb:SelectedItemInViewBehavior/>

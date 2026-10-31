@@ -17,4 +17,6 @@ public sealed partial class AvatarPropertyPage : ScopedPage
     {
         InitializeDataContext<AvatarPropertyViewModel>();
     }
+
+    public new AvatarPropertyViewModel DataContext { get => (AvatarPropertyViewModel)base.DataContext; set => base.DataContext = value; }
 }

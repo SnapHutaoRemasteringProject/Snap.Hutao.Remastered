@@ -72,7 +72,7 @@
 
   <Target Name="CopyContentForUnpackaged" AfterTargets="Build">
     <ItemGroup>
-      <_ResourceFiles Include="Resource\**\*" Exclude="Resource\Localization\**\*;Resource\Font\**\*" />
+      <_ResourceFiles Include="Resource\**\*" Exclude="Resource\Localization\**\*" />
       <_AssetFiles Include="Assets\**\*" />
     </ItemGroup>
     <Copy SourceFiles="@(_ResourceFiles)" DestinationFolder="$(OutDir)Resource\%(RecursiveDir)" SkipUnchangedFiles="true" />

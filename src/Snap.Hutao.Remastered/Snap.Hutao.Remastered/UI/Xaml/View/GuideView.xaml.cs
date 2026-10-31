@@ -26,4 +26,6 @@ public sealed partial class GuideView : UserControl
         if (sender is ComboBox selector && DataContext is GuideViewModel viewModel)
             viewModel.SelectControlMaterial(selector.SelectedIndex);
     }
+
+    public new GuideViewModel DataContext { get => (GuideViewModel)base.DataContext; set => base.DataContext = value; }
 }

@@ -15,10 +15,13 @@
 - **What it is** — Snap Hutao (胡桃工具箱): a C# WinUI 3 desktop application that enhances the
   Genshin Impact experience on Windows without modifying the game client. This repository is the
   **remastered** fork of DGP Studio's upstream (`SnapHutaoRemasteringProject/Snap.Hutao.Remastered`).
-- **Runtime** — **.NET 11**. [`global.json`](global.json) pins SDK `11.0.100-rc.2`
-  (`rollForward: latestFeature`, `allowPrerelease: true`). ⚠️ that file is currently only in the
-  working tree, **not committed** to `dev` (TODO #16) — until it is, a clean clone builds with
-  whatever SDK is installed.
+- **Runtime** — **.NET 11**. There is deliberately **no `global.json`**: the build uses whatever
+  .NET 11 SDK is installed (any `11.x` feature band and patch), so a contributor is never forced
+  onto one particular SDK build. CI follows the same policy and installs only the major version
+  (`actions/setup-dotnet@v6`, `dotnet-version: 11` in all four workflows that build). **Do not
+  reintroduce `global.json` to pin the SDK** — a pin fails the build on machines that carry a
+  different feature band, while the `net11.0*` target frameworks already express the only hard
+  requirement (an 11.x SDK).
 - **Target frameworks** — main app
   [`net11.0-windows10.0.26100.0`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj)
   (`x64` only, WinUI 3, `SelfContained`), test project
@@ -91,7 +94,8 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
   needs another `<Compile Include>` link. Windows dependencies must either be absent or supplied
   by explicit test doubles, as in `UserInitializationThreadingTest` (real initialization service,
   delayed HTTP responses and a dedicated UI-consumer thread; no real XAML controls).
-- **Prerequisites** — the .NET SDK pinned by `global.json`; the workloads and the Single-project MSIX
+- **Prerequisites** — a **.NET 11 SDK** on the machine (no `global.json`, so any `11.x` feature band
+  works; CI installs major `11`); the workloads and the Single-project MSIX
   packaging extension in `.vsconfig` (`ManagedDesktop`, `NativeDesktop`, `Universal`) for
   packaging/interop work; the WebView2 Runtime on the target machine (the app hosts WebView2 windows
   and `Microsoft.Web.WebView2` is a direct dependency).
@@ -258,10 +262,60 @@ the build fails with `CS9275`); write a normal constructor in that case.
 
 ### 5.3 Page / window lifetime
 
-- **Material controls own their theme brushes** — a visible liquid-glass control resolves its
-  default `Foreground` through its own style. Do not bind that value to a detached native peer;
-  forwarding a resolved brush bypasses the visible control's theme resource expression. Preserve
-  explicit caller colors separately. `ThemeSynchronization` still synchronizes inactive peers.
+- **Material switching keeps one control instance** — every materialized control is a
+  `WinUI.LiquidGlass` type that derives from the WinUI control it replaces (`LiquidGlassButton :
+  Button`, `LiquidGlassTextBox : TextBox`, …), marked with
+  `shuxcth:ControlMaterialState.IsManaged="True"`. `UI/Xaml/Control/Theme/MaterialAppearance.cs`
+  swaps its appearance: in the default material it assigns `MaterialNative{Kind}Style` (from
+  `MaterialNative.xaml`, `BasedOn` the framework default style) when the element has no caller
+  style, and clears the glass brush; in the liquid-glass material it restores the caller style and
+  the glass brush. **Do not** reintroduce `cwc:SwitchPresenter` material trees, mirrored
+  `x:Bind …Glass` properties, `ThemeSynchronization`, or a second control instance.
+- **Native styles must not override the font** — a `MaterialNative{Kind}Style` stays based on the
+  framework default style and must not set `FontFamily`. The glass default styles use the framework
+  font, so forcing `MiSans` only in the native material changed control content fonts when the
+  material switched. A caller style that genuinely wants another font still sets it locally.
+  **The framework font is MiSans, and only `FontStyle.xaml` makes it so:** its
+  `ContentControlThemeFontFamily` / `PivotHeaderItemFontFamily` aliases are what every framework
+  template (button, ComboBox, NavigationViewItem, MenuFlyoutItem, `TitleBar`) reads. Deleting those
+  aliases (as the 2026-10-24 material rewrite did) leaves the `TextBlock` styles on MiSans but
+  silently switches *control content* to Segoe UI / Microsoft YaHei UI — both materials inherit the
+  mismatch, so it is a global font regression, not a material bug.
+- **Glass pointer motion lives on the control, not the template** — `PointerMotionHelper` writes
+  `Scale`/`Translation` on the control element itself, so swapping in a native style does not stop a
+  glass button's float/sway. `MaterialAppearance` neutralizes `RestScale`, `PointerOverScale`,
+  `PressedScale`, `FocusedScale`, `Elasticity` and `PointerDisplacement`, stops the composition
+  animations in the native material, and restores the values captured at load when glass returns.
+- **Captured appearance survives an unload** — `MaterialAppearance` keeps the caller style and the
+  control's own glass brush in a `ConditionalWeakTable` keyed by the control and only removes the
+  control from the refresh set in `Release`. Re-capturing on the next `Loaded` would record the
+  `MaterialNative{Kind}Style` that `ApplyCore` assigned as if the caller had set it, and the control
+  could never return to glass. An `Unloaded` that arrives after a newer `Loaded` is ignored with an
+  `IsLoaded` guard, matching the guard in the glass visual model
+  (`microsoft/microsoft-ui-xaml#8402`).
+- **The glass brush lives in `Background`** — a liquid-glass control assigns its `GlassBrush` to its
+  own `Background` in its constructor and its glass template only forwards that local value. A
+  template that forwards `Background` therefore paints the composition brush (or nothing) instead
+  of the theme brush, which is what made controls look blank outside the glass material. A caller
+  style that declares `Background` (accent/danger/setting styles) keeps its own fill in both
+  materials; a caller-assigned local `Background` binding is never overwritten.
+- **`LiquidGlassToggleSwitch` is not a `ToggleSwitch`** — it derives from `ToggleButton`, so
+  `ToggleSwitch`-typed `Style`s and `BehaviorBase<ToggleSwitch>`/`BehaviorBase<…>` behaviors do not
+  apply (a wrong behavior base throws `XamlParseException` while the page loads, and the frame then
+  silently stays on the previous page). Use `MaterialNativeToggleSwitchStyle` plus the
+  `Checked`/`Unchecked` events, and target behaviors at a base type the glass control satisfies
+  (see `ToggleSwitchHeaderHitTestVisibleBehavior`).
+- **The native toggle template must not reuse the glass element names** — `KubeToggleSwitchVisualModel`
+  looks up `SwitchKnob`, `SwitchKnobSurface` and `Track` by exact name on every template change.
+  Naming the native template's elements the same way lets the glass model attach its knob
+  translation/scale and composition track to the native switch, which leaves a glass-like surface
+  behind in the default material. Prefix the native names (`NativeSwitchKnob`, …). `ToggleButton`
+  never drives the native `ToggleSwitch`'s `ToggleStates`, so the knob movement lives in the
+  `CommonStates` Storyboards as a `TranslateTransform.X` animation.
+- **`shuxcth:MaterialSwap` hosts the kinds that cannot be restyled in place** — `Slider`,
+  `PasswordBox` and `SearchBox` glass types hide the native thumb or paint an inner control, so
+  those sites declare `MaterialSwap.Native` and `MaterialSwap.Glass` children. Keep event handlers
+  and code-behind name matching (`ReferenceEquals(sender, X)` pairs) on both instances.
 - Pages derive from
   [`UI/Xaml/Control/ScopedPage.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/UI/Xaml/Control/ScopedPage.cs).
   `Loading` creates an `IServiceScope` from `XamlRoot.XamlContext().ServiceProvider`; a page's
@@ -383,6 +437,24 @@ the build fails with `CS9275`); write a normal constructor in that case.
 
 - **MVVM first** — UI logic in ViewModels; code-behind only for view mechanics. No business
   decisions in `Page`/`Window` code-behind (`CODE_REVIEW.md#ARCH-04`).
+- **`x:Bind` starts at a typed `DataContext`** — a view that binds its view model declares one
+  shadow property in its code-behind
+  (`public new FooViewModel DataContext { get => (FooViewModel)base.DataContext; set => base.DataContext = value; }`),
+  and XAML writes `{x:Bind DataContext.Bar, Mode=OneWay}`. The shadow does **not** replace the
+  dependency property: `DataContext` is still the DP, so one-way tracking keeps working through
+  `RegisterPropertyChangedCallback(DataContextProperty)` and `DataContext` may be assigned later
+  (pages assign it in `Loading`). Never write `x:Bind ((vm:Type)DataContext).Bar` and never bind the
+  view model through `{Binding}` — the cast is per binding-site noise that this property removes.
+  (Element casts such as `((PivotItem)Pivot.SelectedItem).Tag` are a different case and stay.)
+  The property **cannot** move into a generic base such as `ScopedPage<TViewModel>`: the XAML root
+  tag *is* the generated partial's base-class declaration, so a code-behind base other than the tag
+  fails with `CS0263`, and WinUI XAML has no `x:TypeArguments` to spell `ScopedPage<FooViewModel>`
+  in the tag (verified; generic base members are also invisible to `x:Bind`).
+  A **source generator** cannot emit it either: `x:Bind` resolves members of the x:Class root from a
+  type snapshot that excludes generator output, so `{x:Bind Vm.Bar}` fails with `WMC1110 … not found
+  on type '<View>'` while the same member on the *view model* type resolves fine (verified on a
+  throwaway WinUI project; a build-time `*.g.cs` written into `obj` and added to `@(Compile)` does
+  work, but that extra build step was judged not worth it — the 30 hand-written lines stay).
 - **Async for I/O**, no UI-thread blocking, no `.Result`/`.Wait()` without a timeout.
 - **Replacing a persisted collection is parse-first and transactional** — build the complete new
   row set first, then swap it in one transaction
@@ -443,8 +515,8 @@ the build fails with `CS9275`); write a normal constructor in that case.
   in the app (F5 or the built exe). State explicitly what you did and did not run.
 - **Keep edits scoped** — one `CODE_REVIEW.md` ID per PR where practical; reference it in the PR
   description (`Refs BUG-03`) and link issues with `Fixes #123`.
-- **Do not** change `.appxmanifest` capabilities, downgrade the SDK/`LangVersion`, or replace
-  existing services with new singletons/global state.
+- **Do not** change `.appxmanifest` capabilities, downgrade the SDK/`LangVersion`, reintroduce a
+  `global.json` SDK pin (see §1), or replace existing services with new singletons/global state.
 - **Documentation is part of the change** — if you change a fact this file asserts (framework
   version, branch, attribute, command name, threshold), update this file in the same PR, and append
   a row to `CODE_REVIEW.md` §14.
@@ -456,29 +528,32 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | # | Drift | Where | ID |
 |---|---|---|---|
-| 1 | Repository-wide `internal` removal (0 occurrences left) + 12 `SH001` suppressions; `public` was mandated uniformly, which produced the historical rename damage (BUG-10) | whole repo | BUG-10 |
-| 2 | Two ViewModel lifecycle state machines (`ViewModel` vs `ViewModelSlim`), derived classes assign `IsInitialized` on their own | `ViewModel/Abstraction/*` | ARCH-03 |
-| 3 | Analyzer severities are advisory: 54 `suggestion`, 18 `none`, 2 `warning`, **0** `error`; no `TreatWarningsAsErrors`/`AnalysisLevel`; `NoWarn` swallows `CA2012`; `SA1404` disabled | `src/Snap.Hutao.Remastered/.editorconfig`, app csproj | ENG-01, ENG-02 |
-| 4 | Test project cannot reference the app (0 `ProjectReference`, 39 source links, TFM `net11.0` vs `net11.0-windows…`) | `Snap.Hutao.Remastered.Test.csproj` | BUG-02 |
-| 5 | Manifest allows Windows 10 `10.0.19041.0` while the public support statement says Windows 10 22H2 (Jan-2025) / Windows 11 22H2 — reconcile one of the two | `Package*.appxmanifest`, project docs site | — |
-| 6 | Partial CI quality gate: Alpha runs the full MSTest project in Debug and Release on `dev` pushes/PRs, but Canary/Publish do not run it and none of the workflows enforce `dotnet format --verify-no-changes` | `.github/workflows/alpha.yml` | ENG-05 (partial) |
-| 7 | No central package management (`Directory.Build.props` / `Directory.Packages.props` absent, 61 `PackageReference`s across the 4 csproj files carry inline versions) | `src/**/*.csproj` | ENG-04 |
-| 8 | `dependabot.yml` NuGet entry still points at the pre-rename path `/src/Snap.Hutao` → no NuGet updates since the rename | `.github/dependabot.yml` | ENG-06 |
-| 9 | Dead code / stale config: `LegacyMetadataService` (396 lines, `[Service]` commented out), `build.cake` targets a non-existent `.sln`, commented-out `#pragma` block | `Service/Metadata/LegacyMetadataService.cs`, `build.cake`, `Web/Hoyolab/SaltConstants.cs` | ENG-08 |
-| 10 | Normal builds do not emit generator source copies; `AotAnalysis=true` enables diagnostics only, without another generated-source output tree | app csproj | ENG-09 |
-| 11 | 171 `[SuppressMessage]` + 90 `#pragma warning disable`, several without `Justification` | repo-wide | ENG-03 |
-| 12 | Hard-coded Chinese UI text still present in `.cs` string literals and XAML attribute values (`TestPage`, `LaunchGamePage` worst) and no gate against new ones | repo-wide | LOC-01/02/03 |
-| 13 | `ScopedPage` creates its `IServiceScope` only on the first `Loading` (handler unsubscribed) and disposes a `CancellationTokenSource` field it keeps handing out — a second activation throws | `UI/Xaml/Control/ScopedPage.cs` | BUG-05 |
-| 14 | Legacy scope plumbing: 272 constructors/partial ctors take `IServiceProvider`, 171 `CreateScope()` calls, 4 `*ScopeContext` bags, 12 `Ioc.Default` uses | repo-wide | ARCH-01, ARCH-02 |
-| 15 | `.github/copilot-instructions.md` and `CONTRIBUTING.md` had pre-rename paths / wrong branch names (`src/Snap.Hutao`, `Snap.Hutao.sln`, `develop`, `dev-master`); corrected on 2026-10-11, keep them in sync | `.github/copilot-instructions.md`, `CONTRIBUTING.md` | ENG-10 |
-| 16 | `global.json` (the SDK pin referenced in §1) and `CODE_REVIEW.md` exist only as untracked files in the working tree — commit them, otherwise the pin and this review trail do not exist for a clean clone | `global.json`, `CODE_REVIEW.md` | — |
-| 17 | Inventory refresh still replaces its rows through two separate repository calls (`RemoveInventoryItemRangeByProjectId` then `AddInventoryItemRangeByProjectId`, no transaction) and treats only a parse *exception* as failure, not a zero-item parse — the backpack path was fixed for N3, inventory was not | `Service/Inventory/InventoryService.cs` | N3 |
+| 1 | `IMetadataServiceInitialization.InitializepublicAsync` is a mechanical-rename artifact; the target name is `InitializeAsync` (public API change → next major) | `Service/Metadata/IMetadataServiceInitialization.cs`, callers in `MetadataService`, `LegacyMetadataService`, `AppActivation`, `MainViewModel` | BUG-10 |
+| 2 | Same rename damage in the Zstandard streams: `Readpublic`, `ReadpublicAsync`, `Writepublic`, `WritepublicAsync`, `Flushpublic`, `FlushpublicAsync` → `*Core`/`*Async` | `Core/IO/Compression/Zstandard/*` | BUG-10 |
+| 3 | Repository-wide `internal` removal (0 occurrences left) + 12 `SH001` suppressions; `public` was mandated uniformly, which is what caused #1/#2 | whole repo | BUG-10 |
+| 4 | Two ViewModel lifecycle state machines (`ViewModel` vs `ViewModelSlim`), derived classes assign `IsInitialized` on their own | `ViewModel/Abstraction/*` | ARCH-03 |
+| 5 | Analyzer severities are advisory: 54 `suggestion`, 18 `none`, 2 `warning`, **0** `error`; no `TreatWarningsAsErrors`/`AnalysisLevel`; `NoWarn` swallows `CA2012`; `SA1404` disabled | `src/Snap.Hutao.Remastered/.editorconfig`, app csproj | ENG-01, ENG-02 |
+| 6 | Test project cannot reference the app (0 `ProjectReference`, 39 source links, TFM `net11.0` vs `net11.0-windows…`) | `Snap.Hutao.Remastered.Test.csproj` | BUG-02 |
+| 7 | Manifest allows Windows 10 `10.0.19041.0` while the public support statement says Windows 10 22H2 (Jan-2025) / Windows 11 22H2 — reconcile one of the two | `Package*.appxmanifest`, project docs site | — |
+| 8 | No CI quality gate: none of the 8 workflows runs `dotnet test` or `dotnet format --verify-no-changes` | `.github/workflows/` | ENG-05 |
+| 9 | No central package management (`Directory.Build.props` / `Directory.Packages.props` absent, 61 `PackageReference`s across the 4 csproj files carry inline versions) | `src/**/*.csproj` | ENG-04 |
+| 10 | `dependabot.yml` NuGet entry still points at the pre-rename path `/src/Snap.Hutao` → no NuGet updates since the rename | `.github/dependabot.yml` | ENG-06 |
+| 11 | Dead code / stale config: `LegacyMetadataService` (396 lines, `[Service]` commented out), `build.cake` targets a non-existent `.sln`, commented-out `#pragma` block | `Service/Metadata/LegacyMetadataService.cs`, `build.cake`, `Web/Hoyolab/SaltConstants.cs` | ENG-08 |
+| 12 | Normal builds do not emit generator source copies; `AotAnalysis=true` enables diagnostics only, without another generated-source output tree | app csproj | ENG-09 |
+| 13 | 171 `[SuppressMessage]` + 90 `#pragma warning disable`, several without `Justification` | repo-wide | ENG-03 |
+| 14 | Hard-coded Chinese UI text still present in `.cs` string literals and XAML attribute values (`TestPage`, `LaunchGamePage` worst) and no gate against new ones | repo-wide | LOC-01/02/03 |
+| 15 | `ScopedPage` creates its `IServiceScope` only on the first `Loading` (handler unsubscribed) and disposes a `CancellationTokenSource` field it keeps handing out — a second activation throws | `UI/Xaml/Control/ScopedPage.cs` | BUG-05 |
+| 16 | Legacy scope plumbing: 272 constructors/partial ctors take `IServiceProvider`, 171 `CreateScope()` calls, 4 `*ScopeContext` bags, 12 `Ioc.Default` uses | repo-wide | ARCH-01, ARCH-02 |
+| 17 | `.github/copilot-instructions.md` and `CONTRIBUTING.md` had pre-rename paths / wrong branch names (`src/Snap.Hutao`, `Snap.Hutao.sln`, `develop`, `dev-master`); corrected on 2026-10-11, keep them in sync | `.github/copilot-instructions.md`, `CONTRIBUTING.md` | ENG-10 |
 
 ## 9. Changelog of this document
 
 | Date | Change |
 |---|---|
+| 2026-10-31 | Removed the `global.json` SDK pin (`chore: do not use global.json to control dotnet version`) and dropped TODO #18: the build uses the installed .NET 11 SDK, CI installs major `11`, and §1/§2/§7 now forbid reintroducing a pin. |
 | 2026-10-31 | Restored the pre-rename names `InitializeInternalAsync` (metadata initialization) and `ReadInternal`/`WriteInternal`/`FlushInternal` (Zstandard streams), removed TODOs #1/#2 and renumbered the drift table; §5.5 no longer records the rename defect. |
+| 2026-10-31 | Restored the `ContentControlThemeFontFamily` / `PivotHeaderItemFontFamily` → `MiSans` aliases and the MiSans fallback in `CascadiaMonoAndMiSans` that the 2026-10-24 material rewrite deleted; documented in §5.3 that those aliases are the only thing that makes framework control content MiSans. |
+| 2026-10-25 | Kept captured material appearance across unload/reload (`ConditionalWeakTable`) and ignored stale `Unloaded` events; removed the ToggleButton border/padding from the native toggle-switch template and bound its header through the control's Content alias; gave the native toggle its own element names and restored the knob `TranslateTransform` slide animation; made native styles stop overriding `FontFamily`; synchronized both `MaterialSwap` slider instances in the reliquary score dialog; neutralized `PointerMotionHelper` scale/translation and pointer lighting in the native material and restored them on glass; documented all of it in §5.3. |
 | 2026-10-24 | Backpack refresh now parses before it writes, reports a parse failure as `false` (warning + untouched archive) instead of success, and replaces stored items in one transaction; documented the parse-first/transactional rule in §6 (review N3). |
 | 2026-10-24 | Plugin enable/disable now commits after the plugin hook (`OnEnable`/`OnDisable` → package move → `IsEnabled`), and every `PluginInfo` observable write goes through a main-thread helper; documented the contract in §5.6 (review N1). |
 | 2026-10-24 | Replaced the cwc:SwitchPresenter material trees (317 blocks) with single glass instances plus MaterialAppearance/MaterialNative.xaml style-and-background switching; MaterialSwap for slider/password/search; documented the glass-brush, caller-background and ToggleSwitch/behavior rules in §5.3. |

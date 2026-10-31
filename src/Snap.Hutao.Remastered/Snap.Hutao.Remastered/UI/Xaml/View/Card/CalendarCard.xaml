@@ -26,7 +26,7 @@
     Background="Transparent"
     BorderBrush="{x:Null}"
     BorderThickness="0"
-    Command="{x:Bind ((shvc:CalendarViewModel)DataContext).NavigateCommand, Mode=OneWay}"
+    Command="{x:Bind DataContext.NavigateCommand, Mode=OneWay}"
     mc:Ignorable="d">
 
     <shuxcth:MaterialCardButton.Resources>
@@ -61,13 +61,13 @@
     </shuxcth:MaterialCardButton.Resources>
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvc:CalendarViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Grid
         Padding="12"
         RowSpacing="6"
-        Visibility="{x:Bind ((shvc:CalendarViewModel)DataContext).IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+        Visibility="{x:Bind DataContext.IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
@@ -77,7 +77,7 @@
             Grid.Row="0"
             Height="48"
             HorizontalAlignment="Stretch"
-            ItemsSource="{x:Bind ((shvc:CalendarViewModel)DataContext).WeekDays, Mode=OneWay}"
+            ItemsSource="{x:Bind DataContext.WeekDays, Mode=OneWay}"
             Style="{ThemeResource DefaultSegmentedStyle}">
             <cwc:Segmented.ItemTemplate>
                 <DataTemplate x:DataType="shvc:CalendarDay">
@@ -103,14 +103,14 @@
 
         <Grid
             Grid.Row="1"
-            DataContext="{x:Bind ((shvc:CalendarViewModel)DataContext).WeekDays.CurrentItem, FallbackValue={x:Null}, Mode=OneWay}"
+            DataContext="{x:Bind DataContext.WeekDays.CurrentItem, FallbackValue={x:Null}, Mode=OneWay}"
             RowSpacing="6">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <shuxc:StandardView Grid.Row="0" ShowCondition="{x:Bind ((shvc:CalendarViewModel)DataContext).WeekDays.CurrentItem.BirthDayAvatars.IsEmpty, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}">
+            <shuxc:StandardView Grid.Row="0" ShowCondition="{x:Bind DataContext.WeekDays.CurrentItem.BirthDayAvatars.IsEmpty, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}">
                 <shuxc:StandardView.EmptyContent>
                     <Border Padding="12" Style="{ThemeResource BorderShimmerStyle}">
                         <TextBlock
@@ -122,7 +122,7 @@
                 <ItemsControl
                     HorizontalAlignment="Left"
                     ItemsPanel="{StaticResource WrapPanelSpacing6Template}"
-                    ItemsSource="{x:Bind ((shvc:CalendarViewModel)DataContext).WeekDays.CurrentItem.BirthDayAvatars, Mode=OneWay}">
+                    ItemsSource="{x:Bind DataContext.WeekDays.CurrentItem.BirthDayAvatars, Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <shuxcc:HorizontalCard>
@@ -146,7 +146,7 @@
                 Grid.Row="1"
                 Padding="12"
                 Style="{ThemeResource BorderShimmerStyle}"
-                Visibility="{x:Bind ((shvc:CalendarViewModel)DataContext).WeekDays.CurrentItem.Materials.IsEmpty, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                Visibility="{x:Bind DataContext.WeekDays.CurrentItem.Materials.IsEmpty, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                 <TextBlock
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -157,7 +157,7 @@
                 Grid.Row="1"
                 HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{x:Bind ((shvc:CalendarViewModel)DataContext).WeekDays.CurrentItem.Materials, Mode=OneWay}" Visibility="{x:Bind ((shvc:CalendarViewModel)DataContext).WeekDays.CurrentItem.Materials.IsEmpty, Converter={StaticResource BoolToVisibilityRevertConverter}, Mode=OneWay}">
+                <ItemsControl ItemsSource="{x:Bind DataContext.WeekDays.CurrentItem.Materials, Mode=OneWay}" Visibility="{x:Bind DataContext.WeekDays.CurrentItem.Materials.IsEmpty, Converter={StaticResource BoolToVisibilityRevertConverter}, Mode=OneWay}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <cwc:UniformGrid
@@ -169,87 +169,16 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="shvc:CalendarMaterial">
                             <Grid>
-                                <cwc:SwitchPresenter
-                                    x:Name="GlassPresenter_8182"
+                                <wl:LiquidGlassButton
+                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                    MinWidth="0"
+                                    Padding="0"
                                     VerticalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    IsTabStop="False"
-                                    Tag="LiquidGlass:Button"
-                                    Value="{Binding ButtonMaterial, Source={StaticResource ControlMaterialState}, Mode=OneWay}">
-                                    <cwc:Case>
-                                        <cwc:Case.Value>
-                                            <x:Int32>0</x:Int32>
-                                        </cwc:Case.Value>
-                                        <Button
-                                            MinWidth="0"
-                                            Padding="0"
-                                            VerticalAlignment="Stretch"
-                                            AutomationProperties.Name="{x:Bind Inner.Name, Mode=OneWay}"
-                                            Background="{Binding Highlight, Converter={ThemeResource BoolToBrushSelector}}"
-                                            DataContext="{x:Bind}"
-                                            Style="{ThemeResource ShimmerButtonStyle}">
-
-                                            <Button.Flyout>
-                                                <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                                    <Grid RowSpacing="6">
-                                                        <Grid.RowDefinitions>
-                                                            <RowDefinition Height="auto"/>
-                                                            <RowDefinition/>
-                                                        </Grid.RowDefinitions>
-                                                        <shuxcc:HorizontalCard Grid.Row="0">
-                                                            <shuxcc:HorizontalCard.Left>
-                                                                <shuxc:ItemIcon
-                                                                    Width="48"
-                                                                    Height="48"
-                                                                    Icon="{Binding Inner.Icon, Converter={StaticResource ItemIconConverter}}"
-                                                                    Quality="{Binding Inner.RankLevel}"/>
-                                                            </shuxcc:HorizontalCard.Left>
-                                                            <shuxcc:HorizontalCard.Right>
-                                                                <StackPanel Margin="12,0">
-                                                                    <TextBlock Text="{Binding Inner.Name}"/>
-                                                                    <TextBlock
-                                                                        Opacity="0.7"
-                                                                        Style="{StaticResource CaptionTextBlockStyle}"
-                                                                        Text="{Binding Inner.TypeDescription}"/>
-                                                                </StackPanel>
-                                                            </shuxcc:HorizontalCard.Right>
-                                                        </shuxcc:HorizontalCard>
-                                                        <Border
-                                                            Grid.Row="1"
-                                                            HorizontalAlignment="Stretch"
-                                                            Style="{ThemeResource BorderShimmerStyle}">
-                                                            <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{Binding Items}">
-                                                                <ItemsControl.ItemTemplate>
-                                                                    <DataTemplate>
-                                                                        <shuxc:ItemIcon
-                                                                            Width="48"
-                                                                            Height="48"
-                                                                            Icon="{Binding Icon}"
-                                                                            Opacity="{Binding Highlight, Converter={StaticResource BoolToOpacityConverter}}"
-                                                                            Quality="{Binding Quality}"/>
-                                                                    </DataTemplate>
-                                                                </ItemsControl.ItemTemplate>
-                                                            </ItemsControl>
-                                                        </Border>
-                                                    </Grid>
-                                                </Flyout>
-                                            </Button.Flyout>
-                                        </Button>
-                                    </cwc:Case>
-                                    <cwc:Case>
-                                        <cwc:Case.Value>
-                                            <x:Int32>1</x:Int32>
-                                        </cwc:Case.Value>
-                                        <wl:LiquidGlassButton
-                                            MinWidth="0"
-                                            Padding="0"
-                                            VerticalAlignment="Stretch"
-                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                            AutomationProperties.Name="{x:Bind Inner.Name, Mode=OneWay}"
-                                            CornerRadius="8"
-                                            DataContext="{x:Bind}"
-                                            Style="{ThemeResource ShimmerButtonStyle}">
+                                    AutomationProperties.Name="{x:Bind Inner.Name, Mode=OneWay}"
+                                    Background="{Binding Highlight, Converter={ThemeResource BoolToBrushSelector}}"
+                                    CornerRadius="8"
+                                    DataContext="{x:Bind}"
+                                    Style="{ThemeResource ShimmerButtonStyle}">
 
                                             <wl:LiquidGlassButton.Flyout>
                                                 <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
@@ -296,9 +225,7 @@
                                                     </Grid>
                                                 </Flyout>
                                             </wl:LiquidGlassButton.Flyout>
-                                        </wl:LiquidGlassButton>
-                                    </cwc:Case>
-                                </cwc:SwitchPresenter>
+                                </wl:LiquidGlassButton>
                                 <!--  Keep one icon in the stable template tree; only the button surface switches.  -->
                                 <shuxci:CachedImage
                                     Width="24"

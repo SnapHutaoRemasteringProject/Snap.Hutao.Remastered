@@ -17,4 +17,6 @@ public sealed partial class HardChallengePage : ScopedPage
     {
         InitializeDataContext<HardChallengeViewModel>();
     }
+
+    public new HardChallengeViewModel DataContext { get => (HardChallengeViewModel)base.DataContext; set => base.DataContext = value; }
 }

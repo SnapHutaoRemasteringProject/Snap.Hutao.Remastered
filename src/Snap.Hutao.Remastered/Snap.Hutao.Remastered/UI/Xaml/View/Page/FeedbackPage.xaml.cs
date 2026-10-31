@@ -17,4 +17,6 @@ public sealed partial class FeedbackPage : ScopedPage
     {
         InitializeDataContext<FeedbackViewModel>();
     }
+
+    public new FeedbackViewModel DataContext { get => (FeedbackViewModel)base.DataContext; set => base.DataContext = value; }
 }

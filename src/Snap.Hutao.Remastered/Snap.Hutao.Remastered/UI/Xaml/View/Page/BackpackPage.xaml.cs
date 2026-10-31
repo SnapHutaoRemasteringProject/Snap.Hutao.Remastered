@@ -31,4 +31,6 @@ public sealed partial class BackpackPage : ScopedPage
             ShowAttachedFlyoutAction.ShowAttachedFlyout(element);
         }
     }
+
+    public new BackpackViewModel DataContext { get => (BackpackViewModel)base.DataContext; set => base.DataContext = value; }
 }

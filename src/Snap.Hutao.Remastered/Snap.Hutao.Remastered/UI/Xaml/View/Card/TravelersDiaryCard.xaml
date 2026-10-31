@@ -34,15 +34,15 @@
     </shuxcth:MaterialCardButton.Resources>
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Grid>
-        <Grid Visibility="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-            <Grid Visibility="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).Ledger, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
+        <Grid Visibility="{x:Bind DataContext.IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+            <Grid Visibility="{x:Bind DataContext.Ledger, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                 <Grid
                     Margin="12"
-                    DataContext="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).Ledger, Mode=OneWay}"
+                    DataContext="{x:Bind DataContext.Ledger, Mode=OneWay}"
                     RowSpacing="8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto"/>
@@ -71,7 +71,7 @@
                         <TextBlock
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Text="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).Ledger.Uid, Mode=OneWay}"/>
+                            Text="{x:Bind DataContext.Ledger.Uid, Mode=OneWay}"/>
                     </Grid>
 
                     <FlipView
@@ -117,7 +117,7 @@
                                                 <TextBlock
                                                     VerticalAlignment="Center"
                                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                                    Text="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).Ledger.DayData.FormattedPrimogems, Mode=OneWay}"/>
+                                                    Text="{x:Bind DataContext.Ledger.DayData.FormattedPrimogems, Mode=OneWay}"/>
                                             </StackPanel>
                                             <StackPanel
                                                 Grid.Column="1"
@@ -131,7 +131,7 @@
                                                 <TextBlock
                                                     VerticalAlignment="Center"
                                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                                    Text="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).Ledger.DayData.FormattedMora, Mode=OneWay}"/>
+                                                    Text="{x:Bind DataContext.Ledger.DayData.FormattedMora, Mode=OneWay}"/>
                                             </StackPanel>
                                         </Grid>
                                     </Grid>
@@ -169,7 +169,7 @@
                                                 <TextBlock
                                                     VerticalAlignment="Center"
                                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                                    Text="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).Ledger.MonthData.FormattedPrimogems, Mode=OneWay}"/>
+                                                    Text="{x:Bind DataContext.Ledger.MonthData.FormattedPrimogems, Mode=OneWay}"/>
                                             </StackPanel>
                                             <StackPanel
                                                 Grid.Column="1"
@@ -183,7 +183,7 @@
                                                 <TextBlock
                                                     VerticalAlignment="Center"
                                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                                    Text="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).Ledger.MonthData.FormattedMora, Mode=OneWay}"/>
+                                                    Text="{x:Bind DataContext.Ledger.MonthData.FormattedMora, Mode=OneWay}"/>
                                             </StackPanel>
                                         </Grid>
                                     </Grid>
@@ -202,7 +202,7 @@
                                     Grid.ColumnSpan="2"
                                     Padding="12"
                                     Style="{StaticResource TravelersDiarySectionBorderStyle}"
-                                    Visibility="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).Ledger.MonthData.GroupBy, Converter={StaticResource EmptyCollectionToVisibilityRevertConverter}, Mode=OneWay}">
+                                    Visibility="{x:Bind DataContext.Ledger.MonthData.GroupBy, Converter={StaticResource EmptyCollectionToVisibilityRevertConverter}, Mode=OneWay}">
                                     <TextBlock
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
@@ -216,8 +216,8 @@
                                     Height="104"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    Visibility="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).Ledger.MonthData.GroupBy, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}">
-                                    <ItemsControl ItemsSource="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).Ledger.MonthData.GroupBy, Converter={StaticResource LedgerIncomeSourceToDonutSliceConverter}, Mode=OneWay}">
+                                    Visibility="{x:Bind DataContext.Ledger.MonthData.GroupBy, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}">
+                                    <ItemsControl ItemsSource="{x:Bind DataContext.Ledger.MonthData.GroupBy, Converter={StaticResource LedgerIncomeSourceToDonutSliceConverter}, Mode=OneWay}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <Grid/>
@@ -247,7 +247,7 @@
                                         <TextBlock
                                             HorizontalAlignment="Center"
                                             Style="{StaticResource CaptionTextBlockStyle}"
-                                            Text="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).Ledger.MonthData.FormattedPrimogems, Mode=OneWay}"/>
+                                            Text="{x:Bind DataContext.Ledger.MonthData.FormattedPrimogems, Mode=OneWay}"/>
                                     </StackPanel>
                                 </Grid>
 
@@ -256,8 +256,8 @@
                                     Padding="0,0,0,16"
                                     HorizontalScrollBarVisibility="Disabled"
                                     VerticalScrollBarVisibility="Auto"
-                                    Visibility="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).Ledger.MonthData.GroupBy, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}">
-                                    <ItemsControl ItemsSource="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).Ledger.MonthData.GroupBy, Converter={StaticResource LedgerIncomeSourceToDonutSliceConverter}, Mode=OneWay}">
+                                    Visibility="{x:Bind DataContext.Ledger.MonthData.GroupBy, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}">
+                                    <ItemsControl ItemsSource="{x:Bind DataContext.Ledger.MonthData.GroupBy, Converter={StaticResource LedgerIncomeSourceToDonutSliceConverter}, Mode=OneWay}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="shuxdc:LedgerIncomeSlice">
                                                 <Grid Margin="0,2" ColumnSpacing="6">
@@ -318,7 +318,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Spacing="8"
-                Visibility="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).Ledger, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}, Mode=OneWay}">
+                Visibility="{x:Bind DataContext.Ledger, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}, Mode=OneWay}">
                 <Image
                     Width="96"
                     Height="96"
@@ -329,6 +329,6 @@
             </StackPanel>
         </Grid>
 
-        <shuxc:Loading IsLoading="{x:Bind ((shvt:TravelersDiaryViewModel)DataContext).IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" Style="{ThemeResource DefaultLoadingCardStyle}"/>
+        <shuxc:Loading IsLoading="{x:Bind DataContext.IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" Style="{ThemeResource DefaultLoadingCardStyle}"/>
     </Grid>
 </shuxcth:MaterialCardButton>

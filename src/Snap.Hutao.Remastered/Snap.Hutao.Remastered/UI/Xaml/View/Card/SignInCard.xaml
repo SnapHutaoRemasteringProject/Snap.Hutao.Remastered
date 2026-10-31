@@ -78,11 +78,11 @@
     </shuxcth:MaterialCardButton.Resources>
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvs:SignInViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Grid>
-        <Grid Visibility="{x:Bind ((shvs:SignInViewModel)DataContext).IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+        <Grid Visibility="{x:Bind DataContext.IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
             <Grid
                 Padding="12"
                 CornerRadius="8"
@@ -117,7 +117,7 @@
                         <TextBlock
                             Grid.Column="1"
                             VerticalAlignment="Center"
-                            Text="{x:Bind ((shvs:SignInViewModel)DataContext).TotalSignInDaysHint, Mode=OneWay}"
+                            Text="{x:Bind DataContext.TotalSignInDaysHint, Mode=OneWay}"
                             TextTrimming="CharacterEllipsis"
                             TextWrapping="NoWrap"/>
 
@@ -125,7 +125,7 @@
                             Grid.Column="2"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Text="{x:Bind ((shvs:SignInViewModel)DataContext).CurrentUid, Mode=OneWay}"/>
+                            Text="{x:Bind DataContext.CurrentUid, Mode=OneWay}"/>
                     </Grid>
 
                 </Grid>
@@ -136,9 +136,9 @@
                     Padding="0"
                     cw:UIElementExtensions.ClipToBounds="True"
                     CanContentRenderOutsideBounds="False">
-                    <ItemsControl ItemTemplate="{StaticResource AwardTemplate}" ItemsSource="{x:Bind ((shvs:SignInViewModel)DataContext).Awards, Mode=OneWay}">
+                    <ItemsControl ItemTemplate="{StaticResource AwardTemplate}" ItemsSource="{x:Bind DataContext.Awards, Mode=OneWay}">
                         <mxi:Interaction.Behaviors>
-                            <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvs:SignInViewModel)DataContext).ScrollToNextAwardCommand, Mode=OneWay}"/>
+                            <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.ScrollToNextAwardCommand, Mode=OneWay}"/>
                         </mxi:Interaction.Behaviors>
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -166,7 +166,7 @@
                     <Grid
                         Margin="8,0"
                         HorizontalAlignment="Left"
-                        Visibility="{x:Bind ((shvs:SignInViewModel)DataContext).IsTodaySigned, Converter={StaticResource BoolToVisibilityRevertConverter}, Mode=OneWay}">
+                        Visibility="{x:Bind DataContext.IsTodaySigned, Converter={StaticResource BoolToVisibilityRevertConverter}, Mode=OneWay}">
                         <FontIcon
                             FontSize="16"
                             Foreground="{ThemeResource InfoBarInformationalSeverityIconBackground}"
@@ -180,7 +180,7 @@
                     <Grid
                         Margin="8,0"
                         HorizontalAlignment="Left"
-                        Visibility="{x:Bind ((shvs:SignInViewModel)DataContext).IsTodaySigned, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                        Visibility="{x:Bind DataContext.IsTodaySigned, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                         <FontIcon
                             FontSize="16"
                             Foreground="{ThemeResource InfoBarSuccessSeverityIconBackground}"
@@ -191,68 +191,23 @@
                             Glyph="{ThemeResource InfoBarSuccessIconGlyph}"/>
                     </Grid>
 
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_8464"
+                    <wl:LiquidGlassButton
                         Grid.Column="0"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Tag="LiquidGlass:Button"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <Button
-                                Command="{x:Bind ((shvs:SignInViewModel)DataContext).ClaimSignInRewardCommand, Mode=OneWay}"
-                                Content="{shuxm:ResourceString Name=ViewCardSignInClaimSignInAction}"
-                                IsEnabled="{x:Bind ((shvs:SignInViewModel)DataContext).IsTodaySigned, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
-                                Style="{ThemeResource SettingButtonStyle}"/>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassButton
-                                shuxcth:ControlMaterialState.IsManaged="True"
-                                Command="{x:Bind ((shvs:SignInViewModel)DataContext).ClaimSignInRewardCommand, Mode=OneWay}"
-                                Content="{shuxm:ResourceString Name=ViewCardSignInClaimSignInAction}"
-                                IsEnabled="{x:Bind ((shvs:SignInViewModel)DataContext).IsTodaySigned, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
-                                Style="{ThemeResource SettingButtonStyle}"/>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_8874"
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        Command="{x:Bind DataContext.ClaimSignInRewardCommand, Mode=OneWay}"
+                        Content="{shuxm:ResourceString Name=ViewCardSignInClaimSignInAction}"
+                        IsEnabled="{x:Bind DataContext.IsTodaySigned, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
+                        Style="{ThemeResource SettingButtonStyle}"/>
+                    <wl:LiquidGlassButton
                         Grid.Column="1"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Tag="LiquidGlass:Button"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <Button
-                                Command="{x:Bind ((shvs:SignInViewModel)DataContext).ClaimResignInRewardCommand, Mode=OneWay}"
-                                Content="{shuxm:ResourceString Name=ViewCardSignInClaimReSignInAction}"
-                                Style="{ThemeResource SettingButtonStyle}"/>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassButton
-                                shuxcth:ControlMaterialState.IsManaged="True"
-                                Command="{x:Bind ((shvs:SignInViewModel)DataContext).ClaimResignInRewardCommand, Mode=OneWay}"
-                                Content="{shuxm:ResourceString Name=ViewCardSignInClaimReSignInAction}"
-                                Style="{ThemeResource SettingButtonStyle}"/>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        Command="{x:Bind DataContext.ClaimResignInRewardCommand, Mode=OneWay}"
+                        Content="{shuxm:ResourceString Name=ViewCardSignInClaimReSignInAction}"
+                        Style="{ThemeResource SettingButtonStyle}"/>
                 </Grid>
             </Grid>
         </Grid>
 
-        <shuxc:Loading IsLoading="{x:Bind ((shvs:SignInViewModel)DataContext).IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" Style="{ThemeResource DefaultLoadingCardStyle}"/>
+        <shuxc:Loading IsLoading="{x:Bind DataContext.IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" Style="{ThemeResource DefaultLoadingCardStyle}"/>
     </Grid>
 </shuxcth:MaterialCardButton>

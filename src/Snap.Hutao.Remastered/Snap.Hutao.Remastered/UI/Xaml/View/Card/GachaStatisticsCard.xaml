@@ -20,11 +20,11 @@
     Background="Transparent"
     BorderBrush="{x:Null}"
     BorderThickness="0"
-    Command="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).NavigateCommand, Mode=OneWay}"
+    Command="{x:Bind DataContext.NavigateCommand, Mode=OneWay}"
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <shuxcth:MaterialCardButton.Resources>
@@ -173,19 +173,19 @@
     </shuxcth:MaterialCardButton.Resources>
 
     <Grid>
-        <Grid Visibility="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
-            <Grid Visibility="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).StatisticsList.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
+        <Grid Visibility="{x:Bind DataContext.IsInitialized, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+            <Grid Visibility="{x:Bind DataContext.StatisticsList.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
                 <FlipView
                     x:Name="RootFlipView"
                     Background="{x:Null}"
                     ItemTemplate="{StaticResource GachaStatisticsTemplate}"
-                    ItemsSource="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).StatisticsList, Mode=OneWay}"/>
+                    ItemsSource="{x:Bind DataContext.StatisticsList, Mode=OneWay}"/>
 
                 <PipsPager
                     Height="16"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Bottom"
-                    NumberOfPages="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).StatisticsList.Length, Mode=OneWay}"
+                    NumberOfPages="{x:Bind DataContext.StatisticsList.Length, Mode=OneWay}"
                     SelectedPageIndex="{x:Bind Path=RootFlipView.SelectedIndex, Mode=TwoWay}"/>
             </Grid>
         </Grid>
@@ -193,7 +193,7 @@
         <StackPanel
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Visibility="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).StatisticsList.Length, Converter={StaticResource Int32ToVisibilityRevertConverter}, Mode=OneWay}">
+            Visibility="{x:Bind DataContext.StatisticsList.Length, Converter={StaticResource Int32ToVisibilityRevertConverter}, Mode=OneWay}">
             <Image
                 Width="80"
                 Height="80"
@@ -201,6 +201,6 @@
             <TextBlock HorizontalAlignment="Center" Text="{shuxm:ResourceString Name=ViewGachaLogHeader}"/>
         </StackPanel>
 
-        <shuxc:Loading IsLoading="{x:Bind ((shvg:GachaLogViewModelSlim)DataContext).IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" Style="{ThemeResource DefaultLoadingCardStyle}"/>
+        <shuxc:Loading IsLoading="{x:Bind DataContext.IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" Style="{ThemeResource DefaultLoadingCardStyle}"/>
     </Grid>
 </shuxcth:MaterialCardButton>

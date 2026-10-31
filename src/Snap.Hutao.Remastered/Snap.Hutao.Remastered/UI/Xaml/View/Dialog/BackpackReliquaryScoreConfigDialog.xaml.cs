@@ -6,6 +6,7 @@ using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Globalization;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
@@ -20,6 +21,7 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
     private PresetComboItem? selectedComboItem;
     private BackpackReliquaryScoreConfig currentConfig = default!;
     private bool isUpdating;
+    private bool isClosing;
 
     private Func<ReliquaryScoreConfigPreset, BackpackReliquaryScoreConfig> createPreset = default!;
     private Action<Guid>? deleteCallback;
@@ -50,13 +52,15 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
         PresetComboBox.ItemsSource = comboItems;
         BindConfigToControls();
 
+        isClosing = false;
+        Closing -= OnDialogClosing;
+        Closing += OnDialogClosing;
+
         ContentDialogResult result = await contentDialogFactory.EnqueueAndShowAsync(this).ShowTask.ConfigureAwait(false);
         await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
 
         if (result is ContentDialogResult.Primary)
         {
-            // 删除只在用户确认后才落库：取消时对话框不应留下任何持久化副作用，
-            // 否则调用方会持有已被删除的配置（下拉、缓存权重、角色设置都成了旧数据）
             foreach (Guid deletedConfigId in deletedConfigIds)
             {
                 deleteCallback?.Invoke(deletedConfigId);
@@ -105,13 +109,13 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
     {
         isUpdating = true;
 
-        CritSlider.Value = currentConfig.CritWeight;
-        CritHurtSlider.Value = currentConfig.CritHurtWeight;
-        AttackPercentSlider.Value = currentConfig.AttackPercentWeight;
-        ChargeEfficiencySlider.Value = currentConfig.ChargeEfficiencyWeight;
-        ElementalMasterySlider.Value = currentConfig.ElementalMasteryWeight;
-        HpPercentSlider.Value = currentConfig.HpPercentWeight;
-        DefensePercentSlider.Value = currentConfig.DefensePercentWeight;
+        SetSliderValue(CritSlider, CritSliderGlass, currentConfig.CritWeight);
+        SetSliderValue(CritHurtSlider, CritHurtSliderGlass, currentConfig.CritHurtWeight);
+        SetSliderValue(AttackPercentSlider, AttackPercentSliderGlass, currentConfig.AttackPercentWeight);
+        SetSliderValue(ChargeEfficiencySlider, ChargeEfficiencySliderGlass, currentConfig.ChargeEfficiencyWeight);
+        SetSliderValue(ElementalMasterySlider, ElementalMasterySliderGlass, currentConfig.ElementalMasteryWeight);
+        SetSliderValue(HpPercentSlider, HpPercentSliderGlass, currentConfig.HpPercentWeight);
+        SetSliderValue(DefensePercentSlider, DefensePercentSliderGlass, currentConfig.DefensePercentWeight);
 
         UpdateAllLabels();
 
@@ -124,15 +128,18 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
             NameTextBox.Text = GetConfigDisplayName(currentConfig);
         }
 
-        // 用户刚点选的那一行优先：编辑已有配置时再选内置预设，currentConfig 仍带着原配置的 InnerId，
-        // 若直接按 InnerId 反查会把下拉选回原配置行，用户刚选的预设看起来被弹了回去。
-        // 同时把 selectedComboItem 同步成实际显示的行，删除按钮才有明确的操作对象
         PresetComboItem? match = selectedComboItem ?? ResolveComboItem();
         selectedComboItem = match;
 
         DeleteButton.Visibility = match?.ConfigId.HasValue == true ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
         PresetComboBox.SelectedItem = match;
         isUpdating = false;
+    }
+
+    private static void SetSliderValue(Slider native, Slider glass, double value)
+    {
+        native.Value = value;
+        glass.Value = value;
     }
 
     /// <summary>
@@ -185,30 +192,64 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
 
     private void OnSliderValueChanged(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
-        if (isUpdating)
+        if (isUpdating || isClosing)
         {
             return;
         }
 
         double value = Math.Round(e.NewValue, 1);
-        (TextBlock label, Action<double> setter) = GetSliderBinding(sender);
+        (TextBlock label, Action<double> setter, Slider peer) = GetSliderBinding(sender);
         label.Text = value.ToString("F1", CultureInfo.CurrentCulture);
         setter(value);
+
+        // MaterialSwap keeps both instances alive but only one is in the visual tree.
+        // Sync the hidden peer so switching material does not reveal a stale value.
+        if (!ReferenceEquals(peer, sender) && peer.Value != value)
+        {
+            isUpdating = true;
+            try
+            {
+                peer.Value = value;
+            }
+            catch (Exception ex) when (ex is not OutOfMemoryException)
+            {
+                // A closing ContentDialog can detach the hidden peer while its value is
+                // still being written. Do not let that escape a UI event handler: it
+                // would leave ContentDialog.ShowAsync pending and block the next dialog.
+                Debug.WriteLine($"Reliquary score slider sync failed: {ex}");
+            }
+            finally
+            {
+                isUpdating = false;
+            }
+        }
 
         currentConfig.PresetKey = ReliquaryScoreConfigPreset.Custom;
     }
 
-    private (TextBlock Label, Action<double> Setter) GetSliderBinding(object sender)
+    private void OnDialogClosing(ContentDialog sender, ContentDialogClosingEventArgs args)
+    {
+        isClosing = true;
+    }
+
+    private (TextBlock Label, Action<double> Setter, Slider Peer) GetSliderBinding(object sender)
     {
         return sender switch
         {
-            _ when ReferenceEquals(sender, CritSlider) => (CritLabel, v => currentConfig.CritWeight = v),
-            _ when ReferenceEquals(sender, CritHurtSlider) => (CritHurtLabel, v => currentConfig.CritHurtWeight = v),
-            _ when ReferenceEquals(sender, AttackPercentSlider) => (AttackPercentLabel, v => currentConfig.AttackPercentWeight = v),
-            _ when ReferenceEquals(sender, ChargeEfficiencySlider) => (ChargeEfficiencyLabel, v => currentConfig.ChargeEfficiencyWeight = v),
-            _ when ReferenceEquals(sender, ElementalMasterySlider) => (ElementalMasteryLabel, v => currentConfig.ElementalMasteryWeight = v),
-            _ when ReferenceEquals(sender, HpPercentSlider) => (HpPercentLabel, v => currentConfig.HpPercentWeight = v),
-            _ when ReferenceEquals(sender, DefensePercentSlider) => (DefensePercentLabel, v => currentConfig.DefensePercentWeight = v),
+            _ when ReferenceEquals(sender, CritSlider) => (CritLabel, v => currentConfig.CritWeight = v, CritSliderGlass),
+            _ when ReferenceEquals(sender, CritSliderGlass) => (CritLabel, v => currentConfig.CritWeight = v, CritSlider),
+            _ when ReferenceEquals(sender, CritHurtSlider) => (CritHurtLabel, v => currentConfig.CritHurtWeight = v, CritHurtSliderGlass),
+            _ when ReferenceEquals(sender, CritHurtSliderGlass) => (CritHurtLabel, v => currentConfig.CritHurtWeight = v, CritHurtSlider),
+            _ when ReferenceEquals(sender, AttackPercentSlider) => (AttackPercentLabel, v => currentConfig.AttackPercentWeight = v, AttackPercentSliderGlass),
+            _ when ReferenceEquals(sender, AttackPercentSliderGlass) => (AttackPercentLabel, v => currentConfig.AttackPercentWeight = v, AttackPercentSlider),
+            _ when ReferenceEquals(sender, ChargeEfficiencySlider) => (ChargeEfficiencyLabel, v => currentConfig.ChargeEfficiencyWeight = v, ChargeEfficiencySliderGlass),
+            _ when ReferenceEquals(sender, ChargeEfficiencySliderGlass) => (ChargeEfficiencyLabel, v => currentConfig.ChargeEfficiencyWeight = v, ChargeEfficiencySlider),
+            _ when ReferenceEquals(sender, ElementalMasterySlider) => (ElementalMasteryLabel, v => currentConfig.ElementalMasteryWeight = v, ElementalMasterySliderGlass),
+            _ when ReferenceEquals(sender, ElementalMasterySliderGlass) => (ElementalMasteryLabel, v => currentConfig.ElementalMasteryWeight = v, ElementalMasterySlider),
+            _ when ReferenceEquals(sender, HpPercentSlider) => (HpPercentLabel, v => currentConfig.HpPercentWeight = v, HpPercentSliderGlass),
+            _ when ReferenceEquals(sender, HpPercentSliderGlass) => (HpPercentLabel, v => currentConfig.HpPercentWeight = v, HpPercentSlider),
+            _ when ReferenceEquals(sender, DefensePercentSlider) => (DefensePercentLabel, v => currentConfig.DefensePercentWeight = v, DefensePercentSliderGlass),
+            _ when ReferenceEquals(sender, DefensePercentSliderGlass) => (DefensePercentLabel, v => currentConfig.DefensePercentWeight = v, DefensePercentSlider),
             _ => throw new ArgumentException("Unknown slider", nameof(sender)),
         };
     }
@@ -241,7 +282,6 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
             return;
         }
 
-        // 仅从对话框的列表里移除，真正的删除推迟到用户点击确定
         deletedConfigIds.Add(configId);
         savedConfigs = savedConfigs.Where(c => c.InnerId != configId).ToImmutableArray();
         comboItems = BuildComboItems();
