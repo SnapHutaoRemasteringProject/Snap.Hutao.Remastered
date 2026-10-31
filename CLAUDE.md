@@ -15,10 +15,13 @@
 - **What it is** — Snap Hutao (胡桃工具箱): a C# WinUI 3 desktop application that enhances the
   Genshin Impact experience on Windows without modifying the game client. This repository is the
   **remastered** fork of DGP Studio's upstream (`SnapHutaoRemasteringProject/Snap.Hutao.Remastered`).
-- **Runtime** — **.NET 11**. [`global.json`](global.json) pins SDK `11.0.100-rc.2`
-  (`rollForward: latestFeature`, `allowPrerelease: true`). ⚠️ that file is currently only in the
-  working tree, **not committed** to `dev` (TODO #18) — until it is, a clean clone builds with
-  whatever SDK is installed.
+- **Runtime** — **.NET 11**. There is deliberately **no `global.json`**: the build uses whatever
+  .NET 11 SDK is installed (any `11.x` feature band and patch), so a contributor is never forced
+  onto one particular SDK build. CI follows the same policy and installs only the major version
+  (`actions/setup-dotnet@v6`, `dotnet-version: 11` in all four workflows that build). **Do not
+  reintroduce `global.json` to pin the SDK** — a pin fails the build on machines that carry a
+  different feature band, while the `net11.0*` target frameworks already express the only hard
+  requirement (an 11.x SDK).
 - **Target frameworks** — main app
   [`net11.0-windows10.0.26100.0`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj)
   (`x64` only, WinUI 3, `SelfContained`), test project
@@ -91,7 +94,8 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
   needs another `<Compile Include>` link. Windows dependencies must either be absent or supplied
   by explicit test doubles, as in `UserInitializationThreadingTest` (real initialization service,
   delayed HTTP responses and a dedicated UI-consumer thread; no real XAML controls).
-- **Prerequisites** — the .NET SDK pinned by `global.json`; the workloads and the Single-project MSIX
+- **Prerequisites** — a **.NET 11 SDK** on the machine (no `global.json`, so any `11.x` feature band
+  works; CI installs major `11`); the workloads and the Single-project MSIX
   packaging extension in `.vsconfig` (`ManagedDesktop`, `NativeDesktop`, `Universal`) for
   packaging/interop work; the WebView2 Runtime on the target machine (the app hosts WebView2 windows
   and `Microsoft.Web.WebView2` is a direct dependency).
@@ -495,8 +499,8 @@ the build fails with `CS9275`); write a normal constructor in that case.
   in the app (F5 or the built exe). State explicitly what you did and did not run.
 - **Keep edits scoped** — one `CODE_REVIEW.md` ID per PR where practical; reference it in the PR
   description (`Refs BUG-03`) and link issues with `Fixes #123`.
-- **Do not** change `.appxmanifest` capabilities, downgrade the SDK/`LangVersion`, or replace
-  existing services with new singletons/global state.
+- **Do not** change `.appxmanifest` capabilities, downgrade the SDK/`LangVersion`, reintroduce a
+  `global.json` SDK pin (see §1), or replace existing services with new singletons/global state.
 - **Documentation is part of the change** — if you change a fact this file asserts (framework
   version, branch, attribute, command name, threshold), update this file in the same PR, and append
   a row to `CODE_REVIEW.md` §14.
@@ -525,12 +529,12 @@ ID — do not "fix" these by documenting them as if they were intended.
 | 15 | `ScopedPage` creates its `IServiceScope` only on the first `Loading` (handler unsubscribed) and disposes a `CancellationTokenSource` field it keeps handing out — a second activation throws | `UI/Xaml/Control/ScopedPage.cs` | BUG-05 |
 | 16 | Legacy scope plumbing: 272 constructors/partial ctors take `IServiceProvider`, 171 `CreateScope()` calls, 4 `*ScopeContext` bags, 12 `Ioc.Default` uses | repo-wide | ARCH-01, ARCH-02 |
 | 17 | `.github/copilot-instructions.md` and `CONTRIBUTING.md` had pre-rename paths / wrong branch names (`src/Snap.Hutao`, `Snap.Hutao.sln`, `develop`, `dev-master`); corrected on 2026-10-11, keep them in sync | `.github/copilot-instructions.md`, `CONTRIBUTING.md` | ENG-10 |
-| 18 | `global.json` (the SDK pin referenced in §1) and `CODE_REVIEW.md` exist only as untracked files in the working tree — commit them, otherwise the pin and this review trail do not exist for a clean clone | `global.json`, `CODE_REVIEW.md` | — |
 
 ## 9. Changelog of this document
 
 | Date | Change |
 |---|---|
+| 2026-10-31 | Removed the `global.json` SDK pin (`chore: do not use global.json to control dotnet version`) and dropped TODO #18: the build uses the installed .NET 11 SDK, CI installs major `11`, and §1/§2/§7 now forbid reintroducing a pin. |
 | 2026-10-31 | Restored the `ContentControlThemeFontFamily` / `PivotHeaderItemFontFamily` → `MiSans` aliases and the MiSans fallback in `CascadiaMonoAndMiSans` that the 2026-10-24 material rewrite deleted; documented in §5.3 that those aliases are the only thing that makes framework control content MiSans. |
 | 2026-10-25 | Kept captured material appearance across unload/reload (`ConditionalWeakTable`) and ignored stale `Unloaded` events; removed the ToggleButton border/padding from the native toggle-switch template and bound its header through the control's Content alias; gave the native toggle its own element names and restored the knob `TranslateTransform` slide animation; made native styles stop overriding `FontFamily`; synchronized both `MaterialSwap` slider instances in the reliquary score dialog; neutralized `PointerMotionHelper` scale/translation and pointer lighting in the native material and restored them on glass; documented all of it in §5.3. |
 | 2026-10-24 | Replaced the cwc:SwitchPresenter material trees (317 blocks) with single glass instances plus MaterialAppearance/MaterialNative.xaml style-and-background switching; MaterialSwap for slider/password/search; documented the glass-brush, caller-background and ToggleSwitch/behavior rules in §5.3. |
