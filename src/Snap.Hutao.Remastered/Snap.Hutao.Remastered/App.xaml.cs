@@ -48,7 +48,7 @@ public sealed partial class App : Application
     private readonly IAppActivation activation;
     private readonly ILogger<App> logger;
     private bool exitRequested;
-    private DateTime firstShouldExitChecked;
+    private DateTime exitingTime;
 
     [GeneratedConstructor(InitializeComponent = true)]
     public partial App(IServiceProvider serviceProvider);
@@ -213,12 +213,12 @@ public sealed partial class App : Application
 
     private bool ShouldExitNow()
     {
-        if (firstShouldExitChecked == default)
+        if (exitingTime == default)
         {
-            firstShouldExitChecked = DateTime.UtcNow;
+            exitingTime = DateTime.UtcNow;
         }
 
-        if (XamlApplicationLifetime.ActivationAndInitializationCompleted && DateTime.UtcNow >= firstShouldExitChecked.AddSeconds(5))
+        if (XamlApplicationLifetime.ActivationAndInitializationCompleted || DateTime.UtcNow >= exitingTime.AddSeconds(5))
         {
             return true;
         }
