@@ -17,4 +17,6 @@ public sealed partial class SpiralAbyssRecordPage : ScopedPage
     {
         InitializeDataContext<SpiralAbyssViewModel>();
     }
+
+    public new SpiralAbyssViewModel DataContext { get => (SpiralAbyssViewModel)base.DataContext; set => base.DataContext = value; }
 }

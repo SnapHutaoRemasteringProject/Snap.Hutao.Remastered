@@ -17,4 +17,6 @@ public sealed partial class WikiAvatarPage : ScopedPage
     {
         InitializeDataContext<WikiAvatarViewModel>();
     }
+
+    public new WikiAvatarViewModel DataContext { get => (WikiAvatarViewModel)base.DataContext; set => base.DataContext = value; }
 }

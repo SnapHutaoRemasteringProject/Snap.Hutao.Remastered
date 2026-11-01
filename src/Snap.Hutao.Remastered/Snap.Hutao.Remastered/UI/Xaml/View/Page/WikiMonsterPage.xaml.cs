@@ -17,4 +17,6 @@ public sealed partial class WikiMonsterPage : ScopedPage
     {
         InitializeDataContext<WikiMonsterViewModel>();
     }
+
+    public new WikiMonsterViewModel DataContext { get => (WikiMonsterViewModel)base.DataContext; set => base.DataContext = value; }
 }

@@ -23,61 +23,18 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_1149"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:TextBox"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
-                    <TextBox
-                        CornerRadius="0,4,4,0"
-                        KeyDown="OnTextKeyDown"
-                        KeyUp="OnTextKeyUp"
-                        PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserAccountVerificationCaptchaPlaceholder}"
-                        Text="{x:Bind Captcha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
-                    <wl:LiquidGlassTextBox
-                        shuxcth:ControlMaterialState.IsManaged="True"
-                        CornerRadius="0,4,4,0"
-                        KeyDown="OnTextKeyDown"
-                        KeyUp="OnTextKeyUp"
-                        PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserAccountVerificationCaptchaPlaceholder}"
-                        Text="{x:Bind Captcha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_1491"
+            <wl:LiquidGlassTextBox
+                shuxcth:ControlMaterialState.IsManaged="True"
+                CornerRadius="0,4,4,0"
+                KeyDown="OnTextKeyDown"
+                KeyUp="OnTextKeyUp"
+                PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserAccountVerificationCaptchaPlaceholder}"
+                Text="{x:Bind Captcha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <wl:LiquidGlassButton
                 Grid.Column="1"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:Button"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
-                    <Button Command="{x:Bind SendEmailCaptchaCommand}" Content="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaSendCaptchaAction}"/>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
-                    <wl:LiquidGlassButton
-                        shuxcth:ControlMaterialState.IsManaged="True"
-                        Command="{x:Bind SendEmailCaptchaCommand}"
-                        Content="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaSendCaptchaAction}"/>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
+                shuxcth:ControlMaterialState.IsManaged="True"
+                Command="{x:Bind SendEmailCaptchaCommand}"
+                Content="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaSendCaptchaAction}"/>
         </Grid>
     </StackPanel>
 </ContentDialog>

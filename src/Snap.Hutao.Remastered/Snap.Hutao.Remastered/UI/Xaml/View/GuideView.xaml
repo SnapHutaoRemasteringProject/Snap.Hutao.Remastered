@@ -126,7 +126,7 @@
             HorizontalContentAlignment="Stretch"
             VerticalContentAlignment="Stretch"
             ContentTransitions="{ThemeResource EntranceThemeTransitions}"
-            Value="{x:Bind shvg:GuideNavigation.VisibleState(((shvg:GuideViewModel)DataContext).State), Mode=OneWay}">
+            Value="{x:Bind shvg:GuideNavigation.VisibleState(DataContext.State), Mode=OneWay}">
             <!--  Language  -->
             <cwc:Case Value="{shuxm:UInt32 Value=0}">
                 <Grid>
@@ -266,394 +266,144 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
 
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_13608"
+                            <wl:LiquidGlassCheckBox
                                 Grid.Row="0"
                                 Grid.Column="0"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:CheckBox"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <CheckBox IsChecked="{Binding IsTermOfServiceAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://snaphutaorp.org/statements/tos.html">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementTermOfService}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </CheckBox>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassCheckBox shuxcth:ControlMaterialState.IsManaged="True" IsChecked="{Binding IsTermOfServiceAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://snaphutaorp.org/statements/tos.html">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementTermOfService}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </wl:LiquidGlassCheckBox>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                IsChecked="{Binding IsTermOfServiceAgreed, Mode=TwoWay}">
+                                <TextBlock>
+                                    <TextBlock.Inlines>
+                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
+                                        <Hyperlink NavigateUri="https://snaphutaorp.org/statements/tos.html">
+                                            <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementTermOfService}"/>
+                                        </Hyperlink>
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+                            </wl:LiquidGlassCheckBox>
 
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_14475"
+                            <wl:LiquidGlassCheckBox
                                 Grid.Row="0"
                                 Grid.Column="1"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:CheckBox"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <CheckBox IsChecked="{Binding IsPrivacyPolicyAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://snaphutaorp.org/statements/privacy-notice.html">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementPrivacyPolicy}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </CheckBox>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassCheckBox shuxcth:ControlMaterialState.IsManaged="True" IsChecked="{Binding IsPrivacyPolicyAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://snaphutaorp.org/statements/privacy-notice.html">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementPrivacyPolicy}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </wl:LiquidGlassCheckBox>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                IsChecked="{Binding IsPrivacyPolicyAgreed, Mode=TwoWay}">
+                                <TextBlock>
+                                    <TextBlock.Inlines>
+                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
+                                        <Hyperlink NavigateUri="https://snaphutaorp.org/statements/privacy-notice.html">
+                                            <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementPrivacyPolicy}"/>
+                                        </Hyperlink>
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+                            </wl:LiquidGlassCheckBox>
 
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_15353"
+                            <wl:LiquidGlassCheckBox
                                 Grid.Row="1"
                                 Grid.Column="0"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:CheckBox"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <CheckBox IsChecked="{Binding IsIssueReportAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://snaphutaorp.org/statements/bug-report.html">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIssueReport}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </CheckBox>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassCheckBox shuxcth:ControlMaterialState.IsManaged="True" IsChecked="{Binding IsIssueReportAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://snaphutaorp.org/statements/bug-report.html">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIssueReport}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </wl:LiquidGlassCheckBox>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                IsChecked="{Binding IsIssueReportAgreed, Mode=TwoWay}">
+                                <TextBlock>
+                                    <TextBlock.Inlines>
+                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
+                                        <Hyperlink NavigateUri="https://snaphutaorp.org/statements/bug-report.html">
+                                            <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIssueReport}"/>
+                                        </Hyperlink>
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+                            </wl:LiquidGlassCheckBox>
 
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_16223"
+                            <wl:LiquidGlassCheckBox
                                 Grid.Row="1"
                                 Grid.Column="1"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:CheckBox"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <CheckBox IsChecked="{Binding IsOpenSourceLicenseAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/main/LICENSE">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementOpenSourceLicense}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </CheckBox>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassCheckBox shuxcth:ControlMaterialState.IsManaged="True" IsChecked="{Binding IsOpenSourceLicenseAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/main/LICENSE">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementOpenSourceLicense}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </wl:LiquidGlassCheckBox>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                IsChecked="{Binding IsOpenSourceLicenseAgreed, Mode=TwoWay}">
+                                <TextBlock>
+                                    <TextBlock.Inlines>
+                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
+                                        <Hyperlink NavigateUri="https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/main/LICENSE">
+                                            <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementOpenSourceLicense}"/>
+                                        </Hyperlink>
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+                            </wl:LiquidGlassCheckBox>
 
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_17141"
+                            <wl:LiquidGlassCheckBox
                                 Grid.Row="2"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:CheckBox"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <CheckBox IsChecked="{Binding IsAgreementCopyAgreed, Mode=TwoWay}">
-                                        <TextBlock Text="{Binding AgreementCopyTarget}" TextWrapping="Wrap"/>
-                                    </CheckBox>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassCheckBox shuxcth:ControlMaterialState.IsManaged="True" IsChecked="{Binding IsAgreementCopyAgreed, Mode=TwoWay}">
-                                        <TextBlock Text="{Binding AgreementCopyTarget}" TextWrapping="Wrap"/>
-                                    </wl:LiquidGlassCheckBox>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                IsChecked="{Binding IsAgreementCopyAgreed, Mode=TwoWay}">
+                                <TextBlock Text="{Binding AgreementCopyTarget}" TextWrapping="Wrap"/>
+                            </wl:LiquidGlassCheckBox>
                         </Grid>
 
                         <!--  Vertical layout for non-Chinese locales  -->
                         <StackPanel Margin="0,8,0,0" Visibility="{Binding AgreementUseGrid, Converter={StaticResource BoolToVisibilityRevertConverter}}">
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_17818"
+                            <wl:LiquidGlassCheckBox
                                 Margin="0,4,0,0"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:CheckBox"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <CheckBox IsChecked="{Binding IsTermOfServiceAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://snaphutaorp.org/statements/tos.html">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementTermOfService}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </CheckBox>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassCheckBox shuxcth:ControlMaterialState.IsManaged="True" IsChecked="{Binding IsTermOfServiceAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://snaphutaorp.org/statements/tos.html">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementTermOfService}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </wl:LiquidGlassCheckBox>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                IsChecked="{Binding IsTermOfServiceAgreed, Mode=TwoWay}">
+                                <TextBlock>
+                                    <TextBlock.Inlines>
+                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
+                                        <Hyperlink NavigateUri="https://snaphutaorp.org/statements/tos.html">
+                                            <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementTermOfService}"/>
+                                        </Hyperlink>
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+                            </wl:LiquidGlassCheckBox>
 
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_18577"
+                            <wl:LiquidGlassCheckBox
                                 Margin="0,4,0,0"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:CheckBox"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <CheckBox IsChecked="{Binding IsPrivacyPolicyAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://snaphutaorp.org/statements/privacy-notice.html">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementPrivacyPolicy}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </CheckBox>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassCheckBox shuxcth:ControlMaterialState.IsManaged="True" IsChecked="{Binding IsPrivacyPolicyAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://snaphutaorp.org/statements/privacy-notice.html">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementPrivacyPolicy}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </wl:LiquidGlassCheckBox>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                IsChecked="{Binding IsPrivacyPolicyAgreed, Mode=TwoWay}">
+                                <TextBlock>
+                                    <TextBlock.Inlines>
+                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
+                                        <Hyperlink NavigateUri="https://snaphutaorp.org/statements/privacy-notice.html">
+                                            <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementPrivacyPolicy}"/>
+                                        </Hyperlink>
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+                            </wl:LiquidGlassCheckBox>
 
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_19347"
+                            <wl:LiquidGlassCheckBox
                                 Margin="0,4,0,0"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:CheckBox"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <CheckBox IsChecked="{Binding IsIssueReportAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://snaphutaorp.org/statements/bug-report.html">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIssueReport}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </CheckBox>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassCheckBox shuxcth:ControlMaterialState.IsManaged="True" IsChecked="{Binding IsIssueReportAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://snaphutaorp.org/statements/bug-report.html">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIssueReport}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </wl:LiquidGlassCheckBox>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                IsChecked="{Binding IsIssueReportAgreed, Mode=TwoWay}">
+                                <TextBlock>
+                                    <TextBlock.Inlines>
+                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
+                                        <Hyperlink NavigateUri="https://snaphutaorp.org/statements/bug-report.html">
+                                            <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIssueReport}"/>
+                                        </Hyperlink>
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+                            </wl:LiquidGlassCheckBox>
 
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_20109"
+                            <wl:LiquidGlassCheckBox
                                 Margin="0,4,0,0"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:CheckBox"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <CheckBox IsChecked="{Binding IsOpenSourceLicenseAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/main/LICENSE">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementOpenSourceLicense}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </CheckBox>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassCheckBox shuxcth:ControlMaterialState.IsManaged="True" IsChecked="{Binding IsOpenSourceLicenseAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
-                                                <Hyperlink NavigateUri="https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/main/LICENSE">
-                                                    <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementOpenSourceLicense}"/>
-                                                </Hyperlink>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </wl:LiquidGlassCheckBox>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                IsChecked="{Binding IsOpenSourceLicenseAgreed, Mode=TwoWay}">
+                                <TextBlock>
+                                    <TextBlock.Inlines>
+                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
+                                        <Hyperlink NavigateUri="https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/main/LICENSE">
+                                            <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementOpenSourceLicense}"/>
+                                        </Hyperlink>
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+                            </wl:LiquidGlassCheckBox>
 
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_20919"
+                            <wl:LiquidGlassCheckBox
                                 Margin="0,4,0,0"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:CheckBox"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <CheckBox IsChecked="{Binding IsDownStreamAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementDownStream}"/>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </CheckBox>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassCheckBox shuxcth:ControlMaterialState.IsManaged="True" IsChecked="{Binding IsDownStreamAgreed, Mode=TwoWay}">
-                                        <TextBlock>
-                                            <TextBlock.Inlines>
-                                                <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementDownStream}"/>
-                                            </TextBlock.Inlines>
-                                        </TextBlock>
-                                    </wl:LiquidGlassCheckBox>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                IsChecked="{Binding IsDownStreamAgreed, Mode=TwoWay}">
+                                <TextBlock>
+                                    <TextBlock.Inlines>
+                                        <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementDownStream}"/>
+                                    </TextBlock.Inlines>
+                                </TextBlock>
+                            </wl:LiquidGlassCheckBox>
                         </StackPanel>
                     </StackPanel>
                 </Grid>
@@ -790,33 +540,11 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_28951"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:Button"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <Button
-                                    Command="{Binding CreateGameLaunchShortcutCommand}"
-                                    Content="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"
-                                    Style="{ThemeResource AccentButtonStyle}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassButton
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Command="{Binding CreateGameLaunchShortcutCommand}"
-                                    Content="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"
-                                    Style="{ThemeResource AccentButtonStyle}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                        <wl:LiquidGlassButton
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Command="{Binding CreateGameLaunchShortcutCommand}"
+                            Content="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"
+                            Style="{ThemeResource AccentButtonStyle}"/>
 
                         <!--  Separator  -->
                         <Border
@@ -826,33 +554,11 @@
                             VerticalAlignment="Center"
                             Background="{ThemeResource TextFillColorDisabledBrush}"/>
 
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_29583"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:Button"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <Button
-                                    Command="{Binding CreateDesktopShortcutCommand}"
-                                    Content="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutDescription}"
-                                    Style="{ThemeResource AccentButtonStyle}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassButton
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Command="{Binding CreateDesktopShortcutCommand}"
-                                    Content="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutDescription}"
-                                    Style="{ThemeResource AccentButtonStyle}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                        <wl:LiquidGlassButton
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Command="{Binding CreateDesktopShortcutCommand}"
+                            Content="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutDescription}"
+                            Style="{ThemeResource AccentButtonStyle}"/>
                     </StackPanel>
 
                     <TextBlock
@@ -895,7 +601,7 @@
                             HorizontalAlignment="Center"
                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                             Header="{shuxm:ResourceString Name=ViewPageSettingControlMaterialHeader}"
-                            SelectedIndex="{x:Bind ((shvg:GuideViewModel)DataContext).ControlMaterialState, Mode=OneWay}"
+                            SelectedIndex="{x:Bind DataContext.ControlMaterialState, Mode=OneWay}"
                             SelectionChanged="OnControlMaterialSelectionChanged">
                             <ComboBoxItem Content="{shuxm:ResourceString Name=ViewPageSettingControlMaterialDefault}"/>
                             <ComboBoxItem Content="{shuxm:ResourceString Name=ViewPageSettingControlMaterialLiquidGlass}"/>
@@ -932,8 +638,8 @@
                                     </Rectangle.RenderTransform>
                                 </Rectangle>
                             </Canvas>
-                            <cwc:SwitchPresenter Margin="36" Value="{x:Bind shuxcth:MaterialBindingSource.Current.CardMaterial, Mode=OneWay}">
-                                <cwc:Case Value="{shuxm:Int32 Value=0}">
+                            <shuxcth:MaterialSwap Margin="36">
+                                <shuxcth:MaterialSwap.Native>
                                     <Border
                                         Padding="24"
                                         Background="{ThemeResource SystemControlAcrylicElementBrush}"
@@ -951,70 +657,28 @@
                                                 HorizontalAlignment="Center"
                                                 Orientation="Horizontal"
                                                 Spacing="12">
-                                                <cwc:SwitchPresenter IsTabStop="False" Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                                                    <cwc:Case>
-                                                        <cwc:Case.Value>
-                                                            <x:Int32>0</x:Int32>
-                                                        </cwc:Case.Value>
-                                                        <Button x:Name="GuidePreviewButton1" Content="Button"/>
-                                                    </cwc:Case>
-                                                    <cwc:Case>
-                                                        <cwc:Case.Value>
-                                                            <x:Int32>1</x:Int32>
-                                                        </cwc:Case.Value>
-                                                        <wl:LiquidGlassButton
-                                                            x:Name="GuidePreviewButton1Glass"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                                            Content="Button"/>
-                                                    </cwc:Case>
-                                                </cwc:SwitchPresenter>
-                                                <cwc:SwitchPresenter IsTabStop="False" Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                                                    <cwc:Case>
-                                                        <cwc:Case.Value>
-                                                            <x:Int32>0</x:Int32>
-                                                        </cwc:Case.Value>
-                                                        <ToggleSwitch
-                                                            x:Name="GuidePreviewToggleSwitch2"
-                                                            Header="Switch"
-                                                            IsOn="True"/>
-                                                    </cwc:Case>
-                                                    <cwc:Case>
-                                                        <cwc:Case.Value>
-                                                            <x:Int32>1</x:Int32>
-                                                        </cwc:Case.Value>
-                                                        <wl:LiquidGlassToggleSwitch
-                                                            x:Name="GuidePreviewToggleSwitch2Glass"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                                            Header="Switch"
-                                                            IsOn="{x:Bind GuidePreviewToggleSwitch2.IsOn, Mode=TwoWay}"/>
-                                                    </cwc:Case>
-                                                </cwc:SwitchPresenter>
-                                                <cwc:SwitchPresenter IsTabStop="False" Value="{x:Bind shuxcth:MaterialBindingSource.Current.SliderMaterial, Mode=OneWay}">
-                                                    <cwc:Case>
-                                                        <cwc:Case.Value>
-                                                            <x:Int32>0</x:Int32>
-                                                        </cwc:Case.Value>
-                                                        <Slider
-                                                            x:Name="GuidePreviewSlider3"
-                                                            Width="150"
-                                                            Value="60"/>
-                                                    </cwc:Case>
-                                                    <cwc:Case>
-                                                        <cwc:Case.Value>
-                                                            <x:Int32>1</x:Int32>
-                                                        </cwc:Case.Value>
-                                                        <wl:LiquidGlassSlider
-                                                            x:Name="GuidePreviewSlider3Glass"
-                                                            Width="150"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                                            Value="{x:Bind GuidePreviewSlider3.Value, Mode=TwoWay}"/>
-                                                    </cwc:Case>
-                                                </cwc:SwitchPresenter>
+                                                <wl:LiquidGlassButton
+                                                    x:Name="GuidePreviewButton1"
+                                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                                    Content="Button"/>
+                                                <wl:LiquidGlassToggleSwitch
+                                                    x:Name="GuidePreviewToggleSwitch2"
+                                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                                    Header="Switch"
+                                                    IsOn="True"/>
+                                                <shuxcth:MaterialSwap Width="150">
+                                                    <shuxcth:MaterialSwap.Native>
+                                                        <Slider x:Name="GuidePreviewSlider3" Value="60"/>
+                                                    </shuxcth:MaterialSwap.Native>
+                                                    <shuxcth:MaterialSwap.Glass>
+                                                        <wl:LiquidGlassSlider shuxcth:ControlMaterialState.IsManaged="True" Value="60"/>
+                                                    </shuxcth:MaterialSwap.Glass>
+                                                </shuxcth:MaterialSwap>
                                             </StackPanel>
                                         </StackPanel>
                                     </Border>
-                                </cwc:Case>
-                                <cwc:Case Value="{shuxm:Int32 Value=1}">
+                                </shuxcth:MaterialSwap.Native>
+                                <shuxcth:MaterialSwap.Glass>
                                     <wl:LiquidGlassCard
                                         Padding="24"
                                         shuxcth:ControlMaterialState.IsManaged="True"
@@ -1044,70 +708,28 @@
                                                 HorizontalAlignment="Center"
                                                 Orientation="Horizontal"
                                                 Spacing="12">
-                                                <cwc:SwitchPresenter IsTabStop="False" Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                                                    <cwc:Case>
-                                                        <cwc:Case.Value>
-                                                            <x:Int32>0</x:Int32>
-                                                        </cwc:Case.Value>
-                                                        <Button x:Name="GuidePreviewButton4" Content="Button"/>
-                                                    </cwc:Case>
-                                                    <cwc:Case>
-                                                        <cwc:Case.Value>
-                                                            <x:Int32>1</x:Int32>
-                                                        </cwc:Case.Value>
-                                                        <wl:LiquidGlassButton
-                                                            x:Name="GuidePreviewButton4Glass"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                                            Content="Button"/>
-                                                    </cwc:Case>
-                                                </cwc:SwitchPresenter>
-                                                <cwc:SwitchPresenter IsTabStop="False" Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                                                    <cwc:Case>
-                                                        <cwc:Case.Value>
-                                                            <x:Int32>0</x:Int32>
-                                                        </cwc:Case.Value>
-                                                        <ToggleSwitch
-                                                            x:Name="GuidePreviewToggleSwitch5"
-                                                            Header="Switch"
-                                                            IsOn="True"/>
-                                                    </cwc:Case>
-                                                    <cwc:Case>
-                                                        <cwc:Case.Value>
-                                                            <x:Int32>1</x:Int32>
-                                                        </cwc:Case.Value>
-                                                        <wl:LiquidGlassToggleSwitch
-                                                            x:Name="GuidePreviewToggleSwitch5Glass"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                                            Header="Switch"
-                                                            IsOn="{x:Bind GuidePreviewToggleSwitch5.IsOn, Mode=TwoWay}"/>
-                                                    </cwc:Case>
-                                                </cwc:SwitchPresenter>
-                                                <cwc:SwitchPresenter IsTabStop="False" Value="{x:Bind shuxcth:MaterialBindingSource.Current.SliderMaterial, Mode=OneWay}">
-                                                    <cwc:Case>
-                                                        <cwc:Case.Value>
-                                                            <x:Int32>0</x:Int32>
-                                                        </cwc:Case.Value>
-                                                        <Slider
-                                                            x:Name="GuidePreviewSlider6"
-                                                            Width="150"
-                                                            Value="60"/>
-                                                    </cwc:Case>
-                                                    <cwc:Case>
-                                                        <cwc:Case.Value>
-                                                            <x:Int32>1</x:Int32>
-                                                        </cwc:Case.Value>
-                                                        <wl:LiquidGlassSlider
-                                                            x:Name="GuidePreviewSlider6Glass"
-                                                            Width="150"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                                            Value="{x:Bind GuidePreviewSlider6.Value, Mode=TwoWay}"/>
-                                                    </cwc:Case>
-                                                </cwc:SwitchPresenter>
+                                                <wl:LiquidGlassButton
+                                                    x:Name="GuidePreviewButton4"
+                                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                                    Content="Button"/>
+                                                <wl:LiquidGlassToggleSwitch
+                                                    x:Name="GuidePreviewToggleSwitch5"
+                                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                                    Header="Switch"
+                                                    IsOn="True"/>
+                                                <shuxcth:MaterialSwap Width="150">
+                                                    <shuxcth:MaterialSwap.Native>
+                                                        <Slider x:Name="GuidePreviewSlider6" Value="60"/>
+                                                    </shuxcth:MaterialSwap.Native>
+                                                    <shuxcth:MaterialSwap.Glass>
+                                                        <wl:LiquidGlassSlider shuxcth:ControlMaterialState.IsManaged="True" Value="60"/>
+                                                    </shuxcth:MaterialSwap.Glass>
+                                                </shuxcth:MaterialSwap>
                                             </StackPanel>
                                         </StackPanel>
                                     </wl:LiquidGlassCard>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                                </shuxcth:MaterialSwap.Glass>
+                            </shuxcth:MaterialSwap>
                         </Grid>
                     </StackPanel>
                 </ScrollViewer>
@@ -1242,40 +864,14 @@
                             HorizontalTextAlignment="Center"
                             Style="{StaticResource CaptionTextBlockStyle}"
                             Text="{shuxm:ResourceString Name=ViewGuideStepStaticResourceDownloadIncompleteHint}"/>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_45009"
+                        <wl:LiquidGlassButton
+                            Visibility="{Binding IsDownloading, Converter={StaticResource BoolToVisibilityConverter}}"
+                            shuxcth:ControlMaterialState.IsManaged="True"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:Button"
-                            Visibility="{Binding IsDownloading, Converter={StaticResource BoolToVisibilityConverter}}"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <Button
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Center"
-                                    Command="{Binding SkipDownloadCommand}"
-                                    Content="{shuxm:ResourceString Name=ViewModelGuideActionSkipDownload}"
-                                    Style="{ThemeResource AccentButtonStyle}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassButton
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Center"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Command="{Binding SkipDownloadCommand}"
-                                    Content="{shuxm:ResourceString Name=ViewModelGuideActionSkipDownload}"
-                                    Style="{ThemeResource AccentButtonStyle}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                            Command="{Binding SkipDownloadCommand}"
+                            Content="{shuxm:ResourceString Name=ViewModelGuideActionSkipDownload}"
+                            Style="{ThemeResource AccentButtonStyle}"/>
                     </Grid>
                 </Grid>
 
@@ -1288,7 +884,7 @@
                     HorizontalAlignment="Center"
                     IsHitTestVisible="False"
                     Loaded="OnGuideProgressLoaded"
-                    SelectedIndex="{x:Bind shvg:GuideNavigation.StepIndex(((shvg:GuideViewModel)DataContext).State), Mode=OneWay}">
+                    SelectedIndex="{x:Bind shvg:GuideNavigation.StepIndex(DataContext.State), Mode=OneWay}">
                     <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xF2B7;}"/>
                     <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xF28B;}"/>
                     <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xE81E;}"/>
@@ -1298,35 +894,12 @@
                     <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xE8B9;}"/>
                     <cwc:SegmentedItem Icon="{shuxm:FontIcon Glyph=&#xE790;}"/>
                 </cwc:Segmented>
-                <cwc:SwitchPresenter
-                    x:Name="GlassPresenter_46731"
-                    HorizontalContentAlignment="Stretch"
-                    VerticalContentAlignment="Stretch"
-                    IsTabStop="False"
-                    Tag="LiquidGlass:Button"
-                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                    <cwc:Case>
-                        <cwc:Case.Value>
-                            <x:Int32>0</x:Int32>
-                        </cwc:Case.Value>
-                        <Button
-                            Command="{Binding NextOrCompleteCommand}"
-                            Content="{Binding NextOrCompleteButtonText}"
-                            IsEnabled="{Binding IsNextOrCompleteButtonEnabled}"
-                            Style="{ThemeResource AccentButtonStyle}"/>
-                    </cwc:Case>
-                    <cwc:Case>
-                        <cwc:Case.Value>
-                            <x:Int32>1</x:Int32>
-                        </cwc:Case.Value>
-                        <wl:LiquidGlassButton
-                            shuxcth:ControlMaterialState.IsManaged="True"
-                            BorderThickness="0"
-                            Command="{Binding NextOrCompleteCommand}"
-                            Content="{Binding NextOrCompleteButtonText}"
-                            IsEnabled="{Binding IsNextOrCompleteButtonEnabled}"/>
-                    </cwc:Case>
-                </cwc:SwitchPresenter>
+                <wl:LiquidGlassButton
+                    shuxcth:ControlMaterialState.IsManaged="True"
+                    Command="{Binding NextOrCompleteCommand}"
+                    Content="{Binding NextOrCompleteButtonText}"
+                    IsEnabled="{Binding IsNextOrCompleteButtonEnabled}"
+                    Style="{ThemeResource AccentButtonStyle}"/>
             </StackPanel>
         </Grid>
     </Grid>

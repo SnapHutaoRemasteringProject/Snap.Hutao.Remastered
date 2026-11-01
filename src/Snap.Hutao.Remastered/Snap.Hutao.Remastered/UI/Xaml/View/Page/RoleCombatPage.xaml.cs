@@ -17,4 +17,6 @@ public sealed partial class RoleCombatPage : ScopedPage
     {
         InitializeDataContext<RoleCombatViewModel>();
     }
+
+    public new RoleCombatViewModel DataContext { get => (RoleCombatViewModel)base.DataContext; set => base.DataContext = value; }
 }

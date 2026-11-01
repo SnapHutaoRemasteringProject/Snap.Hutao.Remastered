@@ -21,7 +21,7 @@
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvh:HardChallengeViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Page.Resources>
@@ -126,11 +126,11 @@
             <Pivot.RightHeader>
                 <CommandBar Grid.Row="0" DefaultLabelPosition="Right">
                     <AppBarButton
-                        Command="{x:Bind ((shvh:HardChallengeViewModel)DataContext).OpenAccountInsightsCommand, Mode=OneWay}"
+                        Command="{x:Bind DataContext.OpenAccountInsightsCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph=&#xE9D9;}"
                         Label="{shuxm:ResourceString Name=ViewDialogAccountInsightsOpen}"/>
                     <AppBarButton
-                        Command="{x:Bind ((shvh:HardChallengeViewModel)DataContext).RefreshCommand, Mode=OneWay}"
+                        Command="{x:Bind DataContext.RefreshCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph=&#xE72C;}"
                         Label="{shuxm:ResourceString Name=ViewSpiralAbyssRefresh}"/>
                 </CommandBar>
@@ -150,27 +150,27 @@
                                     shuxcth:MaterialBackground.NativeBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                     shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoCardBrush}"
                                     ItemTemplate="{StaticResource HardChallengeListTemplate}"
-                                    ItemsSource="{x:Bind ((shvh:HardChallengeViewModel)DataContext).HardChallengeEntries, Mode=OneWay}"
-                                    SelectedItem="{x:Bind ((shvh:HardChallengeViewModel)DataContext).HardChallengeEntries.CurrentItem, Mode=TwoWay}"/>
+                                    ItemsSource="{x:Bind DataContext.HardChallengeEntries, Mode=OneWay}"
+                                    SelectedItem="{x:Bind DataContext.HardChallengeEntries.CurrentItem, Mode=TwoWay}"/>
                             </SplitView.Pane>
                             <SplitView.Content>
                                 <ScrollViewer>
                                     <StackPanel
                                         Padding="16"
-                                        DataContext="{x:Bind ((shvh:HardChallengeViewModel)DataContext).HardChallengeEntries.CurrentItem, Mode=OneWay}"
+                                        DataContext="{x:Bind DataContext.HardChallengeEntries.CurrentItem, Mode=OneWay}"
                                         Spacing="16"
                                         Visibility="{Binding Converter={StaticResource EmptyObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                                         <ItemsControl
                                             ItemTemplate="{StaticResource BlingAvatarViewTemplate}"
                                             ItemsPanel="{ThemeResource WrapPanelSpacing4Template}"
-                                            ItemsSource="{x:Bind ((shvh:HardChallengeViewModel)DataContext).HardChallengeEntries.CurrentItem.BlingAvatars, Mode=OneWay}"
-                                            Visibility="{x:Bind ((shvh:HardChallengeViewModel)DataContext).HardChallengeEntries.CurrentItem.BlingAvatars, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}"/>
+                                            ItemsSource="{x:Bind DataContext.HardChallengeEntries.CurrentItem.BlingAvatars, Mode=OneWay}"
+                                            Visibility="{x:Bind DataContext.HardChallengeEntries.CurrentItem.BlingAvatars, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}"/>
 
                                         <cwc:Segmented
                                             HorizontalAlignment="Stretch"
-                                            ItemsSource="{x:Bind ((shvh:HardChallengeViewModel)DataContext).HardChallengeEntries.CurrentItem.DataEntries, Mode=OneWay}"
-                                            SelectedItem="{x:Bind ((shvh:HardChallengeViewModel)DataContext).HardChallengeEntries.CurrentItem.DataEntries.CurrentItem, Mode=TwoWay}"
-                                            Visibility="{x:Bind ((shvh:HardChallengeViewModel)DataContext).HardChallengeEntries.CurrentItem.DataEntries, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}">
+                                            ItemsSource="{x:Bind DataContext.HardChallengeEntries.CurrentItem.DataEntries, Mode=OneWay}"
+                                            SelectedItem="{x:Bind DataContext.HardChallengeEntries.CurrentItem.DataEntries.CurrentItem, Mode=TwoWay}"
+                                            Visibility="{x:Bind DataContext.HardChallengeEntries.CurrentItem.DataEntries, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}">
                                             <cwc:Segmented.ItemTemplate>
                                                 <DataTemplate x:DataType="shvh:DataEntryView">
                                                     <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
@@ -181,7 +181,7 @@
                                         <ContentControl
                                             HorizontalAlignment="Stretch"
                                             HorizontalContentAlignment="Stretch"
-                                            Content="{x:Bind ((shvh:HardChallengeViewModel)DataContext).HardChallengeEntries.CurrentItem.DataEntries.CurrentItem, Mode=OneWay}">
+                                            Content="{x:Bind DataContext.HardChallengeEntries.CurrentItem.DataEntries.CurrentItem, Mode=OneWay}">
                                             <ContentControl.ContentTemplate>
                                                 <DataTemplate x:DataType="shvh:DataEntryView">
                                                     <Grid RowSpacing="16">
@@ -355,7 +355,7 @@
                             Padding="16,16,4,4"
                             ItemContainerStyle="{StaticResource LargeGridViewItemStyle}"
                             ItemTemplate="{StaticResource AvatarViewTemplate}"
-                            ItemsSource="{x:Bind ((shvh:HardChallengeViewModel)DataContext).BlingAvatars, Mode=OneWay}"
+                            ItemsSource="{x:Bind DataContext.BlingAvatars, Mode=OneWay}"
                             SelectionMode="None"/>
                     </Grid>
                 </Border>

@@ -16,34 +16,11 @@
     mc:Ignorable="d">
 
     <Grid>
-        <cwc:SwitchPresenter
-            x:Name="GlassPresenter_812"
+        <wl:LiquidGlassTextBox
             Margin="0,0,0,8"
             VerticalAlignment="Top"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            IsTabStop="False"
-            Tag="LiquidGlass:TextBox"
-            Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>0</x:Int32>
-                </cwc:Case.Value>
-                <TextBox
-                    VerticalAlignment="Top"
-                    PlaceholderText="{shuxm:ResourceString Name=ViewDialogAchievementArchiveCreateInputPlaceholder}"
-                    Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            </cwc:Case>
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>1</x:Int32>
-                </cwc:Case.Value>
-                <wl:LiquidGlassTextBox
-                    VerticalAlignment="Top"
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    PlaceholderText="{shuxm:ResourceString Name=ViewDialogAchievementArchiveCreateInputPlaceholder}"
-                    Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            </cwc:Case>
-        </cwc:SwitchPresenter>
+            shuxcth:ControlMaterialState.IsManaged="True"
+            PlaceholderText="{shuxm:ResourceString Name=ViewDialogAchievementArchiveCreateInputPlaceholder}"
+            Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>
 </ContentDialog>

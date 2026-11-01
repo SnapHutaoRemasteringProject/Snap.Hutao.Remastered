@@ -18,6 +18,8 @@ public sealed partial class PluginPage : ScopedPage
     {
         InitializeDataContext<PluginViewModel>();
     }
+
+    public new PluginViewModel DataContext { get => (PluginViewModel)base.DataContext; set => base.DataContext = value; }
 }
 
 public partial class StringToVisibilityConverter : IValueConverter

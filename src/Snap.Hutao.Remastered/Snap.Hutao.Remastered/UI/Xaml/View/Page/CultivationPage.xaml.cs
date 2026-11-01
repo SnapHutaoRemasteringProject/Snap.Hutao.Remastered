@@ -17,4 +17,6 @@ public sealed partial class CultivationPage : ScopedPage
     {
         InitializeDataContext<CultivationViewModel>();
     }
+
+    public new CultivationViewModel DataContext { get => (CultivationViewModel)base.DataContext; set => base.DataContext = value; }
 }

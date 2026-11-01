@@ -91,113 +91,35 @@
             </Grid>
         </ScrollViewer>
 
-        <cwc:SwitchPresenter
-            x:Name="GlassPresenter_4275"
+        <wl:LiquidGlassButton
             Grid.Row="2"
             Margin="16"
+            MinWidth="120"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            IsTabStop="False"
-            Tag="LiquidGlass:Button"
             Visibility="{Binding CanCancel, Converter={StaticResource BoolToVisibilityConverter}}"
-            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>0</x:Int32>
-                </cwc:Case.Value>
-                <Button
-                    MinWidth="120"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Command="{Binding CancelCommand}"
-                    Content="{shuxm:ResourceString Name=ContentDialogPauseButtonText}"/>
-            </cwc:Case>
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>1</x:Int32>
-                </cwc:Case.Value>
-                <wl:LiquidGlassButton
-                    MinWidth="120"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    Command="{Binding CancelCommand}"
-                    Content="{shuxm:ResourceString Name=ContentDialogPauseButtonText}"/>
-            </cwc:Case>
-        </cwc:SwitchPresenter>
-        <cwc:SwitchPresenter
-            x:Name="GlassPresenter_4672"
+            shuxcth:ControlMaterialState.IsManaged="True"
+            Command="{Binding CancelCommand}"
+            Content="{shuxm:ResourceString Name=ContentDialogPauseButtonText}"/>
+        <wl:LiquidGlassButton
             Grid.Row="2"
             Margin="16"
+            MinWidth="120"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            IsTabStop="False"
-            Tag="LiquidGlass:Button"
             Visibility="{Binding CanContinue, Converter={StaticResource BoolToVisibilityConverter}}"
-            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>0</x:Int32>
-                </cwc:Case.Value>
-                <Button
-                    MinWidth="120"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Command="{Binding ContinueCommand}"
-                    Content="{shuxm:ResourceString Name=ViewModelGamePackageOperationContinueDownloadButtonText}"/>
-            </cwc:Case>
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>1</x:Int32>
-                </cwc:Case.Value>
-                <wl:LiquidGlassButton
-                    MinWidth="120"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    Command="{Binding ContinueCommand}"
-                    Content="{shuxm:ResourceString Name=ViewModelGamePackageOperationContinueDownloadButtonText}"/>
-            </cwc:Case>
-        </cwc:SwitchPresenter>
-        <cwc:SwitchPresenter
-            x:Name="GlassPresenter_5100"
+            shuxcth:ControlMaterialState.IsManaged="True"
+            Command="{Binding ContinueCommand}"
+            Content="{shuxm:ResourceString Name=ViewModelGamePackageOperationContinueDownloadButtonText}"/>
+        <wl:LiquidGlassButton
             Grid.Row="2"
             Margin="16"
+            MinWidth="120"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            IsTabStop="False"
-            Tag="LiquidGlass:Button"
             Visibility="{Binding IsFinished, Converter={StaticResource BoolToVisibilityConverter}}"
-            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>0</x:Int32>
-                </cwc:Case.Value>
-                <Button
-                    MinWidth="120"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Command="{x:Bind CloseCommand}"
-                    Content="{shuxm:ResourceString Name=ContentDialogCompletePrimaryButtonText}"/>
-            </cwc:Case>
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>1</x:Int32>
-                </cwc:Case.Value>
-                <wl:LiquidGlassButton
-                    MinWidth="120"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    Command="{x:Bind CloseCommand}"
-                    Content="{shuxm:ResourceString Name=ContentDialogCompletePrimaryButtonText}"/>
-            </cwc:Case>
-        </cwc:SwitchPresenter>
+            shuxcth:ControlMaterialState.IsManaged="True"
+            Command="{x:Bind CloseCommand}"
+            Content="{shuxm:ResourceString Name=ContentDialogCompletePrimaryButtonText}"/>
     </Grid>
 </Window>

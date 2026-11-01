@@ -20,7 +20,7 @@ These instructions are repository-wide and task-agnostic. If something here cont
 
 - What this is. Snap Hutao (胡桃工具箱) is a C# WinUI 3 desktop application packaged as MSIX. It is an open-source toolkit that enhances the Genshin Impact experience on Windows without modifying the game client.
 - Target OS. Runs on Windows 11 (22H2+) and Windows 10 22H2 with the January 2025 update. Agent work should assume a modern, fully updated Windows dev box.
-- Key tech. .NET 11 (pinned by `global.json`), Windows App SDK / WinUI 3 (XAML), GitHub Actions CI, StyleCop and the repository source generator, plus validation utilities such as Microsoft.VisualStudio.Validation (see usage policy below).
+- Key tech. .NET 11 (no `global.json` SDK pin: the installed 11.x SDK is used, and CI installs major `11`), Windows App SDK / WinUI 3 (XAML), GitHub Actions CI, StyleCop and the repository source generator, plus validation utilities such as Microsoft.VisualStudio.Validation (see usage policy below).
 - License and scope. MIT. The app integrates official game data and community features; it must not introduce destructive client modifications.
 
 Rule of thumb: let the repository's `.vsconfig` provision the Visual Studio workloads and the Single-project MSIX packaging extension, and use the .NET SDK CLI for restore, build, and test.
@@ -69,7 +69,7 @@ Search shortcuts: Package.appxmanifest for capabilities or identity, .editorconf
    - Desktop development with C++
    - Windows application development
 3) MSIX tooling: Single-project MSIX Packaging Tools (the exact extension is listed in `.vsconfig`) if your Visual Studio installation does not include it.
-4) SDK policy: The .NET SDK is pinned by `global.json` (.NET 11 preview). Do not downgrade SDK versions or LangVersion.
+4) SDK policy: A .NET 11 SDK is all that is required. The repo deliberately has no `global.json`, so any `11.x` feature band works; CI installs only the major version (`actions/setup-dotnet`, `dotnet-version: 11`). Do not add a `global.json` SDK pin, downgrade SDK versions, or lower LangVersion.
 5) Optional runtime UX: WebView2 Runtime, Segoe Fluent Icons font, MSVC Runtime if required by features.
 
 If the agent runs headless, prefer CLI restore, build, and test for validation and rely on CI to produce MSIX artifacts.

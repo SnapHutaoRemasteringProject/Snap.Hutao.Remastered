@@ -25,7 +25,7 @@
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <shuxc:ScopedPage.Resources>
@@ -318,15 +318,15 @@
             <Pivot.RightHeader>
                 <CommandBar Grid.Row="0" DefaultLabelPosition="Right">
                     <AppBarButton
-                        Command="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).UploadSpiralAbyssRecordCommand, Mode=OneWay}"
+                        Command="{x:Bind DataContext.UploadSpiralAbyssRecordCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph=&#xE898;}"
                         Label="{shuxm:ResourceString Name=ViewSpiralAbyssUploadRecord}"/>
                     <AppBarButton
-                        Command="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).OpenAccountInsightsCommand, Mode=OneWay}"
+                        Command="{x:Bind DataContext.OpenAccountInsightsCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph=&#xE9D9;}"
                         Label="{shuxm:ResourceString Name=ViewDialogAccountInsightsOpen}"/>
                     <AppBarButton
-                        Command="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).RefreshCommand, Mode=OneWay}"
+                        Command="{x:Bind DataContext.RefreshCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph=&#xE72C;}"
                         Label="{shuxm:ResourceString Name=ViewSpiralAbyssRefresh}"/>
                 </CommandBar>
@@ -346,14 +346,14 @@
                                     shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoCardBrush}"
                                     shuxcth:MaterialBackground.NativeBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                     ItemTemplate="{StaticResource SpiralAbyssListTemplate}"
-                                    ItemsSource="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries, Mode=OneWay}"
-                                    SelectedItem="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem, Mode=TwoWay}"/>
+                                    ItemsSource="{x:Bind DataContext.SpiralAbyssEntries, Mode=OneWay}"
+                                    SelectedItem="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem, Mode=TwoWay}"/>
                             </SplitView.Pane>
                             <SplitView.Content>
                                 <ScrollViewer>
                                     <StackPanel
                                         Padding="16"
-                                        DataContext="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem, Mode=OneWay}"
+                                        DataContext="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem, Mode=OneWay}"
                                         Spacing="16">
 
                                         <Grid Padding="12" Style="{ThemeResource GridShimmerStyle}">
@@ -369,11 +369,11 @@
                                                 <TextBlock
                                                     Margin="0,0,16,0"
                                                     Style="{ThemeResource SubtitleTextBlockStyle}"
-                                                    Text="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.BlessingName, Mode=OneWay}"/>
+                                                    Text="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.BlessingName, Mode=OneWay}"/>
                                                 <ItemsControl
                                                     Margin="0,0,16,0"
                                                     ItemTemplate="{StaticResource DescriptionTextTemplate}"
-                                                    ItemsSource="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.Blessings, Mode=OneWay}"/>
+                                                    ItemsSource="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.Blessings, Mode=OneWay}"/>
                                             </StackPanel>
 
                                             <AppBarButton
@@ -382,7 +382,7 @@
                                                 VerticalAlignment="Top"
                                                 Icon="{shuxm:FontIcon Glyph=&#xE8A1;}"
                                                 Label="{shuxm:ResourceString Name=ViewSpiralAbyssStatistics}"
-                                                Visibility="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.Engaged, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                                Visibility="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.Engaged, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                                                 <AppBarButton.Flyout>
                                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" Placement="BottomEdgeAlignedRight">
                                                         <Flyout.FlyoutPresenterStyle>
@@ -410,12 +410,12 @@
                                                                         <TextBlock
                                                                             Margin="0,0,16,0"
                                                                             VerticalAlignment="Center"
-                                                                            Text="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.Defeat.Value, Mode=OneWay}"/>
+                                                                            Text="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.Defeat.Value, Mode=OneWay}"/>
                                                                         <shuxci:CachedImage
                                                                             Width="48"
                                                                             Height="48"
                                                                             Margin="-8,-24,-8,-8"
-                                                                            Source="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.Defeat.SideIcon, Mode=OneWay}"/>
+                                                                            Source="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.Defeat.SideIcon, Mode=OneWay}"/>
                                                                     </StackPanel>
                                                                 </cwc:SettingsCard>
 
@@ -424,12 +424,12 @@
                                                                         <TextBlock
                                                                             Margin="0,0,16,0"
                                                                             VerticalAlignment="Center"
-                                                                            Text="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.Damage.Value, Mode=OneWay}"/>
+                                                                            Text="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.Damage.Value, Mode=OneWay}"/>
                                                                         <shuxci:CachedImage
                                                                             Width="48"
                                                                             Height="48"
                                                                             Margin="-8,-24,-8,-8"
-                                                                            Source="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.Damage.SideIcon, Mode=OneWay}"/>
+                                                                            Source="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.Damage.SideIcon, Mode=OneWay}"/>
                                                                     </StackPanel>
                                                                 </cwc:SettingsCard>
 
@@ -438,12 +438,12 @@
                                                                         <TextBlock
                                                                             Margin="0,0,16,0"
                                                                             VerticalAlignment="Center"
-                                                                            Text="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.TakeDamage.Value, Mode=OneWay}"/>
+                                                                            Text="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.TakeDamage.Value, Mode=OneWay}"/>
                                                                         <shuxci:CachedImage
                                                                             Width="48"
                                                                             Height="48"
                                                                             Margin="-8,-24,-8,-8"
-                                                                            Source="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.TakeDamage.SideIcon, Mode=OneWay}"/>
+                                                                            Source="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.TakeDamage.SideIcon, Mode=OneWay}"/>
                                                                     </StackPanel>
                                                                 </cwc:SettingsCard>
 
@@ -452,12 +452,12 @@
                                                                         <TextBlock
                                                                             Margin="0,0,16,0"
                                                                             VerticalAlignment="Center"
-                                                                            Text="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.NormalSkill.Value, Mode=OneWay}"/>
+                                                                            Text="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.NormalSkill.Value, Mode=OneWay}"/>
                                                                         <shuxci:CachedImage
                                                                             Width="48"
                                                                             Height="48"
                                                                             Margin="-8,-24,-8,-8"
-                                                                            Source="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.NormalSkill.SideIcon, Mode=OneWay}"/>
+                                                                            Source="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.NormalSkill.SideIcon, Mode=OneWay}"/>
                                                                     </StackPanel>
                                                                 </cwc:SettingsCard>
 
@@ -466,25 +466,25 @@
                                                                         <TextBlock
                                                                             Margin="0,0,16,0"
                                                                             VerticalAlignment="Center"
-                                                                            Text="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.EnergySkill.Value, Mode=OneWay}"/>
+                                                                            Text="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.EnergySkill.Value, Mode=OneWay}"/>
                                                                         <shuxci:CachedImage
                                                                             Width="48"
                                                                             Height="48"
                                                                             Margin="-8,-24,-8,-8"
-                                                                            Source="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.EnergySkill.SideIcon, Mode=OneWay}"/>
+                                                                            Source="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.EnergySkill.SideIcon, Mode=OneWay}"/>
                                                                     </StackPanel>
                                                                 </cwc:SettingsCard>
                                                             </StackPanel>
                                                             <StackPanel Grid.Column="1" Spacing="{StaticResource SettingsCardSpacing}">
-                                                                <cwc:SettingsCard Content="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.MaxFloor, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewSpiralAbyssMaxFloor}"/>
-                                                                <cwc:SettingsCard Content="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.TotalBattleTimes, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewSpiralAbyssBattleTimes}"/>
-                                                                <cwc:SettingsCard Content="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.TotalStar, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewSpiralAbyssTotalStar}"/>
+                                                                <cwc:SettingsCard Content="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.MaxFloor, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewSpiralAbyssMaxFloor}"/>
+                                                                <cwc:SettingsCard Content="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.TotalBattleTimes, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewSpiralAbyssBattleTimes}"/>
+                                                                <cwc:SettingsCard Content="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.TotalStar, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewSpiralAbyssTotalStar}"/>
 
                                                                 <TextBlock
                                                                     Margin="1,6,0,5"
                                                                     Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
                                                                     Text="{shuxm:ResourceString Name=ViewSpiralAbyssReveal}"/>
-                                                                <ItemsControl HorizontalAlignment="Left" ItemsSource="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.Reveals, Mode=OneWay}">
+                                                                <ItemsControl HorizontalAlignment="Left" ItemsSource="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.Reveals, Mode=OneWay}">
                                                                     <ItemsControl.ItemsPanel>
                                                                         <ItemsPanelTemplate>
                                                                             <cwc:UniformGrid ColumnSpacing="3" Columns="4"/>
@@ -517,8 +517,8 @@
                                         <!--  各层信息  -->
                                         <cwc:Segmented
                                             HorizontalAlignment="Stretch"
-                                            ItemsSource="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.Floors, Mode=OneWay}"
-                                            SelectedItem="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.Floors.CurrentItem, Mode=TwoWay}">
+                                            ItemsSource="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.Floors, Mode=OneWay}"
+                                            SelectedItem="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.Floors.CurrentItem, Mode=TwoWay}">
                                             <cwc:Segmented.ItemTemplate>
                                                 <DataTemplate x:DataType="shvs:FloorView">
                                                     <TextBlock Margin="0,1,0,0" Text="{x:Bind Index, Mode=OneWay}"/>
@@ -529,7 +529,7 @@
                                         <ContentControl
                                             HorizontalAlignment="Stretch"
                                             HorizontalContentAlignment="Stretch"
-                                            Content="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).SpiralAbyssEntries.CurrentItem.Floors.CurrentItem, Mode=OneWay}"
+                                            Content="{x:Bind DataContext.SpiralAbyssEntries.CurrentItem.Floors.CurrentItem, Mode=OneWay}"
                                             ContentTemplate="{StaticResource SpiralAbyssFloorTemplate}"/>
 
                                     </StackPanel>
@@ -542,9 +542,9 @@
             </PivotItem>
 
             <PivotItem Header="{shuxm:ResourceString Name=ViewSpiralAbyssHutaoStatistics}">
-                <Grid DataContext="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel, Mode=OneWay}">
+                <Grid DataContext="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel, Mode=OneWay}">
                     <mxi:Interaction.Behaviors>
-                        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.LoadCommand, Mode=OneWay}"/>
+                        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.LoadCommand, Mode=OneWay}"/>
                     </mxi:Interaction.Behaviors>
 
                     <Grid.Resources>
@@ -629,7 +629,7 @@
                         </DataTemplate>
                     </Grid.Resources>
 
-                    <Pivot Style="{ThemeResource CardPivotStyle}" Visibility="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.Overview, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
+                    <Pivot Style="{ThemeResource CardPivotStyle}" Visibility="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.Overview, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                         <Pivot.RightHeader>
                             <CommandBar DefaultLabelPosition="Right">
                                 <AppBarButton Icon="{shuxm:FontIcon Glyph=&#xE946;}" Label="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverview}">
@@ -648,32 +648,32 @@
                                                     <!--  ReSharper restore Xaml.RedundantResource  -->
                                                 </StackPanel.Resources>
                                                 <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewDataCollect}"/>
-                                                <cwc:SettingsCard Content="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.Overview.RefreshTime, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewRefreshTime}"/>
-                                                <cwc:SettingsCard Content="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.Overview.RecordTotal, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewRecordTotal}"/>
+                                                <cwc:SettingsCard Content="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.Overview.RefreshTime, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewRefreshTime}"/>
+                                                <cwc:SettingsCard Content="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.Overview.RecordTotal, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewRecordTotal}"/>
                                                 <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewSpiralAbyss}"/>
-                                                <cwc:SettingsCard Content="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.Overview.SpiralAbyssTotal, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewSpiralAbyssTotal}"/>
+                                                <cwc:SettingsCard Content="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.Overview.SpiralAbyssTotal, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewSpiralAbyssTotal}"/>
                                                 <cwc:SettingsCard Padding="16,8" Header="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewSpiralAbyssPassed}">
                                                     <StackPanel>
-                                                        <TextBlock Text="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.Overview.SpiralAbyssPassedPercent, Mode=OneWay}"/>
+                                                        <TextBlock Text="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.Overview.SpiralAbyssPassedPercent, Mode=OneWay}"/>
                                                         <TextBlock
                                                             HorizontalAlignment="Right"
                                                             Opacity="0.7"
                                                             Style="{StaticResource CaptionTextBlockStyle}"
-                                                            Text="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.Overview.SpiralAbyssPassed, Mode=OneWay}"/>
+                                                            Text="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.Overview.SpiralAbyssPassed, Mode=OneWay}"/>
                                                     </StackPanel>
                                                 </cwc:SettingsCard>
                                                 <cwc:SettingsCard Padding="16,8" Header="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewSpiralAbyssFullStar}">
                                                     <StackPanel>
-                                                        <TextBlock Text="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.Overview.SpiralAbyssFullStarPercent, Mode=OneWay}"/>
+                                                        <TextBlock Text="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.Overview.SpiralAbyssFullStarPercent, Mode=OneWay}"/>
                                                         <TextBlock
                                                             HorizontalAlignment="Right"
                                                             Opacity="0.7"
                                                             Style="{StaticResource CaptionTextBlockStyle}"
-                                                            Text="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.Overview.SpiralAbyssFullStar, Mode=OneWay}"/>
+                                                            Text="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.Overview.SpiralAbyssFullStar, Mode=OneWay}"/>
                                                     </StackPanel>
                                                 </cwc:SettingsCard>
-                                                <cwc:SettingsCard Content="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.Overview.SpiralAbyssStarAverage, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewSpiralAbyssStarAverage}"/>
-                                                <cwc:SettingsCard Content="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.Overview.SpiralAbyssBattleAverage, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewSpiralAbyssBattleAverage}"/>
+                                                <cwc:SettingsCard Content="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.Overview.SpiralAbyssStarAverage, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewSpiralAbyssStarAverage}"/>
+                                                <cwc:SettingsCard Content="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.Overview.SpiralAbyssBattleAverage, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewSpiralAbyssBattleAverage}"/>
                                             </StackPanel>
                                         </Flyout>
                                     </AppBarButton.Flyout>
@@ -694,8 +694,8 @@
                                         </Grid.ColumnDefinitions>
                                         <cwc:Segmented
                                             DisplayMemberPath="Floor"
-                                            ItemsSource="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.AvatarUsageRanks, Mode=OneWay}"
-                                            SelectedItem="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.SelectedAvatarUsageRank, Mode=TwoWay}"/>
+                                            ItemsSource="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.AvatarUsageRanks, Mode=OneWay}"
+                                            SelectedItem="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.SelectedAvatarUsageRank, Mode=TwoWay}"/>
                                         <TextBlock
                                             Grid.Column="1"
                                             Margin="12,0,0,0"
@@ -706,10 +706,10 @@
                                     <GridView
                                         Grid.Row="1"
                                         Padding="16,0,4,4"
-                                        DataContext="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.SelectedAvatarUsageRank, Mode=OneWay}"
+                                        DataContext="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.SelectedAvatarUsageRank, Mode=OneWay}"
                                         ItemContainerStyle="{StaticResource LargeGridViewItemStyle}"
                                         ItemTemplate="{StaticResource RatedAvatarTemplate}"
-                                        ItemsSource="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.SelectedAvatarUsageRank.Avatars, Mode=OneWay}"
+                                        ItemsSource="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.SelectedAvatarUsageRank.Avatars, Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </Grid>
                             </Border>
@@ -728,8 +728,8 @@
                                         </Grid.ColumnDefinitions>
                                         <cwc:Segmented
                                             DisplayMemberPath="Floor"
-                                            ItemsSource="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.AvatarAppearanceRanks, Mode=OneWay}"
-                                            SelectedItem="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.SelectedAvatarAppearanceRank, Mode=TwoWay}"/>
+                                            ItemsSource="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.AvatarAppearanceRanks, Mode=OneWay}"
+                                            SelectedItem="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.SelectedAvatarAppearanceRank, Mode=TwoWay}"/>
                                         <TextBlock
                                             Grid.Column="1"
                                             Margin="12,0,0,0"
@@ -740,10 +740,10 @@
                                     <GridView
                                         Grid.Row="1"
                                         Padding="16,0,4,4"
-                                        DataContext="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.SelectedAvatarAppearanceRank, Mode=OneWay}"
+                                        DataContext="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.SelectedAvatarAppearanceRank, Mode=OneWay}"
                                         ItemContainerStyle="{StaticResource LargeGridViewItemStyle}"
                                         ItemTemplate="{StaticResource RatedAvatarTemplate}"
-                                        ItemsSource="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.SelectedAvatarAppearanceRank.Avatars, Mode=OneWay}"
+                                        ItemsSource="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.SelectedAvatarAppearanceRank.Avatars, Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </Grid>
                             </Border>
@@ -759,14 +759,14 @@
                                         Grid.Row="0"
                                         Margin="16,16,0,16"
                                         DisplayMemberPath="Floor"
-                                        ItemsSource="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.TeamAppearances, Mode=OneWay}"
-                                        SelectedItem="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.SelectedTeamAppearance, Mode=TwoWay}"/>
+                                        ItemsSource="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.TeamAppearances, Mode=OneWay}"
+                                        SelectedItem="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.SelectedTeamAppearance, Mode=TwoWay}"/>
 
                                     <Grid
                                         Grid.Row="1"
                                         Margin="16,0,0,0"
                                         ColumnSpacing="8"
-                                        DataContext="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.SelectedTeamAppearance, Mode=OneWay}">
+                                        DataContext="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.SelectedTeamAppearance, Mode=OneWay}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition/>
                                             <ColumnDefinition/>
@@ -784,7 +784,7 @@
                                                 Padding="0,0,0,16"
                                                 ItemContainerStyle="{ThemeResource NoneSelectionListViewItemStyle}"
                                                 ItemTemplate="{StaticResource TeamItemTemplate}"
-                                                ItemsSource="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.SelectedTeamAppearance.Up, Mode=OneWay}"
+                                                ItemsSource="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.SelectedTeamAppearance.Up, Mode=OneWay}"
                                                 SelectionMode="None">
                                                 <ListView.ItemsPanel>
                                                     <ItemsPanelTemplate>
@@ -811,7 +811,7 @@
                                                 Padding="0,0,0,16"
                                                 ItemContainerStyle="{ThemeResource NoneSelectionListViewItemStyle}"
                                                 ItemTemplate="{StaticResource TeamItemTemplate}"
-                                                ItemsSource="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.SelectedTeamAppearance.Down, Mode=OneWay}"
+                                                ItemsSource="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.SelectedTeamAppearance.Down, Mode=OneWay}"
                                                 SelectionMode="None">
                                                 <ListView.ItemsPanel>
                                                     <ItemsPanelTemplate>
@@ -908,7 +908,7 @@
                                         Padding="0,0,0,8"
                                         HorizontalContentAlignment="Stretch"
                                         ItemsPanel="{StaticResource ItemsStackPanelTemplate}"
-                                        ItemsSource="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.AvatarConstellationInfos, Mode=OneWay}"
+                                        ItemsSource="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.AvatarConstellationInfos, Mode=OneWay}"
                                         SelectionMode="None"
                                         VirtualizingStackPanel.VirtualizationMode="Standard">
                                         <ItemsControl.ItemTemplate>
@@ -971,7 +971,7 @@
                     <shuxc:Loading
                         Margin="16"
                         CornerRadius="{ThemeResource ControlCornerRadius}"
-                        IsLoading="{x:Bind ((shvs:SpiralAbyssViewModel)DataContext).HutaoSpiralAbyssDatabaseViewModel.Overview, Converter={StaticResource EmptyObjectToBoolRevertConverter}, Mode=OneWay}"
+                        IsLoading="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.Overview, Converter={StaticResource EmptyObjectToBoolRevertConverter}, Mode=OneWay}"
                         Style="{ThemeResource DefaultLoadingViewStyle}"/>
                 </Grid>
             </PivotItem>

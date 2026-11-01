@@ -455,10 +455,10 @@
     </Page.Resources>
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shv:BackpackViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
-    <shuxc:StandardView HideCondition="{x:Bind ((shv:BackpackViewModel)DataContext).IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" ShowCondition="{x:Bind ((shv:BackpackViewModel)DataContext).Archives.CurrentItem, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
+    <shuxc:StandardView HideCondition="{x:Bind DataContext.IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" ShowCondition="{x:Bind DataContext.Archives.CurrentItem, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
         <shuxc:StandardView.EmptyContent>
             <Border
                 HorizontalAlignment="Center"
@@ -478,37 +478,13 @@
                             HorizontalAlignment="Center"
                             Style="{StaticResource SubtitleTextBlockStyle}"
                             Text="{shuxm:ResourceString Name=ViewPageBackpackAddArchiveHint}"/>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_20193"
+                        <wl:LiquidGlassButton
                             Margin="0,16,0,0"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Padding="16,8"
                             HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:Button"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <Button
-                                    Padding="16,8"
-                                    HorizontalAlignment="Stretch"
-                                    Command="{x:Bind ((shv:BackpackViewModel)DataContext).AddArchiveCommand, Mode=OneWay}"
-                                    Content="{shuxm:ResourceString Name=ViewPageBackpackAddArchive}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassButton
-                                    Padding="16,8"
-                                    HorizontalAlignment="Stretch"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Command="{x:Bind ((shv:BackpackViewModel)DataContext).AddArchiveCommand, Mode=OneWay}"
-                                    Content="{shuxm:ResourceString Name=ViewPageBackpackAddArchive}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                            Command="{x:Bind DataContext.AddArchiveCommand, Mode=OneWay}"
+                            Content="{shuxm:ResourceString Name=ViewPageBackpackAddArchive}"/>
                     </StackPanel>
                 </Border>
             </Border>
@@ -536,69 +512,36 @@
                             Height="44"
                             Margin="6,-2,6,6"
                             HorizontalAlignment="Right"
-                            AvailableTokens="{x:Bind ((shv:BackpackViewModel)DataContext).SearchData.AvailableTokens, Mode=OneWay}"
-                            FilterCommand="{x:Bind ((shv:BackpackViewModel)DataContext).FilterCommand, Mode=OneWay}"
-                            ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).SearchData.FilterTokens, Mode=OneWay}"
+                            AvailableTokens="{x:Bind DataContext.SearchData.AvailableTokens, Mode=OneWay}"
+                            FilterCommand="{x:Bind DataContext.FilterCommand, Mode=OneWay}"
+                            ItemsSource="{x:Bind DataContext.SearchData.FilterTokens, Mode=OneWay}"
                             MaximumTokens="5"
                             PlaceholderText="{shuxm:ResourceString Name=ViewPageBackpackFilterPlaceholder}"
                             QueryIcon="{cw:FontIconSource Glyph=&#xE721;}"
                             Style="{StaticResource DefaultAutoSuggestTokenBoxStyle}"
                             SuggestedItemTemplate="{StaticResource TokenTemplate}"
-                            SuggestedItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).SearchData.AvailableTokens.Values, Mode=OneWay}"
-                            Text="{x:Bind ((shv:BackpackViewModel)DataContext).SearchData.FilterToken, Mode=TwoWay}"
+                            SuggestedItemsSource="{x:Bind DataContext.SearchData.AvailableTokens.Values, Mode=OneWay}"
+                            Text="{x:Bind DataContext.SearchData.FilterToken, Mode=TwoWay}"
                             TokenItemTemplate="{StaticResource TokenTemplate}"/>
                         <StackPanel
                             Grid.Column="1"
                             VerticalAlignment="Center"
                             Orientation="Horizontal"
                             Spacing="6">
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_22704"
-                                VerticalAlignment="Center"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:Button"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <Button VerticalAlignment="Center">
-                                        <Button.Flyout>
-                                            <Flyout essential:FlyoutHelper.AcrylicWorkaround="True">
-                                                <shuxcas:AutoSortList
-                                                    Width="260"
-                                                    AvailableTokens="{x:Bind ((shv:BackpackViewModel)DataContext).AvailableSortTokens, Mode=OneWay}"
-                                                    SortCommand="{x:Bind ((shv:BackpackViewModel)DataContext).ApplySortCommand, Mode=OneWay}"/>
-                                            </Flyout>
-                                        </Button.Flyout>
-                                        <StackPanel Orientation="Horizontal" Spacing="4">
-                                            <FontIcon FontSize="12" Glyph="&#xE8CB;"/>
-                                            <TextBlock Text="{shuxm:ResourceString Name=ViewPageBackpackSortHeader}"/>
-                                        </StackPanel>
-                                    </Button>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassButton VerticalAlignment="Center" shuxcth:ControlMaterialState.IsManaged="True">
-                                        <wl:LiquidGlassButton.Flyout>
-                                            <Flyout essential:FlyoutHelper.AcrylicWorkaround="True">
-                                                <shuxcas:AutoSortList
-                                                    Width="260"
-                                                    AvailableTokens="{x:Bind ((shv:BackpackViewModel)DataContext).AvailableSortTokens, Mode=OneWay}"
-                                                    SortCommand="{x:Bind ((shv:BackpackViewModel)DataContext).ApplySortCommand, Mode=OneWay}"/>
-                                            </Flyout>
-                                        </wl:LiquidGlassButton.Flyout>
-                                        <StackPanel Orientation="Horizontal" Spacing="4">
-                                            <FontIcon FontSize="12" Glyph="&#xE8CB;"/>
-                                            <TextBlock Text="{shuxm:ResourceString Name=ViewPageBackpackSortHeader}"/>
-                                        </StackPanel>
-                                    </wl:LiquidGlassButton>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" VerticalAlignment="Center">
+                                <wl:LiquidGlassButton.Flyout>
+                                    <Flyout essential:FlyoutHelper.AcrylicWorkaround="True">
+                                        <shuxcas:AutoSortList
+                                            Width="260"
+                                            AvailableTokens="{x:Bind DataContext.AvailableSortTokens, Mode=OneWay}"
+                                            SortCommand="{x:Bind DataContext.ApplySortCommand, Mode=OneWay}"/>
+                                    </Flyout>
+                                </wl:LiquidGlassButton.Flyout>
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <FontIcon FontSize="12" Glyph="&#xE8CB;"/>
+                                    <TextBlock Text="{shuxm:ResourceString Name=ViewPageBackpackSortHeader}"/>
+                                </StackPanel>
+                            </wl:LiquidGlassButton>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -606,88 +549,37 @@
             <Pivot
                 Grid.Row="1"
                 Margin="0,-24"
-                SelectedIndex="{x:Bind ((shv:BackpackViewModel)DataContext).SelectedCategoryIndex, Mode=TwoWay}"
+                SelectedIndex="{x:Bind DataContext.SelectedCategoryIndex, Mode=TwoWay}"
                 Style="{ThemeResource CardPivotStyle}">
                 <Pivot.RightHeader>
                     <CommandBar Background="Transparent" DefaultLabelPosition="Right">
                         <AppBarElementContainer AllowFocusOnInteraction="True">
                             <shuxc:SizeRestrictedContentControl Margin="2,6,3,6">
-                                <cwc:SwitchPresenter
-                                    x:Name="GlassPresenter_24224"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    IsTabStop="False"
-                                    Tag="LiquidGlass:ComboBox"
-                                    Visibility="{x:Bind GlassPresenter_24224_State.Visibility, Mode=OneWay}"
-                                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
-                                    <cwc:Case>
-                                        <cwc:Case.Value>
-                                            <x:Int32>0</x:Int32>
-                                        </cwc:Case.Value>
-                                        <ComboBox
-                                            x:Name="GlassPresenter_24224_State"
-                                            shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_24224}"
-                                            DataContext="{x:Bind GlassPresenter_24224.DataContext, Mode=OneWay}"
-                                            DisplayMemberPath="Name"
-                                            ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Archives, Mode=OneWay}"
-                                            SelectedItem="{x:Bind ((shv:BackpackViewModel)DataContext).Archives.CurrentItem, Mode=TwoWay}"
-                                            Style="{ThemeResource CommandBarComboBoxStyle}"/>
-                                    </cwc:Case>
-                                    <cwc:Case>
-                                        <cwc:Case.Value>
-                                            <x:Int32>1</x:Int32>
-                                        </cwc:Case.Value>
-                                        <wl:LiquidGlassComboBox
-                                            x:Name="GlassPresenter_24224_StateGlass"
-                                            Width="{x:Bind GlassPresenter_24224_State.Width, Mode=OneWay}"
-                                            Height="{x:Bind GlassPresenter_24224_State.Height, Mode=OneWay}"
-                                            MinWidth="{x:Bind GlassPresenter_24224_State.MinWidth, Mode=OneWay}"
-                                            MinHeight="{x:Bind GlassPresenter_24224_State.MinHeight, Mode=OneWay}"
-                                            MaxWidth="{x:Bind GlassPresenter_24224_State.MaxWidth, Mode=OneWay}"
-                                            MaxHeight="{x:Bind GlassPresenter_24224_State.MaxHeight, Mode=OneWay}"
-                                            Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(GlassPresenter_24224_State.Padding), Mode=OneWay}"
-                                            shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                            shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassPresenter_24224_State, Mode=OneWay}"
-                                            shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                                            BorderThickness="{x:Bind GlassPresenter_24224_State.BorderThickness, Mode=OneWay}"
-                                            DisplayMemberPath="{x:Bind GlassPresenter_24224_State.DisplayMemberPath, Mode=OneWay}"
-                                            FlowDirection="{x:Bind GlassPresenter_24224_State.FlowDirection, Mode=OneWay}"
-                                            FontFamily="{x:Bind GlassPresenter_24224_State.FontFamily, Mode=OneWay}"
-                                            FontSize="{x:Bind GlassPresenter_24224_State.FontSize, Mode=OneWay}"
-                                            FontStyle="{x:Bind GlassPresenter_24224_State.FontStyle, Mode=OneWay}"
-                                            FontWeight="{x:Bind GlassPresenter_24224_State.FontWeight, Mode=OneWay}"
-                                            Header="{x:Bind GlassPresenter_24224_State.Header, Mode=OneWay}"
-                                            HeaderTemplate="{x:Bind GlassPresenter_24224_State.HeaderTemplate, Mode=OneWay}"
-                                            IsEditable="{x:Bind GlassPresenter_24224_State.IsEditable, Mode=OneWay}"
-                                            IsEnabled="{x:Bind GlassPresenter_24224_State.IsEnabled, Mode=OneWay}"
-                                            IsTextSearchEnabled="{x:Bind GlassPresenter_24224_State.IsTextSearchEnabled, Mode=OneWay}"
-                                            ItemsSource="{x:Bind GlassPresenter_24224_State.ItemsSource, Mode=OneWay}"
-                                            MaxDropDownHeight="{x:Bind GlassPresenter_24224_State.MaxDropDownHeight, Mode=OneWay}"
-                                            PlaceholderText="{x:Bind GlassPresenter_24224_State.PlaceholderText, Mode=OneWay}"
-                                            SelectedIndex="{x:Bind GlassPresenter_24224_State.SelectedIndex, Mode=TwoWay}"
-                                            SelectedValuePath="{x:Bind GlassPresenter_24224_State.SelectedValuePath, Mode=OneWay}"/>
-                                    </cwc:Case>
-                                </cwc:SwitchPresenter>
+                                <wl:LiquidGlassComboBox
+                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                    shuxcth:ComboBoxPopupLifetime.IsManaged="True"
+                                    DisplayMemberPath="Name"
+                                    ItemsSource="{x:Bind DataContext.Archives, Mode=OneWay}"
+                                    SelectedItem="{x:Bind DataContext.Archives.CurrentItem, Mode=TwoWay}"
+                                    Style="{ThemeResource CommandBarComboBoxStyle}"/>
                             </shuxc:SizeRestrictedContentControl>
                         </AppBarElementContainer>
                         <AppBarButton
-                            Command="{x:Bind ((shv:BackpackViewModel)DataContext).AddArchiveCommand, Mode=OneWay}"
+                            Command="{x:Bind DataContext.AddArchiveCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE710;}"
                             Label="{shuxm:ResourceString Name=ViewPageBackpackAddArchive}"/>
                         <AppBarButton
-                            Command="{x:Bind ((shv:BackpackViewModel)DataContext).RemoveArchiveCommand, Mode=OneWay}"
+                            Command="{x:Bind DataContext.RemoveArchiveCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE74D;}"
                             Label="{shuxm:ResourceString Name=ViewPageBackpackRemoveArchive}"/>
                         <AppBarSeparator/>
                         <AppBarButton
-                            Command="{x:Bind ((shv:BackpackViewModel)DataContext).RefreshByEmbeddedYaeCommand, Mode=OneWay}"
+                            Command="{x:Bind DataContext.RefreshByEmbeddedYaeCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE72C;}"
                             Label="{shuxm:ResourceString Name=ViewPageBackpackRefreshByEmbeddedYae}"/>
                         <AppBarSeparator/>
                         <AppBarButton
-                            Command="{x:Bind ((shv:BackpackViewModel)DataContext).ConfigureScoreCommand, Mode=OneWay}"
+                            Command="{x:Bind DataContext.ConfigureScoreCommand, Mode=OneWay}"
                             Icon="{shuxm:FontIcon Glyph=&#xE946;}"
                             Label="{shuxm:ResourceString Name=ViewPageBackpackConfigureScore}"/>
                     </CommandBar>
@@ -699,7 +591,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -717,7 +609,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -735,7 +627,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -753,7 +645,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -771,7 +663,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -789,7 +681,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -807,7 +699,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -825,7 +717,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind ((shv:BackpackViewModel)DataContext).Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">

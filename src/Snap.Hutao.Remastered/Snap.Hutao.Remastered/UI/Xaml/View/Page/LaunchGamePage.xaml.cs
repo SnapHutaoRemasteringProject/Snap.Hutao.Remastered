@@ -8,6 +8,7 @@ using Snap.Hutao.Remastered.UI.Content;
 using Snap.Hutao.Remastered.UI.Xaml.Control;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.ViewModel.Game;
+using WinUI.LiquidGlass;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 
@@ -24,7 +25,7 @@ public sealed partial class LaunchGamePage : ScopedPage
     protected override void LoadingOverride()
     {
         // 树脂物品与 FastSkipTalk 开关是 TwoWay 绑定，页面挂载时绑定会把持久化的值
-        // 推入 IsOn 并触发 Toggled，若此时弹确认框就会"进页面就弹窗"。
+        // 推入 IsOn 并触发 Checked/Unchecked，若此时弹确认框就会"进页面就弹窗"。
         // 因此这里在绑定激活前先把 IsOn 置为持久化值：绑定随后推入相同值时，依赖属性
         // 值未变化、不会触发变更回调（这正是弹窗只在 DB 值≠默认时才出现的原因）
         isInitializing = true;
@@ -45,7 +46,7 @@ public sealed partial class LaunchGamePage : ScopedPage
 
     // 为什么用 Code-Behind 而非 ViewModel：
     // ToggleSwitch 的 IsOn 是 TwoWay 绑定到 LaunchOptions.FastSkipTalk.Value，
-    // 用户拨动开关时值在 Toggled 事件触发前就已经被写入为 true，ViewModel 没有拦截点。
+    // 用户拨动开关时值在 Checked 事件触发前就已经被写入为 true，ViewModel 没有拦截点。
     // 因此在此处"事后裁决"：未确认则回拨 toggleSwitch.IsOn，使绑定把值回写为 false。
     private async void FastSkipTalkToggleSwitch_Toggled(object sender, RoutedEventArgs e)
     {
@@ -54,7 +55,7 @@ public sealed partial class LaunchGamePage : ScopedPage
             return;
         }
 
-        if (sender is not ToggleSwitch { IsOn: true } toggleSwitch)
+        if (sender is not LiquidGlassToggleSwitch { IsOn: true } toggleSwitch)
         {
             return;
         }
@@ -70,8 +71,9 @@ public sealed partial class LaunchGamePage : ScopedPage
         using (IServiceScope scope = context.ServiceProvider.CreateScope())
         {
             IContentDialogFactory contentDialogFactory = scope.ServiceProvider.GetRequiredService<IContentDialogFactory>();
-            // Both material peers can report the same change. Coalesce them before
-            // the first await so closing one dialog cannot reveal another queued copy.
+            // The TwoWay binding can raise the event again while the first dialog is
+            // still open. Coalesce it before the first await so closing one dialog
+            // cannot reveal another queued copy.
             isFastSkipTalkConfirmationPending = true;
             try
             {
@@ -87,11 +89,11 @@ public sealed partial class LaunchGamePage : ScopedPage
                 if (!confirmed)
                 {
                     await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
-                    // Restore the authoritative setting as well as both material peers;
+                    // Restore the authoritative setting as well as the switch;
                     // keep the guard active throughout the TwoWay binding callbacks.
                     launchOptions.FastSkipTalk.Value = false;
                     toggleSwitch.IsOn = false;
-                    FastSkipTalkToggleSwitchGlass.IsOn = false;
+                    FastSkipTalkToggleSwitch.IsOn = false;
                 }
             }
             finally
@@ -103,7 +105,7 @@ public sealed partial class LaunchGamePage : ScopedPage
     }
 
     // 为什么用 Code-Behind 而非 ViewModel：与 FastSkipTalk 同理。
-    // 树脂物品的 IsOn 同样是 TwoWay 绑定，Toggled 触发前值已被写入，
+    // 树脂物品的 IsOn 同样是 TwoWay 绑定，Unchecked 触发前值已被写入，
     // 因此在此"事后裁决"：用户取消确认则回拨 toggleSwitch.IsOn，使绑定把值回写为开启。
     private async void ResinListItemToggle_Toggled(object sender, RoutedEventArgs e)
     {
@@ -112,7 +114,7 @@ public sealed partial class LaunchGamePage : ScopedPage
             return;
         }
 
-        if (sender is not ToggleSwitch { IsOn: false } toggleSwitch)
+        if (sender is not LiquidGlassToggleSwitch { IsOn: false } toggleSwitch)
         {
             return;
         }
@@ -156,4 +158,6 @@ public sealed partial class LaunchGamePage : ScopedPage
             }
         }
     }
+
+    public new LaunchGameViewModel DataContext { get => (LaunchGameViewModel)base.DataContext; set => base.DataContext = value; }
 }

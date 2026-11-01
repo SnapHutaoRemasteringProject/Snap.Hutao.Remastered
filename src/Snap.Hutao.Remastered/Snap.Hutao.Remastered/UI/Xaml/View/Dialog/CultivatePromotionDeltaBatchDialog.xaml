@@ -76,109 +76,23 @@
                 Value="{x:Bind PromotionDelta.Weapon.LevelTarget, Mode=TwoWay}"/>
         </cwc:SettingsCard>
 
-        <cwc:SwitchPresenter
-            x:Name="MaterialSelector_SaveModeSelector"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            IsTabStop="False"
-            Value="{x:Bind shuxcth:MaterialBindingSource.Current.RadioButtonMaterial, Mode=OneWay}">
-            <cwc:Case Value="{shuxm:Int32 Value=0}">
-                <RadioButtons
-                    x:Name="SaveModeSelector"
-                    Margin="0,13,0,0"
-                    Header="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyHeader}"
-                    SelectedIndex="0">
-                    <RadioButton
-                        x:Name="GlassNative_3863"
-                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_SaveModeSelector}"
-                        Content="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyPreserveExisting}"
-                        DataContext="{x:Bind MaterialSelector_SaveModeSelector.DataContext, Mode=OneWay}"/>
-                    <RadioButton
-                        x:Name="GlassNative_3989"
-                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_SaveModeSelector}"
-                        Content="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyOverwriteExisting}"
-                        DataContext="{x:Bind MaterialSelector_SaveModeSelector.DataContext, Mode=OneWay}"/>
-                    <RadioButton
-                        x:Name="GlassNative_4116"
-                        shuxcth:ThemeSynchronization.Source="{x:Bind MaterialSelector_SaveModeSelector}"
-                        Content="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyCreateNewEntry}"
-                        DataContext="{x:Bind MaterialSelector_SaveModeSelector.DataContext, Mode=OneWay}"/>
-                </RadioButtons>
-            </cwc:Case>
-            <cwc:Case Value="{shuxm:Int32 Value=1}">
-                <RadioButtons
-                    x:Name="SaveModeSelectorGlass"
-                    Margin="0,13,0,0"
-                    Header="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyHeader}"
-                    SelectedIndex="{x:Bind SaveModeSelector.SelectedIndex, Mode=TwoWay}">
-                    <wl:LiquidGlassRadioButton
-                        x:Name="GlassNative_3863Glass"
-                        Width="{x:Bind GlassNative_3863.Width, Mode=OneWay}"
-                        Height="{x:Bind GlassNative_3863.Height, Mode=OneWay}"
-                        MinWidth="{x:Bind GlassNative_3863.MinWidth, Mode=OneWay}"
-                        MinHeight="{x:Bind GlassNative_3863.MinHeight, Mode=OneWay}"
-                        MaxWidth="{x:Bind GlassNative_3863.MaxWidth, Mode=OneWay}"
-                        MaxHeight="{x:Bind GlassNative_3863.MaxHeight, Mode=OneWay}"
-                        Padding="{x:Bind GlassNative_3863.Padding, Mode=OneWay}"
-                        shuxcth:ControlMaterialState.IsManaged="True"
-                        shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassNative_3863, Mode=OneWay}"
-                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                        BorderThickness="{x:Bind GlassNative_3863.BorderThickness, Mode=OneWay}"
-                        Command="{x:Bind GlassNative_3863.Command, Mode=OneWay}"
-                        CommandParameter="{x:Bind GlassNative_3863.CommandParameter, Mode=OneWay}"
-                        Content="{x:Bind GlassNative_3863.Content, Mode=OneWay}"
-                        FlowDirection="{x:Bind GlassNative_3863.FlowDirection, Mode=OneWay}"
-                        FontFamily="{x:Bind GlassNative_3863.FontFamily, Mode=OneWay}"
-                        FontSize="{x:Bind GlassNative_3863.FontSize, Mode=OneWay}"
-                        FontStyle="{x:Bind GlassNative_3863.FontStyle, Mode=OneWay}"
-                        FontWeight="{x:Bind GlassNative_3863.FontWeight, Mode=OneWay}"
-                        IsEnabled="{x:Bind GlassNative_3863.IsEnabled, Mode=OneWay}"/>
-                    <wl:LiquidGlassRadioButton
-                        x:Name="GlassNative_3989Glass"
-                        Width="{x:Bind GlassNative_3989.Width, Mode=OneWay}"
-                        Height="{x:Bind GlassNative_3989.Height, Mode=OneWay}"
-                        MinWidth="{x:Bind GlassNative_3989.MinWidth, Mode=OneWay}"
-                        MinHeight="{x:Bind GlassNative_3989.MinHeight, Mode=OneWay}"
-                        MaxWidth="{x:Bind GlassNative_3989.MaxWidth, Mode=OneWay}"
-                        MaxHeight="{x:Bind GlassNative_3989.MaxHeight, Mode=OneWay}"
-                        Padding="{x:Bind GlassNative_3989.Padding, Mode=OneWay}"
-                        shuxcth:ControlMaterialState.IsManaged="True"
-                        shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassNative_3989, Mode=OneWay}"
-                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                        BorderThickness="{x:Bind GlassNative_3989.BorderThickness, Mode=OneWay}"
-                        Command="{x:Bind GlassNative_3989.Command, Mode=OneWay}"
-                        CommandParameter="{x:Bind GlassNative_3989.CommandParameter, Mode=OneWay}"
-                        Content="{x:Bind GlassNative_3989.Content, Mode=OneWay}"
-                        FlowDirection="{x:Bind GlassNative_3989.FlowDirection, Mode=OneWay}"
-                        FontFamily="{x:Bind GlassNative_3989.FontFamily, Mode=OneWay}"
-                        FontSize="{x:Bind GlassNative_3989.FontSize, Mode=OneWay}"
-                        FontStyle="{x:Bind GlassNative_3989.FontStyle, Mode=OneWay}"
-                        FontWeight="{x:Bind GlassNative_3989.FontWeight, Mode=OneWay}"
-                        IsEnabled="{x:Bind GlassNative_3989.IsEnabled, Mode=OneWay}"/>
-                    <wl:LiquidGlassRadioButton
-                        x:Name="GlassNative_4116Glass"
-                        Width="{x:Bind GlassNative_4116.Width, Mode=OneWay}"
-                        Height="{x:Bind GlassNative_4116.Height, Mode=OneWay}"
-                        MinWidth="{x:Bind GlassNative_4116.MinWidth, Mode=OneWay}"
-                        MinHeight="{x:Bind GlassNative_4116.MinHeight, Mode=OneWay}"
-                        MaxWidth="{x:Bind GlassNative_4116.MaxWidth, Mode=OneWay}"
-                        MaxHeight="{x:Bind GlassNative_4116.MaxHeight, Mode=OneWay}"
-                        Padding="{x:Bind GlassNative_4116.Padding, Mode=OneWay}"
-                        shuxcth:ControlMaterialState.IsManaged="True"
-                        shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassNative_4116, Mode=OneWay}"
-                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                        BorderThickness="{x:Bind GlassNative_4116.BorderThickness, Mode=OneWay}"
-                        Command="{x:Bind GlassNative_4116.Command, Mode=OneWay}"
-                        CommandParameter="{x:Bind GlassNative_4116.CommandParameter, Mode=OneWay}"
-                        Content="{x:Bind GlassNative_4116.Content, Mode=OneWay}"
-                        FlowDirection="{x:Bind GlassNative_4116.FlowDirection, Mode=OneWay}"
-                        FontFamily="{x:Bind GlassNative_4116.FontFamily, Mode=OneWay}"
-                        FontSize="{x:Bind GlassNative_4116.FontSize, Mode=OneWay}"
-                        FontStyle="{x:Bind GlassNative_4116.FontStyle, Mode=OneWay}"
-                        FontWeight="{x:Bind GlassNative_4116.FontWeight, Mode=OneWay}"
-                        IsEnabled="{x:Bind GlassNative_4116.IsEnabled, Mode=OneWay}"/>
-                </RadioButtons>
-            </cwc:Case>
-        </cwc:SwitchPresenter>
+        <RadioButtons
+            x:Name="SaveModeSelector"
+            Margin="0,13,0,0"
+            Header="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyHeader}"
+            SelectedIndex="0">
+            <wl:LiquidGlassRadioButton
+                x:Name="GlassNative_3863"
+                shuxcth:ControlMaterialState.IsManaged="True"
+                Content="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyPreserveExisting}"/>
+            <wl:LiquidGlassRadioButton
+                x:Name="GlassNative_3989"
+                shuxcth:ControlMaterialState.IsManaged="True"
+                Content="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyOverwriteExisting}"/>
+            <wl:LiquidGlassRadioButton
+                x:Name="GlassNative_4116"
+                shuxcth:ControlMaterialState.IsManaged="True"
+                Content="{shuxm:ResourceString Name=ViewDialogCultivationConsumptionSaveStrategyCreateNewEntry}"/>
+        </RadioButtons>
     </StackPanel>
 </ContentDialog>

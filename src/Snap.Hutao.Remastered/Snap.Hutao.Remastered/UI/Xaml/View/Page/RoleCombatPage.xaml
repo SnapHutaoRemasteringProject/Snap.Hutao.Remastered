@@ -25,7 +25,7 @@
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvr:RoleCombatViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <shuxc:ScopedPage.Resources>
@@ -278,15 +278,15 @@
             <Pivot.RightHeader>
                 <CommandBar Grid.Row="0" DefaultLabelPosition="Right">
                     <AppBarButton
-                        Command="{x:Bind ((shvr:RoleCombatViewModel)DataContext).UploadRoleCombatRecordCommand, Mode=OneWay}"
+                        Command="{x:Bind DataContext.UploadRoleCombatRecordCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph=&#xE898;}"
                         Label="{shuxm:ResourceString Name=ViewSpiralAbyssUploadRecord}"/>
                     <AppBarButton
-                        Command="{x:Bind ((shvr:RoleCombatViewModel)DataContext).OpenAccountInsightsCommand, Mode=OneWay}"
+                        Command="{x:Bind DataContext.OpenAccountInsightsCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph=&#xE9D9;}"
                         Label="{shuxm:ResourceString Name=ViewDialogAccountInsightsOpen}"/>
                     <AppBarButton
-                        Command="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RefreshCommand, Mode=OneWay}"
+                        Command="{x:Bind DataContext.RefreshCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph=&#xE72C;}"
                         Label="{shuxm:ResourceString Name=ViewSpiralAbyssRefresh}"/>
                 </CommandBar>
@@ -306,14 +306,14 @@
                                     shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoCardBrush}"
                                     shuxcth:MaterialBackground.NativeBrush="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                                     ItemTemplate="{StaticResource RoleCombatListTemplate}"
-                                    ItemsSource="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries, Mode=OneWay}"
-                                    SelectedItem="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem, Mode=TwoWay}"/>
+                                    ItemsSource="{x:Bind DataContext.RoleCombatEntries, Mode=OneWay}"
+                                    SelectedItem="{x:Bind DataContext.RoleCombatEntries.CurrentItem, Mode=TwoWay}"/>
                             </SplitView.Pane>
                             <SplitView.Content>
                                 <ScrollViewer>
                                     <Grid
                                         Padding="16"
-                                        DataContext="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem, Mode=OneWay}"
+                                        DataContext="{x:Bind DataContext.RoleCombatEntries.CurrentItem, Mode=OneWay}"
                                         RowSpacing="8"
                                         Visibility="{Binding Converter={StaticResource EmptyObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                                         <Grid.RowDefinitions>
@@ -326,7 +326,7 @@
                                             Grid.Row="0"
                                             Padding="8"
                                             Style="{ThemeResource BorderShimmerStyle}">
-                                            <ItemsControl ItemTemplate="{StaticResource ElementTemplate}" ItemsSource="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Elements, Mode=OneWay}">
+                                            <ItemsControl ItemTemplate="{StaticResource ElementTemplate}" ItemsSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Elements, Mode=OneWay}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <shuxcp:WrapPanel HorizontalSpacing="6" VerticalSpacing="6"/>
@@ -347,7 +347,7 @@
                                                         <ItemsControl
                                                             ItemTemplate="{StaticResource AvatarTemplate}"
                                                             ItemsPanel="{ThemeResource WrapPanelSpacing6Template}"
-                                                            ItemsSource="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.InitialAvatars, Mode=OneWay}"/>
+                                                            ItemsSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.InitialAvatars, Mode=OneWay}"/>
                                                     </StackPanel>
                                                 </Border>
 
@@ -357,14 +357,14 @@
                                                         <ItemsControl
                                                             ItemTemplate="{StaticResource AvatarTemplate}"
                                                             ItemsPanel="{ThemeResource WrapPanelSpacing6Template}"
-                                                            ItemsSource="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.SpecialAvatars, Mode=OneWay}"/>
+                                                            ItemsSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.SpecialAvatars, Mode=OneWay}"/>
                                                     </StackPanel>
                                                 </Border>
                                             </Grid>
                                         </Grid>
                                         <!--  挑战记录  -->
                                         <Border Grid.Row="2" Style="{ThemeResource BorderShimmerStyle}">
-                                            <shuxc:StandardView ShowCondition="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Engaged, Mode=OneWay}">
+                                            <shuxc:StandardView ShowCondition="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Engaged, Mode=OneWay}">
                                                 <shuxc:StandardView.EmptyContent>
                                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                         <Image
@@ -379,13 +379,13 @@
                                                     </StackPanel>
                                                 </shuxc:StandardView.EmptyContent>
                                                 <StackPanel Margin="8" Spacing="8">
-                                                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Difficulty, Mode=OneWay}"/>
+                                                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Difficulty, Mode=OneWay}"/>
                                                     <StackPanel Orientation="Horizontal" Spacing="2">
-                                                        <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.FormattedHeraldry, Mode=OneWay}"/>
+                                                        <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{x:Bind DataContext.RoleCombatEntries.CurrentItem.FormattedHeraldry, Mode=OneWay}"/>
                                                         <BitmapIcon
                                                             Width="20"
                                                             ShowAsMonochrome="False"
-                                                            UriSource="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Stat.Heraldry, Converter={StaticResource RoleCombatDifficultyIconConverter}, Mode=OneWay}"/>
+                                                            UriSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Stat.Heraldry, Converter={StaticResource RoleCombatDifficultyIconConverter}, Mode=OneWay}"/>
                                                     </StackPanel>
                                                     <Border>
                                                         <Border.Resources>
@@ -414,14 +414,14 @@
                                                                     <TextBlock
                                                                         Margin="0,0,16,0"
                                                                         VerticalAlignment="Center"
-                                                                        Text="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Defeat.Value, Mode=OneWay}"
+                                                                        Text="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Defeat.Value, Mode=OneWay}"
                                                                         TextTrimming="None"
                                                                         TextWrapping="NoWrap"/>
                                                                     <shuxci:CachedImage
                                                                         Width="36"
                                                                         Height="36"
                                                                         Margin="-10,-20,-8,-10"
-                                                                        Source="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Defeat.SideIcon, Mode=OneWay}"/>
+                                                                        Source="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Defeat.SideIcon, Mode=OneWay}"/>
                                                                 </StackPanel>
                                                             </cwc:SettingsCard>
 
@@ -434,14 +434,14 @@
                                                                     <TextBlock
                                                                         Margin="0,0,16,0"
                                                                         VerticalAlignment="Center"
-                                                                        Text="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Damage.Value, Mode=OneWay}"
+                                                                        Text="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Damage.Value, Mode=OneWay}"
                                                                         TextTrimming="None"
                                                                         TextWrapping="NoWrap"/>
                                                                     <shuxci:CachedImage
                                                                         Width="36"
                                                                         Height="36"
                                                                         Margin="-10,-20,-8,-10"
-                                                                        Source="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Damage.SideIcon, Mode=OneWay}"/>
+                                                                        Source="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Damage.SideIcon, Mode=OneWay}"/>
                                                                 </StackPanel>
                                                             </cwc:SettingsCard>
 
@@ -454,14 +454,14 @@
                                                                     <TextBlock
                                                                         Margin="0,0,16,0"
                                                                         VerticalAlignment="Center"
-                                                                        Text="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.TakeDamage.Value, Mode=OneWay}"
+                                                                        Text="{x:Bind DataContext.RoleCombatEntries.CurrentItem.TakeDamage.Value, Mode=OneWay}"
                                                                         TextTrimming="None"
                                                                         TextWrapping="NoWrap"/>
                                                                     <shuxci:CachedImage
                                                                         Width="36"
                                                                         Height="36"
                                                                         Margin="-10,-20,-8,-10"
-                                                                        Source="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.TakeDamage.SideIcon, Mode=OneWay}"/>
+                                                                        Source="{x:Bind DataContext.RoleCombatEntries.CurrentItem.TakeDamage.SideIcon, Mode=OneWay}"/>
                                                                 </StackPanel>
                                                             </cwc:SettingsCard>
 
@@ -473,7 +473,7 @@
                                                                 <StackPanel Orientation="Horizontal">
                                                                     <TextBlock
                                                                         VerticalAlignment="Center"
-                                                                        Text="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Stat.CoinNumber, Mode=OneWay}"
+                                                                        Text="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Stat.CoinNumber, Mode=OneWay}"
                                                                         TextTrimming="None"
                                                                         TextWrapping="NoWrap"/>
                                                                 </StackPanel>
@@ -484,7 +484,7 @@
                                                                 shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatMedalRound}">
-                                                                <ItemsControl ItemsSource="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Rounds, Mode=OneWay}">
+                                                                <ItemsControl ItemsSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Rounds, Mode=OneWay}">
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate x:DataType="shvr:RoundView">
                                                                             <Grid>
@@ -531,28 +531,28 @@
                                                                 shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                                 shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                                                                Content="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.FormattedTotalBattleTimes, Mode=OneWay}"
+                                                                Content="{x:Bind DataContext.RoleCombatEntries.CurrentItem.FormattedTotalBattleTimes, Mode=OneWay}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatTotalBattleTime}"/>
 
                                                             <cwc:SettingsCard
                                                                 shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                                 shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                                                                Content="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.MaxRound, Mode=OneWay}"
+                                                                Content="{x:Bind DataContext.RoleCombatEntries.CurrentItem.MaxRound, Mode=OneWay}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatMaxRound}"/>
 
                                                             <cwc:SettingsCard
                                                                 shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                                 shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                                                                Content="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Stat.AvatarBonusNumber, Mode=OneWay}"
+                                                                Content="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Stat.AvatarBonusNumber, Mode=OneWay}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatStatAvatarBonus}"/>
 
                                                             <cwc:SettingsCard
                                                                 shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                                 shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                                                                Content="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Stat.RentCount, Mode=OneWay}"
+                                                                Content="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Stat.RentCount, Mode=OneWay}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatStatRent}"/>
 
                                                             <cwc:SettingsCard
@@ -560,7 +560,7 @@
                                                                 shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatShortest}">
-                                                                <ItemsControl ItemsPanel="{ThemeResource HorizontalStackPanelSpacing4Template}" ItemsSource="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Shortest, Mode=OneWay}">
+                                                                <ItemsControl ItemsPanel="{ThemeResource HorizontalStackPanelSpacing4Template}" ItemsSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Shortest, Mode=OneWay}">
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <shuxci:CachedImage
@@ -581,11 +581,11 @@
                                                             <ItemsControl
                                                                 ItemTemplate="{StaticResource AvatarTemplate}"
                                                                 ItemsPanel="{ThemeResource WrapPanelSpacing6Template}"
-                                                                ItemsSource="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.BackupAvatars, Mode=OneWay}"/>
+                                                                ItemsSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.BackupAvatars, Mode=OneWay}"/>
                                                         </StackPanel>
                                                     </Border>
 
-                                                    <ItemsControl ItemTemplate="{StaticResource RoundTemplate}" ItemsSource="{x:Bind ((shvr:RoleCombatViewModel)DataContext).RoleCombatEntries.CurrentItem.Rounds, Mode=OneWay}">
+                                                    <ItemsControl ItemTemplate="{StaticResource RoundTemplate}" ItemsSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Rounds, Mode=OneWay}">
                                                         <ItemsControl.ItemsPanel>
                                                             <ItemsPanelTemplate>
                                                                 <shuxcp:UniformStaggeredPanel
@@ -608,9 +608,9 @@
             </PivotItem>
 
             <PivotItem Header="{shuxm:ResourceString Name=ViewSpiralAbyssHutaoStatistics}">
-                <Grid DataContext="{x:Bind ((shvr:RoleCombatViewModel)DataContext).HutaoRoleCombatDatabaseViewModel, Mode=OneWay}">
+                <Grid DataContext="{x:Bind DataContext.HutaoRoleCombatDatabaseViewModel, Mode=OneWay}">
                     <mxi:Interaction.Behaviors>
-                        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvr:RoleCombatViewModel)DataContext).HutaoRoleCombatDatabaseViewModel.LoadCommand, Mode=OneWay}"/>
+                        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.HutaoRoleCombatDatabaseViewModel.LoadCommand, Mode=OneWay}"/>
                     </mxi:Interaction.Behaviors>
 
                     <Grid.Resources>
@@ -635,7 +635,7 @@
                         </DataTemplate>
                     </Grid.Resources>
 
-                    <Pivot Style="{ThemeResource CardPivotStyle}" Visibility="{x:Bind ((shvr:RoleCombatViewModel)DataContext).HutaoRoleCombatDatabaseViewModel.RecordTotal, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
+                    <Pivot Style="{ThemeResource CardPivotStyle}" Visibility="{x:Bind DataContext.HutaoRoleCombatDatabaseViewModel.RecordTotal, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
                         <Pivot.RightHeader>
                             <CommandBar DefaultLabelPosition="Right">
                                 <AppBarButton Icon="{shuxm:FontIcon Glyph=&#xE946;}" Label="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverview}">
@@ -654,7 +654,7 @@
                                                     <!--  ReSharper restore Xaml.RedundantResource  -->
                                                 </StackPanel.Resources>
                                                 <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewDataCollect}"/>
-                                                <cwc:SettingsCard Content="{x:Bind ((shvr:RoleCombatViewModel)DataContext).HutaoRoleCombatDatabaseViewModel.RecordTotal, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewRecordTotal}"/>
+                                                <cwc:SettingsCard Content="{x:Bind DataContext.HutaoRoleCombatDatabaseViewModel.RecordTotal, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageHutaoDatabaseOverviewRecordTotal}"/>
                                             </StackPanel>
                                         </Flyout>
                                     </AppBarButton.Flyout>
@@ -668,7 +668,7 @@
                                         Padding="16,16,4,4"
                                         ItemContainerStyle="{StaticResource LargeGridViewItemStyle}"
                                         ItemTemplate="{StaticResource RatedAvatarTemplate}"
-                                        ItemsSource="{x:Bind ((shvr:RoleCombatViewModel)DataContext).HutaoRoleCombatDatabaseViewModel.AvatarAppearances, Mode=OneWay}"
+                                        ItemsSource="{x:Bind DataContext.HutaoRoleCombatDatabaseViewModel.AvatarAppearances, Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </Grid>
                             </Border>

@@ -22,7 +22,7 @@
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvf:FeedbackViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Page.Resources>
@@ -40,29 +40,10 @@
                 <TextBlock Text="{shuxm:ResourceString Name=ViewPageFeedbackEnableLoopbackEnabledDescription}"/>
             </cwconv:BoolToObjectConverter.TrueValue>
             <cwconv:BoolToObjectConverter.FalseValue>
-                <cwc:SwitchPresenter
-                    x:Name="GlassPresenter_2251"
-                    HorizontalContentAlignment="Stretch"
-                    VerticalContentAlignment="Stretch"
-                    IsTabStop="False"
-                    Tag="LiquidGlass:HyperlinkButton"
-                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.HyperlinkButtonMaterial, Mode=OneWay}">
-                    <cwc:Case>
-                        <cwc:Case.Value>
-                            <x:Int32>0</x:Int32>
-                        </cwc:Case.Value>
-                        <HyperlinkButton Content="{shuxm:ResourceString Name=ViewPageAnnouncementViewDetails}" NavigateUri="{StaticResource DocumentLink_Loopback}"/>
-                    </cwc:Case>
-                    <cwc:Case>
-                        <cwc:Case.Value>
-                            <x:Int32>1</x:Int32>
-                        </cwc:Case.Value>
-                        <wl:LiquidGlassHyperlinkButton
-                            shuxcth:ControlMaterialState.IsManaged="True"
-                            Content="{shuxm:ResourceString Name=ViewPageAnnouncementViewDetails}"
-                            NavigateUri="{StaticResource DocumentLink_Loopback}"/>
-                    </cwc:Case>
-                </cwc:SwitchPresenter>
+                <wl:LiquidGlassHyperlinkButton
+                    shuxcth:ControlMaterialState.IsManaged="True"
+                    Content="{shuxm:ResourceString Name=ViewPageAnnouncementViewDetails}"
+                    NavigateUri="{StaticResource DocumentLink_Loopback}"/>
             </cwconv:BoolToObjectConverter.FalseValue>
         </cwconv:BoolToObjectConverter>
     </Page.Resources>
@@ -92,19 +73,19 @@
                                         <cwc:SettingsCard
                                             ActionIcon="{shuxm:FontIcon Glyph=&#xE8C8;}"
                                             ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingCopyDeviceIdAction}"
-                                            Command="{x:Bind ((shvf:FeedbackViewModel)DataContext).CopyDeviceIdCommand, Mode=OneWay}"
+                                            Command="{x:Bind DataContext.CopyDeviceIdCommand, Mode=OneWay}"
                                             Description="{x:Bind shc:HutaoRuntime.DeviceId}"
                                             Header="{shuxm:ResourceString Name=ViewPageSettingDeviceIdHeader}"
                                             IsClickEnabled="True"/>
-                                        <cwc:SettingsCard Description="{x:Bind ((shvf:FeedbackViewModel)DataContext).IPInformation, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageSettingDeviceIpHeader}"/>
+                                        <cwc:SettingsCard Description="{x:Bind DataContext.IPInformation, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageSettingDeviceIpHeader}"/>
                                         <cwc:SettingsCard Description="{x:Bind shvf:FeedbackViewModel.DynamicHttpProxy.DisplayProxyUri, Mode=OneWay}" Header="{shuxm:ResourceString Name=ViewPageFeedbackCurrentProxyHeader}"/>
                                         <cwc:SettingsCard
-                                            Command="{x:Bind ((shvf:FeedbackViewModel)DataContext).EnableLoopbackCommand, Mode=OneWay}"
+                                            Command="{x:Bind DataContext.EnableLoopbackCommand, Mode=OneWay}"
                                             Header="{shuxm:ResourceString Name=ViewPageFeedbackEnableLoopbackHeader}"
-                                            IsClickEnabled="{x:Bind ((shvf:FeedbackViewModel)DataContext).LoopbackSupport.CanEnableLoopback, Mode=OneWay}"
-                                            IsEnabled="{x:Bind ((shvf:FeedbackViewModel)DataContext).LoopbackSupport.IsLoopbackEnabled, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}">
+                                            IsClickEnabled="{x:Bind DataContext.LoopbackSupport.CanEnableLoopback, Mode=OneWay}"
+                                            IsEnabled="{x:Bind DataContext.LoopbackSupport.IsLoopbackEnabled, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}">
                                             <cwc:SettingsCard.Description>
-                                                <UserControl Content="{x:Bind ((shvf:FeedbackViewModel)DataContext).LoopbackSupport.IsLoopbackEnabled, Converter={StaticResource BoolToLoopbackDescriptionControlConverter}, Mode=OneWay}"/>
+                                                <UserControl Content="{x:Bind DataContext.LoopbackSupport.IsLoopbackEnabled, Converter={StaticResource BoolToLoopbackDescriptionControlConverter}, Mode=OneWay}"/>
                                             </cwc:SettingsCard.Description>
                                         </cwc:SettingsCard>
                                         <cwc:SettingsCard Description="{x:Bind shc:HutaoRuntime.WebView2Version.Version}" Header="{shuxm:ResourceString Name=ViewPageSettingWebview2Header}"/>
@@ -251,9 +232,9 @@
             </SplitView.Pane>
             <Border Margin="16,16,0,16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                 <Grid Style="{ThemeResource AcrylicGridCardStyle}">
-                    <shuxc:StandardView ShowCondition="{x:Bind ((shvf:FeedbackViewModel)DataContext).IsInitialized, Mode=OneWay}">
+                    <shuxc:StandardView ShowCondition="{x:Bind DataContext.IsInitialized, Mode=OneWay}">
                         <shuxc:StandardView.EmptyContent>
-                            <clw:Shimmer IsActive="{x:Bind ((shvf:FeedbackViewModel)DataContext).IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"/>
+                            <clw:Shimmer IsActive="{x:Bind DataContext.IsInitialized, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"/>
                         </shuxc:StandardView.EmptyContent>
 
                         <Grid Padding="16" RowSpacing="8">
@@ -261,65 +242,45 @@
                                 <RowDefinition Height="auto"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
-                            <cwc:SwitchPresenter
-                                x:Name="SearchPresenter_19969"
+                            <shuxcth:MaterialSwap
                                 Grid.Row="0"
                                 Margin="0,0,0,8"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.SearchBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
+                                HorizontalAlignment="Stretch">
+                                <shuxcth:MaterialSwap.Native>
                                     <AutoSuggestBox
                                         x:Name="NativeSearch_19969"
                                         Height="36"
                                         HorizontalAlignment="Stretch"
                                         VerticalContentAlignment="Center"
-                                        DataContext="{x:Bind SearchPresenter_19969.DataContext, Mode=OneWay}"
                                         PlaceholderText="{shuxm:ResourceString Name=ViewPageFeedbackAutoSuggestBoxPlaceholder}"
                                         QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
-                                        shuxcth:ThemeSynchronization.Source="{x:Bind SearchPresenter_19969}"
                                         Style="{StaticResource DefaultAutoSuggestBoxStyle}"
-                                        Text="{x:Bind ((shvf:FeedbackViewModel)DataContext).SearchText, Mode=TwoWay}">
+                                        Text="{x:Bind DataContext.SearchText, Mode=TwoWay}">
                                         <mxi:Interaction.Behaviors>
                                             <mxi:EventTriggerBehavior EventName="QuerySubmitted">
-                                                <mxi:InvokeCommandAction Command="{x:Bind ((shvf:FeedbackViewModel)DataContext).SearchDocumentCommand, Mode=OneWay}" CommandParameter="{x:Bind ((shvf:FeedbackViewModel)DataContext).SearchText, Mode=OneWay}"/>
+                                                <mxi:InvokeCommandAction Command="{x:Bind DataContext.SearchDocumentCommand, Mode=OneWay}" CommandParameter="{x:Bind DataContext.SearchText, Mode=OneWay}"/>
                                             </mxi:EventTriggerBehavior>
                                         </mxi:Interaction.Behaviors>
                                     </AutoSuggestBox>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
+                                </shuxcth:MaterialSwap.Native>
+                                <shuxcth:MaterialSwap.Glass>
                                     <wl:LiquidGlassSearchBox
-                                        x:Name="NativeSearch_19969Glass"
                                         Height="36"
                                         HorizontalAlignment="Stretch"
                                         VerticalContentAlignment="Center"
                                         shuxcth:ControlMaterialState.IsManaged="True"
-                                        shuxcth:ControlMaterialState.NativeControl="{x:Bind NativeSearch_19969, Mode=OneWay}"
-                                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                                        Description="{x:Bind NativeSearch_19969.Description, Mode=OneWay}"
-                                        Header="{x:Bind NativeSearch_19969.Header, Mode=OneWay}"
-                                        IsEnabled="{x:Bind NativeSearch_19969.IsEnabled, Mode=OneWay}"
-                                        IsSuggestionListOpen="{x:Bind NativeSearch_19969.IsSuggestionListOpen, Mode=TwoWay}"
-                                        ItemTemplate="{x:Bind NativeSearch_19969.ItemTemplate, Mode=OneWay}"
-                                        ItemsSource="{x:Bind NativeSearch_19969.ItemsSource, Mode=OneWay}"
-                                        MaxSuggestionListHeight="{x:Bind NativeSearch_19969.MaxSuggestionListHeight, Mode=OneWay}"
-                                        PlaceholderText="{x:Bind NativeSearch_19969.PlaceholderText, Mode=OneWay}"
+                                        PlaceholderText="{shuxm:ResourceString Name=ViewPageFeedbackAutoSuggestBoxPlaceholder}"
                                         QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
-                                        shuxcth:ThemeSynchronization.Source="{x:Bind SearchPresenter_19969}"
-                                        Text="{x:Bind NativeSearch_19969.Text, Mode=TwoWay}"
-                                        TextBoxStyle="{x:Bind NativeSearch_19969.TextBoxStyle, Mode=OneWay}"
-                                        TextMemberPath="{x:Bind NativeSearch_19969.TextMemberPath, Mode=OneWay}"
-                                        UpdateTextOnSelect="{x:Bind NativeSearch_19969.UpdateTextOnSelect, Mode=OneWay}"/>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
-                            <shuxc:StandardView Grid.Row="1" ShowCondition="{x:Bind ((shvf:FeedbackViewModel)DataContext).SearchResults.Count, Converter={StaticResource Int32ToBoolConverter}, Mode=OneWay}">
+                                        Text="{x:Bind DataContext.SearchText, Mode=TwoWay}">
+                                        <mxi:Interaction.Behaviors>
+                                            <mxi:EventTriggerBehavior EventName="QuerySubmitted">
+                                                <mxi:InvokeCommandAction Command="{x:Bind DataContext.SearchDocumentCommand, Mode=OneWay}" CommandParameter="{x:Bind DataContext.SearchText, Mode=OneWay}"/>
+                                            </mxi:EventTriggerBehavior>
+                                        </mxi:Interaction.Behaviors>
+                                    </wl:LiquidGlassSearchBox>
+                                </shuxcth:MaterialSwap.Glass>
+                            </shuxcth:MaterialSwap>
+                            <shuxc:StandardView Grid.Row="1" ShowCondition="{x:Bind DataContext.SearchResults.Count, Converter={StaticResource Int32ToBoolConverter}, Mode=OneWay}">
                                 <shuxc:StandardView.EmptyContent>
                                     <StackPanel VerticalAlignment="Center">
                                         <StackPanel.ChildrenTransitions>
@@ -341,62 +302,27 @@
                                     <ItemsControl
                                         ItemContainerTransitions="{ThemeResource ListViewLikeThemeTransitions}"
                                         ItemsPanel="{ThemeResource StackPanelSpacing8Template}"
-                                        ItemsSource="{x:Bind ((shvf:FeedbackViewModel)DataContext).SearchResults, Mode=OneWay}">
+                                        ItemsSource="{x:Bind DataContext.SearchResults, Mode=OneWay}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <Border Style="{ThemeResource BorderCardStyle}">
-                                                    <cwc:SwitchPresenter
-                                                        x:Name="GlassPresenter_22099"
+                                                    <wl:LiquidGlassHyperlinkButton
                                                         HorizontalAlignment="Stretch"
                                                         HorizontalContentAlignment="Stretch"
-                                                        VerticalContentAlignment="Stretch"
-                                                        IsTabStop="False"
-                                                        Tag="LiquidGlass:HyperlinkButton"
-                                                        Value="{Binding HyperlinkButtonMaterial, Source={StaticResource ControlMaterialState}, Mode=OneWay}">
-                                                        <cwc:Case>
-                                                            <cwc:Case.Value>
-                                                                <x:Int32>0</x:Int32>
-                                                            </cwc:Case.Value>
-                                                            <HyperlinkButton
-                                                                HorizontalAlignment="Stretch"
-                                                                HorizontalContentAlignment="Stretch"
-                                                                NavigateUri="{Binding Url}">
-                                                                <Grid>
-                                                                    <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition/>
-                                                                        <ColumnDefinition Width="auto"/>
-                                                                    </Grid.ColumnDefinitions>
-                                                                    <BreadcrumbBar
-                                                                        Grid.Column="0"
-                                                                        Margin="4,8,8,4"
-                                                                        IsHitTestVisible="False"
-                                                                        ItemsSource="{Binding Hierarchy.DisplayLevels}"/>
-                                                                </Grid>
-                                                            </HyperlinkButton>
-                                                        </cwc:Case>
-                                                        <cwc:Case>
-                                                            <cwc:Case.Value>
-                                                                <x:Int32>1</x:Int32>
-                                                            </cwc:Case.Value>
-                                                            <wl:LiquidGlassHyperlinkButton
-                                                                HorizontalAlignment="Stretch"
-                                                                HorizontalContentAlignment="Stretch"
-                                                                shuxcth:ControlMaterialState.IsManaged="True"
-                                                                NavigateUri="{Binding Url}">
-                                                                <Grid>
-                                                                    <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition/>
-                                                                        <ColumnDefinition Width="auto"/>
-                                                                    </Grid.ColumnDefinitions>
-                                                                    <BreadcrumbBar
-                                                                        Grid.Column="0"
-                                                                        Margin="4,8,8,4"
-                                                                        IsHitTestVisible="False"
-                                                                        ItemsSource="{Binding Hierarchy.DisplayLevels}"/>
-                                                                </Grid>
-                                                            </wl:LiquidGlassHyperlinkButton>
-                                                        </cwc:Case>
-                                                    </cwc:SwitchPresenter>
+                                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                                        NavigateUri="{Binding Url}">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition/>
+                                                                <ColumnDefinition Width="auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <BreadcrumbBar
+                                                                Grid.Column="0"
+                                                                Margin="4,8,8,4"
+                                                                IsHitTestVisible="False"
+                                                                ItemsSource="{Binding Hierarchy.DisplayLevels}"/>
+                                                        </Grid>
+                                                    </wl:LiquidGlassHyperlinkButton>
                                                 </Border>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>

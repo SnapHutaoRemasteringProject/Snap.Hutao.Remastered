@@ -21,7 +21,7 @@
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shv:TestViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Border Margin="16" Style="{ThemeResource AcrylicBorderCardStyle}">
@@ -81,342 +81,86 @@
 
                 <TextBlock Style="{ThemeResource SettingsSectionHeaderTextBlockStyle}" Text="State"/>
                 <cwc:SettingsCard Header="Reset Guide State">
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_5460"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Tag="LiquidGlass:Button"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <Button
-                                Command="{x:Bind shv:TestViewModel.ResetGuideStateCommand}"
-                                Content="Reset (No restart)"
-                                Style="{ThemeResource SettingButtonStyle}"/>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassButton
-                                shuxcth:ControlMaterialState.IsManaged="True"
-                                Command="{x:Bind shv:TestViewModel.ResetGuideStateCommand}"
-                                Content="Reset (No restart)"
-                                Style="{ThemeResource SettingButtonStyle}"/>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
+                    <wl:LiquidGlassButton
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        Command="{x:Bind shv:TestViewModel.ResetGuideStateCommand}"
+                        Content="Reset (No restart)"
+                        Style="{ThemeResource SettingButtonStyle}"/>
                 </cwc:SettingsCard>
 
                 <cwc:SettingsCard Header="Resize MainWindow">
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_5776"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Tag="LiquidGlass:Button"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <Button
-                                Command="{x:Bind ((shv:TestViewModel)DataContext).ResetMainWindowSizeCommand, Mode=OneWay}"
-                                Content="Reset"
-                                Style="{ThemeResource SettingButtonStyle}"/>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassButton
-                                shuxcth:ControlMaterialState.IsManaged="True"
-                                Command="{x:Bind ((shv:TestViewModel)DataContext).ResetMainWindowSizeCommand, Mode=OneWay}"
-                                Content="Reset"
-                                Style="{ThemeResource SettingButtonStyle}"/>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
+                    <wl:LiquidGlassButton
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        Command="{x:Bind DataContext.ResetMainWindowSizeCommand, Mode=OneWay}"
+                        Content="Reset"
+                        Style="{ThemeResource SettingButtonStyle}"/>
                 </cwc:SettingsCard>
 
                 <TextBlock Style="{ThemeResource SettingsSectionHeaderTextBlockStyle}" Text="Condition Override"/>
 
                 <cwc:SettingsCard Header="Override Elevation Requirement">
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_6212"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Tag="LiquidGlass:ToggleSwitch"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <ToggleSwitch IsOn="{x:Bind ((shv:TestViewModel)DataContext).OverrideElevationRequirement, Mode=TwoWay}"/>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind ((shv:TestViewModel)DataContext).OverrideElevationRequirement, Mode=TwoWay}"/>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
+                    <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind DataContext.OverrideElevationRequirement, Mode=TwoWay}"/>
                 </cwc:SettingsCard>
 
                 <cwc:SettingsCard Header="Override Update Version Comparison">
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_6423"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Tag="LiquidGlass:ToggleSwitch"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <ToggleSwitch IsOn="{x:Bind ((shv:TestViewModel)DataContext).OverrideUpdateVersionComparison, Mode=TwoWay}"/>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind ((shv:TestViewModel)DataContext).OverrideUpdateVersionComparison, Mode=TwoWay}"/>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
+                    <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind DataContext.OverrideUpdateVersionComparison, Mode=TwoWay}"/>
                 </cwc:SettingsCard>
 
                 <cwc:SettingsCard
-                    Command="{x:Bind ((shv:TestViewModel)DataContext).ForceUpdateDialogCommand, Mode=OneWay}"
+                    Command="{x:Bind DataContext.ForceUpdateDialogCommand, Mode=OneWay}"
                     Description="Show the update dialog without requiring an actual new version"
                     Header="Force Show Update Dialog"
                     IsClickEnabled="True"/>
 
                 <cwc:SettingsCard
-                    Command="{x:Bind ((shv:TestViewModel)DataContext).OpenStoreTestCommand, Mode=OneWay}"
+                    Command="{x:Bind DataContext.OpenStoreTestCommand, Mode=OneWay}"
                     Description="Open product 9P1LDJFJFJQQ using the same Store link and web fallback as updates; works in packaged and unpackaged builds"
                     Header="Open Microsoft Store (Test)"
                     IsClickEnabled="True"/>
 
                 <cwc:SettingsCard Header="Override Package Convert Directory Permission Requirement">
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_6955"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Tag="LiquidGlass:ToggleSwitch"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <ToggleSwitch IsOn="{x:Bind ((shv:TestViewModel)DataContext).OverridePackageConvertDirectoryPermissionsRequirement, Mode=TwoWay}"/>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind ((shv:TestViewModel)DataContext).OverridePackageConvertDirectoryPermissionsRequirement, Mode=TwoWay}"/>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
+                    <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind DataContext.OverridePackageConvertDirectoryPermissionsRequirement, Mode=TwoWay}"/>
                 </cwc:SettingsCard>
 
                 <cwc:SettingsCard Header="Override Hard Drive Type">
                     <StackPanel Orientation="Horizontal" Spacing="{ThemeResource SettingsCardContentControlSpacing}">
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_7303"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:ToggleSwitch"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <ToggleSwitch
-                                    IsEnabled="{x:Bind HardDriveTypeToggle.IsOn, Mode=OneWay}"
-                                    IsOn="{x:Bind ((shv:TestViewModel)DataContext).OverrideHardDriveTypeIsSolidState, Mode=TwoWay}"
-                                    OffContent="HDD"
-                                    OnContent="SSD"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassToggleSwitch
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    IsEnabled="{x:Bind HardDriveTypeToggle.IsOn, Mode=OneWay}"
-                                    IsOn="{x:Bind ((shv:TestViewModel)DataContext).OverrideHardDriveTypeIsSolidState, Mode=TwoWay}"
-                                    OffContent="HDD"
-                                    OnContent="SSD"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_7611"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:ToggleSwitch"
-                            Visibility="{x:Bind HardDriveTypeToggle.Visibility, Mode=OneWay}"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <ToggleSwitch
-                                    x:Name="HardDriveTypeToggle"
-                                    DataContext="{x:Bind GlassPresenter_7611.DataContext, Mode=OneWay}"
-                                    IsOn="{x:Bind ((shv:TestViewModel)DataContext).OverrideHardDriveType, Mode=TwoWay}"
-                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_7611}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassToggleSwitch
-                                    x:Name="HardDriveTypeToggleGlass"
-                                    Width="{x:Bind HardDriveTypeToggle.Width, Mode=OneWay}"
-                                    MinWidth="{x:Bind HardDriveTypeToggle.MinWidth, Mode=OneWay}"
-                                    MinHeight="{x:Bind HardDriveTypeToggle.MinHeight, Mode=OneWay}"
-                                    MaxWidth="{x:Bind HardDriveTypeToggle.MaxWidth, Mode=OneWay}"
-                                    MaxHeight="{x:Bind HardDriveTypeToggle.MaxHeight, Mode=OneWay}"
-                                    Padding="{x:Bind HardDriveTypeToggle.Padding, Mode=OneWay}"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    shuxcth:ControlMaterialState.NativeControl="{x:Bind HardDriveTypeToggle, Mode=OneWay}"
-                                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                                    BorderThickness="{x:Bind HardDriveTypeToggle.BorderThickness, Mode=OneWay}"
-                                    FlowDirection="{x:Bind HardDriveTypeToggle.FlowDirection, Mode=OneWay}"
-                                    FontFamily="{x:Bind HardDriveTypeToggle.FontFamily, Mode=OneWay}"
-                                    FontSize="{x:Bind HardDriveTypeToggle.FontSize, Mode=OneWay}"
-                                    FontStyle="{x:Bind HardDriveTypeToggle.FontStyle, Mode=OneWay}"
-                                    FontWeight="{x:Bind HardDriveTypeToggle.FontWeight, Mode=OneWay}"
-                                    Header="{x:Bind HardDriveTypeToggle.Header, Mode=OneWay}"
-                                    HeaderTemplate="{x:Bind HardDriveTypeToggle.HeaderTemplate, Mode=OneWay}"
-                                    IsEnabled="{x:Bind HardDriveTypeToggle.IsEnabled, Mode=OneWay}"
-                                    IsOn="{x:Bind HardDriveTypeToggle.IsOn, Mode=TwoWay}"
-                                    OffContent="{x:Bind HardDriveTypeToggle.OffContent, Mode=OneWay}"
-                                    OffContentTemplate="{x:Bind HardDriveTypeToggle.OffContentTemplate, Mode=OneWay}"
-                                    OnContent="{x:Bind HardDriveTypeToggle.OnContent, Mode=OneWay}"
-                                    OnContentTemplate="{x:Bind HardDriveTypeToggle.OnContentTemplate, Mode=OneWay}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                        <wl:LiquidGlassToggleSwitch
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            IsEnabled="{x:Bind HardDriveTypeToggle.IsOn, Mode=OneWay}"
+                            IsOn="{x:Bind DataContext.OverrideHardDriveTypeIsSolidState, Mode=TwoWay}"
+                            OffContent="HDD"
+                            OnContent="SSD"/>
+                        <wl:LiquidGlassToggleSwitch
+                            x:Name="HardDriveTypeToggle"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            IsOn="{x:Bind DataContext.OverrideHardDriveType, Mode=TwoWay}"/>
                     </StackPanel>
                 </cwc:SettingsCard>
 
                 <cwc:SettingsCard Header="Always Treat As First Run After Update">
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_7882"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Tag="LiquidGlass:ToggleSwitch"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <ToggleSwitch IsOn="{x:Bind ((shv:TestViewModel)DataContext).AlwaysIsFirstRunAfterUpdate, Mode=TwoWay}"/>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind ((shv:TestViewModel)DataContext).AlwaysIsFirstRunAfterUpdate, Mode=TwoWay}"/>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
+                    <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind DataContext.AlwaysIsFirstRunAfterUpdate, Mode=TwoWay}"/>
                 </cwc:SettingsCard>
 
                 <cwc:SettingsCard Header="Alpha Build Generic API Endpoint">
                     <StackPanel Orientation="Horizontal" Spacing="{ThemeResource SettingsCardContentControlSpacing}">
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_8212"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:ToggleSwitch"
-                            Visibility="{x:Bind GenericApiEndPointToggle.Visibility, Mode=OneWay}"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <ToggleSwitch
-                                    x:Name="GenericApiEndPointToggle"
-                                    DataContext="{x:Bind GlassPresenter_8212.DataContext, Mode=OneWay}"
-                                    IsOn="{x:Bind ((shv:TestViewModel)DataContext).AlphaBuildUseCNPatchEndpoint, Mode=TwoWay}"
-                                    OffContent="Oversea Endpoints"
-                                    OnContent="Chinese Endpoints"
-                                    shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_8212}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassToggleSwitch
-                                    x:Name="GenericApiEndPointToggleGlass"
-                                    Width="{x:Bind GenericApiEndPointToggle.Width, Mode=OneWay}"
-                                    MinWidth="{x:Bind GenericApiEndPointToggle.MinWidth, Mode=OneWay}"
-                                    MinHeight="{x:Bind GenericApiEndPointToggle.MinHeight, Mode=OneWay}"
-                                    MaxWidth="{x:Bind GenericApiEndPointToggle.MaxWidth, Mode=OneWay}"
-                                    MaxHeight="{x:Bind GenericApiEndPointToggle.MaxHeight, Mode=OneWay}"
-                                    Padding="{x:Bind GenericApiEndPointToggle.Padding, Mode=OneWay}"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    shuxcth:ControlMaterialState.NativeControl="{x:Bind GenericApiEndPointToggle, Mode=OneWay}"
-                                    shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                                    BorderThickness="{x:Bind GenericApiEndPointToggle.BorderThickness, Mode=OneWay}"
-                                    FlowDirection="{x:Bind GenericApiEndPointToggle.FlowDirection, Mode=OneWay}"
-                                    FontFamily="{x:Bind GenericApiEndPointToggle.FontFamily, Mode=OneWay}"
-                                    FontSize="{x:Bind GenericApiEndPointToggle.FontSize, Mode=OneWay}"
-                                    FontStyle="{x:Bind GenericApiEndPointToggle.FontStyle, Mode=OneWay}"
-                                    FontWeight="{x:Bind GenericApiEndPointToggle.FontWeight, Mode=OneWay}"
-                                    Header="{x:Bind GenericApiEndPointToggle.Header, Mode=OneWay}"
-                                    HeaderTemplate="{x:Bind GenericApiEndPointToggle.HeaderTemplate, Mode=OneWay}"
-                                    IsEnabled="{x:Bind GenericApiEndPointToggle.IsEnabled, Mode=OneWay}"
-                                    IsOn="{x:Bind GenericApiEndPointToggle.IsOn, Mode=TwoWay}"
-                                    OffContent="{x:Bind GenericApiEndPointToggle.OffContent, Mode=OneWay}"
-                                    OffContentTemplate="{x:Bind GenericApiEndPointToggle.OffContentTemplate, Mode=OneWay}"
-                                    OnContent="{x:Bind GenericApiEndPointToggle.OnContent, Mode=OneWay}"
-                                    OnContentTemplate="{x:Bind GenericApiEndPointToggle.OnContentTemplate, Mode=OneWay}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_8518"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:ToggleSwitch"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <ToggleSwitch
-                                    IsEnabled="{x:Bind GenericApiEndPointToggle.IsOn, Mode=OneWay}"
-                                    IsOn="{x:Bind ((shv:TestViewModel)DataContext).AlphaBuildUseFJPatchEndpoint, Mode=TwoWay}"
-                                    OffContent="No Secondary Endpoints"
-                                    OnContent="Fujian Endpoints"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassToggleSwitch
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    IsEnabled="{x:Bind GenericApiEndPointToggle.IsOn, Mode=OneWay}"
-                                    IsOn="{x:Bind ((shv:TestViewModel)DataContext).AlphaBuildUseFJPatchEndpoint, Mode=TwoWay}"
-                                    OffContent="No Secondary Endpoints"
-                                    OnContent="Fujian Endpoints"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                        <wl:LiquidGlassToggleSwitch
+                            x:Name="GenericApiEndPointToggle"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            IsOn="{x:Bind DataContext.AlphaBuildUseCNPatchEndpoint, Mode=TwoWay}"
+                            OffContent="Oversea Endpoints"
+                            OnContent="Chinese Endpoints"/>
+                        <wl:LiquidGlassToggleSwitch
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            IsEnabled="{x:Bind GenericApiEndPointToggle.IsOn, Mode=OneWay}"
+                            IsOn="{x:Bind DataContext.AlphaBuildUseFJPatchEndpoint, Mode=TwoWay}"
+                            OffContent="No Secondary Endpoints"
+                            OnContent="Fujian Endpoints"/>
                     </StackPanel>
                 </cwc:SettingsCard>
 
                 <TextBlock Style="{ThemeResource SettingsSectionHeaderTextBlockStyle}" Text="Hutao Cloud"/>
                 <cwc:SettingsCard
-                    Command="{x:Bind ((shv:TestViewModel)DataContext).CompensationGachaLogServiceTimeCommand, Mode=OneWay}"
+                    Command="{x:Bind DataContext.CompensationGachaLogServiceTimeCommand, Mode=OneWay}"
                     Header="Compensation GachaLog Service Time"
                     IsClickEnabled="True">
                     <StackPanel
@@ -427,13 +171,13 @@
                             MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
                             VerticalAlignment="Center"
                             AcceptsExpression="False"
-                            Value="{x:Bind ((shv:TestViewModel)DataContext).GachaLogCompensationDays, Mode=TwoWay}"/>
+                            Value="{x:Bind DataContext.GachaLogCompensationDays, Mode=TwoWay}"/>
                         <TextBlock VerticalAlignment="Center" Text="Days"/>
                     </StackPanel>
                 </cwc:SettingsCard>
 
                 <cwc:SettingsCard
-                    Command="{x:Bind ((shv:TestViewModel)DataContext).DesignationGachaLogServiceTimeCommand, Mode=OneWay}"
+                    Command="{x:Bind DataContext.DesignationGachaLogServiceTimeCommand, Mode=OneWay}"
                     Header="Designation GachaLog Service Time"
                     IsClickEnabled="True">
                     <StackPanel
@@ -441,45 +185,22 @@
                         Orientation="Horizontal"
                         Spacing="8">
                         <TextBlock VerticalAlignment="Center" Text="UserName"/>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_10360"
+                        <wl:LiquidGlassTextBox
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
                             VerticalAlignment="Center"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:TextBox"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <TextBox
-                                    MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
-                                    VerticalAlignment="Center"
-                                    Text="{x:Bind ((shv:TestViewModel)DataContext).GachaLogDesignationOptions.UserName, Mode=TwoWay}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassTextBox
-                                    MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
-                                    VerticalAlignment="Center"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Text="{x:Bind ((shv:TestViewModel)DataContext).GachaLogDesignationOptions.UserName, Mode=TwoWay}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                            Text="{x:Bind DataContext.GachaLogDesignationOptions.UserName, Mode=TwoWay}"/>
                         <NumberBox
                             MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
                             VerticalAlignment="Center"
                             AcceptsExpression="False"
-                            Value="{x:Bind ((shv:TestViewModel)DataContext).GachaLogDesignationOptions.Days, Mode=TwoWay}"/>
+                            Value="{x:Bind DataContext.GachaLogDesignationOptions.Days, Mode=TwoWay}"/>
                         <TextBlock VerticalAlignment="Center" Text="Days"/>
                     </StackPanel>
                 </cwc:SettingsCard>
 
                 <cwc:SettingsCard
-                    Command="{x:Bind ((shv:TestViewModel)DataContext).CompensationCdnServiceTimeCommand, Mode=OneWay}"
+                    Command="{x:Bind DataContext.CompensationCdnServiceTimeCommand, Mode=OneWay}"
                     Header="Compensation Cdn Service Time"
                     IsClickEnabled="True">
                     <StackPanel
@@ -490,13 +211,13 @@
                             MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
                             VerticalAlignment="Center"
                             AcceptsExpression="False"
-                            Value="{x:Bind ((shv:TestViewModel)DataContext).CdnCompensationDays, Mode=TwoWay}"/>
+                            Value="{x:Bind DataContext.CdnCompensationDays, Mode=TwoWay}"/>
                         <TextBlock VerticalAlignment="Center" Text="Days"/>
                     </StackPanel>
                 </cwc:SettingsCard>
 
                 <cwc:SettingsCard
-                    Command="{x:Bind ((shv:TestViewModel)DataContext).DesignationCdnServiceTimeCommand, Mode=OneWay}"
+                    Command="{x:Bind DataContext.DesignationCdnServiceTimeCommand, Mode=OneWay}"
                     Header="Designation Cdn Service Time"
                     IsClickEnabled="True">
                     <StackPanel
@@ -504,39 +225,16 @@
                         Orientation="Horizontal"
                         Spacing="8">
                         <TextBlock VerticalAlignment="Center" Text="UserName"/>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_12406"
+                        <wl:LiquidGlassTextBox
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
                             VerticalAlignment="Center"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:TextBox"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <TextBox
-                                    MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
-                                    VerticalAlignment="Center"
-                                    Text="{x:Bind ((shv:TestViewModel)DataContext).CdnDesignationOptions.UserName, Mode=TwoWay}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassTextBox
-                                    MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
-                                    VerticalAlignment="Center"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Text="{x:Bind ((shv:TestViewModel)DataContext).CdnDesignationOptions.UserName, Mode=TwoWay}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                            Text="{x:Bind DataContext.CdnDesignationOptions.UserName, Mode=TwoWay}"/>
                         <NumberBox
                             MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
                             VerticalAlignment="Center"
                             AcceptsExpression="False"
-                            Value="{x:Bind ((shv:TestViewModel)DataContext).CdnDesignationOptions.Days, Mode=TwoWay}"/>
+                            Value="{x:Bind DataContext.CdnDesignationOptions.Days, Mode=TwoWay}"/>
                         <TextBlock VerticalAlignment="Center" Text="Days"/>
                     </StackPanel>
                 </cwc:SettingsCard>
@@ -550,176 +248,39 @@
                         <NumberBox
                             Header="Count"
                             PlaceholderText="Code count"
-                            Text="{x:Bind ((shv:TestViewModel)DataContext).RedeemCodeGenerateOption.Count, Mode=TwoWay}"/>
+                            Text="{x:Bind DataContext.RedeemCodeGenerateOption.Count, Mode=TwoWay}"/>
                         <StackPanel Orientation="Horizontal" Spacing="8">
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_13715"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:CheckBox"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <CheckBox Content="IsTimeLimited" IsChecked="{x:Bind ((shv:TestViewModel)DataContext).RedeemCodeGenerateOption.IsTimeLimited, Mode=TwoWay}"/>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassCheckBox
-                                        shuxcth:ControlMaterialState.IsManaged="True"
-                                        Content="IsTimeLimited"
-                                        IsChecked="{x:Bind ((shv:TestViewModel)DataContext).RedeemCodeGenerateOption.IsTimeLimited, Mode=TwoWay}"/>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_13853"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:CheckBox"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <CheckBox Content="IsTimesLimited" IsChecked="{x:Bind ((shv:TestViewModel)DataContext).RedeemCodeGenerateOption.IsTimesLimited, Mode=TwoWay}"/>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassCheckBox
-                                        shuxcth:ControlMaterialState.IsManaged="True"
-                                        Content="IsTimesLimited"
-                                        IsChecked="{x:Bind ((shv:TestViewModel)DataContext).RedeemCodeGenerateOption.IsTimesLimited, Mode=TwoWay}"/>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                            <wl:LiquidGlassCheckBox shuxcth:ControlMaterialState.IsManaged="True" Content="IsTimeLimited" IsChecked="{x:Bind DataContext.RedeemCodeGenerateOption.IsTimeLimited, Mode=TwoWay}"/>
+                            <wl:LiquidGlassCheckBox shuxcth:ControlMaterialState.IsManaged="True" Content="IsTimesLimited" IsChecked="{x:Bind DataContext.RedeemCodeGenerateOption.IsTimesLimited, Mode=TwoWay}"/>
                         </StackPanel>
                         <shuxc:SizeRestrictedContentControl>
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_14092"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:ComboBox"
-                                Visibility="{x:Bind GlassPresenter_14092_State.Visibility, Mode=OneWay}"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                        x:Name="GlassPresenter_14092_State"
-                                        DataContext="{x:Bind GlassPresenter_14092.DataContext, Mode=OneWay}"
-                                        Header="ServiceType"
-                                        ItemsSource="{cwh:EnumValues Type=shwhr:RedeemCodeTargetServiceType}"
-                                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_14092}"
-                                        SelectedItem="{x:Bind ((shv:TestViewModel)DataContext).RedeemCodeGenerateOption.ServiceType, Mode=TwoWay}"/>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                        x:Name="GlassPresenter_14092_StateGlass"
-                                        Width="{x:Bind GlassPresenter_14092_State.Width, Mode=OneWay}"
-                                        Height="{x:Bind GlassPresenter_14092_State.Height, Mode=OneWay}"
-                                        MinWidth="{x:Bind GlassPresenter_14092_State.MinWidth, Mode=OneWay}"
-                                        MinHeight="{x:Bind GlassPresenter_14092_State.MinHeight, Mode=OneWay}"
-                                        MaxWidth="{x:Bind GlassPresenter_14092_State.MaxWidth, Mode=OneWay}"
-                                        MaxHeight="{x:Bind GlassPresenter_14092_State.MaxHeight, Mode=OneWay}"
-                                        Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(GlassPresenter_14092_State.Padding), Mode=OneWay}"
-                                        shuxcth:ControlMaterialState.IsManaged="True"
-                                        shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassPresenter_14092_State, Mode=OneWay}"
-                                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                                        BorderThickness="{x:Bind GlassPresenter_14092_State.BorderThickness, Mode=OneWay}"
-                                        DisplayMemberPath="{x:Bind GlassPresenter_14092_State.DisplayMemberPath, Mode=OneWay}"
-                                        FlowDirection="{x:Bind GlassPresenter_14092_State.FlowDirection, Mode=OneWay}"
-                                        FontFamily="{x:Bind GlassPresenter_14092_State.FontFamily, Mode=OneWay}"
-                                        FontSize="{x:Bind GlassPresenter_14092_State.FontSize, Mode=OneWay}"
-                                        FontStyle="{x:Bind GlassPresenter_14092_State.FontStyle, Mode=OneWay}"
-                                        FontWeight="{x:Bind GlassPresenter_14092_State.FontWeight, Mode=OneWay}"
-                                        Header="{x:Bind GlassPresenter_14092_State.Header, Mode=OneWay}"
-                                        HeaderTemplate="{x:Bind GlassPresenter_14092_State.HeaderTemplate, Mode=OneWay}"
-                                        IsEditable="{x:Bind GlassPresenter_14092_State.IsEditable, Mode=OneWay}"
-                                        IsEnabled="{x:Bind GlassPresenter_14092_State.IsEnabled, Mode=OneWay}"
-                                        IsTextSearchEnabled="{x:Bind GlassPresenter_14092_State.IsTextSearchEnabled, Mode=OneWay}"
-                                        ItemsSource="{x:Bind GlassPresenter_14092_State.ItemsSource, Mode=OneWay}"
-                                        MaxDropDownHeight="{x:Bind GlassPresenter_14092_State.MaxDropDownHeight, Mode=OneWay}"
-                                        PlaceholderText="{x:Bind GlassPresenter_14092_State.PlaceholderText, Mode=OneWay}"
-                                        SelectedIndex="{x:Bind GlassPresenter_14092_State.SelectedIndex, Mode=TwoWay}"
-                                        SelectedValuePath="{x:Bind GlassPresenter_14092_State.SelectedValuePath, Mode=OneWay}"/>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                            <wl:LiquidGlassComboBox
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                shuxcth:ComboBoxPopupLifetime.IsManaged="True"
+                                Header="ServiceType"
+                                ItemsSource="{cwh:EnumValues Type=shwhr:RedeemCodeTargetServiceType}"
+                                SelectedItem="{x:Bind DataContext.RedeemCodeGenerateOption.ServiceType, Mode=TwoWay}"/>
                         </shuxc:SizeRestrictedContentControl>
                         <NumberBox
                             Header="Value"
                             PlaceholderText="Days"
-                            Text="{x:Bind ((shv:TestViewModel)DataContext).RedeemCodeGenerateOption.Value, Mode=TwoWay}"/>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_14672"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:TextBox"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <TextBox
-                                    Header="Description"
-                                    PlaceholderText="Code description"
-                                    Text="{x:Bind ((shv:TestViewModel)DataContext).RedeemCodeGenerateOption.Description, Mode=TwoWay}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassTextBox
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Header="Description"
-                                    PlaceholderText="Code description"
-                                    Text="{x:Bind ((shv:TestViewModel)DataContext).RedeemCodeGenerateOption.Description, Mode=TwoWay}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                            Text="{x:Bind DataContext.RedeemCodeGenerateOption.Value, Mode=TwoWay}"/>
+                        <wl:LiquidGlassTextBox
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Header="Description"
+                            PlaceholderText="Code description"
+                            Text="{x:Bind DataContext.RedeemCodeGenerateOption.Description, Mode=TwoWay}"/>
                         <NumberBox
                             Header="Expire Hours"
-                            IsEnabled="{x:Bind ((shv:TestViewModel)DataContext).RedeemCodeGenerateOption.IsTimeLimited, Mode=OneWay}"
+                            IsEnabled="{x:Bind DataContext.RedeemCodeGenerateOption.IsTimeLimited, Mode=OneWay}"
                             PlaceholderText="72"
-                            Text="{x:Bind ((shv:TestViewModel)DataContext).RedeemCodeGenerateOption.ExpireHours, Mode=TwoWay}"/>
+                            Text="{x:Bind DataContext.RedeemCodeGenerateOption.ExpireHours, Mode=TwoWay}"/>
                         <NumberBox
                             Header="Times"
-                            IsEnabled="{x:Bind ((shv:TestViewModel)DataContext).RedeemCodeGenerateOption.IsTimesLimited, Mode=OneWay}"
+                            IsEnabled="{x:Bind DataContext.RedeemCodeGenerateOption.IsTimesLimited, Mode=OneWay}"
                             PlaceholderText="Limited times"
-                            Text="{x:Bind ((shv:TestViewModel)DataContext).RedeemCodeGenerateOption.Times, Mode=TwoWay}"/>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_15553"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:Button"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <Button Command="{x:Bind ((shv:TestViewModel)DataContext).GenerateRedeemCodeCommand, Mode=OneWay}" Content="Generate"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassButton
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Command="{x:Bind ((shv:TestViewModel)DataContext).GenerateRedeemCodeCommand, Mode=OneWay}"
-                                    Content="Generate"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                            Text="{x:Bind DataContext.RedeemCodeGenerateOption.Times, Mode=TwoWay}"/>
+                        <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Command="{x:Bind DataContext.GenerateRedeemCodeCommand, Mode=OneWay}" Content="Generate"/>
                     </StackPanel>
                 </Expander>
 
@@ -736,182 +297,56 @@
                     IsClickEnabled="True"/>
 
                 <cwc:SettingsCard
-                    Command="{x:Bind ((shv:TestViewModel)DataContext).SendRandomInfoBarNotificationCommand, Mode=OneWay}"
+                    Command="{x:Bind DataContext.SendRandomInfoBarNotificationCommand, Mode=OneWay}"
                     Header="Random InfoBar"
                     IsClickEnabled="True"/>
 
                 <cwc:SettingsCard
-                    Command="{x:Bind ((shv:TestViewModel)DataContext).CheckPathBelongsToSSDCommand, Mode=OneWay}"
+                    Command="{x:Bind DataContext.CheckPathBelongsToSSDCommand, Mode=OneWay}"
                     Header="Check path belongs to a SSD"
                     IsClickEnabled="True"/>
 
                 <cwc:SettingsCard
-                    Command="{x:Bind ((shv:TestViewModel)DataContext).RunCodeCommand, Mode=OneWay}"
+                    Command="{x:Bind DataContext.RunCodeCommand, Mode=OneWay}"
                     Header="Run Script Code"
                     IsClickEnabled="True"/>
 
                 <cwc:SettingsCard Header="SpeedGraphTest" IsClickEnabled="False">
                     <StackPanel Orientation="Horizontal">
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_16916"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:Button"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <Button
-                                    Command="{x:Bind ((shv:TestViewModel)DataContext).OpenSpeedGraphTestWindowCommand, Mode=OneWay}"
-                                    Content="{shuxm:ResourceString Name=ViewPageTestSpeedGraphWindowHeader}"
-                                    Style="{ThemeResource SettingButtonStyle}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassButton
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Command="{x:Bind ((shv:TestViewModel)DataContext).OpenSpeedGraphTestWindowCommand, Mode=OneWay}"
-                                    Content="{shuxm:ResourceString Name=ViewPageTestSpeedGraphWindowHeader}"
-                                    Style="{ThemeResource SettingButtonStyle}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_17202"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:Button"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <Button
-                                    Command="{x:Bind ((shv:TestViewModel)DataContext).OpenGamePackageWindowCommand, Mode=OneWay}"
-                                    Content="Open The Game Package Window"
-                                    Style="{ThemeResource SettingButtonStyle}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassButton
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Command="{x:Bind ((shv:TestViewModel)DataContext).OpenGamePackageWindowCommand, Mode=OneWay}"
-                                    Content="Open The Game Package Window"
-                                    Style="{ThemeResource SettingButtonStyle}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                        <wl:LiquidGlassButton
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Command="{x:Bind DataContext.OpenSpeedGraphTestWindowCommand, Mode=OneWay}"
+                            Content="{shuxm:ResourceString Name=ViewPageTestSpeedGraphWindowHeader}"
+                            Style="{ThemeResource SettingButtonStyle}"/>
+                        <wl:LiquidGlassButton
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Command="{x:Bind DataContext.OpenGamePackageWindowCommand, Mode=OneWay}"
+                            Content="Open The Game Package Window"
+                            Style="{ThemeResource SettingButtonStyle}"/>
                     </StackPanel>
                 </cwc:SettingsCard>
 
                 <TextBlock Style="{ThemeResource SettingsSectionHeaderTextBlockStyle}" Text="Game Package"/>
                 <cwc:SettingsCard Header="Treat Predownload As Main">
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_17697"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Tag="LiquidGlass:ToggleSwitch"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <ToggleSwitch IsOn="{x:Bind ((shv:TestViewModel)DataContext).TreatPredownloadAsMain, Mode=TwoWay}"/>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind ((shv:TestViewModel)DataContext).TreatPredownloadAsMain, Mode=TwoWay}"/>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
+                    <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind DataContext.TreatPredownloadAsMain, Mode=TwoWay}"/>
                 </cwc:SettingsCard>
 
                 <cwc:SettingsCard Header="Enable Beta Game Install">
-                    <cwc:SwitchPresenter
-                        x:Name="GlassPresenter_17892"
-                        HorizontalContentAlignment="Stretch"
-                        VerticalContentAlignment="Stretch"
-                        IsTabStop="False"
-                        Tag="LiquidGlass:ToggleSwitch"
-                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <ToggleSwitch IsOn="{x:Bind ((shv:TestViewModel)DataContext).EnableBetaGameInstall, Mode=TwoWay}"/>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind ((shv:TestViewModel)DataContext).EnableBetaGameInstall, Mode=TwoWay}"/>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
+                    <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind DataContext.EnableBetaGameInstall, Mode=TwoWay}"/>
                 </cwc:SettingsCard>
 
                 <cwc:SettingsCard
-                    Command="{x:Bind ((shv:TestViewModel)DataContext).ExtractGameBlocksCommand, Mode=OneWay}"
+                    Command="{x:Bind DataContext.ExtractGameBlocksCommand, Mode=OneWay}"
                     Header="Extract Game Blocks"
                     IsClickEnabled="True"/>
 
                 <cwc:SettingsCard
-                    Command="{x:Bind ((shv:TestViewModel)DataContext).ExtractGameExeCommand, Mode=OneWay}"
+                    Command="{x:Bind DataContext.ExtractGameExeCommand, Mode=OneWay}"
                     Header="Extract Game Executable"
                     IsClickEnabled="True">
                     <StackPanel Orientation="Horizontal" Spacing="{ThemeResource SettingsCardContentControlSpacing}">
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_18524"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:CheckBox"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <CheckBox Content="IsOversea" IsChecked="{x:Bind ((shv:TestViewModel)DataContext).ExtractExeOptions.IsOversea, Mode=TwoWay}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassCheckBox
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Content="IsOversea"
-                                    IsChecked="{x:Bind ((shv:TestViewModel)DataContext).ExtractExeOptions.IsOversea, Mode=TwoWay}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_18643"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:CheckBox"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <CheckBox Content="IsPredownload" IsChecked="{x:Bind ((shv:TestViewModel)DataContext).ExtractExeOptions.IsPreDownload, Mode=TwoWay}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassCheckBox
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Content="IsPredownload"
-                                    IsChecked="{x:Bind ((shv:TestViewModel)DataContext).ExtractExeOptions.IsPreDownload, Mode=TwoWay}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                        <wl:LiquidGlassCheckBox shuxcth:ControlMaterialState.IsManaged="True" Content="IsOversea" IsChecked="{x:Bind DataContext.ExtractExeOptions.IsOversea, Mode=TwoWay}"/>
+                        <wl:LiquidGlassCheckBox shuxcth:ControlMaterialState.IsManaged="True" Content="IsPredownload" IsChecked="{x:Bind DataContext.ExtractExeOptions.IsPreDownload, Mode=TwoWay}"/>
                     </StackPanel>
                 </cwc:SettingsCard>
 
@@ -922,196 +357,36 @@
                     Header="Upload Announcement"
                     IsExpanded="True">
                     <StackPanel Spacing="8">
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_19216"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:TextBox"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <TextBox
-                                    Header="Title"
-                                    PlaceholderText="Please input title"
-                                    Text="{x:Bind ((shv:TestViewModel)DataContext).Announcement.Title, Mode=TwoWay}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassTextBox
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Header="Title"
-                                    PlaceholderText="Please input title"
-                                    Text="{x:Bind ((shv:TestViewModel)DataContext).Announcement.Title, Mode=TwoWay}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_19436"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:TextBox"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <TextBox
-                                    Header="Link"
-                                    PlaceholderText="Please input link"
-                                    Text="{x:Bind ((shv:TestViewModel)DataContext).Announcement.Link, Mode=TwoWay}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassTextBox
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Header="Link"
-                                    PlaceholderText="Please input link"
-                                    Text="{x:Bind ((shv:TestViewModel)DataContext).Announcement.Link, Mode=TwoWay}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_19653"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:TextBox"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <TextBox
-                                    Header="Version Threshold"
-                                    PlaceholderText="Max present version(leave empty to present in all version)"
-                                    Text="{x:Bind ((shv:TestViewModel)DataContext).Announcement.MaxPresentVersion, Mode=TwoWay}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassTextBox
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Header="Version Threshold"
-                                    PlaceholderText="Max present version(leave empty to present in all version)"
-                                    Text="{x:Bind ((shv:TestViewModel)DataContext).Announcement.MaxPresentVersion, Mode=TwoWay}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_19937"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:TextBox"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.TextBoxMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <TextBox
-                                    AcceptsReturn="True"
-                                    Header="Content"
-                                    PlaceholderText="Please input content"
-                                    Text="{x:Bind ((shv:TestViewModel)DataContext).Announcement.Content, Mode=TwoWay}"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassTextBox
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    AcceptsReturn="True"
-                                    Header="Content"
-                                    PlaceholderText="Please input content"
-                                    Text="{x:Bind ((shv:TestViewModel)DataContext).Announcement.Content, Mode=TwoWay}"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                        <wl:LiquidGlassTextBox
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Header="Title"
+                            PlaceholderText="Please input title"
+                            Text="{x:Bind DataContext.Announcement.Title, Mode=TwoWay}"/>
+                        <wl:LiquidGlassTextBox
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Header="Link"
+                            PlaceholderText="Please input link"
+                            Text="{x:Bind DataContext.Announcement.Link, Mode=TwoWay}"/>
+                        <wl:LiquidGlassTextBox
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            Header="Version Threshold"
+                            PlaceholderText="Max present version(leave empty to present in all version)"
+                            Text="{x:Bind DataContext.Announcement.MaxPresentVersion, Mode=TwoWay}"/>
+                        <wl:LiquidGlassTextBox
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            AcceptsReturn="True"
+                            Header="Content"
+                            PlaceholderText="Please input content"
+                            Text="{x:Bind DataContext.Announcement.Content, Mode=TwoWay}"/>
                         <shuxc:SizeRestrictedContentControl>
-                            <cwc:SwitchPresenter
-                                x:Name="GlassPresenter_20277"
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                IsTabStop="False"
-                                Tag="LiquidGlass:ComboBox"
-                                Visibility="{x:Bind GlassPresenter_20277_State.Visibility, Mode=OneWay}"
-                                Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>0</x:Int32>
-                                    </cwc:Case.Value>
-                                    <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                        x:Name="GlassPresenter_20277_State"
-                                        DataContext="{x:Bind GlassPresenter_20277.DataContext, Mode=OneWay}"
-                                        Header="Severity"
-                                        ItemsSource="{cwh:EnumValues Type=InfoBarSeverity}"
-                                        shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_20277}"
-                                        SelectedItem="{x:Bind ((shv:TestViewModel)DataContext).Announcement.Severity, Mode=TwoWay}"/>
-                                </cwc:Case>
-                                <cwc:Case>
-                                    <cwc:Case.Value>
-                                        <x:Int32>1</x:Int32>
-                                    </cwc:Case.Value>
-                                    <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                        x:Name="GlassPresenter_20277_StateGlass"
-                                        Width="{x:Bind GlassPresenter_20277_State.Width, Mode=OneWay}"
-                                        Height="{x:Bind GlassPresenter_20277_State.Height, Mode=OneWay}"
-                                        MinWidth="{x:Bind GlassPresenter_20277_State.MinWidth, Mode=OneWay}"
-                                        MinHeight="{x:Bind GlassPresenter_20277_State.MinHeight, Mode=OneWay}"
-                                        MaxWidth="{x:Bind GlassPresenter_20277_State.MaxWidth, Mode=OneWay}"
-                                        MaxHeight="{x:Bind GlassPresenter_20277_State.MaxHeight, Mode=OneWay}"
-                                        Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(GlassPresenter_20277_State.Padding), Mode=OneWay}"
-                                        shuxcth:ControlMaterialState.IsManaged="True"
-                                        shuxcth:ControlMaterialState.NativeControl="{x:Bind GlassPresenter_20277_State, Mode=OneWay}"
-                                        shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"
-                                        BorderThickness="{x:Bind GlassPresenter_20277_State.BorderThickness, Mode=OneWay}"
-                                        DisplayMemberPath="{x:Bind GlassPresenter_20277_State.DisplayMemberPath, Mode=OneWay}"
-                                        FlowDirection="{x:Bind GlassPresenter_20277_State.FlowDirection, Mode=OneWay}"
-                                        FontFamily="{x:Bind GlassPresenter_20277_State.FontFamily, Mode=OneWay}"
-                                        FontSize="{x:Bind GlassPresenter_20277_State.FontSize, Mode=OneWay}"
-                                        FontStyle="{x:Bind GlassPresenter_20277_State.FontStyle, Mode=OneWay}"
-                                        FontWeight="{x:Bind GlassPresenter_20277_State.FontWeight, Mode=OneWay}"
-                                        Header="{x:Bind GlassPresenter_20277_State.Header, Mode=OneWay}"
-                                        HeaderTemplate="{x:Bind GlassPresenter_20277_State.HeaderTemplate, Mode=OneWay}"
-                                        IsEditable="{x:Bind GlassPresenter_20277_State.IsEditable, Mode=OneWay}"
-                                        IsEnabled="{x:Bind GlassPresenter_20277_State.IsEnabled, Mode=OneWay}"
-                                        IsTextSearchEnabled="{x:Bind GlassPresenter_20277_State.IsTextSearchEnabled, Mode=OneWay}"
-                                        ItemsSource="{x:Bind GlassPresenter_20277_State.ItemsSource, Mode=OneWay}"
-                                        MaxDropDownHeight="{x:Bind GlassPresenter_20277_State.MaxDropDownHeight, Mode=OneWay}"
-                                        PlaceholderText="{x:Bind GlassPresenter_20277_State.PlaceholderText, Mode=OneWay}"
-                                        SelectedIndex="{x:Bind GlassPresenter_20277_State.SelectedIndex, Mode=TwoWay}"
-                                        SelectedValuePath="{x:Bind GlassPresenter_20277_State.SelectedValuePath, Mode=OneWay}"/>
-                                </cwc:Case>
-                            </cwc:SwitchPresenter>
+                            <wl:LiquidGlassComboBox
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                shuxcth:ComboBoxPopupLifetime.IsManaged="True"
+                                Header="Severity"
+                                ItemsSource="{cwh:EnumValues Type=InfoBarSeverity}"
+                                SelectedItem="{x:Bind DataContext.Announcement.Severity, Mode=TwoWay}"/>
                         </shuxc:SizeRestrictedContentControl>
-                        <cwc:SwitchPresenter
-                            x:Name="GlassPresenter_20601"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            IsTabStop="False"
-                            Tag="LiquidGlass:Button"
-                            Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>0</x:Int32>
-                                </cwc:Case.Value>
-                                <Button Command="{x:Bind ((shv:TestViewModel)DataContext).UploadAnnouncementCommand, Mode=OneWay}" Content="Upload"/>
-                            </cwc:Case>
-                            <cwc:Case>
-                                <cwc:Case.Value>
-                                    <x:Int32>1</x:Int32>
-                                </cwc:Case.Value>
-                                <wl:LiquidGlassButton
-                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                    Command="{x:Bind ((shv:TestViewModel)DataContext).UploadAnnouncementCommand, Mode=OneWay}"
-                                    Content="Upload"/>
-                            </cwc:Case>
-                        </cwc:SwitchPresenter>
+                        <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Command="{x:Bind DataContext.UploadAnnouncementCommand, Mode=OneWay}" Content="Upload"/>
                     </StackPanel>
                 </Expander>
             </StackPanel>

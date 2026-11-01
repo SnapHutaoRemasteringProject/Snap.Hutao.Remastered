@@ -17,4 +17,6 @@ public sealed partial class HutaoPassportPage : ScopedPage
     {
         InitializeDataContext<HutaoPassportViewModel>();
     }
+
+    public new HutaoPassportViewModel DataContext { get => (HutaoPassportViewModel)base.DataContext; set => base.DataContext = value; }
 }

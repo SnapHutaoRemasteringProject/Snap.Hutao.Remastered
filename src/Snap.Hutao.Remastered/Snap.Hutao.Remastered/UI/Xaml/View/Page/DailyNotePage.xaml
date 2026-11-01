@@ -29,11 +29,11 @@
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ((shvd:DailyNoteViewModel)DataContext).LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Page.Resources>
-        <shux:BindingProxy x:Key="ViewModelBindingProxy" DataContext="{x:Bind ((shvd:DailyNoteViewModel)DataContext), Mode=OneWay}"/>
+        <shux:BindingProxy x:Key="ViewModelBindingProxy" DataContext="{x:Bind DataContext, Mode=OneWay}"/>
 
         <cwconv:BoolToObjectConverter
             x:Name="DailyTaskIconConverter"
@@ -73,140 +73,49 @@
                                 HorizontalAlignment="Right"
                                 Orientation="Horizontal">
                                 <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                                <cwc:SwitchPresenter
-                                    x:Name="GlassPresenter_3932"
+                                <wl:LiquidGlassButton
                                     Margin="8,0,0,0"
+                                    shuxcth:ControlMaterialState.IsManaged="True"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    IsTabStop="False"
-                                    Tag="LiquidGlass:Button"
-                                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                                    <cwc:Case>
-                                        <cwc:Case.Value>
-                                            <x:Int32>0</x:Int32>
-                                        </cwc:Case.Value>
-                                        <Button
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Stretch"
-                                            shux:FrameworkElementHelper.SquareLength="40"
-                                            Background="Transparent"
-                                            BorderBrush="{x:Null}"
-                                            BorderThickness="0"
-                                            Command="{Binding DataContext.StartGameFromDailyNoteCommand, Source={StaticResource ViewModelBindingProxy}}"
-                                            CommandParameter="{x:Bind Mode=OneWay}"
-                                            Content="{StaticResource FontIconContentGame}"
-                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteStartGameToolTip}"/>
-                                    </cwc:Case>
-                                    <cwc:Case>
-                                        <cwc:Case.Value>
-                                            <x:Int32>1</x:Int32>
-                                        </cwc:Case.Value>
-                                        <wl:LiquidGlassButton
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Stretch"
-                                            shux:FrameworkElementHelper.SquareLength="40"
-                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                            BorderBrush="{x:Null}"
-                                            BorderThickness="0"
-                                            Command="{Binding DataContext.StartGameFromDailyNoteCommand, Source={StaticResource ViewModelBindingProxy}}"
-                                            CommandParameter="{x:Bind Mode=OneWay}"
-                                            Content="{StaticResource FontIconContentGame}"
-                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteStartGameToolTip}"/>
-                                    </cwc:Case>
-                                </cwc:SwitchPresenter>
+                                    shux:FrameworkElementHelper.SquareLength="40"
+                                    Background="Transparent"
+                                    BorderBrush="{x:Null}"
+                                    BorderThickness="0"
+                                    Command="{Binding DataContext.StartGameFromDailyNoteCommand, Source={StaticResource ViewModelBindingProxy}}"
+                                    CommandParameter="{x:Bind Mode=OneWay}"
+                                    Content="{StaticResource FontIconContentGame}"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteStartGameToolTip}"/>
                                 <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                                <cwc:SwitchPresenter
-                                    x:Name="GlassPresenter_5018"
+                                <wl:LiquidGlassButton
                                     Margin="8,0,0,0"
+                                    shuxcth:ControlMaterialState.IsManaged="True"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    IsTabStop="False"
-                                    Tag="LiquidGlass:Button"
-                                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                                    <cwc:Case>
-                                        <cwc:Case.Value>
-                                            <x:Int32>0</x:Int32>
-                                        </cwc:Case.Value>
-                                        <Button
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Stretch"
-                                            shux:FrameworkElementHelper.SquareLength="40"
-                                            Background="Transparent"
-                                            BorderBrush="{x:Null}"
-                                            BorderThickness="0"
-                                            Command="{Binding DataContext.RemoveDailyNoteCommand, Source={StaticResource ViewModelBindingProxy}}"
-                                            CommandParameter="{x:Bind Mode=OneWay}"
-                                            Content="{StaticResource FontIconContentDelete}"
-                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteRemoveToolTip}"/>
-                                    </cwc:Case>
-                                    <cwc:Case>
-                                        <cwc:Case.Value>
-                                            <x:Int32>1</x:Int32>
-                                        </cwc:Case.Value>
-                                        <wl:LiquidGlassButton
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Stretch"
-                                            shux:FrameworkElementHelper.SquareLength="40"
-                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                            BorderBrush="{x:Null}"
-                                            BorderThickness="0"
-                                            Command="{Binding DataContext.RemoveDailyNoteCommand, Source={StaticResource ViewModelBindingProxy}}"
-                                            CommandParameter="{x:Bind Mode=OneWay}"
-                                            Content="{StaticResource FontIconContentDelete}"
-                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteRemoveToolTip}"/>
-                                    </cwc:Case>
-                                </cwc:SwitchPresenter>
+                                    shux:FrameworkElementHelper.SquareLength="40"
+                                    Background="Transparent"
+                                    BorderBrush="{x:Null}"
+                                    BorderThickness="0"
+                                    Command="{Binding DataContext.RemoveDailyNoteCommand, Source={StaticResource ViewModelBindingProxy}}"
+                                    CommandParameter="{x:Bind Mode=OneWay}"
+                                    Content="{StaticResource FontIconContentDelete}"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteRemoveToolTip}"/>
                                 <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                                <cwc:SwitchPresenter
-                                    x:Name="GlassPresenter_6096"
+                                <wl:LiquidGlassButton
                                     Margin="8,0,0,0"
+                                    shuxcth:ControlMaterialState.IsManaged="True"
                                     VerticalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    IsTabStop="False"
-                                    Tag="LiquidGlass:Button"
-                                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                                    <cwc:Case>
-                                        <cwc:Case.Value>
-                                            <x:Int32>0</x:Int32>
-                                        </cwc:Case.Value>
-                                        <Button
-                                            VerticalAlignment="Stretch"
-                                            shux:FrameworkElementHelper.SquareLength="40"
-                                            Background="Transparent"
-                                            BorderBrush="{x:Null}"
-                                            BorderThickness="0"
-                                            Command="{Binding DataContext.ModifyNotificationCommand, Source={StaticResource ViewModelBindingProxy}}"
-                                            CommandParameter="{x:Bind Mode=OneWay}"
-                                            Content="{StaticResource FontIconContentSetting}"
-                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteNotificationSetting}"/>
-                                    </cwc:Case>
-                                    <cwc:Case>
-                                        <cwc:Case.Value>
-                                            <x:Int32>1</x:Int32>
-                                        </cwc:Case.Value>
-                                        <wl:LiquidGlassButton
-                                            VerticalAlignment="Stretch"
-                                            shux:FrameworkElementHelper.SquareLength="40"
-                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                            BorderBrush="{x:Null}"
-                                            BorderThickness="0"
-                                            Command="{Binding DataContext.ModifyNotificationCommand, Source={StaticResource ViewModelBindingProxy}}"
-                                            CommandParameter="{x:Bind Mode=OneWay}"
-                                            Content="{StaticResource FontIconContentSetting}"
-                                            FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteNotificationSetting}"/>
-                                    </cwc:Case>
-                                </cwc:SwitchPresenter>
+                                    shux:FrameworkElementHelper.SquareLength="40"
+                                    Background="Transparent"
+                                    BorderBrush="{x:Null}"
+                                    BorderThickness="0"
+                                    Command="{Binding DataContext.ModifyNotificationCommand, Source={StaticResource ViewModelBindingProxy}}"
+                                    CommandParameter="{x:Bind Mode=OneWay}"
+                                    Content="{StaticResource FontIconContentSetting}"
+                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteNotificationSetting}"/>
                             </StackPanel>
                         </Grid>
 
@@ -368,124 +277,57 @@
                                     Margin="0,0,8,0"
                                     Orientation="Horizontal"
                                     Spacing="8">
-                                    <cwc:SwitchPresenter
-                                        x:Name="GlassPresenter_17316"
-                                        HorizontalContentAlignment="Stretch"
-                                        VerticalContentAlignment="Stretch"
-                                        IsTabStop="False"
-                                        Tag="LiquidGlass:Button"
+                                    <wl:LiquidGlassButton
                                         Visibility="{x:Bind DailyNote.DailyTask.AttendanceVisible, Mode=OneWay}"
-                                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ButtonMaterial, Mode=OneWay}">
-                                        <cwc:Case>
-                                            <cwc:Case.Value>
-                                                <x:Int32>0</x:Int32>
-                                            </cwc:Case.Value>
-                                            <Button
-                                                Width="32"
-                                                Height="32"
-                                                Padding="6"
-                                                Style="{ThemeResource ShimmerButtonStyle}"
-                                                ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteAttendanceStatusInfo}">
-                                                <shuxm:BitmapIconExtension ShowAsMonochrome="True" Source="ms-appx:///Resource/Icon/UI_IconSmall_EP.png"/>
-                                                <Button.Flyout>
-                                                    <Flyout
-                                                        essential:FlyoutHelper.AcrylicWorkaround="True"
-                                                        FlyoutPresenterStyle="{StaticResource FlyoutPresenterPadding6Style}"
-                                                        Placement="BottomEdgeAlignedRight">
-                                                        <Grid>
-                                                            <Grid.RowDefinitions>
-                                                                <RowDefinition Height="auto"/>
-                                                                <RowDefinition Height="auto"/>
-                                                                <RowDefinition/>
-                                                            </Grid.RowDefinitions>
-                                                            <Grid ColumnSpacing="6">
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition/>
-                                                                    <ColumnDefinition Width="auto"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <TextBlock Grid.Column="0" Text="{shuxm:ResourceString Name=ViewPageDailyNoteStoredAttendance}"/>
-                                                                <TextBlock Grid.Column="1" Text="{x:Bind DailyNote.DailyTask.StoredAttendance, Mode=OneWay}"/>
-                                                            </Grid>
-                                                            <MenuFlyoutSeparator Grid.Row="1" Margin="-3,4,-3,6"/>
-                                                            <ItemsControl
-                                                                Grid.Row="2"
-                                                                ItemsPanel="{ThemeResource StackPanelSpacing3Template}"
-                                                                ItemsSource="{x:Bind DailyNote.DailyTask.AttendanceRewards, Mode=OneWay}">
-                                                                <ItemsControl.ItemTemplate>
-                                                                    <DataTemplate>
-                                                                        <shuxcc:CardProgressBar
-                                                                            MinWidth="120"
-                                                                            MinHeight="32"
-                                                                            Description="{Binding Progress}"
-                                                                            Header="{Binding StatusFormatted}"
-                                                                            Maximum="2000"
-                                                                            ProgressForeground="{ThemeResource HyperlinkButtonForeground}"
-                                                                            Value="{Binding Progress}"/>
-                                                                    </DataTemplate>
-                                                                </ItemsControl.ItemTemplate>
-                                                            </ItemsControl>
-                                                        </Grid>
+                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                        Width="32"
+                                        Height="32"
+                                        Padding="6"
+                                        Style="{ThemeResource ShimmerButtonStyle}"
+                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteAttendanceStatusInfo}">
+                                        <shuxm:BitmapIconExtension ShowAsMonochrome="True" Source="ms-appx:///Resource/Icon/UI_IconSmall_EP.png"/>
+                                        <wl:LiquidGlassButton.Flyout>
+                                            <Flyout
+                                                essential:FlyoutHelper.AcrylicWorkaround="True"
+                                                FlyoutPresenterStyle="{StaticResource FlyoutPresenterPadding6Style}"
+                                                Placement="BottomEdgeAlignedRight">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="auto"/>
+                                                        <RowDefinition Height="auto"/>
+                                                        <RowDefinition/>
+                                                    </Grid.RowDefinitions>
+                                                    <Grid ColumnSpacing="6">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition/>
+                                                            <ColumnDefinition Width="auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Grid.Column="0" Text="{shuxm:ResourceString Name=ViewPageDailyNoteStoredAttendance}"/>
+                                                        <TextBlock Grid.Column="1" Text="{x:Bind DailyNote.DailyTask.StoredAttendance, Mode=OneWay}"/>
+                                                    </Grid>
+                                                    <MenuFlyoutSeparator Grid.Row="1" Margin="-3,4,-3,6"/>
+                                                    <ItemsControl
+                                                        Grid.Row="2"
+                                                        ItemsPanel="{ThemeResource StackPanelSpacing3Template}"
+                                                        ItemsSource="{x:Bind DailyNote.DailyTask.AttendanceRewards, Mode=OneWay}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <shuxcc:CardProgressBar
+                                                                    MinWidth="120"
+                                                                    MinHeight="32"
+                                                                    Description="{Binding Progress}"
+                                                                    Header="{Binding StatusFormatted}"
+                                                                    Maximum="2000"
+                                                                    ProgressForeground="{ThemeResource HyperlinkButtonForeground}"
+                                                                    Value="{Binding Progress}"/>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </Grid>
 
-                                                    </Flyout>
-                                                </Button.Flyout>
-                                            </Button>
-                                        </cwc:Case>
-                                        <cwc:Case>
-                                            <cwc:Case.Value>
-                                                <x:Int32>1</x:Int32>
-                                            </cwc:Case.Value>
-                                            <wl:LiquidGlassButton
-                                                Width="32"
-                                                Height="32"
-                                                Padding="6"
-                                                shuxcth:ControlMaterialState.IsManaged="True"
-                                                Style="{ThemeResource ShimmerButtonStyle}"
-                                                ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteAttendanceStatusInfo}">
-                                                <shuxm:BitmapIconExtension ShowAsMonochrome="True" Source="ms-appx:///Resource/Icon/UI_IconSmall_EP.png"/>
-                                                <wl:LiquidGlassButton.Flyout>
-                                                    <Flyout
-                                                        essential:FlyoutHelper.AcrylicWorkaround="True"
-                                                        FlyoutPresenterStyle="{StaticResource FlyoutPresenterPadding6Style}"
-                                                        Placement="BottomEdgeAlignedRight">
-                                                        <Grid>
-                                                            <Grid.RowDefinitions>
-                                                                <RowDefinition Height="auto"/>
-                                                                <RowDefinition Height="auto"/>
-                                                                <RowDefinition/>
-                                                            </Grid.RowDefinitions>
-                                                            <Grid ColumnSpacing="6">
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition/>
-                                                                    <ColumnDefinition Width="auto"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <TextBlock Grid.Column="0" Text="{shuxm:ResourceString Name=ViewPageDailyNoteStoredAttendance}"/>
-                                                                <TextBlock Grid.Column="1" Text="{x:Bind DailyNote.DailyTask.StoredAttendance, Mode=OneWay}"/>
-                                                            </Grid>
-                                                            <MenuFlyoutSeparator Grid.Row="1" Margin="-3,4,-3,6"/>
-                                                            <ItemsControl
-                                                                Grid.Row="2"
-                                                                ItemsPanel="{ThemeResource StackPanelSpacing3Template}"
-                                                                ItemsSource="{x:Bind DailyNote.DailyTask.AttendanceRewards, Mode=OneWay}">
-                                                                <ItemsControl.ItemTemplate>
-                                                                    <DataTemplate>
-                                                                        <shuxcc:CardProgressBar
-                                                                            MinWidth="120"
-                                                                            MinHeight="32"
-                                                                            Description="{Binding Progress}"
-                                                                            Header="{Binding StatusFormatted}"
-                                                                            Maximum="2000"
-                                                                            ProgressForeground="{ThemeResource HyperlinkButtonForeground}"
-                                                                            Value="{Binding Progress}"/>
-                                                                    </DataTemplate>
-                                                                </ItemsControl.ItemTemplate>
-                                                            </ItemsControl>
-                                                        </Grid>
-
-                                                    </Flyout>
-                                                </wl:LiquidGlassButton.Flyout>
-                                            </wl:LiquidGlassButton>
-                                        </cwc:Case>
-                                    </cwc:SwitchPresenter>
+                                            </Flyout>
+                                        </wl:LiquidGlassButton.Flyout>
+                                    </wl:LiquidGlassButton>
                                 </StackPanel>
                             </Grid>
                             <Grid Style="{ThemeResource GridShimmerStyle}">
@@ -631,7 +473,7 @@
             <Border Style="{ThemeResource AcrylicSecondaryBorderCardStyle}">
                 <CommandBar DefaultLabelPosition="Right">
                     <AppBarButton
-                        Command="{x:Bind ((shvd:DailyNoteViewModel)DataContext).RefreshCommand, Mode=OneWay}"
+                        Command="{x:Bind DataContext.RefreshCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentRefresh}}"
                         Label="{shuxm:ResourceString Name=ViewPageDailyNoteRefresh}"/>
                     <AppBarButton
@@ -642,14 +484,14 @@
                             <mxi:EventTriggerBehavior EventName="Click">
                                 <shuxba:ShowWebView2WindowAction>
                                     <shuxba:ShowWebView2WindowAction.ContentProvider>
-                                        <shuxvww:MiHoYoJSBridgeWebView2ContentProvider SourceProvider="{x:Bind ((shvd:DailyNoteViewModel)DataContext).VerifyUrlSource, Mode=OneWay}"/>
+                                        <shuxvww:MiHoYoJSBridgeWebView2ContentProvider SourceProvider="{x:Bind DataContext.VerifyUrlSource, Mode=OneWay}"/>
                                     </shuxba:ShowWebView2WindowAction.ContentProvider>
                                 </shuxba:ShowWebView2WindowAction>
                             </mxi:EventTriggerBehavior>
                         </mxi:Interaction.Behaviors>
                     </AppBarButton>
                     <AppBarButton
-                        Command="{x:Bind ((shvd:DailyNoteViewModel)DataContext).TrackCurrentUserAndUidCommand, Mode=OneWay}"
+                        Command="{x:Bind DataContext.TrackCurrentUserAndUidCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentAdd}}"
                         Label="{shuxm:ResourceString Name=ViewPageDailyNoteAddEntry}"/>
                     <AppBarButton Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentSetting}}" Label="{shuxm:ResourceString Name=ViewPageDailyNoteNotificationSetting}">
@@ -689,33 +531,16 @@
                                                     Description="{shuxm:ResourceString Name=ViewPageDailyNoteSettingAutoRefreshDescription}"
                                                     Header="{shuxm:ResourceString Name=ViewPageDailyNoteSettingAutoRefresh}"
                                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE72C;}">
-                                                    <cwc:SwitchPresenter
-                                                        x:Name="GlassPresenter_34702"
+                                                    <wl:LiquidGlassToggleSwitch
                                                         Margin="24,0,0,0"
-                                                        HorizontalContentAlignment="Stretch"
-                                                        VerticalContentAlignment="Stretch"
-                                                        IsTabStop="False"
-                                                        Tag="LiquidGlass:ToggleSwitch"
-                                                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                                                        <cwc:Case>
-                                                            <cwc:Case.Value>
-                                                                <x:Int32>0</x:Int32>
-                                                            </cwc:Case.Value>
-                                                            <ToggleSwitch IsOn="{x:Bind ((shvd:DailyNoteViewModel)DataContext).DailyNoteOptions.IsAutoRefreshEnabled.Value, Mode=TwoWay}"/>
-                                                        </cwc:Case>
-                                                        <cwc:Case>
-                                                            <cwc:Case.Value>
-                                                                <x:Int32>1</x:Int32>
-                                                            </cwc:Case.Value>
-                                                            <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind ((shvd:DailyNoteViewModel)DataContext).DailyNoteOptions.IsAutoRefreshEnabled.Value, Mode=TwoWay}"/>
-                                                        </cwc:Case>
-                                                    </cwc:SwitchPresenter>
+                                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                                        IsOn="{x:Bind DataContext.DailyNoteOptions.IsAutoRefreshEnabled.Value, Mode=TwoWay}"/>
                                                 </cwc:SettingsCard>
                                                 <RadioButtons
                                                     Margin="0,12,0,5"
-                                                    IsEnabled="{x:Bind ((shvd:DailyNoteViewModel)DataContext).DailyNoteOptions.IsAutoRefreshEnabled.Value, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind ((shvd:DailyNoteViewModel)DataContext).DailyNoteOptions.RefreshTimes, Mode=OneWay}"
-                                                    SelectedItem="{x:Bind ((shvd:DailyNoteViewModel)DataContext).DailyNoteOptions.SelectedRefreshTime.Value, Mode=TwoWay}">
+                                                    IsEnabled="{x:Bind DataContext.DailyNoteOptions.IsAutoRefreshEnabled.Value, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind DataContext.DailyNoteOptions.RefreshTimes, Mode=OneWay}"
+                                                    SelectedItem="{x:Bind DataContext.DailyNoteOptions.SelectedRefreshTime.Value, Mode=TwoWay}">
                                                     <RadioButtons.Header>
                                                         <TextBlock
                                                             Margin="1,0,0,0"
@@ -751,60 +576,26 @@
                                                     Description="{shuxm:ResourceString Name=ViewPageDailyNoteSilentModeDescription}"
                                                     Header="{shuxm:ResourceString Name=ViewPageDailyNoteSilentModeHeader}"
                                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE7ED;}">
-                                                    <cwc:SwitchPresenter
-                                                        x:Name="GlassPresenter_38579"
+                                                    <wl:LiquidGlassToggleSwitch
                                                         Margin="24,0,0,0"
-                                                        HorizontalContentAlignment="Stretch"
-                                                        VerticalContentAlignment="Stretch"
-                                                        IsTabStop="False"
-                                                        Tag="LiquidGlass:ToggleSwitch"
-                                                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                                                        <cwc:Case>
-                                                            <cwc:Case.Value>
-                                                                <x:Int32>0</x:Int32>
-                                                            </cwc:Case.Value>
-                                                            <ToggleSwitch IsOn="{x:Bind ((shvd:DailyNoteViewModel)DataContext).DailyNoteOptions.IsSilentWhenPlayingGame.Value, Mode=TwoWay}"/>
-                                                        </cwc:Case>
-                                                        <cwc:Case>
-                                                            <cwc:Case.Value>
-                                                                <x:Int32>1</x:Int32>
-                                                            </cwc:Case.Value>
-                                                            <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind ((shvd:DailyNoteViewModel)DataContext).DailyNoteOptions.IsSilentWhenPlayingGame.Value, Mode=TwoWay}"/>
-                                                        </cwc:Case>
-                                                    </cwc:SwitchPresenter>
+                                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                                        IsOn="{x:Bind DataContext.DailyNoteOptions.IsSilentWhenPlayingGame.Value, Mode=TwoWay}"/>
                                                 </cwc:SettingsCard>
                                                 <cwc:SettingsCard
                                                     Description="{shuxm:ResourceString Name=ViewPageDailyNoteReminderDescription}"
                                                     Header="{shuxm:ResourceString Name=ViewPageDailyNoteReminderHeader}"
                                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xEA8F;}">
-                                                    <cwc:SwitchPresenter
-                                                        x:Name="GlassPresenter_39232"
+                                                    <wl:LiquidGlassToggleSwitch
                                                         Margin="24,0,0,0"
-                                                        HorizontalContentAlignment="Stretch"
-                                                        VerticalContentAlignment="Stretch"
-                                                        IsTabStop="False"
-                                                        Tag="LiquidGlass:ToggleSwitch"
-                                                        Value="{x:Bind shuxcth:MaterialBindingSource.Current.ToggleSwitchMaterial, Mode=OneWay}">
-                                                        <cwc:Case>
-                                                            <cwc:Case.Value>
-                                                                <x:Int32>0</x:Int32>
-                                                            </cwc:Case.Value>
-                                                            <ToggleSwitch IsOn="{x:Bind ((shvd:DailyNoteViewModel)DataContext).DailyNoteOptions.IsReminderNotification.Value, Mode=TwoWay}"/>
-                                                        </cwc:Case>
-                                                        <cwc:Case>
-                                                            <cwc:Case.Value>
-                                                                <x:Int32>1</x:Int32>
-                                                            </cwc:Case.Value>
-                                                            <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind ((shvd:DailyNoteViewModel)DataContext).DailyNoteOptions.IsReminderNotification.Value, Mode=TwoWay}"/>
-                                                        </cwc:Case>
-                                                    </cwc:SwitchPresenter>
+                                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                                        IsOn="{x:Bind DataContext.DailyNoteOptions.IsReminderNotification.Value, Mode=TwoWay}"/>
                                                 </cwc:SettingsCard>
                                             </StackPanel>
                                         </cwc:HeaderedContentControl>
 
                                         <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageDailyNoteDataInteropHeader}"/>
                                         <cwc:SettingsCard
-                                            Command="{x:Bind ((shvd:DailyNoteViewModel)DataContext).ConfigDailyNoteWebhookUrlCommand, Mode=OneWay}"
+                                            Command="{x:Bind DataContext.ConfigDailyNoteWebhookUrlCommand, Mode=OneWay}"
                                             Description="{shuxm:ResourceString Name=ViewPageDailyNoteConfigWebhookDescription}"
                                             Header="{shuxm:ResourceString Name=ViewPageDailyNoteConfigWebhookHeader}"
                                             HeaderIcon="{shuxm:FontIcon Glyph=&#xEE94;}"
@@ -822,7 +613,7 @@
             <ItemsControl
                 Margin="16"
                 ItemTemplate="{StaticResource DailyNoteEntryTemplate}"
-                ItemsSource="{x:Bind ((shvd:DailyNoteViewModel)DataContext).DailyNoteEntries, Mode=OneWay}">
+                ItemsSource="{x:Bind DataContext.DailyNoteEntries, Mode=OneWay}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <shuxcp:UniformStaggeredPanel

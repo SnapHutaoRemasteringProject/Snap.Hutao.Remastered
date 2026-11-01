@@ -13,6 +13,8 @@ public sealed partial class AchievementPage : ScopedPage
         InitializeComponent();
     }
 
+    public new AchievementViewModel DataContext { get => (AchievementViewModel)base.DataContext; set => base.DataContext = value; }
+
     protected override void LoadingOverride()
     {
         InitializeDataContext<AchievementViewModel>();

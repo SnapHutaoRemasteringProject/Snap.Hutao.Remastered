@@ -10,6 +10,8 @@ using Snap.Hutao.Remastered.UI.Windowing.Abstraction;
 using System.Collections.ObjectModel;
 using System.Collections.Immutable;
 using Windows.Graphics;
+using WinUI.LiquidGlass;
+using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Window;
 
@@ -25,7 +27,7 @@ public sealed class SpeedGraphTestWindow : Microsoft.UI.Xaml.Window,
     private readonly TextBlock statusTextBlock = new();
     private readonly TextBlock currentStepTextBlock = new();
     private readonly ListView logListView = new();
-    private readonly Button replayButton = new();
+    private readonly LiquidGlassButton replayButton = new();
     private readonly SpeedGraph demoSpeedGraph = new();
     private bool hasAutoStarted;
     private bool isRunning;
@@ -124,13 +126,15 @@ public sealed class SpeedGraphTestWindow : Microsoft.UI.Xaml.Window,
         Grid.SetRow(buttonPanel, 4);
 
         replayButton.Content = SH.ViewWindowSpeedGraphTestReplay;
+        ControlMaterialState.SetIsManaged(replayButton, true);
         replayButton.Click += ReplayButton_Click;
-        buttonPanel.Children.Add(Snap.Hutao.Remastered.UI.Xaml.Control.Theme.ControlMaterialState.CreateButtonPresenter(replayButton, ReplayButton_Click));
+        buttonPanel.Children.Add(replayButton);
 
-        Button closeButton = new();
+        LiquidGlassButton closeButton = new();
         closeButton.Content = SH.ViewWindowSpeedGraphTestClose;
+        ControlMaterialState.SetIsManaged(closeButton, true);
         closeButton.Click += CloseButton_Click;
-        buttonPanel.Children.Add(Snap.Hutao.Remastered.UI.Xaml.Control.Theme.ControlMaterialState.CreateButtonPresenter(closeButton, CloseButton_Click));
+        buttonPanel.Children.Add(closeButton);
         rootGrid.Children.Add(buttonPanel);
 
         Content = rootGrid;

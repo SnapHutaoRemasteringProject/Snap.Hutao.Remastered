@@ -56,63 +56,13 @@
             ItemTemplate="{StaticResource ParameterDescriptionTemplate}"
             ItemsSource="{x:Bind SelectedItem.Parameters, Mode=OneWay}">
             <shuxc:SizeRestrictedContentControl Margin="0,-8" IsHeightRestricted="False">
-                <cwc:SwitchPresenter
-                    x:Name="GlassPresenter_3562"
-                    HorizontalContentAlignment="Stretch"
-                    VerticalContentAlignment="Stretch"
-                    IsTabStop="False"
-                    Tag="LiquidGlass:ComboBox"
-                    Visibility="{x:Bind LevelComboBox.Visibility, Mode=OneWay}"
-                    Value="{x:Bind shuxcth:MaterialBindingSource.Current.ComboBoxMaterial, Mode=OneWay}">
-                    <cwc:Case>
-                        <cwc:Case.Value>
-                            <x:Int32>0</x:Int32>
-                        </cwc:Case.Value>
-                        <ComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                            x:Name="LevelComboBox"
-                            DataContext="{x:Bind GlassPresenter_3562.DataContext, Mode=OneWay}"
-                            DisplayMemberPath="Level"
-                            ItemsSource="{x:Bind Source, Mode=OneWay}"
-                            shuxcth:ThemeSynchronization.Source="{x:Bind GlassPresenter_3562}"
-                            SelectedItem="{x:Bind SelectedItem, Mode=TwoWay}"
-                            Style="{StaticResource SettingsContentComboBoxStyle}"/>
-                    </cwc:Case>
-                    <cwc:Case>
-                        <cwc:Case.Value>
-                            <x:Int32>1</x:Int32>
-                        </cwc:Case.Value>
-                        <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                            x:Name="LevelComboBoxGlass"
-                            Width="{x:Bind LevelComboBox.Width, Mode=OneWay}"
-                            Height="{x:Bind LevelComboBox.Height, Mode=OneWay}"
-                            MinWidth="{x:Bind LevelComboBox.MinWidth, Mode=OneWay}"
-                            MinHeight="{x:Bind LevelComboBox.MinHeight, Mode=OneWay}"
-                            MaxWidth="{x:Bind LevelComboBox.MaxWidth, Mode=OneWay}"
-                            MaxHeight="{x:Bind LevelComboBox.MaxHeight, Mode=OneWay}"
-                            Padding="{x:Bind shuxcth:ControlMaterialState.ComboBoxPadding(LevelComboBox.Padding), Mode=OneWay}"
-                            shuxcth:ControlMaterialState.IsManaged="True"
-                            shuxcth:ControlMaterialState.NativeControl="{x:Bind LevelComboBox, Mode=OneWay}"
-                            BorderThickness="{x:Bind LevelComboBox.BorderThickness, Mode=OneWay}"
-                            DisplayMemberPath="{x:Bind LevelComboBox.DisplayMemberPath, Mode=OneWay}"
-                            FlowDirection="{x:Bind LevelComboBox.FlowDirection, Mode=OneWay}"
-                            FontFamily="{x:Bind LevelComboBox.FontFamily, Mode=OneWay}"
-                            FontSize="{x:Bind LevelComboBox.FontSize, Mode=OneWay}"
-                            FontStyle="{x:Bind LevelComboBox.FontStyle, Mode=OneWay}"
-                            FontWeight="{x:Bind LevelComboBox.FontWeight, Mode=OneWay}"
-                            Header="{x:Bind LevelComboBox.Header, Mode=OneWay}"
-                            HeaderTemplate="{x:Bind LevelComboBox.HeaderTemplate, Mode=OneWay}"
-                            IsEditable="{x:Bind LevelComboBox.IsEditable, Mode=OneWay}"
-                            IsEnabled="{x:Bind LevelComboBox.IsEnabled, Mode=OneWay}"
-                            IsTextSearchEnabled="{x:Bind LevelComboBox.IsTextSearchEnabled, Mode=OneWay}"
-                            ItemsSource="{x:Bind LevelComboBox.ItemsSource, Mode=OneWay}"
-                            MaxDropDownHeight="{x:Bind LevelComboBox.MaxDropDownHeight, Mode=OneWay}"
-                            PlaceholderText="{x:Bind LevelComboBox.PlaceholderText, Mode=OneWay}"
-                            SelectedIndex="{x:Bind LevelComboBox.SelectedIndex, Mode=TwoWay}"
-                            SelectedValuePath="{x:Bind LevelComboBox.SelectedValuePath, Mode=OneWay}"
-                            Style="{StaticResource SettingsContentComboBoxStyle}"
-                            shuxcth:ControlMaterialState.UsesCompiledEnabledBinding="True"/>
-                    </cwc:Case>
-                </cwc:SwitchPresenter>
+                <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
+                    x:Name="LevelComboBox"
+                    shuxcth:ControlMaterialState.IsManaged="True"
+                    DisplayMemberPath="Level"
+                    ItemsSource="{x:Bind Source, Mode=OneWay}"
+                    SelectedItem="{x:Bind SelectedItem, Mode=TwoWay}"
+                    Style="{StaticResource SettingsContentComboBoxStyle}"/>
             </shuxc:SizeRestrictedContentControl>
         </cwc:SettingsExpander>
     </ScrollViewer>

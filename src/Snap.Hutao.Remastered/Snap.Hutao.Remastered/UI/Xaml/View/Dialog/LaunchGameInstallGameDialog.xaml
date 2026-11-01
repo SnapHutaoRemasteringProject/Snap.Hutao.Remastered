@@ -31,43 +31,19 @@
             HeaderIcon="{shuxm:FontIcon Glyph=&#xED25;}"
             IsClickEnabled="True"/>
 
-        <cwc:SwitchPresenter
-            x:Name="GlassPresenter_1616"
+        <wl:LiquidGlassCheckBox
             VerticalAlignment="Center"
-            HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch"
-            IsTabStop="False"
-            Tag="LiquidGlass:CheckBox"
             Visibility="{x:Bind IsBetaGameInstallEnabled}"
-            Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>0</x:Int32>
-                </cwc:Case.Value>
-                <CheckBox
-                    MinWidth="64"
-                    VerticalAlignment="Center"
-                    Content="Beta Game"
-                    IsChecked="{x:Bind IsBetaGameInstall, Mode=TwoWay}"/>
-            </cwc:Case>
-            <cwc:Case>
-                <cwc:Case.Value>
-                    <x:Int32>1</x:Int32>
-                </cwc:Case.Value>
-                <wl:LiquidGlassCheckBox
-                    MinWidth="64"
-                    VerticalAlignment="Center"
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    Content="Beta Game"
-                    IsChecked="{x:Bind IsBetaGameInstall, Mode=TwoWay}"/>
-            </cwc:Case>
-        </cwc:SwitchPresenter>
+            shuxcth:ControlMaterialState.IsManaged="True"
+            MinWidth="64"
+            Content="Beta Game"
+            IsChecked="{x:Bind IsBetaGameInstall, Mode=TwoWay}"/>
 
         <cwc:SettingsCard
             Width="480"
             Command="{x:Bind PickBetaBuildBodyFilePathCommand}"
             Description="{x:Bind BetaBuildBodyFilePath, Mode=OneWay}"
-            Header="GetBuildWithStokenLogin Body JSON File, Raw Body, including retcode"
+            Header="GetBuildWithStokenLogin Body JSON File, Raw body, including retcode"
             HeaderIcon="{shuxm:FontIcon Glyph=&#xED25;}"
             IsClickEnabled="True"
             Visibility="{x:Bind IsBetaGameInstall, Mode=OneWay}"/>
@@ -87,126 +63,30 @@
             Columns="2"
             Orientation="Horizontal"
             RowSpacing="16">
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_2914"
+            <wl:LiquidGlassCheckBox
                 VerticalAlignment="Center"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:CheckBox"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
-                    <CheckBox
-                        MinWidth="64"
-                        VerticalAlignment="Center"
-                        Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceChinese}"
-                        IsChecked="{x:Bind Chinese, Mode=TwoWay}"/>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
-                    <wl:LiquidGlassCheckBox
-                        MinWidth="64"
-                        VerticalAlignment="Center"
-                        shuxcth:ControlMaterialState.IsManaged="True"
-                        Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceChinese}"
-                        IsChecked="{x:Bind Chinese, Mode=TwoWay}"/>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_3157"
+                shuxcth:ControlMaterialState.IsManaged="True"
+                MinWidth="64"
+                Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceChinese}"
+                IsChecked="{x:Bind Chinese, Mode=TwoWay}"/>
+            <wl:LiquidGlassCheckBox
                 VerticalAlignment="Center"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:CheckBox"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
-                    <CheckBox
-                        MinWidth="64"
-                        VerticalAlignment="Center"
-                        Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceEnglish}"
-                        IsChecked="{x:Bind English, Mode=TwoWay}"/>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
-                    <wl:LiquidGlassCheckBox
-                        MinWidth="64"
-                        VerticalAlignment="Center"
-                        shuxcth:ControlMaterialState.IsManaged="True"
-                        Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceEnglish}"
-                        IsChecked="{x:Bind English, Mode=TwoWay}"/>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_3400"
+                shuxcth:ControlMaterialState.IsManaged="True"
+                MinWidth="64"
+                Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceEnglish}"
+                IsChecked="{x:Bind English, Mode=TwoWay}"/>
+            <wl:LiquidGlassCheckBox
                 VerticalAlignment="Center"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:CheckBox"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
-                    <CheckBox
-                        MinWidth="64"
-                        VerticalAlignment="Center"
-                        Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceJapanese}"
-                        IsChecked="{x:Bind Japanese, Mode=TwoWay}"/>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
-                    <wl:LiquidGlassCheckBox
-                        MinWidth="64"
-                        VerticalAlignment="Center"
-                        shuxcth:ControlMaterialState.IsManaged="True"
-                        Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceJapanese}"
-                        IsChecked="{x:Bind Japanese, Mode=TwoWay}"/>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
-            <cwc:SwitchPresenter
-                x:Name="GlassPresenter_3645"
+                shuxcth:ControlMaterialState.IsManaged="True"
+                MinWidth="64"
+                Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceJapanese}"
+                IsChecked="{x:Bind Japanese, Mode=TwoWay}"/>
+            <wl:LiquidGlassCheckBox
                 VerticalAlignment="Center"
-                HorizontalContentAlignment="Stretch"
-                VerticalContentAlignment="Stretch"
-                IsTabStop="False"
-                Tag="LiquidGlass:CheckBox"
-                Value="{x:Bind shuxcth:MaterialBindingSource.Current.CheckBoxMaterial, Mode=OneWay}">
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>0</x:Int32>
-                    </cwc:Case.Value>
-                    <CheckBox
-                        MinWidth="64"
-                        VerticalAlignment="Center"
-                        Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceKorean}"
-                        IsChecked="{x:Bind Korean, Mode=TwoWay}"/>
-                </cwc:Case>
-                <cwc:Case>
-                    <cwc:Case.Value>
-                        <x:Int32>1</x:Int32>
-                    </cwc:Case.Value>
-                    <wl:LiquidGlassCheckBox
-                        MinWidth="64"
-                        VerticalAlignment="Center"
-                        shuxcth:ControlMaterialState.IsManaged="True"
-                        Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceKorean}"
-                        IsChecked="{x:Bind Korean, Mode=TwoWay}"/>
-                </cwc:Case>
-            </cwc:SwitchPresenter>
+                shuxcth:ControlMaterialState.IsManaged="True"
+                MinWidth="64"
+                Content="{shuxm:ResourceString Name=ViewDialogGameInstallVoiceKorean}"
+                IsChecked="{x:Bind Korean, Mode=TwoWay}"/>
         </cwc:UniformGrid>
     </StackPanel>
 </ContentDialog>

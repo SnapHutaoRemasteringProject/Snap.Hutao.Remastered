@@ -1,4 +1,4 @@
-// Copyright (c) Millennium-Science-Technology-R-D-Inst. All rights reserved.
+// Copyright (c) Millennium-Science-Technology-R&D-Inst. All rights reserved.
 // Licensed under the MIT license.
 
 using Microsoft.UI.Xaml;
@@ -14,8 +14,6 @@ public partial class MaterialCardButton : ContentControl
 {
     private readonly Button nativeButton = new();
     private readonly LiquidGlassButton glassButton = new();
-    private ControlMaterialState? materialState;
-    private long materialToken;
 
     public static readonly DependencyProperty BodyProperty = DependencyProperty.Register(
         nameof(Body), typeof(UIElement), typeof(MaterialCardButton), new PropertyMetadata(null, OnBodyChanged));
@@ -76,23 +74,20 @@ public partial class MaterialCardButton : ContentControl
 
     private void OnLoaded(object sender, RoutedEventArgs args)
     {
-        DetachMaterialState();
-        materialState = MaterialBindingSource.Current;
-        WeakReference<MaterialCardButton> weak = new(this);
-        materialToken = materialState.RegisterPropertyChangedCallback(ControlMaterialState.CardMaterialProperty, (_, _) =>
-        {
-            if (weak.TryGetTarget(out MaterialCardButton? card) && card.IsLoaded) card.MoveBody();
-        });
+        ControlMaterialState.MaterialChanged -= OnMaterialChanged;
+        ControlMaterialState.MaterialChanged += OnMaterialChanged;
         SynchronizeSurfaceCorners();
         MoveBody();
     }
 
-    private void OnUnloaded(object sender, RoutedEventArgs args) => DetachMaterialState();
-
-    private void DetachMaterialState()
+    private void OnMaterialChanged()
     {
-        if (materialState is not null) materialState.UnregisterPropertyChangedCallback(ControlMaterialState.CardMaterialProperty, materialToken);
-        materialState = null;
+        if (IsLoaded) MoveBody();
+    }
+
+    private void OnUnloaded(object sender, RoutedEventArgs args)
+    {
+        ControlMaterialState.MaterialChanged -= OnMaterialChanged;
     }
 
     private void SynchronizeSurfaceCorners()
@@ -109,7 +104,8 @@ public partial class MaterialCardButton : ContentControl
 
     private void MoveBody()
     {
-        Button active = materialState?.CardMaterial is 1 ? glassButton : nativeButton;
+        bool glass = ControlMaterialState.IsGlassMaterial && MaterialBindingSource.Current.GetTypeEnabled("Card");
+        Button active = glass ? glassButton : nativeButton;
         if (ReferenceEquals(Content, active) && ReferenceEquals(active.Content, Body)) return;
         nativeButton.Content = null;
         glassButton.Content = null;

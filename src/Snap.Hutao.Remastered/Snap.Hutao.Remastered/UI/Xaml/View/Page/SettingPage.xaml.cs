@@ -23,4 +23,6 @@ public sealed partial class SettingPage : ScopedPage
 
     private void OpenGlassControls(object sender, RoutedEventArgs args) => LiquidGlassSettingsWindows.OpenControls();
     private void OpenGlassEffects(object sender, RoutedEventArgs args) => LiquidGlassSettingsWindows.OpenEffects();
+
+    public new SettingViewModel DataContext { get => (SettingViewModel)base.DataContext; set => base.DataContext = value; }
 }

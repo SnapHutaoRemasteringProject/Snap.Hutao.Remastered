@@ -17,4 +17,6 @@ public sealed partial class WikiWeaponPage : ScopedPage
     {
         InitializeDataContext<WikiWeaponViewModel>();
     }
+
+    public new WikiWeaponViewModel DataContext { get => (WikiWeaponViewModel)base.DataContext; set => base.DataContext = value; }
 }
