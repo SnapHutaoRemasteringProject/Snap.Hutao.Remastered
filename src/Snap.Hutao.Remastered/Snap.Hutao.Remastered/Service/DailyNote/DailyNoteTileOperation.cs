@@ -30,10 +30,6 @@ internal sealed partial class DailyNoteTileOperation
     private const string IconExpeditionUrl = "https://api.snaphutaorp.org/static/raw/ItemIcon/UI_ItemIcon_105005.png";
     private const string IconTransformerUrl = "https://api.snaphutaorp.org/static/raw/ItemIcon/UI_ItemIcon_220021.png";
 
-    // 通知队列里两条通知的 Tag：一条让中号磁贴回退显示应用图标，一条显示便笺摘要。
-    private const string LogoNotificationTag = "DailyNoteLogo";
-    private const string ContentNotificationTag = "DailyNoteContent";
-
     private static readonly (string Url, string FileName)[] IconEntries =
     [
         (IconResinUrl, "resin.png"),
@@ -259,23 +255,15 @@ internal sealed partial class DailyNoteTileOperation
         // 磁贴更新只是锦上添花，任何一步失败都不应该让调用方的数据库写入回滚或抛出。
         try
         {
-            TileUpdater updater = TileUpdateManager.CreateTileUpdaterForApplication();
-            updater.Clear();
+            string tileXml = entries.Count == 0
+                ? BuildBackgroundOnlyTileXml()
+                : BuildTileXml(entries);
 
-            if (entries.Count == 0)
-            {
-                updater.Update(CreateTileNotification(BuildBackgroundOnlyTileXml(), ContentNotificationTag));
-                return true;
-            }
+            XmlDocument document = new();
+            document.LoadXml(tileXml);
 
-            // 中号磁贴只有 150x150，塞不下完整便笺，改为「应用默认图标」与「便笺摘要」交替滚动。
-            // 通知队列放两条 Tag 互斥的通知循环播放：
-            //   - LogoNotificationTag 那条不提供 TileMedium 绑定，中号回退到清单里的应用默认图标；
-            //   - ContentNotificationTag 那条三档尺寸齐全，中号显示便笺摘要。
-            // 宽号与大号两条都带完整便笺，因此始终保持便笺展示，不会闪回图标。
-            updater.EnableNotificationQueue(true);
-            updater.Update(CreateTileNotification(BuildTileXml(entries, includeMediumBinding: false), LogoNotificationTag));
-            updater.Update(CreateTileNotification(BuildTileXml(entries, includeMediumBinding: true), ContentNotificationTag));
+            TileNotification notification = new(document);
+            TileUpdateManager.CreateTileUpdaterForApplication().Update(notification);
             return true;
         }
         catch (Exception ex)
@@ -283,17 +271,6 @@ internal sealed partial class DailyNoteTileOperation
             SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Update primary tile failed", "DailyNoteTileOperation", [("error", ex.GetType().Name)]));
             return false;
         }
-    }
-
-    private static TileNotification CreateTileNotification(string tileXml, string tag)
-    {
-        XmlDocument document = new();
-        document.LoadXml(tileXml);
-
-        return new(document)
-        {
-            Tag = tag,
-        };
     }
 
     private string? ResolveBackgroundImageSource(bool isWide)
@@ -334,14 +311,14 @@ internal sealed partial class DailyNoteTileOperation
             """;
     }
 
-    private string BuildTileXml(IReadOnlyCollection<DailyNoteEntry> entries, bool includeMediumBinding)
+    private string BuildTileXml(IReadOnlyCollection<DailyNoteEntry> entries)
     {
         return entries.Count == 1
-            ? BuildSingleEntryXml(entries.First(), includeMediumBinding)
-            : BuildMultipleEntriesXml(entries, includeMediumBinding);
+            ? BuildSingleEntryXml(entries.First())
+            : BuildMultipleEntriesXml(entries);
     }
 
-    private string BuildSingleEntryXml(DailyNoteEntry entry, bool includeMediumBinding)
+    private string BuildSingleEntryXml(DailyNoteEntry entry)
     {
         if (entry.DailyNote is not { } dailyNote)
         {
@@ -395,23 +372,17 @@ internal sealed partial class DailyNoteTileOperation
         string? bg = ResolveBackgroundImageSource(true);
         string? bgSquare = ResolveBackgroundImageSource(false);
 
-        // 中号磁贴只有 150x150，只放树脂一行，其余明细留给宽号/大号。
-        string mediumBinding = includeMediumBinding
-            ? BuildBindingXml("TileMedium", bgSquare, BuildIconRow(IconResinUrl, dailyNote.FormattedResin, "base"))
-            : string.Empty;
-
         return $"""
             <tile>
                 <visual version="3" addImageQuery="false">
-                    {mediumBinding}
-                    {BuildBindingXml("TileWide", bg, BuildSpacedRows(allRows))}
+                    {BuildBindingXml("TileWide", bg, allRows)}
                     {BuildBindingXml("TileLarge", bgSquare, allRows)}
                 </visual>
             </tile>
             """;
     }
 
-    private string BuildMultipleEntriesXml(IReadOnlyCollection<DailyNoteEntry> entries, bool includeMediumBinding)
+    private string BuildMultipleEntriesXml(IReadOnlyCollection<DailyNoteEntry> entries)
     {
         List<string> rows = [];
         foreach (DailyNoteEntry entry in entries)
@@ -430,15 +401,9 @@ internal sealed partial class DailyNoteTileOperation
         string? bg = ResolveBackgroundImageSource(true);
         string? bgSquare = ResolveBackgroundImageSource(false);
 
-        // 中号磁贴只显示首个账户的树脂，避免多账户挤在一起看不清。
-        string mediumBinding = includeMediumBinding && rows.Count > 0
-            ? BuildBindingXml("TileMedium", bgSquare, rows[0])
-            : string.Empty;
-
         return $"""
             <tile>
                 <visual version="3" addImageQuery="false">
-                    {mediumBinding}
                     {BuildBindingXml("TileWide", bg, allRows)}
                     {BuildBindingXml("TileLarge", bgSquare, allRows)}
                 </visual>
@@ -455,7 +420,7 @@ internal sealed partial class DailyNoteTileOperation
         }
 
         StringBuilder sb = new();
-        sb.Append($"<binding template=\"{template}\">");
+        sb.Append($"        <binding template=\"{template}\">");
 
         if (!string.IsNullOrEmpty(background))
         {
@@ -467,18 +432,13 @@ internal sealed partial class DailyNoteTileOperation
         return sb.ToString();
     }
 
-    private static string BuildSpacedRows(string rows)
-    {
-        return rows.Replace("</group><group>", "</group><text hint-style=\"captionSubtle\"> </text><group>");
-    }
-
     private static string BuildIconRow(string icon, string text, string hintStyle)
     {
         string iconSource = ResolveIconSource(icon) ?? icon;
         return $"""
             <group>
-                <subgroup hint-weight="1"><image src="{iconSource}" hint-crop="circle"/></subgroup>
-                <subgroup hint-weight="9"><text hint-style="{hintStyle}" hint-wrap="true">{SecurityElement.Escape(text)}</text></subgroup>
+                <subgroup hint-weight="1" hint-textStacking="center"><image src="{iconSource}" hint-crop="circle"/></subgroup>
+                <subgroup hint-weight="9" hint-textStacking="center"><text hint-style="{hintStyle}" hint-wrap="true">{SecurityElement.Escape(text)}</text></subgroup>
             </group>
             """;
     }
