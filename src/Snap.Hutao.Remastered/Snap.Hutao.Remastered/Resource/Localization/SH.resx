@@ -935,6 +935,9 @@
   <data name="ServiceDailyNoteNotifierExpeditionHint" xml:space="preserve">
     <value>探索派遣已完成</value>
   </data>
+  <data name="ServiceDailyNoteNotifierExpeditionCount" xml:space="preserve">
+    <value>探索派遣 {0}/{1}</value>
+  </data>
   <data name="ServiceDailyNoteNotifierHomeCoin" xml:space="preserve">
     <value>洞天宝钱</value>
   </data>
@@ -2033,6 +2036,24 @@
   <data name="ViewModelDailyNoteRequestProgressTitle" xml:space="preserve">
     <value>正在获取实时便笺信息，请稍候</value>
   </data>
+  <data name="ViewModelDailyNotePinTileComplete" xml:space="preserve">
+    <value>磁贴已固定</value>
+  </data>
+  <data name="ViewModelDailyNotePinTileFailed" xml:space="preserve">
+    <value>固定磁贴失败</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundFailed" xml:space="preserve">
+    <value>设置磁贴背景失败，请稍后重试</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundLoadFailed" xml:space="preserve">
+    <value>加载磁贴背景角色列表失败</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundSet" xml:space="preserve">
+    <value>磁贴背景设置成功</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundCleared" xml:space="preserve">
+    <value>磁贴背景已清除</value>
+  </data>
   <data name="ViewModelExportSuccessMessage" xml:space="preserve">
     <value>成功保存到指定位置</value>
   </data>
@@ -2692,6 +2713,21 @@
   </data>
   <data name="ViewPageDailyNoteRemoveToolTip" xml:space="preserve">
     <value>移除角色</value>
+  </data>
+  <data name="ViewPageDailyNotePinTileToolTip" xml:space="preserve">
+    <value>固定到开始菜单</value>
+  </data>
+  <data name="ViewPageDailyNoteTileBackgroundDescription" xml:space="preserve">
+    <value>选择角色后，其名刺图片将用作开始菜单磁贴背景。</value>
+  </data>
+  <data name="ViewPageDailyNoteTileBackgroundHeader" xml:space="preserve">
+    <value>磁贴背景</value>
+  </data>
+  <data name="ViewPageDailyNoteTileBackgroundNone" xml:space="preserve">
+    <value>（无背景）</value>
+  </data>
+  <data name="ViewPageDailyNoteUnpinTileToolTip" xml:space="preserve">
+    <value>取消磁贴固定</value>
   </data>
   <data name="ViewPageDailyNoteResinDiscountUsed" xml:space="preserve">
     <value>本周已消耗减半次数</value>
