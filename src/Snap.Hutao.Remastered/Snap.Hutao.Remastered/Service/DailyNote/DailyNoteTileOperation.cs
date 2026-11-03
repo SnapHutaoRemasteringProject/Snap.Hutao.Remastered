@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core;
+using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Service.Abstraction;
 using System.Drawing;
@@ -251,24 +252,33 @@ internal sealed partial class DailyNoteTileOperation
 
         PrepareIconsAsync().SafeForget();
 
-        TileUpdater updater = TileUpdateManager.CreateTileUpdaterForApplication();
-        updater.Clear();
-
-        if (entries.Count == 0)
+        // 磁贴更新只是锦上添花，任何一步失败都不应该让调用方的数据库写入回滚或抛出。
+        try
         {
-            updater.Update(CreateTileNotification(BuildBackgroundOnlyTileXml(), ContentNotificationTag));
+            TileUpdater updater = TileUpdateManager.CreateTileUpdaterForApplication();
+            updater.Clear();
+
+            if (entries.Count == 0)
+            {
+                updater.Update(CreateTileNotification(BuildBackgroundOnlyTileXml(), ContentNotificationTag));
+                return true;
+            }
+
+            // 中号磁贴只有 150x150，塞不下完整便笺，改为「应用默认图标」与「便笺摘要」交替滚动。
+            // 通知队列放两条 Tag 互斥的通知循环播放：
+            //   - LogoNotificationTag 那条不提供 TileMedium 绑定，中号回退到清单里的应用默认图标；
+            //   - ContentNotificationTag 那条三档尺寸齐全，中号显示便笺摘要。
+            // 宽号与大号两条都带完整便笺，因此始终保持便笺展示，不会闪回图标。
+            updater.EnableNotificationQueue(true);
+            updater.Update(CreateTileNotification(BuildTileXml(entries, includeMediumBinding: false), LogoNotificationTag));
+            updater.Update(CreateTileNotification(BuildTileXml(entries, includeMediumBinding: true), ContentNotificationTag));
             return true;
         }
-
-        // 中号磁贴只有 150x150，塞不下完整便笺，改为「应用默认图标」与「便笺摘要」交替滚动。
-        // 通知队列放两条 Tag 互斥的通知循环播放：
-        //   - LogoNotificationTag 那条不提供 TileMedium 绑定，中号回退到清单里的应用默认图标；
-        //   - ContentNotificationTag 那条三档尺寸齐全，中号显示便笺摘要。
-        // 宽号与大号两条都带完整便笺，因此始终保持便笺展示，不会闪回图标。
-        updater.EnableNotificationQueue(true);
-        updater.Update(CreateTileNotification(BuildTileXml(entries, includeMediumBinding: false), LogoNotificationTag));
-        updater.Update(CreateTileNotification(BuildTileXml(entries, includeMediumBinding: true), ContentNotificationTag));
-        return true;
+        catch (Exception ex)
+        {
+            SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Update primary tile failed", "DailyNoteTileOperation", [("error", ex.GetType().Name)]));
+            return false;
+        }
     }
 
     private static TileNotification CreateTileNotification(string tileXml, string tag)
