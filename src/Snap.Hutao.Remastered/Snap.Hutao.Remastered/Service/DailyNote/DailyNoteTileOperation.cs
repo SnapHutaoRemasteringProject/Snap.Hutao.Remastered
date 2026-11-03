@@ -50,14 +50,18 @@ internal sealed partial class DailyNoteTileOperation
     [GeneratedConstructor]
     public partial DailyNoteTileOperation(IServiceProvider serviceProvider);
 
+    /// <summary>
+    /// 磁贴通知的图片只能通过 ms-appx:///、ms-appdata:///local/ 或 http(s):// 引用，
+    /// 没有 localcache 协议，因此缓存目录必须落在 LocalFolder 而不是 LocalCacheFolder。
+    /// </summary>
     private static string BackgroundCacheDirectory
     {
-        get => Path.Combine(HutaoRuntime.LocalCacheDirectory, "TileBackgrounds");
+        get => Path.Combine(HutaoRuntime.LocalFolderDirectory, "TileBackgrounds");
     }
 
     private static string IconCacheDirectory
     {
-        get => Path.Combine(HutaoRuntime.LocalCacheDirectory, "TileIcons");
+        get => Path.Combine(HutaoRuntime.LocalFolderDirectory, "TileIcons");
     }
 
     /// <summary>
@@ -235,7 +239,7 @@ internal sealed partial class DailyNoteTileOperation
             {
                 string path = Path.Combine(IconCacheDirectory, fileName);
                 return File.Exists(path)
-                    ? $"ms-appdata:///localcache/TileIcons/{fileName}"
+                    ? $"ms-appdata:///local/TileIcons/{fileName}"
                     : url;
             }
         }
@@ -303,7 +307,7 @@ internal sealed partial class DailyNoteTileOperation
         string suffix = isWide ? "_wide" : "_large";
         string path = Path.Combine(BackgroundCacheDirectory, $"{avatarId}{suffix}.png");
         return File.Exists(path)
-            ? $"ms-appdata:///localcache/TileBackgrounds/{avatarId}{suffix}.png"
+            ? $"ms-appdata:///local/TileBackgrounds/{avatarId}{suffix}.png"
             : null;
     }
 
