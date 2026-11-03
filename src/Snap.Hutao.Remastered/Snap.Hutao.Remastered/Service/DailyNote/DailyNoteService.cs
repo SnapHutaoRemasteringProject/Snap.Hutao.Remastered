@@ -19,6 +19,7 @@ namespace Snap.Hutao.Remastered.Service.DailyNote;
 public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<UserRemovedMessage>
 {
     private readonly DailyNoteNotificationOperation dailyNoteNotificationOperation;
+    private readonly DailyNoteTileOperation dailyNoteTileOperation;
     private readonly IDailyNoteRepository dailyNoteRepository;
     private readonly DailyNoteOptions dailyNoteOptions;
     private readonly IServiceProvider serviceProvider;
@@ -73,6 +74,7 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
 
         await taskContext.SwitchToMainThreadAsync();
         entries?.Add(newEntry);
+        dailyNoteTileOperation.TryUpdatePrimaryTile(entries ?? []);
     }
 
     public async ValueTask<ObservableCollection<DailyNoteEntry>> GetDailyNoteEntryCollectionAsync(DailyNoteMetadataContext context, bool forceRefresh = false, CancellationToken token = default)
@@ -107,6 +109,7 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
         await taskContext.SwitchToMainThreadAsync();
         ArgumentNullException.ThrowIfNull(entries);
         entries.Remove(entry);
+        dailyNoteTileOperation.TryUpdatePrimaryTile(entries);
 
         await taskContext.SwitchToBackgroundAsync();
         dailyNoteRepository.DeleteDailyNoteEntryById(entry.InnerId);
@@ -181,6 +184,12 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
                 // After everything is done, we copy the updated entry to the cached entry.
                 await taskContext.SwitchToMainThreadAsync();
                 dbEntry.CopyTo(cachedEntry);
+            }
+
+            await taskContext.SwitchToMainThreadAsync();
+            if (entries is { } localEntries)
+            {
+                dailyNoteTileOperation.TryUpdatePrimaryTile(localEntries);
             }
         }
     }

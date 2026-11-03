@@ -10,6 +10,8 @@ using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Service;
+using Snap.Hutao.Remastered.Service.AvatarInfo;
+using Snap.Hutao.Remastered.Service.AvatarInfo.Factory;
 using Snap.Hutao.Remastered.Service.DailyNote;
 using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
@@ -19,7 +21,9 @@ using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.UI.Xaml.View.Page;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
+using Snap.Hutao.Remastered.ViewModel.AvatarProperty;
 using Snap.Hutao.Remastered.ViewModel.Game;
+using Snap.Hutao.Remastered.ViewModel.User;
 using System.Collections.ObjectModel;
 
 namespace Snap.Hutao.Remastered.ViewModel.DailyNote;
@@ -36,6 +40,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     private readonly ITaskContext taskContext;
     private readonly IUserService userService;
     private readonly IMessenger messenger;
+    private readonly IAvatarInfoService avatarInfoService;
 
     private DailyNoteMetadataContext? metadataContext;
 
@@ -48,6 +53,14 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
 
     public partial AppOptions AppOptions { get; }
 
+    private partial DailyNoteTileOperation DailyNoteTileOperation { get; }
+
+    [ObservableProperty]
+    public partial ObservableCollection<TileBackgroundAvatarItem> TileBackgroundAvatars { get; set; } = [];
+
+    [ObservableProperty]
+    public partial TileBackgroundAvatarItem? SelectedTileBackgroundAvatar { get; set; }
+
     public IJSBridgeUriSourceProvider VerifyUrlSource { get; } = new DailyJSBridgeUriSourceProvider();
 
     [ObservableProperty]
@@ -55,6 +68,8 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
 
     [ObservableProperty]
     public partial ObservableCollection<DailyNoteEntry>? DailyNoteEntries { get; set; }
+
+    private bool _suppressSelectionChange;
 
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
@@ -74,6 +89,8 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
             await taskContext.SwitchToMainThreadAsync();
             Users = users;
             DailyNoteEntries = entries;
+
+            LoadTileBackgroundAvatarsAsync().SafeForget();
             return true;
         }
         catch (HutaoException ex)
@@ -170,6 +187,167 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
             await taskContext.SwitchToMainThreadAsync();
             DailyNoteOptions.WebhookUrl.Value = url;
             messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNoteConfigWebhookUrlComplete));
+        }
+    }
+
+    [Command("LoadTileBackgroundAvatarsCommand")]
+    private async Task LoadTileBackgroundAvatarsAsync()
+    {
+        await taskContext.SwitchToBackgroundAsync();
+        try
+        {
+            await PrivateLoadTileBackgroundAvatarsAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Load tile background avatars failed", "DailyNoteViewModel", [("error", ex.GetType().Name)]));
+            await taskContext.SwitchToMainThreadAsync();
+            messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundLoadFailed, ex));
+        }
+    }
+
+    private async ValueTask PrivateLoadTileBackgroundAvatarsAsync()
+    {
+        UserAndUid? userAndUid = await userService.GetCurrentUserAndUidAsync().ConfigureAwait(false);
+        if (userAndUid is null)
+        {
+            return;
+        }
+
+        SummaryFactoryMetadataContext summaryContext = await metadataService.GetContextAsync<SummaryFactoryMetadataContext>().ConfigureAwait(false);
+        Summary? summary = await avatarInfoService.GetSummaryAsync(summaryContext, userAndUid, RefreshOptionKind.None).ConfigureAwait(false);
+
+        ObservableCollection<TileBackgroundAvatarItem> items = [];
+        items.Add(new TileBackgroundAvatarItem
+        {
+            Uid = string.Empty,
+            AvatarId = string.Empty,
+            Name = SH.ViewPageDailyNoteTileBackgroundNone,
+        });
+
+        if (summary is not null)
+        {
+            foreach (AvatarView avatar in summary.Avatars)
+            {
+                items.Add(new TileBackgroundAvatarItem
+                {
+                    Uid = userAndUid.Uid.Value,
+                    AvatarId = avatar.Id.ToString(),
+                    Name = avatar.Name,
+                    NameCard = avatar.NameCard,
+                });
+            }
+        }
+
+        string? selectedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
+        await taskContext.SwitchToMainThreadAsync();
+        _suppressSelectionChange = true;
+        TileBackgroundAvatars = items;
+        SelectedTileBackgroundAvatar = items.FirstOrDefault(i => i.AvatarId == selectedAvatarId);
+        _suppressSelectionChange = false;
+    }
+
+    [Command("SelectTileBackgroundCommand")]
+    private async Task SelectTileBackgroundAsync(TileBackgroundAvatarItem? item)
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Select tile background avatar", "DailyNoteViewModel.Command", [("avatarId", item?.AvatarId ?? "<null>")]));
+
+        if (item is null)
+        {
+            return;
+        }
+
+        // 「无背景」占位项
+        if (string.IsNullOrEmpty(item.AvatarId))
+        {
+            DailyNoteTileOperation.ClearBackground();
+            DailyNoteOptions.TileBackgroundAvatarId.Value = string.Empty;
+            messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteTileBackgroundCleared));
+            return;
+        }
+
+        TileBackgroundAvatarItem? previous = SelectedTileBackgroundAvatar;
+        try
+        {
+            bool ok = await DailyNoteTileOperation.TrySetBackgroundAsync(item.Uid, item.AvatarId, item.NameCard).ConfigureAwait(false);
+
+            await taskContext.SwitchToMainThreadAsync();
+            if (ok)
+            {
+                if (DailyNoteEntries is { Count: > 0 } entries)
+                {
+                    DailyNoteTileOperation.TryUpdatePrimaryTile(entries);
+                }
+
+                messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteTileBackgroundSet));
+            }
+            else
+            {
+                messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundFailed));
+            }
+        }
+        catch
+        {
+            await taskContext.SwitchToMainThreadAsync();
+            if (previous is not null)
+            {
+                _suppressSelectionChange = true;
+                SelectedTileBackgroundAvatar = previous;
+                _suppressSelectionChange = false;
+            }
+
+            messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundFailed));
+        }
+    }
+
+    [Command("PinTileCommand")]
+    private void PinTile()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Pin daily note tile", "DailyNoteViewModel.Command"));
+
+        if (DailyNoteEntries is { Count: > 0 } entries)
+        {
+            if (DailyNoteTileOperation.TryUpdatePrimaryTile(entries))
+            {
+                messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNotePinTileComplete));
+            }
+            else
+            {
+                messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNotePinTileFailed));
+            }
+        }
+        else
+        {
+            messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNotePinTileFailed));
+        }
+    }
+
+    [Command("UnpinTileCommand")]
+    private void UnpinTile()
+    {
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Unpin daily note tile", "DailyNoteViewModel.Command"));
+
+        DailyNoteTileOperation.ClearBackground();
+        if (DailyNoteTileOperation.TryUpdatePrimaryTile([]))
+        {
+            messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNotePinTileComplete));
+        }
+        else
+        {
+            messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNotePinTileFailed));
+        }
+    }
+
+    partial void OnSelectedTileBackgroundAvatarChanged(TileBackgroundAvatarItem? value)
+    {
+        if (_suppressSelectionChange)
+        {
+            return;
+        }
+
+        if (value is not null && SelectTileBackgroundCommand.CanExecute(value))
+        {
+            SelectTileBackgroundCommand.Execute(value);
         }
     }
 }

@@ -494,6 +494,14 @@
                         Command="{x:Bind DataContext.TrackCurrentUserAndUidCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentAdd}}"
                         Label="{shuxm:ResourceString Name=ViewPageDailyNoteAddEntry}"/>
+                    <AppBarButton
+                        Command="{x:Bind DataContext.PinTileCommand, Mode=OneWay}"
+                        Icon="{shuxm:FontIcon Glyph=&#xE840;}"
+                        Label="{shuxm:ResourceString Name=ViewPageDailyNotePinTileToolTip}"/>
+                    <AppBarButton
+                        Command="{x:Bind DataContext.UnpinTileCommand, Mode=OneWay}"
+                        Icon="{shuxm:FontIcon Glyph=&#xEC9F;}"
+                        Label="{shuxm:ResourceString Name=ViewPageDailyNoteUnpinTileToolTip}"/>
                     <AppBarButton Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentSetting}}" Label="{shuxm:ResourceString Name=ViewPageDailyNoteNotificationSetting}">
                         <AppBarButton.Flyout>
                             <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" Placement="BottomEdgeAlignedRight">
@@ -600,6 +608,21 @@
                                             Header="{shuxm:ResourceString Name=ViewPageDailyNoteConfigWebhookHeader}"
                                             HeaderIcon="{shuxm:FontIcon Glyph=&#xEE94;}"
                                             IsClickEnabled="True"/>
+
+                                        <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageDailyNoteTileBackgroundHeader}"/>
+                                        <cwc:SettingsExpander
+                                            Description="{shuxm:ResourceString Name=ViewPageDailyNoteTileBackgroundDescription}"
+                                            Header="{shuxm:ResourceString Name=ViewPageDailyNoteTileBackgroundHeader}"
+                                            HeaderIcon="{shuxm:FontIcon Glyph=&#xE8F1;}"
+                                            IsExpanded="False">
+                                            <ComboBox
+                                                x:Name="TileBackgroundList"
+                                                Margin="24,0,0,0"
+                                                MinWidth="200"
+                                                DisplayMemberPath="Name"
+                                                ItemsSource="{x:Bind DataContext.TileBackgroundAvatars, Mode=OneWay}"
+                                                SelectedItem="{x:Bind DataContext.SelectedTileBackgroundAvatar, Mode=TwoWay}"/>
+                                        </cwc:SettingsExpander>
                                     </StackPanel>
                                 </ScrollViewer>
                             </Flyout>
