@@ -121,15 +121,16 @@ internal sealed partial class DailyNoteTileOperation
     }
 
     /// <summary>
-    /// 准备图标缓存（幂等）。
+    /// 准备图标缓存（幂等）。失败时清空缓存的任务，以便下次调用重新尝试。
     /// </summary>
     public Task PrepareIconsAsync()
     {
-        if (iconsPreparedTask is null)
+        if (iconsPreparedTask is { IsFaulted: false, IsCanceled: false })
         {
-            iconsPreparedTask = PrepareIconsCoreAsync();
+            return iconsPreparedTask;
         }
 
+        iconsPreparedTask = PrepareIconsCoreAsync();
         return iconsPreparedTask;
     }
 
@@ -146,10 +147,16 @@ internal sealed partial class DailyNoteTileOperation
 
     private static async Task DownloadAndTrimAsync(HttpClient httpClient, (string Url, string FileName) entry, string directory)
     {
+        string outputPath = Path.Combine(directory, entry.FileName);
+        if (File.Exists(outputPath))
+        {
+            return;
+        }
+
         byte[] bytes = await httpClient.GetByteArrayAsync(entry.Url).ConfigureAwait(false);
         using (Bitmap bitmap = new(new MemoryStream(bytes)))
         {
-            TrimAndCenter(bitmap, Path.Combine(directory, entry.FileName));
+            TrimAndCenter(bitmap, outputPath);
         }
     }
 
@@ -279,6 +286,9 @@ internal sealed partial class DailyNoteTileOperation
         return $"""
             <tile>
                 <visual version="3" addImageQuery="false">
+                    <binding template="TileMedium">
+                        <image src="{bgSquare}" placement="background" addImageQuery="false"/>
+                    </binding>
                     <binding template="TileWide">
                         <image src="{bg}" placement="background" addImageQuery="false"/>
                     </binding>
@@ -354,6 +364,7 @@ internal sealed partial class DailyNoteTileOperation
         return $"""
             <tile>
                 <visual version="3" addImageQuery="false">
+                    {BuildBindingXml("TileMedium", bgSquare, string.Empty)}
                     {BuildBindingXml("TileWide", bg, BuildSpacedRows(allRows))}
                     {BuildBindingXml("TileLarge", bgSquare, allRows)}
                 </visual>
@@ -383,6 +394,7 @@ internal sealed partial class DailyNoteTileOperation
         return $"""
             <tile>
                 <visual version="3" addImageQuery="false">
+                    {BuildBindingXml("TileMedium", bgSquare, string.Empty)}
                     {BuildBindingXml("TileWide", bg, allRows)}
                     {BuildBindingXml("TileLarge", bgSquare, allRows)}
                 </visual>
@@ -392,6 +404,12 @@ internal sealed partial class DailyNoteTileOperation
 
     private static string BuildBindingXml(string template, string? background, string rows)
     {
+        // 既没有背景图也没有内容时输出空 binding，磁贴会变成一片空白，直接省略
+        if (string.IsNullOrEmpty(background) && string.IsNullOrEmpty(rows))
+        {
+            return string.Empty;
+        }
+
         StringBuilder sb = new();
         sb.Append($"<binding template=\"{template}\">");
 

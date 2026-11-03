@@ -218,24 +218,13 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         Summary? summary = await avatarInfoService.GetSummaryAsync(summaryContext, userAndUid, RefreshOptionKind.None).ConfigureAwait(false);
 
         ObservableCollection<TileBackgroundAvatarItem> items = [];
-        items.Add(new TileBackgroundAvatarItem
-        {
-            Uid = string.Empty,
-            AvatarId = string.Empty,
-            Name = SH.ViewPageDailyNoteTileBackgroundNone,
-        });
+        items.Add(new TileBackgroundAvatarItem(string.Empty, string.Empty, SH.ViewPageDailyNoteTileBackgroundNone, null));
 
         if (summary is not null)
         {
             foreach (AvatarView avatar in summary.Avatars)
             {
-                items.Add(new TileBackgroundAvatarItem
-                {
-                    Uid = userAndUid.Uid.Value,
-                    AvatarId = avatar.Id.ToString(),
-                    Name = avatar.Name,
-                    NameCard = avatar.NameCard,
-                });
+                items.Add(new TileBackgroundAvatarItem(userAndUid.Uid.Value, avatar.Id.ToString(), avatar.Name, avatar.NameCard));
             }
         }
 
@@ -258,18 +247,33 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         }
 
         // 「无背景」占位项
-        if (string.IsNullOrEmpty(item.AvatarId))
+        if (item.IsNone)
         {
             DailyNoteTileOperation.ClearBackground();
-            DailyNoteOptions.TileBackgroundAvatarId.Value = string.Empty;
+
+            // 清空设置后立即重发磁贴，否则旧背景图会一直留在开始菜单上
+            if (DailyNoteEntries is { Count: > 0 } currentEntries)
+            {
+                DailyNoteTileOperation.TryUpdatePrimaryTile(currentEntries);
+            }
+            else
+            {
+                DailyNoteTileOperation.TryUpdatePrimaryTile([]);
+            }
             messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteTileBackgroundCleared));
+            return;
+        }
+
+        if (item.NameCard is not { } nameCard)
+        {
+            messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundFailed));
             return;
         }
 
         TileBackgroundAvatarItem? previous = SelectedTileBackgroundAvatar;
         try
         {
-            bool ok = await DailyNoteTileOperation.TrySetBackgroundAsync(item.Uid, item.AvatarId, item.NameCard).ConfigureAwait(false);
+            bool ok = await DailyNoteTileOperation.TrySetBackgroundAsync(item.Uid, item.AvatarId, nameCard).ConfigureAwait(false);
 
             await taskContext.SwitchToMainThreadAsync();
             if (ok)
