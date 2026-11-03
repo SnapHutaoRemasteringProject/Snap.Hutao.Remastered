@@ -938,6 +938,9 @@
   <data name="ServiceDailyNoteNotifierExpeditionCount" xml:space="preserve">
     <value>探索派遣 {0}/{1}</value>
   </data>
+  <data name="ServiceDailyNoteTileAccountResin" xml:space="preserve">
+    <value>{0} {1}</value>
+  </data>
   <data name="ServiceDailyNoteNotifierHomeCoin" xml:space="preserve">
     <value>洞天宝钱</value>
   </data>
