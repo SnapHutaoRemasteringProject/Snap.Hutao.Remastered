@@ -270,7 +270,6 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
             return;
         }
 
-        TileBackgroundAvatarItem? previous = SelectedTileBackgroundAvatar;
         try
         {
             bool ok = await DailyNoteTileOperation.TrySetBackgroundAsync(item.Uid, item.AvatarId, nameCard).ConfigureAwait(false);
@@ -278,67 +277,80 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
             await taskContext.SwitchToMainThreadAsync();
             if (ok)
             {
+                // 无论便笺条目是否为空都要发布磁贴：空条目时发布纯背景磁贴，
+                // 否则刚保存的背景图不会显示。
                 if (DailyNoteEntries is { Count: > 0 } entries)
                 {
                     DailyNoteTileOperation.TryUpdatePrimaryTile(entries);
+                }
+                else
+                {
+                    DailyNoteTileOperation.TryUpdatePrimaryTile([]);
                 }
 
                 messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteTileBackgroundSet));
             }
             else
             {
+                RestoreAppliedTileBackgroundAvatar();
                 messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundFailed));
             }
         }
         catch
         {
             await taskContext.SwitchToMainThreadAsync();
-            if (previous is not null)
-            {
-                _suppressSelectionChange = true;
-                SelectedTileBackgroundAvatar = previous;
-                _suppressSelectionChange = false;
-            }
-
+            RestoreAppliedTileBackgroundAvatar();
             messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundFailed));
         }
+    }
+
+    /// <summary>
+    /// 选择变更由 ComboBox 的 TwoWay 绑定先行写入，设置失败时 <see cref="SelectedTileBackgroundAvatar"/>
+    /// 已经是未生效的新项，只能按持久化中的 avatarId 还原上一次真正应用成功的角色。
+    /// </summary>
+    private void RestoreAppliedTileBackgroundAvatar()
+    {
+        string appliedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
+        _suppressSelectionChange = true;
+        SelectedTileBackgroundAvatar = TileBackgroundAvatars.FirstOrDefault(i => i.AvatarId == appliedAvatarId);
+        _suppressSelectionChange = false;
     }
 
     [Command("PinTileCommand")]
     private void PinTile()
     {
-        SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Pin daily note tile", "DailyNoteViewModel.Command"));
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Update daily note tile", "DailyNoteViewModel.Command"));
 
         if (DailyNoteEntries is { Count: > 0 } entries)
         {
             if (DailyNoteTileOperation.TryUpdatePrimaryTile(entries))
             {
-                messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNotePinTileComplete));
+                messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteUpdateTileComplete));
             }
             else
             {
-                messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNotePinTileFailed));
+                messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNoteUpdateTileFailed));
             }
         }
         else
         {
-            messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNotePinTileFailed));
+            messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNoteUpdateTileFailed));
         }
     }
 
     [Command("UnpinTileCommand")]
     private void UnpinTile()
     {
-        SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Unpin daily note tile", "DailyNoteViewModel.Command"));
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Clear daily note tile", "DailyNoteViewModel.Command"));
 
         DailyNoteTileOperation.ClearBackground();
         if (DailyNoteTileOperation.TryUpdatePrimaryTile([]))
         {
-            messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNotePinTileComplete));
+            messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteClearTileComplete));
         }
         else
         {
-            messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNotePinTileFailed));
+            messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNoteClearTileFailed));
         }
     }
 
