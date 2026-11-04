@@ -229,11 +229,21 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         }
 
         string? selectedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
+
         await taskContext.SwitchToMainThreadAsync();
         _suppressSelectionChange = true;
-        TileBackgroundAvatars = items;
-        SelectedTileBackgroundAvatar = items.FirstOrDefault(i => i.AvatarId == selectedAvatarId);
-        _suppressSelectionChange = false;
+        try
+        {
+            TileBackgroundAvatars = items;
+
+            // 未设置过背景时（null 或空串）默认选中「无背景」占位项。
+            SelectedTileBackgroundAvatar = items.FirstOrDefault(i => i.AvatarId == selectedAvatarId) ?? items[0];
+        }
+        finally
+        {
+            // 中途抛异常也必须复位，否则后续所有选择都会被静默忽略。
+            _suppressSelectionChange = false;
+        }
     }
 
     [Command("SelectTileBackgroundCommand")]
@@ -296,11 +306,14 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
                 messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundFailed));
             }
         }
-        catch
+        catch (Exception ex)
         {
             await taskContext.SwitchToMainThreadAsync();
+            SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Set tile background failed", "DailyNoteViewModel", [("error", ex.GetType().Name)]));
             RestoreAppliedTileBackgroundAvatar();
-            messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundFailed));
+
+            // 带上异常信息，便于用户直接看到失败原因（下载失败、解码失败等）。
+            messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundFailed, ex));
         }
     }
 
@@ -312,7 +325,9 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     {
         string appliedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
         _suppressSelectionChange = true;
-        SelectedTileBackgroundAvatar = TileBackgroundAvatars.FirstOrDefault(i => i.AvatarId == appliedAvatarId);
+
+        // 与加载时一致：没有已应用的背景就回落到「无背景」占位项。
+        SelectedTileBackgroundAvatar = TileBackgroundAvatars.FirstOrDefault(i => i.AvatarId == appliedAvatarId) ?? TileBackgroundAvatars.FirstOrDefault();
         _suppressSelectionChange = false;
     }
 
@@ -325,7 +340,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         {
             if (DailyNoteTileOperation.TryUpdatePrimaryTile(entries))
             {
-                messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteUpdateTileComplete));
+                messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteUpdateTileCompleteHint));
             }
             else
             {
@@ -361,9 +376,10 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
             return;
         }
 
-        if (value is not null && SelectTileBackgroundCommand.CanExecute(value))
+        if (value is not null)
         {
-            SelectTileBackgroundCommand.Execute(value);
+            // 直接调用实现方法，避免 IAsyncRelayCommand<T>.CanExecute(object) 的泛型参数转换失败。
+            SelectTileBackgroundAsync(value).SafeForget();
         }
     }
 }

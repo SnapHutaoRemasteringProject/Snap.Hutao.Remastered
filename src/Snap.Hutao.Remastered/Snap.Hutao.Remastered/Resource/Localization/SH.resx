@@ -938,7 +938,10 @@
   <data name="ServiceDailyNoteNotifierExpeditionCount" xml:space="preserve">
     <value>探索派遣 {0}/{1}</value>
   </data>
-  <data name="ServiceDailyNoteTileAccountResin" xml:space="preserve">
+  <data name="ServiceDailyNoteNotifierExpeditionProgress" xml:space="preserve">
+    <value>{0}/{1}</value>
+  </data>
+  <data name="ServiceDailyNoteTileLabelValue" xml:space="preserve">
     <value>{0} {1}</value>
   </data>
   <data name="ServiceDailyNoteNotifierHomeCoin" xml:space="preserve">
@@ -2036,8 +2039,8 @@
   <data name="ViewModelDailyNoteRequestProgressTitle" xml:space="preserve">
     <value>正在获取实时便笺信息，请稍候</value>
   </data>
-  <data name="ViewModelDailyNoteUpdateTileComplete" xml:space="preserve">
-    <value>磁贴已更新</value>
+  <data name="ViewModelDailyNoteUpdateTileCompleteHint" xml:space="preserve">
+    <value>磁贴已更新，实时便笺仅在宽磁贴和大磁贴上显示</value>
   </data>
   <data name="ViewModelDailyNoteUpdateTileFailed" xml:space="preserve">
     <value>更新磁贴失败</value>
@@ -2724,13 +2727,13 @@
     <value>更新磁贴</value>
   </data>
   <data name="ViewPageDailyNoteTileBackgroundDescription" xml:space="preserve">
-    <value>选择角色后，其名刺图片将用作开始菜单磁贴背景。</value>
+    <value>选择角色后，其名片图片将用作开始菜单磁贴背景</value>
   </data>
   <data name="ViewPageDailyNoteTileBackgroundHeader" xml:space="preserve">
     <value>磁贴背景</value>
   </data>
   <data name="ViewPageDailyNoteTileBackgroundNone" xml:space="preserve">
-    <value>（无背景）</value>
+    <value>无背景</value>
   </data>
   <data name="ViewPageDailyNoteUnpinTileToolTip" xml:space="preserve">
     <value>清除磁贴</value>
