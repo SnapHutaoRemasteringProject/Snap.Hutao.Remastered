@@ -63,10 +63,15 @@ internal sealed partial class DailyNoteTileOperation
 
     /// <summary>
     /// 为指定账户下载名片并裁剪为磁贴背景图（宽版 31:15 与大版 1:1）。
+    /// <para>
+    /// <paramref name="token"/> 用于取消先发起但用户已经不想要的选择：
+    /// 写入设置之前必须再次检查，否则晚完成的旧请求会把新选择覆盖掉。
+    /// </para>
     /// </summary>
-    public async ValueTask<bool> TrySetBackgroundAsync(string uid, string avatarId, Uri nameCardUri)
+    public async ValueTask<bool> TrySetBackgroundAsync(string uid, string avatarId, Uri nameCardUri, CancellationToken token = default)
     {
-        byte[] bytes = await DownloadImageAsync(nameCardUri).ConfigureAwait(false);
+        byte[] bytes = await DownloadImageAsync(nameCardUri, token).ConfigureAwait(false);
+        token.ThrowIfCancellationRequested();
 
         string directory = BackgroundCacheDirectory;
         Directory.CreateDirectory(directory);
@@ -88,6 +93,9 @@ internal sealed partial class DailyNoteTileOperation
             }
         }
 
+        // 落盘可能耗时，写设置前必须最后确认一次；否则被取消的旧请求仍会覆盖新选择。
+        token.ThrowIfCancellationRequested();
+
         options.TileBackgroundAvatarId.Value = avatarId;
         options.TileBackgroundUid.Value = uid;
         return true;
@@ -105,7 +113,7 @@ internal sealed partial class DailyNoteTileOperation
     /// 避免一次失败就让用户看到「设置磁贴背景失败」。
     /// </para>
     /// </summary>
-    private static async Task<byte[]> DownloadImageAsync(Uri uri)
+    private static async Task<byte[]> DownloadImageAsync(Uri uri, CancellationToken token)
     {
         using (SocketsHttpHandler handler = new()
         {
@@ -124,20 +132,23 @@ internal sealed partial class DailyNoteTileOperation
 
             for (int attempt = 1; attempt <= DownloadMaxAttempts; attempt++)
             {
+                token.ThrowIfCancellationRequested();
+
                 try
                 {
-                    using (HttpResponseMessage response = await client.GetAsync(uri).ConfigureAwait(false))
+                    using (HttpResponseMessage response = await client.GetAsync(uri, token).ConfigureAwait(false))
                     {
                         response.EnsureSuccessStatusCode();
-                        return await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                        return await response.Content.ReadAsByteArrayAsync(token).ConfigureAwait(false);
                     }
                 }
-                catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+                catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException && !token.IsCancellationRequested)
                 {
+                    // 取消不是失败：只有真正的网络错误才重试，取消必须立刻冒泡出去。
                     lastError = ex;
                     if (attempt < DownloadMaxAttempts)
                     {
-                        await Task.Delay(TimeSpan.FromMilliseconds(500 * attempt)).ConfigureAwait(false);
+                        await Task.Delay(TimeSpan.FromMilliseconds(500 * attempt), token).ConfigureAwait(false);
                     }
                 }
             }
@@ -305,7 +316,8 @@ internal sealed partial class DailyNoteTileOperation
             return;
         }
 
-        byte[] bytes = await DownloadImageAsync(new Uri(entry.Url)).ConfigureAwait(false);
+        // 图标是一次性缓存，与用户的背景选择无关，因此不参与取消。
+        byte[] bytes = await DownloadImageAsync(new Uri(entry.Url), CancellationToken.None).ConfigureAwait(false);
         using (Bitmap bitmap = new(new MemoryStream(bytes)))
         {
             TrimAndCenter(bitmap, outputPath);

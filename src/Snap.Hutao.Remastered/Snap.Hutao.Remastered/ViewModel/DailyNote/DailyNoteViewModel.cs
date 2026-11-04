@@ -72,9 +72,9 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     private bool _suppressSelectionChange;
 
     /// <summary>
-    /// 磁贴背景选择的请求版本号，用于丢弃先发起但后完成的下载结果。
+    /// 当前磁贴背景选择请求；新选择到来时取消旧的，避免晚完成的下载覆盖新选择。
     /// </summary>
-    private int tileBackgroundRequestVersion;
+    private CancellationTokenSource? tileBackgroundCts;
 
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
@@ -276,10 +276,10 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
             return;
         }
 
-        // 每次选择都递增版本号。下载耗时较长，用户在完成前可能又选了别的角色，
-        // 先发起的下载若后完成就会覆盖新选择（界面显示 A、磁贴却是 B），
-        // 因此结果回到主线程后先比对版本号，过期请求直接丢弃。
-        int requestVersion = ++tileBackgroundRequestVersion;
+        // 每次选择都取消上一个还在下载的请求。下载耗时可达数十秒，用户在完成前很可能
+        // 又选了别的角色；如果只比对结果而不取消，旧请求仍会在 TrySetBackgroundAsync
+        // 里写入设置，导致界面显示 A、磁贴却是 B。取消会让它在写设置前中止。
+        CancellationTokenSource cts = ReplaceTileBackgroundCts();
 
         // 「无背景」占位项
         if (item.IsNone)
@@ -307,10 +307,10 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
 
         try
         {
-            bool ok = await DailyNoteTileOperation.TrySetBackgroundAsync(item.Uid, item.AvatarId, nameCard).ConfigureAwait(false);
+            bool ok = await DailyNoteTileOperation.TrySetBackgroundAsync(item.Uid, item.AvatarId, nameCard, cts.Token).ConfigureAwait(false);
 
             await taskContext.SwitchToMainThreadAsync();
-            if (requestVersion != tileBackgroundRequestVersion)
+            if (cts.IsCancellationRequested || cts != tileBackgroundCts)
             {
                 return;
             }
@@ -336,13 +336,18 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
                 messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundFailed));
             }
         }
+        catch (OperationCanceledException)
+        {
+            // 用户已经选了别的角色（或「无背景」），这次下载被主动取消，属于正常路径。
+            return;
+        }
         catch (Exception ex)
         {
             await taskContext.SwitchToMainThreadAsync();
             SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Set tile background failed", "DailyNoteViewModel", [("error", ex.GetType().Name)]));
 
             // 过期请求的失败同样要丢弃，否则会把用户的新选择回滚掉。
-            if (requestVersion != tileBackgroundRequestVersion)
+            if (cts != tileBackgroundCts)
             {
                 return;
             }
@@ -352,6 +357,19 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
             // 带上异常信息，便于用户直接看到失败原因（下载失败、解码失败等）。
             messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundFailed, ex));
         }
+    }
+
+    /// <summary>
+    /// 取消上一个背景选择请求并开启新的一个。旧的 <see cref="CancellationTokenSource"/>
+    /// 只取消、不释放：被取消的请求可能仍在 <c>catch</c> 分支里读取 <c>IsCancellationRequested</c>，
+    /// 提前 Dispose 会抛 <see cref="ObjectDisposedException"/>。
+    /// </summary>
+    private CancellationTokenSource ReplaceTileBackgroundCts()
+    {
+        CancellationTokenSource cts = new();
+        CancellationTokenSource? previous = Interlocked.Exchange(ref tileBackgroundCts, cts);
+        previous?.Cancel();
+        return cts;
     }
 
     /// <summary>
