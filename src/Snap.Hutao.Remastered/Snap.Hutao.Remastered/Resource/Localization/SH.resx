@@ -944,6 +944,9 @@
   <data name="ServiceDailyNoteTileLabelValue" xml:space="preserve">
     <value>{0} {1}</value>
   </data>
+  <data name="ServiceDailyNoteTileImageDownloadFailed" xml:space="preserve">
+    <value>下载图片失败：{0}</value>
+  </data>
   <data name="ServiceDailyNoteNotifierHomeCoin" xml:space="preserve">
     <value>洞天宝钱</value>
   </data>

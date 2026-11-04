@@ -142,7 +142,7 @@ internal sealed partial class DailyNoteTileOperation
                 }
             }
 
-            throw new HttpRequestException($"下载图片失败：{uri}", lastError);
+            throw new HttpRequestException(SH.FormatServiceDailyNoteTileImageDownloadFailed(uri), lastError);
         }
     }
 
@@ -406,15 +406,25 @@ internal sealed partial class DailyNoteTileOperation
         // 磁贴更新只是锦上添花，任何一步失败都不应该让调用方的数据库写入回滚或抛出。
         try
         {
-            string tileXml = entries.Count == 0
+            string? tileXml = entries.Count == 0
                 ? BuildBackgroundOnlyTileXml()
                 : BuildTileXml(entries);
+
+            TileUpdater updater = TileUpdateManager.CreateTileUpdaterForApplication();
+
+            // 没有任何内容可发布时必须用 Clear()：发送 <tile/> 没有内容绑定，
+            // Windows 不会清除上一条通知，旧内容会一直留在磁贴上。
+            if (string.IsNullOrEmpty(tileXml))
+            {
+                updater.Clear();
+                return true;
+            }
 
             XmlDocument document = new();
             document.LoadXml(tileXml);
 
             TileNotification notification = new(document);
-            TileUpdateManager.CreateTileUpdaterForApplication().Update(notification);
+            updater.Update(notification);
             return true;
         }
         catch (Exception ex)
@@ -445,13 +455,17 @@ internal sealed partial class DailyNoteTileOperation
         return null;
     }
 
-    private string BuildBackgroundOnlyTileXml()
+    /// <summary>
+    /// 只带背景图的磁贴内容；没有背景图时返回 <see langword="null"/>，
+    /// 表示没有任何内容可发布（调用方会改用 <c>TileUpdater.Clear()</c>）。
+    /// </summary>
+    private string? BuildBackgroundOnlyTileXml()
     {
         string? bg = ResolveBackgroundImageSource(true);
         string? bgSquare = ResolveBackgroundImageSource(false);
         if (string.IsNullOrEmpty(bg))
         {
-            return "<tile/>";
+            return null;
         }
 
         return $"""
@@ -468,14 +482,14 @@ internal sealed partial class DailyNoteTileOperation
             """;
     }
 
-    private string BuildTileXml(IReadOnlyCollection<DailyNoteEntry> entries)
+    private string? BuildTileXml(IReadOnlyCollection<DailyNoteEntry> entries)
     {
         return entries.Count == 1
             ? BuildSingleEntryXml(entries.First())
             : BuildMultipleEntriesXml(entries);
     }
 
-    private string BuildSingleEntryXml(DailyNoteEntry entry)
+    private string? BuildSingleEntryXml(DailyNoteEntry entry)
     {
         if (entry.DailyNote is not { } dailyNote)
         {
@@ -565,7 +579,7 @@ internal sealed partial class DailyNoteTileOperation
         return string.Join("<text hint-style=\"captionSubtle\"> </text>", rows);
     }
 
-    private string BuildMultipleEntriesXml(IReadOnlyCollection<DailyNoteEntry> entries)
+    private string? BuildMultipleEntriesXml(IReadOnlyCollection<DailyNoteEntry> entries)
     {
         // 宽磁贴只有 310x150，装不下多个账户，只展示首个账户；大磁贴才铺开全部账户。
         string? wideBlock = null;
@@ -580,6 +594,12 @@ internal sealed partial class DailyNoteTileOperation
 
             wideBlock ??= BuildAccountWideBlock(entry, dailyNote);
             accountBlocks.Add(BuildAccountBlock(entry, dailyNote));
+        }
+
+        // 所有账户都还没有便笺数据：退化为纯背景磁贴（没有背景时返回 null 交给调用方清空）。
+        if (accountBlocks.Count == 0)
+        {
+            return BuildBackgroundOnlyTileXml();
         }
 
         string? bg = ResolveBackgroundImageSource(true);

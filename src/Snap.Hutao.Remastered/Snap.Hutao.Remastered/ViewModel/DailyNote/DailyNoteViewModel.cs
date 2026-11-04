@@ -71,6 +71,11 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
 
     private bool _suppressSelectionChange;
 
+    /// <summary>
+    /// 磁贴背景选择的请求版本号，用于丢弃先发起但后完成的下载结果。
+    /// </summary>
+    private int tileBackgroundRequestVersion;
+
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
         if (!await metadataService.InitializeAsync().ConfigureAwait(false))
@@ -217,6 +222,21 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         SummaryFactoryMetadataContext summaryContext = await metadataService.GetContextAsync<SummaryFactoryMetadataContext>().ConfigureAwait(false);
         Summary? summary = await avatarInfoService.GetSummaryAsync(summaryContext, userAndUid, RefreshOptionKind.None).ConfigureAwait(false);
 
+        // RefreshOptionKind.None 只读数据库缓存。该账号的角色若从未在别处拉取过，
+        // 缓存为空会让候选列表只剩「无背景」，因此这里补一次主动拉取。
+        if (summary is null)
+        {
+            try
+            {
+                summary = await avatarInfoService.GetSummaryAsync(summaryContext, userAndUid, RefreshOptionKind.RequestFromHoyolabGameRecord).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                // 拉取失败（未登录、网络异常等）不影响「无背景」这一项，仅记录后继续。
+                SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Fetch tile background avatars failed", "DailyNoteViewModel", [("error", ex.GetType().Name)]));
+            }
+        }
+
         ObservableCollection<TileBackgroundAvatarItem> items = [];
         items.Add(new TileBackgroundAvatarItem(string.Empty, string.Empty, SH.ViewPageDailyNoteTileBackgroundNone, null));
 
@@ -256,6 +276,11 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
             return;
         }
 
+        // 每次选择都递增版本号。下载耗时较长，用户在完成前可能又选了别的角色，
+        // 先发起的下载若后完成就会覆盖新选择（界面显示 A、磁贴却是 B），
+        // 因此结果回到主线程后先比对版本号，过期请求直接丢弃。
+        int requestVersion = ++tileBackgroundRequestVersion;
+
         // 「无背景」占位项
         if (item.IsNone)
         {
@@ -285,6 +310,11 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
             bool ok = await DailyNoteTileOperation.TrySetBackgroundAsync(item.Uid, item.AvatarId, nameCard).ConfigureAwait(false);
 
             await taskContext.SwitchToMainThreadAsync();
+            if (requestVersion != tileBackgroundRequestVersion)
+            {
+                return;
+            }
+
             if (ok)
             {
                 // 无论便笺条目是否为空都要发布磁贴：空条目时发布纯背景磁贴，
@@ -310,6 +340,13 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         {
             await taskContext.SwitchToMainThreadAsync();
             SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Set tile background failed", "DailyNoteViewModel", [("error", ex.GetType().Name)]));
+
+            // 过期请求的失败同样要丢弃，否则会把用户的新选择回滚掉。
+            if (requestVersion != tileBackgroundRequestVersion)
+            {
+                return;
+            }
+
             RestoreAppliedTileBackgroundAvatar();
 
             // 带上异常信息，便于用户直接看到失败原因（下载失败、解码失败等）。
