@@ -40,12 +40,22 @@ public sealed class GachaLogServiceMetadataContext : IMetadataContext,
     {
         if (string.Equals(type, SH.ModelInterchangeUIGFItemTypeAvatar, StringComparison.Ordinal))
         {
-            return this.GetAvatar(name).GetOrCreateItem();
+            if (NameAvatarMap.TryGetValue(name, out Avatar? avatar))
+            {
+                return avatar.GetOrCreateItem();
+            }
+
+            throw HutaoException.Throw(SH.FormatServiceGachaLogItemMetadataNotFound(name));
         }
 
         if (string.Equals(type, SH.ModelInterchangeUIGFItemTypeWeapon, StringComparison.Ordinal))
         {
-            return this.GetWeapon(name).GetOrCreateItem();
+            if (NameWeaponMap.TryGetValue(name, out Weapon? weapon))
+            {
+                return weapon.GetOrCreateItem();
+            }
+
+            throw HutaoException.Throw(SH.FormatServiceGachaLogItemMetadataNotFound(name));
         }
 
         throw HutaoException.NotSupported($"Unsupported item type and name: '{type},{name}'");
@@ -53,17 +63,7 @@ public sealed class GachaLogServiceMetadataContext : IMetadataContext,
 
     public uint GetItemId(GachaLogItem item)
     {
-        if (string.Equals(item.ItemType, SH.ModelInterchangeUIGFItemTypeAvatar, StringComparison.Ordinal))
-        {
-            return this.GetAvatar(item.Name).Id;
-        }
-
-        if (string.Equals(item.ItemType, SH.ModelInterchangeUIGFItemTypeWeapon, StringComparison.Ordinal))
-        {
-            return this.GetWeapon(item.Name).Id;
-        }
-
-        throw HutaoException.NotSupported($"Unsupported item type and name: '{item.ItemType},{item.Name}'");
+        return GetItemByNameAndType(item.Name, item.ItemType).Id;
     }
 
     public INameQualityAccess GetNameQualityByItemId(uint id)
