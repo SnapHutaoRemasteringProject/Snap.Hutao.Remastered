@@ -28,6 +28,11 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
     /// <paramref name="token"/> 用于取消先发起但用户已经不想要的选择：
     /// 写入设置之前必须再次检查，否则晚完成的旧请求会把新选择覆盖掉。
     /// </para>
+    /// <para>
+    /// 下载失败但该角色已有完整旧缓存时沿用旧图，仍然写入设置并返回
+    /// <see langword="true"/>——用户要的是「背景换成这个角色」，
+    /// 用该角色上一张缓存图同样满足，不必因为一次网络抖动就失败。
+    /// </para>
     /// </summary>
     public async ValueTask<bool> TrySetBackgroundAsync(string uid, string avatarId, Uri nameCardUri, CancellationToken token = default)
     {
@@ -63,7 +68,10 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
         // 提权进程无法更新 shell 通知（见 ToastNotificationService 的非提权辅助进程方案）。
         // 主路径下提权实例由 runas 启动、不带包标识，上面的 IsUnpackaged 已拦住；
         // 这里再显式挡一次，覆盖 "已打包但提权" 的边缘情况。
-        if (HutaoRuntime.IsProcessElevated)
+        // 用 Environment.IsPrivilegedProcess 而不是 HutaoRuntime.IsProcessElevated：
+        // 后者还混入了 OverrideElevationRequirement 设置开关，普通打包进程打开该开关后
+        // 会被误判为提权，导致磁贴无法更新或清除。
+        if (Environment.IsPrivilegedProcess)
         {
             return false;
         }
