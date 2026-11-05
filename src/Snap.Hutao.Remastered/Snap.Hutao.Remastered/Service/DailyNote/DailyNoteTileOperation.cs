@@ -370,9 +370,53 @@ internal sealed partial class DailyNoteTileOperation
         int contentW = maxX - minX + 1;
         int contentH = maxY - minY + 1;
 
-        // 裁掉透明边后再压到磁贴实际需要的尺寸（磁贴按容器缩放，过大的源图毫无意义）。
-        (int drawW, int drawH) = ScaleToFit(contentW, contentH, MaxTileIconPixelSize);
-        int size = Math.Max(drawW, drawH);
+        // 统一画布与内容尺寸：源图有的 80x80、有的 256x256，裁剪后内容宽高比也各不相同。
+        // ScaleToFit 只缩不放，小源图会得到小画布，磁贴里各图标的显示尺寸于是不一致，
+        // 看起来就像没对齐。这里一律等比缩放到 128 满边，画布固定 128x128。
+        double iconScale = (double)MaxTileIconPixelSize / Math.Max(contentW, contentH);
+        int drawW = Math.Max(1, (int)Math.Round(contentW * iconScale));
+        int drawH = Math.Max(1, (int)Math.Round(contentH * iconScale));
+        int size = MaxTileIconPixelSize;
+
+        double drawnX = (size - drawW) / 2d;
+        double drawnY = (size - drawH) / 2d;
+
+        // 按「视觉重心」居中，而不是「边框重心」：探索派遣等图标图形左重右轻，
+        // 边框居中后视觉质心偏左，看起来就跟上面两个图标没对齐。
+        // 这里用不透明度加权的水平质心反向补偿绘制位置，让视觉重心落在画布水平中心。
+        double centroidWeight = 0;
+        double centroidXSum = 0;
+        for (int y = minY; y <= maxY; y++)
+        {
+            for (int x = minX; x <= maxX; x++)
+            {
+                int alpha = source.GetPixel(x, y).A;
+                if (alpha <= 0)
+                {
+                    continue;
+                }
+
+                centroidWeight += alpha;
+                centroidXSum += x * (double)alpha;
+            }
+        }
+
+        if (centroidWeight > 0)
+        {
+            double centroidX = centroidXSum / centroidWeight;
+            double contentCenterX = (minX + maxX) / 2d;
+
+            // 质心相对内容区中心的偏移（源图像素，正 = 偏右）。质心偏左时让绘制位置右移。
+            double offsetX = centroidX - contentCenterX;
+            double scaleX = (double)drawW / contentW;
+            drawnX -= offsetX * scaleX;
+        }
+
+        // 补偿可能让内容略微越出画布，磁贴的圆形裁剪本来就会吃掉圆外部分，
+        // 因此这里只做宽松保护，不再硬拉回画布内——拉回去等于补偿不足，图标依旧偏。
+        double slack = size * 0.25;
+        drawnX = Math.Clamp(drawnX, -slack, size - drawW + slack);
+        drawnY = Math.Clamp(drawnY, 0, size - drawH);
 
         using (Bitmap output = new(size, size))
         {
@@ -381,7 +425,7 @@ internal sealed partial class DailyNoteTileOperation
                 graphics.Clear(Color.Transparent);
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 graphics.DrawImage(source,
-                    new Rectangle((size - drawW) / 2, (size - drawH) / 2, drawW, drawH),
+                    new Rectangle((int)Math.Round(drawnX), (int)Math.Round(drawnY), drawW, drawH),
                     new Rectangle(minX, minY, contentW, contentH),
                     GraphicsUnit.Pixel);
             }
@@ -533,8 +577,9 @@ internal sealed partial class DailyNoteTileOperation
     private static string BuildSingleEntryWideRows(WebDailyNote dailyNote)
     {
         StringBuilder sb = new();
-        sb.Append(BuildIconRow(IconResinUrl, SH.FormatServiceDailyNoteTileLabelValue(SH.ServiceDailyNoteNotifierResin, dailyNote.FormattedResin), WideRowHintStyle));
-        sb.Append(BuildIconRow(IconTaskUrl, SH.FormatServiceDailyNoteTileLabelValue(SH.ServiceDailyNoteNotifierDailyTask, dailyNote.FormattedTask), WideRowHintStyle));
+        // 树脂是首要资源，用比 caption 更大的 body 字号强调。
+        sb.Append(BuildIconRow(IconResinUrl, SH.FormatServiceDailyNoteTileLabelValue(SH.ServiceDailyNoteNotifierResin, dailyNote.FormattedResin), "body"));
+        sb.Append(BuildIconRow(IconTaskUrl, SH.FormatServiceDailyNoteTileLabelValue(SH.ServiceDailyNoteNotifierDailyTask, dailyNote.FormattedTask), TaskHintStyle(dailyNote, WideRowHintStyle)));
 
         if (BuildExpeditionValue(dailyNote) is { Length: > 0 } expeditionText)
         {
@@ -542,6 +587,20 @@ internal sealed partial class DailyNoteTileOperation
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// 每日委托的文字样式：全部完成（4/4）时改用半透明的 captionSubtle，
+    /// 用「已完成」的褪色效果提示用户；否则保持传入的普通样式。
+    /// <para>
+    /// 判断要求 TotalTaskNum 大于 0，避免便笺尚未加载（两者都是 0）时误判为已完成。
+    /// </para>
+    /// </summary>
+    private static string TaskHintStyle(WebDailyNote dailyNote, string normalStyle)
+    {
+        return dailyNote.TotalTaskNum > 0 && dailyNote.FinishedTaskNum >= dailyNote.TotalTaskNum
+            ? "captionSubtle"
+            : normalStyle;
     }
 
     /// <summary>
@@ -557,7 +616,7 @@ internal sealed partial class DailyNoteTileOperation
     {
         List<string> rows = [];
         rows.Add(BuildIconRow(IconResinUrl, SH.FormatServiceDailyNoteTileLabelValue(SH.ServiceDailyNoteNotifierResin, dailyNote.FormattedResin), "base"));
-        rows.Add(BuildIconRow(IconTaskUrl, SH.FormatServiceDailyNoteTileLabelValue(SH.ServiceDailyNoteNotifierDailyTask, dailyNote.FormattedTask), "caption"));
+        rows.Add(BuildIconRow(IconTaskUrl, SH.FormatServiceDailyNoteTileLabelValue(SH.ServiceDailyNoteNotifierDailyTask, dailyNote.FormattedTask), TaskHintStyle(dailyNote, "caption")));
 
         if (BuildExpeditionValue(dailyNote) is { Length: > 0 } expeditionText)
         {
@@ -640,7 +699,7 @@ internal sealed partial class DailyNoteTileOperation
         StringBuilder sb = new();
         sb.Append(BuildAccountTitleRow(entry, compact: true));
         sb.Append(BuildIconRow(IconResinUrl, SH.FormatServiceDailyNoteTileLabelValue(SH.ServiceDailyNoteNotifierResin, dailyNote.FormattedResin), WideRowHintStyle));
-        sb.Append(BuildIconRow(IconTaskUrl, SH.FormatServiceDailyNoteTileLabelValue(SH.ServiceDailyNoteNotifierDailyTask, dailyNote.FormattedTask), WideRowHintStyle));
+        sb.Append(BuildIconRow(IconTaskUrl, SH.FormatServiceDailyNoteTileLabelValue(SH.ServiceDailyNoteNotifierDailyTask, dailyNote.FormattedTask), TaskHintStyle(dailyNote, WideRowHintStyle)));
         return sb.ToString();
     }
 
@@ -706,7 +765,7 @@ internal sealed partial class DailyNoteTileOperation
         sb.Append(BuildAccountTitleRow(entry, compact: false));
 
         sb.Append(BuildIconRow(IconResinUrl, SH.FormatServiceDailyNoteTileLabelValue(SH.ServiceDailyNoteNotifierResin, dailyNote.FormattedResin), "caption"));
-        sb.Append(BuildIconRow(IconTaskUrl, SH.FormatServiceDailyNoteTileLabelValue(SH.ServiceDailyNoteNotifierDailyTask, dailyNote.FormattedTask), "caption"));
+        sb.Append(BuildIconRow(IconTaskUrl, SH.FormatServiceDailyNoteTileLabelValue(SH.ServiceDailyNoteNotifierDailyTask, dailyNote.FormattedTask), TaskHintStyle(dailyNote, "caption")));
 
         if (BuildExpeditionValue(dailyNote) is { Length: > 0 } expeditionText)
         {
