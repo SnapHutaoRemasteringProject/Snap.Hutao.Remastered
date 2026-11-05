@@ -378,7 +378,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     /// </summary>
     private void RestoreAppliedTileBackgroundAvatar()
     {
-        string appliedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
+        string? appliedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
         _suppressSelectionChange = true;
 
         // 与加载时一致：没有已应用的背景就回落到「无背景」占位项。

@@ -68,7 +68,7 @@ internal sealed partial class DailyNoteTileOperation
     /// 写入设置之前必须再次检查，否则晚完成的旧请求会把新选择覆盖掉。
     /// </para>
     /// </summary>
-    public async ValueTask<bool> TrySetBackgroundAsync(string uid, string avatarId, Uri nameCardUri, CancellationToken token = default)
+    internal async ValueTask<bool> TrySetBackgroundAsync(string uid, string avatarId, Uri nameCardUri, CancellationToken token = default)
     {
         byte[] bytes = await DownloadImageAsync(nameCardUri, token).ConfigureAwait(false);
         token.ThrowIfCancellationRequested();
@@ -280,7 +280,7 @@ internal sealed partial class DailyNoteTileOperation
     /// <summary>
     /// 清除磁贴背景设置。
     /// </summary>
-    public void ClearBackground()
+    internal void ClearBackground()
     {
         options.TileBackgroundAvatarId.Value = string.Empty;
         options.TileBackgroundUid.Value = string.Empty;
@@ -289,7 +289,7 @@ internal sealed partial class DailyNoteTileOperation
     /// <summary>
     /// 准备图标缓存（幂等）。失败时清空缓存的任务，以便下次调用重新尝试。
     /// </summary>
-    public Task PrepareIconsAsync()
+    private Task PrepareIconsAsync()
     {
         if (iconsPreparedTask is { IsFaulted: false, IsCanceled: false })
         {
