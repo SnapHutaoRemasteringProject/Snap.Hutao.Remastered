@@ -19,7 +19,7 @@ namespace Snap.Hutao.Remastered.Service.DailyNote;
 public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<UserRemovedMessage>
 {
     private readonly DailyNoteNotificationOperation dailyNoteNotificationOperation;
-    private readonly DailyNoteTileOperation dailyNoteTileOperation;
+    private readonly IDailyNoteTileService dailyNoteTileService;
     private readonly IDailyNoteRepository dailyNoteRepository;
     private readonly DailyNoteOptions dailyNoteOptions;
     private readonly IServiceProvider serviceProvider;
@@ -44,7 +44,7 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
 
                 // 自动刷新默认关闭，不同步重发磁贴的话，
                 // 已删除账号的便笺会一直留在开始菜单上直到下一次刷新。
-                dailyNoteTileOperation.TryUpdatePrimaryTile(localEntries);
+                dailyNoteTileService.TryUpdatePrimaryTile(localEntries);
             });
         }
     }
@@ -81,7 +81,7 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
 
         await taskContext.SwitchToMainThreadAsync();
         entries?.Add(newEntry);
-        dailyNoteTileOperation.TryUpdatePrimaryTile(entries ?? []);
+        dailyNoteTileService.TryUpdatePrimaryTile(entries ?? []);
     }
 
     public async ValueTask<ObservableCollection<DailyNoteEntry>> GetDailyNoteEntryCollectionAsync(DailyNoteMetadataContext context, bool forceRefresh = false, CancellationToken token = default)
@@ -116,7 +116,7 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
         await taskContext.SwitchToMainThreadAsync();
         ArgumentNullException.ThrowIfNull(entries);
         entries.Remove(entry);
-        dailyNoteTileOperation.TryUpdatePrimaryTile(entries);
+        dailyNoteTileService.TryUpdatePrimaryTile(entries);
 
         await taskContext.SwitchToBackgroundAsync();
         dailyNoteRepository.DeleteDailyNoteEntryById(entry.InnerId);
@@ -196,7 +196,7 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
             await taskContext.SwitchToMainThreadAsync();
             if (entries is { } localEntries)
             {
-                dailyNoteTileOperation.TryUpdatePrimaryTile(localEntries);
+                dailyNoteTileService.TryUpdatePrimaryTile(localEntries);
             }
         }
     }
