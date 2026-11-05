@@ -300,6 +300,30 @@ internal sealed partial class DailyNoteTileOperation
         return iconsPreparedTask;
     }
 
+    /// <summary>
+    /// 在后台准备图标缓存，并就地处理失败。
+    /// <para>
+    /// 图标下载失败只会让磁贴回退到远程 URL，不影响便笺内容本身，属于可处理的失败；
+    /// 因此在这里记 breadcrumb 而不是交给 <c>SafeForget</c> 把它推进全局异常池，
+    /// 那个机制只允许用在生命周期边界上。
+    /// </para>
+    /// <para>
+    /// 失败不会缓存：<see cref="PrepareIconsAsync"/> 保留了 faulted 的任务状态，
+    /// 下一次磁贴更新会重新尝试下载。
+    /// </para>
+    /// </summary>
+    private async Task PrepareIconsIgnoringFailureAsync()
+    {
+        try
+        {
+            await PrepareIconsAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Prepare tile icons failed", "DailyNoteTileOperation", [("error", ex.GetType().Name)]));
+        }
+    }
+
     private async Task PrepareIconsCoreAsync()
     {
         string directory = IconCacheDirectory;
@@ -457,7 +481,8 @@ internal sealed partial class DailyNoteTileOperation
             return false;
         }
 
-        PrepareIconsAsync().SafeForget();
+        // 图标缓存是尽力而为的后台准备，失败已在 helper 内记录，不阻塞磁贴更新。
+        PrepareIconsIgnoringFailureAsync().SafeForget();
 
         // 磁贴更新只是锦上添花，任何一步失败都不应该让调用方的数据库写入回滚或抛出。
         try
