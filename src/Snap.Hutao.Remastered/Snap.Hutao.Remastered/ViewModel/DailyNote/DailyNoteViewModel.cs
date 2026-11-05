@@ -41,6 +41,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     private readonly IUserService userService;
     private readonly IMessenger messenger;
     private readonly IAvatarInfoService avatarInfoService;
+    private readonly IDailyNoteTileService dailyNoteTileService;
 
     private DailyNoteMetadataContext? metadataContext;
 
@@ -52,8 +53,6 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     public partial RuntimeOptions RuntimeOptions { get; }
 
     public partial AppOptions AppOptions { get; }
-
-    private partial DailyNoteTileOperation DailyNoteTileOperation { get; }
 
     [ObservableProperty]
     public partial ObservableCollection<TileBackgroundAvatarItem> TileBackgroundAvatars { get; set; } = [];
@@ -284,16 +283,16 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         // 「无背景」占位项
         if (item.IsNone)
         {
-            DailyNoteTileOperation.ClearBackground();
+            dailyNoteTileService.ClearBackground();
 
             // 清空设置后立即重发磁贴，否则旧背景图会一直留在开始菜单上
             if (DailyNoteEntries is { Count: > 0 } currentEntries)
             {
-                DailyNoteTileOperation.TryUpdatePrimaryTile(currentEntries);
+                dailyNoteTileService.TryUpdatePrimaryTile(currentEntries);
             }
             else
             {
-                DailyNoteTileOperation.TryUpdatePrimaryTile([]);
+                dailyNoteTileService.TryUpdatePrimaryTile([]);
             }
             messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteTileBackgroundCleared));
             return;
@@ -307,7 +306,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
 
         try
         {
-            bool ok = await DailyNoteTileOperation.TrySetBackgroundAsync(item.Uid, item.AvatarId, nameCard, cts.Token).ConfigureAwait(false);
+            bool ok = await dailyNoteTileService.TrySetBackgroundAsync(item.Uid, item.AvatarId, nameCard, cts.Token).ConfigureAwait(false);
 
             await taskContext.SwitchToMainThreadAsync();
             if (cts.IsCancellationRequested || cts != tileBackgroundCts)
@@ -321,11 +320,11 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
                 // 否则刚保存的背景图不会显示。
                 if (DailyNoteEntries is { Count: > 0 } entries)
                 {
-                    DailyNoteTileOperation.TryUpdatePrimaryTile(entries);
+                    dailyNoteTileService.TryUpdatePrimaryTile(entries);
                 }
                 else
                 {
-                    DailyNoteTileOperation.TryUpdatePrimaryTile([]);
+                    dailyNoteTileService.TryUpdatePrimaryTile([]);
                 }
 
                 messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteTileBackgroundSet));
@@ -393,7 +392,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
 
         if (DailyNoteEntries is { Count: > 0 } entries)
         {
-            if (DailyNoteTileOperation.TryUpdatePrimaryTile(entries))
+            if (dailyNoteTileService.TryUpdatePrimaryTile(entries))
             {
                 messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteUpdateTileCompleteHint));
             }
@@ -413,8 +412,8 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Clear daily note tile", "DailyNoteViewModel.Command"));
 
-        DailyNoteTileOperation.ClearBackground();
-        if (DailyNoteTileOperation.TryUpdatePrimaryTile([]))
+        dailyNoteTileService.ClearBackground();
+        if (dailyNoteTileService.TryUpdatePrimaryTile([]))
         {
             messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteClearTileComplete));
         }
