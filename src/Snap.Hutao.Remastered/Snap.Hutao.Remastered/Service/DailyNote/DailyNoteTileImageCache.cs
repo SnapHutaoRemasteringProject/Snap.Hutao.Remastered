@@ -86,19 +86,40 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     }
 
     /// <summary>
-    /// 为指定账户下载名片并裁剪为磁贴背景图（宽版 31:15 与大版 1:1）。
+    /// 为指定角色下载名片并裁剪为磁贴背景图（宽版 31:15 与大版 1:1）。
     /// <para>
     /// 只做下载、裁剪与落盘，不写设置项；写入设置由 <see cref="IDailyNoteTileService"/> 负责，
     /// 因此被取消的旧请求不会覆盖用户的新选择。
     /// </para>
+    /// <para>
+    /// 下载失败时如果该角色已有完整缓存，沿用旧图而不是抛出：
+    /// 背景图地址在网络抖动时经常连不上，而缓存本身已经是一张可用的背景图，
+    /// 沿用它可以避免「网络一抖就换不了背景」。用户主动取消不在兜底范围内。
+    /// </para>
     /// </summary>
-    /// <param name="uid">账户 UID；由调用方用于持久化，本方法不写设置项。</param>
     /// <param name="avatarId">角色 ID，决定缓存文件名。</param>
     /// <param name="nameCardUri">名片图地址。</param>
     /// <param name="token">取消标记：用户改选后必须尽快中止下载与落盘。</param>
-    public async ValueTask PrepareBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token)
+    public async ValueTask<bool> PrepareBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token)
     {
-        byte[] bytes = await DownloadImageAsync(nameCardUri, token).ConfigureAwait(false);
+        byte[] bytes;
+
+        try
+        {
+            bytes = await DownloadImageAsync(nameCardUri, token).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            // 该角色此前下载过、且宽版与大版都还在缓存里时，直接沿用旧图。
+            if (HasCachedBackground(avatarId))
+            {
+                SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateError("Reuse cached tile background", "DailyNoteTileImageCache", [("error", ex.GetType().Name), ("avatarId", avatarId)]));
+                return false;
+            }
+
+            throw;
+        }
+
         token.ThrowIfCancellationRequested();
 
         string directory = BackgroundCacheDirectory;
@@ -120,6 +141,39 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
                 File.Delete(pngPath);
             }
         }
+
+        return true;
+    }
+
+    /// <summary>
+    /// 判断该角色的背景图缓存是否完整可用：宽版与大版都必须存在。
+    /// <para>
+    /// 只存在一张时不能沿用——磁贴的宽磁贴与大磁贴分别引用 <c>_wide</c> 与 <c>_large</c>，
+    /// 缺任何一张都会让对应尺寸回退成没有背景。
+    /// </para>
+    /// </summary>
+    private bool HasCachedBackground(string avatarId)
+    {
+        string directory = BackgroundCacheDirectory;
+        foreach (string suffix in (string[])["_wide", "_large"])
+        {
+            bool found = false;
+            foreach (string extension in BackgroundImageExtensions)
+            {
+                if (File.Exists(Path.Combine(directory, $"{avatarId}{suffix}{extension}")))
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>

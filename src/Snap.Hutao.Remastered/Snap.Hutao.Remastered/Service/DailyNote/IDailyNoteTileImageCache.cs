@@ -24,11 +24,18 @@ internal interface IDailyNoteTileImageCache
     /// 只做下载、裁剪与落盘，不写设置项，因此被取消的旧请求不会覆盖用户的新选择；
     /// UID 由调用方在持久化时写入，本方法不需要它。
     /// </para>
+    /// <para>
+    /// 下载失败但该角色已有一份完整的旧缓存时，沿用旧图并返回
+    /// <see langword="false"/>，由调用方决定如何提示；用户主动取消不会被兜底。
+    /// </para>
     /// </summary>
     /// <param name="avatarId">角色 ID，决定缓存文件名。</param>
     /// <param name="nameCardUri">名片图地址。</param>
     /// <param name="token">取消标记：用户改选后必须尽快中止下载与落盘。</param>
-    ValueTask PrepareBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token);
+    /// <returns>
+    /// <see langword="true"/> 表示图片来自本次下载；<see langword="false"/> 表示沿用了已有缓存。
+    /// </returns>
+    ValueTask<bool> PrepareBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token);
 
     /// <summary>
     /// 把图标的远程地址解析为本地缓存地址；缓存不存在时回退到原始远程地址。
