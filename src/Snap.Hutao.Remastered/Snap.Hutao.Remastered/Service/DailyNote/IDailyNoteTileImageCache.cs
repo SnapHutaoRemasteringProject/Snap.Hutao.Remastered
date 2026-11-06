@@ -46,4 +46,14 @@ internal interface IDailyNoteTileImageCache
     /// 解析当前已应用背景图的本地地址，没有可用背景图时返回 <see langword="null"/>。
     /// </summary>
     string? ResolveBackgroundImageSource(bool isWide);
+
+    /// <summary>
+    /// 解析指定角色已缓存的背景图本地地址，没有缓存时返回 <see langword="null"/>。
+    /// <para>
+    /// 供设置面板的预览使用：预览直接加载远程名片图时既慢又容易在网络抖动时空白，
+    /// 而这里返回的是已按磁贴比例裁切好的本地文件，既不依赖网络，
+    /// 呈现的也正是磁贴实际会显示的效果。
+    /// </para>
+    /// </summary>
+    string? ResolveBackgroundImageSource(string avatarId, bool isWide);
 }

@@ -42,6 +42,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     private readonly IMessenger messenger;
     private readonly IAvatarInfoService avatarInfoService;
     private readonly IDailyNoteTileService dailyNoteTileService;
+    private readonly IInfoBarService infoBarService;
 
     private DailyNoteMetadataContext? metadataContext;
 
@@ -243,7 +244,15 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         {
             foreach (AvatarView avatar in summary.Avatars)
             {
-                items.Add(new TileBackgroundAvatarItem(userAndUid.Uid.Value, avatar.Id.ToString(), avatar.Name, avatar.NameCard));
+                string avatarId = avatar.Id.ToString();
+
+                // 已下载过该角色的背景图时用它做预览：本地加载不受网络抖动影响，
+                // 且呈现的就是磁贴实际显示的效果；没有缓存才退回远程名刺地址。
+                Uri? cachedPreview = dailyNoteTileService.ResolveCachedWideBackground(avatarId) is { } cached
+                    ? new Uri(cached)
+                    : null;
+
+                items.Add(new TileBackgroundAvatarItem(userAndUid.Uid.Value, avatarId, avatar.Name, avatar.NameCard, cachedPreview));
             }
         }
 
@@ -306,7 +315,9 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
 
         try
         {
-            bool ok = await dailyNoteTileService.TrySetBackgroundAsync(item.Uid, item.AvatarId, nameCard, cts.Token).ConfigureAwait(false);
+            // TrySetBackgroundAsync 立即写设置并返回，下载在服务侧后台进行，
+            // 因此切换不再等待下载、不再因超时失败；返回的后台任务用于显示下载进度。
+            TileBackgroundSwitchResult result = await dailyNoteTileService.TrySetBackgroundAsync(item.Uid, item.AvatarId, nameCard, cts.Token).ConfigureAwait(false);
 
             await taskContext.SwitchToMainThreadAsync();
             if (cts.IsCancellationRequested || cts != tileBackgroundCts)
@@ -314,30 +325,32 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
                 return;
             }
 
-            if (ok)
-            {
-                // 无论便笺条目是否为空都要发布磁贴：空条目时发布纯背景磁贴，
-                // 否则刚保存的背景图不会显示。
-                if (DailyNoteEntries is { Count: > 0 } entries)
-                {
-                    dailyNoteTileService.TryUpdatePrimaryTile(entries);
-                }
-                else
-                {
-                    dailyNoteTileService.TryUpdatePrimaryTile([]);
-                }
-
-                messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteTileBackgroundSet));
-            }
-            else
+            if (!result.Applied)
             {
                 RestoreAppliedTileBackgroundAvatar();
                 messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundFailed));
+                return;
             }
+
+            // 立即发布磁贴：新角色有旧缓存图就直接显示新背景；
+            // 没有缓存则先显示纯内容磁贴，后台下载完成后服务会再重发一次换上新图。
+            if (DailyNoteEntries is { Count: > 0 } entries)
+            {
+                dailyNoteTileService.TryUpdatePrimaryTile(entries);
+            }
+            else
+            {
+                dailyNoteTileService.TryUpdatePrimaryTile([]);
+            }
+
+            ShowBackgroundDownloadProgress(item, result.BackgroundReady, cts);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (cts.IsCancellationRequested)
         {
-            // 用户已经选了别的角色（或「无背景」），这次下载被主动取消，属于正常路径。
+            // 用户已经选了别的角色（或「无背景」），这次切换被主动取消，属于正常路径。
+            // 必须用 token 判断而不是异常类型：HttpClient 超时抛出的 TaskCanceledException
+            // 也继承自 OperationCanceledException，若按类型捕获，超时会被误当成「用户取消」，
+            // 用户等满超时后得不到任何错误提示。
             return;
         }
         catch (Exception ex)
@@ -356,6 +369,62 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
             // 带上异常信息，便于用户直接看到失败原因（下载失败、解码失败等）。
             messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundFailed, ex));
         }
+    }
+
+    /// <summary>
+    /// 显示背景图下载进度：先放一条常驻的转圈提示，下载结束后移除并给出结果。
+    /// <para>
+    /// <see cref="InfoBarMessage.MilliSecondsDelay"/> 为 0 的提示不会自动消失，
+    /// 因此这里直接操作 <see cref="IInfoBarService.Collection"/> 自行管理它的生命周期；
+    /// 下载完成后再发一条普通提示（会按阅读时长自动消失）。
+    /// </para>
+    /// </summary>
+    private void ShowBackgroundDownloadProgress(TileBackgroundAvatarItem item, Task<bool> backgroundReady, CancellationTokenSource cts)
+    {
+        InfoBarOptions progress = InfoBarOptions.Create(new InfoBarMessage
+        {
+            Severity = InfoBarSeverity.Informational,
+            Message = SH.FormatViewModelDailyNoteTileBackgroundDownloading(item.Name),
+            Content = new ProgressRing { IsActive = true, Width = 20, Height = 20 },
+            MilliSecondsDelay = 0,
+        });
+
+        infoBarService.Collection.Insert(0, progress);
+        CompleteBackgroundProgressAsync(progress, item, backgroundReady, cts).SafeForget();
+    }
+
+    /// <summary>
+    /// 等待后台下载结束并收尾转圈提示。失败与取消都在这里就地处理，
+    /// 因此可以安全地用 <c>SafeForget</c> 启动。
+    /// </summary>
+    private async Task CompleteBackgroundProgressAsync(InfoBarOptions progress, TileBackgroundAvatarItem item, Task<bool> backgroundReady, CancellationTokenSource cts)
+    {
+        bool downloaded = false;
+
+        try
+        {
+            downloaded = await backgroundReady.ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            // 服务侧的后台任务本不抛异常；这里兜底以防未来改动，避免静默 lost task。
+            SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateError("Await tile background failed", "DailyNoteViewModel", [("error", ex.GetType().Name)]));
+        }
+
+        await taskContext.SwitchToMainThreadAsync();
+
+        // 无论是否为过期请求，都要收掉自己插入的那条转圈提示。
+        infoBarService.Collection.Remove(progress);
+
+        if (cts != tileBackgroundCts)
+        {
+            // 用户已经选了别的角色，结果由那次选择负责提示。
+            return;
+        }
+
+        messenger.Send(downloaded
+            ? InfoBarMessage.Success(SH.FormatViewModelDailyNoteTileBackgroundDownloadCompleted(item.Name))
+            : InfoBarMessage.Warning(SH.FormatViewModelDailyNoteTileBackgroundDownloadFallback(item.Name)));
     }
 
     /// <summary>

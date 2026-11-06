@@ -15,14 +15,19 @@ namespace Snap.Hutao.Remastered.Service.DailyNote;
 internal interface IDailyNoteTileService
 {
     /// <summary>
-    /// 为指定账户设置磁贴背景：下载并裁剪名片图，成功后写入背景设置。
+    /// 把磁贴背景切换到指定账户的角色。
     /// <para>
-    /// 若请求在下载或落盘期间被取消，本方法不会写入设置项，并抛出
-    /// <see cref="OperationCanceledException"/>。
+    /// 立即写入背景设置并返回；名片图的下载与裁剪在后台进行，
+    /// 完成后由本服务重发磁贴换上新图。切换响应不再被下载阻塞，
+    /// 网络慢或下载失败时磁贴沿用该角色已有的旧缓存图。
+    /// </para>
+    /// <para>
+    /// 若请求在切换后被用户的新选择取代，本方法不再生效：
+    /// <paramref name="token"/> 用于取消先发起但用户已经不想要的选择，
+    /// 被取消时不会写入设置项。
     /// </para>
     /// </summary>
-    /// <returns>背景是否已设置成功。</returns>
-    ValueTask<bool> TrySetBackgroundAsync(string uid, string avatarId, Uri nameCardUri, CancellationToken token = default);
+    ValueTask<TileBackgroundSwitchResult> TrySetBackgroundAsync(string uid, string avatarId, Uri nameCardUri, CancellationToken token = default);
 
     /// <summary>
     /// 清除已设置的磁贴背景。
@@ -30,8 +35,27 @@ internal interface IDailyNoteTileService
     void ClearBackground();
 
     /// <summary>
+    /// 解析指定角色已缓存的宽版背景图本地地址，没有缓存时返回 <see langword="null"/>。
+    /// <para>
+    /// 供设置面板预览使用：远程名片图既慢又会在网络抖动时加载失败，
+    /// 而已缓存的本地文件正是磁贴实际显示的效果。
+    /// </para>
+    /// </summary>
+    string? ResolveCachedWideBackground(string avatarId);
+
+    /// <summary>
     /// 用给定的便笺条目更新主磁贴；没有内容可发布时清空磁贴。
     /// </summary>
     /// <returns>磁贴是否已更新；当前进程无法更新磁贴时返回 <see langword="false"/>。</returns>
     bool TryUpdatePrimaryTile(IReadOnlyCollection<DailyNoteEntry> entries);
 }
+
+/// <summary>
+/// 磁贴背景切换的结果。
+/// </summary>
+/// <param name="Applied">背景设置是否已写入。</param>
+/// <param name="BackgroundReady">
+/// 后台下载任务：完成后返回 <see langword="true"/> 表示拿到了新图，
+/// <see langword="false"/> 表示沿用旧图或下载失败。任务本身不会抛出。
+/// </param>
+internal readonly record struct TileBackgroundSwitchResult(bool Applied, Task<bool> BackgroundReady);

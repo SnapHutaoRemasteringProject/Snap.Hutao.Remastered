@@ -12,12 +12,18 @@ namespace Snap.Hutao.Remastered.ViewModel.DailyNote;
 /// </summary>
 public sealed partial class TileBackgroundAvatarItem : ObservableObject
 {
-    public TileBackgroundAvatarItem(string uid, string avatarId, string name, Uri? nameCard)
+    private ImageSource? nameCardSource;
+
+    public TileBackgroundAvatarItem(string uid, string avatarId, string name, Uri? nameCard, Uri? cachedPreview = null)
     {
         Uid = uid;
         AvatarId = avatarId;
         Name = name;
         NameCard = nameCard;
+
+        // 已下载过该角色的背景图时优先用它：本地加载不受网络影响，
+        // 而且它就是磁贴实际显示的内容（已按 31:15 裁切）。
+        PreviewUri = cachedPreview ?? nameCard;
     }
 
     public string Uid { get; }
@@ -32,13 +38,27 @@ public sealed partial class TileBackgroundAvatarItem : ObservableObject
     public Uri? NameCard { get; }
 
     /// <summary>
-    /// 无背景占位项没有名刺，因此没有预览图。
+    /// 预览图地址：优先为已缓存的本地背景图，否则退回远程名刺地址。
+    /// </summary>
+    public Uri? PreviewUri { get; }
+
+    /// <summary>
+    /// 「无背景」占位项没有名刺，因此没有预览图。
+    /// <para>
+    /// 结果缓存在字段里：绑定会在每次属性变更时重新求值，
+    /// 每次新建 <see cref="BitmapImage"/> 会让同一张图被反复下载。
+    /// </para>
     /// </summary>
     public ImageSource? NameCardSource
     {
         get
         {
-            return NameCard is null ? null : new BitmapImage(NameCard);
+            if (PreviewUri is null)
+            {
+                return null;
+            }
+
+            return nameCardSource ??= new BitmapImage(PreviewUri);
         }
     }
 

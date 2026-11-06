@@ -2060,6 +2060,15 @@
   <data name="ViewModelDailyNoteTileBackgroundSet" xml:space="preserve">
     <value>磁贴背景设置成功</value>
   </data>
+  <data name="ViewModelDailyNoteTileBackgroundDownloading" xml:space="preserve">
+    <value>正在下载「{0}」的背景图…</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundDownloadCompleted" xml:space="preserve">
+    <value>「{0}」的背景图已更新</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundDownloadFallback" xml:space="preserve">
+    <value>未获取到「{0}」的最新背景图，已沿用原有背景</value>
+  </data>
   <data name="ViewModelDailyNoteClearTileComplete" xml:space="preserve">
     <value>磁贴已清除</value>
   </data>
