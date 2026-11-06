@@ -2,13 +2,12 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core;
-using Snap.Hutao.Remastered.Core.IO.Http.Proxy;
+using Snap.Hutao.Remastered.Core.Caching;
 using Snap.Hutao.Remastered.Core.Logging;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Net.Http;
 
 namespace Snap.Hutao.Remastered.Service.DailyNote;
 
@@ -20,8 +19,17 @@ namespace Snap.Hutao.Remastered.Service.DailyNote;
 internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
 {
     /// <summary>
-    /// 图标地址。这些常量同时是内容工厂构建图标行时使用的图标标识，
+    /// 图标地址与缓存文件名，以及逐个图标的水平视觉校准量（画布像素，正 = 右移）。
+    /// <para>
+    /// 这些常量同时是内容工厂构建图标行时使用的图标标识，
     /// 因此对同程序集可见：地址只在这一处定义，避免两处字面量漂移。
+    /// </para>
+    /// <para>
+    /// 校准量的由来：自动居中用的是不透明度加权的质心，但人眼判断「对齐」时
+    /// 对轮廓和色彩重量更敏感——弯月是半透明浅色、四角星与瓶子是高饱和不透明，
+    /// 质心对齐后视觉上仍会显得下面两个偏左。因此保留一张人工标定的微调表，
+    /// 数字由实际渲染效果反推，0 表示无需额外补偿。
+    /// </para>
     /// </summary>
     internal const string IconResinUrl = "https://api.snaphutaorp.org/static/raw/ItemIcon/UI_ItemIcon_106.png";
     internal const string IconTaskUrl = "https://api.snaphutaorp.org/static/raw/Mark/UI_MarkQuest_Events_Proce.png";
@@ -30,9 +38,13 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     internal const string IconTransformerUrl = "https://api.snaphutaorp.org/static/raw/ItemIcon/UI_ItemIcon_220021.png";
 
     /// <summary>
-    /// 名片图下载的最大尝试次数。
+    /// 单次下载的总体超时（秒）。项目下载器（
+    /// <see cref="Snap.Hutao.Remastered.Core.Caching.ImageCacheDownloadOperation"/>）使用
+    /// 无限超时的 HttpClient，磁贴下载是用户交互的一部分，必须有上限；
+    /// 因此对下载任务施加 <see cref="Task.WaitAsync(TimeSpan)"/> 超时。
+    /// 名片图约 600 KB，正常网络 3 秒内完成，留足慢网与管道重试余量。
     /// </summary>
-    private const int DownloadMaxAttempts = 3;
+    private const int DownloadTimeoutSeconds = 90;
 
     /// <summary>
     /// 磁贴通知的图片上限：不得超过 1024x1024 像素，且不超过 200 KB；
@@ -47,13 +59,21 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     /// </summary>
     private const int MaxTileIconPixelSize = 128;
 
-    private static readonly (string Url, string FileName)[] IconEntries =
+    /// <summary>
+    /// 图标缓存条目：地址、缓存文件名，以及人工标定的水平视觉校准量（画布像素，正 = 右移）。
+    /// <para>
+    /// 自动居中用的是不透明度加权的质心，但人眼判断「对齐」时对轮廓与色彩重量更敏感：
+    /// 弯月是半透明浅色、四角星与瓶子是高饱和不透明，质心对齐后视觉上仍会显得偏。
+    /// 因此保留一张人工标定表，数字按实际渲染效果反推，0 表示无需额外补偿。
+    /// </para>
+    /// </summary>
+    private static readonly (string Url, string FileName, int HorizontalNudge)[] IconEntries =
     [
-        (IconResinUrl, "resin.png"),
-        (IconTaskUrl, "task.png"),
-        (IconHomeCoinUrl, "homecoin.png"),
-        (IconExpeditionUrl, "expedition.png"),
-        (IconTransformerUrl, "transformer.png"),
+        (IconResinUrl, "resin.png", 0),
+        (IconTaskUrl, "task.png", 5),
+        (IconHomeCoinUrl, "homecoin.png", 0),
+        (IconExpeditionUrl, "expedition.png", 5),
+        (IconTransformerUrl, "transformer.png", 0),
     ];
 
     /// <summary>
@@ -62,6 +82,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     private static readonly string[] BackgroundImageExtensions = [".png", ".jpg"];
 
     private readonly DailyNoteOptions options;
+    private readonly IImageCacheDownloadOperation downloadOperation;
 
     /// <summary>
     /// 图标缓存只准备一次；失败时保留 faulted 的任务状态，下一次调用重新尝试。
@@ -102,15 +123,33 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     /// <param name="token">取消标记：用户改选后必须尽快中止下载与落盘。</param>
     public async ValueTask<bool> PrepareBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token)
     {
-        byte[] bytes;
+        string directory = BackgroundCacheDirectory;
+        Directory.CreateDirectory(directory);
+
+        // 上一次异常退出可能留下同角色的临时文件，先清掉避免堆积。
+        DeleteTemporaryFiles(directory, $"{avatarId}_");
+
+        string temporaryFile = Path.Combine(directory, $"{avatarId}_{Guid.NewGuid():N}.download");
 
         try
         {
-            bytes = await DownloadImageAsync(nameCardUri, token).ConfigureAwait(false);
+            // 下载交给项目的标准下载器：统一管道（系统代理、
+            // ServerDomainRedirectHandler 处理 302、RetryHttpHandler 重试）。
+            // 磁贴只负责下载后的裁剪与落盘，不再重实现下载逻辑。
+            await downloadOperation
+                .DownloadFileAsync(nameCardUri, temporaryFile)
+                .AsTask()
+                .WaitAsync(TimeSpan.FromSeconds(DownloadTimeoutSeconds), token)
+                .ConfigureAwait(false);
         }
-        catch (Exception ex) when (ex is not OperationCanceledException)
+        catch (Exception ex) when (!token.IsCancellationRequested)
         {
+            TryDeleteFile(temporaryFile);
+
             // 该角色此前下载过、且宽版与大版都还在缓存里时，直接沿用旧图。
+            // 注意不能按异常类型排除取消：WaitAsync 超时抛出的 TimeoutException
+            // 不是 OperationCanceledException，而真正的用户取消 token 已被取消，
+            // 以 token 是否被取消为准。
             if (HasCachedBackground(avatarId))
             {
                 SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateError("Reuse cached tile background", "DailyNoteTileImageCache", [("error", ex.GetType().Name), ("avatarId", avatarId)]));
@@ -122,13 +161,23 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
 
         token.ThrowIfCancellationRequested();
 
-        string directory = BackgroundCacheDirectory;
-        Directory.CreateDirectory(directory);
-
-        using (Image image = Image.FromStream(new MemoryStream(bytes)))
+        try
         {
-            CropAndSave(image, Path.Combine(directory, $"{avatarId}_wide.png"), 31d / 15d);
-            CropAndSave(image, Path.Combine(directory, $"{avatarId}_large.png"), 1d);
+            // 先读进内存再解码：Image.FromFile / new Bitmap(path) 会一直持有文件句柄，
+            // 之后的删除会因文件被占用而失败，临时文件就堆积下来了。
+            byte[] bytes = await File.ReadAllBytesAsync(temporaryFile, token).ConfigureAwait(false);
+            using (MemoryStream stream = new(bytes))
+            {
+                using (Image image = Image.FromStream(stream))
+                {
+                    CropAndSave(image, Path.Combine(directory, $"{avatarId}_wide.png"), 31d / 15d);
+                    CropAndSave(image, Path.Combine(directory, $"{avatarId}_large.png"), 1d);
+                }
+            }
+        }
+        finally
+        {
+            TryDeleteFile(temporaryFile);
         }
 
         // 超限时 CropAndSave 会改写同名 JPEG，残留的 PNG 会让下一次解析错误命中旧图。
@@ -143,6 +192,21 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         }
 
         return true;
+    }
+
+    private static void TryDeleteFile(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            // 临时文件清理失败不影响结果
+        }
     }
 
     /// <summary>
@@ -174,62 +238,6 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         }
 
         return true;
-    }
-
-    /// <summary>
-    /// 下载图片字节。
-    /// <para>
-    /// 与项目其余请求保持一致：显式使用系统代理（<see cref="HttpProxyUsingSystemProxy"/>），
-    /// 并开启自动重定向——静态资源域名会把请求 302 到 <c>static.snaphutaorp.org</c>，
-    /// 而项目共用的 <see cref="HttpClient"/> 关闭了重定向，直接用只会拿到 302 的响应体。
-    /// </para>
-    /// <para>
-    /// 名片图约 600KB，经代理时可能有连接抖动，因此设置较短的连接超时并重试若干次，
-    /// 避免一次失败就让用户看到「设置磁贴背景失败」。
-    /// </para>
-    /// </summary>
-    private async Task<byte[]> DownloadImageAsync(Uri uri, CancellationToken token)
-    {
-        using (SocketsHttpHandler handler = new()
-        {
-            AllowAutoRedirect = true,
-            MaxAutomaticRedirections = 5,
-            UseProxy = true,
-            Proxy = HttpProxyUsingSystemProxy.Instance,
-            ConnectTimeout = TimeSpan.FromSeconds(15),
-        })
-        using (HttpClient client = new(handler)
-        {
-            Timeout = TimeSpan.FromSeconds(60),
-        })
-        {
-            Exception? lastError = null;
-
-            for (int attempt = 1; attempt <= DownloadMaxAttempts; attempt++)
-            {
-                token.ThrowIfCancellationRequested();
-
-                try
-                {
-                    using (HttpResponseMessage response = await client.GetAsync(uri, token).ConfigureAwait(false))
-                    {
-                        response.EnsureSuccessStatusCode();
-                        return await response.Content.ReadAsByteArrayAsync(token).ConfigureAwait(false);
-                    }
-                }
-                catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException && !token.IsCancellationRequested)
-                {
-                    // 取消不是失败：只有真正的网络错误才重试，取消必须立刻冒泡出去。
-                    lastError = ex;
-                    if (attempt < DownloadMaxAttempts)
-                    {
-                        await Task.Delay(TimeSpan.FromMilliseconds(500 * attempt), token).ConfigureAwait(false);
-                    }
-                }
-            }
-
-            throw new HttpRequestException(SH.FormatServiceDailyNoteTileImageDownloadFailed(uri), lastError);
-        }
     }
 
     /// <summary>
@@ -375,10 +383,13 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         string directory = IconCacheDirectory;
         Directory.CreateDirectory(directory);
 
+        // 回收上一次异常退出或删除失败留下的临时文件。
+        DeleteTemporaryFiles(directory, string.Empty);
+
         await Task.WhenAll(IconEntries.Select(entry => DownloadAndTrimAsync(entry, directory))).ConfigureAwait(false);
     }
 
-    private async Task DownloadAndTrimAsync((string Url, string FileName) entry, string directory)
+    private async Task DownloadAndTrimAsync((string Url, string FileName, int HorizontalNudge) entry, string directory)
     {
         string outputPath = Path.Combine(directory, entry.FileName);
         if (File.Exists(outputPath))
@@ -387,14 +398,57 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         }
 
         // 图标是一次性缓存，与用户的背景选择无关，因此不参与取消。
-        byte[] bytes = await DownloadImageAsync(new Uri(entry.Url), CancellationToken.None).ConfigureAwait(false);
-        using (Bitmap bitmap = new(new MemoryStream(bytes)))
+        // 下载交给项目的标准下载器（统一管道），磁贴只做裁剪。
+        string temporaryFile = $"{outputPath}.{Guid.NewGuid():N}.download";
+        try
         {
-            TrimAndCenter(bitmap, outputPath);
+            await downloadOperation
+                .DownloadFileAsync(new Uri(entry.Url), temporaryFile)
+                .AsTask()
+                .WaitAsync(TimeSpan.FromSeconds(DownloadTimeoutSeconds), CancellationToken.None)
+                .ConfigureAwait(false);
+
+            // 先读进内存再解码，避免 GDI+ 持有文件句柄导致临时文件删不掉。
+            byte[] bytes = await File.ReadAllBytesAsync(temporaryFile, CancellationToken.None).ConfigureAwait(false);
+            using (MemoryStream stream = new(bytes))
+            {
+                using (Bitmap bitmap = new(stream))
+                {
+                    TrimAndCenter(bitmap, outputPath, entry.HorizontalNudge);
+                }
+            }
+        }
+        finally
+        {
+            TryDeleteFile(temporaryFile);
         }
     }
 
-    private void TrimAndCenter(Bitmap source, string outputPath)
+    /// <summary>
+    /// 删除目录下匹配前缀的临时下载文件。上一次异常退出或删除失败留下的文件在这里被回收。
+    /// </summary>
+    private static void DeleteTemporaryFiles(string directory, string fileNamePrefix)
+    {
+        try
+        {
+            foreach (string path in Directory.EnumerateFiles(directory, $"{fileNamePrefix}*.download"))
+            {
+                TryDeleteFile(path);
+            }
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            // 清理失败不影响本次下载
+        }
+    }
+
+    /// <summary>
+    /// 按视觉重心把图标内容居中到 128x128 画布，并缩放到统一尺寸。
+    /// </summary>
+    /// <param name="source">源图标。</param>
+    /// <param name="outputPath">输出路径。</param>
+    /// <param name="horizontalNudge">该图标的水平视觉校准量（画布像素，正 = 右移）。</param>
+    private void TrimAndCenter(Bitmap source, string outputPath, int horizontalNudge)
     {
         int width = source.Width;
         int height = source.Height;
@@ -482,6 +536,9 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
             drawnX -= offsetX * scaleX;
         }
 
+        // 人工标定的视觉校准量：质心对齐后，轮廓与色彩重量不同的图标看起来仍会有偏差。
+        drawnX += horizontalNudge;
+
         // 补偿可能让内容略微越出画布，磁贴的圆形裁剪本来就会吃掉圆外部分，
         // 因此这里只做宽松保护，不再硬拉回画布内——拉回去等于补偿不足，图标依旧偏。
         double slack = size * 0.25;
@@ -509,7 +566,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     /// </summary>
     public string? ResolveIconSource(string url)
     {
-        foreach ((string entryUrl, string fileName) in IconEntries)
+        foreach ((string entryUrl, string fileName, _) in IconEntries)
         {
             if (entryUrl == url)
             {
@@ -529,11 +586,14 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     public string? ResolveBackgroundImageSource(bool isWide)
     {
         string? avatarId = options.TileBackgroundAvatarId.Value;
-        if (string.IsNullOrEmpty(avatarId))
-        {
-            return null;
-        }
+        return string.IsNullOrEmpty(avatarId) ? null : ResolveBackgroundImageSource(avatarId, isWide);
+    }
 
+    /// <summary>
+    /// 解析指定角色已缓存的背景图本地地址，没有缓存时返回 <see langword="null"/>。
+    /// </summary>
+    public string? ResolveBackgroundImageSource(string avatarId, bool isWide)
+    {
         string suffix = isWide ? "_wide" : "_large";
         foreach (string extension in BackgroundImageExtensions)
         {

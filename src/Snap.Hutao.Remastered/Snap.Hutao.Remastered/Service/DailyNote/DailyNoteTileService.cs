@@ -18,32 +18,81 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
     private readonly IDailyNoteTileImageCache imageCache;
     private readonly IDailyNoteTileContentFactory contentFactory;
     private readonly DailyNoteOptions options;
+    private readonly ITaskContext taskContext;
+
+    /// <summary>
+    /// 最近一次发布磁贴用的条目集合。后台下载完成后用它重发磁贴，
+    /// 让新落盘的背景图立即生效，而不是等下一次便笺刷新。
+    /// </summary>
+    private IReadOnlyCollection<DailyNoteEntry>? lastPublishedEntries;
 
     [GeneratedConstructor]
     public partial DailyNoteTileService(IServiceProvider serviceProvider);
 
     /// <summary>
-    /// 为指定账户下载名片并裁剪为磁贴背景图（宽版 31:15 与大版 1:1），成功后写入背景设置。
+    /// 把磁贴背景切换到指定账户的角色：立即写设置，后台下载图。
+    /// <para>
+    /// 之前是先下载、成功后才写设置——名片图约 600KB，网络差时下载要数十秒甚至超时，
+    /// 用户切换角色后磁贴迟迟不响应。现在设置先行：
+    /// 磁贴立即指向新角色（该角色有旧缓存图就直接显示，没有则显示纯内容磁贴），
+    /// 下载在后台完成后重发一次磁贴，换上新图。
+    /// </para>
     /// <para>
     /// <paramref name="token"/> 用于取消先发起但用户已经不想要的选择：
-    /// 写入设置之前必须再次检查，否则晚完成的旧请求会把新选择覆盖掉。
+    /// 写入设置之前必须检查，否则晚完成的旧请求会把新选择覆盖掉。
     /// </para>
     /// <para>
-    /// 下载失败但该角色已有完整旧缓存时沿用旧图，仍然写入设置并返回
-    /// <see langword="true"/>——用户要的是「背景换成这个角色」，
-    /// 用该角色上一张缓存图同样满足，不必因为一次网络抖动就失败。
+    /// 返回的后台任务供调用方显示下载进度；本方法自己不启动它，
+    /// 避免同一次下载被 SafeForget 与调用方各观察一次。
     /// </para>
     /// </summary>
-    public async ValueTask<bool> TrySetBackgroundAsync(string uid, string avatarId, Uri nameCardUri, CancellationToken token = default)
+    public async ValueTask<TileBackgroundSwitchResult> TrySetBackgroundAsync(string uid, string avatarId, Uri nameCardUri, CancellationToken token = default)
     {
-        await imageCache.PrepareBackgroundAsync(avatarId, nameCardUri, token).ConfigureAwait(false);
-
-        // 落盘可能耗时，写设置前必须最后确认一次；否则被取消的旧请求仍会覆盖新选择。
+        // 第一步：写设置（取消检查必须在写之前，否则旧请求会覆盖新选择）。
         token.ThrowIfCancellationRequested();
-
         options.TileBackgroundAvatarId.Value = avatarId;
         options.TileBackgroundUid.Value = uid;
-        return true;
+
+        // 第二步：把后台下载交给调用方观察——调用方需要它来显示进度。
+        return new(true, PrepareBackgroundInBackgroundAsync(avatarId, nameCardUri, token));
+    }
+
+    /// <summary>
+    /// 后台下载名片图；完成后切回主线程重发一次磁贴，让新图生效。
+    /// 失败时沿用该角色的旧缓存（<see cref="IDailyNoteTileImageCache"/> 内部处理），
+    /// 最坏情况是磁贴继续显示旧图，不影响已经生效的设置。
+    /// <para>
+    /// 本方法不抛异常，返回值只用于区分「拿到新图」与「沿用旧图/下载失败」。
+    /// </para>
+    /// </summary>
+    private async Task<bool> PrepareBackgroundInBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token)
+    {
+        bool downloaded;
+
+        try
+        {
+            downloaded = await imageCache.PrepareBackgroundAsync(avatarId, nameCardUri, token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            // 用户已经选了别的角色，后台下载被取消，属正常路径。
+            return false;
+        }
+        catch (Exception ex)
+        {
+            // 下载失败到此为止：设置已经生效，磁贴有旧图就用旧图。
+            SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateError("Prepare tile background failed", "DailyNoteTileService", [("error", ex.GetType().Name), ("avatarId", avatarId)]));
+            return false;
+        }
+
+        // 新图落盘后重发磁贴，让新背景立即生效。
+        await taskContext.SwitchToMainThreadAsync();
+        if (lastPublishedEntries is { } entries)
+        {
+            TryUpdatePrimaryTile(entries);
+        }
+
+        return downloaded;
     }
 
     /// <summary>
@@ -56,6 +105,14 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
     }
 
     /// <summary>
+    /// 解析指定角色已缓存的宽版背景图本地地址，没有缓存时返回 <see langword="null"/>。
+    /// </summary>
+    public string? ResolveCachedWideBackground(string avatarId)
+    {
+        return imageCache.ResolveBackgroundImageSource(avatarId, true);
+    }
+
+    /// <summary>
     /// 更新主磁贴：图标缓存尽力而为地后台准备，任何一步失败都不影响调用方的数据库写入。
     /// </summary>
     public bool TryUpdatePrimaryTile(IReadOnlyCollection<DailyNoteEntry> entries)
@@ -64,6 +121,9 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
         {
             return false;
         }
+
+        // 记住最近发布的集合：后台下载新背景图完成后，用它重发磁贴让新图立即生效。
+        lastPublishedEntries = entries;
 
         // 提权进程无法更新 shell 通知（见 ToastNotificationService 的非提权辅助进程方案）。
         // 主路径下提权实例由 runas 启动、不带包标识，上面的 IsUnpackaged 已拦住；
