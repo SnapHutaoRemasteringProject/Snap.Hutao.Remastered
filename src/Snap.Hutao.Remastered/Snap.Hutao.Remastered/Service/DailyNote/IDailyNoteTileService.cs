@@ -55,7 +55,36 @@ internal interface IDailyNoteTileService
 /// </summary>
 /// <param name="Applied">背景设置是否已写入。</param>
 /// <param name="BackgroundReady">
-/// 后台下载任务：完成后返回 <see langword="true"/> 表示拿到了新图，
-/// <see langword="false"/> 表示沿用旧图或下载失败。任务本身不会抛出。
+/// 后台下载任务：完成后给出本次背景图准备的结局。任务本身不会抛出。
 /// </param>
-internal readonly record struct TileBackgroundSwitchResult(bool Applied, Task<bool> BackgroundReady);
+internal readonly record struct TileBackgroundSwitchResult(bool Applied, Task<TileBackgroundOutcome> BackgroundReady);
+
+/// <summary>
+/// 后台准备磁贴背景图的结局。
+/// <para>
+/// 「沿用了旧图」和「彻底没有背景图」必须分开：前者的磁贴仍有背景，
+/// 后者已经丢掉旧背景，提示文案与用户预期完全不同。
+/// </para>
+/// </summary>
+internal enum TileBackgroundOutcome
+{
+    /// <summary>
+    /// 下载并裁剪成功，磁贴换成了新图。
+    /// </summary>
+    Downloaded,
+
+    /// <summary>
+    /// 下载失败，但该角色此前有完整缓存，磁贴沿用旧图。
+    /// </summary>
+    ReusedCache,
+
+    /// <summary>
+    /// 下载失败且没有可用缓存，磁贴暂时没有背景图。
+    /// </summary>
+    Failed,
+
+    /// <summary>
+    /// 用户已经改选，本次准备作废（不提示）。
+    /// </summary>
+    Canceled,
+}

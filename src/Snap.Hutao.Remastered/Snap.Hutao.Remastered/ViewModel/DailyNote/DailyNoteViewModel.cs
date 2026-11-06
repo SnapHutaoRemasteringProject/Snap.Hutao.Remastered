@@ -379,7 +379,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     /// 下载完成后再发一条普通提示（会按阅读时长自动消失）。
     /// </para>
     /// </summary>
-    private void ShowBackgroundDownloadProgress(TileBackgroundAvatarItem item, Task<bool> backgroundReady, CancellationTokenSource cts)
+    private void ShowBackgroundDownloadProgress(TileBackgroundAvatarItem item, Task<TileBackgroundOutcome> backgroundReady, CancellationTokenSource cts)
     {
         InfoBarOptions progress = InfoBarOptions.Create(new InfoBarMessage
         {
@@ -397,13 +397,13 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     /// 等待后台下载结束并收尾转圈提示。失败与取消都在这里就地处理，
     /// 因此可以安全地用 <c>SafeForget</c> 启动。
     /// </summary>
-    private async Task CompleteBackgroundProgressAsync(InfoBarOptions progress, TileBackgroundAvatarItem item, Task<bool> backgroundReady, CancellationTokenSource cts)
+    private async Task CompleteBackgroundProgressAsync(InfoBarOptions progress, TileBackgroundAvatarItem item, Task<TileBackgroundOutcome> backgroundReady, CancellationTokenSource cts)
     {
-        bool downloaded = false;
+        TileBackgroundOutcome outcome = TileBackgroundOutcome.Failed;
 
         try
         {
-            downloaded = await backgroundReady.ConfigureAwait(false);
+            outcome = await backgroundReady.ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -416,15 +416,20 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         // 无论是否为过期请求，都要收掉自己插入的那条转圈提示。
         infoBarService.Collection.Remove(progress);
 
-        if (cts != tileBackgroundCts)
+        if (cts != tileBackgroundCts || outcome is TileBackgroundOutcome.Canceled)
         {
             // 用户已经选了别的角色，结果由那次选择负责提示。
             return;
         }
 
-        messenger.Send(downloaded
-            ? InfoBarMessage.Success(SH.FormatViewModelDailyNoteTileBackgroundDownloadCompleted(item.Name))
-            : InfoBarMessage.Warning(SH.FormatViewModelDailyNoteTileBackgroundDownloadFallback(item.Name)));
+        // 「沿用了旧图」与「彻底没有背景图」必须分开提示：
+        // 前者磁贴还有背景，后者已经丢掉旧背景。
+        messenger.Send(outcome switch
+        {
+            TileBackgroundOutcome.Downloaded => InfoBarMessage.Success(SH.FormatViewModelDailyNoteTileBackgroundDownloadCompleted(item.Name)),
+            TileBackgroundOutcome.ReusedCache => InfoBarMessage.Warning(SH.FormatViewModelDailyNoteTileBackgroundDownloadFallback(item.Name)),
+            _ => InfoBarMessage.Warning(SH.FormatViewModelDailyNoteTileBackgroundDownloadFailed(item.Name)),
+        });
     }
 
     /// <summary>

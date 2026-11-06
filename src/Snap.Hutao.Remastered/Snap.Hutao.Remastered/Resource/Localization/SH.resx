@@ -2069,6 +2069,9 @@
   <data name="ViewModelDailyNoteTileBackgroundDownloadFallback" xml:space="preserve">
     <value>未获取到「{0}」的最新背景图，已沿用原有背景</value>
   </data>
+  <data name="ViewModelDailyNoteTileBackgroundDownloadFailed" xml:space="preserve">
+    <value>「{0}」的背景图下载失败，磁贴暂时没有背景</value>
+  </data>
   <data name="ViewModelDailyNoteClearTileComplete" xml:space="preserve">
     <value>磁贴已清除</value>
   </data>
