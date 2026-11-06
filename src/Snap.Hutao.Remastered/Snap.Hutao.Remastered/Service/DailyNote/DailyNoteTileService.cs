@@ -62,37 +62,40 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
     /// 失败时沿用该角色的旧缓存（<see cref="IDailyNoteTileImageCache"/> 内部处理），
     /// 最坏情况是磁贴继续显示旧图，不影响已经生效的设置。
     /// <para>
-    /// 本方法不抛异常，返回值只用于区分「拿到新图」与「沿用旧图/下载失败」。
+    /// 本方法不抛异常，返回值区分「拿到新图」「沿用旧图」与「彻底没有背景图」，
+    /// 调用方据此给出不同的提示。取消单独返回，交由调用方忽略。
     /// </para>
     /// </summary>
-    private async Task<bool> PrepareBackgroundInBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token)
+    private async Task<TileBackgroundOutcome> PrepareBackgroundInBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token)
     {
-        bool downloaded;
+        TileBackgroundOutcome outcome;
 
         try
         {
-            downloaded = await imageCache.PrepareBackgroundAsync(avatarId, nameCardUri, token).ConfigureAwait(false);
+            outcome = await imageCache.PrepareBackgroundAsync(avatarId, nameCardUri, token).ConfigureAwait(false)
+                ? TileBackgroundOutcome.Downloaded
+                : TileBackgroundOutcome.ReusedCache;
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested)
         {
             // 用户已经选了别的角色，后台下载被取消，属正常路径。
-            return false;
+            return TileBackgroundOutcome.Canceled;
         }
         catch (Exception ex)
         {
-            // 下载失败到此为止：设置已经生效，磁贴有旧图就用旧图。
+            // 下载失败且没有可沿用的缓存：设置已经生效，但磁贴暂时拿不到背景图。
             SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateError("Prepare tile background failed", "DailyNoteTileService", [("error", ex.GetType().Name), ("avatarId", avatarId)]));
-            return false;
+            outcome = TileBackgroundOutcome.Failed;
         }
 
-        // 新图落盘后重发磁贴，让新背景立即生效。
+        // 新图落盘（或确认无图可用）后重发磁贴，让磁贴与当前设置一致。
         await taskContext.SwitchToMainThreadAsync();
         if (lastPublishedEntries is { } entries)
         {
             TryUpdatePrimaryTile(entries);
         }
 
-        return downloaded;
+        return outcome;
     }
 
     /// <summary>

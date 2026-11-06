@@ -41,7 +41,8 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     /// 单次下载的总体超时（秒）。项目下载器（
     /// <see cref="Snap.Hutao.Remastered.Core.Caching.ImageCacheDownloadOperation"/>）使用
     /// 无限超时的 HttpClient，磁贴下载是用户交互的一部分，必须有上限；
-    /// 因此对下载任务施加 <see cref="Task.WaitAsync(TimeSpan)"/> 超时。
+    /// 因此在调用处用 <see cref="CancellationTokenSource.CancelAfter(TimeSpan)"/>
+    /// 把超时作为取消令牌传进下载器——取消真的会中止请求，而不是放弃等待。
     /// 名片图约 600 KB，正常网络 3 秒内完成，留足慢网与管道重试余量。
     /// </summary>
     private const int DownloadTimeoutSeconds = 90;
@@ -136,11 +137,14 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
             // 下载交给项目的标准下载器：统一管道（系统代理、
             // ServerDomainRedirectHandler 处理 302、RetryHttpHandler 重试）。
             // 磁贴只负责下载后的裁剪与落盘，不再重实现下载逻辑。
-            await downloadOperation
-                .DownloadFileAsync(nameCardUri, temporaryFile)
-                .AsTask()
-                .WaitAsync(TimeSpan.FromSeconds(DownloadTimeoutSeconds), token)
-                .ConfigureAwait(false);
+            //
+            // 超时必须作为令牌传进下载器，不能只用 WaitAsync：WaitAsync 只是停止等待，
+            // 被放弃的请求会继续跑（占着响应体写入临时文件，也会占用共享客户端的连接）。
+            using (CancellationTokenSource timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(token))
+            {
+                timeoutSource.CancelAfter(TimeSpan.FromSeconds(DownloadTimeoutSeconds));
+                await downloadOperation.DownloadFileAsync(nameCardUri, temporaryFile, timeoutSource.Token).ConfigureAwait(false);
+            }
         }
         catch (Exception ex) when (!token.IsCancellationRequested)
         {
@@ -402,11 +406,11 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         string temporaryFile = $"{outputPath}.{Guid.NewGuid():N}.download";
         try
         {
-            await downloadOperation
-                .DownloadFileAsync(new Uri(entry.Url), temporaryFile)
-                .AsTask()
-                .WaitAsync(TimeSpan.FromSeconds(DownloadTimeoutSeconds), CancellationToken.None)
-                .ConfigureAwait(false);
+            // 图标下载同样把超时作为令牌传进下载器，避免放弃等待后请求仍在后台跑。
+            using (CancellationTokenSource timeoutSource = new(TimeSpan.FromSeconds(DownloadTimeoutSeconds)))
+            {
+                await downloadOperation.DownloadFileAsync(new Uri(entry.Url), temporaryFile, timeoutSource.Token).ConfigureAwait(false);
+            }
 
             // 先读进内存再解码，避免 GDI+ 持有文件句柄导致临时文件删不掉。
             byte[] bytes = await File.ReadAllBytesAsync(temporaryFile, CancellationToken.None).ConfigureAwait(false);
