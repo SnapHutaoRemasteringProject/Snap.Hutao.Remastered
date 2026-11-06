@@ -137,7 +137,8 @@ public sealed class GameIslandInterop : IGameIslandInterop
         IslandEnvironment* pIslandEnvironment = (IslandEnvironment*)handle;
 
         pIslandEnvironment->IsOversea = isOversea;
-        pIslandEnvironment->ProvideOffsets = Win32.Foundation.BOOL.FALSE;
+        pIslandEnvironment->HookOffsets = isOversea ? default : IslandHookOffsets.Chinese;
+        pIslandEnvironment->ProvideOffsets = !isOversea;
 
         if (LocalSetting.Get(SettingKeys.LaunchForceUsingTouchScreen, false))
         {
@@ -154,7 +155,6 @@ public sealed class GameIslandInterop : IGameIslandInterop
     private static unsafe IslandEnvironmentView UpdateIslandEnvironment(nint handle, LaunchOptions options)
     {
         IslandEnvironment* pIslandEnvironment = (IslandEnvironment*)handle;
-        pIslandEnvironment->ProvideOffsets = Win32.Foundation.BOOL.FALSE;
 
         pIslandEnvironment->EnableSetFieldOfView = options.IsSetFieldOfViewEnabled.Value;
         pIslandEnvironment->FieldOfView = options.TargetFov.Value;
