@@ -48,6 +48,12 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     private const int DownloadTimeoutSeconds = 90;
 
     /// <summary>
+    /// 临时下载文件的最短保留时间（分钟）。比在途下载的存活时间长得多，
+    /// 因此清理时不会误删正在写入的文件，只回收异常退出留下的孤儿。
+    /// </summary>
+    private const int TemporaryFileRetentionMinutes = 10;
+
+    /// <summary>
     /// 磁贴通知的图片上限：不得超过 1024x1024 像素，且不超过 200 KB；
     /// 任一条件不满足时 Windows 会直接丢弃整条通知。
     /// </summary>
@@ -127,8 +133,8 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         string directory = BackgroundCacheDirectory;
         Directory.CreateDirectory(directory);
 
-        // 上一次异常退出可能留下同角色的临时文件，先清掉避免堆积。
-        DeleteTemporaryFiles(directory, $"{avatarId}_");
+        // 上一次异常退出可能留下临时文件，先回收陈旧的。
+        DeleteStaleTemporaryFiles(directory);
 
         string temporaryFile = Path.Combine(directory, $"{avatarId}_{Guid.NewGuid():N}.download");
 
@@ -387,8 +393,8 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         string directory = IconCacheDirectory;
         Directory.CreateDirectory(directory);
 
-        // 回收上一次异常退出或删除失败留下的临时文件。
-        DeleteTemporaryFiles(directory, string.Empty);
+        // 回收上一次异常退出留下的临时文件。
+        DeleteStaleTemporaryFiles(directory);
 
         await Task.WhenAll(IconEntries.Select(entry => DownloadAndTrimAsync(entry, directory))).ConfigureAwait(false);
     }
@@ -429,15 +435,21 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     }
 
     /// <summary>
-    /// 删除目录下匹配前缀的临时下载文件。上一次异常退出或删除失败留下的文件在这里被回收。
+    /// 回收陈旧的临时下载文件。只清理超过 <see cref="TemporaryFileRetentionMinutes"/>
+    /// 分钟没有变动的文件：在途下载最多只活 <see cref="DownloadTimeoutSeconds"/> 秒，
+    /// 因此不会误删正在写入的文件；异常退出留下的孤儿文件则能在这里被收掉。
     /// </summary>
-    private static void DeleteTemporaryFiles(string directory, string fileNamePrefix)
+    private static void DeleteStaleTemporaryFiles(string directory)
     {
         try
         {
-            foreach (string path in Directory.EnumerateFiles(directory, $"{fileNamePrefix}*.download"))
+            DateTime cutoff = DateTime.UtcNow.AddMinutes(-TemporaryFileRetentionMinutes);
+            foreach (string path in Directory.EnumerateFiles(directory, "*.download"))
             {
-                TryDeleteFile(path);
+                if (File.GetLastWriteTimeUtc(path) < cutoff)
+                {
+                    TryDeleteFile(path);
+                }
             }
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
