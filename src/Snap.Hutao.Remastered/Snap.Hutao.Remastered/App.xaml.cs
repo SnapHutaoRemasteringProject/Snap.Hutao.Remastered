@@ -215,12 +215,7 @@ public sealed partial class App : Application
             exitingTime = DateTime.UtcNow;
         }
 
-        if (XamlApplicationLifetime.ActivationAndInitializationCompleted || DateTime.UtcNow >= exitingTime.AddSeconds(5))
-        {
-            return true;
-        }
-
-        return false;
+        return XamlApplicationLifetime.ActivationAndInitializationCompleted || DateTime.UtcNow >= exitingTime.AddSeconds(5);
     }
 
     /// <summary>
