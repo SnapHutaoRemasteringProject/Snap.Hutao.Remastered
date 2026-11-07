@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.API.Model;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.ExceptionService;
@@ -11,7 +10,6 @@ using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Service.Game.FileSystem;
 using Snap.Hutao.Remastered.Service.Game.Configuration;
 using Snap.Hutao.Remastered.Service.Game.Launching.Context;
-using Snap.Hutao.Remastered.Service.Plugin;
 using Snap.Hutao.Remastered.Service.Notification;
 using System.Net.Http;
 using Snap.Hutao.Remastered.Web.Hutao;
@@ -106,26 +104,6 @@ public sealed class GameIslandInterop : IGameIslandInterop
                     }
 
                     fullTrustProcess.LoadLibrary(FullTrustLoadLibraryRequest.Create("Island", islandPath));
-
-                    IPluginService pluginService = context.PluginService;
-
-                    // Load dll in inject of plugins
-                    foreach (PluginInfo plugin in pluginService.GetAllPluginInfos())
-                    {
-                        if (!plugin.IsEnabled) continue;
-
-                        string? pluginDirectory = pluginService.GetPluginPath(plugin.Id);
-                        if (pluginDirectory is null) continue;
-                        if (!Directory.Exists(Path.Combine(pluginDirectory, "inject"))) continue;
-
-                        string injectPath = Path.Combine(pluginDirectory, "inject");
-
-                        foreach (FileInfo inject in new DirectoryInfo(injectPath).GetFiles("*.dll", SearchOption.TopDirectoryOnly))
-                        {
-                            fullTrustProcess.LoadLibrary(FullTrustLoadLibraryRequest.Create($"{plugin.Manifest.Name}::{inject.Name}", inject.FullName));
-                        }
-                    }
-
                     fullTrustProcess.ResumeMainThread();
                 }
 

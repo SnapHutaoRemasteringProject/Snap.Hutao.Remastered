@@ -305,11 +305,6 @@
                         Content="{shuxm:ResourceString Name=ViewFeedbackHeader}"
                         Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/Feedback.png}"/>
 
-                    <NavigationViewItem
-                        shuxc:NavigationViewItemHelper.NavigateTo="shuxvp:PluginPage"
-                        Content="{shuxm:ResourceString Name=ViewPluginHeader}"
-                        Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/Plugin.png}"/>
-
                     <NavigationViewItemHeader Content="{shuxm:ResourceString Name=ViewToolHeader}"/>
 
                     <NavigationViewItem

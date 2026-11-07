@@ -354,7 +354,6 @@
     <Content Include="Resource\Navigation\HardChallenge.png" />
     <Content Include="Resource\Navigation\LaunchGame.png" />
     <Content Include="Resource\Navigation\Passport.png" />
-    <Content Include="Resource\Navigation\Plugin.png" />
     <Content Include="Resource\Navigation\RoleCombat.png" />
     <Content Include="Resource\Navigation\SpiralAbyss.png" />
     <Content Include="Resource\Navigation\WikiAvatar.png" />

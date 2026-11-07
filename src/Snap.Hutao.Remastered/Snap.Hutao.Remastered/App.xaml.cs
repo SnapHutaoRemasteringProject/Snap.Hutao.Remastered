@@ -13,7 +13,6 @@ using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Service;
-using Snap.Hutao.Remastered.UI.Xaml;
 using Snap.Hutao.Remastered.UI.Windowing;
 using Snap.Hutao.Remastered.Service.Job;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior;

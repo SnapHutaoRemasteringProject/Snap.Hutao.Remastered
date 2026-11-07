@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.Diagnostics;
-using Snap.Hutao.Remastered.Service.Plugin;
 
 namespace Snap.Hutao.Remastered.Service.Game.Launching.Context;
 
@@ -19,8 +18,6 @@ public sealed class LaunchExecutionContext
     public required LaunchOptions LaunchOptions { get; init; }
 
     public required IProcess Process { get; init; }
-
-    public required IPluginService PluginService { get; init; }
 
     public required bool IsOversea { get; init; }
 }
