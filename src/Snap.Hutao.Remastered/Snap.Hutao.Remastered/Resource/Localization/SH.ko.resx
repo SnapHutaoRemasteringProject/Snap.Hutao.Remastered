@@ -980,6 +980,9 @@
   <data name="ServiceGachaLogHutaoCloudEndIdFetchFailed" xml:space="preserve">
     <value>클라우드 기원 기록 가져오기 실패</value>
   </data>
+  <data name="ServiceGachaLogItemMetadataNotFound" xml:space="preserve">
+    <value>祈愿物品“{0}”的元数据尚未更新，请稍后重试</value>
+  </data>
   <data name="ServiceGachaLogUrlProviderAuthkeyRequestFailed" xml:space="preserve">
     <value>인증키 요청 실패</value>
   </data>
