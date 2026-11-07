@@ -20,37 +20,6 @@ public static class ThemeHelper
         };
     }
 
-    public static Snap.Hutao.Remastered.UI.Xaml.Theme ElementToFramework(ElementTheme elementTheme)
-    {
-        return elementTheme switch
-        {
-            ElementTheme.Default => Snap.Hutao.Remastered.UI.Xaml.Theme.None,
-            ElementTheme.Light => Snap.Hutao.Remastered.UI.Xaml.Theme.Light,
-            ElementTheme.Dark => Snap.Hutao.Remastered.UI.Xaml.Theme.Dark,
-            _ => throw HutaoException.NotSupported($"Unexpected ElementTheme value: {elementTheme}."),
-        };
-    }
-
-    public static Snap.Hutao.Remastered.UI.Xaml.Theme ApplicationToFramework(ApplicationTheme applicationTheme)
-    {
-        return applicationTheme switch
-        {
-            ApplicationTheme.Light => Snap.Hutao.Remastered.UI.Xaml.Theme.Light,
-            ApplicationTheme.Dark => Snap.Hutao.Remastered.UI.Xaml.Theme.Dark,
-            _ => throw HutaoException.NotSupported($"Unexpected ApplicationTheme value: {applicationTheme}."),
-        };
-    }
-
-    public static Snap.Hutao.Remastered.UI.Xaml.Theme ApplicationToFrameworkInvert(ApplicationTheme applicationTheme)
-    {
-        return applicationTheme switch
-        {
-            ApplicationTheme.Light => Snap.Hutao.Remastered.UI.Xaml.Theme.Dark,
-            ApplicationTheme.Dark => Snap.Hutao.Remastered.UI.Xaml.Theme.Light,
-            _ => throw HutaoException.NotSupported($"Unexpected ApplicationTheme value: {applicationTheme}."),
-        };
-    }
-
     public static ApplicationTheme ElementToApplication(ElementTheme applicationTheme)
     {
         return applicationTheme switch

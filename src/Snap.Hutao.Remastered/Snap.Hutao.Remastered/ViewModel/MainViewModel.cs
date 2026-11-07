@@ -21,7 +21,6 @@ using Snap.Hutao.Remastered.Service.Update;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
-using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
 using Snap.Hutao.Remastered.Web;
 using Snap.Hutao.Remastered.Web.Request.Builder;
@@ -103,7 +102,12 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
     private void InvertAppTheme()
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Invert app theme", "MainViewModel.Command"));
-        FrameworkTheming.SetTheme(ThemeHelper.ApplicationToFrameworkInvert(app.RequestedTheme));
+        AppOptions.ElementTheme.Value = AppOptions.ElementTheme.Value switch
+        {
+            ElementTheme.Dark => ElementTheme.Light,
+            ElementTheme.Light => ElementTheme.Dark,
+            _ => app.RequestedTheme is ApplicationTheme.Dark ? ElementTheme.Light : ElementTheme.Dark,
+        };
     }
 
     private void ShowUpdateLogWindowAfterUpdate()

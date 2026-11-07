@@ -1,7 +1,9 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.LifeCycle;
 using Windows.Foundation;
@@ -70,6 +72,18 @@ public sealed partial class ContentDialogQueue : IContentDialogQueue
                 // User close the window on previous dialog, and this dialog still using old XamlRoot.
                 // And that's why we didn't use dialog's DispatcherQueue to switch thread either.
                 HutaoException.NotSupported("Dialog using different XamlRoot");
+            }
+
+            // Dialogs live in a popup and need an explicit theme source. Bind at
+            // show time so queued and already-open dialogs follow the host root.
+            if (contentDialog.XamlRoot.Content is FrameworkElement root)
+            {
+                contentDialog.SetBinding(FrameworkElement.RequestedThemeProperty, new Binding
+                {
+                    Source = root,
+                    Path = new PropertyPath(nameof(FrameworkElement.RequestedTheme)),
+                    Mode = BindingMode.OneWay,
+                });
             }
 
             IAsyncOperation<ContentDialogResult> operation = contentDialog.ShowAsync();

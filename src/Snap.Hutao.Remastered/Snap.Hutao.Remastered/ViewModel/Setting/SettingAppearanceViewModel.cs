@@ -44,6 +44,7 @@ public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
         SelectedControlMaterial = AppOptions.ControlMaterials.Single(material => material.Value == AppOptions.ControlMaterial.Value);
         AppOptions.ControlMaterial.PropertyChanged += OnControlMaterialChanged;
         AppOptions.BackdropType.PropertyChanged += OnBackdropTypeChanged;
+        AppOptions.ElementTheme.PropertyChanged += OnElementThemeChanged;
     }
 
     partial void OnSelectedControlMaterialChanged(NameValue<ControlMaterial>? value)
@@ -65,10 +66,16 @@ public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
         SelectedBackdropType = AppOptions.BackdropTypes.Single(backdrop => backdrop.Value == AppOptions.BackdropType.Value);
     }
 
+    private void OnElementThemeChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        SelectedElementTheme = AppOptions.LazyElementThemes.Value.Single(theme => theme.Value == AppOptions.ElementTheme.Value);
+    }
+
     public override void Dispose()
     {
         AppOptions.ControlMaterial.PropertyChanged -= OnControlMaterialChanged;
         AppOptions.BackdropType.PropertyChanged -= OnBackdropTypeChanged;
+        AppOptions.ElementTheme.PropertyChanged -= OnElementThemeChanged;
         base.Dispose();
     }
 
@@ -208,7 +215,6 @@ public sealed partial class SettingAppearanceViewModel : Abstraction.ViewModel
             if (SetProperty(ref field, value) && value is not null)
             {
                 AppOptions.ElementTheme.Value = value.Value;
-                FrameworkTheming.SetTheme(ThemeHelper.ElementToFramework(value.Value));
             }
         }
     }

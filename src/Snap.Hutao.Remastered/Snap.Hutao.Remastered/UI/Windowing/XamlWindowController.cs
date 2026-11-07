@@ -53,6 +53,11 @@ public sealed class XamlWindowController
         Debug.Assert(serviceProvider is IServiceScope);
         ServiceProvider = serviceProvider;
 
+        // Apply the public XAML theme override before showing the window.
+        AppOptions appOptions = serviceProvider.GetRequiredService<AppOptions>();
+        ApplyElementTheme(appOptions.ElementTheme.Value);
+        ElementThemeCallback = appOptions.ElementTheme.WithValueChangedCallback(static (value, controller) => controller.ApplyElementTheme(value), this);
+
         // Subclassing and NonRudeHWND are standard infrastructure.
         subclass = new(window);
         nonRude = new(window.GetWindowHandle());
@@ -94,7 +99,6 @@ public sealed class XamlWindowController
         hasCustomSystemBackdrop = window.SystemBackdrop is not null;
 
         // SystemBackdrop
-        AppOptions appOptions = serviceProvider.GetRequiredService<AppOptions>();
         UpdateSystemBackdrop(appOptions.BackdropType.Value);
         BackdropTypeCallback = appOptions.BackdropType.WithValueChangedCallback(static (value, controller) => controller.UpdateSystemBackdrop(value), this);
 
@@ -107,6 +111,8 @@ public sealed class XamlWindowController
     public IServiceProvider ServiceProvider { get; }
 
     private IObservableProperty<BackdropType>? BackdropTypeCallback { get; }
+
+    private IObservableProperty<ElementTheme>? ElementThemeCallback { get; }
 
     public Task DetachContentAsync()
     {
@@ -254,6 +260,19 @@ public sealed class XamlWindowController
         // Dispose the service scope
         Unsafe.As<IServiceScope>(ServiceProvider).Dispose();
         window.UninitializeController();
+    }
+
+    private void ApplyElementTheme(ElementTheme theme)
+    {
+        if (closing || detachContent is not null)
+        {
+            return;
+        }
+
+        if (window.Content is FrameworkElement root)
+        {
+            root.RequestedTheme = theme;
+        }
     }
 
     private bool UpdateSystemBackdrop(BackdropType backdropType)

@@ -17,7 +17,6 @@ using Snap.Hutao.Remastered.UI.Xaml;
 using Snap.Hutao.Remastered.UI.Windowing;
 using Snap.Hutao.Remastered.Service.Job;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior;
-using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using System.Diagnostics;
 using System.IO;
 
@@ -195,8 +194,6 @@ public sealed partial class App : Application
             }
 
             logger.LogInformation($"{ConsoleBanner}");
-
-            FrameworkTheming.SetTheme(ThemeHelper.ElementToFramework(serviceProvider.GetRequiredService<AppOptions>().ElementTheme.Value));
 
             // Manually invoke
             SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Activate and Initialize", "Application"));

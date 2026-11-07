@@ -3,10 +3,12 @@
 
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.Graphics;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Factory.Process;
+using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.Hutao;
 using Snap.Hutao.Remastered.UI.Windowing;
 using System.Runtime.CompilerServices;
@@ -23,6 +25,20 @@ public sealed partial class ExceptionWindow : Microsoft.UI.Xaml.Window, INotifyP
     {
         // Message pump will die if we introduce XamlWindowController
         InitializeComponent();
+        try
+        {
+            if (Content is FrameworkElement root)
+            {
+                root.RequestedTheme = Ioc.Default.GetRequiredService<AppOptions>().ElementTheme.Value;
+            }
+        }
+        catch (Exception themeException)
+        {
+            // Reporting an initialization/database failure must not depend on
+            // successfully resolving the persisted appearance settings.
+            System.Diagnostics.Trace.WriteLine($"Unable to apply exception window theme: {themeException}");
+        }
+
         this.associatedEventId = associatedEventId;
         Exception = ex.ToString();
 
