@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core;
-using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Model.Entity;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
@@ -19,6 +18,7 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
     private readonly IDailyNoteTileContentFactory contentFactory;
     private readonly DailyNoteOptions options;
     private readonly ITaskContext taskContext;
+    private readonly ILogger<DailyNoteTileService> logger;
 
     /// <summary>
     /// 最近一次发布磁贴用的条目集合。后台下载完成后用它重发磁贴，
@@ -84,7 +84,7 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
         catch (Exception ex)
         {
             // 下载失败且没有可沿用的缓存：设置已经生效，但磁贴暂时拿不到背景图。
-            SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateError("Prepare tile background failed", "DailyNoteTileService", [("error", ex.GetType().Name), ("avatarId", avatarId)]));
+            logger.LogWarning(ex, "Prepare tile background failed for avatar {AvatarId}", avatarId);
             outcome = TileBackgroundOutcome.Failed;
         }
 
@@ -168,7 +168,7 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
         }
         catch (Exception ex)
         {
-            SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateError("Update primary tile failed", "DailyNoteTileService", [("error", ex.GetType().Name)]));
+            logger.LogWarning(ex, "Update primary tile failed");
             return false;
         }
     }

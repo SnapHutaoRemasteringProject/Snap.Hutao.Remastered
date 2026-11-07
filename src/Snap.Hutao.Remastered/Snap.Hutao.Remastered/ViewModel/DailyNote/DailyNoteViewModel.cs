@@ -43,6 +43,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     private readonly IAvatarInfoService avatarInfoService;
     private readonly IDailyNoteTileService dailyNoteTileService;
     private readonly IInfoBarService infoBarService;
+    private readonly ILogger<DailyNoteViewModel> logger;
 
     private DailyNoteMetadataContext? metadataContext;
 
@@ -205,7 +206,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         }
         catch (Exception ex)
         {
-            SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Load tile background avatars failed", "DailyNoteViewModel", [("error", ex.GetType().Name)]));
+            logger.LogWarning(ex, "Load tile background avatars failed");
             await taskContext.SwitchToMainThreadAsync();
             messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundLoadFailed, ex));
         }
@@ -233,7 +234,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
             catch (Exception ex)
             {
                 // 拉取失败（未登录、网络异常等）不影响「无背景」这一项，仅记录后继续。
-                SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Fetch tile background avatars failed", "DailyNoteViewModel", [("error", ex.GetType().Name)]));
+                logger.LogWarning(ex, "Fetch tile background avatars failed");
             }
         }
 
@@ -356,7 +357,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         catch (Exception ex)
         {
             await taskContext.SwitchToMainThreadAsync();
-            SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Set tile background failed", "DailyNoteViewModel", [("error", ex.GetType().Name)]));
+            logger.LogWarning(ex, "Set tile background failed");
 
             // 过期请求的失败同样要丢弃，否则会把用户的新选择回滚掉。
             if (cts != tileBackgroundCts)
@@ -408,7 +409,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         catch (Exception ex)
         {
             // 服务侧的后台任务本不抛异常；这里兜底以防未来改动，避免静默 lost task。
-            SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateError("Await tile background failed", "DailyNoteViewModel", [("error", ex.GetType().Name)]));
+            logger.LogWarning(ex, "Await tile background failed");
         }
 
         await taskContext.SwitchToMainThreadAsync();

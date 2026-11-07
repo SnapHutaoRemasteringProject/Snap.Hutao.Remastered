@@ -3,7 +3,6 @@
 
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Caching;
-using Snap.Hutao.Remastered.Core.Logging;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -90,6 +89,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
 
     private readonly DailyNoteOptions options;
     private readonly IImageCacheDownloadOperation downloadOperation;
+    private readonly ILogger<DailyNoteTileImageCache> logger;
 
     /// <summary>
     /// 图标缓存只准备一次；失败时保留 faulted 的任务状态，下一次调用重新尝试。
@@ -162,7 +162,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
             // 以 token 是否被取消为准。
             if (HasCachedBackground(avatarId))
             {
-                SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateError("Reuse cached tile background", "DailyNoteTileImageCache", [("error", ex.GetType().Name), ("avatarId", avatarId)]));
+                logger.LogWarning(ex, "Reuse cached tile background for avatar {AvatarId}", avatarId);
                 return false;
             }
 
@@ -384,7 +384,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         }
         catch (Exception ex)
         {
-            SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateError("Prepare tile icons failed", "DailyNoteTileImageCache", [("error", ex.GetType().Name)]));
+            logger.LogWarning(ex, "Prepare tile icons failed");
         }
     }
 
