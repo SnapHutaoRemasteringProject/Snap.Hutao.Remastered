@@ -204,7 +204,11 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         return true;
     }
 
-    private static void TryDeleteFile(string path)
+    /// <summary>
+    /// 尽力删除临时文件。删除失败不中断调用方，但必须留下记录，
+    /// 否则残留文件无从追查（仓库约定：catch 必须记录、上报或重抛）。
+    /// </summary>
+    private void TryDeleteFile(string path)
     {
         try
         {
@@ -215,7 +219,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
-            // 临时文件清理失败不影响结果
+            logger.LogDebug(ex, "Unable to delete temporary tile file '{Path}'", path);
         }
     }
 
@@ -438,8 +442,9 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     /// 回收陈旧的临时下载文件。只清理超过 <see cref="TemporaryFileRetentionMinutes"/>
     /// 分钟没有变动的文件：在途下载最多只活 <see cref="DownloadTimeoutSeconds"/> 秒，
     /// 因此不会误删正在写入的文件；异常退出留下的孤儿文件则能在这里被收掉。
+    /// 目录枚举失败只记录，不影响本次下载。
     /// </summary>
-    private static void DeleteStaleTemporaryFiles(string directory)
+    private void DeleteStaleTemporaryFiles(string directory)
     {
         try
         {
@@ -454,7 +459,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
-            // 清理失败不影响本次下载
+            logger.LogDebug(ex, "Unable to recycle stale tile downloads in '{Directory}'", directory);
         }
     }
 

@@ -46,7 +46,7 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
     /// 避免同一次下载被 SafeForget 与调用方各观察一次。
     /// </para>
     /// </summary>
-    public async ValueTask<TileBackgroundSwitchResult> TrySetBackgroundAsync(string uid, string avatarId, Uri nameCardUri, CancellationToken token = default)
+    public ValueTask<TileBackgroundSwitchResult> TrySetBackgroundAsync(string uid, string avatarId, Uri nameCardUri, CancellationToken token = default)
     {
         // 第一步：写设置（取消检查必须在写之前，否则旧请求会覆盖新选择）。
         token.ThrowIfCancellationRequested();
@@ -54,7 +54,8 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
         options.TileBackgroundUid.Value = uid;
 
         // 第二步：把后台下载交给调用方观察——调用方需要它来显示进度。
-        return new(true, PrepareBackgroundInBackgroundAsync(avatarId, nameCardUri, token));
+        // 本方法自身立即完成：同步路径不该带 async，否则只会多一层状态机。
+        return new(new TileBackgroundSwitchResult(true, PrepareBackgroundInBackgroundAsync(avatarId, nameCardUri, token)));
     }
 
     /// <summary>
