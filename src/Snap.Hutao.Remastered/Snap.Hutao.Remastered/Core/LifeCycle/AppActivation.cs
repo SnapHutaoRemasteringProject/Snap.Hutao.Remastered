@@ -13,7 +13,6 @@ using Snap.Hutao.Remastered.Service.Job;
 using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.Service.Notification;
-using Snap.Hutao.Remastered.Service.Plugin;
 using Snap.Hutao.Remastered.UI.Input.HotKey;
 using Snap.Hutao.Remastered.UI.Shell;
 using Snap.Hutao.Remastered.UI.Windowing;
@@ -302,7 +301,6 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
             [
                 serviceProvider.GetRequiredService<HutaoUserOptions>().InitializeAsync().AsTask(),
                 serviceProvider.GetRequiredService<IMetadataService>().InitializeInternalAsync().AsTask(),
-                serviceProvider.GetRequiredService<IPluginService>().LoadAllPluginsAsync()
             ]).ConfigureAwait(false);
 
             SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Background initialization completed", "Application"));
