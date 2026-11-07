@@ -980,6 +980,9 @@
   <data name="ServiceGachaLogHutaoCloudEndIdFetchFailed" xml:space="preserve">
     <value>Không thể lấy lịch sử cầu nguyện trên cloud</value>
   </data>
+  <data name="ServiceGachaLogItemMetadataNotFound" xml:space="preserve">
+    <value>祈愿物品“{0}”的元数据尚未更新，请稍后重试</value>
+  </data>
   <data name="ServiceGachaLogUrlProviderAuthkeyRequestFailed" xml:space="preserve">
     <value>Yêu cầu xác thực &lt;0&gt; thất bại</value>
   </data>
