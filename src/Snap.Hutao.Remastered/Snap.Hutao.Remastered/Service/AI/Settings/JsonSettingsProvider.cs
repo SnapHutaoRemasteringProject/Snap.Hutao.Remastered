@@ -1,4 +1,4 @@
-// Copyright (c) 2026 DGP Studio. All rights reserved.
+﻿// Copyright (c) 2026 DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 // Adapted from Snap.Nicole.
 
@@ -9,6 +9,7 @@ using Snap.Hutao.Remastered.Core.AI.Threading;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Service.AI.Migration;
 using Snap.Hutao.Remastered.Core.Setting;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using System.IO;
 using System.Reflection;
 
@@ -39,7 +40,12 @@ internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, I
 
     public JsonSettingsProvider(string fileNameWithoutExtension, JsonSerializerOptions jsonOptions)
     {
-        this.jsonOptions = jsonOptions;
+        // Test doubles and legacy callers may pass options without a resolver. Keep the
+        // serializer's default reflection resolver for those callers instead of failing
+        // inside JsonSerialize.GetTypeInfo.
+        this.jsonOptions = jsonOptions.TypeInfoResolver is null
+            ? new JsonSerializerOptions(jsonOptions) { TypeInfoResolver = JsonSerializerOptions.Default.TypeInfoResolver }
+            : jsonOptions;
 
         string directory = WellKnownLocations.Settings;
         Directory.CreateDirectory(directory);
@@ -332,7 +338,7 @@ internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, I
             if (value is AgentSettings settings) { AgentCredentialStore.Save(settings); }
             using (FileStream stream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                JsonSerializer.Serialize(stream, value, jsonOptions);
+                JsonSerialize.Serialize(stream, value, jsonOptions);
             }
 
             File.ClearReadOnlyAttribute(filePath);

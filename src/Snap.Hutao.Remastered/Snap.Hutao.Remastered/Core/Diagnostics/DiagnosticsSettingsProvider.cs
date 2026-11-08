@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Text.Json;
 using System.Collections.Concurrent;
 using System.IO;
 using Windows.Storage;
@@ -10,6 +11,7 @@ namespace Snap.Hutao.Remastered.Core.Diagnostics;
 public sealed class DiagnosticsSettingsProvider
 {
     private static readonly string? SettingsFilePath;
+    private static readonly JsonSerializerOptions CompactJsonOptions = JsonOptions.CreateCompact();
 
     private readonly ConcurrentDictionary<string, object?>? store;
 
@@ -77,7 +79,7 @@ public sealed class DiagnosticsSettingsProvider
             if (SettingsFilePath is not null && File.Exists(SettingsFilePath))
             {
                 string json = File.ReadAllText(SettingsFilePath);
-                Dictionary<string, JsonElement>? raw = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
+                Dictionary<string, JsonElement>? raw = JsonSerialize.Deserialize<Dictionary<string, JsonElement>>(json, JsonOptions.Default);
                 if (raw is not null)
                 {
                     ConcurrentDictionary<string, object?> result = [];
@@ -107,7 +109,8 @@ public sealed class DiagnosticsSettingsProvider
 
         try
         {
-            string json = JsonSerializer.Serialize(store, new JsonSerializerOptions { WriteIndented = false });
+            Dictionary<string, object?> snapshot = store.ToDictionary(static item => item.Key, static item => item.Value);
+            string json = JsonSerialize.Serialize(snapshot, CompactJsonOptions);
             File.WriteAllText(SettingsFilePath, json);
         }
         catch

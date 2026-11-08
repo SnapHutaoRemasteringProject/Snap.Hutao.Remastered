@@ -66,7 +66,7 @@ public static class RegistryInterop
         try
         {
             string decoded = RegistryAccountDataListDecoder.Decode(raw, out address);
-            userInfo = JsonSerializer.Deserialize<DataWrapper<ImmutableArray<AccountInformation>>>(decoded, JsonOptions.Default);
+            userInfo = JsonSerialize.Deserialize<DataWrapper<ImmutableArray<AccountInformation>>>(decoded, JsonOptions.Default);
             return true;
         }
         catch (Exception ex)

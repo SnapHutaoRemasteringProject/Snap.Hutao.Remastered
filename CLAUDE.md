@@ -1,4 +1,4 @@
-# CLAUDE.md — Snap Hutao Remastered
+﻿# CLAUDE.md — Snap Hutao Remastered
 
 > **This file is a contract, not a wish list.** Every statement below was checked against the
 > file named beside it. Where reality does not yet match what we want, the gap is recorded in
@@ -92,7 +92,7 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
     `CopyContentForUnpackaged` target copies `Resource/` and `Assets/` next to the exe for the
     unpackaged mode.
 - **Test caveat (important)** — the test project has **no `ProjectReference` to the app**
-  (`CODE_REVIEW.md#BUG-02`). It compiles a hand-picked set of 39 production files through
+  (`CODE_REVIEW.md#BUG-02`). It compiles a hand-picked set of 40 production files through
   `<Compile Include="..\Snap.Hutao.Remastered\...">` links and holds 167 `[TestMethod]`s across
   `BaseClassLibrary/`, `RuntimeBehavior/`, `IncomingFeature/` and `PlatformExtensions/`.
   Consequence: **a new test can only touch code that is already source-linked**; anything else
@@ -578,7 +578,7 @@ ID — do not "fix" these by documenting them as if they were intended.
 | 3 | Repository-wide `internal` removal (0 occurrences left) + 12 `SH001` suppressions; `public` was mandated uniformly, which is what caused #1/#2 | whole repo | BUG-10 |
 | 4 | Two ViewModel lifecycle state machines (`ViewModel` vs `ViewModelSlim`), derived classes assign `IsInitialized` on their own | `ViewModel/Abstraction/*` | ARCH-03 |
 | 5 | Analyzer severities are advisory: 54 `suggestion`, 18 `none`, 2 `warning`, **0** `error`; no `TreatWarningsAsErrors`/`AnalysisLevel`; `NoWarn` swallows `CA2012`; `SA1404` disabled | `src/Snap.Hutao.Remastered/.editorconfig`, app csproj | ENG-01, ENG-02 |
-| 6 | Test project cannot reference the app (0 `ProjectReference`, 39 source links, TFM `net11.0` vs `net11.0-windows…`) | `Snap.Hutao.Remastered.Test.csproj` | BUG-02 |
+| 6 | Test project cannot reference the app (0 `ProjectReference`, 40 source links, TFM `net11.0` vs `net11.0-windows…`) | `Snap.Hutao.Remastered.Test.csproj` | BUG-02 |
 | 7 | Manifest allows Windows 10 `10.0.19041.0` while the public support statement says Windows 10 22H2 (Jan-2025) / Windows 11 22H2 — reconcile one of the two | `Package*.appxmanifest`, project docs site | — |
 | 8 | No CI quality gate: none of the 8 workflows runs `dotnet test` or `dotnet format --verify-no-changes` | `.github/workflows/` | ENG-05 |
 | 9 | No central package management (`Directory.Build.props` / `Directory.Packages.props` absent, 61 `PackageReference`s across the 4 csproj files carry inline versions) | `src/**/*.csproj` | ENG-04 |
@@ -598,6 +598,7 @@ ID — do not "fix" these by documenting them as if they were intended.
 | 2026-11-08 | Added Sentry performance instrumentation (§5.9): every page load and the startup named-pipe redirect start a transaction, and HTTP, SQL, repository/save, EF migration, metadata/git/update/gacha/achievement/user/daily-note/record/plugin/inventory/cultivation/backpack/game-launch/game-package work is captured as nested spans through `SentrySpanScope`; documented the transaction-vs-child policy and the "no user-controlled waits in a transaction" rule. |
 | 2026-11-08 | All 30 typed `DataContext` shadow properties in the binding views read the base dependency property through `Unsafe.As<T>` instead of a checked `(T)base.DataContext` cast, and every such view imports `System.Runtime.CompilerServices`; documented in §6. |
 | 2026-11-08 | `MaterialCardButton` no longer copies the host's resolved `Foreground` onto its inner buttons as a local value; it forwards only a caller-defined color and otherwise clears the local value, so home-card text keeps `ButtonForeground`'s theme expression instead of the application theme captured at construction (black text on dark cards). Documented the rule in §5.3. |
+| 2026-11-08 | Added per-domain generated JSON contexts (`InterProcessJsonContext`, `UserJsonContext`, `UigfJsonContext`, …) composed by `JsonSerializeContexts`, plus the `JsonSerialize` AOT facade; migrated the remaining direct `JsonSerializer` reflection call sites, made `JsonSerialize` consult generated contexts directly and `JsonOptions.Default` keep the reflection resolver, and linked `JsonSerialize.cs` into the test project. |
 | 2026-10-31 | Removed the `global.json` SDK pin (`chore: do not use global.json to control dotnet version`) and dropped TODO #18: the build uses the installed .NET 11 SDK, CI installs major `11`, and §1/§2/§7 now forbid reintroducing a pin. |
 | 2026-10-31 | Restored the pre-rename names `InitializeInternalAsync` (metadata initialization) and `ReadInternal`/`WriteInternal`/`FlushInternal` (Zstandard streams), removed TODOs #1/#2 and renumbered the drift table; §5.5 no longer records the rename defect. |
 | 2026-10-31 | Restored the `ContentControlThemeFontFamily` / `PivotHeaderItemFontFamily` → `MiSans` aliases and the MiSans fallback in `CascadiaMonoAndMiSans` that the 2026-10-24 material rewrite deleted; documented in §5.3 that those aliases are the only thing that makes framework control content MiSans. |

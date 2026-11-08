@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.LifeCycle;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
 using Snap.Hutao.Remastered.Web.Hoyolab.Passport;
@@ -15,6 +16,8 @@ namespace Snap.Hutao.Remastered.Service.Geetest;
 [Service(ServiceLifetime.Transient, typeof(IGeetestService))]
 public sealed partial class GeetestService : IGeetestService
 {
+    private static readonly JsonSerializerOptions CompactJsonOptions = JsonOptions.CreateCompact();
+
     private readonly ICurrentXamlWindowReference currentXamlWindowReference;
     private readonly CustomGeetestClient customGeetestClient;
     private readonly JsonSerializerOptions jsonOptions;
@@ -40,7 +43,7 @@ public sealed partial class GeetestService : IGeetestService
             return default;
         }
 
-        GeetestWebResponse? webResponse = JsonSerializer.Deserialize<GeetestWebResponse>(result, jsonOptions);
+        GeetestWebResponse? webResponse = JsonSerialize.Deserialize<GeetestWebResponse>(result, jsonOptions);
         ArgumentNullException.ThrowIfNull(webResponse);
 
         return new()
@@ -80,10 +83,10 @@ public sealed partial class GeetestService : IGeetestService
             return false;
         }
 
-        AigisSession? session = JsonSerializer.Deserialize<AigisSession>(rawSession, jsonOptions);
+        AigisSession? session = JsonSerialize.Deserialize<AigisSession>(rawSession, jsonOptions);
         ArgumentNullException.ThrowIfNull(session);
 
-        GeetestVerification? verification = JsonSerializer.Deserialize<GeetestVerification>(session.Data, jsonOptions);
+        GeetestVerification? verification = JsonSerialize.Deserialize<GeetestVerification>(session.Data, jsonOptions);
         ArgumentNullException.ThrowIfNull(verification);
 
         if (await TryVerifyGtChallengeAsync(verification.Gt, verification.Challenge, isOversea, token).ConfigureAwait(false) is not { } data)
@@ -94,7 +97,7 @@ public sealed partial class GeetestService : IGeetestService
 
         GeetestWebResponse result = new(data.Challenge, data.Validate);
 
-        provider.Aigis = $"{session.SessionId};{Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(result))}";
+        provider.Aigis = $"{session.SessionId};{Convert.ToBase64String(JsonSerialize.SerializeToUtf8Bytes(result, CompactJsonOptions))}";
         return true;
     }
 

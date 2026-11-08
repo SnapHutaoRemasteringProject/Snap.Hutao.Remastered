@@ -2,7 +2,10 @@
 // Licensed under the MIT license.
 // Adapted from Snap.Nicole.
 
+using Microsoft.Extensions.AI;
+using Snap.Hutao.Remastered.Service.AI.Models;
 using System.Collections.Concurrent;
+using System.Text.Json.Serialization.Metadata;
 
 namespace Snap.Hutao.Remastered.Core.AI;
 
@@ -34,29 +37,66 @@ internal sealed class EnumBox<T>
     }
 }
 
+internal static class EnumBoxJsonConverters
+{
+    private static readonly Dictionary<Type, JsonConverter> Converters = [];
+
+    static EnumBoxJsonConverters()
+    {
+        Register(new EnumBoxJsonConverter<ModelProviderType>());
+        Register(new EnumBoxJsonConverter<ReasoningEffort>());
+    }
+
+    public static void Register<T>(JsonConverter<EnumBox<T>> converter)
+        where T : struct, Enum
+    {
+        Converters[typeof(EnumBox<T>)] = converter;
+    }
+
+    public static JsonConverter Resolve(Type enumBoxType)
+    {
+        return Converters.TryGetValue(enumBoxType, out JsonConverter? converter)
+            ? converter
+            : throw new NotSupportedException($"The enum box JSON type '{enumBoxType}' must be registered in a generated JsonSerializerContext.");
+    }
+}
+
+[SuppressMessage("", "SA1402")]
 file sealed class EnumBoxJsonConverterFactory : JsonConverterFactory
 {
     public override bool CanConvert(Type typeToConvert)
     {
-        return true;
+        return typeToConvert.IsGenericType && typeToConvert.GetGenericTypeDefinition() == typeof(EnumBox<>);
     }
 
     public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        return (JsonConverter)Activator.CreateInstance(typeof(EnumBoxJsonConverter<>).MakeGenericType(typeToConvert.GetGenericArguments()[0]))!;
+        return EnumBoxJsonConverters.Resolve(typeToConvert);
     }
 }
 
-file sealed class EnumBoxJsonConverter<T> : JsonConverter<EnumBox<T>>
+[SuppressMessage("", "SA1402")]
+internal sealed class EnumBoxJsonConverter<T> : JsonConverter<EnumBox<T>>
     where T : struct, Enum
 {
     public override EnumBox<T> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        return EnumBox.Of(JsonSerializer.Deserialize<T>(ref reader, options));
+        JsonTypeInfo<T> typeInfo = ResolveTypeInfo(options);
+        return EnumBox.Of(JsonSerializer.Deserialize(ref reader, typeInfo));
     }
 
     public override void Write(Utf8JsonWriter writer, EnumBox<T> value, JsonSerializerOptions options)
     {
-        JsonSerializer.Serialize(writer, value.Value, options);
+        JsonSerializer.Serialize(writer, value.Value, ResolveTypeInfo(options));
+    }
+
+    private static JsonTypeInfo<T> ResolveTypeInfo(JsonSerializerOptions options)
+    {
+        JsonTypeInfo? typeInfo = options.TypeInfoResolver?.GetTypeInfo(typeof(T), options)
+            ?? JsonSerializerOptions.Default.GetTypeInfo(typeof(T));
+
+        return typeInfo is JsonTypeInfo<T> typed
+            ? typed
+            : throw new NotSupportedException($"The enum JSON type '{typeof(T)}' is not registered in the active JsonSerializerContext.");
     }
 }

@@ -62,7 +62,7 @@ file sealed class Converter<TType, TValue> : JsonConverter<TypeValueCollection<T
         return typeof(TType) == typeof(FightProperty) && (typeof(TValue) == typeof(float) || typeof(TValue) == typeof(GrowCurveType))
             || typeof(TType) == typeof(GrowCurveType) && typeof(TValue) == typeof(float)
             ? new(MetadataCollectionJson.Deserialize<ImmutableArray<TypeValue<TType, TValue>>>(ref reader, options))
-            : new(JsonSerializer.Deserialize<ImmutableArray<TypeValue<TType, TValue>>>(ref reader, options));
+            : new(JsonSerialize.Deserialize<ImmutableArray<TypeValue<TType, TValue>>>(ref reader, options));
     }
 
     public override void Write(Utf8JsonWriter writer, TypeValueCollection<TType, TValue> value, JsonSerializerOptions options)

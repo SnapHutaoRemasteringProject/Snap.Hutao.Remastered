@@ -3,6 +3,7 @@
 
 using Google.Protobuf;
 using Snap.Hutao.Remastered.Core.Protobuf;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.InterChange.Inventory;
 using System.Collections.Immutable;
@@ -11,6 +12,7 @@ namespace Snap.Hutao.Remastered.Service.Yae.PlayerStore;
 
 public static class PlayerStoreParser
 {
+    private static readonly JsonSerializerOptions CompactJsonOptions = JsonOptions.CreateCompact();
     public static UIIF? Parse(ByteString bytes)
     {
         if (!TryParseItems(bytes, out List<Item>? items))
@@ -209,13 +211,13 @@ public static class PlayerStoreParser
             Level = reliquary.Level,
             MainPropId = reliquary.MainPropId,
             AppendPropIdListJson = reliquary.AppendPropIdList is { Count: > 0 }
-                ? JsonSerializer.Serialize(reliquary.AppendPropIdList.ToArray())
+                ? JsonSerialize.Serialize(reliquary.AppendPropIdList.ToArray(), CompactJsonOptions)
                 : null,
             PurchasedAppendPropIdListJson = reliquary.PurchasedAppendPropIdList is { Count: > 0 }
-                ? JsonSerializer.Serialize(reliquary.PurchasedAppendPropIdList.ToArray())
+                ? JsonSerialize.Serialize(reliquary.PurchasedAppendPropIdList.ToArray(), CompactJsonOptions)
                 : null,
             DefiniteAppendPropIdListJson = reliquary.DefiniteAppendPropIdList is { Count: > 0 }
-                ? JsonSerializer.Serialize(reliquary.DefiniteAppendPropIdList.ToArray())
+                ? JsonSerialize.Serialize(reliquary.DefiniteAppendPropIdList.ToArray(), CompactJsonOptions)
                 : null,
             IsLocked = equip.IsLocked,
             IsMarked = reliquary.IsMarked,

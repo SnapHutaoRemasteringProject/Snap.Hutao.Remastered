@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Service.Abstraction;
 
 namespace Snap.Hutao.Remastered.Service.Hutao;
@@ -24,7 +25,7 @@ public sealed partial class ObjectCacheRepository : IObjectCacheRepository
         {
             Key = key,
             ExpireTime = DateTimeOffset.Now.Add(expire),
-            Value = JsonSerializer.Serialize(data, jsonSerializerOptions),
+            Value = JsonSerialize.Serialize(data, jsonSerializerOptions),
         });
     }
 
@@ -37,7 +38,7 @@ public sealed partial class ObjectCacheRepository : IObjectCacheRepository
             if (!entry.IsExpired)
             {
                 ArgumentNullException.ThrowIfNull(entry.Value);
-                return JsonSerializer.Deserialize<T>(entry.Value, jsonSerializerOptions);
+                return JsonSerialize.Deserialize<T>(entry.Value, jsonSerializerOptions);
             }
 
             this.Delete(entry);

@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.Web.Hoyolab.Passport;
@@ -10,6 +11,8 @@ namespace Snap.Hutao.Remastered.Service.User;
 [Service(ServiceLifetime.Transient, typeof(IUserVerificationService))]
 public sealed partial class UserVerificationService : IUserVerificationService
 {
+    private static readonly JsonSerializerOptions CompactJsonOptions = JsonOptions.CreateCompact();
+
     private readonly IContentDialogFactory contentDialogFactory;
     private readonly JsonSerializerOptions jsonOptions;
     private readonly IServiceProvider serviceProvider;
@@ -24,10 +27,10 @@ public sealed partial class UserVerificationService : IUserVerificationService
             return false;
         }
 
-        Risk? risk = JsonSerializer.Deserialize<Risk>(rawRisk, jsonOptions);
+        Risk? risk = JsonSerialize.Deserialize<Risk>(rawRisk, jsonOptions);
         ArgumentNullException.ThrowIfNull(risk?.VerifyString);
 
-        RiskVerify? riskVerify = JsonSerializer.Deserialize<RiskVerify>(risk.VerifyString, jsonOptions);
+        RiskVerify? riskVerify = JsonSerialize.Deserialize<RiskVerify>(risk.VerifyString, jsonOptions);
         ArgumentNullException.ThrowIfNull(riskVerify);
 
         using (IServiceScope scope = serviceProvider.CreateScope())
@@ -39,7 +42,7 @@ public sealed partial class UserVerificationService : IUserVerificationService
             if (await verificationDialog.TryValidateAsync(riskVerify.Ticket, isOversea).ConfigureAwait(false))
             {
                 risk.VerifyString = default;
-                provider.Verify = JsonSerializer.Serialize(risk); // DO NOT pass json options, newline-less string is required
+                provider.Verify = JsonSerialize.Serialize(risk, CompactJsonOptions); // newline-less string is required
                 return true;
             }
 

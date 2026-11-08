@@ -337,6 +337,11 @@ options.TypeInfoResolver = new DefaultJsonTypeInfoResolver
 
 **修法**：给每条路径配一个 `JsonSerializerContext`，把 `JsonOptions.Default` 从"公共默认值"降级为"仅插件/脚本兼容路径"，并在 AOT 版里直接禁用；运行期 `Type` 的两处改成"已知类型 switch + 显式上下文"。
 
+2026-11-08 进展：已按域新增多个 `JsonSerializerContext`（`InterProcessJsonContext`、`UserJsonContext`、`UigfJsonContext` 等），由 `JsonSerializeContexts` 组合，
+并新增 `JsonSerialize` 门面；直接调用 `JsonSerializer` 反射重载的应用代码改为先取 `JsonTypeInfo<T>`；
+`JsonSerialize` 直接查询按域上下文，未命中时回退到调用方 options 的反射 resolver；`JsonOptions.Default` 保持反射 resolver，脚本窗口改用独立的 `JsonOptions.CreateReflection()`。
+网络响应 DTO、元数据根类型和 AI 会话仍走兼容回退，需要后续按类型闭包登记后才能从 Native AOT 路径移除。
+
 **规模**：156 处 / 约 50 个文件，机械但需要逐类型确认元数据闭包（历史教训：124 种类型的闭包是逐个核对出来的，见 aot-readiness.md §"已接入的 JSON 路径"）。
 
 ### 5.2 按属性名排序（15 条，最容易修）

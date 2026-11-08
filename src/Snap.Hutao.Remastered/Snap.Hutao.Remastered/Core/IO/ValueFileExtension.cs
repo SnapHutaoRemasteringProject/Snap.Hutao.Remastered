@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.ExceptionService;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Win32;
 using System.IO;
 
@@ -18,7 +19,7 @@ public static class ValueFileExtension
             {
                 using (FileStream stream = File.OpenRead(file))
                 {
-                    T? t = await JsonSerializer.DeserializeAsync<T>(stream, options).ConfigureAwait(false);
+                    T? t = await JsonSerialize.DeserializeAsync<T>(stream, options).ConfigureAwait(false);
                     return new(true, t);
                 }
             }
@@ -35,7 +36,7 @@ public static class ValueFileExtension
             {
                 using (FileStream stream = File.Create(file))
                 {
-                    await JsonSerializer.SerializeAsync(stream, obj, options).ConfigureAwait(false);
+                    await JsonSerialize.SerializeAsync(stream, obj, options).ConfigureAwait(false);
                 }
 
                 return true;

@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.ViewModel.User;
 using Snap.Hutao.Remastered.Web.Hoyolab;
 using Snap.Hutao.Remastered.Web.Hoyolab.PublicData.DeviceFp;
@@ -11,6 +12,8 @@ namespace Snap.Hutao.Remastered.Service.User;
 [Service(ServiceLifetime.Singleton, typeof(IUserFingerprintService))]
 public sealed partial class UserFingerprintService : IUserFingerprintService
 {
+    private static readonly JsonSerializerOptions CompactJsonOptions = JsonOptions.CreateCompact();
+
     private readonly IServiceScopeFactory serviceScopeFactory;
 
     [GeneratedConstructor]
@@ -99,7 +102,7 @@ public sealed partial class UserFingerprintService : IUserFingerprintService
             SeedId = $"{Guid.NewGuid()}",
             Platform = "2",
             SeedTime = $"{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}",
-            ExtFields = JsonSerializer.Serialize(extendProperties),
+            ExtFields = JsonSerialize.Serialize(extendProperties, CompactJsonOptions),
             AppName = "bbs_cn",
             BbsDeviceId = HoyolabOptions.DeviceId36,
             DeviceFp = string.IsNullOrEmpty(user.Fingerprint) ? Core.Random.GetLowerHexString(13) : user.Fingerprint,

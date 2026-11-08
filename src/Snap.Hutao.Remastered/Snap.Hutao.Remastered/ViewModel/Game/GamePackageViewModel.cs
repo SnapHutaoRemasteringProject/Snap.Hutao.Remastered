@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Service.Game;
 using Snap.Hutao.Remastered.Service.Game.Configuration;
@@ -356,7 +357,7 @@ public sealed partial class GamePackageViewModel : Abstraction.ViewModel
 
             try
             {
-                if (JsonSerializer.Deserialize<PredownloadStatus>(File.ReadAllText(gameFileSystem.PredownloadStatusFilePath), jsonOptions) is { } status)
+                if (JsonSerialize.Deserialize<PredownloadStatus>(File.ReadAllText(gameFileSystem.PredownloadStatusFilePath), jsonOptions) is { } status)
                 {
                     if (PreVersion is null || status.Tag != PreVersion.ToString()) return cachedPredownloadProgress = default;
                     int downloadedBlocks = Math.Max(Directory.GetFiles(gameFileSystem.ChunksDirectory).Length - 1, 0);

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation.HttpClient;
 using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.ExceptionService;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Service.Git;
 using System.Collections.Immutable;
 using System.IO;
@@ -117,12 +118,12 @@ public sealed partial class MetadataService : IMetadataService
         {
             try
             {
-                ImmutableArray<T> result = await JsonSerializer.DeserializeAsync<ImmutableArray<T>>(fileStream, options, token).ConfigureAwait(false);
+                ImmutableArray<T> result = await JsonSerialize.DeserializeAsync<ImmutableArray<T>>(fileStream, options, token).ConfigureAwait(false);
                 return MemoryCache.Set(cacheKey, result);
             }
             catch (Exception ex)
             {
-                ex.Data.Add("FileName", strategy.Name);
+                ex.Data["FileName"] = strategy.Name;
                 throw;
             }
         }
@@ -146,13 +147,13 @@ public sealed partial class MetadataService : IMetadataService
             {
                 try
                 {
-                    T? result = await JsonSerializer.DeserializeAsync<T>(fileStream, options, token).ConfigureAwait(false);
+                    T? result = await JsonSerialize.DeserializeAsync<T>(fileStream, options, token).ConfigureAwait(false);
                     ArgumentNullException.ThrowIfNull(result);
                     results.Add(result);
                 }
                 catch (Exception ex)
                 {
-                    ex.Data.Add("FileName", fileName);
+                    ex.Data["FileName"] = fileName;
                     throw;
                 }
             }

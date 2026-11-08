@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Model.InterChange.GachaLog;
 using Snap.Hutao.Remastered.Service.Notification;
 
@@ -48,7 +49,7 @@ public sealed partial class UIGFService : IUIGFService
             {
                 if (view.IsLegacy)
                 {
-                    UIGF3? legacy = JsonSerializer.Deserialize<UIGF3>(json, jsonOptions);
+                    UIGF3? legacy = JsonSerialize.Deserialize<UIGF3>(json, jsonOptions);
                     if (legacy is not null)
                     {
                         uigf = ConvertFromLegacy(legacy);
@@ -56,7 +57,7 @@ public sealed partial class UIGFService : IUIGFService
                 }
                 else
                 {
-                    uigf = JsonSerializer.Deserialize<UIGF42>(json, jsonOptions);
+                    uigf = JsonSerialize.Deserialize<UIGF42>(json, jsonOptions);
                 }
             }
         }

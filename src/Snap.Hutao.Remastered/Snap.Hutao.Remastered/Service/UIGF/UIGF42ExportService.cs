@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.InterChange.GachaLog;
 using Snap.Hutao.Remastered.Model.Metadata.Item;
@@ -41,7 +42,7 @@ public sealed partial class UIGF42ExportService : AbstractUIGF40ExportService
 
         using (FileStream stream = File.Create(exportOptions.FilePath))
         {
-            await JsonSerializer.SerializeAsync(stream, uigf, jsonOptions, token).ConfigureAwait(false);
+            await JsonSerialize.SerializeAsync(stream, uigf, jsonOptions, token).ConfigureAwait(false);
         }
     }
 

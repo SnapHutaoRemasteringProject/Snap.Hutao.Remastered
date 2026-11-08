@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Factory.Picker;
 using Snap.Hutao.Remastered.Service.Game;
@@ -91,7 +92,7 @@ public sealed partial class LaunchGameInstallGameDialog : ContentDialog
             SophonBuild? build;
             using (FileStream stream = File.OpenRead(BetaBuildBodyFilePath))
             {
-                build = (await JsonSerializer.DeserializeAsync<Response<SophonBuild>>(stream, jsonSerializerOptions).ConfigureAwait(true))?.Data;
+                build = (await JsonSerialize.DeserializeAsync<Response<SophonBuild>>(stream, jsonSerializerOptions).ConfigureAwait(true))?.Data;
             }
 
             if (build is null)

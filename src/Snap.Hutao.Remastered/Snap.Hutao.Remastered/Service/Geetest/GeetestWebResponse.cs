@@ -5,6 +5,7 @@ namespace Snap.Hutao.Remastered.Service.Geetest;
 
 public sealed class GeetestWebResponse
 {
+    [JsonConstructor]
     public GeetestWebResponse(string challenge, string validate)
     {
         Challenge = challenge;

@@ -5,6 +5,7 @@ namespace Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.Model;
 
 public sealed class ElevationStatusResponse
 {
+    [JsonConstructor]
     public ElevationStatusResponse(bool isElevated, int processId)
     {
         IsElevated = isElevated;

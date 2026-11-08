@@ -1,6 +1,8 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Text.Json;
+
 namespace Snap.Hutao.Remastered.Web.Bridge.Model;
 
 public sealed class JsParam
@@ -32,7 +34,7 @@ public sealed class JsParam<TPayload>
         return new()
         {
             Method = jsParam.Method,
-            Payload = jsParam.Payload.Deserialize<TPayload>() ?? default!,
+            Payload = JsonSerialize.Deserialize<TPayload>(jsParam.Payload, JsonOptions.Default) ?? default!,
             Callback = jsParam.Callback,
         };
     }

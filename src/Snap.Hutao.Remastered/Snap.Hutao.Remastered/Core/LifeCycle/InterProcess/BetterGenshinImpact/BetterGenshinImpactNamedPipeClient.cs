@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.BetterGenshinImpact.Task;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Win32.Foundation;
 using System.Collections.Immutable;
 using System.IO.Pipes;
@@ -171,7 +172,7 @@ public sealed partial class BetterGenshinImpactNamedPipeClient : IDisposable
 
             if (response is { Kind: PipeResponseKind.Array })
             {
-                taskDefinitions = response.Data.Deserialize<ImmutableArray<AutomationTaskDefinition>>();
+                taskDefinitions = JsonSerialize.Deserialize<ImmutableArray<AutomationTaskDefinition>>(response.Data, JsonOptions.Default);
                 return true;
             }
             else

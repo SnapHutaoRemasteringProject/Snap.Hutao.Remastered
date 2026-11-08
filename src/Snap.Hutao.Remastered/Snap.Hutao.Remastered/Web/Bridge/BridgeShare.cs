@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.IO;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Web.Bridge.Model;
 using System.IO;
@@ -41,7 +42,7 @@ public static class BridgeShare
                     const string JsonParameters = /*lang=json*/"""{ "format": "png", "captureBeyondViewport": true }""";
                     string resultJson = await context.CoreWebView2.CallDevToolsProtocolMethodAsync("Page.captureScreenshot", JsonParameters);
 
-                    CaptureScreenshotResult? result = JsonSerializer.Deserialize<CaptureScreenshotResult>(resultJson, context.JsonSerializerOptions);
+                    CaptureScreenshotResult? result = JsonSerialize.Deserialize<CaptureScreenshotResult>(resultJson, context.JsonSerializerOptions);
                     ArgumentNullException.ThrowIfNull(result);
 
                     await ShareFromRawPixelDataAsync(context, result.Data).ConfigureAwait(false);
@@ -142,10 +143,11 @@ public static class BridgeShare
             context.Messenger.Send(InfoBarMessage.Error(SH.WebBridgeShareSaveAsFileFailed));
         }
     }
+}
 
-    private sealed class CaptureScreenshotResult
-    {
-        [JsonPropertyName("data")]
-        public byte[] Data { get; set; } = default!;
-    }
+[SuppressMessage("", "SA1402")]
+internal sealed class CaptureScreenshotResult
+{
+    [JsonPropertyName("data")]
+    public byte[] Data { get; set; } = default!;
 }
