@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Service.Game.FileSystem;
 using Snap.Hutao.Remastered.Service.Game.Package.Advanced.Model;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Downloader.Proto;
@@ -35,7 +36,7 @@ public sealed partial class GamePackagePredownloadOperation : GamePackageOperati
         PredownloadStatus predownloadStatus = new(remoteBuild.Tag, false, uniqueTotalBlocks);
         using (FileStream predownloadStatusStream = File.Create(context.Operation.GameFileSystem.PredownloadStatusFilePath))
         {
-            await JsonSerializer.SerializeAsync(predownloadStatusStream, predownloadStatus, jsonOptions).ConfigureAwait(false);
+            await JsonSerialize.SerializeAsync(predownloadStatusStream, predownloadStatus, jsonOptions).ConfigureAwait(false);
         }
 
         if (context.Operation.PatchBuild is { } patchBuild)
@@ -50,7 +51,7 @@ public sealed partial class GamePackagePredownloadOperation : GamePackageOperati
         using (FileStream predownloadStatusStream = File.Create(context.Operation.GameFileSystem.PredownloadStatusFilePath))
         {
             predownloadStatus.Finished = true;
-            await JsonSerializer.SerializeAsync(predownloadStatusStream, predownloadStatus, jsonOptions).ConfigureAwait(false);
+            await JsonSerialize.SerializeAsync(predownloadStatusStream, predownloadStatus, jsonOptions).ConfigureAwait(false);
         }
 
         context.Progress.Report(new GamePackageOperationReport.Finish(context.Operation.Kind));

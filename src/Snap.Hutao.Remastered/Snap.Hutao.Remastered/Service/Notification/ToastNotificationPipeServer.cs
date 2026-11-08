@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess;
 using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.Model;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using System.IO.Pipes;
 
 namespace Snap.Hutao.Remastered.Service.Notification;
@@ -31,7 +32,7 @@ public sealed partial class ToastNotificationPipeServer : IDisposable
                 return false;
             }
 
-            JsonSerializer.Serialize(pipeServer, request);
+            JsonSerialize.Serialize(pipeServer, request, JsonOptions.Default);
             pipeServer.Flush();
             return true;
         }

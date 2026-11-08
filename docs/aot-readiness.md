@@ -44,6 +44,12 @@ SDK 发布不包含生成后的 AppxManifest.xml，四个入口的 Copy files �
 - 字符串枚举/数字字符串枚举使用标准 `JsonConverter` 属性及封闭泛型转换器；ID 转换器显式获取 UInt32 元数据。
   严格数字、自定义 UInt32 转换器与未知枚举数值均有回归测试。
 - 养成页三个导航目标改为显式 typeof 映射，不再通过字符串发现类型。
+- 新增按域拆分的 JSON 源生成上下文（`InterProcessJsonContext`、`UserJsonContext`、`UigfJsonContext`、`BridgeJsonContext` 等），
+  由 `JsonSerializeContexts` 持有；`JsonSerialize` 先直接查询这些上下文，再回退到调用方 options 的反射 resolver。
+  `JsonOptions.Default` 保持反射 resolver，供未迁移路径和 STJ 内部调用使用；上下文不挂到 options 上，因为
+  `JsonSerializerContext` 会冻结传入的 options，多个上下文无法共享同一个实例。
+  网络响应 DTO、元数据根类型和 AI 会话完成登记后，才能在 Native AOT 路径移除反射回退。
+  脚本窗口使用独立的 `JsonOptions.CreateReflection()`，不再依赖应用默认选项。
 
 未知的新数据库 JSON 类型必须显式登记，不能静默回退到反射。
 其他网络接口、插件自定义数据等尚未迁移的 JSON 路径仍保留旧实现，不能因此宣称全项目 JSON 已兼容 Native AOT。

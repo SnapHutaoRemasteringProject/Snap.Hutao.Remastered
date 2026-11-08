@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.Model;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using System.IO.Pipes;
 
 namespace Snap.Hutao.Remastered.Core.LifeCycle.InterProcess;
@@ -21,7 +22,7 @@ public sealed partial class ToastNotificationPipeClient : IDisposable
         {
             pipeClient.Connect(100);
 
-            ToastNotificationRequest? request = JsonSerializer.Deserialize<ToastNotificationRequest>(pipeClient);
+            ToastNotificationRequest? request = JsonSerialize.Deserialize<ToastNotificationRequest>(pipeClient, JsonOptions.Default);
             return request;
         }
         catch

@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Model.Metadata.Converter;
@@ -9,7 +10,6 @@ using Snap.Hutao.Remastered.Model.Metadata.Reliquary;
 using Snap.Hutao.Remastered.Service.Backpack;
 using System.Collections.Immutable;
 using System.Globalization;
-using System.Text.Json.Serialization.Metadata;
 
 namespace Snap.Hutao.Remastered.ViewModel.Backpack;
 
@@ -20,7 +20,7 @@ public sealed partial class BackpackReliquaryItemView : BackpackItemView
     /// Shared read-only options for the sub affix id lists. A single read-only instance keeps the STJ
     /// <c>uint[]</c> type info cached across the whole inventory instead of resolving it per item.
     /// </summary>
-    private static readonly JsonSerializerOptions SubAffixIdListJsonOptions = CreateSubAffixIdListJsonOptions();
+    private static readonly JsonSerializerOptions SubAffixIdListJsonOptions = JsonOptions.CreateCompact();
 
     public Reliquary Reliquary { get; private set; } = default!;
 
@@ -257,7 +257,7 @@ public sealed partial class BackpackReliquaryItemView : BackpackItemView
 
         try
         {
-            return JsonSerializer.Deserialize<uint[]>(json, SubAffixIdListJsonOptions);
+            return JsonSerialize.Deserialize<uint[]>(json, SubAffixIdListJsonOptions);
         }
         catch (JsonException ex)
         {
@@ -267,19 +267,6 @@ public sealed partial class BackpackReliquaryItemView : BackpackItemView
                 level: BreadcrumbLevel.Error);
             return null;
         }
-    }
-
-    private static JsonSerializerOptions CreateSubAffixIdListJsonOptions()
-    {
-        // A read-only instance keeps the resolved uint[] type info cached across the whole inventory.
-        // .NET 9+ refuses to mark options read-only unless a resolver is set explicitly.
-        JsonSerializerOptions options = new(JsonSerializerDefaults.General)
-        {
-            TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
-        };
-
-        options.MakeReadOnly();
-        return options;
     }
 
     private static ReliquarySubStatState GetSubStatState(FightProperty prop, BackpackReliquaryScoreConfig scoreConfig)

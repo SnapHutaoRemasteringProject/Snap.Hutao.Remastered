@@ -53,7 +53,7 @@ public sealed partial class HutaoAsAServiceClient
                 string json = await response.Content.ReadAsStringAsync(deadline.Token).ConfigureAwait(false);
                 JsonSerializerOptions? options = (builder.HttpContentSerializer as JsonHttpContentSerializer)?.JsonSerializerOptions ?? JsonOptions.Default;
                 HutaoResponse<ImmutableArray<Announcement>>? body = string.IsNullOrEmpty(json)
-                    ? null : JsonSerializer.Deserialize<HutaoResponse<ImmutableArray<Announcement>>>(json, options);
+                    ? null : JsonSerialize.Deserialize<HutaoResponse<ImmutableArray<Announcement>>>(json, options);
                 return Web.Response.Response.DefaultIfNull(body);
             }
             catch (OperationCanceledException) when (attempt is 0 && !token.IsCancellationRequested && !XamlApplicationLifetime.ShutdownToken.IsCancellationRequested)
