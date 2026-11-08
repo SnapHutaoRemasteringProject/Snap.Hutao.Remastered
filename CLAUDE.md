@@ -78,11 +78,16 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
   See [deployment details and debugger limits](docs/aot-readiness.md). Do not add AnyCPU mappings,
   force Debug optimization, or mistake a stale `obj/R2R` file for the actual deployed image.
 - **Build quirks (do not "clean up" blindly)**
-  - The app csproj contains a `UsePatchedXamlCompiler` target that byte-patches
-    `XamlCompiler.exe` on `dotnet build` (MSBuild Core) to work around
-    [`microsoft/microsoft-ui-xaml#11157`](https://github.com/microsoft/microsoft-ui-xaml/issues/11157)
+  - The app project carries a `UsePatchedXamlCompiler` target (in
+    [`Build/PatchedXamlCompiler.targets`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Build/PatchedXamlCompiler.targets),
+    imported by the csproj) that byte-patches `XamlCompiler.exe` on `dotnet build` (MSBuild Core) to
+    work around [`microsoft/microsoft-ui-xaml#11157`](https://github.com/microsoft/microsoft-ui-xaml/issues/11157)
     — without it, CLI builds die with `WMC9999: Could not find any resources...` while Visual
-    Studio builds succeed. Keep the comment in the csproj if you touch it.
+    Studio builds succeed. Keep the explanation comment in that file if you touch it.
+  - AOT-only MSBuild patches live in
+    [`Build/AotPublish.targets`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Build/AotPublish.targets)
+    (`MarkupCompilePass1DependsOn` ordering fix and the `Deployment.exe` publish payload), gated on
+    `PublishAot`; the default R2R build must stay untouched.
   - A `DeleteLibsAfterBuild` target removes stray `*.lib` from the output; a
     `CopyContentForUnpackaged` target copies `Resource/` and `Assets/` next to the exe for the
     unpackaged mode.

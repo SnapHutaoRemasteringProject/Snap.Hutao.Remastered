@@ -1,0 +1,114 @@
+<Project>
+  <!--
+    Workaround for https://github.com/microsoft/microsoft-ui-xaml/issues/11157
+
+    `dotnet build` (MSBuild Core) compiles XAML through the out-of-process XamlCompiler.exe shipped in the
+    Windows App SDK package, whereas Visual Studio runs the in-proc Microsoft.UI.Xaml.Markup.Compiler.dll.
+    In microsoft.windowsappsdk.winui the executable is an older build whose embedded error message resource is
+    still named "Microsoft.Windows.UI.Xaml.Build.Tasks.ErrorMessages.resources", while the code looks up
+    "Microsoft.UI.Xaml.Markup.Compiler.ErrorMessages". As soon as the compiler wants to render any x:Bind
+    diagnostic, that lookup throws MissingManifestResourceException and the whole build dies with the opaque
+    "Xaml Internal Error error WMC9999: Could not find any resources appropriate for the specified culture ..."
+    - which is why CI (`dotnet build`) fails while building from Visual Studio succeeds.
+
+    The metadata string heap stores resource names as zero terminated ASCII and the expected name is shorter
+    than the broken one, so the name can be corrected in place without moving anything. Do that on a private
+    copy of the tool (the NuGet cache is left untouched) and point the XAML compile at the copy.
+
+    This is the same failure mode that surfaces when `PublishAot` turns on `EnableBindingDiagnostics`: the
+    compiler tries to render a binding diagnostic and hits the broken resource lookup first.
+
+    Remove this file (and its Import in the csproj) once Microsoft ships a fixed XamlCompiler.exe.
+
+    Kept in a separate targets file so the project file only carries the Import, and so the byte layout of
+    this workaround stays reviewable on its own.
+  -->
+  <UsingTask TaskName="PatchXamlCompilerResourceName" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <ExePath ParameterType="System.String" Required="true" />
+      <WasPatched ParameterType="System.Boolean" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        const string BrokenResourceName = "Microsoft.Windows.UI.Xaml.Build.Tasks.ErrorMessages.resources";
+        const string ExpectedResourceName = "Microsoft.UI.Xaml.Markup.Compiler.ErrorMessages.resources";
+
+        byte[] image = File.ReadAllBytes(ExePath);
+        byte[] brokenName = Encoding.ASCII.GetBytes(BrokenResourceName);
+        byte[] expectedName = Encoding.ASCII.GetBytes(ExpectedResourceName);
+        bool wasPatched = false;
+
+        for (int i = 0; i <= image.Length - brokenName.Length; i++)
+        {
+            if (image[i] != brokenName[0])
+            {
+                continue;
+            }
+
+            bool isMatch = true;
+            for (int j = 1; j < brokenName.Length; j++)
+            {
+                if (image[i + j] != brokenName[j])
+                {
+                    isMatch = false;
+                    break;
+                }
+            }
+
+            if (!isMatch)
+            {
+                continue;
+            }
+
+            for (int j = 0; j < expectedName.Length; j++)
+            {
+                image[i + j] = expectedName[j];
+            }
+
+            for (int j = expectedName.Length; j < brokenName.Length; j++)
+            {
+                image[i + j] = 0;
+            }
+
+            wasPatched = true;
+            i += brokenName.Length - 1;
+        }
+
+        if (wasPatched)
+        {
+            File.WriteAllBytes(ExePath, image);
+        }
+
+        WasPatched = wasPatched;
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="UsePatchedXamlCompiler"
+          BeforeTargets="MarkupCompilePass1"
+          Condition="'$(MSBuildRuntimeType)' == 'Core' and '$(UseXamlCompilerExecutable)' == 'true'">
+    <PropertyGroup>
+      <_XamlCompilerToolDirectory>$([System.IO.Path]::GetDirectoryName('$(XamlCompilerExePath)'))\</_XamlCompilerToolDirectory>
+      <_PatchedXamlCompilerDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(BaseIntermediateOutputPath)', 'patchedxamlcompiler'))</_PatchedXamlCompilerDirectory>
+      <_PatchedXamlCompilerExe>$(_PatchedXamlCompilerDirectory)XamlCompiler.exe</_PatchedXamlCompilerExe>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <_XamlCompilerToolFile Include="$(_XamlCompilerToolDirectory)**\*" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(_XamlCompilerToolFile)" DestinationFiles="@(_XamlCompilerToolFile->'$(_PatchedXamlCompilerDirectory)%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+
+    <PatchXamlCompilerResourceName ExePath="$(_PatchedXamlCompilerExe)">
+      <Output TaskParameter="WasPatched" PropertyName="_XamlCompilerResourceNamePatched" />
+    </PatchXamlCompilerResourceName>
+
+    <PropertyGroup>
+      <XamlCompilerExePath>$(_PatchedXamlCompilerExe)</XamlCompilerExePath>
+    </PropertyGroup>
+
+    <Message Importance="normal" Text="Using XAML compiler '$(_PatchedXamlCompilerExe)' (resource name patched this build: $(_XamlCompilerResourceNamePatched))" />
+  </Target>
+</Project>

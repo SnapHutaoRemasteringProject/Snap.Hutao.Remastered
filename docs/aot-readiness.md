@@ -1,5 +1,8 @@
 # R2R 部署与 Native AOT 兼容性准备
 
+> 本文记录 R2R 的落地方式与已验证边界。Native AOT 仍不可用的原因、194 条剩余诊断、修复路线与验收标准见
+> [Native AOT 阻塞项扫描报告](aot-blockers.md)。
+
 ## 默认构建与部署
 
 所有配置（包括 Debug）默认启用 `PublishReadyToRun`。不启用 Native AOT、裁剪或单文件发布；插件、运行时 C# 脚本和 CoreCLR/JIT 功能保持不变。
