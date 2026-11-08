@@ -271,6 +271,14 @@ the build fails with `CS9275`); write a normal constructor in that case.
   style, and clears the glass brush; in the liquid-glass material it restores the caller style and
   the glass brush. **Do not** reintroduce `cwc:SwitchPresenter` material trees, mirrored
   `x:Bind …Glass` properties, `ThemeSynchronization`, or a second control instance.
+- **Mirror only caller-defined theme brushes into helper controls** — `MaterialCardButton` hosts the
+  real `Button` that carries the home-card body, so it forwards the card's `Foreground` to that
+  button. Copying the host's *resolved* `Foreground` (its default, or a theme brush resolved while
+  the card is still detached from its window) writes a local value that outranks the button style's
+  `{ThemeResource ButtonForeground}` and freezes the card text in the theme that happened to be
+  active at construction — black text on a dark card when the system theme is light. Forward a color
+  only when the caller set one (local value or style setter); otherwise `ClearValue` so the helper
+  control keeps its own theme expression.
 - **Native styles must not override the font** — a `MaterialNative{Kind}Style` stays based on the
   framework default style and must not set `FontFamily`. The glass default styles use the framework
   font, so forcing `MiSans` only in the native material changed control content fonts when the
@@ -550,6 +558,7 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
+| 2026-11-08 | `MaterialCardButton` no longer copies the host's resolved `Foreground` onto its inner buttons as a local value; it forwards only a caller-defined color and otherwise clears the local value, so home-card text keeps `ButtonForeground`'s theme expression instead of the application theme captured at construction (black text on dark cards). Documented the rule in §5.3. |
 | 2026-10-31 | Removed the `global.json` SDK pin (`chore: do not use global.json to control dotnet version`) and dropped TODO #18: the build uses the installed .NET 11 SDK, CI installs major `11`, and §1/§2/§7 now forbid reintroducing a pin. |
 | 2026-10-31 | Restored the pre-rename names `InitializeInternalAsync` (metadata initialization) and `ReadInternal`/`WriteInternal`/`FlushInternal` (Zstandard streams), removed TODOs #1/#2 and renumbered the drift table; §5.5 no longer records the rename defect. |
 | 2026-10-31 | Restored the `ContentControlThemeFontFamily` / `PivotHeaderItemFontFamily` → `MiSans` aliases and the MiSans fallback in `CascadiaMonoAndMiSans` that the 2026-10-24 material rewrite deleted; documented in §5.3 that those aliases are the only thing that makes framework control content MiSans. |

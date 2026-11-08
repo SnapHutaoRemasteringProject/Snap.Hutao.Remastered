@@ -39,7 +39,7 @@ public partial class MaterialCardButton : ContentControl
             Mirror(button, Button.CommandProperty, CommandProperty);
             Mirror(button, Button.CommandParameterProperty, CommandParameterProperty);
             Mirror(button, XamlControl.PaddingProperty, XamlControl.PaddingProperty);
-            Mirror(button, XamlControl.ForegroundProperty, XamlControl.ForegroundProperty);
+            MirrorCallerForeground(button);
             Mirror(button, XamlControl.HorizontalContentAlignmentProperty, XamlControl.HorizontalContentAlignmentProperty);
             Mirror(button, XamlControl.VerticalContentAlignmentProperty, XamlControl.VerticalContentAlignmentProperty);
             button.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -70,6 +70,53 @@ public partial class MaterialCardButton : ContentControl
             if (weak.TryGetTarget(out Button? button)) button.SetValue(targetProperty, sender.GetValue(property));
         });
         target.SetValue(targetProperty, GetValue(sourceProperty));
+    }
+
+    /// <summary>
+    /// Forwards a caller-defined Foreground, never the host's resolved default.
+    /// A card that is still detached from its window resolves Foreground from the
+    /// application theme. Copying that brush onto the inner button as a local value
+    /// wins over the button style's ThemeResource expression, so the card text keeps
+    /// the theme that happened to be active while the card was created (black text on
+    /// a dark card when the system theme is light). Clearing the local value lets the
+    /// button resolve its own theme-aware Foreground again, and a later explicit
+    /// caller color is still forwarded by the property-changed callback.
+    /// </summary>
+    private void MirrorCallerForeground(Button target)
+    {
+        WeakReference<Button> weak = new(target);
+        RegisterPropertyChangedCallback(XamlControl.ForegroundProperty, (_, _) =>
+        {
+            if (weak.TryGetTarget(out Button? button)) ApplyForeground(button);
+        });
+        ApplyForeground(target);
+    }
+
+    private void ApplyForeground(Button target)
+    {
+        if (HasCallerForeground())
+        {
+            target.SetValue(XamlControl.ForegroundProperty, GetValue(XamlControl.ForegroundProperty));
+            return;
+        }
+
+        // A local null also outranks the style setter, so clear instead of copying.
+        target.ClearValue(XamlControl.ForegroundProperty);
+    }
+
+    private bool HasCallerForeground()
+    {
+        if (ReadLocalValue(XamlControl.ForegroundProperty) != DependencyProperty.UnsetValue) return true;
+
+        for (Style? current = Style; current is not null; current = current.BasedOn)
+        {
+            foreach (SetterBase setter in current.Setters)
+            {
+                if (setter is Setter { Property: { } property } && property == XamlControl.ForegroundProperty) return true;
+            }
+        }
+
+        return false;
     }
 
     private void OnLoaded(object sender, RoutedEventArgs args)
