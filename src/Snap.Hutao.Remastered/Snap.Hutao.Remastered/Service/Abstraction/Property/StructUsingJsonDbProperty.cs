@@ -20,11 +20,11 @@ public sealed partial class StructUsingJsonDbProperty<T> : StructUsingCustomDbPr
 
     private static T From(string source)
     {
-        return JsonSerializer.Deserialize<T>(source, JsonOptions.Default);
+        return JsonSerialize.Deserialize<T>(source, JsonOptions.Default);
     }
 
     private static string To(T value)
     {
-        return JsonSerializer.Serialize(value, JsonOptions.Default);
+        return JsonSerialize.Serialize(value, JsonOptions.Default);
     }
 }

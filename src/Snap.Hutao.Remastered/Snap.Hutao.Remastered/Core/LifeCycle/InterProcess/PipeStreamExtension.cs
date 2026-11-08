@@ -2,6 +2,9 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.ExceptionService;
+using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.BetterGenshinImpact;
+using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.BetterGenshinImpact.Cultivation;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using System.Buffers;
 using System.IO.Hashing;
 using System.IO.Pipes;
@@ -20,7 +23,7 @@ public static class PipeStreamExtension
                 stream.ReadExactly(content);
                 HutaoException.ThrowIf(XxHash64.HashToUInt64(content) != header.Checksum, "PipePacket Content Hash incorrect");
 
-                return JsonSerializer.Deserialize<TData>(content);
+                return JsonSerialize.Deserialize<TData>(content, JsonOptions.Default);
             }
         }
 
@@ -44,7 +47,7 @@ public static class PipeStreamExtension
             }
         }
 
-        public void WritePacketWithJsonContent(byte version, PipePacketType type, PipePacketCommand command, object data)
+        public void WritePacketWithJsonContent<TData>(byte version, PipePacketType type, PipePacketCommand command, TData data)
         {
             PipePacketHeader header = default;
             header.Version = version;
@@ -52,8 +55,28 @@ public static class PipeStreamExtension
             header.Command = command;
             header.ContentType = PipePacketContentType.Json;
 
-            // 使用运行时类型序列化，避免被推断为基类 PipeResponse 时擦除 PipeResponse<T> 的 Data 字段。
-            stream.WritePacket(ref header, JsonSerializer.SerializeToUtf8Bytes(data, data.GetType()));
+            // The caller's static type is the wire contract, so no runtime Type lookup is needed.
+            stream.WritePacket(ref header, JsonSerialize.SerializeToUtf8Bytes(data, JsonOptions.Default));
+        }
+
+        public void WritePacketWithJsonResponse(byte version, PipePacketType type, PipePacketCommand command, PipeResponse response)
+        {
+            PipePacketHeader header = default;
+            header.Version = version;
+            header.Type = type;
+            header.Command = command;
+            header.ContentType = PipePacketContentType.Json;
+
+            // PipeResponse<T>.Data is erased if the base type is serialized directly; dispatch
+            // over the closed response types that this private pipe actually writes.
+            byte[] content = response switch
+            {
+                PipeResponse<Void> value => JsonSerialize.SerializeToUtf8Bytes(value, JsonOptions.Default),
+                PipeResponse<AutomationCultivationProject> value => JsonSerialize.SerializeToUtf8Bytes(value, JsonOptions.Default),
+                _ => throw new NotSupportedException($"The pipe response type '{response.GetType()}' is not registered."),
+            };
+
+            stream.WritePacket(ref header, content);
         }
 
         public void WritePacket(ref PipePacketHeader header, ReadOnlySpan<byte> content)

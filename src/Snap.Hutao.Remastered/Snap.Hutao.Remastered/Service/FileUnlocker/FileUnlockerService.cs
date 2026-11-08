@@ -1,6 +1,7 @@
 // Copyright (c) Snap Hutao RP. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Text.Json;
 using System.Runtime.InteropServices;
 
 namespace Snap.Hutao.Remastered.Service.FileUnlocker;
@@ -8,10 +9,7 @@ namespace Snap.Hutao.Remastered.Service.FileUnlocker;
 [Service(ServiceLifetime.Singleton, typeof(IFileUnlockerService))]
 public sealed partial class FileUnlockerService : IFileUnlockerService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = false,
-    };
+    private static readonly JsonSerializerOptions SerializerOptions = Snap.Hutao.Remastered.Core.Text.Json.JsonOptions.Create(static options => options.PropertyNameCaseInsensitive = false);
 
     public ValueTask<LockUnlockResponse?> UnlockAsync(string directoryPath)
     {
@@ -33,7 +31,7 @@ public sealed partial class FileUnlockerService : IFileUnlockerService
                 }
 
                 string json = Marshal.PtrToStringUni((nint)pResult) ?? string.Empty;
-                return JsonSerializer.Deserialize<LockUnlockResponse>(json, JsonOptions);
+                return JsonSerialize.Deserialize<LockUnlockResponse>(json, SerializerOptions);
             }
         }
         finally

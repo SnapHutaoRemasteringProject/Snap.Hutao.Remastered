@@ -5,6 +5,7 @@ using Microsoft.Web.WebView2.Core;
 using Snap.Hutao.Remastered.Core.DataTransfer;
 using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
 using Snap.Hutao.Remastered.Core.Logging;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Factory.Picker;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.User;
@@ -25,6 +26,8 @@ namespace Snap.Hutao.Remastered.Web.Bridge;
 
 public class MiHoYoJSBridge
 {
+    private static readonly JsonSerializerOptions CompactJsonOptions = JsonOptions.CreateCompact();
+
     private readonly Guid bridgeId = Guid.NewGuid();
     private readonly AsyncLock webMessageLock = new();
     private readonly UserAndUid userAndUid;
@@ -436,7 +439,7 @@ public class MiHoYoJSBridge
     {
         string message = args.TryGetWebMessageAsString();
         logger.LogInformation("[{Id}][OnRawMessage]\n{message}", bridgeId, message);
-        JsParam? param = JsonSerializer.Deserialize<JsParam>(message, serviceProvider.GetRequiredService<JsonSerializerOptions>());
+        JsParam? param = JsonSerialize.Deserialize<JsParam>(message, serviceProvider.GetRequiredService<JsonSerializerOptions>());
 
         ArgumentNullException.ThrowIfNull(param);
         logger.LogInformation("[OnMessage]\nMethod  : {method}\nPayload : {payload}\nCallback: {callback}", param.Method, param.Payload, param.Callback);
@@ -449,7 +452,15 @@ public class MiHoYoJSBridge
 
                 if (result is not null && param.Callback is not null)
                 {
-                    await ExecuteCallbackScriptAsync(param.Callback, JsonSerializer.Serialize(result, result.GetType())).ConfigureAwait(false);
+                    // Known-type dispatch replaces the runtime-type reflection serializer for the JS bridge.
+                    string resultJson = result switch
+                    {
+                        JsResult<Dictionary<string, string>> stringResult => JsonSerialize.Serialize(stringResult, CompactJsonOptions),
+                        JsResult<Dictionary<string, object>> objectResult => JsonSerialize.Serialize(objectResult, CompactJsonOptions),
+                        _ => throw new NotSupportedException($"The JS bridge result type '{result.GetType()}' is not registered."),
+                    };
+
+                    await ExecuteCallbackScriptAsync(param.Callback, resultJson).ConfigureAwait(false);
                 }
             }
         }
