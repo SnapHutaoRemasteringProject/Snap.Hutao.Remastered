@@ -1,5 +1,6 @@
 using System.IO;
 using Snap.Hutao.Remastered.API.Model;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Service.Notification;
 
@@ -36,6 +37,9 @@ public partial class PluginService : IPluginService
 
     public async Task<bool> DisablePluginAsync(string id, bool suppressNotification = false)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("plugin.disable", "plugin");
+        span.SetData("plugin.id", id);
+
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Disabling plugin", category: "PluginService", data: new Dictionary<string, string>
         {
             { "PluginId", id },
@@ -84,6 +88,9 @@ public partial class PluginService : IPluginService
 
     public async Task<bool> EnablePluginAsync(string id, bool suppressNotification = false)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("plugin.enable", "plugin");
+        span.SetData("plugin.id", id);
+
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Enabling plugin", category: "PluginService", data: new Dictionary<string, string>
         {
             { "PluginId", id },
@@ -140,6 +147,9 @@ public partial class PluginService : IPluginService
 
     public async Task<bool> LoadPluginAsync(string id, bool suppressNotification = false)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("plugin.load", "plugin");
+        span.SetData("plugin.id", id);
+
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Loading plugin", category: "PluginService", data: new Dictionary<string, string>
         {
             { "PluginId", id },
@@ -201,6 +211,9 @@ public partial class PluginService : IPluginService
 
     public void UninstallPlugin(string id)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("plugin.uninstall", "plugin");
+        span.SetData("plugin.id", id);
+
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Uninstalling plugin", category: "PluginService", data: new Dictionary<string, string>
         {
             { "PluginId", id },
@@ -226,6 +239,9 @@ public partial class PluginService : IPluginService
 
     public async Task<bool> InstallPluginAsync(string path)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("plugin.install", "plugin");
+        span.SetData("plugin.package", Path.GetFileName(path));
+
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Installing plugin", category: "PluginService", data: new Dictionary<string, string>
         {
             { "SourcePath", path },

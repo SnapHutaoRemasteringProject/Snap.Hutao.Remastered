@@ -4,6 +4,7 @@
 using CommunityToolkit.Common;
 using LibGit2Sharp;
 using Snap.Hutao.Remastered.Core;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Core.IO.Http.Proxy;
 using Snap.Hutao.Remastered.Core.Setting;
@@ -42,6 +43,9 @@ public sealed partial class GitRepositoryService : IGitRepositoryService
     {
         using CancellationTokenSource linked = CancellationTokenSource.CreateLinkedTokenSource(token, XamlApplicationLifetime.ShutdownToken);
         token = linked.Token;
+        using SentrySpanScope span = SentrySpanScope.StartOperation("git.ensure_repository", "git");
+        span.SetData("git.repository", name);
+
         await taskContext.SwitchToBackgroundAsync();
         token.ThrowIfCancellationRequested();
         if (LocalSetting.Get("Snap::Hutao::Git::Repository::Override", false))

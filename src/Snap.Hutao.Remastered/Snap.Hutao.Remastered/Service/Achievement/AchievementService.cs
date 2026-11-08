@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.Database;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.InterChange.Achievement;
@@ -114,6 +115,11 @@ public sealed partial class AchievementService : IAchievementService
 
     public async ValueTask<ImportResult> ImportFromUIAFAsync(AchievementArchive archive, ImmutableArray<UIAFItem> array, ImportStrategyKind strategy)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("achievement.import", "achievement");
+        span
+            .SetData("achievement.strategy", strategy.ToString())
+            .SetData("achievement.items", array.Length);
+
         await taskContext.SwitchToBackgroundAsync();
 
         Guid archiveId = archive.InnerId;
@@ -152,6 +158,8 @@ public sealed partial class AchievementService : IAchievementService
     {
         await taskContext.SwitchToBackgroundAsync();
         ImmutableArray<EntityAchievement> entities = achievementRepository.GetAchievementImmutableArrayByArchiveId(archive.InnerId);
+        using SentrySpanScope span = SentrySpanScope.StartChild("achievement.export", archive.Name);
+        span.SetData("achievement.items", entities.Length);
 
         return new()
         {

@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.Windows.AppLifecycle;
 using Microsoft.Windows.AppNotifications;
 using Snap.Hutao.Remastered.Core;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.LifeCycle;
 using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess;
 using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.Model;
@@ -50,14 +51,33 @@ public static partial class Bootstrap
             return;
         }
 
+        // Sentry initializes before the redirect so the second instance can report how long
+        // handing the activation to the running instance takes. ComWrappers are initialized
+        // first because Sentry reads the WebView2 version while configuring its scope.
+        ComWrappersSupport.InitializeComWrappers();
+        using IDisposable telemetry = LoggerFactoryExtension.InitializeSentry();
+
         bool hasRunningInstance = HasRunningInstance();
 
         // 1. Another instance is already running, hand this activation over to it.
         // If the redirect fails, fall through to full startup: the pipe server may not be ready yet
         // during first instance init.
-        if (hasRunningInstance && PrivateNamedPipeClient.TryLightweightRedirect(args))
+        if (hasRunningInstance)
         {
-            return;
+            bool redirected;
+            using (SentrySpanScope redirect = SentrySpanScope.StartTransaction("app.startup.redirect", "app.startup"))
+            {
+                redirect.SetData("startup.has_running_instance", true);
+                redirected = PrivateNamedPipeClient.TryLightweightRedirect(args);
+                redirect.SetData("startup.redirected", redirected);
+            }
+
+            if (redirected)
+            {
+                // The transaction above is finished by the using block; flush it before exit.
+                SentrySdk.Flush();
+                return;
+            }
         }
 
         // 2. Check if we should restart as administrator. The command-line arguments carry the
@@ -103,10 +123,6 @@ public static partial class Bootstrap
             Environment.SetEnvironmentVariable("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "00000000");
             Environment.SetEnvironmentVariable("DOTNET_SYSTEM_BUFFERS_SHAREDARRAYPOOL_MAXARRAYSPERPARTITION", "128");
             AppContext.SetData("MVVMTOOLKIT_ENABLE_INOTIFYPROPERTYCHANGING_SUPPORT", false);
-
-            ComWrappersSupport.InitializeComWrappers();
-
-            using IDisposable telemetry = LoggerFactoryExtension.InitializeSentry();
 
             // By adding the using statement, we can dispose the injected services when closing
             using (ServiceProvider serviceProvider = DependencyInjection.Initialize(true))
@@ -211,6 +227,7 @@ public static partial class Bootstrap
                 : GetAppModelForwardedArguments();
 
             ProcessFactory.StartUsingShellExecuteRunAs(currentProcessPath, forwardedArguments);
+            SentrySdk.Flush();
             Environment.Exit(0);
         }
         catch (Exception ex)
@@ -228,8 +245,6 @@ public static partial class Bootstrap
     {
         try
         {
-            ComWrappersSupport.InitializeComWrappers();
-
             HutaoActivationArguments activation = HutaoActivationArguments.FromAppActivationArguments(AppInstance.GetCurrent().GetActivatedEventArgs());
             return activation switch
             {

@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.IO.Compression.Zstandard;
 using Snap.Hutao.Remastered.Core.IO.Hashing;
 using Snap.Hutao.Remastered.Core.Threading.RateLimiting;
@@ -291,6 +292,9 @@ public sealed partial class GamePackageService : IGamePackageService
             return default;
         }
 
+        using SentrySpanScope span = SentrySpanScope.StartOperation("game.decode_manifests", "game");
+        span.SetData("game.manifest_count", build.Manifests.Count);
+
         long downloadTotalBytes = 0L;
         long totalBytes = 0L;
         ImmutableArray<SophonDecodedManifest>.Builder decodedManifests = ImmutableArray.CreateBuilder<SophonDecodedManifest>();
@@ -412,6 +416,9 @@ public sealed partial class GamePackageService : IGamePackageService
         {
             return default;
         }
+
+        using SentrySpanScope span = SentrySpanScope.StartOperation("game.decode_diff_manifests", "game");
+        span.SetData("game.manifest_count", patchBuild.Manifests.Count);
 
         long downloadTotalBytes = 0L;
         long downloadFileCount = 0L;

@@ -4,6 +4,7 @@
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Service.Abstraction;
 using Snap.Hutao.Remastered.ViewModel.User;
@@ -89,6 +90,9 @@ public sealed partial class UserService : IUserService
 
     public async ValueTask<bool> RefreshCookieTokenAsync(EntityUser user)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("user.refresh_cookie", "user");
+        span.SetData("user.is_oversea", user.IsOversea);
+
         UidCookieToken? uidCookieToken;
         using (IServiceScope scope = serviceProvider.CreateScope())
         {

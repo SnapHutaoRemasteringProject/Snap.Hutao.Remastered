@@ -43,6 +43,8 @@ public sealed partial class CalendarViewModel : Abstraction.ViewModelSlim<Cultiv
 
     protected override async Task LoadAsync()
     {
+        using SentrySpanScope span = SentrySpanScope.StartTransaction($"{nameof(CalendarViewModel)}.Load", "ui.load");
+
         if (!await metadataService.InitializeAsync().ConfigureAwait(false))
         {
             return;

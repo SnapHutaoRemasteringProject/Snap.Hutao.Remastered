@@ -3,6 +3,8 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Dispatching;
+using Snap.Hutao.Remastered.Core;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.Property;
 using Snap.Hutao.Remastered.UI.Xaml;
@@ -87,6 +89,9 @@ public abstract partial class ViewModel : ObservableObject, IViewModel, IDisposa
 
     private async Task RunLoadAsync(TaskCompletionSource completion, TaskCompletionSource<bool> initialization, CancellationToken token)
     {
+        using SentrySpanScope span = SentrySpanScope.StartTransaction($"{TypeNameHelper.GetTypeDisplayName(GetType(), fullName: false)}.Load", "ui.load");
+        span.SetData("viewmodel", GetType().FullName ?? GetType().Name);
+
         try
         {
             bool initialized = await LoadOverrideAsync(token).ConfigureAwait(false);

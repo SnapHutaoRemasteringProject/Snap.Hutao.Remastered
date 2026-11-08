@@ -4,6 +4,7 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Property;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
@@ -82,6 +83,8 @@ public sealed partial class LaunchGameViewModelSlim : Abstraction.ViewModelSlim<
 
     protected override async Task LoadAsync()
     {
+        using SentrySpanScope span = SentrySpanScope.StartTransaction($"{nameof(LaunchGameViewModelSlim)}.Load", "ui.load");
+
         if (Shared.GetCurrentLaunchSchemeFromConfigurationFile() is not { } scheme)
         {
             // The scheme is null, user must go to LaunchGamePage to select a proper game path.

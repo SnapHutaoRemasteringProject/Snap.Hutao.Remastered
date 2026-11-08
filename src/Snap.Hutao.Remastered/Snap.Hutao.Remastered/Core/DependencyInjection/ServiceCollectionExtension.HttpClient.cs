@@ -38,6 +38,7 @@ public static partial class ServiceCollectionExtension
                             typedHandler.Proxy = HttpProxyUsingSystemProxy.Instance;
                             typedHandler.AllowAutoRedirect = false;
                         })
+                        .AddHttpMessageHandler<SentryTracingHttpMessageHandler>()
                         .AddHttpMessageHandler<ServerDomainRedirectHandler>()
                         .AddHttpMessageHandler<RetryHttpHandler>();
                 })

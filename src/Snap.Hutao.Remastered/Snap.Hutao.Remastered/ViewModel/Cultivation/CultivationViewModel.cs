@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Database;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
@@ -402,6 +403,8 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
             messenger.Send(InfoBarMessage.Warning(SH.MustSelectUserAndUid));
             return;
         }
+
+        using SentrySpanScope span = SentrySpanScope.StartCommand(nameof(CultivationViewModel));
 
         using (await EnterCriticalSectionAsync().ConfigureAwait(false))
         {

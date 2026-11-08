@@ -2,11 +2,14 @@
 // Licensed under the MIT license.
 
 using Microsoft.EntityFrameworkCore;
+using Snap.Hutao.Remastered.Core.Database;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Model.Entity.Database;
 using Snap.Hutao.Remastered.Win32;
 using System.Data.Common;
+using System.IO;
 
 namespace Snap.Hutao.Remastered.Core.DependencyInjection;
 
@@ -35,10 +38,19 @@ public static partial class ServiceCollectionExtension
                 {
                     using (AppDbContext context = AppDbContext.Create(serviceProvider, sqlConnectionString))
                     {
-                        if (context.Database.GetPendingMigrations().Any())
+                        List<string> pendingMigrations = [.. context.Database.GetPendingMigrations()];
+                        if (pendingMigrations.Count > 0)
                         {
                             serviceProvider.GetRequiredService<ILogger<AppDbContext>>().LogInformation("[Database] Performing AppDbContext Migrations");
-                            context.Database.Migrate();
+
+                            using (SentrySpanScope migration = SentrySpanScope.StartTransaction("db.migration", "db.migration"))
+                            {
+                                migration
+                                    .SetData("db.pending_migrations", pendingMigrations.Count)
+                                    .SetData("db.file", Path.GetFileName(dbFile));
+
+                                context.Database.Migrate();
+                            }
                         }
                     }
                 }
@@ -61,6 +73,7 @@ public static partial class ServiceCollectionExtension
 #if DEBUG
                     .EnableSensitiveDataLogging()
 #endif
+                    .AddInterceptors(SentryDbCommandInterceptor.Instance)
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
                     .UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>())
                     .UseSqlite(sqlConnectionString);

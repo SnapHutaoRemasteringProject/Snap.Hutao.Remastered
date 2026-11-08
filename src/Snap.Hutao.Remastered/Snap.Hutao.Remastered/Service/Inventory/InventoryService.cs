@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.InterChange.Inventory;
 using Snap.Hutao.Remastered.Model.Metadata.Item;
@@ -67,6 +68,9 @@ public sealed partial class InventoryService : IInventoryService
 
     public void SaveInventoryItemsFromBackpackArchive(CultivateProject project, ImmutableArray<BackpackItem> backpackItems, ICultivationMetadataContext context)
     {
+        using SentrySpanScope span = SentrySpanScope.StartChild("inventory.save_from_backpack", project.Name);
+        span.SetData("inventory.backpack_items", backpackItems.Length);
+
         Dictionary<uint, uint> backpackCounts = [];
         foreach (BackpackItem item in backpackItems)
         {
@@ -111,6 +115,9 @@ public sealed partial class InventoryService : IInventoryService
             return;
         }
 
+        using SentrySpanScope span = SentrySpanScope.StartOperation("inventory.refresh", "inventory");
+        span.SetData("inventory.source", "web_calculator");
+
         ImmutableArray<AvatarPromotionDelta> deltas = await promotionDeltaFactory.GetAsync(context, userAndUid).ConfigureAwait(false);
 
         BatchConsumption? batchConsumption;
@@ -137,12 +144,17 @@ public sealed partial class InventoryService : IInventoryService
 
     private async ValueTask RefreshInventoryByEmbeddedYaeAsync(IYaeService yaeService, IViewModelSupportLaunchExecution viewModel, CultivateProject project)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("inventory.refresh", "inventory");
+        span.SetData("inventory.source", "embedded_yae");
+
         if (await yaeService.GetInventoryAsync(viewModel).ConfigureAwait(false) is not { } uiif)
         {
+            span.SetData("inventory.parse_failed", true);
             messenger.Send(InfoBarMessage.Warning(SH.ServiceYaeEmbeddedYaeErrorTitle, SH.ServiceInventoryRefreshByEmbeddedYaeErrorMessage));
             return;
         }
 
+        span.SetData("inventory.items", uiif.List.Length);
         inventoryRepository.RemoveInventoryItemRangeByProjectId(project.InnerId);
         inventoryRepository.AddInventoryItemRangeByProjectId(UIIFItemToInventoryItem(project.InnerId, uiif.List));
 

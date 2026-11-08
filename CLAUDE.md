@@ -441,6 +441,37 @@ the build fails with `CS9275`); write a normal constructor in that case.
 - `ValueTask` is preferred over `Task` where a synchronous completion is common; the generator's own
   analyzer (`SH003`) enforces this.
 
+### 5.9 Sentry performance instrumentation
+
+- A desktop app has no incoming request, so `TracesSampleRate = 1.0` alone produces no performance
+  data: every measured operation must start a transaction explicitly.
+  [`Core/Diagnostics/SentrySpanScope.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Core/Diagnostics/SentrySpanScope.cs)
+  is the only wrapper.
+  - `StartTransaction(name, operation)` — page load, startup step, migration.
+  - `StartCommand(typeName)` — a UI command; names the transaction `<Type>.<Method>` with operation
+    `ui.command`.
+  - `StartOperation(name, operation)` — a service entry point that can be a child of an active
+    command or the transaction root when a background job calls it.
+  - `StartChild(operation, description)` — nested work; **no-op when no transaction is active**, so
+    HTTP and SQL instrumentation never creates a transaction per request/statement.
+- Instrumentation outside view models:
+
+  | Area | Where | Span |
+  |---|---|---|
+  | Page load | `ViewModel.RunLoadAsync`, `UserViewModel.LoadAsync`, the five `ViewModelSlim` `LoadAsync` overrides | `<ViewModel>.Load` / `ui.load` |
+  | Startup redirect | `Bootstrap.Main`, `PrivateNamedPipeClient` | `app.startup.redirect`, `pipe.*` |
+  | HTTP | `SentryTracingHttpMessageHandler` (outermost client handler) | `http.client` |
+  | SQL | `SentryDbCommandInterceptor` (attached in `AddDatabase`) | `db.sql` |
+  | Repository / save | `RepositoryExtension.Execute`, `DbSetExtension` | `db.repository`, `db.save` |
+  | EF migration | `ServiceCollectionExtension.AddDatabase` | `db.migration` |
+  | Business services | Metadata, Git, Update, GachaLog, Achievement, User, DailyNote, game-record refresh, Plugin, Inventory, Cultivation, Backpack, game launch/package | `*.refresh` and similar |
+
+- Span data must not contain tokens, cookies, query strings or absolute user paths. File names and
+  entity names are fine; raw SQL (`db.statement`) carries parameter placeholders, not values.
+- Do not wrap a wait the user controls (game process lifetime, an open dialog) in a transaction;
+  start the span after the interaction, around the bounded work. Cheap synchronous commands (copy,
+  navigate, filter) intentionally stay untraced.
+
 ## 6. Coding Conventions (rules, not descriptions)
 
 - **MVVM first** — UI logic in ViewModels; code-behind only for view mechanics. No business
@@ -559,6 +590,7 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
+| 2026-11-08 | Added Sentry performance instrumentation (§5.9): every page load and the startup named-pipe redirect start a transaction, and HTTP, SQL, repository/save, EF migration, metadata/git/update/gacha/achievement/user/daily-note/record/plugin/inventory/cultivation/backpack/game-launch/game-package work is captured as nested spans through `SentrySpanScope`; documented the transaction-vs-child policy and the "no user-controlled waits in a transaction" rule. |
 | 2026-11-08 | All 30 typed `DataContext` shadow properties in the binding views read the base dependency property through `Unsafe.As<T>` instead of a checked `(T)base.DataContext` cast, and every such view imports `System.Runtime.CompilerServices`; documented in §6. |
 | 2026-11-08 | `MaterialCardButton` no longer copies the host's resolved `Foreground` onto its inner buttons as a local value; it forwards only a caller-defined color and otherwise clears the local value, so home-card text keeps `ButtonForeground`'s theme expression instead of the application theme captured at construction (black text on dark cards). Documented the rule in §5.3. |
 | 2026-10-31 | Removed the `global.json` SDK pin (`chore: do not use global.json to control dotnet version`) and dropped TODO #18: the build uses the installed .NET 11 SDK, CI installs major `11`, and §1/§2/§7 now forbid reintroducing a pin. |

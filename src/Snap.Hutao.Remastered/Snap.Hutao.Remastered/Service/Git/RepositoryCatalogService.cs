@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Service.Network;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Web.Hutao;
@@ -54,6 +55,7 @@ public sealed partial class RepositoryCatalogService : ObservableObject, IDispos
     {
         if (XamlApplicationLifetime.Exiting) throw new OperationCanceledException();
         using CancellationTokenSource linked = CancellationTokenSource.CreateLinkedTokenSource(token, lifetimeToken, XamlApplicationLifetime.ShutdownToken);
+        using SentrySpanScope span = SentrySpanScope.StartChild("git.catalog", name);
         await requestGate.WaitAsync(linked.Token).ConfigureAwait(false);
         try
         {

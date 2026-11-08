@@ -3,8 +3,10 @@
 
 using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Core.Database;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Model.Entity.Database;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.Service.Abstraction;
 
@@ -13,8 +15,13 @@ public static class RepositoryExtension
     extension<TEntity>(IRepository<TEntity> repository)
         where TEntity : class
     {
-        public TResult Execute<TResult>(Func<DbSet<TEntity>, TResult> func)
+        public TResult Execute<TResult>(Func<DbSet<TEntity>, TResult> func, [CallerMemberName] string caller = "")
         {
+            using SentrySpanScope span = SentrySpanScope.StartChild("db.repository", $"{typeof(TEntity).Name}.{caller}");
+            span
+                .SetData("db.entity", typeof(TEntity).FullName ?? typeof(TEntity).Name)
+                .SetData("db.repository_operation", caller);
+
             using (IServiceScope scope = repository.ServiceProvider.CreateScope())
             {
                 AppDbContext appDbContext = scope.GetAppDbContext();

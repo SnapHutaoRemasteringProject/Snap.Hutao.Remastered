@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Service.Game.Launching.Context;
 using Snap.Hutao.Remastered.Service.Git;
@@ -26,9 +27,11 @@ public sealed class LaunchExecutionGameProcessStartHandler : AbstractLaunchExecu
 
     public override async ValueTask ExecuteAsync(LaunchExecutionContext context)
     {
+        using SentrySpanScope span = SentrySpanScope.StartChild("game.process_start", "Launch game process");
         try
         {
             context.Process.Start();
+            span.SetData("game.process_id", context.Process.Id);
             await context.TaskContext.SwitchToMainThreadAsync();
             GameLifeCycle.IsGameRunningProperty.Value = true;
         }

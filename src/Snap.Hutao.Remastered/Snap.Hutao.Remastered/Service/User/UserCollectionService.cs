@@ -4,6 +4,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.Database;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.ViewModel.User;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Binding;
 using System.Collections.Immutable;
@@ -135,6 +136,7 @@ public sealed partial class UserCollectionService : IUserCollectionService, IDis
 
     private async ValueTask<bool> RetryResumeUninitializedUsersCoreAsync(CancellationToken token)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("user.resume_uninitialized", "user");
         AdvancedDbCollectionView<BindingUser, EntityUser> users = await GetUsersAsync(token).ConfigureAwait(false);
         await taskContext.SwitchToMainThreadAsync();
         token.ThrowIfCancellationRequested();

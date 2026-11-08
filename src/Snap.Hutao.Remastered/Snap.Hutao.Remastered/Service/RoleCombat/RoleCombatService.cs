@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.ViewModel.RoleCombat;
@@ -52,6 +53,9 @@ public sealed partial class RoleCombatService : IRoleCombatService
 
     public async ValueTask RefreshRoleCombatAsync(RoleCombatMetadataContext context, UserAndUid userAndUid)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("record.refresh", "game_record");
+        span.SetData("game_record.type", "role_combat").SetData("game_record.oversea", userAndUid.IsOversea);
+
         Web.Hoyolab.Takumi.GameRecord.RoleCombat.RoleCombat? webRoleCombat;
         using (IServiceScope scope = serviceScopeFactory.CreateScope())
         {

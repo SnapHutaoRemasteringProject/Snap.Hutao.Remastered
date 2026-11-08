@@ -45,10 +45,17 @@ public sealed partial class MetadataService : IMetadataService
         try
         {
             if (isInitialized) return true;
-            using (ValueStopwatch.MeasureExecution(logger))
+            using (SentrySpanScope span = SentrySpanScope.StartOperation("metadata.initialize", "metadata"))
             {
-                (isInitialized, _) = await gitRepositoryService.EnsureRepositoryAsync("Snap.Metadata", token).ConfigureAwait(false);
+                span.SetData("metadata.repository", "Snap.Metadata");
+                using (ValueStopwatch.MeasureExecution(logger))
+                {
+                    (isInitialized, _) = await gitRepositoryService.EnsureRepositoryAsync("Snap.Metadata", token).ConfigureAwait(false);
+                }
+
+                span.SetData("metadata.initialized", isInitialized);
             }
+
             return isInitialized;
         }
         catch (OperationCanceledException) { throw; }
@@ -74,11 +81,19 @@ public sealed partial class MetadataService : IMetadataService
         Verify.Operation(isInitialized, SH.ServiceMetadataNotInitialized);
         string cacheKey = $"{nameof(MetadataService)}.Cache.{strategy.Name}";
 
+        using SentrySpanScope span = SentrySpanScope.StartChild("metadata.load", strategy.Name);
+        span
+            .SetData("metadata.file", strategy.Name)
+            .SetData("metadata.scattered", strategy.IsScattered);
+
         if (MemoryCache.TryGetValue(cacheKey, out object? value))
         {
             ArgumentNullException.ThrowIfNull(value);
+            span.SetData("metadata.cache_hit", true);
             return Unsafe.Unbox<ImmutableArray<T>>(value);
         }
+
+        span.SetData("metadata.cache_hit", false);
 
         // Cached filesystem reads/deserialization can complete synchronously.
         // Keep that CPU work off the UI without changing initialization ordering.

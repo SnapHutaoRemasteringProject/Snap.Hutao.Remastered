@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.Win32.SafeHandles;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
@@ -36,6 +37,9 @@ public sealed class LaunchExecutionGameResourceHandler : AbstractLaunchExecution
 
             return;
         }
+
+        using SentrySpanScope span = SentrySpanScope.StartOperation("game.convert", "game");
+        span.SetData("game.convert_only", convertOnly);
 
         using (BlockDeferral<PackageConvertStatus> deferral = await context.ViewModel.CreateConvertBlockDeferralAsync().ConfigureAwait(false))
         {

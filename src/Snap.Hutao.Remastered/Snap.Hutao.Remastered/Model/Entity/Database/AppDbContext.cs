@@ -3,6 +3,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Model.Entity.Configuration;
 using System.Diagnostics;
 
@@ -85,6 +86,7 @@ public sealed partial class AppDbContext : DbContext
     {
         DbContextOptions<AppDbContext> options = new DbContextOptionsBuilder<AppDbContext>()
             .UseSqlite(sqlConnectionString)
+            .AddInterceptors(SentryDbCommandInterceptor.Instance)
             .Options;
 
         return new(options);

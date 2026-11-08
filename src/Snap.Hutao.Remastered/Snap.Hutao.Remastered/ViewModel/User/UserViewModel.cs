@@ -6,6 +6,7 @@ using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.DataTransfer;
 using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.LifeCycle;
 using Snap.Hutao.Remastered.Core.Logging;
@@ -94,6 +95,7 @@ public sealed partial class UserViewModel : ObservableObject
     [Command("LoadCommand")]
     private async Task LoadAsync()
     {
+        using SentrySpanScope span = SentrySpanScope.StartTransaction($"{nameof(UserViewModel)}.Load", "ui.load");
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Load", "UserViewModel.Command"));
 
         try

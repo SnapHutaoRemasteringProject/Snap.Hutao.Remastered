@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Service.Abstraction;
 using Snap.Hutao.Remastered.Service.User;
@@ -138,6 +139,9 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
 
     private async ValueTask PrivateRefreshDailyNotesAsync(bool forceRefresh, CancellationToken token = default)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("daily_note.refresh", "daily_note");
+        span.SetData("daily_note.force_refresh", forceRefresh);
+
         await taskContext.SwitchToBackgroundAsync();
 
         bool autoRefresh = dailyNoteOptions.IsAutoRefreshEnabled.Value;

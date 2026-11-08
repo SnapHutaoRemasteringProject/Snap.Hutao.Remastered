@@ -3,6 +3,7 @@
 
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Core;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.LifeCycle;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
@@ -32,6 +33,9 @@ public sealed partial class UpdateService : IUpdateService
 
     public async ValueTask<CheckUpdateResult> CheckUpdateAsync(CancellationToken token = default)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("update.check", "update");
+        span.SetData("update.current_version", $"{HutaoRuntime.Version}");
+
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             CheckUpdateResult checkUpdateResult = new();
@@ -72,6 +76,7 @@ public sealed partial class UpdateService : IUpdateService
             }
             finally
             {
+                span.SetData("update.result", checkUpdateResult.Kind.ToString());
                 UpdateInfo = checkUpdateResult.Kind switch
                 {
                     CheckUpdateResultKind.UpdateAvailable => SH.FormatViewModelSettingUpdateAvailable(checkUpdateResult.PackageInformation?.Version.ToString()),
@@ -225,6 +230,7 @@ public sealed partial class UpdateService : IUpdateService
 
     private async ValueTask LaunchUpdaterAsync(DownloadSourceKind downloadSource = DownloadSourceKind.Official)
     {
+        using SentrySpanScope span = SentrySpanScope.StartChild("update.launch_updater", $"{downloadSource}");
         string updaterTargetPath = HutaoRuntime.GetDataUpdateCacheDirectoryFile(UpdaterFilename);
         InstalledLocation.CopyFileFromApplicationUri($"ms-appx:///{UpdaterFilename}", updaterTargetPath);
 

@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.Database;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.Yae;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Intrinsic;
@@ -45,6 +46,7 @@ public sealed partial class BackpackService : IBackpackService
 
     public bool RefreshByEmbeddedYae(BackpackArchive archive, PlayerStoreResult storeResult)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("backpack.refresh", "backpack");
         ArgumentNullException.ThrowIfNull(storeResult.StoreBytes);
 
         ImmutableDictionary<ulong, uint> equippedItemOwners = storeResult.AvatarDataBytes is { } avatarDataBytes
@@ -53,6 +55,7 @@ public sealed partial class BackpackService : IBackpackService
 
         if (!PlayerStoreParser.TryParseToBackpackItems(storeResult.StoreBytes, archive.InnerId, equippedItemOwners, out ImmutableArray<BackpackItem> items))
         {
+            span.SetData("backpack.parse_failed", true);
             return false;
         }
 
@@ -60,6 +63,7 @@ public sealed partial class BackpackService : IBackpackService
         ImmutableArray<BackpackItem> virtualItems = CreateVirtualItems(archive.InnerId, storeResult.PropMap);
 
         ImmutableArray<BackpackItem> allItems = [.. items, .. virtualItems];
+        span.SetData("backpack.items", allItems.Length);
         backpackRepository.ReplaceBackpackItemRangeByArchiveId(archive.InnerId, allItems);
 
         return true;

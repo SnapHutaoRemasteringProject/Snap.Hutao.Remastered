@@ -3,6 +3,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.Core.Database;
@@ -46,7 +47,11 @@ public static class DbSetExtension
         private int SaveChangesAndClearChangeTracker()
         {
             DbContext dbContext = dbSet.Context();
+            using SentrySpanScope span = SentrySpanScope.StartChild("db.save", typeof(TEntity).Name);
             int count = dbContext.SaveChanges();
+            span
+                .SetData("db.entity", typeof(TEntity).FullName ?? typeof(TEntity).Name)
+                .SetData("db.rows_affected", count);
             dbContext.ChangeTracker.Clear();
             return count;
         }

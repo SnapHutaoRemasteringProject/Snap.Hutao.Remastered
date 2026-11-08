@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Model.Entity;
@@ -65,6 +66,8 @@ public sealed partial class DailyNoteViewModelSlim : Abstraction.ViewModelSlim<D
     /// <inheritdoc/>
     protected override async Task LoadAsync()
     {
+        using SentrySpanScope span = SentrySpanScope.StartTransaction($"{nameof(DailyNoteViewModelSlim)}.Load", "ui.load");
+
         if (!await metadataService.InitializeAsync().ConfigureAwait(false))
         {
             return;

@@ -40,19 +40,22 @@ public sealed partial class GachaLogService : IGachaLogService
 
     public async ValueTask<GachaStatistics> GetStatisticsAsync(GachaLogServiceMetadataContext context, GachaArchive archive)
     {
+        using SentrySpanScope span = SentrySpanScope.StartChild("gacha.statistics", $"Gacha statistics {archive.Uid}");
         using (ValueStopwatch.MeasureExecution(logger))
         {
             ImmutableArray<GachaItem> items = gachaLogRepository.GetGachaItemImmutableArrayByArchiveId(archive.InnerId);
+            span.SetData("gacha.items", items.Length);
             return await gachaStatisticsFactory.CreateAsync(context, items, default!).ConfigureAwait(false);
         }
     }
 
     public async ValueTask<GachaStatistics> GetBeyondStatisticsAsync(GachaLogServiceMetadataContext context, GachaArchive archive)
     {
+        using SentrySpanScope span = SentrySpanScope.StartChild("gacha.statistics", $"Beyond gacha statistics {archive.Uid}");
         using (ValueStopwatch.MeasureExecution(logger))
         {
             ImmutableArray<BeyondGachaItem> beyondItems = gachaLogRepository.GetBeyondGachaItemImmutableArrayByArchiveId(archive.InnerId);
-            
+            span.SetData("gacha.items", beyondItems.Length);
             return await gachaStatisticsFactory.CreateAsync(context, default!, beyondItems).ConfigureAwait(false);
         }
     }
@@ -72,6 +75,11 @@ public sealed partial class GachaLogService : IGachaLogService
 
     public async ValueTask<bool> RefreshGachaLogAsync(GachaLogServiceMetadataContext context, GachaLogQuery query, RefreshStrategyKind kind, IProgress<GachaLogFetchStatus> progress, CancellationToken token)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("gacha.refresh", "gacha");
+        span
+            .SetData("gacha.beyond", false)
+            .SetData("gacha.strategy", kind.ToString());
+
         bool isLazy = kind switch
         {
             RefreshStrategyKind.AggressiveMerge => false,
@@ -80,6 +88,7 @@ public sealed partial class GachaLogService : IGachaLogService
         };
 
         (bool authkeyValid, GachaArchive? target) = await FetchGachaLogsAsync(context, query, isLazy, progress, token).ConfigureAwait(false);
+        span.SetData("gacha.authkey_valid", authkeyValid);
 
         if (target is not null)
         {
@@ -93,6 +102,11 @@ public sealed partial class GachaLogService : IGachaLogService
 
     public async ValueTask<bool> RefreshBeyondGachaLogAsync(GachaLogServiceMetadataContext context, GachaLogQuery query, RefreshStrategyKind kind, IProgress<GachaLogFetchStatus> progress, CancellationToken token)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("gacha.refresh", "gacha");
+        span
+            .SetData("gacha.beyond", true)
+            .SetData("gacha.strategy", kind.ToString());
+
         bool isLazy = kind switch
         {
             RefreshStrategyKind.AggressiveMerge => false,
@@ -101,6 +115,7 @@ public sealed partial class GachaLogService : IGachaLogService
         };
 
         (bool authkeyValid, GachaArchive? target) = await FetchBeyondGachaLogsAsync(context, query, isLazy, progress, token).ConfigureAwait(false);
+        span.SetData("gacha.authkey_valid", authkeyValid);
 
         if (target is not null)
         {

@@ -8,6 +8,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Core;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Core.Shell;
@@ -287,6 +288,8 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
     private async Task CheckUpdateAsync()
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Check update", "SettingViewModel.Command"));
+
+        using SentrySpanScope span = SentrySpanScope.StartCommand(nameof(SettingViewModel));
 
         await taskContext.SwitchToBackgroundAsync();
 

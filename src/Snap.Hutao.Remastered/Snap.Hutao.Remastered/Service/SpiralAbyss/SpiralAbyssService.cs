@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.ViewModel.SpiralAbyss;
@@ -51,6 +52,9 @@ public sealed partial class SpiralAbyssService : ISpiralAbyssService
 
     public async ValueTask RefreshSpiralAbyssAsync(SpiralAbyssMetadataContext context, UserAndUid userAndUid)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("record.refresh", "game_record");
+        span.SetData("game_record.type", "spiral_abyss").SetData("game_record.oversea", userAndUid.IsOversea);
+
         using (IServiceScope scope = serviceScopeFactory.CreateScope())
         {
             IMessenger messenger = scope.ServiceProvider.GetRequiredService<IMessenger>();

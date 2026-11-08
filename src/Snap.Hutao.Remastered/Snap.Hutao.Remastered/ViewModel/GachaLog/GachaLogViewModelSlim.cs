@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Service.GachaLog;
 using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
@@ -27,6 +28,8 @@ public sealed partial class GachaLogViewModelSlim : Abstraction.ViewModelSlim<Ga
 
     protected override async Task LoadAsync()
     {
+        using SentrySpanScope span = SentrySpanScope.StartTransaction($"{nameof(GachaLogViewModelSlim)}.Load", "ui.load");
+
         using (IServiceScope scope = ServiceProvider.CreateScope())
         {
             IGachaLogService gachaLogService = scope.ServiceProvider.GetRequiredService<IGachaLogService>();

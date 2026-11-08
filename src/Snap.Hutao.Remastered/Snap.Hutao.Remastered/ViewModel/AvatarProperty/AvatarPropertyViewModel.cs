@@ -4,6 +4,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.WinUI.Collections;
 using Microsoft.UI.Xaml.Controls;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
@@ -161,6 +162,8 @@ public sealed partial class AvatarPropertyViewModel : Abstraction.ViewModel, IRe
     private async Task RefreshByHoyolabGameRecordAsync()
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Refresh", "AvatarPropertyViewModel.Command"));
+
+        using SentrySpanScope span = SentrySpanScope.StartCommand(nameof(AvatarPropertyViewModel));
 
         if (await scopeContext.UserService.GetCurrentUserAndUidAsync().ConfigureAwait(false) is { } userAndUid)
         {

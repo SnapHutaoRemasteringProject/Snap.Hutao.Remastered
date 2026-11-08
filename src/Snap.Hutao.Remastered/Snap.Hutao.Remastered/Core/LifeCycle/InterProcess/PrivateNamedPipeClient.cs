@@ -22,16 +22,23 @@ public sealed partial class PrivateNamedPipeClient : IDisposable
 
     public bool TryRedirectActivationTo(HutaoActivationArguments hutaoArgs)
     {
+        using SentrySpanScope span = SentrySpanScope.StartOperation("pipe.redirect_activation", "app.activation");
+        span.SetData("activation.kind", hutaoArgs.Kind.ToString());
+
         if (!clientStream.TryConnectOnce())
         {
+            span.SetData("pipe.connected", false);
             return false;
         }
+
+        span.SetData("pipe.connected", true);
 
         try
         {
             clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.Request, PipePacketCommand.RequestElevationStatus);
             clientStream.ReadPacket(out PipePacketHeader _, out ElevationStatusResponse? response);
             ArgumentNullException.ThrowIfNull(response);
+            span.SetData("pipe.peer_elevated", response.IsElevated);
 
             // Prefer elevated instance
             if (HutaoRuntime.IsProcessElevated && !response.IsElevated)
@@ -42,6 +49,7 @@ public sealed partial class PrivateNamedPipeClient : IDisposable
                 WaitPreviousProcessExit(response);
 
                 // Retain the elevated instance
+                span.SetData("pipe.previous_instance_terminated", true);
                 return false;
             }
 
@@ -55,6 +63,7 @@ public sealed partial class PrivateNamedPipeClient : IDisposable
         catch (IOException)
         {
             // Pipe is broken.
+            span.SetData("pipe.broken", true);
             return false;
         }
     }
@@ -106,37 +115,50 @@ public sealed partial class PrivateNamedPipeClient : IDisposable
 
         using NamedPipeClientStream clientStream = new(".", PrivateNamedPipe.PrivateName, PipeDirection.InOut, PipeOptions.Asynchronous | PipeOptions.WriteThrough);
 
-        try
+        using (SentrySpanScope connect = SentrySpanScope.StartChild("pipe.connect", PrivateNamedPipe.PrivateName))
         {
-            clientStream.Connect(TimeSpan.Zero);
-        }
-        catch (TimeoutException)
-        {
-            return false;
-        }
+            connect.SetData("activation.kind", hutaoArgs.Kind.ToString());
 
-        try
-        {
-            clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.Request, PipePacketCommand.RequestElevationStatus);
-            clientStream.ReadPacket(out PipePacketHeader _, out ElevationStatusResponse? response);
-            ArgumentNullException.ThrowIfNull(response);
-
-            if (HutaoRuntime.IsProcessElevated && !response.IsElevated)
+            try
             {
-                clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.SessionTermination, PipePacketCommand.Exit);
-                clientStream.Flush();
+                clientStream.Connect(TimeSpan.Zero);
+                connect.SetData("pipe.connected", true);
+            }
+            catch (TimeoutException)
+            {
+                connect.SetData("pipe.connected", false);
                 return false;
             }
-
-            clientStream.WritePacketWithJsonContent(PrivateNamedPipe.PrivateVersion, PipePacketType.Request, PipePacketCommand.RedirectActivation, hutaoArgs);
-            clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.SessionTermination, PipePacketCommand.None);
-            clientStream.Flush();
-
-            return true;
         }
-        catch (IOException)
+
+        using (SentrySpanScope span = SentrySpanScope.StartChild("pipe.redirect", "RequestElevationStatus + RedirectActivation"))
         {
-            return false;
+            try
+            {
+                clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.Request, PipePacketCommand.RequestElevationStatus);
+                clientStream.ReadPacket(out PipePacketHeader _, out ElevationStatusResponse? response);
+                ArgumentNullException.ThrowIfNull(response);
+                span.SetData("pipe.peer_elevated", response.IsElevated);
+
+                if (HutaoRuntime.IsProcessElevated && !response.IsElevated)
+                {
+                    clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.SessionTermination, PipePacketCommand.Exit);
+                    clientStream.Flush();
+                    span.SetData("pipe.previous_instance_terminated", true);
+                    return false;
+                }
+
+                clientStream.WritePacketWithJsonContent(PrivateNamedPipe.PrivateVersion, PipePacketType.Request, PipePacketCommand.RedirectActivation, hutaoArgs);
+                clientStream.WritePacket(PrivateNamedPipe.PrivateVersion, PipePacketType.SessionTermination, PipePacketCommand.None);
+                clientStream.Flush();
+
+                return true;
+            }
+            catch (IOException)
+            {
+                span.SetData("pipe.broken", true);
+                return false;
+            }
         }
     }
 

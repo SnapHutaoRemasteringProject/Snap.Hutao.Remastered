@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Service.Achievement;
 using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
@@ -22,6 +23,8 @@ public sealed partial class AchievementViewModelSlim : Abstraction.ViewModelSlim
 
     protected override async Task LoadAsync()
     {
+        using SentrySpanScope span = SentrySpanScope.StartTransaction($"{nameof(AchievementViewModelSlim)}.Load", "ui.load");
+
         using (IServiceScope scope = ServiceProvider.CreateScope())
         {
             ITaskContext taskContext = scope.ServiceProvider.GetRequiredService<ITaskContext>();

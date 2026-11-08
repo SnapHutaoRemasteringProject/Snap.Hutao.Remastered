@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.Database;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Model.Calculable;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Entity.Primitive;
@@ -180,6 +181,10 @@ public sealed partial class CultivationService : ICultivationService
         if (projects.CurrentItem is not { } project) return ConsumptionSaveResultKind.NoProject;
         Guid projectId = project.InnerId;
         await taskContext.SwitchToBackgroundAsync();
+
+        using SentrySpanScope span = SentrySpanScope.StartOperation("cultivation.save_consumption", "db");
+        span.SetData("cultivation.strategy", inputConsumption.Strategy.ToString());
+        span.SetData("cultivation.items", inputConsumption.Items.Length);
 
         if (inputConsumption is { Strategy: not ConsumptionSaveStrategyKind.OverwriteExisting, Items: [] })
         {
