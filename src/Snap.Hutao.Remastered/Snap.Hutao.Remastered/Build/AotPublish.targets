@@ -1,0 +1,78 @@
+<Project>
+  <!--
+    Native AOT publishing patches.
+
+    Every AOT-only MSBuild tweak lives here so Snap.Hutao.Remastered.csproj and the
+    default R2R build stay untouched. Nothing in this file runs unless an AOT publish
+    is requested (`-p:PublishAot=true`).
+
+    Keep this file imported *after* Build/ReadyToRun.targets: the payload targets below
+    must be able to act on the same build state that the R2R payload check validates.
+  -->
+
+  <!--
+    1. The XAML compiler needs the reference set.
+
+    MarkupCompilePass1 only depends on $(MarkupCompilePass1DependsOn), which does not
+    include ResolveReferences. In a PublishAot build graph ResolveReferences is
+    scheduled later than the XAML pass, so the compiler receives an empty
+    @(ReferencePath) and fails with:
+
+        WMC1007: Cannot resolve metadata for WinUI types.
+
+    Appending ResolveReferences restores the ordering a normal build already has.
+    MarkupCompilePass1DependsOn is self-appending inside the XAML targets, so the
+    default dependencies are preserved.
+  -->
+  <PropertyGroup Condition="'$(PublishAot)' == 'true'">
+    <MarkupCompilePass1DependsOn>$(MarkupCompilePass1DependsOn);ResolveReferences</MarkupCompilePass1DependsOn>
+  </PropertyGroup>
+
+  <!--
+    2. AOT publish drops the deployment payload.
+
+    Snap.Hutao.Remastered.Deployment.exe ships as a `lib/` asset of the
+    Snap.Hutao.Remastered.Deployment.Runtime package. A normal publish copies it; an
+    AOT publish does not, and VerifyRequiredPublishRuntimeFiles (Build/ReadyToRun.targets)
+    then fails with "Required runtime file is missing from publish output".
+
+    IncludeAotPublishRuntimePayload re-adds the file to @(ResolvedFileToPublish) so the
+    SDK puts it into the publish folder and the MSIX payload.
+    EnsureAotPublishRuntimePayload copies it as a safety net right before the check,
+    which also covers hosts that ship their own publish-copy pipeline.
+  -->
+  <Target Name="IncludeAotPublishRuntimePayload"
+          BeforeTargets="CopyFilesToPublishDirectory"
+          Condition="'$(PublishAot)' == 'true'">
+    <ItemGroup>
+      <_HutaoAotPayload Include="$(OutDir)Snap.Hutao.Remastered.Deployment.exe"
+                        Condition="Exists('$(OutDir)Snap.Hutao.Remastered.Deployment.exe')" />
+      <_HutaoAotPayloadInPublish Include="@(ResolvedFileToPublish)"
+                                 Condition="'%(Filename)%(Extension)' == 'Snap.Hutao.Remastered.Deployment.exe'" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'@(_HutaoAotPayload)' != '' and '@(_HutaoAotPayloadInPublish)' == ''">
+      <ResolvedFileToPublish Include="@(_HutaoAotPayload)">
+        <RelativePath>%(Filename)%(Extension)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+
+    <Error Condition="'@(_HutaoAotPayload)' == ''"
+           Text="AOT publish expects Snap.Hutao.Remastered.Deployment.exe in '$(OutDir)'. Build the project before publishing." />
+
+    <Message Importance="normal"
+             Text="AOT payload injected: '@(_HutaoAotPayload)' (already published: '@(_HutaoAotPayloadInPublish)')" />
+  </Target>
+
+  <Target Name="EnsureAotPublishRuntimePayload"
+          BeforeTargets="VerifyRequiredPublishRuntimeFiles"
+          DependsOnTargets="IncludeAotPublishRuntimePayload"
+          Condition="'$(PublishAot)' == 'true' and '@(_HutaoAotPayload)' != ''">
+    <Copy SourceFiles="@(_HutaoAotPayload)"
+          DestinationFolder="$(PublishDir)"
+          SkipUnchangedFiles="true" />
+    <Message Importance="normal" Text="AOT payload copied to $(PublishDir)" />
+  </Target>
+</Project>
