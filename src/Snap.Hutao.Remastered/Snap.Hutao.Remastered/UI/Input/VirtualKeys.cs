@@ -9,140 +9,174 @@ namespace Snap.Hutao.Remastered.UI.Input;
 
 public static class VirtualKeys
 {
-    public static ImmutableArray<NameValue<VIRTUAL_KEY>> Values { get; } = ImmutableCollectionsNameValue.FromEnum<VIRTUAL_KEY>();
+    public static ImmutableArray<NameValue<VIRTUAL_KEY>> Values { get; } = CreateValues();
 
-    public static ImmutableArray<NameValue<VIRTUAL_KEY>> HotKeyValues { get; } = ImmutableCollectionsNameValue.From(RawHotKeyValues);
-
-    private static ReadOnlySpan<VIRTUAL_KEY> RawHotKeyValues
-    {
-        get =>
-        [
-            VIRTUAL_KEY.VK_BACK,
-            VIRTUAL_KEY.VK_TAB,
-            VIRTUAL_KEY.VK_RETURN,
-            VIRTUAL_KEY.VK_PAUSE,
-            VIRTUAL_KEY.VK_CAPITAL,
-            VIRTUAL_KEY.VK_SPACE,
-            VIRTUAL_KEY.VK_PRIOR,
-            VIRTUAL_KEY.VK_NEXT,
-            VIRTUAL_KEY.VK_END,
-            VIRTUAL_KEY.VK_HOME,
-            VIRTUAL_KEY.VK_LEFT,
-            VIRTUAL_KEY.VK_UP,
-            VIRTUAL_KEY.VK_RIGHT,
-            VIRTUAL_KEY.VK_DOWN,
-            VIRTUAL_KEY.VK_INSERT,
-            VIRTUAL_KEY.VK_DELETE,
-            VIRTUAL_KEY.VK_0,
-            VIRTUAL_KEY.VK_1,
-            VIRTUAL_KEY.VK_2,
-            VIRTUAL_KEY.VK_3,
-            VIRTUAL_KEY.VK_4,
-            VIRTUAL_KEY.VK_5,
-            VIRTUAL_KEY.VK_6,
-            VIRTUAL_KEY.VK_7,
-            VIRTUAL_KEY.VK_8,
-            VIRTUAL_KEY.VK_9,
-            VIRTUAL_KEY.VK_A,
-            VIRTUAL_KEY.VK_B,
-            VIRTUAL_KEY.VK_C,
-            VIRTUAL_KEY.VK_D,
-            VIRTUAL_KEY.VK_E,
-            VIRTUAL_KEY.VK_F,
-            VIRTUAL_KEY.VK_G,
-            VIRTUAL_KEY.VK_H,
-            VIRTUAL_KEY.VK_I,
-            VIRTUAL_KEY.VK_J,
-            VIRTUAL_KEY.VK_K,
-            VIRTUAL_KEY.VK_L,
-            VIRTUAL_KEY.VK_M,
-            VIRTUAL_KEY.VK_N,
-            VIRTUAL_KEY.VK_O,
-            VIRTUAL_KEY.VK_P,
-            VIRTUAL_KEY.VK_Q,
-            VIRTUAL_KEY.VK_R,
-            VIRTUAL_KEY.VK_S,
-            VIRTUAL_KEY.VK_T,
-            VIRTUAL_KEY.VK_U,
-            VIRTUAL_KEY.VK_V,
-            VIRTUAL_KEY.VK_W,
-            VIRTUAL_KEY.VK_X,
-            VIRTUAL_KEY.VK_Y,
-            VIRTUAL_KEY.VK_Z,
-            VIRTUAL_KEY.VK_NUMPAD0,
-            VIRTUAL_KEY.VK_NUMPAD1,
-            VIRTUAL_KEY.VK_NUMPAD2,
-            VIRTUAL_KEY.VK_NUMPAD3,
-            VIRTUAL_KEY.VK_NUMPAD4,
-            VIRTUAL_KEY.VK_NUMPAD5,
-            VIRTUAL_KEY.VK_NUMPAD6,
-            VIRTUAL_KEY.VK_NUMPAD7,
-            VIRTUAL_KEY.VK_NUMPAD8,
-            VIRTUAL_KEY.VK_NUMPAD9,
-            VIRTUAL_KEY.VK_MULTIPLY,
-            VIRTUAL_KEY.VK_ADD,
-            VIRTUAL_KEY.VK_SEPARATOR,
-            VIRTUAL_KEY.VK_SUBTRACT,
-            VIRTUAL_KEY.VK_DECIMAL,
-            VIRTUAL_KEY.VK_DIVIDE,
-            VIRTUAL_KEY.VK_F1,
-            VIRTUAL_KEY.VK_F2,
-            VIRTUAL_KEY.VK_F3,
-            VIRTUAL_KEY.VK_F4,
-            VIRTUAL_KEY.VK_F5,
-            VIRTUAL_KEY.VK_F6,
-            VIRTUAL_KEY.VK_F7,
-            VIRTUAL_KEY.VK_F8,
-            VIRTUAL_KEY.VK_F9,
-            VIRTUAL_KEY.VK_F10,
-            VIRTUAL_KEY.VK_F11,
-            VIRTUAL_KEY.VK_F12,
-            VIRTUAL_KEY.VK_F13,
-            VIRTUAL_KEY.VK_F14,
-            VIRTUAL_KEY.VK_F15,
-            VIRTUAL_KEY.VK_F16,
-            VIRTUAL_KEY.VK_F17,
-            VIRTUAL_KEY.VK_F18,
-            VIRTUAL_KEY.VK_F19,
-            VIRTUAL_KEY.VK_F20,
-            VIRTUAL_KEY.VK_F21,
-            VIRTUAL_KEY.VK_F22,
-            VIRTUAL_KEY.VK_F23,
-            VIRTUAL_KEY.VK_F24,
-            VIRTUAL_KEY.VK_NUMLOCK,
-            VIRTUAL_KEY.VK_SCROLL,
-            VIRTUAL_KEY.VK_BROWSER_BACK,
-            VIRTUAL_KEY.VK_BROWSER_REFRESH,
-            VIRTUAL_KEY.VK_BROWSER_HOME,
-            VIRTUAL_KEY.VK_VOLUME_MUTE,
-            VIRTUAL_KEY.VK_VOLUME_DOWN,
-            VIRTUAL_KEY.VK_VOLUME_UP,
-            VIRTUAL_KEY.VK_MEDIA_NEXT_TRACK,
-            VIRTUAL_KEY.VK_MEDIA_PREV_TRACK,
-            VIRTUAL_KEY.VK_MEDIA_STOP,
-            VIRTUAL_KEY.VK_MEDIA_PLAY_PAUSE,
-            VIRTUAL_KEY.VK_OEM_1,
-            VIRTUAL_KEY.VK_OEM_PLUS,
-            VIRTUAL_KEY.VK_OEM_COMMA,
-            VIRTUAL_KEY.VK_OEM_MINUS,
-            VIRTUAL_KEY.VK_OEM_PERIOD,
-            VIRTUAL_KEY.VK_OEM_2,
-            VIRTUAL_KEY.VK_OEM_3,
-            VIRTUAL_KEY.VK_OEM_4,
-            VIRTUAL_KEY.VK_OEM_5,
-            VIRTUAL_KEY.VK_OEM_6,
-            VIRTUAL_KEY.VK_OEM_7,
-            VIRTUAL_KEY.VK_OEM_8,
-            VIRTUAL_KEY.VK_OEM_102,
-            VIRTUAL_KEY.VK_PLAY,
-            VIRTUAL_KEY.VK__none_, // VK__none_ must be the last one
-        ];
-    }
+    public static ImmutableArray<NameValue<VIRTUAL_KEY>> HotKeyValues { get; } = Values;
 
     public static NameValue<VIRTUAL_KEY> First(ImmutableArray<NameValue<VIRTUAL_KEY>> array, VIRTUAL_KEY value)
     {
-        // The value may come from the result of a method call, so this method
-        // is intentionally made to avoid multiple calls to compute input value
-        return array.First(n => n.Value == value);
+        foreach (NameValue<VIRTUAL_KEY> item in array)
+        {
+            if (item.Value == value)
+            {
+                return item;
+            }
+        }
+
+        // VK__none_ is the last item and represents "not set". Falling back to
+        // it keeps an outdated persisted value from breaking initialization.
+        return array[^1];
+    }
+
+    private static ImmutableArray<NameValue<VIRTUAL_KEY>> CreateValues()
+    {
+        return
+        [
+            .. Enum.GetValues<VIRTUAL_KEY>()
+                .Distinct()
+                .Where(static key => IsKeyboardKey(key))
+                .Select(static key => new NameValue<VIRTUAL_KEY>(GetDisplayName(key), key)),
+        ];
+    }
+
+    private static bool IsKeyboardKey(VIRTUAL_KEY key)
+    {
+        return key switch
+        {
+            VIRTUAL_KEY.VK_LBUTTON or VIRTUAL_KEY.VK_RBUTTON or VIRTUAL_KEY.VK_MBUTTON or VIRTUAL_KEY.VK_XBUTTON1 or VIRTUAL_KEY.VK_XBUTTON2 => false,
+            >= VIRTUAL_KEY.VK_NAVIGATION_VIEW and <= VIRTUAL_KEY.VK_NAVIGATION_CANCEL => false,
+            >= VIRTUAL_KEY.VK_GAMEPAD_A and <= VIRTUAL_KEY.VK_GAMEPAD_RIGHT_THUMBSTICK_LEFT => false,
+            VIRTUAL_KEY.VK_PACKET => false,
+            _ => true,
+        };
+    }
+
+    private static string GetDisplayName(VIRTUAL_KEY key)
+    {
+        int code = (int)key;
+
+        if (code is >= (int)VIRTUAL_KEY.VK_0 and <= (int)VIRTUAL_KEY.VK_9)
+        {
+            return ((char)('0' + (code - (int)VIRTUAL_KEY.VK_0))).ToString();
+        }
+
+        if (code is >= (int)VIRTUAL_KEY.VK_A and <= (int)VIRTUAL_KEY.VK_Z)
+        {
+            return ((char)('A' + (code - (int)VIRTUAL_KEY.VK_A))).ToString();
+        }
+
+        if (code is >= (int)VIRTUAL_KEY.VK_F1 and <= (int)VIRTUAL_KEY.VK_F24)
+        {
+            return $"F{code - (int)VIRTUAL_KEY.VK_F1 + 1}";
+        }
+
+        if (code is >= (int)VIRTUAL_KEY.VK_NUMPAD0 and <= (int)VIRTUAL_KEY.VK_NUMPAD9)
+        {
+            return $"Num {code - (int)VIRTUAL_KEY.VK_NUMPAD0}";
+        }
+
+        return key switch
+        {
+            VIRTUAL_KEY.VK_CANCEL => "Break",
+            VIRTUAL_KEY.VK_BACK => "Backspace",
+            VIRTUAL_KEY.VK_TAB => "Tab",
+            VIRTUAL_KEY.VK_CLEAR => "Clear",
+            VIRTUAL_KEY.VK_RETURN => "Enter",
+            VIRTUAL_KEY.VK_SHIFT => "Shift",
+            VIRTUAL_KEY.VK_CONTROL => "Ctrl",
+            VIRTUAL_KEY.VK_MENU => "Alt",
+            VIRTUAL_KEY.VK_PAUSE => "Pause",
+            VIRTUAL_KEY.VK_CAPITAL => "Caps Lock",
+            VIRTUAL_KEY.VK_KANA => "Kana",
+            VIRTUAL_KEY.VK_IME_ON => "IME On",
+            VIRTUAL_KEY.VK_JUNJA => "Junja",
+            VIRTUAL_KEY.VK_FINAL => "Final",
+            VIRTUAL_KEY.VK_HANJA => "Hanja",
+            VIRTUAL_KEY.VK_IME_OFF => "IME Off",
+            VIRTUAL_KEY.VK_ESCAPE => "Esc",
+            VIRTUAL_KEY.VK_CONVERT => "Convert",
+            VIRTUAL_KEY.VK_NONCONVERT => "Non Convert",
+            VIRTUAL_KEY.VK_ACCEPT => "Accept",
+            VIRTUAL_KEY.VK_MODECHANGE => "Mode Change",
+            VIRTUAL_KEY.VK_SPACE => "Space",
+            VIRTUAL_KEY.VK_PRIOR => "Page Up",
+            VIRTUAL_KEY.VK_NEXT => "Page Down",
+            VIRTUAL_KEY.VK_END => "End",
+            VIRTUAL_KEY.VK_HOME => "Home",
+            VIRTUAL_KEY.VK_LEFT => "Left",
+            VIRTUAL_KEY.VK_UP => "Up",
+            VIRTUAL_KEY.VK_RIGHT => "Right",
+            VIRTUAL_KEY.VK_DOWN => "Down",
+            VIRTUAL_KEY.VK_SELECT => "Select",
+            VIRTUAL_KEY.VK_PRINT => "Print",
+            VIRTUAL_KEY.VK_EXECUTE => "Execute",
+            VIRTUAL_KEY.VK_SNAPSHOT => "Print Screen",
+            VIRTUAL_KEY.VK_INSERT => "Insert",
+            VIRTUAL_KEY.VK_DELETE => "Delete",
+            VIRTUAL_KEY.VK_HELP => "Help",
+            VIRTUAL_KEY.VK_LWIN => "Left Win",
+            VIRTUAL_KEY.VK_RWIN => "Right Win",
+            VIRTUAL_KEY.VK_APPS => "Menu",
+            VIRTUAL_KEY.VK_SLEEP => "Sleep",
+            VIRTUAL_KEY.VK_MULTIPLY => "Num *",
+            VIRTUAL_KEY.VK_ADD => "Num +",
+            VIRTUAL_KEY.VK_SEPARATOR => "Num ,",
+            VIRTUAL_KEY.VK_SUBTRACT => "Num -",
+            VIRTUAL_KEY.VK_DECIMAL => "Num .",
+            VIRTUAL_KEY.VK_DIVIDE => "Num /",
+            VIRTUAL_KEY.VK_NUMLOCK => "Num Lock",
+            VIRTUAL_KEY.VK_SCROLL => "Scroll Lock",
+            VIRTUAL_KEY.VK_LSHIFT => "Left Shift",
+            VIRTUAL_KEY.VK_RSHIFT => "Right Shift",
+            VIRTUAL_KEY.VK_LCONTROL => "Left Ctrl",
+            VIRTUAL_KEY.VK_RCONTROL => "Right Ctrl",
+            VIRTUAL_KEY.VK_LMENU => "Left Alt",
+            VIRTUAL_KEY.VK_RMENU => "Right Alt",
+            VIRTUAL_KEY.VK_BROWSER_BACK => "Browser Back",
+            VIRTUAL_KEY.VK_BROWSER_FORWARD => "Browser Forward",
+            VIRTUAL_KEY.VK_BROWSER_REFRESH => "Browser Refresh",
+            VIRTUAL_KEY.VK_BROWSER_STOP => "Browser Stop",
+            VIRTUAL_KEY.VK_BROWSER_SEARCH => "Browser Search",
+            VIRTUAL_KEY.VK_BROWSER_FAVORITES => "Browser Favorites",
+            VIRTUAL_KEY.VK_BROWSER_HOME => "Browser Home",
+            VIRTUAL_KEY.VK_VOLUME_MUTE => "Volume Mute",
+            VIRTUAL_KEY.VK_VOLUME_DOWN => "Volume Down",
+            VIRTUAL_KEY.VK_VOLUME_UP => "Volume Up",
+            VIRTUAL_KEY.VK_MEDIA_NEXT_TRACK => "Media Next",
+            VIRTUAL_KEY.VK_MEDIA_PREV_TRACK => "Media Previous",
+            VIRTUAL_KEY.VK_MEDIA_STOP => "Media Stop",
+            VIRTUAL_KEY.VK_MEDIA_PLAY_PAUSE => "Media Play/Pause",
+            VIRTUAL_KEY.VK_LAUNCH_MAIL => "Launch Mail",
+            VIRTUAL_KEY.VK_LAUNCH_MEDIA_SELECT => "Launch Media",
+            VIRTUAL_KEY.VK_LAUNCH_APP1 => "Launch App 1",
+            VIRTUAL_KEY.VK_LAUNCH_APP2 => "Launch App 2",
+            VIRTUAL_KEY.VK_OEM_1 => ";",
+            VIRTUAL_KEY.VK_OEM_PLUS => "+",
+            VIRTUAL_KEY.VK_OEM_COMMA => ",",
+            VIRTUAL_KEY.VK_OEM_MINUS => "-",
+            VIRTUAL_KEY.VK_OEM_PERIOD => ".",
+            VIRTUAL_KEY.VK_OEM_2 => "/",
+            VIRTUAL_KEY.VK_OEM_3 => "`",
+            VIRTUAL_KEY.VK_OEM_4 => "[",
+            VIRTUAL_KEY.VK_OEM_5 => "\\",
+            VIRTUAL_KEY.VK_OEM_6 => "]",
+            VIRTUAL_KEY.VK_OEM_7 => "'",
+            VIRTUAL_KEY.VK_OEM_8 => "OEM 8",
+            VIRTUAL_KEY.VK_ABNT_C1 => "ABNT C1",
+            VIRTUAL_KEY.VK_ABNT_C2 => "ABNT C2",
+            VIRTUAL_KEY.VK_OEM_NEC_EQUAL => "Num =",
+            VIRTUAL_KEY.VK_OEM_102 => "OEM 102",
+            VIRTUAL_KEY.VK_PLAY => "Play",
+            VIRTUAL_KEY.VK_ZOOM => "Zoom",
+            VIRTUAL_KEY.VK_OEM_CLEAR => "OEM Clear",
+            VIRTUAL_KEY.VK__none_ => "None",
+            _ => GetFallbackName(key),
+        };
+    }
+
+    private static string GetFallbackName(VIRTUAL_KEY key)
+    {
+        string name = key.ToString();
+        return name.StartsWith("VK_", StringComparison.Ordinal) ? name[3..].Replace('_', ' ') : name;
     }
 }

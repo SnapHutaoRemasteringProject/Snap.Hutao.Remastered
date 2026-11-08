@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Model;
-using Snap.Hutao.Remastered.Service.Game;
+using Snap.Hutao.Remastered.UI.Input;
 using Snap.Hutao.Remastered.Win32.UI.Input.KeyboardAndMouse;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized;
@@ -15,13 +15,8 @@ public sealed partial class IntToNameValueVirtualKeyConverter : DependencyValueC
 {
     public override NameValue<VIRTUAL_KEY> Convert(int from)
     {
-        // source -> target: source is int (CombineMenuHotkey.Value), target expects VIRTUAL_KEY or underlying numeric
-        if (from is int i)
-        {
-            return LaunchOptions.VirtualKeys.Where(x => x.Value == (VIRTUAL_KEY)i).First();
-        }
-
-        return Convert(255);
+        // source -> target: source is int (CombineMenuHotkey.Value), target expects NameValue<VIRTUAL_KEY>
+        return VirtualKeys.First(VirtualKeys.Values, (VIRTUAL_KEY)from);
     }
 
     public override int ConvertBack(NameValue<VIRTUAL_KEY> to)

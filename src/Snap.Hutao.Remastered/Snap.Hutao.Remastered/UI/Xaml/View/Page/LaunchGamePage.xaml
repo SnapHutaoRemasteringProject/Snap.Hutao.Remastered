@@ -12,7 +12,6 @@
     xmlns:shme="using:Snap.Hutao.Remastered.Model.Entity"
     xmlns:shsg="using:Snap.Hutao.Remastered.Service.Game"
     xmlns:shsgp="using:Snap.Hutao.Remastered.Service.Game.PathAbstraction"
-    xmlns:shuil="using:Snap.Hutao.Remastered.UI.Input.LowLevel"
     xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxba="using:Snap.Hutao.Remastered.UI.Xaml.Behavior.Action"
@@ -440,14 +439,7 @@
                                                         HeaderIcon="{shuxm:FontIcon Glyph=&#xED1A;}">
                                                         <StackPanel Orientation="Horizontal" Spacing="8">
                                                             <shuxc:SizeRestrictedContentControl VerticalAlignment="Center">
-                                                                <wl:LiquidGlassComboBox
-                                                                    shuxcth:ControlMaterialState.IsManaged="True"
-                                                                    MinWidth="120"
-                                                                    VerticalAlignment="Center"
-                                                                    shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                                                    DisplayMemberPath="Name"
-                                                                    ItemsSource="{x:Bind shuil:LowLevelKeyOptions.VirtualKeys}"
-                                                                    SelectedItem="{x:Bind DataContext.LowLevelKeyOptions.OverlayHideKey, Mode=TwoWay}"/>
+                                                                <shuxc:KeyComboBox SelectedItem="{x:Bind DataContext.LowLevelKeyOptions.OverlayHideKey, Mode=TwoWay}"/>
                                                             </shuxc:SizeRestrictedContentControl>
                                                         </StackPanel>
                                                     </cwc:SettingsCard>
@@ -1320,17 +1312,12 @@
                                             <Image Source="ms-appx:///Resource/TeachingTip/LaunchGameIslandRedirectCombineEntry.gif"/>
                                         </TeachingTip.HeroContent>
                                     </TeachingTip>
-                                    <wl:LiquidGlassComboBox
+                                    <shuxc:KeyComboBox
                                         Grid.Row="4"
                                         Grid.Column="1"
-                                        shuxcth:ControlMaterialState.IsManaged="True"
-                                        Padding="10,8,6,6"
                                         VerticalAlignment="Center"
-                                        shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                        DisplayMemberPath="Name"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandCombineMenuHotkeyHeader}"
-                                        ItemsSource="{x:Bind shsg:LaunchOptions.VirtualKeys}"
-                                        SelectedValue="{x:Bind DataContext.LaunchOptions.CombineMenuHotkey.Value, Mode=TwoWay, Converter={StaticResource IntToNameValueVirtualKeyConverter}}"
+                                        SelectedItem="{x:Bind DataContext.LaunchOptions.CombineMenuHotkey.Value, Mode=TwoWay, Converter={StaticResource IntToNameValueVirtualKeyConverter}}"
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandCombineMenuHotkeyDescription}"/>
 
                                     <wl:LiquidGlassToggleSwitch
