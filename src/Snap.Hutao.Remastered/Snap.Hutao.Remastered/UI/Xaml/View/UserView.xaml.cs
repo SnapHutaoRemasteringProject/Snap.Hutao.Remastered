@@ -3,6 +3,7 @@
 
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.ViewModel.User;
+using System.Runtime.CompilerServices;
 using User = Snap.Hutao.Remastered.ViewModel.User.User;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View;
@@ -16,5 +17,5 @@ public sealed partial class UserView : UserControl
 
     public string GetUserNickname(User? user) => user?.UserInfo?.Nickname ?? SH.ViewUserNoUserHint;
 
-    public new UserViewModel DataContext { get => (UserViewModel)base.DataContext; set => base.DataContext = value; }
+    public new UserViewModel DataContext { get => Unsafe.As<UserViewModel>(base.DataContext); set => base.DataContext = value; }
 }

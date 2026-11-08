@@ -447,7 +447,8 @@ the build fails with `CS9275`); write a normal constructor in that case.
   decisions in `Page`/`Window` code-behind (`CODE_REVIEW.md#ARCH-04`).
 - **`x:Bind` starts at a typed `DataContext`** — a view that binds its view model declares one
   shadow property in its code-behind
-  (`public new FooViewModel DataContext { get => (FooViewModel)base.DataContext; set => base.DataContext = value; }`),
+  (`public new FooViewModel DataContext { get => Unsafe.As<FooViewModel>(base.DataContext); set => base.DataContext = value; }`,
+  with `using System.Runtime.CompilerServices;` in every such view — the getter does not use a checked cast),
   and XAML writes `{x:Bind DataContext.Bar, Mode=OneWay}`. The shadow does **not** replace the
   dependency property: `DataContext` is still the DP, so one-way tracking keeps working through
   `RegisterPropertyChangedCallback(DataContextProperty)` and `DataContext` may be assigned later
@@ -558,6 +559,7 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
+| 2026-11-08 | All 30 typed `DataContext` shadow properties in the binding views read the base dependency property through `Unsafe.As<T>` instead of a checked `(T)base.DataContext` cast, and every such view imports `System.Runtime.CompilerServices`; documented in §6. |
 | 2026-11-08 | `MaterialCardButton` no longer copies the host's resolved `Foreground` onto its inner buttons as a local value; it forwards only a caller-defined color and otherwise clears the local value, so home-card text keeps `ButtonForeground`'s theme expression instead of the application theme captured at construction (black text on dark cards). Documented the rule in §5.3. |
 | 2026-10-31 | Removed the `global.json` SDK pin (`chore: do not use global.json to control dotnet version`) and dropped TODO #18: the build uses the installed .NET 11 SDK, CI installs major `11`, and §1/§2/§7 now forbid reintroducing a pin. |
 | 2026-10-31 | Restored the pre-rename names `InitializeInternalAsync` (metadata initialization) and `ReadInternal`/`WriteInternal`/`FlushInternal` (Zstandard streams), removed TODOs #1/#2 and renumbered the drift table; §5.5 no longer records the rename defect. |

@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Snap.Hutao.Remastered.ViewModel;
 using Snap.Hutao.Remastered.ViewModel.User;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View;
 
@@ -55,5 +56,5 @@ public sealed partial class MainView : UserControl, IDataContextInitialized
         this.DataContext<MainViewModel>()?.Uninitialize();
     }
 
-    public new MainViewModel DataContext { get => (MainViewModel)base.DataContext; set => base.DataContext = value; }
+    public new MainViewModel DataContext { get => Unsafe.As<MainViewModel>(base.DataContext); set => base.DataContext = value; }
 }

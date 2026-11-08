@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.UI.Xaml.Control;
 using Snap.Hutao.Remastered.ViewModel.Wiki;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 
@@ -18,5 +19,5 @@ public sealed partial class WikiMonsterPage : ScopedPage
         InitializeDataContext<WikiMonsterViewModel>();
     }
 
-    public new WikiMonsterViewModel DataContext { get => (WikiMonsterViewModel)base.DataContext; set => base.DataContext = value; }
+    public new WikiMonsterViewModel DataContext { get => Unsafe.As<WikiMonsterViewModel>(base.DataContext); set => base.DataContext = value; }
 }

@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.UI.Xaml.Control;
 using Snap.Hutao.Remastered.ViewModel.Wiki;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 
@@ -18,5 +19,5 @@ public sealed partial class WikiAvatarPage : ScopedPage
         InitializeDataContext<WikiAvatarViewModel>();
     }
 
-    public new WikiAvatarViewModel DataContext { get => (WikiAvatarViewModel)base.DataContext; set => base.DataContext = value; }
+    public new WikiAvatarViewModel DataContext { get => Unsafe.As<WikiAvatarViewModel>(base.DataContext); set => base.DataContext = value; }
 }

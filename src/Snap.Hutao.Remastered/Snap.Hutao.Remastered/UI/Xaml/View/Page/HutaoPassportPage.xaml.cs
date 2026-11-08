@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.UI.Xaml.Control;
 using Snap.Hutao.Remastered.ViewModel.HutaoPassport;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 
@@ -18,5 +19,5 @@ public sealed partial class HutaoPassportPage : ScopedPage
         InitializeDataContext<HutaoPassportViewModel>();
     }
 
-    public new HutaoPassportViewModel DataContext { get => (HutaoPassportViewModel)base.DataContext; set => base.DataContext = value; }
+    public new HutaoPassportViewModel DataContext { get => Unsafe.As<HutaoPassportViewModel>(base.DataContext); set => base.DataContext = value; }
 }

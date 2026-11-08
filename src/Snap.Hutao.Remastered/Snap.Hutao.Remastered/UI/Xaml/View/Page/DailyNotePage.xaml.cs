@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.UI.Xaml.Control;
 using Snap.Hutao.Remastered.ViewModel.DailyNote;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 
@@ -18,5 +19,5 @@ public sealed partial class DailyNotePage : ScopedPage
         InitializeDataContext<DailyNoteViewModel>();
     }
 
-    public new DailyNoteViewModel DataContext { get => (DailyNoteViewModel)base.DataContext; set => base.DataContext = value; }
+    public new DailyNoteViewModel DataContext { get => Unsafe.As<DailyNoteViewModel>(base.DataContext); set => base.DataContext = value; }
 }

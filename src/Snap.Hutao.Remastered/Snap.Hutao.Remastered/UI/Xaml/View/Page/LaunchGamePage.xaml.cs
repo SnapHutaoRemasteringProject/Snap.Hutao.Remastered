@@ -8,6 +8,7 @@ using Snap.Hutao.Remastered.UI.Content;
 using Snap.Hutao.Remastered.UI.Xaml.Control;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.ViewModel.Game;
+using System.Runtime.CompilerServices;
 using WinUI.LiquidGlass;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
@@ -159,5 +160,5 @@ public sealed partial class LaunchGamePage : ScopedPage
         }
     }
 
-    public new LaunchGameViewModel DataContext { get => (LaunchGameViewModel)base.DataContext; set => base.DataContext = value; }
+    public new LaunchGameViewModel DataContext { get => Unsafe.As<LaunchGameViewModel>(base.DataContext); set => base.DataContext = value; }
 }

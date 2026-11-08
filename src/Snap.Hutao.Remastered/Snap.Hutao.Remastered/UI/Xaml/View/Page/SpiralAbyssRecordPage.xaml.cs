@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.UI.Xaml.Control;
 using Snap.Hutao.Remastered.ViewModel.SpiralAbyss;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 
@@ -18,5 +19,5 @@ public sealed partial class SpiralAbyssRecordPage : ScopedPage
         InitializeDataContext<SpiralAbyssViewModel>();
     }
 
-    public new SpiralAbyssViewModel DataContext { get => (SpiralAbyssViewModel)base.DataContext; set => base.DataContext = value; }
+    public new SpiralAbyssViewModel DataContext { get => Unsafe.As<SpiralAbyssViewModel>(base.DataContext); set => base.DataContext = value; }
 }

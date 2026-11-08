@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.UI.Xaml.Control;
 using Snap.Hutao.Remastered.ViewModel.Achievement;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 
@@ -13,7 +14,7 @@ public sealed partial class AchievementPage : ScopedPage
         InitializeComponent();
     }
 
-    public new AchievementViewModel DataContext { get => (AchievementViewModel)base.DataContext; set => base.DataContext = value; }
+    public new AchievementViewModel DataContext { get => Unsafe.As<AchievementViewModel>(base.DataContext); set => base.DataContext = value; }
 
     protected override void LoadingOverride()
     {

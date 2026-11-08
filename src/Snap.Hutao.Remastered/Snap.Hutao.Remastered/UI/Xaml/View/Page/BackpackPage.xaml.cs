@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Input;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 using Snap.Hutao.Remastered.UI.Xaml.Control;
 using Snap.Hutao.Remastered.ViewModel.Backpack;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 
@@ -32,5 +33,5 @@ public sealed partial class BackpackPage : ScopedPage
         }
     }
 
-    public new BackpackViewModel DataContext { get => (BackpackViewModel)base.DataContext; set => base.DataContext = value; }
+    public new BackpackViewModel DataContext { get => Unsafe.As<BackpackViewModel>(base.DataContext); set => base.DataContext = value; }
 }

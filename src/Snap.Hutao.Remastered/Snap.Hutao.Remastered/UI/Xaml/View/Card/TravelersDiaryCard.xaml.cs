@@ -4,6 +4,7 @@
 using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using Snap.Hutao.Remastered.ViewModel.Abstraction;
 using Snap.Hutao.Remastered.ViewModel.TravelersDiary;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Card;
 
@@ -15,5 +16,5 @@ public sealed partial class TravelersDiaryCard : MaterialCardButton
         this.InitializeViewModelSlim<ViewModel.TravelersDiary.TravelersDiaryViewModel>(serviceProvider);
     }
 
-    public new TravelersDiaryViewModel DataContext { get => (TravelersDiaryViewModel)base.DataContext; set => base.DataContext = value; }
+    public new TravelersDiaryViewModel DataContext { get => Unsafe.As<TravelersDiaryViewModel>(base.DataContext); set => base.DataContext = value; }
 }

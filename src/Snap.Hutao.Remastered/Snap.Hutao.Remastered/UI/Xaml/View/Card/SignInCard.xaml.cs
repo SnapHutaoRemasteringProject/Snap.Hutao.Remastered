@@ -4,6 +4,7 @@
 using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using Snap.Hutao.Remastered.ViewModel.Abstraction;
 using Snap.Hutao.Remastered.ViewModel.Sign;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Card;
 
@@ -16,5 +17,5 @@ public sealed partial class SignInCard : MaterialCardButton
         this.DataContext<SignInViewModel>()?.AttachXamlElement(AwardScrollViewer);
     }
 
-    public new SignInViewModel DataContext { get => (SignInViewModel)base.DataContext; set => base.DataContext = value; }
+    public new SignInViewModel DataContext { get => Unsafe.As<SignInViewModel>(base.DataContext); set => base.DataContext = value; }
 }

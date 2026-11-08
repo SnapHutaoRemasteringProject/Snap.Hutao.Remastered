@@ -4,6 +4,7 @@
 using Microsoft.UI.Xaml.Data;
 using Snap.Hutao.Remastered.UI.Xaml.Control;
 using Snap.Hutao.Remastered.ViewModel.Plugin;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 
@@ -19,7 +20,7 @@ public sealed partial class PluginPage : ScopedPage
         InitializeDataContext<PluginViewModel>();
     }
 
-    public new PluginViewModel DataContext { get => (PluginViewModel)base.DataContext; set => base.DataContext = value; }
+    public new PluginViewModel DataContext { get => Unsafe.As<PluginViewModel>(base.DataContext); set => base.DataContext = value; }
 }
 
 public partial class StringToVisibilityConverter : IValueConverter

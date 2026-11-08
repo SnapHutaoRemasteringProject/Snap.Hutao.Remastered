@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.UI.Xaml.Control;
 using Snap.Hutao.Remastered.ViewModel.AvatarProperty;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 
@@ -18,5 +19,5 @@ public sealed partial class AvatarPropertyPage : ScopedPage
         InitializeDataContext<AvatarPropertyViewModel>();
     }
 
-    public new AvatarPropertyViewModel DataContext { get => (AvatarPropertyViewModel)base.DataContext; set => base.DataContext = value; }
+    public new AvatarPropertyViewModel DataContext { get => Unsafe.As<AvatarPropertyViewModel>(base.DataContext); set => base.DataContext = value; }
 }

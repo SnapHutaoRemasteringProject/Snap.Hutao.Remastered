@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.UI.Xaml.Control;
 using Snap.Hutao.Remastered.ViewModel.RoleCombat;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 
@@ -18,5 +19,5 @@ public sealed partial class RoleCombatPage : ScopedPage
         InitializeDataContext<RoleCombatViewModel>();
     }
 
-    public new RoleCombatViewModel DataContext { get => (RoleCombatViewModel)base.DataContext; set => base.DataContext = value; }
+    public new RoleCombatViewModel DataContext { get => Unsafe.As<RoleCombatViewModel>(base.DataContext); set => base.DataContext = value; }
 }

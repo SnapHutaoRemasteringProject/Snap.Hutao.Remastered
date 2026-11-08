@@ -3,6 +3,7 @@
 
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.ViewModel.Guide;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View;
 
@@ -27,5 +28,5 @@ public sealed partial class GuideView : UserControl
             viewModel.SelectControlMaterial(selector.SelectedIndex);
     }
 
-    public new GuideViewModel DataContext { get => (GuideViewModel)base.DataContext; set => base.DataContext = value; }
+    public new GuideViewModel DataContext { get => Unsafe.As<GuideViewModel>(base.DataContext); set => base.DataContext = value; }
 }
