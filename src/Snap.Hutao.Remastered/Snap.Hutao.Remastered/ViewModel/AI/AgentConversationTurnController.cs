@@ -5,7 +5,7 @@
 using Microsoft.Agents.AI;
 using Snap.Hutao.Remastered.Core.AI.Threading;
 using Microsoft.Extensions.AI;
-using Snap.Hutao.Remastered.Core.AI.Diagnostics;
+using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.AI.Text.Json;
 using Snap.Hutao.Remastered.Service.AI;
 using Snap.Hutao.Remastered.Service.AI.Models;
@@ -200,7 +200,7 @@ internal sealed class AgentConversationTurnController(IServiceProvider servicePr
         {
             conversation.Runtime.Reset();
 
-            SentryDiagnostics.AddBreadcrumb("Chat blocked by missing API key", SentryBreadcrumbCategories.AIChat, SentryBreadcrumbTypes.UI);
+            SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Chat blocked by missing API key", "AgentConversationViewModel.Command"));
             throw new AgentConversationException(SHName.UIXamlPagesAgentPageMessageConfigureApiKey);
         }
 
@@ -217,36 +217,26 @@ internal sealed class AgentConversationTurnController(IServiceProvider servicePr
             TargetResponseMessage = ApplyToolApprovalState(conversation, operation.ToolApprovalState),
         };
 
-        using SentryDiagnosticSpan span = SentryDiagnostics.StartSpan(SentryOperations.AIChatSend, "Run chat turn");
-        span.SetTag(SentryTags.AIProvider, requestOptions.ProviderType.ToString());
-        span.SetTag(SentryTags.AIModel, requestOptions.ModelId);
-
         conversation.IsBusy = true;
 
         try
         {
             TaskScheduler taskScheduler = AgentThreadingContext.Current.TaskScheduler;
-            span.Finish(await agentService.RunStreamingAsync(streamingContext, taskScheduler, cancellationToken));
+            await agentService.RunStreamingAsync(streamingContext, taskScheduler, cancellationToken);
 
             conversation.UpdatedAt = DateTimeOffset.Now;
             if (operation.TitleInput is not null && string.IsNullOrWhiteSpace(conversation.Title))
             {
                 conversation.Title = CreateTitle(operation.TitleInput);
             }
-
         }
         catch (OperationCanceledException)
         {
-            span.Finish(SpanStatus.Cancelled);
+            // The user cancelled the generation; cancellation is not an error.
         }
-        catch (AgentConversationException)
+        catch (Exception ex) when (ex is not AgentConversationException)
         {
-            span.Finish(SpanStatus.FailedPrecondition);
-            throw;
-        }
-        catch (Exception ex)
-        {
-            SentryDiagnostics.CaptureException(ex, span, SentryOperations.AIChatSend);
+            SentrySdk.CaptureException(ex);
             throw;
         }
         finally

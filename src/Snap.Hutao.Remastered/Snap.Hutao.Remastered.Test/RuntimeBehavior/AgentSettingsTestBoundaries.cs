@@ -19,21 +19,26 @@ namespace Snap.Hutao.Remastered.Service.AI.Settings
         }
     }
 }
-namespace Sentry { internal enum SpanStatus { Cancelled, FailedPrecondition } }
-namespace Snap.Hutao.Remastered.Core.AI.Diagnostics
+namespace Sentry
 {
-    internal sealed class SentryDiagnosticSpan : IDisposable
+    // The linked settings provider emits breadcrumbs through BreadcrumbFactory.
+    public enum BreadcrumbLevel { Debug, Info, Warning, Error, Fatal }
+
+    public sealed class Breadcrumb
     {
-        public void SetTag(string name, object value) { }
-        public void SetData(string name, object value) { }
-        public void Finish(Sentry.SpanStatus status) { }
-        public void Finish(Exception exception) { }
-        public void Dispose() { }
-    }
-    internal static class SentryDiagnostics
-    {
-        public static SentryDiagnosticSpan StartSpan(string operation, string description) => new();
-        public static void AddBreadcrumb(string message, string category, string type) { }
-        public static void CaptureException(Exception exception, SentryDiagnosticSpan span, string operation) { }
+        public Breadcrumb(string message, string type, IReadOnlyDictionary<string, string>? data = null, string? category = null, BreadcrumbLevel level = default)
+        {
+            Message = message;
+            Type = type;
+            Data = data;
+            Category = category;
+            Level = level;
+        }
+
+        public string Message { get; }
+        public string Type { get; }
+        public IReadOnlyDictionary<string, string>? Data { get; }
+        public string? Category { get; }
+        public BreadcrumbLevel Level { get; }
     }
 }

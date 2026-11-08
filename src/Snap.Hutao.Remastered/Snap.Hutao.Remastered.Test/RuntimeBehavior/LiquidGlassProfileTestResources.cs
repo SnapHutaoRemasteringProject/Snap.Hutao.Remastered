@@ -126,6 +126,8 @@ namespace Snap.Hutao.Remastered.Test.RuntimeBehavior
             configure(new());
             Exceptions.Add(exception);
         }
+
+        public static void AddBreadcrumb(Sentry.Breadcrumb breadcrumb) { }
     }
 
     public sealed class LiquidGlassTestScope

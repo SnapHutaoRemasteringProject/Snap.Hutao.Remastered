@@ -5,7 +5,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.AI;
-using Snap.Hutao.Remastered.Core.AI.Diagnostics;
+using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Resource.Localization.AI;
 using Snap.Hutao.Remastered.Service.AI.Models;
 using Snap.Hutao.Remastered.Service.AI.Observables;
@@ -158,7 +158,7 @@ internal sealed partial class AgentConversationViewModel(IAgentConversationDelet
             return;
         }
 
-        SentryDiagnostics.AddBreadcrumb("Stop chat generation", SentryBreadcrumbCategories.AIChat, SentryBreadcrumbTypes.UI);
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Stop chat generation", "AgentConversationViewModel.Command"));
         command.Cancel();
         OnPropertyChanged(nameof(CanStopGeneration));
         StopGenerationCommand.NotifyCanExecuteChanged();

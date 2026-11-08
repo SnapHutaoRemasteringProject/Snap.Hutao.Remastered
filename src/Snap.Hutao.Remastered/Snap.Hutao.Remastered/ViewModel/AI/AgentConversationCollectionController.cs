@@ -3,7 +3,7 @@
 // Adapted from Snap.Nicole.
 
 using Snap.Hutao.Remastered.Core.AI.Collections.ObjectModel;
-using Snap.Hutao.Remastered.Core.AI.Diagnostics;
+using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Service.AI.Models;
 
 namespace Snap.Hutao.Remastered.ViewModel.AI;
@@ -40,7 +40,7 @@ internal sealed class AgentConversationCollectionController(IServiceProvider ser
             return false;
         }
 
-        SentryDiagnostics.AddBreadcrumb("Delete chat conversation", SentryBreadcrumbCategories.AIChat, SentryBreadcrumbTypes.UI);
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Delete chat conversation", "AgentConversationViewModel.Command"));
 
         bool isCurrentConversation = ReferenceEquals(Conversations.CurrentItem, conversation);
         int oldIndex = Conversations.IndexOf(conversation);

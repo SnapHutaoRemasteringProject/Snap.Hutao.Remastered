@@ -4,9 +4,9 @@
 
 using Microsoft.Extensions.FileProviders;
 using Snap.Hutao.Remastered.Core.AI;
-using Snap.Hutao.Remastered.Core.AI.Diagnostics;
 using Snap.Hutao.Remastered.Core.AI.IO;
 using Snap.Hutao.Remastered.Core.AI.Threading;
+using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Service.AI.Migration;
 using Snap.Hutao.Remastered.Core.Setting;
 using System.IO;
@@ -128,12 +128,8 @@ internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, I
             return;
         }
 
-        using SentryDiagnosticSpan span = SentryDiagnostics.StartSpan(SentryOperations.SettingsJsonFileChanged, $"Reload {self.fileName}");
-        span.SetTag(SentryTags.SettingsOptions, typeof(TSettings).Name);
-
         if (self.disposed)
         {
-            span.Finish(SpanStatus.Cancelled);
             return;
         }
 
@@ -159,14 +155,10 @@ internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, I
             {
                 self.BeginApplyExternalChangeOnMainThread(newValue!, revision);
             }
-            else
-            {
-                span.Finish(SpanStatus.FailedPrecondition);
-            }
         }
         catch (Exception ex)
         {
-            SentryDiagnostics.CaptureException(ex, span, SentryOperations.SettingsJsonFileChanged);
+            SentrySdk.CaptureException(ex);
         }
         finally
         {
@@ -226,12 +218,8 @@ internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, I
 
     private void ApplyExternalChange(TSettings value, long revision)
     {
-        using SentryDiagnosticSpan span = SentryDiagnostics.StartSpan(SentryOperations.SettingsJsonApplyExternalChange, $"Apply {fileName}");
-        span.SetTag(SentryTags.SettingsOptions, typeof(TSettings).Name);
-
         if (disposed)
         {
-            span.Finish(SpanStatus.Cancelled);
             return;
         }
 
@@ -257,97 +245,76 @@ internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, I
         }
         catch (Exception ex)
         {
-            SentryDiagnostics.CaptureException(ex, span, SentryOperations.SettingsJsonApplyExternalChange);
+            SentrySdk.CaptureException(ex);
         }
     }
 
     private bool TryLoadCore(bool newWhenMissing, [NotNullWhen(true)] out TSettings? value)
     {
-        using SentryDiagnosticSpan span = SentryDiagnostics.StartSpan(SentryOperations.SettingsJsonLoad, $"Load {fileName}");
-        span.SetTag(SentryTags.SettingsOptions, typeof(TSettings).Name);
-
-        int loadRetry = 0;
         Exception? loadException = null;
 
         for (int retry = 0; retry < LoadRetryCount; retry++)
         {
             try
             {
+                bool missing;
                 try
                 {
-                    bool missing;
-                    try
+                    File.GetAttributes(filePath);
+                    missing = false;
+                }
+                catch (FileNotFoundException) { missing = true; }
+                catch (DirectoryNotFoundException) { missing = true; }
+
+                if (missing)
+                {
+                    if (newWhenMissing)
                     {
-                        File.GetAttributes(filePath);
-                        missing = false;
-                    }
-                    catch (FileNotFoundException) { missing = true; }
-                    catch (DirectoryNotFoundException) { missing = true; }
-
-                    if (missing)
-                    {
-                        span.SetTag(SentryTags.SettingsFileExists, false);
-
-                        if (newWhenMissing)
-                        {
-                            value = new TSettings();
-                            return true;
-                        }
-
-                        loadRetry = retry + 1;
-
-                        if (retry < LoadRetryCount - 1)
-                        {
-                            SentryDiagnostics.AddBreadcrumb("Retry missing settings load", SentryBreadcrumbCategories.SettingsJson, SentryBreadcrumbTypes.Default);
-                            Thread.Sleep(LoadRetryDelay);
-                            continue;
-                        }
-
-                        break;
-                    }
-
-                    span.SetTag(SentryTags.SettingsFileExists, true);
-                    using (FileStream stream = File.OpenRead(filePath))
-                    {
-                        value = JsonSerializer.Deserialize<TSettings>(stream, jsonOptions)
-                            ?? throw new JsonException("Settings root must not be null.");
+                        value = new TSettings();
                         return true;
                     }
-                }
-                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-                {
-                    loadRetry = retry + 1;
+
                     if (retry < LoadRetryCount - 1)
                     {
-                        SentryDiagnostics.AddBreadcrumb("Retry settings load", SentryBreadcrumbCategories.SettingsJson, SentryBreadcrumbTypes.Default);
+                        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Retry missing settings load", "Service.AI.Settings.JsonSettingsProvider"));
                         Thread.Sleep(LoadRetryDelay);
+                        continue;
                     }
-                    else
-                    {
-                        loadException = ex;
-                        break;
-                    }
+
+                    break;
                 }
-                catch (Exception ex) when (ex is JsonException or NotSupportedException or InvalidOperationException or ArgumentException or TargetInvocationException)
+
+                using (FileStream stream = File.OpenRead(filePath))
+                {
+                    value = JsonSerializer.Deserialize<TSettings>(stream, jsonOptions)
+                        ?? throw new JsonException("Settings root must not be null.");
+                    return true;
+                }
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                if (retry < LoadRetryCount - 1)
+                {
+                    SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Retry settings load", "Service.AI.Settings.JsonSettingsProvider"));
+                    Thread.Sleep(LoadRetryDelay);
+                }
+                else
                 {
                     loadException = ex;
                     break;
                 }
             }
-            finally
+            catch (Exception ex) when (ex is JsonException or NotSupportedException or InvalidOperationException or ArgumentException or TargetInvocationException)
             {
-                span.SetData(SentryData.SettingsLoadRetry, loadRetry);
+                loadException = ex;
+                break;
             }
         }
 
         value = null;
         if (loadException is not null)
         {
-            SentryDiagnostics.CaptureException(loadException, span, SentryOperations.SettingsJsonLoad);
-        }
-        else
-        {
-            span.Finish(SpanStatus.FailedPrecondition);
+            SentrySdk.CaptureException(loadException);
         }
 
         return false;
@@ -355,9 +322,6 @@ internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, I
 
     private void SaveCore(TSettings value)
     {
-        using SentryDiagnosticSpan span = SentryDiagnostics.StartSpan(SentryOperations.SettingsJsonSave, $"Save {fileName}");
-        span.SetTag(SentryTags.SettingsOptions, typeof(TSettings).Name);
-
         string tempFile = $"{filePath}.tmp";
 
         try
@@ -386,7 +350,7 @@ internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, I
             }
 
             // Preserve the original save failure as the observable error.
-            SentryDiagnostics.CaptureException(ex, span, SentryOperations.SettingsJsonSave);
+            SentrySdk.CaptureException(ex);
             throw;
         }
     }

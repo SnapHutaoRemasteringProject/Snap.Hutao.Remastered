@@ -2,8 +2,6 @@
 // Licensed under the MIT license.
 // Adapted from Snap.Nicole.
 
-using Snap.Hutao.Remastered.Core.AI.Diagnostics;
-
 namespace Snap.Hutao.Remastered.Service.AI;
 
 internal static class BuiltInFunctions
@@ -11,15 +9,13 @@ internal static class BuiltInFunctions
     [Description("Get the current local time.")]
     public static string GetCurrentTime()
     {
-        using SentryDiagnosticSpan span = SentryDiagnostics.StartSpan(SentryOperations.AIToolCurrentTime, "Get current local time");
-
         try
         {
             return DateTimeOffset.Now.ToString("O");
         }
         catch (Exception ex)
         {
-            SentryDiagnostics.CaptureException(ex, span, SentryOperations.AIToolCurrentTime);
+            SentrySdk.CaptureException(ex);
             throw;
         }
     }
