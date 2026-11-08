@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net11.0</TargetFramework>
@@ -73,6 +73,7 @@
     <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Markdown/MarkdownCodeFenceLine.cs" Link="Production/Markdown/MarkdownCodeFenceLine.cs" />
     <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/Control/Markdown/MarkdownCodeFenceSegment.cs" Link="Production/Markdown/MarkdownCodeFenceSegment.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/JsonWireOptions.cs" Link="Production/JsonWireOptions.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/JsonSerialize.cs" Link="Production/JsonSerialize.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/Converter/InternStringConverter.cs" Link="Production/InternStringConverter.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/Converter/UnsafeEnumConverter.cs" Link="Production/UnsafeEnumConverter.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/Annotation/JsonEnumHandling.cs" Link="Production/JsonEnumHandling.cs" />

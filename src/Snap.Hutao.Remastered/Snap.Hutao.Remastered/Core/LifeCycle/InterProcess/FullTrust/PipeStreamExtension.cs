@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.ExceptionService;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using System.Buffers;
 using System.IO.Hashing;
 using System.IO.Pipes;
@@ -20,7 +21,7 @@ public static class PipeStreamExtension
                 stream.ReadExactly(content);
                 HutaoException.ThrowIf(XxHash64.HashToUInt64(content) != header.Checksum, "PipePacket Content Hash incorrect");
 
-                return JsonSerializer.Deserialize<TData>(content);
+                return JsonSerialize.Deserialize<TData>(content, JsonOptions.Default);
             }
         }
 
@@ -52,7 +53,7 @@ public static class PipeStreamExtension
             header.Command = command;
             header.ContentType = FullTrustPipePacketContentType.Json;
 
-            stream.WritePacket(ref header, JsonSerializer.SerializeToUtf8Bytes(data));
+            stream.WritePacket(ref header, JsonSerialize.SerializeToUtf8Bytes(data, JsonOptions.Default));
         }
 
         public void WritePacket(ref FullTrustPipePacketHeader header, ReadOnlySpan<byte> content)

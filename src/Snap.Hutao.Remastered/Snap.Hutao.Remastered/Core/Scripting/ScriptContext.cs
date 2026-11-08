@@ -20,18 +20,20 @@ namespace Snap.Hutao.Remastered.Core.Scripting;
 [SuppressMessage("", "SH001", Justification = "ScriptContext must be public in order to be exposed to the scripting environment")]
 public sealed class ScriptContext
 {
+    private static readonly Lazy<JsonSerializerOptions> ScriptJsonOptions = new(JsonOptions.CreateReflection);
+
     public IServiceProvider ServiceProvider { get => Ioc.Default; }
 
     public IHutaoDiagnostics Diagnostics { get => ServiceProvider.GetRequiredService<IHutaoDiagnostics>(); }
 
     public static string FormatJson(string input)
     {
-        return Serialize(JsonSerializer.Deserialize<JsonElement>(input));
+        return Serialize(JsonSerialize.Deserialize<JsonElement>(input, ScriptJsonOptions.Value));
     }
 
     public static string Serialize<T>(T data)
     {
-        return JsonSerializer.Serialize(data, JsonOptions.Default);
+        return JsonSerialize.Serialize(data, ScriptJsonOptions.Value);
     }
 
     public async ValueTask<string> RequestAsync(string method, string url, string[] headers, string? body = default)

@@ -3,6 +3,7 @@
 
 using Microsoft.UI.Xaml;
 using Snap.Hutao.Remastered.Core.LifeCycle;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.UI.Content;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
@@ -18,6 +19,8 @@ namespace Snap.Hutao.Remastered.Service.Geetest;
 [Service(ServiceLifetime.Transient, typeof(IGeetestService))]
 public sealed partial class GeetestService : IGeetestService
 {
+    private static readonly JsonSerializerOptions CompactJsonOptions = JsonOptions.CreateCompact();
+
     private readonly ICurrentXamlWindowReference currentXamlWindowReference;
     private readonly CustomGeetestClient customGeetestClient;
     private readonly JsonSerializerOptions jsonOptions;
@@ -43,7 +46,7 @@ public sealed partial class GeetestService : IGeetestService
             return default;
         }
 
-        GeetestWebResponse? webResponse = JsonSerializer.Deserialize<GeetestWebResponse>(result, jsonOptions);
+        GeetestWebResponse? webResponse = JsonSerialize.Deserialize<GeetestWebResponse>(result, jsonOptions);
         ArgumentNullException.ThrowIfNull(webResponse);
 
         return new()
@@ -90,7 +93,7 @@ public sealed partial class GeetestService : IGeetestService
         string? riskType;
         try
         {
-            AigisSession? session = JsonSerializer.Deserialize<AigisSession>(rawSession, jsonOptions);
+            AigisSession? session = JsonSerialize.Deserialize<AigisSession>(rawSession, jsonOptions);
             if (session is null || string.IsNullOrWhiteSpace(session.SessionId))
             {
                 System.Diagnostics.Debug.WriteLine("Passport Aigis: response has no verification session ID.");
@@ -163,13 +166,13 @@ public sealed partial class GeetestService : IGeetestService
             }
             else
             {
-                GeetestWebResponse? result = JsonSerializer.Deserialize<GeetestWebResponse>(webResult, jsonOptions);
+                GeetestWebResponse? result = JsonSerialize.Deserialize<GeetestWebResponse>(webResult, jsonOptions);
                 if (result is null || string.IsNullOrWhiteSpace(result.Challenge) || string.IsNullOrWhiteSpace(result.Validate))
                 {
                     return false;
                 }
 
-                verification = JsonSerializer.Serialize(result);
+                verification = JsonSerialize.Serialize(result, CompactJsonOptions);
             }
         }
         catch (JsonException)

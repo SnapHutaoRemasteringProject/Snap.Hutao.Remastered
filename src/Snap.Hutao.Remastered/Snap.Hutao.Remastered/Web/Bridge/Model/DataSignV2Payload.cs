@@ -14,6 +14,6 @@ public sealed class DataSignV2Payload
     [SuppressMessage("", "CA1308")]
     public string GetQueryParam()
     {
-        return string.Join('&', Query.OrderBy(x => x.Key).Select(x => JsonSerializer.Serialize(x.Value)));
+        return string.Join('&', Query.OrderBy(x => x.Key).Select(x => x.Value.GetRawText()));
     }
 }

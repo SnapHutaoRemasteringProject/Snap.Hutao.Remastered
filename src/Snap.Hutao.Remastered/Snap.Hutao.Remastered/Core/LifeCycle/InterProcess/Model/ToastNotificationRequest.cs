@@ -5,6 +5,7 @@ namespace Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.Model;
 
 public sealed class ToastNotificationRequest
 {
+    [JsonConstructor]
     public ToastNotificationRequest(string rawXml, bool suppressDisplay = false)
     {
         RawXml = rawXml;

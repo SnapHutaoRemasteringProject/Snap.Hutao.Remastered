@@ -71,7 +71,7 @@ file sealed class Converter<TId, TLevel, TParameter> : JsonConverter<IdLevelPara
         // NullReferenceException inside System.Text.Json
         return typeof(TId) == typeof(ProudSkillId) && typeof(TLevel) == typeof(SkillLevel) && typeof(TParameter) == typeof(float)
             ? new(MetadataCollectionJson.Deserialize<ImmutableArray<IdLevelParameters<TId, TLevel, TParameter>>>(ref reader, options))
-            : new(JsonSerializer.Deserialize<ImmutableArray<IdLevelParameters<TId, TLevel, TParameter>>>(ref reader, options));
+            : new(JsonSerialize.Deserialize<ImmutableArray<IdLevelParameters<TId, TLevel, TParameter>>>(ref reader, options));
     }
 
     public override void Write(Utf8JsonWriter writer, IdLevelParametersCollection<TId, TLevel, TParameter> value, JsonSerializerOptions options)
