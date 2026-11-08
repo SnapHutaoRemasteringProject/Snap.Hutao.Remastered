@@ -391,7 +391,6 @@
     <PackageReference Include="DevWinUI" Version="10.9.1" />
     <PackageReference Include="Google.Protobuf" Version="3.36.2" />
     <PackageReference Include="JetBrains.Annotations" Version="2026.2.0" />
-    <PackageReference Include="Lib.Harmony" Version="3.0.0-rc.5" />
     <PackageReference Include="Microsoft.Agents.AI.Anthropic" Version="1.28.0" />
     <PackageReference Include="Microsoft.Agents.AI.Harness" Version="1.28.0" />
     <PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.28.0" />
