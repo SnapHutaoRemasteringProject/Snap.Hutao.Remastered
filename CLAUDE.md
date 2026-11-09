@@ -382,6 +382,11 @@ the build fails with `CS9275`); write a normal constructor in that case.
 
 - This branch removed the plugin system and Harmony. The historical plugin review entries below
   describe earlier releases; they are not instructions to restore dynamic assembly loading.
+- Database startup uses `DatabaseSchema.Upgrade`, not EF's runtime migration discovery. Generated
+  SQL is derived from the original 47 migration snapshots; migration source changes require
+  regeneration through `tools/Snap.Hutao.Database.Schema`. Do not edit the generated SQL/catalog.
+  The build validates source fingerprints; runtime validates SQL hashes, history and foreign keys
+  within one write transaction. See [database implementation and verification](docs/database-aot.md).
 - `JsonSerializeContexts.Generated` combines generated contexts as `IJsonTypeInfoResolver`s on
   the caller's options. Do not construct each context with a cloned options instance: nested
   converters must resolve contracts through the same options and resolver chain.
@@ -575,6 +580,7 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
+| 2026-11-10 | Replaced runtime EF migrations with generated versioned SQL and an atomic, history-validating SQLite upgrade runner; added source fingerprint checks, EF-created legacy database parity verification, and an actual Native AOT database test project. EF model/query work remains separate. |
 | 2026-11-10 | Replaced cloned per-context JSON options and the hidden reflection retry with a shared generated resolver chain; preserved resolver errors and first-use freezing, registered dictionary/legacy list roots, source-linked their real contexts, and documented the AOT branch's removed plugin scope and validation limits. |
 | 2026-11-08 | Added Sentry performance instrumentation (§5.9): every page load and the startup named-pipe redirect start a transaction, and HTTP, SQL, repository/save, EF migration, metadata/git/update/gacha/achievement/user/daily-note/record/plugin/inventory/cultivation/backpack/game-launch/game-package work is captured as nested spans through `SentrySpanScope`; documented the transaction-vs-child policy and the "no user-controlled waits in a transaction" rule. |
 | 2026-11-08 | All 30 typed `DataContext` shadow properties in the binding views read the base dependency property through `Unsafe.As<T>` instead of a checked `(T)base.DataContext` cast, and every such view imports `System.Runtime.CompilerServices`; documented in §6. |
