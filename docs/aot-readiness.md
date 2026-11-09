@@ -1,11 +1,12 @@
 # R2R 部署与 Native AOT 兼容性准备
 
-> 本文记录 R2R 的落地方式与已验证边界。Native AOT 仍不可用的原因、194 条剩余诊断、修复路线与验收标准见
+> 本文记录 R2R 的落地方式与已验证边界。Native AOT 的历史 194 条诊断基线、后续修复进度与验收标准见
 > [Native AOT 阻塞项扫描报告](aot-blockers.md)。
 
 ## 默认构建与部署
 
-所有配置（包括 Debug）默认启用 `PublishReadyToRun`。不启用 Native AOT、裁剪或单文件发布；插件、运行时 C# 脚本和 CoreCLR/JIT 功能保持不变。
+所有配置（包括 Debug）默认启用 `PublishReadyToRun`。默认不启用 Native AOT、裁剪或单文件发布；运行时 C# 脚本和 CoreCLR/JIT 功能仍保留。
+本分支已移除插件系统与 Harmony；这与 R2R 开关无关。显式 Native AOT 发布使用 `Build/AotPublish.targets` 的引用顺序与运行时载荷补丁，仍不代表应用已可完整运行。
 `Release` 是构建配置，`publish` 是部署产物生成阶段；两者不是二选一，Debug 也可以发布 R2R。
 
 ```powershell
@@ -40,15 +41,21 @@ SDK 发布不包含生成后的 AppxManifest.xml，四个入口的 Copy files �
 - 公共 `JsonWireOptions` 不创建反射 resolver，持久化上下文不再通过复制 `JsonOptions.Default` 初始化。
 - 仓库列表的直接读取及 HTTP 序列化入口使用基础设施源生成上下文；编码、声明类型和数字字符串策略保留。
 - 已知的三种属性曲线集合、技能参数集合、武器曲线集合使用生成的数组元数据和静态封闭转换器。
-  普通运行时保留插件自定义泛型的兼容路径；无动态代码的运行时不尝试构造未知泛型。
+  普通运行时保留未登记泛型的兼容路径；无动态代码的运行时不尝试构造未知泛型。
 - 字符串枚举/数字字符串枚举使用标准 `JsonConverter` 属性及封闭泛型转换器；ID 转换器显式获取 UInt32 元数据。
   严格数字、自定义 UInt32 转换器与未知枚举数值均有回归测试。
 - 养成页三个导航目标改为显式 typeof 映射，不再通过字符串发现类型。
 - 新增按域拆分的 JSON 源生成上下文（`InterProcessJsonContext`、`UserJsonContext`、`UigfJsonContext`、`BridgeJsonContext` 等），
-  由 `JsonSerializeContexts` 持有；`JsonSerialize` 先直接查询这些上下文，再回退到调用方 options 的反射 resolver。
-  `JsonOptions.Default` 保持反射 resolver，供未迁移路径和 STJ 内部调用使用；上下文不挂到 options 上，因为
-  `JsonSerializerContext` 会冻结传入的 options，多个上下文无法共享同一个实例。
-  网络响应 DTO、元数据根类型和 AI 会话完成登记后，才能在 Native AOT 路径移除反射回退。
+  `JsonSerializeContexts.Generated` 通过 `JsonTypeInfoResolver.Combine` 组合各上下文的 `Default` 实例，安装到调用方 options。
+  源生成代码实现的 `IJsonTypeInfoResolver.GetTypeInfo(type, options)` 会为传入的 options 创建元数据；
+  不调用 `new XxxJsonContext(options)`，因此配置阶段不会被某个上下文提前冻结或替换解析器。
+  `JsonSerialize` 首次使用时冻结 options，再通过 `options.GetTypeInfo` 获取缓存元数据；转换器查找嵌套类型时使用同一条解析链。
+  它不创建备用 options、不隐式启用反射，也不吞掉解析器异常。没有配置解析器的调用方必须先显式提供解析器。
+  `JsonOptions.Create` / `Default` 优先使用生成元数据，仅在 `JsonSerializer.IsReflectionEnabledByDefault` 为 true 时追加兼容反射解析器。
+  关闭反射时，未登记的类型会明确失败；网络响应 DTO、元数据根类型和当前 AI 会话仍需继续登记。
+  `InfrastructureJsonContext` 也加入公共解析链，HTTP 入口不再维护独立的配置副本。
+  指纹请求的 `Dictionary<string, object>` 根类型已登记；旧 AI 文件的两种列表根类型使用独立 `AgentJsonContext.Default.Options`，
+  保留旧文件的大小写、数字和未知字段处理规则，不套用应用的宽松网络策略。
   脚本窗口使用独立的 `JsonOptions.CreateReflection()`，不再依赖应用默认选项。
 
 未知的新数据库 JSON 类型必须显式登记，不能静默回退到反射。
@@ -96,5 +103,7 @@ AppX 目录要在部署时才会刷新，不能把其中旧部署副本的验证
 未执行正式签名/安装和交互 UI 测试，也未读取真实历史用户数据。
 
 这些验证不是实际 WinUI 启动、退出、导航或性能实测，不能据此给出启动加速百分比。
-完整 Native AOT 仍需继续处理网络 JSON、动态转换器、查询预编译、迁移执行以及 WinRT 封送；未来纯 Native AOT 版才按授权禁用插件/脚本入口。
+完整 Native AOT 仍需继续处理网络 JSON、动态转换器、查询预编译、迁移执行以及 WinRT 封送；脚本入口的 AOT 策略仍待处理。
 需要查看剩余编译器诊断时，Debug 构建添加 `-p:AotAnalysis=true`；不额外导出生成源码副本，也不改变运行功能。
+
+2026-11-10 的 JSON 解析器修复与验证记录见 [aot-blockers.md §14](aot-blockers.md#14-2026-11-10json-解析器契约修复)。
