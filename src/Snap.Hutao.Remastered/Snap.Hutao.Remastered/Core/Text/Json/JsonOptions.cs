@@ -8,9 +8,8 @@ namespace Snap.Hutao.Remastered.Core.Text.Json;
 public static class JsonOptions
 {
     /// <summary>
-    /// Compatibility default used by paths that have not been migrated yet. Generated
-    /// contexts are consulted by <see cref="JsonSerialize"/> directly, not through this
-    /// resolver, because a <see cref="JsonSerializerContext"/> freezes its options instance.
+    /// Generated contracts are preferred. Unregistered types retain their reflection
+    /// compatibility path only when the runtime enables JSON reflection.
     /// </summary>
     public static readonly JsonSerializerOptions Default = CreateDefault();
 
@@ -21,12 +20,14 @@ public static class JsonOptions
     public static JsonSerializerOptions CreateReflection()
     {
         JsonSerializerOptions options = JsonSerializeContexts.CreateOptions();
-        options.TypeInfoResolver = CreateReflectionResolver();
+        options.TypeInfoResolver = JsonSerializer.IsReflectionEnabledByDefault
+            ? CreateReflectionResolver()
+            : throw new NotSupportedException("JSON reflection is disabled in this runtime.");
         return options;
     }
 
     /// <summary>
-    /// Creates an options instance whose generated context is created from that exact
+    /// Creates an options instance whose generated resolvers receive that exact
     /// configuration, so formatting switches such as
     /// <see cref="JsonSerializerOptions.WriteIndented"/> are honored by the resolved
     /// <c>JsonTypeInfo</c> as well.
@@ -35,7 +36,11 @@ public static class JsonOptions
     {
         JsonSerializerOptions options = JsonSerializeContexts.CreateOptions();
         configure?.Invoke(options);
-        options.TypeInfoResolver = CreateReflectionResolver();
+        if (JsonSerializer.IsReflectionEnabledByDefault)
+        {
+            options.TypeInfoResolver = JsonTypeInfoResolver.Combine(options.TypeInfoResolver, CreateReflectionResolver());
+        }
+
         return options;
     }
 
@@ -51,14 +56,15 @@ public static class JsonOptions
 
     private static IJsonTypeInfoResolver CreateReflectionResolver()
     {
-        // The only reflection resolver left in the application. Native AOT never constructs
-        // it; the scripting window is already outside the AOT product surface.
-        return new DefaultJsonTypeInfoResolver
+        // Reuse the runtime's resolver without changing its shared modifiers. The feature
+        // switch removes this compatibility path from a reflection-disabled AOT build.
+        if (!JsonSerializer.IsReflectionEnabledByDefault)
         {
-            Modifiers =
-            {
-                JsonTypeInfoResolvers.ResolveEnumType,
-            },
-        };
+            throw new NotSupportedException("JSON reflection is disabled in this runtime.");
+        }
+
+        IJsonTypeInfoResolver resolver = JsonSerializerOptions.Default.TypeInfoResolver
+            ?? throw new NotSupportedException("The runtime JSON reflection resolver is unavailable.");
+        return resolver.WithAddedModifier(JsonTypeInfoResolvers.ResolveEnumType);
     }
 }

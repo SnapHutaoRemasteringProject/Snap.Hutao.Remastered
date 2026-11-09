@@ -1,12 +1,14 @@
 # Native AOT 阻塞项扫描报告
 
-> 扫描日期：2026-11-08　分支：`feat/aot-compatible`　HEAD：`5f17088f9`（refactor(aot): remove Lib.Harmony）
+> 基线扫描日期：2026-11-08　分支：`feat/aot-compatible`　基线 HEAD：`5f17088f9`（refactor(aot): remove Lib.Harmony）
 > SDK：11.0.100-rc.2.26504.105　TFM：`net11.0-windows10.0.26100.0`　RID：`win-x64`　配置：Debug
 > 依赖关键版本：Windows App SDK 2.6.6-experimental、CsWinRT 2.3.1、EF Core 11.0.0-rc.3、Roslyn 5.9.0
 > 关联文档：[R2R 部署与 AOT 准备](aot-readiness.md)
 
 本文回答一个问题：**这个仓库离 Native AOT 还差什么，差的部分能不能修。**
-结论用一句话概括：**现在不能做 Native AOT——不是代码写得不够干净，而是 AOT 发布链路在 WinUI XAML 编译器里就断了；代码层另有 194 条可量化的诊断，以及 4 个需要产品决策的结构性依赖。**
+当前结论：**已能通过引用顺序补丁生成原生 exe，但还不能宣称应用完整支持 Native AOT。**
+194 条是上述提交的历史诊断基线，并非当前剩余数量；引用顺序问题的后续实验证据见 §3.5 / 附录 D，
+JSON 解析器与旧 AI 文件契约的后续修复见 §14。其余历史统计和行号保留用于追溯，未重新运行完整分析前不更新诊断总数。
 
 ---
 
@@ -15,7 +17,7 @@
 | # | 阻塞项 | 层级 | 规模 | 能否在仓库内解决 | 状态 |
 |---|---|---|---|---|---|
 | 1 | `PublishAot=true` 时 XAML 编译器拿到 **0 个引用**（`@(ReferencePath)` 为空）→ `WMC1007` | 工具链（MSBuild 目标顺序） | 1 个属性 | ✅ 已找到 workaround，见 §3.5 | **已解除**（2026-11-08） |
-| 2 | `System.Text.Json` 反射序列化路径 | 代码 | 156 条 / 约 50 个文件 | ✅ 能，机械但量大 | 待修 |
+| 2 | `System.Text.Json` 反射序列化路径 | 代码 | 基线 156 条 / 约 50 个文件 | ✅ 能，机械但量大 | 入口及解析器已改造；类型登记未完成，见 §14 |
 | 3 | CommunityToolkit 按属性名排序 | 代码 | 15 条 / 2 个文件 | ✅ 能，改动很小 | 待修 |
 | 4 | 运行期 `MakeGenericType` 构造 JSON 转换器 | 代码 | 9 条 / 4 个文件 | ✅ 能 | 待修 |
 | 5 | EF Core：启动期迁移 + `DbContext` 构造 + 泛型集合注解 | 代码 + 设计 | 11 条 / 5 个文件 | ⚠️ 迁移需改设计 | 待决策 |
@@ -26,7 +28,7 @@
 
 > 194 = 156（JSON）+ 15（排序）+ 9（转换器工厂）+ 11（EF）+ 2（生成的 XAML 代码）+ 1（DI 泛型）。
 
-**一句话路线**：P0 只能等 Windows App SDK；P1 是 194 条里除 EF 迁移外的全部；P2 是脚本、迁移、`{Binding}` 这些产品/框架级取舍。
+**推进路线**：P0 的引用顺序问题已有仓库补丁，资源交付与运行仍待验证；P1 继续处理 JSON、排序和泛型契约；P2 处理脚本、迁移和 `{Binding}` 等结构性问题。
 
 ---
 
@@ -507,10 +509,11 @@ M.E.AI 团队在做 AOT 支持，但当前版本不能假定可用。**这属于
 
 按"收益 / 风险 / 是否被上游阻塞"排序。
 
-### P0：先让 AOT 发布能跑起来（被上游阻塞，仓库侧只能等/绕）
+### P0：发布目标顺序已绕过，资源交付与运行仍待验证
 
 | 动作 | 说明 |
 |---|---|
+| 保留已验证的引用顺序与运行时载荷补丁 | `Build/AotPublish.targets` 已接入，显式 AOT 发布不再需要重复传入 `MarkupCompilePass1DependsOn`；补丁仅在 `PublishAot=true` 时运行 |
 | 跟踪 Windows App SDK 的 AOT 进展 | 关注 `EnableBindingDiagnostics` 路径的修复与 `.xbf`/`.pri` 打包（[#6394](https://github.com/microsoft/WindowsAppSDK/issues/6394)） |
 | 建立"能否 AOT 发布"的冒烟任务 | 不要求成功，要求**失败点可比较**：记录每次尝试的 error code + 阶段，便于上游修复后立刻验证 |
 | 不要在仓库里"伪造" AOT | 例如 `PublishTrimmed=false` + `PublishAot=true` 这类组合、或用手写描述符掩盖问题 |
@@ -960,3 +963,73 @@ dotnet publish tmp-aot-probe/minwinui/MinWinUI.csproj `
 | `tmp-aot-probe/_diag/refs-*.txt` | `@(ReferencePath)` 快照（0 vs 314 / 213） |
 | `tmp-aot-probe/minwinui/` | 最小复现工程 |
 | `aot-publish-forced.log` | 主工程带 workaround 的完整日志（停在 R2R 校验） |
+
+## 14. 2026-11-10：JSON 解析器契约修复
+
+### 14.1 本阶段解决的问题
+
+`16b417bec` 已把调用点改成 `JsonTypeInfo` 重载，但公共入口仍无条件初始化反射备用配置；测试项目也只链接了入口，没有链接它依赖的应用上下文集合。
+此外，每个领域上下文持有独立的 options 副本，转换器内部用 `options.GetTypeInfo` 查找其他领域的类型时无法使用完整解析链；解析器抛出的异常还会被吞掉，转而套用另一份配置。
+这些问题会把“入口不再调用反射重载”误当成“运行路径已经不需要反射”。
+
+本阶段改为一条明确的解析链：
+
+1. `JsonSerializeContexts.Generated` 组合生成上下文的 `Default` 实例，并由 `CreateOptions` 安装到调用方 options。
+   关键是**生成代码实现的** `IJsonTypeInfoResolver.GetTypeInfo(type, options)`：它为传入的 options 创建元数据，
+   不同于把 options 传给上下文构造函数后固定绑定的用法。多个解析器因此可以共享同一份调用方配置。
+2. `JsonSerialize` 首次使用时调用无反射的 `MakeReadOnly()`，再走 `options.GetTypeInfo` 的缓存。
+   根类型和转换器内部的嵌套类型使用同一份 options。未配置解析器、缺少类型、解析器自身异常均直接交还调用方，不创建备用反射 options。
+3. `JsonOptions.Create` / `Default` 的普通运行时兼容反射路径受 `JsonSerializer.IsReflectionEnabledByDefault` 控制。
+   显式自定义解析器仍受尊重；没有配置解析器的调用方需要先声明自己的契约。
+4. HTTP 入口使用同一解析链，移除私有上下文和配置副本；`InfrastructureJsonContext` 纳入公共登记。
+5. 登记指纹请求的 `Dictionary<string, object>` 根类型，以及旧 AI 配置、会话的两种 `List<T>` 根类型。
+   旧 AI 文件显式使用 `AgentJsonContext.Default.Options`，保留原来的严格数字规则，避免应用网络配置的数字字符串兼容策略改变旧文件语义。
+
+没有更改数据库结构、导出格式、插件/脚本的产品取舍，也没有对未知类型静默启用反射。
+
+### 14.2 可重复的验证入口
+
+现有测试项目新增 `AotJsonSerializationTest`，并为 `AgentMigrationTest` 增加真实临时文件读入用例。
+测试直接链接生产入口、字典转换器与两个小型生产上下文；跨领域转换器另外使用两个专门的生成上下文，以确保确实需要从第二个解析器取得嵌套契约。
+
+普通运行时相关回归：
+
+```powershell
+dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.Test/Snap.Hutao.Remastered.Test.csproj -p:JsonSerializerIsReflectionEnabledByDefault=true --filter "FullyQualifiedName~AotJson|FullyQualifiedName~LocalSettingsJsonTest|FullyQualifiedName~AgentHarnessTest|FullyQualifiedName~AgentMigrationTest|FullyQualifiedName~AgentSettings|FullyQualifiedName~AgentModelProfile|FullyQualifiedName~LiquidGlassProfile"
+```
+
+关闭反射后的专门用例：
+
+```powershell
+dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.Test/Snap.Hutao.Remastered.Test.csproj -p:JsonSerializerIsReflectionEnabledByDefault=false --filter "FullyQualifiedName~AotJsonSerializationTest|FullyQualifiedName~AotJsonCodecTest|FullyQualifiedName~GeneratedLegacyFileContracts"
+```
+
+`LocalSettingsJsonTest` 的两项格式对照用例会主动调用反射序列化来生成旧格式基准，因而只放在普通运行时回归里；不能把基准生成失败误判成生产设置编码器依赖反射。
+
+新增可选项目 [Snap.Hutao.Remastered.JsonAotSmoke](../src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.JsonAotSmoke/Snap.Hutao.Remastered.JsonAotSmoke.csproj)，不加入应用解决方案和打包链路，无第三方包引用。
+它直接链接生产 JSON 代码、诊断/旧 AI 上下文和三个旧 AI 数据模型。发布时启用 Native AOT、关闭 JSON 反射、把编译和 ILC 警告视为错误。
+运行时要求 `IsReflectionEnabledByDefault`、`IsDynamicCodeSupported`、`IsDynamicCodeCompiled` 全部为 false；直接用托管方式运行会失败。
+所有样例都在内存中，不读取应用设置、真实用户文件或数据库，也不请求网络。
+
+Windows 命令（本轮未执行）：
+
+```powershell
+dotnet publish src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.JsonAotSmoke/Snap.Hutao.Remastered.JsonAotSmoke.csproj -c Release -r win-x64
+& ./src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.JsonAotSmoke/bin/Release/net11.0/win-x64/publish/Snap.Hutao.Remastered.JsonAotSmoke.exe
+```
+
+Linux 使用相同项目与 `-r linux-x64`，运行对应 publish 目录中的无扩展名可执行文件。需要当前平台的官方 Native AOT 链接工具，不固定 SDK feature band，也不引入 `global.json`。
+
+### 14.3 本轮实际结果与边界
+
+| 检查 | 实际结果 |
+|---|---|
+| 普通运行时相关回归，Debug / Linux / SDK 11.0.100-rc.2.26504.105 | **75 / 75 通过**；覆盖 JSON、设置恢复、AI 历史迁移与会话对象、材质配置 |
+| 关闭 JSON 反射的专门用例，同一 SDK | **19 / 19 通过**；包括选项同一性、跨上下文转换器、缓存、首次使用冻结、克隆格式、显式转换器、原异常传播、缺失类型、声明类型、各同步/异步重载和取消 |
+| 独立 JSON 原生发布，Release / linux-x64 / SDK 11.0.100-rc.3.26522.148 | **成功，0 warning / 0 error**；使用 SDK 自带的 ILC，不额外固定编译器包版本 |
+| 实际运行原生程序 | **PASS**；确认反射与动态代码关闭，完成指纹字典、异步读写、两种旧文件列表、严格数字与缺失类型检查；产物为约 3.6 MiB 的 ELF 原生程序 |
+| 未过滤的全量测试 | 未取得完整结果。Linux 下先出现注册表、Windows 路径/启动任务和文件替换语义的失败；随后自动审批因测试包含未确认授权的项目外网 API 请求而拦截继续执行，未重试该请求 |
+| Windows 应用和全部领域上下文 | **未验证**：未在本机执行 WinUI 构建、主应用 Native AOT 发布/启动、安装或交互操作；未取得本阶段远端 CI 结果 |
+
+独立项目只证明所链接的生产契约可以生成并运行原生代码，不包含公共 `JsonOptions` 的完整应用登记表、Windows XAML、当前 AI SDK 会话模型、网络响应根类型或 EF。
+不要把这个 PASS 写成“胡桃已完成 AOT”。后续优先补齐网络响应/元数据根类型和当前 AI 设置/会话的生成契约，继续处理排序与 EF 的既有路线；194 条基线需要在 Windows 上重新扫描后才能给出新的剩余数。

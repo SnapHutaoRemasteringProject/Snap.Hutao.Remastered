@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.Text.Json;
-using Snap.Hutao.Remastered.Web.Hutao;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
@@ -14,13 +13,10 @@ namespace Snap.Hutao.Remastered.Web.Request.Builder;
 [Service(ServiceLifetime.Singleton)]
 public sealed class JsonHttpContentSerializer : HttpContentSerializer
 {
-    private readonly InfrastructureJsonContext generatedContext;
-
     public JsonHttpContentSerializer(JsonSerializerOptions jsonSerializerOptions)
     {
         ArgumentNullException.ThrowIfNull(jsonSerializerOptions);
         JsonSerializerOptions = jsonSerializerOptions;
-        generatedContext = new(new JsonSerializerOptions(jsonSerializerOptions) { TypeInfoResolver = null });
     }
 
     public JsonSerializerOptions JsonSerializerOptions { get; }
@@ -84,18 +80,6 @@ public sealed class JsonHttpContentSerializer : HttpContentSerializer
 
     private JsonTypeInfo GetTypeInfo(Type contentType)
     {
-        try
-        {
-            if (generatedContext.GetTypeInfo(contentType) is { } generated)
-            {
-                return generated;
-            }
-        }
-        catch (Exception exception) when (exception is NotSupportedException or InvalidOperationException or ArgumentException)
-        {
-            // Infrastructure context does not own this type.
-        }
-
         return JsonSerialize.GetTypeInfo(contentType, JsonSerializerOptions);
     }
 }

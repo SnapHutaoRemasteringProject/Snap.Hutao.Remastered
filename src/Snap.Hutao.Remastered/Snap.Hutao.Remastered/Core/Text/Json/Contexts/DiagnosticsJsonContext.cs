@@ -5,4 +5,5 @@ namespace Snap.Hutao.Remastered.Core.Text.Json;
 
 [JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Metadata)]
 [JsonSerializable(typeof(Dictionary<string, JsonElement>))]
+[JsonSerializable(typeof(Dictionary<string, object>))]
 internal sealed partial class DiagnosticsJsonContext : JsonSerializerContext;

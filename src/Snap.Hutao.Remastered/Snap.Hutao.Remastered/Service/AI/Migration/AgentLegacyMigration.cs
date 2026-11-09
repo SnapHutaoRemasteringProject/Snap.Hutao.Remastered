@@ -121,7 +121,9 @@ internal static class AgentLegacyMigration
         {
             throw new InvalidDataException("Legacy account insights data exceeds the size limit");
         }
-        return JsonSerialize.Deserialize<T>(stream, JsonSerializerOptions.Default);
+        // Legacy files used the serializer defaults, not the application's permissive wire
+        // options. Keep that contract while using metadata for both supported list roots.
+        return JsonSerialize.Deserialize<T>(stream, AgentJsonContext.Default.Options);
     }
 
     private static string NormalizeEndpoint(string endpoint, ModelProviderType provider)

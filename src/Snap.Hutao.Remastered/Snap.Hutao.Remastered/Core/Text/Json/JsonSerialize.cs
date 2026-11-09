@@ -12,14 +12,11 @@ namespace Snap.Hutao.Remastered.Core.Text.Json;
 
 /// <summary>
 /// AOT-safe facade over <see cref="JsonSerializer"/>.
-/// Every member resolves a <see cref="JsonTypeInfo{T}"/> from the supplied options first;
-/// the generic reflection overloads are never used here, so call sites stay free of
-/// IL2026/IL3050 while the actual metadata comes from the registered context.
+/// Every member uses the supplied options' resolver and its cached metadata. Generated
+/// contexts must be registered on those options, including contracts used by converters.
 /// </summary>
 internal static class JsonSerialize
 {
-    private static readonly JsonSerializerOptions ReflectionFallbackOptions = CreateReflectionFallbackOptions();
-
     public static string Serialize<T>(T value, JsonSerializerOptions options)
     {
         return JsonSerializer.Serialize(value, GetTypeInfo<T>(options));
@@ -85,11 +82,12 @@ internal static class JsonSerialize
         ArgumentNullException.ThrowIfNull(type);
         ArgumentNullException.ThrowIfNull(options);
 
-        JsonTypeInfo? typeInfo = JsonSerializeContexts.TryGetTypeInfo(type, options)
-            ?? TryGetTypeInfo(type, options)
-            ?? ReflectionFallbackOptions.GetTypeInfo(type);
-
-        return typeInfo ?? throw new NotSupportedException($"The JSON type '{type}' is not registered in the active JsonSerializerContext.");
+        // Match JsonSerializer's options lifecycle: configuration is frozen on first use,
+        // and nested contracts resolve through the same options and resolver chain.
+        // An unconfigured resolver is a contract error. Reflection compatibility, when
+        // needed, is an explicit choice made by the caller rather than a hidden fallback.
+        options.MakeReadOnly();
+        return options.GetTypeInfo(type);
     }
 
     public static JsonTypeInfo<T> GetTypeInfo<T>(JsonSerializerOptions options)
@@ -97,24 +95,5 @@ internal static class JsonSerialize
         return GetTypeInfo(typeof(T), options) is JsonTypeInfo<T> typeInfo
             ? typeInfo
             : throw new NotSupportedException($"The JSON type '{typeof(T)}' is not registered in the active JsonSerializerContext.");
-    }
-
-    private static JsonTypeInfo? TryGetTypeInfo(Type type, JsonSerializerOptions options)
-    {
-        try
-        {
-            return options.TypeInfoResolver?.GetTypeInfo(type, options);
-        }
-        catch (Exception exception) when (exception is NotSupportedException or InvalidOperationException or ArgumentException)
-        {
-            return null;
-        }
-    }
-
-    private static JsonSerializerOptions CreateReflectionFallbackOptions()
-    {
-        JsonSerializerOptions options = JsonWireOptions.Create();
-        options.TypeInfoResolver = new DefaultJsonTypeInfoResolver();
-        return options;
     }
 }
