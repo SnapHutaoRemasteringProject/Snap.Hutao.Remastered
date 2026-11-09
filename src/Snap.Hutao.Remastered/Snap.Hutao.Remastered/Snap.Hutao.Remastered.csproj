@@ -363,4 +363,5 @@
   <Import Project="Build\ReadyToRun.targets" />
   <Import Project="Build\BundledImages.targets" />
   <Import Project="Build\AotPublish.targets" />
+  <Import Project="Build\DatabaseSchema.targets" />
 </Project>
