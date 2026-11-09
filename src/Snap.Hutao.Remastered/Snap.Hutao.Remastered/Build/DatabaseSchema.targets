@@ -1,0 +1,58 @@
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)../Core/Database/Schema/SchemaSources.props" />
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)../Core/Database/Schema/*.sql" LogicalName="Hutao.Database.Schema.%(Filename)%(Extension)" />
+    <DatabaseSchemaActualSource Include="$(MSBuildThisFileDirectory)../Migrations/*.cs" />
+  </ItemGroup>
+
+  <UsingTask TaskName="ValidateHutaoDatabaseSchemaSources" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Sources ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <ActualSources ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.Collections.Generic" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Security.Cryptography" />
+      <Using Namespace="System.Text" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        var expected = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var source in Sources)
+        {
+            string path = Path.GetFullPath(source.ItemSpec);
+            expected.Add(path);
+            if (!File.Exists(path))
+            {
+                Log.LogError("Database migration source is missing: {0}. Regenerate with tools/Snap.Hutao.Database.Schema.", path);
+                continue;
+            }
+            string text = File.ReadAllText(path).Replace("\r\n", "\n");
+            using (var sha = SHA256.Create())
+            {
+                string hash = BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(text))).Replace("-", "");
+                if (hash != source.GetMetadata("ExpectedHash"))
+                {
+                    Log.LogError("Database migration source changed: {0}. Regenerate with tools/Snap.Hutao.Database.Schema.", path);
+                }
+            }
+        }
+        foreach (var source in ActualSources)
+        {
+            if (!expected.Remove(Path.GetFullPath(source.ItemSpec)))
+            {
+                Log.LogError("Database migration source is not registered: {0}. Regenerate with tools/Snap.Hutao.Database.Schema.", source.ItemSpec);
+            }
+        }
+        if (expected.Count != 0)
+        {
+            Log.LogError("The database migration source list is outdated. Regenerate with tools/Snap.Hutao.Database.Schema.");
+        }
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="ValidateDatabaseSchemaSources" BeforeTargets="CoreCompile" Condition="'$(ValidateDatabaseSchemaSources)' != 'false'">
+    <ValidateHutaoDatabaseSchemaSources Sources="@(DatabaseSchemaSource)" ActualSources="@(DatabaseSchemaActualSource)" />
+  </Target>
+</Project>

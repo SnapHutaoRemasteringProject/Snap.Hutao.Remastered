@@ -1,10 +1,11 @@
-// Copyright (c) DGP Studio. All rights reserved.
+﻿// Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
 using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.Text.Json;
+using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Model.Entity.Database;
 using Snap.Hutao.Remastered.Win32;
@@ -36,12 +37,13 @@ public static partial class ServiceCollectionExtension
 
                 try
                 {
-                    using (AppDbContext context = AppDbContext.Create(serviceProvider, sqlConnectionString))
+                    int applied = DatabaseSchema.Upgrade(sqlConnectionString);
+                    if (applied > 0)
                     {
                         List<string> pendingMigrations = [.. context.Database.GetPendingMigrations()];
                         if (pendingMigrations.Count > 0)
                         {
-                            serviceProvider.GetRequiredService<ILogger<AppDbContext>>().LogInformation("[Database] Performing AppDbContext Migrations");
+                            serviceProvider.GetRequiredService<ILogger<AppDbContext>>().LogInformation("[Database] Applied {Count} schema migrations", applied);
 
                             using (SentrySpanScope migration = SentrySpanScope.StartTransaction("db.migration", "db.migration"))
                             {
@@ -54,7 +56,7 @@ public static partial class ServiceCollectionExtension
                         }
                     }
                 }
-                catch (DbException ex)
+                catch (Exception ex) when (ex is DbException or InvalidDataException)
                 {
                     string message = $"""
                         Snap Hutao 在执行数据库迁移时发生错误。

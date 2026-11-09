@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net11.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <PublishAot>true</PublishAot>
+    <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IlcTreatWarningsAsErrors>true</IlcTreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="11.0.0-rc.3.26522.148" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/Database/DatabaseSchema.cs" Link="Production/DatabaseSchema.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/Database/Schema/DatabaseMigrations.g.cs" Link="Production/DatabaseMigrations.g.cs" />
+  </ItemGroup>
+  <Import Project="../Snap.Hutao.Remastered/Build/DatabaseSchema.targets" />
+</Project>
