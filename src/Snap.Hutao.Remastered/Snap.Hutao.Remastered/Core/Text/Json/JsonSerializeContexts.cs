@@ -4,35 +4,37 @@
 using Snap.Hutao.Remastered.Core.Text.Json.Converter;
 using Snap.Hutao.Remastered.Model.Primitive;
 using Snap.Hutao.Remastered.Model.Primitive.Converter;
-using System.Runtime.CompilerServices;
+using Snap.Hutao.Remastered.Web.Hutao;
 using System.Text.Json.Serialization.Metadata;
 
 namespace Snap.Hutao.Remastered.Core.Text.Json;
 
 /// <summary>
-/// Holds the per-domain generated contexts and looks up metadata directly. The contexts are
-/// deliberately not installed into <see cref="JsonSerializerOptions.TypeInfoResolver"/>: a
-/// <see cref="JsonSerializerContext"/> freezes the options passed to its constructor, so several
-/// contexts cannot share one caller options instance, and metadata from a context built from a
-/// clone fails STJ's "JsonTypeInfo.Options must match" validation.
+/// Combines the generated resolvers on the caller's options. The source generator's
+/// IJsonTypeInfoResolver implementation creates metadata for the options it receives;
+/// constructing a context with those options would instead freeze and replace their resolver.
 /// </summary>
 internal static class JsonSerializeContexts
 {
-    private static readonly ConditionalWeakTable<JsonSerializerOptions, ContextSet> Contexts = new();
+    public static IJsonTypeInfoResolver Generated { get; } = JsonTypeInfoResolver.Combine(
+        InterProcessJsonContext.Default,
+        DiagnosticsJsonContext.Default,
+        UserJsonContext.Default,
+        UigfJsonContext.Default,
+        UiafJsonContext.Default,
+        GamePackageJsonContext.Default,
+        GameDataJsonContext.Default,
+        BridgeJsonContext.Default,
+        CacheJsonContext.Default,
+        AgentJsonContext.Default,
+        InfrastructureJsonContext.Default);
 
     public static JsonSerializerOptions CreateOptions()
     {
         JsonSerializerOptions options = JsonWireOptions.Create();
         AddConverters(options);
+        options.TypeInfoResolver = Generated;
         return options;
-    }
-
-    public static JsonTypeInfo? TryGetTypeInfo(Type type, JsonSerializerOptions options)
-    {
-        ArgumentNullException.ThrowIfNull(type);
-        ArgumentNullException.ThrowIfNull(options);
-
-        return Contexts.GetValue(options, static value => new ContextSet(value)).TryGetTypeInfo(type);
     }
 
     public static void AddConverters(JsonSerializerOptions options)
@@ -55,54 +57,5 @@ internal static class JsonSerializeContexts
         options.Converters.Add(new IdentityConverter<SkillLevel>());
         options.Converters.Add(new IdentityConverter<WeaponId>());
         options.Converters.Add(new ObjectDictionaryConverter());
-    }
-
-    private static JsonSerializerOptions Clone(JsonSerializerOptions options)
-    {
-        return new(options) { TypeInfoResolver = null };
-    }
-
-    private sealed class ContextSet
-    {
-        private readonly JsonSerializerContext[] contexts;
-
-        public ContextSet(JsonSerializerOptions options)
-        {
-            // Each JsonSerializerContext freezes its options, so each context gets its own
-            // snapshot. Formatting and converters still match the caller's options.
-            contexts =
-            [
-                new InterProcessJsonContext(Clone(options)),
-                new DiagnosticsJsonContext(Clone(options)),
-                new UserJsonContext(Clone(options)),
-                new UigfJsonContext(Clone(options)),
-                new UiafJsonContext(Clone(options)),
-                new GamePackageJsonContext(Clone(options)),
-                new GameDataJsonContext(Clone(options)),
-                new BridgeJsonContext(Clone(options)),
-                new CacheJsonContext(Clone(options)),
-                new AgentJsonContext(Clone(options)),
-            ];
-        }
-
-        public JsonTypeInfo? TryGetTypeInfo(Type type)
-        {
-            foreach (JsonSerializerContext context in contexts)
-            {
-                try
-                {
-                    if (context.GetTypeInfo(type) is { } typeInfo)
-                    {
-                        return typeInfo;
-                    }
-                }
-                catch (Exception exception) when (exception is NotSupportedException or InvalidOperationException or ArgumentException)
-                {
-                    // This context does not own the type.
-                }
-            }
-
-            return null;
-        }
     }
 }

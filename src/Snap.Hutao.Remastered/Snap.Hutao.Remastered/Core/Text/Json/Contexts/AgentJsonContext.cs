@@ -8,4 +8,6 @@ namespace Snap.Hutao.Remastered.Core.Text.Json;
 [JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Metadata)]
 [JsonSerializable(typeof(LegacyModelProfile))]
 [JsonSerializable(typeof(LegacyConversation))]
+[JsonSerializable(typeof(List<LegacyModelProfile>))]
+[JsonSerializable(typeof(List<LegacyConversation>))]
 internal sealed partial class AgentJsonContext : JsonSerializerContext;

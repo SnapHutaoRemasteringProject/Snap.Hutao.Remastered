@@ -65,9 +65,8 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
   as startup, select `x64`, `F5`. The Debug build deploys
   `Package.development.appxmanifest`; the built exe is also directly runnable (unpackaged) at
   `src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/bin/x64/Debug/net11.0-windows10.0.26100.0/win-x64/Snap.Hutao.Remastered.exe`.
-- **Plugin SDK** — has its own solution,
-  [`src/Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.slnx`](src/Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.slnx),
-  which pulls in the main app project, the SDK project and the `TestPlugin` sample.
+- **AOT branch scope** — `feat/aot-compatible` has removed the plugin system, its SDK/sample
+  and Harmony. Runtime C# scripts remain and still require a separate AOT product decision.
 - **ReadyToRun** — enabled by default for every configuration, including Debug. The SDK keeps
   the IL compiler input in `obj`; `Build/ReadyToRun.targets` delivers the selected R2R images to
   the runnable bin output. VS MSIX deployment consumes the WinUI SDK's publish-item list. All four
@@ -92,8 +91,8 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
     `CopyContentForUnpackaged` target copies `Resource/` and `Assets/` next to the exe for the
     unpackaged mode.
 - **Test caveat (important)** — the test project has **no `ProjectReference` to the app**
-  (`CODE_REVIEW.md#BUG-02`). It compiles a hand-picked set of 40 production files through
-  `<Compile Include="..\Snap.Hutao.Remastered\...">` links and holds 167 `[TestMethod]`s across
+  (`CODE_REVIEW.md#BUG-02`). It compiles an explicit set of production files through
+  `<Compile Include="..\Snap.Hutao.Remastered\...">` links and holds regression tests across
   `BaseClassLibrary/`, `RuntimeBehavior/`, `IncomingFeature/` and `PlatformExtensions/`.
   Consequence: **a new test can only touch code that is already source-linked**; anything else
   needs another `<Compile Include>` link. Windows dependencies must either be absent or supplied
@@ -126,8 +125,6 @@ src/
     Snap.Hutao.Remastered.slnx        Solution (app + test), x64 only
     .editorconfig  .vsconfig  settings.xamlstyler  ResXManager.config.xml
     Snap.Hutao.Remastered/            Main app project (WinUI 3)
-      API/                 Plugin contract handed to third parties: HutaoPlugin, PluginManifest,
-                           PluginContext, [PluginMain], PluginSetting, PluginScopedPage
       Assets/              MSIX tile/splash images, Logo.ico
       Core/                Infrastructure: DI, lifecycle, IO/Http, threading, settings, logging, scripting
       Extension/           Extension methods and helpers
@@ -145,10 +142,6 @@ src/
       Package.appxmanifest  Package.development.appxmanifest  app.manifest
       BannedSymbols.txt  CodeMetricsConfig.txt  ApiEndpoints.csv  IdentityStructs.json
     Snap.Hutao.Remastered.Test/       Test project (net11.0, source-linked production files)
-  Snap.Hutao.Plugin.SDK/
-    Snap.Hutao.Plugin.SDK.slnx        Plugin SDK solution (app + SDK + sample)
-    Snap.Hutao.Plugin.SDK/            SDK package (build/*.targets, README)
-    TestPlugin/                       Sample plugin (manifest.json, TestPluginPage.hxaml, inject/)
 ```
 
 ## 4. Key Files
@@ -385,37 +378,24 @@ the build fails with `CS9275`); write a normal constructor in that case.
   (re-runs startup work after the network recovers — this one is the best-quality recent code in
   the repo and a good template).
 
-### 5.6 Plugin system
+### 5.6 Native AOT branch and JSON contracts
 
-- The plugin-facing contract lives in
-  [`API/`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/API): `HutaoPlugin` (base class),
-  `PluginManifest`, `PluginContext`, `[PluginMain]` (marks the entry type), `PluginSetting`,
-  `PluginScopedPage`, `PluginInfo`.
-- A plugin package is a directory with a `manifest.json` plus its assemblies; the entry type is the
-  class tagged `[PluginMain]` and **must have a public parameterless constructor**.
-- [`Service/Plugin/PluginAssemblyLoadContext.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Plugin/PluginAssemblyLoadContext.cs)
-  gives **every plugin its own collectible `AssemblyLoadContext`** (`isCollectible: true`, name
-  `HutaoPlugin:<id>`): assemblies shipped in the package load there and die with it, while anything
-  the plugin does not ship resolves from the host. The host contract assembly is *always* forced
-  back to the host so a package can never introduce a second `HutaoPlugin` identity.
-  **Never load plugin assemblies with `Assembly.LoadFrom`** (that was the old bug,
-  `CODE_REVIEW.md#BUG-11`); go through `PluginAssemblyLoadContext`.
-- Enabling/disabling/uninstalling goes through `IPluginService` and is observable via its
-  `PluginsChanged` event (raised on the UI thread), because a page may be open before the background
-  scan finishes. `GetAllPluginInfos()` = installed (enabled and disabled);
-  `GetAllPlugins()` = live instances only.
-- **Enable/disable commits after the plugin hook** — `OnEnable`/`OnDisable` run *before* the package
-  move and before `PluginInfo.IsEnabled` changes, so a hook that throws leaves the plugin exactly as
-  the manager describes it (enabled and loaded) instead of half-applied. `PluginInfo` is an
-  `ObservableObject` bound by `PluginPage`, so its observable properties (`IsEnabled`, `IconPath`)
-  are only written on the main thread — `SetPluginEnabledAsync`/`SetPluginIconPathAsync` — because
-  enabling runs past `await … ConfigureAwait(false)`; assigning them there raised `PropertyChanged`
-  on a pool thread and faulted the binding (review N1 in
-  [`docs/code-review-contributors-2026-10.md`](docs/code-review-contributors-2026-10.md)).
-- Plugins receive the **root** service provider through `PluginContext` (full trust — document it
-  when writing plugin docs).
-- The SDK ships as a NuGet package built from
-  [`src/Snap.Hutao.Plugin.SDK/`](src/Snap.Hutao.Plugin.SDK); `TestPlugin/` is the reference sample.
+- This branch removed the plugin system and Harmony. The historical plugin review entries below
+  describe earlier releases; they are not instructions to restore dynamic assembly loading.
+- `JsonSerializeContexts.Generated` combines generated contexts as `IJsonTypeInfoResolver`s on
+  the caller's options. Do not construct each context with a cloned options instance: nested
+  converters must resolve contracts through the same options and resolver chain.
+- `JsonSerialize` freezes the options on first use and retrieves their cached `JsonTypeInfo`.
+  An unconfigured resolver, missing contract or resolver error is reported to the caller; the
+  facade never creates reflection options or catches those errors to retry with a different policy.
+- `JsonOptions.Create` prefers generated contracts and appends reflection compatibility only when
+  `JsonSerializer.IsReflectionEnabledByDefault` is true. Custom options must supply their own
+  resolver; configuring a new resolver deliberately replaces the generated registry.
+- Legacy AI files use `AgentJsonContext.Default.Options` for their two list roots, preserving the
+  serializer defaults instead of the application's permissive network JSON policy.
+- Source-linked JSON tests cover the real facade, converters and the small diagnostics/legacy
+  contexts. They do not validate the other domain contexts or Windows XAML generation.
+  See [current progress and verification](docs/aot-blockers.md#14-2026-11-10json-解析器契约修复).
 
 ### 5.7 Localization
 
@@ -530,7 +510,7 @@ the build fails with `CS9275`); write a normal constructor in that case.
   properties, resx accessors and dependency properties come from the source generator. Never
   hand-write what a generator produces, and never edit files under `obj/`.
 - **Visibility** — use the narrowest visibility that works. `public` is required only where it is
-  genuinely part of a contract: the plugin API (`API/`), XAML-facing types, and members bound from
+  genuinely part of a contract: documented external contracts, XAML-facing types, and members bound from
   XAML. For implementation details, `internal`/`private` are acceptable and preferred (the
   generator's `SH001` even demands `internal` for non-contract types).
   **Never perform a repository-wide visibility rewrite** — the last one (a single commit touching
@@ -578,7 +558,7 @@ ID — do not "fix" these by documenting them as if they were intended.
 | 3 | Repository-wide `internal` removal (0 occurrences left) + 12 `SH001` suppressions; `public` was mandated uniformly, which is what caused #1/#2 | whole repo | BUG-10 |
 | 4 | Two ViewModel lifecycle state machines (`ViewModel` vs `ViewModelSlim`), derived classes assign `IsInitialized` on their own | `ViewModel/Abstraction/*` | ARCH-03 |
 | 5 | Analyzer severities are advisory: 54 `suggestion`, 18 `none`, 2 `warning`, **0** `error`; no `TreatWarningsAsErrors`/`AnalysisLevel`; `NoWarn` swallows `CA2012`; `SA1404` disabled | `src/Snap.Hutao.Remastered/.editorconfig`, app csproj | ENG-01, ENG-02 |
-| 6 | Test project cannot reference the app (0 `ProjectReference`, 40 source links, TFM `net11.0` vs `net11.0-windows…`) | `Snap.Hutao.Remastered.Test.csproj` | BUG-02 |
+| 6 | Test project cannot reference the app (0 `ProjectReference`, explicit source links, TFM `net11.0` vs `net11.0-windows…`) | `Snap.Hutao.Remastered.Test.csproj` | BUG-02 |
 | 7 | Manifest allows Windows 10 `10.0.19041.0` while the public support statement says Windows 10 22H2 (Jan-2025) / Windows 11 22H2 — reconcile one of the two | `Package*.appxmanifest`, project docs site | — |
 | 8 | No CI quality gate: none of the 8 workflows runs `dotnet test` or `dotnet format --verify-no-changes` | `.github/workflows/` | ENG-05 |
 | 9 | No central package management (`Directory.Build.props` / `Directory.Packages.props` absent, 61 `PackageReference`s across the 4 csproj files carry inline versions) | `src/**/*.csproj` | ENG-04 |
@@ -595,6 +575,7 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
+| 2026-11-10 | Replaced cloned per-context JSON options and the hidden reflection retry with a shared generated resolver chain; preserved resolver errors and first-use freezing, registered dictionary/legacy list roots, source-linked their real contexts, and documented the AOT branch's removed plugin scope and validation limits. |
 | 2026-11-08 | Added Sentry performance instrumentation (§5.9): every page load and the startup named-pipe redirect start a transaction, and HTTP, SQL, repository/save, EF migration, metadata/git/update/gacha/achievement/user/daily-note/record/plugin/inventory/cultivation/backpack/game-launch/game-package work is captured as nested spans through `SentrySpanScope`; documented the transaction-vs-child policy and the "no user-controlled waits in a transaction" rule. |
 | 2026-11-08 | All 30 typed `DataContext` shadow properties in the binding views read the base dependency property through `Unsafe.As<T>` instead of a checked `(T)base.DataContext` cast, and every such view imports `System.Runtime.CompilerServices`; documented in §6. |
 | 2026-11-08 | `MaterialCardButton` no longer copies the host's resolved `Foreground` onto its inner buttons as a local value; it forwards only a caller-defined color and otherwise clears the local value, so home-card text keeps `ButtonForeground`'s theme expression instead of the application theme captured at construction (black text on dark cards). Documented the rule in §5.3. |

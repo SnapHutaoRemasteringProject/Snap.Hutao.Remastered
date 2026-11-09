@@ -3,12 +3,51 @@ using Snap.Hutao.Remastered.Service.AI.Migration;
 using Snap.Hutao.Remastered.Service.AI.Models;
 using Snap.Hutao.Remastered.Service.AI.Observables;
 using Snap.Hutao.Remastered.Service.AI.Settings;
+using System.IO;
 
 namespace Snap.Hutao.Remastered.Test.RuntimeBehavior;
 
 [TestClass]
 public sealed class AgentMigrationTest
 {
+    [TestMethod]
+    public void GeneratedLegacyFileContractsReadBothListRoots()
+    {
+        string path = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(path, """[{"Name":"provider","Model":"model","MaxOutputTokens":8192,"Unknown":true}]""");
+            LegacyModelProfile profile = AgentLegacyMigration.Read<List<LegacyModelProfile>>(path)!.Single();
+            Assert.AreEqual("provider", profile.Name);
+            Assert.AreEqual(8192, profile.MaxOutputTokens);
+
+            File.WriteAllText(path, """[{"Title":"chat","Snapshot":"{}","Messages":[{"Role":"user","Content":"question","Completed":true}]}]""");
+            LegacyConversation conversation = AgentLegacyMigration.Read<List<LegacyConversation>>(path)!.Single();
+            Assert.AreEqual("chat", conversation.Title);
+            Assert.AreEqual("{}", conversation.Snapshot);
+            Assert.AreEqual("question", conversation.Messages.Single().Content);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [TestMethod]
+    public void GeneratedLegacyFileContractsKeepDefaultNumberHandling()
+    {
+        string path = Path.GetTempFileName();
+        try
+        {
+            File.WriteAllText(path, """[{"MaxOutputTokens":"8192"}]""");
+            Assert.Throws<JsonException>(() => AgentLegacyMigration.Read<List<LegacyModelProfile>>(path));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
     [TestMethod]
     public void LegacyConversationRetainsSnapshotDraftAndDisplayWhileExcludingInterruptedAnswersFromReplay()
     {
