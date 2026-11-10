@@ -981,7 +981,7 @@
     <value>Gagal mengambil riwayat wish dari cloud</value>
   </data>
   <data name="ServiceGachaLogItemMetadataNotFound" xml:space="preserve">
-    <value>祈愿物品“{0}”的元数据尚未更新，请稍后重试</value>
+    <value>Metadata item Wish "{0}" belum diperbarui, silakan coba lagi nanti</value>
   </data>
   <data name="ServiceGachaLogUrlProviderAuthkeyRequestFailed" xml:space="preserve">
     <value>Gagal meminta kunci otorisasi</value>
@@ -1063,7 +1063,7 @@
     <value>Gagal mengakhiri proses</value>
   </data>
   <data name="ServiceGameStopProcessAccessDenied" xml:space="preserve">
-    <value>没有权限结束游戏进程，请以管理员身份运行胡桃后重试</value>
+    <value>Tidak memiliki izin untuk mengakhiri proses game, jalankan Hutao sebagai administrator lalu coba lagi</value>
   </data>
   <data name="ServiceGameLaunchPhaseProcessExited" xml:space="preserve">
     <value>Proses game ditutup</value>
@@ -4350,7 +4350,7 @@ Ruang Tersedia: {2}</value>
     <value>Mengubah pintu masuk Komisi Harian yang mengarah ke Katheryne di Buku Petualang menjadi langsung membuka dialog konfirmasi hadiah komisi Katheryne</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
-    <value>把冒险之证中跳转凯瑟琳的每日委托入口，改为直接打开凯瑟琳的委托奖励确认弹窗。第一次点击「领取奖励」会先打开冒险派遣页面；第二次点击时，如果委托已完成，则会打开领取奖励界面。</value>
+    <value>Mengubah pintu masuk Komisi Harian di Buku Petualang yang menuju Katheryne menjadi langsung membuka jendela konfirmasi hadiah komisi Katheryne. Klik pertama pada "Klaim Hadiah" akan membuka halaman Ekspedisi terlebih dahulu; pada klik kedua, jika komisi sudah selesai, antarmuka klaim hadiah akan terbuka.</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Hapus cooldown lewati dialog</value>
@@ -6154,91 +6154,91 @@ Ruang Tersedia: {2}</value>
     <value>Provider default</value>
   </data>
   <data name="UIXamlPagesSettingsPageDescriptionProfileModelId" xml:space="preserve">
-    <value>必填，填写服务商提供的精确模型标识。请求接口时使用此值</value>
+    <value>Wajib diisi, masukkan pengenal model persis seperti yang disediakan oleh penyedia layanan. Nilai ini digunakan saat meminta API</value>
   </data>
   <data name="UIXamlPagesSettingsPageDescriptionModelDisplayName" xml:space="preserve">
-    <value>可选，仅用于列表显示，不会发送给服务商；留空时显示模型 ID</value>
+    <value>Opsional, hanya untuk tampilan daftar dan tidak dikirim ke penyedia layanan; jika dikosongkan, ID model akan ditampilkan</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderProfileModelId" xml:space="preserve">
-    <value>例如 qwen3.8-flash</value>
+    <value>Contoh: qwen3.8-flash</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderModelDisplayName" xml:space="preserve">
-    <value>例如 千问快速模型（可留空）</value>
+    <value>Contoh: model cepat Qwen (boleh dikosongkan)</value>
   </data>
   <data name="ViewPageGameRefreshInstallation" xml:space="preserve">
-    <value>刷新版本</value>
+    <value>Segarkan versi</value>
   </data>
   <data name="ViewPageGameVerifyAndRepairLatest" xml:space="preserve">
-    <value>按最新版本校验修复</value>
+    <value>Verifikasi dan perbaiki sesuai versi terbaru</value>
   </data>
   <data name="ViewModelGameInstallationSources" xml:space="preserve">
-    <value>安装配置版本：{0} · 游戏脚本版本：{1}</value>
+    <value>Versi konfigurasi pemasangan: {0} · Versi skrip game: {1}</value>
   </data>
   <data name="ViewModelGameInstallationConflict" xml:space="preserve">
-    <value>两个版本来源不一致，未推断安装版本。请先刷新，或按显示的目标版本进行完整校验和修复；普通启动不受此提示限制</value>
+    <value>Dua sumber versi tidak konsisten, versi terpasang tidak dapat disimpulkan. Silakan segarkan terlebih dahulu, atau lakukan verifikasi dan perbaikan lengkap sesuai versi target yang ditampilkan; peluncuran normal tidak terpengaruh oleh peringatan ini</value>
   </data>
   <data name="ViewModelGameInstallationInvalid" xml:space="preserve">
-    <value>版本文件无效或无法读取。请检查文件占用和权限后刷新；可读取渠道时也可按显示的目标版本校验修复</value>
+    <value>File versi tidak valid atau tidak dapat dibaca. Periksa file yang sedang dipakai dan izinnya lalu segarkan; jika kanal dapat dibaca, Anda juga dapat memverifikasi dan memperbaiki sesuai versi target yang ditampilkan</value>
   </data>
   <data name="ViewModelGameInstallationMissingSource" xml:space="preserve">
-    <value>缺少一个版本来源，当前显示另一个有效来源。未自动补写文件；完成校验修复后才会同步版本信息</value>
+    <value>Salah satu sumber versi tidak ada, saat ini menampilkan sumber valid lainnya. File tidak ditulis secara otomatis; informasi versi baru akan disinkronkan setelah verifikasi dan perbaikan selesai</value>
   </data>
   <data name="ViewModelGameInstallationSourceMissing" xml:space="preserve">
-    <value>缺失</value>
+    <value>Hilang</value>
   </data>
   <data name="ViewModelGameInstallationSourceInvalid" xml:space="preserve">
-    <value>无效</value>
+    <value>Tidak valid</value>
   </data>
   <data name="ViewModelGameInstallationSourceUnreadable" xml:space="preserve">
-    <value>无法读取</value>
+    <value>Tidak dapat dibaca</value>
   </data>
   <data name="ViewModelGameInstallationChanged" xml:space="preserve">
-    <value>游戏安装信息在准备操作期间发生了变化。为避免使用过期版本，已停止本次操作，请刷新后重试</value>
+    <value>Informasi instalasi game berubah selama persiapan operasi. Untuk menghindari penggunaan versi yang kedaluwarsa, operasi ini dihentikan, silakan segarkan lalu coba lagi</value>
   </data>
   <data name="ServiceGameIslandVersionConflict" xml:space="preserve">
-    <value>游戏版本来源不一致，无法确定 Island 兼容版本。请先校验游戏，或关闭 Island 后正常启动</value>
+    <value>Sumber versi game tidak konsisten, sehingga versi Island yang kompatibel tidak dapat ditentukan. Silakan verifikasi game terlebih dahulu, atau tutup Island lalu jalankan secara normal</value>
   </data>
   <data name="ViewPageGameInstallationInfoTitle" xml:space="preserve">
-    <value>游戏版本信息</value>
+    <value>Informasi Versi Game</value>
   </data>
   <data name="ViewPageGameInstallationInfoDescription" xml:space="preserve">
-    <value>安装配置版本来自 config.ini，游戏脚本版本来自 ScriptVersion。它们记录安装信息，不代表游戏资源已经校验。
+    <value>Versi konfigurasi instalasi berasal dari config.ini, sedangkan versi skrip game berasal dari ScriptVersion. Keduanya mencatat informasi instalasi dan tidak berarti sumber daya game telah diverifikasi.
 
-使用其他启动器更新游戏后，可点击“刷新版本”重新读取，刷新不会修改文件。版本不一致时，请先完成游戏更新，或按显示的目标版本完整校验修复。
+Setelah memperbarui game melalui launcher lain, Anda dapat mengeklik “Segarkan Versi” untuk membacanya ulang; penyegaran tidak akan mengubah file. Jika versi tidak konsisten, selesaikan pembaruan game terlebih dahulu, atau lakukan verifikasi dan perbaikan lengkap sesuai versi target yang ditampilkan.
 
-普通启动不受 Island 版本支持限制；启用 Island 增强功能时会单独检查兼容性。</value>
+Peluncuran biasa tidak dibatasi oleh dukungan versi Island; kompatibilitas akan diperiksa secara terpisah saat fitur peningkatan Island diaktifkan.</value>
   </data>
   <data name="ServiceUpdateOpenStoreContent" xml:space="preserve">
-    <value>是否打开 Microsoft Store 获取更新？此版本通过商店更新。如果新版仍在审核或分批发布，商店可能暂时不提供更新，请稍后重试。</value>
+    <value>Buka Microsoft Store untuk mendapatkan pembaruan? Versi ini diperbarui melalui Store. Jika versi baru masih dalam peninjauan atau dirilis secara bertahap, Store mungkin belum menyediakan pembaruan untuk sementara. Silakan coba lagi nanti.</value>
   </data>
   <data name="ServiceUpdateOpenStoreFailed" xml:space="preserve">
-    <value>无法打开 Microsoft Store 或产品网页。请在 Microsoft Store 中搜索 Snap Hutao Remastered 并检查更新。</value>
+    <value>Tidak dapat membuka Microsoft Store atau halaman produk. Silakan cari Snap Hutao Remastered di Microsoft Store dan periksa pembaruan.</value>
   </data>
   <data name="ViewGuideBundledImagesHeader" xml:space="preserve">
-    <value>图片资源</value>
+    <value>Sumber Daya Gambar</value>
   </data>
   <data name="ViewGuideBundledImagesAvailable" xml:space="preserve">
-    <value>安装包附带 {0} 版图片，共 {1} 张，直接从安装目录读取，不复制到缓存。将跳过整包下载；缺少的图片会按需下载，已有缓存继续使用。可在设置的缓存目录中清理与随包图片相同的重复缓存。</value>
+    <value>Paket instalasi menyertakan gambar versi {0} sebanyak {1} gambar, dibaca langsung dari direktori instalasi dan tidak disalin ke cache. Unduhan paket penuh akan dilewati; gambar yang tidak tersedia akan diunduh sesuai kebutuhan, dan cache yang ada tetap digunakan. Anda dapat membersihkan cache duplikat yang identik dengan gambar bawaan paket di direktori cache pada pengaturan.</value>
   </data>
   <data name="ViewGuideBundledImagesUnavailable" xml:space="preserve">
-    <value>此安装包未附带图片，接下来可预下载图片整包，也可跳过并在使用时按需下载。</value>
+    <value>Paket instalasi ini tidak menyertakan gambar. Selanjutnya Anda dapat mengunduh paket gambar penuh terlebih dahulu, atau melewatinya dan mengunduh sesuai kebutuhan saat digunakan.</value>
   </data>
   <data name="ViewGuideBundledImagesOnDemand" xml:space="preserve">
-    <value>此商店安装包未附带图片快照，将跳过整包下载。图片会在使用时按需下载到缓存。</value>
+    <value>Paket instalasi Store ini tidak menyertakan snapshot gambar, sehingga unduhan paket penuh akan dilewati. Gambar akan diunduh ke cache sesuai kebutuhan saat digunakan.</value>
   </data>
   <data name="ViewSettingImageDuplicatesHeader" xml:space="preserve">
-    <value>清理重复图片缓存</value>
+    <value>Bersihkan Cache Gambar Duplikat</value>
   </data>
   <data name="ViewSettingImageDuplicatesDescription" xml:space="preserve">
-    <value>仅删除与安装目录随包图片内容完全相同的缓存。保留不同内容、其他版本及明暗主题派生图片，不修改安装目录。</value>
+    <value>Hanya menghapus cache yang isinya sama persis dengan gambar bawaan paket di direktori instalasi. Cache dengan isi berbeda, versi lain, serta gambar turunan tema terang/gelap akan dipertahankan, dan direktori instalasi tidak diubah.</value>
   </data>
   <data name="ViewSettingImageDuplicatesProgress" xml:space="preserve">
-    <value>正在比较并清理重复图片缓存…</value>
+    <value>Membandingkan dan membersihkan cache gambar duplikat…</value>
   </data>
   <data name="ViewSettingImageDuplicatesResult" xml:space="preserve">
-    <value>已清理 {0} 个重复图片缓存，释放 {1}。</value>
+    <value>Berhasil membersihkan {0} cache gambar duplikat, membebaskan {1}.</value>
   </data>
   <data name="ServiceGameIslandVerificationUnavailable" xml:space="preserve">
-    <value>暂时无法连接 Island 账户检查服务，本次检查未完成，游戏将继续运行。请在网络恢复后重试。</value>
+    <value>Tidak dapat terhubung ke layanan pemeriksaan akun Island untuk sementara. Pemeriksaan ini tidak selesai dan game akan terus berjalan. Silakan coba lagi setelah jaringan pulih.</value>
   </data>
 </root>
