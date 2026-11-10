@@ -23,9 +23,14 @@
     <PackageReference Include="Microsoft.VisualStudio.Validation" Version="17.13.22" />
     <PackageReference Include="Snap.Hutao.Remastered.SourceGeneration" Version="1.3.16" PrivateAssets="all" />
     <PackageReference Include="JetBrains.Annotations" Version="2026.2.0" />
+    <PackageReference Include="Sentry.Extensions.Logging" Version="7.0.0-rc.3" />
   </ItemGroup>
   <ItemGroup Condition="'$(PublishAot)' == 'true'">
     <Compile Remove="QueryCompiler.cs;FixtureBuilder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Sentry" />
+    <Compile Include="$(ApplicationSource)/Core/Diagnostics/SentrySpanScope.cs;$(ApplicationSource)/Core/Database/SentryDbCommandInterceptor.cs" Link="Production/Diagnostics/%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(ApplicationSource)/Model/Entity/**/*.cs" Exclude="$(ApplicationSource)/Model/Entity/**/*.Factory.cs;$(ApplicationSource)/Model/Entity/**/*.Presentation.cs;$(ApplicationSource)/Model/Entity/**/Extension/*.cs;$(ApplicationSource)/Model/Entity/Primitive/Converter/*.cs;$(ApplicationSource)/Model/Entity/BackpackItemCategoryExtension.cs" Link="Production/%(RecursiveDir)%(Filename)%(Extension)" />

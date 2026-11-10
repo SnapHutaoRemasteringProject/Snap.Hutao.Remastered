@@ -1,0 +1,72 @@
+{
+  "remain_resin_discount_num": 7,
+  "resin_discount_num_limit": 7,
+  "home_coin_recovery_time": 7,
+  "calendar_url": "AOT 中文 <&> \" '",
+  "transformer": {
+    "obtained": true,
+    "recovery_time": {
+      "Day": 7,
+      "Hour": 7,
+      "Minute": 7,
+      "Second": 7,
+      "reached": true
+    },
+    "ObtainedAndReachedFormatted": "可使用",
+    "ObtainedAndTimeFormatted": "已准备完成",
+    "wiki": "https://example.invalid/aot",
+    "noticed": true,
+    "latest_job_id": "AOT 中文 <&> \" '"
+  },
+  "daily_task": {
+    "total_num": 7,
+    "finished_num": 7,
+    "is_extra_task_reward_received": true,
+    "task_rewards": [
+      {
+        "status": "TaskRewardStatusInvalid"
+      }
+    ],
+    "attendance_rewards": [
+      {
+        "status": "AttendanceRewardStatusInvalid",
+        "StatusFormatted": "无效",
+        "progress": 7
+      }
+    ],
+    "attendance_visible": true,
+    "stored_attendance": 7,
+    "stored_attendance_refresh_countdown": 7
+  },
+  "archon_quest_progress": {
+    "list": [
+      {
+        "status": "StatusFinished",
+        "chapter_num": "AOT 中文 <&> \" '",
+        "chapter_title": "AOT 中文 <&> \" '",
+        "id": 7
+      }
+    ],
+    "is_open_archon_quest": true,
+    "is_finish_all_mainline": true,
+    "is_finish_all_interchapter": true,
+    "wiki_url": "AOT 中文 <&> \" '"
+  },
+  "current_expedition_num": 7,
+  "current_home_coin": 7,
+  "current_resin": 7,
+  "expeditions": [
+    {
+      "avatar_side_icon": "https://example.invalid/aot",
+      "status": "Finished",
+      "remained_time": 7
+    }
+  ],
+  "finished_task_num": 7,
+  "is_extra_task_reward_received": true,
+  "max_expedition_num": 7,
+  "max_home_coin": 7,
+  "max_resin": 7,
+  "resin_recovery_time": 7,
+  "total_task_num": 7
+}

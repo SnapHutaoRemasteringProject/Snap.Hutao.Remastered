@@ -1,5 +1,7 @@
 # Native AOT 阻塞项扫描报告
 
+> 2026-11-10 Windows 本地更新：真实 EF 数据层已重新生成原生模型/访问器与官方查询拦截器，并在关闭动态代码和 JSON 反射的 Windows Native AOT 程序中运行通过（25 实体、69 查询、Include、参数变化、事务/级联及真实仓库）。47 历史库对照、Windows 原生升级器、共享 JSON 原生程序和 268 项 Debug 测试重新通过。可重复生成/过期检查见 [数据库实现](database-aot.md)。完整 WinUI Debug 构建通过；Release 原生发布/启动继续验收，不能以数据宿主 PASS 取代应用验收。本文 194 条是历史基线，尚未更新为本轮剩余诊断数。
+
 > 基线扫描日期：2026-11-08　分支：`feat/aot-compatible`　基线 HEAD：`5f17088f9`（refactor(aot): remove Lib.Harmony）
 > SDK：11.0.100-rc.2.26504.105　TFM：`net11.0-windows10.0.26100.0`　RID：`win-x64`　配置：Debug
 > 依赖关键版本：Windows App SDK 2.6.6-experimental、CsWinRT 2.3.1、EF Core 11.0.0-rc.3、Roslyn 5.9.0

@@ -30,7 +30,7 @@ file static class Sort
 }
 
 [SuppressMessage("", "SA1402")]
-public sealed class ObservableReorderableDbCollection<TEntity> : ObservableCollection<TEntity>
+public sealed class ObservableReorderableDbCollection<[DynamicallyAccessedMembers(DatabaseEntityContract.Members)] TEntity> : ObservableCollection<TEntity>
     where TEntity : class, IReorderable
 {
     private readonly IServiceProvider serviceProvider;
@@ -77,7 +77,7 @@ public sealed class ObservableReorderableDbCollection<TEntity> : ObservableColle
 }
 
 [SuppressMessage("", "SA1402")]
-public sealed class ObservableReorderableDbCollection<TEntityAccess, TEntity> : ObservableCollection<TEntityAccess>
+public sealed class ObservableReorderableDbCollection<TEntityAccess, [DynamicallyAccessedMembers(DatabaseEntityContract.Members)] TEntity> : ObservableCollection<TEntityAccess>
     where TEntityAccess : class, IEntityAccess<TEntity>
     where TEntity : class, IReorderable
 {

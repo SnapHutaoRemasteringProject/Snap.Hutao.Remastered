@@ -6,6 +6,7 @@ using Snap.Hutao.Remastered.Model.Entity.Database;
 using Snap.Hutao.Remastered.Service.Backpack;
 using Snap.Hutao.Remastered.Service.Cultivation;
 using Snap.Hutao.Remastered.Service.GachaLog;
+using Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Event.GachaInfo;
 
 internal static partial class DatabaseVerification
 {
@@ -15,6 +16,7 @@ internal static partial class DatabaseVerification
         Require(AppDbQueries.DailyNoteContainsUid(context, "100000001") && !AppDbQueries.DailyNoteContainsUid(context, "missing"), "Parameterized existence");
         Require(AppDbQueries.DailyNotesIncludingUser(context).Single().User.Aid == "test-user", "Include user navigation");
         Require(!AppDbQueries.UserContainsMid(context, "missing"), "Missing user mid");
+        Require(AppDbQueries.UserContainsMid(context, null), "Nullable parameter matches nullable user mid");
         Require(AppDbQueries.InventoryByProject(context, project.InnerId).Single().Count == 10 && AppDbQueries.InventoryByProject(context, missing).Length == 0, "Inventory scope");
         Require(AppDbQueries.CultivateEntriesByProject(context, project.InnerId).Single().InnerId == entry.InnerId, "Cultivate project scope");
         Require(AppDbQueries.CultivateEntriesWithLevels(context, project.InnerId).Single().LevelInformation!.AvatarLevelTo == 90, "Include level navigation");
@@ -51,6 +53,7 @@ internal static partial class DatabaseVerification
         Require(AppDbQueries.BeyondGachaByArchive(context, gachaArchive.InnerId).Length == 1, "Beyond gacha scope");
         Require(AppDbQueries.NewestBeyondGacha(context, gachaArchive.InnerId, default)?.Id == 124 && AppDbQueries.OldestBeyondGacha(context, gachaArchive.InnerId, default)?.Id == 124, "Beyond extrema");
         Require(AppDbQueries.NewerBeyondGacha(context, gachaArchive.InnerId, default, 123).Length == 1 && AppDbQueries.NewerBeyondGacha(context, gachaArchive.InnerId, default, 124).Length == 0, "Beyond export threshold");
+        VerifyGachaParameters(context, gachaArchive.InnerId);
         CultivateItem item = AppDbQueries.CultivateItemsByEntry(context, entry.InnerId).Single();
         Require(AppDbQueries.UpdateCultivateItemFinished(context, item.InnerId, true) == 1 && AppDbQueries.UpdateCultivateItemFinished(context, missing, true) == 0, "Targeted update and stale row");
         Require(AppDbQueries.CultivateItemsByEntry(context, entry.InnerId).Single().IsFinished, "Finish update persistence");
@@ -70,8 +73,40 @@ internal static partial class DatabaseVerification
             transaction.Rollback();
         }
         Require(AppDbQueries.GachaByArchive(context, gachaArchive.InnerId).Length == 1, "Bulk operations participate in caller transaction");
+        Require(AppDbQueries.AchievementsByArchive(context, achievementArchive.InnerId).Length == 1
+            && AppDbQueries.BackpackItemsByArchive(context, backpackArchive.InnerId).Length == 1
+            && AppDbQueries.CultivateEntriesWithLevels(context, project.InnerId).Single().LevelInformation is not null
+            && AppDbQueries.CultivateItemsByEntry(context, entry.InnerId).Length == 1
+            && AppDbQueries.InventoryByProject(context, project.InnerId).Length == 1, "Rollback restores cascade and related rows");
         VerifyRepositories(context.Database.GetConnectionString()!, backpackArchive, gachaArchive, project);
         Console.WriteLine("PASS: 69 query terminals, Include, aggregates, parameters, bulk commands, rollback and real repositories.");
+    }
+
+    private static void VerifyGachaParameters(AppDbContext context, Guid archiveId)
+    {
+        using var transaction = context.Database.BeginTransaction();
+        context.AddRange(
+            new GachaItem { ArchiveId = archiveId, QueryType = GachaType.ActivityAvatar, Id = 200 },
+            new GachaItem { ArchiveId = archiveId, QueryType = GachaType.ActivityAvatar, Id = 300 },
+            new BeyondGachaItem { ArchiveId = archiveId, QueryType = GachaType.UGCAvatarEventWish, Id = 201 },
+            new BeyondGachaItem { ArchiveId = archiveId, QueryType = GachaType.UGCAvatarEventWish, Id = 301 });
+        context.SaveChanges();
+        context.ChangeTracker.Clear();
+        Require(AppDbQueries.NewestGacha(context, archiveId, GachaType.ActivityAvatar)?.Id == 300
+            && AppDbQueries.OldestGacha(context, archiveId, GachaType.ActivityAvatar)?.Id == 200
+            && AppDbQueries.NewestGacha(context, archiveId, default)?.Id == 123
+            && AppDbQueries.NewestGacha(context, archiveId, (GachaType)(-1)) is null, "Enum parameters change between calls");
+        Require(AppDbQueries.NewerGacha(context, archiveId, GachaType.ActivityAvatar, 200).Single().Id == 300
+            && AppDbQueries.NewerGacha(context, archiveId, GachaType.ActivityAvatar, 300).Length == 0, "Gacha strict threshold with populated pool");
+        Require(AppDbQueries.NewestBeyondGacha(context, archiveId, GachaType.UGCAvatarEventWish)?.Id == 301
+            && AppDbQueries.OldestBeyondGacha(context, archiveId, GachaType.UGCAvatarEventWish)?.Id == 201
+            && AppDbQueries.NewerBeyondGacha(context, archiveId, GachaType.UGCAvatarEventWish, 201).Single().Id == 301
+            && AppDbQueries.NewerBeyondGacha(context, archiveId, default, 124).Length == 0, "Beyond enum parameters and strict threshold");
+        Require(AppDbQueries.DeleteNewerGacha(context, archiveId, GachaType.ActivityAvatar, 300) == 1
+            && AppDbQueries.DeleteNewerBeyondGacha(context, archiveId, GachaType.UGCAvatarEventWish, 301) == 1
+            && AppDbQueries.GachaByArchive(context, archiveId).Length == 2
+            && AppDbQueries.BeyondGachaByArchive(context, archiveId).Length == 2, "Inclusive deletion keeps other pools and earlier records");
+        transaction.Rollback();
     }
 
     private static void VerifyRepositories(string connectionString, BackpackArchive archive, GachaArchive gachaArchive, CultivateProject project)
@@ -83,6 +118,16 @@ internal static partial class DatabaseVerification
         CultivationRepository cultivation = new(provider);
         GachaLogRepository gacha = new(provider);
         Require(backpack.GetBackpackItemImmutableArrayByArchiveId(archive.InnerId).Single().Count == 5, "Real backpack repository");
+        try
+        {
+            backpack.ReplaceBackpackItemRangeByArchiveId(archive.InnerId,
+                [new BackpackItem { ArchiveId = Guid.NewGuid(), ItemId = 1, Count = 99 }]);
+            throw new InvalidOperationException("Invalid FK replacement unexpectedly succeeded");
+        }
+        catch (DbUpdateException)
+        {
+            Require(backpack.GetBackpackItemImmutableArrayByArchiveId(archive.InnerId).Single().Count == 5, "Failed replacement rolls back original backpack");
+        }
         Require(cultivation.GetCultivateEntryImmutableArrayIncludingLevelInformationByProjectId(project.InnerId).Single().LevelInformation!.AvatarLevelTo == 90, "Real cultivate Include");
         Require(gacha.GetNewestGachaItemIdByArchiveIdAndQueryType(gachaArchive.InnerId, default) == 123 && gacha.GetNewestGachaItemIdByArchiveIdAndQueryType(Guid.NewGuid(), default) == 0 && gacha.GetOldestGachaItemIdByArchiveId(Guid.NewGuid()) == long.MaxValue, "Gacha missing sentinels");
         BackpackReliquaryScoreConfig config = new() { InnerId = Guid.NewGuid(), Name = "AOT repository config", IsActive = true, CritWeight = 2.5 };

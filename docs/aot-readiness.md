@@ -63,6 +63,11 @@ SDK 发布不包含生成后的 AppxManifest.xml，四个入口的 Copy files �
 
 ## EF 编译模型
 
+2026-11-10 Windows 本地更新：25 生产实体已重新生成 Native AOT 模型与 UnsafeAccessors，69 个查询已生成官方拦截器。
+真实生产数据宿主普通构建及 Windows 原生发布运行通过；生成顺序、过期检查、SQL 枚举参数修复及实际验收范围见 [数据库 AOT 实现](database-aot.md)。
+使用 `scripts/Generate-DatabaseAot.ps1` 生成，`-Check -Native` 检查并发布运行；普通构建始终编入拦截器。
+以下手工 EF CLI 与 XAML Workspace 失败说明是此前路线的历史记录，已由独立的真实生产数据生成宿主替代。
+
 `Model/Entity/Database/Compiled` 是官方 EF 工具生成的模型，25 个实体由 EF 11 的程序集属性自动发现。
 设计时工厂使用内存 SQLite，不访问开发者个人数据库。
 运行时升级已改为由原 EF 迁移生成的版本化 SQL，保留旧迁移历史并事务化执行；维护、旧库对照和原生验证见 [数据库 AOT 实现](database-aot.md)。

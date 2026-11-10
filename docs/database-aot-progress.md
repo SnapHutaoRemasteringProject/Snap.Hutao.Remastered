@@ -1,5 +1,21 @@
 # EF Native AOT 工作状态（2026-11-10）
 
+## Windows 本地验收进展
+
+本地 `feat/aot-compatible` 头为 `5f2f874e3`，与交接中的 `ed39397e` 为不同历史，不回退已有诊断/界面修改。初始工作区干净。
+当前 Windows / .NET SDK 与 EF rc.3 上已重新生成 53 个 Native AOT 模型/访问器文件、两份官方查询拦截器和五类非空嵌套 JSON 样本。
+
+- 普通数据宿主构建包含拦截器，0 warning / 0 error；全部 69 个查询及真实仓库验收通过。
+- Windows Native AOT 实际运行通过：动态代码支持/编译与 JSON 反射均为 false；25 个真实实体 CRUD、五类 JSON/Cookie、Include、参数切换、边界、回滚和级联通过。
+- 重新运行 47 个原 EF 创建的历史数据库升级对照通过；完整 Debug 测试项目 268/268 通过。
+- Windows 原生升级器与共享 JSON 程序发布运行通过；二者未新增编译/ILC 警告。
+- WinUI Debug/x64 完整构建成功，257 个警告、0 错误；Release 原生发布和启动正在后续验收，不将数据宿主结果替代完整应用。
+
+可重复生成、过期检查和原生验收统一入口：`scripts/Generate-DatabaseAot.ps1`，检查用 `-Check`，检查并原生发布运行用 `-Check -Native`。
+原生发布仍有 EF 上游实验性诊断及待清理项目诊断，不声称零警告。详细实现与验收边界见 [数据库实现](database-aot.md)。
+
+下面保留的是迁移到本地前的历史 WIP 说明，已不代表当前编译和数据层运行状态。
+
 ## 已交付基线
 
 - `6f79a4138cc388bef899445d44c8f4c3045acfeb`：共享 JSON 源生成契约和原生验证。

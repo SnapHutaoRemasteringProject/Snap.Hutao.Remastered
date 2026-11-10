@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Database.Abstraction;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 
@@ -8,7 +9,7 @@ namespace Snap.Hutao.Remastered.Service.Abstraction;
 
 public static class RepositoryCollectionExtension
 {
-    extension<TEntity>(IRepository<TEntity> repository)
+    extension<[DynamicallyAccessedMembers(DatabaseEntityContract.Members)] TEntity>(IRepository<TEntity> repository)
         where TEntity : class
     {
         public ImmutableArray<TEntity> ImmutableArray()

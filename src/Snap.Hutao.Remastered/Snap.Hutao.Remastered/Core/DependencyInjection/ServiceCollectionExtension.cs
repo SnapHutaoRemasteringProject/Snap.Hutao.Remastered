@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.Text.Json;
-using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Model.Entity.Database;
 using Snap.Hutao.Remastered.Win32;
@@ -37,23 +36,13 @@ public static partial class ServiceCollectionExtension
 
                 try
                 {
+                    using SentrySpanScope migration = SentrySpanScope.StartOperation("db.migration", "db.migration");
+                    migration.SetData("db.file", Path.GetFileName(dbFile));
                     int applied = DatabaseSchema.Upgrade(sqlConnectionString);
+                    migration.SetData("db.applied_migrations", applied);
                     if (applied > 0)
                     {
-                        List<string> pendingMigrations = [.. context.Database.GetPendingMigrations()];
-                        if (pendingMigrations.Count > 0)
-                        {
-                            serviceProvider.GetRequiredService<ILogger<AppDbContext>>().LogInformation("[Database] Applied {Count} schema migrations", applied);
-
-                            using (SentrySpanScope migration = SentrySpanScope.StartTransaction("db.migration", "db.migration"))
-                            {
-                                migration
-                                    .SetData("db.pending_migrations", pendingMigrations.Count)
-                                    .SetData("db.file", Path.GetFileName(dbFile));
-
-                                context.Database.Migrate();
-                            }
-                        }
+                        serviceProvider.GetRequiredService<ILogger<AppDbContext>>().LogInformation("[Database] Applied {Count} schema migrations", applied);
                     }
                 }
                 catch (Exception ex) when (ex is DbException or InvalidDataException)
