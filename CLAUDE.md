@@ -1,4 +1,4 @@
-﻿# CLAUDE.md — Snap Hutao Remastered
+# CLAUDE.md — Snap Hutao Remastered
 
 > **This file is a contract, not a wish list.** Every statement below was checked against the
 > file named beside it. Where reality does not yet match what we want, the gap is recorded in
@@ -66,7 +66,8 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
   `Package.development.appxmanifest`; the built exe is also directly runnable (unpackaged) at
   `src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/bin/x64/Debug/net11.0-windows10.0.26100.0/win-x64/Snap.Hutao.Remastered.exe`.
 - **AOT branch scope** — `feat/aot-compatible` has removed the plugin system, its SDK/sample
-  and Harmony. Runtime C# scripts remain and still require a separate AOT product decision.
+  and Harmony. At the user's explicit request, it has also removed the runtime C# scripting
+  window and developer test command; do not add a CoreCLR scripting side process.
 - **ReadyToRun** — enabled by default for every configuration, including Debug. The SDK keeps
   the IL compiler input in `obj`; `Build/ReadyToRun.targets` delivers the selected R2R images to
   the runnable bin output. VS MSIX deployment consumes the WinUI SDK's publish-item list. All four
@@ -130,14 +131,14 @@ src/
     .editorconfig  .vsconfig  settings.xamlstyler  ResXManager.config.xml
     Snap.Hutao.Remastered/            Main app project (WinUI 3)
       Assets/              MSIX tile/splash images, Logo.ico
-      Core/                Infrastructure: DI, lifecycle, IO/Http, threading, settings, logging, scripting
+      Core/                Infrastructure: DI, lifecycle, IO/Http, threading, settings, logging
       Extension/           Extension methods and helpers
       Factory/             Factory types (process, QR code, …)
       Migrations/          EF Core migrations
       Model/               Domain models, DTOs, EF entities (Model/Entity/Database)
       Properties/          AssemblyInfo.cs, launchSettings.json, FolderProfile.pubxml
       Resource/            Icons, fonts, images, Localization/*.resx
-      Service/             Business logic: metadata, git, network, background, plugins, backpack, …
+      Service/             Business logic: metadata, git, network, background, backpack, …
       UI/                  Xaml/ (View, Control, Behavior, Data, Markup, Media), Shell/, Windowing/, Input/
       ViewModel/           MVVM ViewModels (+ ViewModel/Abstraction)
       Web/                 HTTP clients, endpoints, request builders, response validation
@@ -386,6 +387,9 @@ the build fails with `CS9275`); write a normal constructor in that case.
 
 - This branch removed the plugin system and Harmony. The historical plugin review entries below
   describe earlier releases; they are not instructions to restore dynamic assembly loading.
+- Runtime C# scripting was removed with user authorization. Roslyn workspace/EF design-time
+  packages belong to the database generation host, not the application runtime. Keep the
+  production query/model generation entry in `scripts/Generate-DatabaseAot.ps1`.
 - Database startup uses `DatabaseSchema.Upgrade`, not EF's runtime migration discovery. Generated
   SQL is derived from the original 47 migration snapshots; migration source changes require
   regeneration through `tools/Snap.Hutao.Database.Schema`. Do not edit the generated SQL/catalog.
@@ -410,7 +414,8 @@ the build fails with `CS9275`); write a normal constructor in that case.
   serializer defaults instead of the application's permissive network JSON policy.
 - Source-linked JSON tests cover the real facade, converters and the small diagnostics/legacy
   contexts. They do not validate the other domain contexts or Windows XAML generation.
-  See [current progress and verification](docs/aot-blockers.md#14-2026-11-10json-解析器契约修复).
+  See [current development report](docs/aot-development-report.md) and the
+  [historical resolver verification](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/32976c2f4b7ef2f8053b34131ffd7fdbae5b5722/docs/aot-blockers.md#14-2026-11-10json-解析器契约修复).
 
 ### 5.7 Localization
 
