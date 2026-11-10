@@ -1,0 +1,132 @@
+{
+  "schedule": {
+    "schedule_id": 123,
+    "start_time": 7,
+    "end_time": 7,
+    "start_date_time": {
+      "year": 7,
+      "month": 7,
+      "day": 7,
+      "hour": 7,
+      "minute": 7,
+      "second": 7
+    },
+    "end_date_time": {
+      "year": 7,
+      "month": 7,
+      "day": 7,
+      "hour": 7,
+      "minute": 7,
+      "second": 7
+    },
+    "is_valid": true,
+    "name": "AOT 中文 <&> \" '"
+  },
+  "single": {
+    "best": {
+      "difficulty": 0,
+      "second": 7,
+      "icon": "AOT 中文 <&> \" '"
+    },
+    "challenge": [
+      {
+        "name": "AOT 中文 <&> \" '",
+        "second": 7,
+        "teams": [
+          {
+            "level": 123,
+            "rank": 7,
+            "avatar_id": 123,
+            "name": "AOT 中文 <&> \" '",
+            "element": "AOT 中文 <&> \" '",
+            "image": "AOT 中文 <&> \" '",
+            "rarity": 0
+          }
+        ],
+        "best_avatar": [
+          {
+            "avatar_id": 123,
+            "side_icon": "https://example.invalid/aot",
+            "dps": 7,
+            "type": 0
+          }
+        ],
+        "monster": {
+          "name": "AOT 中文 <&> \" '",
+          "level": 7,
+          "icon": "https://example.invalid/aot",
+          "desc": [
+            "AOT 中文 <&> \" '"
+          ],
+          "tags": [
+            {
+              "type": 7,
+              "desc": "AOT 中文 <&> \" '"
+            }
+          ],
+          "monster_id": 123
+        }
+      }
+    ],
+    "has_data": true
+  },
+  "mp": {
+    "best": {
+      "difficulty": 0,
+      "second": 7,
+      "icon": "AOT 中文 <&> \" '"
+    },
+    "challenge": [
+      {
+        "name": "AOT 中文 <&> \" '",
+        "second": 7,
+        "teams": [
+          {
+            "level": 123,
+            "rank": 7,
+            "avatar_id": 123,
+            "name": "AOT 中文 <&> \" '",
+            "element": "AOT 中文 <&> \" '",
+            "image": "AOT 中文 <&> \" '",
+            "rarity": 0
+          }
+        ],
+        "best_avatar": [
+          {
+            "avatar_id": 123,
+            "side_icon": "https://example.invalid/aot",
+            "dps": 7,
+            "type": 0
+          }
+        ],
+        "monster": {
+          "name": "AOT 中文 <&> \" '",
+          "level": 7,
+          "icon": "https://example.invalid/aot",
+          "desc": [
+            "AOT 中文 <&> \" '"
+          ],
+          "tags": [
+            {
+              "type": 7,
+              "desc": "AOT 中文 <&> \" '"
+            }
+          ],
+          "monster_id": 123
+        }
+      }
+    ],
+    "has_data": true
+  },
+  "blings": [
+    {
+      "is_plus": true,
+      "SideIcon": "https://example.invalid/aot",
+      "avatar_id": 123,
+      "name": "AOT 中文 <&> \" '",
+      "element": "AOT 中文 <&> \" '",
+      "image": "AOT 中文 <&> \" '",
+      "rarity": 0
+    }
+  ]
+}

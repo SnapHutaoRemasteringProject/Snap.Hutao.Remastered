@@ -26,9 +26,10 @@ internal static partial class DatabaseVerification
             DatabaseSchema.Upgrade(connectionString);
             using AppDbContext context = new(new DbContextOptionsBuilder<AppDbContext>().UseSqlite(connectionString).Options);
             Require(context.Model.GetEntityTypes().Count() == 25 && ReferenceEquals(context.Model, AppDbContextModel.Instance), "Use the real compiled 25-entity production model");
-            Console.WriteLine($"Dynamic code supported: {RuntimeFeature.IsDynamicCodeSupported}; compiled: {RuntimeFeature.IsDynamicCodeCompiled}.");
+            Console.WriteLine($"Dynamic code supported: {RuntimeFeature.IsDynamicCodeSupported}; compiled: {RuntimeFeature.IsDynamicCodeCompiled}; JSON reflection: {JsonSerializer.IsReflectionEnabledByDefault}.");
 #if HUTAO_NATIVEAOT
             Require(!RuntimeFeature.IsDynamicCodeSupported && !RuntimeFeature.IsDynamicCodeCompiled, "Must execute as native code");
+            Require(!JsonSerializer.IsReflectionEnabledByDefault, "JSON reflection must be disabled");
 #endif
             DetailedCharacter avatar = Fixture<DetailedCharacter>("avatar");
             DailyNote dailyNote = Fixture<DailyNote>("daily-note");
@@ -129,7 +130,11 @@ internal static partial class DatabaseVerification
     {
         using Stream stream = typeof(DatabaseVerification).Assembly.GetManifestResourceStream("Hutao.Database.Fixtures." + name + ".json") ?? throw new InvalidOperationException("Missing fixture " + name);
         using StreamReader reader = new(stream);
-        return PersistenceJson.Deserialize<T>(reader.ReadToEnd()) ?? throw new InvalidOperationException("Null fixture " + name);
+        string json = reader.ReadToEnd();
+        T value = PersistenceJson.Deserialize<T>(json) ?? throw new InvalidOperationException("Null fixture " + name);
+        string extended = json.Insert(json.LastIndexOf('}'), ",\n\"future_field\": { \"nested\": [1, 2, 3] }\n");
+        Require(PersistenceJson.Serialize(value) == PersistenceJson.Serialize(PersistenceJson.Deserialize<T>(extended)), "Unknown JSON fields remain compatible: " + name);
+        return value;
     }
 
     private static void RoundTrip<T>(T expected, T actual) => Require(PersistenceJson.Serialize(expected) == PersistenceJson.Serialize(actual), "JSON round-trip " + typeof(T).Name);

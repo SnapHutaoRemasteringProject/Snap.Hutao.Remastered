@@ -1,11 +1,11 @@
-﻿// Copyright (c) DGP Studio. All rights reserved.
+// Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
 using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Core.Database;
+using Snap.Hutao.Remastered.Core.Database.Abstraction;
 using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Model.Entity.Database;
-using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.Service.Abstraction;
@@ -18,7 +18,7 @@ public static class RepositoryExtension
         return operation(scope.GetAppDbContext());
     }
 
-    extension<TEntity>(IRepository<TEntity> repository)
+    extension<[DynamicallyAccessedMembers(DatabaseEntityContract.Members)] TEntity>(IRepository<TEntity> repository)
         where TEntity : class
     {
         public TResult Execute<TResult>(Func<DbSet<TEntity>, TResult> func, [CallerMemberName] string caller = "")

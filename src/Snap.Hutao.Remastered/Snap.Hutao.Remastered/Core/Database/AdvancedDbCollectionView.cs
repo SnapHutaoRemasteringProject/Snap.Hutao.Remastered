@@ -9,7 +9,7 @@ using Snap.Hutao.Remastered.UI.Xaml.Data;
 
 namespace Snap.Hutao.Remastered.Core.Database;
 
-public sealed partial class AdvancedDbCollectionView<TEntity> : AdvancedCollectionView<TEntity>,
+public sealed partial class AdvancedDbCollectionView<[DynamicallyAccessedMembers(DatabaseEntityContract.Members)] TEntity> : AdvancedCollectionView<TEntity>,
     IAdvancedDbCollectionView<TEntity>
     where TEntity : class, IPropertyValuesProvider, ISelectable
 {

@@ -99,12 +99,12 @@ internal static partial class AppDbQueries
 
     public static int DeleteNewerGacha(AppDbContext context, Guid archiveId, GachaType queryType, long endId)
     {
-        return context.Database.ExecuteSql($"DELETE FROM [gacha_items] WHERE [ArchiveId] = {archiveId} AND [QueryType] = {queryType} AND [Id] >= {endId};");
+        return context.Database.ExecuteSql($"DELETE FROM [gacha_items] WHERE [ArchiveId] = {archiveId} AND [QueryType] = {(int)queryType} AND [Id] >= {endId};");
     }
 
     public static int DeleteNewerBeyondGacha(AppDbContext context, Guid archiveId, GachaType queryType, long endId)
     {
-        return context.Database.ExecuteSql($"DELETE FROM [beyond_gacha_items] WHERE [ArchiveId] = {archiveId} AND [QueryType] = {queryType} AND [Id] >= {endId};");
+        return context.Database.ExecuteSql($"DELETE FROM [beyond_gacha_items] WHERE [ArchiveId] = {archiveId} AND [QueryType] = {(int)queryType} AND [Id] >= {endId};");
     }
 
     public static int UpdateCultivateItemFinished(AppDbContext context, Guid innerId, bool isFinished)
