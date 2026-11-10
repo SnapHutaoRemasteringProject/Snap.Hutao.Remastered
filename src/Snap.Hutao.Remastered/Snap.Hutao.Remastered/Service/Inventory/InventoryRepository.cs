@@ -5,6 +5,8 @@ using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Service.Abstraction;
 using System.Collections.Immutable;
 
+using Snap.Hutao.Remastered.Core.Database;
+
 namespace Snap.Hutao.Remastered.Service.Inventory;
 
 [Service(ServiceLifetime.Singleton, typeof(IInventoryRepository))]
@@ -17,7 +19,7 @@ public sealed partial class InventoryRepository : IInventoryRepository
 
     public void RemoveInventoryItemRangeByProjectId(Guid projectId)
     {
-        this.Delete(i => i.ProjectId == projectId);
+        this.WithDatabase(context => AppDbQueries.DeleteInventoryByProject(context, projectId));
     }
 
     public void AddInventoryItemRangeByProjectId(IEnumerable<InventoryItem> items)
@@ -32,11 +34,11 @@ public sealed partial class InventoryRepository : IInventoryRepository
 
     public ImmutableArray<InventoryItem> GetInventoryItemImmutableArrayByProjectId(Guid projectId)
     {
-        return this.ImmutableArray(i => i.ProjectId == projectId);
+        return this.WithDatabase(context => AppDbQueries.InventoryByProject(context, projectId)).ToImmutableArray();
     }
 
     public ImmutableDictionary<uint, InventoryItem> GetInventoryItemImmutableDictionaryByProjectId(Guid projectId)
     {
-        return this.Query(query => query.Where(i => i.ProjectId == projectId).ToImmutableDictionary(i => i.ItemId));
+        return this.WithDatabase(context => AppDbQueries.InventoryByProject(context, projectId)).ToImmutableDictionary(i => i.ItemId);
     }
 }

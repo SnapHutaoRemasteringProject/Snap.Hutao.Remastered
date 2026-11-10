@@ -6,6 +6,8 @@ using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Service.Abstraction;
 using System.Collections.Immutable;
 
+using Snap.Hutao.Remastered.Core.Database;
+
 namespace Snap.Hutao.Remastered.Service.DailyNote;
 
 [Service(ServiceLifetime.Singleton, typeof(IDailyNoteRepository))]
@@ -18,7 +20,7 @@ public sealed partial class DailyNoteRepository : IDailyNoteRepository
 
     public bool ContainsUid(string uid)
     {
-        return this.Query(query => query.Any(n => n.Uid == uid));
+        return this.WithDatabase(context => AppDbQueries.DailyNoteContainsUid(context, uid));
     }
 
     public void AddDailyNoteEntry(DailyNoteEntry entry)
@@ -38,6 +40,6 @@ public sealed partial class DailyNoteRepository : IDailyNoteRepository
 
     public ImmutableArray<DailyNoteEntry> GetDailyNoteEntryImmutableArrayIncludingUser()
     {
-        return this.ImmutableArray(query => query.Include(n => n.User));
+        return this.WithDatabase(context => AppDbQueries.DailyNotesIncludingUser(context)).ToImmutableArray();
     }
 }

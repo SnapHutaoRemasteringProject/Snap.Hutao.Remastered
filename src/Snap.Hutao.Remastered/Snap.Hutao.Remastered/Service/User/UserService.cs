@@ -150,7 +150,7 @@ public sealed partial class UserService : IUserService
             }
         }
 
-        if (!ReferenceEquals(sToken, user.SToken) || !userRepository.Execute(query => query.Any(u => u.Mid == mid)))
+        if (!ReferenceEquals(sToken, user.SToken) || !userRepository.WithDatabase(context => AppDbQueries.UserContainsMid(context, mid)))
         {
             return false;
         }
