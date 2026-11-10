@@ -23,7 +23,7 @@ internal sealed partial class ModelProfile : ObservableObject, IIdentifiable<Gui
     public partial string ModelId { get; set; } = string.Empty;
 
     [JsonInclude]
-    public ModelProfileAgentOptions AgentOptions { get; private set => SetProperty(ref field, value ?? new()); } = new();
+    public ModelProfileAgentOptions AgentOptions { get; internal set => SetProperty(ref field, value ?? new()); } = new();
 
     [JsonIgnore]
     public string DisplayName { get => !string.IsNullOrWhiteSpace(Name) ? Name : ModelId; }

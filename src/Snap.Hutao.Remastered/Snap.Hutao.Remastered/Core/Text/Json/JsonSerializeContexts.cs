@@ -47,8 +47,10 @@ internal static class JsonSerializeContexts
         options.Converters.Add(new IdentityConverter<HardChallengeScheduleId>());
         options.Converters.Add(new IdentityConverter<Level>());
         options.Converters.Add(new IdentityConverter<MainQuestId>());
+        options.Converters.Add(new IdentityConverter<MaterialId>());
         options.Converters.Add(new IdentityConverter<MonsterId>());
         options.Converters.Add(new IdentityConverter<PromoteLevel>());
+        options.Converters.Add(new IdentityConverter<ProfilePictureId>());
         options.Converters.Add(new IdentityConverter<ProudSkillId>());
         options.Converters.Add(new IdentityConverter<ReliquaryId>());
         options.Converters.Add(new IdentityConverter<ReliquarySetId>());

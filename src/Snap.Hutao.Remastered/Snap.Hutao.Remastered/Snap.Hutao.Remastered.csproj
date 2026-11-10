@@ -326,7 +326,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Snap.Hutao.FileUnlocker" Version="1.2.0" />
-    <PackageReference Include="Snap.Hutao.Remastered.Deployment.Runtime" Version="1.8.1" Publish="true">
+    <PackageReference Include="Snap.Hutao.Remastered.Deployment.Runtime" Version="1.8.1" Publish="true" GeneratePathProperty="true">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -7,6 +7,17 @@
 
 所有配置（包括 Debug）默认启用 `PublishReadyToRun`。默认不启用 Native AOT、裁剪或单文件发布；运行时 C# 脚本和 CoreCLR/JIT 功能仍保留。
 本分支已移除插件系统与 Harmony；这与 R2R 开关无关。显式 Native AOT 发布使用 `Build/AotPublish.targets` 的引用顺序与运行时载荷补丁，仍不代表应用已可完整运行。
+
+2026-11-10 本地发布修复已完成文件级验证：AOT 发布显式执行 SDK 的 PRI/XBF 资源流水线，在 ILC 前完成普通输出准备；
+从复制清单中移除 SDK 不会在 AOT 下创建的托管 apphost，由 ILC 提供实际主程序。
+Assets、非 Localization 的 Resource 与本轮生成的 XBF 进入 `ResolvedFileToPublish`，部署辅助程序可从已还原的版本绑定包目录取得。
+发布结束检查 PRI、App.xbf、图标和 Resource，不能仅凭原生 EXE 存在判定可运行。
+最终发布门禁还读取主 EXE 的 PE 数据目录，要求 x64、无 CLR 头，并拒绝根目录中的 CoreCLR/hostfxr/hostpolicy。
+当前 SDK 的 Native AOT 目标在 `--no-build` 下仍调用 `Compile`，WinUI 生成项未初始化时会失败；本轮采用完整 `dotnet publish` 验证。
+普通构建与 AOT 发布的隐式包不同，不能并行覆盖同一个 `obj/project.assets.json` 后再跳过还原；本轮串行还原、完整发布。
+XAML 编译器的私有修补副本放在各配置/TFM/RID 的中间目录，避免 Debug/Release 并行构建互相锁住同一个工具。
+
+CsWinRT 3.0 新预览版已对真实主项目试验，当前仍有八个依赖无法在 `.1` 目标下还原；具体结论见 [CsWinRT 3 评估](cswinrt3-assessment.md)。
 `Release` 是构建配置，`publish` 是部署产物生成阶段；两者不是二选一，Debug 也可以发布 R2R。
 
 ```powershell
@@ -83,6 +94,30 @@ SDK 发布不包含生成后的 AppxManifest.xml，四个入口的 Copy files �
 加入默认构建，也未修改生成文件或用 `EF.CompileQuery` 冒充 Native AOT 查询预编译。后续需要解耦 EF 查询与 UI 设计时编译。
 
 ## 验证与边界
+
+### 完整应用的独立数据目录
+
+非打包应用可通过进程环境变量 `SNAP_HUTAO_PROFILE_ROOT` 指定绝对路径。
+该目录同时承载设置、诊断设置、数据库、缓存和基于 DataDirectory 的业务文件；显式指定后不读取旧设置里的个人数据目录或待删除目录。
+单实例锁和应用私有 IPC 名称按目录隔离；该运行不替换正常安装的 `hutao://` 注册。默认启动与 MSIX 路径维持原行为。
+这提供可复制旧库/设置的验收位置，并不自动把游戏、外部辅助进程或系统集成变成隔离环境。
+
+在一个新的发布目录执行 Native AOT 发布后，可以校验文件及 PE 头并启动完整应用：
+
+```powershell
+./scripts/Test-NativePublish.ps1 -PublishDirectory <发布目录> -Launch -ProfileRoot <独立数据目录的绝对路径>
+```
+
+脚本检查主程序是无 CLR 头的 x64 PE、运行时载荷与应用资源齐全、根目录不包含 CoreCLR/hostfxr/hostpolicy。
+`-Launch` 用子进程环境设置独立目录，并记录 stdout/stderr；它不等同于窗口、导航、数据库升级和主要功能已经通过交互验收。
+完整应用的实际结果继续记录在 [阻塞项报告](aot-blockers.md)，不能用此脚本或数据宿主的 PASS 代替功能验收。
+
+本机本轮完整 Release Native AOT 发布退出码为 0：
+`bin/AotValidation/20261110-complete-flow/Snap.Hutao.Remastered.exe` 为 174,052,864 字节，发布门禁与 `Test-NativePublish.ps1` 均通过。
+该快照仍包含运行时 C# 脚本代码。用户随后授权移除该调试功能，移除后必须重新发布验证。
+普通 Debug/x64 默认 R2R 构建为 256 warnings / 0 errors；完整测试 271/271，关闭 JSON 反射的专门用例 21/21。
+普通版在独立数据目录显示语言选择及协议向导，生成自己的 266,240 字节数据库；物理 Esc 停止了界面自动操作。
+尚未启动/交互验收本轮原生 EXE，不把普通版窗口记作原生启动通过。
 
 2026-10-20 R2R 部署接通验证：
 
