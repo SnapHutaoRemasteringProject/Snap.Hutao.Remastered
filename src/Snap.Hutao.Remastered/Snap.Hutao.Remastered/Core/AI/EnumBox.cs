@@ -62,7 +62,7 @@ internal static class EnumBoxJsonConverters
 }
 
 [SuppressMessage("", "SA1402")]
-file sealed class EnumBoxJsonConverterFactory : JsonConverterFactory
+internal sealed class EnumBoxJsonConverterFactory : JsonConverterFactory
 {
     public override bool CanConvert(Type typeToConvert)
     {

@@ -1,5 +1,9 @@
 # Native AOT 阻塞项扫描报告
 
+> 2026-11-10 本机完整 WinUI Release Native AOT 发布已取得退出码 0，主 EXE 174,052,864 字节，PE 原生头、PRI/XBF、Assets/Resource 及运行时载荷检查通过，根目录无 CoreCLR 宿主。完整 Debug 默认 R2R 构建通过；测试 271/271，关闭 JSON 反射专门用例 21/21。原生交互启动尚未验收，界面操作被用户物理 Esc 停止。此快照仍包含 C# 脚本；用户随后授权移除该调试功能，后续版本需重新构建/发布。详见 [发布及验证边界](aot-readiness.md)。
+
+> CsWinRT `3.0.0-preview.261104.1` 已按官方配置对真实主项目做隔离评估：当前八个依赖在 `.1` 目标下报 NU1202，保留 2.3.1 继续验收。发布说明、GitHub 反馈、可复现脚本与具体依赖见 [CsWinRT 3 评估](cswinrt3-assessment.md)。
+
 > 2026-11-10 Windows 本地更新：真实 EF 数据层已重新生成原生模型/访问器与官方查询拦截器，并在关闭动态代码和 JSON 反射的 Windows Native AOT 程序中运行通过（25 实体、69 查询、Include、参数变化、事务/级联及真实仓库）。47 历史库对照、Windows 原生升级器、共享 JSON 原生程序和 268 项 Debug 测试重新通过。可重复生成/过期检查见 [数据库实现](database-aot.md)。完整 WinUI Debug 构建通过；Release 原生发布/启动继续验收，不能以数据宿主 PASS 取代应用验收。本文 194 条是历史基线，尚未更新为本轮剩余诊断数。
 
 > 基线扫描日期：2026-11-08　分支：`feat/aot-compatible`　基线 HEAD：`5f17088f9`（refactor(aot): remove Lib.Harmony）

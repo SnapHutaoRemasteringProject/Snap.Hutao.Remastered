@@ -40,11 +40,15 @@ internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, I
 
     public JsonSettingsProvider(string fileNameWithoutExtension, JsonSerializerOptions jsonOptions)
     {
-        // Test doubles and legacy callers may pass options without a resolver. Keep the
-        // serializer's default reflection resolver for those callers instead of failing
-        // inside JsonSerialize.GetTypeInfo.
+        // Legacy callers may pass options without a resolver on the managed runtime.
+        // Native callers must provide an explicit generated contract.
         this.jsonOptions = jsonOptions.TypeInfoResolver is null
-            ? new JsonSerializerOptions(jsonOptions) { TypeInfoResolver = JsonSerializerOptions.Default.TypeInfoResolver }
+            ? new JsonSerializerOptions(jsonOptions)
+            {
+                TypeInfoResolver = JsonSerializer.IsReflectionEnabledByDefault
+                    ? JsonSerializerOptions.Default.TypeInfoResolver
+                    : throw new NotSupportedException("Settings JSON requires a generated resolver.")
+            }
             : jsonOptions;
 
         string directory = WellKnownLocations.Settings;
@@ -292,7 +296,7 @@ internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, I
 
                 using (FileStream stream = File.OpenRead(filePath))
                 {
-                    value = JsonSerializer.Deserialize<TSettings>(stream, jsonOptions)
+                    value = JsonSerialize.Deserialize<TSettings>(stream, jsonOptions)
                         ?? throw new JsonException("Settings root must not be null.");
                     return true;
                 }
