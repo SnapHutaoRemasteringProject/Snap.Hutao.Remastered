@@ -981,7 +981,7 @@
     <value>Fehler beim Abrufen des Cloud-Wunschverlaufs</value>
   </data>
   <data name="ServiceGachaLogItemMetadataNotFound" xml:space="preserve">
-    <value>祈愿物品“{0}”的元数据尚未更新，请稍后重试</value>
+    <value>Die Metadaten des Wunschgegenstands „{0}“ wurden noch nicht aktualisiert, bitte versuchen Sie es später erneut</value>
   </data>
   <data name="ServiceGachaLogUrlProviderAuthkeyRequestFailed" xml:space="preserve">
     <value>Anforderung des Authentifizierungsschlüssels fehlgeschlagen</value>
@@ -1063,7 +1063,7 @@
     <value>Prozess beenden fehlgeschlagen</value>
   </data>
   <data name="ServiceGameStopProcessAccessDenied" xml:space="preserve">
-    <value>没有权限结束游戏进程，请以管理员身份运行胡桃后重试</value>
+    <value>Keine Berechtigung zum Beenden des Spielprozesses, bitte führen Sie Hutao als Administrator aus und versuchen Sie es erneut</value>
   </data>
   <data name="ServiceGameLaunchPhaseProcessExited" xml:space="preserve">
     <value>Spielprozess wurde beendet</value>
@@ -4350,7 +4350,7 @@ Verfügbarer Speicherplatz: {2}</value>
     <value>Ändert den Eintrag für tägliche Aufträge im Abenteurerhandbuch, der zu Katheryne führt, sodass direkt das Bestätigungsfenster für Katherynes Auftragsbelohnungen geöffnet wird</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
-    <value>把冒险之证中跳转凯瑟琳的每日委托入口，改为直接打开凯瑟琳的委托奖励确认弹窗。第一次点击「领取奖励」会先打开冒险派遣页面；第二次点击时，如果委托已完成，则会打开领取奖励界面。</value>
+    <value>Ändert im Abenteurerhandbuch den Einstieg zu Katheryne für tägliche Aufträge, sodass direkt Katherynes Bestätigungsfenster für Auftragsbelohnungen geöffnet wird. Beim ersten Klick auf „Belohnung abholen“ wird zuerst die Expeditionsseite geöffnet; beim zweiten Klick wird, wenn der Auftrag abgeschlossen ist, die Oberfläche zum Abholen der Belohnung geöffnet.</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Cooldown beim Dialogüberspringen entfernen</value>
@@ -6150,91 +6150,91 @@ Verfügbarer Speicherplatz: {2}</value>
     <value>Provider default</value>
   </data>
   <data name="UIXamlPagesSettingsPageDescriptionProfileModelId" xml:space="preserve">
-    <value>必填，填写服务商提供的精确模型标识。请求接口时使用此值</value>
+    <value>Erforderlich, geben Sie die exakte Modellkennung an, die der Anbieter bereitstellt. Dieser Wert wird bei der Anfrage an die Schnittstelle verwendet</value>
   </data>
   <data name="UIXamlPagesSettingsPageDescriptionModelDisplayName" xml:space="preserve">
-    <value>可选，仅用于列表显示，不会发送给服务商；留空时显示模型 ID</value>
+    <value>Optional, dient nur der Anzeige in der Liste und wird nicht an den Anbieter gesendet; wenn das Feld leer bleibt, wird die Modell-ID angezeigt</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderProfileModelId" xml:space="preserve">
-    <value>例如 qwen3.8-flash</value>
+    <value>z. B. qwen3.8-flash</value>
   </data>
   <data name="UIXamlPagesSettingsPagePlaceholderModelDisplayName" xml:space="preserve">
-    <value>例如 千问快速模型（可留空）</value>
+    <value>z. B. Qwen-Schnellmodell (kann leer bleiben)</value>
   </data>
   <data name="ViewPageGameRefreshInstallation" xml:space="preserve">
-    <value>刷新版本</value>
+    <value>Version aktualisieren</value>
   </data>
   <data name="ViewPageGameVerifyAndRepairLatest" xml:space="preserve">
-    <value>按最新版本校验修复</value>
+    <value>Anhand der neuesten Version überprüfen und reparieren</value>
   </data>
   <data name="ViewModelGameInstallationSources" xml:space="preserve">
-    <value>安装配置版本：{0} · 游戏脚本版本：{1}</value>
+    <value>Installationskonfigurationsversion: {0} · Spielskriptversion: {1}</value>
   </data>
   <data name="ViewModelGameInstallationConflict" xml:space="preserve">
-    <value>两个版本来源不一致，未推断安装版本。请先刷新，或按显示的目标版本进行完整校验和修复；普通启动不受此提示限制</value>
+    <value>Die beiden Versionsquellen stimmen nicht überein, die installierte Version wurde nicht ermittelt. Bitte aktualisieren Sie zuerst oder führen Sie anhand der angezeigten Zielversion eine vollständige Überprüfung und Reparatur durch; der normale Start ist von diesem Hinweis nicht betroffen</value>
   </data>
   <data name="ViewModelGameInstallationInvalid" xml:space="preserve">
-    <value>版本文件无效或无法读取。请检查文件占用和权限后刷新；可读取渠道时也可按显示的目标版本校验修复</value>
+    <value>Die Versionsdatei ist ungültig oder nicht lesbar. Bitte prüfen Sie Dateisperrung und Berechtigungen und aktualisieren Sie anschließend; wenn der Kanal lesbar ist, können Sie auch anhand der angezeigten Zielversion überprüfen und reparieren</value>
   </data>
   <data name="ViewModelGameInstallationMissingSource" xml:space="preserve">
-    <value>缺少一个版本来源，当前显示另一个有效来源。未自动补写文件；完成校验修复后才会同步版本信息</value>
+    <value>Eine Versionsquelle fehlt, aktuell wird eine andere gültige Quelle angezeigt. Die Datei wurde nicht automatisch ergänzt; die Versionsinformationen werden erst nach Abschluss der Überprüfung und Reparatur synchronisiert</value>
   </data>
   <data name="ViewModelGameInstallationSourceMissing" xml:space="preserve">
-    <value>缺失</value>
+    <value>Fehlt</value>
   </data>
   <data name="ViewModelGameInstallationSourceInvalid" xml:space="preserve">
-    <value>无效</value>
+    <value>Ungültig</value>
   </data>
   <data name="ViewModelGameInstallationSourceUnreadable" xml:space="preserve">
-    <value>无法读取</value>
+    <value>Nicht lesbar</value>
   </data>
   <data name="ViewModelGameInstallationChanged" xml:space="preserve">
-    <value>游戏安装信息在准备操作期间发生了变化。为避免使用过期版本，已停止本次操作，请刷新后重试</value>
+    <value>Die Spielinstallationsinformationen haben sich während der Vorbereitung geändert. Um eine veraltete Version zu vermeiden, wurde der Vorgang abgebrochen. Bitte aktualisieren Sie und versuchen Sie es erneut</value>
   </data>
   <data name="ServiceGameIslandVersionConflict" xml:space="preserve">
-    <value>游戏版本来源不一致，无法确定 Island 兼容版本。请先校验游戏，或关闭 Island 后正常启动</value>
+    <value>Die Quellen der Spielversion stimmen nicht überein, die kompatible Island-Version kann nicht ermittelt werden. Bitte überprüfen Sie zuerst das Spiel oder schließen Sie Island und starten Sie es normal</value>
   </data>
   <data name="ViewPageGameInstallationInfoTitle" xml:space="preserve">
-    <value>游戏版本信息</value>
+    <value>Informationen zur Spielversion</value>
   </data>
   <data name="ViewPageGameInstallationInfoDescription" xml:space="preserve">
-    <value>安装配置版本来自 config.ini，游戏脚本版本来自 ScriptVersion。它们记录安装信息，不代表游戏资源已经校验。
+    <value>Die Version der Installationskonfiguration stammt aus config.ini, die Spielskriptversion aus ScriptVersion. Sie dokumentieren die Installationsinformationen und bedeuten nicht, dass die Spielressourcen bereits überprüft wurden.
 
-使用其他启动器更新游戏后，可点击“刷新版本”重新读取，刷新不会修改文件。版本不一致时，请先完成游戏更新，或按显示的目标版本完整校验修复。
+Nach einer Aktualisierung des Spiels über einen anderen Launcher können Sie auf „Version aktualisieren“ klicken, um die Werte neu einzulesen; das Aktualisieren ändert keine Dateien. Bei abweichenden Versionen schließen Sie bitte zuerst das Spielupdate ab oder führen Sie eine vollständige Überprüfung und Reparatur gemäß der angezeigten Zielversion durch.
 
-普通启动不受 Island 版本支持限制；启用 Island 增强功能时会单独检查兼容性。</value>
+Der normale Start ist nicht durch die Island-Versionsunterstützung eingeschränkt; bei aktivierten Island-Erweiterungsfunktionen wird die Kompatibilität separat geprüft.</value>
   </data>
   <data name="ServiceUpdateOpenStoreContent" xml:space="preserve">
-    <value>是否打开 Microsoft Store 获取更新？此版本通过商店更新。如果新版仍在审核或分批发布，商店可能暂时不提供更新，请稍后重试。</value>
+    <value>Möchten Sie den Microsoft Store öffnen, um das Update zu erhalten? Diese Version wird über den Store aktualisiert. Wenn die neue Version noch geprüft wird oder schrittweise ausgerollt wird, bietet der Store das Update möglicherweise vorübergehend nicht an. Bitte versuchen Sie es später erneut.</value>
   </data>
   <data name="ServiceUpdateOpenStoreFailed" xml:space="preserve">
-    <value>无法打开 Microsoft Store 或产品网页。请在 Microsoft Store 中搜索 Snap Hutao Remastered 并检查更新。</value>
+    <value>Der Microsoft Store oder die Produktwebseite konnte nicht geöffnet werden. Bitte suchen Sie im Microsoft Store nach Snap Hutao Remastered und prüfen Sie auf Updates.</value>
   </data>
   <data name="ViewGuideBundledImagesHeader" xml:space="preserve">
-    <value>图片资源</value>
+    <value>Bildressourcen</value>
   </data>
   <data name="ViewGuideBundledImagesAvailable" xml:space="preserve">
-    <value>安装包附带 {0} 版图片，共 {1} 张，直接从安装目录读取，不复制到缓存。将跳过整包下载；缺少的图片会按需下载，已有缓存继续使用。可在设置的缓存目录中清理与随包图片相同的重复缓存。</value>
+    <value>Das Installationspaket enthält Bilder der Version {0}, insgesamt {1} Stück. Sie werden direkt aus dem Installationsverzeichnis gelesen und nicht in den Cache kopiert. Der vollständige Paketdownload wird übersprungen; fehlende Bilder werden bei Bedarf heruntergeladen, vorhandene Caches weiterhin verwendet. Im Cache-Verzeichnis der Einstellungen können doppelte Caches bereinigt werden, die mit den mitgelieferten Bildern identisch sind.</value>
   </data>
   <data name="ViewGuideBundledImagesUnavailable" xml:space="preserve">
-    <value>此安装包未附带图片，接下来可预下载图片整包，也可跳过并在使用时按需下载。</value>
+    <value>Dieses Installationspaket enthält keine Bilder. Als Nächstes können Sie das vollständige Bildpaket vorab herunterladen oder überspringen und die Bilder bei Bedarf herunterladen.</value>
   </data>
   <data name="ViewGuideBundledImagesOnDemand" xml:space="preserve">
-    <value>此商店安装包未附带图片快照，将跳过整包下载。图片会在使用时按需下载到缓存。</value>
+    <value>Dieses Store-Installationspaket enthält keinen Bild-Snapshot, der vollständige Paketdownload wird übersprungen. Die Bilder werden bei Bedarf in den Cache heruntergeladen.</value>
   </data>
   <data name="ViewSettingImageDuplicatesHeader" xml:space="preserve">
-    <value>清理重复图片缓存</value>
+    <value>Doppelte Bild-Caches bereinigen</value>
   </data>
   <data name="ViewSettingImageDuplicatesDescription" xml:space="preserve">
-    <value>仅删除与安装目录随包图片内容完全相同的缓存。保留不同内容、其他版本及明暗主题派生图片，不修改安装目录。</value>
+    <value>Löscht nur Caches, deren Inhalt exakt mit den mitgelieferten Bildern im Installationsverzeichnis übereinstimmt. Caches mit abweichendem Inhalt, andere Versionen sowie aus hellem und dunklem Design abgeleitete Bilder bleiben erhalten; das Installationsverzeichnis wird nicht verändert.</value>
   </data>
   <data name="ViewSettingImageDuplicatesProgress" xml:space="preserve">
-    <value>正在比较并清理重复图片缓存…</value>
+    <value>Doppelte Bild-Caches werden verglichen und bereinigt…</value>
   </data>
   <data name="ViewSettingImageDuplicatesResult" xml:space="preserve">
-    <value>已清理 {0} 个重复图片缓存，释放 {1}。</value>
+    <value>Es wurden {0} doppelte Bild-Caches bereinigt und {1} freigegeben.</value>
   </data>
   <data name="ServiceGameIslandVerificationUnavailable" xml:space="preserve">
-    <value>暂时无法连接 Island 账户检查服务，本次检查未完成，游戏将继续运行。请在网络恢复后重试。</value>
+    <value>Der Dienst zur Prüfung des Island-Kontos ist vorübergehend nicht erreichbar. Diese Prüfung wurde nicht abgeschlossen, das Spiel wird weiter ausgeführt. Bitte versuchen Sie es erneut, sobald die Netzwerkverbindung wiederhergestellt ist.</value>
   </data>
 </root>
