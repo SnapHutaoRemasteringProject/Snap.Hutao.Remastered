@@ -28,7 +28,7 @@ public sealed partial class BackpackRepository : IBackpackRepository
 
     public ImmutableArray<BackpackItem> GetBackpackItemImmutableArrayByArchiveId(Guid archiveId)
     {
-        return this.ImmutableArray<BackpackItem, BackpackItem>(query => query.Where(i => i.ArchiveId == archiveId).OrderBy(i => i.ItemId));
+        return this.WithDatabase(context => AppDbQueries.BackpackItemsByArchive(context, archiveId)).ToImmutableArray();
     }
 
     public void AddBackpackArchive(BackpackArchive archive)
@@ -47,12 +47,12 @@ public sealed partial class BackpackRepository : IBackpackRepository
 
     public BackpackArchive? GetBackpackArchiveById(Guid archiveId)
     {
-        return this.SingleOrDefault<BackpackArchive>(a => a.InnerId == archiveId);
+        return this.WithDatabase(context => AppDbQueries.BackpackArchiveById(context, archiveId));
     }
 
     public BackpackArchive? GetBackpackArchiveByName(string name)
     {
-        return this.SingleOrDefault<BackpackArchive>(a => a.Name == name);
+        return this.WithDatabase(context => AppDbQueries.BackpackArchiveByName(context, name));
     }
 
     public void ReplaceBackpackItemRangeByArchiveId(Guid archiveId, IEnumerable<BackpackItem> items)
@@ -67,9 +67,7 @@ public sealed partial class BackpackRepository : IBackpackRepository
 
             using (IDbContextTransaction transaction = appDbContext.Database.BeginTransaction())
             {
-                appDbContext.BackpackItems
-                    .Where(i => i.ArchiveId == archiveId)
-                    .ExecuteDelete();
+                AppDbQueries.DeleteBackpackItemsByArchive(appDbContext, archiveId);
 
                 appDbContext.BackpackItems.AddRange(itemList);
                 appDbContext.SaveChanges();
@@ -81,7 +79,7 @@ public sealed partial class BackpackRepository : IBackpackRepository
 
     public void RemoveBackpackItemRangeByArchiveId(Guid archiveId)
     {
-        this.Delete<BackpackItem>(i => i.ArchiveId == archiveId);
+        this.WithDatabase(context => AppDbQueries.DeleteBackpackItemsByArchive(context, archiveId));
     }
 
     public BackpackReliquaryScoreConfig? GetActiveReliquaryScoreConfig()
@@ -89,7 +87,7 @@ public sealed partial class BackpackRepository : IBackpackRepository
         using (IServiceScope scope = ServiceProvider.CreateScope())
         {
             AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            return appDbContext.BackpackReliquaryScoreConfigs.FirstOrDefault(c => c.IsActive);
+            return AppDbQueries.ActiveScoreConfig(appDbContext);
         }
     }
 
@@ -98,7 +96,7 @@ public sealed partial class BackpackRepository : IBackpackRepository
         using (IServiceScope scope = ServiceProvider.CreateScope())
         {
             AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            return [.. appDbContext.BackpackReliquaryScoreConfigs.OrderBy(c => c.Name)];
+            return AppDbQueries.OrderedScoreConfigs(appDbContext).ToImmutableArray();
         }
     }
 
@@ -111,17 +109,14 @@ public sealed partial class BackpackRepository : IBackpackRepository
             AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
             // Load and attach all other active configs (override global NoTracking via Attach)
-            List<BackpackReliquaryScoreConfig> others = appDbContext.BackpackReliquaryScoreConfigs
-                .Where(c => c.IsActive && c.InnerId != config.InnerId)
-                .ToList();
+            BackpackReliquaryScoreConfig[] others = AppDbQueries.OtherActiveScoreConfigs(appDbContext, config.InnerId);
             foreach (BackpackReliquaryScoreConfig other in others)
             {
                 appDbContext.Attach(other);
                 other.IsActive = false;
             }
 
-            BackpackReliquaryScoreConfig? existing = appDbContext.BackpackReliquaryScoreConfigs
-                .FirstOrDefault(c => c.InnerId == config.InnerId);
+            BackpackReliquaryScoreConfig? existing = AppDbQueries.ScoreConfigById(appDbContext, config.InnerId);
             if (existing is not null)
             {
                 appDbContext.Attach(existing);
@@ -152,7 +147,7 @@ public sealed partial class BackpackRepository : IBackpackRepository
         using (IServiceScope scope = ServiceProvider.CreateScope())
         {
             AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            BackpackReliquaryScoreConfig? config = appDbContext.BackpackReliquaryScoreConfigs.Find(configId);
+            BackpackReliquaryScoreConfig? config = AppDbQueries.ScoreConfigById(appDbContext, configId);
             if (config is not null)
             {
                 // ExecuteDelete 会立即落库，与下方的 SaveChanges 不在同一事务里，
@@ -163,9 +158,7 @@ public sealed partial class BackpackRepository : IBackpackRepository
                     appDbContext.BackpackReliquaryScoreConfigs.Remove(config);
 
                     // 同时清理「我的角色」页面引用此配置的评分算法设置，避免悬挂的 ConfigId
-                    appDbContext.AvatarReliquaryScoreSettings
-                        .Where(s => s.ConfigId == configId)
-                        .ExecuteDelete();
+                    AppDbQueries.DeleteAvatarScoreSettingsByConfig(appDbContext, configId);
 
                     appDbContext.SaveChanges();
                     transaction.Commit();

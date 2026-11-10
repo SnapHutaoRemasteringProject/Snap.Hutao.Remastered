@@ -4,6 +4,8 @@
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Service.Abstraction;
 
+using Snap.Hutao.Remastered.Core.Database;
+
 namespace Snap.Hutao.Remastered.Service.User;
 
 [Service(ServiceLifetime.Singleton, typeof(IUidProfilePictureRepository))]
@@ -18,11 +20,11 @@ public sealed partial class UidProfilePictureRepository : IUidProfilePictureRepo
     {
         try
         {
-            return this.Query(query => query.SingleOrDefault(n => n.Uid == uid));
+            return this.WithDatabase(context => AppDbQueries.ProfilePictureByUid(context, uid));
         }
         catch
         {
-            this.Delete(n => n.Uid == uid);
+            this.WithDatabase(context => AppDbQueries.DeleteProfilePicturesByUid(context, uid));
             return default;
         }
     }
@@ -34,6 +36,6 @@ public sealed partial class UidProfilePictureRepository : IUidProfilePictureRepo
 
     public void DeleteUidProfilePictureByUid(string uid)
     {
-        this.Delete(profilePicture => profilePicture.Uid == uid);
+        this.WithDatabase(context => AppDbQueries.DeleteProfilePicturesByUid(context, uid));
     }
 }

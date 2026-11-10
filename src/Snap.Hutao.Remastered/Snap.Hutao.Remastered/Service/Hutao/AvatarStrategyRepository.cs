@@ -5,6 +5,8 @@ using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Primitive;
 using Snap.Hutao.Remastered.Service.Abstraction;
 
+using Snap.Hutao.Remastered.Core.Database;
+
 namespace Snap.Hutao.Remastered.Service.Hutao;
 
 [Service(ServiceLifetime.Singleton, typeof(IAvatarStrategyRepository))]
@@ -17,7 +19,7 @@ public sealed partial class AvatarStrategyRepository : IAvatarStrategyRepository
 
     public AvatarStrategy? GetStrategyByAvatarId(AvatarId avatarId)
     {
-        return this.SingleOrDefault(s => s.AvatarId == (uint)avatarId);
+        return this.WithDatabase(context => AppDbQueries.AvatarStrategyById(context, (uint)avatarId));
     }
 
     public void AddStrategy(AvatarStrategy strategy)

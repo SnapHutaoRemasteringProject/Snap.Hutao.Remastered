@@ -7,6 +7,8 @@ using Snap.Hutao.Remastered.Service.Abstraction;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 
+using Snap.Hutao.Remastered.Core.Database;
+
 namespace Snap.Hutao.Remastered.Service.Cultivation;
 
 [Service(ServiceLifetime.Singleton, typeof(ICultivationRepository))]
@@ -19,17 +21,17 @@ public sealed partial class CultivationRepository : ICultivationRepository
 
     public ImmutableArray<CultivateEntry> GetCultivateEntryImmutableArrayByProjectId(Guid projectId)
     {
-        return this.ImmutableArray<CultivateEntry>(e => e.ProjectId == projectId);
+        return this.WithDatabase(context => AppDbQueries.CultivateEntriesByProject(context, projectId)).ToImmutableArray();
     }
 
     public ImmutableArray<CultivateEntry> GetCultivateEntryImmutableArrayIncludingLevelInformationByProjectId(Guid projectId)
     {
-        return this.ImmutableArray<CultivateEntry, CultivateEntry>(query => query.Where(e => e.ProjectId == projectId).Include(e => e.LevelInformation));
+        return this.WithDatabase(context => AppDbQueries.CultivateEntriesWithLevels(context, projectId)).ToImmutableArray();
     }
 
     public ImmutableArray<CultivateItem> GetCultivateItemImmutableArrayByEntryId(Guid entryId)
     {
-        return this.ImmutableArray<CultivateItem, CultivateItem>(query => query.Where(i => i.EntryId == entryId).OrderBy(i => i.ItemId));
+        return this.WithDatabase(context => AppDbQueries.CultivateItemsByEntry(context, entryId)).ToImmutableArray();
     }
 
     public void RemoveCultivateEntryById(Guid entryId)
@@ -42,14 +44,12 @@ public sealed partial class CultivationRepository : ICultivationRepository
         // A pending card command can outlive deletion/replacement of its row.
         // Update only the finish flag and report a missing row without attaching
         // the stale entity as Modified or recreating it.
-        return this.Execute<CultivateItem, bool>(dbSet => dbSet
-            .Where(value => value.InnerId == item.InnerId)
-            .ExecuteUpdate(setters => setters.SetProperty(value => value.IsFinished, item.IsFinished)) == 1);
+        return this.WithDatabase(context => AppDbQueries.UpdateCultivateItemFinished(context, item.InnerId, item.IsFinished)) == 1;
     }
 
     public ImmutableArray<CultivateEntry> GetCultivateEntryImmutableArrayByProjectIdAndItemId(Guid projectId, uint itemId)
     {
-        return this.ImmutableArray<CultivateEntry>(e => e.ProjectId == projectId && e.Id == itemId);
+        return this.WithDatabase(context => AppDbQueries.CultivateEntriesByProjectAndItem(context, projectId, itemId)).ToImmutableArray();
     }
 
     public void AddCultivateEntry(CultivateEntry entry)
@@ -59,7 +59,7 @@ public sealed partial class CultivationRepository : ICultivationRepository
 
     public void RemoveCultivateItemRangeByEntryId(Guid entryId)
     {
-        this.Delete<CultivateItem>(i => i.EntryId == entryId);
+        this.WithDatabase(context => AppDbQueries.DeleteCultivateItemsByEntry(context, entryId));
     }
 
     public void AddCultivateItemRange(IEnumerable<CultivateItem> toAdd)
@@ -84,7 +84,7 @@ public sealed partial class CultivationRepository : ICultivationRepository
 
     public void RemoveLevelInformationByEntryId(Guid entryId)
     {
-        this.Delete<CultivateEntryLevelInformation>(l => l.EntryId == entryId);
+        this.WithDatabase(context => AppDbQueries.DeleteLevelsByEntry(context, entryId));
     }
 
     public void AddLevelInformation(CultivateEntryLevelInformation levelInformation)
@@ -94,11 +94,11 @@ public sealed partial class CultivationRepository : ICultivationRepository
 
     public CultivateProject? GetCultivateProjectById(Guid projectId)
     {
-        return this.SingleOrDefault<CultivateProject>(p => p.InnerId == projectId);
+        return this.WithDatabase(context => AppDbQueries.CultivateProjectById(context, projectId));
     }
 
     public Guid GetCultivateProjectIdByEntryId(Guid entryId)
     {
-        return this.Single<CultivateEntry, Guid>(query => query.Where(entry => entry.InnerId == entryId).Select(entry => entry.InnerId));
+        return this.WithDatabase(context => AppDbQueries.CultivateProjectIdByEntry(context, entryId));
     }
 }

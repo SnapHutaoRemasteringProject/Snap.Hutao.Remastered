@@ -50,7 +50,7 @@ public sealed partial class AdvancedDbCollectionView<TEntity> : AdvancedCollecti
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             AppDbContext dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            dbContext.Set<TEntity>().ExecuteUpdate(static update => update.SetProperty(entity => entity.IsSelected, false));
+            AppDbQueries.ClearSelection<TEntity>(dbContext);
 
             if (currentItem is not null)
             {
@@ -126,7 +126,7 @@ public sealed partial class AdvancedDbCollectionView<TEntityAccess, TEntity> : A
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             AppDbContext dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            dbContext.Set<TEntity>().ExecuteUpdate(static update => update.SetProperty(entity => entity.IsSelected, false));
+            AppDbQueries.ClearSelection<TEntity>(dbContext);
 
             if (currentItem is not null)
             {

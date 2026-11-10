@@ -165,6 +165,6 @@ public sealed partial class AchievementRepositoryOperation
 
     private static ImmutableArray<EntityAchievement> LoadAchievements(AppDbContext appDbContext, Guid archiveId)
     {
-        return [.. appDbContext.Achievements.AsNoTracking().Where(a => a.ArchiveId == archiveId).OrderBy(a => a.Id)];
+        return AppDbQueries.AchievementsByArchive(appDbContext, archiveId).OrderBy(a => a.Id).ToImmutableArray();
     }
 }

@@ -72,8 +72,7 @@ public partial class StructUsingCustomDbProperty<T> : DbProperty<T>
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            appDbContext.Settings.Where(e => e.Key == key).ExecuteDelete();
-            appDbContext.Settings.AddAndSave(new(key, to(value)));
+            AppDbQueries.WriteSetting(appDbContext, key, to(value));
         }
     }
 }

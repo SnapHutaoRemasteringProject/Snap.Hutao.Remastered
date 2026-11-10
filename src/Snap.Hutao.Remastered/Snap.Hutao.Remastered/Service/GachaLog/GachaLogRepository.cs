@@ -26,7 +26,7 @@ public sealed partial class GachaLogRepository : IGachaLogRepository
 
     public ImmutableArray<GachaItem> GetGachaItemImmutableArrayByArchiveId(Guid archiveId)
     {
-        return this.ImmutableArray<GachaItem, GachaItem>(query => query.Where(i => i.ArchiveId == archiveId).OrderBy(i => i.Id));
+        return this.WithDatabase(context => AppDbQueries.GachaByArchive(context, archiveId)).ToImmutableArray();
     }
 
     public void RemoveGachaArchiveById(Guid archiveId)
@@ -36,30 +36,21 @@ public sealed partial class GachaLogRepository : IGachaLogRepository
 
     public long GetNewestGachaItemIdByArchiveIdAndQueryType(Guid archiveId, GachaType queryType)
     {
-        GachaItem? item = this.Query<GachaItem, GachaItem?>(query => query
-            .Where(i => i.ArchiveId == archiveId && i.QueryType == queryType)
-            .OrderByDescending(i => i.Id)
-            .FirstOrDefault());
+        GachaItem? item = this.WithDatabase(context => AppDbQueries.NewestGacha(context, archiveId, queryType));
 
         return item?.Id ?? 0L;
     }
 
     public long GetOldestGachaItemIdByArchiveId(Guid archiveId)
     {
-        GachaItem? item = this.Query<GachaItem, GachaItem?>(query => query
-            .Where(i => i.ArchiveId == archiveId)
-            .OrderBy(i => i.Id)
-            .FirstOrDefault());
+        GachaItem? item = this.WithDatabase(context => AppDbQueries.OldestGachaInArchive(context, archiveId));
 
         return item?.Id ?? long.MaxValue;
     }
 
     public long GetOldestGachaItemIdByArchiveIdAndQueryType(Guid archiveId, GachaType queryType)
     {
-        GachaItem? item = this.Query<GachaItem, GachaItem?>(query => query
-            .Where(i => i.ArchiveId == archiveId && i.QueryType == queryType)
-            .OrderBy(i => i.Id)
-            .FirstOrDefault());
+        GachaItem? item = this.WithDatabase(context => AppDbQueries.OldestGacha(context, archiveId, queryType));
 
         return item?.Id ?? long.MaxValue;
     }
@@ -76,30 +67,24 @@ public sealed partial class GachaLogRepository : IGachaLogRepository
     [SuppressMessage("", "IDE0305")]
     public ImmutableArray<Web.Hutao.GachaLog.GachaItem> GetHutaoGachaItemListByArchiveIdAndQueryTypeNewerThanEndId(Guid archiveId, GachaType queryType, long endId)
     {
-        return this.Query<GachaItem, ImmutableArray<Web.Hutao.GachaLog.GachaItem>>(query =>
-        [.. query
-            .Where(i => i.ArchiveId == archiveId && i.QueryType == queryType)
-            .OrderByDescending(i => i.Id)
-            .Where(i => i.Id > endId)
-            .Select(i => new Web.Hutao.GachaLog.GachaItem
+        return this.WithDatabase(context => AppDbQueries.NewerGacha(context, archiveId, queryType, endId)).Select(i => new Web.Hutao.GachaLog.GachaItem
             {
                 GachaType = i.GachaType,
                 QueryType = i.QueryType,
                 ItemId = i.ItemId,
                 Time = i.Time,
                 Id = i.Id,
-            })
-        ]);
+            }).ToImmutableArray();
     }
 
     public GachaArchive? GetGachaArchiveById(Guid archiveId)
     {
-        return this.SingleOrDefault<GachaArchive>(a => a.InnerId == archiveId);
+        return this.WithDatabase(context => AppDbQueries.GachaArchiveById(context, archiveId));
     }
 
     public GachaArchive? GetGachaArchiveByUid(string uid)
     {
-        return this.SingleOrDefault<GachaArchive>(a => a.Uid == uid);
+        return this.WithDatabase(context => AppDbQueries.GachaArchiveByUid(context, uid));
     }
 
     public void AddGachaItemRange(IEnumerable<GachaItem> items)
@@ -109,12 +94,12 @@ public sealed partial class GachaLogRepository : IGachaLogRepository
 
     public void RemoveGachaItemRangeByArchiveIdAndQueryTypeNewerThanEndId(Guid archiveId, GachaType queryType, long endId)
     {
-        this.Delete<GachaItem>(i => i.ArchiveId == archiveId && i.QueryType == queryType && i.Id >= endId);
+        this.WithDatabase(context => AppDbQueries.DeleteNewerGacha(context, archiveId, queryType, endId));
     }
 
     public ImmutableArray<string> GetGachaArchiveUidImmutableArray()
     {
-        return this.ImmutableArray<GachaArchive, string>(query => query.Select(archive => archive.Uid));
+        return this.WithDatabase(context => AppDbQueries.GachaArchiveUids(context)).ToImmutableArray();
     }
 
     public void AddBeyondGachaItemRange(IEnumerable<BeyondGachaItem> items)
@@ -124,30 +109,24 @@ public sealed partial class GachaLogRepository : IGachaLogRepository
 
     public void RemoveBeyondGachaItemRangeByArchiveIdAndGachaTypeNewerThanEndId(Guid archiveId, GachaType queryType, long endId)
     {
-        this.Delete<BeyondGachaItem>(i => i.ArchiveId == archiveId && i.QueryType == queryType && i.Id >= endId);
+        this.WithDatabase(context => AppDbQueries.DeleteNewerBeyondGacha(context, archiveId, queryType, endId));
     }
 
     public ImmutableArray<BeyondGachaItem> GetBeyondGachaItemImmutableArrayByArchiveId(Guid archiveId)
     {
-        return this.ImmutableArray<BeyondGachaItem, BeyondGachaItem>(query => query.Where(i => i.ArchiveId == archiveId).OrderBy(i => i.Id));
+        return this.WithDatabase(context => AppDbQueries.BeyondGachaByArchive(context, archiveId)).ToImmutableArray();
     }
 
     public long GetNewestBeyondGachaItemIdByArchiveIdAndGachaType(Guid archiveId, GachaType queryType)
     {
-        BeyondGachaItem? item = this.Query<BeyondGachaItem, BeyondGachaItem?>(query => query
-            .Where(i => i.ArchiveId == archiveId && i.QueryType == queryType)
-            .OrderByDescending(i => i.Id)
-            .FirstOrDefault());
+        BeyondGachaItem? item = this.WithDatabase(context => AppDbQueries.NewestBeyondGacha(context, archiveId, queryType));
 
         return item?.Id ?? 0L;
     }
 
     public long GetOldestBeyondGachaItemIdByArchiveIdAndGachaType(Guid archiveId, GachaType queryType)
     {
-        BeyondGachaItem? item = this.Query<BeyondGachaItem, BeyondGachaItem?>(query => query
-            .Where(i => i.ArchiveId == archiveId && i.QueryType == queryType)
-            .OrderBy(i => i.Id)
-            .FirstOrDefault());
+        BeyondGachaItem? item = this.WithDatabase(context => AppDbQueries.OldestBeyondGacha(context, archiveId, queryType));
 
         return item?.Id ?? long.MaxValue;
     }
@@ -155,19 +134,13 @@ public sealed partial class GachaLogRepository : IGachaLogRepository
     [SuppressMessage("", "IDE0305")]
     public ImmutableArray<Web.Hutao.GachaLog.GachaItem> GetHutaoBeyondGachaItemListByArchiveIdAndQueryTypeNewerThanEndId(Guid archiveId, GachaType queryType, long endId)
     {
-        return this.Query<BeyondGachaItem, ImmutableArray<Web.Hutao.GachaLog.GachaItem>>(query =>
-        [.. query
-            .Where(i => i.ArchiveId == archiveId && i.QueryType == queryType)
-            .OrderByDescending(i => i.Id)
-            .Where(i => i.Id > endId)
-            .Select(i => new Web.Hutao.GachaLog.GachaItem
+        return this.WithDatabase(context => AppDbQueries.NewerBeyondGacha(context, archiveId, queryType, endId)).Select(i => new Web.Hutao.GachaLog.GachaItem
             {
                 GachaType = i.GachaType,
                 QueryType = i.QueryType,
                 ItemId = i.ItemId,
                 Time = i.Time,
                 Id = i.Id,
-            })
-        ]);
+            }).ToImmutableArray();
     }
 }

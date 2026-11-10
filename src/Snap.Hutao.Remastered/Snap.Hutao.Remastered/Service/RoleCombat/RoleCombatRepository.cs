@@ -5,6 +5,8 @@ using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Service.Abstraction;
 using System.Collections.Frozen;
 
+using Snap.Hutao.Remastered.Core.Database;
+
 namespace Snap.Hutao.Remastered.Service.RoleCombat;
 
 [Service(ServiceLifetime.Singleton, typeof(IRoleCombatRepository))]
@@ -17,10 +19,7 @@ public sealed partial class RoleCombatRepository : IRoleCombatRepository
 
     public FrozenDictionary<uint, RoleCombatEntry> GetRoleCombatEntryMapByUid(string uid)
     {
-        return this.Query(query => query
-            .Where(s => s.Uid == uid)
-            .OrderByDescending(s => s.ScheduleId)
-            .ToFrozenDictionary(e => e.ScheduleId));
+        return this.WithDatabase(context => AppDbQueries.RoleCombatByUid(context, uid)).ToFrozenDictionary(e => e.ScheduleId);
     }
 
     public void UpdateRoleCombatEntry(RoleCombatEntry entry)

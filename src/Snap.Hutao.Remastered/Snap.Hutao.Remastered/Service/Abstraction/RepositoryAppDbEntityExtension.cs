@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Model.Entity.Abstraction;
-using System.Collections.Immutable;
+using Snap.Hutao.Remastered.Core.Database;
 
 namespace Snap.Hutao.Remastered.Service.Abstraction;
 
@@ -18,16 +18,8 @@ public static class RepositoryAppDbEntityExtension
 
         public int DeleteByInnerId(Guid innerId)
         {
-            return repository.Delete(e => e.InnerId == innerId);
+            return repository.WithDatabase(context => AppDbQueries.DeleteByInnerId<TEntity>(context, innerId));
         }
     }
 
-    extension<TEntity>(IRepository<TEntity> repository)
-        where TEntity : class, IAppDbEntityHasArchive
-    {
-        public ImmutableArray<TEntity> ImmutableArrayByArchiveId(Guid archiveId)
-        {
-            return repository.Query(query => query.Where(e => e.ArchiveId == archiveId).ToImmutableArray());
-        }
-    }
 }

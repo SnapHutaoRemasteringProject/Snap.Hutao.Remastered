@@ -1,0 +1,11 @@
+global using Microsoft;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
+global using Snap.Hutao.Remastered.Core.Annotation;
+global using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation;
+global using Snap.Hutao.Remastered.Resource.Localization;
+global using Snap.Hutao.Remastered.Extension;
+global using System.ComponentModel;
+global using System.Diagnostics.CodeAnalysis;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;

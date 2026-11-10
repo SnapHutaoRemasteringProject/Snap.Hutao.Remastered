@@ -4,6 +4,8 @@
 using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Service.Abstraction;
 
+using Snap.Hutao.Remastered.Core.Database;
+
 namespace Snap.Hutao.Remastered.Service.Hutao;
 
 [Service(ServiceLifetime.Singleton, typeof(IObjectCacheRepository))]
@@ -33,7 +35,7 @@ public sealed partial class ObjectCacheRepository : IObjectCacheRepository
         where T : class
     {
         await taskContext.SwitchToBackgroundAsync();
-        if (this.SingleOrDefault(e => e.Key == key) is { } entry)
+        if (this.WithDatabase(context => AppDbQueries.ObjectCacheByKey(context, key)) is { } entry)
         {
             if (!entry.IsExpired)
             {
