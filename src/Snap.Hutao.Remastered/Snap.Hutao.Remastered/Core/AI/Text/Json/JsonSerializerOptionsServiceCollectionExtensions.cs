@@ -4,6 +4,7 @@
 
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using System.Text.Encodings.Web;
 
 namespace Snap.Hutao.Remastered.Core.AI.Text.Json;
@@ -28,6 +29,7 @@ internal static class JsonSerializerOptionsServiceCollectionExtensions
         {
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             WriteIndented = true,
+            TypeInfoResolver = AgentSettingsJsonContext.Default,
         };
     }
 
