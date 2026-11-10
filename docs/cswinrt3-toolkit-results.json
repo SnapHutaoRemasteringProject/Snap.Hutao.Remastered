@@ -1,0 +1,131 @@
+{
+  "verifiedOn": "2026-11-10",
+  "targetFramework": "net11.0-windows10.0.26100.1",
+  "csWinRT": "3.0.0-preview.261104.1",
+  "windowsSdkProjection": "10.0.26100.88-preview",
+  "note": "Restore selection only; no CsWinRT 3 C#/XAML build or runtime acceptance.",
+  "results": [
+    {
+      "Package": "CommunityToolkit.Labs.WinUI.Controls.DataTable",
+      "Selected": "lib/net9.0/CommunityToolkit.WinUI.Controls.DataTable.dll",
+      "Uno": true,
+      "WinRT": false,
+      "NU1202": false,
+      "Version": "0.1.261027-build.2704"
+    },
+    {
+      "Package": "CommunityToolkit.Labs.WinUI.Shimmer",
+      "Selected": null,
+      "Uno": false,
+      "WinRT": false,
+      "NU1202": true,
+      "Version": "0.1.250828-build.2223"
+    },
+    {
+      "Package": "CommunityToolkit.Labs.WinUI.TokenView",
+      "Selected": "lib/net9.0/CommunityToolkit.Labs.WinUI.TokenView.dll",
+      "Uno": true,
+      "WinRT": false,
+      "NU1202": false,
+      "Version": "0.1.250828-build.2223"
+    },
+    {
+      "Package": "CommunityToolkit.Labs.WinUI.TransitionHelper",
+      "Selected": null,
+      "Uno": false,
+      "WinRT": false,
+      "NU1202": true,
+      "Version": "0.1.261027-build.2704"
+    },
+    {
+      "Package": "CommunityToolkit.Mvvm",
+      "Selected": "lib/net8.0/CommunityToolkit.Mvvm.dll",
+      "Uno": false,
+      "WinRT": false,
+      "NU1202": false,
+      "Version": "8.4.2"
+    },
+    {
+      "Package": "CommunityToolkit.WinUI.Behaviors",
+      "Selected": "lib/net9.0/CommunityToolkit.WinUI.Behaviors.dll",
+      "Uno": true,
+      "WinRT": false,
+      "NU1202": false,
+      "Version": "8.3.261026-build.1872"
+    },
+    {
+      "Package": "CommunityToolkit.WinUI.Collections",
+      "Selected": "lib/net9.0/CommunityToolkit.WinUI.Collections.dll",
+      "Uno": true,
+      "WinRT": false,
+      "NU1202": false,
+      "Version": "8.3.261026-build.1872"
+    },
+    {
+      "Package": "CommunityToolkit.WinUI.Controls.HeaderedControls",
+      "Selected": "lib/net9.0/CommunityToolkit.WinUI.Controls.HeaderedControls.dll",
+      "Uno": true,
+      "WinRT": false,
+      "NU1202": false,
+      "Version": "8.3.261026-build.1872"
+    },
+    {
+      "Package": "CommunityToolkit.WinUI.Controls.Primitives",
+      "Selected": "lib/net9.0/CommunityToolkit.WinUI.Controls.Primitives.dll",
+      "Uno": true,
+      "WinRT": false,
+      "NU1202": false,
+      "Version": "8.3.261026-build.1872"
+    },
+    {
+      "Package": "CommunityToolkit.WinUI.Controls.Segmented",
+      "Selected": "lib/net9.0/CommunityToolkit.WinUI.Controls.Segmented.dll",
+      "Uno": true,
+      "WinRT": false,
+      "NU1202": false,
+      "Version": "8.3.261026-build.1872"
+    },
+    {
+      "Package": "CommunityToolkit.WinUI.Controls.SettingsControls",
+      "Selected": "lib/net9.0/CommunityToolkit.WinUI.Controls.SettingsControls.dll",
+      "Uno": true,
+      "WinRT": false,
+      "NU1202": false,
+      "Version": "8.3.261026-build.1872"
+    },
+    {
+      "Package": "CommunityToolkit.WinUI.Converters",
+      "Selected": "lib/net9.0/CommunityToolkit.WinUI.Converters.dll",
+      "Uno": true,
+      "WinRT": false,
+      "NU1202": false,
+      "Version": "8.3.261026-build.1872"
+    },
+    {
+      "Package": "CommunityToolkit.WinUI.Media",
+      "Selected": null,
+      "Uno": false,
+      "WinRT": false,
+      "NU1202": true,
+      "Version": "8.3.261026-build.1872"
+    },
+    {
+      "Package": "DevWinUI",
+      "Selected": null,
+      "Uno": false,
+      "WinRT": false,
+      "NU1202": false,
+      "Version": "10.9.1",
+      "BuildAssets": [
+        "build/DevWinUI.targets"
+      ]
+    }
+  ],
+  "standaloneCollections": {
+    "targetFramework": "net10.0-windows10.0.26100.1",
+    "version": "8.3.261026-build.1872",
+    "restoreExitCode": 0,
+    "selected": "lib/net9.0/CommunityToolkit.WinUI.Collections.dll",
+    "dependency": "Uno.WinUI 5.5.87"
+  }
+}

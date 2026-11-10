@@ -35,7 +35,7 @@
   <Target Name="PrepareAotPublishResources"
           BeforeTargets="IlcCompile;ComputeFilesToPublish"
           DependsOnTargets="GenerateProjectPriFile"
-          Condition="'$(PublishAot)' == 'true' and '$(NoBuild)' != 'true'">
+          Condition="'$(PublishAot)' == 'true'">
     <Error Condition="!Exists('$(ProjectPriFullPath)')" Text="Native AOT publish did not generate the application PRI: $(ProjectPriFullPath)" />
   </Target>
 
@@ -157,6 +157,8 @@
             foreach (string file in new[] { "coreclr.dll", "hostfxr.dll", "hostpolicy.dll" })
                 if (File.Exists(Path.Combine(PublishDirectory, file)))
                     throw new InvalidDataException("Native AOT output contains " + file + ". Restore with PublishAot=true and use a fresh publish directory.");
+            if (File.Exists(Path.Combine(PublishDirectory, Path.GetFileNameWithoutExtension(ImagePath) + ".dll")))
+                throw new InvalidDataException("Native AOT output still contains the primary managed assembly. An apphost PE alone is not a native application.");
         }
         catch (Exception ex)
         {

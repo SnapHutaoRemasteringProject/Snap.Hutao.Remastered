@@ -4,8 +4,6 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Core.DataTransfer;
 using Snap.Hutao.Remastered.Core.ExceptionService;
@@ -375,25 +373,6 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
         {
             bool isSolidState = PhysicalDrive.DangerousGetIsSolidState(file);
             messenger.Send(InfoBarMessage.Success($"The path '{file}' belongs to a {(isSolidState ? "solid state" : "hard disk")} drive."));
-        }
-    }
-
-    [Command("RunCodeCommand")]
-    private async Task RunCodeAsync()
-    {
-        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Test run code", "TestViewModel.Command"));
-
-        try
-        {
-            string script = """
-                            return 1 + 1;
-                            """;
-            object? result = await CSharpScript.EvaluateAsync(script, ScriptOptions.Default).ConfigureAwait(false);
-            logger.LogInformation("Run Code Result: '{Result}'", result);
-        }
-        catch (CompilationErrorException ex)
-        {
-            logger.LogCritical(ex, "Compilation Error");
         }
     }
 

@@ -1,51 +1,42 @@
-# CsWinRT 3.0 预览版评估（2026-11-10）
+# CsWinRT 3：已验证结果和 issue 交接
 
-评估版本：`3.0.0-preview.261104.1`。当前应用继续使用 `2.3.1`，未将不兼容依赖强制回退到旧投影。
+当前应用使用 CsWinRT 2.3.1。下面是升级到 3.0.0-preview.261104.1、SDK 投影 10.0.26100.88-preview、Windows TFM .1 的独立试验，不是当前 AOT 程序故障。
 
-## 与 Native AOT 的关系
+## 实际选择结果
 
-新版将封送发现/生成移到应用级构建，能看到其他源生成器产出的代码，并改进私有/合成类型、泛型、事件、异步对象与生命周期处理。
-因此它是值得迁移的方向，但不解决 EF 运行时模型/查询生成、JSON 契约缺失或 Roslyn 运行时脚本等应用层问题。
-参考 [本次发布说明](https://github.com/microsoft/CsWinRT/releases/tag/3.0.0-preview.261104.1)。
+完整数据：[cswinrt3-toolkit-results.json](cswinrt3-toolkit-results.json)。
 
-这不是原位替换包版本的升级。官方要求配套 `WindowsSdkPackageVersion=10.0.26100.88-preview` 与 `.1` Windows 目标框架；
-2.x/3.0 投影不具有二进制兼容性，相关依赖须提供适用版本。
-`Point`/`Size`/`Rect` 等投影成员、事件委托及底层互操作 API 也有变化。
-参考 [官方迁移设计](https://github.com/microsoft/CsWinRT/blob/staging/3.0/docs/cswinrt3.0-spec.md)、
-[AOT 说明](https://github.com/microsoft/CsWinRT/blob/staging/3.0/docs/aot-trimming.md)。
-
-## 实际主项目试验
-
-```powershell
-./scripts/Test-CsWinRT3.ps1
-```
-
-脚本编译真实主项目，临时覆盖 CsWinRT 包版本与 SDK/TFM；还原、中间及输出目录在 `bin/CsWinRT3Assessment`。
-没有新建替身 WinUI 项目，也不改变当前 2.x 项目的依赖清单或生成结果。
-显式给还原传入 `TargetFrameworks`，避免 CLI `TargetFramework` 覆盖在静态还原图中丢失、误用原 `.0` 资产。
-
-Windows / SDK `11.0.100-rc.3.26522.148` 上，新的 SDK 投影和 CsWinRT 包已实际还原；
-真实依赖图在 `.1` 兼容性检查中报 `NU1202`，以下八个包没有当前目标可用的兼容资产：
-
-| 包 | 当前版本 |
+| 包 | 试验结果 |
 |---|---|
-| CommunityToolkit.Labs.WinUI.Shimmer | 0.1.250828-build.2223 |
-| CommunityToolkit.Labs.WinUI.TransitionHelper | 0.1.261027-build.2704 |
-| CommunityToolkit.WinUI.Media | 8.3.261026-build.1872 |
-| Snap.Hutao.Remastered.Deployment.Runtime | 1.8.1 |
-| Snap.ZStandard | 1.5.7 |
-| WinUI.Composition.Hlsl | 1.3.1 |
-| WinUI.LiquidGlass | 1.3.1 |
-| WinUIEssential.WinUI3 | 1.9.2 |
+| Shimmer、TransitionHelper、Media | NU1202，没有匹配的 .1 Windows 资产 |
+| DataTable、TokenView、Behaviors、Collections、HeaderedControls、Primitives、Segmented、SettingsControls、Converters | 选中 lib/net9.0 的 Uno 版，DLL 引用 Uno.UI；不能算 Windows/CsWinRT 3 支持 |
+| DevWinUI 10.9.1 | 只有 build targets，没有 compile/runtime DLL |
+| Mvvm 8.4.2 | 选中纯 .NET 资产，不属于 WinRT 问题 |
 
-这轮尚未到 C#/XAML 编译或原生运行，不能声称新版已经修复本应用的运行问题。
-不使用 `AssetTargetFallback`、忽略还原错误或混装 2.x/3.0 投影来越过兼容性检查。
-需先为上述依赖提供兼容构建，再评估其余投影的 API/二进制兼容性和实际绑定行为。
+Collections 单包试验还原返回 0，但依赖 Uno.WinUI 5.5.87。因此只检查 NU1202 会漏掉错误的资产选择。
+不能据此说 Labs 已适配、Windows 没适配；本轮验证的是这些具体发布版本，不是两个仓库的最新支持状态。
 
-## GitHub 反馈的使用边界
+## 为什么会这样
 
-- [CsWinRT #2382](https://github.com/microsoft/CsWinRT/issues/2382) 记录旧 WinUI 投影消费新运行时时缺少 `IWinRTObject` 的问题，符合需要共同迁移的设计约束；这是旧预览版报告，不直接证明本次新版仍有同一故障。
-- [CsWinRT #2386](https://github.com/microsoft/CsWinRT/issues/2386) 讨论 `ICustomPropertyProvider`、`IXamlType.IsBindable` 与运行时绑定；不能将升级包版本视作全部 `{Binding}` 已验收。
-- [WindowsAppSDK #6394](https://github.com/microsoft/WindowsAppSDK/issues/6394) 的 PRI/XBF 发布缺失已有上游修复记录；本项目仍实际出现资源生成未运行及输出复制遗漏，必须按当前构建图与发布文件验证，不能直接照搬历史结论。
+.NET 10+ 用 Windows TFM 的 .0/.1 区分两代不兼容的 CsWinRT。旧 Windows .0 资产被排除后，有些包报错，有些退回包内通用 net9.0 的 Uno 资产。
+规则见 [NuGet/Home #14859](https://github.com/NuGet/Home/issues/14859)。
 
-当前优先完成 2.3.1 路径上的完整应用原生发布/启动及功能验证。依赖具备条件后，可重复执行同一主项目试验再决定切换。
+Hlsl、LiquidGlass、WinUIEssential 已有 WinMD，也声明了 WindowsMetadataReference；缺的是可供新目标选择的正确托管投影，不是再加一个 WinMD。
+纯 C# Toolkit 控件没有 WinMD 属正常情况，应从源码构建新目标。
+Deployment.Runtime 和 ZStandard 要另外审查打包标签，不应要求它们生成 WinRT 投影。
+
+## 下一轮写 issue 的提示词
+
+只准备可复制正文，不提交到 GitHub。先复核包的当前版本和现有跟踪 issue。
+
+- 对 CommunityToolkit/Windows：报告 Media 的 NU1202，以及 Collections/Primitives 等误选 Uno 的情况。
+- 对 Labs-Windows：报告它对应的包，不把两个仓库混为一谈。
+- 环境：CsWinRT 3.0.0-preview.261104.1、WindowsSdkPackageVersion=10.0.26100.88-preview、net10.0-windows10.0.26100.1；实测 SDK 11.0.100-rc.3.26522.148。
+- Windows 包版本 8.3.261026-build.1872；DataTable/TransitionHelper 为 0.1.261027-build.2704；Shimmer/TokenView 为 0.1.250828-build.2223。
+- Labs 源：CommunityToolkit-Labs；Windows 源：CommunityToolkit-MainLatest，均为 dotnet/CommunityToolkit 的公开 Azure feed。
+- 附最小 csproj、restore 命令、实际选中资产和 Uno 依赖。不是运行崩溃报告，不声称所有组件无法 AOT。
+- 要求新增真正的 .1 Windows 资产：共享组件构建配置中添加新目标；该目标使用上述 CsWinRT/SDK 版本，并对齐 WinUI、Animations、Extensions 等依赖。保留旧 .0 资产。
+- 不要求纯 C# 控件补 WinMD，不把旧 DLL 换目录、强制回退或“还原没报错”当成适配完成。
+- 当前没有完成上游 3.0 重建，不能把建议配置当作已验证补丁。
+
+部署包的打包问题已创建 [Deployment #1](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered.Deployment/issues/1)；其他 issue 未创建。用户随后要求只给 issue 材料，不再代发。

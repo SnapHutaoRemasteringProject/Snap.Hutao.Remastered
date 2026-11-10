@@ -268,13 +268,6 @@ public sealed partial class NotifyIconViewModel : ObservableObject
         app.Exit();
     }
 
-    [Command("OpenScriptingWindowCommand")]
-    private void OpenScriptingWindow()
-    {
-        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Open Scripting Window", "NotifyIconViewModel.Command"));
-        _ = serviceProvider.GetRequiredService<ScriptingWindow>();
-    }
-
     [Command("TakeScreenshotCommand")]
     private async Task TakeScreenshotAsync()
     {

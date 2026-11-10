@@ -21,6 +21,9 @@ foreach ($folder in @('Assets', 'Resource')) {
 foreach ($runtime in @('coreclr.dll', 'hostfxr.dll', 'hostpolicy.dll')) {
     if (Test-Path -LiteralPath (Join-Path $publish $runtime)) { throw "Unexpected CoreCLR runtime: $runtime" }
 }
+if (Test-Path -LiteralPath (Join-Path $publish 'Snap.Hutao.Remastered.dll')) {
+    throw 'Publish output still contains the primary managed assembly; an apphost PE alone is not Native AOT'
+}
 
 $stream = [IO.File]::OpenRead($executable)
 $reader = [IO.BinaryReader]::new($stream)
