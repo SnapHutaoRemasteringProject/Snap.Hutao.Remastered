@@ -3,3 +3,5 @@ src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Core/Database/Schema/*.sql text 
 
 # EF query interception uses physical source content checksums.
 src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Core/Database/*Queries.cs text eol=lf
+src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Model/Entity/Database/Compiled/*.cs text eol=lf
+tools/Snap.Hutao.Database.Model/Fixtures/*.json text eol=lf

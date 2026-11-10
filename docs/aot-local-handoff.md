@@ -1,5 +1,7 @@
 # 本地继续开发 Native AOT
 
+> 2026-11-10 本地更新：已完成 Windows 数据宿主的普通/Native AOT 发布运行，25 生产实体及 69 查询通过；生成产物已恢复，统一生成/检查入口是 `scripts/Generate-DatabaseAot.ps1`。完整记录见 [当前进展](database-aot-progress.md) 和 [实现](database-aot.md)。下文的产物缺失及无法还原是迁移前历史记录，不能覆盖本地新证据。完整 WinUI 原生验收继续进行。
+
 仓库：`SnapHutaoRemasteringProject/Snap.Hutao.Remastered`；分支：`feat/aot-compatible`。
 
 本次是用户明确要求保存全部未提交工作、迁移到本地开发的 WIP 检查点，不代表第二阶段验收完成。此后恢复“非阶段性成果不提交 commit”的要求。
