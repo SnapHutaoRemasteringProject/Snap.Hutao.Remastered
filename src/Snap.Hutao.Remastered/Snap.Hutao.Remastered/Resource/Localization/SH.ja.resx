@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -980,6 +980,9 @@
   <data name="ServiceGachaLogHutaoCloudEndIdFetchFailed" xml:space="preserve">
     <value>胡桃クラウドの祈願履歴を取得できません</value>
   </data>
+  <data name="ServiceGachaLogItemMetadataNotFound" xml:space="preserve">
+    <value>祈願アイテム「{0}」のメタデータがまだ更新されていません。しばらくしてから再試行してください</value>
+  </data>
   <data name="ServiceGachaLogUrlProviderAuthkeyRequestFailed" xml:space="preserve">
     <value>認証キーのリクエストに失敗しました。</value>
   </data>
@@ -1059,6 +1062,9 @@
   <data name="ServiceGameLaunchExecutionGameRunningKillFailed" xml:space="preserve">
     <value>プロセスの終了に失敗しました</value>
   </data>
+  <data name="ServiceGameStopProcessAccessDenied" xml:space="preserve">
+    <value>ゲームプロセスを終了する権限がありません。Hutaoを管理者として実行してから再試行してください</value>
+  </data>
   <data name="ServiceGameLaunchPhaseProcessExited" xml:space="preserve">
     <value>ゲームプロセスが終了しました</value>
   </data>
@@ -1075,7 +1081,7 @@
     <value>Embedded Yae を使う前に、胡桃を管理者権限で実行する必要があります</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeErrorSystemIntegrityPolicyViolation" xml:space="preserve">
-    <value>注入に失敗しました。Windows Defender のアプリとブラウザー コントロール &gt; スマート アプリ コントロールポリシーが操作をブロックしている可能性があるので、無効化をお試しください</value>
+    <value>注入に失敗しました。Windows Defender のアプリとブラウザー コントロール > スマート アプリ コントロールポリシーが操作をブロックしている可能性があるので、無効化をお試しください</value>
   </data>
   <data name="ServiceGameLaunchingHandlerEmbeddedYaeIslandNotEnabled" xml:space="preserve">
     <value>Embedded Yae を使う前に、関連するリスクを理解し「ゲームランチャー」ページで注入機能を有効にする必要があります</value>
@@ -4343,6 +4349,9 @@
   <data name="ViewPageLaunchGameIslandRedirectCatherineDescription" xml:space="preserve">
     <value>冒険者手帳のキャサリンへ移動するデイリー依頼の入口を、キャサリンの依頼報酬確認ダイアログを直接開くように変更します</value>
   </data>
+  <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
+    <value>冒険者ハンドブックのキャサリンへ遷移するデイリー依頼の入口を、キャサリンの依頼報酬確認ダイアログを直接開くように変更します。初めて「報酬を受け取る」をクリックすると探索派遣ページが開き、2回目のクリック時に依頼が完了していれば報酬受け取り画面が開きます。</value>
+  </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>会話スキップのクールダウンを削除</value>
   </data>
@@ -4823,6 +4832,9 @@
   </data>
   <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
     <value>ブートセルフスタート</value>
+  </data>
+  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
+    <value>起動時の自動起動スケジュールタスクを読み取れないか、更新できません。タスクスケジューラサービスが利用可能であることを確認し、管理者として実行してから再試行してください。</value>
   </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>動作の適用</value>
@@ -6141,7 +6153,92 @@
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
     <value>Provider default</value>
   </data>
-  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
-    <value>起動時の自動起動スケジュールタスクを読み取れないか、更新できません。タスクスケジューラサービスが利用可能であることを確認し、管理者として実行してから再試行してください。</value>
+  <data name="UIXamlPagesSettingsPageDescriptionProfileModelId" xml:space="preserve">
+    <value>必須。プロバイダーが提供する正確なモデル識別子を入力してください。APIリクエスト時にこの値が使用されます</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageDescriptionModelDisplayName" xml:space="preserve">
+    <value>任意。一覧表示のみに使用され、プロバイダーには送信されません。空欄の場合はモデルIDが表示されます</value>
+  </data>
+  <data name="UIXamlPagesSettingsPagePlaceholderProfileModelId" xml:space="preserve">
+    <value>例：qwen3.8-flash</value>
+  </data>
+  <data name="UIXamlPagesSettingsPagePlaceholderModelDisplayName" xml:space="preserve">
+    <value>例：Qwen高速モデル（空欄可）</value>
+  </data>
+  <data name="ViewPageGameRefreshInstallation" xml:space="preserve">
+    <value>バージョンを更新</value>
+  </data>
+  <data name="ViewPageGameVerifyAndRepairLatest" xml:space="preserve">
+    <value>最新バージョンで検証・修復</value>
+  </data>
+  <data name="ViewModelGameInstallationSources" xml:space="preserve">
+    <value>インストール構成バージョン：{0} · ゲームスクリプトバージョン：{1}</value>
+  </data>
+  <data name="ViewModelGameInstallationConflict" xml:space="preserve">
+    <value>2つのバージョンソースが一致しないため、インストールバージョンを推定できませんでした。先に更新するか、表示されているターゲットバージョンで完全な検証と修復を行ってください。通常の起動はこの通知の影響を受けません</value>
+  </data>
+  <data name="ViewModelGameInstallationInvalid" xml:space="preserve">
+    <value>バージョンファイルが無効か読み取れません。ファイルのロックと権限を確認してから更新してください。チャンネルを読み取れる場合は、表示されているターゲットバージョンで検証・修復することもできます</value>
+  </data>
+  <data name="ViewModelGameInstallationMissingSource" xml:space="preserve">
+    <value>バージョンソースが1つ不足しているため、現在はもう1つの有効なソースを表示しています。ファイルの自動補完は行われておらず、検証・修復の完了後にバージョン情報が同期されます</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceMissing" xml:space="preserve">
+    <value>欠落</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceInvalid" xml:space="preserve">
+    <value>無効</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceUnreadable" xml:space="preserve">
+    <value>読み取りできません</value>
+  </data>
+  <data name="ViewModelGameInstallationChanged" xml:space="preserve">
+    <value>ゲームのインストール情報が準備操作中に変更されました。古いバージョンの使用を避けるため、この操作を中止しました。更新してから再試行してください</value>
+  </data>
+  <data name="ServiceGameIslandVersionConflict" xml:space="preserve">
+    <value>ゲームバージョンの取得元が一致しないため、Island の互換バージョンを特定できません。まずゲームを検証するか、Island を無効にして通常起動してください</value>
+  </data>
+  <data name="ViewPageGameInstallationInfoTitle" xml:space="preserve">
+    <value>ゲームバージョン情報</value>
+  </data>
+  <data name="ViewPageGameInstallationInfoDescription" xml:space="preserve">
+    <value>インストール設定バージョンは config.ini から、ゲームスクリプトバージョンは ScriptVersion から取得されます。これらはインストール情報を記録するものであり、ゲームリソースが検証済みであることを意味しません。
+
+他のランチャーでゲームを更新した後は、「バージョンを更新」をクリックして再読み取りできます。更新してもファイルは変更されません。バージョンが一致しない場合は、先にゲームの更新を完了するか、表示されているターゲットバージョンに従って完全な検証と修復を行ってください。
+
+通常起動は Island バージョンのサポート制限を受けません。Island 拡張機能を有効にすると、互換性が個別にチェックされます。</value>
+  </data>
+  <data name="ServiceUpdateOpenStoreContent" xml:space="preserve">
+    <value>Microsoft Store を開いて更新を取得しますか？このバージョンはストア経由で更新されます。新しいバージョンがまだ審査中または段階的に配信されている場合、ストアでは一時的に更新が提供されないことがあります。しばらくしてから再試行してください。</value>
+  </data>
+  <data name="ServiceUpdateOpenStoreFailed" xml:space="preserve">
+    <value>Microsoft Store または製品ページを開けませんでした。Microsoft Store で Snap Hutao Remastered を検索し、更新を確認してください。</value>
+  </data>
+  <data name="ViewGuideBundledImagesHeader" xml:space="preserve">
+    <value>画像リソース</value>
+  </data>
+  <data name="ViewGuideBundledImagesAvailable" xml:space="preserve">
+    <value>インストーラーには {0} 版の画像が {1} 枚同梱されており、インストールディレクトリから直接読み取られ、キャッシュにはコピーされません。一括ダウンロードはスキップされます。不足している画像はオンデマンドでダウンロードされ、既存のキャッシュは引き続き使用されます。設定のキャッシュディレクトリでは、同梱画像と同一の重複キャッシュをクリーンアップできます。</value>
+  </data>
+  <data name="ViewGuideBundledImagesUnavailable" xml:space="preserve">
+    <value>このインストーラーには画像が同梱されていません。続けて画像の一括ダウンロードを事前に行うことも、スキップして使用時にオンデマンドでダウンロードすることもできます。</value>
+  </data>
+  <data name="ViewGuideBundledImagesOnDemand" xml:space="preserve">
+    <value>このストア版インストーラーには画像スナップショットが同梱されていないため、一括ダウンロードはスキップされます。画像は使用時にオンデマンドでキャッシュにダウンロードされます。</value>
+  </data>
+  <data name="ViewSettingImageDuplicatesHeader" xml:space="preserve">
+    <value>重複した画像キャッシュをクリーンアップ</value>
+  </data>
+  <data name="ViewSettingImageDuplicatesDescription" xml:space="preserve">
+    <value>インストールディレクトリの同梱画像と内容が完全に同一のキャッシュのみを削除します。内容が異なるもの、他のバージョン、およびライト・ダークテーマの派生画像は保持され、インストールディレクトリは変更されません。</value>
+  </data>
+  <data name="ViewSettingImageDuplicatesProgress" xml:space="preserve">
+    <value>重複した画像キャッシュを比較してクリーンアップしています…</value>
+  </data>
+  <data name="ViewSettingImageDuplicatesResult" xml:space="preserve">
+    <value>{0} 個の重複した画像キャッシュをクリーンアップし、{1} を解放しました。</value>
+  </data>
+  <data name="ServiceGameIslandVerificationUnavailable" xml:space="preserve">
+    <value>一時的に Island アカウント確認サービスに接続できないため、今回のチェックは完了しませんでした。ゲームは引き続き実行されます。ネットワークが復旧してから再試行してください。</value>
   </data>
 </root>

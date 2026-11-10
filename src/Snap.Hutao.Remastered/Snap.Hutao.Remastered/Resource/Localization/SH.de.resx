@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -980,6 +980,9 @@
   <data name="ServiceGachaLogHutaoCloudEndIdFetchFailed" xml:space="preserve">
     <value>Fehler beim Abrufen des Cloud-Wunschverlaufs</value>
   </data>
+  <data name="ServiceGachaLogItemMetadataNotFound" xml:space="preserve">
+    <value>Die Metadaten des Wunschgegenstands „{0}“ wurden noch nicht aktualisiert, bitte versuchen Sie es später erneut</value>
+  </data>
   <data name="ServiceGachaLogUrlProviderAuthkeyRequestFailed" xml:space="preserve">
     <value>Anforderung des Authentifizierungsschlüssels fehlgeschlagen</value>
   </data>
@@ -1058,6 +1061,9 @@
   </data>
   <data name="ServiceGameLaunchExecutionGameRunningKillFailed" xml:space="preserve">
     <value>Prozess beenden fehlgeschlagen</value>
+  </data>
+  <data name="ServiceGameStopProcessAccessDenied" xml:space="preserve">
+    <value>Keine Berechtigung zum Beenden des Spielprozesses, bitte führen Sie Hutao als Administrator aus und versuchen Sie es erneut</value>
   </data>
   <data name="ServiceGameLaunchPhaseProcessExited" xml:space="preserve">
     <value>Spielprozess wurde beendet</value>
@@ -4343,6 +4349,9 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewPageLaunchGameIslandRedirectCatherineDescription" xml:space="preserve">
     <value>Ändert den Eintrag für tägliche Aufträge im Abenteurerhandbuch, der zu Katheryne führt, sodass direkt das Bestätigungsfenster für Katherynes Auftragsbelohnungen geöffnet wird</value>
   </data>
+  <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
+    <value>Ändert im Abenteurerhandbuch den Einstieg zu Katheryne für tägliche Aufträge, sodass direkt Katherynes Bestätigungsfenster für Auftragsbelohnungen geöffnet wird. Beim ersten Klick auf „Belohnung abholen“ wird zuerst die Expeditionsseite geöffnet; beim zweiten Klick wird, wenn der Auftrag abgeschlossen ist, die Oberfläche zum Abholen der Belohnung geöffnet.</value>
+  </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Cooldown beim Dialogüberspringen entfernen</value>
   </data>
@@ -4819,6 +4828,9 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
     <value>Autostart beim Booten</value>
+  </data>
+  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
+    <value>Die geplante Aufgabe für den Autostart konnte nicht gelesen oder aktualisiert werden. Bitte stellen Sie sicher, dass der Dienst für geplante Aufgaben verfügbar ist, und starten Sie die App als Administrator neu.</value>
   </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>Anwendungsverhalten</value>
@@ -6137,7 +6149,92 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
     <value>Provider default</value>
   </data>
-  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
-    <value>Die geplante Aufgabe für den Autostart konnte nicht gelesen oder aktualisiert werden. Bitte stellen Sie sicher, dass der Dienst für geplante Aufgaben verfügbar ist, und starten Sie die App als Administrator neu.</value>
+  <data name="UIXamlPagesSettingsPageDescriptionProfileModelId" xml:space="preserve">
+    <value>Erforderlich, geben Sie die exakte Modellkennung an, die der Anbieter bereitstellt. Dieser Wert wird bei der Anfrage an die Schnittstelle verwendet</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageDescriptionModelDisplayName" xml:space="preserve">
+    <value>Optional, dient nur der Anzeige in der Liste und wird nicht an den Anbieter gesendet; wenn das Feld leer bleibt, wird die Modell-ID angezeigt</value>
+  </data>
+  <data name="UIXamlPagesSettingsPagePlaceholderProfileModelId" xml:space="preserve">
+    <value>z. B. qwen3.8-flash</value>
+  </data>
+  <data name="UIXamlPagesSettingsPagePlaceholderModelDisplayName" xml:space="preserve">
+    <value>z. B. Qwen-Schnellmodell (kann leer bleiben)</value>
+  </data>
+  <data name="ViewPageGameRefreshInstallation" xml:space="preserve">
+    <value>Version aktualisieren</value>
+  </data>
+  <data name="ViewPageGameVerifyAndRepairLatest" xml:space="preserve">
+    <value>Anhand der neuesten Version überprüfen und reparieren</value>
+  </data>
+  <data name="ViewModelGameInstallationSources" xml:space="preserve">
+    <value>Installationskonfigurationsversion: {0} · Spielskriptversion: {1}</value>
+  </data>
+  <data name="ViewModelGameInstallationConflict" xml:space="preserve">
+    <value>Die beiden Versionsquellen stimmen nicht überein, die installierte Version wurde nicht ermittelt. Bitte aktualisieren Sie zuerst oder führen Sie anhand der angezeigten Zielversion eine vollständige Überprüfung und Reparatur durch; der normale Start ist von diesem Hinweis nicht betroffen</value>
+  </data>
+  <data name="ViewModelGameInstallationInvalid" xml:space="preserve">
+    <value>Die Versionsdatei ist ungültig oder nicht lesbar. Bitte prüfen Sie Dateisperrung und Berechtigungen und aktualisieren Sie anschließend; wenn der Kanal lesbar ist, können Sie auch anhand der angezeigten Zielversion überprüfen und reparieren</value>
+  </data>
+  <data name="ViewModelGameInstallationMissingSource" xml:space="preserve">
+    <value>Eine Versionsquelle fehlt, aktuell wird eine andere gültige Quelle angezeigt. Die Datei wurde nicht automatisch ergänzt; die Versionsinformationen werden erst nach Abschluss der Überprüfung und Reparatur synchronisiert</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceMissing" xml:space="preserve">
+    <value>Fehlt</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceInvalid" xml:space="preserve">
+    <value>Ungültig</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceUnreadable" xml:space="preserve">
+    <value>Nicht lesbar</value>
+  </data>
+  <data name="ViewModelGameInstallationChanged" xml:space="preserve">
+    <value>Die Spielinstallationsinformationen haben sich während der Vorbereitung geändert. Um eine veraltete Version zu vermeiden, wurde der Vorgang abgebrochen. Bitte aktualisieren Sie und versuchen Sie es erneut</value>
+  </data>
+  <data name="ServiceGameIslandVersionConflict" xml:space="preserve">
+    <value>Die Quellen der Spielversion stimmen nicht überein, die kompatible Island-Version kann nicht ermittelt werden. Bitte überprüfen Sie zuerst das Spiel oder schließen Sie Island und starten Sie es normal</value>
+  </data>
+  <data name="ViewPageGameInstallationInfoTitle" xml:space="preserve">
+    <value>Informationen zur Spielversion</value>
+  </data>
+  <data name="ViewPageGameInstallationInfoDescription" xml:space="preserve">
+    <value>Die Version der Installationskonfiguration stammt aus config.ini, die Spielskriptversion aus ScriptVersion. Sie dokumentieren die Installationsinformationen und bedeuten nicht, dass die Spielressourcen bereits überprüft wurden.
+
+Nach einer Aktualisierung des Spiels über einen anderen Launcher können Sie auf „Version aktualisieren“ klicken, um die Werte neu einzulesen; das Aktualisieren ändert keine Dateien. Bei abweichenden Versionen schließen Sie bitte zuerst das Spielupdate ab oder führen Sie eine vollständige Überprüfung und Reparatur gemäß der angezeigten Zielversion durch.
+
+Der normale Start ist nicht durch die Island-Versionsunterstützung eingeschränkt; bei aktivierten Island-Erweiterungsfunktionen wird die Kompatibilität separat geprüft.</value>
+  </data>
+  <data name="ServiceUpdateOpenStoreContent" xml:space="preserve">
+    <value>Möchten Sie den Microsoft Store öffnen, um das Update zu erhalten? Diese Version wird über den Store aktualisiert. Wenn die neue Version noch geprüft wird oder schrittweise ausgerollt wird, bietet der Store das Update möglicherweise vorübergehend nicht an. Bitte versuchen Sie es später erneut.</value>
+  </data>
+  <data name="ServiceUpdateOpenStoreFailed" xml:space="preserve">
+    <value>Der Microsoft Store oder die Produktwebseite konnte nicht geöffnet werden. Bitte suchen Sie im Microsoft Store nach Snap Hutao Remastered und prüfen Sie auf Updates.</value>
+  </data>
+  <data name="ViewGuideBundledImagesHeader" xml:space="preserve">
+    <value>Bildressourcen</value>
+  </data>
+  <data name="ViewGuideBundledImagesAvailable" xml:space="preserve">
+    <value>Das Installationspaket enthält Bilder der Version {0}, insgesamt {1} Stück. Sie werden direkt aus dem Installationsverzeichnis gelesen und nicht in den Cache kopiert. Der vollständige Paketdownload wird übersprungen; fehlende Bilder werden bei Bedarf heruntergeladen, vorhandene Caches weiterhin verwendet. Im Cache-Verzeichnis der Einstellungen können doppelte Caches bereinigt werden, die mit den mitgelieferten Bildern identisch sind.</value>
+  </data>
+  <data name="ViewGuideBundledImagesUnavailable" xml:space="preserve">
+    <value>Dieses Installationspaket enthält keine Bilder. Als Nächstes können Sie das vollständige Bildpaket vorab herunterladen oder überspringen und die Bilder bei Bedarf herunterladen.</value>
+  </data>
+  <data name="ViewGuideBundledImagesOnDemand" xml:space="preserve">
+    <value>Dieses Store-Installationspaket enthält keinen Bild-Snapshot, der vollständige Paketdownload wird übersprungen. Die Bilder werden bei Bedarf in den Cache heruntergeladen.</value>
+  </data>
+  <data name="ViewSettingImageDuplicatesHeader" xml:space="preserve">
+    <value>Doppelte Bild-Caches bereinigen</value>
+  </data>
+  <data name="ViewSettingImageDuplicatesDescription" xml:space="preserve">
+    <value>Löscht nur Caches, deren Inhalt exakt mit den mitgelieferten Bildern im Installationsverzeichnis übereinstimmt. Caches mit abweichendem Inhalt, andere Versionen sowie aus hellem und dunklem Design abgeleitete Bilder bleiben erhalten; das Installationsverzeichnis wird nicht verändert.</value>
+  </data>
+  <data name="ViewSettingImageDuplicatesProgress" xml:space="preserve">
+    <value>Doppelte Bild-Caches werden verglichen und bereinigt…</value>
+  </data>
+  <data name="ViewSettingImageDuplicatesResult" xml:space="preserve">
+    <value>Es wurden {0} doppelte Bild-Caches bereinigt und {1} freigegeben.</value>
+  </data>
+  <data name="ServiceGameIslandVerificationUnavailable" xml:space="preserve">
+    <value>Der Dienst zur Prüfung des Island-Kontos ist vorübergehend nicht erreichbar. Diese Prüfung wurde nicht abgeschlossen, das Spiel wird weiter ausgeführt. Bitte versuchen Sie es erneut, sobald die Netzwerkverbindung wiederhergestellt ist.</value>
   </data>
 </root>

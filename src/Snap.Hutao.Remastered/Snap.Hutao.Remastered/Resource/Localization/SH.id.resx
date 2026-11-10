@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -980,6 +980,9 @@
   <data name="ServiceGachaLogHutaoCloudEndIdFetchFailed" xml:space="preserve">
     <value>Gagal mengambil riwayat wish dari cloud</value>
   </data>
+  <data name="ServiceGachaLogItemMetadataNotFound" xml:space="preserve">
+    <value>Metadata item Wish "{0}" belum diperbarui, silakan coba lagi nanti</value>
+  </data>
   <data name="ServiceGachaLogUrlProviderAuthkeyRequestFailed" xml:space="preserve">
     <value>Gagal meminta kunci otorisasi</value>
   </data>
@@ -1058,6 +1061,9 @@
   </data>
   <data name="ServiceGameLaunchExecutionGameRunningKillFailed" xml:space="preserve">
     <value>Gagal mengakhiri proses</value>
+  </data>
+  <data name="ServiceGameStopProcessAccessDenied" xml:space="preserve">
+    <value>Tidak memiliki izin untuk mengakhiri proses game, jalankan Hutao sebagai administrator lalu coba lagi</value>
   </data>
   <data name="ServiceGameLaunchPhaseProcessExited" xml:space="preserve">
     <value>Proses game ditutup</value>
@@ -4343,6 +4349,9 @@ Ruang Tersedia: {2}</value>
   <data name="ViewPageLaunchGameIslandRedirectCatherineDescription" xml:space="preserve">
     <value>Mengubah pintu masuk Komisi Harian yang mengarah ke Katheryne di Buku Petualang menjadi langsung membuka dialog konfirmasi hadiah komisi Katheryne</value>
   </data>
+  <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
+    <value>Mengubah pintu masuk Komisi Harian di Buku Petualang yang menuju Katheryne menjadi langsung membuka jendela konfirmasi hadiah komisi Katheryne. Klik pertama pada "Klaim Hadiah" akan membuka halaman Ekspedisi terlebih dahulu; pada klik kedua, jika komisi sudah selesai, antarmuka klaim hadiah akan terbuka.</value>
+  </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Hapus cooldown lewati dialog</value>
   </data>
@@ -4823,6 +4832,9 @@ Ruang Tersedia: {2}</value>
   </data>
   <data name="ViewPageSettingAutoStartHeader" xml:space="preserve">
     <value>Mulai otomatis saat startup</value>
+  </data>
+  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
+    <value>Gagal membaca atau memperbaharui tugas terjadwal saat startup. Mohon periksa layanan tugas terjadwal, lalu coba lagi dengan menjalankan aplikasi sebagai administrator.</value>
   </data>
   <data name="ViewPageSettingAppBehaviorHeader" xml:space="preserve">
     <value>Perilaku aplikasi</value>
@@ -6141,7 +6153,92 @@ Ruang Tersedia: {2}</value>
   <data name="UIXamlPagesSettingsPagePlaceholderProviderDefault" xml:space="preserve">
     <value>Provider default</value>
   </data>
-  <data name="ViewModelSettingStartupRegistrationFailed" xml:space="preserve">
-    <value>Gagal membaca atau memperbaharui tugas terjadwal saat startup. Mohon periksa layanan tugas terjadwal, lalu coba lagi dengan menjalankan aplikasi sebagai administrator.</value>
+  <data name="UIXamlPagesSettingsPageDescriptionProfileModelId" xml:space="preserve">
+    <value>Wajib diisi, masukkan pengenal model persis seperti yang disediakan oleh penyedia layanan. Nilai ini digunakan saat meminta API</value>
+  </data>
+  <data name="UIXamlPagesSettingsPageDescriptionModelDisplayName" xml:space="preserve">
+    <value>Opsional, hanya untuk tampilan daftar dan tidak dikirim ke penyedia layanan; jika dikosongkan, ID model akan ditampilkan</value>
+  </data>
+  <data name="UIXamlPagesSettingsPagePlaceholderProfileModelId" xml:space="preserve">
+    <value>Contoh: qwen3.8-flash</value>
+  </data>
+  <data name="UIXamlPagesSettingsPagePlaceholderModelDisplayName" xml:space="preserve">
+    <value>Contoh: model cepat Qwen (boleh dikosongkan)</value>
+  </data>
+  <data name="ViewPageGameRefreshInstallation" xml:space="preserve">
+    <value>Segarkan versi</value>
+  </data>
+  <data name="ViewPageGameVerifyAndRepairLatest" xml:space="preserve">
+    <value>Verifikasi dan perbaiki sesuai versi terbaru</value>
+  </data>
+  <data name="ViewModelGameInstallationSources" xml:space="preserve">
+    <value>Versi konfigurasi pemasangan: {0} · Versi skrip game: {1}</value>
+  </data>
+  <data name="ViewModelGameInstallationConflict" xml:space="preserve">
+    <value>Dua sumber versi tidak konsisten, versi terpasang tidak dapat disimpulkan. Silakan segarkan terlebih dahulu, atau lakukan verifikasi dan perbaikan lengkap sesuai versi target yang ditampilkan; peluncuran normal tidak terpengaruh oleh peringatan ini</value>
+  </data>
+  <data name="ViewModelGameInstallationInvalid" xml:space="preserve">
+    <value>File versi tidak valid atau tidak dapat dibaca. Periksa file yang sedang dipakai dan izinnya lalu segarkan; jika kanal dapat dibaca, Anda juga dapat memverifikasi dan memperbaiki sesuai versi target yang ditampilkan</value>
+  </data>
+  <data name="ViewModelGameInstallationMissingSource" xml:space="preserve">
+    <value>Salah satu sumber versi tidak ada, saat ini menampilkan sumber valid lainnya. File tidak ditulis secara otomatis; informasi versi baru akan disinkronkan setelah verifikasi dan perbaikan selesai</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceMissing" xml:space="preserve">
+    <value>Hilang</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceInvalid" xml:space="preserve">
+    <value>Tidak valid</value>
+  </data>
+  <data name="ViewModelGameInstallationSourceUnreadable" xml:space="preserve">
+    <value>Tidak dapat dibaca</value>
+  </data>
+  <data name="ViewModelGameInstallationChanged" xml:space="preserve">
+    <value>Informasi instalasi game berubah selama persiapan operasi. Untuk menghindari penggunaan versi yang kedaluwarsa, operasi ini dihentikan, silakan segarkan lalu coba lagi</value>
+  </data>
+  <data name="ServiceGameIslandVersionConflict" xml:space="preserve">
+    <value>Sumber versi game tidak konsisten, sehingga versi Island yang kompatibel tidak dapat ditentukan. Silakan verifikasi game terlebih dahulu, atau tutup Island lalu jalankan secara normal</value>
+  </data>
+  <data name="ViewPageGameInstallationInfoTitle" xml:space="preserve">
+    <value>Informasi Versi Game</value>
+  </data>
+  <data name="ViewPageGameInstallationInfoDescription" xml:space="preserve">
+    <value>Versi konfigurasi instalasi berasal dari config.ini, sedangkan versi skrip game berasal dari ScriptVersion. Keduanya mencatat informasi instalasi dan tidak berarti sumber daya game telah diverifikasi.
+
+Setelah memperbarui game melalui launcher lain, Anda dapat mengeklik “Segarkan Versi” untuk membacanya ulang; penyegaran tidak akan mengubah file. Jika versi tidak konsisten, selesaikan pembaruan game terlebih dahulu, atau lakukan verifikasi dan perbaikan lengkap sesuai versi target yang ditampilkan.
+
+Peluncuran biasa tidak dibatasi oleh dukungan versi Island; kompatibilitas akan diperiksa secara terpisah saat fitur peningkatan Island diaktifkan.</value>
+  </data>
+  <data name="ServiceUpdateOpenStoreContent" xml:space="preserve">
+    <value>Buka Microsoft Store untuk mendapatkan pembaruan? Versi ini diperbarui melalui Store. Jika versi baru masih dalam peninjauan atau dirilis secara bertahap, Store mungkin belum menyediakan pembaruan untuk sementara. Silakan coba lagi nanti.</value>
+  </data>
+  <data name="ServiceUpdateOpenStoreFailed" xml:space="preserve">
+    <value>Tidak dapat membuka Microsoft Store atau halaman produk. Silakan cari Snap Hutao Remastered di Microsoft Store dan periksa pembaruan.</value>
+  </data>
+  <data name="ViewGuideBundledImagesHeader" xml:space="preserve">
+    <value>Sumber Daya Gambar</value>
+  </data>
+  <data name="ViewGuideBundledImagesAvailable" xml:space="preserve">
+    <value>Paket instalasi menyertakan gambar versi {0} sebanyak {1} gambar, dibaca langsung dari direktori instalasi dan tidak disalin ke cache. Unduhan paket penuh akan dilewati; gambar yang tidak tersedia akan diunduh sesuai kebutuhan, dan cache yang ada tetap digunakan. Anda dapat membersihkan cache duplikat yang identik dengan gambar bawaan paket di direktori cache pada pengaturan.</value>
+  </data>
+  <data name="ViewGuideBundledImagesUnavailable" xml:space="preserve">
+    <value>Paket instalasi ini tidak menyertakan gambar. Selanjutnya Anda dapat mengunduh paket gambar penuh terlebih dahulu, atau melewatinya dan mengunduh sesuai kebutuhan saat digunakan.</value>
+  </data>
+  <data name="ViewGuideBundledImagesOnDemand" xml:space="preserve">
+    <value>Paket instalasi Store ini tidak menyertakan snapshot gambar, sehingga unduhan paket penuh akan dilewati. Gambar akan diunduh ke cache sesuai kebutuhan saat digunakan.</value>
+  </data>
+  <data name="ViewSettingImageDuplicatesHeader" xml:space="preserve">
+    <value>Bersihkan Cache Gambar Duplikat</value>
+  </data>
+  <data name="ViewSettingImageDuplicatesDescription" xml:space="preserve">
+    <value>Hanya menghapus cache yang isinya sama persis dengan gambar bawaan paket di direktori instalasi. Cache dengan isi berbeda, versi lain, serta gambar turunan tema terang/gelap akan dipertahankan, dan direktori instalasi tidak diubah.</value>
+  </data>
+  <data name="ViewSettingImageDuplicatesProgress" xml:space="preserve">
+    <value>Membandingkan dan membersihkan cache gambar duplikat…</value>
+  </data>
+  <data name="ViewSettingImageDuplicatesResult" xml:space="preserve">
+    <value>Berhasil membersihkan {0} cache gambar duplikat, membebaskan {1}.</value>
+  </data>
+  <data name="ServiceGameIslandVerificationUnavailable" xml:space="preserve">
+    <value>Tidak dapat terhubung ke layanan pemeriksaan akun Island untuk sementara. Pemeriksaan ini tidak selesai dan game akan terus berjalan. Silakan coba lagi setelah jaringan pulih.</value>
   </data>
 </root>
