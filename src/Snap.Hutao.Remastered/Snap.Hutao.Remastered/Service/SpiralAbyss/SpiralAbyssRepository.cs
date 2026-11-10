@@ -5,6 +5,8 @@ using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Service.Abstraction;
 using System.Collections.Frozen;
 
+using Snap.Hutao.Remastered.Core.Database;
+
 namespace Snap.Hutao.Remastered.Service.SpiralAbyss;
 
 [Service(ServiceLifetime.Singleton, typeof(ISpiralAbyssRepository))]
@@ -17,10 +19,7 @@ public sealed partial class SpiralAbyssRepository : ISpiralAbyssRepository
 
     public FrozenDictionary<uint, SpiralAbyssEntry> GetSpiralAbyssEntryMapByUid(string uid)
     {
-        return this.Query(query => query
-            .Where(s => s.Uid == uid)
-            .OrderByDescending(s => s.ScheduleId)
-            .ToFrozenDictionary(e => e.ScheduleId));
+        return this.WithDatabase(context => AppDbQueries.SpiralAbyssByUid(context, uid)).ToFrozenDictionary(e => e.ScheduleId);
     }
 
     public void UpdateSpiralAbyssEntry(SpiralAbyssEntry entry)

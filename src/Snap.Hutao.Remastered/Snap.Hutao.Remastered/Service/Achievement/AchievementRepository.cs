@@ -11,6 +11,8 @@ using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using EntityAchievement = Snap.Hutao.Remastered.Model.Entity.Achievement;
 
+using Snap.Hutao.Remastered.Core.Database;
+
 namespace Snap.Hutao.Remastered.Service.Achievement;
 
 [Service(ServiceLifetime.Singleton, typeof(IAchievementRepository))]
@@ -25,9 +27,7 @@ public sealed partial class AchievementRepository : IAchievementRepository
     {
         try
         {
-            return this.Query<EntityAchievement, FrozenDictionary<AchievementId, EntityAchievement>>(query => query
-                .Where(a => a.ArchiveId == archiveId)
-                .ToFrozenDictionary(a => (AchievementId)a.Id));
+            return this.WithDatabase(context => AppDbQueries.AchievementsByArchive(context, archiveId)).ToFrozenDictionary(a => (AchievementId)a.Id);
         }
         catch (ArgumentException ex)
         {
@@ -37,22 +37,14 @@ public sealed partial class AchievementRepository : IAchievementRepository
 
     public int GetFinishedAchievementCountByArchiveId(Guid archiveId)
     {
-        return this.Query<EntityAchievement, int>(query => query
-            .Where(a => a.ArchiveId == archiveId)
-            .Count(a => a.Status >= AchievementStatus.STATUS_FINISHED));
+        return this.WithDatabase(context => AppDbQueries.FinishedAchievementCount(context, archiveId));
     }
 
     public ImmutableArray<EntityAchievement> GetLatestFinishedAchievementImmutableArrayByArchiveId(Guid archiveId, int take)
     {
         // SQLite does not support expressions of type 'DateTimeOffset' in ORDER BY clauses.
         // Convert the values to a supported type, or use LINQ to Objects to order the results on the client side.
-        return this.ImmutableArray<EntityAchievement, EntityAchievement>(query => query
-            .Where(a => a.ArchiveId == archiveId)
-            .Where(a => a.Status >= AchievementStatus.STATUS_FINISHED)
-#pragma warning disable CA1305 // EF Core does not support IFormatProvider
-            .OrderByDescending(a => a.Time.ToString()) // ORDER BY CAST("a"."Time" AS TEXT) DESC
-#pragma warning restore CA1305
-            .Take(take));
+        return this.WithDatabase(context => AppDbQueries.LatestFinishedAchievements(context, archiveId, take)).ToImmutableArray();
     }
 
     public void OverwriteAchievement(EntityAchievement achievement)
@@ -77,7 +69,7 @@ public sealed partial class AchievementRepository : IAchievementRepository
 
     public ImmutableArray<EntityAchievement> GetAchievementImmutableArrayByArchiveId(Guid archiveId)
     {
-        return this.ImmutableArrayByArchiveId<EntityAchievement>(archiveId);
+        return this.WithDatabase(context => AppDbQueries.AchievementsByArchive(context, archiveId)).ToImmutableArray();
     }
 
     public ImmutableArray<AchievementArchive> GetAchievementArchiveImmutableArray()
@@ -87,12 +79,12 @@ public sealed partial class AchievementRepository : IAchievementRepository
 
     public AchievementArchive? GetAchievementArchiveById(Guid archiveId)
     {
-        return this.SingleOrDefault<AchievementArchive>(a => a.InnerId == archiveId);
+        return this.WithDatabase(context => AppDbQueries.AchievementArchiveById(context, archiveId));
     }
 
     public AchievementArchive? GetAchievementArchiveByName(string name)
     {
-        return this.SingleOrDefault<AchievementArchive>(a => a.Name == name);
+        return this.WithDatabase(context => AppDbQueries.AchievementArchiveByName(context, name));
     }
 
     public void AddAchievementArchive(AchievementArchive archive)

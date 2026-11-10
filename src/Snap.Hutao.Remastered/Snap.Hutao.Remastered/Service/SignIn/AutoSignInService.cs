@@ -171,13 +171,12 @@ public sealed partial class AutoSignInService : IAutoSignInService
 
     private static string? GetSettingValue(AppDbContext appDbContext, string key)
     {
-        return appDbContext.Settings.AsNoTracking().Where(e => e.Key == key).Select(e => e.Value).SingleOrDefault();
+        return AppDbQueries.ReadSetting(appDbContext, key)?.Value;
     }
 
     private static void SetSettingValue(AppDbContext appDbContext, string key, string value)
     {
-        appDbContext.Settings.Where(e => e.Key == key).ExecuteDelete();
-        appDbContext.Settings.AddAndSave(new(key, value));
+        AppDbQueries.WriteSetting(appDbContext, key, value);
     }
 
     private static string GetCompletedDayKeySetting(UserAndUid userAndUid)

@@ -12,6 +12,8 @@ using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
 using System.Collections.Immutable;
 
+using Snap.Hutao.Remastered.Core.Database;
+
 namespace Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.BetterGenshinImpact.Cultivation;
 
 [Service(ServiceLifetime.Singleton, typeof(IAutomationCultivationService))]
@@ -29,7 +31,7 @@ public sealed partial class AutomationCultivationService : IAutomationCultivatio
 
     public async ValueTask<AutomationCultivationProject?> GetCurrentProjectAsync(CancellationToken token = default)
     {
-        CultivateProject? project = cultivationRepository.SingleOrDefault<CultivateProject>(p => p.IsSelected);
+        CultivateProject? project = cultivationRepository.WithDatabase(AppDbQueries.SelectedCultivateProject);
 
         if (project is null)
         {
@@ -41,12 +43,12 @@ public sealed partial class AutomationCultivationService : IAutomationCultivatio
         Dictionary<MaterialId, List<string>> materialToMonsters = await GetMaterialToMonstersAsync(token).ConfigureAwait(false);
 
         Guid projectId = project.InnerId;
-        ImmutableArray<CultivateEntry> entries = cultivationRepository.ImmutableArray<CultivateEntry>(e => e.ProjectId == projectId);
+        ImmutableArray<CultivateEntry> entries = cultivationRepository.GetCultivateEntryImmutableArrayByProjectId(projectId);
         ImmutableArray<AutomationCultivationEntry>.Builder entriesBuilder = ImmutableArray.CreateBuilder<AutomationCultivationEntry>();
         foreach (ref readonly CultivateEntry entry in entries.AsSpan())
         {
             Guid entryId = entry.InnerId;
-            ImmutableArray<CultivateItem> items = cultivationRepository.ImmutableArray<CultivateItem>(i => i.EntryId == entryId);
+            ImmutableArray<CultivateItem> items = cultivationRepository.GetCultivateItemImmutableArrayByEntryId(entryId);
             ImmutableArray<AutomationCultivationItem>.Builder itemsBuilder = ImmutableArray.CreateBuilder<AutomationCultivationItem>();
             foreach (ref readonly CultivateItem item in items.AsSpan())
             {
@@ -68,7 +70,7 @@ public sealed partial class AutomationCultivationService : IAutomationCultivatio
             });
         }
 
-        ImmutableArray<InventoryItem> inventoryItems = inventoryRepository.ImmutableArray(i => i.ProjectId == projectId);
+        ImmutableArray<InventoryItem> inventoryItems = inventoryRepository.GetInventoryItemImmutableArrayByProjectId(projectId);
         ImmutableArray<AutomationInventoryItem>.Builder inventoryItemsBuilder = ImmutableArray.CreateBuilder<AutomationInventoryItem>();
         foreach (ref readonly InventoryItem item in inventoryItems.AsSpan())
         {
