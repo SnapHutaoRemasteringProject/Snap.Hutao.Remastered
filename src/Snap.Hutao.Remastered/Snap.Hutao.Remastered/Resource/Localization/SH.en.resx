@@ -981,7 +981,7 @@
     <value>Failed to fetch cloud wish history</value>
   </data>
   <data name="ServiceGachaLogItemMetadataNotFound" xml:space="preserve">
-    <value>祈愿物品“{0}”的元数据尚未更新，请稍后重试</value>
+    <value>The metadata of wish item “{0}” has not been updated yet, please try again later</value>
   </data>
   <data name="ServiceGachaLogUrlProviderAuthkeyRequestFailed" xml:space="preserve">
     <value>Failed to request authkey</value>
@@ -4350,7 +4350,7 @@ Space Available: {2}</value>
     <value>Change the Catherine entry for Daily Commissions in the Adventurer Handbook to directly open Catherine's commission reward confirmation dialog</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
-    <value>把冒险之证中跳转凯瑟琳的每日委托入口，改为直接打开凯瑟琳的委托奖励确认弹窗。第一次点击「领取奖励」会先打开冒险派遣页面；第二次点击时，如果委托已完成，则会打开领取奖励界面。</value>
+    <value>Change the Daily Commission entry in the Adventurer Handbook that redirects to Katheryne so it directly opens Katheryne's commission reward confirmation dialog. The first click on “Claim Rewards” opens the Expedition page; the second click, if the commission is complete, opens the claim rewards interface.</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Remove Dialogue Skip Cooldown</value>
