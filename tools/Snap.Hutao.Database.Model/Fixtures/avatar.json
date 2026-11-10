@@ -1,0 +1,108 @@
+{
+  "base": {
+    "weapon_type": 0,
+    "weapon": {
+      "id": 123,
+      "type": 0,
+      "rarity": 0,
+      "level": 123,
+      "affix_level": 7
+    },
+    "id": 123,
+    "name": "AOT 中文 <&> \" '",
+    "element": "None",
+    "fetter": 123,
+    "level": 123,
+    "rarity": 0,
+    "actived_constellation_num": 7,
+    "promote_level": 123
+  },
+  "weapon": {
+    "promote_level": 123,
+    "id": 123,
+    "type": 0,
+    "rarity": 0,
+    "level": 123,
+    "affix_level": 7
+  },
+  "relics": [
+    {
+      "id": 123,
+      "name": "AOT 中文 <&> \" '",
+      "icon": "AOT 中文 <&> \" '",
+      "pos": 0,
+      "rarity": 0,
+      "level": 7,
+      "set": {
+        "id": 123,
+        "name": "AOT 中文 <&> \" '",
+        "affixes": [
+          {
+            "activation_number": 7,
+            "effect": "AOT 中文 <&> \" '"
+          }
+        ]
+      },
+      "pos_name": "AOT 中文 <&> \" '",
+      "main_property": {
+        "property_type": 0,
+        "value": "AOT 中文 <&> \" '",
+        "times": 7
+      },
+      "sub_property_list": [
+        {
+          "property_type": 0,
+          "value": "AOT 中文 <&> \" '",
+          "times": 7
+        }
+      ]
+    }
+  ],
+  "constellations": [
+    {
+      "id": 123,
+      "name": "AOT 中文 <&> \" '",
+      "icon": "AOT 中文 <&> \" '",
+      "effect": "AOT 中文 <&> \" '",
+      "is_actived": true,
+      "pos": 7
+    }
+  ],
+  "costumes": [
+    {
+      "id": 123,
+      "name": "AOT 中文 <&> \" '"
+    }
+  ],
+  "selected_properties": [
+    {
+      "property_type": 0,
+      "base": "AOT 中文 <&> \" '",
+      "add": "AOT 中文 <&> \" '",
+      "final": "AOT 中文 <&> \" '"
+    }
+  ],
+  "skills": [
+    {
+      "skill_id": 123,
+      "skill_type": 0,
+      "level": 123
+    }
+  ],
+  "recommend_relic_property": {
+    "recommend_properties": {
+      "sand_main_property_list": [
+        0
+      ],
+      "goblet_main_property_list": [
+        0
+      ],
+      "circlet_main_property_list": [
+        0
+      ],
+      "sub_property_list": [
+        0
+      ]
+    }
+  }
+}

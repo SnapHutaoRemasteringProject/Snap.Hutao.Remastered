@@ -26,10 +26,10 @@ internal static partial class AppDbQueries
         return context.DailyNotes.AsNoTracking().Include(n => n.User).ToArray();
     }
 
-    public static bool UserContainsMid(AppDbContext dbContext, string midArgument)
+    public static bool UserContainsMid(AppDbContext dbContext, string? midArgument)
     {
         AppDbContext context = dbContext;
-        string mid = midArgument;
+        string? mid = midArgument;
         return context.Users.AsNoTracking().Any(u => u.Mid == mid);
     }
 
@@ -259,25 +259,25 @@ internal static partial class AppDbQueries
     {
         AppDbContext context = dbContext;
         Guid archiveId = archiveIdArgument;
-        GachaType queryType = queryTypeArgument;
-        return context.GachaItems.AsNoTracking().Where(i => i.ArchiveId == archiveId && i.QueryType == queryType).OrderByDescending(i => i.Id).FirstOrDefault();
+        long queryType = (long)queryTypeArgument;
+        return context.GachaItems.AsNoTracking().Where(i => i.ArchiveId == archiveId && (long)i.QueryType == queryType).OrderByDescending(i => i.Id).FirstOrDefault();
     }
 
     public static GachaItem? OldestGacha(AppDbContext dbContext, Guid archiveIdArgument, GachaType queryTypeArgument)
     {
         AppDbContext context = dbContext;
         Guid archiveId = archiveIdArgument;
-        GachaType queryType = queryTypeArgument;
-        return context.GachaItems.AsNoTracking().Where(i => i.ArchiveId == archiveId && i.QueryType == queryType).OrderBy(i => i.Id).FirstOrDefault();
+        long queryType = (long)queryTypeArgument;
+        return context.GachaItems.AsNoTracking().Where(i => i.ArchiveId == archiveId && (long)i.QueryType == queryType).OrderBy(i => i.Id).FirstOrDefault();
     }
 
     public static GachaItem[] NewerGacha(AppDbContext dbContext, Guid archiveIdArgument, GachaType queryTypeArgument, long endIdArgument)
     {
         AppDbContext context = dbContext;
         Guid archiveId = archiveIdArgument;
-        GachaType queryType = queryTypeArgument;
+        long queryType = (long)queryTypeArgument;
         long endId = endIdArgument;
-        return context.GachaItems.AsNoTracking().Where(i => i.ArchiveId == archiveId && i.QueryType == queryType && i.Id > endId).OrderByDescending(i => i.Id).ToArray();
+        return context.GachaItems.AsNoTracking().Where(i => i.ArchiveId == archiveId && (long)i.QueryType == queryType && i.Id > endId).OrderByDescending(i => i.Id).ToArray();
     }
 
     public static BeyondGachaItem[] BeyondGachaByArchive(AppDbContext dbContext, Guid archiveIdArgument)
@@ -291,25 +291,25 @@ internal static partial class AppDbQueries
     {
         AppDbContext context = dbContext;
         Guid archiveId = archiveIdArgument;
-        GachaType queryType = queryTypeArgument;
-        return context.BeyondGachaItems.AsNoTracking().Where(i => i.ArchiveId == archiveId && i.QueryType == queryType).OrderByDescending(i => i.Id).FirstOrDefault();
+        long queryType = (long)queryTypeArgument;
+        return context.BeyondGachaItems.AsNoTracking().Where(i => i.ArchiveId == archiveId && (long)i.QueryType == queryType).OrderByDescending(i => i.Id).FirstOrDefault();
     }
 
     public static BeyondGachaItem? OldestBeyondGacha(AppDbContext dbContext, Guid archiveIdArgument, GachaType queryTypeArgument)
     {
         AppDbContext context = dbContext;
         Guid archiveId = archiveIdArgument;
-        GachaType queryType = queryTypeArgument;
-        return context.BeyondGachaItems.AsNoTracking().Where(i => i.ArchiveId == archiveId && i.QueryType == queryType).OrderBy(i => i.Id).FirstOrDefault();
+        long queryType = (long)queryTypeArgument;
+        return context.BeyondGachaItems.AsNoTracking().Where(i => i.ArchiveId == archiveId && (long)i.QueryType == queryType).OrderBy(i => i.Id).FirstOrDefault();
     }
 
     public static BeyondGachaItem[] NewerBeyondGacha(AppDbContext dbContext, Guid archiveIdArgument, GachaType queryTypeArgument, long endIdArgument)
     {
         AppDbContext context = dbContext;
         Guid archiveId = archiveIdArgument;
-        GachaType queryType = queryTypeArgument;
+        long queryType = (long)queryTypeArgument;
         long endId = endIdArgument;
-        return context.BeyondGachaItems.AsNoTracking().Where(i => i.ArchiveId == archiveId && i.QueryType == queryType && i.Id > endId).OrderByDescending(i => i.Id).ToArray();
+        return context.BeyondGachaItems.AsNoTracking().Where(i => i.ArchiveId == archiveId && (long)i.QueryType == queryType && i.Id > endId).OrderByDescending(i => i.Id).ToArray();
     }
 
     public static GachaItem? OldestGachaInArchive(AppDbContext dbContext, Guid archiveIdArgument)

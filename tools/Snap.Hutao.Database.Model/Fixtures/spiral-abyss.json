@@ -1,0 +1,122 @@
+{
+  "schedule_id": 7,
+  "start_time": 7,
+  "end_time": 7,
+  "total_battle_times": 7,
+  "total_win_times": 7,
+  "max_floor": "AOT 中文 <&> \" '",
+  "reveal_rank": [
+    {
+      "avatar_id": 123,
+      "avatar_icon": "AOT 中文 <&> \" '",
+      "value": 7,
+      "rarity": 7
+    }
+  ],
+  "defeat_rank": [
+    {
+      "avatar_id": 123,
+      "avatar_icon": "AOT 中文 <&> \" '",
+      "value": 7,
+      "rarity": 7
+    }
+  ],
+  "damage_rank": [
+    {
+      "avatar_id": 123,
+      "avatar_icon": "AOT 中文 <&> \" '",
+      "value": 7,
+      "rarity": 7
+    }
+  ],
+  "take_damage_rank": [
+    {
+      "avatar_id": 123,
+      "avatar_icon": "AOT 中文 <&> \" '",
+      "value": 7,
+      "rarity": 7
+    }
+  ],
+  "normal_skill_rank": [
+    {
+      "avatar_id": 123,
+      "avatar_icon": "AOT 中文 <&> \" '",
+      "value": 7,
+      "rarity": 7
+    }
+  ],
+  "energy_skill_rank": [
+    {
+      "avatar_id": 123,
+      "avatar_icon": "AOT 中文 <&> \" '",
+      "value": 7,
+      "rarity": 7
+    }
+  ],
+  "floors": [
+    {
+      "index": 7,
+      "icon": "AOT 中文 <&> \" '",
+      "is_unlock": true,
+      "settle_time": 7,
+      "star": 7,
+      "max_star": 7,
+      "levels": [
+        {
+          "index": 7,
+          "star": 7,
+          "max_star": 7,
+          "battles": [
+            {
+              "index": 7,
+              "timestamp": 7,
+              "avatars": [
+                {
+                  "id": 123,
+                  "icon": "AOT 中文 <&> \" '",
+                  "level": 7,
+                  "rarity": 7
+                }
+              ],
+              "settle_date_time": {
+                "year": 7,
+                "month": 7,
+                "day": 7,
+                "hour": 7,
+                "minute": 7,
+                "second": 7
+              }
+            }
+          ],
+          "top_half_floor_monster": [
+            {
+              "name": "AOT 中文 <&> \" '",
+              "icon": "AOT 中文 <&> \" '",
+              "level": 7
+            }
+          ],
+          "bottom_half_floor_monster": [
+            {
+              "name": "AOT 中文 <&> \" '",
+              "icon": "AOT 中文 <&> \" '",
+              "level": 7
+            }
+          ]
+        }
+      ],
+      "settle_date_time": {
+        "year": 7,
+        "month": 7,
+        "day": 7,
+        "hour": 7,
+        "minute": 7,
+        "second": 7
+      },
+      "ley_line_disorder": [
+        "AOT 中文 <&> \" '"
+      ]
+    }
+  ],
+  "total_star": 7,
+  "is_unlock": true
+}

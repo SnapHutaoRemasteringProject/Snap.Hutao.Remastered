@@ -3,12 +3,13 @@
 
 using Snap.Hutao.Remastered.Model.Entity.Abstraction;
 using Snap.Hutao.Remastered.Core.Database;
+using Snap.Hutao.Remastered.Core.Database.Abstraction;
 
 namespace Snap.Hutao.Remastered.Service.Abstraction;
 
 public static class RepositoryAppDbEntityExtension
 {
-    extension<TEntity>(IRepository<TEntity> repository)
+    extension<[DynamicallyAccessedMembers(DatabaseEntityContract.Members)] TEntity>(IRepository<TEntity> repository)
         where TEntity : class, IAppDbEntity
     {
         public int DeleteByInnerId(TEntity entity)

@@ -387,6 +387,12 @@ the build fails with `CS9275`); write a normal constructor in that case.
   regeneration through `tools/Snap.Hutao.Database.Schema`. Do not edit the generated SQL/catalog.
   The build validates source fingerprints; runtime validates SQL hashes, history and foreign keys
   within one write transaction. See [database implementation and verification](docs/database-aot.md).
+- Regenerate the Native AOT EF model/accessors, persistence fixtures and official query interceptors
+  with `scripts/Generate-DatabaseAot.ps1`; `-Check -Native` checks for stale output and runs the real
+  production data host as a Windows native executable. `GenerateEfQueries=true` is only a bootstrap
+  option for generation: ordinary builds and acceptance must include the interceptors. Keep database
+  filtering/ordering in SQL; captured gacha enum parameters use `long` numeric comparisons because
+  rc.3 otherwise dynamically constructs enum type mappings. Never edit generated output by hand.
 - `JsonSerializeContexts.Generated` combines generated contexts as `IJsonTypeInfoResolver`s on
   the caller's options. Do not construct each context with a cloned options instance: nested
   converters must resolve contracts through the same options and resolver chain.
