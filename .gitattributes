@@ -1,2 +1,5 @@
 # Preserve EF-generated SQL, including whitespace in historical raw SQL commands.
 src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Core/Database/Schema/*.sql text eol=lf whitespace=-blank-at-eol
+
+# EF query interception uses physical source content checksums.
+src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Core/Database/*Queries.cs text eol=lf

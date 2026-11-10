@@ -117,7 +117,7 @@ public sealed partial class UserService : IUserService
         user.CookieToken[Cookie.COOKIE_TOKEN] = cookieToken;
 
         string? mid = user.Mid;
-        if (!userRepository.Execute(query => query.Any(u => u.Mid == mid)))
+        if (!userRepository.WithDatabase(context => AppDbQueries.UserContainsMid(context, mid)))
         {
             return false;
         }

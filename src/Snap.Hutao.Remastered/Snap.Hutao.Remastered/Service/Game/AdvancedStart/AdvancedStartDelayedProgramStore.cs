@@ -49,7 +49,7 @@ public sealed class AdvancedStartDelayedProgramStore
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             AppDbContext db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            string? base64 = db.Settings.SingleOrDefault(e => e.Key == Core.Setting.SettingKeys.LaunchAdvancedStartDelayedPrograms)?.Value;
+            string? base64 = AppDbQueries.ReadSetting(db, Core.Setting.SettingKeys.LaunchAdvancedStartDelayedPrograms)?.Value;
             if (string.IsNullOrEmpty(base64))
             {
                 return new();
@@ -76,8 +76,7 @@ public sealed class AdvancedStartDelayedProgramStore
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             AppDbContext db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            db.Settings.Where(e => e.Key == Core.Setting.SettingKeys.LaunchAdvancedStartDelayedPrograms).ExecuteDelete();
-            db.Settings.AddAndSave(new(Core.Setting.SettingKeys.LaunchAdvancedStartDelayedPrograms, base64));
+            AppDbQueries.WriteSetting(db, Core.Setting.SettingKeys.LaunchAdvancedStartDelayedPrograms, base64);
         }
     }
 }

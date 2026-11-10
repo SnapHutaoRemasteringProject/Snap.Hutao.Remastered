@@ -117,7 +117,7 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
     {
         await taskContext.SwitchToBackgroundAsync();
         string uid = entry.Uid;
-        if (!dailyNoteRepository.Execute(query => query.Any(e => e.Uid == uid)))
+        if (!dailyNoteRepository.ContainsUid(uid))
         {
             return false;
         }

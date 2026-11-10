@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.Property;
 using Snap.Hutao.Remastered.Model.Entity.Database;
@@ -42,7 +43,7 @@ public abstract class DbProperty<T> : ObservableObject, IObservableProperty<T>
     protected static string? GetValue(AppDbContext appDbContext, string key)
     {
         // This method is separated to avoid implicit capture of the key
-        return appDbContext.Settings.SingleOrDefault(e => e.Key == key)?.Value;
+        return AppDbQueries.ReadSetting(appDbContext, key)?.Value;
     }
 
     protected abstract void SetValue(T value);
