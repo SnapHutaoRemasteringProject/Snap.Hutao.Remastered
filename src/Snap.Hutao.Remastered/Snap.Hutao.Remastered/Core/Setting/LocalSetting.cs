@@ -139,8 +139,7 @@ public static class LocalSetting
 
         static FileSettingsStore()
         {
-            string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string directory = Path.Combine(appData, "SnapHutaoRemastered");
+            string directory = AppDataPaths.UnpackagedRoot;
             Directory.CreateDirectory(directory);
             SettingsFilePath = Path.Combine(directory, "settings.json");
         }

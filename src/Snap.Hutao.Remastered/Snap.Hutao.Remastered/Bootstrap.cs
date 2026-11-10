@@ -29,7 +29,7 @@ namespace Snap.Hutao.Remastered;
 [SuppressMessage("", "SH001")]
 public static partial class Bootstrap
 {
-    private const string LockName = "SNAP_HUTAO_BOOTSTRAP_LOCK";
+    private static string LockName => "SNAP_HUTAO_BOOTSTRAP_LOCK" + AppDataPaths.InstanceSuffix;
     private static readonly ApplicationInitializationCallback AppInitializationCallback = InitializeApp;
     private static EventWaitHandle? instanceHandle;
 

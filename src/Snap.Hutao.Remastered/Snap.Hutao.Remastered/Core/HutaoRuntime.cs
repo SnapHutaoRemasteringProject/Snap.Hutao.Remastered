@@ -27,7 +27,7 @@ public static class HutaoRuntime
 
     public static string LocalCacheDirectory { get; } = RuntimeEnvironment.IsPackaged
         ? ApplicationData.Current.LocalCacheFolder.Path
-        : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"SnapHutaoRemastered\Cache");
+        : Path.Combine(AppDataPaths.UnpackagedRoot, "Cache");
 
     public static string FamilyName { get; } = RuntimeEnvironment.IsPackaged
         ? Package.Current.Id.FamilyName
@@ -135,6 +135,12 @@ public static class HutaoRuntime
 
     private static string InitializeDataDirectory()
     {
+        if (AppDataPaths.ProfileRoot is { } profileRoot)
+        {
+            Directory.CreateDirectory(profileRoot);
+            return profileRoot;
+        }
+
         // Delete the previous data folder if it exists
         try
         {

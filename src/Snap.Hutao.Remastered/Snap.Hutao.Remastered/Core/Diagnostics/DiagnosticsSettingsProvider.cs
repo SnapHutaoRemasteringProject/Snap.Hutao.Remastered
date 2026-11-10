@@ -19,8 +19,7 @@ public sealed class DiagnosticsSettingsProvider
     {
         if (RuntimeEnvironment.IsUnpackaged)
         {
-            string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string directory = Path.Combine(appData, "SnapHutaoRemastered");
+            string directory = AppDataPaths.UnpackagedRoot;
             Directory.CreateDirectory(directory);
             SettingsFilePath = Path.Combine(directory, "diagnostics_settings.json");
         }

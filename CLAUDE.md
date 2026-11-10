@@ -87,6 +87,10 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
     [`Build/AotPublish.targets`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Build/AotPublish.targets)
     (`MarkupCompilePass1DependsOn` ordering fix and the `Deployment.exe` publish payload), gated on
     `PublishAot`; the default R2R build must stay untouched.
+  - Unpackaged validation can set the child process environment variable `SNAP_HUTAO_PROFILE_ROOT`
+    to an absolute directory. Settings, diagnostics, data/cache and the private instance/IPC namespace
+    use that profile, and it does not replace the normal URI handler. Use
+    `scripts/Test-NativePublish.ps1` to verify the native payload and launch it with a fresh profile.
   - A `DeleteLibsAfterBuild` target removes stray `*.lib` from the output; a
     `CopyContentForUnpackaged` target copies `Resource/` and `Assets/` next to the exe for the
     unpackaged mode.
@@ -171,7 +175,7 @@ src/
 ### 5.1 Dependency injection
 
 Everything is registered by the `Snap.Hutao.Remastered.SourceGeneration` source generator
-(package `1.3.16`, `PrivateAssets=all`). **Do not hand-wire registrations.** Attribute forms that
+(package `1.3.17`, `PrivateAssets=all`). **Do not hand-wire registrations.** Attribute forms that
 actually exist in the repo (counts as of the audit):
 
 | Attribute | Forms in use | Count |

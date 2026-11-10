@@ -91,7 +91,10 @@
           Condition="'$(MSBuildRuntimeType)' == 'Core' and '$(UseXamlCompilerExecutable)' == 'true'">
     <PropertyGroup>
       <_XamlCompilerToolDirectory>$([System.IO.Path]::GetDirectoryName('$(XamlCompilerExePath)'))\</_XamlCompilerToolDirectory>
-      <_PatchedXamlCompilerDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(BaseIntermediateOutputPath)', 'patchedxamlcompiler'))</_PatchedXamlCompilerDirectory>
+      <!-- Debug, Release and projection assessments must not overwrite a compiler
+           that another configuration is executing. Keep each copy with its own
+           TFM/RID-specific intermediate output. -->
+      <_PatchedXamlCompilerDirectory>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(IntermediateOutputPath)', 'patchedxamlcompiler'))</_PatchedXamlCompilerDirectory>
       <_PatchedXamlCompilerExe>$(_PatchedXamlCompilerDirectory)XamlCompiler.exe</_PatchedXamlCompilerExe>
     </PropertyGroup>
 

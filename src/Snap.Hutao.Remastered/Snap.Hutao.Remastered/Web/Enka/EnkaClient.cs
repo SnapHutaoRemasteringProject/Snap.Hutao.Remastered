@@ -3,6 +3,7 @@
 
 using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation.HttpClient;
 using Snap.Hutao.Remastered.Core.IO.Http;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 using Snap.Hutao.Remastered.Web.Enka.Model;
 using Snap.Hutao.Remastered.Web.Hoyolab;
@@ -64,7 +65,7 @@ public sealed partial class EnkaClient
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    return await response.Content.ReadFromJsonAsync<EnkaResponse>(options, token).ConfigureAwait(false);
+                    return await response.Content.ReadFromJsonAsync(JsonSerialize.GetTypeInfo<EnkaResponse>(options), token).ConfigureAwait(false);
                 }
 
                 if (isForward)
