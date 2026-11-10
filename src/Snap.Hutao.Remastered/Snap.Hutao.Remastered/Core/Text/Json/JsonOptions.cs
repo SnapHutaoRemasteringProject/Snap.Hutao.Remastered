@@ -14,8 +14,8 @@ public static class JsonOptions
     public static readonly JsonSerializerOptions Default = CreateDefault();
 
     /// <summary>
-    /// Reflection-only options for the runtime C# scripting window and third-party
-    /// compatibility paths. This is intentionally not used by application JSON paths.
+    /// Explicit reflection-only options for managed compatibility callers.
+    /// This is intentionally not used by native application JSON paths.
     /// </summary>
     public static JsonSerializerOptions CreateReflection()
     {

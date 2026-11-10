@@ -9,16 +9,16 @@ namespace Snap.Hutao.Remastered.ViewModel.AvatarProperty;
 [SuppressMessage("", "SA1202")]
 public static class AvatarPropertySortDescriptions
 {
-    private static readonly SortDescription LevelNumber = new(nameof(AvatarView.LevelNumber), SortDirection.Descending);
-    private static readonly SortDescription Quality = new(nameof(AvatarView.Quality), SortDirection.Descending);
-    private static readonly SortDescription Element = new(nameof(AvatarView.Element), SortDirection.Descending);
-    private static readonly SortDescription Id = new(nameof(AvatarView.Id), SortDirection.Descending);
-    private static readonly SortDescription ActivatedConstellationCount = new(nameof(AvatarView.ActivatedConstellationCount), SortDirection.Descending);
-    private static readonly SortDescription FetterLevel = new(nameof(AvatarView.FetterLevel), SortDirection.Descending);
-    private static readonly SortDescription MaxHp = new(nameof(AvatarView.MaxHp), SortDirection.Descending);
-    private static readonly SortDescription CurAttack = new(nameof(AvatarView.CurAttack), SortDirection.Descending);
-    private static readonly SortDescription CurDefense = new(nameof(AvatarView.CurDefense), SortDirection.Descending);
-    private static readonly SortDescription ElementMastery = new(nameof(AvatarView.ElementMastery), SortDirection.Descending);
+    private static readonly SortDescription<AvatarView> LevelNumber = new(nameof(AvatarView.LevelNumber), SortDirection.Descending);
+    private static readonly SortDescription<AvatarView> Quality = new(nameof(AvatarView.Quality), SortDirection.Descending);
+    private static readonly SortDescription<AvatarView> Element = new(nameof(AvatarView.Element), SortDirection.Descending);
+    private static readonly SortDescription<AvatarView> Id = new(nameof(AvatarView.Id), SortDirection.Descending);
+    private static readonly SortDescription<AvatarView> ActivatedConstellationCount = new(nameof(AvatarView.ActivatedConstellationCount), SortDirection.Descending);
+    private static readonly SortDescription<AvatarView> FetterLevel = new(nameof(AvatarView.FetterLevel), SortDirection.Descending);
+    private static readonly SortDescription<AvatarView> MaxHp = new(nameof(AvatarView.MaxHp), SortDirection.Descending);
+    private static readonly SortDescription<AvatarView> CurAttack = new(nameof(AvatarView.CurAttack), SortDirection.Descending);
+    private static readonly SortDescription<AvatarView> CurDefense = new(nameof(AvatarView.CurDefense), SortDirection.Descending);
+    private static readonly SortDescription<AvatarView> ElementMastery = new(nameof(AvatarView.ElementMastery), SortDirection.Descending);
 
     private static readonly ImmutableArray<SortDescription> DefaultSortDescriptions = [];
 

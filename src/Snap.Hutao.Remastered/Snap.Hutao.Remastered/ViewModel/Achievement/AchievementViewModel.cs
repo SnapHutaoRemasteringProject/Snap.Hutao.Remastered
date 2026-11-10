@@ -33,12 +33,12 @@ public sealed partial class AchievementViewModel : Abstraction.ViewModel, INavig
 {
     public const string ImportUIAFFromClipboard = nameof(ImportUIAFFromClipboard);
 
-    private readonly SortDescription achievementUncompletedItemsFirstSortDescription = new(nameof(AchievementView.IsChecked), SortDirection.Ascending);
-    private readonly SortDescription achievementCompletionTimeSortDescription = new(nameof(AchievementView.Time), SortDirection.Descending);
-    private readonly SortDescription achievementGoalUncompletedItemsFirstSortDescription = new(nameof(AchievementGoalView.FinishPercent), SortDirection.Ascending);
+    private readonly SortDescription<AchievementView> achievementUncompletedItemsFirstSortDescription = new(nameof(AchievementView.IsChecked), SortDirection.Ascending);
+    private readonly SortDescription<AchievementView> achievementCompletionTimeSortDescription = new(nameof(AchievementView.Time), SortDirection.Descending);
+    private readonly SortDescription<AchievementGoalView> achievementGoalUncompletedItemsFirstSortDescription = new(nameof(AchievementGoalView.FinishPercent), SortDirection.Ascending);
 
-    private readonly SortDescription achievementDefaultSortDescription = new(nameof(AchievementView.Order), SortDirection.Ascending);
-    private readonly SortDescription achievementGoalDefaultSortDescription = new(nameof(AchievementGoalView.Order), SortDirection.Ascending);
+    private readonly SortDescription<AchievementView> achievementDefaultSortDescription = new(nameof(AchievementView.Order), SortDirection.Ascending);
+    private readonly SortDescription<AchievementGoalView> achievementGoalDefaultSortDescription = new(nameof(AchievementGoalView.Order), SortDirection.Ascending);
 
     private readonly ExclusiveTokenProvider achievementsTokenProvider = new();
 
