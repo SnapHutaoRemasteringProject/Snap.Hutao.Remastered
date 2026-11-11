@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Database;
+using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
@@ -199,6 +200,8 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     [Command("LoadTileBackgroundAvatarsCommand")]
     private async Task LoadTileBackgroundAvatarsAsync()
     {
+        using SentrySpanScope span = SentrySpanScope.StartCommand(nameof(DailyNoteViewModel));
+
         await taskContext.SwitchToBackgroundAsync();
         try
         {
@@ -278,6 +281,9 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     [Command("SelectTileBackgroundCommand")]
     private async Task SelectTileBackgroundAsync(TileBackgroundAvatarItem? item)
     {
+        using SentrySpanScope span = SentrySpanScope.StartCommand(nameof(DailyNoteViewModel));
+        span.SetData("tile.avatar_id", item?.AvatarId ?? "<none>");
+
         SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Select tile background avatar", "DailyNoteViewModel.Command", [("avatarId", item?.AvatarId ?? "<null>")]));
 
         if (item is null)
@@ -285,9 +291,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
             return;
         }
 
-        // 每次选择都取消上一个还在下载的请求。下载耗时可达数十秒，用户在完成前很可能
-        // 又选了别的角色；如果只比对结果而不取消，旧请求仍会在 TrySetBackgroundAsync
-        // 里写入设置，导致界面显示 A、磁贴却是 B。取消会让它在写设置前中止。
+        // 每次选择都取消上一个还在下载的请求，否则旧请求会在写设置时覆盖新选择。
         CancellationTokenSource cts = ReplaceTileBackgroundCts();
 
         // 「无背景」占位项
@@ -316,8 +320,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
 
         try
         {
-            // TrySetBackgroundAsync 立即写设置并返回，下载在服务侧后台进行，
-            // 因此切换不再等待下载、不再因超时失败；返回的后台任务用于显示下载进度。
+            // 立即写设置并返回，下载在服务侧后台进行，切换不再等待下载；后台任务用于显示进度。
             TileBackgroundSwitchResult result = await dailyNoteTileService.TrySetBackgroundAsync(item.Uid, item.AvatarId, nameCard, cts.Token).ConfigureAwait(false);
 
             await taskContext.SwitchToMainThreadAsync();
@@ -333,8 +336,8 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
                 return;
             }
 
-            // 立即发布磁贴：新角色有旧缓存图就直接显示新背景；
-            // 没有缓存则先显示纯内容磁贴，后台下载完成后服务会再重发一次换上新图。
+            // 立即发布磁贴：有旧缓存图就直接显示新背景；没有则先显示纯内容磁贴，
+            // 后台下载完成后服务会再重发一次换上新图。
             if (DailyNoteEntries is { Count: > 0 } entries)
             {
                 dailyNoteTileService.TryUpdatePrimaryTile(entries);
@@ -348,10 +351,8 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         }
         catch (OperationCanceledException) when (cts.IsCancellationRequested)
         {
-            // 用户已经选了别的角色（或「无背景」），这次切换被主动取消，属于正常路径。
-            // 必须用 token 判断而不是异常类型：HttpClient 超时抛出的 TaskCanceledException
-            // 也继承自 OperationCanceledException，若按类型捕获，超时会被误当成「用户取消」，
-            // 用户等满超时后得不到任何错误提示。
+            // 用户已改选，本次切换被主动取消。必须用 token 而不是异常类型判断：
+            // HttpClient 超时抛出的 TaskCanceledException 也继承自 OperationCanceledException。
             return;
         }
         catch (Exception ex)
@@ -374,11 +375,8 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
 
     /// <summary>
     /// 显示背景图下载进度：先放一条常驻的转圈提示，下载结束后移除并给出结果。
-    /// <para>
-    /// <see cref="InfoBarMessage.MilliSecondsDelay"/> 为 0 的提示不会自动消失，
-    /// 因此这里直接操作 <see cref="IInfoBarService.Collection"/> 自行管理它的生命周期；
-    /// 下载完成后再发一条普通提示（会按阅读时长自动消失）。
-    /// </para>
+    /// <c>MilliSecondsDelay</c> 为 0 的提示不会自动消失，因此直接操作
+    /// <see cref="IInfoBarService.Collection"/> 管理它的生命周期。
     /// </summary>
     private void ShowBackgroundDownloadProgress(TileBackgroundAvatarItem item, Task<TileBackgroundOutcome> backgroundReady, CancellationTokenSource cts)
     {

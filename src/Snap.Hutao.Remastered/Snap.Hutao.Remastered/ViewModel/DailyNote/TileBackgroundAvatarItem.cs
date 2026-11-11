@@ -43,11 +43,9 @@ public sealed partial class TileBackgroundAvatarItem : ObservableObject
     public Uri? PreviewUri { get; }
 
     /// <summary>
-    /// 「无背景」占位项没有名刺，因此没有预览图。
-    /// <para>
+    /// 预览图：「无背景」占位项为 <see langword="null"/>。
     /// 结果缓存在字段里：绑定会在每次属性变更时重新求值，
     /// 每次新建 <see cref="BitmapImage"/> 会让同一张图被反复下载。
-    /// </para>
     /// </summary>
     public ImageSource? NameCardSource
     {
