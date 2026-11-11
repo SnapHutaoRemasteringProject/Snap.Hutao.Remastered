@@ -31,7 +31,7 @@ namespace Snap.Hutao.Remastered.ViewModel.DailyNote;
 
 [BindableCustomPropertyProvider]
 [Service(ServiceLifetime.Scoped)]
-public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
+public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipient<UserAndUidChangedMessage>
 {
     private readonly IContentDialogFactory contentDialogFactory;
     private readonly INavigationService navigationService;
@@ -47,6 +47,12 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     private readonly ILogger<DailyNoteViewModel> logger;
 
     private DailyNoteMetadataContext? metadataContext;
+
+    /// <summary>
+    /// 每次（重新）加载背景候选列表都换一个令牌：账户切换后仍在途的旧加载会被取消，
+    /// 不会把上一个账户的角色列表覆盖到新账户上。
+    /// </summary>
+    private CancellationTokenSource? loadTileBackgroundCts;
 
     [GeneratedConstructor]
     public partial DailyNoteViewModel(IServiceProvider serviceProvider);
@@ -202,10 +208,16 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     {
         using SentrySpanScope span = SentrySpanScope.StartCommand(nameof(DailyNoteViewModel));
 
-        await taskContext.SwitchToBackgroundAsync();
+        // 换新令牌取消上一次在途加载：账户切换后旧结果必须被丢弃。
+        CancellationTokenSource cts = ReplaceLoadTileBackgroundCts();
         try
         {
-            await PrivateLoadTileBackgroundAvatarsAsync().ConfigureAwait(false);
+            await taskContext.SwitchToBackgroundAsync();
+            await PrivateLoadTileBackgroundAvatarsAsync(cts).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cts.IsCancellationRequested)
+        {
+            // 被新一次加载取代，属正常路径。
         }
         catch (Exception ex)
         {
@@ -215,16 +227,41 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         }
     }
 
-    private async ValueTask PrivateLoadTileBackgroundAvatarsAsync()
+    /// <summary>
+    /// 账户或角色切换后，背景候选列表与当前选择都需要按新账户重建。
+    /// </summary>
+    public void Receive(UserAndUidChangedMessage message)
     {
+        if (message.UserAndUid is null)
+        {
+            return;
+        }
+
+        LoadTileBackgroundAvatarsAsync().SafeForget();
+    }
+
+    private CancellationTokenSource ReplaceLoadTileBackgroundCts()
+    {
+        CancellationTokenSource cts = new();
+        CancellationTokenSource? previous = Interlocked.Exchange(ref loadTileBackgroundCts, cts);
+        previous?.Cancel();
+        return cts;
+    }
+
+    private async ValueTask PrivateLoadTileBackgroundAvatarsAsync(CancellationTokenSource cts)
+    {
+        CancellationToken token = cts.Token;
+
         UserAndUid? userAndUid = await userService.GetCurrentUserAndUidAsync().ConfigureAwait(false);
         if (userAndUid is null)
         {
             return;
         }
 
+        token.ThrowIfCancellationRequested();
+
         SummaryFactoryMetadataContext summaryContext = await metadataService.GetContextAsync<SummaryFactoryMetadataContext>().ConfigureAwait(false);
-        Summary? summary = await avatarInfoService.GetSummaryAsync(summaryContext, userAndUid, RefreshOptionKind.None).ConfigureAwait(false);
+        Summary? summary = await avatarInfoService.GetSummaryAsync(summaryContext, userAndUid, RefreshOptionKind.None, token).ConfigureAwait(false);
 
         // RefreshOptionKind.None 只读数据库缓存。该账号的角色若从未在别处拉取过，
         // 缓存为空会让候选列表只剩「无背景」，因此这里补一次主动拉取。
@@ -232,7 +269,11 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         {
             try
             {
-                summary = await avatarInfoService.GetSummaryAsync(summaryContext, userAndUid, RefreshOptionKind.RequestFromHoyolabGameRecord).ConfigureAwait(false);
+                summary = await avatarInfoService.GetSummaryAsync(summaryContext, userAndUid, RefreshOptionKind.RequestFromHoyolabGameRecord, token).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -240,6 +281,8 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
                 logger.LogWarning(ex, "Fetch tile background avatars failed");
             }
         }
+
+        token.ThrowIfCancellationRequested();
 
         ObservableCollection<TileBackgroundAvatarItem> items = [];
         items.Add(new TileBackgroundAvatarItem(string.Empty, string.Empty, SH.ViewPageDailyNoteTileBackgroundNone, null));
@@ -263,6 +306,11 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         string? selectedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
 
         await taskContext.SwitchToMainThreadAsync();
+        if (cts.IsCancellationRequested || cts != loadTileBackgroundCts)
+        {
+            return;
+        }
+
         _suppressSelectionChange = true;
         try
         {
@@ -282,7 +330,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
     private async Task SelectTileBackgroundAsync(TileBackgroundAvatarItem? item)
     {
         using SentrySpanScope span = SentrySpanScope.StartCommand(nameof(DailyNoteViewModel));
-        span.SetData("tile.avatar_id", item?.AvatarId ?? "<none>");
+        span.SetData("daily_note_tile.avatar_id", item?.AvatarId ?? "<none>");
 
         SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Select tile background avatar", "DailyNoteViewModel.Command", [("avatarId", item?.AvatarId ?? "<null>")]));
 
@@ -294,7 +342,6 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         // 每次选择都取消上一个还在下载的请求，否则旧请求会在写设置时覆盖新选择。
         CancellationTokenSource cts = ReplaceTileBackgroundCts();
 
-        // 「无背景」占位项
         if (item.IsNone)
         {
             dailyNoteTileService.ClearBackground();
@@ -368,7 +415,6 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
 
             RestoreAppliedTileBackgroundAvatar();
 
-            // 带上异常信息，便于用户直接看到失败原因（下载失败、解码失败等）。
             messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundFailed, ex));
         }
     }
@@ -486,7 +532,18 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel
         SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Clear daily note tile", "DailyNoteViewModel.Command"));
 
         dailyNoteTileService.ClearBackground();
-        if (dailyNoteTileService.TryUpdatePrimaryTile([]))
+
+        // 清背景后把选择器复位到「无背景」项：否则界面仍显示被清的角色为选中，
+        // 再次点它不会触发属性变更，用户必须先选别的才能恢复该背景。
+        _suppressSelectionChange = true;
+        try
+        {
+            SelectedTileBackgroundAvatar = TileBackgroundAvatars.FirstOrDefault(static item => item.IsNone);
+        }
+        finally
+        {
+            _suppressSelectionChange = false;
+        }        if (dailyNoteTileService.TryUpdatePrimaryTile([]))
         {
             messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteClearTileComplete));
         }

@@ -90,8 +90,10 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     /// </summary>
     public async ValueTask<bool> PrepareBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token)
     {
-        using SentrySpanScope span = SentrySpanScope.StartOperation("tile.download_background", "daily_note_tile");
-        span.SetData("tile.avatar_id", avatarId);
+        // 服务层入口已有 daily_note_tile.prepare_background 事务时，这里作为子 span；
+        // 图标路径（无外层）时它自身成为事务。
+        using SentrySpanScope span = SentrySpanScope.StartOperation("daily_note_tile.download_background", "daily_note_tile");
+        span.SetData("daily_note_tile.avatar_id", avatarId);
 
         string directory = BackgroundCacheDirectory;
         Directory.CreateDirectory(directory);
@@ -141,17 +143,6 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         finally
         {
             TryDeleteFile(temporaryFile);
-        }
-
-        // 超限时 CropAndSave 会改写同名 JPEG，残留的 PNG 会让下一次解析错误命中旧图。
-        foreach (string suffix in (string[])["_wide", "_large"])
-        {
-            string pngPath = Path.Combine(directory, $"{avatarId}{suffix}.png");
-            string jpgPath = Path.Combine(directory, $"{avatarId}{suffix}.jpg");
-            if (File.Exists(pngPath) && File.Exists(jpgPath))
-            {
-                File.Delete(pngPath);
-            }
         }
 
         return true;
@@ -253,16 +244,22 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
 
     /// <summary>
     /// 逐级降低质量重试，直到图片体积落在磁贴允许的 200 KB 以内；PNG 超限时改用 JPEG。
+    /// 每次保存后删掉另一种格式，保证磁盘上只有本次保存的格式，
+    /// 否则旧格式会被解析器优先命中，磁贴显示旧图。
     /// </summary>
     private void SaveCompressedPng(Bitmap output, string path)
     {
         output.Save(path, ImageFormat.Png);
+
+        string jpegPath = Path.ChangeExtension(path, ".jpg");
+
         if (new FileInfo(path).Length <= MaxTileImageBytes)
         {
+            // 新 PNG 已经合规：删掉可能存在的旧 JPEG，它才是该被丢弃的格式。
+            TryDeleteFile(jpegPath);
             return;
         }
 
-        string jpegPath = Path.ChangeExtension(path, ".jpg");
         for (int quality = 90; quality >= 40; quality -= 10)
         {
             using (Bitmap rgb = new(output.Width, output.Height, PixelFormat.Format24bppRgb))
@@ -293,10 +290,17 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
             }
         }
 
-        // JPEG 成功落盘后删除超限的 PNG，否则解析会优先命中那张被 Windows 丢弃的图。
-        if (File.Exists(jpegPath) && new FileInfo(jpegPath).Length <= MaxTileImageBytes)
+        // JPEG 成功落盘后删除超限的 PNG；JPEG 仍超限则也删掉，避免留下坏文件。
+        if (File.Exists(jpegPath))
         {
-            File.Delete(path);
+            if (new FileInfo(jpegPath).Length <= MaxTileImageBytes)
+            {
+                File.Delete(path);
+            }
+            else
+            {
+                File.Delete(jpegPath);
+            }
         }
     }
 
@@ -331,7 +335,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
 
     private async Task PrepareIconsCoreAsync()
     {
-        using SentrySpanScope span = SentrySpanScope.StartOperation("tile.prepare_icons", "daily_note_tile");
+        using SentrySpanScope span = SentrySpanScope.StartOperation("daily_note_tile.prepare_icons", "daily_note_tile");
 
         string directory = IconCacheDirectory;
         Directory.CreateDirectory(directory);

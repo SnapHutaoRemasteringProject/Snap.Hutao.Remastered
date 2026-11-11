@@ -51,8 +51,8 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
     /// </summary>
     private async Task<TileBackgroundOutcome> PrepareBackgroundInBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token)
     {
-        using SentrySpanScope span = SentrySpanScope.StartOperation("tile.prepare_background", "daily_note_tile");
-        span.SetData("tile.avatar_id", avatarId);
+        using SentrySpanScope span = SentrySpanScope.StartOperation("daily_note_tile.prepare_background", "daily_note_tile");
+        span.SetData("daily_note_tile.avatar_id", avatarId);
 
         TileBackgroundOutcome outcome;
 
@@ -104,7 +104,7 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
     /// </summary>
     public bool TryUpdatePrimaryTile(IReadOnlyCollection<DailyNoteEntry> entries)
     {
-        using SentrySpanScope span = SentrySpanScope.StartOperation("tile.update", "daily_note_tile");
+        using SentrySpanScope span = SentrySpanScope.StartOperation("daily_note_tile.update", "daily_note_tile");
 
         if (RuntimeEnvironment.IsUnpackaged)
         {
