@@ -292,8 +292,10 @@ the build fails with `CS9275`); write a normal constructor in that case.
   aliases (as the 2026-10-24 material rewrite did) leaves the `TextBlock` styles on MiSans but
   silently switches *control content* to Segoe UI / Microsoft YaHei UI — both materials inherit the
   mismatch, so it is a global font regression, not a material bug.
-- **Glass pointer motion lives on the control, not the template** — `PointerMotionHelper` writes
-  `Scale`/`Translation` on the control element itself, so swapping in a native style does not stop a
+- **Glass pointer motion lives on the control, not the template** — in WinUI.LiquidGlass v1.3.1,
+  `PointerMotionHelper` calls `MotionAnimation.hpp`, which sets Scale on the control's backing Visual
+  and uses the enabled XAML Translation channel. Never write UIElement.Scale on these controls:
+  the library has already called GetElementVisual. Swapping in a native style does not stop a
   glass button's float/sway. `MaterialAppearance` neutralizes `RestScale`, `PointerOverScale`,
   `PressedScale`, `FocusedScale`, `Elasticity` and `PointerDisplacement`, stops the composition
   animations in the native material, and restores the values captured at load when glass returns.
