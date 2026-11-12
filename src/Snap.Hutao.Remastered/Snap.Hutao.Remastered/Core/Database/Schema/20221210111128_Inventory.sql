@@ -32,6 +32,3 @@ CREATE INDEX "IX_inventory_items_ProjectId" ON "inventory_items" ("ProjectId");
 CREATE INDEX "IX_inventory_reliquaries_ProjectId" ON "inventory_reliquaries" ("ProjectId");
 
 CREATE INDEX "IX_inventory_weapons_ProjectId" ON "inventory_weapons" ("ProjectId");
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20221210111128_Inventory', '11.0.0-rc.3.26522.148');

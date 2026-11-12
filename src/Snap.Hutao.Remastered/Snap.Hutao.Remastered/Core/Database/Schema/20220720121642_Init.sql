@@ -8,6 +8,3 @@ CREATE TABLE "users" (
     "IsSelected" INTEGER NOT NULL,
     "Cookie" TEXT NULL
 );
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20220720121642_Init', '11.0.0-rc.3.26522.148');

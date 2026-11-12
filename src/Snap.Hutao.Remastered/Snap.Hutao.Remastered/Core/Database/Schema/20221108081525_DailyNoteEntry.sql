@@ -18,6 +18,3 @@ CREATE TABLE "daily_notes" (
 );
 
 CREATE INDEX "IX_daily_notes_UserId" ON "daily_notes" ("UserId");
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20221108081525_DailyNoteEntry', '11.0.0-rc.3.26522.148');

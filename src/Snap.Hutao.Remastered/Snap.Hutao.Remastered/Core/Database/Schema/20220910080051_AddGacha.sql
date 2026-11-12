@@ -15,6 +15,3 @@ CREATE TABLE "GachaItems" (
 );
 
 CREATE INDEX "IX_GachaItems_ArchiveId" ON "GachaItems" ("ArchiveId");
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20220910080051_AddGacha', '11.0.0-rc.3.26522.148');
