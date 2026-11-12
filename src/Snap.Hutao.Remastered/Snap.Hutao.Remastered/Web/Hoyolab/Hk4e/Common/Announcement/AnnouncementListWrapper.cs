@@ -6,7 +6,6 @@ using Snap.Hutao.Remastered.Web.Response;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Common.Announcement;
 
-[ObservableObject]
 public sealed partial class AnnouncementListWrapper : ListWrapper<Announcement>
 {
     [JsonPropertyName("list")]

@@ -110,7 +110,7 @@ public sealed partial class AccountInsightsWindow
                 .OrderByDescending(item => item.Time)
                 .Take(35))
             {
-                recentGold.Add(new JsonObject
+                recentGold.Add((JsonNode)new JsonObject
                 {
                     ["name"] = wish.Name,
                     ["date"] = wish.Time.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
@@ -121,7 +121,7 @@ public sealed partial class AccountInsightsWindow
                 });
             }
 
-            pools.Add(new JsonObject
+            pools.Add((JsonNode)new JsonObject
             {
                 ["pool"] = name,
                 ["total_wishes"] = summary.TotalCount,
@@ -144,14 +144,14 @@ public sealed partial class AccountInsightsWindow
             JsonArray featuredNames = [];
             foreach (StatisticsItem featured in eventWish.OrangeUpList.Take(6))
             {
-                featuredNames.Add(new JsonObject
+                featuredNames.Add((JsonNode)new JsonObject
                 {
                     ["name"] = featured.Name,
                     ["recorded_obtain_count"] = featured.Count,
                 });
             }
 
-            featuredBanners.Add(new JsonObject
+            featuredBanners.Add((JsonNode)new JsonObject
             {
                 ["from"] = eventWish.From.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
                 ["to"] = eventWish.To.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),

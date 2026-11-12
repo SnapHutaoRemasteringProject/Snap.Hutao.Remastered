@@ -84,7 +84,7 @@ public sealed partial class AdvancedDbCollectionView<[DynamicallyAccessedMembers
 }
 
 [SuppressMessage("", "SA1402")]
-public sealed partial class AdvancedDbCollectionView<TEntityAccess, TEntity> : AdvancedCollectionView<TEntityAccess>,
+public sealed partial class AdvancedDbCollectionView<TEntityAccess, [DynamicallyAccessedMembers(DatabaseEntityContract.Members)] TEntity> : AdvancedCollectionView<TEntityAccess>,
     IAdvancedDbCollectionView<TEntityAccess>
     where TEntityAccess : class, IEntityAccess<TEntity>, IPropertyValuesProvider
     where TEntity : class, ISelectable

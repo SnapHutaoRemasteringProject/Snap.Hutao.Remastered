@@ -24,7 +24,7 @@ internal sealed class RoundTripInMemoryChatHistoryProvider(ObjectPool<StringBuil
     private readonly ProviderSessionState<State> sessionState = new((_ => new()), StateName, null);
     private IReadOnlyList<string>? stateKeys;
 
-    public override IReadOnlyList<string> StateKeys { get => stateKeys ??= [sessionState.StateKey]; }
+    public override IReadOnlyList<string> StateKeys { get => stateKeys ??= new string[] { sessionState.StateKey }; }
 
     protected override ValueTask<IEnumerable<ChatMessage>> ProvideChatHistoryAsync(InvokingContext context, CancellationToken cancellationToken = default)
     {
@@ -37,7 +37,7 @@ internal sealed class RoundTripInMemoryChatHistoryProvider(ObjectPool<StringBuil
             {
                 continue;
             }
-            OpenAI.Chat.ChatMessage? raw = OpenAI.Chat.MicrosoftExtensionsAIChatExtensions.AsOpenAIChatMessages([message]).FirstOrDefault();
+            OpenAI.Chat.ChatMessage? raw = OpenAI.Chat.MicrosoftExtensionsAIChatExtensions.AsOpenAIChatMessages(new ChatMessage[] { message }).FirstOrDefault();
             if (raw is not null)
             {
                 WorkaroundReasoningContentRoundTrip(message, raw);
@@ -55,7 +55,7 @@ internal sealed class RoundTripInMemoryChatHistoryProvider(ObjectPool<StringBuil
         List<ChatMessage> responseMessages = context.ResponseMessages is null ? [] : [.. context.ResponseMessages];
         if (responseMessages.Count > 0)
         {
-            IReadOnlyList<OpenAI.Chat.ChatMessage> rawRepresentations = [.. OpenAI.Chat.MicrosoftExtensionsAIChatExtensions.AsOpenAIChatMessages(responseMessages)];
+            IReadOnlyList<OpenAI.Chat.ChatMessage> rawRepresentations = OpenAI.Chat.MicrosoftExtensionsAIChatExtensions.AsOpenAIChatMessages(responseMessages).ToList();
 
             // Raw representations should be the same count as response messages
             Debug.Assert(responseMessages.Count == rawRepresentations.Count);

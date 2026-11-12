@@ -16,6 +16,7 @@ using System.Diagnostics;
 
 namespace Snap.Hutao.Remastered.ViewModel.AI.Settings;
 
+[WinRT.GeneratedBindableCustomProperty]
 [Service(ServiceLifetime.Scoped)]
 internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvider serviceProvider) : ObservableObject
 {
@@ -24,14 +25,14 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
 
     public AgentSettings Settings { get; } = serviceProvider.GetRequiredService<ISettingsProvider<AgentSettings>>().CurrentValue;
 
-    public IReadOnlyList<SettingsItem<EnumBox<ModelProviderType>>> ModelProviderTypes { get; } =
+    public List<SettingsItem<EnumBox<ModelProviderType>>> ModelProviderTypes { get; } =
     [
         new("OpenAI Chat Completions | ~/chat/completions", EnumBox.Of(ModelProviderType.OpenAIChatCompletion)),
         new("OpenAI Responses | ~/responses", EnumBox.Of(ModelProviderType.OpenAIResponses)),
         new("Anthropic Messages | ~/v1/messages", EnumBox.Of(ModelProviderType.Anthropic)),
     ];
 
-    public IReadOnlyList<SettingsItem<EnumBox<ReasoningEffort>?>> ReasoningEfforts { get; } =
+    public List<SettingsItem<EnumBox<ReasoningEffort>?>> ReasoningEfforts { get; } =
     [
         new(SHName.UIXamlPagesSettingsPageOptionProviderDefault, null),
         new(SHName.UIXamlPagesSettingsPageOptionReasoningEffortNone, EnumBox.Of(ReasoningEffort.None)),
@@ -246,7 +247,7 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
         {
             ExtendedAgentOptions options = ExtendedAgentOptions.Create(provider, model, Settings.AgentOptions) with { MaxOutputTokens = 64 };
             using IChatClient client = serviceProvider.GetRequiredService<AgentChatClientFactory>().Create(options);
-            ChatResponse response = await client.GetResponseAsync([new ChatMessage(ChatRole.User, "Reply only OK. This is a connection test without account data.")], new ChatOptions { ModelId = model.ModelId, MaxOutputTokens = 64 }, cancellationToken);
+            ChatResponse response = await client.GetResponseAsync((ChatMessage[])[new ChatMessage(ChatRole.User, "Reply only OK. This is a connection test without account data.")], new ChatOptions { ModelId = model.ModelId, MaxOutputTokens = 64 }, cancellationToken);
             SetModelListStatus(InfoBarSeverity.Success, SHName.ViewDialogAccountInsightsTestConnection,
                 string.IsNullOrWhiteSpace(response.Text) ? SHName.ViewDialogAccountInsightsEmptyReply : SHName.ViewDialogAccountInsightsTestSuccess);
         }

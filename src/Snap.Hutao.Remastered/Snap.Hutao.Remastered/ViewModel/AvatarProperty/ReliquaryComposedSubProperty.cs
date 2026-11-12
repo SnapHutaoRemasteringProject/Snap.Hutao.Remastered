@@ -7,7 +7,6 @@ using Snap.Hutao.Remastered.Model.Intrinsic;
 namespace Snap.Hutao.Remastered.ViewModel.AvatarProperty;
 
 [WinRT.GeneratedBindableCustomProperty]
-[ObservableObject]
 public partial class ReliquaryComposedSubProperty : ReliquarySubProperty
 {
     public ReliquaryComposedSubProperty(FightProperty type, string value, uint enhancedCount)

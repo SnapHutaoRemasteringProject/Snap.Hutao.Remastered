@@ -3,7 +3,7 @@
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar;
 
-public sealed class ActLiBen : Act
+public sealed partial class ActLiBen : Act
 {
     [JsonPropertyName("liben_detail")]
     public required ActLiBenDetail LiBenDetail { get; init; }

@@ -1,7 +1,8 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Snap.Hutao.Remastered.Model.Metadata.Avatar;
 using Snap.Hutao.Remastered.Model.Primitive;
 using Snap.Hutao.Remastered.Web.Hutao.SpiralAbyss;
@@ -10,11 +11,10 @@ using System.Globalization;
 
 namespace Snap.Hutao.Remastered.ViewModel.Complex;
 
-[ObservableObject]
-public sealed partial class Team : List<AvatarView>
+public sealed partial class Team : ObservableCollection<AvatarView>
 {
     public Team(ItemRate<string, int> team, ImmutableDictionary<AvatarId, Avatar> idAvatarMap, int rank)
-        : base(4)
+        : base()
     {
         ReadOnlySpan<char> itemSpan = team.Item.AsSpan();
         foreach (Range range in itemSpan.Split(','))
@@ -23,7 +23,7 @@ public sealed partial class Team : List<AvatarView>
             Add(new(idAvatarMap[id], 0));
         }
 
-        AddRange(new AvatarView[4 - Count]);
+        foreach (AvatarView avatar in new AvatarView[4 - Count]) Add(avatar);
 
         UpCount = SH.FormatModelBindingHutaoTeamUpCount(team.Rate);
         Rank = rank;
@@ -31,6 +31,14 @@ public sealed partial class Team : List<AvatarView>
 
     public string UpCount { get; }
 
-    [ObservableProperty]
-    public partial int Rank { get; set; }
+    public int Rank
+    {
+        get;
+        set
+        {
+            if (field == value) return;
+            field = value;
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(Rank)));
+        }
+    }
 }
