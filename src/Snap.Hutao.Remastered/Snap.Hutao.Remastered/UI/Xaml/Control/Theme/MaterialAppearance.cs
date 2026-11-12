@@ -243,11 +243,15 @@ internal static class MaterialAppearance
 
     private static void ResetMotion(FrameworkElement element, Vector3 scale)
     {
+        // Match WinUI.LiquidGlass MotionAnimation.hpp: PointerMotionHelper already owns the backing Visual's Scale. UIElement.Scale is forbidden
+        // after GetElementVisual, even when this method did not acquire it first.
+        ElementCompositionPreview.SetIsTranslationEnabled(element, true);
         Visual visual = ElementCompositionPreview.GetElementVisual(element);
         visual.StopAnimation("Scale");
         visual.StopAnimation("Translation");
         visual.Scale = scale;
-        element.Scale = scale;
+        // Translation is the library's enabled XAML translation channel; unlike
+        // Scale it is reset through UIElement after stopping the Visual animation.
         element.Translation = Vector3.Zero;
     }
 
