@@ -1,6 +1,6 @@
 # 构建、原生发布与交付说明
 
-更新：2026-11-10。现状与证据见 [开发报告](aot-development-report.md)，剩余工作见 [当前阻塞项](aot-blockers.md)。
+更新：2026-11-11。当前按用户要求只构建/发布 Debug。现状与证据见 [开发报告](aot-development-report.md)，剩余工作见 [当前阻塞项](aot-blockers.md)。
 
 ## 构建模式
 
@@ -23,12 +23,12 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.Test -c Debug --logg
 
 ```powershell
 $nativeOutput = Join-Path $PWD ('artifacts/aot/publish-' + (Get-Date -Format yyyyMMdd-HHmmss))
-dotnet publish src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj -c Release -p:Platform=x64 -r win-x64 -p:PublishAot=true -p:PublishReadyToRun=false -p:SelfContained=true -p:JsonSerializerIsReflectionEnabledByDefault=false "-p:PublishDir=$nativeOutput/"
+dotnet publish src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj -c Debug -p:Platform=x64 -r win-x64 -p:PublishAot=true -p:PublishReadyToRun=false -p:SelfContained=true -p:JsonSerializerIsReflectionEnabledByDefault=false "-p:PublishDir=$nativeOutput/"
 ./scripts/Test-NativePublish.ps1 -PublishDirectory $nativeOutput
 ```
 
 原生和普通构建的隐式包不同，不要并行还原同一项目、覆盖同一个 obj/project.assets.json 后再跳过还原。
-本机 rc.3 的 ILC 目标在 --no-build 下仍调用 Compile，会遇到 WinUI 生成项未初始化；使用上面的完整发布。
+此前 rc.3 的 ILC 目标在 --no-build 下仍调用 Compile，曾遇到 WinUI 生成项未初始化；当前继续使用完整发布，不依赖该组合。
 使用新目录，避免旧 R2R/CoreCLR 文件混入交付；不跳过检查来容忍旧文件。
 
 ## 构建目标的职责
@@ -52,6 +52,7 @@ Cake/MSIX/安装器必须消费同一轮完整发布树，不能改用旧 AppX �
 JsonSerialize 从调用方同一份 options/生成解析链取得 JsonTypeInfo；未知类型或解析器异常明确失败，不静默反射重试。
 普通运行时的反射兼容受 IsReflectionEnabledByDefault 控制，原生发布关闭该开关。
 新网络响应、元数据、AI 会话和工具类型必须补齐根与嵌套闭包，并验证旧格式跨读写。
+当前会话通过 AgentConversationJsonOptions 登记应用契约；SDK 类型仍由 SDK 自身契约处理，以保留其内部审批状态字段。旧文件双向读写、24 种可观察内容、重试与待审批恢复均有验证；这不代替实际模型服务/工具执行验收。
 
 数据库运行时升级使用版本化 SQL；生产查询具体化并由官方工具预生成。
 统一入口为 Generate-DatabaseAot.ps1，维护及回滚/边界覆盖见 [数据库实现](database-aot.md)。
@@ -81,7 +82,7 @@ CsWinRT 维持 2.3.1；3.0 的资产问题与包适配见 [独立评估](cswinrt
 ## 验证口径
 
 完整原生发布、生产数据库原生测试和最新普通构建已通过。
-最新测试首跑有一个外网 TLS 失败，该项单独复验通过；细节记录在 CODE_REVIEW.md。
+2026-11-11 的 Debug 全量测试 274/274、关闭 JSON 反射回归 16/16；细节记录在 CODE_REVIEW.md。
 
 未验证：原生 GUI 启动/导航/退出、完整网络/AI/COM 路径、真实无对应运行时机器、MSIX 安装/卸载及性能。
 不把旧 194 条当成当前剩余诊断数，也不写“全部原生功能完成”。

@@ -3,7 +3,7 @@
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.HoyoPlay.Connect.Package;
 
-public sealed class AudioPackageSegment : PackageSegment
+public sealed partial class AudioPackageSegment : PackageSegment
 {
     [JsonPropertyName("language")]
     public string Language { get; set; } = default!;

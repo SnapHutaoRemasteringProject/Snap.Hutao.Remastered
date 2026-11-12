@@ -44,7 +44,7 @@ public sealed partial class BlockDeferral<T> : IDisposable
 
     public IProgress<T> Progress { get; }
 
-    public static async ValueTask<BlockDeferral<T>> CreateAsync<TContentDialog>(IServiceProvider serviceProvider, [RequireStaticDelegate] Action<T, TContentDialog> progressHandler)
+    public static async ValueTask<BlockDeferral<T>> CreateAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TContentDialog>(IServiceProvider serviceProvider, [RequireStaticDelegate] Action<T, TContentDialog> progressHandler)
         where TContentDialog : Microsoft.UI.Xaml.Controls.ContentDialog
     {
         IServiceScope scope = serviceProvider.CreateScope();

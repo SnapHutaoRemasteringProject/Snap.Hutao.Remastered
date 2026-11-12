@@ -73,7 +73,12 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
     public partial string GreetingText { get; set; } = SH.ViewPageHomeGreetingTextDefault;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RedeemCodeItems))]
     public partial ImmutableArray<CodeWrapper> RedeemCodes { get; set; } = [];
+
+    // Keep immutable service results inside the view model; cross the WinRT
+    // ItemsSource boundary with a reference-type list rather than a boxed struct.
+    public List<CodeWrapper> RedeemCodeItems => RedeemCodes.IsDefaultOrEmpty ? [] : new(RedeemCodes);
 
     [ObservableProperty]
     public partial List<CardReference>? Cards { get; set; }
@@ -87,7 +92,10 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
     public partial bool IsActivityCalendarLoading { get; set; } = true;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayedActivityCardItems))]
     public partial ImmutableArray<Act> DisplayedActivityCards { get; set; } = [];
+
+    public List<Act> DisplayedActivityCardItems => DisplayedActivityCards.IsDefaultOrEmpty ? [] : new(DisplayedActivityCards);
 
     public bool IsHomeAnnouncementActivityCalendarPresented
     {
