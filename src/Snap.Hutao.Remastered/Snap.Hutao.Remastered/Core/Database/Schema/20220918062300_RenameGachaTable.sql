@@ -44,6 +44,3 @@ ALTER TABLE "ef_temp_gacha_archives" RENAME TO "gacha_archives";
 PRAGMA foreign_keys = 1;
 
 CREATE INDEX "IX_gacha_items_ArchiveId" ON "gacha_items" ("ArchiveId");
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20220918062300_RenameGachaTable', '11.0.0-rc.3.26522.148');

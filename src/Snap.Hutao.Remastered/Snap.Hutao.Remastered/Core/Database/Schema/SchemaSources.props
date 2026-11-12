@@ -1,4 +1,7 @@
 <Project>
+  <PropertyGroup>
+    <DatabaseSchemaEfVersion>11.0.0</DatabaseSchemaEfVersion>
+  </PropertyGroup>
   <ItemGroup>
     <DatabaseSchemaSource Include="$(MSBuildThisFileDirectory)../../../Migrations/20220720121642_Init.Designer.cs" ExpectedHash="9CD3F6E9FF0DD2722611E014B2A73F48F0C85437FFE2AA11AF1568F597B5ED85" />
     <DatabaseSchemaSource Include="$(MSBuildThisFileDirectory)../../../Migrations/20220720121642_Init.cs" ExpectedHash="C03DCD9C57FA3F9D9A95963342EE7F5D596B7AD0533A7AF3C8D94EDEEFDF8241" />
@@ -94,6 +97,8 @@
     <DatabaseSchemaSource Include="$(MSBuildThisFileDirectory)../../../Migrations/20260919084443_AddBackpackItemEquippedAvatarId.cs" ExpectedHash="F9B682E3FA6217D0C1E88E88E3D8E7D698EA1767F48A809BAC0BB443F8335952" />
     <DatabaseSchemaSource Include="$(MSBuildThisFileDirectory)../../../Migrations/20260925133234_AddAvatarReliquaryScoreSetting.Designer.cs" ExpectedHash="2B7CD31F332E441F25EC95FE3EC31295299C8AD4C6692CDDD8CB7923B708FB5B" />
     <DatabaseSchemaSource Include="$(MSBuildThisFileDirectory)../../../Migrations/20260925133234_AddAvatarReliquaryScoreSetting.cs" ExpectedHash="F6A8E7472186709F1E40BF2E342B1F61F54E5C8D68832AA2B4AF5B133BC110E1" />
+    <DatabaseSchemaSource Include="$(MSBuildThisFileDirectory)../../../Migrations/20261022144006_MakeBackpackEquippedAvatarIdNullable.Designer.cs" ExpectedHash="34AE44454AFF139573B8D579E41F12DE1F469C896D51A85D331EE6D7708F7772" />
+    <DatabaseSchemaSource Include="$(MSBuildThisFileDirectory)../../../Migrations/20261022144006_MakeBackpackEquippedAvatarIdNullable.cs" ExpectedHash="5D118077CE8B329EA8EA98253DF22987DEDEB034E990196E916A9523576134FA" />
     <DatabaseSchemaSource Include="$(MSBuildThisFileDirectory)../../../Migrations/AppDbContextModelSnapshot.cs" ExpectedHash="596D2C2D672056ADA16E328D3D627116B5FE9329BA38E2E74DAB5FB50023A24C" />
   </ItemGroup>
 </Project>

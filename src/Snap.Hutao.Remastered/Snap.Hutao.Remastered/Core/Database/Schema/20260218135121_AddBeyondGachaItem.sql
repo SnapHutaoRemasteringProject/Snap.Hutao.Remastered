@@ -15,6 +15,3 @@ CREATE TABLE "beyond_gacha_items" (
 );
 
 CREATE INDEX "IX_beyond_gacha_items_ArchiveId" ON "beyond_gacha_items" ("ArchiveId");
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20260218135121_AddBeyondGachaItem', '11.0.0-rc.3.26522.148');

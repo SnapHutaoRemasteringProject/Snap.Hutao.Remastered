@@ -39,6 +39,3 @@ DROP TABLE "avatar_infos";
 ALTER TABLE "ef_temp_avatar_infos" RENAME TO "avatar_infos";
 
 PRAGMA foreign_keys = 1;
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20241107151107_AddRoleCombatEntry', '11.0.0-rc.3.26522.148');

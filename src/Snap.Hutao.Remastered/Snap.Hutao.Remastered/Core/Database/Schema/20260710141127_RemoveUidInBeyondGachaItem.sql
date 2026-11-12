@@ -24,6 +24,3 @@ ALTER TABLE "ef_temp_beyond_gacha_items" RENAME TO "beyond_gacha_items";
 PRAGMA foreign_keys = 1;
 
 CREATE INDEX "IX_beyond_gacha_items_ArchiveId" ON "beyond_gacha_items" ("ArchiveId");
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20260710141127_RemoveUidInBeyondGachaItem', '11.0.0-rc.3.26522.148');
