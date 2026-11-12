@@ -4,6 +4,3 @@ CREATE TABLE "spiral_abysses" (
     "Uid" TEXT NOT NULL,
     "SpiralAbyss" TEXT NOT NULL
 );
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20221231104727_SpiralAbyssEntry', '11.0.0-rc.3.26522.148');

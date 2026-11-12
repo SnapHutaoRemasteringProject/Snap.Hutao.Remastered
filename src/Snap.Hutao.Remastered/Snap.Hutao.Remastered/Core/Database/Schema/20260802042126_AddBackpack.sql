@@ -21,6 +21,3 @@ CREATE TABLE "backpack_items" (
 );
 
 CREATE INDEX "IX_backpack_items_ArchiveId" ON "backpack_items" ("ArchiveId");
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20260802042126_AddBackpack', '11.0.0-rc.3.26522.148');

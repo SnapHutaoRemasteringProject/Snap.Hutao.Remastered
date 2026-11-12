@@ -37,13 +37,13 @@ internal static class DatabaseSchema
         List<string> applied = ReadHistory(connection, transaction);
         if (applied.Count > targetCount)
         {
-            throw new InvalidDataException("This database requires a newer application version; downgrading its schema is not supported.");
+            throw new InvalidDataException($"This build cannot accept the database migration history: the database has {applied.Count} records ending at '{applied[^1]}'; the requested target recognizes {targetCount} records ending at '{DatabaseMigrations.All[targetCount - 1].Id}'. Unknown histories and schema downgrades are not supported. The database was not changed.");
         }
         for (int index = 0; index < applied.Count; index++)
         {
             if (applied[index] != DatabaseMigrations.All[index].Id)
             {
-                throw new InvalidDataException("The database migration history is unknown or incomplete. The database was not changed.");
+                throw new InvalidDataException($"The database migration history is unknown or incomplete: record {index + 1} is '{applied[index]}', expected '{DatabaseMigrations.All[index].Id}'. The database was not changed.");
             }
         }
 
@@ -62,7 +62,15 @@ internal static class DatabaseSchema
 
         for (int index = applied.Count; index < targetCount; index++)
         {
-            Execute(connection, transaction, ReadScript(DatabaseMigrations.All[index]));
+            DatabaseMigration migration = DatabaseMigrations.All[index];
+            string sql = ReadScript(migration);
+            if (!string.IsNullOrWhiteSpace(sql)) Execute(connection, transaction, sql);
+            using SqliteCommand history = connection.CreateCommand();
+            history.Transaction = transaction;
+            history.CommandText = "INSERT INTO __EFMigrationsHistory (MigrationId, ProductVersion) VALUES ($id, $version);";
+            history.Parameters.AddWithValue("$id", migration.Id);
+            history.Parameters.AddWithValue("$version", DatabaseMigrations.EfProductVersion);
+            history.ExecuteNonQuery();
         }
 
         using (SqliteCommand check = connection.CreateCommand())

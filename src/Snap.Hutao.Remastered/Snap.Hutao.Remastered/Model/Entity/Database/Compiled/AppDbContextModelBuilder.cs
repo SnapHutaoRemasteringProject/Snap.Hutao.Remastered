@@ -16,7 +16,7 @@ namespace Snap.Hutao.Remastered.Model.Entity.Database.Compiled;
 public partial class AppDbContextModel
 {
     private AppDbContextModel()
-        : base(skipDetectChanges: false, modelId: new Guid("cf76caf6-6f2e-473a-58de-b1bfddcbe5cb"), entityTypeCount: 25)
+        : base(skipDetectChanges: false, modelId: new Guid("c41c48a0-d5f0-7ed6-861f-31b4aaa893ea"), entityTypeCount: 25)
     {
     }
 
@@ -84,7 +84,7 @@ public partial class AppDbContextModel
         UidProfilePictureEntityType.CreateAnnotations(uidProfilePicture);
         UserEntityType.CreateAnnotations(user);
 
-        AddAnnotation("ProductVersion", "11.0.0-rc.3.26522.148");
+        AddAnnotation("ProductVersion", "11.0.0");
         AddRuntimeAnnotation("Relational:RelationalModelFactory", () => CreateRelationalModel());
     }
 

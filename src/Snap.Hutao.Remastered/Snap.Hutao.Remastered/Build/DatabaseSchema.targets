@@ -24,7 +24,7 @@
             expected.Add(path);
             if (!File.Exists(path))
             {
-                Log.LogError("Database migration source is missing: {0}. Regenerate with tools/Snap.Hutao.Database.Schema.", path);
+                Log.LogError("Database migration source is missing: {0}. Regenerate with src/Snap.Hutao.Remastered/Snap.Hutao.Database.Schema.", path);
                 continue;
             }
             string text = File.ReadAllText(path).Replace("\r\n", "\n");
@@ -33,7 +33,7 @@
                 string hash = BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(text))).Replace("-", "");
                 if (hash != source.GetMetadata("ExpectedHash"))
                 {
-                    Log.LogError("Database migration source changed: {0}. Regenerate with tools/Snap.Hutao.Database.Schema.", path);
+                    Log.LogError("Database migration source changed: {0}. Regenerate with src/Snap.Hutao.Remastered/Snap.Hutao.Database.Schema.", path);
                 }
             }
         }
@@ -41,18 +41,20 @@
         {
             if (!expected.Remove(Path.GetFullPath(source.ItemSpec)))
             {
-                Log.LogError("Database migration source is not registered: {0}. Regenerate with tools/Snap.Hutao.Database.Schema.", source.ItemSpec);
+                Log.LogError("Database migration source is not registered: {0}. Regenerate with src/Snap.Hutao.Remastered/Snap.Hutao.Database.Schema.", source.ItemSpec);
             }
         }
         if (expected.Count != 0)
         {
-            Log.LogError("The database migration source list is outdated. Regenerate with tools/Snap.Hutao.Database.Schema.");
+            Log.LogError("The database migration source list is outdated. Regenerate with src/Snap.Hutao.Remastered/Snap.Hutao.Database.Schema.");
         }
       ]]></Code>
     </Task>
   </UsingTask>
 
   <Target Name="ValidateDatabaseSchemaSources" BeforeTargets="CoreCompile" Condition="'$(ValidateDatabaseSchemaSources)' != 'false'">
+    <Error Condition="'%(ReferencePath.NuGetPackageId)' == 'Microsoft.EntityFrameworkCore' and '%(ReferencePath.NuGetPackageVersion)' != '$(DatabaseSchemaEfVersion)'"
+           Text="Resolved EF Core %(ReferencePath.NuGetPackageVersion) differs from generated database artifacts ($(DatabaseSchemaEfVersion)). Regenerate schema and model/query artifacts using the AOT development projects; do not mix generated outputs from different EF versions." />
     <ValidateHutaoDatabaseSchemaSources Sources="@(DatabaseSchemaSource)" ActualSources="@(DatabaseSchemaActualSource)" />
   </Target>
 </Project>

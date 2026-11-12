@@ -9,6 +9,3 @@ UPDATE `cultivate_projects`
                                            '08:00:00'
                                        )
                                    );
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20250220130835_AddCultivationProjectServerTimeZoneOffset', '11.0.0-rc.3.26522.148');

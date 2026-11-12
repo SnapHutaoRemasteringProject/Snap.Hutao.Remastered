@@ -23,6 +23,3 @@ CREATE TABLE "cultivate_items" (
 CREATE INDEX "IX_cultivate_entries_ProjectId" ON "cultivate_entries" ("ProjectId");
 
 CREATE INDEX "IX_cultivate_items_EntryId" ON "cultivate_items" ("EntryId");
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20221202052444_Cultivation', '11.0.0-rc.3.26522.148');

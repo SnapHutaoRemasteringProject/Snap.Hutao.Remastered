@@ -31,11 +31,52 @@ internal static partial class DatabaseVerification
             Require(!RuntimeFeature.IsDynamicCodeSupported && !RuntimeFeature.IsDynamicCodeCompiled, "Must execute as native code");
             Require(!JsonSerializer.IsReflectionEnabledByDefault, "JSON reflection must be disabled");
 #endif
-            DetailedCharacter avatar = Fixture<DetailedCharacter>("avatar");
-            DailyNote dailyNote = Fixture<DailyNote>("daily-note");
-            SpiralAbyss spiralAbyss = Fixture<SpiralAbyss>("spiral-abyss");
-            RoleCombatData roleCombat = Fixture<RoleCombatData>("role-combat");
-            HardChallengeData hardChallenge = Fixture<HardChallengeData>("hard-challenge");
+            // CRUD payloads use production DTOs directly; external legacy-format fixtures were removed.
+            DetailedCharacter avatar = new()
+            {
+                Base = new() { Id = 10000001 },
+                Weapon = new(),
+                Relics = [],
+                Constellations = [],
+                Costumes = [],
+                SelectedProperties = [],
+                Skills = [],
+                RecommendRelicProperty = new() { RecommendProperties = new() { SandMainPropertyList = [], GobletMainPropertyList = [], CircletMainPropertyList = [], SubPropertyList = [] } },
+            };
+            DailyNote dailyNote = new() { CurrentResin = 20, MaxResin = 200, Expeditions = [] };
+            SpiralAbyss spiralAbyss = new()
+            {
+                ScheduleId = 1,
+                StartTime = 1,
+                EndTime = 2,
+                TotalBattleTimes = 1,
+                TotalWinTimes = 1,
+                MaxFloor = "1-1",
+                RevealRank = [],
+                DefeatRank = [],
+                DamageRank = [],
+                TakeDamageRank = [],
+                NormalSkillRank = [],
+                EnergySkillRank = [],
+                Floors = [],
+                TotalStar = 0,
+                IsUnlock = true,
+            };
+            RoleCombatData roleCombat = new()
+            {
+                Detail = new() { RoundsData = [], DetailStat = new() { DifficultyId = default, MaxRoundId = 0, Heraldry = default, GetMedalRoundList = [], MedalNumber = 0, CoinNumber = 0, AvatarBonusNumber = 0, RentCount = 0 }, BackupAvatars = [], FightStatistics = new() { ShortestAvatarList = [], TotalUseTime = 0, IsShowBattleStats = false } },
+                Stat = new() { DifficultyId = default, MaxRoundId = 0, Heraldry = default, GetMedalRoundList = [], MedalNumber = 0, CoinNumber = 0, AvatarBonusNumber = 0, RentCount = 0 },
+                Schedule = new() { StartTime = 1, EndTime = 2, ScheduleType = default, ScheduleId = default, StartDateTime = new() { Year = 2026, Month = 1, Day = 1, Hour = 0, Minute = 0, Second = 0 }, EndDateTime = new() { Year = 2026, Month = 1, Day = 2, Hour = 0, Minute = 0, Second = 0 } },
+                HasData = false,
+                HasDetailData = false,
+            };
+            HardChallengeData hardChallenge = new()
+            {
+                Schedule = new() { ScheduleId = default, StartTime = 1, EndTime = 2, StartDateTime = new() { Year = 2026, Month = 1, Day = 1, Hour = 0, Minute = 0, Second = 0 }, EndDateTime = new() { Year = 2026, Month = 1, Day = 2, Hour = 0, Minute = 0, Second = 0 }, IsValid = true, Name = "CRUD" },
+                SinglePlayer = new() { Challenges = [], HasData = false },
+                MultiPlayer = new() { Challenges = [], HasData = false },
+                Blings = [],
+            };
             User user = new() { Aid = "test-user", SToken = Cookie.Parse("stoken=test-token;stuid=123"), Index = 9 };
             AchievementArchive achievementArchive = AchievementArchive.Create("AOT achievement");
             BackpackArchive backpackArchive = BackpackArchive.Create("AOT backpack");
@@ -117,24 +158,13 @@ internal static partial class DatabaseVerification
             Require(AppDbQueries.GetUsers(context).Single().Aid == "updated-aid", "Update persisted");
             context.Remove(AppDbQueries.GetObjectCache(context).Single());
             Require(context.SaveChanges() == 1 && AppDbQueries.GetObjectCache(context).Length == 0, "Disconnected delete");
-            Console.WriteLine("PASS: 25 real entity types, CRUD, five JSON converters, cookies, parameterized settings.");
+            Console.WriteLine("PASS: 25 real entity types, CRUD, JSON converter CRUD, cookies, parameterized settings.");
         }
         finally
         {
             SqliteConnection.ClearAllPools();
             Directory.Delete(directory, recursive: true);
         }
-    }
-
-    private static T Fixture<T>(string name)
-    {
-        using Stream stream = typeof(DatabaseVerification).Assembly.GetManifestResourceStream("Hutao.Database.Fixtures." + name + ".json") ?? throw new InvalidOperationException("Missing fixture " + name);
-        using StreamReader reader = new(stream);
-        string json = reader.ReadToEnd();
-        T value = PersistenceJson.Deserialize<T>(json) ?? throw new InvalidOperationException("Null fixture " + name);
-        string extended = json.Insert(json.LastIndexOf('}'), ",\n\"future_field\": { \"nested\": [1, 2, 3] }\n");
-        Require(PersistenceJson.Serialize(value) == PersistenceJson.Serialize(PersistenceJson.Deserialize<T>(extended)), "Unknown JSON fields remain compatible: " + name);
-        return value;
     }
 
     private static void RoundTrip<T>(T expected, T actual) => Require(PersistenceJson.Serialize(expected) == PersistenceJson.Serialize(actual), "JSON round-trip " + typeof(T).Name);

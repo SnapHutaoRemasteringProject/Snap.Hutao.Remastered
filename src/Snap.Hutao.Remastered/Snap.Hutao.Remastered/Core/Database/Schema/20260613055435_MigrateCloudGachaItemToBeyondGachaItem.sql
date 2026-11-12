@@ -4,6 +4,3 @@ FROM gacha_items
 WHERE QueryType IN (1000, 2000);
 
 DELETE FROM gacha_items WHERE QueryType IN (1000, 2000);
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20260613055435_MigrateCloudGachaItemToBeyondGachaItem', '11.0.0-rc.3.26522.148');

@@ -16,7 +16,7 @@ internal static class JsonSerializerOptionsServiceCollectionExtensions
         public IServiceCollection AddJsonSerializerOptions()
         {
             services.TryAddKeyedSingleton(JsonSerializerOptionsKey.Settings, CreateSettingsOptions());
-            services.TryAddKeyedSingleton(JsonSerializerOptionsKey.AgentConversation, CreateAgentConversationOptions());
+            services.TryAddKeyedSingleton(JsonSerializerOptionsKey.AgentConversation, AgentConversationJsonOptions.Create());
             services.TryAddKeyedSingleton(JsonSerializerOptionsKey.AIFunctionContent, CreateAIFunctionContentOptions());
 
             return services;
@@ -33,17 +33,9 @@ internal static class JsonSerializerOptionsServiceCollectionExtensions
         };
     }
 
-    private static JsonSerializerOptions CreateAgentConversationOptions()
-    {
-        return new(AIJsonUtilities.DefaultOptions)
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            WriteIndented = true,
-        };
-    }
-
     private static JsonSerializerOptions CreateAIFunctionContentOptions()
     {
         return new(AIJsonUtilities.DefaultOptions);
     }
+
 }

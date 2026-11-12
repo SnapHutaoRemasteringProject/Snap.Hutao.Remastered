@@ -29,6 +29,3 @@ ALTER TABLE "ef_temp_daily_notes" RENAME TO "daily_notes";
 PRAGMA foreign_keys = 1;
 
 CREATE INDEX "IX_daily_notes_UserId" ON "daily_notes" ("UserId");
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20230506065837_RemoveDailyNoteEntryShowInHomeWidget', '11.0.0-rc.3.26522.148');

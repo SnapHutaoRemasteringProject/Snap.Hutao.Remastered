@@ -17,6 +17,7 @@ internal static class SchemaVerifier
         Directory.CreateDirectory(directory);
         try
         {
+            Snap.Hutao.Remastered.DatabaseTooling.BackpackMigrationVerification.Run(directory);
             string reference = ConnectionString(Path.Combine(directory, "reference.db"));
             using (AppDbContext context = CreateContext(reference))
             {

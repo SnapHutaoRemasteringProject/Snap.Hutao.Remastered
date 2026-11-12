@@ -76,6 +76,9 @@
     <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/JsonSerialize.cs" Link="Production/JsonSerialize.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/Contexts/AgentJsonContext.cs" Link="Production/AgentJsonContext.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/Contexts/AgentSettingsJsonContext.cs" Link="Production/AgentSettingsJsonContext.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/Contexts/AgentConversationJsonContext.cs" Link="Production/AgentConversationJsonContext.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/AgentConversationJsonOptions.cs" Link="Production/AgentConversationJsonOptions.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/AI/Text/Json/*.cs" Link="Production/Agent/Json/%(Filename)%(Extension)" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/Contexts/DiagnosticsJsonContext.cs" Link="Production/DiagnosticsJsonContext.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/Converter/ObjectDictionaryConverter.cs" Link="Production/ObjectDictionaryConverter.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Text/Json/Converter/InternStringConverter.cs" Link="Production/InternStringConverter.cs" />
@@ -121,23 +124,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <PackageReference Include="Microsoft.Agents.AI.Anthropic" Version="1.28.0" />
-    <PackageReference Include="Microsoft.Agents.AI.Harness" Version="1.28.0" />
-    <PackageReference Include="Microsoft.Agents.AI.OpenAI" Version="1.28.0" />
-    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="11.0.0-rc.3.26522.148" />
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="11.0.0-rc.3.26522.148" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0-rc.3.26522.148" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="11.0.0-rc.3.26522.148" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="4.5.2" />
-    <PackageReference Include="MSTest.TestFramework" Version="4.5.2" />
-    <PackageReference Include="Quartz" Version="4.7.2" />
-    <PackageReference Include="coverlet.collector" Version="10.1.0">
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Microsoft.Agents.AI.Anthropic" />
+    <PackageReference Include="Microsoft.Agents.AI.Harness" />
+    <PackageReference Include="Microsoft.Agents.AI.OpenAI" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="MSTest.TestAdapter" />
+    <PackageReference Include="MSTest.TestFramework" />
+    <PackageReference Include="Quartz" />
+    <PackageReference Include="coverlet.collector">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Threading.RateLimiting" Version="11.0.0-rc.3.26522.148" />
+    <PackageReference Include="System.Threading.RateLimiting" />
   </ItemGroup>
 
 </Project>

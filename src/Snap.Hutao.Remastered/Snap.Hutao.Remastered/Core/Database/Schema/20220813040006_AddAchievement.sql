@@ -8,6 +8,3 @@ CREATE TABLE "achievements" (
 );
 
 CREATE INDEX "IX_achievements_UserId" ON "achievements" ("UserId");
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20220813040006_AddAchievement', '11.0.0-rc.3.26522.148');

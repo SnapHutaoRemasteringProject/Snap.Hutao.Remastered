@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net11.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<ValidateDatabaseSchemaSources>false</ValidateDatabaseSchemaSources>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+		<Compile Include="../Snap.Hutao.Remastered/Migrations/*.cs" Link="Migrations/%(Filename)%(Extension)" />
+		<Compile Include="../Snap.Hutao.Remastered/Core/Database/DatabaseSchema.cs" Link="Production/DatabaseSchema.cs" />
+		<Compile Include="../Snap.Hutao.Remastered/Core/Database/Schema/DatabaseMigrations.g.cs" Link="Production/DatabaseMigrations.g.cs" />
+	</ItemGroup>
+	<Import Project="../Snap.Hutao.Remastered/Build/DatabaseSchema.targets" />
+</Project>
