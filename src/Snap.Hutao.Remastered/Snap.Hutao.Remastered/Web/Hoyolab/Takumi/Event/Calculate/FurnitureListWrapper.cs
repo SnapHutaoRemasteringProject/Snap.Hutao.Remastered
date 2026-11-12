@@ -5,7 +5,7 @@ using Snap.Hutao.Remastered.Web.Response;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate;
 
-public sealed class FurnitureListWrapper : ListWrapper<Item>
+public sealed partial class FurnitureListWrapper : ListWrapper<Item>
 {
     [JsonPropertyName("not_calc_list")]
     public List<Item>? NotCalculateList { get; set; }

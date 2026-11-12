@@ -22,7 +22,7 @@ namespace Snap.Hutao.Remastered.Core.Diagnostics;
 /// silently become a transaction of its own.
 /// </para>
 /// </remarks>
-public sealed class SentrySpanScope : IDisposable
+public sealed partial class SentrySpanScope : IDisposable
 {
     private static readonly AsyncLocal<ISpan?> CurrentSpan = new();
     private static readonly SentrySpanScope NoOp = new(null, null);

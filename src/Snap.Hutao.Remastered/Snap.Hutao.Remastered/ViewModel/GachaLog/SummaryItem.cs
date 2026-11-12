@@ -7,7 +7,6 @@ using Snap.Hutao.Remastered.Model;
 namespace Snap.Hutao.Remastered.ViewModel.GachaLog;
 
 [WinRT.GeneratedBindableCustomProperty]
-[ObservableObject]
 public sealed partial class SummaryItem : Item
 {
     [ObservableProperty]

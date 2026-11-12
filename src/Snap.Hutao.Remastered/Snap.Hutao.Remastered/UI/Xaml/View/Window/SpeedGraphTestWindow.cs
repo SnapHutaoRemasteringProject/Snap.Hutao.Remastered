@@ -16,7 +16,7 @@ using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Window;
 
 [Service(ServiceLifetime.Transient)]
-public sealed class SpeedGraphTestWindow : Microsoft.UI.Xaml.Window,
+public sealed partial class SpeedGraphTestWindow : Microsoft.UI.Xaml.Window,
     IXamlWindowExtendContentIntoTitleBar,
     IXamlWindowHasInitSize,
     IDisposable

@@ -691,7 +691,7 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
 
     // Keep the wire DTO unchanged; the editable UI model supplies notifications
     // so inactive native/glass branches also observe edits to announcement fields.
-    public sealed class AnnouncementEditor : ObservableObject
+    public sealed partial class AnnouncementEditor : ObservableObject
     {
         public string Title { get; set => SetProperty(ref field, value); } = default!;
 
@@ -713,14 +713,14 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
         };
     }
 
-    public sealed class ExtractOptions : ObservableObject
+    public sealed partial class ExtractOptions : ObservableObject
     {
         public bool IsOversea { get; set => SetProperty(ref field, value); }
 
         public bool IsPreDownload { get; set => SetProperty(ref field, value); }
     }
 
-    public sealed class DesignationOptions : ObservableObject
+    public sealed partial class DesignationOptions : ObservableObject
     {
         public string UserName { get; set => SetProperty(ref field, value); } = default!;
 

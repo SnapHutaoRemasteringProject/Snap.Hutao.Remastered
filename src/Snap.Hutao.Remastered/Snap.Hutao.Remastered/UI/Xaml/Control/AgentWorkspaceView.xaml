@@ -15,6 +15,7 @@
     xmlns:snuxd="using:Snap.Hutao.Remastered.UI.Xaml.Data.AI"
     xmlns:snuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:snv="using:Snap.Hutao.Remastered.ViewModel.AI"
+    x:DataType="snv:AgentViewModel"
     d:DataContext="{d:DesignInstance snv:AgentViewModel}"
     mc:Ignorable="d">
 
@@ -344,7 +345,7 @@
                     SelectedItem="{Binding Conversations.CurrentItem, Mode=TwoWay}"
                     SelectionMode="Single">
                     <ListView.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="snv:AgentConversationViewModel">
                             <Grid
                                 MinHeight="68"
                                 Padding="12,8"
@@ -534,7 +535,7 @@
                         ItemContainerTransitions="{ThemeResource AddDeleteThemeTransitions}"
                         ItemsSource="{Binding Conversations.CurrentItem.Messages}">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate x:DataType="snv:AgentConversationViewModel">
                                 <snuxcc:ChatMessageView Margin="0,0,0,8" Message="{Binding}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

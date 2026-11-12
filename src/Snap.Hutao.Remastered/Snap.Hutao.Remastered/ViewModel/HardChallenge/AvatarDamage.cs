@@ -8,7 +8,7 @@ using System.Globalization;
 
 namespace Snap.Hutao.Remastered.ViewModel.HardChallenge;
 
-public sealed class AvatarDamage : AvatarView
+public sealed partial class AvatarDamage : AvatarView
 {
     private AvatarDamage(HardChallengeBestAvatar avatar, Avatar metaAvatar)
         : base(metaAvatar)

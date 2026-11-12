@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 namespace Snap.Hutao.Remastered.Service.AI.Compatibility.OpenAIChatCompletion;
 
 // Specially designed DelegatingChatClient to rectify multiple 'usage_content' in one chat response.
-internal sealed class UsageContentRectifyDelegatingChatClient(IChatClient innerClient) : DelegatingChatClient(innerClient)
+internal sealed partial class UsageContentRectifyDelegatingChatClient(IChatClient innerClient) : DelegatingChatClient(innerClient)
 {
     public override async Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default)
     {

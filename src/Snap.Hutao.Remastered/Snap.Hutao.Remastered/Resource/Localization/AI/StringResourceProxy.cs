@@ -9,9 +9,9 @@ using System.Globalization;
 
 namespace Snap.Hutao.Remastered.Resource.Localization.AI;
 
-internal sealed class StringResourceProxy : ObservableObject
+internal sealed partial class StringResourceProxy : ObservableObject
 {
-    public static IReadOnlyList<string> SupportedCultures { get; } = ["zh-Hans", "en"];
+    public static IReadOnlyList<string> SupportedCultures { get; } = new string[] { "zh-Hans", "en" };
 
     public static StringResourceProxy Default { get; } = new();
 

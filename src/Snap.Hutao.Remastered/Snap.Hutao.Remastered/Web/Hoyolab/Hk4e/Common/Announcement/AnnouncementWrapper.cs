@@ -6,7 +6,7 @@ using Snap.Hutao.Remastered.Web.Response;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Common.Announcement;
 
-public sealed class AnnouncementWrapper : ListWrapper<AnnouncementListWrapper>, IJsonOnDeserialized
+public sealed partial class AnnouncementWrapper : ListWrapper<AnnouncementListWrapper>, IJsonOnDeserialized
 {
     [JsonPropertyName("total")]
     public int Total { get; set; }

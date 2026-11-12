@@ -1,7 +1,7 @@
 # Native AOT 后续开发流程
 
 仓库：SnapHutaoRemasteringProject/Snap.Hutao.Remastered；分支：feat/aot-compatible。
-更新：2026-11-10。先读适用的 AGENTS.md、CLAUDE.md、CODE_REVIEW.md。
+更新：2026-11-12。先读适用的 AGENTS.md、CLAUDE.md、CODE_REVIEW.md。
 
 ## 文档入口
 
@@ -16,7 +16,10 @@
 
 ## 起点与用户决策
 
-- 本机 SDK/EF 为 11.0.100-rc.3.26522.148 / 11.0.0-rc.3.26522.148；不新增 global.json。
+- 本机 SDK 为 11.0.100；.NET/EF 包统一共享 11.*（当前还原 11.0.0），不新增 global.json。本流程直接调用官方设计服务，无独立 dotnet-ef 工具依赖。
+- 两个 AOT 生成项目已在 src/Snap.Hutao.Remastered 与 slnx；用途及命令先读该目录的 [AOT.md](../src/Snap.Hutao.Remastered/AOT.md)。
+- 必须保留已使用的迁移 ID。用户实际旧库有 20261022144006_MakeBackpackEquippedAvatarIdNullable，已从原提交恢复；当前登记 48 条，不能重新退回只含 47 条的版本。
+- 用户要求当前只做 Debug 构建/原生发布，不构建 Release。Generate-DatabaseAot.ps1 也已默认 Debug。
 - 数据层真实生产代码原生运行通过，生成产物齐全；主 WinUI 已实际原生发布。
 - 插件/Harmony 已在此前分支移除；C# 脚本现经用户授权移除，不做 CoreCLR 脚本进程。
 - CsWinRT 保持 2.3.1；3.0 评估止于依赖还原，不能说新版已修复运行问题。
@@ -61,6 +64,6 @@ GenerateEfQueries=true 只作生成引导，不用于最终构建或验收。
 
 ## 阶段交付
 
-记录源码版本、SDK/包版本、命令、退出码、产物哈希、运行结果及未验证范围。
+记录源码版本、SDK/包版本、命令、退出码、运行结果及未验证范围；详细日志留 artifacts，不把文件大小/哈希清单当成功能报告。
 同步开发报告、领域文档和 CODE_REVIEW.md；比较 dev，清理实验漂移，保留必要生成/验证宿主。
 测试失败须记录原因与复验，不通过过滤/抑制写成全量通过。警告逐项归属，不复用旧 194 条作新统计。

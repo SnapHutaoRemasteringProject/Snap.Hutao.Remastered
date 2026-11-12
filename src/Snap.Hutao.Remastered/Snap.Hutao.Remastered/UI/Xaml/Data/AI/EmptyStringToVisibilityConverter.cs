@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Data.AI;
 
-internal sealed class EmptyStringToVisibilityConverter : EmptyStringToObjectConverter
+internal sealed partial class EmptyStringToVisibilityConverter : EmptyStringToObjectConverter
 {
     private bool isInverted;
 

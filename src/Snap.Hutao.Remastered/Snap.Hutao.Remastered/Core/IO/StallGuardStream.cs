@@ -14,7 +14,7 @@ namespace Snap.Hutao.Remastered.Core.IO;
 /// pending read before surfacing <see cref="StallDetectedException"/>. Awaiting the aborted read
 /// is what keeps it from faulting as an unobserved task. Only asynchronous reads are supported.
 /// </remarks>
-public sealed class StallGuardStream : Stream
+public sealed partial class StallGuardStream : Stream
 {
     private readonly Stream inner;
     private readonly TimeSpan readTimeout;

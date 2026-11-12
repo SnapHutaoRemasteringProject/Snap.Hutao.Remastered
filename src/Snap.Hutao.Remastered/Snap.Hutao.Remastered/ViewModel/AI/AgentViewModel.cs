@@ -14,6 +14,7 @@ using Snap.Hutao.Remastered.Resource.Localization.AI;
 
 namespace Snap.Hutao.Remastered.ViewModel.AI;
 
+[WinRT.GeneratedBindableCustomProperty]
 [Service(ServiceLifetime.Scoped)]
 internal sealed partial class AgentViewModel : ObservableObject, IDisposable
 {

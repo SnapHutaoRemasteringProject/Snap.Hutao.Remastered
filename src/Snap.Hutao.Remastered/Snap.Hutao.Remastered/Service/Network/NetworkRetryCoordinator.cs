@@ -348,7 +348,7 @@ public sealed partial class NetworkRetryCoordinator : INetworkRetryCoordinator, 
         }
     }
 
-    private sealed class Registration : IDisposable
+    private sealed partial class Registration : IDisposable
     {
         private readonly NetworkRetryCoordinator owner;
         private readonly string key;

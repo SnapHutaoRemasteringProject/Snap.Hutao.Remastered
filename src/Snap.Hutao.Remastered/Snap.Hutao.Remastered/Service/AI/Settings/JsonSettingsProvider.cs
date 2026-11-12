@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2026 DGP Studio. All rights reserved.
+// Copyright (c) 2026 DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 // Adapted from Snap.Nicole.
 
@@ -17,7 +17,7 @@ namespace Snap.Hutao.Remastered.Service.AI.Settings;
 
 // A single change in the options can trigger the whole object graph to be serialized and written to disk,
 // so it's recommended to use this provider only for relatively small options objects and avoid putting large data in them.
-internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, IDisposable
+internal partial class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, IDisposable
     where TSettings : class, INotifyPropertyChanged, ICopyFrom<TSettings>, new()
 {
     private const int LoadRetryCount = 3;

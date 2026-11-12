@@ -9,7 +9,7 @@ using Snap.Hutao.Remastered.Service.AI.Models;
 namespace Snap.Hutao.Remastered.ViewModel.AI;
 
 [Service(ServiceLifetime.Scoped)]
-internal sealed class AgentConversationCollectionController(IServiceProvider serviceProvider)
+internal sealed partial class AgentConversationCollectionController(IServiceProvider serviceProvider)
     : IAgentConversationDeleteHandler, IDisposable
 {
     private readonly AgentConversationPersistenceController persistenceController = serviceProvider.GetRequiredService<AgentConversationPersistenceController>();
