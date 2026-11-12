@@ -9,7 +9,7 @@ $overrides = Join-Path $assessment 'VersionOverride.targets'
 @'
 <Project>
   <ItemGroup>
-    <PackageReference Update="Microsoft.Windows.CsWinRT" Version="3.0.0-preview.261104.1" />
+    <PackageVersion Update="Microsoft.Windows.CsWinRT" Version="3.0.0-preview.261104.1" />
   </ItemGroup>
 </Project>
 '@ | Set-Content -LiteralPath $overrides -Encoding utf8NoBOM
@@ -17,7 +17,7 @@ $overrides = Join-Path $assessment 'VersionOverride.targets'
 # Build the actual application with the complete production dependency graph.
 # Separate restore/intermediate/output paths leave the current 2.x build intact.
 & dotnet build (Join-Path $repository 'src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj') `
-    -c Release '-p:Platform=x64' '-p:PublishReadyToRun=false' `
+    -c Debug '-p:Platform=x64' '-p:PublishReadyToRun=false' `
     '-p:TargetFramework=net11.0-windows10.0.26100.1' `
     '-p:TargetFrameworks=net11.0-windows10.0.26100.1' `
     '-p:WindowsSdkPackageVersion=10.0.26100.88-preview' `

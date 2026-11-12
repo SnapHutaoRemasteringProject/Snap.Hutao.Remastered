@@ -15,6 +15,3 @@ CREATE TABLE "cultivate_entry_level_informations" (
 );
 
 CREATE INDEX "IX_cultivate_entry_level_informations_EntryId" ON "cultivate_entry_level_informations" ("EntryId");
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20231207085530_AddCultivateEntryLevelInformation', '11.0.0-rc.3.26522.148');

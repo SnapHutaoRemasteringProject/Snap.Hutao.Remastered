@@ -35,6 +35,3 @@ ALTER TABLE "ef_temp_achievements" RENAME TO "achievements";
 PRAGMA foreign_keys = 1;
 
 CREATE INDEX "IX_achievements_ArchiveId" ON "achievements" ("ArchiveId");
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20220815133601_AddAchievementArchive', '11.0.0-rc.3.26522.148');
