@@ -28,8 +28,7 @@ public sealed partial class User : ObservableObject, IEntityAccess<EntityUser>,
         this.serviceProvider = serviceProvider;
     }
 
-    [ObservableProperty]
-    public partial bool IsInitialized { get; set; }
+    public bool IsInitialized { get; set; }
 
     [ObservableProperty]
     public partial UserInfo? UserInfo { get; set; }
@@ -86,8 +85,7 @@ public sealed partial class User : ObservableObject, IEntityAccess<EntityUser>,
 
     public EntityUser Entity { get; }
 
-    [ObservableProperty]
-    public partial bool NeedDbUpdateAfterResume { get; set; }
+    public bool NeedDbUpdateAfterResume { get; set; }
 
     public string? PreferredUid { get => Entity.PreferredUid; private set => Entity.PreferredUid = value; }
 

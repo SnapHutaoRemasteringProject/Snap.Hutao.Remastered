@@ -30,7 +30,6 @@ public sealed class UserInitializationThreadingTest
         CollectionAssert.AreEqual(new[] { "10001", "10002" }, scenario.Dependencies.SignedInUids);
         CollectionAssert.Contains(scenario.Notifications, nameof(BindingUser.UserInfo));
         CollectionAssert.Contains(scenario.Notifications, nameof(BindingUser.UserGameRoles));
-        CollectionAssert.Contains(scenario.Notifications, nameof(BindingUser.IsInitialized));
     }
 
     [TestMethod]

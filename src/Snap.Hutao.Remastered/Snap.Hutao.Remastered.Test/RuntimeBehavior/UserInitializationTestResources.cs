@@ -93,8 +93,7 @@ namespace Snap.Hutao.Remastered.ViewModel.User
 {
     public sealed partial class User : ObservableObject
     {
-        [ObservableProperty]
-        public partial bool IsInitialized { get; set; }
+        public bool IsInitialized { get; set; }
 
         [ObservableProperty]
         public partial Web.Hoyolab.Bbs.User.UserInfo? UserInfo { get; set; }
