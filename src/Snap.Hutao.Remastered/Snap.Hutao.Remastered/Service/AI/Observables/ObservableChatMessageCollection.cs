@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace Snap.Hutao.Remastered.Service.AI.Observables;
 
-internal sealed class ObservableChatMessageCollection : ObservableCollection<ObservableChatMessage>
+internal sealed partial class ObservableChatMessageCollection : ObservableCollection<ObservableChatMessage>
 {
     public ObservableChatMessageCollection()
         : base()

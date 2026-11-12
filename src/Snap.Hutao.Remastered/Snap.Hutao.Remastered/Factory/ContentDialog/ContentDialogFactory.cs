@@ -95,7 +95,7 @@ public sealed partial class ContentDialogFactory : IContentDialogFactory
         return dialog;
     }
 
-    public async ValueTask<TContentDialog> CreateInstanceAsync<TContentDialog>(IServiceProvider serviceProvider, params object[] parameters)
+    public async ValueTask<TContentDialog> CreateInstanceAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TContentDialog>(IServiceProvider serviceProvider, params object[] parameters)
         where TContentDialog : Microsoft.UI.Xaml.Controls.ContentDialog
     {
         await TaskContext.SwitchToMainThreadAsync();

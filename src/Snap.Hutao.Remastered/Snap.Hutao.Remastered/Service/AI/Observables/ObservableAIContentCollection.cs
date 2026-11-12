@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 
 namespace Snap.Hutao.Remastered.Service.AI.Observables;
 
-internal sealed class ObservableAIContentCollection : ObservableCollection<ObservableAIContent>
+internal sealed partial class ObservableAIContentCollection : ObservableCollection<ObservableAIContent>
 {
     public ObservableAIContentCollection()
         : base()

@@ -14,7 +14,6 @@ using System.Text;
 namespace Snap.Hutao.Remastered.ViewModel.Cultivation;
 
 [WinRT.GeneratedBindableCustomProperty]
-[ObservableObject]
 public sealed partial class CultivateEntryView : Item, IPropertyValuesProvider
 {
     private CultivateEntryView(CultivateEntry entry, Item item, ImmutableArray<CultivateItemView> items)

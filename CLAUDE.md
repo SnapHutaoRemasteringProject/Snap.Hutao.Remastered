@@ -45,7 +45,7 @@
 ## 2. Build & Run
 
 ```bash
-# Restore (solution: 2 projects — the WinUI app and the test project)
+# Restore (solution: WinUI app, unit tests and two AOT generation projects)
 dotnet restore src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx
 
 # Build Debug (x64 is the only declared platform)
@@ -390,17 +390,37 @@ the build fails with `CS9275`); write a normal constructor in that case.
 - Runtime C# scripting was removed with user authorization. Roslyn workspace/EF design-time
   packages belong to the database generation host, not the application runtime. Keep the
   production query/model generation entry in `scripts/Generate-DatabaseAot.ps1`.
+- Current local validation uses SDK 11.0.100; all .NET/EF 11 package references share
+  `HutaoDotNetPackageVersion=11.*` in the repository's `Directory.Packages.props` (last validated resolution
+  to 11.0.0). The build rejects an EF version different from the generated schema metadata;
+  regenerate schema/model/query output after dependency changes. No separate pinned dotnet-ef
+  tool is needed: the generation project directly uses the official EF design services. At the user's
+  request, use Debug for builds and Native AOT publishes; do not build Release. The database
+  generation script defaults to Debug. Neither configuration alone selects Native AOT.
 - Database startup uses `DatabaseSchema.Upgrade`, not EF's runtime migration discovery. Generated
-  SQL is derived from the original 47 migration snapshots; migration source changes require
-  regeneration through `tools/Snap.Hutao.Database.Schema`. Do not edit the generated SQL/catalog.
+  SQL is derived from the 48 registered migration snapshots, including restored published
+  migration `20261022144006_MakeBackpackEquippedAvatarIdNullable`; migration source changes require
+  regeneration through `src/Snap.Hutao.Remastered/Snap.Hutao.Database.Schema`. Do not edit the generated SQL/catalog.
   The build validates source fingerprints; runtime validates SQL hashes, history and foreign keys
   within one write transaction. See [database implementation and verification](docs/database-aot.md).
-- Regenerate the Native AOT EF model/accessors, persistence fixtures and official query interceptors
+- AOT development/validation projects live under `src/Snap.Hutao.Remastered` and are included
+  in the solution. Their purpose, commands and standard EF AOT migration alternatives are
+  documented in [AOT development](src/Snap.Hutao.Remastered/AOT.md). They are not app payloads.
+- All csproj package versions are centrally declared in the root `Directory.Packages.props`;
+  retain package-specific asset/publish metadata in the projects. Do not reintroduce inline versions.
+  The user removed the two standalone AotSmoke test projects. Keep the production generation
+  projects and their verification entry points; do not describe removed native JSON checks as current tests.
+  For this central-management change the user explicitly requested no restore/build validation;
+  dependency review and upgrades are manual.
+- Regenerate the Native AOT EF model/accessors and official query interceptors
   with `scripts/Generate-DatabaseAot.ps1`; `-Check -Native` checks for stale output and runs the real
   production data host as a Windows native executable. `GenerateEfQueries=true` is only a bootstrap
   option for generation: ordinary builds and acceptance must include the interceptors. Keep database
   filtering/ordering in SQL; captured gacha enum parameters use `long` numeric comparisons because
   rc.3 otherwise dynamically constructs enum type mappings. Never edit generated output by hand.
+- External persistence Fixtures and their generator/check commands were removed at the user's
+  request. The model host retains direct production-DTO CRUD payloads and basic JSON round trips;
+  previous deep legacy-fixture validation is historical, not current coverage.
 - `JsonSerializeContexts.Generated` combines generated contexts as `IJsonTypeInfoResolver`s on
   the caller's options. Do not construct each context with a cloned options instance: nested
   converters must resolve contracts through the same options and resolver chain.
@@ -412,6 +432,10 @@ the build fails with `CS9275`); write a normal constructor in that case.
   resolver; configuring a new resolver deliberately replaces the generated registry.
 - Legacy AI files use `AgentJsonContext.Default.Options` for their two list roots, preserving the
   serializer defaults instead of the application's permissive network JSON policy.
+- Current AI conversation options use `AgentConversationJsonOptions.Create`: generated application
+  contracts precede the SDK resolver, while SDK types use their own contracts to retain internal
+  JSON-included approval state. Keep the previous SDK naming/number/converter policy. Native checks
+  cover all 24 observable content discriminators and conversation/checkpoint/approval round trips.
 - Source-linked JSON tests cover the real facade, converters and the small diagnostics/legacy
   contexts. They do not validate the other domain contexts or Windows XAML generation.
   See [current development report](docs/aot-development-report.md) and the
@@ -581,7 +605,6 @@ ID — do not "fix" these by documenting them as if they were intended.
 | 6 | Test project cannot reference the app (0 `ProjectReference`, explicit source links, TFM `net11.0` vs `net11.0-windows…`) | `Snap.Hutao.Remastered.Test.csproj` | BUG-02 |
 | 7 | Manifest allows Windows 10 `10.0.19041.0` while the public support statement says Windows 10 22H2 (Jan-2025) / Windows 11 22H2 — reconcile one of the two | `Package*.appxmanifest`, project docs site | — |
 | 8 | No CI quality gate: none of the 8 workflows runs `dotnet test` or `dotnet format --verify-no-changes` | `.github/workflows/` | ENG-05 |
-| 9 | No central package management (`Directory.Build.props` / `Directory.Packages.props` absent, 61 `PackageReference`s across the 4 csproj files carry inline versions) | `src/**/*.csproj` | ENG-04 |
 | 10 | `dependabot.yml` NuGet entry still points at the pre-rename path `/src/Snap.Hutao` → no NuGet updates since the rename | `.github/dependabot.yml` | ENG-06 |
 | 11 | Dead code / stale config: `LegacyMetadataService` (396 lines, `[Service]` commented out), `build.cake` targets a non-existent `.sln`, commented-out `#pragma` block | `Service/Metadata/LegacyMetadataService.cs`, `build.cake`, `Web/Hoyolab/SaltConstants.cs` | ENG-08 |
 | 12 | Normal builds do not emit generator source copies; `AotAnalysis=true` enables diagnostics only, without another generated-source output tree | app csproj | ENG-09 |

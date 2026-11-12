@@ -27,7 +27,6 @@ using Snap.Hutao.Remastered.Web.Hoyolab.Passport;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Response;
 using System.Net.Http;
-using System.Collections.Immutable;
 using System.Text;
 using EntityUser = Snap.Hutao.Remastered.Model.Entity.User;
 
@@ -56,7 +55,8 @@ public sealed partial class UserViewModel : ObservableObject
     [ObservableProperty]
     public partial AdvancedDbCollectionView<User, EntityUser>? Users { get; set; }
 
-    public ImmutableArray<NameValue<OverseaThirdPartyKind>> OverseaThirdPartyKinds { get; } = ImmutableCollectionsNameValue.FromEnum<OverseaThirdPartyKind>(static kind => kind is OverseaThirdPartyKind.Twitter ? ThirdPartyIconConverter.TwitterName : kind.ToString());
+    // WinUI ItemsSource cannot consume a boxed ImmutableArray under Native AOT.
+    public List<NameValue<OverseaThirdPartyKind>> OverseaThirdPartyKinds { get; } = new(ImmutableCollectionsNameValue.FromEnum<OverseaThirdPartyKind>(static kind => kind is OverseaThirdPartyKind.Twitter ? ThirdPartyIconConverter.TwitterName : kind.ToString()));
 
     public IProperty<bool> IsViewUnloaded { get; } = Property.Create(false);
 

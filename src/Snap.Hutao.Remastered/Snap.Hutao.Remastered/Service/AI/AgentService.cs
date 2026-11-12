@@ -12,7 +12,7 @@ using Snap.Hutao.Remastered.Service.AI.Observables;
 namespace Snap.Hutao.Remastered.Service.AI;
 
 [Service(ServiceLifetime.Scoped, typeof(IAgentService))]
-internal sealed class AgentService(IServiceProvider serviceProvider) : IAgentService, IDisposable
+internal sealed partial class AgentService(IServiceProvider serviceProvider) : IAgentService, IDisposable
 {
     private readonly List<IChatClient> clients = [];
     private readonly IServiceProvider serviceProvider = serviceProvider;
@@ -37,7 +37,7 @@ internal sealed class AgentService(IServiceProvider serviceProvider) : IAgentSer
         try
         {
             await Task.Yield();
-            IEnumerable<ChatMessage> messages = context.SeedMessages is { Count: > 0 } seed ? seed.Append(context.InputMessage) : [context.InputMessage];
+            IEnumerable<ChatMessage> messages = context.SeedMessages is { Count: > 0 } seed ? seed.Append(context.InputMessage) : new ChatMessage[] { context.InputMessage };
             await foreach (AgentResponseUpdate update in context.Agent.RunStreamingAsync(messages, context.Session, context.Options.AsAgentRunOptions(), cancellationToken))
             {
                 ExtendedAgentResponseUpdate pendingUpdate = ExtendedAgentResponseUpdate.Create(update, functionContentJsonOptions);

@@ -7,7 +7,7 @@ using Snap.Hutao.Remastered.Model.Metadata.Converter;
 
 namespace Snap.Hutao.Remastered.ViewModel.Complex;
 
-public class AvatarView : CollocationView
+public partial class AvatarView : CollocationView
 {
     public AvatarView(Avatar avatar, double rate, double? lastRate = default)
         : base(rate, lastRate)

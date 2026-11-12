@@ -32,7 +32,7 @@ namespace Snap.Hutao.Remastered.Service.AI.Observables;
 [JsonDerivedType(typeof(ObservableUsageContent), "usage")]
 [JsonDerivedType(typeof(ObservableWebSearchToolCallContent), "web_search_tool_call")]
 [JsonDerivedType(typeof(ObservableWebSearchToolResultContent), "web_search_tool_result")]
-internal class ObservableAIContent : ObservableObject
+internal partial class ObservableAIContent : ObservableObject
 {
     public static ObservableAIContent? Create(AIContent content, JsonSerializerOptions jsonOptions)
     {

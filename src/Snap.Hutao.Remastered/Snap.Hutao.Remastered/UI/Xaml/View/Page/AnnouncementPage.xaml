@@ -981,13 +981,13 @@
                             <AppBarButton
                                 Icon="{shuxm:FontIcon Glyph=&#xE728;}"
                                 Label="{shuxm:ResourceString Name=ViewPageAnnouncementRedeemCodeLabel}"
-                                Visibility="{x:Bind DataContext.RedeemCodes, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}">
+                                Visibility="{x:Bind DataContext.RedeemCodeItems, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}">
                                 <AppBarButton.Flyout>
                                     <Flyout
                                         essential:FlyoutHelper.AcrylicWorkaround="True"
                                         FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding12Style}"
                                         Placement="BottomEdgeAlignedRight">
-                                        <ItemsControl ItemsPanel="{ThemeResource StackPanelSpacing8Template}" ItemsSource="{x:Bind DataContext.RedeemCodes, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{ThemeResource StackPanelSpacing8Template}" ItemsSource="{x:Bind DataContext.RedeemCodeItems, Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Grid
@@ -1173,7 +1173,7 @@
                                     Margin="8"
                                     VerticalAlignment="Top"
                                     ItemTemplateSelector="{StaticResource ActivityTemplateSelector}"
-                                    ItemsSource="{Binding DataContext.DisplayedActivityCards, Source={StaticResource ViewModelBindingProxy}}">
+                                    ItemsSource="{Binding DataContext.DisplayedActivityCardItems, Source={StaticResource ViewModelBindingProxy}}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <shuxcp:UniformPanel

@@ -14,6 +14,8 @@
     xmlns:snuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:snuxd="using:Snap.Hutao.Remastered.UI.Xaml.Data.AI"
     xmlns:snuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    xmlns:snv="using:Snap.Hutao.Remastered.ViewModel.AI"
+    x:DataType="snv:AgentViewModel"
     xmlns:snvs="using:Snap.Hutao.Remastered.ViewModel.AI.Settings"
     mc:Ignorable="d">
 
@@ -78,7 +80,7 @@
                     Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                     CornerRadius="{ThemeResource ControlCornerRadius}"
                     DataContext="{Binding ModelConfiguration}">
-                    <StackPanel Padding="16" Spacing="16">
+                    <StackPanel x:DataType="snvs:SettingsModelConfigurationViewModel" Padding="16" Spacing="16">
                         <TextBlock
                             Margin="1,0,0,0"
                             Style="{ThemeResource BaseTextBlockStyle}"

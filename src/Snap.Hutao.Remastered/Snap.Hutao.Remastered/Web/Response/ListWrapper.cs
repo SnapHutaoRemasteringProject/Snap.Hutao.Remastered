@@ -1,12 +1,13 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using JetBrains.Annotations;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Web.Response;
 
-public partial class ListWrapper<[MeansImplicitUse(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature, ImplicitUseTargetFlags.WithMembers)] T>
+public partial class ListWrapper<[MeansImplicitUse(ImplicitUseKindFlags.InstantiatedNoFixedConstructorSignature, ImplicitUseTargetFlags.WithMembers)] T> : ObservableObject
 {
     [JsonPropertyName("list")]
     public ImmutableArray<T> List { get; set; }

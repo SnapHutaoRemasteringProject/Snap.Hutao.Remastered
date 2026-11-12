@@ -152,7 +152,7 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
             JsonArray points = [];
             foreach (InsightPoint point in item.Points)
             {
-                points.Add(new JsonObject { ["period"] = point.Period, ["value"] = point.Value });
+                points.Add((JsonNode)new JsonObject { ["period"] = point.Period, ["value"] = point.Value });
             }
 
             double[] values = item.Points.Select(point => point.Value).ToArray();
@@ -166,7 +166,7 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
                 ["latest_change_from_previous"] = item.IsTimeSeries && values.Length > 1 ? JsonValue.Create(values[^1] - values[^2]) : null,
             };
 
-            data.Add(new JsonObject
+            data.Add((JsonNode)new JsonObject
             {
                 ["summary"] = summary,
                 ["difficulty"] = item.Difficulty,

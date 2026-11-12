@@ -92,8 +92,7 @@ internal sealed class EnumBoxJsonConverter<T> : JsonConverter<EnumBox<T>>
 
     private static JsonTypeInfo<T> ResolveTypeInfo(JsonSerializerOptions options)
     {
-        JsonTypeInfo? typeInfo = options.TypeInfoResolver?.GetTypeInfo(typeof(T), options)
-            ?? JsonSerializerOptions.Default.GetTypeInfo(typeof(T));
+        JsonTypeInfo? typeInfo = options.TypeInfoResolver?.GetTypeInfo(typeof(T), options);
 
         return typeInfo is JsonTypeInfo<T> typed
             ? typed

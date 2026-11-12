@@ -6,7 +6,7 @@ using Microsoft.Extensions.AI;
 
 namespace Snap.Hutao.Remastered.Service.AI.Observables;
 
-internal sealed class ObservableImageGenerationToolCallContent : ObservableToolCallContent
+internal sealed partial class ObservableImageGenerationToolCallContent : ObservableToolCallContent
 {
     public static ObservableImageGenerationToolCallContent Create(ImageGenerationToolCallContent toolCallContent)
     {

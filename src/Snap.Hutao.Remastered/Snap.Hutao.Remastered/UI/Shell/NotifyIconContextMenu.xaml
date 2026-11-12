@@ -29,6 +29,7 @@
 
     <Grid
         x:Name="Root"
+        x:DataType="shv:NotifyIconViewModel"
         d:DataContext="{d:DesignInstance shv:NotifyIconViewModel}"
         Background="Transparent">
         <Grid.Resources>

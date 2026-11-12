@@ -6,7 +6,6 @@ using Snap.Hutao.Remastered.Model;
 
 namespace Snap.Hutao.Remastered.ViewModel.GachaLog;
 
-[ObservableObject]
 public sealed partial class StatisticsItem : Item
 {
     [ObservableProperty]

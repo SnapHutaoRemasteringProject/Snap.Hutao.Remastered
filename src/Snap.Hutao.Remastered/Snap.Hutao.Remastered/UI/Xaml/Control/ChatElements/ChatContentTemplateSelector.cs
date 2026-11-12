@@ -8,7 +8,7 @@ using Snap.Hutao.Remastered.Service.AI.Observables;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.ChatElements;
 
-internal sealed class ChatContentTemplateSelector : DataTemplateSelector
+internal sealed partial class ChatContentTemplateSelector : DataTemplateSelector
 {
     public DataTemplate? TextTemplate { get; set; }
 

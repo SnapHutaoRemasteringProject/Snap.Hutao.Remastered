@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.ChatElements;
 
-internal sealed class ChatRoleToVisibilityConverter : IValueConverter
+internal sealed partial class ChatRoleToVisibilityConverter : IValueConverter
 {
     public string? Role { get; set; }
 

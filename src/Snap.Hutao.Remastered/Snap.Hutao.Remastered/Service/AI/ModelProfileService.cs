@@ -45,7 +45,7 @@ internal sealed class ModelProfileService : IModelProfileService
         IEnumerable<ModelProfile> models = result.Value
             .Where(static model => !string.IsNullOrWhiteSpace(model.Id))
             .Select(ModelProfile.Create);
-        return [.. models];
+        return models.ToList();
     }
 
     private static async Task<IReadOnlyList<ModelProfile>> GetAnthropicModelsAsync(ModelProviderProfile providerProfile, CancellationToken cancellationToken)

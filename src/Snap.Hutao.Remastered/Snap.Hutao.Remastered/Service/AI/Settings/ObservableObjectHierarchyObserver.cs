@@ -4,7 +4,7 @@
 
 namespace Snap.Hutao.Remastered.Service.AI.Settings;
 
-internal sealed class ObservableObjectHierarchyObserver<T, TState> : IDisposable
+internal sealed partial class ObservableObjectHierarchyObserver<T, TState> : IDisposable
     where T : class, INotifyPropertyChanged
 {
     private readonly T root;

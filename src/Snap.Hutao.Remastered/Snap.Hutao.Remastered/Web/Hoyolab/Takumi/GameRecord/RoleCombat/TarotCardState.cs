@@ -5,7 +5,7 @@ using Snap.Hutao.Remastered.Web.Response;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.RoleCombat;
 
-public sealed class TarotCardState : ListWrapper<TarotCard>
+public sealed partial class TarotCardState : ListWrapper<TarotCard>
 {
     [JsonPropertyName("total_num")]
     public required int TotalNumber { get; init; }
