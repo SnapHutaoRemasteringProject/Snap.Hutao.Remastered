@@ -26,6 +26,7 @@
     xmlns:shvh="using:Snap.Hutao.Remastered.ViewModel.Home"
     xmlns:shwhh="using:Snap.Hutao.Remastered.Web.Hutao.HutaoAsAService"
     xmlns:shwhhca="using:Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Common.Announcement"
+    xmlns:shwhtem="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Miyolive"
     xmlns:shwhtga="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar"
     xmlns:wl="using:WinUI.LiquidGlass"
     d:DataContext="{d:DesignInstance shvh:AnnouncementViewModel}"
@@ -37,7 +38,6 @@
     </mxi:Interaction.Behaviors>
 
     <shuxc:ScopedPage.Resources>
-        <shux:BindingProxy x:Key="ViewModelBindingProxy" DataContext="{x:Bind DataContext, Mode=OneWay}"/>
 
         <DataTemplate x:Key="HutaoAnnouncementTemplate" x:DataType="shwhh:Announcement">
             <InfoBar
@@ -989,7 +989,7 @@
                                         Placement="BottomEdgeAlignedRight">
                                         <ItemsControl ItemsPanel="{ThemeResource StackPanelSpacing8Template}" ItemsSource="{x:Bind DataContext.RedeemCodeItems, Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="shwhtem:CodeWrapper">
                                                     <Grid
                                                         Padding="8"
                                                         ColumnSpacing="12"
@@ -1002,13 +1002,13 @@
                                                             <TextBlock
                                                                 IsTextSelectionEnabled="True"
                                                                 Style="{ThemeResource BaseTextBlockStyle}"
-                                                                Text="{Binding Code}"
+                                                                Text="{x:Bind Code, Mode=OneWay}"
                                                                 TextTrimming="CharacterEllipsis"
                                                                 TextWrapping="NoWrap"/>
                                                             <TextBlock
                                                                 Opacity="0.7"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Title}"
+                                                                Text="{x:Bind Title, Mode=OneWay}"
                                                                 TextTrimming="CharacterEllipsis"
                                                                 TextWrapping="NoWrap"/>
                                                         </StackPanel>
@@ -1017,8 +1017,9 @@
                                                             shuxcth:ControlMaterialState.IsManaged="True"
                                                             VerticalAlignment="Stretch"
                                                             Background="Transparent"
-                                                            Command="{Binding DataContext.CopyCodeCommand, Source={StaticResource ViewModelBindingProxy}}"
-                                                            CommandParameter="{Binding Code}"
+                                                            Loaded="OnCopyCodeLoaded"
+                                                            Unloaded="OnCopyCodeUnloaded"
+                                                            CommandParameter="{x:Bind Code, Mode=OneWay}"
                                                             Content="{StaticResource FontIconContentCopy}"
                                                             FontFamily="{StaticResource SymbolThemeFontFamily}"
                                                             Style="{StaticResource ButtonRevealStyle}"/>
@@ -1048,10 +1049,10 @@
                     Padding="8"
                     x:FieldModifier="internal"
                     Style="{ThemeResource AcrylicGridCardStyle}"
-                    Visibility="{Binding DataContext.IsActivityCalendarPresented, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}">
+                    Visibility="{x:Bind DataContext.IsActivityCalendarPresented, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
 
                     <!--  Placeholder shown while the activity calendar is loading  -->
-                    <Grid ColumnSpacing="8" Visibility="{Binding DataContext.ActivityCalendar, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}}">
+                    <Grid ColumnSpacing="8" Visibility="{x:Bind DataContext.ActivityCalendar, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}, Mode=OneWay}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition/>
@@ -1091,7 +1092,7 @@
                     <Grid
                         ColumnSpacing="8"
                         DataContext="{x:Bind DataContext.ActivityCalendar, Mode=OneWay}"
-                        Visibility="{Binding DataContext.ActivityCalendar, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                        Visibility="{x:Bind DataContext.ActivityCalendar, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition/>
@@ -1173,7 +1174,7 @@
                                     Margin="8"
                                     VerticalAlignment="Top"
                                     ItemTemplateSelector="{StaticResource ActivityTemplateSelector}"
-                                    ItemsSource="{Binding DataContext.DisplayedActivityCardItems, Source={StaticResource ViewModelBindingProxy}}">
+                                    ItemsSource="{x:Bind DataContext.DisplayedActivityCardItems, Mode=OneWay}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <shuxcp:UniformPanel
