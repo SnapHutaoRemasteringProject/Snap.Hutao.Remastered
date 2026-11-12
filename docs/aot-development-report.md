@@ -42,3 +42,13 @@ CDB 确认 0xC000027B，发生于 Loading/Measure 事件链。转储有 4204 个
 按 CsWinRT aot-trimming.md 检查源类型、partial 基类链、具体集合和生成 vtable。上次公告 VM 专用声明经用户复验未解决，已撤回；共用 BindingProxy 改用 FrameworkElement 自带 DataContext，所有资源代理共用此路径。
 Debug --no-restore、PublishAot=true 的编译检查通过（967 warning / 0 error），不执行原生发布或启动。CsWinRT1028、CsWinRT1032、MVVMTK0050、CS8604 在本轮日志中为 0；WMC1510 独立诊断从本阶段首轮 612 降至 530，仍未解决全部绑定。测试 274/274，当前生产数据宿主托管运行 25 实体/69 查询通过；不把这些记为 Native UI 验收。
 修复还包括明确集合类型、可观察基类、JSON DOM 的 JsonNode 重载和 EnumBox 的显式元数据契约。实验 API 通知、CS0436 投影冲突、外部包 AOT 警告仍保留。日志 artifacts/aot/2026-11-12/binding-audit。
+
+## DataContext 异常的进一步证据
+
+三份本地 CrashLogs（UTC 10:52、11:08、12:51）的 Message 均为 Scale/GetElementVisual 互斥错误，即使托管栈停在 DataContext setter。MaterialAppearance.ResetMotion 同时调用 GetElementVisual、Visual.Scale 和 UIElement.Scale，符合平台禁止混用的条件。已改为只使用 UIElement facade 动画路径，停止相同目标动画后设置 Scale/Translation；不捕获吞掉业务异常，不删材质切换。来源 https://github.com/microsoft/microsoft-ui-xaml/issues/4904 。这推翻了此前仅凭 DataContext 栈归因代理或 vtable 的结论；仍需原生重测确认是否覆盖全部异常。
+SettingsModelConfigurationViewModel 的八个命令改为源码声明，官方绑定生成器可见；两个异步命令保持 CancellationToken、CanExecute 及忙状态通知。Debug --no-restore/AOT 分析编译通过（965 warning / 0 error），MVVMTK0046 未再出现。没有还原依赖、发布 Release 或运行界面。
+
+## 首次异常确认后的纠正
+
+用户提供首次异常：0x80070005 在 MaterialAppearance.ResetMotion 的 UIElement.Scale 直接发生，发生阶段是 Loaded。已读取 NuGet 1.3.1 对应仓库标签 v1.3.1 的 PointerMotionHelper.hpp 与 MotionAnimation.hpp：实际缩放走 GetElementVisual(...).Scale；平移按 SetIsTranslationEnabled + Visual.StopAnimation + UIElement.Translation 处理。此前改为 facade-only 的 4905f473f 不符合该库实现，现已纠正为与版本标签一致的路径，移除 UIElement.Scale。不是通过捕获异常或禁用动作绕过。
+来源：https://github.com/Millennium-Science-Technology-R-D-Inst/WinUI.Composition.Hlsl/blob/v1.3.1/src/WinUI.LiquidGlass/include/MotionAnimation.hpp 。该证据确认 Scale 缺陷，但不能将另一个发生在 Loading 的 0x80070057 DataContext 异常自动认作同一问题；需要分别复验。
