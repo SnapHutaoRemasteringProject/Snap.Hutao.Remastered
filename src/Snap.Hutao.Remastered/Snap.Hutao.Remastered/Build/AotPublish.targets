@@ -1,4 +1,9 @@
 <Project>
+  <Target Name="ValidateAotCompilerReady" BeforeTargets="PrepareForPublish" Condition="'$(PublishAot)' == 'true'">
+    <Error Condition="'$(IlcCompileDependsOn)' == ''"
+           Text="Native AOT compiler targets are not active. Restore this project with -r win-x64 -p:PublishAot=true -p:PublishReadyToRun=false before using --no-restore publish. No native executable can be produced from the current restore assets." />
+  </Target>
+
   <!--
     Native AOT publishing patches.
 
