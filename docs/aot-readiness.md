@@ -23,9 +23,12 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.Test -c Debug --logg
 
 ```powershell
 $nativeOutput = Join-Path $PWD ('artifacts/aot/publish-' + (Get-Date -Format yyyyMMdd-HHmmss))
+dotnet restore src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj -r win-x64 -p:PublishAot=true -p:PublishReadyToRun=false
 dotnet publish src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj -c Debug -p:Platform=x64 -r win-x64 -p:PublishAot=true -p:PublishReadyToRun=false -p:SelfContained=true -p:JsonSerializerIsReflectionEnabledByDefault=false "-p:PublishDir=$nativeOutput/"
 ./scripts/Test-NativePublish.ps1 -PublishDirectory $nativeOutput
 ```
+
+仅先还原普通解决方案，再带 --no-restore 发布 AOT，可能没有导入原生编译器，无法产生原生 EXE。以上 AOT 参数必须同时用于还原；之后才可在相同配置下加 --no-restore。项目现在会在 PrepareForPublish 前明确拒绝未激活的原生编译器。当前用户要求不自动还原时，须由用户执行该定向还原或明确授权。
 
 原生和普通构建的隐式包不同，不要并行还原同一项目、覆盖同一个 obj/project.assets.json 后再跳过还原。
 此前 rc.3 的 ILC 目标在 --no-build 下仍调用 Compile，曾遇到 WinUI 生成项未初始化；当前继续使用完整发布，不依赖该组合。
