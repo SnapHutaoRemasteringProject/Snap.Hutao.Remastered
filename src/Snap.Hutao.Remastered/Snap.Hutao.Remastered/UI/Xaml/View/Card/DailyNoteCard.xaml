@@ -146,8 +146,8 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
                     BorderThickness="0"
-                    Command="{Binding RefreshCommand}"
-                    IsEnabled="{Binding IsRefreshing, Converter={StaticResource BoolNegationConverter}}"
+                    Command="{x:Bind DataContext.RefreshCommand, Mode=OneWay}"
+                    IsEnabled="{x:Bind DataContext.IsRefreshing, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
                     Style="{ThemeResource DefaultButtonStyle}"
                     ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteRefresh}">
                     <Button.Resources>
@@ -174,12 +174,12 @@
                         <FontIcon
                             FontSize="14"
                             Glyph="{StaticResource FontIconContentRefresh}"
-                            Visibility="{Binding IsRefreshing, Converter={StaticResource BoolToVisibilityRevertConverter}}"/>
+                            Visibility="{x:Bind DataContext.IsRefreshing, Converter={StaticResource BoolToVisibilityRevertConverter}, Mode=OneWay}"/>
                         <ProgressRing
                             Width="14"
                             Height="14"
-                            IsActive="{Binding IsRefreshing}"
-                            Visibility="{Binding IsRefreshing, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            IsActive="{x:Bind DataContext.IsRefreshing, Mode=OneWay}"
+                            Visibility="{x:Bind DataContext.IsRefreshing, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                     </Grid>
                 </Button>
             </Grid>

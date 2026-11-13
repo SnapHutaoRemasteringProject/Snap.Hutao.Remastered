@@ -3,8 +3,6 @@
 
 using Snap.Hutao.Remastered.Model.InterChange.GachaLog;
 using Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Event.GachaInfo;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Snap.Hutao.Remastered.Model.Entity;
 

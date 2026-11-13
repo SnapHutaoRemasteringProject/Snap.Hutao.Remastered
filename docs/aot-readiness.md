@@ -55,9 +55,27 @@ Cake/MSIX/安装器必须消费同一轮完整发布树，不能改用旧 AppX �
 ## JSON 与数据库维护
 
 JsonSerialize 从调用方同一份 options/生成解析链取得 JsonTypeInfo；未知类型或解析器异常明确失败，不静默反射重试。
-普通运行时的反射兼容受 IsReflectionEnabledByDefault 控制，原生发布关闭该开关。
+JsonOptions.Default/Create 在普通运行时与原生运行时均使用生成契约，让缺失契约在普通调试中也能暴露。
+显式托管兼容入口 CreateReflection 带有裁剪/动态代码要求标记，且仍要求 IsReflectionEnabledByDefault 开启；原生发布关闭该开关。
 新网络响应、元数据、AI 会话和工具类型必须补齐根与嵌套闭包，并验证旧格式跨读写。
 当前会话通过 AgentConversationJsonOptions 登记应用契约；SDK 类型仍由 SDK 自身契约处理，以保留其内部审批状态字段。旧文件双向读写、24 种可观察内容、重试与待审批恢复均有验证；这不代替实际模型服务/工具执行验收。
+
+2026-11-14 源码检查：Debug、`--no-restore`、`PublishAot=true`、`AotAnalysis=true` 编译通过，0 错误、544 个警告。
+这是编译和分析检查，没有执行原生发布或启动应用。关闭默认 JSON 反射的相关测试为 42/42，
+生成的集合赋值、页面 VM 属性提供器声明及 HTTP/元数据契约检查均通过。
+六处 AnnouncementPage 编译错误、重复窗口 SDK 投影、已确认类型的部分绑定及 JSON 隐式反射路径已处理。
+仍需研究的警告按本轮编译统计如下，不以全局屏蔽方式清零：
+
+| 类别 | 数量 | 后续范围 |
+|---|---:|---|
+| WMC1510 | 258 | 剩余运行时属性路径、模板上下文与属性提供器 |
+| CsWinRT1034 | 189 | WinRT 运行时类转换保留要求，含外部生成器生成的属性 |
+| CsWinRT1035 | 12 | WinRT 枚举拆箱，含外部生成器生成的依赖属性 getter |
+| CS8305 / WMC1501 | 76 | SDK 实验性图表、窗口布局和控件 API |
+| IL2026 / IL3050 | 5 | EF Core 与事件行为的裁剪/动态代码要求 |
+| IDE0005 | 4 | 数据库源码导入；修改需同步重新生成查询拦截器校验和 |
+
+NuGet.Config 保持原配置；本轮没有执行依赖还原或修改包版本。NU1507 的包源策略警告暂不处理。
 
 数据库运行时升级使用版本化 SQL；生产查询具体化并由官方工具预生成。
 统一入口为 Generate-DatabaseAot.ps1，维护及回滚/边界覆盖见 [数据库实现](database-aot.md)。

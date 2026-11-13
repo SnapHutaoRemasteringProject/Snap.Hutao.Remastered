@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using Snap.Hutao.Remastered.Model.Metadata.Avatar;
 using Snap.Hutao.Remastered.Model.Primitive;
 using Snap.Hutao.Remastered.Web.Hutao.SpiralAbyss;

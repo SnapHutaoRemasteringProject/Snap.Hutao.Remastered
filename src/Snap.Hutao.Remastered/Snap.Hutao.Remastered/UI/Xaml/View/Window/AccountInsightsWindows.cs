@@ -22,7 +22,7 @@ public sealed class AccountInsightsWindows : IRecipient<UserAndUidChangedMessage
     public async Task OpenAsync()
     {
         using IServiceScope scope = serviceProvider.CreateScope();
-        var selected = await scope.ServiceProvider.GetRequiredService<IUserService>().GetCurrentUserAndUidAsync();
+        UserAndUid? selected = await scope.ServiceProvider.GetRequiredService<IUserService>().GetCurrentUserAndUidAsync();
         string? uid = selected?.Uid.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
         if (current is not null && currentUid != uid) { CloseCurrent(); }
         if (current is null)

@@ -84,9 +84,9 @@
                     <!--  ReSharper restore Xaml.RedundantResource  -->
                 </cwc:SettingsCard.Resources>
                 <cwc:SettingsCard.Header>
-                    <TextBlock Text="{Binding Name, Mode=OneWay}" TextWrapping="NoWrap"/>
+                    <TextBlock Text="{x:Bind Name, Mode=OneTime}" TextWrapping="NoWrap"/>
                 </cwc:SettingsCard.Header>
-                <TextBlock Text="{Binding Value, Mode=OneWay}"/>
+                <TextBlock Text="{x:Bind Value, Mode=OneTime}"/>
             </cwc:SettingsCard>
         </DataTemplate>
 

@@ -282,7 +282,7 @@
                                 <shuxc:ItemIcon
                                     Width="48"
                                     Height="48"
-                                    Icon="{Binding Icons[0]}"
+                                    Icon="{x:Bind Icons[0], Mode=OneWay}"
                                     Quality="QUALITY_ORANGE"/>
                             </Grid>
                         </cwc:Case>
@@ -300,13 +300,13 @@
                                     Margin="2,2,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
-                                    Source="{Binding Icons[0]}"/>
+                                    Source="{x:Bind Icons[0], Mode=OneWay}"/>
                                 <shuxci:CachedImage
                                     Width="32"
                                     Margin="0,0,2,2"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Bottom"
-                                    Source="{Binding Icons[1]}"/>
+                                    Source="{x:Bind Icons[1], Mode=OneWay}"/>
                             </Grid>
                         </cwc:Case>
                     </cwc:SwitchPresenter>

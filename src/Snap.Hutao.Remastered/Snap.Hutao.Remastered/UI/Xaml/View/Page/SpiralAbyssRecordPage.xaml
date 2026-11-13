@@ -81,11 +81,11 @@
                         <MenuFlyoutSeparator Margin="-5,4" Visibility="{x:Bind Affixes, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}"/>
                         <ItemsControl ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(Affixes, Affixes.IsDefaultOrEmpty), Mode=OneWay}">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Model" x:DataType="aot:NameDescription">
                                     <StackPanel>
-                                        <TextBlock Text="{Binding Name}"/>
+                                        <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
                                         <shuxct:HtmlDescriptionTextBlock
-                                            Description="{Binding Description}"
+                                            Description="{x:Bind Description, Mode=OneWay}"
                                             Opacity="0.8"
                                             TextStyle="{StaticResource CaptionTextBlockStyle}"/>
                                     </StackPanel>
@@ -492,17 +492,17 @@
                                                                         </ItemsPanelTemplate>
                                                                     </ItemsControl.ItemsPanel>
                                                                     <ItemsControl.ItemTemplate>
-                                                                        <DataTemplate>
+                                                                        <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.ViewModel.SpiralAbyss" x:DataType="aot:RankAvatar">
                                                                             <shuxcc:VerticalCard>
                                                                                 <shuxcc:VerticalCard.Top>
                                                                                     <shuxc:ItemIcon
                                                                                         Width="52"
                                                                                         Height="52"
-                                                                                        Icon="{Binding Icon}"
-                                                                                        Quality="{Binding Quality}"/>
+                                                                                        Icon="{x:Bind Icon, Mode=OneWay}"
+                                                                                        Quality="{x:Bind Quality, Mode=OneWay}"/>
                                                                                 </shuxcc:VerticalCard.Top>
                                                                                 <shuxcc:VerticalCard.Bottom>
-                                                                                    <TextBlock Text="{Binding Value}"/>
+                                                                                    <TextBlock Text="{x:Bind Value, Mode=OneWay}"/>
                                                                                 </shuxcc:VerticalCard.Bottom>
                                                                             </shuxcc:VerticalCard>
                                                                         </DataTemplate>
@@ -924,8 +924,8 @@
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Quality}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneWay}"
+                                                            Quality="{x:Bind Quality, Mode=OneWay}"/>
 
                                                         <Grid Grid.Column="1">
                                                             <Grid.ColumnDefinitions>
@@ -933,10 +933,10 @@
                                                                 <ColumnDefinition Width="7*"/>
                                                             </Grid.ColumnDefinitions>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <TextBlock HorizontalAlignment="Center" Text="{Binding Rate}"/>
+                                                                <TextBlock HorizontalAlignment="Center" Text="{x:Bind Rate, Mode=OneWay}"/>
                                                                 <shuxct:RateDeltaTextBlock
                                                                     HorizontalAlignment="Center"
-                                                                    Text="{Binding RateDelta}"
+                                                                    Text="{x:Bind RateDelta, Mode=OneWay}"
                                                                     TextStyle="{StaticResource CaptionTextBlockStyle}"/>
                                                             </StackPanel>
 
@@ -947,12 +947,12 @@
                                                                     </ItemsPanelTemplate>
                                                                 </ItemsControl.ItemsPanel>
                                                                 <ItemsControl.ItemTemplate>
-                                                                    <DataTemplate>
+                                                                    <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.ViewModel.Complex" x:DataType="aot:RateAndDelta">
                                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                            <TextBlock HorizontalAlignment="Center" Text="{Binding Rate}"/>
+                                                                            <TextBlock HorizontalAlignment="Center" Text="{x:Bind Rate, Mode=OneWay}"/>
                                                                             <shuxct:RateDeltaTextBlock
                                                                                 HorizontalAlignment="Center"
-                                                                                Text="{Binding RateDelta}"
+                                                                                Text="{x:Bind RateDelta, Mode=OneWay}"
                                                                                 TextStyle="{StaticResource CaptionTextBlockStyle}"/>
                                                                         </StackPanel>
                                                                     </DataTemplate>

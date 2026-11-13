@@ -39,7 +39,7 @@
                         Grid.Column="2"
                         Opacity="0.7"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding Result}" />
+                        Text="{x:Bind Result, Mode=OneWay}" />
                 </Grid>
             </Border>
         </DataTemplate>
@@ -125,7 +125,7 @@
                         Grid.Column="2"
                         Opacity="0.7"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding CallId}"
+                        Text="{x:Bind CallId, Mode=OneWay}"
                         TextTrimming="CharacterEllipsis" />
                 </Grid>
             </Border>

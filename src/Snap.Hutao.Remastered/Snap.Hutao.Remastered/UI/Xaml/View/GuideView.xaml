@@ -22,7 +22,7 @@
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <UserControl.Resources>
@@ -156,7 +156,7 @@
                             ItemContainerStyle="{ThemeResource LargeGridViewItemStyle}"
                             ItemTemplate="{StaticResource LanguageTemplate}"
                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(shs:CultureOptions.Cultures, shs:CultureOptions.Cultures.IsDefaultOrEmpty), Mode=OneTime}"
-                            SelectedItem="{Binding SelectedCulture, Mode=TwoWay}"
+                            SelectedItem="{x:Bind DataContext.SelectedCulture, Mode=TwoWay}"
                             SelectionMode="Single"/>
                     </Border>
 
@@ -257,7 +257,7 @@
                             Margin="0,8,0,0"
                             ColumnSpacing="12"
                             RowSpacing="4"
-                            Visibility="{Binding AgreementUseGrid, Converter={StaticResource BoolToVisibilityConverter}}">
+                            Visibility="{x:Bind DataContext.AgreementUseGrid, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
@@ -272,7 +272,7 @@
                                 Grid.Row="0"
                                 Grid.Column="0"
                                 shuxcth:ControlMaterialState.IsManaged="True"
-                                IsChecked="{Binding IsTermOfServiceAgreed, Mode=TwoWay}">
+                                IsChecked="{x:Bind DataContext.IsTermOfServiceAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -287,7 +287,7 @@
                                 Grid.Row="0"
                                 Grid.Column="1"
                                 shuxcth:ControlMaterialState.IsManaged="True"
-                                IsChecked="{Binding IsPrivacyPolicyAgreed, Mode=TwoWay}">
+                                IsChecked="{x:Bind DataContext.IsPrivacyPolicyAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -302,7 +302,7 @@
                                 Grid.Row="1"
                                 Grid.Column="0"
                                 shuxcth:ControlMaterialState.IsManaged="True"
-                                IsChecked="{Binding IsIssueReportAgreed, Mode=TwoWay}">
+                                IsChecked="{x:Bind DataContext.IsIssueReportAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -317,7 +317,7 @@
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 shuxcth:ControlMaterialState.IsManaged="True"
-                                IsChecked="{Binding IsOpenSourceLicenseAgreed, Mode=TwoWay}">
+                                IsChecked="{x:Bind DataContext.IsOpenSourceLicenseAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -339,11 +339,11 @@
                         </Grid>
 
                         <!--  Vertical layout for non-Chinese locales  -->
-                        <StackPanel Margin="0,8,0,0" Visibility="{Binding AgreementUseGrid, Converter={StaticResource BoolToVisibilityRevertConverter}}">
+                        <StackPanel Margin="0,8,0,0" Visibility="{x:Bind DataContext.AgreementUseGrid, Converter={StaticResource BoolToVisibilityRevertConverter}, Mode=OneWay}">
                             <wl:LiquidGlassCheckBox
                                 Margin="0,4,0,0"
                                 shuxcth:ControlMaterialState.IsManaged="True"
-                                IsChecked="{Binding IsTermOfServiceAgreed, Mode=TwoWay}">
+                                IsChecked="{x:Bind DataContext.IsTermOfServiceAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -357,7 +357,7 @@
                             <wl:LiquidGlassCheckBox
                                 Margin="0,4,0,0"
                                 shuxcth:ControlMaterialState.IsManaged="True"
-                                IsChecked="{Binding IsPrivacyPolicyAgreed, Mode=TwoWay}">
+                                IsChecked="{x:Bind DataContext.IsPrivacyPolicyAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -371,7 +371,7 @@
                             <wl:LiquidGlassCheckBox
                                 Margin="0,4,0,0"
                                 shuxcth:ControlMaterialState.IsManaged="True"
-                                IsChecked="{Binding IsIssueReportAgreed, Mode=TwoWay}">
+                                IsChecked="{x:Bind DataContext.IsIssueReportAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -385,7 +385,7 @@
                             <wl:LiquidGlassCheckBox
                                 Margin="0,4,0,0"
                                 shuxcth:ControlMaterialState.IsManaged="True"
-                                IsChecked="{Binding IsOpenSourceLicenseAgreed, Mode=TwoWay}">
+                                IsChecked="{x:Bind DataContext.IsOpenSourceLicenseAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementIHaveReadText}"/>
@@ -399,7 +399,7 @@
                             <wl:LiquidGlassCheckBox
                                 Margin="0,4,0,0"
                                 shuxcth:ControlMaterialState.IsManaged="True"
-                                IsChecked="{Binding IsDownStreamAgreed, Mode=TwoWay}">
+                                IsChecked="{x:Bind DataContext.IsDownStreamAgreed, Mode=TwoWay}">
                                 <TextBlock>
                                     <TextBlock.Inlines>
                                         <Run Text="{shuxm:ResourceString Name=ViewGuideStepAgreementDownStream}"/>
@@ -452,7 +452,7 @@
                             Margin="1,32,0,5"
                             Style="{StaticResource TitleTextBlockStyle}"
                             Text="{shuxm:ResourceString Name=ViewPageSettingWebview2Header}"/>
-                        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{Binding RuntimeOptions.WebView2Version}"/>
+                        <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{x:Bind DataContext.RuntimeOptions.WebView2Version, Mode=OneWay}"/>
                         <TextBlock>
                             <Run Text="{shuxm:ResourceString Name=ViewGuideStepEnvironmentWebView2Description1}"/>
                             <Hyperlink NavigateUri="https://go.microsoft.com/fwlink/p/?LinkId=2124703">
@@ -483,10 +483,10 @@
                             HorizontalAlignment="Stretch"
                             ActionIcon="{shuxm:FontIcon Glyph=&#xE76C;}"
                             ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingStorageSetAction}"
-                            Command="{Binding SetDataFolderCommand}"
-                            Description="{Binding RuntimeOptions.DataFolder}"
+                            Command="{x:Bind DataContext.SetDataFolderCommand, Mode=OneWay}"
+                            Description="{x:Bind DataContext.RuntimeOptions.DataFolder, Mode=OneWay}"
                             Header="{shuxm:ResourceString Name=ViewPageSettingSetDataFolderHeader}"
-                            IsClickEnabled="{Binding IsSetDataFolderEnabled}"/>
+                            IsClickEnabled="{x:Bind DataContext.IsSetDataFolderEnabled, Mode=OneWay}"/>
                     </StackPanel>
 
                     <TextBlock
@@ -525,7 +525,7 @@
                                 Margin="0,8,0,0"
                                 DisplayMemberPath="Name"
                                 ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.AppOptions.LazyRegions.Value, DataContext.AppOptions.LazyRegions.Value.IsDefaultOrEmpty), Mode=OneWay}"
-                                SelectedItem="{Binding SelectedRegion, Mode=TwoWay}"/>
+                                SelectedItem="{x:Bind DataContext.SelectedRegion, Mode=TwoWay}"/>
                             <!--  TODO: Add more common settings here in the future, such as theme and accent color.  -->
                             <!--  Separator  -->
                             <!--<Border
@@ -544,7 +544,7 @@
                         Orientation="Horizontal">
                         <wl:LiquidGlassButton
                             shuxcth:ControlMaterialState.IsManaged="True"
-                            Command="{Binding CreateGameLaunchShortcutCommand}"
+                            Command="{x:Bind DataContext.CreateGameLaunchShortcutCommand, Mode=OneWay}"
                             Content="{shuxm:ResourceString Name=ViewPageLaunchGameCreateGameLaunchShortcut}"
                             Style="{ThemeResource AccentButtonStyle}"/>
 
@@ -558,7 +558,7 @@
 
                         <wl:LiquidGlassButton
                             shuxcth:ControlMaterialState.IsManaged="True"
-                            Command="{Binding CreateDesktopShortcutCommand}"
+                            Command="{x:Bind DataContext.CreateDesktopShortcutCommand, Mode=OneWay}"
                             Content="{shuxm:ResourceString Name=ViewPageSettingCreateDesktopShortcutDescription}"
                             Style="{ThemeResource AccentButtonStyle}"/>
                     </StackPanel>
@@ -803,19 +803,19 @@
                                 Margin="0,8,0,32"
                                 DisplayMemberPath="Name"
                                 ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.StaticResourceOptions.ImageQualities, DataContext.StaticResourceOptions.ImageQualities.IsDefaultOrEmpty), Mode=OneWay}"
-                                SelectedItem="{Binding StaticResourceOptions.ImageQuality, Mode=TwoWay}"/>
+                                SelectedItem="{x:Bind DataContext.StaticResourceOptions.ImageQuality, Mode=TwoWay}"/>
                             <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewGuideStepStaticResourceSettingMinimumHeader}"/>
                             <ListView
                                 MinWidth="320"
                                 Margin="0,8,0,32"
                                 DisplayMemberPath="Name"
                                 ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.StaticResourceOptions.ImageArchives, DataContext.StaticResourceOptions.ImageArchives.IsDefaultOrEmpty), Mode=OneWay}"
-                                SelectedItem="{Binding StaticResourceOptions.ImageArchive, Mode=TwoWay}"/>
-                            <TextBlock Margin="0,16,0,0" Text="{Binding StaticResourceOptions.SizeInformationText, Mode=OneWay}"/>
+                                SelectedItem="{x:Bind DataContext.StaticResourceOptions.ImageArchive, Mode=TwoWay}"/>
+                            <TextBlock Margin="0,16,0,0" Text="{x:Bind DataContext.StaticResourceOptions.SizeInformationText, Mode=OneWay}"/>
                             <cwc:SettingsCard
                                 MaxWidth="720"
                                 Margin="0,16,0,0"
-                                Description="{Binding StaticResourceOptions.BundledImagesDescription, Mode=OneWay}"
+                                Description="{x:Bind DataContext.StaticResourceOptions.BundledImagesDescription, Mode=OneWay}"
                                 Header="{shuxm:ResourceString Name=ViewGuideBundledImagesHeader}"/>
                         </StackPanel>
                     </Grid>
@@ -856,7 +856,7 @@
                             ItemContainerTransitions="{StaticResource ListViewLikeThemeTransitions}"
                             ItemTemplate="{StaticResource DownloadSummaryTemplate}"
                             ItemsPanel="{StaticResource WrapPanelSpacing0Template}"
-                            ItemsSource="{Binding DownloadSummaries}"/>
+                            ItemsSource="{x:Bind DataContext.DownloadSummaries, Mode=OneWay}"/>
                     </ScrollViewer>
 
                     <Grid Grid.Row="2" Margin="16">
@@ -867,11 +867,11 @@
                             Style="{StaticResource CaptionTextBlockStyle}"
                             Text="{shuxm:ResourceString Name=ViewGuideStepStaticResourceDownloadIncompleteHint}"/>
                         <wl:LiquidGlassButton
-                            Visibility="{Binding IsDownloading, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Visibility="{x:Bind DataContext.IsDownloading, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                             shuxcth:ControlMaterialState.IsManaged="True"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Command="{Binding SkipDownloadCommand}"
+                            Command="{x:Bind DataContext.SkipDownloadCommand, Mode=OneWay}"
                             Content="{shuxm:ResourceString Name=ViewModelGuideActionSkipDownload}"
                             Style="{ThemeResource AccentButtonStyle}"/>
                     </Grid>
@@ -898,9 +898,9 @@
                 </cwc:Segmented>
                 <wl:LiquidGlassButton
                     shuxcth:ControlMaterialState.IsManaged="True"
-                    Command="{Binding NextOrCompleteCommand}"
-                    Content="{Binding NextOrCompleteButtonText}"
-                    IsEnabled="{Binding IsNextOrCompleteButtonEnabled}"
+                    Command="{x:Bind DataContext.NextOrCompleteCommand, Mode=OneWay}"
+                    Content="{x:Bind DataContext.NextOrCompleteButtonText, Mode=OneWay}"
+                    IsEnabled="{x:Bind DataContext.IsNextOrCompleteButtonEnabled, Mode=OneWay}"
                     Style="{ThemeResource AccentButtonStyle}"/>
             </StackPanel>
         </Grid>

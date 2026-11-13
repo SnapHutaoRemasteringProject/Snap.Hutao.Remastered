@@ -701,7 +701,7 @@
                         <shuxvs:HutaoStatisticsCard DataContext="{x:Bind DataContext.HutaoCloudStatisticsViewModel.Statistics.AvatarEvent, Mode=OneWay}"/>
                         <shuxvs:HutaoStatisticsCard DataContext="{x:Bind DataContext.HutaoCloudStatisticsViewModel.Statistics.AvatarEvent2, Mode=OneWay}"/>
                         <shuxvs:HutaoStatisticsCard DataContext="{x:Bind DataContext.HutaoCloudStatisticsViewModel.Statistics.WeaponEvent, Mode=OneWay}"/>
-                        <shuxvs:HutaoStatisticsCard DataContext="{x:Bind DataContext.HutaoCloudStatisticsViewModel.Statistics.Chronicled, Mode=OneWay}" Visibility="{Binding Converter={StaticResource EmptyObjectToVisibilityConverter}, FallbackValue=Collapsed}"/>
+                        <shuxvs:HutaoStatisticsCard DataContext="{x:Bind DataContext.HutaoCloudStatisticsViewModel.Statistics.Chronicled, Mode=OneWay}" Visibility="{x:Bind DataContext.HutaoCloudStatisticsViewModel.Statistics.Chronicled, Converter={StaticResource EmptyObjectToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}"/>
                     </shuxcp:EqualPanel>
                 </Grid>
             </PivotItem>

@@ -1112,7 +1112,7 @@
                                             SelectedIndex="{x:Bind DataContext.GachaLog.SelectedUIGFVersionIndex, Mode=TwoWay}">
                                             <wl:LiquidGlassComboBox.ItemTemplate>
                                                 <DataTemplate x:DataType="shsu:UIGFVersion">
-                                                    <TextBlock Text="{Binding Converter={StaticResource UIGFVersionToStringConverter}, Mode=OneWay}"/>
+                                                    <TextBlock Text="{x:Bind Converter={StaticResource UIGFVersionToStringConverter}, Mode=OneTime}"/>
                                                 </DataTemplate>
                                             </wl:LiquidGlassComboBox.ItemTemplate>
                                         </wl:LiquidGlassComboBox>

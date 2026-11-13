@@ -3,8 +3,6 @@
 
 using Snap.Hutao.Remastered.Web.Enka.Model;
 using Snap.Hutao.Remastered.Web.Hoyolab;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Snap.Hutao.Remastered.Model.Entity;
 

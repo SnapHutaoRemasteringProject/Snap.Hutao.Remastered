@@ -10,7 +10,6 @@ using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.BackgroundImage;
 using Snap.Hutao.Remastered.Service.BackgroundMediaPlayer;
-using Snap.Hutao.Remastered.UI.Xaml;
 using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using Snap.Hutao.Remastered.UI.Xaml.Media.Backdrop;
 

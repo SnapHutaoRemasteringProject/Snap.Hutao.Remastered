@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Service.Abstraction;
 using System.Collections.Immutable;
 

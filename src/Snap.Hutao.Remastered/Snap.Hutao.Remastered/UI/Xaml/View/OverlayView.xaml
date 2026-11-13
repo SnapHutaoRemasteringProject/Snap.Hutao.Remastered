@@ -18,7 +18,7 @@
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding LoadCommand}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Grid
@@ -96,9 +96,9 @@
             Grid.Column="0"
             VerticalAlignment="Stretch"
             BorderThickness="0"
-            Command="{Binding SwitchToNextCatalogCommand}">
+            Command="{x:Bind DataContext.SwitchToNextCatalogCommand, Mode=OneWay}">
             <SplitButton.Content>
-                <FontIcon FontSize="16" Glyph="{Binding SelectedCatalog.Icon}"/>
+                <FontIcon FontSize="16" Glyph="{x:Bind DataContext.SelectedCatalog.Icon, Mode=OneWay}"/>
             </SplitButton.Content>
             <SplitButton.Flyout>
                 <Flyout
@@ -106,9 +106,9 @@
                     FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding0And2Style}"
                     Placement="Bottom"
                     ShouldConstrainToRootBounds="False">
-                    <ListView ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Catalogs, DataContext.Catalogs.IsDefaultOrEmpty), Mode=OneWay}" SelectedItem="{Binding SelectedCatalog, Mode=TwoWay}">
+                    <ListView ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Catalogs, DataContext.Catalogs.IsDefaultOrEmpty), Mode=OneWay}" SelectedItem="{x:Bind DataContext.SelectedCatalog, Mode=TwoWay}">
                         <ListView.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.ViewModel.Overlay" x:DataType="aot:OverlayCatalog">
                                 <Grid ColumnSpacing="12">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="20"/>
@@ -117,8 +117,8 @@
                                     <FontIcon
                                         Grid.Column="0"
                                         FontSize="16"
-                                        Glyph="{Binding Icon}"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Name}"/>
+                                        Glyph="{x:Bind Icon, Mode=OneTime}"/>
+                                    <TextBlock Grid.Column="1" Text="{x:Bind Name, Mode=OneTime}"/>
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -130,7 +130,7 @@
         <cwc:SwitchPresenter
             Grid.Column="1"
             ContentTransitions="{ThemeResource ContentThemeTransitions}"
-            Value="{Binding SelectedCatalog.Id}">
+            Value="{x:Bind DataContext.SelectedCatalog.Id, Mode=OneWay}">
             <cwc:Case Value="HotKey">
                 <Grid ColumnSpacing="4">
                     <Grid.ColumnDefinitions>
@@ -143,8 +143,8 @@
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         BorderThickness="0"
-                        IsChecked="{Binding HotKeyOptions.MouseClickRepeatForeverKeyCombination.IsOn, Mode=OneWay}"
-                        IsEnabled="{Binding HotKeyOptions.MouseClickRepeatForeverKeyCombination.IsEnabled, Mode=OneWay}"
+                        IsChecked="{x:Bind DataContext.HotKeyOptions.MouseClickRepeatForeverKeyCombination.IsOn, Mode=OneWay}"
+                        IsEnabled="{x:Bind DataContext.HotKeyOptions.MouseClickRepeatForeverKeyCombination.IsEnabled, Mode=OneWay}"
                         IsHitTestVisible="False"
                         Grid.Column="0">
                         <Grid RowSpacing="4">
@@ -161,7 +161,7 @@
                                 Grid.Row="1"
                                 HorizontalAlignment="Center"
                                 Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{Binding HotKeyOptions.MouseClickRepeatForeverKeyCombination.DisplayName, Mode=OneWay}"/>
+                                Text="{x:Bind DataContext.HotKeyOptions.MouseClickRepeatForeverKeyCombination.DisplayName, Mode=OneWay}"/>
                         </Grid>
                     </wl:LiquidGlassToggleButton>
                     <wl:LiquidGlassToggleButton
@@ -170,8 +170,8 @@
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         BorderThickness="0"
-                        IsChecked="{Binding HotKeyOptions.KeyPressRepeatForeverKeyCombination.IsOn, Mode=OneWay}"
-                        IsEnabled="{Binding HotKeyOptions.KeyPressRepeatForeverKeyCombination.IsEnabled, Mode=OneWay}"
+                        IsChecked="{x:Bind DataContext.HotKeyOptions.KeyPressRepeatForeverKeyCombination.IsOn, Mode=OneWay}"
+                        IsEnabled="{x:Bind DataContext.HotKeyOptions.KeyPressRepeatForeverKeyCombination.IsEnabled, Mode=OneWay}"
                         IsHitTestVisible="False"
                         Grid.Column="1">
                         <Grid RowSpacing="4">
@@ -188,7 +188,7 @@
                                 Grid.Row="1"
                                 HorizontalAlignment="Center"
                                 Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{Binding HotKeyOptions.KeyPressRepeatForeverKeyCombination.DisplayName, Mode=OneWay}"/>
+                                Text="{x:Bind DataContext.HotKeyOptions.KeyPressRepeatForeverKeyCombination.DisplayName, Mode=OneWay}"/>
                         </Grid>
                     </wl:LiquidGlassToggleButton>
                 </Grid>

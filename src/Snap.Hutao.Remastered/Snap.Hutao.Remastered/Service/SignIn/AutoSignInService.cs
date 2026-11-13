@@ -3,7 +3,6 @@
 // Copyright (c) Snap Hutao RP. All rights reserved.
 // Licensed under the MIT license.
 
-using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Model.Entity.Database;

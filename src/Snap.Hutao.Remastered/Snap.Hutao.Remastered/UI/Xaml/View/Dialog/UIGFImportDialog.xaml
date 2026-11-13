@@ -70,8 +70,8 @@
                     SelectionChanged="OnSelectionChanged"
                     SelectionMode="Multiple">
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Uid}"/>
+                        <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.UI.Xaml.View.Dialog" x:DataType="aot:UIGFUidSelection">
+                            <TextBlock Text="{x:Bind Uid, Mode=OneWay}"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

@@ -311,15 +311,15 @@
                                                         ItemsPanel="{ThemeResource StackPanelSpacing3Template}"
                                                         ItemsSource="{x:Bind DailyNote.DailyTask.AttendanceRewards, Mode=OneWay}">
                                                         <ItemsControl.ItemTemplate>
-                                                            <DataTemplate>
+                                                            <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.DailyNote" x:DataType="aot:AttendanceReward">
                                                                 <shuxcc:CardProgressBar
                                                                     MinWidth="120"
                                                                     MinHeight="32"
-                                                                    Description="{Binding Progress}"
-                                                                    Header="{Binding StatusFormatted}"
+                                                                    Description="{x:Bind Progress, Mode=OneTime}"
+                                                                    Header="{x:Bind StatusFormatted, Mode=OneTime}"
                                                                     Maximum="2000"
                                                                     ProgressForeground="{ThemeResource HyperlinkButtonForeground}"
-                                                                    Value="{Binding Progress}"/>
+                                                                    Value="{x:Bind Progress, Mode=OneTime}"/>
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
                                                     </ItemsControl>
@@ -418,7 +418,7 @@
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.DailyNote" x:DataType="aot:Expedition">
                                     <Grid Style="{ThemeResource GridShimmerStyle}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="auto"/>
@@ -433,20 +433,20 @@
                                             BorderBrush="{x:Null}"
                                             BorderThickness="0"
                                             CornerRadius="{ThemeResource ControlCornerRadius}"
-                                            Maximum="{Binding TotalTime, Mode=OneWay}"
+                                            Maximum="{x:Bind TotalTime, Mode=OneTime}"
                                             Opacity="{StaticResource LargeBackgroundProgressBarOpacity}"
-                                            Value="{Binding PassedTime, Mode=OneWay}"/>
+                                            Value="{x:Bind PassedTime, Mode=OneTime}"/>
                                         <shuxci:CachedImage
                                             Grid.Column="0"
                                             Margin="0,0,0,8"
                                             shux:FrameworkElementHelper.SquareLength="32"
-                                            Source="{Binding AvatarSideIcon, Mode=OneWay}"/>
+                                            Source="{x:Bind AvatarSideIcon, Mode=OneTime}"/>
                                         <TextBlock
                                             Grid.Column="1"
                                             Margin="16,0,0,0"
                                             VerticalAlignment="Center"
                                             Style="{StaticResource BaseTextBlockStyle}"
-                                            Text="{Binding RemainedTimeFormatted, Mode=OneWay}"/>
+                                            Text="{x:Bind RemainedTimeFormatted, Mode=OneTime}"/>
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

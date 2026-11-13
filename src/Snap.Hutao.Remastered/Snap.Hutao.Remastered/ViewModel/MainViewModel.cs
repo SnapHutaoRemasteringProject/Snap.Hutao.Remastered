@@ -19,7 +19,6 @@ using Snap.Hutao.Remastered.Service.Network;
 using Snap.Hutao.Remastered.Service.Git;
 using Snap.Hutao.Remastered.Service.Update;
 using Snap.Hutao.Remastered.Service.User;
-using Snap.Hutao.Remastered.UI.Xaml;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
 using Snap.Hutao.Remastered.Web;

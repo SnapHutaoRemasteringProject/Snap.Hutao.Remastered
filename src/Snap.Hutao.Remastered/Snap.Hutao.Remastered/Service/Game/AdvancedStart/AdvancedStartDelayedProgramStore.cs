@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using Google.Protobuf;
-using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Model.Entity.Database;
 using Snap.Hutao.Remastered.Service.Game.AdvancedStart.Model;
