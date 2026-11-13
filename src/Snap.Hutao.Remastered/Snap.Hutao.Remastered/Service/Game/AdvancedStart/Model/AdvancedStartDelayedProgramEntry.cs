@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Snap.Hutao.Remastered.Service.Game.AdvancedStart.Model;
 
+[WinRT.GeneratedBindableCustomProperty]
 public sealed partial class AdvancedStartDelayedProgramEntry : ObservableObject
 {
     public AdvancedStartDelayedProgramEntry(string name, string path, int delaySeconds)

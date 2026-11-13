@@ -12,6 +12,7 @@ using System.IO;
 namespace Snap.Hutao.Remastered.ViewModel.Setting;
 
 [Service(ServiceLifetime.Scoped)]
+[BindableCustomPropertyProvider]
 public sealed partial class SettingGameViewModel : Abstraction.ViewModel
 {
     private readonly LaunchOptions launchOptions;

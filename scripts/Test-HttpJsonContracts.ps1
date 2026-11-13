@@ -86,8 +86,11 @@ public sealed class HttpJsonContractInspection : ISignatureTypeProvider<string, 
         foreach(var context in contexts){if(!found.Contains(context))throw new InvalidOperationException("Compiled assembly has no "+context+". Build current source before checking contracts.");if(!registered.Contains(context))throw new InvalidOperationException(context+" is not registered by JsonSerializeContexts.");}
         var expected=new HashSet<string>();
         foreach(var entry in Read(path)) {
-            string type=entry.Method=="SendAsync"||entry.Method=="FromCacheOrFileAsync"?entry.Arguments[0]:entry.Arguments.Length>1?entry.Arguments[entry.Arguments.Length-1]:"!open";
-            if(!type.Contains("!")&&!type.Contains("NoContent")){expected.Add(Canonical(type));if(entry.Method=="FromCacheOrFileAsync")expected.Add(Canonical("global::System.Collections.Immutable.ImmutableArray<"+type+">"));}
+            bool metadata=entry.Method=="FromCacheOrFileAsync"||entry.Method=="FromCacheAsDictionaryAsync";
+            // Dictionary overloads use <TKey,TValue> or <TData,...>. Inspect
+            // the actual file element type rather than the resulting map type.
+            string type=entry.Method=="FromCacheAsDictionaryAsync"?(entry.Arguments.Length==2?entry.Arguments[1]:entry.Arguments[0]):entry.Method=="SendAsync"||metadata?entry.Arguments[0]:entry.Arguments.Length>1?entry.Arguments[entry.Arguments.Length-1]:"!open";
+            if(!type.Contains("!")&&!type.Contains("NoContent")){expected.Add(Canonical(type));if(metadata)expected.Add(Canonical("global::System.Collections.Immutable.ImmutableArray<"+type+">"));}
         }
         return expected.Where(type=>!known.Contains(type)).OrderBy(t=>t).ToArray();
     }
@@ -97,7 +100,7 @@ public sealed class HttpJsonContractInspection : ISignatureTypeProvider<string, 
             var spec=r.GetMethodSpecification(MetadataTokens.MethodSpecificationHandle(i)); string name; string owner="";
             if(spec.Method.Kind==HandleKind.MethodDefinition) { var m=r.GetMethodDefinition((MethodDefinitionHandle)spec.Method); name=r.GetString(m.Name); owner=p.GetTypeFromDefinition(r,m.GetDeclaringType(),0); }
             else {var m=r.GetMemberReference((MemberReferenceHandle)spec.Method);name=r.GetString(m.Name);if(m.Parent.Kind==HandleKind.TypeReference)owner=p.GetTypeFromReference(r,(TypeReferenceHandle)m.Parent,0);else if(m.Parent.Kind==HandleKind.TypeDefinition)owner=p.GetTypeFromDefinition(r,(TypeDefinitionHandle)m.Parent,0);}
-            if(((owner.Contains("HttpRequestMessageBuilder") || owner.Contains("JsonBuilderExtension")) && (name.Contains("SendAsync")||name.Contains("PostJson")||name.Contains("PutJson")||name.Contains("PatchJson")||name.Contains("SetJsonContent"))) || (owner.Contains("MetadataService")&&name.Contains("FromCacheOrFileAsync"))) result.Add(new Entry(name,owner,spec.DecodeSignature(p,null).ToArray()));
+            if(((owner.Contains("HttpRequestMessageBuilder") || owner.Contains("JsonBuilderExtension")) && (name.Contains("SendAsync")||name.Contains("PostJson")||name.Contains("PutJson")||name.Contains("PatchJson")||name.Contains("SetJsonContent"))) || (owner.Contains("MetadataService")&&(name.Contains("FromCacheOrFileAsync")||name.Contains("FromCacheAsDictionaryAsync")))) result.Add(new Entry(name,owner,spec.DecodeSignature(p,null).ToArray()));
         }
         return result;
     }

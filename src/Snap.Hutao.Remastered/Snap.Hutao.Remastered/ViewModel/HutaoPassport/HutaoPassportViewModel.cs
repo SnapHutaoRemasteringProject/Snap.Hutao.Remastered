@@ -13,6 +13,7 @@ using Snap.Hutao.Remastered.UI.Xaml.View.Page;
 namespace Snap.Hutao.Remastered.ViewModel.HutaoPassport;
 
 [Service(ServiceLifetime.Scoped)]
+[BindableCustomPropertyProvider]
 public sealed partial class HutaoPassportViewModel : Abstraction.ViewModel
 {
     private readonly IContentDialogFactory contentDialogFactory;
