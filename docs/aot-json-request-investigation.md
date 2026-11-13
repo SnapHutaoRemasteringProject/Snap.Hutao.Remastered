@@ -11,12 +11,14 @@
 本轮增加并接入：
 
 - `HttpApiJsonContext`：从真实编译调用核对的 85 个 HTTP 响应和 33 个请求根契约；为同名 DTO 显式区分生成名称。
-- `MetadataFileJsonContext`：23 个 `MetadataService.FromCacheOrFileAsync<T>` 文件集合及其元素契约。
-- 18 个元数据 ID 的源声明和闭合 IdentityConverter。只提前声明类型，uint 字段、运算符等仍由原 IdentityGenerator 生成。
+- `MetadataFileJsonContext`：27 个 `MetadataService.FromCacheOrFileAsync<T>` 文件集合及其元素契约。
+- 20 个元数据 ID 的源声明和闭合 IdentityConverter。只提前声明类型，uint 字段、运算符等仍由原 IdentityGenerator 生成。
 - 将 JSON 属性引用的三个 file-local 转换器/工厂改为有唯一名称的 internal 类型，供另一个生成器产出的代码访问；转换逻辑保持。
 - 三处非泛型字符串枚举转换器改成闭合的泛型转换器。SYSLIB1030/1031/1034 作为错误处理，避免缺失契约、类型名冲突或不支持 AOT 的枚举转换被忽略。
 
 `scripts/Test-HttpJsonContracts.ps1` 读取编译程序集的实际泛型调用和生成 resolver 的 IL，核对 HTTP 请求/响应、元数据集合及元素契约，并验证默认 resolver 确实注册了相应 context。它不加载或执行应用程序集。先前只登记响应的中间构建被此检查报告缺少 31 个请求契约；补齐后的构建通过。
+
+2026-11-13 追加：`MetadataFileStrategies` 里的 `BeyondItem`、`HardChallengeSchedule`、`RoleCombatSchedule`、`Combine` 四个文件此前只有策略而没有 `MetadataFileJsonContext` 根契约，颂愿（千星奇域）页面因此在读取 `ImmutableArray<BeyondItem>` 时抛 `NotSupportedException`，同类的幽境危战、剧诗和合成页面也会失败。已补齐这四个根契约，并为 `BeyondItemId`、`CombineId` 增加源声明和闭合 `IdentityConverter`。验证方式：用编译后的 `JsonSerializeContexts.CreateOptions()` 反序列化 CHS 元数据仓库中全部 27 个文件根（含这 4 个），全部成功且 `Id` 非零。`Test-HttpJsonContracts.ps1` 依赖 PowerShell 7（其 `Add-Type` 源使用 C# 6 语法），在只有 Windows PowerShell 5.1 的环境中无法运行，本轮未执行该脚本。
 
 ## 主页显示
 
