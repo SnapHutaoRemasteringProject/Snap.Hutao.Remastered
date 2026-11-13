@@ -39,8 +39,8 @@ public sealed class AgentSettingsWatchRaceTest
             initial.ModelProviderProfiles.Add(profile);
             initial.ModelProviderProfiles.MoveCurrentToFirst();
             string file = Path.Combine(directory, "test.json");
-            File.WriteAllText(file, JsonSerializer.Serialize(initial));
-            Assert.IsNotNull(JsonSerializer.Deserialize<AgentSettings>(File.ReadAllText(file)));
+            File.WriteAllText(file, JsonSerializer.Serialize(initial, Snap.Hutao.Remastered.Core.Text.Json.AgentSettingsJsonContext.Default.AgentSettings));
+            Assert.IsNotNull(JsonSerializer.Deserialize(File.ReadAllText(file), Snap.Hutao.Remastered.Core.Text.Json.AgentSettingsJsonContext.Default.AgentSettings));
             provider = new("test", new());
             StopWatching(provider);
 
@@ -80,7 +80,7 @@ public sealed class AgentSettingsWatchRaceTest
             context.Drain();
 
             Assert.HasCount(178, current.ModelProfiles);
-            AgentSettings persisted = JsonSerializer.Deserialize<AgentSettings>(File.ReadAllText(file))!;
+            AgentSettings persisted = JsonSerializer.Deserialize(File.ReadAllText(file), Snap.Hutao.Remastered.Core.Text.Json.AgentSettingsJsonContext.Default.AgentSettings)!;
             Assert.HasCount(178, persisted.ModelProviderProfiles.Single().ModelProfiles);
         }
         finally

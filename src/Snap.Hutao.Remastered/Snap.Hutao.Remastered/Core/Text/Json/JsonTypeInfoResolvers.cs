@@ -10,6 +10,8 @@ public static class JsonTypeInfoResolvers
 {
     private static readonly Type JsonEnumHandlingAttributeType = typeof(JsonEnumHandlingAttribute);
 
+    [RequiresUnreferencedCode("This modifier reads reflection property attributes.")]
+    [RequiresDynamicCode("This modifier constructs reflection enum converters.")]
     public static void ResolveEnumType(JsonTypeInfo typeInfo)
     {
         if (typeInfo.Kind is not JsonTypeInfoKind.Object)
