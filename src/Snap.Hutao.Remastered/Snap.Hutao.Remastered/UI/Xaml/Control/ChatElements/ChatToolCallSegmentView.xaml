@@ -41,12 +41,12 @@
                         Grid.Column="2"
                         Opacity="0.8"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding Name}" />
+                        Text="{x:Bind Name, Mode=OneWay}" />
                     <TextBlock
                         Grid.Column="3"
                         Opacity="0.6"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding Arguments}" />
+                        Text="{x:Bind Arguments, Mode=OneWay}" />
                 </Grid>
             </Border>
         </DataTemplate>
@@ -82,11 +82,11 @@
                             Grid.Column="2"
                             Opacity="0.7"
                             Style="{ThemeResource CaptionTextBlockStyle}"
-                            Text="{Binding CallId}"
+                            Text="{x:Bind CallId, Mode=OneWay}"
                             TextTrimming="CharacterEllipsis" />
                     </Grid>
 
-                    <ItemsControl ItemsSource="{Binding Inputs}" Visibility="{Binding Inputs, Converter={StaticResource ContentVisibilityConverter}}">
+                    <ItemsControl ItemsSource="{x:Bind Inputs, Mode=OneWay}" Visibility="{x:Bind Inputs, Converter={StaticResource ContentVisibilityConverter}, Mode=OneWay}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <snuxcc:ChatObjectSegmentView Value="{Binding}" />
@@ -127,7 +127,7 @@
                         Grid.Column="2"
                         Opacity="0.7"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding CallId}"
+                        Text="{x:Bind CallId, Mode=OneWay}"
                         TextTrimming="CharacterEllipsis" />
                 </Grid>
             </Border>
@@ -165,20 +165,20 @@
                         Grid.Column="2"
                         Opacity="0.8"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding Name}" />
+                        Text="{x:Bind Name, Mode=OneWay}" />
                     <TextBlock
                         Grid.Column="3"
                         Opacity="0.6"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding ServerName}"
-                        Visibility="{Binding ServerName, Converter={StaticResource TextVisibilityConverter}}" />
+                        Text="{x:Bind ServerName, Mode=OneWay}"
+                        Visibility="{x:Bind ServerName, Converter={StaticResource TextVisibilityConverter}, Mode=OneWay}" />
                     <TextBlock
                         Grid.Column="4"
                         Opacity="0.6"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding Arguments}"
+                        Text="{x:Bind Arguments, Mode=OneWay}"
                         TextWrapping="WrapWholeWords"
-                        Visibility="{Binding Arguments, Converter={StaticResource TextVisibilityConverter}}" />
+                        Visibility="{x:Bind Arguments, Converter={StaticResource TextVisibilityConverter}, Mode=OneWay}" />
                 </Grid>
             </Border>
         </DataTemplate>
@@ -211,19 +211,19 @@
                         Glyph="&#xE721;" />
                     <ItemsControl
                         Grid.Column="2"
-                        ItemsSource="{Binding Queries}"
-                        Visibility="{Binding Queries, Converter={StaticResource ContentVisibilityConverter}}">
+                        ItemsSource="{x:Bind Queries, Mode=OneWay}"
+                        Visibility="{x:Bind Queries, Converter={StaticResource ContentVisibilityConverter}, Mode=OneWay}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Spacing="2" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate x:DataType="x:String">
                                 <TextBlock
                                     Opacity="0.7"
                                     Style="{ThemeResource CaptionTextBlockStyle}"
-                                    Text="{Binding}"
+                                    Text="{x:Bind Mode=OneTime}"
                                     TextWrapping="WrapWholeWords" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
@@ -281,7 +281,7 @@
 
     <ContentControl
         HorizontalContentAlignment="Stretch"
-        Content="{Binding}"
+        Content="{x:Bind ToolCall, Mode=OneWay}"
         ContentTemplateSelector="{StaticResource ToolCallTemplateSelector}"
         DataContext="{x:Bind ToolCall, Mode=OneWay}" />
 </UserControl>

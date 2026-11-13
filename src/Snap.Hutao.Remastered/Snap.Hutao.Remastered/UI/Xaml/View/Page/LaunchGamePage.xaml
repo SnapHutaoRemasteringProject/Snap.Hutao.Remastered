@@ -65,7 +65,7 @@
                         Tag="ModifyGameAccountCommand"
                         Loaded="OnTemplateCommandLoaded"
                         Unloaded="OnTemplateCommandUnloaded"
-                        CommandParameter="{Binding Mode=OneWay}"
+                        CommandParameter="{x:Bind Mode=OneWay}"
                         Content="&#xE8AC;"
                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameSwitchAccountRenameToolTip}"/>
@@ -124,7 +124,7 @@
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock VerticalAlignment="Center" Text="{Binding Mode=OneWay}"/>
+                        <TextBlock VerticalAlignment="Center" Text="{x:Bind Mode=OneTime}"/>
                         <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
                         <wl:LiquidGlassButton
                             Grid.Column="1"
@@ -136,7 +136,7 @@
                             Tag="RemoveAspectRatioCommand"
                             Loaded="OnTemplateCommandLoaded"
                             Unloaded="OnTemplateCommandUnloaded"
-                            CommandParameter="{Binding Mode=OneWay}"
+                            CommandParameter="{x:Bind Mode=OneTime}"
                             Content="&#xE711;"
                             FontFamily="{ThemeResource SymbolThemeFontFamily}"
                             Style="{ThemeResource SettingButtonStyle}"/>

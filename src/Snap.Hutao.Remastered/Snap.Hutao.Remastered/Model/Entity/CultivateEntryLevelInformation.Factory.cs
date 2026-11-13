@@ -4,8 +4,6 @@
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Model.Entity.Primitive;
 using Snap.Hutao.Remastered.Service.Cultivation;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Snap.Hutao.Remastered.Model.Entity;
 

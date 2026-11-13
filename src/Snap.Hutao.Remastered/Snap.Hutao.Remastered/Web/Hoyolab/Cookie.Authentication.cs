@@ -3,7 +3,6 @@
 
 using Microsoft.Web.WebView2.Core;
 using Snap.Hutao.Remastered.Web.Hoyolab.Passport;
-using System.Text;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab;
 

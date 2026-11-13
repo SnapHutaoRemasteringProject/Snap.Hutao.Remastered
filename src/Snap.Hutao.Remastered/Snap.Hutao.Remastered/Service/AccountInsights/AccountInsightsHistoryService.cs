@@ -97,7 +97,7 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
             .ToList(), failures);
 
         // Keep different difficulty levels in separate series and snapshots.
-        var challenge = ReadSafely("ChartChallenge", () => challengeRepository.GetHardChallengeMapByUid(uid).Values
+        List<Model.Entity.HardChallengeEntry> challenge = ReadSafely("ChartChallenge", () => challengeRepository.GetHardChallengeMapByUid(uid).Values
             .Where(entry => entry.HardChallengeData?.Schedule is not null
                 && entry.HardChallengeData.SinglePlayer is { HasData: true, Best: not null })
             .OrderBy(entry => entry.ScheduleId).ToList(), failures);
@@ -111,7 +111,7 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
             new(Translate("ChartAbyss", culture), Translate("MetricAbyss", culture), Translate("UnitStar", culture), abyss, InsightDirection.HigherIsBetter),
             new(Translate("ChartTheater", culture), Translate("MetricTheater", culture), Translate("UnitMedal", culture), theater, InsightDirection.HigherIsBetter),
         ];
-        foreach (var difficulty in challenge.GroupBy(entry => entry.HardChallengeData.SinglePlayer.Best!.Difficulty))
+        foreach (IGrouping<Model.Intrinsic.HardChallengeDifficultyLevel, Model.Entity.HardChallengeEntry> difficulty in challenge.GroupBy(entry => entry.HardChallengeData.SinglePlayer.Best!.Difficulty))
         {
             List<InsightPoint> points = difficulty.Select(entry => new InsightPoint(
                 FormatScheduleDate(entry.HardChallengeData.Schedule.StartDateTime),
