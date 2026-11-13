@@ -76,7 +76,11 @@ public partial class Avatar : ObservableObject, IDefaultIdentity<AvatarId>,
 
     [JsonIgnore]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CultivationItemSource))]
     public partial ImmutableArray<Material>? CultivationItemsView { get; set; }
+
+    [JsonIgnore]
+    public List<Material>? CultivationItemSource => CultivationItemsView is { } items ? items.IsDefaultOrEmpty ? [] : new(items) : null;
 
     [JsonIgnore]
     [ObservableProperty]

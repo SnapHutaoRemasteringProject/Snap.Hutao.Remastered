@@ -214,7 +214,7 @@
                             <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Grid>
@@ -310,7 +310,7 @@
                             <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Grid>
@@ -406,7 +406,7 @@
                             <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Grid>
@@ -502,7 +502,7 @@
                             <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Grid>
@@ -598,7 +598,7 @@
                             <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Grid>
@@ -695,7 +695,7 @@
                             <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Grid>
@@ -792,7 +792,7 @@
                             <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Grid>
@@ -889,7 +889,7 @@
                             <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <Grid>
@@ -1098,9 +1098,9 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
-                        <ItemsControl ItemsPanel="{ThemeResource StackPanelSpacing8Template}" ItemsSource="{x:Bind DataContext.ActivityCalendar.CompositeCardPools, Mode=OneWay}">
+                        <ItemsControl ItemsPanel="{ThemeResource StackPanelSpacing8Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.ActivityCalendar.CompositeCardPools, DataContext.ActivityCalendar.CompositeCardPools.IsDefaultOrEmpty), Mode=OneWay}">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="shwhtga:CardPool">
                                     <Grid RowSpacing="6" Style="{ThemeResource GridShimmerStyle}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition/>
@@ -1140,7 +1140,7 @@
                                             Grid.Row="1"
                                             Margin="6,0"
                                             ItemsPanel="{ThemeResource HorizontalStackPanelSpacing6Template}"
-                                            ItemsSource="{Binding CompositeItems}">
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(CompositeItems, CompositeItems.IsDefaultOrEmpty), Mode=OneTime}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate>
                                                     <shuxc:ItemIcon

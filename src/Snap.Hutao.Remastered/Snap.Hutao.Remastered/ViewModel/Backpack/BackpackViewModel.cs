@@ -74,7 +74,11 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
     public partial SearchData? SearchData { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(AvailableSortTokenItems))]
     public partial ImmutableArray<AutoSortToken> AvailableSortTokens { get; set; } = [];
+
+    [JsonIgnore]
+    public List<AutoSortToken> AvailableSortTokenItems => AvailableSortTokens.IsDefaultOrEmpty ? [] : new(AvailableSortTokens);
 
     public BackpackReliquaryScoreConfig? ScoreConfig { get; private set; }
 

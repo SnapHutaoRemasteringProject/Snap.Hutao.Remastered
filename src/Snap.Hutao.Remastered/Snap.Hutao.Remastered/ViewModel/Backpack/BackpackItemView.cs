@@ -11,10 +11,12 @@ using Snap.Hutao.Remastered.Model.Metadata.Reliquary;
 using Snap.Hutao.Remastered.Model.Metadata.Weapon;
 using Snap.Hutao.Remastered.Model.Primitive;
 using Snap.Hutao.Remastered.Service.Backpack;
+using Snap.Hutao.Remastered.UI.Xaml;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.Backpack;
 
+[WinRT.GeneratedBindableCustomProperty]
 public partial class BackpackItemView : ObservableObject
 {
     public BackpackItem Entity { get; protected init => SetProperty(ref field, value); } = default!;
@@ -44,6 +46,9 @@ public partial class BackpackItemView : ObservableObject
 
     [ObservableProperty]
     public partial ImmutableArray<string> SetDescriptions { get; protected set; } = [];
+
+    [JsonIgnore]
+    public List<object?>? SetDescriptionItems => ItemsSourceHelper.Create(SetDescriptions, SetDescriptions.IsDefaultOrEmpty);
 
     public bool HasSetDescriptions => !SetDescriptions.IsDefaultOrEmpty;
 
@@ -121,6 +126,7 @@ public partial class BackpackItemView : ObservableObject
         {
             case nameof(SetDescriptions):
                 OnPropertyChanged(nameof(HasSetDescriptions));
+                OnPropertyChanged(nameof(SetDescriptionItems));
                 break;
             case nameof(Entity):
                 OnPropertyChanged(nameof(DisplayCount));

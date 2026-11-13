@@ -48,7 +48,7 @@
                 HorizontalAlignment="Center"
                 AspectRatio="1080:533"
                 CornerRadius="{ThemeResource ControlCornerRadiusTop}">
-                <shuxci:CachedImage Source="{Binding Event.Banner}" Stretch="UniformToFill"/>
+                <shuxci:CachedImage Source="{x:Bind DataContext.Event.Banner, Mode=OneWay}" Stretch="UniformToFill"/>
             </cwc:ConstrainedBox>
             <Border
                 Margin="-1"
@@ -63,48 +63,48 @@
                     Foreground="{ThemeResource UpPullColorBrush}"
                     Style="{StaticResource BaseTextBlockStyle}"
                     Text="{shuxm:ResourceString Name=ViewControlStatisticsCardUpText}"
-                    Visibility="{Binding UpItems.Length, Converter={StaticResource Int32ToVisibilityConverter}}"/>
+                    Visibility="{x:Bind DataContext.UpItems.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
                 <ItemsControl
                     ItemTemplate="{StaticResource GridTemplate}"
                     ItemsPanel="{StaticResource WrapPanelSpacing4Template}"
-                    ItemsSource="{Binding UpItems}"
-                    Visibility="{Binding UpItems.Length, Converter={StaticResource Int32ToVisibilityConverter}}"/>
+                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.UpItems, DataContext.UpItems.IsDefaultOrEmpty), Mode=OneWay}"
+                    Visibility="{x:Bind DataContext.UpItems.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
 
                 <TextBlock
                     Margin="0,16,0,8"
                     Foreground="{ThemeResource OrangeColorBrush}"
                     Style="{StaticResource BaseTextBlockStyle}"
                     Text="{shuxm:ResourceString Name=ViewControlStatisticsCardOrangeText}"
-                    Visibility="{Binding OrangeItems.Length, Converter={StaticResource Int32ToVisibilityConverter}}"/>
+                    Visibility="{x:Bind DataContext.OrangeItems.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
                 <ItemsControl
                     ItemTemplate="{StaticResource GridTemplate}"
                     ItemsPanel="{StaticResource WrapPanelSpacing4Template}"
-                    ItemsSource="{Binding OrangeItems}"
-                    Visibility="{Binding OrangeItems.Length, Converter={StaticResource Int32ToVisibilityConverter}}"/>
+                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.OrangeItems, DataContext.OrangeItems.IsDefaultOrEmpty), Mode=OneWay}"
+                    Visibility="{x:Bind DataContext.OrangeItems.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
 
                 <TextBlock
                     Margin="0,16,0,8"
                     Foreground="{ThemeResource PurpleColorBrush}"
                     Style="{StaticResource BaseTextBlockStyle}"
                     Text="{shuxm:ResourceString Name=ViewControlStatisticsCardPurpleText}"
-                    Visibility="{Binding PurpleItems.Length, Converter={StaticResource Int32ToVisibilityConverter}}"/>
+                    Visibility="{x:Bind DataContext.PurpleItems.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
                 <ItemsControl
                     ItemTemplate="{StaticResource GridTemplate}"
                     ItemsPanel="{StaticResource WrapPanelSpacing4Template}"
-                    ItemsSource="{Binding PurpleItems}"
-                    Visibility="{Binding PurpleItems.Length, Converter={StaticResource Int32ToVisibilityConverter}}"/>
+                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.PurpleItems, DataContext.PurpleItems.IsDefaultOrEmpty), Mode=OneWay}"
+                    Visibility="{x:Bind DataContext.PurpleItems.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
 
                 <TextBlock
                     Margin="0,16,0,8"
                     Foreground="{ThemeResource BlueColorBrush}"
                     Style="{StaticResource BaseTextBlockStyle}"
                     Text="{shuxm:ResourceString Name=ViewControlStatisticsCardBlueText}"
-                    Visibility="{Binding BlueItems.Length, Converter={StaticResource Int32ToVisibilityConverter}}"/>
+                    Visibility="{x:Bind DataContext.BlueItems.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
                 <ItemsControl
                     ItemTemplate="{StaticResource GridTemplate}"
                     ItemsPanel="{StaticResource WrapPanelSpacing4Template}"
-                    ItemsSource="{Binding BlueItems}"
-                    Visibility="{Binding BlueItems.Length, Converter={StaticResource Int32ToVisibilityConverter}}"/>
+                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.BlueItems, DataContext.BlueItems.IsDefaultOrEmpty), Mode=OneWay}"
+                    Visibility="{x:Bind DataContext.BlueItems.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>
