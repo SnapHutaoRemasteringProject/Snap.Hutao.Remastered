@@ -63,6 +63,22 @@ public sealed class AotJsonCodecTest
         Assert.AreEqual("42", JsonSerializer.Serialize(new AotJsonTestIdentity(43), context.AotJsonTestIdentity));
     }
 
+    [TestMethod]
+    public void OptionsIdentityConverterOverridesGeneratedContract()
+    {
+        // IdentityGenerator's [JsonConverter] attributes are invisible to the JSON source
+        // generator, so metadata identities are declared without an attribute and their
+        // converters are added to the options instead. This asserts that an options-level
+        // converter wins over the generated (empty-struct) contract, which is what makes the
+        // metadata identity wiring work with the combined generated resolvers.
+        var options = new JsonSerializerOptions();
+        options.Converters.Add(new IdentityConverter<AotJsonOptionIdentity>());
+        options.TypeInfoResolver = System.Text.Json.Serialization.Metadata.JsonTypeInfoResolver.Combine(AotJsonCodecTestContext.Default);
+
+        Assert.AreEqual(42U, JsonSerializer.Deserialize<AotJsonOptionIdentity>("42", options).Value);
+        Assert.AreEqual("42", JsonSerializer.Serialize(new AotJsonOptionIdentity(42), options));
+    }
+
     private sealed class OffsetUIntConverter : JsonConverter<uint>
     {
         public override uint Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => reader.GetUInt32() + 1;
@@ -90,9 +106,15 @@ public readonly struct AotJsonTestIdentity(uint value)
     public uint Value { get; } = value;
 }
 
+public readonly struct AotJsonOptionIdentity(uint value)
+{
+    public uint Value { get; } = value;
+}
+
 public sealed class AotNumberToStringEnumConverter() : UnsafeEnumConverter<AotJsonTestEnum>(JsonEnumHandling.Number, JsonEnumHandling.NumberString);
 
 [JsonSerializable(typeof(AotJsonEnumProbe))]
 [JsonSerializable(typeof(AotJsonTestIdentity))]
+[JsonSerializable(typeof(AotJsonOptionIdentity))]
 [JsonSerializable(typeof(uint))]
 internal sealed partial class AotJsonCodecTestContext : JsonSerializerContext;
