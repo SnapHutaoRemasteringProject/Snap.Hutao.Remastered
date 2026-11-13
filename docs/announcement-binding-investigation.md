@@ -1,5 +1,15 @@
 # 公告页 DataContext 异常源码调查
 
+## 2026-11-14：新版运行后的后续修复
+
+用户新日志明确运行 bb433551e。SettingViewModel/BackpackViewModel 等七个具体 VM 没有声明属性访问生成器，已补充现有 BindableCustomPropertyProvider；它支持继承的 IsInitialized 和本项目生成命令，避免改用另一生成器后丢失命令。源声明检查及删除 Settings 标记的负例均通过；新生成结果尚待依赖缓存补齐后编译确认。
+
+LaunchGamePage 已移除整个 VM 到资源 BindingProxy.DataContext 的赋值。普通页面绑定直接编译；模板菜单/按钮在 Loaded/Unloaded 绑定和清除原命令，保留参数、异步 CanExecute 及原有业务方法。延迟程序条目的传统绑定属性也生成 AOT 访问器。
+
+游戏公告另有显示层遗漏：三个 PivotItem 以传统 Binding 遍历 ImmutableArray 并索引，且分类模板仍把不可变 List 直接交给 ItemsSource。现用带边界检查的编译函数取分类/标题，分类列表在托管函数内转换。HTTP 返回失败、尚未发出请求和显示绑定失败是不同路径；没有 HTTP 诊断文件不能据此断言网络正常或异常。
+
+本轮 Debug no-restore 检查被 NETSDK1112 阻止：Microsoft.Windows.SDK.NET.Ref runtime pack 不在当前缓存。遵守用户不自动还原的限制，未绕过依赖检查或报告编译通过。源码 XML、命令路由和 provider 声明检查通过，原生行为仍待构建后验证。
+
 更新：2026-11-13。用户要求只做源码研究，.NET/EF 保持 `11.*` 主版本策略，不还原、不启动界面。本记录不代表原生崩溃已修复。
 
 ## 后续运行日志：成就与抽卡卡片
