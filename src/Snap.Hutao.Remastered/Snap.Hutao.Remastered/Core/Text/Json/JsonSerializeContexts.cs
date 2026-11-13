@@ -44,6 +44,7 @@ internal static class JsonSerializeContexts
         // IdentityGenerator's converter attributes are not visible to a different generator
         // in the same round, so every closed identity converter is registered explicitly.
         options.Converters.Add(new IdentityConverter<AvatarId>());
+        options.Converters.Add(new IdentityConverter<BeyondItemId>());
         options.Converters.Add(new IdentityConverter<CostumeId>());
         options.Converters.Add(new IdentityConverter<FetterLevel>());
         options.Converters.Add(new IdentityConverter<HardChallengeScheduleId>());
