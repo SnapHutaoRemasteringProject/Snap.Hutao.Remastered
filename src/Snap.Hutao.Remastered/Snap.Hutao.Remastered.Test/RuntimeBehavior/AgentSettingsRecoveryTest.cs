@@ -3,6 +3,7 @@ using System.Reflection;
 using Snap.Hutao.Remastered.Service.AI.Settings;
 using Snap.Hutao.Remastered.Core.AI.IO;
 using Snap.Hutao.Remastered.Core.AI.Threading;
+using Snap.Hutao.Remastered.Core.Text.Json;
 
 namespace Snap.Hutao.Remastered.Test.RuntimeBehavior;
 
@@ -49,10 +50,10 @@ public sealed class AgentSettingsRecoveryTest
             File.WriteAllText(path, "{");
             using var provider = new JsonSettingsProvider<AgentSettings>("test", new());
             provider.CurrentValue.AgentOptions.UserName = "ignored";
-            File.WriteAllText(path, JsonSerializer.Serialize(new AgentSettings()));
+            File.WriteAllText(path, JsonSerializer.Serialize(new AgentSettings(), AgentSettingsJsonContext.Default.AgentSettings));
             typeof(JsonSettingsProvider<AgentSettings>).GetMethod("OnFileChanged", BindingFlags.Static | BindingFlags.NonPublic)!.Invoke(null, [provider]);
             provider.CurrentValue.AgentOptions.UserName = "recovered";
-            Assert.AreEqual("recovered", JsonSerializer.Deserialize<AgentSettings>(File.ReadAllText(path))!.AgentOptions.UserName);
+            Assert.AreEqual("recovered", JsonSerializer.Deserialize(File.ReadAllText(path), AgentSettingsJsonContext.Default.AgentSettings)!.AgentOptions.UserName);
             Assert.IsGreaterThan(0, AgentCredentialStore.SaveCalls);
         });
     }

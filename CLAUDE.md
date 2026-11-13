@@ -429,9 +429,11 @@ the build fails with `CS9275`); write a normal constructor in that case.
 - `JsonSerialize` freezes the options on first use and retrieves their cached `JsonTypeInfo`.
   An unconfigured resolver, missing contract or resolver error is reported to the caller; the
   facade never creates reflection options or catches those errors to retry with a different policy.
-- `JsonOptions.Create` prefers generated contracts and appends reflection compatibility only when
-  `JsonSerializer.IsReflectionEnabledByDefault` is true. Custom options must supply their own
-  resolver; configuring a new resolver deliberately replaces the generated registry.
+- `JsonOptions.Default` and `JsonOptions.Create` use generated contracts in both managed and native
+  builds. Managed-only reflection compatibility requires an explicit `JsonOptions.CreateReflection`
+  call (annotated for trimming/dynamic-code requirements) and an enabled reflection feature switch.
+  Custom options must supply their own resolver; configuring a new resolver deliberately replaces
+  the generated registry. Register new roots instead of adding an implicit reflection fallback.
 - Legacy AI files use `AgentJsonContext.Default.Options` for their two list roots, preserving the
   serializer defaults instead of the application's permissive network JSON policy.
 - Current AI conversation options use `AgentConversationJsonOptions.Create`: generated application

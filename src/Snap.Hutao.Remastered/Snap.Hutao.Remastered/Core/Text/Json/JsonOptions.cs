@@ -8,8 +8,7 @@ namespace Snap.Hutao.Remastered.Core.Text.Json;
 public static class JsonOptions
 {
     /// <summary>
-    /// Generated contracts are preferred. Unregistered types retain their reflection
-    /// compatibility path only when the runtime enables JSON reflection.
+    /// Generated contracts are used on both managed and native runtimes.
     /// </summary>
     public static readonly JsonSerializerOptions Default = CreateDefault();
 
@@ -17,6 +16,8 @@ public static class JsonOptions
     /// Explicit reflection-only options for managed compatibility callers.
     /// This is intentionally not used by native application JSON paths.
     /// </summary>
+    [RequiresUnreferencedCode("Explicit reflection compatibility requires preserving serialized members.")]
+    [RequiresDynamicCode("Explicit reflection compatibility is not supported by Native AOT.")]
     public static JsonSerializerOptions CreateReflection()
     {
         JsonSerializerOptions options = JsonSerializeContexts.CreateOptions();
@@ -36,11 +37,6 @@ public static class JsonOptions
     {
         JsonSerializerOptions options = JsonSerializeContexts.CreateOptions();
         configure?.Invoke(options);
-        if (JsonSerializer.IsReflectionEnabledByDefault)
-        {
-            options.TypeInfoResolver = JsonTypeInfoResolver.Combine(options.TypeInfoResolver, CreateReflectionResolver());
-        }
-
         return options;
     }
 
@@ -54,6 +50,8 @@ public static class JsonOptions
         return Create();
     }
 
+    [RequiresUnreferencedCode("Reflection compatibility requires preserving serialized members.")]
+    [RequiresDynamicCode("Reflection compatibility is not supported by Native AOT.")]
     private static IJsonTypeInfoResolver CreateReflectionResolver()
     {
         // Reuse the runtime's resolver without changing its shared modifiers. The feature

@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using System.Collections.Immutable;
-using System.Runtime.CompilerServices;
 using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Model.Primitive;
 
@@ -46,8 +45,6 @@ public sealed class IdLevelParametersCollection<TId, TLevel, TParameter>
 [SuppressMessage("", "SA1402")]
 internal sealed class IdLevelParametersCollectionConverterFactory : JsonConverterFactory
 {
-    private static readonly Type ConverterType = typeof(Converter<,,>);
-
     public override bool CanConvert(Type typeToConvert)
     {
         return typeToConvert.IsGenericType && typeToConvert.GetGenericTypeDefinition() == typeof(IdLevelParametersCollection<,,>);
@@ -56,8 +53,7 @@ internal sealed class IdLevelParametersCollectionConverterFactory : JsonConverte
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
         if (typeToConvert == typeof(IdLevelParametersCollection<ProudSkillId, SkillLevel, float>)) return new Converter<ProudSkillId, SkillLevel, float>();
-        if (!RuntimeFeature.IsDynamicCodeSupported) throw new NotSupportedException("Unregistered Native AOT metadata parameter type.");
-        return Activator.CreateInstance(ConverterType.MakeGenericType(typeToConvert.GetGenericArguments())) as JsonConverter;
+        throw new NotSupportedException("Unregistered metadata parameter type; add a closed converter before using it.");
     }
 }
 
