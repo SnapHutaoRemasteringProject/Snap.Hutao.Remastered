@@ -24,7 +24,7 @@ public sealed class ActReward
     public required int Number { get; init; }
 
     [JsonPropertyName("rarity")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter<QualityType>))]
     public required QualityType Rarity { get; init; }
 
     [JsonPropertyName("homepage_show")]

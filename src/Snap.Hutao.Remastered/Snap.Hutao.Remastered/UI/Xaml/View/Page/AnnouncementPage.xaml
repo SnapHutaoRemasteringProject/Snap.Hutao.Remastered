@@ -1192,6 +1192,7 @@
                 <ItemsControl
                     ItemTemplate="{StaticResource CardTemplate}"
                     ItemsSource="{x:Bind DataContext.Cards, Mode=OneWay}"
+                    IsHitTestVisible="{x:Bind DataContext.IsInitialized, Mode=OneWay}"
                     Visibility="{x:Bind DataContext.Cards, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>

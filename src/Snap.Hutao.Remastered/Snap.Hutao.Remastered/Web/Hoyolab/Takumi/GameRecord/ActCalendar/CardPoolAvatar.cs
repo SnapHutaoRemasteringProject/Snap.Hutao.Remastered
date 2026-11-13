@@ -12,7 +12,7 @@ public sealed class CardPoolAvatar : CardPoolItem
     public required AvatarId Id { get; set; }
 
     [JsonPropertyName("element")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter<ElementName>))]
     public required ElementName Element { get; init; }
 
     [JsonPropertyName("is_invisible")]

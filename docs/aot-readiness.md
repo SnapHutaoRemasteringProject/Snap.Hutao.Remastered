@@ -19,6 +19,8 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.Test -c Debug --logg
 
 ## Native AOT 发布
 
+`dotnet build -p:PublishAot=true` 只更新托管编译输入和 XAML，不会替代原生发布。`bin/.../native` 中可能保留旧 EXE/PDB；源码和生成代码已经修复，并不表示该文件已经更新。请完整 publish 到新目录，并从该目录使用匹配的 EXE、PRI/XBF 和资源。
+
 在 Windows、.NET 11 SDK、Windows SDK、VC++ 工具和 WinUI 构建工具齐备的环境执行完整发布：
 
 ```powershell
