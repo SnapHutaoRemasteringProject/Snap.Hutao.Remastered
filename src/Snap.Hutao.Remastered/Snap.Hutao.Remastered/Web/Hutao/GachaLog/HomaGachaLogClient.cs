@@ -123,7 +123,7 @@ public sealed partial class HomaGachaLogClient
         return Web.Response.Response.DefaultIfNull(resp);
     }
 
-    private sealed class UidAndEndIds
+    internal sealed class UidAndEndIds
     {
         public UidAndEndIds(string uid, EndIds endIds)
         {
@@ -136,7 +136,7 @@ public sealed partial class HomaGachaLogClient
         public EndIds EndIds { get; }
     }
 
-    private sealed class UidAndItems
+    internal sealed class UidAndItems
     {
         public UidAndItems(string uid, IReadOnlyList<GachaItem> gachaItems)
         {

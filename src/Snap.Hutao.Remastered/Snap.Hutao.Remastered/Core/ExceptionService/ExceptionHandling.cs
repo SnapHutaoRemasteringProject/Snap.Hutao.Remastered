@@ -9,6 +9,7 @@ using Snap.Hutao.Remastered.Win32;
 using System.Data.Common;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.Core.ExceptionService;
@@ -60,7 +61,8 @@ public sealed partial class ExceptionHandling
             string directory = Path.Combine(AppDataPaths.UnpackagedRoot, "CrashLogs");
             Directory.CreateDirectory(directory);
             string path = Path.Combine(directory, $"unhandled-xaml-{DateTime.UtcNow:yyyyMMddTHHmmssfffffff}-{Environment.ProcessId}.txt");
-            File.WriteAllText(path, $"UTC: {DateTime.UtcNow:O}\nHRESULT: {e.Exception?.HResult:X8}\nMessage: {e.Message}\n{e.Exception}");
+            string build = typeof(ExceptionHandling).Assembly.GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "unknown";
+            File.WriteAllText(path, $"UTC: {DateTime.UtcNow:O}\nBuild: {build}\nExecutable: {Environment.ProcessPath}\nDynamicCode: {System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeCompiled}\nHRESULT: {e.Exception?.HResult:X8}\nMessage: {e.Message}\n{e.Exception}");
         }
         catch (Exception diagnosticError)
         {
