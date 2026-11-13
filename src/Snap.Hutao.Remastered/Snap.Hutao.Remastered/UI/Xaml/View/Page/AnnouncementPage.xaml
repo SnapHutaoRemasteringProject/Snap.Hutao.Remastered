@@ -1002,13 +1002,13 @@
                                                             <TextBlock
                                                                 IsTextSelectionEnabled="True"
                                                                 Style="{ThemeResource BaseTextBlockStyle}"
-                                                                Text="{x:Bind Code, Mode=OneWay}"
+                                                                Text="{x:Bind Code, Mode=OneTime}"
                                                                 TextTrimming="CharacterEllipsis"
                                                                 TextWrapping="NoWrap"/>
                                                             <TextBlock
                                                                 Opacity="0.7"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{x:Bind Title, Mode=OneWay}"
+                                                                Text="{x:Bind Title, Mode=OneTime}"
                                                                 TextTrimming="CharacterEllipsis"
                                                                 TextWrapping="NoWrap"/>
                                                         </StackPanel>
@@ -1019,7 +1019,7 @@
                                                             Background="Transparent"
                                                             Loaded="OnCopyCodeLoaded"
                                                             Unloaded="OnCopyCodeUnloaded"
-                                                            CommandParameter="{x:Bind Code, Mode=OneWay}"
+                                                            CommandParameter="{x:Bind Code, Mode=OneTime}"
                                                             Content="{StaticResource FontIconContentCopy}"
                                                             FontFamily="{StaticResource SymbolThemeFontFamily}"
                                                             Style="{StaticResource ButtonRevealStyle}"/>
