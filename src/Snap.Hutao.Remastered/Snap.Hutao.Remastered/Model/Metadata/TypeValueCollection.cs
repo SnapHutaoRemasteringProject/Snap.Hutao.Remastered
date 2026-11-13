@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using System.Collections.Immutable;
-using System.Runtime.CompilerServices;
 using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 
@@ -36,8 +35,6 @@ public sealed class TypeValueCollection<TType, TValue>
 [SuppressMessage("", "SA1402")]
 internal sealed class TypeValueCollectionConverterFactory : JsonConverterFactory
 {
-    private static readonly Type ConverterType = typeof(Converter<,>);
-
     public override bool CanConvert(Type typeToConvert)
     {
         return typeToConvert.IsGenericType && typeToConvert.GetGenericTypeDefinition() == typeof(TypeValueCollection<,>);
@@ -48,8 +45,7 @@ internal sealed class TypeValueCollectionConverterFactory : JsonConverterFactory
         if (typeToConvert == typeof(TypeValueCollection<FightProperty, float>)) return new Converter<FightProperty, float>();
         if (typeToConvert == typeof(TypeValueCollection<FightProperty, GrowCurveType>)) return new Converter<FightProperty, GrowCurveType>();
         if (typeToConvert == typeof(TypeValueCollection<GrowCurveType, float>)) return new Converter<GrowCurveType, float>();
-        if (!RuntimeFeature.IsDynamicCodeSupported) throw new NotSupportedException("Unregistered Native AOT metadata collection type.");
-        return Activator.CreateInstance(ConverterType.MakeGenericType(typeToConvert.GetGenericArguments())) as JsonConverter;
+        throw new NotSupportedException("Unregistered metadata collection type; add a closed converter before using it.");
     }
 }
 

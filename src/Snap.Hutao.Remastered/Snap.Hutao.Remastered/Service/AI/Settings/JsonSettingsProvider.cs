@@ -40,16 +40,16 @@ internal partial class JsonSettingsProvider<TSettings> : ISettingsProvider<TSett
 
     public JsonSettingsProvider(string fileNameWithoutExtension, JsonSerializerOptions jsonOptions)
     {
-        // Legacy callers may pass options without a resolver on the managed runtime.
-        // Native callers must provide an explicit generated contract.
+        // Preserve legacy formatting options without opting into reflection.
+        // Other settings types must supply their own generated resolver.
         this.jsonOptions = jsonOptions.TypeInfoResolver is null
             ? new JsonSerializerOptions(jsonOptions)
             {
-                TypeInfoResolver = JsonSerializer.IsReflectionEnabledByDefault
-                    ? JsonSerializerOptions.Default.TypeInfoResolver
-                    : throw new NotSupportedException("Settings JSON requires a generated resolver.")
+                TypeInfoResolver = AgentSettingsJsonContext.Default
             }
             : jsonOptions;
+
+        _ = JsonSerialize.GetTypeInfo<TSettings>(this.jsonOptions);
 
         string directory = WellKnownLocations.Settings;
         Directory.CreateDirectory(directory);
