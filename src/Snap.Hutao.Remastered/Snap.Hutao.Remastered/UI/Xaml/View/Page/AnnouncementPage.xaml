@@ -159,7 +159,7 @@
         </DataTemplate>
 
         <DataTemplate x:Key="AnnouncementPivotItemContentTemplate" x:DataType="shwhhca:AnnouncementListWrapper">
-            <ItemsControl ItemTemplate="{StaticResource AnnouncementTemplate}" ItemsSource="{x:Bind List, Mode=OneWay}">
+            <ItemsControl ItemTemplate="{StaticResource AnnouncementTemplate}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(List, List.IsDefaultOrEmpty), Mode=OneWay}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <shuxcp:UniformPanel
@@ -1213,17 +1213,17 @@
                         Transitions="{ThemeResource EntranceThemeTransitions}"
                         Visibility="{x:Bind DataContext.Announcement, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                         <PivotItem
-                            Content="{Binding Announcement.List[1]}"
+                            Content="{x:Bind GetAnnouncementCategory(DataContext.Announcement, 1), Mode=OneWay}"
                             ContentTemplate="{StaticResource AnnouncementPivotItemContentTemplate}"
-                            Header="{Binding Announcement.TypeList[1].MI18NName}"/>
+                            Header="{x:Bind GetAnnouncementHeader(DataContext.Announcement, 1), Mode=OneWay}"/>
                         <PivotItem
-                            Content="{Binding Announcement.List[0]}"
+                            Content="{x:Bind GetAnnouncementCategory(DataContext.Announcement, 0), Mode=OneWay}"
                             ContentTemplate="{StaticResource AnnouncementPivotItemContentTemplate}"
-                            Header="{Binding Announcement.TypeList[0].MI18NName}"/>
+                            Header="{x:Bind GetAnnouncementHeader(DataContext.Announcement, 0), Mode=OneWay}"/>
                         <PivotItem
-                            Content="{Binding Announcement.List[2]}"
+                            Content="{x:Bind GetAnnouncementCategory(DataContext.Announcement, 2), Mode=OneWay}"
                             ContentTemplate="{StaticResource AnnouncementPivotItemContentTemplate}"
-                            Header="{Binding Announcement.TypeList[2].MI18NName}"/>
+                            Header="{x:Bind GetAnnouncementHeader(DataContext.Announcement, 2), Mode=OneWay}"/>
                     </Pivot>
                 </ScrollViewer>
             </StackPanel>

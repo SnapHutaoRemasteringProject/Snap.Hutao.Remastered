@@ -3,6 +3,7 @@
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.UI.Content;
 using Snap.Hutao.Remastered.UI.Xaml.Control;
@@ -21,6 +22,43 @@ public sealed partial class LaunchGamePage : ScopedPage
     public LaunchGamePage()
     {
         InitializeComponent();
+    }
+
+    // Templates have their own data context. Assign only the command, without
+    // storing the page VM in a native resource object's DataContext property.
+    private void OnTemplateCommandLoaded(object sender, RoutedEventArgs args)
+    {
+        if (sender is FrameworkElement { Tag: string name } && base.DataContext is LaunchGameViewModel viewModel)
+        {
+            ICommand command = name switch
+            {
+                nameof(viewModel.ModifyGameAccountCommand) => viewModel.ModifyGameAccountCommand,
+                nameof(viewModel.RemoveGameAccountCommand) => viewModel.RemoveGameAccountCommand,
+                nameof(viewModel.RemoveGamePathEntryCommand) => viewModel.RemoveGamePathEntryCommand,
+                nameof(viewModel.RemoveAspectRatioCommand) => viewModel.RemoveAspectRatioCommand,
+                nameof(viewModel.PickDelayedProgramPathCommand) => viewModel.PickDelayedProgramPathCommand,
+                _ => throw new InvalidOperationException($"Unknown template command: {name}"),
+            };
+            SetTemplateCommand(sender, command);
+        }
+    }
+
+    private void OnTemplateCommandUnloaded(object sender, RoutedEventArgs args)
+    {
+        SetTemplateCommand(sender, null);
+    }
+
+    private static void SetTemplateCommand(object sender, ICommand? command)
+    {
+        switch (sender)
+        {
+            case ButtonBase button:
+                button.Command = command;
+                break;
+            case MenuFlyoutItem menuItem:
+                menuItem.Command = command;
+                break;
+        }
     }
 
     protected override void LoadingOverride()
