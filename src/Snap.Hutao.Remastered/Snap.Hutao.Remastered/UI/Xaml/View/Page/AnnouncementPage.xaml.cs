@@ -24,14 +24,14 @@ public sealed partial class AnnouncementPage : ScopedPage
 
     public new AnnouncementViewModel DataContext { get => Unsafe.As<AnnouncementViewModel>(base.DataContext); set => base.DataContext = value; }
 
-    private static AnnouncementListWrapper? GetAnnouncementCategory(AnnouncementWrapper? wrapper, int index)
+    private AnnouncementListWrapper? GetAnnouncementCategory(AnnouncementWrapper? wrapper, int index)
     {
         return wrapper is not null && !wrapper.List.IsDefaultOrEmpty && (uint)index < (uint)wrapper.List.Length
             ? wrapper.List[index]
             : null;
     }
 
-    private static string? GetAnnouncementHeader(AnnouncementWrapper? wrapper, int index)
+    private string? GetAnnouncementHeader(AnnouncementWrapper? wrapper, int index)
     {
         return wrapper?.TypeList is { } types && (uint)index < (uint)types.Count
             ? types[index].MI18NName

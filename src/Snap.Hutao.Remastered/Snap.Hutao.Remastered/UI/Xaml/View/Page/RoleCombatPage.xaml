@@ -175,7 +175,7 @@
                 Width="24"
                 Height="24"
                 ShowAsMonoChrome="True"
-                Source="{Binding Converter={StaticResource ElementTypeIconConverter}, Mode=OneWay}"/>
+                Source="{x:Bind Converter={StaticResource ElementTypeIconConverter}, Mode=OneTime}"/>
         </DataTemplate>
 
         <DataTemplate x:Key="RoundTemplate" x:DataType="shvr:RoundView">
@@ -316,7 +316,7 @@
                                         Padding="16"
                                         DataContext="{x:Bind DataContext.RoleCombatEntries.CurrentItem, Mode=OneWay}"
                                         RowSpacing="8"
-                                        Visibility="{Binding Converter={StaticResource EmptyObjectToVisibilityConverter}, FallbackValue=Collapsed}">
+                                        Visibility="{x:Bind DataContext.RoleCombatEntries.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="auto"/>
                                             <RowDefinition Height="auto"/>
@@ -563,12 +563,12 @@
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatShortest}">
                                                                 <ItemsControl ItemsPanel="{ThemeResource HorizontalStackPanelSpacing4Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.RoleCombatEntries.CurrentItem.Shortest, DataContext.RoleCombatEntries.CurrentItem.Shortest.IsDefaultOrEmpty), Mode=OneWay}">
                                                                     <ItemsControl.ItemTemplate>
-                                                                        <DataTemplate>
+                                                                        <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.ViewModel.RoleCombat" x:DataType="aot:AvatarDamage">
                                                                             <shuxci:CachedImage
                                                                                 Width="36"
                                                                                 Height="36"
                                                                                 Margin="-10,-20,-8,-10"
-                                                                                Source="{Binding SideIcon}"/>
+                                                                                Source="{x:Bind SideIcon, Mode=OneWay}"/>
                                                                         </DataTemplate>
                                                                     </ItemsControl.ItemTemplate>
                                                                 </ItemsControl>
@@ -678,7 +678,7 @@
                     <shuxc:Loading
                         Margin="16"
                         CornerRadius="{ThemeResource ControlCornerRadius}"
-                        IsLoading="{Binding Converter={StaticResource EmptyObjectToBoolRevertConverter}}"
+                        IsLoading="{x:Bind DataContext.HutaoRoleCombatDatabaseViewModel, Converter={StaticResource EmptyObjectToBoolRevertConverter}, Mode=OneWay}"
                         Style="{ThemeResource DefaultLoadingViewStyle}"/>
                 </Grid>
             </PivotItem>

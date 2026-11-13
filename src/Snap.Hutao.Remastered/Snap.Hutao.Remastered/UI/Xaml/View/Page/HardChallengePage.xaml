@@ -160,7 +160,7 @@
                                         Padding="16"
                                         DataContext="{x:Bind DataContext.HardChallengeEntries.CurrentItem, Mode=OneWay}"
                                         Spacing="16"
-                                        Visibility="{Binding Converter={StaticResource EmptyObjectToVisibilityConverter}, FallbackValue=Collapsed}">
+                                        Visibility="{x:Bind DataContext.HardChallengeEntries.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityConverter}, FallbackValue=Collapsed, Mode=OneWay}">
                                         <ItemsControl
                                             ItemTemplate="{StaticResource BlingAvatarViewTemplate}"
                                             ItemsPanel="{ThemeResource WrapPanelSpacing4Template}"
@@ -250,12 +250,12 @@
                                                                                 Width="64"
                                                                                 Height="64"
                                                                                 Margin="0,0,0,0"
-                                                                                Source="{Binding Monster.Icon}">
+                                                                                Source="{x:Bind Monster.Icon, Mode=OneTime}">
                                                                                 <ToolTipService.ToolTip>
                                                                                     <ItemsControl ItemsPanel="{ThemeResource StackPanelSpacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(Monster.Descriptions, Monster.Descriptions.IsDefaultOrEmpty), Mode=OneTime}">
                                                                                         <ItemsControl.ItemTemplate>
-                                                                                            <DataTemplate>
-                                                                                                <shuxct:DescriptionTextBlock Description="{Binding}"/>
+                                                                                            <DataTemplate x:DataType="x:String">
+                                                                                                <shuxct:DescriptionTextBlock Description="{x:Bind Mode=OneTime}"/>
                                                                                             </DataTemplate>
                                                                                         </ItemsControl.ItemTemplate>
                                                                                     </ItemsControl>
@@ -263,11 +263,11 @@
                                                                             </shuxci:CachedImage>
                                                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                                                 <TextBlock
-                                                                                    Text="{Binding Monster.Name}"
+                                                                                    Text="{x:Bind Monster.Name, Mode=OneTime}"
                                                                                     TextTrimming="CharacterEllipsis"
                                                                                     TextWrapping="NoWrap"/>
                                                                                 <TextBlock
-                                                                                    Text="{Binding Monster.Level}"
+                                                                                    Text="{x:Bind Monster.Level, Mode=OneTime}"
                                                                                     TextTrimming="CharacterEllipsis"
                                                                                     TextWrapping="NoWrap"/>
                                                                             </StackPanel>
@@ -279,12 +279,12 @@
                                                                             ItemsPanel="{ThemeResource WrapPanelSpacing4Template}"
                                                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(Monster.Tags, Monster.Tags.IsDefaultOrEmpty), Mode=OneTime}">
                                                                             <ItemsControl.ItemTemplate>
-                                                                                <DataTemplate>
+                                                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.HardChallenge" x:DataType="aot:HardChallengeMonsterTag">
                                                                                     <Border
                                                                                         Padding="6,4"
                                                                                         CornerRadius="12"
                                                                                         Style="{ThemeResource BorderShimmerStyle}">
-                                                                                        <shuxct:DescriptionRichTextBlock Margin="0,-1,0,0" Description="{Binding Description}"/>
+                                                                                        <shuxct:DescriptionRichTextBlock Margin="0,-1,0,0" Description="{x:Bind Description, Mode=OneTime}"/>
                                                                                     </Border>
                                                                                 </DataTemplate>
                                                                             </ItemsControl.ItemTemplate>
@@ -295,7 +295,7 @@
                                                                             Padding="8"
                                                                             Style="{ThemeResource GridShimmerStyle}">
                                                                             <TextBlock Text="{shuxm:ResourceString Name=ViewPageHardChallengeTime}"/>
-                                                                            <TextBlock HorizontalTextAlignment="Right" Text="{Binding FormattedSeconds}"/>
+                                                                            <TextBlock HorizontalTextAlignment="Right" Text="{x:Bind FormattedSeconds, Mode=OneTime}"/>
                                                                         </Grid>
 
                                                                         <Viewbox Grid.Row="4">
@@ -311,21 +311,21 @@
                                                                             ItemsPanel="{StaticResource StackPanelSpacing8Template}"
                                                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(BestAvatars, BestAvatars.IsDefaultOrEmpty), Mode=OneTime}">
                                                                             <ItemsControl.ItemTemplate>
-                                                                                <DataTemplate>
+                                                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.ViewModel.HardChallenge" x:DataType="aot:AvatarDamage">
                                                                                     <Grid Padding="8" Style="{ThemeResource GridShimmerStyle}">
                                                                                         <StackPanel Orientation="Horizontal">
                                                                                             <shuxci:CachedImage
                                                                                                 Width="36"
                                                                                                 Height="36"
                                                                                                 Margin="-8,-8,0,0"
-                                                                                                Source="{Binding SideIcon}"/>
-                                                                                            <TextBlock VerticalAlignment="Center" Text="{Binding Type}"/>
+                                                                                                Source="{x:Bind SideIcon, Mode=OneWay}"/>
+                                                                                            <TextBlock VerticalAlignment="Center" Text="{x:Bind Type, Mode=OneWay}"/>
                                                                                         </StackPanel>
 
                                                                                         <TextBlock
                                                                                             HorizontalAlignment="Right"
                                                                                             VerticalAlignment="Center"
-                                                                                            Text="{Binding Value}"/>
+                                                                                            Text="{x:Bind Value, Mode=OneWay}"/>
                                                                                     </Grid>
                                                                                 </DataTemplate>
                                                                             </ItemsControl.ItemTemplate>

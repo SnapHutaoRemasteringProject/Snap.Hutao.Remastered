@@ -193,7 +193,7 @@ public sealed partial class CultivationService : ICultivationService
 
         // Readers use this same lock. Invalidate after the writes, before releasing
         // it, so a reader cannot repopulate the cache from rows being deleted.
-        using var mutation = await entryCollectionLock.LockAsync().ConfigureAwait(false);
+        using AsyncLock.Releaser mutation = await entryCollectionLock.LockAsync().ConfigureAwait(false);
         bool entriesChanged = false;
         try
         {

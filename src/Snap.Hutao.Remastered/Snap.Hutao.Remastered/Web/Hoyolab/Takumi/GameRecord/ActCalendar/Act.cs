@@ -68,6 +68,9 @@ public partial class Act : ObservableObject
     [JsonPropertyName("reward_list")]
     public required ImmutableArray<ActReward> RewardList { get; init; }
 
+    [JsonIgnore]
+    public ActReward? FirstReward { get => RewardList.IsDefaultOrEmpty ? null : RewardList[0]; }
+
     [JsonPropertyName("is_finished")]
     [ObservableProperty]
     public required partial bool IsFinished { get; set; }

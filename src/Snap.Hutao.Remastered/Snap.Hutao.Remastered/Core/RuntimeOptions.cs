@@ -3,21 +3,19 @@
 
 namespace Snap.Hutao.Remastered.Core;
 
+/// <summary>
+/// Exposes runtime values to XAML bindings, including generated compiled bindings.
+/// </summary>
 [Service(ServiceLifetime.Singleton)]
 public sealed class RuntimeOptions
 {
-    [Obsolete("This property only exist for binding purpose")]
     public Version Version { get => HutaoRuntime.Version; }
 
-    [Obsolete("This property only exist for binding purpose")]
     public string DataFolder { get => HutaoRuntime.DataDirectory; }
 
-    [Obsolete("This property only exist for binding purpose")]
     public string DeviceId { get => HutaoRuntime.DeviceId; }
 
-    [Obsolete("This property only exist for binding purpose")]
     public string WebView2Version { get => HutaoRuntime.WebView2Version.Version; }
 
-    [Obsolete("This property only exist for binding purpose")]
     public bool IsToastAvailable { get => HutaoRuntime.IsAppNotificationEnabled; }
 }

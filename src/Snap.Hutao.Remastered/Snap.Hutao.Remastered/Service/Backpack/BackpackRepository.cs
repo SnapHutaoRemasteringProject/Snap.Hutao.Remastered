@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.Diagnostics;

@@ -416,13 +416,13 @@
                                 </Border>
                                 <ItemsControl Margin="0,12,0,0" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(Info.Parameters, Info.Parameters.IsDefaultOrEmpty), Mode=OneWay}">
                                     <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
+                                        <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Model.Metadata" x:DataType="aot:ParameterDescription">
                                             <cwc:SettingsCard
                                                 Margin="0,2,0,0"
                                                 Padding="12,0"
-                                                Background="{Binding IsSpecial, Converter={StaticResource BoolToSpecialBackgroundConverter}}"
-                                                Header="{Binding Description}">
-                                                <TextBlock Margin="0,8" Text="{Binding Parameter}"/>
+                                                Background="{x:Bind IsSpecial, Converter={StaticResource BoolToSpecialBackgroundConverter}, Mode=OneWay}"
+                                                Header="{x:Bind Description, Mode=OneWay}">
+                                                <TextBlock Margin="0,8" Text="{x:Bind Parameter, Mode=OneWay}"/>
                                             </cwc:SettingsCard>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
@@ -710,7 +710,7 @@
                                         shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                         DisplayMemberPath="Name"
                                         ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.ScoreConfigOptions, DataContext.ScoreConfigOptions.IsDefaultOrEmpty), Mode=OneWay}"
-                                        SelectedItem="{Binding CurrentScoreOption, Mode=TwoWay}"
+                                        SelectedItem="{x:Bind DataContext.CurrentScoreOption, Mode=TwoWay}"
                                         Style="{ThemeResource DefaultComboBoxStyle}"
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageAvatarPropertyScoreAlgorithm}"/>
                                 </shuxc:SizeRestrictedContentControl>
@@ -719,7 +719,7 @@
                                     Height="32"
                                     Margin="4,8,0,0"
                                     Padding="0"
-                                    Command="{Binding ConfigureScoreCommand}"
+                                    Command="{x:Bind DataContext.ConfigureScoreCommand, Mode=OneWay}"
                                     ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageAvatarPropertyConfigureScore}">
                                     <FontIcon FontSize="14" Glyph="&#xE946;"/>
                                 </Button>

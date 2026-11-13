@@ -83,23 +83,23 @@
                         <TextBlock
                             HorizontalAlignment="Center"
                             Style="{StaticResource BaseTextBlockStyle}"
-                            Text="{Binding Name}"
+                            Text="{x:Bind AvatarWish.Name, Mode=OneTime}"
                             TextWrapping="NoWrap"/>
 
                         <shuxcc:CardProgressBar
-                            Description="{Binding LastOrangePull}"
+                            Description="{x:Bind AvatarWish.LastOrangePull, Mode=OneTime}"
                             Header="{shuxm:ResourceString Name=ViewControlStatisticsCardOrangeText}"
-                            Maximum="{Binding GuaranteeOrangeThreshold}"
+                            Maximum="{x:Bind AvatarWish.GuaranteeOrangeThreshold, Mode=OneTime}"
                             ProgressForeground="{ThemeResource OrangeColorBrush}"
                             TextForeground="{ThemeResource OrangeColorBrush}"
-                            Value="{Binding LastOrangePull, Mode=OneWay}"/>
+                            Value="{x:Bind AvatarWish.LastOrangePull, Mode=OneWay}"/>
                         <shuxcc:CardProgressBar
-                            Description="{Binding LastPurplePull}"
+                            Description="{x:Bind AvatarWish.LastPurplePull, Mode=OneTime}"
                             Header="{shuxm:ResourceString Name=ViewControlStatisticsCardPurpleText}"
-                            Maximum="{Binding GuaranteePurpleThreshold}"
+                            Maximum="{x:Bind AvatarWish.GuaranteePurpleThreshold, Mode=OneTime}"
                             ProgressForeground="{StaticResource PurpleColorBrush}"
                             TextForeground="{StaticResource PurpleColorBrush}"
-                            Value="{Binding LastPurplePull}"/>
+                            Value="{x:Bind AvatarWish.LastPurplePull, Mode=OneTime}"/>
                     </StackPanel>
                 </Border>
 
@@ -116,23 +116,23 @@
                         <TextBlock
                             HorizontalAlignment="Center"
                             Style="{StaticResource BaseTextBlockStyle}"
-                            Text="{Binding Name}"
+                            Text="{x:Bind WeaponWish.Name, Mode=OneTime}"
                             TextWrapping="NoWrap"/>
 
                         <shuxcc:CardProgressBar
-                            Description="{Binding LastOrangePull}"
+                            Description="{x:Bind WeaponWish.LastOrangePull, Mode=OneTime}"
                             Header="{shuxm:ResourceString Name=ViewControlStatisticsCardOrangeText}"
-                            Maximum="{Binding GuaranteeOrangeThreshold}"
+                            Maximum="{x:Bind WeaponWish.GuaranteeOrangeThreshold, Mode=OneTime}"
                             ProgressForeground="{StaticResource OrangeColorBrush}"
                             TextForeground="{StaticResource OrangeColorBrush}"
-                            Value="{Binding LastOrangePull}"/>
+                            Value="{x:Bind WeaponWish.LastOrangePull, Mode=OneTime}"/>
                         <shuxcc:CardProgressBar
-                            Description="{Binding LastPurplePull}"
+                            Description="{x:Bind WeaponWish.LastPurplePull, Mode=OneTime}"
                             Header="{shuxm:ResourceString Name=ViewControlStatisticsCardPurpleText}"
-                            Maximum="{Binding GuaranteePurpleThreshold}"
+                            Maximum="{x:Bind WeaponWish.GuaranteePurpleThreshold, Mode=OneTime}"
                             ProgressForeground="{StaticResource PurpleColorBrush}"
                             TextForeground="{StaticResource PurpleColorBrush}"
-                            Value="{Binding LastPurplePull}"/>
+                            Value="{x:Bind WeaponWish.LastPurplePull, Mode=OneTime}"/>
                     </StackPanel>
                 </Border>
 
@@ -149,24 +149,24 @@
                         <TextBlock
                             HorizontalAlignment="Center"
                             Style="{StaticResource BaseTextBlockStyle}"
-                            Text="{Binding Name}"
+                            Text="{x:Bind StandardWish.Name, Mode=OneTime}"
                             TextWrapping="NoWrap"/>
 
 
                         <shuxcc:CardProgressBar
-                            Description="{Binding LastOrangePull}"
+                            Description="{x:Bind StandardWish.LastOrangePull, Mode=OneTime}"
                             Header="{shuxm:ResourceString Name=ViewControlStatisticsCardOrangeText}"
-                            Maximum="{Binding GuaranteeOrangeThreshold}"
+                            Maximum="{x:Bind StandardWish.GuaranteeOrangeThreshold, Mode=OneTime}"
                             ProgressForeground="{StaticResource OrangeColorBrush}"
                             TextForeground="{StaticResource OrangeColorBrush}"
-                            Value="{Binding LastOrangePull}"/>
+                            Value="{x:Bind StandardWish.LastOrangePull, Mode=OneTime}"/>
                         <shuxcc:CardProgressBar
-                            Description="{Binding LastPurplePull}"
+                            Description="{x:Bind StandardWish.LastPurplePull, Mode=OneTime}"
                             Header="{shuxm:ResourceString Name=ViewControlStatisticsCardPurpleText}"
-                            Maximum="{Binding GuaranteePurpleThreshold}"
+                            Maximum="{x:Bind StandardWish.GuaranteePurpleThreshold, Mode=OneTime}"
                             ProgressForeground="{StaticResource PurpleColorBrush}"
                             TextForeground="{StaticResource PurpleColorBrush}"
-                            Value="{Binding LastPurplePull}"/>
+                            Value="{x:Bind StandardWish.LastPurplePull, Mode=OneTime}"/>
                     </StackPanel>
                 </Border>
             </Grid>
