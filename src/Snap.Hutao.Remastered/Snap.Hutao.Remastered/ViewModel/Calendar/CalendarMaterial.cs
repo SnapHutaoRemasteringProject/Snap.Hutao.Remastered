@@ -6,7 +6,8 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.Calendar;
 
-public sealed class CalendarMaterial
+[WinRT.GeneratedBindableCustomProperty([nameof(Highlight)], [])]
+public sealed partial class CalendarMaterial
 {
     public required Material Inner { get; init; }
 

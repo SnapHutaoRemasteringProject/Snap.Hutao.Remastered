@@ -29,7 +29,7 @@
         <snuxd:EmptyStringToVisibilityConverter x:Key="ErrorMetadataVisibilityConverter" />
 
         <DataTemplate x:Key="TextContentTemplate" x:DataType="snsao:ObservableTextContent">
-            <snuxcc:ChatMarkdownSegmentView Margin="1,0,0,0" Markdown="{Binding Text}" />
+            <snuxcc:ChatMarkdownSegmentView Margin="1,0,0,0" Markdown="{x:Bind Text, Mode=OneWay}" />
         </DataTemplate>
 
         <DataTemplate x:Key="ReasoningContentTemplate" x:DataType="snsao:ObservableTextReasoningContent">
@@ -45,11 +45,11 @@
         </DataTemplate>
 
         <DataTemplate x:Key="ToolCallContentTemplate" x:DataType="snsao:ObservableToolCallContent">
-            <snuxcc:ChatToolCallSegmentView ToolCall="{Binding}" />
+            <snuxcc:ChatToolCallSegmentView ToolCall="{x:Bind Mode=OneWay}" />
         </DataTemplate>
 
         <DataTemplate x:Key="ToolResultContentTemplate" x:DataType="snsao:ObservableToolResultContent">
-            <snuxcc:ChatToolResultSegmentView ToolResult="{Binding}" />
+            <snuxcc:ChatToolResultSegmentView ToolResult="{x:Bind Mode=OneWay}" />
         </DataTemplate>
 
         <DataTemplate x:Key="UsageContentTemplate" x:DataType="snsao:ObservableUsageContent">
@@ -63,24 +63,24 @@
                     Orientation="Horizontal"
                     Spacing="4"
                     ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlControlsChatMessageViewToolTipTotalTokenCount}"
-                    Visibility="{Binding TotalTokenCount, Converter={StaticResource UsageCountVisibilityConverter}}">
+                    Visibility="{x:Bind TotalTokenCount, Converter={StaticResource UsageCountVisibilityConverter}, Mode=OneWay}">
                     <FontIcon FontSize="14" Glyph="&#xE8A9;" />
                     <TextBlock
                         VerticalAlignment="Center"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding TotalTokenCount}" />
+                        Text="{x:Bind TotalTokenCount, Mode=OneWay}" />
                 </StackPanel>
 
                 <StackPanel
                     Orientation="Horizontal"
                     Spacing="4"
                     ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlControlsChatMessageViewToolTipInputTokenCount}"
-                    Visibility="{Binding InputTokenCount, Converter={StaticResource UsageCountVisibilityConverter}}">
+                    Visibility="{x:Bind InputTokenCount, Converter={StaticResource UsageCountVisibilityConverter}, Mode=OneWay}">
                     <FontIcon FontSize="14" Glyph="&#xE70E;" />
                     <TextBlock
                         VerticalAlignment="Center"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding InputTokenCount}" />
+                        Text="{x:Bind InputTokenCount, Mode=OneWay}" />
                 </StackPanel>
 
                 <StackPanel
@@ -88,24 +88,24 @@
                     Orientation="Horizontal"
                     Spacing="4"
                     ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlControlsChatMessageViewToolTipOutputTokenCount}"
-                    Visibility="{Binding OutputTokenCount, Converter={StaticResource UsageCountVisibilityConverter}}">
+                    Visibility="{x:Bind OutputTokenCount, Converter={StaticResource UsageCountVisibilityConverter}, Mode=OneWay}">
                     <FontIcon FontSize="14" Glyph="&#xE70D;" />
                     <TextBlock
                         VerticalAlignment="Center"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding OutputTokenCount}" />
+                        Text="{x:Bind OutputTokenCount, Mode=OneWay}" />
                 </StackPanel>
 
                 <StackPanel
                     Orientation="Horizontal"
                     Spacing="4"
                     ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlControlsChatMessageViewToolTipReasoningTokenCount}"
-                    Visibility="{Binding ReasoningTokenCount, Converter={StaticResource UsageCountVisibilityConverter}}">
+                    Visibility="{x:Bind ReasoningTokenCount, Converter={StaticResource UsageCountVisibilityConverter}, Mode=OneWay}">
                     <FontIcon FontSize="14" Glyph="&#xE794;" />
                     <TextBlock
                         VerticalAlignment="Center"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding ReasoningTokenCount}" />
+                        Text="{x:Bind ReasoningTokenCount, Mode=OneWay}" />
                 </StackPanel>
 
                 <StackPanel
@@ -113,17 +113,17 @@
                     Orientation="Horizontal"
                     Spacing="4"
                     ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlControlsChatMessageViewToolTipCachedInputTokenCount}"
-                    Visibility="{Binding CachedInputTokenCount, Converter={StaticResource UsageCountVisibilityConverter}}">
+                    Visibility="{x:Bind CachedInputTokenCount, Converter={StaticResource UsageCountVisibilityConverter}, Mode=OneWay}">
                     <FontIcon FontSize="14" Glyph="&#xE950;" />
                     <TextBlock
                         VerticalAlignment="Center"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding CachedInputTokenCount}" />
+                        Text="{x:Bind CachedInputTokenCount, Mode=OneWay}" />
                     <TextBlock
                         VerticalAlignment="Center"
                         Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{Binding CacheHitRate, Converter={StaticResource UsageCacheHitRateTextConverter}, ConverterParameter=P0}"
-                        Visibility="{Binding CacheHitRate, Converter={StaticResource UsageCountVisibilityConverter}}" />
+                        Text="{x:Bind CacheHitRate, Converter={StaticResource UsageCacheHitRateTextConverter}, ConverterParameter=P0, Mode=OneWay}"
+                        Visibility="{x:Bind CacheHitRate, Converter={StaticResource UsageCountVisibilityConverter}, Mode=OneWay}" />
                 </StackPanel>
             </StackPanel>
         </DataTemplate>
@@ -148,18 +148,18 @@
                         Foreground="{ThemeResource SystemFillColorCriticalBrush}"
                         Glyph="&#xEA39;" />
                     <StackPanel Grid.Column="1" Spacing="2">
-                        <TextBlock Text="{Binding Message}" TextWrapping="WrapWholeWords" />
+                        <TextBlock Text="{x:Bind Message, Mode=OneWay}" TextWrapping="WrapWholeWords" />
                         <TextBlock
                             Opacity="0.75"
                             Style="{ThemeResource CaptionTextBlockStyle}"
-                            Text="{Binding ErrorCode}"
-                            Visibility="{Binding ErrorCode, Converter={StaticResource ErrorMetadataVisibilityConverter}}" />
+                            Text="{x:Bind ErrorCode, Mode=OneWay}"
+                            Visibility="{x:Bind ErrorCode, Converter={StaticResource ErrorMetadataVisibilityConverter}, Mode=OneWay}" />
                         <TextBlock
                             Opacity="0.75"
                             Style="{ThemeResource CaptionTextBlockStyle}"
-                            Text="{Binding Details}"
+                            Text="{x:Bind Details, Mode=OneWay}"
                             TextWrapping="WrapWholeWords"
-                            Visibility="{Binding Details, Converter={StaticResource ErrorMetadataVisibilityConverter}}" />
+                            Visibility="{x:Bind Details, Converter={StaticResource ErrorMetadataVisibilityConverter}, Mode=OneWay}" />
                     </StackPanel>
                 </Grid>
             </Border>

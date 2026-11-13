@@ -304,13 +304,13 @@
                                         ItemsPanel="{ThemeResource StackPanelSpacing8Template}"
                                         ItemsSource="{x:Bind DataContext.SearchResults, Mode=OneWay}">
                                         <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
+                                            <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hutao.Algolia" x:DataType="aot:AlgoliaHit">
                                                 <Border Style="{ThemeResource BorderCardStyle}">
                                                     <wl:LiquidGlassHyperlinkButton
                                                         HorizontalAlignment="Stretch"
                                                         HorizontalContentAlignment="Stretch"
                                                         shuxcth:ControlMaterialState.IsManaged="True"
-                                                        NavigateUri="{Binding Url}">
+                                                        NavigateUri="{x:Bind Url, Mode=OneTime}">
                                                         <Grid>
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition/>
@@ -320,7 +320,7 @@
                                                                 Grid.Column="0"
                                                                 Margin="4,8,8,4"
                                                                 IsHitTestVisible="False"
-                                                                ItemsSource="{Binding Hierarchy.DisplayLevels}"/>
+                                                                ItemsSource="{x:Bind Hierarchy.DisplayLevels, Mode=OneTime}"/>
                                                         </Grid>
                                                     </wl:LiquidGlassHyperlinkButton>
                                                 </Border>

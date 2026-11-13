@@ -216,13 +216,13 @@
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -233,7 +233,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -241,12 +241,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -256,7 +256,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -312,13 +312,13 @@
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -329,7 +329,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -337,12 +337,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -352,7 +352,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -408,13 +408,13 @@
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -425,7 +425,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -433,12 +433,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -448,7 +448,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -504,13 +504,13 @@
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -521,7 +521,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -529,12 +529,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -544,7 +544,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -600,13 +600,13 @@
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -617,7 +617,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -625,12 +625,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -640,7 +640,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -697,13 +697,13 @@
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -714,7 +714,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -722,12 +722,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -737,7 +737,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -794,13 +794,13 @@
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -811,7 +811,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -819,12 +819,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -834,7 +834,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -891,13 +891,13 @@
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -908,7 +908,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -916,12 +916,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -931,7 +931,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -1124,30 +1124,30 @@
                                                     FontSize="10"
                                                     IsTextSelectionEnabled="True"
                                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                                    Text="{Binding VersionName}"
+                                                    Text="{x:Bind VersionName, Mode=OneTime}"
                                                     TextTrimming="None"
                                                     TextWrapping="NoWrap"/>
                                             </Border>
-                                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding PoolName}"/>
+                                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{x:Bind PoolName, Mode=OneTime}"/>
                                         </StackPanel>
                                         <TextBlock
                                             Grid.Row="0"
                                             Margin="0,6,6,0"
                                             HorizontalAlignment="Right"
                                             Style="{ThemeResource BodyTextBlockStyle}"
-                                            Text="{Binding FormattedCountdown}"/>
+                                            Text="{x:Bind FormattedCountdown, Mode=OneTime}"/>
                                         <ItemsControl
                                             Grid.Row="1"
                                             Margin="6,0"
                                             ItemsPanel="{ThemeResource HorizontalStackPanelSpacing6Template}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(CompositeItems, CompositeItems.IsDefaultOrEmpty), Mode=OneTime}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:CardPoolItem">
                                                     <shuxc:ItemIcon
                                                         Width="40"
                                                         Height="40"
-                                                        Icon="{Binding Icon}"
-                                                        Quality="{Binding Rarity}"/>
+                                                        Icon="{x:Bind Icon, Mode=OneTime}"
+                                                        Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
@@ -1161,7 +1161,7 @@
                                                 HorizontalAlignment="Center"
                                                 Opacity="0.7"
                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                Text="{Binding FormattedDuration}"/>
+                                                Text="{x:Bind FormattedDuration, Mode=OneTime}"/>
                                         </Border>
                                     </Grid>
                                 </DataTemplate>

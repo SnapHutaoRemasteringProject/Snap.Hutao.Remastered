@@ -107,7 +107,7 @@
                 <Grid
                     Width="24"
                     Height="24"
-                    Visibility="{Binding HasEquippedAvatar, Converter={StaticResource BoolToVisibilityConverter}}">
+                    Visibility="{x:Bind HasEquippedAvatar, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                     <Grid.Clip>
                         <!--  Keep equal to the Width/Height above: the image is larger than the plate, a bigger Rect would clip nothing and let it spill onto the card  -->
                         <RectangleGeometry Rect="0,0,24,24"/>
@@ -120,7 +120,7 @@
                         Margin="-4,-6,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
-                        Source="{Binding EquippedAvatarIconUri}"/>
+                        Source="{x:Bind EquippedAvatarIconUri, Mode=OneWay}"/>
                 </Grid>
             </DataTemplate>
 
@@ -145,7 +145,7 @@
                             <ContentControl
                                 HorizontalContentAlignment="Right"
                                 VerticalContentAlignment="Bottom"
-                                Content="{Binding}"
+                                Content="{x:Bind Mode=OneWay}"
                                 ContentTemplate="{StaticResource EquippedAvatarBadgeTemplate}"/>
                         </Grid>
                     </shuxcc:HorizontalCard.Left>
@@ -210,7 +210,7 @@
                                 VerticalAlignment="Bottom"
                                 FlyoutBase.AttachedFlyout="{StaticResource PurchasedAppendPropFlyout}"
                                 Tapped="OnPurchasedAppendPropIconTapped"
-                                Visibility="{Binding HasPurchasedAppendProp, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                Visibility="{x:Bind HasPurchasedAppendProp, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                             <shuxc:LockIcon
                                 Grid.Column="1"
                                 Width="20"
@@ -244,7 +244,7 @@
                                 <ContentControl
                                     HorizontalContentAlignment="Right"
                                     VerticalContentAlignment="Bottom"
-                                    Content="{Binding}"
+                                    Content="{x:Bind Mode=OneWay}"
                                     ContentTemplate="{StaticResource EquippedAvatarBadgeTemplate}"/>
                             </Grid>
                             <Grid Grid.Column="1">
