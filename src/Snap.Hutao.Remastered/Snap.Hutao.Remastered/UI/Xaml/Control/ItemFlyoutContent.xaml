@@ -31,7 +31,7 @@
                                 Height="1"
                                 Fill="{ThemeResource ControlStrokeColorDefaultBrush}"
                                 Visibility="{Binding HasSetDescriptions, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                            <ItemsControl ItemsSource="{Binding SetDescriptions}" Visibility="{Binding HasSetDescriptions, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <ItemsControl ItemsSource="{Binding SetDescriptionItems}" Visibility="{Binding HasSetDescriptions, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <shuxctb:DescriptionTextBlock Margin="0,2,0,0" Description="{Binding}"/>

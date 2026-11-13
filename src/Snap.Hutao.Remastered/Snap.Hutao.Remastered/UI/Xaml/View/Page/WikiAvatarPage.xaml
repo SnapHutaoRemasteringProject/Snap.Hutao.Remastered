@@ -429,7 +429,7 @@
                                 QueryIcon="{cw:FontIconSource Glyph=&#xE721;}"
                                 Style="{StaticResource DefaultAutoSuggestTokenBoxStyle}"
                                 SuggestedItemTemplate="{StaticResource TokenTemplate}"
-                                SuggestedItemsSource="{x:Bind DataContext.SearchData.AvailableTokens.Values, Mode=OneWay}"
+                                SuggestedItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.SearchData.AvailableTokens.Values, DataContext.SearchData.AvailableTokens.Values.IsDefaultOrEmpty), Mode=OneWay}"
                                 Text="{x:Bind DataContext.SearchData.FilterToken, Mode=TwoWay}"
                                 TokenItemTemplate="{StaticResource TokenTemplate}"/>
                         </AppBarElementContainer>
@@ -641,7 +641,7 @@
                                                         <ItemsControl
                                                             Margin="16,0,16,16"
                                                             ItemTemplate="{StaticResource CultivationItemTemplate}"
-                                                            ItemsSource="{x:Bind DataContext.Avatars.CurrentItem.CultivationItemsView, Mode=OneWay}">
+                                                            ItemsSource="{x:Bind DataContext.Avatars.CurrentItem.CultivationItemSource, Mode=OneWay}">
                                                             <ItemsControl.ItemsPanel>
                                                                 <ItemsPanelTemplate>
                                                                     <cwc:UniformGrid
@@ -754,12 +754,12 @@
 
                                                 <!--  天赋  -->
                                                 <Border Padding="16" Style="{ThemeResource BorderShimmerStyle}">
-                                                    <shuxvs:SkillPivot ItemTemplate="{StaticResource SkillDataTemplate}" Skills="{x:Bind DataContext.Avatars.CurrentItem.SkillDepot.CompositeSkills, Mode=OneWay}"/>
+                                                    <shuxvs:SkillPivot ItemTemplate="{StaticResource SkillDataTemplate}" Skills="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Avatars.CurrentItem.SkillDepot.CompositeSkills, DataContext.Avatars.CurrentItem.SkillDepot.CompositeSkills.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                 </Border>
 
                                                 <!--  命座  -->
                                                 <Border Padding="16" Style="{ThemeResource BorderShimmerStyle}">
-                                                    <shuxvs:SkillPivot ItemTemplate="{StaticResource TalentDataTemplate}" Skills="{x:Bind DataContext.Avatars.CurrentItem.SkillDepot.Talents, Mode=OneWay}"/>
+                                                    <shuxvs:SkillPivot ItemTemplate="{StaticResource TalentDataTemplate}" Skills="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Avatars.CurrentItem.SkillDepot.Talents, DataContext.Avatars.CurrentItem.SkillDepot.Talents.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                 </Border>
 
                                                 <!--  搭配  -->
@@ -797,19 +797,19 @@
                                                             Grid.Column="0"
                                                             ItemTemplate="{StaticResource CollocationTemplate}"
                                                             ItemsPanel="{StaticResource StackPanelSpacing4Template}"
-                                                            ItemsSource="{x:Bind DataContext.Avatars.CurrentItem.CollocationView.Avatars, Mode=OneWay}"/>
+                                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Avatars.CurrentItem.CollocationView.Avatars, DataContext.Avatars.CurrentItem.CollocationView.Avatars.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                         <ItemsControl
                                                             Grid.Row="1"
                                                             Grid.Column="1"
                                                             ItemTemplate="{StaticResource CollocationTemplate}"
                                                             ItemsPanel="{StaticResource StackPanelSpacing4Template}"
-                                                            ItemsSource="{x:Bind DataContext.Avatars.CurrentItem.CollocationView.Weapons, Mode=OneWay}"/>
+                                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Avatars.CurrentItem.CollocationView.Weapons, DataContext.Avatars.CurrentItem.CollocationView.Weapons.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                         <ItemsControl
                                                             Grid.Row="1"
                                                             Grid.Column="2"
                                                             ItemTemplate="{StaticResource CollocationReliquaryTemplate}"
                                                             ItemsPanel="{StaticResource StackPanelSpacing4Template}"
-                                                            ItemsSource="{x:Bind DataContext.Avatars.CurrentItem.CollocationView.ReliquarySets, Mode=OneWay}"/>
+                                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Avatars.CurrentItem.CollocationView.ReliquarySets, DataContext.Avatars.CurrentItem.CollocationView.ReliquarySets.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                     </Grid>
                                                 </Border>
 
@@ -1092,7 +1092,7 @@
                                                         <cwc:SettingsExpander
                                                             Header="{shuxm:ResourceString Name=ViewPageWiKiAvatarQuotesHeader}"
                                                             ItemTemplate="{StaticResource FetterStoryTemplate}"
-                                                            ItemsSource="{x:Bind DataContext.Avatars.CurrentItem.FetterInfo.Fetters, Mode=OneWay}"/>
+                                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Avatars.CurrentItem.FetterInfo.Fetters, DataContext.Avatars.CurrentItem.FetterInfo.Fetters.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                     </ScrollViewer>
                                                 </Border>
 
@@ -1115,7 +1115,7 @@
                                                         <cwc:SettingsExpander
                                                             Header="{shuxm:ResourceString Name=ViewPageWiKiAvatarStoriesHeader}"
                                                             ItemTemplate="{StaticResource FetterStoryTemplate}"
-                                                            ItemsSource="{x:Bind DataContext.Avatars.CurrentItem.FetterInfo.FetterStories, Mode=OneWay}"/>
+                                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Avatars.CurrentItem.FetterInfo.FetterStories, DataContext.Avatars.CurrentItem.FetterInfo.FetterStories.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                     </ScrollViewer>
                                                 </Border>
                                             </StackPanel>

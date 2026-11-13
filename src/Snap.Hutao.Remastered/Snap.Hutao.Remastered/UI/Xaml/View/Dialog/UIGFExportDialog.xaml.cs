@@ -8,7 +8,7 @@ using WinRT;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 
-[DependencyProperty<IReadOnlyList<UIGFUidSelection>>("ItemsSource")]
+[DependencyProperty<List<UIGFUidSelection>>("ItemsSource")]
 public sealed partial class UIGFExportDialog : ContentDialog
 {
     private readonly IContentDialogFactory contentDialogFactory;
@@ -24,7 +24,7 @@ public sealed partial class UIGFExportDialog : ContentDialog
             SelectionListView.SelectionMode = ListViewSelectionMode.Single;
         }
 
-        ItemsSource = uids.SelectAsArray(UIGFUidSelection.Create);
+        ItemsSource = uids.Select(UIGFUidSelection.Create).ToList();
         IsPrimaryButtonEnabled = false;
     }
 

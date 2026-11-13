@@ -169,7 +169,7 @@
                     <Border Style="{ThemeResource BorderCardStyle}" Visibility="{x:Bind DataContext.LaunchOptions.GamePathEntries.Value.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
                         <ListView
                             ItemTemplate="{StaticResource GamePathEntryListTemplate}"
-                            ItemsSource="{x:Bind DataContext.LaunchOptions.GamePathEntries.Value, Mode=OneWay}"
+                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.LaunchOptions.GamePathEntries.Value, DataContext.LaunchOptions.GamePathEntries.Value.IsDefaultOrEmpty), Mode=OneWay}"
                             SelectedItem="{x:Bind DataContext.GamePathEntry.Value, Mode=TwoWay}"/>
                     </Border>
                     <cwc:SettingsCard
@@ -413,7 +413,7 @@
                                                         DisplayMemberPath="DisplayName"
                                                         EnableMemberPath="IsNotCompatOnly"
                                                         IsEnabled="{x:Bind shsg:LaunchOptions.IsGameRunning.Value, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
-                                                        ItemsSource="{x:Bind DataContext.KnownSchemes, Mode=OneWay}"
+                                                        ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.KnownSchemes, DataContext.KnownSchemes.IsDefaultOrEmpty), Mode=OneWay}"
                                                         SelectedItem="{x:Bind DataContext.TargetSchemeFilteredGameAccountsView.Scheme, Mode=TwoWay}"
                                                         Style="{StaticResource DefaultComboBoxStyle}"/>
                                                 </shuxc:SizeRestrictedContentControl>
@@ -565,7 +565,7 @@
                                                                 shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                                                 DisplayMemberPath="Name"
                                                                 IsEnabled="{x:Bind DataContext.LaunchOptions.IsPlatformTypeEnabled.Value, Mode=OneWay}"
-                                                                ItemsSource="{x:Bind DataContext.LaunchOptions.PlatformTypes, Mode=OneWay}"
+                                                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.LaunchOptions.PlatformTypes, DataContext.LaunchOptions.PlatformTypes.IsDefaultOrEmpty), Mode=OneWay}"
                                                                 SelectedItem="{x:Bind DataContext.SelectedPlatformType.Value, Mode=TwoWay}"/>
                                                         </shuxc:SizeRestrictedContentControl>
                                                         <wl:LiquidGlassToggleSwitch
@@ -581,7 +581,7 @@
                                                             MinWidth="{ThemeResource SettingsCardContentControlMinWidth2}"
                                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                                             ItemTemplateSelector="{StaticResource AspectRatioComboBoxTemplateSelector}"
-                                                            ItemsSource="{x:Bind DataContext.LaunchOptions.AspectRatios.Value, Mode=OneWay}"
+                                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.LaunchOptions.AspectRatios.Value, DataContext.LaunchOptions.AspectRatios.Value.IsDefaultOrEmpty), Mode=OneWay}"
                                                             PlaceholderText="{shuxm:ResourceString Name=ViewPageLaunchGameAppearanceAspectRatioPlaceHolder}"
                                                             SelectedItem="{x:Bind DataContext.LaunchOptions.SelectedAspectRatio, Mode=TwoWay}"
                                                             Style="{ThemeResource DefaultComboBoxStyle}"/>
@@ -631,7 +631,7 @@
                                                                 shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                                                 DisplayMemberPath="Name"
                                                                 IsEnabled="{x:Bind DataContext.LaunchOptions.IsMonitorEnabled.Value, Mode=OneWay}"
-                                                                ItemsSource="{x:Bind DataContext.LaunchOptions.Monitors, Mode=OneWay}"
+                                                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.LaunchOptions.Monitors, DataContext.LaunchOptions.Monitors.IsDefaultOrEmpty), Mode=OneWay}"
                                                                 SelectedItem="{x:Bind DataContext.LaunchOptions.Monitor.Value, Mode=TwoWay}"/>
                                                         </shuxc:SizeRestrictedContentControl>
                                                         <wl:LiquidGlassToggleSwitch

@@ -42,5 +42,9 @@ public sealed partial class Monster : ObservableObject, IPropertyValuesProvider
 
     [JsonIgnore]
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DropsItemSource))]
     public partial ImmutableArray<DisplayItem>? DropsView { get; set; }
+
+    [JsonIgnore]
+    public List<DisplayItem>? DropsItemSource => DropsView is { } items ? items.IsDefaultOrEmpty ? [] : new(items) : null;
 }

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Snap.Hutao.Remastered.ViewModel.Complex;
 
+[WinRT.GeneratedBindableCustomProperty]
 public partial class RateAndDelta : ObservableObject
 {
     public RateAndDelta(double rate, double? lastRate)

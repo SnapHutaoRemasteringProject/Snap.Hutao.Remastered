@@ -5,7 +5,8 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar;
 
-public sealed class CardPool
+[WinRT.GeneratedBindableCustomProperty]
+public sealed partial class CardPool
 {
     [JsonPropertyName("pool_id")]
     public required int PoolId { get; init; }

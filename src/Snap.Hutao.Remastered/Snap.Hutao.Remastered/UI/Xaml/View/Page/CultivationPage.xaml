@@ -177,7 +177,7 @@
                                 Value="{x:Bind Avatar.LevelTarget, Mode=TwoWay}"/>
                         </Grid>
 
-                        <ItemsControl ItemTemplate="{StaticResource FlyoutSkillTemplate}" ItemsSource="{x:Bind Avatar.Skills, Mode=OneWay}"/>
+                        <ItemsControl ItemTemplate="{StaticResource FlyoutSkillTemplate}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(Avatar.Skills, Avatar.Skills.IsDefaultOrEmpty), Mode=OneWay}"/>
                     </StackPanel>
 
                     <!--  Weapon section  -->
@@ -490,7 +490,7 @@
                             <ItemsControl
                                 Margin="8,0,8,8"
                                 ItemTemplate="{ThemeResource CultivateEntryItemTemplate}"
-                                ItemsSource="{x:Bind Items, Mode=OneWay}"/>
+                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(Items, Items.IsDefaultOrEmpty), Mode=OneWay}"/>
                         </ScrollViewer>
                     </Grid>
                 </Border>
@@ -752,7 +752,7 @@
                                         QueryIcon="{cw:FontIconSource Glyph=&#xE721;}"
                                         Style="{StaticResource DefaultAutoSuggestTokenBoxStyle}"
                                         SuggestedItemTemplate="{StaticResource TokenTemplate}"
-                                        SuggestedItemsSource="{x:Bind DataContext.SearchData.AvailableTokens.Values, Mode=OneWay}"
+                                        SuggestedItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.SearchData.AvailableTokens.Values, DataContext.SearchData.AvailableTokens.Values.IsDefaultOrEmpty), Mode=OneWay}"
                                         Text="{x:Bind DataContext.SearchData.FilterToken, Mode=TwoWay}"
                                         TokenItemTemplate="{StaticResource TokenTemplate}"
                                         Visibility="{x:Bind ((PivotItem)MaterialListPivot.SelectedItem).Tag, Converter={StaticResource MaterialListSelectedItemIsEntryViewConverter}, Mode=OneWay}"/>
@@ -795,7 +795,7 @@
                                                                 shuxcth:ControlMaterialState.IsManaged="True"
                                                                 shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                                                 DisplayMemberPath="WorldLevel"
-                                                                ItemsSource="{x:Bind DataContext.ResinStatistics.DropDistributions, Mode=OneWay}"
+                                                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.ResinStatistics.DropDistributions, DataContext.ResinStatistics.DropDistributions.IsDefaultOrEmpty), Mode=OneWay}"
                                                                 SelectedItem="{x:Bind DataContext.ResinStatistics.SelectedDropDistribution, Mode=TwoWay}"/>
                                                         </shuxc:SizeRestrictedContentControl>
                                                     </Grid>
@@ -895,7 +895,7 @@
                         <GridView
                             Padding="16,16,10,10"
                             ItemTemplate="{StaticResource InventoryItemTemplate}"
-                            ItemsSource="{x:Bind DataContext.InventoryItems, Mode=OneWay}"
+                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.InventoryItems, DataContext.InventoryItems.IsDefaultOrEmpty), Mode=OneWay}"
                             SelectionMode="None">
                             <GridView.ItemContainerStyle>
                                 <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
