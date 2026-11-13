@@ -7,7 +7,7 @@ using Snap.Hutao.Remastered.Core.Text.Json;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Weapon;
 
-[JsonConverter(typeof(Converter))]
+[JsonConverter(typeof(WeaponTypeValueCollectionConverter))]
 public sealed class WeaponTypeValueCollection
 {
     private readonly SortedDictionary<FightProperty, GrowCurveType> typeValues = [];
@@ -31,7 +31,7 @@ public sealed class WeaponTypeValueCollection
 }
 
 [SuppressMessage("", "SA1402")]
-file sealed class Converter : JsonConverter<WeaponTypeValueCollection>
+internal sealed class WeaponTypeValueCollectionConverter : JsonConverter<WeaponTypeValueCollection>
 {
     public override WeaponTypeValueCollection Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {

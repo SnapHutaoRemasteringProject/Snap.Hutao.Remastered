@@ -205,7 +205,7 @@ public sealed partial class PassportClient : IPassportClient
         }
     }
 
-    private class Timestamp
+    internal class Timestamp
     {
         [JsonPropertyName("t")]
         public long Time { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();

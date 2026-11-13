@@ -18,7 +18,7 @@ public sealed class WorldExploration
     public string Name { get; set; } = default!;
 
     [JsonPropertyName("type")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter<WorldExplorationType>))]
     public WorldExplorationType Type { get; set; } = default!;
 
     [JsonPropertyName("offerings")]

@@ -8,7 +8,7 @@ using Snap.Hutao.Remastered.Model.Primitive;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Avatar;
 
-[JsonConverter(typeof(ConverterFactory))]
+[JsonConverter(typeof(IdLevelParametersCollectionConverterFactory))]
 public sealed class IdLevelParametersCollection<TId, TLevel, TParameter>
     where TId : notnull
     where TLevel : notnull
@@ -44,7 +44,7 @@ public sealed class IdLevelParametersCollection<TId, TLevel, TParameter>
 }
 
 [SuppressMessage("", "SA1402")]
-file sealed class ConverterFactory : JsonConverterFactory
+internal sealed class IdLevelParametersCollectionConverterFactory : JsonConverterFactory
 {
     private static readonly Type ConverterType = typeof(Converter<,,>);
 

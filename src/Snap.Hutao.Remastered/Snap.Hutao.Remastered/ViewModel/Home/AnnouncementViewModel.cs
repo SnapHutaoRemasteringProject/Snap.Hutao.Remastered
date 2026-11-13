@@ -141,13 +141,15 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
             networkRetryCoordinator.Register(MiyoliveRetryKey, RetryMiyoliveAsync),
             networkRetryCoordinator.Register(CalendarRetryKey, RetryCalendarAsync),
         ];
-        // Navigation must not unlock while the metadata/Git prerequisite is pending.
-        await metadataService.InitializeAsync().AsTask().WaitAsync(token).ConfigureAwait(false);
-        token.ThrowIfCancellationRequested();
+        // Show the dashboard/loading cards while metadata is being prepared.
+        // Its load operation still stays pending, keeping navigation locked.
         await taskContext.SwitchToMainThreadAsync();
         token.ThrowIfCancellationRequested();
         RefreshDashboard();
         UpdateGreetingText();
+
+        await metadataService.InitializeAsync().AsTask().WaitAsync(token).ConfigureAwait(false);
+        token.ThrowIfCancellationRequested();
 
         // Metadata/Git and the dashboard are the navigation prerequisites.
         // Slow optional feeds must not keep the whole NavigationView disabled.

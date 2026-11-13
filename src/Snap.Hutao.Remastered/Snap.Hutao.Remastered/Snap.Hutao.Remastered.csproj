@@ -46,6 +46,7 @@
     <PublishReadyToRun>true</PublishReadyToRun>
     <MvvmToolkitEnableINotifyPropertyChangingSupport>false</MvvmToolkitEnableINotifyPropertyChangingSupport>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <WarningsAsErrors>$(WarningsAsErrors);SYSLIB1030;SYSLIB1031;SYSLIB1034</WarningsAsErrors>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
