@@ -10,7 +10,7 @@ using WinRT;
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 
 [DependencyProperty<UIGF4>("UIGF")]
-[DependencyProperty<ImmutableArray<UIGFUidSelection>>("ItemsSource", NotNull = true)]
+[DependencyProperty<List<UIGFUidSelection>>("ItemsSource")]
 public sealed partial class UIGFImportDialog : ContentDialog
 {
     private readonly IContentDialogFactory contentDialogFactory;
@@ -22,7 +22,7 @@ public sealed partial class UIGFImportDialog : ContentDialog
         contentDialogFactory = serviceProvider.GetRequiredService<IContentDialogFactory>();
 
         UIGF = uigf;
-        ItemsSource = uigf.Hk4e.SelectAsArray(static item => UIGFUidSelection.Create(item.Uid));
+        ItemsSource = uigf.Hk4e.Select(static item => UIGFUidSelection.Create(item.Uid)).ToList();
     }
 
     public async ValueTask<ValueResult<bool, HashSet<uint>>> GetSelectedUidsAsync()

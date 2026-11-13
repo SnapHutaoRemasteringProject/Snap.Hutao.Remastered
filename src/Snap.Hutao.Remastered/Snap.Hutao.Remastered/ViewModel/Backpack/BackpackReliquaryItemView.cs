@@ -62,6 +62,9 @@ public sealed partial class BackpackReliquaryItemView : BackpackItemView
 
     public ImmutableArray<string> PurchasedAppendPropNames { get; private set; } = [];
 
+    [JsonIgnore]
+    public List<object?>? PurchasedAppendPropItems => UI.Xaml.ItemsSourceHelper.Create(PurchasedAppendPropNames, PurchasedAppendPropNames.IsDefaultOrEmpty);
+
     public bool HasPurchasedAppendProp => PurchasedAppendPropNames.Length > 0;
 
     public static BackpackReliquaryItemView Create(BackpackItem entity, BackpackServiceMetadataContext context, Reliquary reliquary)

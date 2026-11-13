@@ -539,7 +539,7 @@
                                                 <RadioButtons
                                                     Margin="0,12,0,5"
                                                     IsEnabled="{x:Bind DataContext.DailyNoteOptions.IsAutoRefreshEnabled.Value, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind DataContext.DailyNoteOptions.RefreshTimes, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.DailyNoteOptions.RefreshTimes, DataContext.DailyNoteOptions.RefreshTimes.IsDefaultOrEmpty), Mode=OneWay}"
                                                     SelectedItem="{x:Bind DataContext.DailyNoteOptions.SelectedRefreshTime.Value, Mode=TwoWay}">
                                                     <RadioButtons.Header>
                                                         <TextBlock

@@ -6,7 +6,8 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.HardChallenge;
 
-public sealed class ChallengeView
+[WinRT.GeneratedBindableCustomProperty]
+public sealed partial class ChallengeView
 {
     private ChallengeView(HardChallengeChallenge challenge, HardChallengeMetadataContext context)
     {

@@ -2,6 +2,7 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Dialog.CultivateProjectDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -27,7 +28,7 @@
             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
             HorizontalAlignment="Stretch"
             DisplayMemberPath="Name"
-            ItemsSource="{x:Bind ServerTimeZoneOffsets}"
+            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(ServerTimeZoneOffsets, ServerTimeZoneOffsets.IsDefaultOrEmpty)}"
             SelectedItem="{x:Bind SelectedServerTimeZoneOffset, Mode=TwoWay}"/>
     </StackPanel>
 </ContentDialog>

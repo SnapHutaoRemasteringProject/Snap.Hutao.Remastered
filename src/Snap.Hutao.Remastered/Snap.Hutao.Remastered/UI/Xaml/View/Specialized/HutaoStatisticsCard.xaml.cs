@@ -2,6 +2,8 @@
 // Licensed under the MIT license.
 
 using Microsoft.UI.Xaml.Controls;
+using Snap.Hutao.Remastered.ViewModel.GachaLog;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Specialized;
 
@@ -14,4 +16,6 @@ public sealed partial class HutaoStatisticsCard : UserControl
     {
         InitializeComponent();
     }
+
+    public new HutaoWishSummary DataContext { get => Unsafe.As<HutaoWishSummary>(base.DataContext); set => base.DataContext = value; }
 }

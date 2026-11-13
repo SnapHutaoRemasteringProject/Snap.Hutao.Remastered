@@ -84,13 +84,11 @@ public sealed class HutaoStatisticsFactory
             }
         }
 
-        return new()
-        {
-            Event = gachaEvent,
-            UpItems = [.. upItems.OrderByDescending(i => i.Quality).ThenByDescending(i => i.Count)],
-            OrangeItems = [.. orangeItems.OrderByDescending(i => i.Count)],
-            PurpleItems = [.. purpleItems.OrderByDescending(i => i.Count)],
-            BlueItems = [.. blueItems.OrderByDescending(i => i.Count)],
-        };
+        return new(
+            gachaEvent,
+            [.. upItems.OrderByDescending(i => i.Quality).ThenByDescending(i => i.Count)],
+            [.. orangeItems.OrderByDescending(i => i.Count)],
+            [.. purpleItems.OrderByDescending(i => i.Count)],
+            [.. blueItems.OrderByDescending(i => i.Count)]);
     }
 }

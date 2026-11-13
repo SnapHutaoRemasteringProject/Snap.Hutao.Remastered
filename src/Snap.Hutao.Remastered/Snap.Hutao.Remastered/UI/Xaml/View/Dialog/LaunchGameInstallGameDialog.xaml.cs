@@ -137,7 +137,7 @@ public sealed partial class LaunchGameInstallGameDialog : ContentDialog
     private static void OnIsBetaGameInstallChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
     {
         LaunchGameInstallGameDialog dialog = sender.As<LaunchGameInstallGameDialog>();
-        dialog.KnownSchemes = Unsafe.Unbox<bool>(args.NewValue) ? KnownLaunchSchemes.BetaValues : KnownLaunchSchemes.Values;
+        dialog.KnownSchemes = (Unsafe.Unbox<bool>(args.NewValue) ? KnownLaunchSchemes.BetaValues : KnownLaunchSchemes.Values).ToList();
         dialog.SelectedScheme = dialog.KnownSchemes.First(s => s.IsNotCompatOnly);
     }
 

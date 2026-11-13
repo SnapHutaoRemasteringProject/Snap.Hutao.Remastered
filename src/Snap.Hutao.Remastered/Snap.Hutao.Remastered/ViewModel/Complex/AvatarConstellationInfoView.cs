@@ -6,6 +6,7 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.Complex;
 
+[WinRT.GeneratedBindableCustomProperty]
 public sealed partial class AvatarConstellationInfoView : AvatarView
 {
     public AvatarConstellationInfoView(Avatar avatar, double rate, double? lastRate)

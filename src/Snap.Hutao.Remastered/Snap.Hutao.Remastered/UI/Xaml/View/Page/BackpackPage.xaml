@@ -2,6 +2,7 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.BackpackPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -90,7 +91,7 @@
                                 Style="{StaticResource BodyStrongTextBlockStyle}"
                                 Text="{shuxm:ResourceString Name=ViewPageBackpackPurchasedAppendPropTitle}"/>
                         </StackPanel>
-                        <ItemsControl ItemsSource="{Binding PurchasedAppendPropNames}">
+                        <ItemsControl ItemsSource="{Binding PurchasedAppendPropItems}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{Binding}"/>
@@ -305,7 +306,7 @@
                             Grid.Row="4"
                             Margin="0,12"
                             ItemTemplate="{StaticResource BackpackReliquarySubStatTemplate}"
-                            ItemsSource="{x:Bind PaddedSubStats, Mode=OneWay}"/>
+                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(PaddedSubStats, PaddedSubStats.IsDefaultOrEmpty), Mode=OneWay}"/>
                     </Grid>
                 </Border>
             </DataTemplate>
@@ -520,7 +521,7 @@
                             QueryIcon="{cw:FontIconSource Glyph=&#xE721;}"
                             Style="{StaticResource DefaultAutoSuggestTokenBoxStyle}"
                             SuggestedItemTemplate="{StaticResource TokenTemplate}"
-                            SuggestedItemsSource="{x:Bind DataContext.SearchData.AvailableTokens.Values, Mode=OneWay}"
+                            SuggestedItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.SearchData.AvailableTokens.Values, DataContext.SearchData.AvailableTokens.Values.IsDefaultOrEmpty), Mode=OneWay}"
                             Text="{x:Bind DataContext.SearchData.FilterToken, Mode=TwoWay}"
                             TokenItemTemplate="{StaticResource TokenTemplate}"/>
                         <StackPanel
@@ -533,7 +534,7 @@
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True">
                                         <shuxcas:AutoSortList
                                             Width="260"
-                                            AvailableTokens="{x:Bind DataContext.AvailableSortTokens, Mode=OneWay}"
+                                            AvailableTokens="{x:Bind DataContext.AvailableSortTokenItems, Mode=OneWay}"
                                             SortCommand="{x:Bind DataContext.ApplySortCommand, Mode=OneWay}"/>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
@@ -591,7 +592,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -609,7 +610,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -627,7 +628,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -645,7 +646,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -663,7 +664,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -681,7 +682,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -699,7 +700,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
@@ -717,7 +718,7 @@
                             <GridView
                                 Padding="16,16,10,10"
                                 ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
+                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
                                 SelectionMode="None">
                                 <GridView.ItemContainerStyle>
                                     <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">

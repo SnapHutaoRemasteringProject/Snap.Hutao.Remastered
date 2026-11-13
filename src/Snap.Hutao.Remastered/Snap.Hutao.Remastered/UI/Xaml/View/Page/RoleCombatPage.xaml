@@ -2,6 +2,7 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.RoleCombatPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -148,7 +149,7 @@
                 <ToolTipService.ToolTip>
                     <StackPanel Spacing="{StaticResource SettingsCardContentControlSpacing}">
                         <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{x:Bind Name, Mode=OneTime}"/>
-                        <ItemsControl ItemTemplate="{StaticResource SplendourBuffLevelEffectTemplate}" ItemsSource="{x:Bind Effects, Mode=OneTime}"/>
+                        <ItemsControl ItemTemplate="{StaticResource SplendourBuffLevelEffectTemplate}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(Effects, Effects.IsDefaultOrEmpty), Mode=OneTime}"/>
                     </StackPanel>
                 </ToolTipService.ToolTip>
                 <Grid Height="40" CornerRadius="20">
@@ -229,12 +230,12 @@
                         Grid.Column="0"
                         ItemTemplate="{StaticResource EnemyTemplate}"
                         ItemsPanel="{ThemeResource WrapPanelSpacing6Template}"
-                        ItemsSource="{x:Bind Enemies, Mode=OneWay}"/>
+                        ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(Enemies, Enemies.IsDefaultOrEmpty), Mode=OneWay}"/>
                     <ItemsControl
                         Grid.Column="1"
                         ItemTemplate="{StaticResource AvatarTemplate}"
                         ItemsPanel="{ThemeResource WrapPanelSpacing6Template}"
-                        ItemsSource="{x:Bind Avatars, Mode=OneWay}"/>
+                        ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(Avatars, Avatars.IsDefaultOrEmpty), Mode=OneWay}"/>
                 </Grid>
 
                 <Grid
@@ -255,12 +256,12 @@
                         <ItemsControl
                             ItemTemplate="{StaticResource SplendourBuffTemplate}"
                             ItemsPanel="{ThemeResource WrapPanelSpacing6Template}"
-                            ItemsSource="{x:Bind SplendourBuffs, Mode=OneWay}"/>
+                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(SplendourBuffs, SplendourBuffs.IsDefaultOrEmpty), Mode=OneWay}"/>
                     </StackPanel>
                     <!--  神秘收获  -->
                     <StackPanel Grid.Column="1" Spacing="2">
                         <TextBlock Style="{ThemeResource SettingsCardHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageRoleCombatChoiceCardsHeader}"/>
-                        <ItemsControl ItemTemplate="{StaticResource BuffTemplate}" ItemsSource="{x:Bind ChoiceCards, Mode=OneWay}">
+                        <ItemsControl ItemTemplate="{StaticResource BuffTemplate}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(ChoiceCards, ChoiceCards.IsDefaultOrEmpty), Mode=OneWay}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <shuxcp:WrapPanel HorizontalSpacing="6" VerticalSpacing="6"/>
@@ -326,7 +327,7 @@
                                             Grid.Row="0"
                                             Padding="8"
                                             Style="{ThemeResource BorderShimmerStyle}">
-                                            <ItemsControl ItemTemplate="{StaticResource ElementTemplate}" ItemsSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Elements, Mode=OneWay}">
+                                            <ItemsControl ItemTemplate="{StaticResource ElementTemplate}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.RoleCombatEntries.CurrentItem.Elements, DataContext.RoleCombatEntries.CurrentItem.Elements.IsDefaultOrEmpty), Mode=OneWay}">
                                                 <ItemsControl.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <shuxcp:WrapPanel HorizontalSpacing="6" VerticalSpacing="6"/>
@@ -347,7 +348,7 @@
                                                         <ItemsControl
                                                             ItemTemplate="{StaticResource AvatarTemplate}"
                                                             ItemsPanel="{ThemeResource WrapPanelSpacing6Template}"
-                                                            ItemsSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.InitialAvatars, Mode=OneWay}"/>
+                                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.RoleCombatEntries.CurrentItem.InitialAvatars, DataContext.RoleCombatEntries.CurrentItem.InitialAvatars.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                     </StackPanel>
                                                 </Border>
 
@@ -357,7 +358,7 @@
                                                         <ItemsControl
                                                             ItemTemplate="{StaticResource AvatarTemplate}"
                                                             ItemsPanel="{ThemeResource WrapPanelSpacing6Template}"
-                                                            ItemsSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.SpecialAvatars, Mode=OneWay}"/>
+                                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.RoleCombatEntries.CurrentItem.SpecialAvatars, DataContext.RoleCombatEntries.CurrentItem.SpecialAvatars.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                     </StackPanel>
                                                 </Border>
                                             </Grid>
@@ -484,7 +485,7 @@
                                                                 shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatMedalRound}">
-                                                                <ItemsControl ItemsSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Rounds, Mode=OneWay}">
+                                                                <ItemsControl ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.RoleCombatEntries.CurrentItem.Rounds, DataContext.RoleCombatEntries.CurrentItem.Rounds.IsDefaultOrEmpty), Mode=OneWay}">
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate x:DataType="shvr:RoundView">
                                                                             <Grid>
@@ -560,7 +561,7 @@
                                                                 shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
                                                                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
                                                                 Header="{shuxm:ResourceString Name=ViewPageRoleCombatShortest}">
-                                                                <ItemsControl ItemsPanel="{ThemeResource HorizontalStackPanelSpacing4Template}" ItemsSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Shortest, Mode=OneWay}">
+                                                                <ItemsControl ItemsPanel="{ThemeResource HorizontalStackPanelSpacing4Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.RoleCombatEntries.CurrentItem.Shortest, DataContext.RoleCombatEntries.CurrentItem.Shortest.IsDefaultOrEmpty), Mode=OneWay}">
                                                                     <ItemsControl.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <shuxci:CachedImage
@@ -581,11 +582,11 @@
                                                             <ItemsControl
                                                                 ItemTemplate="{StaticResource AvatarTemplate}"
                                                                 ItemsPanel="{ThemeResource WrapPanelSpacing6Template}"
-                                                                ItemsSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.BackupAvatars, Mode=OneWay}"/>
+                                                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.RoleCombatEntries.CurrentItem.BackupAvatars, DataContext.RoleCombatEntries.CurrentItem.BackupAvatars.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                         </StackPanel>
                                                     </Border>
 
-                                                    <ItemsControl ItemTemplate="{StaticResource RoundTemplate}" ItemsSource="{x:Bind DataContext.RoleCombatEntries.CurrentItem.Rounds, Mode=OneWay}">
+                                                    <ItemsControl ItemTemplate="{StaticResource RoundTemplate}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.RoleCombatEntries.CurrentItem.Rounds, DataContext.RoleCombatEntries.CurrentItem.Rounds.IsDefaultOrEmpty), Mode=OneWay}">
                                                         <ItemsControl.ItemsPanel>
                                                             <ItemsPanelTemplate>
                                                                 <shuxcp:UniformStaggeredPanel
@@ -668,7 +669,7 @@
                                         Padding="16,16,4,4"
                                         ItemContainerStyle="{StaticResource LargeGridViewItemStyle}"
                                         ItemTemplate="{StaticResource RatedAvatarTemplate}"
-                                        ItemsSource="{x:Bind DataContext.HutaoRoleCombatDatabaseViewModel.AvatarAppearances, Mode=OneWay}"
+                                        ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.HutaoRoleCombatDatabaseViewModel.AvatarAppearances, DataContext.HutaoRoleCombatDatabaseViewModel.AvatarAppearances.IsDefaultOrEmpty), Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </Grid>
                             </Border>

@@ -2,6 +2,7 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.GachaLogPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:cwconv="using:CommunityToolkit.WinUI.Converters"
@@ -269,7 +270,7 @@
                     HorizontalAlignment="Left"
                     ItemTemplate="{StaticResource HistoryWishItemTemplate}"
                     ItemsPanel="{StaticResource WrapPanelSpacing4Template}"
-                    ItemsSource="{x:Bind OrangeUpList, Mode=OneWay}"/>
+                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(OrangeUpList, OrangeUpList.IsDefaultOrEmpty), Mode=OneWay}"/>
                 <ItemsControl
                     Grid.Row="1"
                     MaxWidth="272"
@@ -277,7 +278,7 @@
                     HorizontalAlignment="Right"
                     ItemTemplate="{StaticResource HistoryWishItemTemplate}"
                     ItemsPanel="{StaticResource WrapPanelSpacing4Template}"
-                    ItemsSource="{x:Bind PurpleUpList, Mode=OneWay}"/>
+                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(PurpleUpList, PurpleUpList.IsDefaultOrEmpty), Mode=OneWay}"/>
                 <TextBlock
                     Grid.Row="2"
                     Margin="0,6,0,8"
@@ -539,7 +540,7 @@
                                                 Visibility="{x:Bind DataContext.Statistics.HistoryWishes.CurrentItem.SummaryList.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
                                             <GridView
                                                 ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                                ItemsSource="{x:Bind DataContext.Statistics.HistoryWishes.CurrentItem.SummaryList, Mode=OneWay}"
+                                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Statistics.HistoryWishes.CurrentItem.SummaryList, DataContext.Statistics.HistoryWishes.CurrentItem.SummaryList.IsDefaultOrEmpty), Mode=OneWay}"
                                                 SelectionMode="None"/>
 
                                             <TextBlock
@@ -549,7 +550,7 @@
                                                 Visibility="{x:Bind DataContext.Statistics.HistoryWishes.CurrentItem.PurpleList.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
                                             <GridView
                                                 ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                                ItemsSource="{x:Bind DataContext.Statistics.HistoryWishes.CurrentItem.PurpleList, Mode=OneWay}"
+                                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Statistics.HistoryWishes.CurrentItem.PurpleList, DataContext.Statistics.HistoryWishes.CurrentItem.PurpleList.IsDefaultOrEmpty), Mode=OneWay}"
                                                 SelectionMode="None"/>
 
                                             <TextBlock
@@ -559,7 +560,7 @@
                                                 Visibility="{x:Bind DataContext.Statistics.HistoryWishes.CurrentItem.BlueList.Length, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}"/>
                                             <GridView
                                                 ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                                ItemsSource="{x:Bind DataContext.Statistics.HistoryWishes.CurrentItem.BlueList, Mode=OneWay}"
+                                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Statistics.HistoryWishes.CurrentItem.BlueList, DataContext.Statistics.HistoryWishes.CurrentItem.BlueList.IsDefaultOrEmpty), Mode=OneWay}"
                                                 SelectionMode="None"/>
                                         </StackPanel>
 
@@ -582,7 +583,7 @@
                                         Text="{shuxm:ResourceString Name=ViewControlStatisticsCardOrangeText}"/>
                                     <GridView
                                         ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                        ItemsSource="{x:Bind DataContext.Statistics.OrangeAvatars, Mode=OneWay}"
+                                        ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Statistics.OrangeAvatars, DataContext.Statistics.OrangeAvatars.IsDefaultOrEmpty), Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </StackPanel>
                             </Border>
@@ -597,7 +598,7 @@
                                         Text="{shuxm:ResourceString Name=ViewControlStatisticsCardPurpleText}"/>
                                     <GridView
                                         ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                        ItemsSource="{x:Bind DataContext.Statistics.PurpleAvatars, Mode=OneWay}"
+                                        ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Statistics.PurpleAvatars, DataContext.Statistics.PurpleAvatars.IsDefaultOrEmpty), Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </StackPanel>
                             </Border>
@@ -617,7 +618,7 @@
                                         Text="{shuxm:ResourceString Name=ViewControlStatisticsCardOrangeText}"/>
                                     <GridView
                                         ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                        ItemsSource="{x:Bind DataContext.Statistics.OrangeWeapons, Mode=OneWay}"
+                                        ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Statistics.OrangeWeapons, DataContext.Statistics.OrangeWeapons.IsDefaultOrEmpty), Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </StackPanel>
                             </Border>
@@ -631,7 +632,7 @@
                                         Text="{shuxm:ResourceString Name=ViewControlStatisticsCardPurpleText}"/>
                                     <GridView
                                         ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                        ItemsSource="{x:Bind DataContext.Statistics.PurpleWeapons, Mode=OneWay}"
+                                        ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Statistics.PurpleWeapons, DataContext.Statistics.PurpleWeapons.IsDefaultOrEmpty), Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </StackPanel>
                             </Border>
@@ -645,7 +646,7 @@
                                         Text="{shuxm:ResourceString Name=ViewControlStatisticsCardBlueText}"/>
                                     <GridView
                                         ItemTemplate="{StaticResource HistoryWishGridTemplate}"
-                                        ItemsSource="{x:Bind DataContext.Statistics.BlueWeapons, Mode=OneWay}"
+                                        ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Statistics.BlueWeapons, DataContext.Statistics.BlueWeapons.IsDefaultOrEmpty), Mode=OneWay}"
                                         SelectionMode="None"/>
                                 </StackPanel>
                             </Border>
@@ -674,10 +675,10 @@
                             <mxi:Interaction.Behaviors>
                                 <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.WishCountdownViewModel.LoadCommand, Mode=OneWay}"/>
                             </mxi:Interaction.Behaviors>
-                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogOrangeAvatarCountdown}" Countdowns="{x:Bind DataContext.WishCountdownViewModel.WishCountdowns.OrangeAvatars, Mode=OneWay}"/>
-                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogPurpleAvatarCountdown}" Countdowns="{x:Bind DataContext.WishCountdownViewModel.WishCountdowns.PurpleAvatars, Mode=OneWay}"/>
-                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogOrangeWeaponCountdown}" Countdowns="{x:Bind DataContext.WishCountdownViewModel.WishCountdowns.OrangeWeapons, Mode=OneWay}"/>
-                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogPurpleWeaponCountdown}" Countdowns="{x:Bind DataContext.WishCountdownViewModel.WishCountdowns.PurpleWeapons, Mode=OneWay}"/>
+                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogOrangeAvatarCountdown}" Countdowns="{x:Bind DataContext.WishCountdownViewModel.WishCountdowns.OrangeAvatarItems, Mode=OneWay}"/>
+                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogPurpleAvatarCountdown}" Countdowns="{x:Bind DataContext.WishCountdownViewModel.WishCountdowns.PurpleAvatarItems, Mode=OneWay}"/>
+                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogOrangeWeaponCountdown}" Countdowns="{x:Bind DataContext.WishCountdownViewModel.WishCountdowns.OrangeWeaponItems, Mode=OneWay}"/>
+                            <shuxvs:CountdownCard Title="{shuxm:ResourceString Name=ViewPageGachaLogPurpleWeaponCountdown}" Countdowns="{x:Bind DataContext.WishCountdownViewModel.WishCountdowns.PurpleWeaponItems, Mode=OneWay}"/>
                         </shuxcp:HorizontalEqualPanel>
                     </ScrollViewer>
                 </Grid>

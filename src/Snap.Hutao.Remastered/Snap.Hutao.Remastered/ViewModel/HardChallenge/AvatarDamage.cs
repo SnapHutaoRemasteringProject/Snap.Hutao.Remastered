@@ -8,6 +8,7 @@ using System.Globalization;
 
 namespace Snap.Hutao.Remastered.ViewModel.HardChallenge;
 
+[WinRT.GeneratedBindableCustomProperty]
 public sealed partial class AvatarDamage : AvatarView
 {
     private AvatarDamage(HardChallengeBestAvatar avatar, Avatar metaAvatar)

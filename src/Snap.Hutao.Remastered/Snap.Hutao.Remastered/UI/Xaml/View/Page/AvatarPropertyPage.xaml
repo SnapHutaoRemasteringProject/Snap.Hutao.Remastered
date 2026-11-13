@@ -2,6 +2,7 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.AvatarPropertyPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:cwconv="using:CommunityToolkit.WinUI.Converters"
@@ -233,7 +234,7 @@
                             VerticalAlignment="Stretch"
                             ItemTemplate="{StaticResource AvatarGridViewSkillTemplate}"
                             ItemsPanel="{StaticResource HorizontalStackPanelSpacing6Template}"
-                            ItemsSource="{x:Bind Skills, Mode=OneWay}"/>
+                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(Skills, Skills.IsDefaultOrEmpty), Mode=OneWay}"/>
                     </Grid>
                 </Grid>
             </DataTemplate>
@@ -413,7 +414,7 @@
                                     </Border.BorderBrush>
                                     <shuxct:DescriptionTextBlock Description="{x:Bind SpecialDescription, Mode=OneWay}" TextStyle="{StaticResource BodyTextBlockStyle}"/>
                                 </Border>
-                                <ItemsControl Margin="0,12,0,0" ItemsSource="{x:Bind Info.Parameters, Mode=OneWay}">
+                                <ItemsControl Margin="0,12,0,0" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(Info.Parameters, Info.Parameters.IsDefaultOrEmpty), Mode=OneWay}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <cwc:SettingsCard
@@ -583,7 +584,7 @@
                         Margin="0,12"
                         ItemTemplate="{StaticResource AvatarReliquarySubPropertyTemplate}"
                         ItemsPanel="{ThemeResource StackPanelSpacing12Template}"
-                        ItemsSource="{x:Bind ComposedSubProperties, Mode=OneWay}"/>
+                        ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(ComposedSubProperties, ComposedSubProperties.IsDefaultOrEmpty), Mode=OneWay}"/>
                 </Grid>
             </DataTemplate>
 
@@ -698,7 +699,7 @@
                                         Padding="12,6,0,7"
                                         shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                         DisplayMemberPath="Name"
-                                        ItemsSource="{x:Bind DataContext.SortDescriptionKinds, Mode=OneWay}"
+                                        ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.SortDescriptionKinds, DataContext.SortDescriptionKinds.IsDefaultOrEmpty), Mode=OneWay}"
                                         SelectedItem="{x:Bind DataContext.SortDescriptionKind, Mode=TwoWay}"
                                         Style="{ThemeResource DefaultComboBoxStyle}"/>
                                 </shuxc:SizeRestrictedContentControl>
@@ -708,7 +709,7 @@
                                         Padding="12,6,0,7"
                                         shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                         DisplayMemberPath="Name"
-                                        ItemsSource="{Binding ScoreConfigOptions}"
+                                        ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.ScoreConfigOptions, DataContext.ScoreConfigOptions.IsDefaultOrEmpty), Mode=OneWay}"
                                         SelectedItem="{Binding CurrentScoreOption, Mode=TwoWay}"
                                         Style="{ThemeResource DefaultComboBoxStyle}"
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageAvatarPropertyScoreAlgorithm}"/>
@@ -739,7 +740,7 @@
                                 QueryIcon="{cw:FontIconSource Glyph=&#xE721;}"
                                 Style="{StaticResource DefaultAutoSuggestTokenBoxStyle}"
                                 SuggestedItemTemplate="{StaticResource TokenTemplate}"
-                                SuggestedItemsSource="{x:Bind DataContext.SearchData.AvailableTokens.Values, Mode=OneWay}"
+                                SuggestedItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.SearchData.AvailableTokens.Values, DataContext.SearchData.AvailableTokens.Values.IsDefaultOrEmpty), Mode=OneWay}"
                                 Text="{x:Bind DataContext.SearchData.FilterToken, Mode=TwoWay}"
                                 TokenItemTemplate="{StaticResource TokenTemplate}"/>
                         </AppBarElementContainer>
@@ -913,7 +914,7 @@
                                                                         Margin="0,2,0,0"
                                                                         ItemTemplate="{StaticResource PromoteArrayTemplate}"
                                                                         ItemsPanel="{ThemeResource HorizontalStackPanelSpacing2Template}"
-                                                                        ItemsSource="{x:Bind DataContext.Summary.Avatars.CurrentItem.PromoteArray, Mode=OneWay}"/>
+                                                                        ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Summary.Avatars.CurrentItem.PromoteArray, DataContext.Summary.Avatars.CurrentItem.PromoteArray.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                                     <TextBlock
                                                                         Margin="0,2,0,0"
                                                                         Foreground="#FFFFFFFF"
@@ -1010,7 +1011,7 @@
                                                                         Margin="0,2,0,0"
                                                                         ItemTemplate="{StaticResource PromoteArrayTemplate}"
                                                                         ItemsPanel="{ThemeResource HorizontalStackPanelSpacing2Template}"
-                                                                        ItemsSource="{x:Bind DataContext.Summary.Avatars.CurrentItem.Weapon.PromoteArray, Mode=OneWay}"/>
+                                                                        ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Summary.Avatars.CurrentItem.Weapon.PromoteArray, DataContext.Summary.Avatars.CurrentItem.Weapon.PromoteArray.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                                     <TextBlock
                                                                         Margin="0,2,0,0"
                                                                         Foreground="#FFFFFFFF"
@@ -1032,7 +1033,7 @@
                                                             Margin="16"
                                                             VerticalAlignment="Bottom"
                                                             ItemTemplate="{StaticResource AvatarSkillTemplate}"
-                                                            ItemsSource="{x:Bind DataContext.Summary.Avatars.CurrentItem.Skills, Mode=OneWay}"/>
+                                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Summary.Avatars.CurrentItem.Skills, DataContext.Summary.Avatars.CurrentItem.Skills.IsDefaultOrEmpty), Mode=OneWay}"/>
 
                                                         <ItemsControl
                                                             Grid.Row="1"
@@ -1040,7 +1041,7 @@
                                                             Margin="16"
                                                             ItemTemplate="{StaticResource AvatarConstellationTemplate}"
                                                             ItemsPanel="{StaticResource HorizontalStackPanelSpacing0Template}"
-                                                            ItemsSource="{x:Bind DataContext.Summary.Avatars.CurrentItem.Constellations, Mode=OneWay}"/>
+                                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Summary.Avatars.CurrentItem.Constellations, DataContext.Summary.Avatars.CurrentItem.Constellations.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                     </Grid>
                                                 </Border>
 
@@ -1064,7 +1065,7 @@
                                                             shuxcth:MaterialBackground.GlassBrush="{ThemeResource HutaoSurfaceBrush}"
                                                             shuxcth:MaterialBackground.NativeBrush="{ThemeResource ControlAltFillColorSecondaryBrush}"
                                                             BorderThickness="0">
-                                                            <ItemsControl ItemTemplate="{StaticResource AvatarPropertyTemplate}" ItemsSource="{x:Bind DataContext.Summary.Avatars.CurrentItem.Properties, Mode=OneWay}"/>
+                                                            <ItemsControl ItemTemplate="{StaticResource AvatarPropertyTemplate}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Summary.Avatars.CurrentItem.Properties, DataContext.Summary.Avatars.CurrentItem.Properties.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                         </Border>
                                                     </Expander>
                                                 </Border>
@@ -1089,7 +1090,7 @@
                                                                 Margin="12"
                                                                 VerticalAlignment="Center"
                                                                 ItemsPanel="{StaticResource WrapPanelSpacing4Template}"
-                                                                ItemsSource="{x:Bind DataContext.Summary.Avatars.CurrentItem.RecommendedProperties.SandProperties, Mode=OneWay}"/>
+                                                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Summary.Avatars.CurrentItem.RecommendedProperties.SandProperties, DataContext.Summary.Avatars.CurrentItem.RecommendedProperties.SandProperties.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                         </shuxcc:VerticalCard.Bottom>
                                                     </shuxcc:VerticalCard>
                                                     <Image
@@ -1113,7 +1114,7 @@
                                                                 Margin="12"
                                                                 VerticalAlignment="Center"
                                                                 ItemsPanel="{StaticResource WrapPanelSpacing4Template}"
-                                                                ItemsSource="{x:Bind DataContext.Summary.Avatars.CurrentItem.RecommendedProperties.GobletProperties, Mode=OneWay}"/>
+                                                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Summary.Avatars.CurrentItem.RecommendedProperties.GobletProperties, DataContext.Summary.Avatars.CurrentItem.RecommendedProperties.GobletProperties.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                         </shuxcc:VerticalCard.Bottom>
                                                     </shuxcc:VerticalCard>
                                                     <Image
@@ -1137,7 +1138,7 @@
                                                                 Margin="12"
                                                                 VerticalAlignment="Center"
                                                                 ItemsPanel="{StaticResource WrapPanelSpacing4Template}"
-                                                                ItemsSource="{x:Bind DataContext.Summary.Avatars.CurrentItem.RecommendedProperties.CircletProperties, Mode=OneWay}"/>
+                                                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Summary.Avatars.CurrentItem.RecommendedProperties.CircletProperties, DataContext.Summary.Avatars.CurrentItem.RecommendedProperties.CircletProperties.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                         </shuxcc:VerticalCard.Bottom>
                                                     </shuxcc:VerticalCard>
                                                     <Image
@@ -1161,13 +1162,13 @@
                                                                 Margin="12"
                                                                 VerticalAlignment="Center"
                                                                 ItemsPanel="{StaticResource WrapPanelSpacing4Template}"
-                                                                ItemsSource="{x:Bind DataContext.Summary.Avatars.CurrentItem.RecommendedProperties.SubProperties, Mode=OneWay}"/>
+                                                                ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Summary.Avatars.CurrentItem.RecommendedProperties.SubProperties, DataContext.Summary.Avatars.CurrentItem.RecommendedProperties.SubProperties.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                         </shuxcc:VerticalCard.Bottom>
                                                     </shuxcc:VerticalCard>
                                                 </Grid>
 
                                                 <!--  圣遗物  -->
-                                                <ItemsControl ItemTemplate="{StaticResource AvatarReliquaryTemplate}" ItemsSource="{x:Bind DataContext.Summary.Avatars.CurrentItem.Reliquaries, Mode=OneWay}">
+                                                <ItemsControl ItemTemplate="{StaticResource AvatarReliquaryTemplate}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Summary.Avatars.CurrentItem.Reliquaries, DataContext.Summary.Avatars.CurrentItem.Reliquaries.IsDefaultOrEmpty), Mode=OneWay}">
                                                     <ItemsControl.ItemsPanel>
                                                         <ItemsPanelTemplate>
                                                             <shuxcp:UniformPanel

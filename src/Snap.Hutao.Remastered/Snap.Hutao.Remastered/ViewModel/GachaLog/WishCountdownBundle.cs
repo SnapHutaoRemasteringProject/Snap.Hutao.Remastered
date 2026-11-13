@@ -14,4 +14,16 @@ public sealed class WishCountdownBundle
     public required ImmutableArray<Countdown> OrangeWeapons { get; init; }
 
     public required ImmutableArray<Countdown> PurpleWeapons { get; init; }
+
+    [JsonIgnore]
+    public List<Countdown> OrangeAvatarItems => OrangeAvatars.IsDefaultOrEmpty ? [] : new(OrangeAvatars);
+
+    [JsonIgnore]
+    public List<Countdown> PurpleAvatarItems => PurpleAvatars.IsDefaultOrEmpty ? [] : new(PurpleAvatars);
+
+    [JsonIgnore]
+    public List<Countdown> OrangeWeaponItems => OrangeWeapons.IsDefaultOrEmpty ? [] : new(OrangeWeapons);
+
+    [JsonIgnore]
+    public List<Countdown> PurpleWeaponItems => PurpleWeapons.IsDefaultOrEmpty ? [] : new(PurpleWeapons);
 }
