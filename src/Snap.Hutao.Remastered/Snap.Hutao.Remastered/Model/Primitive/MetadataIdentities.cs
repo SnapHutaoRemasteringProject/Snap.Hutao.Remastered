@@ -7,8 +7,10 @@ namespace Snap.Hutao.Remastered.Model.Primitive;
 // generator remains responsible for their uint storage, operators and attributes.
 public readonly partial struct AchievementGoalId;
 public readonly partial struct AchievementId;
+public readonly partial struct BeyondItemId;
 public readonly partial struct ChapterGroupId;
 public readonly partial struct ChapterId;
+public readonly partial struct CombineId;
 public readonly partial struct CookRecipeId;
 public readonly partial struct EquipAffixId;
 public readonly partial struct ExtendedEquipAffixId;

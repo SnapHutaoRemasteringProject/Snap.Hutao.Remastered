@@ -65,6 +65,7 @@ internal static class JsonSerializeContexts
         options.Converters.Add(new IdentityConverter<AchievementId>());
         options.Converters.Add(new IdentityConverter<ChapterGroupId>());
         options.Converters.Add(new IdentityConverter<ChapterId>());
+        options.Converters.Add(new IdentityConverter<CombineId>());
         options.Converters.Add(new IdentityConverter<CookRecipeId>());
         options.Converters.Add(new IdentityConverter<EquipAffixId>());
         options.Converters.Add(new IdentityConverter<ExtendedEquipAffixId>());
