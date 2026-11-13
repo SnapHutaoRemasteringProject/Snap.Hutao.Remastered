@@ -8,7 +8,7 @@ using Snap.Hutao.Remastered.Model.Intrinsic;
 
 namespace Snap.Hutao.Remastered.Model.Metadata;
 
-[JsonConverter(typeof(ConverterFactory))]
+[JsonConverter(typeof(TypeValueCollectionConverterFactory))]
 public sealed class TypeValueCollection<TType, TValue>
     where TType : notnull
 {
@@ -34,7 +34,7 @@ public sealed class TypeValueCollection<TType, TValue>
 }
 
 [SuppressMessage("", "SA1402")]
-file sealed class ConverterFactory : JsonConverterFactory
+internal sealed class TypeValueCollectionConverterFactory : JsonConverterFactory
 {
     private static readonly Type ConverterType = typeof(Converter<,>);
 
