@@ -2,6 +2,7 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.OverlayView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:essential="using:WinUI3Package"
@@ -105,7 +106,7 @@
                     FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding0And2Style}"
                     Placement="Bottom"
                     ShouldConstrainToRootBounds="False">
-                    <ListView ItemsSource="{Binding Catalogs}" SelectedItem="{Binding SelectedCatalog, Mode=TwoWay}">
+                    <ListView ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Catalogs, DataContext.Catalogs.IsDefaultOrEmpty), Mode=OneWay}" SelectedItem="{Binding SelectedCatalog, Mode=TwoWay}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <Grid ColumnSpacing="12">

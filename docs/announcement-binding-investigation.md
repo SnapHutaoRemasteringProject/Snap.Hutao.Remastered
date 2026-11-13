@@ -2,6 +2,18 @@
 
 更新：2026-11-13。用户要求只做源码研究，.NET/EF 保持 `11.*` 主版本策略，不还原、不启动界面。本记录不代表原生崩溃已修复。
 
+## 后续运行日志：成就与抽卡卡片
+
+用户提供的 PID 12636 日志先在 `GachaStatisticsCard.Update_DataContext_StatisticsList(ImmutableArray)` 的 ItemsSource setter 失败，随后 `AchievementCard` 在同一路径失败。两处本来就是 x:Bind，说明此处不能通过替换绑定语法解决。截图中的 UniformPanel 停在 child.Measure；它正在触发子卡片的 Loading。未修改布局计算。
+
+该转储为 C000027B，记录了六个暂存异常，异常数组地址指向的内存未包含在转储中，无法还原全部记录。因此具体赋值定位采用同进程的本地日志及相应生成代码，不把公开符号的近似函数名当作原始失败函数。
+
+修复在托管代码中将不可变集合转换为引用集合，再调用 WinRT setter。ItemsSourceHelper 是 x:Bind 调用的普通 C# 方法，不是 IValueConverter；默认数组不枚举，null 保持 null，保留元素次序、空元素及原对象身份。显式登记 List<object> 的 CCW，避免依赖元素类型或另一生成器输出的自动发现。
+
+除两张卡片，修复还覆盖生成代码扫描出的同类 ItemsSource/Source、自定义依赖属性、传统 Binding 集合、两处 nullable 集合以及 UIGF 对话框构造时的集合赋值。强类型 Countdown、排序令牌及 nullable 视图保留具体 List<T> 适配器和变化通知；业务和服务层的 ImmutableArray 保留。传统 Binding 所需的属性访问器按 CsWinRT 文档生成。胡桃云统计模型使用完整参数构造函数，保留所有 required 成员，避免 XAML 元数据尝试无参创建未初始化统计对象。
+
+提交前检查包括 Debug --no-restore AOT 分析构建、四个集合转换回归测试，以及 scripts/Test-XamlCollectionBoundaries.ps1 对实际生成代码的检查。检查范围包括自定义依赖属性，而不只是 ItemsSource。没有还原依赖或启动原生界面；运行验收仍由新的原生发布与用户复测确认。
+
 ## 能够确认的范围
 
 原堆栈中的 `AnnouncementPage_obj1_Bindings.Update_DataContext(AnnouncementViewModel)` 给资源 `ViewModelBindingProxy.DataContext` 赋整个 ViewModel。`ScopedPage.InitializeDataContext` 已先把同一实例赋给页面的原生 DataContext，因此不能直接认定 ViewModel 本身无法封送。

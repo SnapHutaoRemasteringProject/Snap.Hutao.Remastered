@@ -231,7 +231,8 @@ public sealed partial class AutoSuggestTokenBox : ListViewBase
                 .ExceptBy(Tokens, kvp => kvp.Value)
                 .OrderBy(kvp => kvp.Value.Kind)
                 .ThenBy(kvp => kvp.Value.Order)
-                .Select(kvp => kvp.Value);
+                .Select(kvp => kvp.Value)
+                .ToList();
         }
 
         if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
@@ -242,7 +243,8 @@ public sealed partial class AutoSuggestTokenBox : ListViewBase
                 .OrderBy(kvp => kvp.Value.Kind)
                 .ThenBy(kvp => kvp.Value.Order)
                 .Select(kvp => kvp.Value)
-                .DefaultIfEmpty(SearchToken.NotFound);
+                .DefaultIfEmpty(SearchToken.NotFound)
+                .ToList();
         }
     }
 
