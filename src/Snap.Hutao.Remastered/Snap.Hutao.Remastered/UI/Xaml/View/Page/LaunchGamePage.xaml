@@ -33,7 +33,6 @@
     </mxi:Interaction.Behaviors>
 
     <Page.Resources>
-        <shux:BindingProxy x:Key="BindingProxy" DataContext="{x:Bind DataContext, Mode=OneWay}"/>
 
         <DataTemplate x:Key="GameAccountListTemplate" x:DataType="shme:GameAccount">
             <Grid>
@@ -63,7 +62,9 @@
                         shuxcth:ControlMaterialState.IsManaged="True"
                         MinWidth="35.2"
                         VerticalAlignment="Stretch"
-                        Command="{Binding DataContext.ModifyGameAccountCommand, Source={StaticResource BindingProxy}}"
+                        Tag="ModifyGameAccountCommand"
+                        Loaded="OnTemplateCommandLoaded"
+                        Unloaded="OnTemplateCommandUnloaded"
                         CommandParameter="{Binding Mode=OneWay}"
                         Content="&#xE8AC;"
                         FontFamily="{StaticResource SymbolThemeFontFamily}"
@@ -74,7 +75,9 @@
                         shuxcth:ControlMaterialState.IsManaged="True"
                         MinWidth="35.2"
                         VerticalAlignment="Stretch"
-                        Command="{Binding DataContext.RemoveGameAccountCommand, Source={StaticResource BindingProxy}}"
+                        Tag="RemoveGameAccountCommand"
+                        Loaded="OnTemplateCommandLoaded"
+                        Unloaded="OnTemplateCommandUnloaded"
                         CommandParameter="{x:Bind Mode=OneWay}"
                         Content="&#xE74D;"
                         FontFamily="{StaticResource SymbolThemeFontFamily}"
@@ -101,7 +104,9 @@
                     shuxcth:ControlMaterialState.IsManaged="True"
                     MinWidth="48"
                     VerticalAlignment="Stretch"
-                    Command="{Binding DataContext.RemoveGamePathEntryCommand, Source={StaticResource BindingProxy}}"
+                    Tag="RemoveGamePathEntryCommand"
+                    Loaded="OnTemplateCommandLoaded"
+                    Unloaded="OnTemplateCommandUnloaded"
                     CommandParameter="{x:Bind Mode=OneWay}"
                     Content="&#xE74D;"
                     FontFamily="{StaticResource SymbolThemeFontFamily}"
@@ -128,7 +133,9 @@
                             MinHeight="32"
                             Padding="0"
                             VerticalAlignment="Center"
-                            Command="{Binding DataContext.RemoveAspectRatioCommand, Source={StaticResource BindingProxy}}"
+                            Tag="RemoveAspectRatioCommand"
+                            Loaded="OnTemplateCommandLoaded"
+                            Unloaded="OnTemplateCommandUnloaded"
                             CommandParameter="{Binding Mode=OneWay}"
                             Content="&#xE711;"
                             FontFamily="{ThemeResource SymbolThemeFontFamily}"
@@ -828,7 +835,7 @@
                                                 Spacing="8">
                                                 <wl:LiquidGlassButton
                                                     shuxcth:ControlMaterialState.IsManaged="True"
-                                                    Command="{Binding DataContext.AddDelayedProgramCommand, Source={StaticResource BindingProxy}}"
+                                                    Command="{x:Bind DataContext.AddDelayedProgramCommand, Mode=OneWay}"
                                                     Style="{ThemeResource SettingButtonStyle}">
                                                     <wl:LiquidGlassButton.Content>
                                                         <FontIcon Glyph="&#xE710;"/>
@@ -836,8 +843,8 @@
                                                 </wl:LiquidGlassButton>
                                                 <wl:LiquidGlassButton
                                                     shuxcth:ControlMaterialState.IsManaged="True"
-                                                    Command="{Binding DataContext.EditDelayedProgramCommand, Source={StaticResource BindingProxy}}"
-                                                    IsEnabled="{Binding DataContext.SelectedDelayedProgramEntry, Source={StaticResource BindingProxy}, Converter={StaticResource EmptyObjectToBoolConverter}}"
+                                                    Command="{x:Bind DataContext.EditDelayedProgramCommand, Mode=OneWay}"
+                                                    IsEnabled="{x:Bind DataContext.SelectedDelayedProgramEntry, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}"
                                                     Style="{ThemeResource SettingButtonStyle}">
                                                     <wl:LiquidGlassButton.Content>
                                                         <FontIcon Glyph="&#xE70F;"/>
@@ -845,8 +852,8 @@
                                                 </wl:LiquidGlassButton>
                                                 <wl:LiquidGlassButton
                                                     shuxcth:ControlMaterialState.IsManaged="True"
-                                                    Command="{Binding DataContext.RemoveDelayedProgramCommand, Source={StaticResource BindingProxy}}"
-                                                    IsEnabled="{Binding DataContext.SelectedDelayedProgramEntry, Source={StaticResource BindingProxy}, Converter={StaticResource EmptyObjectToBoolConverter}}"
+                                                    Command="{x:Bind DataContext.RemoveDelayedProgramCommand, Mode=OneWay}"
+                                                    IsEnabled="{x:Bind DataContext.SelectedDelayedProgramEntry, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}"
                                                     Style="{ThemeResource SettingButtonStyle}">
                                                     <wl:LiquidGlassButton.Content>
                                                         <FontIcon Glyph="&#xE74D;"/>
@@ -855,7 +862,7 @@
                                             </StackPanel>
                                         </shuxcc:TitleCard.TitleContent>
                                         <shuxcc:TitleCard.Content>
-                                            <ListView ItemsSource="{Binding DataContext.Entries, Source={StaticResource BindingProxy}}" SelectedItem="{Binding DataContext.SelectedDelayedProgramEntry, Source={StaticResource BindingProxy}, Mode=TwoWay}">
+                                            <ListView ItemsSource="{x:Bind DataContext.Entries, Mode=OneWay}" SelectedItem="{x:Bind DataContext.SelectedDelayedProgramEntry, Mode=TwoWay}">
                                                 <ListView.Header>
                                                     <cwc:DataTable Margin="12,0,0,0">
                                                         <cwc:DataColumn
@@ -899,7 +906,9 @@
                                                                     shuxcth:ControlMaterialState.IsManaged="True"
                                                                     MinWidth="24"
                                                                     VerticalAlignment="Center"
-                                                                    Command="{Binding DataContext.PickDelayedProgramPathCommand, Source={StaticResource BindingProxy}}"
+                                                                    Tag="PickDelayedProgramPathCommand"
+                                                                    Loaded="OnTemplateCommandLoaded"
+                                                                    Unloaded="OnTemplateCommandUnloaded"
                                                                     CommandParameter="{x:Bind Mode=OneWay}"
                                                                     Style="{ThemeResource SettingButtonStyle}">
                                                                     <wl:LiquidGlassButton.Content>

@@ -26,6 +26,7 @@ using System.Collections.Immutable;
 namespace Snap.Hutao.Remastered.ViewModel.Backpack;
 
 [Service(ServiceLifetime.Scoped)]
+[BindableCustomPropertyProvider]
 public sealed partial class BackpackViewModel : Abstraction.ViewModel
 {
     private readonly BackpackViewModelScopeContext scopeContext;
