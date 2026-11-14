@@ -3,7 +3,6 @@
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.HardChallenge;
 
-[WinRT.GeneratedBindableCustomProperty]
 public sealed partial class HardChallengeMonsterTag
 {
     [JsonPropertyName("type")]
