@@ -21,13 +21,16 @@ public sealed partial class ServiceRecipientBackgroundImagePresenterBehavior : B
     private readonly AsyncLock backgroundImageLock = new();
 
     private IBackgroundImageService? backgroundImageService;
+    private ILogger<ServiceRecipientBackgroundImagePresenterBehavior>? logger;
     private BackgroundImage? previousBackgroundImage;
 
     private IObservableProperty<BackgroundImageType>? BackgroundImageTypeCallback { get; set; }
+    private IObservableProperty<string>? BackgroundImagePathCallback { get; set; }
 
     public void Dispose()
     {
         BackgroundImageTypeCallback = null;
+        BackgroundImagePathCallback = null;
         unloadCts?.Cancel();
         unloadCts?.Dispose();
         unloadCts = null;
@@ -39,11 +42,25 @@ public sealed partial class ServiceRecipientBackgroundImagePresenterBehavior : B
         unloadCts?.Cancel();
         unloadCts?.Dispose();
         unloadCts = new();
+        if (AssociatedObject.Source is null)
+        {
+            previousBackgroundImage = null;
+        }
         if (AssociatedObject.XamlRoot.XamlContext()?.ServiceProvider is { } serviceProvider)
         {
             backgroundImageService = serviceProvider.GetRequiredService<IBackgroundImageService>();
-            BackgroundImageTypeCallback = serviceProvider.GetRequiredService<AppOptions>().BackgroundImageType
+            logger = serviceProvider.GetRequiredService<ILogger<ServiceRecipientBackgroundImagePresenterBehavior>>();
+            AppOptions appOptions = serviceProvider.GetRequiredService<AppOptions>();
+            BackgroundImageTypeCallback = appOptions.BackgroundImageType
                 .WithValueChangedCallback(static (type, behavior) => behavior.UpdateBackground(true), this);
+            BackgroundImagePathCallback = appOptions.BackgroundImagePath
+                .WithValueChangedCallback(static (path, behavior) =>
+                {
+                    if (behavior.BackgroundImageTypeCallback?.Value is BackgroundImageType.LocalFolder)
+                    {
+                        behavior.UpdateBackground(true);
+                    }
+                }, this);
             PrivateUpdateBackgroundAsync(false, unloadCts.Token).SafeForget();
         }
     }
@@ -51,6 +68,7 @@ public sealed partial class ServiceRecipientBackgroundImagePresenterBehavior : B
     protected override bool Uninitialize()
     {
         BackgroundImageTypeCallback = null;
+        BackgroundImagePathCallback = null;
         unloadCts?.Cancel();
         unloadCts?.Dispose();
         unloadCts = null;
@@ -86,7 +104,6 @@ public sealed partial class ServiceRecipientBackgroundImagePresenterBehavior : B
 
             if (shouldRefresh || forceRefresh)
             {
-                previousBackgroundImage = backgroundImage;
                 token.ThrowIfCancellationRequested();
                 await taskContext.SwitchToMainThreadAsync();
                 token.ThrowIfCancellationRequested();
@@ -113,10 +130,17 @@ public sealed partial class ServiceRecipientBackgroundImagePresenterBehavior : B
 
                     await OpacityTransition.StartAsync(backgroundImagePresenter, targetOpacity, Constants.ImageOpacityFadeInOut, token)
                         .ConfigureAwait(false);
+
+                    // A canceled/failed transition must remain retryable, including when
+                    // the local folder has only one image and the view is loaded again.
+                    previousBackgroundImage = backgroundImage;
                 }
-                catch (COMException)
+                catch (COMException exception)
                 {
-                    // 0x8001010E The given object has already been closed / disposed and may no longer be used.
+                    if (!XamlApplicationLifetime.Exiting && !token.IsCancellationRequested)
+                    {
+                        logger?.LogWarning(exception, "Failed to present background image (HResult=0x{HResult:X8})", exception.HResult);
+                    }
                 }
             }
         }
