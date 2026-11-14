@@ -416,7 +416,7 @@
                     </AppBarButton>
                     <AppBarSeparator/>
                     <AppBarToggleButton
-                        Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Icon/UI_ItemIcon_231.png}"
+                        Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Icon/UI_BtnIcon_Beyond_GH.png, ShowAsMonochrome=True}"
                         IsChecked="{x:Bind DataContext.IsBeyondMode, Mode=TwoWay}"
                         Label="{shuxm:ResourceString Name=ViewPageGachaLogSwitchToBeyondGachaModeHeader}">
                         <AppBarToggleButton.Resources>

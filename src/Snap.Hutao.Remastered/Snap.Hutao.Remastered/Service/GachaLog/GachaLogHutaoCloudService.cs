@@ -44,7 +44,7 @@ public sealed partial class GachaLogHutaoCloudService : IGachaLogHutaoCloudServi
             List<Web.Hutao.GachaLog.GachaItem> items = [];
             foreach ((GachaType type, long endId) in endIds)
             {
-                if (type is GachaType.UGCStandard or GachaType.UGCAvatarEventWish)
+                if (BeyondGachaLog.QueryTypes.Contains(type))
                 {
                     items.AddRange(gachaLogRepository.GetHutaoBeyondGachaItemListByArchiveIdAndQueryTypeNewerThanEndId(gachaArchive.InnerId, type, endId));
                 }
@@ -172,14 +172,19 @@ public sealed partial class GachaLogHutaoCloudService : IGachaLogHutaoCloudServi
     private EndIds CreateEndIdsForArchive(GachaArchive? archive)
     {
         EndIds endIds = new();
+        if (archive is null)
+        {
+            return endIds;
+        }
+
         foreach (GachaType type in GachaLog.QueryTypes)
         {
-            if (archive is not null)
-            {
-                endIds[type] = type is GachaType.UGCStandard or GachaType.UGCAvatarEventWish
-                    ? gachaLogRepository.GetOldestBeyondGachaItemIdByArchiveIdAndGachaType(archive.InnerId, type)
-                    : gachaLogRepository.GetOldestGachaItemIdByArchiveIdAndQueryType(archive.InnerId, type);
-            }
+            endIds[type] = gachaLogRepository.GetOldestGachaItemIdByArchiveIdAndQueryType(archive.InnerId, type);
+        }
+
+        foreach (GachaType type in BeyondGachaLog.QueryTypes)
+        {
+            endIds[type] = gachaLogRepository.GetOldestBeyondGachaItemIdByArchiveIdAndGachaType(archive.InnerId, type);
         }
 
         return endIds;

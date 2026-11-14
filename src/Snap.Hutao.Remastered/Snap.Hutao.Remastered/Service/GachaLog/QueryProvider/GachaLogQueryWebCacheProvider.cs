@@ -80,23 +80,25 @@ public sealed partial class GachaLogQueryWebCacheProvider : IGachaLogQueryProvid
         {
             using (MemoryStream memoryStream = await memoryStreamFactory.GetStreamAsync(fileStream).ConfigureAwait(false))
             {
-                string? result = Match(memoryStream, cacheFile.Contains(GameConstants.GenshinImpactData, StringComparison.OrdinalIgnoreCase));
-
-                if (string.IsNullOrEmpty(result))
+                string? url = Match(memoryStream, cacheFile.Contains(GameConstants.GenshinImpactData, StringComparison.OrdinalIgnoreCase));
+                if (string.IsNullOrEmpty(url))
                 {
                     return new(false, GachaLogQuery.Invalid(SH.ServiceGachaLogUrlProviderCacheUrlNotFound));
                 }
 
-                NameValueCollection query = HttpUtility.ParseQueryString(result.TrimEnd("#/log"));
-                string? queryLanguageCode = query["lang"];
-
-                if (!LocaleNames.LanguageCodeFitsCurrentLocale(queryLanguageCode, cultureOptions.LocaleName))
+                if (!Uri.TryCreate(url, UriKind.Absolute, out Uri? uri))
                 {
-                    string message = SH.FormatServiceGachaLogUrlProviderUrlLanguageNotMatchCurrentLocale(queryLanguageCode, cultureOptions.LanguageCode);
-                    return new(false, GachaLogQuery.Invalid(message));
+                    return new(false, GachaLogQuery.Invalid(SH.ServiceGachaLogUrlProviderCacheUrlNotFound));
                 }
 
-                return new(true, new(result));
+                NameValueCollection query = HttpUtility.ParseQueryString(uri.Query);
+                if (query["authkey"] is not { Length: > 0 })
+                {
+                    return new(false, GachaLogQuery.Invalid(SH.ServiceGachaLogUrlProviderCacheUrlNotFound));
+                }
+
+                query.Set("lang", cultureOptions.LanguageCode);
+                return new(true, new(query.ToString()!));
             }
         }
     }
@@ -115,7 +117,7 @@ public sealed partial class GachaLogQueryWebCacheProvider : IGachaLogQueryProvid
             int index = span.LastIndexOf(match);
             if (index >= 0)
             {
-                ReadOnlySpan<byte> target = span[(index + match.Length)..];
+                ReadOnlySpan<byte> target = span[index..];
                 int terminator = target.IndexOf((byte)0);
                 return terminator < 0 ? null : Encoding.UTF8.GetString(target[..terminator]);
             }

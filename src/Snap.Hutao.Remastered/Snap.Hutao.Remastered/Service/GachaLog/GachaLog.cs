@@ -15,7 +15,5 @@ public static class GachaLog
         GachaType.ActivityAvatar,
         GachaType.ActivityWeapon,
         GachaType.ActivityCity,
-        GachaType.UGCStandard,
-        GachaType.UGCAvatarEventWish,
     ];
 }

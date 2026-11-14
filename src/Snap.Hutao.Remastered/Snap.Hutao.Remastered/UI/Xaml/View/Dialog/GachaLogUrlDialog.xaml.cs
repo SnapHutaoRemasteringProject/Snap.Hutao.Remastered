@@ -18,7 +18,7 @@ public sealed partial class GachaLogUrlDialog : ContentDialog
     {
         ContentDialogResult result = await contentDialogFactory.EnqueueAndShowAsync(this).ShowTask.ConfigureAwait(false);
         await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
-        string? url = Text?.TrimEnd("#/log");
+        string? url = Text?.Trim();
         return new(result is ContentDialogResult.Primary, url);
     }
 }

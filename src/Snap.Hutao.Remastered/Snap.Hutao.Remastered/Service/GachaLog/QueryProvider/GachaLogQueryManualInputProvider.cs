@@ -27,37 +27,39 @@ public sealed partial class GachaLogQueryManualInputProvider : IGachaLogQueryPro
             return new(false, default);
         }
 
-        if ((AfterLast(url, "index.html") ?? AfterLast(url, "getGachaLog")) is not { } queryString)
-        {
-            return new(false, GachaLogQuery.Invalid(SH.ServiceGachaLogUrlProviderManualInputInvalid));
-        }
-
+        string queryString = ExtractQuery(url);
         NameValueCollection query = HttpUtility.ParseQueryString(queryString);
-        if (!query.TryGetSingleValue("auth_appid", out string? appId) || appId is not "webview_gacha")
+        if (query["auth_appid"] is not "webview_gacha")
         {
             return new(false, GachaLogQuery.Invalid(SH.ServiceGachaLogUrlProviderManualInputInvalid));
         }
 
-        if (!query.TryGetSingleValue("lang", out string? queryLanguageCode) || !LocaleNames.LanguageCodeFitsCurrentLocale(queryLanguageCode, cultureOptions.LocaleName))
-        {
-            string message = SH.FormatServiceGachaLogUrlProviderUrlLanguageNotMatchCurrentLocale(queryLanguageCode, cultureOptions.LanguageCode);
-            return new(false, GachaLogQuery.Invalid(message));
-        }
-
-        return new(true, new(url));
+        query.Set("lang", cultureOptions.LanguageCode);
+        return new(true, new(query.ToString()!));
     }
 
-    private static string? AfterLast(string url, string match)
+    private static string ExtractQuery(string url)
     {
-        ReadOnlySpan<char> urlSpan = url;
+        ReadOnlySpan<char> span = url.AsSpan().Trim();
 
-        int index = urlSpan.LastIndexOf(match);
-        if (index >= 0)
+        int fragmentIndex = span.IndexOf('#');
+        if (fragmentIndex >= 0)
         {
-            index += match.Length;
-            return urlSpan[index..].ToString();
+            span = span[..fragmentIndex];
         }
 
-        return default;
+        int queryIndex = span.IndexOf('?');
+        if (queryIndex >= 0)
+        {
+            span = span[queryIndex..];
+        }
+
+        int end = span.IndexOfAny(" \t\r\n");
+        if (end >= 0)
+        {
+            span = span[..end];
+        }
+
+        return span.ToString();
     }
 }
