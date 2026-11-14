@@ -10,7 +10,7 @@ namespace Snap.Hutao.Remastered.Model;
 /// 直接绑定枚举变量会显示 Windows.Foundation.IReference{T}
 /// </summary>
 /// <typeparam name="T">包含值的类型</typeparam>
-public class NameValue<T> : IEquatable<NameValue<T>>
+public partial class NameValue<T> : INamedValue, IEquatable<NameValue<T>>
 {
     public NameValue(string name, T value)
     {
@@ -21,6 +21,8 @@ public class NameValue<T> : IEquatable<NameValue<T>>
     public string Name { get; }
 
     public T Value { get; }
+
+    public override string ToString() => Name;
 
     public bool Equals(NameValue<T>? other)
     {

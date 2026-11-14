@@ -570,7 +570,7 @@
                                                                 shuxcth:ControlMaterialState.IsManaged="True"
                                                                 MinWidth="{ThemeResource SettingsCardContentControlMinWidth2}"
                                                                 shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                                                DisplayMemberPath="Name"
+                                                                ItemTemplate="{StaticResource NameValueItemTemplate}"
                                                                 IsEnabled="{x:Bind DataContext.LaunchOptions.IsPlatformTypeEnabled.Value, Mode=OneWay}"
                                                                 ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.LaunchOptions.PlatformTypes, DataContext.LaunchOptions.PlatformTypes.IsDefaultOrEmpty), Mode=OneWay}"
                                                                 SelectedItem="{x:Bind DataContext.SelectedPlatformType.Value, Mode=TwoWay}"/>
@@ -636,7 +636,7 @@
                                                                 shuxcth:ControlMaterialState.IsManaged="True"
                                                                 MinWidth="{ThemeResource SettingsCardContentControlMinWidth2}"
                                                                 shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                                                DisplayMemberPath="Name"
+                                                                ItemTemplate="{StaticResource NameValueItemTemplate}"
                                                                 IsEnabled="{x:Bind DataContext.LaunchOptions.IsMonitorEnabled.Value, Mode=OneWay}"
                                                                 ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.LaunchOptions.Monitors, DataContext.LaunchOptions.Monitors.IsDefaultOrEmpty), Mode=OneWay}"
                                                                 SelectedItem="{x:Bind DataContext.LaunchOptions.Monitor.Value, Mode=TwoWay}"/>
