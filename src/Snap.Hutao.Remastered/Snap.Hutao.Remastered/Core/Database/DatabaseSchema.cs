@@ -2,8 +2,6 @@
 // Licensed under the MIT license.
 
 using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;

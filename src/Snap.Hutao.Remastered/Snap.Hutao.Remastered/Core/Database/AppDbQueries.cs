@@ -4,8 +4,6 @@
 using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Entity.Database;
-using System;
-using System.Linq;
 
 namespace Snap.Hutao.Remastered.Core.Database;
 
