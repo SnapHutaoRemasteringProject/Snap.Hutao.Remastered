@@ -22,6 +22,8 @@ public partial class MaterialCardButton : ContentControl
     public static readonly DependencyProperty CommandParameterProperty = DependencyProperty.Register(
         nameof(CommandParameter), typeof(object), typeof(MaterialCardButton), new PropertyMetadata(null));
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.ControlTemplate))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Style))]
     public MaterialCardButton()
     {
         DefaultStyleKey = typeof(ContentControl);
@@ -57,7 +59,8 @@ public partial class MaterialCardButton : ContentControl
         Unloaded += OnUnloaded;
     }
 
-    public UIElement? Body { get => (UIElement?)GetValue(BodyProperty); set => SetValue(BodyProperty, value); }
+    public UIElement? Body { [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.UIElement))]
+    get => (UIElement?)GetValue(BodyProperty); set => SetValue(BodyProperty, value); }
     public ICommand? Command { get => (ICommand?)GetValue(CommandProperty); set => SetValue(CommandProperty, value); }
     public object? CommandParameter { get => GetValue(CommandParameterProperty); set => SetValue(CommandParameterProperty, value); }
 

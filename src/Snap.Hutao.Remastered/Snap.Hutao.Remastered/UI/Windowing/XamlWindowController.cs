@@ -46,6 +46,7 @@ public sealed class XamlWindowController
     private bool closing;
     private bool readyToClose;
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.TitleBar))]
     public XamlWindowController(Window window, IServiceProvider serviceProvider)
     {
         windowType = window.GetType();
@@ -114,6 +115,7 @@ public sealed class XamlWindowController
 
     private IObservableProperty<ElementTheme>? ElementThemeCallback { get; }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     public Task DetachContentAsync()
     {
         if (detachContent is not null) return detachContent;
@@ -262,6 +264,7 @@ public sealed class XamlWindowController
         window.UninitializeController();
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private void ApplyElementTheme(ElementTheme theme)
     {
         if (closing || detachContent is not null)

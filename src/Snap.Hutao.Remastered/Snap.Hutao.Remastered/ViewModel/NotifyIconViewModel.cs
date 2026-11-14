@@ -60,6 +60,7 @@ public sealed partial class NotifyIconViewModel : ObservableObject
         return CloseNotifyIconContextMenuWithAnimationAsync();
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Media.ScaleTransform))]
     public void NotifyIconContextMenuClosed()
     {
         // Ensure next open has correct visual state.

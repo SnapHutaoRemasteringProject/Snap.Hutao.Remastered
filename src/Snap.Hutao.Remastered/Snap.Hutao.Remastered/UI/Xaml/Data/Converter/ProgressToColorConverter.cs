@@ -12,6 +12,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Data.Converter;
 /// </summary>
 public sealed partial class ProgressToColorConverter : ValueConverter<double, Brush>
 {
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Media.Brush))]
     public override Brush Convert(double from)
     {
         if (from >= 1.0)

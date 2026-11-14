@@ -8,8 +8,11 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 
 public sealed partial class DailyNoteNotificationDialog : ContentDialog
 {
+    private DailyNoteEntry Entry { get; }
+
     public DailyNoteNotificationDialog(IServiceProvider serviceProvider, DailyNoteEntry entry)
     {
+        Entry = entry;
         InitializeComponent();
 
         DataContext = entry;

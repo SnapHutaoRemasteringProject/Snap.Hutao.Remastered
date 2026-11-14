@@ -17,21 +17,25 @@ public sealed partial class MaterialBackground : DependencyObject
 
     public static readonly DependencyProperty NativeBrushProperty = DependencyProperty.RegisterAttached(
         "NativeBrush", typeof(Brush), typeof(MaterialBackground), new PropertyMetadata(null, OnBrushChanged));
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Media.Brush))]
     public static Brush? GetNativeBrush(DependencyObject target) => (Brush?)target.GetValue(NativeBrushProperty);
     public static void SetNativeBrush(DependencyObject target, Brush? value) => target.SetValue(NativeBrushProperty, value);
 
     public static readonly DependencyProperty GlassBrushProperty = DependencyProperty.RegisterAttached(
         "GlassBrush", typeof(Brush), typeof(MaterialBackground), new PropertyMetadata(null, OnBrushChanged));
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Media.Brush))]
     public static Brush? GetGlassBrush(DependencyObject target) => (Brush?)target.GetValue(GlassBrushProperty);
     public static void SetGlassBrush(DependencyObject target, Brush? value) => target.SetValue(GlassBrushProperty, value);
 
     public static readonly DependencyProperty NativePaneBrushProperty = DependencyProperty.RegisterAttached(
         "NativePaneBrush", typeof(Brush), typeof(MaterialBackground), new PropertyMetadata(null, OnBrushChanged));
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Media.Brush))]
     public static Brush? GetNativePaneBrush(DependencyObject target) => (Brush?)target.GetValue(NativePaneBrushProperty);
     public static void SetNativePaneBrush(DependencyObject target, Brush? value) => target.SetValue(NativePaneBrushProperty, value);
 
     public static readonly DependencyProperty GlassPaneBrushProperty = DependencyProperty.RegisterAttached(
         "GlassPaneBrush", typeof(Brush), typeof(MaterialBackground), new PropertyMetadata(null, OnBrushChanged));
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Media.Brush))]
     public static Brush? GetGlassPaneBrush(DependencyObject target) => (Brush?)target.GetValue(GlassPaneBrushProperty);
     public static void SetGlassPaneBrush(DependencyObject target, Brush? value) => target.SetValue(GlassPaneBrushProperty, value);
 
@@ -49,6 +53,7 @@ public sealed partial class MaterialBackground : DependencyObject
         foreach (FrameworkElement element in Elements.ToArray()) Update(element);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private static void OnBrushChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
     {
         if (target is not FrameworkElement element) return;
@@ -63,6 +68,7 @@ public sealed partial class MaterialBackground : DependencyObject
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private static void OnLoaded(object sender, RoutedEventArgs args)
     {
         FrameworkElement element = (FrameworkElement)sender;
@@ -70,8 +76,14 @@ public sealed partial class MaterialBackground : DependencyObject
         Update(element);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private static void OnUnloaded(object sender, RoutedEventArgs args) => Elements.Remove((FrameworkElement)sender);
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Border))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.ContentPresenter))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Control))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Panel))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.SplitView))]
     private static void Update(FrameworkElement element)
     {
         if (XamlApplicationLifetime.Exiting) return;
@@ -95,6 +107,7 @@ public sealed partial class MaterialBackground : DependencyObject
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Media.Brush))]
     private static void SetBrush(FrameworkElement element, DependencyProperty property, DependencyProperty appliedProperty, Brush brush)
     {
         object current = element.GetValue(property);

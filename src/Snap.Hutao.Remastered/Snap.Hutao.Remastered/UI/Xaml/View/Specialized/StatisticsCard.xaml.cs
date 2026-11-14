@@ -13,6 +13,8 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View.Specialized;
 [DependencyProperty<bool>("ShowCombinedModeToggle", DefaultValue = true, NotNull = true)]
 public sealed partial class StatisticsCard : UserControl
 {
+    private TypedWishSummary? Summary => DataContext as TypedWishSummary;
+
     public StatisticsCard()
     {
         InitializeComponent();
@@ -26,6 +28,8 @@ public sealed partial class StatisticsCard : UserControl
         {
             summary.ShowCombinedTotal = ShowCombinedTotal;
         }
+
+        Bindings.Update();
     }
 
     private static void OnShowCombinedTotalChanged(DependencyObject sender, DependencyProperty dp)
