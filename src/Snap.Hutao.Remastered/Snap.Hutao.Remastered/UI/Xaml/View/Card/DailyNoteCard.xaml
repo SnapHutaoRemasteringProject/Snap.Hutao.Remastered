@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
     xmlns:shme="using:Snap.Hutao.Remastered.Model.Entity"
+    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
@@ -29,6 +30,8 @@
     </mxi:Interaction.Behaviors>
 
     <shuxcth:MaterialCardButton.Resources>
+        <shux:BindingProxy x:Key="ViewModelBindingProxy" DataContext="{x:Bind DataContext, Mode=OneWay}"/>
+
         <DataTemplate x:Key="DailyNoteTemplate" x:DataType="shme:DailyNoteEntry">
             <Grid
                 Margin="12"
@@ -48,29 +51,86 @@
                 <Grid
                     Grid.Row="0"
                     Grid.ColumnSpan="3"
-                    Height="48"
-                    Padding="12"
+                    MinHeight="48"
+                    Padding="12,2"
+                    ColumnSpacing="10"
                     Style="{ThemeResource GridShimmerStyle}">
-                    <StackPanel
-                        VerticalAlignment="Center"
-                        Orientation="Horizontal"
-                        Spacing="12">
-                        <Image
-                            Width="24"
-                            Height="24"
-                            Margin="-4"
-                            Source="ms-appx:///Resource/Navigation/DailyNote.png"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                        <TextBlock Text="{x:Bind Uid, Mode=OneWay}"/>
+                    <Image
+                        Grid.Column="0"
+                        Width="24"
+                        Height="24"
+                        Margin="-4,0,0,0"
+                        VerticalAlignment="Center"
+                        Source="ms-appx:///Resource/Navigation/DailyNote.png"/>
+
+                    <StackPanel
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Spacing="2">
+                        <TextBlock
+                            Style="{ThemeResource BodyTextBlockStyle}"
+                            Text="{x:Bind Uid, Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap"/>
+                        <TextBlock
+                            Opacity="0.6"
+                            Style="{ThemeResource CaptionTextBlockStyle}"
+                            Text="{x:Bind RefreshTimeFormatted, Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap"/>
                     </StackPanel>
 
-                    <TextBlock
-                        Margin="0,0,34,0"
-                        HorizontalAlignment="Right"
+                    <Button
+                        Grid.Column="2"
+                        MinWidth="0"
+                        MinHeight="0"
+                        Padding="6"
                         VerticalAlignment="Center"
-                        Text="{x:Bind RefreshTimeFormatted, Mode=OneWay}"/>
+                        AutomationProperties.Name="{shuxm:ResourceString Name=ViewPageDailyNoteRefresh}"
+                        BorderThickness="0"
+                        Command="{Binding DataContext.RefreshCommand, Source={StaticResource ViewModelBindingProxy}}"
+                        IsEnabled="{Binding DataContext.IsRefreshing, Converter={StaticResource BoolNegationConverter}, Source={StaticResource ViewModelBindingProxy}}"
+                        Style="{ThemeResource DefaultButtonStyle}"
+                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteRefresh}">
+                        <Button.Resources>
+                            <ResourceDictionary>
+                                <ResourceDictionary.ThemeDictionaries>
+                                    <ResourceDictionary x:Key="Light">
+                                        <StaticResource x:Key="ButtonBackground" ResourceKey="ControlFillColorTransparentBrush"/>
+                                        <StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush"/>
+                                        <StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush"/>
+                                        <StaticResource x:Key="ButtonBackgroundDisabled" ResourceKey="ControlFillColorTransparentBrush"/>
+                                        <StaticResource x:Key="ButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush"/>
+                                    </ResourceDictionary>
+                                    <ResourceDictionary x:Key="Dark">
+                                        <StaticResource x:Key="ButtonBackground" ResourceKey="ControlFillColorTransparentBrush"/>
+                                        <StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush"/>
+                                        <StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush"/>
+                                        <StaticResource x:Key="ButtonBackgroundDisabled" ResourceKey="ControlFillColorTransparentBrush"/>
+                                        <StaticResource x:Key="ButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush"/>
+                                    </ResourceDictionary>
+                                </ResourceDictionary.ThemeDictionaries>
+                            </ResourceDictionary>
+                        </Button.Resources>
+                        <Grid>
+                            <FontIcon
+                                FontSize="14"
+                                Glyph="{StaticResource FontIconContentRefresh}"
+                                Visibility="{Binding DataContext.IsRefreshing, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource BoolToVisibilityRevertConverter}}"/>
+                            <ProgressRing
+                                Width="14"
+                                Height="14"
+                                IsActive="{Binding DataContext.IsRefreshing, Source={StaticResource ViewModelBindingProxy}}"
+                                Visibility="{Binding DataContext.IsRefreshing, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        </Grid>
+                    </Button>
                 </Grid>
-
 
                 <shuxcc:CardBlock
                     Grid.Row="1"
@@ -137,51 +197,6 @@
                     VerticalAlignment="Bottom"
                     NumberOfPages="{x:Bind DataContext.DailyNoteEntries.Count, FallbackValue=0, Mode=OneWay}"
                     SelectedPageIndex="{x:Bind Path=RootFlipView.SelectedIndex, Mode=TwoWay}"/>
-
-                <Button
-                    MinWidth="0"
-                    MinHeight="0"
-                    Margin="0,23,24,0"
-                    Padding="6"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    BorderThickness="0"
-                    Command="{Binding RefreshCommand}"
-                    IsEnabled="{Binding IsRefreshing, Converter={StaticResource BoolNegationConverter}}"
-                    Style="{ThemeResource DefaultButtonStyle}"
-                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteRefresh}">
-                    <Button.Resources>
-                        <ResourceDictionary>
-                            <ResourceDictionary.ThemeDictionaries>
-                                <ResourceDictionary x:Key="Light">
-                                    <StaticResource x:Key="ButtonBackground" ResourceKey="ControlFillColorTransparentBrush"/>
-                                    <StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush"/>
-                                    <StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush"/>
-                                    <StaticResource x:Key="ButtonBackgroundDisabled" ResourceKey="ControlFillColorTransparentBrush"/>
-                                    <StaticResource x:Key="ButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush"/>
-                                </ResourceDictionary>
-                                <ResourceDictionary x:Key="Dark">
-                                    <StaticResource x:Key="ButtonBackground" ResourceKey="ControlFillColorTransparentBrush"/>
-                                    <StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush"/>
-                                    <StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush"/>
-                                    <StaticResource x:Key="ButtonBackgroundDisabled" ResourceKey="ControlFillColorTransparentBrush"/>
-                                    <StaticResource x:Key="ButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush"/>
-                                </ResourceDictionary>
-                            </ResourceDictionary.ThemeDictionaries>
-                        </ResourceDictionary>
-                    </Button.Resources>
-                    <Grid>
-                        <FontIcon
-                            FontSize="14"
-                            Glyph="{StaticResource FontIconContentRefresh}"
-                            Visibility="{Binding IsRefreshing, Converter={StaticResource BoolToVisibilityRevertConverter}}"/>
-                        <ProgressRing
-                            Width="14"
-                            Height="14"
-                            IsActive="{Binding IsRefreshing}"
-                            Visibility="{Binding IsRefreshing, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                    </Grid>
-                </Button>
             </Grid>
 
             <StackPanel
