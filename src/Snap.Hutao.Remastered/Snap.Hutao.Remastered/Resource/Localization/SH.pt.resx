@@ -4352,6 +4352,12 @@ Espaço disponível: {2}</value>
   <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
     <value>Altera a entrada de Comissões Diárias que redireciona para Katheryne no Manual do Aventureiro para abrir diretamente a janela de confirmação de recompensa de comissão da Katheryne. O primeiro clique em «Resgatar recompensa» abrirá primeiro a página de Expedições; o segundo clique, se a comissão estiver concluída, abrirá a interface de resgate de recompensa.</value>
   </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuHeader" xml:space="preserve">
+    <value>旧版派蒙菜单</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuDescription" xml:space="preserve">
+    <value>恢复“千星商城”和“人气奇域”在派蒙菜单的位置</value>
+  </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Remover o tempo de recarga do salto de diálogo</value>
   </data>
