@@ -8,7 +8,6 @@ using Microsoft.Xaml.Interactivity;
 namespace Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 
 [DependencyProperty<AnimationSet>("Animation")]
-[DependencyProperty<UIElement>("TargetObject")]
 public sealed partial class StartAnimationActionNoThrow : DependencyObject, IAction
 {
     /// <inheritdoc/>
