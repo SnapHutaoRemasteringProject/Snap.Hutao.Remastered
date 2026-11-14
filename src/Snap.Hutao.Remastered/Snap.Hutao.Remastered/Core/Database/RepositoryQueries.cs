@@ -6,8 +6,6 @@ using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Model.Entity.Database;
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Event.GachaInfo;
-using System;
-using System.Linq;
 
 namespace Snap.Hutao.Remastered.Core.Database;
 
