@@ -17,23 +17,14 @@ using WinRT;
 using VirtualKey = Windows.System.VirtualKey;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox;
-
-[DependencyProperty<Style>("AutoSuggestBoxStyle")]
-[DependencyProperty<Style>("AutoSuggestBoxTextBoxStyle")]
 [DependencyProperty<IReadOnlyDictionary<string, SearchToken>>("AvailableTokens")]
 [DependencyProperty<ICommand>("FilterCommand")]
 [DependencyProperty<object>("FilterCommandParameter")]
 [DependencyProperty<int>("MaximumTokens", DefaultValue = -1, PropertyChangedCallbackName = nameof(OnMaximumTokensChanged), NotNull = true)]
 [DependencyProperty<string>("PlaceholderText")]
-[DependencyProperty<IconSource>("QueryIcon")]
 [DependencyProperty<object>("SuggestedItemsSource")]
-[DependencyProperty<DataTemplate>("SuggestedItemTemplate")]
-[DependencyProperty<DataTemplateSelector>("SuggestedItemTemplateSelector")]
-[DependencyProperty<Style>("SuggestedItemContainerStyle")]
 [DependencyProperty<bool>("TabNavigateBackOnArrow", DefaultValue = false, NotNull = true)]
 [DependencyProperty<string>("TextMemberPath")]
-[DependencyProperty<DataTemplate>("TokenItemTemplate")]
-[DependencyProperty<DataTemplateSelector>("TokenItemTemplateSelector")]
 [DependencyProperty<string>("TokenDelimiter", DefaultValue = " ")]
 [DependencyProperty<double>("TokenSpacing", NotNull = true)]
 [TemplatePart(Name = NormalState, Type = typeof(VisualState))]

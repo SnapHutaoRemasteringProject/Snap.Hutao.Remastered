@@ -1,6 +1,6 @@
 # 构建、原生发布与交付说明
 
-更新：2026-11-11。当前按用户要求只构建/发布 Debug。现状与证据见 [开发报告](aot-development-report.md)，剩余工作见 [当前阻塞项](aot-blockers.md)。
+更新：2026-11-14。当前按用户要求只构建/发布 Debug。现状与证据见 [开发报告](aot-development-report.md)，剩余工作见 [当前阻塞项](aot-blockers.md)。
 
 ## 构建模式
 
@@ -60,12 +60,21 @@ JsonOptions.Default/Create 在普通运行时与原生运行时均使用生成�
 新网络响应、元数据、AI 会话和工具类型必须补齐根与嵌套闭包，并验证旧格式跨读写。
 当前会话通过 AgentConversationJsonOptions 登记应用契约；SDK 类型仍由 SDK 自身契约处理，以保留其内部审批状态字段。旧文件双向读写、24 种可观察内容、重试与待审批恢复均有验证；这不代替实际模型服务/工具执行验收。
 
-2026-11-14 最新源码检查：Debug、`--no-restore`、`PublishAot=true`、`AotAnalysis=true` 编译通过，0 错误、254 个警告（上一轮 544 个）。
+2026-11-14 最新源码检查：Debug、`--no-restore`、`PublishAot=true`、`AotAnalysis=true` 编译通过，0 错误、194 个警告（上一轮 254 个）。
 这是编译和分析检查，没有执行原生发布或启动应用。上一轮关闭默认 JSON 反射的相关测试为 42/42；
-本轮生成的存档属性分派、WinRT 转换元数据、集合赋值、页面 VM 属性提供器声明及 HTTP/元数据契约检查均通过。
+本轮 17 类选择项模型的属性分派、WinRT 转换元数据、集合赋值、页面 VM 属性提供器声明及 HTTP/元数据契约检查均通过。
 GachaArchive.Uid 的异常来自 DisplayMemberPath：即使 ItemsSource 使用 x:Bind，显示属性仍通过 ICustomPropertyProvider 查找。
 三个存档类型已补齐对应属性的生成访问器，且修复前程序集会被新增的分派检查拒绝。
-手写源码中的转换位置使用 CsWinRT 官方 DynamicWindowsRuntimeCast 标注；编译产物检查确认 58 个目标类型具有实际 DynamicDependency 根。
+手写源码中的转换位置使用 CsWinRT 官方 DynamicWindowsRuntimeCast 标注；编译产物检查确认 71 个目标类型具有实际 DynamicDependency 根。
+泛型 NameValue<T>、LevelParameters<TLevel,TParam> 的 UI 部分显式实现 IBindableCustomPropertyImplementation，
+从而不依赖不支持泛型声明的属性生成器；语言选项也保留维护来源等派生属性的分派。
+20 处已确认的 NameValue 选择器改用应用范围的共享编译模板，保持原选项实例、类型化值、选择和相等性逻辑。
+其余已确认的启动方案、账户、养成计划、评分预设、楼层、世界等级与技能等级显示字段均有实际编译出的属性访问器。
+45 个存在转换警告的依赖属性改为显式源码声明，getter 直接标注需要保留的类型；
+注册字段、默认值、回调和访问器语句与迁移前生成定义作逐 token 对照，45 项均一致。未修改生成器包或生成文件。
+背景图片像素访问改为已知 IMemoryBufferByteAccess IID 的 QueryInterface 和原生槽位调用，避免传统 ComImport RCW；
+4 项缓冲区回归覆盖内存读写、HRESULT 失败、空缓冲区与非法长度。文件扩展名忽略大小写，
+本地文件夹变化触发刷新，过渡完成后才提交上一张图片状态，避免取消后单图不再重试；非退出时的 COM 呈现失败会记录错误。
 养成编辑接口现在声明既有实现提供的属性通知及突破状态写入契约，编译绑定仍跟踪等级变更和双向编辑。
 统计卡片在 DataContext 变化时刷新私有类型化入口；下载窗口使用函数绑定，避开 Window 转换器查找根被当作 FrameworkElement 的生成代码错误。
 数据库生成宿主同样通过 Debug --no-restore 编译，仅余 NU1507；共享 DTO 的 WinRT 标注移到应用 UI 部分，未增加宿主依赖。
@@ -73,16 +82,17 @@ GachaArchive.Uid 的异常来自 DisplayMemberPath：即使 ItemsSource 使用 x
 
 | 类别 | 数量 | 后续范围 |
 |---|---:|---|
-| WMC1510 | 128 | 剩余运行时属性路径、模板上下文与属性提供器 |
-| CsWinRT1034 | 34 | 均位于当前依赖属性生成器输出；尚未修改生成器包或生成文件 |
-| CsWinRT1035 | 11 | 均位于当前依赖属性生成器输出的 WinRT 值类型 getter |
+| WMC1510 | 108 | 剩余运行时属性路径、模板上下文与属性提供器 |
+| CsWinRT1034 / CsWinRT1035 | 0 | 当前编译没有这两类警告，未屏蔽分析器 |
 | CS8305 / WMC1501 | 76 | SDK 实验性图表、窗口布局和控件 API |
+| IL2026 / IL3050 | 5 | EF Core 与 EventTriggerBehavior 的裁剪/动态代码要求 |
 | IDE0005 | 4 | 数据库源码导入；修改需同步重新生成查询拦截器校验和 |
 | NU1507 | 1 | 保留原有包源策略 |
 
 本次编译统计不代表原生链接阶段的诊断；EF Core、事件行为及第三方程序集的裁剪/AOT 要求仍须在新原生发布中复核。
 修复依据为 [CsWinRT 绑定说明](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/docs/aot-trimming.md#icustompropertyprovider-type-support-on-aot-winui-binding)
 和当前版本的 [转换标注生成器](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/Authoring/WinRT.SourceGenerator/DynamicWindowsRuntimeCastGenerator.cs)。
+泛型属性分派使用当前版本公开的 [ICustomPropertyProvider 实现契约](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/WinRT.Runtime/Projections/ICustomPropertyProvider.net5.cs)，没有启用反射回退。
 
 NuGet.Config 保持原配置；本轮没有执行依赖还原或修改包版本。NU1507 的包源策略警告暂不处理。
 
