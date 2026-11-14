@@ -56,7 +56,11 @@ internal static class QueryCompiler
         string output = Path.Combine(app, "Model/Entity/Database/Compiled");
         string[] sources = Directory.GetFiles(Path.Combine(app, "Core/Database"), "*Queries.cs").Order(StringComparer.Ordinal).ToArray();
         string[] references = ((string?)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") ?? throw new InvalidOperationException("Use the managed generation host.")).Split(Path.PathSeparator);
-        SyntaxTree[] trees = sources.Select(source => CSharpSyntaxTree.ParseText(File.ReadAllText(source), new CSharpParseOptions(LanguageVersion.Preview), source, Encoding.UTF8)).ToArray();
+        // Match the application's shared imports without requiring each query
+        // source to duplicate an import solely for this design-time compilation.
+        SyntaxTree[] trees = sources.Select(source => CSharpSyntaxTree.ParseText(File.ReadAllText(source), new CSharpParseOptions(LanguageVersion.Preview), source, Encoding.UTF8))
+            .Append(CSharpSyntaxTree.ParseText("global using System; global using System.Linq;", new CSharpParseOptions(LanguageVersion.Preview), "QueryGeneration.GlobalUsings.g.cs", Encoding.UTF8))
+            .ToArray();
         CSharpCompilation compilation = CSharpCompilation.Create("HutaoQueryGeneration", trees, references.Select(path => MetadataReference.CreateFromFile(path)), new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable));
         Diagnostic[] errors = compilation.GetDiagnostics().Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error).ToArray();
         if (errors.Length > 0) throw new InvalidOperationException(string.Join(Environment.NewLine, errors.Select(error => error.ToString())));
