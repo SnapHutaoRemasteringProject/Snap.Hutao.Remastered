@@ -478,6 +478,7 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
         return window;
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private async ValueTask WaitForContentLoadedAsync()
     {
         if (currentXamlWindowReference.Window is not { Content: FrameworkElement content })

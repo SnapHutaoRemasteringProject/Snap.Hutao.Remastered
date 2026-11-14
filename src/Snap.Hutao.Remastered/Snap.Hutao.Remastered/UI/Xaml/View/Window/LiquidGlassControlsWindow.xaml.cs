@@ -17,6 +17,7 @@ public sealed partial class LiquidGlassControlsWindow : Microsoft.UI.Xaml.Window
 {
     private bool isReady;
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Windowing.OverlappedPresenter))]
     public LiquidGlassControlsWindow(IServiceProvider serviceProvider)
     {
         InitializeComponent();

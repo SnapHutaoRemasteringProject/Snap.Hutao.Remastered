@@ -49,6 +49,7 @@ public static class FlyoutOpenStateBinding
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Flyout))]
     private static void OnIsTrackingEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         if (d is not Flyout flyout || XamlApplicationLifetime.Exiting) return;
@@ -64,11 +65,13 @@ public static class FlyoutOpenStateBinding
         else Stop(state);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Flyout))]
     private static void OnFlyoutOpened(object? sender, object e)
     {
         if (sender is Flyout flyout) Schedule(flyout, true);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Flyout))]
     private static void OnFlyoutClosed(object? sender, object e)
     {
         if (sender is Flyout flyout) Schedule(flyout, false);

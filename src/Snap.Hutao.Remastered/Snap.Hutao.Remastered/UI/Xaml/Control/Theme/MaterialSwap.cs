@@ -58,6 +58,7 @@ public sealed partial class MaterialSwap : ContentControl
         Content = content;
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private bool UseGlass()
     {
         if (Glass is not FrameworkElement glass) return false;

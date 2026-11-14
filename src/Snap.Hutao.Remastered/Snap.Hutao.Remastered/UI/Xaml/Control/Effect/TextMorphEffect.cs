@@ -103,6 +103,7 @@ public partial class TextMorphEffect : Microsoft.UI.Xaml.Controls.Control, IDisp
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.Graphics.Canvas.UI.Xaml.CanvasControl))]
     protected override void OnApplyTemplate()
     {
         base.OnApplyTemplate();

@@ -9,7 +9,7 @@ public interface ICalculablePromoteLevel : ICalculableMinMaxLevel
 {
     PromoteLevel PromoteLevel { get; }
 
-    bool IsPromoted { get; }
+    bool IsPromoted { get; set; }
 
     bool IsPromotionAvailable { get; }
 }

@@ -44,7 +44,7 @@
                 FalseValue="0"
                 TrueValue="4"/>
 
-            <shuxdcs:Int32ToGradientColorConverter x:Key="Int32ToGradientColorConverter" MaximumValue="{Binding GuaranteeOrangeThreshold}"/>
+            <shuxdcs:Int32ToGradientColorConverter x:Key="Int32ToGradientColorConverter" MaximumValue="{x:Bind Summary.GuaranteeOrangeThreshold, Mode=OneWay}"/>
 
             <DataTemplate x:Key="SummaryListTemplate" x:DataType="shvg:SummaryItem">
                 <Grid Margin="0" Style="{ThemeResource GridShimmerStyle}">
@@ -160,7 +160,7 @@
                         Grid.Column="0"
                         VerticalAlignment="Center"
                         Style="{StaticResource SubtitleTextBlockStyle}"
-                        Text="{Binding Name}"
+                        Text="{x:Bind Summary.Name, Mode=OneWay}"
                         TextWrapping="NoWrap"/>
                     <StackPanel
                         Grid.Column="1"
@@ -173,7 +173,7 @@
                                 VerticalAlignment="Center"
                                 FontSize="20"
                                 Style="{StaticResource BodyTextBlockStyle}"
-                                Text="{Binding FormattedTotalCount}"
+                                Text="{x:Bind Summary.FormattedTotalCount, Mode=OneWay}"
                                 TextTrimming="None"
                                 TextWrapping="NoWrap"/>
                         </Viewbox>
@@ -192,7 +192,7 @@
                             x:Name="ItemsPanelSelector"
                             Margin="6,0,0,0"
                             Current="Grid"
-                            LocalSettingKeyExtraForCurrent="{Binding TypeName}"
+                            LocalSettingKeyExtraForCurrent="{x:Bind Summary.TypeName, Mode=OneWay}"
                             LocalSettingKeySuffixForCurrent="StatisticsCard.SummaryList"
                             Visibility="{x:Bind DetailExpander.IsExpanded, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                     </StackPanel>
@@ -206,7 +206,7 @@
                             Margin="0,4,0,4"
                             FontFamily="{StaticResource CascadiaMonoAndMiSans}"
                             FontSize="48"
-                            Text="{Binding TotalCount}"/>
+                            Text="{x:Bind Summary.TotalCount, Mode=OneWay}"/>
                         <TextBlock
                             Margin="12,0,0,12"
                             VerticalAlignment="Bottom"
@@ -221,21 +221,21 @@
                         <shuxcc:CardProgressBar
                             Grid.Column="0"
                             MinHeight="32"
-                            Description="{Binding LastPurplePull}"
+                            Description="{x:Bind Summary.LastPurplePull, Mode=OneWay}"
                             Header="{shuxm:ResourceString Name=ViewControlStatisticsCardToLastPurpleText}"
-                            Maximum="{Binding GuaranteePurpleThreshold}"
+                            Maximum="{x:Bind Summary.GuaranteePurpleThreshold, Mode=OneWay}"
                             ProgressForeground="{StaticResource PurpleColorBrush}"
                             TextForeground="{StaticResource PurpleColorBrush}"
-                            Value="{Binding LastPurplePull}"/>
+                            Value="{x:Bind Summary.LastPurplePull, Mode=OneWay}"/>
                         <shuxcc:CardProgressBar
                             Grid.Column="1"
                             MinHeight="32"
-                            Description="{Binding LastBluePull}"
+                            Description="{x:Bind Summary.LastBluePull, Mode=OneWay}"
                             Header="{shuxm:ResourceString Name=ViewControlStatisticsCardToLastBlueText}"
-                            Maximum="{Binding GuaranteeBlueThreshold}"
+                            Maximum="{x:Bind Summary.GuaranteeBlueThreshold, Mode=OneWay}"
                             ProgressForeground="{StaticResource BlueColorBrush}"
                             TextForeground="{StaticResource BlueColorBrush}"
-                            Value="{Binding LastBluePull}"/>
+                            Value="{x:Bind Summary.LastBluePull, Mode=OneWay}"/>
                     </Grid>
                 </StackPanel>
                 <Grid Margin="-12,-2" ColumnSpacing="8">
@@ -251,7 +251,7 @@
                         HorizontalAlignment="Center"
                         Opacity="0.6"
                         Style="{StaticResource CaptionTextBlockStyle}"
-                        Text="{Binding FormattedTimeSpan}"/>
+                        Text="{x:Bind Summary.FormattedTimeSpan, Mode=OneWay}"/>
                     <MenuFlyoutSeparator Grid.Column="2"/>
                 </Grid>
 
@@ -259,7 +259,7 @@
                     x:Name="StatisticsSegmented"
                     Margin="0,12,0,0"
                     HorizontalAlignment="Stretch"
-                    IsPredictPullAvailable="{Binding IsPredictPullAvailable}"
+                    IsPredictPullAvailable="{x:Bind Summary.IsPredictPullAvailable, Mode=OneWay}"
                     SelectedIndex="0"/>
                 <cwc:SwitchPresenter
                     Height="96"
@@ -281,7 +281,7 @@
                                             Opacity="0.8"
                                             Style="{StaticResource CaptionTextBlockStyle}"
                                             Text="{shuxm:ResourceString Name=ViewControlStatisticsCardPurpleAveragePullText}"/>
-                                        <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding FormattedAveragePurplePull}"/>
+                                        <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{x:Bind Summary.FormattedAveragePurplePull, Mode=OneWay}"/>
                                     </StackPanel>
                                 </Viewbox>
                             </Border>
@@ -296,7 +296,7 @@
                                                 Opacity="0.8"
                                                 Style="{StaticResource CaptionTextBlockStyle}"
                                                 Text="{shuxm:ResourceString Name=ViewControlStatisticsCardUpAveragePullText}"/>
-                                            <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{Binding FormattedAverageUpOrangePull}"/>
+                                            <TextBlock Style="{StaticResource BodyTextBlockStyle}" Text="{x:Bind Summary.FormattedAverageUpOrangePull, Mode=OneWay}"/>
                                         </StackPanel>
                                         <TextBlock
                                             HorizontalAlignment="Center"
@@ -319,7 +319,7 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Style="{StaticResource BodyTextBlockStyle}"
-                                            Text="{Binding FormattedMaxOrangePull}"/>
+                                            Text="{x:Bind Summary.FormattedMaxOrangePull, Mode=OneWay}"/>
                                     </Viewbox>
                                 </Border>
                                 <Border Grid.Row="1" Style="{ThemeResource BorderShimmerStyle}">
@@ -328,7 +328,7 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Style="{StaticResource BodyTextBlockStyle}"
-                                            Text="{Binding FormattedMinOrangePull}"/>
+                                            Text="{x:Bind Summary.FormattedMinOrangePull, Mode=OneWay}"/>
                                     </Viewbox>
                                 </Border>
                             </Grid>
@@ -351,7 +351,7 @@
                                         Style="{StaticResource CaptionTextBlockStyle}"
                                         Text="{shuxm:ResourceString Name=ViewControlStatisticsCardPurpleText}"/>
                                     <Viewbox StretchDirection="DownOnly">
-                                        <TextBlock Foreground="{StaticResource PurpleColorBrush}" Text="{Binding FormattedTotalPurple}"/>
+                                        <TextBlock Foreground="{StaticResource PurpleColorBrush}" Text="{x:Bind Summary.FormattedTotalPurple, Mode=OneWay}"/>
                                     </Viewbox>
                                 </StackPanel>
                             </Grid>
@@ -365,7 +365,7 @@
                                         Style="{StaticResource CaptionTextBlockStyle}"
                                         Text="{shuxm:ResourceString Name=ViewControlStatisticsCardBlueText}"/>
                                     <Viewbox StretchDirection="DownOnly">
-                                        <TextBlock Foreground="{StaticResource BlueColorBrush}" Text="{Binding FormattedTotalBlue}"/>
+                                        <TextBlock Foreground="{StaticResource BlueColorBrush}" Text="{x:Bind Summary.FormattedTotalBlue, Mode=OneWay}"/>
                                     </Viewbox>
                                 </StackPanel>
                             </Grid>
@@ -379,7 +379,7 @@
                                         Style="{StaticResource CaptionTextBlockStyle}"
                                         Text="{shuxm:ResourceString Name=ViewControlStatisticsCardGreenText}"/>
                                     <Viewbox StretchDirection="DownOnly">
-                                        <TextBlock Foreground="{StaticResource GreenColorBrush}" Text="{Binding FormattedTotalOther}"/>
+                                        <TextBlock Foreground="{StaticResource GreenColorBrush}" Text="{x:Bind Summary.FormattedTotalOther, Mode=OneWay}"/>
                                     </Viewbox>
                                 </StackPanel>
                             </Grid>
@@ -397,7 +397,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Style="{StaticResource BodyTextBlockStyle}"
-                                        Text="{Binding FormattedPredictedPullLeftToOrange}"/>
+                                        Text="{x:Bind Summary.FormattedPredictedPullLeftToOrange, Mode=OneWay}"/>
                                 </Viewbox>
                             </Border>
                             <Border Grid.Row="1" Style="{ThemeResource BorderShimmerStyle}">
@@ -406,7 +406,7 @@
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
                                         Style="{StaticResource BodyTextBlockStyle}"
-                                        Text="{Binding FormattedProbabilityOfNextPullIsOrange}"/>
+                                        Text="{x:Bind Summary.FormattedProbabilityOfNextPullIsOrange, Mode=OneWay}"/>
                                 </Viewbox>
                             </Border>
                         </Grid>
@@ -426,7 +426,7 @@
                     Padding="0,6,0,12"
                     ItemContainerStyle="{StaticResource NoneSelectionListViewItemStyle}"
                     ItemTemplate="{StaticResource SummaryListTemplate}"
-                    ItemsSource="{Binding DisplayList}"
+                    ItemsSource="{x:Bind Summary.DisplayList, Mode=OneWay}"
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                     SelectionMode="None"/>
             </cwc:Case>
@@ -436,7 +436,7 @@
                     Padding="0,12"
                     ItemContainerStyle="{StaticResource NoneSelectionGridViewItemStyle}"
                     ItemTemplate="{ThemeResource OrangeGridTemplate}"
-                    ItemsSource="{Binding DisplayList}"
+                    ItemsSource="{x:Bind Summary.DisplayList, Mode=OneWay}"
                     ScrollViewer.VerticalScrollBarVisibility="Auto"
                     SelectionMode="None"/>
             </cwc:Case>

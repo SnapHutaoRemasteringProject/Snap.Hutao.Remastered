@@ -10,6 +10,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Control;
 [DependencyProperty<bool>("IsItemsEnabled", DefaultValue = true, PropertyChangedCallbackName = nameof(OnIsItemsEnabledChanged), IsAttached = true, TargetType = typeof(SettingsExpander), NotNull = true)]
 public sealed partial class SettingsExpanderHelper
 {
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Control))]
     private static void OnIsItemsEnabledChanged(DependencyObject dp, DependencyPropertyChangedEventArgs e)
     {
         foreach (object item in ((SettingsExpander)dp).Items)

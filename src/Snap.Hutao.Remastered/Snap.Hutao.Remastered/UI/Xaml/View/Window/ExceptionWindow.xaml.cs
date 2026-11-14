@@ -21,6 +21,7 @@ public sealed partial class ExceptionWindow : Microsoft.UI.Xaml.Window, INotifyP
 {
     private readonly SentryId associatedEventId;
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     public ExceptionWindow(SentryId associatedEventId, Exception ex)
     {
         // Message pump will die if we introduce XamlWindowController
