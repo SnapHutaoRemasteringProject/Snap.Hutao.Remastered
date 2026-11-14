@@ -97,7 +97,7 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top"
                     PreferredSelectedIndex="9"
-                    Source="{x:Bind Proud, Mode=OneWay, Converter={StaticResource DescParamDescriptor}}"/>
+                    Proud="{x:Bind Proud, Mode=OneWay}"/>
             </Grid>
         </DataTemplate>
 
@@ -261,55 +261,20 @@
         <DataTemplate x:Key="CollocationReliquaryTemplate" x:DataType="shvc:ReliquarySetView">
             <shuxcc:HorizontalCard>
                 <shuxcc:HorizontalCard.Left>
-                    <cwc:SwitchPresenter Value="{x:Bind Icons.Count, Mode=OneWay}">
-                        <cwc:Case IsDefault="True">
-                            <cwc:Case.Value>
-                                <x:Int32>0</x:Int32>
-                            </cwc:Case.Value>
-                            <Grid>
-                                <shuxc:ItemIcon
-                                    Width="48"
-                                    Height="48"
-                                    Icon="{StaticResource UI_ItemIcon_None}"
-                                    Quality="QUALITY_ORANGE"/>
-                            </Grid>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>1</x:Int32>
-                            </cwc:Case.Value>
-                            <Grid>
-                                <shuxc:ItemIcon
-                                    Width="48"
-                                    Height="48"
-                                    Icon="{x:Bind Icons[0], Mode=OneWay}"
-                                    Quality="QUALITY_ORANGE"/>
-                            </Grid>
-                        </cwc:Case>
-                        <cwc:Case>
-                            <cwc:Case.Value>
-                                <x:Int32>2</x:Int32>
-                            </cwc:Case.Value>
-                            <Grid>
-                                <shuxc:ItemIcon
-                                    Width="48"
-                                    Height="48"
-                                    Quality="QUALITY_ORANGE"/>
-                                <shuxci:CachedImage
-                                    Width="32"
-                                    Margin="2,2,0,0"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top"
-                                    Source="{x:Bind Icons[0], Mode=OneWay}"/>
-                                <shuxci:CachedImage
-                                    Width="32"
-                                    Margin="0,0,2,2"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Bottom"
-                                    Source="{x:Bind Icons[1], Mode=OneWay}"/>
-                            </Grid>
-                        </cwc:Case>
-                    </cwc:SwitchPresenter>
+                    <Grid Width="48" Height="48">
+                        <shuxc:ItemIcon
+                            Width="48"
+                            Height="48"
+                            Icon="{x:Bind Icon, Mode=OneWay}"
+                            Quality="QUALITY_ORANGE"/>
+                        <shuxci:CachedImage
+                            Width="32"
+                            Margin="0,0,2,2"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Source="{x:Bind SecondaryIcon, Mode=OneWay}"
+                            Visibility="{x:Bind SecondaryIcon, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}"/>
+                    </Grid>
                 </shuxcc:HorizontalCard.Left>
                 <shuxcc:HorizontalCard.Right>
                     <StackPanel Margin="8,0,8,0" HorizontalAlignment="Left">
