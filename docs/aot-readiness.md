@@ -77,6 +77,7 @@ GachaArchive.Uid 的异常来自 DisplayMemberPath：即使 ItemsSource 使用 x
 本地文件夹变化触发刷新，过渡完成后才提交上一张图片状态，避免取消后单图不再重试；非退出时的 COM 呈现失败会记录错误。
 养成编辑接口现在声明既有实现提供的属性通知及突破状态写入契约，编译绑定仍跟踪等级变更和双向编辑。
 统计卡片在 DataContext 变化时刷新私有类型化入口；下载窗口使用函数绑定，避开 Window 转换器查找根被当作 FrameworkElement 的生成代码错误。
+AutoSuggestTokenBox 的 ControlTemplate 上下文菜单命令改为源码声明的命令属性，并用限定范围的 `WinRT.GeneratedBindableCustomProperty` 暴露；生成结果包含两个命令访问器。控件不能直接套用仓库属性提供器：它同时遍历继承的 Control 属性，其中 nullable 值类型 setter 会产生 `Unsafe.Unbox<bool?>`（CS0453）。
 数据库生成宿主同样通过 Debug --no-restore 编译，仅余 NU1507；共享 DTO 的 WinRT 标注移到应用 UI 部分，未增加宿主依赖。
 仍需研究的警告按本轮编译统计如下，不以全局屏蔽方式清零：
 
