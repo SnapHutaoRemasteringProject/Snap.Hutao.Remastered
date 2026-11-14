@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
@@ -12,8 +11,6 @@ using Snap.Hutao.Remastered.Web.Response;
 using System.IO;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
-
-[DependencyProperty<ImageSource>("QRCodeSource")]
 public sealed partial class UserQRCodeDialog : ContentDialog, IDisposable
 {
     private readonly HoyoPlayPassportClient hoyoPlayPassportClient;

@@ -8,14 +8,6 @@ using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.UI.Xaml.Data.Converter;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Converter;
-
-[DependencyProperty<ImageSource>("RedSource")]
-[DependencyProperty<ImageSource>("OrangeSource")]
-[DependencyProperty<ImageSource>("PurpleSource")]
-[DependencyProperty<ImageSource>("BlueSource")]
-[DependencyProperty<ImageSource>("GreenSource")]
-[DependencyProperty<ImageSource>("WhiteSource")]
-[DependencyProperty<ImageSource>("NoneSource")]
 public sealed partial class QualityToImageSourceConverter : DependencyValueConverter<QualityType, ImageSource?>
 {
     public QualityToImageSourceConverter()

@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Caching;
@@ -24,7 +23,6 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Control.Image;
 [DependencyProperty<string>("SourceName", DefaultValue = "UnknownSourceName")]
 [DependencyProperty<string>("CachedName", DefaultValue = "UnknownCachedName")]
 [DependencyProperty<Thickness>("NineGrid", NotNull = true)]
-[DependencyProperty<Stretch>("Stretch", DefaultValue = Stretch.Uniform, NotNull = true)]
 [DependencyProperty<object>("PlaceholderSource")]
 [DependencyProperty<object>("Source", PropertyChangedCallbackName = nameof(OnSourceChanged))]
 [DependencyProperty<bool>("ShowAsMonoChrome", DefaultValue = false, NotNull = true)]

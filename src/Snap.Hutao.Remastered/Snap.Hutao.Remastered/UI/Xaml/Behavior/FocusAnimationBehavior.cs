@@ -10,7 +10,6 @@ using WinRT;
 namespace Snap.Hutao.Remastered.UI.Xaml.Behavior;
 
 [DependencyProperty<object>("Watch", PropertyChangedCallbackName = nameof(OnWatchChanged))]
-[DependencyProperty<Storyboard>("Storyboard")]
 public sealed partial class FocusAnimationBehavior : BehaviorBase<Border>
 {
     private static void OnWatchChanged(DependencyObject sender, DependencyPropertyChangedEventArgs _)

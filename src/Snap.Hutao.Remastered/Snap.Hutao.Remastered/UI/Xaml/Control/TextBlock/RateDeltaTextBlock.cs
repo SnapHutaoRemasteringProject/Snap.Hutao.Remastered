@@ -10,7 +10,6 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Control.TextBlock;
 [TemplateVisualState(Name = "PositiveValue", GroupName = "CommonStates")]
 [TemplateVisualState(Name = "NegativeValue", GroupName = "CommonStates")]
 [DependencyProperty<string>("Text", PropertyChangedCallbackName = nameof(OnTextPropertyChanged))]
-[DependencyProperty<Style>("TextStyle")]
 public sealed partial class RateDeltaTextBlock : ContentControl
 {
     public RateDeltaTextBlock()

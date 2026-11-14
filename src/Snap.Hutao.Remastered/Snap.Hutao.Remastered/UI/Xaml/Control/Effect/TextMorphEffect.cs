@@ -16,8 +16,6 @@ using Windows.UI.Text;
 using WinRT;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.Effect;
-
-[DependencyProperty<EasingMode>("Easing", NotNull = true, DefaultValue = EasingMode.EaseInOut, PropertyChangedCallbackName = nameof(OnAnimationChanged))]
 [DependencyProperty<double>("TimeLineFrom", NotNull = true, DefaultValue = 0D, PropertyChangedCallbackName = nameof(OnAnimationChanged))]
 [DependencyProperty<double>("TimeLineTo", NotNull = true, DefaultValue = 1D, PropertyChangedCallbackName = nameof(OnAnimationChanged))]
 [DependencyProperty<double>("Duration", NotNull = true, DefaultValue = 1D, PropertyChangedCallbackName = nameof(OnAnimationChanged))]
@@ -26,9 +24,6 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Control.Effect;
 [DependencyProperty<FontWeight>("EffectFontWeight", NotNull = true, CreateDefaultValueCallbackName = nameof(CreateFontWeightDefaultValue), PropertyChangedCallbackName = nameof(OnAnimationChanged))]
 [DependencyProperty<string>("Text", PropertyChangedCallbackName = nameof(OnTextChanged))]
 [DependencyProperty<string>("Delimiter", DefaultValue = ",", PropertyChangedCallbackName = nameof(OnTextChanged))]
-[DependencyProperty<CanvasTextDirection>("Direction", NotNull = true, DefaultValue = CanvasTextDirection.LeftToRightThenTopToBottom, PropertyChangedCallbackName = nameof(OnAnimationChanged))]
-[DependencyProperty<CanvasVerticalAlignment>("EffectVerticalAlignment", NotNull = true, DefaultValue = CanvasVerticalAlignment.Center, PropertyChangedCallbackName = nameof(OnAnimationChanged))]
-[DependencyProperty<CanvasHorizontalAlignment>("EffectHorizontalAlignment", NotNull = true, DefaultValue = CanvasHorizontalAlignment.Center, PropertyChangedCallbackName = nameof(OnAnimationChanged))]
 [DependencyProperty<bool>("AutoReverse", NotNull = true, DefaultValue = true, PropertyChangedCallbackName = nameof(OnAnimationChanged))]
 [DependencyProperty<double>("BlurAmount", NotNull = true, DefaultValue = 0D, PropertyChangedCallbackName = nameof(OnResourcePropertyValueChanged))]
 [DependencyProperty<Color>("ColorBrush", NotNull = true, PropertyChangedCallbackName = nameof(OnPropertyChanged))]
