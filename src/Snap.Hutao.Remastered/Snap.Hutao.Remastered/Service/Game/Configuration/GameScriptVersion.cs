@@ -25,7 +25,6 @@ public static class GameScriptVersion
                 if (element is IniParameter { Key: GameConstants.GameVersion } parameter)
                 {
                     version = parameter.Value;
-                    break;
                 }
             }
 

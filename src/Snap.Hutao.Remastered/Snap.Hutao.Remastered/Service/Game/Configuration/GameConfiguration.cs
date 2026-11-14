@@ -130,13 +130,10 @@ public static class GameConfiguration
 
         foreach (ref IniElement element in ini.AsSpan())
         {
-            if (element is not IniParameter { Key: "game_version" } parameter)
+            if (element is IniParameter { Key: GameConstants.GameVersion } parameter)
             {
-                continue;
+                element = parameter.WithValue(version, out updated);
             }
-
-            element = parameter.WithValue(version, out updated);
-            break;
         }
 
         IniSerializer.SerializeToFile(configFilePath, ini);

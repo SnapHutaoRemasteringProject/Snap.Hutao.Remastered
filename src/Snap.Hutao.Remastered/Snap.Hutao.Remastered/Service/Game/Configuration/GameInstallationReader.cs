@@ -22,7 +22,7 @@ public static class GameInstallationReader
             foreach (IniElement element in IniSerializer.DeserializeFromFile(configPath))
             {
                 if (element is not IniParameter parameter) { continue; }
-                if (string.Equals(parameter.Key, "game_version", StringComparison.OrdinalIgnoreCase)) { configText ??= parameter.Value; }
+                if (string.Equals(parameter.Key, GameConstants.GameVersion, StringComparison.OrdinalIgnoreCase)) { configText = parameter.Value; }
                 if (string.Equals(parameter.Key, ChannelOptions.ChannelName, StringComparison.OrdinalIgnoreCase)) { channel = parameter.Value; }
                 if (string.Equals(parameter.Key, ChannelOptions.SubChannelName, StringComparison.OrdinalIgnoreCase)) { subChannel = parameter.Value; }
             }

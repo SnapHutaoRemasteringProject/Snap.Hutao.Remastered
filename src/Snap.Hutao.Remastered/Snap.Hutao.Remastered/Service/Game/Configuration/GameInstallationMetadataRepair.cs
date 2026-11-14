@@ -14,13 +14,16 @@ public static class GameInstallationMetadataRepair
     {
         List<IniElement> config = IniSerializer.DeserializeFromFile(configPath).ToList();
         string version = verifiedVersion.ToString();
-        int index = config.FindIndex(static item => item is IniParameter p && string.Equals(p.Key, "game_version", StringComparison.OrdinalIgnoreCase));
-        if (index >= 0) { config[index] = new IniParameter("game_version", version); }
+        int index = config.FindLastIndex(static item => item is IniParameter p && string.Equals(p.Key, GameConstants.GameVersion, StringComparison.OrdinalIgnoreCase));
+        if (index >= 0)
+        {
+            config[index] = new IniParameter(GameConstants.GameVersion, version);
+        }
         else
         {
-            int section = config.FindIndex(static item => item is IniSection s && string.Equals(s.Name, "general", StringComparison.OrdinalIgnoreCase));
+            int section = config.FindLastIndex(static item => item is IniSection s && string.Equals(s.Name, "general", StringComparison.OrdinalIgnoreCase));
             if (section < 0) { config.Add(new IniSection("general", ImmutableArray<IniElement>.Empty)); section = config.Count - 1; }
-            config.Insert(section + 1, new IniParameter("game_version", version));
+            config.Insert(section + 1, new IniParameter(GameConstants.GameVersion, version));
         }
 
         string suffix = ".hutao-version-" + Guid.NewGuid().ToString("N");
