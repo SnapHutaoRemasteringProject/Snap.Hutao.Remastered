@@ -60,9 +60,9 @@ JsonOptions.Default/Create 在普通运行时与原生运行时均使用生成�
 新网络响应、元数据、AI 会话和工具类型必须补齐根与嵌套闭包，并验证旧格式跨读写。
 当前会话通过 AgentConversationJsonOptions 登记应用契约；SDK 类型仍由 SDK 自身契约处理，以保留其内部审批状态字段。旧文件双向读写、24 种可观察内容、重试与待审批恢复均有验证；这不代替实际模型服务/工具执行验收。
 
-2026-11-14 最新源码检查：Debug、`--no-restore`、`PublishAot=true`、`AotAnalysis=true` 编译通过，0 错误、194 个警告（上一轮 254 个）。
+2026-11-14 最新源码检查：Debug、`--no-restore`、`PublishAot=true`、`AotAnalysis=true` 编译通过，0 错误、178 个警告（上一轮 194 个）。
 这是编译和分析检查，没有执行原生发布或启动应用。上一轮关闭默认 JSON 反射的相关测试为 42/42；
-本轮 17 类选择项模型的属性分派、WinRT 转换元数据、集合赋值、页面 VM 属性提供器声明及 HTTP/元数据契约检查均通过。
+本轮 18 类选择项/控件模型的属性分派（含 AutoSuggestTokenBox 两个命令）、WinRT 转换元数据、集合赋值、页面 VM 属性提供器声明及 HTTP/元数据契约检查均通过。
 GachaArchive.Uid 的异常来自 DisplayMemberPath：即使 ItemsSource 使用 x:Bind，显示属性仍通过 ICustomPropertyProvider 查找。
 三个存档类型已补齐对应属性的生成访问器，且修复前程序集会被新增的分派检查拒绝。
 手写源码中的转换位置使用 CsWinRT 官方 DynamicWindowsRuntimeCast 标注；编译产物检查确认 71 个目标类型具有实际 DynamicDependency 根。
@@ -83,7 +83,7 @@ AutoSuggestTokenBox 的 ControlTemplate 上下文菜单命令改为源码声明�
 
 | 类别 | 数量 | 后续范围 |
 |---|---:|---|
-| WMC1510 | 108 | 剩余运行时属性路径、模板上下文与属性提供器 |
+| WMC1510 | 92 | 剩余运行时属性路径、模板上下文与属性提供器 |
 | CsWinRT1034 / CsWinRT1035 | 0 | 当前编译没有这两类警告，未屏蔽分析器 |
 | CS8305 / WMC1501 | 76 | SDK 实验性图表、窗口布局和控件 API |
 | IL2026 / IL3050 | 5 | EF Core 与 EventTriggerBehavior 的裁剪/动态代码要求 |
@@ -96,6 +96,14 @@ AutoSuggestTokenBox 的 ControlTemplate 上下文菜单命令改为源码声明�
 泛型属性分派使用当前版本公开的 [ICustomPropertyProvider 实现契约](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/WinRT.Runtime/Projections/ICustomPropertyProvider.net5.cs)，没有启用反射回退。
 
 NuGet.Config 保持原配置；本轮没有执行依赖还原或修改包版本。NU1507 的包源策略警告暂不处理。
+
+13c608180 是应用仓库的 AutoSuggestTokenBox 命令访问修复，不是生成器版本提交。
+已核对 NuGet 官方索引、应用中央版本与实际 assets，SourceGeneration 均为最新已发布版 1.3.17；
+本地生成器仓库从 1.3.16 快进到 9d2d256（1.3.17），该版本只修正 DP 标识符公开性，尚不包含 DP getter 的裁剪标注改造。
+当前两个显式命令确已进入编译后的属性分派，先前程序集会被回归检查拒绝；不能把报告 Build=aae23dca9 当作已验证 13c608180 的运行结果。
+原 obj 程序集被用户侧映射占用，本轮使用 obj/aot-menu-check 和 artifacts/menu-check-bin 独立验证，没有终止用户进程。
+托盘菜单内容由 UserControl 承载九处编译绑定，Flyout 保留呈现和关闭生命周期；另有七处抽卡卡片可见性改用编译绑定。
+这些是编译/契约验证，没有重新发布或启动原生程序。
 
 数据库运行时升级使用版本化 SQL；生产查询具体化并由官方工具预生成。
 统一入口为 Generate-DatabaseAot.ps1，维护及回滚/边界覆盖见 [数据库实现](database-aot.md)。

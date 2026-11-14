@@ -4,23 +4,24 @@
 // Licensed under the MIT license.
 
 using Microsoft.UI.Xaml.Controls;
-using Snap.Hutao.Remastered.UI.Xaml;
-using Snap.Hutao.Remastered.ViewModel;
 
 namespace Snap.Hutao.Remastered.UI.Shell;
 
 public sealed partial class NotifyIconContextMenu : Flyout
 {
+    private readonly NotifyIconContextMenuContent content;
+
     public NotifyIconContextMenu(IServiceProvider serviceProvider)
     {
         AllowFocusOnInteraction = false;
         InitializeComponent();
-        Root.InitializeDataContext<NotifyIconViewModel>(serviceProvider);
+        content = new(serviceProvider);
+        Content = content;
 
-        if (Root.DataContext is NotifyIconViewModel viewModel)
+        if (content.ViewModel is { } viewModel)
         {
-            viewModel.XamlRoot = Root.XamlRoot;
-            viewModel.SetNotifyIconContextMenu(this, Root);
+            viewModel.XamlRoot = content.RootElement.XamlRoot;
+            viewModel.SetNotifyIconContextMenu(this, content.RootElement);
         }
 
         Closed += OnClosed;
@@ -28,7 +29,7 @@ public sealed partial class NotifyIconContextMenu : Flyout
 
     private void OnClosed(object? sender, object args)
     {
-        if (Root.DataContext is NotifyIconViewModel viewModel)
+        if (content.ViewModel is { } viewModel)
         {
             viewModel.NotifyIconContextMenuClosed();
         }
