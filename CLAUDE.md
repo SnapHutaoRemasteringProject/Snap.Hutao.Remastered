@@ -430,6 +430,12 @@ the build fails with `CS9275`); write a normal constructor in that case.
   stay in application-only partial declarations (`Model/Entity/*.Presentation.cs` or
   `UI/Xaml/Data/BindingProperties`). The database host must not acquire WinUI/WinRT dependencies
   merely to expose a display property in the application.
+- Generic selection models cannot use `GeneratedBindableCustomProperty`. Their application-only
+  partials explicitly implement `IBindableCustomPropertyImplementation`; use the shared
+  `NameValueItemTemplate` for named selections and preserve the original typed item/value.
+- WinRT reference/enum DP getters needing cast roots use explicit declarations in `*.Properties.cs`
+  with `DynamicWindowsRuntimeCast` on the actual getter. Do not reintroduce duplicate declarative
+  generator requests for those properties or remove their registration defaults/callbacks.
 - `JsonSerialize` freezes the options on first use and retrieves their cached `JsonTypeInfo`.
   An unconfigured resolver, missing contract or resolver error is reported to the caller; the
   facade never creates reflection options or catches those errors to retry with a different policy.

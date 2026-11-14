@@ -7,7 +7,6 @@ using Microsoft.UI.Xaml.Media;
 namespace Snap.Hutao.Remastered.UI.Xaml.Control;
 
 [SuppressMessage("", "SH001")]
-[DependencyProperty<Brush>("Background", PropertyChangedCallbackName = nameof(OnBackgroundChanged), IsAttached = true, TargetType = typeof(Microsoft.UI.Xaml.Controls.Control))]
 public sealed partial class ControlHelper
 {
     [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Control))]

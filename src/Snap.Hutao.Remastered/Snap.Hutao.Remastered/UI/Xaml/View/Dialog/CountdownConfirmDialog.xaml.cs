@@ -9,7 +9,6 @@ using Snap.Hutao.Remastered.Factory.ContentDialog;
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 
 [DependencyProperty<string>("Message")]
-[DependencyProperty<InfoBarSeverity>("Severity", NotNull = true)]
 public sealed partial class CountdownConfirmDialog : ContentDialog
 {
     private const int CountdownSeconds = 5;

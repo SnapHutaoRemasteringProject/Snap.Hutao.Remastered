@@ -16,7 +16,6 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Control.TextBlock;
 
 // TODO: change the parsing to syntax tree
 [DependencyProperty<string>("Description", DefaultValue = "", PropertyChangedCallbackName = nameof(OnDescriptionChanged))]
-[DependencyProperty<Style>("TextStyle", PropertyChangedCallbackName = nameof(OnTextStyleChanged))]
 public sealed partial class HtmlDescriptionTextBlock : ContentControl
 {
     private static readonly int ColorTagFullLength = "<color style='color:#FFFFFF;'></color>".Length;
