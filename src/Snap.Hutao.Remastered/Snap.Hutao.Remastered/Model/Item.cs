@@ -11,7 +11,7 @@ public partial class Item : INameIcon<Uri>
 
     public Uri Icon { get; init; } = default!;
 
-    public Uri Badge { get; init; } = default!;
+    public Uri? Badge { get; init; }
 
     public QualityType Quality { get; init; }
 

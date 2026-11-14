@@ -36,7 +36,6 @@ public partial class BeyondItem :
             Id = Id,
             Name = Name,
             Icon = BeyondItemNameIconConverter.IconNameToUri(Icon),
-            Badge = BeyondItemNameIconConverter.IconNameToUri(Icon),
             Time = time,
             Quality = RankLevel,
             LastPull = lastPull,
@@ -51,7 +50,6 @@ public partial class BeyondItem :
             Id = Id,
             Name = Name,
             Icon = BeyondItemNameIconConverter.IconNameToUri(Icon),
-            Badge = BeyondItemNameIconConverter.IconNameToUri(Icon),
             Quality = RankLevel,
             Count = count,
         };
@@ -65,7 +63,6 @@ public partial class BeyondItem :
             Id = Id,
             Name = Name,
             Icon = BeyondItemNameIconConverter.IconNameToUri(Icon),
-            Badge = BeyondItemNameIconConverter.IconNameToUri(Icon),
             Quality = Quality,
         };
     }
