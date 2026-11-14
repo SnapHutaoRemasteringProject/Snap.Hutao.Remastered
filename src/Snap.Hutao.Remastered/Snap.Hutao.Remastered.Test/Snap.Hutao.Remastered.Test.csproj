@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="../Snap.Hutao.Remastered/Core/Graphics/Imaging/MemoryBufferByteAccess.cs" Link="Production/MemoryBufferByteAccess.cs" />
     <Compile Include="../Snap.Hutao.Remastered/UI/Xaml/ItemsSourceHelper.cs" Link="Production/ItemsSourceHelper.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Web/Request/Builder/HttpRequestFailureDetails.cs" Link="Production/HttpRequestFailureDetails.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Web/Hoyolab/Takumi/GameRecord/WorldExploration.cs" Link="Production/Http/WorldExploration.cs" />

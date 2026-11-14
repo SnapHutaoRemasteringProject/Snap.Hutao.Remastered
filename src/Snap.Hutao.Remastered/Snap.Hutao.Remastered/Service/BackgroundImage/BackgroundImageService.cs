@@ -21,7 +21,8 @@ namespace Snap.Hutao.Remastered.Service.BackgroundImage;
 [Service(ServiceLifetime.Singleton, typeof(IBackgroundImageService))]
 public sealed partial class BackgroundImageService : IBackgroundImageService
 {
-    private static readonly FrozenSet<string> AllowedFormats = [".bmp", ".gif", ".ico", ".jpg", ".jpeg", ".png", ".tiff", ".webp"];
+    private static readonly FrozenSet<string> AllowedFormats = ((string[])[".bmp", ".gif", ".ico", ".jpg", ".jpeg", ".png", ".tiff", ".webp"])
+        .ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
     private readonly BackgroundImageOptions backgroundImageOptions;
     private readonly IServiceProvider serviceProvider;
