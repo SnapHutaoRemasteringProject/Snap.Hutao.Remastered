@@ -369,7 +369,7 @@
                                         <wl:LiquidGlassComboBox
                                             shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(shs:CultureOptions.Cultures, shs:CultureOptions.Cultures.IsDefaultOrEmpty)}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedCulture, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
@@ -382,7 +382,7 @@
                                         <wl:LiquidGlassComboBox
                                             shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Appearance.CultureOptions.DayOfWeeks, DataContext.Appearance.CultureOptions.DayOfWeeks.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedFirstDayOfWeek, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
@@ -395,7 +395,7 @@
                                         <wl:LiquidGlassComboBox
                                             shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
                                             IsEnabled="{x:Bind DataContext.Appearance.IsBackdropSelectionEnabled, Mode=OneWay}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Appearance.AppOptions.BackdropTypes, DataContext.Appearance.AppOptions.BackdropTypes.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedBackdropType, Mode=TwoWay}"/>
@@ -409,7 +409,7 @@
                                         <wl:LiquidGlassComboBox
                                             shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Appearance.AppOptions.LazyElementThemes.Value, DataContext.Appearance.AppOptions.LazyElementThemes.Value.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedElementTheme, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
@@ -422,7 +422,7 @@
                                         <wl:LiquidGlassComboBox
                                             shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Appearance.AppOptions.ControlMaterials, DataContext.Appearance.AppOptions.ControlMaterials.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedControlMaterial, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
@@ -448,7 +448,7 @@
                                         <wl:LiquidGlassComboBox
                                             shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Appearance.AppOptions.BackgroundImageTypes, DataContext.Appearance.AppOptions.BackgroundImageTypes.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedBackgroundImageType, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
@@ -487,7 +487,7 @@
                                         <wl:LiquidGlassComboBox
                                             shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Appearance.AppOptions.BackgroundMediaTypes, DataContext.Appearance.AppOptions.BackgroundMediaTypes.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedBackgroundMediaType, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
@@ -522,7 +522,7 @@
                                         <wl:LiquidGlassComboBox
                                             shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Appearance.AppOptions.LastWindowCloseBehaviors, DataContext.Appearance.AppOptions.LastWindowCloseBehaviors.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedLastWindowCloseBehavior, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
@@ -551,7 +551,7 @@
                                         <wl:LiquidGlassComboBox
                                             shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.AppOptions.ServerDomainModes, DataContext.AppOptions.ServerDomainModes.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.SelectedServerDomainMode, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
@@ -958,7 +958,7 @@
                                         <wl:LiquidGlassComboBox
                                             shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Home.AppOptions.LazyCalendarServerTimeZoneOffsets.Value, DataContext.Home.AppOptions.LazyCalendarServerTimeZoneOffsets.Value.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Home.SelectedCalendarServerTimeZoneOffset, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
@@ -971,7 +971,7 @@
                                         <wl:LiquidGlassComboBox
                                             shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Home.AppOptions.LazyRegions.Value, DataContext.Home.AppOptions.LazyRegions.Value.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Home.SelectedRegion, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
@@ -1145,7 +1145,7 @@
                                         <wl:LiquidGlassComboBox
                                             shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.WebView.AppOptions.BridgeShareSaveTypes, DataContext.WebView.AppOptions.BridgeShareSaveTypes.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.WebView.SelectedShareSaveType, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>

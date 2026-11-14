@@ -50,18 +50,32 @@ public static class ArchiveBindingContracts
         using var stream = File.OpenRead(path);
         using var pe = new PEReader(stream);
         MetadataReader reader = pe.GetMetadataReader();
-        var expected = new Dictionary<string, string>
+        var expected = new Dictionary<string, string[]>
         {
-            ["GachaArchive"] = "Uid",
-            ["BackpackArchive"] = "Name",
-            ["AchievementArchive"] = "Name"
+            ["Snap.Hutao.Remastered.Model.Entity.GachaArchive"] = new[] { "Uid" },
+            ["Snap.Hutao.Remastered.Model.Entity.BackpackArchive"] = new[] { "Name" },
+            ["Snap.Hutao.Remastered.Model.Entity.AchievementArchive"] = new[] { "Name" },
+            ["Snap.Hutao.Remastered.Model.Entity.GameAccount"] = new[] { "Name" },
+            ["Snap.Hutao.Remastered.Model.Entity.CultivateProject"] = new[] { "Name" },
+            ["Snap.Hutao.Remastered.Model.NameValue`1"] = new[] { "Name", "Value" },
+            ["Snap.Hutao.Remastered.Model.NameCultureInfoValue"] = new[] { "Name", "IsMaintainedByHutao", "IsMaintainedByCrowdin", "IsMaintainedByGemini" },
+            ["Snap.Hutao.Remastered.Model.Metadata.LevelParameters`2"] = new[] { "Level" },
+            ["Snap.Hutao.Remastered.Service.Game.Scheme.LaunchScheme"] = new[] { "DisplayName" },
+            ["Snap.Hutao.Remastered.UI.Xaml.View.Dialog.PresetComboItem"] = new[] { "DisplayName" },
+            ["Snap.Hutao.Remastered.ViewModel.AvatarProperty.AvatarReliquaryScoreOption"] = new[] { "Name" },
+            ["Snap.Hutao.Remastered.Model.Metadata.Item.MaterialDropDistribution"] = new[] { "WorldLevel" },
+            ["Snap.Hutao.Remastered.ViewModel.Complex.AvatarRankView"] = new[] { "Floor" },
+            ["Snap.Hutao.Remastered.ViewModel.Complex.TeamAppearanceView"] = new[] { "Floor" },
+            ["Snap.Hutao.Remastered.UI.Xaml.Control.AutoSortBox.AutoSortToken"] = new[] { "IsSelected", "SortOrder", "Value", "IconUri", "IsDescending" },
+            ["Snap.Hutao.Remastered.Service.AI.Models.ModelProfile"] = new[] { "DisplayName" },
+            ["Snap.Hutao.Remastered.Service.AI.Models.ModelProviderProfile"] = new[] { "Name" }
         };
         var found = new HashSet<string>();
         foreach (TypeDefinitionHandle handle in reader.TypeDefinitions)
         {
             TypeDefinition type = reader.GetTypeDefinition(handle);
-            string name = reader.GetString(type.Name);
-            if (reader.GetString(type.Namespace) != "Snap.Hutao.Remastered.Model.Entity" || !expected.TryGetValue(name, out string property)) continue;
+            string name = reader.GetString(type.Namespace) + "." + reader.GetString(type.Name);
+            if (!expected.TryGetValue(name, out string[] properties)) continue;
             foreach (MethodDefinitionHandle methodHandle in type.GetMethods())
             {
                 MethodDefinition method = reader.GetMethodDefinition(methodHandle);
@@ -69,10 +83,12 @@ public static class ArchiveBindingContracts
                 string methodName = reader.GetString(method.Name).Replace("global::", "");
                 if (methodName != "Microsoft.UI.Xaml.Data.IBindableCustomPropertyImplementation.GetProperty" || method.RelativeVirtualAddress == 0) continue;
                 byte[] il = pe.GetMethodBody(method.RelativeVirtualAddress).GetILBytes().ToArray();
-                if (StringLiterals(reader, il).Contains(property)) found.Add(name);
+                var literals = new HashSet<string>(StringLiterals(reader, il));
+                foreach (string property in properties)
+                    if (literals.Contains(property)) found.Add(name + "." + property);
             }
         }
-        return expected.Where(e => !found.Contains(e.Key)).Select(e => e.Key + "." + e.Value).ToArray();
+        return expected.SelectMany(e => e.Value.Select(p => e.Key + "." + p)).Where(p => !found.Contains(p)).ToArray();
     }
 }
 '@
@@ -81,4 +97,4 @@ $missing = [ArchiveBindingContracts]::Missing((Resolve-Path -LiteralPath $Assemb
 if ($missing.Count -gt 0) {
     throw "Missing emitted AOT property dispatch for DisplayMemberPath: $($missing -join ', '). Build current source before checking."
 }
-Write-Output 'PASS: GachaArchive.Uid, BackpackArchive.Name and AchievementArchive.Name have emitted AOT property dispatch.'
+Write-Output 'PASS: archive and named selection models have emitted AOT property dispatch, including generic Name/Value and culture labels.'

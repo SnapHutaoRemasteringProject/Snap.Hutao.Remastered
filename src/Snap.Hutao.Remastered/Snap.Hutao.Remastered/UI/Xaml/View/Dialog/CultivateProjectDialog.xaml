@@ -27,7 +27,7 @@
             shuxcth:ControlMaterialState.IsManaged="True"
             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
             HorizontalAlignment="Stretch"
-            DisplayMemberPath="Name"
+            ItemTemplate="{StaticResource NameValueItemTemplate}"
             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(ServerTimeZoneOffsets, ServerTimeZoneOffsets.IsDefaultOrEmpty)}"
             SelectedItem="{x:Bind SelectedServerTimeZoneOffset, Mode=TwoWay}"/>
     </StackPanel>

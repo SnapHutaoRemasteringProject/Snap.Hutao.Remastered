@@ -1,0 +1,9 @@
+<ResourceDictionary
+    x:Class="Snap.Hutao.Remastered.UI.Xaml.NamedValueTemplates"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shm="using:Snap.Hutao.Remastered.Model">
+    <DataTemplate x:Key="NameValueItemTemplate" x:DataType="shm:INamedValue">
+        <TextBlock Text="{x:Bind Name, Mode=OneTime}"/>
+    </DataTemplate>
+</ResourceDictionary>
