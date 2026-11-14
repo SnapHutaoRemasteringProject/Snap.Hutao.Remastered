@@ -10,6 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
     xmlns:shc="using:Snap.Hutao.Remastered.Core"
+    xmlns:shm="using:Snap.Hutao.Remastered.Model"
     xmlns:shme="using:Snap.Hutao.Remastered.Model.Entity"
     xmlns:shs="using:Snap.Hutao.Remastered.Service"
     xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
@@ -29,11 +30,10 @@
     mc:Ignorable="d">
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ViewModel.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <Page.Resources>
-        <shux:BindingProxy x:Key="ViewModelBindingProxy" DataContext="{x:Bind DataContext, Mode=OneWay}"/>
 
         <!--  Native AOT 下 DisplayMemberPath 走反射查找属性，会被裁剪器去掉；改用带 x:DataType 的编译绑定模板  -->
         <DataTemplate x:Key="TileBackgroundAvatarItemTemplate" x:DataType="shvd:TileBackgroundAvatarItem">
@@ -77,46 +77,43 @@
                                 Grid.Column="1"
                                 HorizontalAlignment="Right"
                                 Orientation="Horizontal">
-                                <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
                                 <wl:LiquidGlassButton
                                     Margin="8,0,0,0"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Stretch"
                                     shux:FrameworkElementHelper.SquareLength="40"
+                                    shuxcth:ControlMaterialState.IsManaged="True"
                                     Background="Transparent"
                                     BorderBrush="{x:Null}"
                                     BorderThickness="0"
-                                    Command="{Binding DataContext.StartGameFromDailyNoteCommand, Source={StaticResource ViewModelBindingProxy}}"
+                                    Command="{x:Bind ((shvd:DailyNoteViewModel)ViewContent.DataContext).StartGameFromDailyNoteCommand, Mode=OneWay}"
                                     CommandParameter="{x:Bind Mode=OneWay}"
                                     Content="{StaticResource FontIconContentGame}"
                                     FontFamily="{StaticResource SymbolThemeFontFamily}"
                                     ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteStartGameToolTip}"/>
-                                <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
                                 <wl:LiquidGlassButton
                                     Margin="8,0,0,0"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Stretch"
                                     shux:FrameworkElementHelper.SquareLength="40"
+                                    shuxcth:ControlMaterialState.IsManaged="True"
                                     Background="Transparent"
                                     BorderBrush="{x:Null}"
                                     BorderThickness="0"
-                                    Command="{Binding DataContext.RemoveDailyNoteCommand, Source={StaticResource ViewModelBindingProxy}}"
+                                    Command="{x:Bind ((shvd:DailyNoteViewModel)ViewContent.DataContext).RemoveDailyNoteCommand, Mode=OneWay}"
                                     CommandParameter="{x:Bind Mode=OneWay}"
                                     Content="{StaticResource FontIconContentDelete}"
                                     FontFamily="{StaticResource SymbolThemeFontFamily}"
                                     ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteRemoveToolTip}"/>
-                                <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
                                 <wl:LiquidGlassButton
                                     Margin="8,0,0,0"
-                                    shuxcth:ControlMaterialState.IsManaged="True"
                                     VerticalAlignment="Stretch"
                                     shux:FrameworkElementHelper.SquareLength="40"
+                                    shuxcth:ControlMaterialState.IsManaged="True"
                                     Background="Transparent"
                                     BorderBrush="{x:Null}"
                                     BorderThickness="0"
-                                    Command="{Binding DataContext.ModifyNotificationCommand, Source={StaticResource ViewModelBindingProxy}}"
+                                    Command="{x:Bind ((shvd:DailyNoteViewModel)ViewContent.DataContext).ModifyNotificationCommand, Mode=OneWay}"
                                     CommandParameter="{x:Bind Mode=OneWay}"
                                     Content="{StaticResource FontIconContentSetting}"
                                     FontFamily="{StaticResource SymbolThemeFontFamily}"
@@ -283,13 +280,13 @@
                                     Orientation="Horizontal"
                                     Spacing="8">
                                     <wl:LiquidGlassButton
-                                        Visibility="{x:Bind DailyNote.DailyTask.AttendanceVisible, Mode=OneWay}"
-                                        shuxcth:ControlMaterialState.IsManaged="True"
                                         Width="32"
                                         Height="32"
                                         Padding="6"
+                                        shuxcth:ControlMaterialState.IsManaged="True"
                                         Style="{ThemeResource ShimmerButtonStyle}"
-                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteAttendanceStatusInfo}">
+                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteAttendanceStatusInfo}"
+                                        Visibility="{x:Bind DailyNote.DailyTask.AttendanceVisible, Mode=OneWay}">
                                         <shuxm:BitmapIconExtension ShowAsMonochrome="True" Source="ms-appx:///Resource/Icon/UI_IconSmall_EP.png"/>
                                         <wl:LiquidGlassButton.Flyout>
                                             <Flyout
@@ -468,7 +465,7 @@
         </DataTemplate>
     </Page.Resources>
 
-    <Grid>
+    <Grid x:Name="ViewContent">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition/>
@@ -478,7 +475,7 @@
             <Border Style="{ThemeResource AcrylicSecondaryBorderCardStyle}">
                 <CommandBar DefaultLabelPosition="Right">
                     <AppBarButton
-                        Command="{x:Bind DataContext.RefreshCommand, Mode=OneWay}"
+                        Command="{x:Bind ViewModel.RefreshCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentRefresh}}"
                         Label="{shuxm:ResourceString Name=ViewPageDailyNoteRefresh}"/>
                     <AppBarButton
@@ -489,14 +486,14 @@
                             <mxi:EventTriggerBehavior EventName="Click">
                                 <shuxba:ShowWebView2WindowAction>
                                     <shuxba:ShowWebView2WindowAction.ContentProvider>
-                                        <shuxvww:MiHoYoJSBridgeWebView2ContentProvider SourceProvider="{x:Bind DataContext.VerifyUrlSource, Mode=OneWay}"/>
+                                        <shuxvww:MiHoYoJSBridgeWebView2ContentProvider SourceProvider="{x:Bind ViewModel.VerifyUrlSource, Mode=OneWay}"/>
                                     </shuxba:ShowWebView2WindowAction.ContentProvider>
                                 </shuxba:ShowWebView2WindowAction>
                             </mxi:EventTriggerBehavior>
                         </mxi:Interaction.Behaviors>
                     </AppBarButton>
                     <AppBarButton
-                        Command="{x:Bind DataContext.TrackCurrentUserAndUidCommand, Mode=OneWay}"
+                        Command="{x:Bind ViewModel.TrackCurrentUserAndUidCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentAdd}}"
                         Label="{shuxm:ResourceString Name=ViewPageDailyNoteAddEntry}"/>
                     <AppBarButton
@@ -556,13 +553,13 @@
                                                     <wl:LiquidGlassToggleSwitch
                                                         Margin="24,0,0,0"
                                                         shuxcth:ControlMaterialState.IsManaged="True"
-                                                        IsOn="{x:Bind DataContext.DailyNoteOptions.IsAutoRefreshEnabled.Value, Mode=TwoWay}"/>
+                                                        IsOn="{x:Bind ViewModel.DailyNoteOptions.IsAutoRefreshEnabled.Value, Mode=TwoWay}"/>
                                                 </cwc:SettingsCard>
                                                 <RadioButtons
                                                     Margin="0,12,0,5"
-                                                    IsEnabled="{x:Bind DataContext.DailyNoteOptions.IsAutoRefreshEnabled.Value, Mode=OneWay}"
-                                                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.DailyNoteOptions.RefreshTimes, DataContext.DailyNoteOptions.RefreshTimes.IsDefaultOrEmpty), Mode=OneWay}"
-                                                    SelectedItem="{x:Bind DataContext.DailyNoteOptions.SelectedRefreshTime.Value, Mode=TwoWay}">
+                                                    IsEnabled="{x:Bind ViewModel.DailyNoteOptions.IsAutoRefreshEnabled.Value, Mode=OneWay}"
+                                                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(ViewModel.DailyNoteOptions.RefreshTimes, ViewModel.DailyNoteOptions.RefreshTimes.IsDefaultOrEmpty), Mode=OneWay}"
+                                                    SelectedItem="{x:Bind ViewModel.DailyNoteOptions.SelectedRefreshTime.Value, Mode=TwoWay}">
                                                     <RadioButtons.Header>
                                                         <TextBlock
                                                             Margin="1,0,0,0"
@@ -571,9 +568,8 @@
                                                     </RadioButtons.Header>
                                                     <RadioButtons.ItemTemplate>
                                                         <!--  ReSharper disable once Xaml.RedundantResource  -->
-                                                        <DataTemplate>
-                                                            <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                                                            <TextBlock Margin="0,0,0,0" Text="{Binding Name}"/>
+                                                        <DataTemplate x:DataType="shm:INamedValue">
+                                                            <TextBlock Margin="0,0,0,0" Text="{x:Bind Name, Mode=OneTime}"/>
                                                         </DataTemplate>
                                                     </RadioButtons.ItemTemplate>
                                                 </RadioButtons>
@@ -601,7 +597,7 @@
                                                     <wl:LiquidGlassToggleSwitch
                                                         Margin="24,0,0,0"
                                                         shuxcth:ControlMaterialState.IsManaged="True"
-                                                        IsOn="{x:Bind DataContext.DailyNoteOptions.IsSilentWhenPlayingGame.Value, Mode=TwoWay}"/>
+                                                        IsOn="{x:Bind ViewModel.DailyNoteOptions.IsSilentWhenPlayingGame.Value, Mode=TwoWay}"/>
                                                 </cwc:SettingsCard>
                                                 <cwc:SettingsCard
                                                     Description="{shuxm:ResourceString Name=ViewPageDailyNoteReminderDescription}"
@@ -610,14 +606,14 @@
                                                     <wl:LiquidGlassToggleSwitch
                                                         Margin="24,0,0,0"
                                                         shuxcth:ControlMaterialState.IsManaged="True"
-                                                        IsOn="{x:Bind DataContext.DailyNoteOptions.IsReminderNotification.Value, Mode=TwoWay}"/>
+                                                        IsOn="{x:Bind ViewModel.DailyNoteOptions.IsReminderNotification.Value, Mode=TwoWay}"/>
                                                 </cwc:SettingsCard>
                                             </StackPanel>
                                         </cwc:HeaderedContentControl>
 
                                         <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageDailyNoteDataInteropHeader}"/>
                                         <cwc:SettingsCard
-                                            Command="{x:Bind DataContext.ConfigDailyNoteWebhookUrlCommand, Mode=OneWay}"
+                                            Command="{x:Bind ViewModel.ConfigDailyNoteWebhookUrlCommand, Mode=OneWay}"
                                             Description="{shuxm:ResourceString Name=ViewPageDailyNoteConfigWebhookDescription}"
                                             Header="{shuxm:ResourceString Name=ViewPageDailyNoteConfigWebhookHeader}"
                                             HeaderIcon="{shuxm:FontIcon Glyph=&#xEE94;}"
@@ -690,7 +686,7 @@
             <ItemsControl
                 Margin="16"
                 ItemTemplate="{StaticResource DailyNoteEntryTemplate}"
-                ItemsSource="{x:Bind DataContext.DailyNoteEntries, Mode=OneWay}">
+                ItemsSource="{x:Bind ViewModel.DailyNoteEntries, Mode=OneWay}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <shuxcp:UniformStaggeredPanel

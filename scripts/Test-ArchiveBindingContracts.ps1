@@ -52,6 +52,7 @@ public static class ArchiveBindingContracts
         MetadataReader reader = pe.GetMetadataReader();
         var expected = new Dictionary<string, string[]>
         {
+            ["Snap.Hutao.Remastered.ViewModel.Cultivation.CultivateItemView"] = new[] { "IsToday" },
             ["Snap.Hutao.Remastered.Model.Entity.GachaArchive"] = new[] { "Uid" },
             ["Snap.Hutao.Remastered.Model.Entity.BackpackArchive"] = new[] { "Name" },
             ["Snap.Hutao.Remastered.Model.Entity.AchievementArchive"] = new[] { "Name" },
@@ -96,6 +97,6 @@ public static class ArchiveBindingContracts
 
 $missing = [ArchiveBindingContracts]::Missing((Resolve-Path -LiteralPath $AssemblyPath).Path)
 if ($missing.Count -gt 0) {
-    throw "Missing emitted AOT property dispatch for DisplayMemberPath: $($missing -join ', '). Build current source before checking."
+    throw "Missing emitted AOT property dispatch: $($missing -join ', '). Build current source before checking."
 }
-Write-Output 'PASS: archive and named selection models have emitted AOT property dispatch, including generic Name/Value and culture labels.'
+Write-Output 'PASS: selector, page and control models have emitted AOT property dispatch, including IsToday, generic values and culture labels.'

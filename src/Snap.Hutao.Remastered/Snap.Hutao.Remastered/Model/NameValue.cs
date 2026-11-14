@@ -22,6 +22,8 @@ public partial class NameValue<T> : INamedValue, IEquatable<NameValue<T>>
 
     public T Value { get; }
 
+    object? INamedValue.Value => Value;
+
     public override string ToString() => Name;
 
     public bool Equals(NameValue<T>? other)

@@ -1,4 +1,5 @@
 <ResourceDictionary
+    x:Class="Snap.Hutao.Remastered.UI.Xaml.Control.ItemIconResources"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shmmc="using:Snap.Hutao.Remastered.Model.Metadata.Converter"
@@ -41,7 +42,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="shuxc:ItemIcon">
                     <Grid CornerRadius="{StaticResource ControlCornerRadius}">
-                        <Image Source="{Binding Quality, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource QualityToImageSourceConverter}, Mode=OneWay}"/>
+                        <Image Source="{x:Bind Quality, Converter={StaticResource QualityToImageSourceConverter}, Mode=OneWay}"/>
                         <Image Source="{StaticResource Source_UI_ImgSign_ItemIcon}"/>
                         <shuxci:CachedImage Opacity="{TemplateBinding IconOpacity}" Source="{TemplateBinding Icon}"/>
                         <shuxci:CachedImage

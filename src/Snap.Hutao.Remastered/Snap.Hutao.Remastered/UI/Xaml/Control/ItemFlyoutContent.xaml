@@ -1,4 +1,5 @@
 <ResourceDictionary
+    x:Class="Snap.Hutao.Remastered.UI.Xaml.Control.ItemFlyoutContentResources"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
@@ -15,30 +16,30 @@
                                 <shuxc:ItemIcon
                                     Width="48"
                                     Height="48"
-                                    Icon="{Binding IconUri}"
-                                    Quality="{Binding Quality}"/>
+                                    Icon="{x:Bind Item.IconUri, Mode=OneWay}"
+                                    Quality="{x:Bind Item.Quality, Mode=OneWay}"/>
                                 <StackPanel VerticalAlignment="Center" Spacing="2">
-                                    <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{Binding Name}"/>
+                                    <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{x:Bind Item.Name, Mode=OneWay}"/>
                                     <TextBlock
                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                         Style="{StaticResource CaptionTextBlockStyle}"
-                                        Text="{Binding TypeDescription}"/>
+                                        Text="{x:Bind Item.TypeDescription, Mode=OneWay}"/>
                                 </StackPanel>
                             </StackPanel>
                             <Rectangle Height="1" Fill="{ThemeResource ControlStrokeColorDefaultBrush}"/>
-                            <shuxctb:DescriptionTextBlock Description="{Binding Description}"/>
+                            <shuxctb:DescriptionTextBlock Description="{x:Bind Item.Description, Mode=OneWay}"/>
                             <Rectangle
                                 Height="1"
                                 Fill="{ThemeResource ControlStrokeColorDefaultBrush}"
-                                Visibility="{Binding HasSetDescriptions, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                            <ItemsControl ItemsSource="{Binding SetDescriptionItems}" Visibility="{Binding HasSetDescriptions, Converter={StaticResource BoolToVisibilityConverter}}">
+                                Visibility="{x:Bind Item.HasSetDescriptions, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
+                            <ItemsControl ItemsSource="{x:Bind Item.SetDescriptionItems, Mode=OneWay}" Visibility="{x:Bind Item.HasSetDescriptions, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <shuxctb:DescriptionTextBlock Margin="0,2,0,0" Description="{Binding}"/>
+                                    <DataTemplate x:DataType="x:String">
+                                        <shuxctb:DescriptionTextBlock Margin="0,2,0,0" Description="{x:Bind Mode=OneTime}"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                            <StackPanel Spacing="8" Visibility="{Binding HasEquippedAvatar, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel Spacing="8" Visibility="{x:Bind Item.HasEquippedAvatar, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                                 <Rectangle Height="1" Fill="{ThemeResource ControlStrokeColorDefaultBrush}"/>
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <!--  Same bust and same shift ratio as EquippedAvatarBadgeTemplate, only larger; the clip keeps it from poking through the separator above  -->
@@ -52,12 +53,12 @@
                                             Margin="0,-4,0,0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Top"
-                                            Source="{Binding EquippedAvatarIconUri}"/>
+                                            Source="{x:Bind Item.EquippedAvatarIconUri, Mode=OneWay}"/>
                                     </Grid>
                                     <TextBlock
                                         VerticalAlignment="Center"
                                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                        Text="{Binding EquippedAvatarDisplayName}"/>
+                                        Text="{x:Bind Item.EquippedAvatarDisplayName, Mode=OneWay}"/>
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>

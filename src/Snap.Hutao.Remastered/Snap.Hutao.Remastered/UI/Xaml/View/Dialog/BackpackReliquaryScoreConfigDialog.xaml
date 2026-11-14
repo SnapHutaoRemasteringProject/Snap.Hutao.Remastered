@@ -27,7 +27,7 @@
                 Grid.Column="0"
                 shuxcth:ControlMaterialState.IsManaged="True"
                 shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                DisplayMemberPath="DisplayName"
+                ItemTemplate="{StaticResource PresetDisplayNameTemplate}"
                 Header="{shuxm:ResourceString Name=ViewDialogBackpackReliquaryScoreConfigPresetHeader}"
                 SelectionChanged="OnPresetComboBoxSelectionChanged"/>
             <StackPanel

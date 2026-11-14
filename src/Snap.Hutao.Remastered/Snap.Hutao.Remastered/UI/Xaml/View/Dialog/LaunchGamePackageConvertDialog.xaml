@@ -15,9 +15,9 @@
         <TextBlock Text="{shuxm:ResourceString Name=ViewDialogLaunchGamePackageConvertHint}"/>
         <ProgressBar
             Margin="0,16,0,4"
-            IsIndeterminate="{Binding State.IsIndeterminate}"
+            IsIndeterminate="{x:Bind State.IsIndeterminate, Mode=OneWay}"
             Maximum="1"
-            Value="{Binding State.Percent}"/>
+            Value="{x:Bind State.Percent, Mode=OneWay}"/>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -26,13 +26,13 @@
             <TextBlock
                 Grid.Column="0"
                 Style="{StaticResource CaptionTextBlockStyle}"
-                Text="{Binding State.Name}"
+                Text="{x:Bind State.Name, Mode=OneWay}"
                 TextWrapping="NoWrap"/>
             <TextBlock
                 Grid.Column="1"
                 Margin="16,0,0,0"
                 Style="{StaticResource CaptionTextBlockStyle}"
-                Text="{Binding State.Description}"/>
+                Text="{x:Bind State.Description, Mode=OneWay}"/>
         </Grid>
     </StackPanel>
 </ContentDialog>

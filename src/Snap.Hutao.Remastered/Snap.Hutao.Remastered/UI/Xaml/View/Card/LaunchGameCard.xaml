@@ -117,7 +117,7 @@
                 <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                     shuxcth:ControlMaterialState.IsManaged="True"
                     Padding="12"
-                    DisplayMemberPath="Name"
+                    ItemTemplate="{StaticResource GameAccountNameTemplate}"
                     ItemsSource="{x:Bind DataContext.CurrentSchemeFilteredGameAccountsView.View, Mode=OneWay}"
                     PlaceholderText="{shuxm:ResourceString Name=ViewCardLaunchGameSelectAccountPlaceholder}"
                     SelectedItem="{x:Bind DataContext.CurrentSchemeFilteredGameAccountsView.View.CurrentItem, FallbackValue={x:Null}, Mode=TwoWay}"

@@ -7,6 +7,7 @@ using Snap.Hutao.Remastered.Model.Metadata.Item;
 
 namespace Snap.Hutao.Remastered.ViewModel.Cultivation;
 
+[WinRT.GeneratedBindableCustomProperty([nameof(IsToday)], [])]
 public sealed partial class CultivateItemView : ObservableObject, IEntityAccessWithMetadata<Model.Entity.CultivateItem, Material>
 {
     private readonly TimeSpan offset;
