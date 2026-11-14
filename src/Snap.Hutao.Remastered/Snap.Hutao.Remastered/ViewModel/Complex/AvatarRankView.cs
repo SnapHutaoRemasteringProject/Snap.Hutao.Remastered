@@ -5,7 +5,8 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.Complex;
 
-public sealed class AvatarRankView
+[WinRT.GeneratedBindableCustomProperty([nameof(Floor)], [])]
+public sealed partial class AvatarRankView
 {
     public required string Floor { get; init; }
 

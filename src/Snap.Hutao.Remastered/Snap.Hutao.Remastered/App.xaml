@@ -54,7 +54,9 @@
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/TransitionCollection.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/Uri.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/WindowOverride.xaml"/>
+                <NamedValueTemplates xmlns="using:Snap.Hutao.Remastered.UI.Xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
 
             <Style
                 x:Key="LargeGridViewItemStyle"

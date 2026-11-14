@@ -8,7 +8,8 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.ViewModel.Complex;
 
-public sealed class TeamAppearanceView
+[WinRT.GeneratedBindableCustomProperty([nameof(Floor)], [])]
+public sealed partial class TeamAppearanceView
 {
     public TeamAppearanceView(TeamAppearance teamRank, ImmutableDictionary<AvatarId, Avatar> idAvatarMap)
     {

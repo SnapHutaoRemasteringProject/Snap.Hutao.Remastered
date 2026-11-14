@@ -523,7 +523,7 @@
                             <ListView
                                 MinWidth="320"
                                 Margin="0,8,0,0"
-                                DisplayMemberPath="Name"
+                                ItemTemplate="{StaticResource NameValueItemTemplate}"
                                 ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.AppOptions.LazyRegions.Value, DataContext.AppOptions.LazyRegions.Value.IsDefaultOrEmpty), Mode=OneWay}"
                                 SelectedItem="{x:Bind DataContext.SelectedRegion, Mode=TwoWay}"/>
                             <!--  TODO: Add more common settings here in the future, such as theme and accent color.  -->
@@ -801,14 +801,14 @@
                             <ListView
                                 MinWidth="320"
                                 Margin="0,8,0,32"
-                                DisplayMemberPath="Name"
+                                ItemTemplate="{StaticResource NameValueItemTemplate}"
                                 ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.StaticResourceOptions.ImageQualities, DataContext.StaticResourceOptions.ImageQualities.IsDefaultOrEmpty), Mode=OneWay}"
                                 SelectedItem="{x:Bind DataContext.StaticResourceOptions.ImageQuality, Mode=TwoWay}"/>
                             <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewGuideStepStaticResourceSettingMinimumHeader}"/>
                             <ListView
                                 MinWidth="320"
                                 Margin="0,8,0,32"
-                                DisplayMemberPath="Name"
+                                ItemTemplate="{StaticResource NameValueItemTemplate}"
                                 ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.StaticResourceOptions.ImageArchives, DataContext.StaticResourceOptions.ImageArchives.IsDefaultOrEmpty), Mode=OneWay}"
                                 SelectedItem="{x:Bind DataContext.StaticResourceOptions.ImageArchive, Mode=TwoWay}"/>
                             <TextBlock Margin="0,16,0,0" Text="{x:Bind DataContext.StaticResourceOptions.SizeInformationText, Mode=OneWay}"/>
