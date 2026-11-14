@@ -5,8 +5,8 @@
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shmma="using:Snap.Hutao.Remastered.Model.Metadata.Avatar"
     xmlns:shmmc="using:Snap.Hutao.Remastered.Model.Metadata.Converter"
-    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
     mc:Ignorable="d">
 
@@ -18,20 +18,21 @@
             <Setter Property="Height" Value="80"/>
         </Style>
 
-        <DataTemplate x:Key="SkillHeaderTemplate">
+        <DataTemplate x:Key="SkillHeaderTemplate" x:DataType="shmma:Skill">
             <StackPanel
                 Background="Transparent"
                 Spacing="4"
-                ToolTipService.ToolTip="{Binding Name}">
+                ToolTipService.ToolTip="{x:Bind Name, Mode=OneWay}">
                 <shuxci:CachedImage
-                    shux:FrameworkElementHelper.SquareLength="36"
-                    ShowAsMonoChrome="True"
-                    Source="{Binding Icon, Converter={StaticResource SkillIconConverter}}"/>
+                    Width="36"
+                    Height="36"
+                    HorizontalAlignment="Center"
+                    Source="{x:Bind Icon, Mode=OneWay, Converter={StaticResource SkillIconConverter}}"/>
                 <TextBlock
                     HorizontalAlignment="Center"
                     Opacity="0.8"
                     Style="{ThemeResource CaptionTextBlockStyle}"
-                    Text="{Binding Name}"/>
+                    Text="{x:Bind Name, Mode=OneWay}"/>
             </StackPanel>
         </DataTemplate>
     </UserControl.Resources>
