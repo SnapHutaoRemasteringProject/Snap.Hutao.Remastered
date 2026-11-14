@@ -459,36 +459,36 @@
                         Margin="0,16"
                         MinItemWidth="302"
                         Spacing="16">
-                        <shuxvs:StatisticsCard DataContext="{x:Bind DataContext.Statistics.AvatarWish, Mode=OneWay}" Visibility="{Binding DataContext.IsAvatarWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <shuxvs:StatisticsCard DataContext="{x:Bind DataContext.Statistics.AvatarWish, Mode=OneWay}" Visibility="{x:Bind DataContext.IsAvatarWishCardVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                         <shuxvs:StatisticsCard
                             DataContext="{x:Bind DataContext.Statistics.WeaponWish, Mode=OneWay}"
                             ShowCombinedModeToggle="False"
-                            Visibility="{Binding DataContext.IsWeaponWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            Visibility="{x:Bind DataContext.IsWeaponWishCardVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                         <shuxvs:StatisticsCard
                             DataContext="{x:Bind DataContext.Statistics.StandardWish, Mode=OneWay}"
                             ShowCombinedModeToggle="False"
                             ShowUpPull="False"
-                            Visibility="{Binding DataContext.IsStandardWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            Visibility="{x:Bind DataContext.IsStandardWishCardVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                         <shuxvs:StatisticsCard
                             DataContext="{x:Bind DataContext.Statistics.ChronicledWish, Mode=OneWay}"
                             ShowCombinedModeToggle="False"
                             ShowUpPull="False"
-                            Visibility="{Binding DataContext.IsChronicledWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            Visibility="{x:Bind DataContext.IsChronicledWishCardVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                         <shuxvs:StatisticsCard
                             DataContext="{x:Bind DataContext.Statistics.NoviceWish, Mode=OneWay}"
                             ShowCombinedModeToggle="False"
                             ShowUpPull="False"
-                            Visibility="{Binding DataContext.IsNoviceWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            Visibility="{x:Bind DataContext.IsNoviceWishCardVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                         <shuxvs:BeyondStatisticsCard
                             DataContext="{x:Bind DataContext.Statistics.BeyondStandardWish, Mode=OneWay}"
                             ShowCombinedModeToggle="False"
                             ShowUpPull="False"
-                            Visibility="{Binding DataContext.IsBeyondStandardWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            Visibility="{x:Bind DataContext.IsBeyondStandardWishCardVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                         <shuxvs:StatisticsCard
                             DataContext="{x:Bind DataContext.Statistics.BeyondEventWish, Mode=OneWay}"
                             ShowCombinedModeToggle="False"
                             ShowUpPull="True"
-                            Visibility="{Binding DataContext.IsBeyondEventWishCardVisible, ElementName=RootPage, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                            Visibility="{x:Bind DataContext.IsBeyondEventWishCardVisible, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                     </shuxcp:HorizontalEqualPanel>
                 </ScrollViewer>
             </PivotItem>

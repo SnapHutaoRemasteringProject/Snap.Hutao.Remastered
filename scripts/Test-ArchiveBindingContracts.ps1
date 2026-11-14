@@ -68,7 +68,8 @@ public static class ArchiveBindingContracts
             ["Snap.Hutao.Remastered.ViewModel.Complex.TeamAppearanceView"] = new[] { "Floor" },
             ["Snap.Hutao.Remastered.UI.Xaml.Control.AutoSortBox.AutoSortToken"] = new[] { "IsSelected", "SortOrder", "Value", "IconUri", "IsDescending" },
             ["Snap.Hutao.Remastered.Service.AI.Models.ModelProfile"] = new[] { "DisplayName" },
-            ["Snap.Hutao.Remastered.Service.AI.Models.ModelProviderProfile"] = new[] { "Name" }
+            ["Snap.Hutao.Remastered.Service.AI.Models.ModelProviderProfile"] = new[] { "Name" },
+            ["Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox.AutoSuggestTokenBox"] = new[] { "SelectAllTokensAndTextCommand", "RemoveItemCommand" }
         };
         var found = new HashSet<string>();
         foreach (TypeDefinitionHandle handle in reader.TypeDefinitions)
