@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Item;
 
-public sealed class MaterialDropDistribution
+public sealed partial class MaterialDropDistribution
 {
     public const double MoraPerResin = 50D;
 

@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace Snap.Hutao.Remastered.Model;
 
-public sealed class NameCultureInfoValue : NameValue<CultureInfo>
+public sealed partial class NameCultureInfoValue : NameValue<CultureInfo>
 {
     public NameCultureInfoValue(string name, CultureInfo value, LocalizationSource localizationSource)
         : base(name, value)

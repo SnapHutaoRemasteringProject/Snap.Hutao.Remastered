@@ -5,7 +5,8 @@ using Snap.Hutao.Remastered.Model.Intrinsic;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 
-public sealed class PresetComboItem
+[WinRT.GeneratedBindableCustomProperty([nameof(DisplayName)], [])]
+public sealed partial class PresetComboItem
 {
     public string DisplayName { get; set; } = string.Empty;
     public ReliquaryScoreConfigPreset? PresetKey { get; set; }

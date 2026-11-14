@@ -11,7 +11,7 @@
         VerticalAlignment="Center"
         shuxcth:ComboBoxPopupLifetime.IsManaged="True"
         shuxcth:ControlMaterialState.IsManaged="True"
-        DisplayMemberPath="Name"
+        ItemTemplate="{StaticResource NameValueItemTemplate}"
         Header="{x:Bind Header, Mode=OneWay}"
         ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(Keys, Keys.IsDefaultOrEmpty), Mode=OneWay}"
         SelectedItem="{x:Bind SelectedItem, Mode=TwoWay}"/>

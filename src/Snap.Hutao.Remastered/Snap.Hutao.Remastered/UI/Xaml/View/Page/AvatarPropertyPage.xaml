@@ -698,7 +698,7 @@
                                         Height="32"
                                         Padding="12,6,0,7"
                                         shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                        DisplayMemberPath="Name"
+                                        ItemTemplate="{StaticResource NameValueItemTemplate}"
                                         ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.SortDescriptionKinds, DataContext.SortDescriptionKinds.IsDefaultOrEmpty), Mode=OneWay}"
                                         SelectedItem="{x:Bind DataContext.SortDescriptionKind, Mode=TwoWay}"
                                         Style="{ThemeResource DefaultComboBoxStyle}"/>
