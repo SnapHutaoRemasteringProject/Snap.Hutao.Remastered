@@ -43,6 +43,7 @@ public struct IslandEnvironment
     public BOOL DisablePlayerDiveMosaic;
     public BOOL FastSkipTalk;
     public BOOL RedirectCatherine;
+    public BOOL LegacyPaimonMenu;
 }
 
 public class HexStringToNintConverter : JsonConverter<nint>

@@ -180,6 +180,9 @@ public sealed partial class LaunchOptions : DbStoreOptions, IRestrictedGamePathA
     public IObservableProperty<bool> RedirectCatherine { get => field ??= CreateProperty(SettingKeys.LaunchRedirectCatherine, false); }
 
     [field: MaybeNull]
+    public IObservableProperty<bool> LegacyPaimonMenu { get => field ??= CreateProperty(SettingKeys.LaunchLegacyPaimonMenu, false); }
+
+    [field: MaybeNull]
     public IObservableProperty<ImmutableArray<AspectRatio>> AspectRatios { get => field ??= CreatePropertyForStructUsingJson(SettingKeys.LaunchAspectRatios, ImmutableArray<AspectRatio>.Empty); }
 
     public AspectRatio? SelectedAspectRatio

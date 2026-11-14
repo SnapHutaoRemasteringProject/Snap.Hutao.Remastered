@@ -185,6 +185,7 @@ public sealed class GameIslandInterop : IGameIslandInterop
         pIslandEnvironment->WeakMapCheck = options.WeakMapCheck.Value;
         pIslandEnvironment->FastSkipTalk = options.FastSkipTalk.Value;
         pIslandEnvironment->RedirectCatherine = options.RedirectCatherine.Value;
+        pIslandEnvironment->LegacyPaimonMenu = options.LegacyPaimonMenu.Value;
 
         return pIslandEnvironment->View;
     }

@@ -159,6 +159,7 @@ public static class SettingKeys
     public const string LaunchWeakMapCheck                               = "Snap::Hutao::Game::Island::OpenMap::WeakCheck";
     public const string LaunchFastSkipTalk                               = "Snap::Hutao::Game::Island::Dialogue::SkipCooldown::Remove";
     public const string LaunchRedirectCatherine                          = "Snap::Hutao::Game::Island::DailyCommission::Catherine::Redirect";
+    public const string LaunchLegacyPaimonMenu                           = "Snap::Hutao::Game::Island::PaimonMenu::Legacy";
     public const string LaunchUsingOverlay                               = "Snap::Hutao::Game::Overlay";
     public const string LaunchOverlaySelectedCatalogId                   = "Snap::Hutao::Game::Overlay::CatalogId";
     public const string LaunchOverlayWindowIsVisible                     = "Snap::Hutao::Game::Overlay::Visible";

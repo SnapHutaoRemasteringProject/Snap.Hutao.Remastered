@@ -1324,6 +1324,13 @@
                                         Grid.Row="4"
                                         Grid.Column="2"
                                         shuxcth:ControlMaterialState.IsManaged="True"
+                                        Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandLegacyPaimonMenuHeader}"
+                                        IsOn="{x:Bind DataContext.LaunchOptions.LegacyPaimonMenu.Value, Mode=TwoWay}"
+                                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandLegacyPaimonMenuDescription}"/>
+                                    <wl:LiquidGlassToggleSwitch
+                                        Grid.Row="5"
+                                        Grid.Column="0"
+                                        shuxcth:ControlMaterialState.IsManaged="True"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameEnableInLevelClockPageSpeedUpHeader}"
                                         IsOn="{x:Bind DataContext.LaunchOptions.EnableInLevelClockPageSpeedUp.Value, Mode=TwoWay}"
                                         OffContent="{shuxm:ResourceString Name=ViewPageLaunchGameDisableFogOff}"
@@ -1332,27 +1339,27 @@
 
                                     <wl:LiquidGlassToggleSwitch
                                         Grid.Row="5"
-                                        Grid.Column="0"
+                                        Grid.Column="1"
                                         shuxcth:ControlMaterialState.IsManaged="True"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandWeakMapCheckHeader}"
                                         IsOn="{x:Bind DataContext.LaunchOptions.WeakMapCheck.Value, Mode=TwoWay}"/>
                                     <wl:LiquidGlassToggleSwitch
                                         Grid.Row="5"
-                                        Grid.Column="1"
+                                        Grid.Column="2"
                                         shuxcth:ControlMaterialState.IsManaged="True"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandUsingTouchScreenHeader}"
                                         IsEnabled="{x:Bind shsg:LaunchOptions.IsGameRunning.Value, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
                                         IsOn="{x:Bind DataContext.LaunchOptions.UsingTouchScreen.Value, Mode=TwoWay}"/>
                                     <wl:LiquidGlassToggleSwitch
-                                        Grid.Row="5"
-                                        Grid.Column="2"
+                                        Grid.Row="6"
+                                        Grid.Column="0"
                                         shuxcth:ControlMaterialState.IsManaged="True"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandGamepadHotSwitchEnabledHeader}"
                                         IsOn="{x:Bind DataContext.LaunchOptions.GamepadHotSwitchEnabled.Value, Mode=TwoWay}"
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandGamepadHotSwitchEnabledDescription}"/>
                                     <wl:LiquidGlassToggleSwitch
                                         Grid.Row="6"
-                                        Grid.Column="0"
+                                        Grid.Column="1"
                                         shuxcth:ControlMaterialState.IsManaged="True"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandDisplayPaimonHeader}"
                                         IsOn="{x:Bind DataContext.LaunchOptions.DisplayPaimon.Value, Mode=TwoWay}"
@@ -1361,15 +1368,15 @@
                                     <wl:LiquidGlassToggleSwitch
                                         x:Name="OriginalResinAllowedToggleSwitch"
                                         Grid.Row="6"
-                                        Grid.Column="1"
+                                        Grid.Column="2"
                                         shuxcth:ControlMaterialState.IsManaged="True"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowOriginalResinHeader}"
                                         IsOn="{x:Bind DataContext.LaunchOptions.ResinListItemId000106Allowed.Value, Mode=TwoWay}"
                                         Unchecked="ResinListItemToggle_Toggled"/>
                                     <wl:LiquidGlassToggleSwitch
                                         x:Name="PrimogemAllowedToggleSwitch"
-                                        Grid.Row="6"
-                                        Grid.Column="2"
+                                        Grid.Row="7"
+                                        Grid.Column="0"
                                         shuxcth:ControlMaterialState.IsManaged="True"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowPrimogemHeader}"
                                         IsOn="{x:Bind DataContext.LaunchOptions.ResinListItemId000201Allowed.Value, Mode=TwoWay}"
@@ -1377,7 +1384,7 @@
                                     <wl:LiquidGlassToggleSwitch
                                         x:Name="FragileResinAllowedToggleSwitch"
                                         Grid.Row="7"
-                                        Grid.Column="0"
+                                        Grid.Column="1"
                                         shuxcth:ControlMaterialState.IsManaged="True"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowFragileResinHeader}"
                                         IsOn="{x:Bind DataContext.LaunchOptions.ResinListItemId107009Allowed.Value, Mode=TwoWay}"
@@ -1385,22 +1392,22 @@
                                     <wl:LiquidGlassToggleSwitch
                                         x:Name="TransientResinAllowedToggleSwitch"
                                         Grid.Row="7"
-                                        Grid.Column="1"
+                                        Grid.Column="2"
                                         shuxcth:ControlMaterialState.IsManaged="True"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowTransientResinHeader}"
                                         IsOn="{x:Bind DataContext.LaunchOptions.ResinListItemId107012Allowed.Value, Mode=TwoWay}"
                                         Unchecked="ResinListItemToggle_Toggled"/>
                                     <wl:LiquidGlassToggleSwitch
                                         x:Name="CondensedResinAllowedToggleSwitch"
-                                        Grid.Row="7"
-                                        Grid.Column="2"
+                                        Grid.Row="8"
+                                        Grid.Column="0"
                                         shuxcth:ControlMaterialState.IsManaged="True"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandResinListItemAllowCondensedResinHeader}"
                                         IsOn="{x:Bind DataContext.LaunchOptions.ResinListItemId220007Allowed.Value, Mode=TwoWay}"
                                         Unchecked="ResinListItemToggle_Toggled"/>
                                     <wl:LiquidGlassToggleSwitch
                                         Grid.Row="8"
-                                        Grid.Column="0"
+                                        Grid.Column="1"
                                         shuxcth:ControlMaterialState.IsManaged="True"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandHideGrassHeader}"
                                         IsOn="{x:Bind DataContext.LaunchOptions.HideGrass.Value, Mode=TwoWay}"
@@ -1408,14 +1415,14 @@
                                     <!--  Hidden items should be at the end  -->
                                     <wl:LiquidGlassToggleSwitch
                                         Grid.Row="8"
-                                        Grid.Column="1"
+                                        Grid.Column="2"
                                         shuxcth:ControlMaterialState.IsManaged="True"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandDebugModeHeader}"
                                         IsOn="{x:Bind DataContext.LaunchOptions.DebugMode.Value, Mode=TwoWay}"
                                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandDebugModeDescription}"/>
                                     <wl:LiquidGlassToggleSwitch
-                                        Grid.Row="8"
-                                        Grid.Column="2"
+                                        Grid.Row="9"
+                                        Grid.Column="0"
                                         Visibility="{x:Bind DataContext.IsDeveloperAndLoggedIn, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"
                                         shuxcth:ControlMaterialState.IsManaged="True"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandHidePlayerInfoHeader}"
@@ -1424,7 +1431,7 @@
                                     <wl:LiquidGlassToggleSwitch
                                         x:Name="FastSkipTalkToggleSwitch"
                                         Grid.Row="9"
-                                        Grid.Column="0"
+                                        Grid.Column="1"
                                         shuxcth:ControlMaterialState.IsManaged="True"
                                         Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandFastSkipTalkHeader}"
                                         IsOn="{x:Bind DataContext.LaunchOptions.FastSkipTalk.Value, Mode=TwoWay}"
