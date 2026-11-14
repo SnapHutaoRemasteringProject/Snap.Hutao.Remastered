@@ -128,7 +128,7 @@
                             ItemContainerTransitions="{StaticResource AddDeleteThemeTransitions}"
                             ItemTemplateSelector="{StaticResource InfoBarTemplateSelector}"
                             ItemsPanel="{StaticResource StackPanelSpacing8Template}"
-                            ItemsSource="{Binding InfoBars, Mode=OneWay}"/>
+                            ItemsSource="{x:Bind InfoBars, Mode=OneWay}"/>
                     </ScrollView>
 
                     <Grid Grid.Row="1" ColumnSpacing="8">

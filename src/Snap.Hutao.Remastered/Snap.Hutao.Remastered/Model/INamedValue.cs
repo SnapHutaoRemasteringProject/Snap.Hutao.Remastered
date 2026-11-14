@@ -7,4 +7,6 @@ namespace Snap.Hutao.Remastered.Model;
 public interface INamedValue
 {
     string Name { get; }
+
+    object? Value { get; }
 }

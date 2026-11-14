@@ -145,7 +145,7 @@
                         EffectFontSize="36"
                         EffectHorizontalAlignment="Center"
                         EffectVerticalAlignment="Center"
-                        Text="{Binding AllCulturesWelcomeText}"/>
+                        Text="{x:Bind shvg:GuideViewModel.AllCulturesWelcomeText, Mode=OneTime}"/>
                     <Border
                         Grid.Row="1"
                         HorizontalAlignment="Center"
@@ -333,8 +333,8 @@
                                 Grid.Column="0"
                                 Grid.ColumnSpan="2"
                                 shuxcth:ControlMaterialState.IsManaged="True"
-                                IsChecked="{Binding IsAgreementCopyAgreed, Mode=TwoWay}">
-                                <TextBlock Text="{Binding AgreementCopyTarget}" TextWrapping="Wrap"/>
+                                IsChecked="{x:Bind DataContext.IsDownStreamAgreed, Mode=TwoWay}">
+                                <TextBlock Text="{shuxm:ResourceString Name=ViewGuideStepAgreementDownStream}" TextWrapping="Wrap"/>
                             </wl:LiquidGlassCheckBox>
                         </Grid>
 

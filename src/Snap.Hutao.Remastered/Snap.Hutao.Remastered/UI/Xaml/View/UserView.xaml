@@ -7,7 +7,7 @@
     xmlns:essential="using:WinUI3Package"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
-    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
+    xmlns:shm="using:Snap.Hutao.Remastered.Model"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxba="using:Snap.Hutao.Remastered.UI.Xaml.Behavior.Action"
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
@@ -23,7 +23,6 @@
 
     <UserControl.Resources>
         <shuxdcs:ThirdPartyIconConverter x:Key="ThirdPartyIconConverter"/>
-        <shux:BindingProxy x:Key="ViewModelBindingProxy" DataContext="{x:Bind DataContext, Mode=OneWay}"/>
 
         <DataTemplate x:Key="UserGameRoleTemplate" x:DataType="shwhtb:UserGameRole">
             <Grid Padding="0,12" Background="Transparent">
@@ -179,55 +178,54 @@
                     Grid.Column="3"
                     Orientation="Horizontal"
                     Visibility="Collapsed">
-                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
                     <wl:LiquidGlassButton
-                        shuxcth:ControlMaterialState.IsManaged="True"
+                        Margin="12,0,0,0"
                         VerticalAlignment="Stretch"
+                        shuxcth:ControlMaterialState.IsManaged="True"
                         Background="Transparent"
-                        Command="{Binding DataContext.CopyCookieCommand, Source={StaticResource ViewModelBindingProxy}}"
+                        Command="{x:Bind ((shvu:UserViewModel)ViewContent.DataContext).CopyCookieCommand, Mode=OneWay}"
                         CommandParameter="{x:Bind Mode=OneWay}"
                         Content="{StaticResource FontIconContentCopy}"
                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                         Style="{StaticResource ButtonRevealStyle}"
-                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewUserCopyCookieAction}"
-                        Margin="12,0,0,0"/>
-                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewUserCopyCookieAction}"/>
                     <wl:LiquidGlassButton
-                        shuxcth:ControlMaterialState.IsManaged="True"
+                        Margin="6,0,0,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Stretch"
+                        shuxcth:ControlMaterialState.IsManaged="True"
                         Background="Transparent"
-                        Command="{Binding DataContext.RemoveUserCommand, Source={StaticResource ViewModelBindingProxy}}"
+                        Command="{x:Bind ((shvu:UserViewModel)ViewContent.DataContext).RemoveUserCommand, Mode=OneWay}"
                         CommandParameter="{x:Bind Mode=OneWay}"
                         Content="{StaticResource FontIconContentDelete}"
                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                         Style="{StaticResource ButtonRevealStyle}"
-                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewUserRemoveAction}"
-                        Margin="6,0,0,0"/>
+                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewUserRemoveAction}"/>
                 </StackPanel>
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="ThirdPartyLoginButtonTemplate">
+        <DataTemplate x:Key="ThirdPartyLoginButtonTemplate" x:DataType="shm:INamedValue">
             <!--  ReSharper disable Xaml.BindingWithContextNotResolved  -->
             <AppBarButton
                 Width="{StaticResource LargeAppBarButtonWidth}"
                 MaxWidth="{StaticResource LargeAppBarButtonWidth}"
                 Margin="0,-4"
                 Click="DismissAccountFlyouts"
-                Command="{Binding DataContext.LoginByThirdPartyOverseaCommand, Source={StaticResource ViewModelBindingProxy}}"
-                CommandParameter="{Binding Value}"
-                Icon="{Binding Name, Converter={StaticResource ThirdPartyIconConverter}}"
-                Label="{Binding Name}"/>
+                Command="{x:Bind ((shvu:UserViewModel)ViewContent.DataContext).LoginByThirdPartyOverseaCommand, Mode=OneWay}"
+                CommandParameter="{x:Bind Value, Mode=OneTime}"
+                Icon="{x:Bind Name, Converter={StaticResource ThirdPartyIconConverter}, Mode=OneTime}"
+                Label="{x:Bind Name, Mode=OneTime}"/>
             <!--  ReSharper restore Xaml.BindingWithContextNotResolved  -->
         </DataTemplate>
     </UserControl.Resources>
 
     <mxi:Interaction.Behaviors>
-        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ViewModel.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
 
     <StackPanel
+        x:Name="ViewContent"
         Margin="0,0,0,-2"
         Padding="0,0,0,0"
         Spacing="4">
@@ -270,7 +268,10 @@
             </ResourceDictionary>
         </StackPanel.Resources>
 
-        <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" MaxHeight="40" Margin="4,0">
+        <wl:LiquidGlassButton
+            MaxHeight="40"
+            Margin="4,0"
+            shuxcth:ControlMaterialState.IsManaged="True">
             <wl:LiquidGlassButton.Content>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -284,14 +285,14 @@
                         Margin="1,1,6,1"
                         HorizontalAlignment="Left">
                         <PersonPicture.ProfilePicture>
-                            <BitmapImage UriSource="{x:Bind DataContext.Users.CurrentItem.UserInfo.AvatarUri, Mode=OneWay}"/>
+                            <BitmapImage UriSource="{x:Bind ViewModel.Users.CurrentItem.UserInfo.AvatarUri, Mode=OneWay}"/>
                         </PersonPicture.ProfilePicture>
                     </PersonPicture>
                     <TextBlock
                         Grid.Column="1"
                         Margin="1,0,0,0"
                         VerticalAlignment="Center"
-                        Text="{x:Bind GetUserNickname(DataContext.Users.CurrentItem), Mode=OneWay}"
+                        Text="{x:Bind GetUserNickname(ViewModel.Users.CurrentItem), Mode=OneWay}"
                         TextTrimming="CharacterEllipsis"
                         TextWrapping="NoWrap"/>
                     <FontIcon
@@ -341,7 +342,7 @@
                                                 MaxWidth="{StaticResource LargeAppBarButtonWidth}"
                                                 Margin="0,-4"
                                                 Click="DismissAccountFlyouts"
-                                                Command="{x:Bind DataContext.LoginByQRCodeCommand, Mode=OneWay}"
+                                                Command="{x:Bind ViewModel.LoginByQRCodeCommand, Mode=OneWay}"
                                                 Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentQRCode}}"
                                                 Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginQRCodeAction}"/>
                                             <AppBarButton
@@ -349,7 +350,7 @@
                                                 MaxWidth="{StaticResource LargeAppBarButtonWidth}"
                                                 Margin="0,-4"
                                                 Click="DismissAccountFlyouts"
-                                                Command="{x:Bind DataContext.LoginByMobileCaptchaCommand, Mode=OneWay}"
+                                                Command="{x:Bind ViewModel.LoginByMobileCaptchaCommand, Mode=OneWay}"
                                                 Icon="{shuxm:FontIcon Glyph=&#xE8EA;}"
                                                 Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginMobileCaptchaAction}"/>
                                             <AppBarButton
@@ -357,7 +358,7 @@
                                                 MaxWidth="{StaticResource LargeAppBarButtonWidth}"
                                                 Margin="0,-4"
                                                 Click="DismissAccountFlyouts"
-                                                Command="{x:Bind DataContext.AddUserCommand, Mode=OneWay}"
+                                                Command="{x:Bind ViewModel.AddUserCommand, Mode=OneWay}"
                                                 Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentAdd}}"
                                                 Label="{shuxm:ResourceString Name=ViewUserCookieOperationManualInputAction}"/>
                                         </StackPanel>
@@ -386,14 +387,14 @@
                                                 Grid.Row="0"
                                                 ItemTemplate="{StaticResource ThirdPartyLoginButtonTemplate}"
                                                 ItemsPanel="{ThemeResource HorizontalStackPanelSpacing0Template}"
-                                                ItemsSource="{x:Bind DataContext.OverseaThirdPartyKinds, Mode=OneWay}"/>
+                                                ItemsSource="{x:Bind ViewModel.OverseaThirdPartyKinds, Mode=OneWay}"/>
                                             <StackPanel Grid.Row="1" Orientation="Horizontal">
                                                 <AppBarButton
                                                     Width="{StaticResource LargeAppBarButtonWidth}"
                                                     MaxWidth="{StaticResource LargeAppBarButtonWidth}"
                                                     Margin="0,-4"
                                                     Click="DismissAccountFlyouts"
-                                                    Command="{x:Bind DataContext.LoginByPasswordOverseaCommand, Mode=OneWay}"
+                                                    Command="{x:Bind ViewModel.LoginByPasswordOverseaCommand, Mode=OneWay}"
                                                     Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentOtherUser}}"
                                                     Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginByPasswordAction}"/>
                                                 <AppBarButton
@@ -401,7 +402,7 @@
                                                     MaxWidth="{StaticResource LargeAppBarButtonWidth}"
                                                     Margin="0,-4"
                                                     Click="DismissAccountFlyouts"
-                                                    Command="{x:Bind DataContext.AddOverseaUserCommand, Mode=OneWay}"
+                                                    Command="{x:Bind ViewModel.AddOverseaUserCommand, Mode=OneWay}"
                                                     Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentAdd}}"
                                                     Label="{shuxm:ResourceString Name=ViewUserCookieOperationManualInputAction}"/>
                                             </StackPanel>
@@ -443,14 +444,14 @@
                                 Width="{StaticResource LargeAppBarButtonWidth}"
                                 MaxWidth="{StaticResource LargeAppBarButtonWidth}"
                                 Margin="2,-4"
-                                Command="{x:Bind DataContext.RefreshCookieTokenCommand, Mode=OneWay}"
+                                Command="{x:Bind ViewModel.RefreshCookieTokenCommand, Mode=OneWay}"
                                 Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentRefresh}}"
                                 Label="{shuxm:ResourceString Name=ViewUserCookieOperationRefreshCookieAction}"/>
                         </StackPanel>
 
                         <Grid Grid.Column="1" Width="280">
-                            <StackPanel Visibility="{x:Bind DataContext.Users.Count, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
-                                <StackPanel Visibility="{x:Bind DataContext.Users.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
+                            <StackPanel Visibility="{x:Bind ViewModel.Users.Count, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
+                                <StackPanel Visibility="{x:Bind ViewModel.Users.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                                     <TextBlock
                                         Margin="10,6,0,6"
                                         Style="{StaticResource BaseTextBlockStyle}"
@@ -458,8 +459,8 @@
                                     <ListView
                                         Margin="4"
                                         ItemTemplate="{StaticResource UserGameRoleTemplate}"
-                                        ItemsSource="{x:Bind DataContext.Users.CurrentItem.UserGameRoles, Mode=OneWay}"
-                                        SelectedItem="{x:Bind DataContext.Users.CurrentItem.UserGameRoles.CurrentItem, Mode=TwoWay}"
+                                        ItemsSource="{x:Bind ViewModel.Users.CurrentItem.UserGameRoles, Mode=OneWay}"
+                                        SelectedItem="{x:Bind ViewModel.Users.CurrentItem.UserGameRoles.CurrentItem, Mode=TwoWay}"
                                         SelectionMode="Single"/>
                                 </StackPanel>
 
@@ -472,10 +473,10 @@
                                     AllowDrop="{shuxm:IsProcessNotElevated}"
                                     CanReorderItems="{shuxm:IsProcessNotElevated}"
                                     ItemTemplate="{StaticResource UserTemplate}"
-                                    ItemsSource="{x:Bind DataContext.Users, Mode=OneWay}"
-                                    SelectedItem="{x:Bind DataContext.Users.CurrentItem, Mode=TwoWay}"
+                                    ItemsSource="{x:Bind ViewModel.Users, Mode=OneWay}"
+                                    SelectedItem="{x:Bind ViewModel.Users.CurrentItem, Mode=TwoWay}"
                                     SelectionMode="Single"
-                                    Visibility="{x:Bind DataContext.Users.Count, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
+                                    Visibility="{x:Bind ViewModel.Users.Count, Converter={StaticResource Int32ToVisibilityConverter}, Mode=OneWay}">
                                     <ListView.Header>
                                         <InfoBar
                                             Title="{shuxm:ResourceString Name=ViewListViewDragElevatedHint}"
@@ -493,7 +494,7 @@
                                 VerticalAlignment="Center"
                                 Style="{StaticResource SubtitleTextBlockStyle}"
                                 Text="{shuxm:ResourceString Name=ViewUserDefaultDescription}"
-                                Visibility="{x:Bind DataContext.Users.Count, Converter={StaticResource Int32ToVisibilityRevertConverter}, Mode=OneWay}"/>
+                                Visibility="{x:Bind ViewModel.Users.Count, Converter={StaticResource Int32ToVisibilityRevertConverter}, Mode=OneWay}"/>
                         </Grid>
                     </Grid>
                 </Flyout>

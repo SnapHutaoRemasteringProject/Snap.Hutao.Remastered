@@ -13,7 +13,7 @@
     d:DataContext="{d:DesignInstance shwhhcp:Package}"
     BorderThickness="0"
     IsExpanded="True"
-    ItemsSource="{Binding AllPackages}"
+    ItemsSource="{x:Bind ((shwhhcp:Package)DataContext).AllPackages, Mode=OneWay}"
     mc:Ignorable="d">
 
     <cwc:SettingsExpander.Resources>

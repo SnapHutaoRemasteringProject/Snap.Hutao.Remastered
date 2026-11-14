@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Snap.Hutao.Remastered.Service.AI.Observables;
 
-internal sealed partial class ObservableMcpServerToolResultContent : ObservableToolResultContent
+internal sealed partial class ObservableMcpServerToolResultContent : ObservableToolResultContent, IObservableToolResultOutputs
 {
     [ObservableProperty]
     public partial ObservableAIContentCollection? Outputs { get; set; }

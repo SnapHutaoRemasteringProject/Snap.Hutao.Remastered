@@ -380,7 +380,7 @@
                     <wl:LiquidGlassComboBox
                         shuxcth:ControlMaterialState.IsManaged="True"
                         shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                        DisplayMemberPath="Uid"
+                        ItemTemplate="{StaticResource GachaArchiveUidTemplate}"
                         ItemsSource="{x:Bind DataContext.Archives, Mode=OneWay}"
                         SelectedItem="{x:Bind DataContext.Archives.CurrentItem, Mode=TwoWay}"
                         Style="{ThemeResource CommandBarComboBoxStyle}"/>

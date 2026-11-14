@@ -60,9 +60,12 @@ JsonOptions.Default/Create 在普通运行时与原生运行时均使用生成�
 新网络响应、元数据、AI 会话和工具类型必须补齐根与嵌套闭包，并验证旧格式跨读写。
 当前会话通过 AgentConversationJsonOptions 登记应用契约；SDK 类型仍由 SDK 自身契约处理，以保留其内部审批状态字段。旧文件双向读写、24 种可观察内容、重试与待审批恢复均有验证；这不代替实际模型服务/工具执行验收。
 
-2026-11-14 最新源码检查：Debug、`--no-restore`、`PublishAot=true`、`AotAnalysis=true` 编译通过，0 错误、178 个警告（上一轮 194 个）。
-这是编译和分析检查，没有执行原生发布或启动应用。上一轮关闭默认 JSON 反射的相关测试为 42/42；
-本轮 18 类选择项/控件模型的属性分派（含 AutoSuggestTokenBox 两个命令）、WinRT 转换元数据、集合赋值、页面 VM 属性提供器声明及 HTTP/元数据契约检查均通过。
+2026-11-15 最新源码检查：完整 Debug 重编译通过，0 错误、84 个警告；绑定警告 WMC1510 剩 7 个。
+构建记录为 `artifacts/aot-typed-binding-contracts.log`，分类见下表。
+使用 `--no-restore`、`PublishAot=true`、`AotAnalysis=true`，未关闭裁剪或 AOT 分析器。
+这是编译和分析检查，没有执行新的原生发布或启动应用。关闭默认 JSON 反射的相关回归 44/44；
+旧 AI 会话格式对照单独在托管反射模式验证，3/3 通过。
+本轮选择项/控件模型的属性分派、WinRT 转换元数据、集合赋值、页面 VM 属性提供器声明及 HTTP/元数据契约检查均按最终程序集复核。
 GachaArchive.Uid 的异常来自 DisplayMemberPath：即使 ItemsSource 使用 x:Bind，显示属性仍通过 ICustomPropertyProvider 查找。
 三个存档类型已补齐对应属性的生成访问器，且修复前程序集会被新增的分派检查拒绝。
 手写源码中的转换位置使用 CsWinRT 官方 DynamicWindowsRuntimeCast 标注；编译产物检查确认 71 个目标类型具有实际 DynamicDependency 根。
@@ -79,18 +82,23 @@ GachaArchive.Uid 的异常来自 DisplayMemberPath：即使 ItemsSource 使用 x
 统计卡片在 DataContext 变化时刷新私有类型化入口；下载窗口使用函数绑定，避开 Window 转换器查找根被当作 FrameworkElement 的生成代码错误。
 AutoSuggestTokenBox 的 ControlTemplate 上下文菜单命令改为源码声明的命令属性，并用限定范围的 `WinRT.GeneratedBindableCustomProperty` 暴露；生成结果包含两个命令访问器。控件不能直接套用仓库属性提供器：它同时遍历继承的 Control 属性，其中 nullable 值类型 setter 会产生 `Unsafe.Unbox<bool?>`（CS0453）。
 数据库生成宿主同样通过 Debug --no-restore 编译，仅余 NU1507；共享 DTO 的 WinRT 标注移到应用 UI 部分，未增加宿主依赖。
-仍需研究的警告按本轮编译统计如下，不以全局屏蔽方式清零：
+当前完整重编译的实际警告如下；没有新增全局或局部警告屏蔽：
 
 | 类别 | 数量 | 后续范围 |
 |---|---:|---|
-| WMC1510 | 92 | 剩余运行时属性路径、模板上下文与属性提供器 |
-| CsWinRT1034 / CsWinRT1035 | 0 | 当前编译没有这两类警告，未屏蔽分析器 |
-| CS8305 / WMC1501 | 76 | SDK 实验性图表、窗口布局和控件 API |
-| IL2026 / IL3050 | 5 | EF Core 与 EventTriggerBehavior 的裁剪/动态代码要求 |
-| IDE0005 | 4 | 数据库源码导入；修改需同步重新生成查询拦截器校验和 |
+| WMC1510 | 7 | 原生菜单 TemplateSettings 宽度 1；ItemsPanel 的祖先属性路径 3；AutoSuggest 通用 DisplayMemberPath/TextMemberPath 3 |
+| CsWinRT1034 / CsWinRT1035 | 0 | 71 个手写标注类型的实际裁剪根已复核 |
+| CS8305 | 75 | SDK 实验性图表、窗口布局和控件 API |
+| WMC1501 | 1 | SDK 实验性 XamlChartsResources |
+| IDE0005 | 0 | 数据库重复导入已清理，官方查询生成与校验通过 |
 | NU1507 | 1 | 保留原有包源策略 |
 
-本次编译统计不代表原生链接阶段的诊断；EF Core、事件行为及第三方程序集的裁剪/AOT 要求仍须在新原生发布中复核。
+7 个绑定警告来自通用控件的运行时路径与原生属性通知；AutoSuggest 当前六个调用页面均提供编译的 SuggestedItemTemplate，
+未删掉控件对 DisplayMemberPath/TextMemberPath 的通用支持。ItemsPanelTemplate 也未为消除警告改换视觉结构。
+本次检查实际覆盖 24 类属性分派，包括五个页面/用户视图的 ViewModel 和 CultivateItemView.IsToday；
+149 个生成 XAML 文件没有直接向 WinRT setter 传递 ImmutableArray；HTTP/元数据契约及 VM 声明检查通过。
+本次完整重编译未报告 IL2026/IL3050，但这不证明上游要求已解决：此前记录的 EF Core 和 EventTriggerBehavior 分析要求，
+以及第三方程序集、EF 生成枚举的原生链接诊断，仍须在新的原生发布中复核。没有关闭分析器，也没有为这些路径新增屏蔽。
 修复依据为 [CsWinRT 绑定说明](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/docs/aot-trimming.md#icustompropertyprovider-type-support-on-aot-winui-binding)
 和当前版本的 [转换标注生成器](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/Authoring/WinRT.SourceGenerator/DynamicWindowsRuntimeCastGenerator.cs)。
 泛型属性分派使用当前版本公开的 [ICustomPropertyProvider 实现契约](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/WinRT.Runtime/Projections/ICustomPropertyProvider.net5.cs)，没有启用反射回退。
@@ -104,6 +112,27 @@ NuGet.Config 保持原配置；本轮没有执行依赖还原或修改包版本�
 原 obj 程序集被用户侧映射占用，本轮使用 obj/aot-menu-check 和 artifacts/menu-check-bin 独立验证，没有终止用户进程。
 托盘菜单内容由 UserControl 承载九处编译绑定，Flyout 保留呈现和关闭生命周期；另有七处抽卡卡片可见性改用编译绑定。
 这些是编译/契约验证，没有重新发布或启动原生程序。
+
+2026-11-15 的模板实现保留原 ResourceDictionary 和模板视觉树。AutoSortList、ItemFlyoutContent、
+AutoSuggestTokenBox/Item、ItemIcon、MaterialNative、VerticalCard 仅增加字典的 x:Class/InitializeComponent，
+并在合并字典中实例化相应类型；模板绑定由生成的 IDataTemplateComponent.ProcessBindings 驱动，
+没有给 ResourceDictionary 添加 Loading 生命周期，也没有重新抽取 UserControl。
+页面模板通过带 x:DataType 的 ElementName Binding 直接引用页面公开的强类型 ViewModel；五个视图的 BindingProxy 全部移除，原代理类也已删除。
+ViewModel 暴露既有作用域实例，DataContext 更换时发出属性通知，保留服务容器的创建、取消与释放流程；不在 XAML 中另建 VM。
+五个视图使用限定为 ViewModel 属性的 GeneratedBindableCustomProperty，并检查最终程序集中的实际分派。
+本机编译器对模板中的 x:Bind 根页面引用生成了错误的 WeakReference 参数（CS1503）；该路径没有修改生成文件，改为上述有类型声明及静态分派的 Binding。
+ItemsRepeater 的 ElementName 跨模板问题 [#560](https://github.com/microsoft/microsoft-ui-xaml/issues/560) 已标记在 WinAppSDK 1.6 修复；本项目使用更新版本。
+15 处 DisplayMemberPath 改用 11 个共享强类型文本模板，仍显示原 Name/DisplayName/Uid/WorldLevel/Floor，
+保留原选项对象、类型化值、选择和相等性行为；会通知的账户名称继续 OneWay，快照选项使用 OneTime。
+AutoSuggest 编辑内容使用 PreTokenStringContainer.Text 的编译双向绑定，菜单命令与删除参数直接来自模板父控件。
+INamedValue 增加只读的对象值接口，NameValue<T> 显式实现它，不改变公共泛型 Value 或 JSON 字段。
+四种带输出的 AI 工具结果共用只读通知接口，原 JSON 契约保持不变。
+补齐 CultivateItemView.IsToday 的静态属性分派；修复 VerticalCard 不存在的 ElementName 宽度来源，
+以及中文引导页引用不存在的协议属性、导致真正的下游协议确认未能更新的问题。
+评分颜色转换器在明暗主题中原本完全相同，合并成一份后使用强类型绑定；其他主题相关配置保留。
+托盘菜单 TemplateSettings 宽度仍用原生运行时绑定，避免 OneTime 丢失后续宽度更新。
+字典实现遵循 [官方资源字典编译绑定说明](https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/data-binding-in-depth#resource-dictionaries-with-xbind)。
+这些变更没有改动 NuGet.Config、依赖版本、源生成器包或还原依赖；数据库查询产物由官方生成工具更新。
 
 数据库运行时升级使用版本化 SQL；生产查询具体化并由官方工具预生成。
 统一入口为 Generate-DatabaseAot.ps1，维护及回滚/边界覆盖见 [数据库实现](database-aot.md)。
@@ -136,5 +165,5 @@ CsWinRT 维持 2.3.1；3.0 的资产问题与包适配见 [独立评估](cswinrt
 2026-11-11 的 Debug 全量测试 274/274、关闭 JSON 反射回归 16/16；细节记录在 CODE_REVIEW.md。
 
 未验证：原生 GUI 启动/导航/退出、完整网络/AI/COM 路径、真实无对应运行时机器、MSIX 安装/卸载及性能。
-不把旧 194 条当成当前剩余诊断数，也不写“全部原生功能完成”。
+当前编译警告为 84 条；不把旧 194/178 条或此前原生链接诊断混入这轮统计，也不写“全部原生功能完成”。
 历史 JSON/扫描材料见 [归档](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/32976c2f4b7ef2f8053b34131ffd7fdbae5b5722/docs/aot-blockers.md)；R2R 旧验证保留于 CODE_REVIEW.md。
