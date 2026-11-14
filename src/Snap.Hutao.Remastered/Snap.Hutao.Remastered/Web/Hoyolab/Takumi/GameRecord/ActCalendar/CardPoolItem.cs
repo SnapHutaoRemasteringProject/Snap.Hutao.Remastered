@@ -5,7 +5,6 @@ using Snap.Hutao.Remastered.Model.Intrinsic;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar;
 
-[WinRT.GeneratedBindableCustomProperty]
 public partial class CardPoolItem
 {
     [JsonPropertyName("icon")]

@@ -10,6 +10,7 @@ using System.Globalization;
 
 namespace Snap.Hutao.Remastered.ViewModel.Backpack;
 
+[WinRT.GeneratedBindableCustomProperty]
 public sealed partial class BackpackWeaponItemView : BackpackItemView
 {
     [ObservableProperty]
