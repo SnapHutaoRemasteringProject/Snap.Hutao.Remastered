@@ -60,7 +60,6 @@
                 <wl:LiquidGlassComboBox shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                     x:Name="LevelComboBox"
                     shuxcth:ControlMaterialState.IsManaged="True"
-                    DisplayMemberPath="Level"
                     ItemsSource="{x:Bind Source, Mode=OneWay}"
                     SelectedItem="{x:Bind SelectedItem, Mode=TwoWay}"
                     Style="{StaticResource SettingsContentComboBoxStyle}"/>

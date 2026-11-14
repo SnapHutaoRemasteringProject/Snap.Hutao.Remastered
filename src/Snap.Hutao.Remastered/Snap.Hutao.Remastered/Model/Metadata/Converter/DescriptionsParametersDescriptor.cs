@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Converter;
 
-public sealed partial class DescriptionsParametersDescriptor : ValueConverter<DescriptionsParameters, IList<LevelParameters<string, ParameterDescription>>>
+public sealed partial class DescriptionsParametersDescriptor : ValueConverter<DescriptionsParameters, IList<ParameterLevel>>
 {
     [GeneratedRegex("{param([1-9][0-9]*?):(.+?)}")]
     private static partial Regex ParamRegex { get; }
@@ -21,7 +21,7 @@ public sealed partial class DescriptionsParametersDescriptor : ValueConverter<De
         return new(LevelFormat.Format(level), GetParameterDescription(from.Descriptions, from.Parameters[(SkillLevel)level]));
     }
 
-    public override IList<LevelParameters<string, ParameterDescription>> Convert(DescriptionsParameters from)
+    public override IList<ParameterLevel> Convert(DescriptionsParameters from)
     {
         ImmutableArray<LevelParameters<string, ParameterDescription>> result = from.Parameters.Convert(from.Descriptions, GetParameterDescription);
 
@@ -41,10 +41,10 @@ public sealed partial class DescriptionsParametersDescriptor : ValueConverter<De
                 builder.Add(new(item.Level, marked));
             }
 
-            return builder.ToImmutable();
+            result = builder.ToImmutable();
         }
 
-        return result;
+        return result.Select(item => new ParameterLevel(item.Level, item.Parameters)).ToList();
     }
 
     private static ImmutableArray<ParameterDescription> GetParameterDescription(ImmutableArray<string> descriptions, ImmutableArray<float> paramArray)
