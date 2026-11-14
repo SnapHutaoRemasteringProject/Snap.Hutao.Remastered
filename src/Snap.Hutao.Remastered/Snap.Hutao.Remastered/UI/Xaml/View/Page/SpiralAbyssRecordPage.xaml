@@ -694,7 +694,7 @@
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
                                         <cwc:Segmented
-                                            DisplayMemberPath="Floor"
+                                            ItemTemplate="{StaticResource AvatarRankFloorTemplate}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.HutaoSpiralAbyssDatabaseViewModel.AvatarUsageRanks, DataContext.HutaoSpiralAbyssDatabaseViewModel.AvatarUsageRanks.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.SelectedAvatarUsageRank, Mode=TwoWay}"/>
                                         <TextBlock
@@ -728,7 +728,7 @@
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
                                         <cwc:Segmented
-                                            DisplayMemberPath="Floor"
+                                            ItemTemplate="{StaticResource AvatarRankFloorTemplate}"
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.HutaoSpiralAbyssDatabaseViewModel.AvatarAppearanceRanks, DataContext.HutaoSpiralAbyssDatabaseViewModel.AvatarAppearanceRanks.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.SelectedAvatarAppearanceRank, Mode=TwoWay}"/>
                                         <TextBlock
@@ -759,7 +759,7 @@
                                     <cwc:Segmented
                                         Grid.Row="0"
                                         Margin="16,16,0,16"
-                                        DisplayMemberPath="Floor"
+                                        ItemTemplate="{StaticResource TeamAppearanceFloorTemplate}"
                                         ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.HutaoSpiralAbyssDatabaseViewModel.TeamAppearances, DataContext.HutaoSpiralAbyssDatabaseViewModel.TeamAppearances.IsDefaultOrEmpty), Mode=OneWay}"
                                         SelectedItem="{x:Bind DataContext.HutaoSpiralAbyssDatabaseViewModel.SelectedTeamAppearance, Mode=TwoWay}"/>
 

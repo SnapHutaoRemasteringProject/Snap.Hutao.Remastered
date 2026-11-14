@@ -417,7 +417,7 @@
                                                     Style="{ThemeResource SettingButtonStyle}"/>
                                                 <shuxc:SizeRestrictedContentControl>
                                                     <shuxc:ComboBox2
-                                                        DisplayMemberPath="DisplayName"
+                                                        ItemTemplate="{StaticResource LaunchSchemeDisplayNameTemplate}"
                                                         EnableMemberPath="IsNotCompatOnly"
                                                         IsEnabled="{x:Bind shsg:LaunchOptions.IsGameRunning.Value, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
                                                         ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.KnownSchemes, DataContext.KnownSchemes.IsDefaultOrEmpty), Mode=OneWay}"

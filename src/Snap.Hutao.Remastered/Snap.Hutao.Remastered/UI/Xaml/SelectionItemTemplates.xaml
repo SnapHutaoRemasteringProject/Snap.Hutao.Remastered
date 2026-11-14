@@ -1,0 +1,44 @@
+<ResourceDictionary
+    x:Class="Snap.Hutao.Remastered.UI.Xaml.SelectionItemTemplates"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shme="using:Snap.Hutao.Remastered.Model.Entity"
+    xmlns:shmmi="using:Snap.Hutao.Remastered.Model.Metadata.Item"
+    xmlns:shsgs="using:Snap.Hutao.Remastered.Service.Game.Scheme"
+    xmlns:shuxvd="using:Snap.Hutao.Remastered.UI.Xaml.View.Dialog"
+    xmlns:shva="using:Snap.Hutao.Remastered.ViewModel.AvatarProperty"
+    xmlns:shvc="using:Snap.Hutao.Remastered.ViewModel.Complex">
+    <DataTemplate x:Key="GameAccountNameTemplate" x:DataType="shme:GameAccount">
+        <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
+    </DataTemplate>
+    <DataTemplate x:Key="BackpackArchiveNameTemplate" x:DataType="shme:BackpackArchive">
+        <TextBlock Text="{x:Bind Name, Mode=OneTime}"/>
+    </DataTemplate>
+    <DataTemplate x:Key="AchievementArchiveNameTemplate" x:DataType="shme:AchievementArchive">
+        <TextBlock Text="{x:Bind Name, Mode=OneTime}"/>
+    </DataTemplate>
+    <DataTemplate x:Key="GachaArchiveUidTemplate" x:DataType="shme:GachaArchive">
+        <TextBlock Text="{x:Bind Uid, Mode=OneTime}"/>
+    </DataTemplate>
+    <DataTemplate x:Key="CultivateProjectNameTemplate" x:DataType="shme:CultivateProject">
+        <TextBlock Text="{x:Bind Name, Mode=OneTime}"/>
+    </DataTemplate>
+    <DataTemplate x:Key="LaunchSchemeDisplayNameTemplate" x:DataType="shsgs:LaunchScheme">
+        <TextBlock Text="{x:Bind DisplayName, Mode=OneTime}"/>
+    </DataTemplate>
+    <DataTemplate x:Key="PresetDisplayNameTemplate" x:DataType="shuxvd:PresetComboItem">
+        <TextBlock Text="{x:Bind DisplayName, Mode=OneTime}"/>
+    </DataTemplate>
+    <DataTemplate x:Key="ScoreOptionNameTemplate" x:DataType="shva:AvatarReliquaryScoreOption">
+        <TextBlock Text="{x:Bind Name, Mode=OneTime}"/>
+    </DataTemplate>
+    <DataTemplate x:Key="WorldLevelTemplate" x:DataType="shmmi:MaterialDropDistribution">
+        <TextBlock Text="{x:Bind WorldLevel, Mode=OneTime}"/>
+    </DataTemplate>
+    <DataTemplate x:Key="AvatarRankFloorTemplate" x:DataType="shvc:AvatarRankView">
+        <TextBlock Text="{x:Bind Floor, Mode=OneTime}"/>
+    </DataTemplate>
+    <DataTemplate x:Key="TeamAppearanceFloorTemplate" x:DataType="shvc:TeamAppearanceView">
+        <TextBlock Text="{x:Bind Floor, Mode=OneTime}"/>
+    </DataTemplate>
+</ResourceDictionary>

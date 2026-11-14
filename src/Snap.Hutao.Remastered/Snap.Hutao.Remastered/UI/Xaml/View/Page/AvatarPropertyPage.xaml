@@ -45,12 +45,6 @@
                         MaximumValue="50"
                         Minimum="#FF9E9E9E"
                         MinimumValue="0"/>
-                    <shuxdcs:Int32ToGradientColorConverter
-                        x:Key="TotalScoreToColorConverter"
-                        Maximum="#FFFF8F00"
-                        MaximumValue="100"
-                        Minimum="#FF9E9E9E"
-                        MinimumValue="0"/>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <shuxdcs:UInt32ToGradientColorConverter
@@ -63,14 +57,15 @@
                         MaximumValue="50"
                         Minimum="#FF9E9E9E"
                         MinimumValue="0"/>
-                    <shuxdcs:Int32ToGradientColorConverter
-                        x:Key="TotalScoreToColorConverter"
-                        Maximum="#FFFF8F00"
-                        MaximumValue="100"
-                        Minimum="#FF9E9E9E"
-                        MinimumValue="0"/>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
+
+            <shuxdcs:Int32ToGradientColorConverter
+                x:Key="TotalScoreToColorConverter"
+                Maximum="#FFFF8F00"
+                MaximumValue="100"
+                Minimum="#FF9E9E9E"
+                MinimumValue="0"/>
 
             <cwconv:BoolToObjectConverter x:Key="BoolToOpacityConverter">
                 <cwconv:BoolToObjectConverter.TrueValue>
@@ -708,7 +703,7 @@
                                         Height="32"
                                         Padding="12,6,0,7"
                                         shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                        DisplayMemberPath="Name"
+                                        ItemTemplate="{StaticResource ScoreOptionNameTemplate}"
                                         ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.ScoreConfigOptions, DataContext.ScoreConfigOptions.IsDefaultOrEmpty), Mode=OneWay}"
                                         SelectedItem="{x:Bind DataContext.CurrentScoreOption, Mode=TwoWay}"
                                         Style="{ThemeResource DefaultComboBoxStyle}"
@@ -948,7 +943,7 @@
                                                                             Style="{StaticResource BaseTextBlockStyle}"
                                                                             Text="{x:Bind DataContext.Summary.Avatars.CurrentItem.DisplayScore, Mode=OneWay}">
                                                                             <TextBlock.Foreground>
-                                                                                <SolidColorBrush Color="{Binding Summary.Avatars.CurrentItem.ScoreColorValue, Converter={ThemeResource TotalScoreToColorConverter}, Mode=OneWay}"/>
+                                                                                <SolidColorBrush Color="{x:Bind DataContext.Summary.Avatars.CurrentItem.ScoreColorValue, Converter={StaticResource TotalScoreToColorConverter}, Mode=OneWay}"/>
                                                                             </TextBlock.Foreground>
                                                                         </TextBlock>
                                                                     </StackPanel>

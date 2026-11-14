@@ -23,6 +23,6 @@
             shuxcth:ControlMaterialState.IsManaged="True"
             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
             MinWidth="240"
-            DisplayMemberPath="Name"/>
+            ItemTemplate="{StaticResource BackpackArchiveNameTemplate}"/>
     </Grid>
 </ContentDialog>

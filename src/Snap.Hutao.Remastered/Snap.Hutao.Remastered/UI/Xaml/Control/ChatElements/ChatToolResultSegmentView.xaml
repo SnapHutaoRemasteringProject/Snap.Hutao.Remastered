@@ -44,7 +44,7 @@
             </Border>
         </DataTemplate>
 
-        <DataTemplate x:Key="ContentCollectionToolResultTemplate">
+        <DataTemplate x:Key="ContentCollectionToolResultTemplate" x:DataType="snsao:IObservableToolResultOutputs">
             <Border
                 Padding="8"
                 Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
@@ -75,11 +75,11 @@
                             Grid.Column="2"
                             Opacity="0.7"
                             Style="{ThemeResource CaptionTextBlockStyle}"
-                            Text="{Binding CallId}"
+                            Text="{x:Bind CallId, Mode=OneWay}"
                             TextTrimming="CharacterEllipsis" />
                     </Grid>
 
-                    <ItemsControl ItemsSource="{Binding Outputs}" Visibility="{Binding Outputs, Converter={StaticResource ContentVisibilityConverter}}">
+                    <ItemsControl ItemsSource="{x:Bind Outputs, Mode=OneWay}" Visibility="{x:Bind Outputs, Converter={StaticResource ContentVisibilityConverter}, Mode=OneWay}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Spacing="4" />

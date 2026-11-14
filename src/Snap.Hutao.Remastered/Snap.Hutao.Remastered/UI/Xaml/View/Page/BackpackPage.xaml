@@ -91,7 +91,7 @@
                                 Style="{StaticResource BodyStrongTextBlockStyle}"
                                 Text="{shuxm:ResourceString Name=ViewPageBackpackPurchasedAppendPropTitle}"/>
                         </StackPanel>
-                        <ItemsControl ItemsSource="{Binding PurchasedAppendPropItems}">
+                        <ItemsControl x:DataType="shv:BackpackReliquaryItemView" ItemsSource="{Binding PurchasedAppendPropItems}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{Binding}"/>
@@ -559,7 +559,7 @@
                                 <wl:LiquidGlassComboBox
                                     shuxcth:ControlMaterialState.IsManaged="True"
                                     shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                    DisplayMemberPath="Name"
+                                    ItemTemplate="{StaticResource BackpackArchiveNameTemplate}"
                                     ItemsSource="{x:Bind DataContext.Archives, Mode=OneWay}"
                                     SelectedItem="{x:Bind DataContext.Archives.CurrentItem, Mode=TwoWay}"
                                     Style="{ThemeResource CommandBarComboBoxStyle}"/>

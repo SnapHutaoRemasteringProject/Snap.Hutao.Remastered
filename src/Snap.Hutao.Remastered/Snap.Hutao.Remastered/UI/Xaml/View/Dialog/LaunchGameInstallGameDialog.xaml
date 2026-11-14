@@ -51,7 +51,7 @@
         <shuxc:ComboBox2
             HorizontalAlignment="Stretch"
             VerticalAlignment="Center"
-            DisplayMemberPath="DisplayName"
+            ItemTemplate="{StaticResource LaunchSchemeDisplayNameTemplate}"
             EnableMemberPath="IsNotCompatOnly"
             ItemsSource="{x:Bind KnownSchemes, Mode=OneWay}"
             PlaceholderText="{shuxm:ResourceString Name=ViewDialogGameInstallLaunchScheme}"
