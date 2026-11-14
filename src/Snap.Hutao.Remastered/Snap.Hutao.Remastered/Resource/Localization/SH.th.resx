@@ -4352,6 +4352,12 @@
   <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
     <value>เปลี่ยนทางเข้าค่าคอมมิชชันประจำวันในคู่มือนักผจญภัยที่เคยพาไปยังแคทเธอรีน ให้เปิดหน้าต่างยืนยันการรับรางวัลค่าคอมมิชชันของแคทเธอรีนโดยตรง การคลิก “รับรางวัล” ครั้งแรกจะเปิดหน้าการสำรวจก่อน ส่วนการคลิกครั้งที่สอง หากค่าคอมมิชชันเสร็จสิ้นแล้ว จะเปิดหน้าจอการรับรางวัล</value>
   </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuHeader" xml:space="preserve">
+    <value>旧版派蒙菜单</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuDescription" xml:space="preserve">
+    <value>恢复“千星商城”和“人气奇域”在派蒙菜单的位置</value>
+  </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>ลบเวลาคูลดาวน์การข้ามบทสนทนา</value>
   </data>
