@@ -5,6 +5,7 @@ using Snap.Hutao.Remastered.Core.LifeCycle;
 using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.BetterGenshinImpact;
 using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.BetterGenshinImpact.Cultivation;
 using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.BetterGenshinImpact.Task;
+using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.FullTrust;
 using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.Model;
 using System.Collections.Immutable;
 
@@ -14,6 +15,11 @@ namespace Snap.Hutao.Remastered.Core.Text.Json;
 [JsonSerializable(typeof(HutaoActivationArguments))]
 [JsonSerializable(typeof(ToastNotificationRequest))]
 [JsonSerializable(typeof(ElevationStatusResponse))]
+[JsonSerializable(typeof(FullTrustProcessStartInfoRequest))]
+[JsonSerializable(typeof(FullTrustLoadLibraryRequest))]
+[JsonSerializable(typeof(FullTrustStartProcessResult))]
+[JsonSerializable(typeof(FullTrustLoadLibraryResult))]
+[JsonSerializable(typeof(FullTrustResumeMainThreadResult))]
 [JsonSerializable(typeof(PipeRequest<Void>))]
 [JsonSerializable(typeof(PipeRequest<long>))]
 [JsonSerializable(typeof(PipeRequest<string>))]
