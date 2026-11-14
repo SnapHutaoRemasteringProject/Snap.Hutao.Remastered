@@ -4352,6 +4352,12 @@
   <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
     <value>冒険者ハンドブックのキャサリンへ遷移するデイリー依頼の入口を、キャサリンの依頼報酬確認ダイアログを直接開くように変更します。初めて「報酬を受け取る」をクリックすると探索派遣ページが開き、2回目のクリック時に依頼が完了していれば報酬受け取り画面が開きます。</value>
   </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuHeader" xml:space="preserve">
+    <value>旧版派蒙菜单</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuDescription" xml:space="preserve">
+    <value>恢复“千星商城”和“人气奇域”在派蒙菜单的位置</value>
+  </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>会話スキップのクールダウンを削除</value>
   </data>
