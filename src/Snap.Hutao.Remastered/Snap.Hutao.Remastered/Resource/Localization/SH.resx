@@ -935,6 +935,18 @@
   <data name="ServiceDailyNoteNotifierExpeditionHint" xml:space="preserve">
     <value>探索派遣已完成</value>
   </data>
+  <data name="ServiceDailyNoteNotifierExpeditionCount" xml:space="preserve">
+    <value>探索派遣 {0}/{1}</value>
+  </data>
+  <data name="ServiceDailyNoteNotifierExpeditionProgress" xml:space="preserve">
+    <value>{0}/{1}</value>
+  </data>
+  <data name="ServiceDailyNoteTileLabelValue" xml:space="preserve">
+    <value>{0} {1}</value>
+  </data>
+  <data name="ServiceDailyNoteTileImageDownloadFailed" xml:space="preserve">
+    <value>下载图片失败：{0}</value>
+  </data>
   <data name="ServiceDailyNoteNotifierHomeCoin" xml:space="preserve">
     <value>洞天宝钱</value>
   </data>
@@ -2033,6 +2045,42 @@
   <data name="ViewModelDailyNoteRequestProgressTitle" xml:space="preserve">
     <value>正在获取实时便笺信息，请稍候</value>
   </data>
+  <data name="ViewModelDailyNoteUpdateTileCompleteHint" xml:space="preserve">
+    <value>磁贴已更新，实时便笺仅在宽磁贴和大磁贴上显示</value>
+  </data>
+  <data name="ViewModelDailyNoteUpdateTileFailed" xml:space="preserve">
+    <value>更新磁贴失败</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundFailed" xml:space="preserve">
+    <value>设置磁贴背景失败，请稍后重试</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundLoadFailed" xml:space="preserve">
+    <value>加载磁贴背景角色列表失败</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundSet" xml:space="preserve">
+    <value>磁贴背景设置成功</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundDownloading" xml:space="preserve">
+    <value>正在下载「{0}」的背景图…</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundDownloadCompleted" xml:space="preserve">
+    <value>「{0}」的背景图已更新</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundDownloadFallback" xml:space="preserve">
+    <value>未获取到「{0}」的最新背景图，已沿用原有背景</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundDownloadFailed" xml:space="preserve">
+    <value>「{0}」的背景图下载失败，磁贴暂时没有背景</value>
+  </data>
+  <data name="ViewModelDailyNoteClearTileComplete" xml:space="preserve">
+    <value>磁贴已清除</value>
+  </data>
+  <data name="ViewModelDailyNoteClearTileFailed" xml:space="preserve">
+    <value>清除磁贴失败</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundCleared" xml:space="preserve">
+    <value>磁贴背景已清除</value>
+  </data>
   <data name="ViewModelExportSuccessMessage" xml:space="preserve">
     <value>成功保存到指定位置</value>
   </data>
@@ -2692,6 +2740,21 @@
   </data>
   <data name="ViewPageDailyNoteRemoveToolTip" xml:space="preserve">
     <value>移除角色</value>
+  </data>
+  <data name="ViewPageDailyNotePinTileToolTip" xml:space="preserve">
+    <value>更新磁贴</value>
+  </data>
+  <data name="ViewPageDailyNoteTileBackgroundDescription" xml:space="preserve">
+    <value>选择角色后，其名片图片将用作开始菜单磁贴背景</value>
+  </data>
+  <data name="ViewPageDailyNoteTileBackgroundHeader" xml:space="preserve">
+    <value>磁贴背景</value>
+  </data>
+  <data name="ViewPageDailyNoteTileBackgroundNone" xml:space="preserve">
+    <value>无背景</value>
+  </data>
+  <data name="ViewPageDailyNoteUnpinTileToolTip" xml:space="preserve">
+    <value>清除磁贴</value>
   </data>
   <data name="ViewPageDailyNoteResinDiscountUsed" xml:space="preserve">
     <value>本周已消耗减半次数</value>
