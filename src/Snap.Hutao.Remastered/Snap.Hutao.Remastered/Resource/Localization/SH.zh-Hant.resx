@@ -4353,6 +4353,12 @@
   <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
     <value>將冒險之證中跳轉凱瑟琳的每日委託入口，改為直接開啟凱瑟琳的委託獎勵確認彈窗。第一次點擊「領取獎勵」會先開啟冒險派遣頁面；第二次點擊時，如果委託已完成，則會開啟領取獎勵介面。</value>
   </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuHeader" xml:space="preserve">
+    <value>旧版派蒙菜单</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuDescription" xml:space="preserve">
+    <value>恢复“千星商城”和“人气奇域”在派蒙菜单的位置</value>
+  </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>移除對話跳過冷卻</value>
   </data>

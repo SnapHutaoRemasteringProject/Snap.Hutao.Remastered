@@ -4358,6 +4358,12 @@
   <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
     <value>Изменяет переход к Кэтрин из ежедневных поручений в Справочнике искателя приключений так, чтобы сразу открывалось окно подтверждения награды за поручение у Кэтрин. При первом нажатии «Получить награду» сначала откроется страница экспедиций; при втором нажатии, если поручение выполнено, откроется интерфейс получения награды.</value>
   </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuHeader" xml:space="preserve">
+    <value>旧版派蒙菜单</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuDescription" xml:space="preserve">
+    <value>恢复“千星商城”和“人气奇域”在派蒙菜单的位置</value>
+  </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Убрать задержку пропуска диалогов</value>
   </data>

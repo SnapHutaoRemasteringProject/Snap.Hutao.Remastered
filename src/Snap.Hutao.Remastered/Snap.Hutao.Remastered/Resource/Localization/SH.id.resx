@@ -4352,6 +4352,12 @@ Ruang Tersedia: {2}</value>
   <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
     <value>Mengubah pintu masuk Komisi Harian di Buku Petualang yang menuju Katheryne menjadi langsung membuka jendela konfirmasi hadiah komisi Katheryne. Klik pertama pada "Klaim Hadiah" akan membuka halaman Ekspedisi terlebih dahulu; pada klik kedua, jika komisi sudah selesai, antarmuka klaim hadiah akan terbuka.</value>
   </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuHeader" xml:space="preserve">
+    <value>旧版派蒙菜单</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuDescription" xml:space="preserve">
+    <value>恢复“千星商城”和“人气奇域”在派蒙菜单的位置</value>
+  </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Hapus cooldown lewati dialog</value>
   </data>

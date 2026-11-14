@@ -4352,6 +4352,12 @@
   <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
     <value>모험가 협회 수첩에서 캐서린으로 이동하는 일일 의뢰 입구를 캐서린의 의뢰 보상 확인 팝업을 바로 여는 것으로 변경합니다. 「보상 수령」을 처음 클릭하면 탐험 파견 페이지가 먼저 열리고, 두 번째 클릭 시 의뢰가 완료되었다면 보상 수령 화면이 열립니다.</value>
   </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuHeader" xml:space="preserve">
+    <value>旧版派蒙菜单</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuDescription" xml:space="preserve">
+    <value>恢复“千星商城”和“人气奇域”在派蒙菜单的位置</value>
+  </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>대화 스킵 쿨다운 제거</value>
   </data>

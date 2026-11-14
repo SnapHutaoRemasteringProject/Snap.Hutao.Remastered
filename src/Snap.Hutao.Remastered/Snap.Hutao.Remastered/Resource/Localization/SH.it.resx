@@ -4352,6 +4352,12 @@ Spazio disponibile: {2}</value>
   <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
     <value>Sostituisce la voce delle commissioni giornaliere che apre Catherine nel Manuale dell'avventuriere con l'apertura diretta della finestra di conferma delle ricompense delle commissioni di Catherine. Il primo clic su «Riscuoti ricompense» apre prima la pagina delle spedizioni; il secondo clic, se la commissione è completata, apre l'interfaccia di riscossione delle ricompense.</value>
   </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuHeader" xml:space="preserve">
+    <value>旧版派蒙菜单</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuDescription" xml:space="preserve">
+    <value>恢复“千星商城”和“人气奇域”在派蒙菜单的位置</value>
+  </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Rimuovi il tempo di attesa per il salto dei dialoghi</value>
   </data>
