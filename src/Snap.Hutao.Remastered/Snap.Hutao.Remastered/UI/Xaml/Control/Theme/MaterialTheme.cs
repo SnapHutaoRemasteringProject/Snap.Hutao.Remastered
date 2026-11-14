@@ -55,6 +55,8 @@ public static class MaterialTheme
         MaterialBackground.Apply(material is ControlMaterial.LiquidGlass && LocalSetting.Get("LiquidGlass.CardEnabled", true));
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.ResourceDictionary))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.Composition.Hlsl.LiquidGlassBrush))]
     private static void Apply(ResourceDictionary dictionary, ControlMaterial material)
     {
         foreach (object value in dictionary.ThemeDictionaries.Values)

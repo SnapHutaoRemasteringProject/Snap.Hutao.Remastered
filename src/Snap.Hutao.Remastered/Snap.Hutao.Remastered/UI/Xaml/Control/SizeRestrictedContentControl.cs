@@ -15,6 +15,7 @@ public sealed partial class SizeRestrictedContentControl : ContentControl
     private double minContentHeight;
     private double lastAvailableWidth = double.NaN;
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     protected override Size MeasureOverride(Size availableSize)
     {
         // Wrapped content gets a new intrinsic height when its width changes.

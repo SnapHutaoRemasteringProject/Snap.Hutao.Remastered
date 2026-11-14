@@ -193,6 +193,7 @@ public sealed partial class AutoSuggestTokenBox : ListViewBase
         return innerItemsSource.ItemsSource.Count >= MaximumTokens;
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.TextBlock))]
     public void RefreshTokenCounter()
     {
         if (ContainerFromIndex(Items.Count - 1) is not AutoSuggestTokenBoxItem { AutoSuggestBox: { } autoSuggestBox, AutoSuggestTextBox: { } autoSuggestTextBox })
@@ -927,6 +928,7 @@ public sealed partial class AutoSuggestTokenBox : ListViewBase
         return true;
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.ListViewItem))]
     private bool SelectNewItem(AutoSuggestTokenBoxItem item, int increment, Func<int, bool> testFunc)
     {
         // find the item in the list

@@ -10,6 +10,7 @@ using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Service.Game.Package.Advanced;
 using Snap.Hutao.Remastered.UI.Windowing;
 using Snap.Hutao.Remastered.UI.Windowing.Abstraction;
+using Snap.Hutao.Remastered.UI.Xaml.Media.Backdrop;
 using Snap.Hutao.Remastered.ViewModel.Game;
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -30,6 +31,13 @@ public sealed partial class GamePackageOperationWindow : Microsoft.UI.Xaml.Windo
     private long downloadSpeedGraphLastUpdateTimestamp;
     private long installSpeedGraphLastUpdateTimestamp;
 
+    private GamePackageOperationViewModel? ViewModel => RootGrid.DataContext as GamePackageOperationViewModel;
+
+    private Visibility GetVisibility(bool value) => value ? Visibility.Visible : Visibility.Collapsed;
+
+    private double GetBackdropOpacity(BackdropType value) => value is BackdropType.None ? 1 : 0;
+
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Windowing.OverlappedPresenter))]
     public GamePackageOperationWindow(IServiceProvider serviceProvider)
     {
         InitializeComponent();
@@ -51,6 +59,7 @@ public sealed partial class GamePackageOperationWindow : Microsoft.UI.Xaml.Windo
         IServiceScope scope = serviceProvider.CreateScope();
         this.InitializeController(scope.ServiceProvider);
         RootGrid.InitializeDataContext<GamePackageOperationViewModel>(scope.ServiceProvider);
+        Bindings.Update();
     }
 
     public FrameworkElement TitleBarCaptionAccess { get => DraggableGrid; }

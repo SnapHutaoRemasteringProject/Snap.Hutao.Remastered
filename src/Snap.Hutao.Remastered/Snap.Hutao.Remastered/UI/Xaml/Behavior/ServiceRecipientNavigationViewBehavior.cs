@@ -123,6 +123,7 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
         LocalSetting.Set(SettingKeys.IsNavPaneOpen, sender.IsPaneOpen);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.NavigationViewItem))]
     private static void OnItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
     {
         if (args.InvokedItemContainer is not NavigationViewItem item)

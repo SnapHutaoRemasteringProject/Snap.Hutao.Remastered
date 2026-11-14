@@ -22,7 +22,7 @@
         <x:Double x:Key="NumberBoxMinWidth">180</x:Double>
         <x:Double x:Key="ContentDialogMaxWidth">1200</x:Double>
 
-        <DataTemplate x:Key="SkillTemplate">
+        <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Model.Calculable" x:DataType="aot:ICalculableSkill" x:Key="SkillTemplate">
             <Border Margin="0,2,0,0" Style="{StaticResource BorderCardStyle}">
                 <Grid Margin="8" ColumnSpacing="6">
                     <Grid.ColumnDefinitions>
@@ -38,22 +38,22 @@
                         Width="36"
                         Height="36"
                         ShowAsMonoChrome="True"
-                        Source="{Binding Icon}"/>
+                        Source="{x:Bind Icon, Mode=OneWay}"/>
                     <TextBlock
                         Grid.Column="1"
                         Margin="16,0,0,0"
                         VerticalAlignment="Center"
-                        Text="{Binding Name}"
+                        Text="{x:Bind Name, Mode=OneWay}"
                         TextTrimming="CharacterEllipsis"/>
                     <NumberBox
                         Grid.Column="3"
                         MinWidth="{StaticResource NumberBoxMinWidth}"
                         VerticalAlignment="Center"
                         essential:NumberBoxHelper.AcrylicWorkaround="True"
-                        Maximum="{Binding LevelMax}"
-                        Minimum="{Binding LevelMin}"
+                        Maximum="{x:Bind LevelMax, Mode=OneWay}"
+                        Minimum="{x:Bind LevelMin, Mode=OneWay}"
                         SpinButtonPlacementMode="Inline"
-                        Value="{Binding LevelCurrent, Mode=TwoWay}"/>
+                        Value="{x:Bind LevelCurrent, Mode=TwoWay}"/>
                     <FontIcon
                         Grid.Column="4"
                         Margin="8"
@@ -64,10 +64,10 @@
                         MinWidth="{StaticResource NumberBoxMinWidth}"
                         VerticalAlignment="Center"
                         essential:NumberBoxHelper.AcrylicWorkaround="True"
-                        Maximum="{Binding LevelMax}"
-                        Minimum="{Binding LevelCurrent, Mode=OneWay}"
+                        Maximum="{x:Bind LevelMax, Mode=OneWay}"
+                        Minimum="{x:Bind LevelCurrent, Mode=OneWay}"
                         SpinButtonPlacementMode="Inline"
-                        Value="{Binding LevelTarget, Mode=TwoWay}"/>
+                        Value="{x:Bind LevelTarget, Mode=TwoWay}"/>
                 </Grid>
             </Border>
         </DataTemplate>
@@ -97,34 +97,34 @@
                     Grid.Column="0"
                     Width="36"
                     Height="36"
-                    Icon="{Binding Icon}"
-                    Quality="{Binding Quality}"/>
+                    Icon="{x:Bind Avatar.Icon, Mode=OneWay}"
+                    Quality="{x:Bind Avatar.Quality, Mode=OneWay}"/>
                 <TextBlock
                     Grid.Column="1"
                     Margin="16,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding Name}"
+                    Text="{x:Bind Avatar.Name, Mode=OneWay}"
                     TextTrimming="CharacterEllipsis"/>
                 <StackPanel
                     Grid.Column="2"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"
-                    Visibility="{Binding IsPromotionAvailable}">
+                    Visibility="{x:Bind Avatar.IsPromotionAvailable, Mode=OneWay}">
                     <wl:LiquidGlassCheckBox
                         VerticalAlignment="Center"
                         shuxcth:ControlMaterialState.IsManaged="True"
                         Content="{shuxm:ResourceString Name=ViewDialogCultivatePromotionDeltaPromoted}"
-                        IsChecked="{Binding IsPromoted, Mode=TwoWay}"/>
+                        IsChecked="{x:Bind Avatar.IsPromoted, Mode=TwoWay}"/>
                 </StackPanel>
                 <NumberBox
                     Grid.Column="3"
                     MinWidth="{StaticResource NumberBoxMinWidth}"
                     VerticalAlignment="Center"
                     essential:NumberBoxHelper.AcrylicWorkaround="True"
-                    Maximum="{Binding LevelMax}"
-                    Minimum="{Binding LevelMin}"
+                    Maximum="{x:Bind Avatar.LevelMax, Mode=OneWay}"
+                    Minimum="{x:Bind Avatar.LevelMin, Mode=OneWay}"
                     SpinButtonPlacementMode="Inline"
-                    Value="{Binding LevelCurrent, Mode=TwoWay}"/>
+                    Value="{x:Bind Avatar.LevelCurrent, Mode=TwoWay}"/>
                 <FontIcon
                     Grid.Column="4"
                     Margin="8"
@@ -135,10 +135,10 @@
                     MinWidth="{StaticResource NumberBoxMinWidth}"
                     VerticalAlignment="Center"
                     essential:NumberBoxHelper.AcrylicWorkaround="True"
-                    Maximum="{Binding LevelMax}"
-                    Minimum="{Binding LevelCurrent, Mode=OneWay}"
+                    Maximum="{x:Bind Avatar.LevelMax, Mode=OneWay}"
+                    Minimum="{x:Bind Avatar.LevelCurrent, Mode=OneWay}"
                     SpinButtonPlacementMode="Inline"
-                    Value="{Binding LevelTarget, Mode=TwoWay}"/>
+                    Value="{x:Bind Avatar.LevelTarget, Mode=TwoWay}"/>
             </Grid>
 
             <ItemsControl ItemTemplate="{StaticResource SkillTemplate}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(Avatar.Skills, Avatar.Skills.IsDefaultOrEmpty)}"/>
@@ -162,34 +162,34 @@
                     Grid.Column="0"
                     Width="36"
                     Height="36"
-                    Icon="{Binding Icon}"
-                    Quality="{Binding Quality}"/>
+                    Icon="{x:Bind Weapon.Icon, Mode=OneWay}"
+                    Quality="{x:Bind Weapon.Quality, Mode=OneWay}"/>
                 <TextBlock
                     Grid.Column="1"
                     Margin="16,0,0,0"
                     VerticalAlignment="Center"
-                    Text="{Binding Name}"
+                    Text="{x:Bind Weapon.Name, Mode=OneWay}"
                     TextTrimming="CharacterEllipsis"/>
                 <StackPanel
                     Grid.Column="2"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal"
-                    Visibility="{Binding IsPromotionAvailable}">
+                    Visibility="{x:Bind Weapon.IsPromotionAvailable, Mode=OneWay}">
                     <wl:LiquidGlassCheckBox
                         VerticalAlignment="Center"
                         shuxcth:ControlMaterialState.IsManaged="True"
                         Content="{shuxm:ResourceString Name=ViewDialogCultivatePromotionDeltaPromoted}"
-                        IsChecked="{Binding IsPromoted, Mode=TwoWay}"/>
+                        IsChecked="{x:Bind Weapon.IsPromoted, Mode=TwoWay}"/>
                 </StackPanel>
                 <NumberBox
                     Grid.Column="3"
                     MinWidth="{StaticResource NumberBoxMinWidth}"
                     VerticalAlignment="Center"
                     essential:NumberBoxHelper.AcrylicWorkaround="True"
-                    Maximum="{Binding LevelMax}"
-                    Minimum="{Binding LevelMin}"
+                    Maximum="{x:Bind Weapon.LevelMax, Mode=OneWay}"
+                    Minimum="{x:Bind Weapon.LevelMin, Mode=OneWay}"
                     SpinButtonPlacementMode="Inline"
-                    Value="{Binding LevelCurrent, Mode=TwoWay}"/>
+                    Value="{x:Bind Weapon.LevelCurrent, Mode=TwoWay}"/>
                 <FontIcon
                     Grid.Column="4"
                     Margin="8"
@@ -200,10 +200,10 @@
                     MinWidth="{StaticResource NumberBoxMinWidth}"
                     VerticalAlignment="Center"
                     essential:NumberBoxHelper.AcrylicWorkaround="True"
-                    Maximum="{Binding LevelMax}"
-                    Minimum="{Binding LevelCurrent, Mode=OneWay}"
+                    Maximum="{x:Bind Weapon.LevelMax, Mode=OneWay}"
+                    Minimum="{x:Bind Weapon.LevelCurrent, Mode=OneWay}"
                     SpinButtonPlacementMode="Inline"
-                    Value="{Binding LevelTarget, Mode=TwoWay}"/>
+                    Value="{x:Bind Weapon.LevelTarget, Mode=TwoWay}"/>
             </Grid>
         </StackPanel>
 

@@ -36,6 +36,7 @@ public static class AppActivationArgumentsExtensions
             return true;
         }
 
+        [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.Windows.AppNotifications.AppNotificationActivatedEventArgs))]
         public bool TryGetAppNotificationActivatedArguments(out string? argument, [NotNullWhen(true)] out IDictionary<string, string>? arguments, [NotNullWhen(true)] out IDictionary<string, string>? userInput)
         {
             argument = null;

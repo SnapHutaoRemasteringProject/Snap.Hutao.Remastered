@@ -60,6 +60,7 @@ public sealed partial class DescriptionRichTextBlock : ContentControl
         d.As<DescriptionRichTextBlock>().Content.As<TextBlockType>().Style = e.NewValue.As<Style>();
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Documents.Paragraph))]
     private void UpdateDescription(TextBlockType textBlock, string? text)
     {
         if (textBlock.Blocks is not [Paragraph paragraph])
@@ -85,6 +86,8 @@ public sealed partial class DescriptionRichTextBlock : ContentControl
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Documents.Hyperlink))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Documents.Span))]
     private void DetachHyperLinkClickEvent(InlineCollection inlineCollection)
     {
         foreach (Inline inline in inlineCollection)

@@ -40,6 +40,7 @@ public sealed partial class AnnouncementPage : ScopedPage
 
     // A DataTemplate has its own binding scope. Give its button the existing
     // command directly so ButtonBase retains async CanExecute handling.
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase))]
     private void OnCopyCodeLoaded(object sender, RoutedEventArgs args)
     {
         if (sender is ButtonBase button && base.DataContext is AnnouncementViewModel viewModel)
@@ -48,6 +49,7 @@ public sealed partial class AnnouncementPage : ScopedPage
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase))]
     private void OnCopyCodeUnloaded(object sender, RoutedEventArgs args)
     {
         if (sender is ButtonBase button)
