@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.UI.Input;
@@ -33,6 +34,12 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox;
 [TemplatePart(Name = UnfocusedState, Type = typeof(VisualState))]
 [TemplatePart(Name = MaxReachedState, Type = typeof(VisualState))]
 [TemplatePart(Name = MaxUnreachedState, Type = typeof(VisualState))]
+// The context menu in AutoSuggestTokenBox.xaml binds these two commands through a classic
+// {Binding RelativeSource=TemplatedParent}. Non-x:Bind paths need an AOT property provider,
+// and only the two command properties are bound, so the scoped form is used instead of the
+// repository generator (which walks every inherited Control property and emits a nullable
+// value type setter that does not compile).
+[WinRT.GeneratedBindableCustomProperty([nameof(SelectAllTokensAndTextCommand), nameof(RemoveItemCommand)], [])]
 public sealed partial class AutoSuggestTokenBox : ListViewBase
 {
     // Compiled TwoWay bindings require the target DP identifier to be public.
@@ -342,7 +349,9 @@ public sealed partial class AutoSuggestTokenBox : ListViewBase
         }
     }
 
-    [Command("SelectAllTokensAndTextCommand")]
+    [field: MaybeNull]
+    public IRelayCommand SelectAllTokensAndTextCommand => field ??= new RelayCommand(SelectAllTokensAndText);
+
     public void SelectAllTokensAndText()
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Select all tokens and text", "AutoSuggestTokenBox.Command"));
@@ -891,7 +900,9 @@ public sealed partial class AutoSuggestTokenBox : ListViewBase
         return tokenString;
     }
 
-    [Command("RemoveItemCommand")]
+    [field: MaybeNull]
+    public IRelayCommand<AutoSuggestTokenBoxItem> RemoveItemCommand => field ??= new RelayCommand<AutoSuggestTokenBoxItem>(RemoveToken);
+
     private void RemoveToken(AutoSuggestTokenBoxItem? item)
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Remove token", "AutoSuggestTokenBox.Command"));
