@@ -30,6 +30,7 @@ public sealed partial class WebView2Window : Microsoft.UI.Xaml.Window,
     private readonly WindowId parentWindowId;
     private readonly IServiceScope scope;
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Windowing.OverlappedPresenter))]
     public WebView2Window(IServiceProvider serviceProvider, WindowId parentWindowId, IWebView2ContentProvider contentProvider)
     {
         this.parentWindowId = parentWindowId;

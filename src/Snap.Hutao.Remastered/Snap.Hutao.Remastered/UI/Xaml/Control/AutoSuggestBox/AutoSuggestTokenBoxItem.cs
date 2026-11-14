@@ -78,6 +78,7 @@ public partial class AutoSuggestTokenBoxItem : ListViewItem
     }
 
     /// <inheritdoc/>
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox))]
     protected override void OnApplyTemplate()
     {
         base.OnApplyTemplate();
@@ -88,6 +89,7 @@ public partial class AutoSuggestTokenBoxItem : ListViewItem
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.FontIconSource))]
     private void OnAutoSuggestBoxApplyTemplate(Microsoft.UI.Xaml.Controls.AutoSuggestBox asb)
     {
         // Revoke previous events
@@ -172,6 +174,7 @@ public partial class AutoSuggestTokenBoxItem : ListViewItem
         VisualStateManager.GoToState(Owner, AutoSuggestTokenBox.FocusedState, true);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Button))]
     private void OnAutoSuggestBoxLoaded(object sender, RoutedEventArgs e)
     {
         ArgumentNullException.ThrowIfNull(AutoSuggestBox);
@@ -289,6 +292,7 @@ public partial class AutoSuggestTokenBoxItem : ListViewItem
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.TextBox))]
     private void OnAutoSuggestTextBoxPreviewKeyDown(object sender, KeyRoutedEventArgs e)
     {
         if (sender is not TextBox autoSuggestTextBox)

@@ -16,6 +16,7 @@ namespace Snap.Hutao.Remastered.UI.Shell;
 
 public sealed class NotifyIconXamlHostWindow : Window, IWindowNeedEraseBackground, IXamlWindowClosedHandler
 {
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Windowing.OverlappedPresenter))]
     public NotifyIconXamlHostWindow(IServiceProvider serviceProvider)
     {
         Content = new Border();

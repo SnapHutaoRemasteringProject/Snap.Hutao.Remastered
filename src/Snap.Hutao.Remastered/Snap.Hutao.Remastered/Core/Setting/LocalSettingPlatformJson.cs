@@ -7,6 +7,7 @@ namespace Snap.Hutao.Remastered.Core.Setting;
 
 internal static class LocalSettingPlatformJson
 {
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Windows.Storage.ApplicationDataCompositeValue))]
     public static void Write(Utf8JsonWriter writer, object value)
     {
         switch (value)

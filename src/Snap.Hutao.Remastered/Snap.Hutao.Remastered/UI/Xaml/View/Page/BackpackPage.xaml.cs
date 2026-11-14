@@ -22,6 +22,7 @@ public sealed partial class BackpackPage : ScopedPage
         InitializeDataContext<BackpackViewModel>();
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private void OnPurchasedAppendPropIconTapped(object sender, TappedRoutedEventArgs e)
     {
         // The whole card opens the item detail flyout on Tapped, stop it from replacing this one.

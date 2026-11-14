@@ -9,6 +9,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml;
 [DependencyProperty<double>("SquareLength", DefaultValue = 0D, PropertyChangedCallbackName = nameof(OnSquareLengthChanged), IsAttached = true, TargetType = typeof(FrameworkElement), NotNull = true)]
 public sealed partial class FrameworkElementHelper
 {
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private static void OnSquareLengthChanged(DependencyObject dp, DependencyPropertyChangedEventArgs e)
     {
         FrameworkElement element = (FrameworkElement)dp;

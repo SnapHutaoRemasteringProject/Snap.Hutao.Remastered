@@ -17,6 +17,7 @@ public sealed partial class PivotBeyondModeBehavior : BehaviorBase<Pivot>
     private readonly List<PivotItem> normalOnlyItems = [];
     private bool isBeyondModeInitialized;
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.PivotItem))]
     protected override void OnAssociatedObjectLoaded()
     {
         if (overviewItem is not null)

@@ -22,6 +22,7 @@ public sealed partial class AutoSortList : WinUIControl
         DefaultStyleKey = typeof(AutoSortList);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.ListView))]
     protected override void OnApplyTemplate()
     {
         base.OnApplyTemplate();

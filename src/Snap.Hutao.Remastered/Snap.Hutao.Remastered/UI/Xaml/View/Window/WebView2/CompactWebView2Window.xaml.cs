@@ -71,6 +71,7 @@ public sealed partial class CompactWebView2Window : Microsoft.UI.Xaml.Window,
 
     private bool isLocked;
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Windowing.OverlappedPresenter))]
     public CompactWebView2Window(IServiceProvider serviceProvider)
     {
         opacity = (byte)(LocalSetting.Get(SettingKeys.CompactWebView2WindowInactiveOpacity, 50D) * 255 / 100);

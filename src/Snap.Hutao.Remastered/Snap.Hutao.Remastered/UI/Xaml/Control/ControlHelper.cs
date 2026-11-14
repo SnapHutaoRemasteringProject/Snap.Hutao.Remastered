@@ -10,6 +10,8 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Control;
 [DependencyProperty<Brush>("Background", PropertyChangedCallbackName = nameof(OnBackgroundChanged), IsAttached = true, TargetType = typeof(Microsoft.UI.Xaml.Controls.Control))]
 public sealed partial class ControlHelper
 {
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Control))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Media.Brush))]
     private static void OnBackgroundChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
     {
         if (sender is not Microsoft.UI.Xaml.Controls.Control control)

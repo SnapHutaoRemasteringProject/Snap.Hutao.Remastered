@@ -10,6 +10,7 @@ public sealed partial class AspectRatioComboBoxTemplateSelector : DataTemplateSe
 {
     public DataTemplate ListTemplate { get; set; } = default!;
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.ContentPresenter))]
     protected override DataTemplate? SelectTemplateCore(object item, DependencyObject container)
     {
         return container is ContentPresenter ? default : ListTemplate;

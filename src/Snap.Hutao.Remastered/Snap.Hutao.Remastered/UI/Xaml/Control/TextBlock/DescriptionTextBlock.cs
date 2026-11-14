@@ -86,6 +86,8 @@ public sealed partial class DescriptionTextBlock : ContentControl
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Documents.Hyperlink))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Documents.Span))]
     private void DetachHyperLinkClickEvent(InlineCollection inlineCollection)
     {
         foreach (Inline inline in inlineCollection)

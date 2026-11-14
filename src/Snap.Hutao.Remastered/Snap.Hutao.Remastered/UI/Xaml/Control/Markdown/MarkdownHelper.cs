@@ -695,6 +695,7 @@ internal static partial class MarkdownHelper
         return $"![{altText}]({url} \"{title}\")";
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Media.Brush))]
     internal static Brush GetThemeBrush(string resourceKey, string fallbackResourceKey)
     {
         try

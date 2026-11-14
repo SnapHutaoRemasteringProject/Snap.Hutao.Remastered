@@ -22,6 +22,7 @@ public sealed partial class GuideView : UserControl
             progress.SelectedIndex = GuideNavigation.StepIndex(viewModel.State);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.ComboBox))]
     private void OnControlMaterialSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (sender is ComboBox selector && DataContext is GuideViewModel viewModel)

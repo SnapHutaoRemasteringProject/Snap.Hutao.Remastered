@@ -49,6 +49,7 @@ public sealed partial class CachedImage : Microsoft.UI.Xaml.Controls.Control
 
     private bool IsInitialized { get; set; }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Image))]
     protected override void OnApplyTemplate()
     {
         if (Image is { } oldImage)
@@ -150,6 +151,7 @@ public sealed partial class CachedImage : Microsoft.UI.Xaml.Controls.Control
         previous?.Dispose();
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private static void OnImageOpened(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement element || XamlApplicationLifetime.Exiting)
@@ -162,6 +164,7 @@ public sealed partial class CachedImage : Microsoft.UI.Xaml.Controls.Control
         element.Opacity = 1D;
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Image))]
     private static void OnImageFailed(object sender, ExceptionRoutedEventArgs e)
     {
         if (sender is not Microsoft.UI.Xaml.Controls.Image image || XamlApplicationLifetime.Exiting)
@@ -376,6 +379,7 @@ public sealed partial class CachedImage : Microsoft.UI.Xaml.Controls.Control
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Media.Imaging.BitmapImage))]
     [Command("CopyToClipboardCommand")]
     private async Task CopyToClipboard()
     {

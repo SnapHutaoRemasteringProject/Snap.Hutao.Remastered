@@ -25,7 +25,7 @@
             <TextBlock
                 Margin="0,3,0,3"
                 Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                Text="{Binding UserGameRole}"/>
+                Text="{x:Bind Entry.UserGameRole, Mode=OneWay}"/>
             <cwc:SettingsCard
                 Width="480"
                 Padding="16,8"
@@ -34,17 +34,17 @@
                     <shuxcth:MaterialSwap.Native>
                         <Slider
                             MinWidth="160"
-                            Maximum="{Binding DailyNote.MaxResin}"
+                            Maximum="{x:Bind Entry.DailyNote.MaxResin, Mode=OneWay}"
                             Minimum="0"
-                            Value="{Binding ResinNotifyThreshold, Mode=TwoWay}"/>
+                            Value="{x:Bind Entry.ResinNotifyThreshold, Mode=TwoWay}"/>
                     </shuxcth:MaterialSwap.Native>
                     <shuxcth:MaterialSwap.Glass>
                         <wl:LiquidGlassSlider
                             MinWidth="160"
                             shuxcth:ControlMaterialState.IsManaged="True"
-                            Maximum="{Binding DailyNote.MaxResin}"
+                            Maximum="{x:Bind Entry.DailyNote.MaxResin, Mode=OneWay}"
                             Minimum="0"
-                            Value="{Binding ResinNotifyThreshold, Mode=TwoWay}"/>
+                            Value="{x:Bind Entry.ResinNotifyThreshold, Mode=TwoWay}"/>
                     </shuxcth:MaterialSwap.Glass>
                 </shuxcth:MaterialSwap>
             </cwc:SettingsCard>
@@ -53,28 +53,28 @@
                     <shuxcth:MaterialSwap.Native>
                         <Slider
                             MinWidth="160"
-                            Maximum="{Binding DailyNote.MaxHomeCoin}"
+                            Maximum="{x:Bind Entry.DailyNote.MaxHomeCoin, Mode=OneWay}"
                             Minimum="0"
-                            Value="{Binding HomeCoinNotifyThreshold, Mode=TwoWay}"/>
+                            Value="{x:Bind Entry.HomeCoinNotifyThreshold, Mode=TwoWay}"/>
                     </shuxcth:MaterialSwap.Native>
                     <shuxcth:MaterialSwap.Glass>
                         <wl:LiquidGlassSlider
                             MinWidth="160"
                             shuxcth:ControlMaterialState.IsManaged="True"
-                            Maximum="{Binding DailyNote.MaxHomeCoin}"
+                            Maximum="{x:Bind Entry.DailyNote.MaxHomeCoin, Mode=OneWay}"
                             Minimum="0"
-                            Value="{Binding HomeCoinNotifyThreshold, Mode=TwoWay}"/>
+                            Value="{x:Bind Entry.HomeCoinNotifyThreshold, Mode=TwoWay}"/>
                     </shuxcth:MaterialSwap.Glass>
                 </shuxcth:MaterialSwap>
             </cwc:SettingsCard>
             <cwc:SettingsCard Padding="16,8" Header="{shuxm:ResourceString Name=ViewDialogDailyNoteNotificationTransformerNotify}">
-                <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{Binding TransformerNotify, Mode=TwoWay}"/>
+                <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind Entry.TransformerNotify, Mode=TwoWay}"/>
             </cwc:SettingsCard>
             <cwc:SettingsCard Padding="16,8" Header="{shuxm:ResourceString Name=ViewDialogDailyNoteNotificationDailyTaskNotify}">
-                <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{Binding DailyTaskNotify, Mode=TwoWay}"/>
+                <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind Entry.DailyTaskNotify, Mode=TwoWay}"/>
             </cwc:SettingsCard>
             <cwc:SettingsCard Padding="16,8" Header="{shuxm:ResourceString Name=ViewDialogDailyNoteNotificationExpeditionNotify}">
-                <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{Binding ExpeditionNotify, Mode=TwoWay}"/>
+                <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind Entry.ExpeditionNotify, Mode=TwoWay}"/>
             </cwc:SettingsCard>
         </StackPanel>
     </ScrollViewer>

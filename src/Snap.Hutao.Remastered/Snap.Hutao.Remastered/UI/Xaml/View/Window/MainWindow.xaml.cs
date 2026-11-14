@@ -1,4 +1,4 @@
-﻿// Copyright (c) DGP Studio. All rights reserved.
+// Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
 using Microsoft.UI.Input;
@@ -42,6 +42,7 @@ public sealed partial class MainWindow : Microsoft.UI.Xaml.Window,
         Instance = this;
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Windowing.OverlappedPresenter))]
     partial void PostConstruct(IServiceProvider serviceProvider)
     {
         MainView.Loaded += MainWindow_Loaded;

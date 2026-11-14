@@ -16,6 +16,7 @@ public sealed class DeferContentLoader : IDeferContentLoader
         contentHost.SetTarget(element);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.DependencyObject))]
     public DependencyObject? Load(string name)
     {
         if (contentHost.TryGetTarget(out FrameworkElement? element))

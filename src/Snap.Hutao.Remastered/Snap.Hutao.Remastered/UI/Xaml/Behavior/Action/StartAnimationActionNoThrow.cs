@@ -12,6 +12,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 public sealed partial class StartAnimationActionNoThrow : DependencyObject, IAction
 {
     /// <inheritdoc/>
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.UIElement))]
     public object Execute(object sender, object parameter)
     {
         if (Animation is not null)

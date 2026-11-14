@@ -426,6 +426,10 @@ the build fails with `CS9275`); write a normal constructor in that case.
 - `JsonSerializeContexts.Generated` combines generated contexts as `IJsonTypeInfoResolver`s on
   the caller's options. Do not construct each context with a cloned options instance: nested
   converters must resolve contracts through the same options and resolver chain.
+- XAML binding annotations for entities/DTOs also compiled by `Snap.Hutao.Database.Model` must
+  stay in application-only partial declarations (`Model/Entity/*.Presentation.cs` or
+  `UI/Xaml/Data/BindingProperties`). The database host must not acquire WinUI/WinRT dependencies
+  merely to expose a display property in the application.
 - `JsonSerialize` freezes the options on first use and retrieves their cached `JsonTypeInfo`.
   An unconfigured resolver, missing contract or resolver error is reported to the caller; the
   facade never creates reflection options or catches those errors to retry with a different policy.

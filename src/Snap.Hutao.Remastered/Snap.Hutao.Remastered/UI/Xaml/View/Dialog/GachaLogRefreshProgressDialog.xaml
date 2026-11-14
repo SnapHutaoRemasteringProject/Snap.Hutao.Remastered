@@ -13,12 +13,12 @@
     mc:Ignorable="d">
 
     <ContentDialog.Resources>
-        <DataTemplate x:Key="GachaItemDataTemplate">
+        <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Model" x:DataType="aot:Item" x:Key="GachaItemDataTemplate">
             <shuxc:ItemIcon
                 shux:FrameworkElementHelper.SquareLength="60"
-                Badge="{Binding Badge}"
-                Icon="{Binding Icon}"
-                Quality="{Binding Quality}"/>
+                Badge="{x:Bind Badge, Mode=OneWay}"
+                Icon="{x:Bind Icon, Mode=OneWay}"
+                Quality="{x:Bind Quality, Mode=OneWay}"/>
         </DataTemplate>
     </ContentDialog.Resources>
 

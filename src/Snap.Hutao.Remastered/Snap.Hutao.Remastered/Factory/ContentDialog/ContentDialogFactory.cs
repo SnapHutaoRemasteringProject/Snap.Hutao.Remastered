@@ -21,6 +21,7 @@ public sealed partial class ContentDialogFactory : IContentDialogFactory
 
     public partial ITaskContext TaskContext { get; }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Style))]
     public async ValueTask<ContentDialogResult> CreateForConfirmAsync(string title, string content)
     {
         await TaskContext.SwitchToMainThreadAsync();
@@ -39,6 +40,7 @@ public sealed partial class ContentDialogFactory : IContentDialogFactory
         return await EnqueueAndShowAsync(dialog).ShowTask.ConfigureAwait(false);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Style))]
     public async ValueTask<ContentDialogResult> CreateForConfirmCancelAsync(string title, string content, ContentDialogButton defaultButton = ContentDialogButton.Close, bool isPrimaryButtonEnabled = true)
     {
         await TaskContext.SwitchToMainThreadAsync();
@@ -59,6 +61,7 @@ public sealed partial class ContentDialogFactory : IContentDialogFactory
         return await EnqueueAndShowAsync(dialog).ShowTask.ConfigureAwait(false);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Style))]
     public async ValueTask<ContentDialogResult> CreateForConfirmCancelWithSecondaryAsync(string title, string content, string secondaryButtonText, ContentDialogButton defaultButton = ContentDialogButton.Primary)
     {
         await TaskContext.SwitchToMainThreadAsync();
@@ -79,6 +82,7 @@ public sealed partial class ContentDialogFactory : IContentDialogFactory
         return await EnqueueAndShowAsync(dialog).ShowTask.ConfigureAwait(false);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Style))]
     public async ValueTask<Microsoft.UI.Xaml.Controls.ContentDialog> CreateForIndeterminateProgressAsync(string title)
     {
         await TaskContext.SwitchToMainThreadAsync();
@@ -95,6 +99,7 @@ public sealed partial class ContentDialogFactory : IContentDialogFactory
         return dialog;
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Style))]
     public async ValueTask<TContentDialog> CreateInstanceAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TContentDialog>(IServiceProvider serviceProvider, params object[] parameters)
         where TContentDialog : Microsoft.UI.Xaml.Controls.ContentDialog
     {

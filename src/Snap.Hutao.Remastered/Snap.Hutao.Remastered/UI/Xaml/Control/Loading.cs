@@ -23,6 +23,7 @@ public sealed partial class Loading : Microsoft.UI.Xaml.Controls.ContentControl
         DefaultStyleKey = typeof(Loading);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Media.Animation.Storyboard))]
     protected override void OnApplyTemplate()
     {
         base.OnApplyTemplate();
@@ -35,6 +36,7 @@ public sealed partial class Loading : Microsoft.UI.Xaml.Controls.ContentControl
         Update();
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private static void IsLoadingPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         Loading control = d.As<Loading>();

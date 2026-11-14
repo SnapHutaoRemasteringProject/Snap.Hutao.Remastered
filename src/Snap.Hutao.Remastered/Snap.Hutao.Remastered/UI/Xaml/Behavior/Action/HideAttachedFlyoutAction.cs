@@ -12,6 +12,8 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 
 public sealed class HideAttachedFlyoutAction : DependencyObject, IAction
 {
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.FlyoutPresenter))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.DependencyObject))]
     public object? Execute(object? sender, object parameter)
     {
         if (sender is not DependencyObject element)

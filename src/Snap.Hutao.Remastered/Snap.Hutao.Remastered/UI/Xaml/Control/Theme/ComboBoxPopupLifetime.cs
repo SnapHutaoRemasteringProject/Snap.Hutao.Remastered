@@ -22,6 +22,7 @@ public sealed partial class ComboBoxPopupLifetime : DependencyObject
         foreach (ComboBox control in Controls.ToArray()) control.IsDropDownOpen = false;
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.ComboBox))]
     private static void OnIsManagedChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
     {
         if (target is not ComboBox control) return;
@@ -36,11 +37,13 @@ public sealed partial class ComboBoxPopupLifetime : DependencyObject
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.ComboBox))]
     private static void OnLoaded(object sender, RoutedEventArgs args)
     {
         if (!XamlApplicationLifetime.Exiting) Controls.Add((ComboBox)sender);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.ComboBox))]
     private static void OnUnloaded(object sender, RoutedEventArgs args)
     {
         // Popup state belongs to this visual instance, never its inactive peer.

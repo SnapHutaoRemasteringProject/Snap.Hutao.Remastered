@@ -17,6 +17,7 @@ public sealed partial class LiquidGlassEffectsWindow : Microsoft.UI.Xaml.Window,
 {
     private LiquidGlassProfile selectedProfile = LiquidGlassProfiles.All[0];
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Windowing.OverlappedPresenter))]
     public LiquidGlassEffectsWindow(IServiceProvider serviceProvider)
     {
         InitializeComponent();

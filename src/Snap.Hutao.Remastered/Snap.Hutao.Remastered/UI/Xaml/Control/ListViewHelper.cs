@@ -11,6 +11,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Control;
 [DependencyProperty<object>("ScrollToTopAssociatedObject", PropertyChangedCallbackName = nameof(OnScrollToTopAssociatedObjectChanged), IsAttached = true, TargetType = typeof(ListView))]
 public sealed partial class ListViewHelper
 {
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.ListView))]
     private static void OnScrollToTopAssociatedObjectChanged(DependencyObject dp, DependencyPropertyChangedEventArgs args)
     {
         ListView listView = (ListView)dp;

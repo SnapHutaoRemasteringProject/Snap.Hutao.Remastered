@@ -48,6 +48,8 @@ public sealed partial class LaunchGamePage : ScopedPage
         SetTemplateCommand(sender, null);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.MenuFlyoutItem))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase))]
     private static void SetTemplateCommand(object sender, ICommand? command)
     {
         switch (sender)

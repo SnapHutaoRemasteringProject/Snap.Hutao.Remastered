@@ -30,6 +30,7 @@ public sealed partial class FontIconExtension : MarkupExtension
         };
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Media.FontFamily))]
     private static FontFamily ResolveSymbolFontFamily()
     {
         if (Application.Current is { } application &&

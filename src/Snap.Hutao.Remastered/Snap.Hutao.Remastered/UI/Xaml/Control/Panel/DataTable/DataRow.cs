@@ -23,6 +23,7 @@ public sealed partial class DataRow : Microsoft.UI.Xaml.Controls.Panel
         Unloaded += OnDataRowUnloaded;
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Grid))]
     protected override Size MeasureOverride(Size availableSize)
     {
         // We should probably only have to do this once ever?
@@ -125,6 +126,7 @@ public sealed partial class DataRow : Microsoft.UI.Xaml.Controls.Panel
         return new(parentPanel?.DesiredSize.Width ?? availableSize.Width, maxHeight);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Grid))]
     protected override Size ArrangeOverride(Size finalSize)
     {
         int column = 0;
@@ -182,6 +184,8 @@ public sealed partial class DataRow : Microsoft.UI.Xaml.Controls.Panel
         parentPanel = null;
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Grid))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Panel))]
     private Microsoft.UI.Xaml.Controls.Panel? InitializeParentHeaderConnection()
     {
         // TODO: Think about this expression instead...

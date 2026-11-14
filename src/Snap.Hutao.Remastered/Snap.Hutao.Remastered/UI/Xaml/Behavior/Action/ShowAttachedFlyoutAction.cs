@@ -13,6 +13,9 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 [DependencyProperty<object>("Data")]
 public sealed partial class ShowAttachedFlyoutAction : DependencyObject, IAction
 {
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.DependencyObject))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     public object? Execute(object? sender, object parameter)
     {
         if (sender is FrameworkElement element)
@@ -38,6 +41,7 @@ public sealed partial class ShowAttachedFlyoutAction : DependencyObject, IAction
         ShowAttachedFlyout(element, element.DataContext);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private static void ShowAttachedFlyout(FrameworkElement element, object? data)
     {
         // The Flyout is shared via StaticResource across all card templates. WinUI's

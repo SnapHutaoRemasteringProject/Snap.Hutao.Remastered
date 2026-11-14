@@ -40,6 +40,7 @@ public sealed partial class ServiceRecipientMediaPlayerElementPresenterBehavior 
         messenger = null;
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Windowing.OverlappedPresenter))]
     protected override void OnAssociatedObjectLoaded()
     {
         if (XamlApplicationLifetime.Exiting) return;
@@ -96,6 +97,7 @@ public sealed partial class ServiceRecipientMediaPlayerElementPresenterBehavior 
         return base.Uninitialize();
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Windowing.OverlappedPresenter))]
     private void OnAppWindowChanged(AppWindow sender, AppWindowChangedEventArgs args)
     {
         if (XamlApplicationLifetime.Exiting)

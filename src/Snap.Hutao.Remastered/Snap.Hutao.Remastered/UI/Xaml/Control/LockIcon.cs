@@ -25,6 +25,7 @@ public sealed partial class LockIcon : Microsoft.UI.Xaml.Controls.Control
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Image))]
     protected override void OnApplyTemplate()
     {
         if (GetTemplateChild("IconImage") is Microsoft.UI.Xaml.Controls.Image image)

@@ -9,18 +9,14 @@
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
-    xmlns:shuxdcs="using:Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:shuxvs="using:Snap.Hutao.Remastered.UI.Xaml.View.Specialized"
     xmlns:shvg="using:Snap.Hutao.Remastered.ViewModel.Game"
     xmlns:wl="using:WinUI.LiquidGlass"
     mc:Ignorable="d">
     <Grid x:Name="RootGrid" d:DataContext="{d:DesignInstance shvg:GamePackageOperationViewModel}">
-        <Grid.Resources>
-            <shuxdcs:BackdropTypeToOpacityConverter x:Key="BackdropTypeToOpacityConverter"/>
-        </Grid.Resources>
         <mxi:Interaction.Behaviors>
-            <shuxb:InvokeCommandOnLoadedBehavior Command="{Binding PeriodicRefreshUICommand}"/>
+            <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind ViewModel.PeriodicRefreshUICommand, Mode=OneWay}"/>
         </mxi:Interaction.Behaviors>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -32,7 +28,7 @@
             Grid.Row="0"
             Grid.RowSpan="3"
             Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-            Opacity="{Binding AppOptions.BackdropType.Value, Converter={StaticResource BackdropTypeToOpacityConverter}, Mode=OneWay}">
+            Opacity="{x:Bind GetBackdropOpacity(ViewModel.AppOptions.BackdropType.Value), Mode=OneWay}">
             <Border.OpacityTransition>
                 <ScalarTransition Duration="0:0:1"/>
             </Border.OpacityTransition>
@@ -63,27 +59,27 @@
                     Margin="1,0,0,0"
                     IsHitTestVisible="False"
                     Style="{ThemeResource SubtitleTextBlockStyle}"
-                    Text="{Binding Title}"/>
+                    Text="{x:Bind ViewModel.Title, Mode=OneWay}"/>
                 <shuxvs:SophonProgressBar
                     Grid.Row="1"
-                    Description="{Binding DownloadFileName}"
+                    Description="{x:Bind ViewModel.DownloadFileName, Mode=OneWay}"
                     IconGlyph="{StaticResource FontIconContentDownload}"
-                    Maximum="{Binding DownloadTotalChunks}"
-                    RemainingTime="{Binding DownloadRemainingTime}"
-                    Speed="{Binding DownloadSpeed}"
-                    Value="{Binding DownloadedChunks}">
+                    Maximum="{x:Bind ViewModel.DownloadTotalChunks, Mode=OneWay}"
+                    RemainingTime="{x:Bind ViewModel.DownloadRemainingTime, Mode=OneWay}"
+                    Speed="{x:Bind ViewModel.DownloadSpeed, Mode=OneWay}"
+                    Value="{x:Bind ViewModel.DownloadedChunks, Mode=OneWay}">
                     <shuxvs:SophonProgressBar.HeaderContent>
                         <dev:SpeedGraph x:Name="DownloadSpeedGraph" Height="120"/>
                     </shuxvs:SophonProgressBar.HeaderContent>
                 </shuxvs:SophonProgressBar>
                 <shuxvs:SophonProgressBar
                     Grid.Row="3"
-                    Description="{Binding InstallFileName}"
+                    Description="{x:Bind ViewModel.InstallFileName, Mode=OneWay}"
                     IconGlyph="{StaticResource FontIconContentHardDrive}"
-                    Maximum="{Binding InstallTotalChunks}"
-                    RemainingTime="{Binding InstallRemainingTime}"
-                    Speed="{Binding InstallSpeed}"
-                    Value="{Binding InstalledChunks}">
+                    Maximum="{x:Bind ViewModel.InstallTotalChunks, Mode=OneWay}"
+                    RemainingTime="{x:Bind ViewModel.InstallRemainingTime, Mode=OneWay}"
+                    Speed="{x:Bind ViewModel.InstallSpeed, Mode=OneWay}"
+                    Value="{x:Bind ViewModel.InstalledChunks, Mode=OneWay}">
                     <shuxvs:SophonProgressBar.HeaderContent>
                         <dev:SpeedGraph x:Name="InstallSpeedGraph" Height="120"/>
                     </shuxvs:SophonProgressBar.HeaderContent>
@@ -97,9 +93,9 @@
             MinWidth="120"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            Visibility="{Binding CanCancel, Converter={StaticResource BoolToVisibilityConverter}}"
+            Visibility="{x:Bind GetVisibility(ViewModel.CanCancel), Mode=OneWay}"
             shuxcth:ControlMaterialState.IsManaged="True"
-            Command="{Binding CancelCommand}"
+            Command="{x:Bind ViewModel.CancelCommand, Mode=OneWay}"
             Content="{shuxm:ResourceString Name=ContentDialogPauseButtonText}"/>
         <wl:LiquidGlassButton
             Grid.Row="2"
@@ -107,9 +103,9 @@
             MinWidth="120"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            Visibility="{Binding CanContinue, Converter={StaticResource BoolToVisibilityConverter}}"
+            Visibility="{x:Bind GetVisibility(ViewModel.CanContinue), Mode=OneWay}"
             shuxcth:ControlMaterialState.IsManaged="True"
-            Command="{Binding ContinueCommand}"
+            Command="{x:Bind ViewModel.ContinueCommand, Mode=OneWay}"
             Content="{shuxm:ResourceString Name=ViewModelGamePackageOperationContinueDownloadButtonText}"/>
         <wl:LiquidGlassButton
             Grid.Row="2"
@@ -117,7 +113,7 @@
             MinWidth="120"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            Visibility="{Binding IsFinished, Converter={StaticResource BoolToVisibilityConverter}}"
+            Visibility="{x:Bind GetVisibility(ViewModel.IsFinished), Mode=OneWay}"
             shuxcth:ControlMaterialState.IsManaged="True"
             Command="{x:Bind CloseCommand}"
             Content="{shuxm:ResourceString Name=ContentDialogCompletePrimaryButtonText}"/>

@@ -55,6 +55,7 @@ public sealed partial class ContentDialogQueue : IContentDialogQueue
         return new(queueSource.Task, resultSource.Task);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private async Task PrivateEnqueueAndShowAsync(Microsoft.UI.Xaml.Controls.ContentDialog contentDialog, TaskCompletionSource queueSource, TaskCompletionSource<ContentDialogResult> resultSource)
     {
         using (await dialogShowLock.LockAsync().ConfigureAwait(false))
