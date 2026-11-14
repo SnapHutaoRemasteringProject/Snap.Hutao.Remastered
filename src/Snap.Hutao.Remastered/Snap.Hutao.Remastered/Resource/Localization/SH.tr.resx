@@ -4352,6 +4352,12 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
     <value>Maceracı El Kitabı'ndaki Katheryne'e yönlendiren günlük görev girişini, doğrudan Katheryne'in görev ödülü onay penceresini açacak şekilde değiştirir. İlk kez "Ödül Al" tıklandığında önce keşif sayfası açılır; ikinci tıklamada görev tamamlanmışsa ödül alma arayüzü açılır.</value>
   </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuHeader" xml:space="preserve">
+    <value>旧版派蒙菜单</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuDescription" xml:space="preserve">
+    <value>恢复“千星商城”和“人气奇域”在派蒙菜单的位置</value>
+  </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Diyalog atlama bekleme süresini kaldır</value>
   </data>
