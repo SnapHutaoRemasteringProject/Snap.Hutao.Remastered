@@ -128,9 +128,9 @@
             <DataTemplate x:Key="WeaponCardTemplate" x:DataType="shv:BackpackWeaponItemView">
                 <shuxcc:HorizontalCard Width="270">
                     <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="Tapped">
+                        <shuxb:StaticEventTriggerBehavior EventName="Tapped">
                             <shuxba:ShowAttachedFlyoutAction/>
-                        </mxi:EventTriggerBehavior>
+                        </shuxb:StaticEventTriggerBehavior>
                     </mxi:Interaction.Behaviors>
                     <FlyoutBase.AttachedFlyout>
                         <StaticResource ResourceKey="ItemDetailFlyout"/>
@@ -177,9 +177,9 @@
             <DataTemplate x:Key="ReliquaryCardTemplate" x:DataType="shv:BackpackReliquaryItemView">
                 <Border Width="320" Style="{StaticResource BorderShimmerStyle}">
                     <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="Tapped">
+                        <shuxb:StaticEventTriggerBehavior EventName="Tapped">
                             <shuxba:ShowAttachedFlyoutAction/>
-                        </mxi:EventTriggerBehavior>
+                        </shuxb:StaticEventTriggerBehavior>
                     </mxi:Interaction.Behaviors>
                     <FlyoutBase.AttachedFlyout>
                         <StaticResource ResourceKey="ItemDetailFlyout"/>
@@ -366,9 +366,9 @@
             <DataTemplate x:Key="DefaultCardTemplate" x:DataType="shv:BackpackItemView">
                 <shuxcc:HorizontalCard Width="270">
                     <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="Tapped">
+                        <shuxb:StaticEventTriggerBehavior EventName="Tapped">
                             <shuxba:ShowAttachedFlyoutAction/>
-                        </mxi:EventTriggerBehavior>
+                        </shuxb:StaticEventTriggerBehavior>
                     </mxi:Interaction.Behaviors>
                     <FlyoutBase.AttachedFlyout>
                         <StaticResource ResourceKey="ItemDetailFlyout"/>

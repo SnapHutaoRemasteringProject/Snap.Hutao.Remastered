@@ -469,9 +469,9 @@
                                             IsClickEnabled="True"
                                             Visibility="{x:Bind DataContext.Appearance.BackgroundImageOptions.Wallpaper, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                                             <mxi:Interaction.Behaviors>
-                                                <mxi:EventTriggerBehavior EventName="Click">
+                                                <shuxb:StaticEventTriggerBehavior EventName="Click">
                                                     <cwb:NavigateToUriAction NavigateUri="{x:Bind DataContext.Appearance.BackgroundImageOptions.Wallpaper.SourceUrl, Mode=OneWay}"/>
-                                                </mxi:EventTriggerBehavior>
+                                                </shuxb:StaticEventTriggerBehavior>
                                             </mxi:Interaction.Behaviors>
                                         </cwc:SettingsCard>
                                     </cwc:SettingsExpander.Items>

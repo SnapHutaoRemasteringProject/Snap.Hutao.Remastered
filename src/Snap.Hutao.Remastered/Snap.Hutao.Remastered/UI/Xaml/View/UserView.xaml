@@ -72,12 +72,12 @@
                         </Storyboard>
                     </Button.Resources>
                     <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="PointerEntered">
+                        <shuxb:StaticEventTriggerBehavior EventName="PointerEntered">
                             <mxi:ControlStoryboardAction Storyboard="{StaticResource ShowRefreshIcon}"/>
-                        </mxi:EventTriggerBehavior>
-                        <mxi:EventTriggerBehavior EventName="PointerExited">
+                        </shuxb:StaticEventTriggerBehavior>
+                        <shuxb:StaticEventTriggerBehavior EventName="PointerExited">
                             <mxi:ControlStoryboardAction Storyboard="{StaticResource HideRefreshIcon}"/>
-                        </mxi:EventTriggerBehavior>
+                        </shuxb:StaticEventTriggerBehavior>
                     </mxi:Interaction.Behaviors>
                     <FontIcon
                         x:Name="RefreshIcon"
@@ -142,12 +142,12 @@
                 </Grid.Resources>
 
                 <mxi:Interaction.Behaviors>
-                    <mxi:EventTriggerBehavior EventName="PointerEntered">
+                    <shuxb:StaticEventTriggerBehavior EventName="PointerEntered">
                         <mxi:ControlStoryboardAction Storyboard="{StaticResource ButtonPanelVisibleStoryboard}"/>
-                    </mxi:EventTriggerBehavior>
-                    <mxi:EventTriggerBehavior EventName="PointerExited">
+                    </shuxb:StaticEventTriggerBehavior>
+                    <shuxb:StaticEventTriggerBehavior EventName="PointerExited">
                         <mxi:ControlStoryboardAction Storyboard="{StaticResource ButtonPanelCollapsedStoryboard}"/>
-                    </mxi:EventTriggerBehavior>
+                    </shuxb:StaticEventTriggerBehavior>
                 </mxi:Interaction.Behaviors>
                 <PersonPicture
                     Height="32"
@@ -427,7 +427,7 @@
                                 Label="{shuxm:ResourceString Name=ViewUserCookieOperationGameRecordIndexAction}"
                                 Style="{StaticResource DefaultAppBarButtonStyle}">
                                 <mxi:Interaction.Behaviors>
-                                    <mxi:EventTriggerBehavior EventName="Click">
+                                    <shuxb:StaticEventTriggerBehavior EventName="Click">
                                         <shuxba:ShowWebView2WindowAction>
                                             <shuxba:ShowWebView2WindowAction.ContentProvider>
                                                 <shuxvww:MiHoYoJSBridgeWebView2ContentProvider>
@@ -437,7 +437,7 @@
                                                 </shuxvww:MiHoYoJSBridgeWebView2ContentProvider>
                                             </shuxba:ShowWebView2WindowAction.ContentProvider>
                                         </shuxba:ShowWebView2WindowAction>
-                                    </mxi:EventTriggerBehavior>
+                                    </shuxb:StaticEventTriggerBehavior>
                                 </mxi:Interaction.Behaviors>
                             </AppBarButton>
                             <AppBarButton

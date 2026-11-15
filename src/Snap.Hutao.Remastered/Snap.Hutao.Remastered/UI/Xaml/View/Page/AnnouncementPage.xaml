@@ -140,19 +140,19 @@
                     </Grid>
 
                     <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="Tapped">
+                        <shuxb:StaticEventTriggerBehavior EventName="Tapped">
                             <shuxba:ShowWebView2WindowAction>
                                 <shuxba:ShowWebView2WindowAction.ContentProvider>
                                     <shuxvww:AnnouncementWebView2ContentProvider Announcement="{x:Bind Mode=OneWay}"/>
                                 </shuxba:ShowWebView2WindowAction.ContentProvider>
                             </shuxba:ShowWebView2WindowAction>
-                        </mxi:EventTriggerBehavior>
-                        <mxi:EventTriggerBehavior EventName="PointerEntered">
+                        </shuxb:StaticEventTriggerBehavior>
+                        <shuxb:StaticEventTriggerBehavior EventName="PointerEntered">
                             <shuxba:StartAnimationActionNoThrow Animation="{x:Bind ImageZoomInAnimation, Mode=OneWay}" TargetObject="{x:Bind ImageZoomBorder, Mode=OneWay}"/>
-                        </mxi:EventTriggerBehavior>
-                        <mxi:EventTriggerBehavior EventName="PointerExited">
+                        </shuxb:StaticEventTriggerBehavior>
+                        <shuxb:StaticEventTriggerBehavior EventName="PointerExited">
                             <shuxba:StartAnimationActionNoThrow Animation="{x:Bind ImageZoomOutAnimation, Mode=OneWay}" TargetObject="{x:Bind ImageZoomBorder, Mode=OneWay}"/>
-                        </mxi:EventTriggerBehavior>
+                        </shuxb:StaticEventTriggerBehavior>
                     </mxi:Interaction.Behaviors>
                 </Border>
             </ItemContainer>

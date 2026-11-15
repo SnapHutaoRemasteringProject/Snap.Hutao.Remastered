@@ -31,7 +31,7 @@
                     Text="WebView"/>
                 <cwc:SettingsCard Header="Adopt Calculator" IsClickEnabled="True">
                     <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="Click">
+                        <shuxb:StaticEventTriggerBehavior EventName="Click">
                             <shuxba:ShowWebView2WindowAction>
                                 <shuxba:ShowWebView2WindowAction.ContentProvider>
                                     <shuxvww:MiHoYoJSBridgeWebView2ContentProvider>
@@ -41,13 +41,13 @@
                                     </shuxvww:MiHoYoJSBridgeWebView2ContentProvider>
                                 </shuxba:ShowWebView2WindowAction.ContentProvider>
                             </shuxba:ShowWebView2WindowAction>
-                        </mxi:EventTriggerBehavior>
+                        </shuxb:StaticEventTriggerBehavior>
                     </mxi:Interaction.Behaviors>
                 </cwc:SettingsCard>
 
                 <cwc:SettingsCard Header="Community Game Record" IsClickEnabled="True">
                     <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="Click">
+                        <shuxb:StaticEventTriggerBehavior EventName="Click">
                             <shuxba:ShowWebView2WindowAction>
                                 <shuxba:ShowWebView2WindowAction.ContentProvider>
                                     <shuxvww:MiHoYoJSBridgeWebView2ContentProvider>
@@ -57,13 +57,13 @@
                                     </shuxvww:MiHoYoJSBridgeWebView2ContentProvider>
                                 </shuxba:ShowWebView2WindowAction.ContentProvider>
                             </shuxba:ShowWebView2WindowAction>
-                        </mxi:EventTriggerBehavior>
+                        </shuxb:StaticEventTriggerBehavior>
                     </mxi:Interaction.Behaviors>
                 </cwc:SettingsCard>
 
                 <cwc:SettingsCard Header="SignIn Reward" IsClickEnabled="True">
                     <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="Click">
+                        <shuxb:StaticEventTriggerBehavior EventName="Click">
                             <shuxba:ShowWebView2WindowAction>
                                 <shuxba:ShowWebView2WindowAction.ContentProvider>
                                     <shuxvww:MiHoYoJSBridgeWebView2ContentProvider>
@@ -73,7 +73,7 @@
                                     </shuxvww:MiHoYoJSBridgeWebView2ContentProvider>
                                 </shuxba:ShowWebView2WindowAction.ContentProvider>
                             </shuxba:ShowWebView2WindowAction>
-                        </mxi:EventTriggerBehavior>
+                        </shuxb:StaticEventTriggerBehavior>
                     </mxi:Interaction.Behaviors>
                 </cwc:SettingsCard>
 
