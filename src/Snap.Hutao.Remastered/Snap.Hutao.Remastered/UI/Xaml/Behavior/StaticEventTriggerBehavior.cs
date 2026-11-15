@@ -13,31 +13,18 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Behavior;
 
 /// <summary>Subscribes to the application's known UI events without event reflection.</summary>
 [ContentProperty(Name = nameof(Actions))]
+[DependencyProperty<string>("EventName", DefaultValue = "", NotNull = true, PropertyChangedCallbackName = nameof(OnEventNameChanged))]
+[DependencyProperty<ActionCollection>("Actions", NotNull = true, CreateDefaultValueCallbackName = nameof(CreateActionsDefaultValueCallback))]
 public sealed partial class StaticEventTriggerBehavior : Microsoft.Xaml.Interactivity.Behavior<FrameworkElement>
 {
-    public static readonly DependencyProperty EventNameProperty = DependencyProperty.Register(
-        nameof(EventName), typeof(string), typeof(StaticEventTriggerBehavior), new PropertyMetadata(string.Empty, OnEventNameChanged));
-    public static readonly DependencyProperty ActionsProperty = DependencyProperty.Register(
-        nameof(Actions), typeof(ActionCollection), typeof(StaticEventTriggerBehavior), new PropertyMetadata(null));
-
     private FrameworkElement? source;
     private string subscribedEvent = string.Empty;
 
-    public string EventName
+    // Return the factory delegate expected by PropertyMetadata.Create, so every
+    // behavior receives its own action collection rather than a shared default.
+    private static CreateDefaultValueCallback CreateActionsDefaultValueCallback()
     {
-        get => (string)GetValue(EventNameProperty);
-        set => SetValue(EventNameProperty, value);
-    }
-
-    public ActionCollection Actions
-    {
-        get
-        {
-            if (GetValue(ActionsProperty) is ActionCollection actions) return actions;
-            actions = new ActionCollection();
-            SetValue(ActionsProperty, actions);
-            return actions;
-        }
+        return static () => new ActionCollection();
     }
 
     protected override void OnAttached()
