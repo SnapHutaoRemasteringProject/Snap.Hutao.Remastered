@@ -257,9 +257,9 @@
                                         Style="{StaticResource DefaultAutoSuggestBoxStyle}"
                                         Text="{x:Bind DataContext.SearchText, Mode=TwoWay}">
                                         <mxi:Interaction.Behaviors>
-                                            <mxi:EventTriggerBehavior EventName="QuerySubmitted">
+                                            <shuxb:StaticEventTriggerBehavior EventName="QuerySubmitted">
                                                 <mxi:InvokeCommandAction Command="{x:Bind DataContext.SearchDocumentCommand, Mode=OneWay}" CommandParameter="{x:Bind DataContext.SearchText, Mode=OneWay}"/>
-                                            </mxi:EventTriggerBehavior>
+                                            </shuxb:StaticEventTriggerBehavior>
                                         </mxi:Interaction.Behaviors>
                                     </AutoSuggestBox>
                                 </shuxcth:MaterialSwap.Native>
@@ -273,9 +273,9 @@
                                         QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
                                         Text="{x:Bind DataContext.SearchText, Mode=TwoWay}">
                                         <mxi:Interaction.Behaviors>
-                                            <mxi:EventTriggerBehavior EventName="QuerySubmitted">
+                                            <shuxb:StaticEventTriggerBehavior EventName="QuerySubmitted">
                                                 <mxi:InvokeCommandAction Command="{x:Bind DataContext.SearchDocumentCommand, Mode=OneWay}" CommandParameter="{x:Bind DataContext.SearchText, Mode=OneWay}"/>
-                                            </mxi:EventTriggerBehavior>
+                                            </shuxb:StaticEventTriggerBehavior>
                                         </mxi:Interaction.Behaviors>
                                     </wl:LiquidGlassSearchBox>
                                 </shuxcth:MaterialSwap.Glass>

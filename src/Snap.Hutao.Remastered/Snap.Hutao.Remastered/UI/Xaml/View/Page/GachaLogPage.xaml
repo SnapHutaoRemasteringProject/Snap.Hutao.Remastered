@@ -369,9 +369,9 @@
                                 HeaderIcon="{shuxm:FontIcon Glyph=&#xE753;}"
                                 IsClickEnabled="True">
                                 <mxi:Interaction.Behaviors>
-                                    <mxi:EventTriggerBehavior EventName="Click">
+                                    <shuxb:StaticEventTriggerBehavior EventName="Click">
                                         <shuxba:ShowAttachedFlyoutAction/>
-                                    </mxi:EventTriggerBehavior>
+                                    </shuxb:StaticEventTriggerBehavior>
                                 </mxi:Interaction.Behaviors>
                             </cwc:SettingsCard>
                         </StackPanel>

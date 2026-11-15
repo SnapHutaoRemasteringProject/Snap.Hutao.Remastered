@@ -312,11 +312,11 @@
                                                             AutomationProperties.Name="{shuxm:ResourceString Name=ViewPageGameInstallationInfoTitle}"
                                                             ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageGameInstallationInfoTitle}">
                                                             <mxi:Interaction.Behaviors>
-                                                                <mxi:EventTriggerBehavior EventName="Click">
-                                                                    <mxi:EventTriggerBehavior.Actions>
+                                                                <shuxb:StaticEventTriggerBehavior EventName="Click">
+                                                                    <shuxb:StaticEventTriggerBehavior.Actions>
                                                                         <shuxba:ShowTeachingTipAction TeachingTip="{x:Bind GameInstallationInfoTeachingTip}"/>
-                                                                    </mxi:EventTriggerBehavior.Actions>
-                                                                </mxi:EventTriggerBehavior>
+                                                                    </shuxb:StaticEventTriggerBehavior.Actions>
+                                                                </shuxb:StaticEventTriggerBehavior>
                                                             </mxi:Interaction.Behaviors>
                                                             <FontIcon FontSize="12" Glyph="&#xE946;"/>
                                                         </Button>
@@ -1102,11 +1102,11 @@
                                                 VerticalAlignment="Center"
                                                 shuxcth:ControlMaterialState.IsManaged="True">
                                                 <mxi:Interaction.Behaviors>
-                                                    <mxi:EventTriggerBehavior EventName="Click">
-                                                        <mxi:EventTriggerBehavior.Actions>
+                                                    <shuxb:StaticEventTriggerBehavior EventName="Click">
+                                                        <shuxb:StaticEventTriggerBehavior.Actions>
                                                             <shuxba:ShowTeachingTipAction TeachingTip="{x:Bind TargetFpsTeachingTip}"/>
-                                                        </mxi:EventTriggerBehavior.Actions>
-                                                    </mxi:EventTriggerBehavior>
+                                                        </shuxb:StaticEventTriggerBehavior.Actions>
+                                                    </shuxb:StaticEventTriggerBehavior>
                                                 </mxi:Interaction.Behaviors>
                                                 <FontIcon
                                                     FontSize="12"
@@ -1166,11 +1166,11 @@
                                                 VerticalAlignment="Center"
                                                 shuxcth:ControlMaterialState.IsManaged="True">
                                                 <mxi:Interaction.Behaviors>
-                                                    <mxi:EventTriggerBehavior EventName="Click">
-                                                        <mxi:EventTriggerBehavior.Actions>
+                                                    <shuxb:StaticEventTriggerBehavior EventName="Click">
+                                                        <shuxb:StaticEventTriggerBehavior.Actions>
                                                             <shuxba:ShowTeachingTipAction TeachingTip="{x:Bind HideQuestBannerTeachingTip}"/>
-                                                        </mxi:EventTriggerBehavior.Actions>
-                                                    </mxi:EventTriggerBehavior>
+                                                        </shuxb:StaticEventTriggerBehavior.Actions>
+                                                    </shuxb:StaticEventTriggerBehavior>
                                                 </mxi:Interaction.Behaviors>
                                                 <FontIcon
                                                     FontSize="12"
@@ -1246,11 +1246,11 @@
                                                 VerticalAlignment="Center"
                                                 shuxcth:ControlMaterialState.IsManaged="True">
                                                 <mxi:Interaction.Behaviors>
-                                                    <mxi:EventTriggerBehavior EventName="Click">
-                                                        <mxi:EventTriggerBehavior.Actions>
+                                                    <shuxb:StaticEventTriggerBehavior EventName="Click">
+                                                        <shuxb:StaticEventTriggerBehavior.Actions>
                                                             <shuxba:ShowTeachingTipAction TeachingTip="{x:Bind RedirectCatherineTeachingTip}"/>
-                                                        </mxi:EventTriggerBehavior.Actions>
-                                                    </mxi:EventTriggerBehavior>
+                                                        </shuxb:StaticEventTriggerBehavior.Actions>
+                                                    </shuxb:StaticEventTriggerBehavior>
                                                 </mxi:Interaction.Behaviors>
                                                 <FontIcon
                                                     FontSize="12"
@@ -1291,11 +1291,11 @@
                                                 VerticalAlignment="Center"
                                                 shuxcth:ControlMaterialState.IsManaged="True">
                                                 <mxi:Interaction.Behaviors>
-                                                    <mxi:EventTriggerBehavior EventName="Click">
-                                                        <mxi:EventTriggerBehavior.Actions>
+                                                    <shuxb:StaticEventTriggerBehavior EventName="Click">
+                                                        <shuxb:StaticEventTriggerBehavior.Actions>
                                                             <shuxba:ShowTeachingTipAction TeachingTip="{x:Bind RedirectCombineEntryTeachingTip}"/>
-                                                        </mxi:EventTriggerBehavior.Actions>
-                                                    </mxi:EventTriggerBehavior>
+                                                        </shuxb:StaticEventTriggerBehavior.Actions>
+                                                    </shuxb:StaticEventTriggerBehavior>
                                                 </mxi:Interaction.Behaviors>
                                                 <FontIcon
                                                     FontSize="12"
