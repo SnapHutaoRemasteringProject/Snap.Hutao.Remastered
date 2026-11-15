@@ -339,9 +339,9 @@
                                             </Style>
                                         </AutoSuggestBox.TextBoxStyle>
                                         <mxi:Interaction.Behaviors>
-                                            <mxi:EventTriggerBehavior EventName="QuerySubmitted">
+                                            <shuxb:StaticEventTriggerBehavior EventName="QuerySubmitted">
                                                 <mxi:InvokeCommandAction Command="{x:Bind ViewModel.SearchAchievementCommand, Mode=OneWay}" CommandParameter="{x:Bind ViewModel.SearchText, Mode=OneWay}"/>
-                                            </mxi:EventTriggerBehavior>
+                                            </shuxb:StaticEventTriggerBehavior>
                                         </mxi:Interaction.Behaviors>
                                     </AutoSuggestBox>
                                 </shuxcth:MaterialSwap.Native>

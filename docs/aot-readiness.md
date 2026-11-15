@@ -159,6 +159,23 @@ INamedValue 增加只读的对象值接口，NameValue<T> 显式实现它，不�
 不加入 CoreCLR 脚本进程；应用无 Roslyn 脚本/Workspace/EF Design 运行时依赖，构建期分析器和数据库设计工具仍保留。
 CsWinRT 维持 2.3.1；3.0 的资产问题与包适配见 [独立评估](cswinrt3-assessment.md)，不是本次 Native AOT 的前置条件。
 
+## 2026-11-16：新发布警告与事件订阅
+
+用户提供的原生发布日志共 119 条：CS8305 75、WMC1510 7、WMC1501 1、NU1507 1，
+IL2026 7、IL3050 13、IL2104 6、IL3053 5、IL3002 4。编译与原生分析阶段的重复诊断保留原口径，
+不能与此前仅托管编译的 84 条直接相减。
+
+本轮将 13 个视图中的 32 个 EventTriggerBehavior 替换成限定 UI 事件的 StaticEventTriggerBehavior。
+原行为按事件名反射订阅，SDK 明确标为不支持裁剪；新实现直接订阅 Click、QuerySubmitted、Tapped、
+PointerEntered、PointerExited、PointerPressed，包含 SettingsCard 和 LiquidGlassSearchBox 的具体事件。
+保留 Actions 的依赖属性集合、原事件参数，以及 Detach/更换事件名时的解绑；没有 SourceObject 或反射回退。
+页面上下文、命令参数、模板结构和动作集合均未迁移。没有改依赖、包源或手写生成文件。
+
+这些是源码修改与 XML/事件覆盖检查，未编译或运行。下一次构建应复核 EventTriggerBehavior 的应用激活器及
+静态初始化诊断是否消失；当前没有新的警告总数。EF、Anthropic、DevWinUI 等原生分析诊断仍需继续处理。
+日志中十条枚举动态代码警告对应的位置，当前 EF 生成源码已无直接 Enum.GetValues(Type)，
+需要结合下一次实际编译输入/内联调用定位，不能据日志行号直接改生成文件。
+
 ## 验证口径
 
 完整原生发布、生产数据库原生测试和最新普通构建已通过。

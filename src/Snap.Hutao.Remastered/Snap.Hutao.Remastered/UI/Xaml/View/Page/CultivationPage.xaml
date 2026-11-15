@@ -260,9 +260,9 @@
                             CommandParameter="{x:Bind}"
                             Style="{StaticResource AccentButtonStyle}">
                             <mxi:Interaction.Behaviors>
-                                <mxi:EventTriggerBehavior EventName="Click">
+                                <shuxb:StaticEventTriggerBehavior EventName="Click">
                                     <shuxba:HideAttachedFlyoutAction/>
-                                </mxi:EventTriggerBehavior>
+                                </shuxb:StaticEventTriggerBehavior>
                             </mxi:Interaction.Behaviors>
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <FontIcon FontSize="14" Glyph="&#xE73E;"/>
@@ -275,9 +275,9 @@
                             shuxcth:ControlMaterialState.IsManaged="True"
                             Style="{StaticResource DefaultButtonStyle}">
                             <mxi:Interaction.Behaviors>
-                                <mxi:EventTriggerBehavior EventName="Click">
+                                <shuxb:StaticEventTriggerBehavior EventName="Click">
                                     <shuxba:HideAttachedFlyoutAction/>
-                                </mxi:EventTriggerBehavior>
+                                </shuxb:StaticEventTriggerBehavior>
                             </mxi:Interaction.Behaviors>
                             <StackPanel Orientation="Horizontal" Spacing="4">
                                 <FontIcon FontSize="14" Glyph="&#xE711;"/>
@@ -432,9 +432,9 @@
             <DataTemplate x:Key="CultivateEntryTemplate" x:DataType="shvcu:CultivateEntryView">
                 <Border cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
                     <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="PointerPressed">
+                        <shuxb:StaticEventTriggerBehavior EventName="PointerPressed">
                             <shuxba:ShowAttachedFlyoutAction Data="{x:Bind Mode=OneWay}"/>
-                        </mxi:EventTriggerBehavior>
+                        </shuxb:StaticEventTriggerBehavior>
                     </mxi:Interaction.Behaviors>
                     <FlyoutBase.AttachedFlyout>
                         <StaticResource ResourceKey="CultivateEntryFlyout"/>

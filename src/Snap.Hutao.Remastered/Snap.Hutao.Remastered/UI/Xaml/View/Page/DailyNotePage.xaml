@@ -478,13 +478,13 @@
                         Icon="{shuxm:FontIcon Glyph=&#xE9D5;}"
                         Label="{shuxm:ResourceString Name=ViewPageDailyNoteVerify}">
                         <mxi:Interaction.Behaviors>
-                            <mxi:EventTriggerBehavior EventName="Click">
+                            <shuxb:StaticEventTriggerBehavior EventName="Click">
                                 <shuxba:ShowWebView2WindowAction>
                                     <shuxba:ShowWebView2WindowAction.ContentProvider>
                                         <shuxvww:MiHoYoJSBridgeWebView2ContentProvider SourceProvider="{x:Bind ViewModel.VerifyUrlSource, Mode=OneWay}"/>
                                     </shuxba:ShowWebView2WindowAction.ContentProvider>
                                 </shuxba:ShowWebView2WindowAction>
-                            </mxi:EventTriggerBehavior>
+                            </shuxb:StaticEventTriggerBehavior>
                         </mxi:Interaction.Behaviors>
                     </AppBarButton>
                     <AppBarButton
