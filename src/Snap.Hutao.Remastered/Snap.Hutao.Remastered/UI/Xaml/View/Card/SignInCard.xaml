@@ -151,6 +151,7 @@
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <cwc:UniformGrid
+                                    Margin="0,12"
                                     ColumnSpacing="4"
                                     Columns="7"
                                     RowSpacing="4"/>
