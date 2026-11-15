@@ -24,13 +24,13 @@ public sealed partial class ImageCacheDownloadOperation : IImageCacheDownloadOpe
     [GeneratedConstructor]
     public partial ImageCacheDownloadOperation(IServiceProvider serviceProvider);
 
-    public async ValueTask DownloadFileAsync(Uri uri, ValueFile baseFile)
+    public async ValueTask DownloadFileAsync(Uri uri, ValueFile baseFile, CancellationToken token = default)
     {
         using (HttpClient httpClient = httpClientFactory.CreateClient(nameof(ImageCacheDownloadOperation)))
         {
             try
             {
-                await DownloadFileUsingHttpClientAsync(httpClient, uri, baseFile).ConfigureAwait(false);
+                await DownloadFileUsingHttpClientAsync(httpClient, uri, baseFile, token).ConfigureAwait(false);
             }
             catch (HttpRequestException)
             {
@@ -38,13 +38,16 @@ public sealed partial class ImageCacheDownloadOperation : IImageCacheDownloadOpe
             }
         }
 
+        // 取消后不能再把已经写了一半的文件当作下载成功，否则调用方会拿到截断的图片。
+        token.ThrowIfCancellationRequested();
+
         if (!File.Exists(baseFile))
         {
             throw InternalImageCacheException.Throw($"'{uri.OriginalString}': File not exists after download attempt.");
         }
     }
 
-    private async ValueTask DownloadFileUsingHttpClientAsync(HttpClient httpClient, Uri uri, ValueFile baseFile)
+    private async ValueTask DownloadFileUsingHttpClientAsync(HttpClient httpClient, Uri uri, ValueFile baseFile, CancellationToken token)
     {
         HttpRequestMessageBuilder requestMessageBuilder = httpRequestMessageBuilderFactory
             .Create()
@@ -54,7 +57,7 @@ public sealed partial class ImageCacheDownloadOperation : IImageCacheDownloadOpe
 
         using (HttpRequestMessage requestMessage = requestMessageBuilder.HttpRequestMessage)
         {
-            using (HttpResponseMessage responseMessage = await httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
+            using (HttpResponseMessage responseMessage = await httpClient.SendAsync(requestMessage, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false))
             {
                 if (!responseMessage.IsSuccessStatusCode)
                 {
@@ -70,7 +73,7 @@ public sealed partial class ImageCacheDownloadOperation : IImageCacheDownloadOpe
                     InternalImageCacheException.Throw($"Unexpected content type: {MediaTypeNames.Application.Json}");
                 }
 
-                using (Stream httpStream = await responseMessage.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                using (Stream httpStream = await responseMessage.Content.ReadAsStreamAsync(token).ConfigureAwait(false))
                 {
                     string? directoryName = Path.GetDirectoryName(baseFile);
                     ArgumentException.ThrowIfNullOrEmpty(directoryName);
@@ -99,7 +102,7 @@ public sealed partial class ImageCacheDownloadOperation : IImageCacheDownloadOpe
                     {
                         using (fileStream)
                         {
-                            await httpStream.CopyToAsync(fileStream).ConfigureAwait(false);
+                            await httpStream.CopyToAsync(fileStream, token).ConfigureAwait(false);
                         }
                     }
                     catch (IOException ex)

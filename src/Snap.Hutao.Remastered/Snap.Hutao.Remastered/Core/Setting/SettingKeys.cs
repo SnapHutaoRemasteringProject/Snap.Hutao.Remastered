@@ -107,6 +107,8 @@ public static class SettingKeys
     public const string DailyNoteReminderNotify        = "Snap::Hutao::DailyNote::ReminderNotify";
     public const string DailyNoteSilentWhenPlayingGame = "Snap::Hutao::DailyNote::SilentWhenPlayingGame";
     public const string DailyNoteWebhookUrl            = "Snap::Hutao::DailyNote::Webhook::Url";
+    public const string DailyNoteTileBackgroundAvatarId = "Snap::Hutao::DailyNote::Tile::BackgroundAvatarId";
+    public const string DailyNoteTileBackgroundUid      = "Snap::Hutao::DailyNote::Tile::BackgroundUid";
 
     // Geetest
     public const string GeetestCustomCompositeUrl = "Snap::Hutao::Geetest::CustomCompositeUrl";

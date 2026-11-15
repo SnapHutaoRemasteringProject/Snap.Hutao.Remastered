@@ -29,6 +29,15 @@ public static class HutaoRuntime
         ? ApplicationData.Current.LocalCacheFolder.Path
         : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"SnapHutaoRemastered\Cache");
 
+    /// <summary>
+    /// 对应 <c>ms-appdata:///local/</c> 的本地数据目录。
+    /// 磁贴通知只支持 <c>ms-appx:///</c>、<c>ms-appdata:///local/</c> 与 http(s):// 三种图片地址，
+    /// 没有 localcache 协议，需要被磁贴引用的文件必须放在这里。
+    /// </summary>
+    public static string LocalFolderDirectory { get; } = RuntimeEnvironment.IsPackaged
+        ? ApplicationData.Current.LocalFolder.Path
+        : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"SnapHutaoRemastered\LocalFolder");
+
     public static string FamilyName { get; } = RuntimeEnvironment.IsPackaged
         ? Package.Current.Id.FamilyName
         : "Snap.Hutao.Remastered";

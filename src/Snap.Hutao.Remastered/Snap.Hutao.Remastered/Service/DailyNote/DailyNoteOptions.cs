@@ -45,6 +45,12 @@ public sealed partial class DailyNoteOptions : DbStoreOptions
     [field: MaybeNull]
     public IObservableProperty<string?> WebhookUrl { get => field ??= CreateProperty(SettingKeys.DailyNoteWebhookUrl); }
 
+    [field: MaybeNull]
+    public IObservableProperty<string?> TileBackgroundAvatarId { get => field ??= CreateProperty(SettingKeys.DailyNoteTileBackgroundAvatarId); }
+
+    [field: MaybeNull]
+    public IObservableProperty<string?> TileBackgroundUid { get => field ??= CreateProperty(SettingKeys.DailyNoteTileBackgroundUid); }
+
     private static void OnIsAutoRefreshEnabledChanged(bool value, DailyNoteOptions options)
     {
         if (value)
