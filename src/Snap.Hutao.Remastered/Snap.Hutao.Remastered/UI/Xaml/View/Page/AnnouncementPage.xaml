@@ -52,10 +52,10 @@
                 Severity="{x:Bind Severity, Mode=OneWay}">
                 <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
                     <wl:LiquidGlassHyperlinkButton
-                        Visibility="{x:Bind Link, Converter={StaticResource EmptyStringToBoolConverter}, Mode=OneWay}"
                         shuxcth:ControlMaterialState.IsManaged="True"
                         Content="{shuxm:ResourceString Name=ViewPageAnnouncementViewDetails}"
-                        NavigateUri="{x:Bind Link, Mode=OneWay}"/>
+                        NavigateUri="{x:Bind Link, Mode=OneWay}"
+                        Visibility="{x:Bind Link, Converter={StaticResource EmptyStringToBoolConverter}, Mode=OneWay}"/>
                     <TextBlock
                         Margin="8,0,0,2"
                         VerticalAlignment="Center"
@@ -211,7 +211,7 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
@@ -307,7 +307,7 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
@@ -403,7 +403,7 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
@@ -499,7 +499,7 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
@@ -595,7 +595,7 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
@@ -692,7 +692,7 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
@@ -789,7 +789,7 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
@@ -886,7 +886,7 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
                                         <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
@@ -1014,15 +1014,15 @@
                                                         </StackPanel>
                                                         <wl:LiquidGlassButton
                                                             Grid.Column="1"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             VerticalAlignment="Stretch"
+                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             Background="Transparent"
-                                                            Loaded="OnCopyCodeLoaded"
-                                                            Unloaded="OnCopyCodeUnloaded"
                                                             CommandParameter="{x:Bind Code, Mode=OneTime}"
                                                             Content="{StaticResource FontIconContentCopy}"
                                                             FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                                            Style="{StaticResource ButtonRevealStyle}"/>
+                                                            Loaded="OnCopyCodeLoaded"
+                                                            Style="{StaticResource ButtonRevealStyle}"
+                                                            Unloaded="OnCopyCodeUnloaded"/>
                                                     </Grid>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
@@ -1143,11 +1143,19 @@
                                             ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(CompositeItems, CompositeItems.IsDefaultOrEmpty), Mode=OneTime}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:CardPoolItem">
-                                                    <shuxc:ItemIcon
-                                                        Width="40"
-                                                        Height="40"
-                                                        Icon="{x:Bind Icon, Mode=OneTime}"
-                                                        Quality="{x:Bind Rarity, Mode=OneTime}"/>
+                                                    <!--
+                                                        The template root must stay a framework type. A DataTemplate whose root is an
+                                                        app control makes the generated x:Bind connector cast that root with
+                                                        WinRT.CastExtensions.As, which throws E_NOINTERFACE (0x80004002) in Native AOT.
+                                                        See the same workaround in SignInCard's award template.
+                                                    -->
+                                                    <Grid>
+                                                        <shuxc:ItemIcon
+                                                            Width="40"
+                                                            Height="40"
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
+                                                    </Grid>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
@@ -1190,9 +1198,9 @@
                 </Grid>
 
                 <ItemsControl
+                    IsHitTestVisible="{x:Bind DataContext.IsInitialized, Mode=OneWay}"
                     ItemTemplate="{StaticResource CardTemplate}"
                     ItemsSource="{x:Bind DataContext.Cards, Mode=OneWay}"
-                    IsHitTestVisible="{x:Bind DataContext.IsInitialized, Mode=OneWay}"
                     Visibility="{x:Bind DataContext.Cards, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
