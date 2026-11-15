@@ -105,25 +105,33 @@
                 </Grid>
             </DataTemplate>
 
+            <!--
+                The template root must stay a framework type. A DataTemplate whose root is an
+                app control makes the generated x:Bind connector cast that root with
+                WinRT.CastExtensions.As, which throws E_NOINTERFACE (0x80004002) in Native AOT.
+                See the same workaround in SignInCard's award template.
+            -->
             <DataTemplate x:Key="OrangeGridTemplate" x:DataType="shvg:SummaryItem">
-                <shuxcc:VerticalCard
-                    Background="{Binding IsUp, Converter={ThemeResource BoolToBrushConverter}, Mode=OneWay}"
-                    BottomPadding="0,1"
-                    ToolTipService.ToolTip="{x:Bind FormattedTime, Mode=OneWay}">
-                    <shuxcc:VerticalCard.Top>
-                        <shuxc:ItemIcon
-                            shux:FrameworkElementHelper.SquareLength="40"
-                            Icon="{x:Bind Icon, Mode=OneWay}"
-                            Quality="{x:Bind Quality, Mode=OneWay}"/>
-                    </shuxcc:VerticalCard.Top>
-                    <shuxcc:VerticalCard.Bottom>
-                        <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind LastPull, Mode=OneWay}">
-                            <TextBlock.Foreground>
-                                <SolidColorBrush Color="{x:Bind Color, Mode=OneWay}"/>
-                            </TextBlock.Foreground>
-                        </TextBlock>
-                    </shuxcc:VerticalCard.Bottom>
-                </shuxcc:VerticalCard>
+                <Grid>
+                    <shuxcc:VerticalCard
+                        Background="{Binding IsUp, Converter={ThemeResource BoolToBrushConverter}, Mode=OneWay}"
+                        BottomPadding="0,1"
+                        ToolTipService.ToolTip="{x:Bind FormattedTime, Mode=OneWay}">
+                        <shuxcc:VerticalCard.Top>
+                            <shuxc:ItemIcon
+                                shux:FrameworkElementHelper.SquareLength="40"
+                                Icon="{x:Bind Icon, Mode=OneWay}"
+                                Quality="{x:Bind Quality, Mode=OneWay}"/>
+                        </shuxcc:VerticalCard.Top>
+                        <shuxcc:VerticalCard.Bottom>
+                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind LastPull, Mode=OneWay}">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{x:Bind Color, Mode=OneWay}"/>
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                        </shuxcc:VerticalCard.Bottom>
+                    </shuxcc:VerticalCard>
+                </Grid>
             </DataTemplate>
         </ResourceDictionary>
 
