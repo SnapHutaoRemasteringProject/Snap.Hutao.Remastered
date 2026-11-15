@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.UI.Input;
+using Snap.Hutao.Remastered.UI.Xaml;
 using System.Collections;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Core;
@@ -226,24 +227,12 @@ public sealed partial class AutoSuggestTokenBox : ListViewBase
 
         if (string.IsNullOrWhiteSpace(Text))
         {
-            sender.ItemsSource = AvailableTokens?
-                .ExceptBy(Tokens, kvp => kvp.Value)
-                .OrderBy(kvp => kvp.Value.Kind)
-                .ThenBy(kvp => kvp.Value.Order)
-                .Select(kvp => kvp.Value)
-                .ToList();
+            sender.ItemsSource = CreateSuggestionItemSource(match: default);
         }
 
         if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
         {
-            sender.ItemsSource = AvailableTokens?
-                .ExceptBy(Tokens, kvp => kvp.Value)
-                .Where(kvp => kvp.Value.Value.Contains(Text ?? string.Empty, StringComparison.OrdinalIgnoreCase))
-                .OrderBy(kvp => kvp.Value.Kind)
-                .ThenBy(kvp => kvp.Value.Order)
-                .Select(kvp => kvp.Value)
-                .DefaultIfEmpty(SearchToken.NotFound)
-                .ToList();
+            sender.ItemsSource = CreateSuggestionItemSource(Text ?? string.Empty);
         }
     }
 
@@ -515,6 +504,35 @@ public sealed partial class AutoSuggestTokenBox : ListViewBase
             dataPackage.SetText(tokenString);
             Clipboard.SetContent(dataPackage);
         }
+    }
+
+    private List<object?>? CreateSuggestionItemSource(string? match)
+    {
+        if (AvailableTokens is not { } availableTokens)
+        {
+            return default;
+        }
+
+        IEnumerable<KeyValuePair<string, SearchToken>> candidates = availableTokens.ExceptBy(Tokens, kvp => kvp.Value);
+
+        // A null match lists every token that is still available, without a fallback row.
+        if (match is not null)
+        {
+            candidates = candidates.Where(kvp => kvp.Value.Value.Contains(match, StringComparison.OrdinalIgnoreCase));
+        }
+
+        List<SearchToken> suggestions = candidates
+            .OrderBy(kvp => kvp.Value.Kind)
+            .ThenBy(kvp => kvp.Value.Order)
+            .Select(kvp => kvp.Value)
+            .ToList();
+
+        if (match is not null && suggestions.Count is 0)
+        {
+            suggestions.Add(SearchToken.NotFound);
+        }
+
+        return ItemsSourceHelper.Create(suggestions, suggestions.Count is 0);
     }
 
     private void FocusPrimaryAutoSuggestBox()
