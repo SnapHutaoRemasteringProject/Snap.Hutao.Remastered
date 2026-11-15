@@ -2,7 +2,6 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.Control.Card.VerticalCardResources"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
     xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme">
 
@@ -23,11 +22,16 @@
                                 x:Name="ContentHost"
                                 HorizontalAlignment="{TemplateBinding HorizontalTopAlignment}"
                                 VerticalAlignment="{TemplateBinding VerticalTopAlignment}"
-                                cw:FrameworkElementExtensions.EnableActualSizeBinding="True"
                                 Child="{TemplateBinding Top}"/>
+                            <!--
+                                Do not cap the bottom content with ContentHost.ActualWidth.
+                                A template x:Bind to a template part's ActualWidth captures the
+                                part's initial 0 and is never refreshed, so MaxWidth stayed 0 and
+                                every caption (sign-in day, pull count, ascension label) collapsed
+                                to zero width. The card already sizes itself to its top content.
+                            -->
                             <Border
                                 Grid.Row="1"
-                                MaxWidth="{x:Bind ContentHost.ActualWidth, Mode=OneWay}"
                                 Padding="{TemplateBinding BottomPadding}"
                                 HorizontalAlignment="{TemplateBinding HorizontalBottomAlignment}"
                                 VerticalAlignment="{TemplateBinding VerticalBottomAlignment}"
