@@ -31,15 +31,15 @@
                             <Rectangle
                                 Height="1"
                                 Fill="{ThemeResource ControlStrokeColorDefaultBrush}"
-                                Visibility="{x:Bind Item.HasSetDescriptions, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
-                            <ItemsControl ItemsSource="{x:Bind Item.SetDescriptionItems, Mode=OneWay}" Visibility="{x:Bind Item.HasSetDescriptions, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                                Visibility="{x:Bind shuxc:ItemFlyoutContentResources.VisibleIf(Item.HasSetDescriptions), Mode=OneWay}"/>
+                            <ItemsControl ItemsSource="{x:Bind Item.SetDescriptionItems, Mode=OneWay}" Visibility="{x:Bind shuxc:ItemFlyoutContentResources.VisibleIf(Item.HasSetDescriptions), Mode=OneWay}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="x:String">
                                         <shuxctb:DescriptionTextBlock Margin="0,2,0,0" Description="{x:Bind Mode=OneTime}"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                            <StackPanel Spacing="8" Visibility="{x:Bind Item.HasEquippedAvatar, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                            <StackPanel Spacing="8" Visibility="{x:Bind shuxc:ItemFlyoutContentResources.VisibleIf(Item.HasEquippedAvatar), Mode=OneWay}">
                                 <Rectangle Height="1" Fill="{ThemeResource ControlStrokeColorDefaultBrush}"/>
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <!--  Same bust and same shift ratio as EquippedAvatarBadgeTemplate, only larger; the clip keeps it from poking through the separator above  -->
