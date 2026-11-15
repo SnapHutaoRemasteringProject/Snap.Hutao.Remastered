@@ -10,16 +10,13 @@ using Snap.Hutao.Remastered.UI.Xaml.Data.Converter;
 namespace Snap.Hutao.Remastered.Model.Metadata.Converter;
 public sealed partial class QualityToImageSourceConverter : DependencyValueConverter<QualityType, ImageSource?>
 {
-    public QualityToImageSourceConverter()
-    {
-        RedSource = CreateSource("UI_QUALITY_RED.png");
-        OrangeSource = CreateSource("UI_QUALITY_ORANGE.png");
-        PurpleSource = CreateSource("UI_QUALITY_PURPLE.png");
-        BlueSource = CreateSource("UI_QUALITY_BLUE.png");
-        GreenSource = CreateSource("UI_QUALITY_GREEN.png");
-        WhiteSource = CreateSource("UI_QUALITY_WHITE.png");
-        NoneSource = CreateSource("UI_QUALITY_NONE.png");
-    }
+    private readonly ImageSource redSource = CreateSource("UI_QUALITY_RED.png");
+    private readonly ImageSource orangeSource = CreateSource("UI_QUALITY_ORANGE.png");
+    private readonly ImageSource purpleSource = CreateSource("UI_QUALITY_PURPLE.png");
+    private readonly ImageSource blueSource = CreateSource("UI_QUALITY_BLUE.png");
+    private readonly ImageSource greenSource = CreateSource("UI_QUALITY_GREEN.png");
+    private readonly ImageSource whiteSource = CreateSource("UI_QUALITY_WHITE.png");
+    private readonly ImageSource noneSource = CreateSource("UI_QUALITY_NONE.png");
 
     /// <summary>
     /// Gets the instance used by template bindings that cannot resolve a resource dictionary entry.
@@ -30,13 +27,13 @@ public sealed partial class QualityToImageSourceConverter : DependencyValueConve
     {
         return from switch
         {
-            QualityType.QUALITY_ORANGE_SP => RedSource,
-            QualityType.QUALITY_ORANGE => OrangeSource,
-            QualityType.QUALITY_PURPLE => PurpleSource,
-            QualityType.QUALITY_BLUE => BlueSource,
-            QualityType.QUALITY_GREEN => GreenSource,
-            QualityType.QUALITY_WHITE => WhiteSource,
-            _ => NoneSource,
+            QualityType.QUALITY_ORANGE_SP => redSource,
+            QualityType.QUALITY_ORANGE => orangeSource,
+            QualityType.QUALITY_PURPLE => purpleSource,
+            QualityType.QUALITY_BLUE => blueSource,
+            QualityType.QUALITY_GREEN => greenSource,
+            QualityType.QUALITY_WHITE => whiteSource,
+            _ => noneSource,
         };
     }
 
