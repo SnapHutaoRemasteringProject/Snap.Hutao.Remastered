@@ -17,6 +17,10 @@
     d:DataContext="{d:DesignInstance shvo:OverlayViewModel}"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <shuxdcs:FrameRateStringConverter x:Key="FrameRateStringConverter"/>
+    </UserControl.Resources>
+
     <mxi:Interaction.Behaviors>
         <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
     </mxi:Interaction.Behaviors>
@@ -83,8 +87,6 @@
                 x:Key="SplitButtonBackgroundCheckedDisabled"
                 Opacity="0.4"
                 Color="{ThemeResource AccentFillColorDisabled}"/>
-
-            <shuxdcs:FrameRateStringConverter x:Key="FrameRateStringConverter"/>
         </Grid.Resources>
 
         <Grid.ColumnDefinitions>
