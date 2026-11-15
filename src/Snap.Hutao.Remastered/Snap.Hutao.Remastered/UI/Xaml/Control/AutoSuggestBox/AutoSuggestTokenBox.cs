@@ -11,7 +11,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.UI.Input;
-using Snap.Hutao.Remastered.UI.Xaml;
 using System.Collections;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Core;
