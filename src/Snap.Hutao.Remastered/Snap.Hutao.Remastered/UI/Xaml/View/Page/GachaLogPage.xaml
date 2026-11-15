@@ -221,24 +221,32 @@
             </Grid>
         </Flyout>
 
+        <!--
+            The template root must stay a framework type. A DataTemplate whose root is an
+            app control makes the generated x:Bind connector cast that root with
+            WinRT.CastExtensions.As, which throws E_NOINTERFACE (0x80004002) in Native AOT.
+            See the same workaround in SignInCard's award template.
+        -->
         <DataTemplate x:Key="HistoryWishItemTemplate" x:DataType="shvg:StatisticsItem">
-            <shuxcc:VerticalCard>
-                <shuxcc:VerticalCard.Top>
-                    <shuxc:ItemIcon
-                        Width="40"
-                        Height="40"
-                        Icon="{x:Bind Icon, Mode=OneWay}"
-                        Quality="{x:Bind Quality, Mode=OneWay}"/>
-                </shuxcc:VerticalCard.Top>
-                <shuxcc:VerticalCard.Bottom>
-                    <TextBlock
-                        HorizontalTextAlignment="Center"
-                        Style="{StaticResource CaptionTextBlockStyle}"
-                        Text="{x:Bind Count, Mode=OneWay}"
-                        TextTrimming="None"
-                        TextWrapping="NoWrap"/>
-                </shuxcc:VerticalCard.Bottom>
-            </shuxcc:VerticalCard>
+            <Grid>
+                <shuxcc:VerticalCard>
+                    <shuxcc:VerticalCard.Top>
+                        <shuxc:ItemIcon
+                            Width="40"
+                            Height="40"
+                            Icon="{x:Bind Icon, Mode=OneWay}"
+                            Quality="{x:Bind Quality, Mode=OneWay}"/>
+                    </shuxcc:VerticalCard.Top>
+                    <shuxcc:VerticalCard.Bottom>
+                        <TextBlock
+                            HorizontalTextAlignment="Center"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Text="{x:Bind Count, Mode=OneWay}"
+                            TextTrimming="None"
+                            TextWrapping="NoWrap"/>
+                    </shuxcc:VerticalCard.Bottom>
+                </shuxcc:VerticalCard>
+            </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="HistoryWishListTemplate" x:DataType="shvg:HistoryWish">
