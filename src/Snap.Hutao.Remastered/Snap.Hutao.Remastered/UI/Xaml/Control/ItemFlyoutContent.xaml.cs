@@ -11,4 +11,12 @@ public sealed partial class ItemFlyoutContentResources : ResourceDictionary
     {
         InitializeComponent();
     }
+
+    // A ControlTemplate x:Bind never receives its converter lookup root, so a
+    // {StaticResource} converter throws in the generated LookupConverter. Call the
+    // mapping directly instead, the same way AutoSortListResources.CreateIcon does.
+    public static Visibility VisibleIf(bool value)
+    {
+        return value ? Visibility.Visible : Visibility.Collapsed;
+    }
 }

@@ -12,19 +12,19 @@ public sealed partial class QualityToImageSourceConverter : DependencyValueConve
 {
     public QualityToImageSourceConverter()
     {
-        if (RuntimeEnvironment.IsUnpackaged)
-        {
-            // In unpackaged mode, ms-appx:/// URIs in XAML BitmapImage don't resolve.
-            // Override with absolute file URIs.
-            RedSource = new BitmapImage(InstalledLocation.ToAbsoluteUri("ms-appx:///Resource/ItemIcon/UI_QUALITY_RED.png"));
-            OrangeSource = new BitmapImage(InstalledLocation.ToAbsoluteUri("ms-appx:///Resource/ItemIcon/UI_QUALITY_ORANGE.png"));
-            PurpleSource = new BitmapImage(InstalledLocation.ToAbsoluteUri("ms-appx:///Resource/ItemIcon/UI_QUALITY_PURPLE.png"));
-            BlueSource = new BitmapImage(InstalledLocation.ToAbsoluteUri("ms-appx:///Resource/ItemIcon/UI_QUALITY_BLUE.png"));
-            GreenSource = new BitmapImage(InstalledLocation.ToAbsoluteUri("ms-appx:///Resource/ItemIcon/UI_QUALITY_GREEN.png"));
-            WhiteSource = new BitmapImage(InstalledLocation.ToAbsoluteUri("ms-appx:///Resource/ItemIcon/UI_QUALITY_WHITE.png"));
-            NoneSource = new BitmapImage(InstalledLocation.ToAbsoluteUri("ms-appx:///Resource/ItemIcon/UI_QUALITY_NONE.png"));
-        }
+        RedSource = CreateSource("UI_QUALITY_RED.png");
+        OrangeSource = CreateSource("UI_QUALITY_ORANGE.png");
+        PurpleSource = CreateSource("UI_QUALITY_PURPLE.png");
+        BlueSource = CreateSource("UI_QUALITY_BLUE.png");
+        GreenSource = CreateSource("UI_QUALITY_GREEN.png");
+        WhiteSource = CreateSource("UI_QUALITY_WHITE.png");
+        NoneSource = CreateSource("UI_QUALITY_NONE.png");
     }
+
+    /// <summary>
+    /// Gets the instance used by template bindings that cannot resolve a resource dictionary entry.
+    /// </summary>
+    public static QualityToImageSourceConverter Default { get; } = new();
 
     public override ImageSource? Convert(QualityType from)
     {
@@ -38,5 +38,13 @@ public sealed partial class QualityToImageSourceConverter : DependencyValueConve
             QualityType.QUALITY_WHITE => WhiteSource,
             _ => NoneSource,
         };
+    }
+
+    private static BitmapImage CreateSource(string fileName)
+    {
+        // Template x:Bind cannot reach a converter resource of its own dictionary,
+        // so the images live here. Unpackaged runs cannot resolve ms-appx:///.
+        Uri msAppxUri = new($"ms-appx:///Resource/ItemIcon/{fileName}");
+        return new BitmapImage(RuntimeEnvironment.IsPackaged ? msAppxUri : InstalledLocation.ToAbsoluteUri(msAppxUri));
     }
 }
