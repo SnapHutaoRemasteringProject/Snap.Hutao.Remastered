@@ -22,12 +22,12 @@ public sealed partial class AssociationTypeIconConverter : ValueConverter<Associ
             AssociationType.ASSOC_TYPE_SUMERU => "Sumeru",
             AssociationType.ASSOC_TYPE_FONTAINE => "Fontaine",
             AssociationType.ASSOC_TYPE_NATLAN => "Natlan",
-            AssociationType.ASSOC_TYPE_SNEZHNAYA => default,
+            AssociationType.ASSOC_TYPE_SNEZHNAYA => "Snezhnaya",
             AssociationType.ASSOC_TYPE_OMNI_SCOURGE => default,
-            AssociationType.ASSOC_TYPE_NODKRAI => "Nodkrai",
-            AssociationType.ASSOC_TYPE_NODKRAI_ZIBAI => "Nodkrai",
+            AssociationType.ASSOC_TYPE_NODKRAI => "NodKrai",
+            AssociationType.ASSOC_TYPE_NODKRAI_ZIBAI => "NodKrai",
             AssociationType.ASSOC_TYPE_HVISION => default,
-            AssociationType.ASSOC_TYPE_SNEZHNAYA_STAR => "Snezhnaya",
+            AssociationType.ASSOC_TYPE_SNEZHNAYA_STAR => default,
             _ => throw HutaoException.NotSupported(),
         };
 
