@@ -71,7 +71,7 @@
                         <Setter Property="Padding" Value="0"/>
                     </Style>
                 </Flyout.FlyoutPresenterStyle>
-                <shuxc:ItemFlyoutContent/>
+                <shuxc:ItemFlyoutContent Item="{Binding Mode=OneWay}"/>
             </Flyout>
 
             <!--  Properties defined by 祝圣之霜, only reachable from a reliquary crafted with it  -->
