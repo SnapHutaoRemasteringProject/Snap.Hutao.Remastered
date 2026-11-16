@@ -2,7 +2,6 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox.AutoSuggestTokenBoxResources"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:shuxca="using:Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
@@ -56,10 +55,9 @@
             <Setter.Value>
                 <ItemsPanelTemplate>
                     <cwc:WrapPanel
-                        cw:FrameworkElementExtensions.AncestorType="shuxca:AutoSuggestTokenBox"
-                        HorizontalSpacing="{Binding (cw:FrameworkElementExtensions.Ancestor).TokenSpacing, RelativeSource={RelativeSource Self}}"
+                        HorizontalSpacing="{TemplateBinding shuxca:AutoSuggestTokenPanelHelper.TokenSpacing}"
                         StretchChild="Last"
-                        VerticalSpacing="{Binding (cw:FrameworkElementExtensions.Ancestor).TokenSpacing, RelativeSource={RelativeSource Self}}"/>
+                        VerticalSpacing="{TemplateBinding shuxca:AutoSuggestTokenPanelHelper.TokenSpacing}"/>
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>
@@ -124,7 +122,10 @@
                 VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
                 ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}">
 
-                <ItemsPresenter Margin="{StaticResource AutoSuggestTokenBoxPresenterMargin}" Padding="{TemplateBinding Padding}"/>
+                <ItemsPresenter
+                    Margin="{StaticResource AutoSuggestTokenBoxPresenterMargin}"
+                    Padding="{TemplateBinding Padding}"
+                    shuxca:AutoSuggestTokenPanelHelper.TokenSpacing="{x:Bind TokenSpacing, Mode=OneWay}"/>
             </ScrollViewer>
 
             <ContentPresenter

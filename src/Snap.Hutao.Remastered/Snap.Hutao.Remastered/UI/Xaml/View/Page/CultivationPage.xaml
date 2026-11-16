@@ -537,57 +537,60 @@
             </DataTemplate>
 
             <DataTemplate x:Key="InventoryItemTemplate" x:DataType="shvcu:InventoryItemView">
-                <wl:LiquidGlassButton
-                    Padding="0"
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    Background="Transparent"
-                    BorderBrush="{x:Null}"
-                    BorderThickness="0">
-                    <shuxcc:HorizontalCard Width="300">
-                        <shuxcc:HorizontalCard.Left>
-                            <shuxc:ItemIcon
-                                Width="40"
-                                Height="40"
-                                Icon="{x:Bind Inner.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
-                                Quality="{x:Bind Inner.RankLevel, Mode=OneWay}"/>
-                        </shuxcc:HorizontalCard.Left>
-                        <shuxcc:HorizontalCard.Right>
-                            <Grid Margin="16,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock
-                                    Grid.Column="0"
-                                    Margin="0,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Text="{x:Bind Inner.Name, Mode=OneWay}"
-                                    TextTrimming="CharacterEllipsis"/>
-                                <TextBlock Grid.Column="1" Text="{x:Bind Count, Mode=OneWay}"/>
-                            </Grid>
-                        </shuxcc:HorizontalCard.Right>
-                    </shuxcc:HorizontalCard>
-                    <wl:LiquidGlassButton.Flyout>
-                        <Flyout essential:FlyoutHelper.AcrylicWorkaround="True">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{x:Bind Inner.Name, Mode=OneWay}"/>
-                                <NumberBox
-                                    Grid.Row="1"
-                                    MinWidth="160"
-                                    Margin="0,16,0,0"
-                                    essential:NumberBoxHelper.AcrylicWorkaround="True"
-                                    Maximum="4294967295"
-                                    Minimum="0"
-                                    Value="{x:Bind Count, Mode=TwoWay}"/>
-                            </Grid>
-                        </Flyout>
-                    </wl:LiquidGlassButton.Flyout>
-                </wl:LiquidGlassButton>
+                <!--  https://github.com/microsoft/microsoft-ui-xaml/issues/7810 workaround  -->
+                <Grid>
+                    <wl:LiquidGlassButton
+                        Padding="0"
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        Background="Transparent"
+                        BorderBrush="{x:Null}"
+                        BorderThickness="0">
+                        <shuxcc:HorizontalCard Width="300">
+                            <shuxcc:HorizontalCard.Left>
+                                <shuxc:ItemIcon
+                                    Width="40"
+                                    Height="40"
+                                    Icon="{x:Bind Inner.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                                    Quality="{x:Bind Inner.RankLevel, Mode=OneWay}"/>
+                            </shuxcc:HorizontalCard.Left>
+                            <shuxcc:HorizontalCard.Right>
+                                <Grid Margin="16,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        Margin="0,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="{x:Bind Inner.Name, Mode=OneWay}"
+                                        TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Grid.Column="1" Text="{x:Bind Count, Mode=OneWay}"/>
+                                </Grid>
+                            </shuxcc:HorizontalCard.Right>
+                        </shuxcc:HorizontalCard>
+                        <wl:LiquidGlassButton.Flyout>
+                            <Flyout essential:FlyoutHelper.AcrylicWorkaround="True">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{x:Bind Inner.Name, Mode=OneWay}"/>
+                                    <NumberBox
+                                        Grid.Row="1"
+                                        MinWidth="160"
+                                        Margin="0,16,0,0"
+                                        essential:NumberBoxHelper.AcrylicWorkaround="True"
+                                        Maximum="4294967295"
+                                        Minimum="0"
+                                        Value="{x:Bind Count, Mode=TwoWay}"/>
+                                </Grid>
+                            </Flyout>
+                        </wl:LiquidGlassButton.Flyout>
+                    </wl:LiquidGlassButton>
+                </Grid>
             </DataTemplate>
         </ResourceDictionary>
     </Page.Resources>
@@ -803,7 +806,7 @@
                                                     </Grid>
                                                 </Border>
 
-                                                <cwc:HeaderedItemsControl Margin="0,8,0,4" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(ViewModel.ResinStatistics.ItemsSource, false), Mode=OneWay}">
+                                                <cwc:HeaderedItemsControl Margin="0,8,0,4" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(ViewModel.ResinStatistics.ItemsSource, x:False), Mode=OneWay}">
                                                     <cwc:HeaderedItemsControl.Header>
                                                         <shuxcpd:DataTable ColumnSpacing="8">
                                                             <shuxcpd:DataColumn CanResize="False"/>

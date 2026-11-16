@@ -2,13 +2,13 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.BackpackPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:essential="using:WinUI3Package"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
+    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxba="using:Snap.Hutao.Remastered.UI.Xaml.Behavior.Action"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
@@ -126,52 +126,55 @@
 
             <!--  Weapon card  -->
             <DataTemplate x:Key="WeaponCardTemplate" x:DataType="shv:BackpackWeaponItemView">
-                <shuxcc:HorizontalCard Width="270">
-                    <mxi:Interaction.Behaviors>
-                        <shuxb:StaticEventTriggerBehavior EventName="Tapped">
-                            <shuxba:ShowAttachedFlyoutAction/>
-                        </shuxb:StaticEventTriggerBehavior>
-                    </mxi:Interaction.Behaviors>
-                    <FlyoutBase.AttachedFlyout>
-                        <StaticResource ResourceKey="ItemDetailFlyout"/>
-                    </FlyoutBase.AttachedFlyout>
-                    <shuxcc:HorizontalCard.Left>
-                        <Grid Margin="4,0" VerticalAlignment="Center">
-                            <shuxc:ItemIcon
-                                Width="54"
-                                Height="54"
-                                Icon="{x:Bind Weapon.Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}"
-                                Quality="{x:Bind Weapon.RankLevel, Mode=OneWay}"/>
-                            <ContentControl
-                                HorizontalContentAlignment="Right"
-                                VerticalContentAlignment="Bottom"
-                                Content="{x:Bind Mode=OneWay}"
-                                ContentTemplate="{StaticResource EquippedAvatarBadgeTemplate}"/>
-                        </Grid>
-                    </shuxcc:HorizontalCard.Left>
-                    <shuxcc:HorizontalCard.Right>
-                        <Grid Margin="16,0">
-                            <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock
-                                    Text="{x:Bind Weapon.Name, Mode=OneWay}"
-                                    TextTrimming="CharacterEllipsis"
-                                    TextWrapping="NoWrap"/>
-                                <TextBlock
-                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="{x:Bind WeaponTypeName, Mode=OneWay}"/>
-                                <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind LevelRefinementInfo, Mode=OneWay}"/>
-                            </StackPanel>
-                            <shuxc:LockIcon
-                                Width="20"
-                                Height="20"
-                                Margin="0,0,-10,4"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom"
-                                IsLocked="{x:Bind IsLocked, Mode=OneWay}"/>
-                        </Grid>
-                    </shuxcc:HorizontalCard.Right>
-                </shuxcc:HorizontalCard>
+                <!--  https://github.com/microsoft/microsoft-ui-xaml/issues/7810 workaround  -->
+                <Grid>
+                    <shuxcc:HorizontalCard Width="270">
+                        <mxi:Interaction.Behaviors>
+                            <shuxb:StaticEventTriggerBehavior EventName="Tapped">
+                                <shuxba:ShowAttachedFlyoutAction/>
+                            </shuxb:StaticEventTriggerBehavior>
+                        </mxi:Interaction.Behaviors>
+                        <FlyoutBase.AttachedFlyout>
+                            <StaticResource ResourceKey="ItemDetailFlyout"/>
+                        </FlyoutBase.AttachedFlyout>
+                        <shuxcc:HorizontalCard.Left>
+                            <Grid Margin="4,0" VerticalAlignment="Center">
+                                <shuxc:ItemIcon
+                                    Width="54"
+                                    Height="54"
+                                    Icon="{x:Bind Weapon.Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}"
+                                    Quality="{x:Bind Weapon.RankLevel, Mode=OneWay}"/>
+                                <ContentControl
+                                    HorizontalContentAlignment="Right"
+                                    VerticalContentAlignment="Bottom"
+                                    Content="{x:Bind Mode=OneWay}"
+                                    ContentTemplate="{StaticResource EquippedAvatarBadgeTemplate}"/>
+                            </Grid>
+                        </shuxcc:HorizontalCard.Left>
+                        <shuxcc:HorizontalCard.Right>
+                            <Grid Margin="16,0">
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock
+                                        Text="{x:Bind Weapon.Name, Mode=OneWay}"
+                                        TextTrimming="CharacterEllipsis"
+                                        TextWrapping="NoWrap"/>
+                                    <TextBlock
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="{x:Bind WeaponTypeName, Mode=OneWay}"/>
+                                    <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind LevelRefinementInfo, Mode=OneWay}"/>
+                                </StackPanel>
+                                <shuxc:LockIcon
+                                    Width="20"
+                                    Height="20"
+                                    Margin="0,0,-10,4"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    IsLocked="{x:Bind IsLocked, Mode=OneWay}"/>
+                            </Grid>
+                        </shuxcc:HorizontalCard.Right>
+                    </shuxcc:HorizontalCard>
+                </Grid>
             </DataTemplate>
 
             <DataTemplate x:Key="ReliquaryCardTemplate" x:DataType="shv:BackpackReliquaryItemView">
@@ -364,41 +367,44 @@
 
             <!--  Default card  -->
             <DataTemplate x:Key="DefaultCardTemplate" x:DataType="shv:BackpackItemView">
-                <shuxcc:HorizontalCard Width="270">
-                    <mxi:Interaction.Behaviors>
-                        <shuxb:StaticEventTriggerBehavior EventName="Tapped">
-                            <shuxba:ShowAttachedFlyoutAction/>
-                        </shuxb:StaticEventTriggerBehavior>
-                    </mxi:Interaction.Behaviors>
-                    <FlyoutBase.AttachedFlyout>
-                        <StaticResource ResourceKey="ItemDetailFlyout"/>
-                    </FlyoutBase.AttachedFlyout>
-                    <shuxcc:HorizontalCard.Left>
-                        <shuxc:ItemIcon
-                            Width="40"
-                            Height="40"
-                            Icon="{x:Bind Material.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
-                            Quality="{x:Bind Material.RankLevel, Mode=OneWay}"/>
-                    </shuxcc:HorizontalCard.Left>
-                    <shuxcc:HorizontalCard.Right>
-                        <Grid Margin="16,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                Text="{x:Bind Material.Name, Mode=OneWay}"
-                                TextTrimming="CharacterEllipsis"/>
-                            <TextBlock
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{x:Bind DisplayCount, Mode=OneWay}"/>
-                        </Grid>
-                    </shuxcc:HorizontalCard.Right>
-                </shuxcc:HorizontalCard>
+                <!--  https://github.com/microsoft/microsoft-ui-xaml/issues/7810 workaround  -->
+                <Grid>
+                    <shuxcc:HorizontalCard Width="270">
+                        <mxi:Interaction.Behaviors>
+                            <shuxb:StaticEventTriggerBehavior EventName="Tapped">
+                                <shuxba:ShowAttachedFlyoutAction/>
+                            </shuxb:StaticEventTriggerBehavior>
+                        </mxi:Interaction.Behaviors>
+                        <FlyoutBase.AttachedFlyout>
+                            <StaticResource ResourceKey="ItemDetailFlyout"/>
+                        </FlyoutBase.AttachedFlyout>
+                        <shuxcc:HorizontalCard.Left>
+                            <shuxc:ItemIcon
+                                Width="40"
+                                Height="40"
+                                Icon="{x:Bind Material.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                                Quality="{x:Bind Material.RankLevel, Mode=OneWay}"/>
+                        </shuxcc:HorizontalCard.Left>
+                        <shuxcc:HorizontalCard.Right>
+                            <Grid Margin="16,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind Material.Name, Mode=OneWay}"
+                                    TextTrimming="CharacterEllipsis"/>
+                                <TextBlock
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                    Text="{x:Bind DisplayCount, Mode=OneWay}"/>
+                            </Grid>
+                        </shuxcc:HorizontalCard.Right>
+                    </shuxcc:HorizontalCard>
+                </Grid>
             </DataTemplate>
 
             <shv:BackpackItemTemplateSelector
@@ -481,9 +487,9 @@
                             Text="{shuxm:ResourceString Name=ViewPageBackpackAddArchiveHint}"/>
                         <wl:LiquidGlassButton
                             Margin="0,16,0,0"
-                            shuxcth:ControlMaterialState.IsManaged="True"
                             Padding="16,8"
                             HorizontalAlignment="Stretch"
+                            shuxcth:ControlMaterialState.IsManaged="True"
                             Command="{x:Bind DataContext.AddArchiveCommand, Mode=OneWay}"
                             Content="{shuxm:ResourceString Name=ViewPageBackpackAddArchive}"/>
                     </StackPanel>
@@ -529,7 +535,7 @@
                             VerticalAlignment="Center"
                             Orientation="Horizontal"
                             Spacing="6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" VerticalAlignment="Center">
+                            <wl:LiquidGlassButton VerticalAlignment="Center" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True">
                                         <shuxcas:AutoSortList
@@ -557,8 +563,8 @@
                         <AppBarElementContainer AllowFocusOnInteraction="True">
                             <shuxc:SizeRestrictedContentControl Margin="2,6,3,6">
                                 <wl:LiquidGlassComboBox
-                                    shuxcth:ControlMaterialState.IsManaged="True"
                                     shuxcth:ComboBoxPopupLifetime.IsManaged="True"
+                                    shuxcth:ControlMaterialState.IsManaged="True"
                                     ItemTemplate="{StaticResource BackpackArchiveNameTemplate}"
                                     ItemsSource="{x:Bind DataContext.Archives, Mode=OneWay}"
                                     SelectedItem="{x:Bind DataContext.Archives.CurrentItem, Mode=TwoWay}"

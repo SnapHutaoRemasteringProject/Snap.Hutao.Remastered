@@ -176,11 +176,32 @@ PointerEntered、PointerExited、PointerPressed，包含 SettingsCard 和 Liquid
 日志中十条枚举动态代码警告对应的位置，当前 EF 生成源码已无直接 Enum.GetValues(Type)，
 需要结合下一次实际编译输入/内联调用定位，不能据日志行号直接改生成文件。
 
+## 2026-11-16：最新 XAML 编译阻塞与警告口径
+
+最新用户日志在 XAML 编译阶段失败：1 条 WMC1110、31 条构建警告，另有还原阶段重复报告的 1 条 NU1507。
+31 条分为 CS8305 22、WMC1510 7、WMC1501 1、NU1507 1；该次没有进入完整原生分析，不能据此推断最终 ILC 警告数。
+
+WMC1110 是本分支上次修改的语法错误：x:Bind 函数的 Boolean 实参须写 `x:False`，裸 `false` 会被视为页面属性路径。
+已按 [WinUI 函数绑定文档](https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/function-bindings)修正，保留 ItemsSourceHelper 在 WinRT setter 前转换迭代器的修复。
+
+七条 WMC1510 的当前处理（替代上次局部抑制方案）：
+
+- 菜单模板的 TemplateSettings.KeyboardAcceleratorTextMinWidth 保留编译绑定。
+- 删除全部 `x:SuppressXamlTrimWarnings`。用户实测该指令使当前 XBF 编译器报 WMC0612/0x09C4，[WinUI #12708](https://github.com/microsoft/microsoft-ui-xaml/issues/12708)记录了相同现象；该 issue 尚无维护者确认的修复，不能再以诊断文案为依据加入此属性。
+- SegmentedOverride 补齐 `x:Class`、调用 InitializeComponent 的 code-behind，并在 App.xaml 原位置实例化。`ControlTemplate TargetType=Segmented` 中以 OneWay x:Bind 把 HorizontalAlignment 传给 ItemsPresenter；其 ItemsPanelTemplate 内的 EqualPanel 用原生 TemplateBinding 读取该值。
+- AutoSuggestTokenBox 在其强类型 ControlTemplate 中以 OneWay x:Bind 把 TokenSpacing 写到 ItemsPresenter 的附加 DP；新 AutoSuggestTokenPanelHelper 使用现有 DependencyProperty<double> 源生成器（IsAttached=true、TargetType=ItemsPresenter）。WrapPanel 通过 TemplateBinding 读取两个间距值。ItemsPresenter 是 sealed 类型，没有派生新控件。
+- 两处布局模板均不再查询 Ancestor。局部 XAML 编译器源码只为 ControlTemplate/DataTemplate 建立专用强类型绑定源，不能把 ItemsPanelTemplate 内的 Binding 直接替换为 x:Bind 再假定字典的 x:Class 能补足数据源。原生 ItemsPresenter 加载面板时将自身作为 templated parent，因而这里使用 TemplateBinding。
+- 建议框的 DisplayMemberPath/TextMemberPath 字符串转发保留；相应位置本来已经使用 x:Bind/TemplateBinding。绑定字符串并不等于编译字符串所指的成员访问，这三条原有 WMC1510 可能仍存在，不以删除通用功能或抑制来隐藏。
+
+仍保留的其他诊断是 22 条 SDK 实验 API CS8305、1 条实验图表资源 WMC1501，以及 1 条多包源集中版本管理 NU1507。
+没有全局 NoWarn，未移除图表/窗口位置功能，未更改 NuGet.Config。
+本轮只做源码/XML/差异检查，尚无修正后的编译或 Native AOT 发布警告总数。
+
 ## 验证口径
 
 完整原生发布、生产数据库原生测试和最新普通构建已通过。
 2026-11-11 的 Debug 全量测试 274/274、关闭 JSON 反射回归 16/16；细节记录在 CODE_REVIEW.md。
 
 未验证：原生 GUI 启动/导航/退出、完整网络/AI/COM 路径、真实无对应运行时机器、MSIX 安装/卸载及性能。
-当前编译警告为 84 条；不把旧 194/178 条或此前原生链接诊断混入这轮统计，也不写“全部原生功能完成”。
+该历史构建记录的编译警告为 84 条；最新用户失败构建口径见上节，不与原生链接诊断混算，也不写“全部原生功能完成”。
 历史 JSON/扫描材料见 [归档](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/32976c2f4b7ef2f8053b34131ffd7fdbae5b5722/docs/aot-blockers.md)；R2R 旧验证保留于 CODE_REVIEW.md。

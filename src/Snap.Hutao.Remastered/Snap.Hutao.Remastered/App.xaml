@@ -48,7 +48,7 @@
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/PageOverride.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/PivotOverride.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/ScrollViewer.xaml"/>
-                <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/SegmentedOverride.xaml"/>
+                <SegmentedOverrideResources xmlns="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/SettingsStyle.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/Thickness.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/TransitionCollection.xaml"/>
