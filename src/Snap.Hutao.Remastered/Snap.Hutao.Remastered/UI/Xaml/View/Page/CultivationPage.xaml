@@ -494,43 +494,46 @@
             </DataTemplate>
 
             <DataTemplate x:Key="StatisticsItemTemplate" x:DataType="shvcu:StatisticsCultivateItem">
-                <shuxcc:HorizontalCard Background="{Binding IsToday, Converter={ThemeResource BoolToStatisticsBrushSelector}, Mode=OneWay}">
-                    <shuxcc:HorizontalCard.Left>
-                        <Grid Grid.Column="0">
-                            <shuxc:ItemIcon
-                                Width="40"
-                                Height="40"
-                                Icon="{x:Bind Inner.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
-                                Opacity="{x:Bind IsFinished, Converter={StaticResource BoolToOpacityConverter}, Mode=OneWay}"
-                                Quality="{x:Bind Inner.RankLevel, Mode=OneWay}"/>
-                            <FontIcon
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="24"
-                                Glyph="&#xE73E;"
-                                Visibility="{x:Bind IsFinished, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
-                        </Grid>
-                    </shuxcc:HorizontalCard.Left>
-                    <shuxcc:HorizontalCard.Right>
-                        <Grid Margin="16,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock
-                                Grid.Column="0"
-                                Margin="0,0,0,0"
-                                VerticalAlignment="Center"
-                                Text="{x:Bind Inner.Name, Mode=OneWay}"
-                                TextTrimming="CharacterEllipsis"/>
-                            <TextBlock
-                                Grid.Column="1"
-                                Margin="0,0,0,0"
-                                VerticalAlignment="Center"
-                                Text="{x:Bind FormattedCount, Mode=OneWay}"/>
-                        </Grid>
-                    </shuxcc:HorizontalCard.Right>
-                </shuxcc:HorizontalCard>
+                <!--  Framework root avoids nested custom-control template connector collisions (#3916).  -->
+                <Grid>
+                    <shuxcc:HorizontalCard Background="{Binding IsToday, Converter={ThemeResource BoolToStatisticsBrushSelector}, Mode=OneWay}">
+                        <shuxcc:HorizontalCard.Left>
+                            <Grid Grid.Column="0">
+                                <shuxc:ItemIcon
+                                    Width="40"
+                                    Height="40"
+                                    Icon="{x:Bind Inner.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                                    Opacity="{x:Bind IsFinished, Converter={StaticResource BoolToOpacityConverter}, Mode=OneWay}"
+                                    Quality="{x:Bind Inner.RankLevel, Mode=OneWay}"/>
+                                <FontIcon
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="24"
+                                    Glyph="&#xE73E;"
+                                    Visibility="{x:Bind IsFinished, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
+                            </Grid>
+                        </shuxcc:HorizontalCard.Left>
+                        <shuxcc:HorizontalCard.Right>
+                            <Grid Margin="16,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind Inner.Name, Mode=OneWay}"
+                                    TextTrimming="CharacterEllipsis"/>
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind FormattedCount, Mode=OneWay}"/>
+                            </Grid>
+                        </shuxcc:HorizontalCard.Right>
+                    </shuxcc:HorizontalCard>
+                </Grid>
             </DataTemplate>
 
             <DataTemplate x:Key="InventoryItemTemplate" x:DataType="shvcu:InventoryItemView">

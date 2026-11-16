@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.Xaml.Interactivity;
+using System.Diagnostics;
 using WinUI.LiquidGlass;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Behavior;
@@ -14,34 +15,37 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Behavior;
 /// <summary>Subscribes to the application's known UI events without event reflection.</summary>
 [ContentProperty(Name = nameof(Actions))]
 [DependencyProperty<string>("EventName", DefaultValue = "", NotNull = true, PropertyChangedCallbackName = nameof(OnEventNameChanged))]
-[DependencyProperty<ActionCollection>("Actions", NotNull = true, CreateDefaultValueCallbackName = nameof(CreateActionsDefaultValueCallback))]
-public sealed partial class StaticEventTriggerBehavior : Microsoft.Xaml.Interactivity.Behavior<FrameworkElement>
+public sealed partial class StaticEventTriggerBehavior : Trigger<FrameworkElement>
 {
+    // Reuse Trigger.Actions: the SDK owns its per-instance collection and local
+    // dependency-property value, just as it does for EventTriggerBehavior.
     private FrameworkElement? source;
     private string subscribedEvent = string.Empty;
 
-    // Return the factory delegate expected by PropertyMetadata.Create, so every
-    // behavior receives its own action collection rather than a shared default.
-    private static CreateDefaultValueCallback CreateActionsDefaultValueCallback()
+    public StaticEventTriggerBehavior()
     {
-        return static () => new ActionCollection();
+        TraceLifecycle("Created");
     }
 
     protected override void OnAttached()
     {
         base.OnAttached();
+        TraceLifecycle("Attached");
         RefreshSubscription();
     }
 
     protected override void OnDetaching()
     {
+        TraceLifecycle("Detaching");
         Unsubscribe();
         base.OnDetaching();
     }
 
     private static void OnEventNameChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
     {
-        ((StaticEventTriggerBehavior)sender).RefreshSubscription();
+        StaticEventTriggerBehavior behavior = (StaticEventTriggerBehavior)sender;
+        behavior.TraceLifecycle("EventName changed");
+        behavior.RefreshSubscription();
     }
 
     private void RefreshSubscription()
@@ -51,6 +55,7 @@ public sealed partial class StaticEventTriggerBehavior : Microsoft.Xaml.Interact
         ChangeSubscription(target, EventName, true);
         source = target;
         subscribedEvent = EventName;
+        TraceLifecycle("Subscribed");
     }
 
     private void Unsubscribe()
@@ -63,7 +68,14 @@ public sealed partial class StaticEventTriggerBehavior : Microsoft.Xaml.Interact
 
     private void OnEvent(object? sender, object args)
     {
+        TraceLifecycle("Event received");
         if (source is { } target) Interaction.ExecuteActions(target, Actions, args);
+    }
+
+    [Conditional("DEBUG")]
+    private void TraceLifecycle(string stage)
+    {
+        Debug.WriteLine($"[StaticEventTriggerBehavior] {stage}; Event={EventName}; Host={AssociatedObject?.GetType().FullName ?? "<detached>"}");
     }
 
     [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase))]
