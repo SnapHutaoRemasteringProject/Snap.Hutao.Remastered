@@ -30,6 +30,7 @@ using Snap.Hutao.Remastered.ViewModel.Game;
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using AvatarPromotionDelta = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate.AvatarPromotionDelta;
 using CalculateBatchConsumption = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Calculate.BatchConsumption;
 using DetailedCharacter = Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.Avatar.DetailedCharacter;
@@ -96,32 +97,59 @@ public sealed partial class CultivationViewModel : Abstraction.ViewModel
 
     protected override async ValueTask<bool> LoadOverrideAsync(CancellationToken token)
     {
-        if (!await metadataService.InitializeAsync().ConfigureAwait(false))
+        string stage = "Starting";
+        void ReportStage(string next)
         {
-            return false;
+            stage = next;
+            Debug.WriteLine($"[Cultivation.Load] {stage}");
         }
 
-        metadataContext = await metadataService.GetContextAsync<CultivationMetadataContext>(token).ConfigureAwait(false);
-        SearchData searchData = SearchData.CreateForCultivation();
-
-        using (await EnterCriticalSectionAsync().ConfigureAwait(false))
+        try
         {
-            IAdvancedDbCollectionView<CultivateProject> projects = await cultivationService.GetProjectCollectionAsync().ConfigureAwait(false);
+            ReportStage("Waiting for metadata initialization");
+            if (!await metadataService.InitializeAsync().ConfigureAwait(false))
+            {
+                return false;
+            }
+
+            ReportStage("Loading cultivation metadata context");
+            metadataContext = await metadataService.GetContextAsync<CultivationMetadataContext>(token).ConfigureAwait(false);
+            ReportStage("Creating search tokens");
+            SearchData searchData = SearchData.CreateForCultivation();
+
+            ReportStage("Waiting for view-model critical section");
+            using (await EnterCriticalSectionAsync().ConfigureAwait(false))
+            {
+                ReportStage("Loading projects");
+                IAdvancedDbCollectionView<CultivateProject> projects = await cultivationService.GetProjectCollectionAsync().ConfigureAwait(false);
+                await taskContext.SwitchToMainThreadAsync();
+                ReportStage("Publishing projects");
+                Projects = projects;
+                Projects.MoveCurrentTo(Projects.Source.SelectedOrFirstOrDefault());
+            }
+
+            // Force update when re-entering the page
+            if (Projects.CurrentItem is not null && CultivateEntries is null)
+            {
+                ReportStage("Loading current project entries");
+                await UpdateEntryCollectionAsync(Projects.CurrentItem).ConfigureAwait(false);
+            }
+
             await taskContext.SwitchToMainThreadAsync();
-            Projects = projects;
-            Projects.MoveCurrentTo(Projects.Source.SelectedOrFirstOrDefault());
-        }
+            ReportStage("Publishing search tokens");
+            SearchData = searchData;
+            ReportStage("Load override completed");
 
-        // Force update when re-entering the page
-        if (Projects.CurrentItem is not null && CultivateEntries is null)
+            return true;
+        }
+        catch (Exception exception)
         {
-            await UpdateEntryCollectionAsync(Projects.CurrentItem).ConfigureAwait(false);
+            // SafeForget reports the original exception to Sentry. Retain the
+            // failing step there as well as in Visual Studio's Debug output.
+            exception.Data["Cultivation.LoadStage"] = stage;
+            Debug.WriteLine($"[Cultivation.Load] Failed at {stage}: {exception}");
+            throw;
         }
-
-        await taskContext.SwitchToMainThreadAsync();
-        SearchData = searchData;
-
-        return true;
     }
 
     protected override void UninitializeOverride()
