@@ -803,7 +803,7 @@
                                                     </Grid>
                                                 </Border>
 
-                                                <cwc:HeaderedItemsControl Margin="0,8,0,4" ItemsSource="{x:Bind ViewModel.ResinStatistics.ItemsSource, Mode=OneWay}">
+                                                <cwc:HeaderedItemsControl Margin="0,8,0,4" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(ViewModel.ResinStatistics.ItemsSource, false), Mode=OneWay}">
                                                     <cwc:HeaderedItemsControl.Header>
                                                         <shuxcpd:DataTable ColumnSpacing="8">
                                                             <shuxcpd:DataColumn CanResize="False"/>
