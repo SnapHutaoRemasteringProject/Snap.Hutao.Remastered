@@ -14,8 +14,8 @@
     mc:Ignorable="d">
     <Grid
         x:Name="Root"
-        x:DataType="shv:NotifyIconViewModel"
         d:DataContext="{d:DesignInstance shv:NotifyIconViewModel}"
+        x:DataType="shv:NotifyIconViewModel"
         Background="Transparent">
         <Grid.Resources>
             <Style x:Key="NotifyIconContextMenuFlyoutItemStyle" TargetType="MenuFlyoutItem">
@@ -65,7 +65,7 @@
                                 <TextBlock
                                     x:Name="KeyboardAcceleratorTextBlock"
                                     Grid.Column="2"
-                                    MinWidth="{Binding TemplateSettings.KeyboardAcceleratorTextMinWidth, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
+                                    MinWidth="{x:Bind TemplateSettings.KeyboardAcceleratorTextMinWidth, Mode=OneWay}"
                                     Margin="24,4,0,0"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
