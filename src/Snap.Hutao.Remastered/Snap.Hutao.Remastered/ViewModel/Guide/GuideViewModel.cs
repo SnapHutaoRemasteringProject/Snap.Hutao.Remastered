@@ -337,6 +337,8 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
 
             if (await operation.TryExecuteAsync().ConfigureAwait(false))
             {
+                // Restart and any UI-bound updates must run on the XAML thread.
+                await taskContext.SwitchToMainThreadAsync();
                 try
                 {
                     AppInstance.Restart(string.Empty);
@@ -349,6 +351,9 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         }
         finally
         {
+            // ConfigureAwait(false) can resume on a worker thread even on cancellation
+            // or failure. x:Bind observes this property synchronously.
+            await taskContext.SwitchToMainThreadAsync();
             IsSetDataFolderEnabled = true;
         }
     }
