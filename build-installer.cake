@@ -1,3 +1,4 @@
+#load "./build-runtime.cake"
 #tool "nuget:?package=nuget.commandline&version=6.9.1"
 
 var target = Argument("target", "Build");
@@ -31,7 +32,7 @@ string runtimeIdentifier
 }
 string binPath
 {
-    get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, "publish");
+    get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, publishFolder);
 }
 string installerPublishDir
 {
@@ -63,7 +64,7 @@ if (GitHubActions.IsRunningOnGitHubActions)
     repoDir = GitHubActions.Environment.Workflow.Workspace.FullPath;
 
     // Use date-based version same as build.cake
-    version = System.DateTime.Now.ToString("yyyy.M.d.") + ((int)((System.DateTime.Now - System.DateTime.Today).TotalSeconds / 86400 * 65535)).ToString();
+    version = Argument("version", System.DateTime.Now.ToString("yyyy.M.d.") + ((int)((System.DateTime.Now - System.DateTime.Today).TotalSeconds / 86400 * 65535)).ToString());
 
     GitHubActions.Commands.SetOutputParameter("version", version);
     Information($"Version: {version}");
@@ -131,7 +132,9 @@ Task("NuGet Restore")
     {
         Verbosity = DotNetVerbosity.Detailed,
         Interactive = false,
-        ConfigFile = nugetConfig
+        ConfigFile = nugetConfig,
+        Runtime = runtimeIdentifier,
+        MSBuildSettings = new DotNetMSBuildSettings { ArgumentCustomization = withRuntimeProperties }
     });
 });
 
@@ -143,12 +146,14 @@ Task("Build binary package")
 
     var settings = new DotNetPublishSettings
     {
-        Configuration = configuration
+        Configuration = configuration,
+        Runtime = runtimeIdentifier,
+        OutputDirectory = binPath
     };
 
     settings.MSBuildSettings = new DotNetMSBuildSettings
     {
-        ArgumentCustomization = args => args.Append("/p:Platform=x64")
+        ArgumentCustomization = args => withRuntimeProperties(args)
                                             .Append("/p:AppxPackageSigningEnabled=false")
                                             .Append("/p:AppxBundle=Never")
     };
@@ -187,17 +192,19 @@ Task("Remove unused files")
         System.IO.Path.Combine(binPath, "onnxruntime.dll"),
     };
 
-    foreach (var file in files)
+    foreach (var file in files.Where(file => !publishAot || System.IO.Path.GetFileName(file) != "App.xbf"))
     {
         if (System.IO.File.Exists(file))
         {
             System.IO.File.Delete(file);
         }
     }
+    verifyPublishRuntime(repoDir, binPath);
 });
 
 Task("Prepare installer output")
     .IsDependentOn("Copy files")
+    .IsDependentOn("Remove unused files")
     .Does(() =>
 {
     Information("Preparing installer publish directory...");
@@ -323,7 +330,7 @@ Task("Compile installer")
         isccPath,
         new ProcessSettings
         {
-            Arguments = $"/dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{issFile}\"",
+            Arguments = $"{installerFlavorArgument}/dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{issFile}\"",
             WorkingDirectory = repoDir
         }
     );
@@ -338,7 +345,7 @@ Task("Compile installer")
     {
         p = StartProcess(isccPath, new ProcessSettings
         {
-            Arguments = $"/dIncludeBundledImages=1 /dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{issFile}\"",
+            Arguments = $"/dIncludeBundledImages=1 {installerFlavorArgument}/dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{issFile}\"",
             WorkingDirectory = repoDir
         });
         if (p != 0) { throw new InvalidOperationException($"Cache installer failed ({p})"); }
