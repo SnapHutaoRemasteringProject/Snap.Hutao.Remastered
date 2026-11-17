@@ -64,7 +64,7 @@ if (GitHubActions.IsRunningOnGitHubActions)
     repoDir = GitHubActions.Environment.Workflow.Workspace.FullPath;
 
     // Use date-based version same as build.cake
-    version = Argument("version", System.DateTime.Now.ToString("yyyy.M.d.") + ((int)((System.DateTime.Now - System.DateTime.Today).TotalSeconds / 86400 * 65535)).ToString());
+    version = Argument("appVersion", System.DateTime.Now.ToString("yyyy.M.d.") + ((int)((System.DateTime.Now - System.DateTime.Today).TotalSeconds / 86400 * 65535)).ToString());
 
     GitHubActions.Commands.SetOutputParameter("version", version);
     Information($"Version: {version}");
