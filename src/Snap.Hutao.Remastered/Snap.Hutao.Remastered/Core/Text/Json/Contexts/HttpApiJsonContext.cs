@@ -91,6 +91,7 @@ namespace Snap.Hutao.Remastered.Core.Text.Json;
 [JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Response.Response<global::Snap.Hutao.Remastered.Web.Response.ListWrapper<global::Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.Avatar.Character>>), TypeInfoPropertyName = "HttpResponse083")]
 [JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Response.Response<global::Snap.Hutao.Remastered.Web.Response.ListWrapper<global::Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.Avatar.DetailedCharacter>>), TypeInfoPropertyName = "HttpResponse084")]
 [JsonSerializable(typeof(global::System.Collections.Immutable.ImmutableDictionary<string, string>), TypeInfoPropertyName = "HttpResponse085")]
+[JsonSerializable(typeof(global::Snap.Hutao.Remastered.Service.Yae.Achievement.AchievementFieldId), TypeInfoPropertyName = "HttpFeature001")]
 [JsonSerializable(typeof(global::Snap.Hutao.Remastered.Service.Geetest.GeetestWebResponse), TypeInfoPropertyName = "HttpRequest001")]
 [JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Sdk.Combo.GameLoginRequest), TypeInfoPropertyName = "HttpRequest002")]
 [JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Hoyolab.HoyoPlay.Connect.Branch.BranchWrapper), TypeInfoPropertyName = "HttpRequest003")]
