@@ -22,7 +22,7 @@ public static class ResponseValidator
 
     public static bool TryValidate<TData>(Response<TData> response, IServiceProvider serviceProvider, [NotNullWhen(true)] out TData? data)
     {
-        return serviceProvider.GetRequiredService<ITypedResponseValidator<TData>>().TryValidate(response, out data);
+        return TryValidate(response, serviceProvider.GetRequiredService<IMessenger>(), out data);
     }
 
     public static bool TryValidateWithoutUINotification(Response response)
@@ -42,6 +42,6 @@ public static class ResponseValidator
 
     public static bool TryValidateWithoutUINotification<TData>(Response<TData> response, IServiceProvider serviceProvider, [NotNullWhen(true)] out TData? data)
     {
-        return serviceProvider.GetRequiredService<ITypedResponseValidator<TData>>().TryValidateWithoutUINotification(response, out data);
+        return TryValidateWithoutUINotification(response, out data);
     }
 }
