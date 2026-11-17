@@ -9,9 +9,7 @@ public static class ResponseValidationServiceCollectionExtension
     {
         public IServiceCollection AddResponseValidation()
         {
-            return services
-                .AddTransient<ICommonResponseValidator<Response>, DefaultResponseValidator>()
-                .AddTransient(typeof(ITypedResponseValidator<>), typeof(TypedResponseValidator<>));
+            return services.AddTransient<ICommonResponseValidator<Response>, DefaultResponseValidator>();
         }
     }
 }
