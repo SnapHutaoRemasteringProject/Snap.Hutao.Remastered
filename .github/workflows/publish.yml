@@ -48,6 +48,14 @@ jobs:
         env:
           PUBLISH_CERT: ${{ secrets.PUBLISH_CERT }}
           PUBLISH_PW: ${{ secrets.PUBLISH_PW }}
+          
+      - name: Upload Native AOT symbols
+        if: ${{ matrix.runtime == 'NativeAOT' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: NativeAOT-Symbols-${{ steps.publish.outputs.version }}
+          path: ${{ github.workspace }}/artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
+          if-no-files-found: error
 
       - name: Upload MSIX
         uses: actions/upload-artifact@v7

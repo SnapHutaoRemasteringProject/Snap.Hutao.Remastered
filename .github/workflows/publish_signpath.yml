@@ -50,6 +50,14 @@ jobs:
         id: build
         shell: pwsh
         run: dotnet tool restore && dotnet cake publish_signpath.cake --publishAot=${{ matrix.publish_aot }} --target=BuildAndZip
+        
+      - name: Upload Native AOT symbols
+        if: ${{ matrix.runtime == 'NativeAOT' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: NativeAOT-SignPath-Symbols-${{ steps.build.outputs.version }}
+          path: ${{ github.workspace }}/artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
+          if-no-files-found: error
 
       - name: Upload unsigned zip
         id: upload-zip
