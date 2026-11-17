@@ -9,6 +9,17 @@ permissions:
 
 jobs:
   publish:
+    name: Build (${{ matrix.runtime }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runtime: R2R
+            publish_aot: false
+            suffix: ''
+          - runtime: NativeAOT
+            publish_aot: true
+            suffix: '-AOT'
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -38,13 +49,13 @@ jobs:
       - name: Build and zip
         id: build
         shell: pwsh
-        run: dotnet tool restore && dotnet cake publish_signpath.cake --target=BuildAndZip
+        run: dotnet tool restore && dotnet cake publish_signpath.cake --publishAot=${{ matrix.publish_aot }} --target=BuildAndZip
 
       - name: Upload unsigned zip
         id: upload-zip
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-unsigned-zip
+          name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-unsigned-zip${{ matrix.suffix }}
           path: ${{ steps.build.outputs.zip-path }}
           archive: false
 
@@ -65,7 +76,7 @@ jobs:
       - name: Package installer and MSIX from signed files
         id: package
         shell: pwsh
-        run: dotnet cake publish_signpath.cake --target=PackageFromSigned --signedZipDir="${{ github.workspace }}/src/output/signed-zip"
+        run: dotnet cake publish_signpath.cake --publishAot=${{ matrix.publish_aot }} --target=PackageFromSigned --signedZipDir="${{ github.workspace }}/src/output/signed-zip"
         env:
           PUBLISH_CERT: ${{ secrets.PUBLISH_CERT }}
           PUBLISH_PW: ${{ secrets.PUBLISH_PW }}
@@ -74,7 +85,7 @@ jobs:
         id: upload-installer
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-unsigned-installer
+          name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-unsigned-installer${{ matrix.suffix }}
           path: ${{ steps.package.outputs.installer-path }}
 
       - name: Submit installer to SignPath for signing
@@ -90,43 +101,27 @@ jobs:
           wait-for-completion: true
           output-artifact-directory: ${{ github.workspace }}/src/output/signed-installer
 
-      - name: Create Store upload
-        shell: pwsh
-        run: |
-          $symbols = Get-ChildItem src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/bin/x64/Release -Recurse -Filter Snap.Hutao.Remastered.pdb |
-            Where-Object { $_.Directory.Name -eq 'publish' } | Select-Object -First 1
-          Get-ChildItem src/output -Filter *.msix | ForEach-Object {
-            $arguments = @{ PackagePath = $_.FullName }
-            if ($symbols) { $arguments.SymbolsPath = $symbols.FullName }
-            ./scripts/New-MsixUpload.ps1 @arguments
-          }
-
-      - name: Upload Store submission files
-        uses: actions/upload-artifact@v7
-        with:
-          name: Snap.Hutao.Remastered-Store-upload
-          path: ${{ github.workspace }}/src/output/*.msixupload
-          if-no-files-found: error
-
       - name: Upload MSIX
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-MSIX-${{ steps.package.outputs.msix-signed == 'true' && 'signed' || 'unsigned-store-only' }}
+          name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-MSIX-${{ steps.package.outputs.msix-signed == 'true' && 'signed' || 'unsigned-store-only' }}${{ matrix.suffix }}
           path: ${{ steps.package.outputs.msix-path }}
 
       - name: Upload signed installer
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-signed-installer
+          name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-signed-installer${{ matrix.suffix }}
           path: ${{ github.workspace }}/src/output/signed-installer
 
       - name: Install rclone
+        if: ${{ matrix.runtime == 'R2R' }}
         shell: pwsh
         run: |
           choco install rclone --yes --no-progress
           if ($LASTEXITCODE -ne 0) { throw 'rclone installation failed.' }
 
       - name: Publish default installer to R2
+        if: ${{ matrix.runtime == 'R2R' }}
         id: r2
         shell: pwsh
         env:
@@ -150,6 +145,7 @@ jobs:
           $summary = @"
           ## Snap Hutao Remastered Publish Build (SignPath Release Signing)
 
+          - **Runtime:** ${{ matrix.runtime }}
           - **Version:** ${{ steps.build.outputs.version }}
           - **Signing Policy:** release-signing (zip / installer)
           - **MSIX signed:** ${{ steps.package.outputs.msix-signed }}
@@ -157,6 +153,6 @@ jobs:
           - **Installer Signing Request:** ${{ steps.signpath-installer.outputs.signing-request-web-url }}
 
           > [!IMPORTANT]
-          > zip/安装器使用 SignPath 签名。MSIX 证书与商店 Publisher 不匹配时保持未签名，仅用于商店提交，不可旁加载；请提交 Store-upload 工件内的 .msixupload。
+          > zip/安装器使用 SignPath 签名。MSIX 证书与商店 Publisher 不匹配时保持未签名，仅用于商店提交，不可旁加载。
           "@
           echo $summary >> $Env:GITHUB_STEP_SUMMARY

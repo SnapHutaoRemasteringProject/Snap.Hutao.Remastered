@@ -82,6 +82,17 @@ jobs:
           retention-days: 14
 
   build:
+    name: Build (${{ matrix.runtime }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runtime: R2R
+            publish_aot: false
+            suffix: ''
+          - runtime: NativeAOT
+            publish_aot: true
+            suffix: '-AOT'
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -111,7 +122,7 @@ jobs:
       - name: Cake (MSIX)
         id: cake
         shell: pwsh
-        run: dotnet tool restore && dotnet cake
+        run: dotnet tool restore && dotnet cake --publishAot=${{ matrix.publish_aot }}
         env:
           VERSION_API_TOKEN: ${{ secrets.VERSION_API_TOKEN }}
           CERTIFICATE: ${{ secrets.CERTIFICATE }}
@@ -120,50 +131,30 @@ jobs:
       - name: Build installer
         id: build
         shell: pwsh
-        run: dotnet cake build-installer.cake
+        run: dotnet cake build-installer.cake --publishAot=${{ matrix.publish_aot }} --version=${{ steps.cake.outputs.version }}
         env:
           CERTIFICATE: ${{ secrets.CERTIFICATE }}
           PW: ${{ secrets.PW }}
-
-      - name: Create Store upload
-        if: success() && github.event_name != 'pull_request'
-        shell: pwsh
-        run: |
-          $symbols = Get-ChildItem src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/bin/x64/Release -Recurse -Filter Snap.Hutao.Remastered.pdb |
-            Where-Object { $_.Directory.Name -eq 'publish' } | Select-Object -First 1
-          Get-ChildItem src/output -Filter *.msix | ForEach-Object {
-            $arguments = @{ PackagePath = $_.FullName }
-            if ($symbols) { $arguments.SymbolsPath = $symbols.FullName }
-            ./scripts/New-MsixUpload.ps1 @arguments
-          }
-
-      - name: Upload Store submission files
-        if: success() && github.event_name != 'pull_request'
-        uses: actions/upload-artifact@v7
-        with:
-          name: Snap.Hutao.Remastered-Store-upload
-          path: ${{ github.workspace }}/src/output/*.msixupload
-          if-no-files-found: error
 
       - name: Upload signed msix
         if: success() && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered.Alpha-${{ steps.cake.outputs.version }}
-          path: ${{ github.workspace }}/src/output/Snap.Hutao.Remastered.Alpha-${{ steps.cake.outputs.version }}.msix
+          name: Snap.Hutao.Remastered.Alpha-${{ steps.cake.outputs.version }}${{ matrix.suffix }}
+          path: ${{ github.workspace }}/src/output/Snap.Hutao.Remastered.Alpha-${{ steps.cake.outputs.version }}${{ matrix.suffix }}.msix
 
       - name: Upload installer
         if: success() && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered.Alpha-Setup-${{ steps.build.outputs.version }}
+          name: Snap.Hutao.Remastered.Alpha-Setup-${{ steps.build.outputs.version }}${{ matrix.suffix }}
           path: ${{ github.workspace }}/publish/Snap.Hutao.Remastered-*.exe
 
       - name: Upload code-signing certificate
         if: success() && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered.Alpha-SnapHutaoRemasteringProject-${{ steps.build.outputs.version }}
+          name: Snap.Hutao.Remastered.Alpha-SnapHutaoRemasteringProject-${{ steps.build.outputs.version }}${{ matrix.suffix }}
           path: ${{ github.workspace }}/temp-code-signing.cer
 
       - name: Add summary
@@ -171,6 +162,8 @@ jobs:
         shell: pwsh
         run: |
           $summary = "
+          构建模式：${{ matrix.runtime }}
+
           > [!WARNING]
           > 该版本是由 CI 程序自动打包生成的 Alpha 测试版本，包含已经基本完工的新功能及问题修复
 
