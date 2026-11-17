@@ -71,7 +71,13 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
 - **ReadyToRun** — enabled by default for every configuration, including Debug. The SDK keeps
   the IL compiler input in `obj`; `Build/ReadyToRun.targets` delivers the selected R2R images to
   the runnable bin output. VS MSIX deployment consumes the WinUI SDK's publish-item list. All four
-  Cake entry points use `DotNetPublish` and package its `publish` tree, with final-image validation.
+  Cake entry points use `DotNetPublish` and default to untrimmed R2R. Their shared
+  `--publishAot=true` switch selects Native AOT, disables R2R and selects a separate
+  `publish-aot` payload; `--publishAot=false` explicitly keeps R2R and disables trimming.
+  Alpha, Canary and both Publish workflows build both modes in independent matrix jobs;
+  AOT packages and artifact names carry `-AOT`. `scripts/Test-PackageRuntime.ps1` verifies
+  the selected runtime before packaging, and Native AOT retains its required `App.xbf`.
+  Canary prepares one merged commit for both modes; only R2R publishes the default installer to R2.
   Private runtime packages explicitly set `Publish=true`: the SDK excludes `PrivateAssets=all`
   references from publish by default. Publishing also validates the Native, HPatch, Yae and
   deployment payloads before either Cake packager can consume the output.

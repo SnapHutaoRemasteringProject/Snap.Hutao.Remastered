@@ -1,3 +1,4 @@
+#load "./build-runtime.cake"
 
 var target = Argument("target", "Publish");
 var configuration = Argument("configuration", "Release");
@@ -13,7 +14,7 @@ var manifest = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "
 
 var targetFramework = XmlPeek(project, "/Project/PropertyGroup/TargetFramework/text()").Trim();
 var runtimeIdentifier = XmlPeek(project, "/Project/PropertyGroup/RuntimeIdentifier/text()").Trim();
-var binPath = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, "publish");
+var binPath = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, publishFolder);
 var outputPath = System.IO.Path.Combine(repoDir, "src", "output");
 
 // Version: read from Package.appxmanifest
@@ -74,12 +75,14 @@ Task("Build binary package")
 
     var settings = new DotNetPublishSettings
     {
-        Configuration = configuration
+        Configuration = configuration,
+        Runtime = runtimeIdentifier,
+        OutputDirectory = binPath
     };
 
     settings.MSBuildSettings = new DotNetMSBuildSettings
     {
-        ArgumentCustomization = args => args.Append("/p:Platform=x64")
+        ArgumentCustomization = args => withRuntimeProperties(args)
                                             .Append("/p:UapAppxPackageBuildMode=SideloadOnly")
                                             .Append("/p:AppxPackageSigningEnabled=false")
                                             .Append("/p:AppxBundle=Never")
@@ -116,13 +119,14 @@ Task("Remove unused files")
         System.IO.Path.Combine(binPath, "onnxruntime.dll"),
     };
 
-    foreach (var file in files)
+    foreach (var file in files.Where(file => !publishAot || System.IO.Path.GetFileName(file) != "App.xbf"))
     {
         if (System.IO.File.Exists(file))
         {
             System.IO.File.Delete(file);
         }
     }
+    verifyPublishRuntime(repoDir, binPath);
 });
 
 Task("Inner Sign")
@@ -146,7 +150,7 @@ Task("Build MSIX")
     .Does(() =>
 {
     var makeappx = System.IO.Path.Combine(winsdkBinPath, "makeappx.exe");
-    var msix = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}.msix");
+    var msix = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}{artifactSuffix}.msix");
     var p = StartProcess(makeappx, new ProcessSettings { Arguments = $"pack /d \"{binPath}\" /p \"{msix}\"" });
 
     if (p != 0) { throw new InvalidOperationException($"MSIX build failed ({p})"); }
@@ -178,7 +182,7 @@ Task("Sign MSIX")
     }
     GitHubActions.Commands.SetOutputParameter("msix-signed", "true");
     var signtool = System.IO.Path.Combine(winsdkBinPath, "signtool.exe");
-    var msix = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}.msix");
+    var msix = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}{artifactSuffix}.msix");
     var p = StartProcess(signtool, new ProcessSettings { Arguments = $"sign /debug /v /a /fd SHA256 /f \"{pfxPath}\" /p \"{pw}\" \"{msix}\"" });
 
     if (p != 0) { throw new InvalidOperationException($"MSIX sign failed ({p})"); }
@@ -186,6 +190,7 @@ Task("Sign MSIX")
 
 Task("Prepare installer output")
     .IsDependentOn("Copy files")
+    .IsDependentOn("Remove unused files")
     .Does(() =>
 {
     var publishDir = System.IO.Path.Combine(repoDir, "Installer", "Publish");
@@ -268,12 +273,12 @@ Task("Compile installer")
     var codeSigningCertificateThumbprintArgument = !string.IsNullOrEmpty(codeSigningCertificateThumbprint)
         ? $"/d{CodeSigningCertificateThumbprintArgumentName}=\"{codeSigningCertificateThumbprint}\" "
         : string.Empty;
-    var p = StartProcess(iscc, new ProcessSettings { Arguments = $"/dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{iss}\"", WorkingDirectory = repoDir });
+    var p = StartProcess(iscc, new ProcessSettings { Arguments = $"{installerFlavorArgument}/dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{iss}\"", WorkingDirectory = repoDir });
 
     if (p != 0) { throw new InvalidOperationException($"Inno Setup failed ({p})"); }
     if (System.IO.File.Exists(System.IO.Path.Combine(repoDir, "Installer", "Publish", "BundledImages", "manifest.json")))
     {
-        p = StartProcess(iscc, new ProcessSettings { Arguments = $"/dIncludeBundledImages=1 /dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{iss}\"", WorkingDirectory = repoDir });
+        p = StartProcess(iscc, new ProcessSettings { Arguments = $"/dIncludeBundledImages=1 {installerFlavorArgument}/dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{iss}\"", WorkingDirectory = repoDir });
         if (p != 0) { throw new InvalidOperationException($"Cache installer failed ({p})"); }
     }
     Information("Installer compiled.");

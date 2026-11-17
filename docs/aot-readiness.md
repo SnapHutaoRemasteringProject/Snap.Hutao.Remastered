@@ -159,6 +159,37 @@ INamedValue 增加只读的对象值接口，NameValue<T> 显式实现它，不�
 不加入 CoreCLR 脚本进程；应用无 Roslyn 脚本/Workspace/EF Design 运行时依赖，构建期分析器和数据库设计工具仍保留。
 CsWinRT 维持 2.3.1；3.0 的资产问题与包适配见 [独立评估](cswinrt3-assessment.md)，不是本次 Native AOT 的前置条件。
 
+## 2026-11-17：CI 同时交付 R2R 与 Native AOT
+
+Alpha、Canary、Publish 和 Publish (SignPath) 的打包 job 均使用两个独立 runner 的矩阵，关闭 fail-fast，
+以免 AOT 失败取消正常 R2R 产物。Alpha 的原 Debug/Release 测试任务保留。
+
+| 模式 | Cake 参数 | MSBuild 属性 | 发布目录 |
+|---|---|---|---|
+| 非 AOT / R2R | `--publishAot=false`（本地默认） | PublishAot=false, PublishTrimmed=false, PublishReadyToRun=true | `bin/x64/Release/<TFM>/win-x64/publish` |
+| Native AOT | `--publishAot=true` | PublishAot=true, PublishTrimmed=true, PublishReadyToRun=false | `bin/x64/Release/<TFM>/win-x64/publish-aot` |
+
+四个 Cake 入口共享 build-runtime.cake，分别把同一模式传给还原与发布；本地仍需自行准备依赖和签名配置。
+这保留了将来在非 AOT 构建恢复插件功能的构建路径，并不表示当前分支已恢复插件系统。
+
+保留原有非 AOT MSIX、Setup、缓存图片 Setup、证书以及 SignPath 中间工件；删除独立 Store-upload 工件的生成和上传。
+AOT 的工件名追加 `-AOT`，实际 MSIX/Setup 文件名也带后缀，例如 `Snap.Hutao.Remastered-<version>-AOT.msix`、
+`Snap.Hutao.Remastered-<version>-AOT-Setup.exe` 和 `...-AOT-Setup-cache.exe`。Alpha/Canary 的 MSIX 继续带原频道前缀。
+证书策略与 MSIX Publisher 校验保留；未签名 MSIX 仍不可旁加载。
+
+打包清理保留 AOT 的 App.xbf，普通 R2R 清理策略不变。Test-PackageRuntime.ps1 在打包前检查：
+
+- Native AOT：复用 Test-NativePublish.ps1，检查原生 x64 PE、无 CLR 头、无主托管 DLL/三个 CoreCLR 主机文件，以及 PRI/XBF/资源/运行时附属文件完整性。
+- R2R：检查主托管 DLL 的 CLR 头及 ReadyToRun 签名，以及 CoreCLR/主应用/PRI 文件存在，避免把 native apphost 当成 AOT 证据。
+
+SignPath 在重新解压签名 ZIP 后再次验证模式。Canary 的 prepare job 只合并一次，把确切提交通过短期保留的 git bundle
+共享给两个构建任务，两者校验同一 source-sha。Alpha/Canary 的安装器复用各自 MSIX 的版本号。
+R2 默认安装包上传只允许 R2R job 执行，AOT 不覆盖现有自动更新下载地址。
+
+本轮验证：YAML 矩阵/步骤引用/旧工件名保留检查、25 个内联 PowerShell 块和门禁脚本语法检查、7 组运行时门禁接受/拒绝样本，
+以及现有本地 Native AOT 发布目录的只读检查。未编译应用或 Cake、未还原、未运行签名/打包/上传、未触发 GitHub Actions；
+远程 CI、签名服务对新增 AOT 文件名的接受，以及安装运行效果仍待实际构建验证。
+
 ## 2026-11-16：新发布警告与事件订阅
 
 用户提供的原生发布日志共 119 条：CS8305 75、WMC1510 7、WMC1501 1、NU1507 1，

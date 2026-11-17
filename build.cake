@@ -1,3 +1,4 @@
+#load "./build-runtime.cake"
 #tool "nuget:?package=nuget.commandline&version=6.9.1"
 
 var target = Argument("target", "Build");
@@ -40,7 +41,7 @@ string runtimeIdentifier
 }
 string binPath
 {
-    get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, "publish");
+    get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, publishFolder);
 }
 string manifest
 {
@@ -130,7 +131,9 @@ Task("NuGet Restore")
     {
         Verbosity = DotNetVerbosity.Detailed,
         Interactive = false,
-        ConfigFile = nugetConfig
+        ConfigFile = nugetConfig,
+        Runtime = runtimeIdentifier,
+        MSBuildSettings = new DotNetMSBuildSettings { ArgumentCustomization = withRuntimeProperties }
     });
 });
 
@@ -201,12 +204,14 @@ Task("Build binary package")
 
     var settings = new DotNetPublishSettings
     {
-        Configuration = configuration
+        Configuration = configuration,
+        Runtime = runtimeIdentifier,
+        OutputDirectory = binPath
     };
 
     settings.MSBuildSettings = new DotNetMSBuildSettings
     {
-        ArgumentCustomization = args => args.Append("/p:Platform=x64")
+        ArgumentCustomization = args => withRuntimeProperties(args)
                                             .Append("/p:UapAppxPackageBuildMode=SideloadOnly")
                                             .Append("/p:AppxPackageSigningEnabled=false")
                                             .Append("/p:AppxBundle=Never")
@@ -243,7 +248,7 @@ Task("Remove unused files")
     Information("Removing unused files...");
 
     Information("Removing xbf...");
-    System.IO.File.Delete(System.IO.Path.Combine(binPath, "App.xbf"));
+    if (!publishAot) System.IO.File.Delete(System.IO.Path.Combine(binPath, "App.xbf"));
 
     Information("Removing appxrecipe...");
     System.IO.File.Delete(System.IO.Path.Combine(binPath, "Snap.Hutao.Remastered.build.appxrecipe"));
@@ -254,6 +259,7 @@ Task("Remove unused files")
     {
         System.IO.File.Delete(onnxruntimePath);
     }
+    verifyPublishRuntime(repoDir, binPath);
 });
 
 Task("Inner Sign")
@@ -315,11 +321,11 @@ Task("Build MSIX")
     {
         if (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Alpha")
         {
-            arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Alpha-{version}.msix");
+            arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Alpha-{version}{artifactSuffix}.msix");
         }
         else if (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Canary")
         {
-            arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Canary-{version}.msix");
+            arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Canary-{version}{artifactSuffix}.msix");
         }
         else
         {
@@ -328,11 +334,11 @@ Task("Build MSIX")
     }
     else if (AppVeyor.IsRunningOnAppVeyor)
     {
-        arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}.msix");
+        arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}{artifactSuffix}.msix");
     }
     else
     {
-        arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Local-{version}.msix");
+        arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Local-{version}{artifactSuffix}.msix");
     }
 
     var makeappxPath = System.IO.Path.Combine(winsdkBinPath, "makeappx.exe");
@@ -372,11 +378,11 @@ Task("Sign")
 
         if (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Alpha")
         {
-            arguments = $"sign /debug /v /a /fd SHA256 /f {pfxPath} /p {pw} {System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Alpha-{version}.msix")}";
+            arguments = $"sign /debug /v /a /fd SHA256 /f {pfxPath} /p {pw} {System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Alpha-{version}{artifactSuffix}.msix")}";
         }
         else if (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Canary")
         {
-            arguments = $"sign /debug /v /a /fd SHA256 /f {pfxPath} /p {pw} {System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Canary-{version}.msix")}";
+            arguments = $"sign /debug /v /a /fd SHA256 /f {pfxPath} /p {pw} {System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Canary-{version}{artifactSuffix}.msix")}";
         }
         else
         {
