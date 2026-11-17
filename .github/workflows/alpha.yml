@@ -131,7 +131,7 @@ jobs:
       - name: Build installer
         id: build
         shell: pwsh
-        run: dotnet cake build-installer.cake --publishAot=${{ matrix.publish_aot }} --version=${{ steps.cake.outputs.version }}
+        run: dotnet cake build-installer.cake --publishAot=${{ matrix.publish_aot }} --appVersion=${{ steps.cake.outputs.version }}
         env:
           CERTIFICATE: ${{ secrets.CERTIFICATE }}
           PW: ${{ secrets.PW }}
