@@ -126,6 +126,7 @@ Task("Remove unused files")
             System.IO.File.Delete(file);
         }
     }
+    separateNativeAotSymbols(repoDir, binPath);
     verifyPublishRuntime(repoDir, binPath);
 });
 

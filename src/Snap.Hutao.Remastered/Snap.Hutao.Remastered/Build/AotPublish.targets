@@ -79,26 +79,11 @@
     <ItemGroup>
       <_HutaoAotAssets Include="$(MSBuildProjectDirectory)\Assets\**\*" />
       <_HutaoAotResources Include="$(MSBuildProjectDirectory)\Resource\**\*" Exclude="$(MSBuildProjectDirectory)\Resource\Localization\**\*" />
-      <!-- Derive the expected XBF list from this project's XAML inputs. WinUI's
-           GeneratedXamlDest items may be scoped to a CallTarget and unavailable
-           here; a bin-wide glob would also pick up stale publish/AppX files. -->
-      <_HutaoAotXaml Include="@(Page);@(ApplicationDefinition)" />
-      <_HutaoAotXamlWithPath Include="@(_HutaoAotXaml)">
-        <LogicalPath Condition="'%(_HutaoAotXaml.Link)' != ''">%(_HutaoAotXaml.Link)</LogicalPath>
-        <LogicalPath Condition="'%(_HutaoAotXaml.Link)' == ''">$([MSBuild]::MakeRelative('$(MSBuildProjectDirectory)', '%(_HutaoAotXaml.FullPath)'))</LogicalPath>
-      </_HutaoAotXamlWithPath>
-      <_HutaoAotXamlOutput Include="@(_HutaoAotXamlWithPath)">
-        <XbfPath>$([System.IO.Path]::ChangeExtension('%(_HutaoAotXamlWithPath.LogicalPath)', '.xbf'))</XbfPath>
-      </_HutaoAotXamlOutput>
-      <_HutaoAotXbf Include="@(_HutaoAotXamlOutput->'$(TargetDir)%(XbfPath)')" />
       <_HutaoAotContent Include="@(_HutaoAotAssets)">
         <RelativePath>Assets\%(_HutaoAotAssets.RecursiveDir)%(_HutaoAotAssets.Filename)%(_HutaoAotAssets.Extension)</RelativePath>
       </_HutaoAotContent>
       <_HutaoAotContent Include="@(_HutaoAotResources)">
         <RelativePath>Resource\%(_HutaoAotResources.RecursiveDir)%(_HutaoAotResources.Filename)%(_HutaoAotResources.Extension)</RelativePath>
-      </_HutaoAotContent>
-      <_HutaoAotContent Include="@(_HutaoAotXbf)">
-        <RelativePath>$([MSBuild]::MakeRelative('$(TargetDir)', '%(_HutaoAotXbf.FullPath)'))</RelativePath>
       </_HutaoAotContent>
       <ResolvedFileToPublish Remove="@(_HutaoAotContent)" MatchOnMetadata="RelativePath" MatchOnMetadataOptions="PathLike" />
       <ResolvedFileToPublish Include="@(_HutaoAotContent)" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
@@ -128,7 +113,6 @@
 
   <Target Name="VerifyAotPublishResources" AfterTargets="Publish" Condition="'$(PublishAot)' == 'true'">
     <Error Condition="!Exists('$(PublishDir)resources.pri')" Text="Native AOT publish is missing the application resources.pri." />
-    <Error Condition="!Exists('$(PublishDir)App.xbf')" Text="Native AOT publish is missing the compiled application XAML." />
     <Error Condition="!Exists('$(PublishDir)Assets\Logo.ico')" Text="Native AOT publish is missing the application assets." />
     <Error Condition="!Exists('$(PublishDir)Resource')" Text="Native AOT publish is missing the application resources." />
     <VerifyHutaoNativePublish ImagePath="$(PublishDir)$(TargetName).exe" PublishDirectory="$(PublishDir)" />

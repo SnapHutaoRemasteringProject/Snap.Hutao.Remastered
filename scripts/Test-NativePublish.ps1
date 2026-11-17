@@ -8,7 +8,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $publish = (Resolve-Path -LiteralPath $PublishDirectory).Path
 $executable = Join-Path $publish 'Snap.Hutao.Remastered.exe'
-foreach ($relative in @('Snap.Hutao.Remastered.exe', 'resources.pri', 'App.xbf', 'Assets/Logo.ico',
+foreach ($relative in @('Snap.Hutao.Remastered.exe', 'resources.pri', 'Assets/Logo.ico',
         'Snap.Hutao.Remastered.Native.dll', 'Snap.HPatch.dll', 'YaeAchievementLib.dll', 'Snap.Hutao.Remastered.Deployment.exe')) {
     $file = Get-Item -LiteralPath (Join-Path $publish $relative)
     if ($file.Length -eq 0) { throw "Empty publish file: $relative" }

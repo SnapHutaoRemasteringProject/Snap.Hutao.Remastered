@@ -310,6 +310,10 @@
     <PackageReference Include="Microsoft.Windows.CsWinRT" />
     <!-- Keep Store-bound PRI generation on a stable SDK toolset; preview makepri versions can be rejected. -->
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.WindowsAppSDK" />
     <PackageReference Include="QRCoder" />
     <PackageReference Include="Quartz" />
