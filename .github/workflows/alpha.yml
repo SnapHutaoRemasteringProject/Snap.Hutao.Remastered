@@ -127,6 +127,14 @@ jobs:
           VERSION_API_TOKEN: ${{ secrets.VERSION_API_TOKEN }}
           CERTIFICATE: ${{ secrets.CERTIFICATE }}
           PW: ${{ secrets.PW }}
+          
+      - name: Upload Native AOT MSIX symbols
+        if: ${{ matrix.runtime == 'NativeAOT' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: NativeAOT-MSIX-Symbols-${{ steps.cake.outputs.version }}
+          path: ${{ github.workspace }}/artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
+          if-no-files-found: error
 
       - name: Build installer
         id: build
@@ -135,6 +143,14 @@ jobs:
         env:
           CERTIFICATE: ${{ secrets.CERTIFICATE }}
           PW: ${{ secrets.PW }}
+          
+      - name: Upload Native AOT installer symbols
+        if: ${{ matrix.runtime == 'NativeAOT' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: NativeAOT-Installer-Symbols-${{ steps.cake.outputs.version }}
+          path: ${{ github.workspace }}/artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
+          if-no-files-found: error
 
       - name: Upload signed msix
         if: success() && github.event_name != 'pull_request'

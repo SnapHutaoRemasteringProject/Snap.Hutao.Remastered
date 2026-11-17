@@ -259,6 +259,7 @@ Task("Remove unused files")
     {
         System.IO.File.Delete(onnxruntimePath);
     }
+    separateNativeAotSymbols(repoDir, binPath);
     verifyPublishRuntime(repoDir, binPath);
 });
 

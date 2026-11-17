@@ -41,7 +41,8 @@
     <PackageVersion Include="Microsoft.VisualStudio.Validation" Version="17.13.22" />
     <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.4314.35" />
     <PackageVersion Include="Microsoft.Windows.CsWinRT" Version="2.3.1" />
-    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
+    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2957" />
+    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools.MSIX" Version="1.7.261102100" />
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.6.6-experimental" />
     <PackageVersion Include="MSTest.TestAdapter" Version="4.5.2" />
     <PackageVersion Include="MSTest.TestFramework" Version="4.5.2" />
