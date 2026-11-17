@@ -100,21 +100,23 @@
         </DataTemplate>
 
         <DataTemplate x:Key="CultivationItemTemplate" x:DataType="shmmi:Material">
-            <shuxcc:HorizontalCard>
-                <shuxcc:HorizontalCard.Left>
-                    <shuxc:ItemIcon
-                        Width="40"
-                        Height="40"
-                        Icon="{x:Bind Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
-                        Quality="{x:Bind RankLevel, Mode=OneWay}"/>
-                </shuxcc:HorizontalCard.Left>
-                <shuxcc:HorizontalCard.Right>
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="{x:Bind Name, Mode=OneWay}"/>
-                </shuxcc:HorizontalCard.Right>
-            </shuxcc:HorizontalCard>
+            <Grid>
+                <shuxcc:HorizontalCard>
+                    <shuxcc:HorizontalCard.Left>
+                        <shuxc:ItemIcon
+                            Width="40"
+                            Height="40"
+                            Icon="{x:Bind Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                            Quality="{x:Bind RankLevel, Mode=OneWay}"/>
+                    </shuxcc:HorizontalCard.Left>
+                    <shuxcc:HorizontalCard.Right>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="{x:Bind Name, Mode=OneWay}"/>
+                    </shuxcc:HorizontalCard.Right>
+                </shuxcc:HorizontalCard>
+            </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="AffixPivotHeaderTemplate" x:DataType="shmmw:LevelDescription">
@@ -122,59 +124,65 @@
         </DataTemplate>
 
         <DataTemplate x:Key="AffixPivotItemTemplate" x:DataType="shmmw:LevelDescription">
-            <shuxct:DescriptionTextBlock
-                Margin="16,8,0,0"
-                Description="{x:Bind Description, Mode=OneWay}"
-                TextStyle="{StaticResource BodyTextBlockStyle}"/>
+            <Grid>
+                <shuxct:DescriptionTextBlock
+                    Margin="16,8,0,0"
+                    Description="{x:Bind Description, Mode=OneWay}"
+                    TextStyle="{StaticResource BodyTextBlockStyle}"/>
+            </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="CollocationTemplate" x:DataType="shvc:CollocationView">
-            <shuxcc:HorizontalCard>
-                <shuxcc:HorizontalCard.Left>
-                    <shuxc:ItemIcon
-                        Width="48"
-                        Height="48"
-                        Icon="{x:Bind Icon, Mode=OneWay}"
-                        Quality="{x:Bind Quality, Mode=OneWay}"/>
-                </shuxcc:HorizontalCard.Left>
-                <shuxcc:HorizontalCard.Right>
-                    <StackPanel Margin="8,0,0,0" HorizontalAlignment="Left">
-                        <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
-                        <StackPanel Orientation="Horizontal" Spacing="4">
-                            <TextBlock
-                                Opacity="0.7"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{x:Bind Rate, Mode=OneWay}"/>
-                            <shuxct:RateDeltaTextBlock
-                                Opacity="0.7"
-                                Text="{x:Bind RateDelta, Mode=OneWay}"
-                                TextStyle="{StaticResource CaptionTextBlockStyle}"/>
+            <Grid>
+                <shuxcc:HorizontalCard>
+                    <shuxcc:HorizontalCard.Left>
+                        <shuxc:ItemIcon
+                            Width="48"
+                            Height="48"
+                            Icon="{x:Bind Icon, Mode=OneWay}"
+                            Quality="{x:Bind Quality, Mode=OneWay}"/>
+                    </shuxcc:HorizontalCard.Left>
+                    <shuxcc:HorizontalCard.Right>
+                        <StackPanel Margin="8,0,0,0" HorizontalAlignment="Left">
+                            <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <TextBlock
+                                    Opacity="0.7"
+                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                    Text="{x:Bind Rate, Mode=OneWay}"/>
+                                <shuxct:RateDeltaTextBlock
+                                    Opacity="0.7"
+                                    Text="{x:Bind RateDelta, Mode=OneWay}"
+                                    TextStyle="{StaticResource CaptionTextBlockStyle}"/>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </shuxcc:HorizontalCard.Right>
-            </shuxcc:HorizontalCard>
+                    </shuxcc:HorizontalCard.Right>
+                </shuxcc:HorizontalCard>
+            </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="WeaponGridTemplate" x:DataType="shmmw:Weapon">
-            <shuxcc:VerticalCard Width="82">
-                <shuxcc:VerticalCard.ContextFlyout>
-                    <MenuFlyout>
-                        <MenuFlyoutItem
-                            Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
-                            CommandParameter="{x:Bind Mode=OneWay}"
-                            Text="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
-                    </MenuFlyout>
-                </shuxcc:VerticalCard.ContextFlyout>
-                <shuxcc:VerticalCard.Top>
-                    <shuxc:ItemIcon Icon="{x:Bind Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}" Quality="{x:Bind Quality, Mode=OneWay}"/>
-                </shuxcc:VerticalCard.Top>
-                <shuxcc:VerticalCard.Bottom>
-                    <TextBlock
-                        Margin="2,0"
-                        Text="{x:Bind Name, Mode=OneWay}"
-                        TextTrimming="CharacterEllipsis"/>
-                </shuxcc:VerticalCard.Bottom>
-            </shuxcc:VerticalCard>
+            <Grid>
+                <shuxcc:VerticalCard Width="82">
+                    <shuxcc:VerticalCard.ContextFlyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem
+                                Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
+                                CommandParameter="{x:Bind Mode=OneWay}"
+                                Text="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
+                        </MenuFlyout>
+                    </shuxcc:VerticalCard.ContextFlyout>
+                    <shuxcc:VerticalCard.Top>
+                        <shuxc:ItemIcon Icon="{x:Bind Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}" Quality="{x:Bind Quality, Mode=OneWay}"/>
+                    </shuxcc:VerticalCard.Top>
+                    <shuxcc:VerticalCard.Bottom>
+                        <TextBlock
+                            Margin="2,0"
+                            Text="{x:Bind Name, Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis"/>
+                    </shuxcc:VerticalCard.Bottom>
+                </shuxcc:VerticalCard>
+            </Grid>
         </DataTemplate>
     </Page.Resources>
 
