@@ -20,6 +20,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
+using RuntimeEnvironment = Snap.Hutao.Remastered.Core.RuntimeEnvironment;
 using WinRT;
 
 [assembly: DisableRuntimeMarshalling]
