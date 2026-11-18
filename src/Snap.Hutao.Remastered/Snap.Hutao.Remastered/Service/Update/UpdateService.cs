@@ -157,7 +157,7 @@ public sealed partial class UpdateService : IUpdateService
                 await packageManager.RequestAddPackageByAppInstallerFileAsync(
                     descriptorUri,
                     AddPackageByAppInstallerOptions.ForceTargetAppShutdown,
-                    packageManager.GetDefaultPackageVolume()).ConfigureAwait(false);
+                    packageManager.GetDefaultPackageVolume());
             }
             catch (Exception ex)
             {
