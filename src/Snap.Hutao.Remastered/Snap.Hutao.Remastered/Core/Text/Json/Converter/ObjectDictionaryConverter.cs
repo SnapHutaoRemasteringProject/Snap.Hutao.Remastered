@@ -7,7 +7,7 @@ namespace Snap.Hutao.Remastered.Core.Text.Json.Converter;
 
 /// <summary>
 /// Serializes the small <see cref="object"/>-valued dictionaries used by the fingerprint
-/// payload and the JS bridge without asking the serializer for runtime type metadata.
+/// payload and the JS bridge with source-generated contracts for boxed enum values.
 /// </summary>
 internal sealed class ObjectDictionaryConverter : JsonConverter<Dictionary<string, object>>
 {
@@ -38,13 +38,13 @@ internal sealed class ObjectDictionaryConverter : JsonConverter<Dictionary<strin
         foreach (KeyValuePair<string, object> item in value)
         {
             writer.WritePropertyName(item.Key);
-            WriteValue(writer, item.Value);
+            WriteValue(writer, item.Value, options);
         }
 
         writer.WriteEndObject();
     }
 
-    private static void WriteValue(Utf8JsonWriter writer, object? value)
+    private static void WriteValue(Utf8JsonWriter writer, object? value, JsonSerializerOptions options)
     {
         switch (value)
         {
@@ -77,6 +77,13 @@ internal sealed class ObjectDictionaryConverter : JsonConverter<Dictionary<strin
                 break;
             case decimal decimal128:
                 writer.WriteNumberValue(decimal128);
+                break;
+            case Uri uri:
+                writer.WriteStringValue(uri.OriginalString);
+                break;
+            case Enum enumValue:
+                // Resolve only metadata registered by a generated context; never use reflection fallback.
+                JsonSerializer.Serialize(writer, enumValue, options.GetTypeInfo(enumValue.GetType()));
                 break;
             case JsonElement element:
                 element.WriteTo(writer);
