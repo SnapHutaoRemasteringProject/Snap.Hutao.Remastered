@@ -516,7 +516,7 @@
                                 Y2="15"/>
                         </Grid>
                     </AppBarButton>
-                    <AppBarButton Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentSetting}}" Label="{shuxm:ResourceString Name=ViewPageDailyNoteNotificationSetting}">
+                    <AppBarButton AllowFocusOnInteraction="True" Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentSetting}}" Label="{shuxm:ResourceString Name=ViewPageDailyNoteNotificationSetting}">
                         <AppBarButton.Flyout>
                             <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" Placement="BottomEdgeAlignedRight">
                                 <Flyout.FlyoutPresenterStyle>
@@ -639,10 +639,7 @@
                                             <cwc:SettingsExpander.Items>
                                                 <!--  用内嵌列表而不是 ComboBox：ComboBox 的下拉是 Popup，在 Flyout 内点击会被 light-dismiss 吞掉，选择无法提交。  -->
                                                 <!--  ContentAlignment=Left：卡片没有标题文字时，默认会把内容挤到最右。  -->
-                                                <cwc:SettingsCard
-                                                    Padding="4,0,0,0"
-                                                    ContentAlignment="Left"
-                                                    HorizontalContentAlignment="Stretch">
+                                                <cwc:SettingsCard Padding="4,0,0,0">
                                                     <Grid ColumnSpacing="16">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="Auto"/>
@@ -659,16 +656,23 @@
                                                                 Stretch="UniformToFill"
                                                                 Source="{x:Bind DataContext.SelectedTileBackgroundAvatar.NameCardSource, Mode=OneWay}"/>
                                                         </Border>
-                                                        <ListView
-                                                            x:Name="TileBackgroundList"
+                                                        <StackPanel
                                                             Grid.Column="1"
-                                                            MinWidth="160"
-                                                            MaxHeight="240"
-                                                            HorizontalAlignment="Right"
-                                                            HorizontalContentAlignment="Left"
-                                                            ItemTemplate="{StaticResource TileBackgroundAvatarItemTemplate}"
-                                                            ItemsSource="{x:Bind DataContext.TileBackgroundAvatars, Mode=OneWay}"
-                                                            SelectedItem="{x:Bind DataContext.SelectedTileBackgroundAvatar, Mode=TwoWay}"/>
+                                                            MinWidth="240"
+                                                            VerticalAlignment="Center"
+                                                            Spacing="4">
+                                                            <AutoSuggestBox
+                                                                PlaceholderText="{shuxm:ResourceString Name=ViewPageDailyNoteTileBackgroundSearchPlaceholder}"
+                                                                QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
+                                                                Text="{x:Bind DataContext.TileBackgroundAvatarSearchText, Mode=TwoWay}"/>
+                                                            <ListView
+                                                                x:Name="TileBackgroundList"
+                                                                MaxHeight="120"
+                                                                HorizontalContentAlignment="Left"
+                                                                ItemTemplate="{StaticResource TileBackgroundAvatarItemTemplate}"
+                                                                ItemsSource="{x:Bind DataContext.TileBackgroundAvatars, Mode=OneWay}"
+                                                                SelectedItem="{x:Bind DataContext.SelectedTileBackgroundAvatar, Mode=TwoWay}"/>
+                                                        </StackPanel>
                                                     </Grid>
                                                 </cwc:SettingsCard>
                                             </cwc:SettingsExpander.Items>
