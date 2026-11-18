@@ -98,12 +98,15 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         string directory = BackgroundCacheDirectory;
 
         // 选择背景不需要联网：同一张名片图裁剪出来的结果是一样的，直接用磁盘上的裁剪结果。
-        if (HasCachedBackground(avatarId) && IsSameSource(avatarId, nameCardUri))
+        // 没有 .src 旁文件的缓存（升级前生成的）同样可用——它本来就是这个角色的图；
+        // 只有记录了来源且来源已变（名片图换过）时才重新下载。
+        if (HasCachedBackground(avatarId) && !IsSourceChanged(avatarId, nameCardUri))
         {
             span.SetData("daily_note_tile.reused_cache", true);
+            // 补写来源，下次判断能走精确路径。
+            WriteBackgroundSource(avatarId, nameCardUri);
             return TileBackgroundImageOutcome.Cached;
         }
-
         Directory.CreateDirectory(directory);
         DeleteStaleTemporaryFiles(directory);
 
@@ -171,13 +174,22 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         }
     }
 
-    private bool IsSameSource(string avatarId, Uri nameCardUri)
+    /// <summary>
+    /// 判断缓存对应的名片图是否已经变了。
+    /// 没有 <c>.src</c>（升级前生成的缓存）时返回 <see langword="false"/>：那批缓存本来就是该角色的图，
+    /// 按可用处理即可，不必为了补记录而重新下载。
+    /// </summary>
+    private bool IsSourceChanged(string avatarId, Uri nameCardUri)
     {
         try
         {
             string path = BackgroundSourceFile(avatarId);
-            return File.Exists(path)
-                && string.Equals(File.ReadAllText(path).Trim(), nameCardUri.OriginalString, StringComparison.Ordinal);
+            if (!File.Exists(path))
+            {
+                return false;
+            }
+
+            return !string.Equals(File.ReadAllText(path).Trim(), nameCardUri.OriginalString, StringComparison.Ordinal);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
