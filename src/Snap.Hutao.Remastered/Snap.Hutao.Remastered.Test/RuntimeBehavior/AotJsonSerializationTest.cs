@@ -83,6 +83,23 @@ public sealed class AotJsonSerializationTest
     }
 
     [TestMethod]
+    public void GeneratedDictionaryContractWritesBoxedEnumsAndUris()
+    {
+        JsonSerializerOptions options = JsonWireOptions.Create();
+        options.TypeInfoResolver = BoxedBridgeValuesContext.Default;
+        options.Converters.Add(new ObjectDictionaryConverter());
+        options.WriteIndented = false;
+
+        Dictionary<string, object> values = new()
+        {
+            ["gender"] = BoxedBridgeGender.Male,
+            ["avatar_url"] = new Uri("https://example.invalid/avatar.png"),
+        };
+
+        Assert.AreEqual("""{"gender":1,"avatar_url":"https://example.invalid/avatar.png"}""", JsonSerialize.Serialize(values, options));
+    }
+
+    [TestMethod]
     [DataRow(0)]
     [DataRow(1)]
     [DataRow(2)]
@@ -223,6 +240,13 @@ internal sealed class GeneratedPayloadConverter : JsonConverter<GeneratedJsonPay
 
     public override void Write(Utf8JsonWriter writer, GeneratedJsonPayload value, JsonSerializerOptions options) => writer.WriteStringValue("custom");
 }
+
+internal enum BoxedBridgeGender { None, Male }
+
+[JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Metadata)]
+[JsonSerializable(typeof(Dictionary<string, object>))]
+[JsonSerializable(typeof(BoxedBridgeGender))]
+internal sealed partial class BoxedBridgeValuesContext : JsonSerializerContext;
 
 [JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Metadata)]
 [JsonSerializable(typeof(GeneratedJsonPayload))]
