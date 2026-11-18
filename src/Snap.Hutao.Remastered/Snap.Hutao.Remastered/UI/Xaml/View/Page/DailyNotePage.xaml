@@ -35,6 +35,11 @@
     <Page.Resources>
         <shux:BindingProxy x:Key="ViewModelBindingProxy" DataContext="{x:Bind DataContext, Mode=OneWay}"/>
 
+        <!--  Native AOT 下 DisplayMemberPath 走反射查找属性，会被裁剪器去掉；改用带 x:DataType 的编译绑定模板  -->
+        <DataTemplate x:Key="TileBackgroundAvatarItemTemplate" x:DataType="shvd:TileBackgroundAvatarItem">
+            <TextBlock Text="{x:Bind Name, Mode=OneTime}"/>
+        </DataTemplate>
+
         <cwconv:BoolToObjectConverter
             x:Name="DailyTaskIconConverter"
             FalseValue="{StaticResource UI_MarkQuest_Events_Start}"
@@ -661,7 +666,7 @@
                                                             MaxHeight="240"
                                                             HorizontalAlignment="Right"
                                                             HorizontalContentAlignment="Left"
-                                                            DisplayMemberPath="Name"
+                                                            ItemTemplate="{StaticResource TileBackgroundAvatarItemTemplate}"
                                                             ItemsSource="{x:Bind DataContext.TileBackgroundAvatars, Mode=OneWay}"
                                                             SelectedItem="{x:Bind DataContext.SelectedTileBackgroundAvatar, Mode=TwoWay}"/>
                                                     </Grid>

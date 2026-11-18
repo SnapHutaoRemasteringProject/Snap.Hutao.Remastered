@@ -58,9 +58,12 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
 
         try
         {
-            outcome = await imageCache.PrepareBackgroundAsync(avatarId, nameCardUri, token).ConfigureAwait(false)
-                ? TileBackgroundOutcome.Downloaded
-                : TileBackgroundOutcome.ReusedCache;
+            outcome = await imageCache.PrepareBackgroundAsync(avatarId, nameCardUri, token).ConfigureAwait(false) switch
+            {
+                TileBackgroundImageOutcome.Downloaded => TileBackgroundOutcome.Downloaded,
+                TileBackgroundImageOutcome.Cached => TileBackgroundOutcome.Cached,
+                _ => TileBackgroundOutcome.ReusedCache,
+            };
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested)
         {

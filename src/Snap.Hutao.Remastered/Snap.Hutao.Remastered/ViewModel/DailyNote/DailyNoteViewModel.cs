@@ -467,11 +467,12 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             return;
         }
 
-        // 「沿用了旧图」与「彻底没有背景图」必须分开提示：
+        // 「直接用了已有缓存」是正常成功；「沿用旧图」与「彻底没有背景图」要分开提示：
         // 前者磁贴还有背景，后者已经丢掉旧背景。
         messenger.Send(outcome switch
         {
             TileBackgroundOutcome.Downloaded => InfoBarMessage.Success(SH.FormatViewModelDailyNoteTileBackgroundDownloadCompleted(item.Name)),
+            TileBackgroundOutcome.Cached => InfoBarMessage.Success(SH.ViewModelDailyNoteTileBackgroundSet),
             TileBackgroundOutcome.ReusedCache => InfoBarMessage.Warning(SH.FormatViewModelDailyNoteTileBackgroundDownloadFallback(item.Name)),
             _ => InfoBarMessage.Warning(SH.FormatViewModelDailyNoteTileBackgroundDownloadFailed(item.Name)),
         });

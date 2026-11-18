@@ -85,19 +85,26 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     }
 
     /// <summary>
-    /// 为指定角色下载名片并裁剪为磁贴背景图（宽版 31:15 与大版 1:1）。
-    /// 只做下载、裁剪与落盘，不写设置项；下载失败时如果该角色已有完整缓存，沿用旧图而不是抛出。
+    /// 为指定角色准备磁贴背景图（宽版 31:15 与大版 1:1）。
+    /// 同一角色、同一张名片图已有完整缓存时直接复用，不访问网络；缓存缺失或名片图地址变了才下载。
+    /// 下载失败但仍有旧缓存时沿用旧图。只做文件工作，不写设置项。
     /// </summary>
-    public async ValueTask<bool> PrepareBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token)
+    public async ValueTask<TileBackgroundImageOutcome> PrepareBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token)
     {
-        // 服务层入口已有 daily_note_tile.prepare_background 事务时，这里作为子 span；
-        // 图标路径（无外层）时它自身成为事务。
-        using SentrySpanScope span = SentrySpanScope.StartOperation("daily_note_tile.download_background", "daily_note_tile");
+        // 服务层入口已有 daily_note_tile.prepare_background 事务时，这里作为子 span。
+        using SentrySpanScope span = SentrySpanScope.StartOperation("daily_note_tile.prepare_background_image", "daily_note_tile");
         span.SetData("daily_note_tile.avatar_id", avatarId);
 
         string directory = BackgroundCacheDirectory;
-        Directory.CreateDirectory(directory);
 
+        // 选择背景不需要联网：同一张名片图裁剪出来的结果是一样的，直接用磁盘上的裁剪结果。
+        if (HasCachedBackground(avatarId) && IsSameSource(avatarId, nameCardUri))
+        {
+            span.SetData("daily_note_tile.reused_cache", true);
+            return TileBackgroundImageOutcome.Cached;
+        }
+
+        Directory.CreateDirectory(directory);
         DeleteStaleTemporaryFiles(directory);
 
         string temporaryFile = Path.Combine(directory, $"{avatarId}_{Guid.NewGuid():N}.download");
@@ -119,7 +126,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
             if (HasCachedBackground(avatarId))
             {
                 logger.LogWarning(ex, "Reuse cached tile background for avatar {AvatarId}", avatarId);
-                return false;
+                return TileBackgroundImageOutcome.ReusedAfterFailure;
             }
 
             throw;
@@ -145,7 +152,43 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
             TryDeleteFile(temporaryFile);
         }
 
-        return true;
+        WriteBackgroundSource(avatarId, nameCardUri);
+        return TileBackgroundImageOutcome.Downloaded;
+    }
+
+    /// <summary>
+    /// 记录裁剪结果来自哪张名片图，用于判断缓存是否仍然对应当前地址。
+    /// </summary>
+    private void WriteBackgroundSource(string avatarId, Uri nameCardUri)
+    {
+        try
+        {
+            File.WriteAllText(BackgroundSourceFile(avatarId), nameCardUri.OriginalString);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            logger.LogDebug(ex, "Unable to record tile background source for avatar {AvatarId}", avatarId);
+        }
+    }
+
+    private bool IsSameSource(string avatarId, Uri nameCardUri)
+    {
+        try
+        {
+            string path = BackgroundSourceFile(avatarId);
+            return File.Exists(path)
+                && string.Equals(File.ReadAllText(path).Trim(), nameCardUri.OriginalString, StringComparison.Ordinal);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            logger.LogDebug(ex, "Unable to read tile background source for avatar {AvatarId}", avatarId);
+            return false;
+        }
+    }
+
+    private string BackgroundSourceFile(string avatarId)
+    {
+        return Path.Combine(BackgroundCacheDirectory, $"{avatarId}.src");
     }
 
     /// <summary>
