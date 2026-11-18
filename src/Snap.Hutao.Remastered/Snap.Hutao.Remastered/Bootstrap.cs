@@ -18,7 +18,7 @@ using Snap.Hutao.Remastered.Win32;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Security.AccessControl;
+using System.Runtime.InteropServices;
 using System.Security.Principal;
 using WinRT;
 
@@ -29,16 +29,10 @@ namespace Snap.Hutao.Remastered;
 [SuppressMessage("", "SH001")]
 public static partial class Bootstrap
 {
-    private static string LockName => "SNAP_HUTAO_BOOTSTRAP_LOCK" + AppDataPaths.InstanceSuffix;
     private static readonly ApplicationInitializationCallback AppInitializationCallback = InitializeApp;
-    private static EventWaitHandle? instanceHandle;
-
-    public static void UseNamedPipeRedirection()
-    {
-        // Clear the field without disposing so the kernel object stays alive
-        // for other processes to detect. The using() in Main() handles cleanup.
-        instanceHandle = null;
-    }
+    private static readonly object ActivationSyncRoot = new();
+    private static readonly Queue<HutaoActivationArguments> PendingActivations = new();
+    private static IAppActivation? activationHandler;
 
     [STAThread]
     private static void Main(string[] args)
@@ -57,67 +51,61 @@ public static partial class Bootstrap
         ComWrappersSupport.InitializeComWrappers();
         using IDisposable telemetry = LoggerFactoryExtension.InitializeSentry();
 
-        bool hasRunningInstance = HasRunningInstance();
-
-        // 1. Another instance is already running, hand this activation over to it.
-        // If the redirect fails, fall through to full startup: the pipe server may not be ready yet
-        // during first instance init.
-        if (hasRunningInstance)
+        // WinAppSDK atomically assigns the single-instance key. Unlike the old
+        // open-then-create event check, concurrent launches cannot both become the owner.
+        AppInstance keyInstance = AppInstance.FindOrRegisterForKey("Snap.Hutao.Remastered" + AppDataPaths.InstanceSuffix);
+        if (!keyInstance.IsCurrent)
         {
-            bool redirected;
             using (SentrySpanScope redirect = SentrySpanScope.StartTransaction("app.startup.redirect", "app.startup"))
             {
                 redirect.SetData("startup.has_running_instance", true);
-                redirected = PrivateNamedPipeClient.TryLightweightRedirect(args);
-                redirect.SetData("startup.redirected", redirected);
+                try
+                {
+                    // For packaged toast activations, register before reading activation
+                    // arguments so the SDK can identify notification activation correctly.
+                    if (RuntimeEnvironment.IsPackaged)
+                    {
+                        try
+                        {
+                            AppNotificationManager.Default.Register();
+                        }
+                        catch (Exception ex)
+                        {
+                            // Failed notification registration must not prevent
+                            // redirection of ordinary launches or URI activations.
+                            SentrySdk.CaptureException(ex);
+                        }
+                    }
+
+                    AppActivationArguments activatedArgs = AppInstance.GetCurrent().GetActivatedEventArgs();
+                    RedirectActivationTo(keyInstance, activatedArgs);
+                    redirect.SetData("startup.redirected", true);
+                }
+                catch (Exception ex)
+                {
+                    redirect.SetData("startup.redirected", false);
+                    SentrySdk.CaptureException(ex);
+                }
             }
 
-            if (redirected)
-            {
-                // The transaction above is finished by the using block; flush it before exit.
-                SentrySdk.Flush();
-                return;
-            }
-        }
-
-        // 2. Check if we should restart as administrator. The command-line arguments carry the
-        // activation (hutao:// URI, notification arguments, ...) and are passed on to the restarted
-        // instance, so it continues what this process was started for.
-        if (ShouldRestartAsAdmin())
-        {
-            RestartAsAdministrator(args);
+            // The secondary process must not run XAML startup or become another instance.
+            SentrySdk.Flush();
             return;
         }
 
-        // 3. Without an instance to hand over to, this process becomes the single instance. Its own
-        // activation is read from the command-line arguments by the application.
-        if (!hasRunningInstance)
+        // Register before initializing the XAML application. Redirections arriving while
+        // the app/DI is being constructed are buffered until OnLaunched is ready.
+        AppInstance.GetCurrent().Activated += OnAppInstanceActivated;
+        try
         {
-            try
+            if (ShouldRestartAsAdmin())
             {
-                EventWaitHandleSecurity handleSecurity = new();
-                handleSecurity.AddAccessRule(new(SecurityIdentifiers.Everyone, EventWaitHandleRights.FullControl, AccessControlType.Allow));
-
-                // The security descriptor is applied while the lock is created: setting it afterwards
-                // leaves a window in which another instance sees the default descriptor of this
-                // process, which an unelevated instance of the same user cannot open.
-                instanceHandle = EventWaitHandleAcl.Create(false, EventResetMode.ManualReset, LockName, out bool created, handleSecurity);
-                Debug.Assert(created);
-            }
-            catch (WaitHandleCannotBeOpenedException)
-            {
+                // Release ownership before starting the elevated child.
+                AppInstance.GetCurrent().UnregisterKey();
+                RestartAsAdministrator(args);
                 return;
             }
-            catch (UnauthorizedAccessException ex)
-            {
-                // Another instance created the lock in the meantime and this process may not open it.
-                SentrySdk.CaptureException(ex);
-                return;
-            }
-        }
 
-        using (instanceHandle)
-        {
             ShowLowWindowsVersionWarningOnce();
 
             Environment.SetEnvironmentVariable("WEBVIEW2_DEFAULT_BACKGROUND_COLOR", "00000000");
@@ -158,7 +146,79 @@ public static partial class Bootstrap
 
             SentrySdk.Flush();
         }
+        finally
+        {
+            AppInstance.GetCurrent().Activated -= OnAppInstanceActivated;
+            AppInstance.GetCurrent().UnregisterKey();
+            lock (ActivationSyncRoot)
+            {
+                activationHandler = null;
+                PendingActivations.Clear();
+            }
+        }
     }
+
+    /// <summary>Connect the WASDK activation event to the initialized application.</summary>
+    internal static void SetActivationHandler(IAppActivation handler)
+    {
+        lock (ActivationSyncRoot)
+        {
+            activationHandler = handler;
+            while (PendingActivations.TryDequeue(out HutaoActivationArguments? pending))
+            {
+                handler.RedirectedActivate(pending);
+            }
+        }
+    }
+
+    private static void OnAppInstanceActivated(object? sender, AppActivationArguments args)
+    {
+        try
+        {
+            HutaoActivationArguments redirected = HutaoActivationArguments.FromAppActivationArguments(args, isRedirected: true);
+            lock (ActivationSyncRoot)
+            {
+                if (activationHandler is { } handler)
+                {
+                    handler.RedirectedActivate(redirected);
+                }
+                else
+                {
+                    PendingActivations.Enqueue(redirected);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            SentrySdk.CaptureException(ex);
+        }
+    }
+
+    private static void RedirectActivationTo(AppInstance target, AppActivationArguments args)
+    {
+        // Main is STA. Block with a COM-aware wait rather than synchronously waiting
+        // on a WinRT async operation on the STA, which can deadlock.
+        using ManualResetEvent completed = new(false);
+        Task redirectTask = Task.Run(async () =>
+        {
+            try
+            {
+                await target.RedirectActivationToAsync(args);
+            }
+            finally
+            {
+                completed.Set();
+            }
+        });
+
+        nint eventHandle = completed.SafeWaitHandle.DangerousGetHandle();
+        int hr = CoWaitForMultipleHandles(0, uint.MaxValue, 1, in eventHandle, out _);
+        Marshal.ThrowExceptionForHR(hr);
+        redirectTask.GetAwaiter().GetResult();
+    }
+
+    [LibraryImport("ole32.dll")]
+    private static partial int CoWaitForMultipleHandles(uint flags, uint timeout, uint handleCount, in nint handles, out uint index);
 
     private static void InitializeApp(ApplicationInitializationCallbackParams param)
     {
@@ -179,23 +239,6 @@ public static partial class Bootstrap
         using WindowsIdentity identity = WindowsIdentity.GetCurrent();
         WindowsPrincipal principal = new(identity);
         return principal.IsInRole(WindowsBuiltInRole.Administrator);
-    }
-
-    /// <summary>
-    /// Whether an instance of the application is already running. The lock is only ever used as an
-    /// existence marker, so failing to open it means that someone else owns it as well.
-    /// </summary>
-    private static bool HasRunningInstance()
-    {
-        try
-        {
-            return EventWaitHandle.TryOpenExisting(LockName, out _);
-        }
-        catch (UnauthorizedAccessException ex)
-        {
-            SentrySdk.CaptureException(ex);
-            return true;
-        }
     }
 
     private static bool ShouldRestartAsAdmin()
