@@ -100,11 +100,11 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         // 选择背景不需要联网：同一张名片图裁剪出来的结果是一样的，直接用磁盘上的裁剪结果。
         // 没有 .src 旁文件的缓存（升级前生成的）同样可用——它本来就是这个角色的图；
         // 只有记录了来源且来源已变（名片图换过）时才重新下载。
-        if (HasCachedBackground(avatarId) && !IsSourceChanged(avatarId, nameCardUri))
+        if (HasCachedBackground(avatarId) && !await IsSourceChangedAsync(avatarId, nameCardUri, token).ConfigureAwait(false))
         {
             span.SetData("daily_note_tile.reused_cache", true);
             // 补写来源，下次判断能走精确路径。
-            WriteBackgroundSource(avatarId, nameCardUri);
+            await WriteBackgroundSourceAsync(avatarId, nameCardUri, token).ConfigureAwait(false);
             return TileBackgroundImageOutcome.Cached;
         }
         Directory.CreateDirectory(directory);
@@ -155,18 +155,18 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
             TryDeleteFile(temporaryFile);
         }
 
-        WriteBackgroundSource(avatarId, nameCardUri);
+        await WriteBackgroundSourceAsync(avatarId, nameCardUri, token).ConfigureAwait(false);
         return TileBackgroundImageOutcome.Downloaded;
     }
 
     /// <summary>
     /// 记录裁剪结果来自哪张名片图，用于判断缓存是否仍然对应当前地址。
     /// </summary>
-    private void WriteBackgroundSource(string avatarId, Uri nameCardUri)
+    private async ValueTask WriteBackgroundSourceAsync(string avatarId, Uri nameCardUri, CancellationToken token)
     {
         try
         {
-            File.WriteAllText(BackgroundSourceFile(avatarId), nameCardUri.OriginalString);
+            await File.WriteAllTextAsync(BackgroundSourceFile(avatarId), nameCardUri.OriginalString, token).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
@@ -179,7 +179,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     /// 没有 <c>.src</c>（升级前生成的缓存）时返回 <see langword="false"/>：那批缓存本来就是该角色的图，
     /// 按可用处理即可，不必为了补记录而重新下载。
     /// </summary>
-    private bool IsSourceChanged(string avatarId, Uri nameCardUri)
+    private async ValueTask<bool> IsSourceChangedAsync(string avatarId, Uri nameCardUri, CancellationToken token)
     {
         try
         {
@@ -189,7 +189,8 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
                 return false;
             }
 
-            return !string.Equals(File.ReadAllText(path).Trim(), nameCardUri.OriginalString, StringComparison.Ordinal);
+            string recorded = await File.ReadAllTextAsync(path, token).ConfigureAwait(false);
+            return !string.Equals(recorded.Trim(), nameCardUri.OriginalString, StringComparison.Ordinal);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {

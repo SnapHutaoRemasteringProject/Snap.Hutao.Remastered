@@ -327,7 +327,6 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
         }
 
         allTileBackgroundAvatars = all;
-        ObservableCollection<TileBackgroundAvatarItem> items = [.. all];
 
         string? selectedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
 
@@ -340,16 +339,43 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
         _suppressSelectionChange = true;
         try
         {
-            TileBackgroundAvatars = items;
+            // 重新加载后必须重新应用当前搜索文本：否则搜索框仍显示关键词，
+            // 列表却展示了全部角色，两者不一致。
+            TileBackgroundAvatars = [.. FilterBySearch(all, TileBackgroundAvatarSearchText)];
 
             // 未设置过背景时（null 或空串）默认选中「无背景」占位项。
-            SelectedTileBackgroundAvatar = items.FirstOrDefault(i => i.AvatarId == selectedAvatarId) ?? items[0];
+            SelectedTileBackgroundAvatar = all.FirstOrDefault(i => i.AvatarId == selectedAvatarId) ?? all[0];
         }
         finally
         {
             // 中途抛异常也必须复位，否则后续所有选择都会被静默忽略。
             _suppressSelectionChange = false;
         }
+    }
+
+    /// <summary>
+    /// 按搜索文本从全量候选中筛出可见项；查询为空时返回全量。
+    /// </summary>
+    private static List<TileBackgroundAvatarItem> FilterBySearch(IReadOnlyList<TileBackgroundAvatarItem> all, string? searchText)
+    {
+        string? query = searchText?.Trim();
+        if (string.IsNullOrEmpty(query))
+        {
+            return [.. all];
+        }
+
+        List<TileBackgroundAvatarItem> filtered = [];
+        foreach (TileBackgroundAvatarItem item in all)
+        {
+            if (item.IsNone
+                || item.Name.Contains(query, StringComparison.CurrentCultureIgnoreCase)
+                || (item.SearchKeyword is { } keyword && keyword.Contains(query, StringComparison.OrdinalIgnoreCase)))
+            {
+                filtered.Add(item);
+            }
+        }
+
+        return filtered;
     }
 
     [Command("SelectTileBackgroundCommand")]
@@ -591,37 +617,31 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
     {
         string? query = value?.Trim();
 
-        List<TileBackgroundAvatarItem> filtered = [];
-        foreach (TileBackgroundAvatarItem item in allTileBackgroundAvatars)
-        {
-            if (item.IsNone || string.IsNullOrEmpty(query))
-            {
-                filtered.Add(item);
-                continue;
-            }
+        List<TileBackgroundAvatarItem> filtered = FilterBySearch(allTileBackgroundAvatars, query);
 
-            if (item.Name.Contains(query, StringComparison.CurrentCultureIgnoreCase))
-            {
-                filtered.Add(item);
-                continue;
-            }
-
-            if (item.SearchKeyword is { } keyword && keyword.Contains(query, StringComparison.OrdinalIgnoreCase))
-            {
-                filtered.Add(item);
-            }
-        }
-
+        // 只替换列表，不主动改动选择：TwoWay 绑定在列表替换时会自行把 SelectedItem
+        // 与 ItemsSource 对齐。若已应用的角色被过滤掉，UI 高亮会短暂落到占位项，
+        // 但持久化设置与磁贴背景都不变；清空搜索时按持久化值恢复。
         TileBackgroundAvatars = [.. filtered];
 
-        // 过滤后当前选中项可能不在列表里；此时保留原选中项，不清空用户的选择。
+        // 列表替换后，把高亮恢复为「已应用的角色」；它若不在过滤结果里则回落到占位项。
+        RestoreSelectionToApplied(filtered);
+    }
+
+    /// <summary>
+    /// 把列表选择恢复为「已应用的角色」，而不是清空用户的持久化选择。
+    /// 过滤期间被隐藏的角色在清空搜索后能重新被选中。
+    /// </summary>
+    private void RestoreSelectionToApplied(List<TileBackgroundAvatarItem> filtered)
+    {
+        string? appliedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
+        TileBackgroundAvatarItem? applied = filtered.FirstOrDefault(i => i.AvatarId == appliedAvatarId)
+            ?? filtered.FirstOrDefault(static i => i.IsNone);
+
         _suppressSelectionChange = true;
         try
         {
-            if (SelectedTileBackgroundAvatar is { } selected && !filtered.Contains(selected))
-            {
-                SelectedTileBackgroundAvatar = filtered.FirstOrDefault(item => item.IsNone);
-            }
+            SelectedTileBackgroundAvatar = applied;
         }
         finally
         {
