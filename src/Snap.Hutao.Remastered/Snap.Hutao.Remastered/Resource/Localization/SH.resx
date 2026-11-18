@@ -6218,6 +6218,12 @@
   <data name="ServiceUpdateOpenStoreContent" xml:space="preserve">
     <value>是否打开 Microsoft Store 获取更新？此版本通过商店更新。如果新版仍在审核或分批发布，商店可能暂时不提供更新，请稍后重试。</value>
   </data>
+  <data name="ServiceUpdateUnpackagedUnsupported" xml:space="preserve">
+    <value>非打包版已停止支持自动更新，请重新安装 MSIX 打包版本。</value>
+  </data>
+  <data name="ServiceUpdateAppInstallerUnavailable" xml:space="preserve">
+    <value>当前安装版本不包含受支持的 App Installer 更新源。请使用发布页面提供的 .appinstaller 文件重新安装。</value>
+  </data>
   <data name="ServiceUpdateOpenStoreFailed" xml:space="preserve">
     <value>无法打开 Microsoft Store 或产品网页。请在 Microsoft Store 中搜索 Snap Hutao Remastered 并检查更新。</value>
   </data>

@@ -41,7 +41,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Publish (MSIX + Installer)
+      - name: Publish Store MSIX and R2 AppPackages
         id: publish
         shell: pwsh
         run: dotnet tool restore && dotnet cake publish.cake --publishAot=${{ matrix.publish_aot }}
@@ -63,13 +63,16 @@ jobs:
           name: Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}-MSIX-${{ steps.publish.outputs.msix-signed == 'true' && 'signed' || 'unsigned-store-only' }}${{ matrix.suffix }}
           path: ${{ github.workspace }}/src/output/Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}${{ matrix.suffix }}.msix
 
-      - name: Upload installer
+      - name: Upload R2 AppPackages
+        if: ${{ matrix.runtime == 'R2R' }}
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered-Setup-${{ steps.publish.outputs.version }}${{ matrix.suffix }}
-          path: ${{ github.workspace }}/publish/Snap.Hutao.Remastered-*.exe
+          name: Snap.Hutao.Remastered-AppPackages-${{ steps.publish.outputs.version }}
+          path: ${{ github.workspace }}/AppPackages/
+          if-no-files-found: error
 
       - name: Upload code-signing certificate
+        if: ${{ matrix.runtime == 'R2R' }}
         uses: actions/upload-artifact@v7
         with:
           name: Snap.Hutao.Remastered-SnapHutaoRemasteringProject-${{ steps.publish.outputs.version }}${{ matrix.suffix }}
@@ -82,12 +85,11 @@ jobs:
           choco install rclone --yes --no-progress
           if ($LASTEXITCODE -ne 0) { throw 'rclone installation failed.' }
 
-      - name: Publish default installer to R2
+      - name: Publish AppPackages to R2
         if: ${{ matrix.runtime == 'R2R' }}
         id: r2
         shell: pwsh
         env:
-          RELEASE_VERSION: ${{ steps.publish.outputs.version }}
           RCLONE_CONFIG_R2_TYPE: s3
           RCLONE_CONFIG_R2_PROVIDER: Cloudflare
           RCLONE_CONFIG_R2_REGION: auto
@@ -96,8 +98,7 @@ jobs:
           RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
         run: |
-          $installer = Join-Path 'publish' "Snap.Hutao.Remastered-$env:RELEASE_VERSION-Setup.exe"
-          ./scripts/Publish-InstallerToR2.ps1 -InstallerPath $installer
+          ./scripts/Publish-AppPackagesToR2.ps1 -AppPackagesPath 'AppPackages'
 
       - name: Add summary
         shell: pwsh
@@ -107,12 +108,11 @@ jobs:
 
           - **Runtime:** ${{ matrix.runtime }}
           - **Version:** ${{ steps.publish.outputs.version }}
-          - **MSIX:** Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}${{ matrix.suffix }}.msix
-          - **Installer:** Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}${{ matrix.suffix }}-Setup.exe
-          - **MSIX signed:** ${{ steps.publish.outputs.msix-signed }}
-          - **Installer signed:** Yes
+          - **Store MSIX:** Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}${{ matrix.suffix }}.msix
+          - **Store MSIX signed:** ${{ steps.publish.outputs.msix-signed }}
+          - **R2 sideload:** ${{ matrix.runtime == 'R2R' && 'Snap.Hutao.Remastered_x64.appinstaller' || 'Not published for NativeAOT' }}
 
           > [!IMPORTANT]
-          > MSIX 未签名时不可直接旁加载。Setup 安装包仍已签名，可直接安装。
+          > 商店包保持原有身份；R2R 会额外构建使用发布证书签名的独立侧载包。两个渠道不可直接交叉升级。
           "@
           echo $summary >> $Env:GITHUB_STEP_SUMMARY

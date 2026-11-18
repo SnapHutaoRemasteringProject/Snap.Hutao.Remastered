@@ -133,24 +133,6 @@ jobs:
           path: ${{ github.workspace }}/artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
           if-no-files-found: error
 
-      - name: Build installer
-        if: ${{ needs.prepare.outputs.continue == 'true' }}
-        id: installer
-        shell: pwsh
-        run: dotnet cake build-installer.cake --publishAot=${{ matrix.publish_aot }} --appVersion=${{ steps.cake.outputs.version }}
-        env:
-          CERTIFICATE: ${{ secrets.CERTIFICATE }}
-          PW: ${{ secrets.PW }}
-
-      - name: Upload Native AOT installer symbols
-        if: ${{ matrix.runtime == 'NativeAOT' }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: NativeAOT-Installer-Symbols-${{ steps.cake.outputs.version }}
-          path: ${{ github.workspace }}/artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
-          if-no-files-found: error
-
-
       - name: Upload signed msix
         if: ${{ success() && needs.prepare.outputs.continue == 'true' }}
         uses: actions/upload-artifact@v7
@@ -158,18 +140,18 @@ jobs:
           name: Snap.Hutao.Remastered.Canary-${{ steps.cake.outputs.version }}${{ matrix.suffix }}
           path: ${{ github.workspace }}/src/output/Snap.Hutao.Remastered.Canary-${{ steps.cake.outputs.version }}${{ matrix.suffix }}.msix
 
-      - name: Upload installer
+      - name: Export sideload trust certificate
         if: ${{ success() && needs.prepare.outputs.continue == 'true' }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: Snap.Hutao.Remastered.Canary-Setup-${{ steps.cake.outputs.version }}${{ matrix.suffix }}
-          path: ${{ github.workspace }}/publish/Snap.Hutao.Remastered-*.exe
+        shell: pwsh
+        run: ./scripts/Export-PackageCertificate.ps1 -PfxPath 'temp.pfx' -OutputPath 'temp-code-signing.cer'
+        env:
+          PW: ${{ secrets.PW }}
 
       - name: Upload code-signing certificate
         if: ${{ success() && needs.prepare.outputs.continue == 'true' }}
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered.Canary-SnapHutaoRemasteringProject-${{ steps.installer.outputs.version }}${{ matrix.suffix }}
+          name: Snap.Hutao.Remastered.Canary-SnapHutaoRemasteringProject-${{ steps.cake.outputs.version }}${{ matrix.suffix }}
           path: ${{ github.workspace }}/temp-code-signing.cer
 
       - name: Add summary

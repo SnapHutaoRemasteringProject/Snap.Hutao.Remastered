@@ -63,10 +63,7 @@ Task("Publish")
     .IsDependentOn("Inner Sign")
     .IsDependentOn("Build MSIX")
     .IsDependentOn("Sign MSIX")
-    .IsDependentOn("Prepare installer output")
-    .IsDependentOn("VC Redist")
-    .IsDependentOn("Compile installer")
-    .IsDependentOn("Sign installer");
+    .IsDependentOn("Build AppPackages");
 
 Task("Build binary package")
     .Does(() =>
@@ -189,117 +186,25 @@ Task("Sign MSIX")
     if (p != 0) { throw new InvalidOperationException($"MSIX sign failed ({p})"); }
 });
 
-Task("Prepare installer output")
-    .IsDependentOn("Copy files")
-    .IsDependentOn("Remove unused files")
+Task("Build AppPackages")
+    .IsDependentOn("Sign MSIX")
+    // Preserve the Store package; only R2R gets the separate, signed R2 package.
+    .WithCriteria(GitHubActions.IsRunningOnGitHubActions && !publishAot)
     .Does(() =>
 {
-    var publishDir = System.IO.Path.Combine(repoDir, "Installer", "Publish");
-    if (System.IO.Directory.Exists(publishDir)) { System.IO.Directory.Delete(publishDir, true); }
-    System.IO.Directory.CreateDirectory(publishDir);
-    CopyDirectory(binPath, publishDir);
-});
-
-Task("VC Redist")
-    .Does(() =>
-{
-    var vcRedist = System.IO.Path.Combine(repoDir, "Installer", "VC_redist.x64.exe");
-    if (System.IO.File.Exists(vcRedist))
+    var arguments = new ProcessArgumentBuilder()
+        .Append("-NoProfile").Append("-NonInteractive").Append("-File")
+        .AppendQuoted(System.IO.Path.Combine(repoDir, "scripts", "New-AppInstallerPackages.ps1"))
+        .Append("-PublishDirectory").AppendQuoted(binPath)
+        .Append("-AppPackagesDirectory").AppendQuoted(System.IO.Path.Combine(repoDir, "AppPackages"))
+        .Append("-StagingDirectory").AppendQuoted(System.IO.Path.Combine(repoDir, "artifacts", "appinstaller-staging"))
+        .Append("-CertificatePath").AppendQuoted(pfxPath)
+        .Append("-MakeAppxPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "makeappx.exe"))
+        .Append("-SignToolPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "signtool.exe"));
+    var result = StartProcess("pwsh", new ProcessSettings { Arguments = arguments });
+    if (result != 0)
     {
-        Information("VC_redist.x64.exe already exists.");
-        return;
-    }
-
-    Information("Downloading VC_redist.x64.exe...");
-    DownloadFile("https://aka.ms/vs/17/release/vc_redist.x64.exe", vcRedist);
-    Information("Downloaded VC_redist.x64.exe");
-});
-
-Task("Export code signing certificate")
-    .WithCriteria(GitHubActions.IsRunningOnGitHubActions)
-    .Does(() =>
-{
-    using (var certificate = System.Security.Cryptography.X509Certificates.X509CertificateLoader.LoadPkcs12FromFile(
-        pfxPath,
-        pw,
-        System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.EphemeralKeySet))
-    {
-        bool isCertificateAuthority = certificate.Extensions
-            .OfType<System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension>()
-            .Any(extension => extension.CertificateAuthority);
-        if (isCertificateAuthority)
-        {
-            throw new InvalidOperationException("The installer trust certificate must not be a CA certificate.");
-        }
-
-        bool supportsCodeSigning = certificate.Extensions
-            .OfType<System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension>()
-            .SelectMany(extension => extension.EnhancedKeyUsages.Cast<System.Security.Cryptography.Oid>())
-            .Any(oid => string.Equals(oid.Value, "1.3.6.1.5.5.7.3.3", System.StringComparison.Ordinal));
-        if (!supportsCodeSigning)
-        {
-            throw new InvalidOperationException("The installer trust certificate must have the code-signing EKU.");
-        }
-
-        codeSigningCertificateThumbprint = certificate.Thumbprint.Replace(" ", string.Empty).ToUpperInvariant();
-
-        System.IO.File.WriteAllBytes(
-            codeSigningCertificatePath,
-            certificate.Export(System.Security.Cryptography.X509Certificates.X509ContentType.Cert));
-        Information($"Exported code-signing certificate: {codeSigningCertificatePath} (thumbprint: {codeSigningCertificateThumbprint})");
-    }
-});
-
-Task("Compile installer")
-    .IsDependentOn("Prepare installer output")
-    .IsDependentOn("VC Redist")
-    .IsDependentOn("Export code signing certificate")
-    .Does(() =>
-{
-    var iscc = Context.Tools.Resolve("iscc.exe")?.FullPath;
-    if (string.IsNullOrEmpty(iscc))
-    {
-        var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
-        iscc = System.IO.Directory.GetDirectories(pf, "Inno Setup*")
-            .Select(d => System.IO.Path.Combine(d, "iscc.exe"))
-            .FirstOrDefault(System.IO.File.Exists);
-    }
-
-    if (string.IsNullOrEmpty(iscc)) { throw new Exception("Inno Setup not found"); }
-
-    var iss = System.IO.Path.Combine(repoDir, "Installer", "installer.iss");
-    var codeSigningCertificatePathArgument = System.IO.File.Exists(codeSigningCertificatePath)
-        ? $"/d{CodeSigningCertificatePathArgumentName}=\"{codeSigningCertificatePath}\" "
-        : string.Empty;
-    var codeSigningCertificateThumbprintArgument = !string.IsNullOrEmpty(codeSigningCertificateThumbprint)
-        ? $"/d{CodeSigningCertificateThumbprintArgumentName}=\"{codeSigningCertificateThumbprint}\" "
-        : string.Empty;
-    var p = StartProcess(iscc, new ProcessSettings { Arguments = $"{installerFlavorArgument}/dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{iss}\"", WorkingDirectory = repoDir });
-
-    if (p != 0) { throw new InvalidOperationException($"Inno Setup failed ({p})"); }
-    if (System.IO.File.Exists(System.IO.Path.Combine(repoDir, "Installer", "Publish", "BundledImages", "manifest.json")))
-    {
-        p = StartProcess(iscc, new ProcessSettings { Arguments = $"/dIncludeBundledImages=1 {installerFlavorArgument}/dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{iss}\"", WorkingDirectory = repoDir });
-        if (p != 0) { throw new InvalidOperationException($"Cache installer failed ({p})"); }
-    }
-    Information("Installer compiled.");
-});
-
-Task("Sign installer")
-    .IsDependentOn("Compile installer")
-    .WithCriteria(GitHubActions.IsRunningOnGitHubActions)
-    .Does(() =>
-{
-    var signtool = Context.Tools.Resolve("signtool.exe")?.FullPath
-        ?? System.IO.Path.Combine(winsdkBinPath, "signtool.exe");
-
-    if (!System.IO.File.Exists(signtool)) { Information("signtool not found, skipping."); return; }
-
-    var installerDir = System.IO.Path.Combine(repoDir, "publish");
-    foreach (var installer in System.IO.Directory.GetFiles(installerDir, "Snap.Hutao.Remastered-*.exe"))
-    {
-        var p = StartProcess(signtool, new ProcessSettings { Arguments = $"sign /debug /v /a /fd SHA256 /f \"{pfxPath}\" /p \"{pw}\" /tr http://timestamp.digicert.com /td SHA256 \"{installer}\"" });
-        Information(p == 0 ? $"Signed: {System.IO.Path.GetFileName(installer)}" : $"Failed: {System.IO.Path.GetFileName(installer)}");
+        throw new InvalidOperationException("R2 AppPackages generation or signing failed (exit " + result + ").");
     }
 });
 

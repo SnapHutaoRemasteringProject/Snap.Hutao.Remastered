@@ -7,20 +7,23 @@ using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.LifeCycle;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
-using Snap.Hutao.Remastered.Factory.Process;
-using Snap.Hutao.Remastered.Service.Hutao;
 using Snap.Hutao.Remastered.Service.Notification;
-using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
 using Snap.Hutao.Remastered.Web.Response;
+using System.IO;
+using System.Xml.Linq;
+using Windows.ApplicationModel;
+using Windows.Management.Deployment;
 
 namespace Snap.Hutao.Remastered.Service.Update;
 
 [Service(ServiceLifetime.Singleton, typeof(IUpdateService))]
 public sealed partial class UpdateService : IUpdateService
 {
-    private const string UpdaterFilename = "Snap.Hutao.Remastered.Deployment.exe";
+    private const string AppInstallerFilename = "Snap.Hutao.Remastered_x64.appinstaller";
+    private const string AppInstallerHost = "package.snaphutaorp.org";
+    private const string StorePublisher = "CN=469D671A-3AED-4488-AC4F-75E5394BC7FA";
     private const string StoreProductId = "9P1LDJFJFJQQ";
 
     // Avoid injecting services directly
@@ -64,12 +67,6 @@ public sealed partial class UpdateService : IUpdateService
                         checkUpdateResult.Kind = CheckUpdateResultKind.AlreadyUpdated;
                         return checkUpdateResult;
                     }
-                }
-
-                // Packaged apps update through the Store and never download this installer.
-                if (RuntimeEnvironment.IsUnpackaged && checkUpdateResult.PackageInformation.Validation is not { Length: > 0 })
-                {
-                    checkUpdateResult.Kind = CheckUpdateResultKind.VersionApiInvalidSha256;
                 }
 
                 return checkUpdateResult;
@@ -119,7 +116,7 @@ public sealed partial class UpdateService : IUpdateService
                 ContentDialogResult installUpdateUserConsentResult = await contentDialogFactory
                     .CreateForConfirmCancelWithSecondaryAsync(
                         SH.FormatViewTitleUpdatePackageAvailableTitle(result.PackageInformation?.Version),
-                        RuntimeEnvironment.IsPackaged ? SH.ServiceUpdateOpenStoreContent : SH.ViewTitileUpdatePackageAvailableContent,
+                        IsStorePackage ? SH.ServiceUpdateOpenStoreContent : SH.ViewTitileUpdatePackageAvailableContent,
                         SH.ViewTitleUpdatePackageSkipVersionButtonText)
                     .ConfigureAwait(false);
 
@@ -134,47 +131,33 @@ public sealed partial class UpdateService : IUpdateService
                     return;
                 }
 
-                if (RuntimeEnvironment.IsPackaged)
+                if (RuntimeEnvironment.IsUnpackaged)
+                {
+                    messenger.Send(InfoBarMessage.Error(SH.ServiceUpdateUnpackagedUnsupported));
+                    return;
+                }
+
+                if (IsStorePackage)
                 {
                     await OpenStoreAsync().ConfigureAwait(false);
                     return;
                 }
 
-                DownloadSourceDialog sourceDialog = await contentDialogFactory
-                    .CreateInstanceAsync<DownloadSourceDialog>(scope.ServiceProvider)
-                    .ConfigureAwait(false);
-
-                (bool isOk, DownloadSourceKind downloadSource) = await sourceDialog.GetDownloadSourceAsync().ConfigureAwait(false);
-
-                if (!isOk)
+                Uri? descriptorUri = GetPackagedAppInstallerUri();
+                if (descriptorUri is null)
                 {
+                    messenger.Send(InfoBarMessage.Error(SH.ServiceUpdateAppInstallerUnavailable));
                     return;
                 }
 
-                if (downloadSource is DownloadSourceKind.MirrorChyan)
-                {
-                    MirrorChyanCdkDialog cdkDialog = await contentDialogFactory
-                        .CreateInstanceAsync<MirrorChyanCdkDialog>(scope.ServiceProvider)
-                        .ConfigureAwait(false);
-
-                    (bool cdkOk, string cdk) = await cdkDialog.GetCdkAsync().ConfigureAwait(false);
-
-                    if (!cdkOk)
-                    {
-                        return;
-                    }
-
-                    LocalSetting.Set(SettingKeys.MirrorChyanCdk, cdk);
-                }
-
-#if IS_ALPHA_BUILD
-                if (result.PackageInformation?.Mirrors.SingleOrDefault() is { MirrorType: Web.Hutao.HutaoPackageMirrorType.Browser } mirror)
-                {
-                    await Windows.System.Launcher.LaunchUriAsync(mirror.Url.ToUri());
-                }
-#else
-                await LaunchUpdaterAsync(downloadSource).ConfigureAwait(false);
-#endif
+                // Read the stable HTTPS Uri from our signed, embedded descriptor, but
+                // deploy using the current remote file (the embedded version is stale).
+                // ms-appinstaller: has been disabled by Windows on consumer devices.
+                PackageManager packageManager = new();
+                await packageManager.RequestAddPackageByAppInstallerFileAsync(
+                    descriptorUri,
+                    AddPackageByAppInstallerOptions.ForceTargetAppShutdown,
+                    packageManager.GetDefaultPackageVolume()).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -228,55 +211,46 @@ public sealed partial class UpdateService : IUpdateService
         messenger.Send(InfoBarMessage.Success(SH.FormatViewTitleUpdatePackageSkipVersionInfoBarMessage(version)));
     }
 
-    private async ValueTask LaunchUpdaterAsync(DownloadSourceKind downloadSource = DownloadSourceKind.Official)
+    private static bool IsStorePackage => RuntimeEnvironment.IsPackaged
+        && string.Equals(Package.Current.Id.Publisher, StorePublisher, StringComparison.Ordinal);
+
+    private static Uri? GetPackagedAppInstallerUri()
     {
-        using SentrySpanScope span = SentrySpanScope.StartChild("update.launch_updater", $"{downloadSource}");
-        string updaterTargetPath = HutaoRuntime.GetDataUpdateCacheDirectoryFile(UpdaterFilename);
-        InstalledLocation.CopyFileFromApplicationUri($"ms-appx:///{UpdaterFilename}", updaterTargetPath);
-
-        using (IServiceScope scope = serviceProvider.CreateScope())
+        string path = InstalledLocation.GetAbsolutePath(AppInstallerFilename);
+        if (!File.Exists(path))
         {
-            HutaoUserOptions hutaoUserOptions = scope.ServiceProvider.GetRequiredService<HutaoUserOptions>();
+            return null;
+        }
 
-            CommandLineBuilder commandLineBuilder = new();
-            commandLineBuilder.Append("--update");
-            commandLineBuilder.Append("--installer-kind", RuntimeEnvironment.IsUnpackaged ? "Installer" : "Msix");
-            if (hutaoUserOptions.IsLoggedIn)
+        try
+        {
+            XDocument descriptor = XDocument.Load(path);
+            XElement? root = descriptor.Root;
+            if (root is null || root.Name.LocalName != "AppInstaller")
             {
-                commandLineBuilder.Append("--api-key", await hutaoUserOptions.GetAccessTokenAsync().ConfigureAwait(false));
+                return null;
             }
 
-            commandLineBuilder.Append("--source", downloadSource.ToString());
-
-            if (downloadSource is DownloadSourceKind.MirrorChyan)
+            XElement? main = root.Elements().SingleOrDefault(element => element.Name.LocalName == "MainPackage");
+            if (main is null
+                || (string?)main.Attribute("Name") != Package.Current.Id.Name
+                || (string?)main.Attribute("Publisher") != Package.Current.Id.Publisher)
             {
-                string cdk = LocalSetting.Get(SettingKeys.MirrorChyanCdk, string.Empty);
-                if (!string.IsNullOrEmpty(cdk))
-                {
-                    commandLineBuilder.Append("--cdk", cdk);
-                }
-
-                string resId = RuntimeEnvironment.IsUnpackaged ? "SnapHutaoRemastered" : "SnapHutaoRemastered_msix";
-                commandLineBuilder.Append("--res-id", resId);
+                return null;
             }
 
-            // The updater will request UAC permissions itself
-            ProcessFactory.StartUsingShellExecute(commandLineBuilder.ToString(), updaterTargetPath);
-
-            if (RuntimeEnvironment.IsUnpackaged)
-            {
-                // After launching the deployer in unpackaged mode, the installer needs to
-                // replace the running executable files. Exit the main application to avoid
-                // file-in-use conflicts during installation.
-                ITaskContext taskContext = scope.ServiceProvider.GetRequiredService<ITaskContext>();
-                App app = serviceProvider.GetRequiredService<App>();
-                taskContext.InvokeOnMainThread(app.Exit);
-
-                // base.Exit() may not fully terminate the process in unpackaged mode,
-                // so force exit to guarantee the process terminates completely.
-                SentrySdk.Flush();
-                Environment.Exit(0);
-            }
+            string? source = (string?)root.Attribute("Uri");
+            return Uri.TryCreate(source, UriKind.Absolute, out Uri? uri)
+                && uri.Scheme == Uri.UriSchemeHttps
+                && string.Equals(uri.Host, AppInstallerHost, StringComparison.OrdinalIgnoreCase)
+                && uri.AbsolutePath == "/" + AppInstallerFilename
+                ? uri
+                : null;
+        }
+        catch (Exception)
+        {
+            // Store, legacy or malformed packages must not silently switch channel.
+            return null;
         }
     }
 }
