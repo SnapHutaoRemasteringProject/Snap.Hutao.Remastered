@@ -55,17 +55,13 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
 
         async ValueTask HandleActivationExclusivelyAsync(HutaoActivationArguments args)
         {
-            if (Interlocked.CompareExchange(ref isActivating, 1, 0) is not 0)
-            {
-                return;
-            }
-
+            // Serialize *all* redirects with initial activation/initialization. Dropping
+            // a redirect while initialization is active loses the launch URI.
             using (await activateLock.LockAsync().ConfigureAwait(false))
             {
                 await UnsynchronizedHandleActivationAsync(args).ConfigureAwait(false);
             }
 
-            // Bring the main window to foreground after handling redirect activation
             await taskContext.SwitchToMainThreadAsync();
             if (currentXamlWindowReference.Window is { } window)
             {
@@ -73,8 +69,6 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
                 window.AppWindow?.MoveInZOrderAtTop();
                 window.Activate();
             }
-
-            Interlocked.Exchange(ref isActivating, 0);
         }
     }
 
@@ -253,7 +247,6 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
 
         // Start named pipe server
         serviceProvider.GetRequiredService<PrivateNamedPipeServer>().Start();
-        Bootstrap.UseNamedPipeRedirection();
 
         // Notify icon
         App app = serviceProvider.GetRequiredService<App>();

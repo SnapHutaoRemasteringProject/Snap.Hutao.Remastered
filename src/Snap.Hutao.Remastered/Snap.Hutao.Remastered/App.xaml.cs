@@ -8,7 +8,6 @@ using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Core.LifeCycle;
-using Snap.Hutao.Remastered.Core.LifeCycle.InterProcess;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.Process;
@@ -95,36 +94,18 @@ public sealed partial class App : Application
 
         try
         {
-            AppActivationArguments? activatedEventArgs;
+            HutaoActivationArguments? activationArgs = null;
 
             if (RuntimeEnvironment.IsPackaged)
             {
-                // Important: You must call AppNotificationManager::Default().Register
-                // before calling AppInstance.GetCurrent.GetActivatedEventArgs.
+                // Register before reading AppInstance activation arguments so the SDK
+                // correctly identifies packaged app-notification activations.
                 AppNotificationManager.Default.NotificationInvoked += activation.NotificationInvoked;
                 AppNotificationManager.Default.Register();
-
-                // E_INVALIDARG E_OUTOFMEMORY
-                activatedEventArgs = AppInstance.GetCurrent().GetActivatedEventArgs();
-
-                if (serviceProvider.GetRequiredService<PrivateNamedPipeClient>().TryRedirectActivationTo(activatedEventArgs))
-                {
-                    SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Application exiting on RedirectActivationTo", "Hutao"));
-                    XamlApplicationLifetime.ActivationAndInitializationCompleted = true;
-                    Exit();
-
-                    // base.Exit() may not fully terminate the process in unpackaged mode,
-                    // so force exit to guarantee the new instance terminates completely.
-                    SentrySdk.Flush();
-                    Environment.Exit(0);
-                    return;
-                }
+                activationArgs = HutaoActivationArguments.FromAppActivationArguments(AppInstance.GetCurrent().GetActivatedEventArgs());
             }
             else
             {
-                // In unpackaged mode, register toast notifications.
-                // This must happen before GetActivatedEventArgs() so WASDK can
-                // detect notification-based activations.
                 if (TryRegisterUnpackagedNotification())
                 {
                     try
@@ -135,7 +116,7 @@ public sealed partial class App : Application
 #else
                             "Snap Hutao Remastered";
 #endif
-                        string iconPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Assets", "Logo.ico");
+                        string iconPath = Path.Combine(AppContext.BaseDirectory, "Assets", "Logo.ico");
                         Uri iconUri = new(iconPath);
 
                         AppNotificationManager.Default.Register(displayName, iconUri);
@@ -143,66 +124,41 @@ public sealed partial class App : Application
                     }
                     catch
                     {
-                        // Notification registration is best-effort in unpackaged mode
+                        // Notification registration is best-effort in unpackaged mode.
                     }
                 }
 
-                // In unpackaged mode, AppNotification APIs are not available.
-                // AppInstance.GetCurrent() may also throw in some environments,
-                // and cannot reliably distinguish Launch from Protocol activation.
-                // We always check command-line args ourselves.
-                HutaoActivationArguments? unpackagedArgs = TryDetectUnpackagedActivation();
-
-                if (unpackagedArgs is not null)
+                // The raw command line is authoritative for unpackaged hutao://
+                // activations, which the SDK can otherwise report as Launch.
+                activationArgs = TryDetectUnpackagedActivation();
+                if (activationArgs is null)
                 {
-                    // Try to redirect activation to the already running instance
-                    if (serviceProvider.GetRequiredService<PrivateNamedPipeClient>().TryRedirectActivationTo(unpackagedArgs))
+                    try
                     {
-                        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Application exiting on RedirectActivationTo", "Hutao"));
-                        XamlApplicationLifetime.ActivationAndInitializationCompleted = true;
-                        Exit();
-
-                        // base.Exit() may not fully terminate the process in unpackaged mode,
-                        // so force exit to guarantee the new instance terminates completely.
-                        SentrySdk.Flush();
-                        Environment.Exit(0);
-                        return;
+                        activationArgs = HutaoActivationArguments.FromAppActivationArguments(AppInstance.GetCurrent().GetActivatedEventArgs());
                     }
-
-                    // Redirect failed (no running instance), activate directly
-                    unpackagedArgs.IsRedirectTo = false;
-                    activation.ActivateAndInitialize(unpackagedArgs);
-                    return;
-                }
-
-                try
-                {
-                    activatedEventArgs = AppInstance.GetCurrent().GetActivatedEventArgs();
-                }
-                catch
-                {
-                    activatedEventArgs = null;
+                    catch
+                    {
+                        // Some unpackaged environments cannot provide SDK activation args.
+                    }
                 }
             }
 
-            if (activatedEventArgs is null)
-            {
-                // Fallback for unpackaged mode: treat as a simple launch
-                activation.ActivateAndInitialize(new() { Kind = HutaoActivationKind.Launch, LaunchActivatedArguments = string.Empty });
-                return;
-            }
+            activationArgs ??= new() { Kind = HutaoActivationKind.Launch, LaunchActivatedArguments = string.Empty };
+            activationArgs.IsRedirectTo = false;
 
             logger.LogInformation($"{ConsoleBanner}");
-
-            // Manually invoke
             SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Activate and Initialize", "Application"));
-            activation.ActivateAndInitialize(HutaoActivationArguments.FromAppActivationArguments(activatedEventArgs));
+
+            // Schedule first activation before draining any redirections which arrived
+            // while DI and the XAML dispatcher were starting.
+            activation.ActivateAndInitialize(activationArgs);
+            Bootstrap.SetActivationHandler(activation);
         }
         catch (Exception ex)
         {
             SentrySdk.CaptureException(ex);
             SentrySdk.Flush();
-
             ProcessFactory.KillCurrent();
         }
     }
