@@ -5,6 +5,7 @@
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dev="using:DevWinUI"
     xmlns:essential="using:WinUI3Package"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
@@ -206,34 +207,40 @@
 
         <Pivot Style="{ThemeResource CardPivotStyle}">
             <Pivot.RightHeader>
-                <CommandBar DefaultLabelPosition="Right">
-                    <CommandBar.Content>
-                        <TextBlock
-                            Margin="12,14,12,0"
-                            VerticalAlignment="Center"
-                            Text="{x:Bind DataContext.LaunchStatusOptions.LaunchStatus.Description, Mode=OneWay}"/>
-                    </CommandBar.Content>
-                    <AppBarButton
-                        Command="{x:Bind DataContext.OpenScreenshotFolderCommand, Mode=OneWay}"
-                        Icon="{shuxm:FontIcon Glyph=&#xED25;}"
-                        Label="{shuxm:ResourceString Name=ViewPageOpenScreenshotFolderAction}"/>
-                    <AppBarButton
-                        Command="{x:Bind DataContext.ResetGamePathCommand, Mode=OneWay}"
-                        Icon="{shuxm:FontIcon Glyph=&#xEBC4;}"
-                        IsEnabled="{x:Bind shsg:LaunchOptions.IsGameRunning.Value, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
-                        Label="{shuxm:ResourceString Name=ViewPageResetGamePathAction}"
-                        ToolTipService.ToolTip="{x:Bind DataContext.DisplayGamePath.Value, Mode=OneWay}"/>
-                    <AppBarButton
-                        Command="{x:Bind DataContext.KillGameProcessCommand, Mode=OneWay}"
-                        Icon="{shuxm:FontIcon Glyph=&#xE733;}"
-                        IsEnabled="{x:Bind shsg:LaunchOptions.CanKillGameProcess.Value, Mode=OneWay}"
-                        Label="{shuxm:ResourceString Name=ViewPageLaunchGameKillGameProcessAction}"/>
-                    <AppBarButton
+                <StackPanel
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <CommandBar DefaultLabelPosition="Right">
+                        <CommandBar.Content>
+                            <TextBlock
+                                Margin="12,14,12,0"
+                                VerticalAlignment="Center"
+                                Text="{x:Bind DataContext.LaunchStatusOptions.LaunchStatus.Description, Mode=OneWay}"/>
+                        </CommandBar.Content>
+                        <AppBarButton
+                            Command="{x:Bind DataContext.OpenScreenshotFolderCommand, Mode=OneWay}"
+                            Icon="{shuxm:FontIcon Glyph=&#xED25;}"
+                            Label="{shuxm:ResourceString Name=ViewPageOpenScreenshotFolderAction}"/>
+                        <AppBarButton
+                            Command="{x:Bind DataContext.ResetGamePathCommand, Mode=OneWay}"
+                            Icon="{shuxm:FontIcon Glyph=&#xEBC4;}"
+                            IsEnabled="{x:Bind shsg:LaunchOptions.IsGameRunning.Value, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
+                            Label="{shuxm:ResourceString Name=ViewPageResetGamePathAction}"
+                            ToolTipService.ToolTip="{x:Bind DataContext.DisplayGamePath.Value, Mode=OneWay}"/>
+                        <AppBarButton
+                            Command="{x:Bind DataContext.KillGameProcessCommand, Mode=OneWay}"
+                            Icon="{shuxm:FontIcon Glyph=&#xE733;}"
+                            IsEnabled="{x:Bind shsg:LaunchOptions.CanKillGameProcess.Value, Mode=OneWay}"
+                            Label="{shuxm:ResourceString Name=ViewPageLaunchGameKillGameProcessAction}"/>
+                        <AppBarSeparator/>
+                    </CommandBar>
+                    <dev:FillButton
                         Command="{x:Bind DataContext.LaunchCommand, Mode=OneWay}"
+                        Content="{shuxm:ResourceString Name=ViewPageLaunchGameAction}"
                         Icon="{shuxm:FontIcon Glyph=&#xE7FC;}"
-                        IsEnabled="{x:Bind shsg:LaunchOptions.IsGameRunning.Value, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
-                        Label="{shuxm:ResourceString Name=ViewPageLaunchGameAction}"/>
-                </CommandBar>
+                        IsEnabled="{x:Bind shsg:LaunchOptions.IsGameRunning.Value, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"/>
+                </StackPanel>
             </Pivot.RightHeader>
 
             <PivotItem Header="{shuxm:ResourceString Name=ViewPageLaunchGameOptionsHeader}">
@@ -1005,11 +1012,17 @@
                             Background="{ThemeResource InfoBarErrorSeverityBackgroundBrush}"
                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                             BorderThickness="0,0,0,1">
-                            <TextBlock
-                                Margin="6"
+                            <StackPanel
                                 HorizontalAlignment="Center"
-                                Style="{ThemeResource CaptionTextBlockStyle}"
-                                Text="{shuxm:ResourceString Name=ViewPageLaunchGameDangerousDescriptionHint}"/>
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal">
+                                <FontIcon Foreground="{ThemeResource SystemControlErrorTextForegroundBrush}" Glyph="&#xE7BA;"/>
+                                <TextBlock
+                                    Margin="6"
+                                    HorizontalAlignment="Center"
+                                    Style="{ThemeResource CaptionTextBlockStyle}"
+                                    Text="{shuxm:ResourceString Name=ViewPageLaunchGameDangerousDescriptionHint}"/>
+                            </StackPanel>
                         </Border>
                         <Border
                             Grid.Row="2"

@@ -176,7 +176,7 @@ public partial class AutoSuggestTokenBoxItem : ListViewItem
     private void OnAutoSuggestBoxLoaded(object sender, RoutedEventArgs e)
     {
         ArgumentNullException.ThrowIfNull(AutoSuggestBox);
-        if (AutoSuggestBox.FindDescendant(QueryButton) is Button queryButton)
+        if (AutoSuggestBox.FindDescendant(QueryButton) is Microsoft.UI.Xaml.Controls.Button queryButton)
         {
             queryButton.Visibility = Owner.QueryIcon is not null ? Visibility.Visible : Visibility.Collapsed;
         }

@@ -12,7 +12,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 [Microsoft.UI.Xaml.Markup.ContentProperty(Name = nameof(Body))]
 public partial class MaterialCardButton : ContentControl
 {
-    private readonly Button nativeButton = new();
+    private readonly Microsoft.UI.Xaml.Controls.Button nativeButton = new();
     private readonly LiquidGlassButton glassButton = new();
 
     public static readonly DependencyProperty BodyProperty = DependencyProperty.Register(
@@ -36,10 +36,10 @@ public partial class MaterialCardButton : ContentControl
         ControlMaterialState.SetProfileKind(glassButton, "Card");
         ControlMaterialState.SetIsManaged(glassButton, true);
 
-        foreach (Button button in new Button[] { nativeButton, glassButton })
+        foreach (Microsoft.UI.Xaml.Controls.Button button in new Microsoft.UI.Xaml.Controls.Button[] { nativeButton, glassButton })
         {
-            Mirror(button, Button.CommandProperty, CommandProperty);
-            Mirror(button, Button.CommandParameterProperty, CommandParameterProperty);
+            Mirror(button, Microsoft.UI.Xaml.Controls.Button.CommandProperty, CommandProperty);
+            Mirror(button, Microsoft.UI.Xaml.Controls.Button.CommandParameterProperty, CommandParameterProperty);
             Mirror(button, XamlControl.PaddingProperty, XamlControl.PaddingProperty);
             MirrorCallerForeground(button);
             Mirror(button, XamlControl.HorizontalContentAlignmentProperty, XamlControl.HorizontalContentAlignmentProperty);
@@ -64,13 +64,13 @@ public partial class MaterialCardButton : ContentControl
     public ICommand? Command { get => (ICommand?)GetValue(CommandProperty); set => SetValue(CommandProperty, value); }
     public object? CommandParameter { get => GetValue(CommandParameterProperty); set => SetValue(CommandParameterProperty, value); }
 
-    private void Mirror(Button target, DependencyProperty targetProperty, DependencyProperty sourceProperty)
+    private void Mirror(Microsoft.UI.Xaml.Controls.Button target, DependencyProperty targetProperty, DependencyProperty sourceProperty)
     {
         // Dependency-property callbacks do not require reflection/custom providers.
-        WeakReference<Button> weak = new(target);
+        WeakReference<Microsoft.UI.Xaml.Controls.Button> weak = new(target);
         RegisterPropertyChangedCallback(sourceProperty, (sender, property) =>
         {
-            if (weak.TryGetTarget(out Button? button)) button.SetValue(targetProperty, sender.GetValue(property));
+            if (weak.TryGetTarget(out Microsoft.UI.Xaml.Controls.Button? button)) button.SetValue(targetProperty, sender.GetValue(property));
         });
         target.SetValue(targetProperty, GetValue(sourceProperty));
     }
@@ -85,17 +85,17 @@ public partial class MaterialCardButton : ContentControl
     /// button resolve its own theme-aware Foreground again, and a later explicit
     /// caller color is still forwarded by the property-changed callback.
     /// </summary>
-    private void MirrorCallerForeground(Button target)
+    private void MirrorCallerForeground(Microsoft.UI.Xaml.Controls.Button target)
     {
-        WeakReference<Button> weak = new(target);
+        WeakReference<Microsoft.UI.Xaml.Controls.Button> weak = new(target);
         RegisterPropertyChangedCallback(XamlControl.ForegroundProperty, (_, _) =>
         {
-            if (weak.TryGetTarget(out Button? button)) ApplyForeground(button);
+            if (weak.TryGetTarget(out Microsoft.UI.Xaml.Controls.Button? button)) ApplyForeground(button);
         });
         ApplyForeground(target);
     }
 
-    private void ApplyForeground(Button target)
+    private void ApplyForeground(Microsoft.UI.Xaml.Controls.Button target)
     {
         if (HasCallerForeground())
         {
@@ -155,7 +155,7 @@ public partial class MaterialCardButton : ContentControl
     private void MoveBody()
     {
         bool glass = ControlMaterialState.IsGlassMaterial && MaterialBindingSource.Current.GetTypeEnabled("Card");
-        Button active = glass ? glassButton : nativeButton;
+        Microsoft.UI.Xaml.Controls.Button active = glass ? glassButton : nativeButton;
         if (ReferenceEquals(Content, active) && ReferenceEquals(active.Content, Body)) return;
         nativeButton.Content = null;
         glassButton.Content = null;

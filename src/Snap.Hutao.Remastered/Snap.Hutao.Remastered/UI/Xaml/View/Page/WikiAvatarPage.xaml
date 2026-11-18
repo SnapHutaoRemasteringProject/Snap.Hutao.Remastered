@@ -5,6 +5,7 @@
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dev="using:DevWinUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
     xmlns:shmma="using:Snap.Hutao.Remastered.Model.Metadata.Avatar"
@@ -330,16 +331,14 @@
         </DataTemplate>
 
         <DataTemplate x:Key="FetterStoryTemplate" x:DataType="shmma:Fetter">
-            <Grid>
-                <cwc:SettingsCard Padding="16,8,8,8" BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}">
-                    <cwc:SettingsCard.Header>
-                        <shuxct:DescriptionTextBlock Description="{x:Bind Title, Mode=OneWay}" TextStyle="{StaticResource BaseTextBlockStyle}"/>
-                    </cwc:SettingsCard.Header>
-                    <cwc:SettingsCard.Description>
-                        <shuxct:DescriptionTextBlock Description="{x:Bind Context, Mode=OneWay}" TextStyle="{StaticResource CaptionTextBlockStyle}"/>
-                    </cwc:SettingsCard.Description>
-                </cwc:SettingsCard>
-            </Grid>
+            <cwc:SettingsCard Padding="16,8,8,8" BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}">
+                <cwc:SettingsCard.Header>
+                    <shuxct:DescriptionTextBlock Description="{x:Bind Title, Mode=OneWay}" TextStyle="{StaticResource BaseTextBlockStyle}"/>
+                </cwc:SettingsCard.Header>
+                <cwc:SettingsCard.Description>
+                    <shuxct:DescriptionTextBlock Description="{x:Bind Context, Mode=OneWay}" TextStyle="{StaticResource CaptionTextBlockStyle}"/>
+                </cwc:SettingsCard.Description>
+            </cwc:SettingsCard>
         </DataTemplate>
         <DataTemplate x:Key="AvatarGridTemplate" x:DataType="shmma:Avatar">
             <Grid>
@@ -455,6 +454,7 @@
                                                 Text="{shuxm:ResourceString Name=ControlAutoSuggestBoxNotFoundValue}"/>
                                         </StackPanel>
                                         <ScrollViewer
+                                            x:Name="AvatarItemScrollViewer"
                                             Padding="16,0"
                                             shuxc:ScrollViewerHelper.ScrollToTopAssociatedObject="{x:Bind ViewModel.Avatars.CurrentItem, Mode=OneWay}"
                                             Visibility="{x:Bind ViewModel.Avatars.CurrentItem, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
@@ -1094,6 +1094,13 @@
                                                 </Border>
                                             </StackPanel>
                                         </ScrollViewer>
+                                        <dev:GotoTop
+                                            Margin="0,0,20,20"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Bottom"
+                                            Animated="True"
+                                            AutoHiding="True"
+                                            Target="{x:Bind AvatarItemScrollViewer}"/>
                                     </Grid>
                                 </SplitView.Content>
                             </SplitView>
