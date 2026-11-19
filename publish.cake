@@ -188,7 +188,7 @@ Task("Sign MSIX")
 
 Task("Build AppPackages")
     .IsDependentOn("Sign MSIX")
-    // Preserve the Store package; only R2R gets the separate, signed R2 package.
+    // Preserve the Store package; Publish/R2R gets the separately signed sideload package.
     .WithCriteria(GitHubActions.IsRunningOnGitHubActions && !publishAot)
     .Does(() =>
 {
@@ -200,7 +200,11 @@ Task("Build AppPackages")
         .Append("-StagingDirectory").AppendQuoted(System.IO.Path.Combine(repoDir, "artifacts", "appinstaller-staging"))
         .Append("-CertificatePath").AppendQuoted(pfxPath)
         .Append("-MakeAppxPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "makeappx.exe"))
-        .Append("-SignToolPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "signtool.exe"));
+        .Append("-SignToolPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "signtool.exe"))
+        .Append("-Channel").Append("Publish")
+        .Append("-RuntimeKind").Append("R2R")
+        .Append("-PasswordEnvironmentVariable").Append("PUBLISH_PW")
+        .Append("-ExportCertificatePath").AppendQuoted(codeSigningCertificatePath);
     var result = StartProcess("pwsh", new ProcessSettings { Arguments = arguments });
     if (result != 0)
     {

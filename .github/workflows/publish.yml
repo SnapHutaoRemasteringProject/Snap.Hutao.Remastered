@@ -2,6 +2,10 @@ name: Snap Hutao Remastered Publish
 on:
   workflow_dispatch:
 
+concurrency:
+  group: r2-publish
+  cancel-in-progress: false
+
 jobs:
   publish:
     name: Build (${{ matrix.runtime }})
@@ -68,7 +72,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: Snap.Hutao.Remastered-AppPackages-${{ steps.publish.outputs.version }}
-          path: ${{ github.workspace }}/AppPackages/
+          path: ${{ github.workspace }}/AppPackages/Publish/R2R/
           if-no-files-found: error
 
       - name: Upload code-signing certificate
@@ -98,7 +102,7 @@ jobs:
           RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
         run: |
-          ./scripts/Publish-AppPackagesToR2.ps1 -AppPackagesPath 'AppPackages'
+          ./scripts/Publish-AppPackagesToR2.ps1 -AppPackagesPath 'AppPackages' -Channel Publish -RuntimeKind R2R
 
       - name: Add summary
         shell: pwsh
@@ -110,7 +114,7 @@ jobs:
           - **Version:** ${{ steps.publish.outputs.version }}
           - **Store MSIX:** Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}${{ matrix.suffix }}.msix
           - **Store MSIX signed:** ${{ steps.publish.outputs.msix-signed }}
-          - **R2 sideload:** ${{ matrix.runtime == 'R2R' && 'Snap.Hutao.Remastered_x64.appinstaller' || 'Not published for NativeAOT' }}
+          - **R2 sideload:** ${{ matrix.runtime == 'R2R' && 'Snap.Hutao.Remastered.Publish.R2R.x64.appinstaller' || 'Not published for NativeAOT' }}
 
           > [!IMPORTANT]
           > 商店包保持原有身份；R2R 会额外构建使用发布证书签名的独立侧载包。两个渠道不可直接交叉升级。

@@ -119,7 +119,8 @@ Task("Build")
     .IsDependentOn("Copy files")
     .IsDependentOn("Remove unused files")
     .IsDependentOn("Build MSIX")
-    .IsDependentOn("Sign");
+    .IsDependentOn("Sign")
+    .IsDependentOn("Build AppPackages");
 
 Task("NuGet Restore")
     .Does(() =>
@@ -406,6 +407,38 @@ Task("Sign")
     {
         Information("Local configuration. Skip signing.");
         return;
+    }
+});
+
+// The CI-signed Alpha MSIX continues to be published as an unchanged artifact.
+// Only the App Installer variant is repacked with an embedded channel descriptor.
+// Canary can opt in later, but remains disabled by default.
+Task("Build AppPackages")
+    .IsDependentOn("Sign")
+    .WithCriteria(GitHubActions.IsRunningOnGitHubActions
+        && !GitHubActions.Environment.PullRequest.IsPullRequest
+        && (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Alpha"
+            || (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Canary"
+                && Argument("enableCanaryAppPackages", false))))
+    .Does(() =>
+{
+    var channel = GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Alpha" ? "Alpha" : "Canary";
+    var arguments = new ProcessArgumentBuilder()
+        .Append("-NoProfile").Append("-NonInteractive").Append("-File")
+        .AppendQuoted(System.IO.Path.Combine(repoDir, "scripts", "New-AppInstallerPackages.ps1"))
+        .Append("-PublishDirectory").AppendQuoted(binPath)
+        .Append("-AppPackagesDirectory").AppendQuoted(System.IO.Path.Combine(repoDir, "AppPackages"))
+        .Append("-StagingDirectory").AppendQuoted(System.IO.Path.Combine(repoDir, "artifacts", "appinstaller-staging"))
+        .Append("-CertificatePath").AppendQuoted(pfxPath)
+        .Append("-MakeAppxPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "makeappx.exe"))
+        .Append("-SignToolPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "signtool.exe"))
+        .Append("-Channel").Append(channel)
+        .Append("-RuntimeKind").Append(publishAot ? "NativeAOT" : "R2R")
+        .Append("-PasswordEnvironmentVariable").Append("PW");
+    var exitCode = StartProcess("pwsh", new ProcessSettings { Arguments = arguments });
+    if (exitCode != 0)
+    {
+        throw new InvalidOperationException(channel + " AppPackages generation failed (exit " + exitCode + ").");
     }
 });
 

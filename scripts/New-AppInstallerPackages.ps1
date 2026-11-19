@@ -4,19 +4,24 @@ param(
     [Parameter(Mandatory)][string]$StagingDirectory,
     [Parameter(Mandatory)][string]$CertificatePath,
     [Parameter(Mandatory)][string]$MakeAppxPath,
-    [Parameter(Mandatory)][string]$SignToolPath
+    [Parameter(Mandatory)][string]$SignToolPath,
+    [ValidateSet('Publish', 'Alpha', 'Canary')][string]$Channel = 'Publish',
+    [ValidateSet('R2R', 'NativeAOT')][string]$RuntimeKind = 'R2R',
+    [string]$PasswordEnvironmentVariable = 'PUBLISH_PW',
+    [string]$ExportCertificatePath
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
 $source = (Resolve-Path -LiteralPath $PublishDirectory).Path
 $pfx = (Resolve-Path -LiteralPath $CertificatePath).Path
-if (!$env:PUBLISH_PW) { throw 'PUBLISH_PW is required for R2 sideload signing.' }
+$password = [Environment]::GetEnvironmentVariable($PasswordEnvironmentVariable)
+if ([string]::IsNullOrWhiteSpace($password)) { throw "Missing signing password environment variable: $PasswordEnvironmentVariable" }
 if (!(Test-Path -LiteralPath $MakeAppxPath -PathType Leaf)) { throw "Missing makeappx: $MakeAppxPath" }
 if (!(Test-Path -LiteralPath $SignToolPath -PathType Leaf)) { throw "Missing signtool: $SignToolPath" }
 
 $certificate = [System.Security.Cryptography.X509Certificates.X509CertificateLoader]::LoadPkcs12FromFile(
-    $pfx, $env:PUBLISH_PW, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::EphemeralKeySet)
+    $pfx, $password, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::EphemeralKeySet)
 try {
     # Reuse the release certificate safety checks previously enforced by Inno Setup.
     $isCa = @($certificate.Extensions | Where-Object {
@@ -29,11 +34,11 @@ try {
     }).Count -gt 0
     if (!$hasCodeSigningEku) { throw 'Release certificate must have the code-signing EKU.' }
     $publisher = $certificate.Subject
-    if ($publisher -eq 'CN=469D671A-3AED-4488-AC4F-75E5394BC7FA') {
-        throw 'The R2 publisher must not reuse the Microsoft Store publisher.'
+    if ($Channel -eq 'Publish' -and $publisher -eq 'CN=469D671A-3AED-4488-AC4F-75E5394BC7FA') {
+        throw 'Publish R2 cannot reuse the Microsoft Store publisher.'
     }
     $stage = [IO.Path]::GetFullPath($StagingDirectory)
-    $output = [IO.Path]::GetFullPath($AppPackagesDirectory)
+    $output = Join-Path ([IO.Path]::GetFullPath($AppPackagesDirectory)) (Join-Path $Channel $RuntimeKind)
     if (Test-Path -LiteralPath $stage) { Remove-Item -LiteralPath $stage -Recurse -Force }
     if (Test-Path -LiteralPath $output) { Remove-Item -LiteralPath $output -Recurse -Force }
     New-Item -ItemType Directory -Path $stage, $output -Force | Out-Null
@@ -48,21 +53,31 @@ try {
     [xml]$manifest = Get-Content -LiteralPath $manifestPath -Raw
     $identity = $manifest.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Identity']")
     if ($null -eq $identity) { throw 'No AppxManifest package identity.' }
-    $identity.SetAttribute('Publisher', $publisher)
+    if ($Channel -eq 'Publish') {
+        # Repackage the Store release under the independently signed R2 publisher.
+        $identity.SetAttribute('Publisher', $publisher)
+    } elseif ($identity.GetAttribute('Publisher') -ne $publisher) {
+        throw "The $Channel package publisher differs from the signing certificate."
+    }
     $name = $identity.GetAttribute('Name')
     $version = $identity.GetAttribute('Version')
     $architecture = $identity.GetAttribute('ProcessorArchitecture')
-    if ($name -ne 'SnapHutaoRemasteringProje.SnapHutaoRemastered' -or $architecture -ne 'x64' -or $version -notmatch '^\d+\.\d+\.\d+\.\d+$') {
+    $expectedName = switch ($Channel) {
+        'Publish' { 'SnapHutaoRemasteringProje.SnapHutaoRemastered' }
+        'Alpha' { '7f0db578-026f-4e0b-a75b-d5d06bb0a74c' }
+        'Canary' { '52127695-c6a7-406e-916a-693b905e8ba7' }
+    }
+    if ($name -ne $expectedName -or $architecture -ne 'x64' -or $version -notmatch '^\d+\.\d+\.\d+\.\d+$') {
         throw "Unexpected release identity: $name $version $architecture"
     }
     $manifest.Save($manifestPath)
 
-    $folderName = "Snap.Hutao.Remastered_$($version)_x64_Release"
-    $msixName = "Snap.Hutao.Remastered_$($version)_x64_Release.msix"
-    $descriptorName = 'Snap.Hutao.Remastered_x64.appinstaller'
+    $folderName = "Snap.Hutao.Remastered_$($version)_x64_$($Channel)_$($RuntimeKind)"
+    $msixName = "$folderName.msix"
+    $descriptorName = "Snap.Hutao.Remastered.$Channel.$RuntimeKind.x64.appinstaller"
     $folder = Join-Path $output $folderName
     New-Item -ItemType Directory -Path $folder -Force | Out-Null
-    $origin = 'https://package.snaphutaorp.org/'
+    $origin = "https://package.snaphutaorp.org/$Channel/$RuntimeKind/"
     $namespace = 'http://schemas.microsoft.com/appx/appinstaller/2021'
     $document = [xml]('<?xml version="1.0" encoding="utf-8"?><AppInstaller xmlns="' + $namespace + '"></AppInstaller>')
     $root = $document.DocumentElement
@@ -140,13 +155,15 @@ try {
     $msixPath = Join-Path $folder $msixName
     & $MakeAppxPath pack /d $stage /p $msixPath
     if ($LASTEXITCODE -ne 0) { throw "makeappx failed ($LASTEXITCODE)" }
-    & $SignToolPath sign /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f $pfx /p $env:PUBLISH_PW $msixPath
+    & $SignToolPath sign /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f $pfx /p $password $msixPath
     if ($LASTEXITCODE -ne 0) { throw "MSIX signing failed ($LASTEXITCODE)" }
 
     $certBytes = $certificate.Export([System.Security.Cryptography.X509Certificates.X509ContentType]::Cert)
     [IO.File]::WriteAllBytes((Join-Path $folder 'Snap.Hutao.Remastered.cer'), $certBytes)
-    [IO.File]::WriteAllBytes((Join-Path (Split-Path -Parent $output) 'temp-code-signing.cer'), $certBytes)
-    '<!doctype html><html lang="en"><meta charset="utf-8"><title>Snap Hutao Remastered</title><a href="./Snap.Hutao.Remastered_x64.appinstaller">Download x64</a></html>' |
+    if ($ExportCertificatePath) {
+        [IO.File]::WriteAllBytes([IO.Path]::GetFullPath($ExportCertificatePath), $certBytes)
+    }
+    ('<!doctype html><html lang="en"><meta charset="utf-8"><title>Snap Hutao Remastered ' + $Channel + ' ' + $RuntimeKind + '</title><a href="./' + $descriptorName + '">Download ' + $Channel + ' ' + $RuntimeKind + '</a></html>') |
         Set-Content -LiteralPath (Join-Path $output 'index.html') -Encoding utf8
 
     # Validate that the signed package contains the same descriptor and publisher.

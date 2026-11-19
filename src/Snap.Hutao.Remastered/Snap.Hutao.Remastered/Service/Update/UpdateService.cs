@@ -12,6 +12,7 @@ using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
 using Snap.Hutao.Remastered.Web.Response;
 using System.IO;
+using System.Net.Http;
 using System.Xml.Linq;
 using Windows.ApplicationModel;
 using Windows.Management.Deployment;
@@ -21,7 +22,6 @@ namespace Snap.Hutao.Remastered.Service.Update;
 [Service(ServiceLifetime.Singleton, typeof(IUpdateService))]
 public sealed partial class UpdateService : IUpdateService
 {
-    private const string AppInstallerFilename = "Snap.Hutao.Remastered_x64.appinstaller";
     private const string AppInstallerHost = "package.snaphutaorp.org";
     private const string StorePublisher = "CN=469D671A-3AED-4488-AC4F-75E5394BC7FA";
     private const string StoreProductId = "9P1LDJFJFJQQ";
@@ -46,6 +46,29 @@ public sealed partial class UpdateService : IUpdateService
             {
                 ITaskContext taskContext = scope.ServiceProvider.GetRequiredService<ITaskContext>();
                 await taskContext.SwitchToBackgroundAsync();
+
+                // Self-hosted releases must compare against THEIR own channel.
+                // The infrastructure version API represents Store/Publish, not Alpha/Canary
+                // or the selected R2R/NativeAOT stream.
+                if (RuntimeEnvironment.IsPackaged && !IsStorePackage)
+                {
+                    Uri? descriptorUri = GetPackagedAppInstallerUri();
+                    Version? remoteVersion = descriptorUri is null
+                        ? null
+                        : await GetRemoteAppInstallerVersionAsync(descriptorUri, token).ConfigureAwait(false);
+                    if (remoteVersion is null)
+                    {
+                        checkUpdateResult.Kind = CheckUpdateResultKind.VersionApiInvalidResponse;
+                        return checkUpdateResult;
+                    }
+
+                    checkUpdateResult.PackageInformation = new HutaoPackageInformation { Version = remoteVersion };
+                    checkUpdateResult.Kind = !LocalSetting.Get(SettingKeys.OverrideUpdateVersionComparison, false)
+                        && HutaoRuntime.Version >= remoteVersion
+                        ? CheckUpdateResultKind.AlreadyUpdated
+                        : CheckUpdateResultKind.UpdateAvailable;
+                    return checkUpdateResult;
+                }
 
                 HutaoInfrastructureClient infrastructureClient = scope.ServiceProvider.GetRequiredService<HutaoInfrastructureClient>();
                 HutaoResponse<HutaoPackageInformation> response = await infrastructureClient.GetHutaoVersionInformationAsync(token).ConfigureAwait(false);
@@ -214,42 +237,76 @@ public sealed partial class UpdateService : IUpdateService
     private static bool IsStorePackage => RuntimeEnvironment.IsPackaged
         && string.Equals(Package.Current.Id.Publisher, StorePublisher, StringComparison.Ordinal);
 
-    private static Uri? GetPackagedAppInstallerUri()
+    private static async ValueTask<Version?> GetRemoteAppInstallerVersionAsync(Uri uri, CancellationToken token)
     {
-        string path = InstalledLocation.GetAbsolutePath(AppInstallerFilename);
-        if (!File.Exists(path))
+        using HttpClient client = new();
+        using HttpResponseMessage response = await client.GetAsync(uri, token).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        using Stream stream = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false);
+        XDocument descriptor = await XDocument.LoadAsync(stream, LoadOptions.None, token).ConfigureAwait(false);
+        XElement? root = descriptor.Root;
+        XElement? main = root?.Elements().SingleOrDefault(element => element.Name.LocalName == "MainPackage");
+        if (root is null
+            || root.Name.LocalName != "AppInstaller"
+            || (string?)root.Attribute("Uri") != uri.AbsoluteUri
+            || (string?)main?.Attribute("Name") != Package.Current.Id.Name
+            || (string?)main?.Attribute("Publisher") != Package.Current.Id.Publisher)
         {
             return null;
         }
 
+        string? value = (string?)main?.Attribute("Version");
+        return Version.TryParse(value, out Version? remoteVersion) ? remoteVersion : null;
+    }
+
+    private static Uri? GetPackagedAppInstallerUri()
+    {
         try
         {
-            XDocument descriptor = XDocument.Load(path);
-            XElement? root = descriptor.Root;
-            if (root is null || root.Name.LocalName != "AppInstaller")
+            // Each signed package embeds exactly one descriptor identifying its
+            // own channel and runtime. Never switch streams based on the API.
+            string directory = InstalledLocation.GetAbsolutePath(string.Empty);
+            string[] descriptors = Directory.GetFiles(directory, "Snap.Hutao.Remastered.*.x64.appinstaller");
+            if (descriptors.Length != 1)
             {
                 return null;
             }
 
-            XElement? main = root.Elements().SingleOrDefault(element => element.Name.LocalName == "MainPackage");
-            if (main is null
-                || (string?)main.Attribute("Name") != Package.Current.Id.Name
-                || (string?)main.Attribute("Publisher") != Package.Current.Id.Publisher)
+            string filename = Path.GetFileName(descriptors[0]);
+            XDocument descriptor = XDocument.Load(descriptors[0]);
+            XElement? root = descriptor.Root;
+            XElement? main = root?.Elements().SingleOrDefault(element => element.Name.LocalName == "MainPackage");
+            if (root is null
+                || root.Name.LocalName != "AppInstaller"
+                || (string?)main?.Attribute("Name") != Package.Current.Id.Name
+                || (string?)main?.Attribute("Publisher") != Package.Current.Id.Publisher)
             {
                 return null;
             }
 
             string? source = (string?)root.Attribute("Uri");
-            return Uri.TryCreate(source, UriKind.Absolute, out Uri? uri)
-                && uri.Scheme == Uri.UriSchemeHttps
-                && string.Equals(uri.Host, AppInstallerHost, StringComparison.OrdinalIgnoreCase)
-                && uri.AbsolutePath == "/" + AppInstallerFilename
-                ? uri
-                : null;
+            if (!Uri.TryCreate(source, UriKind.Absolute, out Uri? uri)
+                || uri.Scheme != Uri.UriSchemeHttps
+                || !string.Equals(uri.Host, AppInstallerHost, StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            string[] parts = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length != 3
+                || parts[0] is not ("Publish" or "Alpha" or "Canary")
+                || parts[1] is not ("R2R" or "NativeAOT")
+                || filename != $"Snap.Hutao.Remastered.{parts[0]}.{parts[1]}.x64.appinstaller"
+                || parts[2] != filename)
+            {
+                return null;
+            }
+
+            return uri;
         }
         catch (Exception)
         {
-            // Store, legacy or malformed packages must not silently switch channel.
+            // Reject legacy, malformed or incompatible package descriptors.
             return null;
         }
     }
