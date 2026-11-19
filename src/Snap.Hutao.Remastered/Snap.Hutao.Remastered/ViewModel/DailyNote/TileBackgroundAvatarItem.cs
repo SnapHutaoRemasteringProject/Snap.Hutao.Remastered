@@ -14,12 +14,13 @@ public sealed partial class TileBackgroundAvatarItem : ObservableObject
 {
     private ImageSource? nameCardSource;
 
-    public TileBackgroundAvatarItem(string uid, string avatarId, string name, Uri? nameCard, Uri? cachedPreview = null)
+    public TileBackgroundAvatarItem(string uid, string avatarId, string name, Uri? nameCard, Uri? cachedPreview = null, string? searchKeyword = null)
     {
         Uid = uid;
         AvatarId = avatarId;
         Name = name;
         NameCard = nameCard;
+        SearchKeyword = searchKeyword;
 
         // 已下载过该角色的背景图时优先用它：本地加载不受网络影响，
         // 而且它就是磁贴实际显示的内容（已按 31:15 裁切）。
@@ -31,6 +32,12 @@ public sealed partial class TileBackgroundAvatarItem : ObservableObject
     public string AvatarId { get; }
 
     public string Name { get; }
+
+    /// <summary>
+    /// 用于搜索的英文/拼音关键词（来自名片图前缀，如 Ayaka、Kazuha）。
+    /// Flyout 内中文输入法不可用，用户可用拼音或英文名搜索。
+    /// </summary>
+    public string? SearchKeyword { get; }
 
     /// <summary>
     /// 名刺图片地址；「无背景」占位项为 <see langword="null"/>。

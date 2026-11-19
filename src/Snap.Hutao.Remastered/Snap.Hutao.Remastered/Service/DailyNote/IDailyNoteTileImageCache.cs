@@ -16,15 +16,12 @@ internal interface IDailyNoteTileImageCache
     Task PrepareIconsIgnoringFailureAsync();
 
     /// <summary>
-    /// 为指定角色下载名片并裁剪为磁贴背景图（宽版 31:15 与大版 1:1）。
+    /// 为指定角色准备磁贴背景图（宽版 31:15 与大版 1:1）。
     /// 只做下载、裁剪与落盘，不写设置项，因此被取消的旧请求不会覆盖用户的新选择。
-    /// 下载失败但该角色已有一份完整的旧缓存时，沿用旧图并返回 <see langword="false"/>；
-    /// 用户主动取消不会被兜底。
+    /// 同一角色、同一张名片图已有完整缓存时直接复用，不访问网络；
+    /// 缓存缺失或名片图地址变化时才下载。下载失败但仍有旧缓存时沿用旧图。
     /// </summary>
-    /// <returns>
-    /// <see langword="true"/> 表示图片来自本次下载；<see langword="false"/> 表示沿用了已有缓存。
-    /// </returns>
-    ValueTask<bool> PrepareBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token);
+    ValueTask<TileBackgroundImageOutcome> PrepareBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token);
 
     /// <summary>
     /// 把图标的远程地址解析为本地缓存地址；缓存不存在时回退到原始远程地址。
@@ -42,4 +39,25 @@ internal interface IDailyNoteTileImageCache
     /// 不依赖网络，呈现的也正是磁贴实际会显示的效果。
     /// </summary>
     string? ResolveBackgroundImageSource(string avatarId, bool isWide);
+}
+
+/// <summary>
+/// 背景图准备的来源，用于区分「本来就有缓存」和「下载失败只能凑合」。
+/// </summary>
+internal enum TileBackgroundImageOutcome
+{
+    /// <summary>
+    /// 本次下载并裁剪成功。
+    /// </summary>
+    Downloaded,
+
+    /// <summary>
+    /// 已有同一张名片图的缓存，直接复用，未访问网络。
+    /// </summary>
+    Cached,
+
+    /// <summary>
+    /// 下载失败，沿用了该角色的旧缓存。
+    /// </summary>
+    ReusedAfterFailure,
 }

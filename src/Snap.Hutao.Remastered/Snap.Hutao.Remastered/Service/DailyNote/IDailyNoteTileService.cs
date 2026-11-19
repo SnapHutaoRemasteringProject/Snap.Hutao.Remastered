@@ -56,6 +56,11 @@ internal enum TileBackgroundOutcome
     Downloaded,
 
     /// <summary>
+    /// 同一张名片图已有缓存，直接复用，未访问网络。
+    /// </summary>
+    Cached,
+
+    /// <summary>
     /// 下载失败，但该角色此前有完整缓存，磁贴沿用旧图。
     /// </summary>
     ReusedCache,

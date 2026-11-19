@@ -85,19 +85,29 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     }
 
     /// <summary>
-    /// 为指定角色下载名片并裁剪为磁贴背景图（宽版 31:15 与大版 1:1）。
-    /// 只做下载、裁剪与落盘，不写设置项；下载失败时如果该角色已有完整缓存，沿用旧图而不是抛出。
+    /// 为指定角色准备磁贴背景图（宽版 31:15 与大版 1:1）。
+    /// 同一角色、同一张名片图已有完整缓存时直接复用，不访问网络；缓存缺失或名片图地址变了才下载。
+    /// 下载失败但仍有旧缓存时沿用旧图。只做文件工作，不写设置项。
     /// </summary>
-    public async ValueTask<bool> PrepareBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token)
+    public async ValueTask<TileBackgroundImageOutcome> PrepareBackgroundAsync(string avatarId, Uri nameCardUri, CancellationToken token)
     {
-        // 服务层入口已有 daily_note_tile.prepare_background 事务时，这里作为子 span；
-        // 图标路径（无外层）时它自身成为事务。
-        using SentrySpanScope span = SentrySpanScope.StartOperation("daily_note_tile.download_background", "daily_note_tile");
+        // 服务层入口已有 daily_note_tile.prepare_background 事务时，这里作为子 span。
+        using SentrySpanScope span = SentrySpanScope.StartOperation("daily_note_tile.prepare_background_image", "daily_note_tile");
         span.SetData("daily_note_tile.avatar_id", avatarId);
 
         string directory = BackgroundCacheDirectory;
-        Directory.CreateDirectory(directory);
 
+        // 选择背景不需要联网：同一张名片图裁剪出来的结果是一样的，直接用磁盘上的裁剪结果。
+        // 没有 .src 旁文件的缓存（升级前生成的）同样可用——它本来就是这个角色的图；
+        // 只有记录了来源且来源已变（名片图换过）时才重新下载。
+        if (HasCachedBackground(avatarId) && !await IsSourceChangedAsync(avatarId, nameCardUri, token).ConfigureAwait(false))
+        {
+            span.SetData("daily_note_tile.reused_cache", true);
+            // 补写来源，下次判断能走精确路径。
+            await WriteBackgroundSourceAsync(avatarId, nameCardUri, token).ConfigureAwait(false);
+            return TileBackgroundImageOutcome.Cached;
+        }
+        Directory.CreateDirectory(directory);
         DeleteStaleTemporaryFiles(directory);
 
         string temporaryFile = Path.Combine(directory, $"{avatarId}_{Guid.NewGuid():N}.download");
@@ -119,7 +129,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
             if (HasCachedBackground(avatarId))
             {
                 logger.LogWarning(ex, "Reuse cached tile background for avatar {AvatarId}", avatarId);
-                return false;
+                return TileBackgroundImageOutcome.ReusedAfterFailure;
             }
 
             throw;
@@ -131,6 +141,12 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         {
             // 先读进内存再解码：GDI+ 从文件路径解码会持有文件句柄，导致临时文件删不掉。
             byte[] bytes = await File.ReadAllBytesAsync(temporaryFile, token).ConfigureAwait(false);
+
+            // 裁剪是「宽版 + 大版」两次独立写盘，中间失败会留下 A/B 混合的缓存。
+            // 先删掉来源记录：之后若替换中断，.src 缺失会让下一次请求走下载路径修复，
+            // 而不是误把混合缓存当作「来源一致」直接复用。
+            TryDeleteFile(BackgroundSourceFile(avatarId));
+
             using (MemoryStream stream = new(bytes))
             {
                 using (Image image = Image.FromStream(stream))
@@ -145,7 +161,59 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
             TryDeleteFile(temporaryFile);
         }
 
-        return true;
+        // 两张裁剪图都落盘后才写来源记录：缓存与来源一起提交，替换才算完成。
+        await WriteBackgroundSourceAsync(avatarId, nameCardUri, token).ConfigureAwait(false);
+        return TileBackgroundImageOutcome.Downloaded;
+    }
+
+    /// <summary>
+    /// 记录裁剪结果来自哪张名片图，用于判断缓存是否仍然对应当前地址。
+    /// </summary>
+    private async ValueTask WriteBackgroundSourceAsync(string avatarId, Uri nameCardUri, CancellationToken token)
+    {
+        try
+        {
+            await File.WriteAllTextAsync(BackgroundSourceFile(avatarId), nameCardUri.OriginalString, token).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            logger.LogDebug(ex, "Unable to record tile background source for avatar {AvatarId}", avatarId);
+        }
+    }
+
+    /// <summary>
+    /// 判断缓存对应的名片图是否已经变了。
+    /// 没有 <c>.src</c>（升级前生成的缓存）时返回 <see langword="false"/>：那批缓存本来就是该角色的图，
+    /// 按可用处理即可，不必为了补记录而重新下载。
+    /// 但读取 <c>.src</c> 失败时返回 <see langword="true"/>：读失败意味着无法确认来源，
+    /// 不能当作「来源一致」直接复用，必须走下载路径重新确认。
+    /// </summary>
+    private async ValueTask<bool> IsSourceChangedAsync(string avatarId, Uri nameCardUri, CancellationToken token)
+    {
+        string path = BackgroundSourceFile(avatarId);
+
+        // 明确区分「文件不存在」与「读取失败」：前者是升级迁移场景，视为可用；
+        // 后者是 IO 故障，视为来源未知，走下载。
+        if (!File.Exists(path))
+        {
+            return false;
+        }
+
+        try
+        {
+            string recorded = await File.ReadAllTextAsync(path, token).ConfigureAwait(false);
+            return !string.Equals(recorded.Trim(), nameCardUri.OriginalString, StringComparison.Ordinal);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            logger.LogWarning(ex, "Unable to read tile background source for avatar {AvatarId}; treat as changed", avatarId);
+            return true;
+        }
+    }
+
+    private string BackgroundSourceFile(string avatarId)
+    {
+        return Path.Combine(BackgroundCacheDirectory, $"{avatarId}.src");
     }
 
     /// <summary>

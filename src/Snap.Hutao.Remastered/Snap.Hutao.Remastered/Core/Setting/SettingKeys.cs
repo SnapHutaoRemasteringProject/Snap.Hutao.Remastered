@@ -109,6 +109,7 @@ public static class SettingKeys
     public const string DailyNoteWebhookUrl            = "Snap::Hutao::DailyNote::Webhook::Url";
     public const string DailyNoteTileBackgroundAvatarId = "Snap::Hutao::DailyNote::Tile::BackgroundAvatarId";
     public const string DailyNoteTileBackgroundUid      = "Snap::Hutao::DailyNote::Tile::BackgroundUid";
+    public const string DailyNoteTileMsixHintShown      = "Snap::Hutao::DailyNote::Tile::MsixHintShown";
 
     // Geetest
     public const string GeetestCustomCompositeUrl = "Snap::Hutao::Geetest::CustomCompositeUrl";

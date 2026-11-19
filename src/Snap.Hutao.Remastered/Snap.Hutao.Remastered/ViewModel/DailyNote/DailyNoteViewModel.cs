@@ -8,11 +8,14 @@ using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.Logging;
+using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Model.Entity;
+using Snap.Hutao.Remastered.Model.Metadata.Avatar;
+using Snap.Hutao.Remastered.Model.Metadata.Converter;
+using Snap.Hutao.Remastered.Model.Primitive;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.AvatarInfo;
-using Snap.Hutao.Remastered.Service.AvatarInfo.Factory;
 using Snap.Hutao.Remastered.Service.DailyNote;
 using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction;
@@ -22,10 +25,11 @@ using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.UI.Xaml.View.Page;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
-using Snap.Hutao.Remastered.ViewModel.AvatarProperty;
 using Snap.Hutao.Remastered.ViewModel.Game;
 using Snap.Hutao.Remastered.ViewModel.User;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace Snap.Hutao.Remastered.ViewModel.DailyNote;
 
@@ -65,6 +69,17 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
 
     [ObservableProperty]
     public partial ObservableCollection<TileBackgroundAvatarItem> TileBackgroundAvatars { get; set; } = [];
+
+    /// <summary>
+    /// 全部候选角色，不受 <see cref="TileBackgroundAvatarSearchText"/> 过滤影响。
+    /// </summary>
+    private IReadOnlyList<TileBackgroundAvatarItem> allTileBackgroundAvatars = [];
+
+    /// <summary>
+    /// 背景候选的搜索文本；为空时显示全部角色。
+    /// </summary>
+    [ObservableProperty]
+    public partial string? TileBackgroundAvatarSearchText { get; set; }
 
     [ObservableProperty]
     public partial TileBackgroundAvatarItem? SelectedTileBackgroundAvatar { get; set; }
@@ -214,6 +229,9 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
         {
             await taskContext.SwitchToBackgroundAsync();
             await PrivateLoadTileBackgroundAvatarsAsync(cts).ConfigureAwait(false);
+
+            await taskContext.SwitchToMainThreadAsync();
+            ShowMsixOnlyHintOnce();
         }
         catch (OperationCanceledException) when (cts.IsCancellationRequested)
         {
@@ -225,6 +243,22 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             await taskContext.SwitchToMainThreadAsync();
             messenger.Send(InfoBarMessage.Error(SH.ViewModelDailyNoteTileBackgroundLoadFailed, ex));
         }
+    }
+
+    /// <summary>
+    /// 首次打开背景候选时提示：磁贴功能只在 MSIX 安装包下可用，
+    /// 且需要在开始菜单里固定启动器后右击磁贴调整为宽/大尺寸才能看到。
+    /// 用持久化标志保证只提示一次。
+    /// </summary>
+    private void ShowMsixOnlyHintOnce()
+    {
+        if (LocalSetting.Get(SettingKeys.DailyNoteTileMsixHintShown, false))
+        {
+            return;
+        }
+
+        LocalSetting.Set(SettingKeys.DailyNoteTileMsixHintShown, true);
+        messenger.Send(InfoBarMessage.Information(SH.ViewPageDailyNoteTileMsixOnlyHint));
     }
 
     /// <summary>
@@ -260,70 +294,95 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
 
         token.ThrowIfCancellationRequested();
 
-        SummaryFactoryMetadataContext summaryContext = await metadataService.GetContextAsync<SummaryFactoryMetadataContext>().ConfigureAwait(false);
-        Summary? summary = await avatarInfoService.GetSummaryAsync(summaryContext, userAndUid, RefreshOptionKind.None, token).ConfigureAwait(false);
-
-        // RefreshOptionKind.None 只读数据库缓存。该账号的角色若从未在别处拉取过，
-        // 缓存为空会让候选列表只剩「无背景」，因此这里补一次主动拉取。
-        if (summary is null)
-        {
-            try
-            {
-                summary = await avatarInfoService.GetSummaryAsync(summaryContext, userAndUid, RefreshOptionKind.RequestFromHoyolabGameRecord, token).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException) when (token.IsCancellationRequested)
-            {
-                throw;
-            }
-            catch (Exception ex)
-            {
-                // 拉取失败（未登录、网络异常等）不影响「无背景」这一项，仅记录后继续。
-                logger.LogWarning(ex, "Fetch tile background avatars failed");
-            }
-        }
+        // 磁贴背景不要求账户拥有该角色，因此列出元数据里的全部角色，
+        // 而不是当前账户已拥有的角色。元数据在本地，无需拉取账户数据。
+        ImmutableDictionary<AvatarId, Avatar> avatars = await metadataService.GetIdToAvatarMapAsync(token).ConfigureAwait(false);
 
         token.ThrowIfCancellationRequested();
 
-        ObservableCollection<TileBackgroundAvatarItem> items = [];
-        items.Add(new TileBackgroundAvatarItem(string.Empty, string.Empty, SH.ViewPageDailyNoteTileBackgroundNone, null));
+        // 按名字排序：中文在 zh-CN 下按拼音，其他语言按各自文化规则。
+        StringComparer nameComparer = StringComparer.Create(CultureInfo.CurrentCulture, ignoreCase: true);
 
-        if (summary is not null)
+        List<TileBackgroundAvatarItem> all = [new TileBackgroundAvatarItem(string.Empty, string.Empty, SH.ViewPageDailyNoteTileBackgroundNone, null)];
+
+        foreach (Avatar avatar in avatars.Values.OrderBy(static avatar => avatar.Name, nameComparer))
         {
-            foreach (AvatarView avatar in summary.Avatars)
-            {
-                string avatarId = avatar.Id.ToString();
+            string avatarId = avatar.Id.ToString();
 
-                // 已下载过该角色的背景图时用它做预览：本地加载不受网络抖动影响，
-                // 且呈现的就是磁贴实际显示的效果；没有缓存才退回远程名刺地址。
-                Uri? cachedPreview = dailyNoteTileService.ResolveCachedWideBackground(avatarId) is { } cached
-                    ? new Uri(cached)
-                    : null;
+            // 已下载过该角色的背景图时用它做预览：本地加载不受网络抖动影响，
+            // 且呈现的就是磁贴实际显示的效果；没有缓存才退回远程名刺地址。
+            Uri? cachedPreview = dailyNoteTileService.ResolveCachedWideBackground(avatarId) is { } cached
+                ? new Uri(cached)
+                : null;
 
-                items.Add(new TileBackgroundAvatarItem(userAndUid.Uid.Value, avatarId, avatar.Name, avatar.NameCard, cachedPreview));
-            }
+            Uri? nameCard = AvatarNameCardPicConverter.IconNameToUri(avatar.NameCard.PicturePrefix);
+
+            // 名片图前缀即英文/拼音名（Ayaka、Kazuha 等），作为搜索关键词。
+            // Flyout 内中文输入法不可用，用户可输入拼音或英文名来过滤。
+            string searchKeyword = avatar.NameCard.PicturePrefix.StartsWith("UI_NameCardPic_", StringComparison.Ordinal)
+                ? avatar.NameCard.PicturePrefix["UI_NameCardPic_".Length..]
+                : avatar.NameCard.PicturePrefix;
+
+            all.Add(new TileBackgroundAvatarItem(userAndUid.Uid.Value, avatarId, avatar.Name, nameCard, cachedPreview, searchKeyword));
         }
-
-        string? selectedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
 
         await taskContext.SwitchToMainThreadAsync();
         if (cts.IsCancellationRequested || cts != loadTileBackgroundCts)
         {
+            // 过期加载：不能把候选列表（供搜索用）发布出去，否则会用旧账户的角色覆盖新账户。
             return;
         }
+
+        // 通过取消与请求身份检查后才发布候选列表：
+        // 防止被取消的旧账户加载污染后续搜索。
+        allTileBackgroundAvatars = all;
 
         _suppressSelectionChange = true;
         try
         {
-            TileBackgroundAvatars = items;
+            // 重新加载后必须重新应用当前搜索文本：否则搜索框仍显示关键词，
+            // 列表却展示了全部角色，两者不一致。
+            List<TileBackgroundAvatarItem> visible = FilterBySearch(all, TileBackgroundAvatarSearchText);
+            TileBackgroundAvatars = [.. visible];
 
-            // 未设置过背景时（null 或空串）默认选中「无背景」占位项。
-            SelectedTileBackgroundAvatar = items.FirstOrDefault(i => i.AvatarId == selectedAvatarId) ?? items[0];
+            // 未设置过背景（null/空串）时默认选中「无背景」占位项；
+            // 已设置背景但该角色被当前搜索隐藏时留空，让占位项保持可操作，
+            // 与 RestoreSelectionToApplied 的策略一致。
+            string? appliedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
+            SelectedTileBackgroundAvatar = string.IsNullOrEmpty(appliedAvatarId)
+                ? all.FirstOrDefault(static i => i.IsNone)
+                : visible.FirstOrDefault(i => i.AvatarId == appliedAvatarId);
         }
         finally
         {
             // 中途抛异常也必须复位，否则后续所有选择都会被静默忽略。
             _suppressSelectionChange = false;
         }
+    }
+
+    /// <summary>
+    /// 按搜索文本从全量候选中筛出可见项；查询为空时返回全量。
+    /// </summary>
+    private static List<TileBackgroundAvatarItem> FilterBySearch(IReadOnlyList<TileBackgroundAvatarItem> all, string? searchText)
+    {
+        string? query = searchText?.Trim();
+        if (string.IsNullOrEmpty(query))
+        {
+            return [.. all];
+        }
+
+        List<TileBackgroundAvatarItem> filtered = [];
+        foreach (TileBackgroundAvatarItem item in all)
+        {
+            if (item.IsNone
+                || item.Name.Contains(query, StringComparison.CurrentCultureIgnoreCase)
+                || (item.SearchKeyword is { } keyword && keyword.Contains(query, StringComparison.OrdinalIgnoreCase)))
+            {
+                filtered.Add(item);
+            }
+        }
+
+        return filtered;
     }
 
     [Command("SelectTileBackgroundCommand")]
@@ -467,11 +526,12 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             return;
         }
 
-        // 「沿用了旧图」与「彻底没有背景图」必须分开提示：
+        // 「直接用了已有缓存」是正常成功；「沿用旧图」与「彻底没有背景图」要分开提示：
         // 前者磁贴还有背景，后者已经丢掉旧背景。
         messenger.Send(outcome switch
         {
             TileBackgroundOutcome.Downloaded => InfoBarMessage.Success(SH.FormatViewModelDailyNoteTileBackgroundDownloadCompleted(item.Name)),
+            TileBackgroundOutcome.Cached => InfoBarMessage.Success(SH.ViewModelDailyNoteTileBackgroundSet),
             TileBackgroundOutcome.ReusedCache => InfoBarMessage.Warning(SH.FormatViewModelDailyNoteTileBackgroundDownloadFallback(item.Name)),
             _ => InfoBarMessage.Warning(SH.FormatViewModelDailyNoteTileBackgroundDownloadFailed(item.Name)),
         });
@@ -543,13 +603,59 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
         finally
         {
             _suppressSelectionChange = false;
-        }        if (dailyNoteTileService.TryUpdatePrimaryTile([]))
+        }
+
+        if (dailyNoteTileService.TryUpdatePrimaryTile([]))
         {
             messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteClearTileComplete));
         }
         else
         {
             messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNoteClearTileFailed));
+        }
+    }
+
+    /// <summary>
+    /// 按搜索文本过滤背景候选。同时匹配中文名与英文/拼音关键词（不区分大小写）；
+    /// 「无背景」项始终保留在最前，便于随时清除背景。
+    /// Flyout 内中文输入法不可用，因此英文/拼音匹配是主要搜索途径。
+    /// </summary>
+    partial void OnTileBackgroundAvatarSearchTextChanged(string? value)
+    {
+        string? query = value?.Trim();
+
+        List<TileBackgroundAvatarItem> filtered = FilterBySearch(allTileBackgroundAvatars, query);
+
+        // 只替换列表，不主动改动选择：TwoWay 绑定在列表替换时会自行把 SelectedItem
+        // 与 ItemsSource 对齐。若已应用的角色被过滤掉，UI 高亮会短暂落到占位项，
+        // 但持久化设置与磁贴背景都不变；清空搜索时按持久化值恢复。
+        TileBackgroundAvatars = [.. filtered];
+
+        // 列表替换后，把高亮恢复为「已应用的角色」；它若不在过滤结果里则回落到占位项。
+        RestoreSelectionToApplied(filtered);
+    }
+
+    /// <summary>
+    /// 把列表选择恢复为「已应用的角色」，而不是清空用户的持久化选择。
+    /// 若已应用角色被搜索过滤掉了，则留空（不选「无背景」占位项）：
+    /// 占位项保持可操作，预览与磁贴都继续显示已应用的背景，
+    /// 用户清空搜索后应用角色会重新出现。
+    /// </summary>
+    private void RestoreSelectionToApplied(List<TileBackgroundAvatarItem> filtered)
+    {
+        string? appliedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
+
+        // 只在应用角色可见时选中它；被隐藏时留空，让占位项保持可点击。
+        TileBackgroundAvatarItem? applied = filtered.FirstOrDefault(i => i.AvatarId == appliedAvatarId);
+
+        _suppressSelectionChange = true;
+        try
+        {
+            SelectedTileBackgroundAvatar = applied;
+        }
+        finally
+        {
+            _suppressSelectionChange = false;
         }
     }
 
