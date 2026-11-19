@@ -2750,6 +2750,12 @@ Kullanılabilir Alan: {2}</value>
   <data name="ViewPageDailyNoteTileBackgroundHeader" xml:space="preserve">
     <value>磁贴背景</value>
   </data>
+  <data name="ViewPageDailyNoteTileBackgroundSearchPlaceholder" xml:space="preserve">
+    <value>搜索角色（拼音/英文）</value>
+  </data>
+  <data name="ViewPageDailyNoteTileMsixOnlyHint" xml:space="preserve">
+    <value>磁贴功能仅支持 MSIX 安装包。请将胡桃启动器固定到开始菜单，然后右击磁贴调整大小为「宽」或「大」即可生效。</value>
+  </data>
   <data name="ViewPageDailyNoteTileBackgroundNone" xml:space="preserve">
     <value>无背景</value>
   </data>
