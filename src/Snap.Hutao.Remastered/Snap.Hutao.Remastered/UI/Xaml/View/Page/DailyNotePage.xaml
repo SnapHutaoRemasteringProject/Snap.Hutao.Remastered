@@ -35,6 +35,11 @@
 
     <Page.Resources>
 
+        <!--  Native AOT 下 DisplayMemberPath 走反射查找属性，会被裁剪器去掉；改用带 x:DataType 的编译绑定模板  -->
+        <DataTemplate x:Key="TileBackgroundAvatarItemTemplate" x:DataType="shvd:TileBackgroundAvatarItem">
+            <TextBlock Text="{x:Bind Name, Mode=OneTime}"/>
+        </DataTemplate>
+
         <cwconv:BoolToObjectConverter
             x:Name="DailyTaskIconConverter"
             FalseValue="{StaticResource UI_MarkQuest_Events_Start}"
@@ -491,7 +496,24 @@
                         Command="{x:Bind ViewModel.TrackCurrentUserAndUidCommand, Mode=OneWay}"
                         Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentAdd}}"
                         Label="{shuxm:ResourceString Name=ViewPageDailyNoteAddEntry}"/>
-                    <AppBarButton Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentSetting}}" Label="{shuxm:ResourceString Name=ViewPageDailyNoteNotificationSetting}">
+                    <AppBarButton
+                        Command="{x:Bind DataContext.PinTileCommand, Mode=OneWay}"
+                        Icon="{shuxm:FontIcon Glyph=&#xE840;}"
+                        Label="{shuxm:ResourceString Name=ViewPageDailyNotePinTileToolTip}"/>
+                    <AppBarButton Command="{x:Bind DataContext.UnpinTileCommand, Mode=OneWay}" Label="{shuxm:ResourceString Name=ViewPageDailyNoteUnpinTileToolTip}">
+                        <!--  与「更新磁贴」同一个图标，叠一道斜杠表示清除  -->
+                        <Grid Width="16" Height="16">
+                            <FontIcon FontSize="16" Glyph="&#xE840;"/>
+                            <Line
+                                Stroke="{ThemeResource TextFillColorPrimaryBrush}"
+                                StrokeThickness="1.5"
+                                X1="1"
+                                X2="15"
+                                Y1="1"
+                                Y2="15"/>
+                        </Grid>
+                    </AppBarButton>
+                    <AppBarButton AllowFocusOnInteraction="True" Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentSetting}}" Label="{shuxm:ResourceString Name=ViewPageDailyNoteNotificationSetting}">
                         <AppBarButton.Flyout>
                             <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" Placement="BottomEdgeAlignedRight">
                                 <Flyout.FlyoutPresenterStyle>
@@ -596,6 +618,61 @@
                                             Header="{shuxm:ResourceString Name=ViewPageDailyNoteConfigWebhookHeader}"
                                             HeaderIcon="{shuxm:FontIcon Glyph=&#xEE94;}"
                                             IsClickEnabled="True"/>
+
+                                        <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageDailyNoteTileBackgroundHeader}"/>
+                                        <cwc:SettingsExpander
+                                            Description="{shuxm:ResourceString Name=ViewPageDailyNoteTileBackgroundDescription}"
+                                            Header="{shuxm:ResourceString Name=ViewPageDailyNoteTileBackgroundHeader}"
+                                            HeaderIcon="{shuxm:FontIcon Glyph=&#xE8F1;}"
+                                            IsExpanded="False">
+                                            <!--  容器加宽：文字在加宽的框内居中，比默认的贴右位置整体左移，又不至于贴到最左  -->
+                                            <TextBlock
+                                                MinWidth="150"
+                                                Margin="8,0,16,0"
+                                                VerticalAlignment="Center"
+                                                Style="{StaticResource BodyTextBlockStyle}"
+                                                Text="{x:Bind DataContext.SelectedTileBackgroundAvatar.Name, Mode=OneWay}"/>
+                                            <cwc:SettingsExpander.Items>
+                                                <!--  用内嵌列表而不是 ComboBox：ComboBox 的下拉是 Popup，在 Flyout 内点击会被 light-dismiss 吞掉，选择无法提交。  -->
+                                                <!--  ContentAlignment=Left：卡片没有标题文字时，默认会把内容挤到最右。  -->
+                                                <cwc:SettingsCard Padding="4,0,0,0">
+                                                    <Grid ColumnSpacing="16">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <!--  左侧显示所选名片预览，按宽磁贴 31:15 的比例裁切呈现  -->
+                                                        <Border
+                                                            Grid.Column="0"
+                                                            Width="186"
+                                                            Height="90"
+                                                            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                                            CornerRadius="{ThemeResource ControlCornerRadius}">
+                                                            <Image
+                                                                Stretch="UniformToFill"
+                                                                Source="{x:Bind DataContext.SelectedTileBackgroundAvatar.NameCardSource, Mode=OneWay}"/>
+                                                        </Border>
+                                                        <StackPanel
+                                                            Grid.Column="1"
+                                                            MinWidth="240"
+                                                            VerticalAlignment="Center"
+                                                            Spacing="4">
+                                                            <AutoSuggestBox
+                                                                PlaceholderText="{shuxm:ResourceString Name=ViewPageDailyNoteTileBackgroundSearchPlaceholder}"
+                                                                QueryIcon="{shuxm:FontIcon Glyph=&#xE721;}"
+                                                                Text="{x:Bind DataContext.TileBackgroundAvatarSearchText, Mode=TwoWay}"/>
+                                                            <ListView
+                                                                x:Name="TileBackgroundList"
+                                                                MaxHeight="120"
+                                                                HorizontalContentAlignment="Left"
+                                                                ItemTemplate="{StaticResource TileBackgroundAvatarItemTemplate}"
+                                                                ItemsSource="{x:Bind DataContext.TileBackgroundAvatars, Mode=OneWay}"
+                                                                SelectedItem="{x:Bind DataContext.SelectedTileBackgroundAvatar, Mode=TwoWay}"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </cwc:SettingsCard>
+                                            </cwc:SettingsExpander.Items>
+                                        </cwc:SettingsExpander>
                                     </StackPanel>
                                 </ScrollViewer>
                             </Flyout>

@@ -20,6 +20,7 @@ namespace Snap.Hutao.Remastered.Service.DailyNote;
 public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<UserRemovedMessage>
 {
     private readonly DailyNoteNotificationOperation dailyNoteNotificationOperation;
+    private readonly IDailyNoteTileService dailyNoteTileService;
     private readonly IDailyNoteRepository dailyNoteRepository;
     private readonly DailyNoteOptions dailyNoteOptions;
     private readonly IServiceProvider serviceProvider;
@@ -38,7 +39,14 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
         if (entries is { } localEntries)
         {
             Guid userId = message.RemovedUser.InnerId;
-            taskContext.InvokeOnMainThread(() => localEntries.RemoveWhere(n => n.UserId == userId));
+            taskContext.InvokeOnMainThread(() =>
+            {
+                localEntries.RemoveWhere(n => n.UserId == userId);
+
+                // 自动刷新默认关闭，不同步重发磁贴的话，
+                // 已删除账号的便笺会一直留在开始菜单上直到下一次刷新。
+                dailyNoteTileService.TryUpdatePrimaryTile(localEntries);
+            });
         }
     }
 
@@ -74,6 +82,7 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
 
         await taskContext.SwitchToMainThreadAsync();
         entries?.Add(newEntry);
+        dailyNoteTileService.TryUpdatePrimaryTile(entries ?? []);
     }
 
     public async ValueTask<ObservableCollection<DailyNoteEntry>> GetDailyNoteEntryCollectionAsync(DailyNoteMetadataContext context, bool forceRefresh = false, CancellationToken token = default)
@@ -108,6 +117,7 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
         await taskContext.SwitchToMainThreadAsync();
         ArgumentNullException.ThrowIfNull(entries);
         entries.Remove(entry);
+        dailyNoteTileService.TryUpdatePrimaryTile(entries);
 
         await taskContext.SwitchToBackgroundAsync();
         dailyNoteRepository.DeleteDailyNoteEntryById(entry.InnerId);
@@ -185,6 +195,12 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
                 // After everything is done, we copy the updated entry to the cached entry.
                 await taskContext.SwitchToMainThreadAsync();
                 dbEntry.CopyTo(cachedEntry);
+            }
+
+            await taskContext.SwitchToMainThreadAsync();
+            if (entries is { } localEntries)
+            {
+                dailyNoteTileService.TryUpdatePrimaryTile(localEntries);
             }
         }
     }

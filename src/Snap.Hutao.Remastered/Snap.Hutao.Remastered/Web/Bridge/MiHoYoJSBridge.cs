@@ -457,6 +457,7 @@ public class MiHoYoJSBridge
                     {
                         JsResult<Dictionary<string, string>> stringResult => JsonSerialize.Serialize(stringResult, CompactJsonOptions),
                         JsResult<Dictionary<string, object>> objectResult => JsonSerialize.Serialize(objectResult, CompactJsonOptions),
+                        Response<ActionTicketWrapper> actionTicketResult => JsonSerialize.Serialize(actionTicketResult, CompactJsonOptions),
                         _ => throw new NotSupportedException($"The JS bridge result type '{result.GetType()}' is not registered."),
                     };
 

@@ -12,10 +12,11 @@ using Snap.Hutao.Remastered.Core.LifeCycle;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Property;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
+using Snap.Hutao.Remastered.Factory.WindowedContentDialog;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Service;
-using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.Network;
+using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 using Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized;
@@ -39,6 +40,7 @@ public sealed partial class UserViewModel : ObservableObject
     private readonly ICurrentXamlWindowReference currentXamlWindowReference;
     private readonly IContentDialogFactory contentDialogFactory;
     private readonly IServiceProvider serviceProvider;
+    private readonly IWindowedContentDialogFactory windowedContentDialogFactory;
     private readonly CultureOptions cultureOptions;
     private readonly ITaskContext taskContext;
     private readonly IUserService userService;
@@ -263,7 +265,7 @@ public sealed partial class UserViewModel : ObservableObject
 
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
-            UserQRCodeDialog dialog = await contentDialogFactory.CreateInstanceAsync<UserQRCodeDialog>(scope.ServiceProvider).ConfigureAwait(false);
+            using UserQRCodeDialog dialog = await windowedContentDialogFactory.CreateInstanceAsync<UserQRCodeDialog>(scope.ServiceProvider).ConfigureAwait(false);
             (bool isOk, QrLoginResult? qrLoginResult) = await dialog.GetQrLoginResultAsync().ConfigureAwait(false);
 
             if (!isOk)
