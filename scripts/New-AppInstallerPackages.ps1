@@ -20,6 +20,31 @@ if ([string]::IsNullOrWhiteSpace($password)) { throw "Missing signing password e
 if (!(Test-Path -LiteralPath $MakeAppxPath -PathType Leaf)) { throw "Missing makeappx: $MakeAppxPath" }
 if (!(Test-Path -LiteralPath $SignToolPath -PathType Leaf)) { throw "Missing signtool: $SignToolPath" }
 
+# Read identity from the actual framework APPX. File names and SDKManifest.xml
+# alone are insufficient to establish the required version and publisher.
+function Read-FrameworkPackageIdentity([IO.FileInfo]$File) {
+    try {
+        $archive = [IO.Compression.ZipFile]::OpenRead($File.FullName)
+        try {
+            $entry = $archive.GetEntry('AppxManifest.xml')
+            if ($null -eq $entry) { return $null }
+            $reader = [IO.StreamReader]::new($entry.Open())
+            try { [xml]$frameworkManifest = $reader.ReadToEnd() } finally { $reader.Dispose() }
+            $identity = $frameworkManifest.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Identity']")
+            if ($null -eq $identity) { return $null }
+            return [pscustomobject]@{
+                Path=$File.FullName
+                Name=$identity.GetAttribute('Name')
+                Architecture=$identity.GetAttribute('ProcessorArchitecture')
+                Publisher=$identity.GetAttribute('Publisher')
+                Version=[Version]$identity.GetAttribute('Version')
+            }
+        } finally { $archive.Dispose() }
+    } catch [IO.InvalidDataException] {
+        return $null
+    }
+}
+
 $certificate = [System.Security.Cryptography.X509Certificates.X509CertificateLoader]::LoadPkcs12FromFile(
     $pfx, $password, [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::EphemeralKeySet)
 try {
@@ -101,45 +126,84 @@ try {
     $dependencies = @($manifest.SelectNodes("//*[local-name()='PackageDependency']"))
     if ($dependencies.Count -gt 0) {
         $sdkRoot = Join-Path ([Environment]::GetFolderPath('ProgramFilesX86')) 'Microsoft SDKs\Windows Kits\10\ExtensionSDKs'
-        $roots = @((Join-Path $source 'Dependencies\x64'), (Join-Path $sdkRoot 'Microsoft.VCLibs.140.00.UWPDesktop'))
+        # Visual Studio installs Desktop Bridge VCLibs in Microsoft.VCLibs.Desktop,
+        # not under the framework's MSIX package identity (UWPDesktop).
+        $roots = @(
+            (Join-Path $source 'Dependencies\x64'),
+            (Join-Path $sdkRoot 'Microsoft.VCLibs.Desktop'),
+            (Join-Path $sdkRoot 'Microsoft.VCLibs')
+        )
         $candidates = @($roots | Where-Object { Test-Path -LiteralPath $_ } | ForEach-Object {
             Get-ChildItem -LiteralPath $_ -Recurse -File | Where-Object { $_.Extension -in @('.appx', '.msix') }
         })
         $dependenciesElement = $document.CreateElement('Dependencies', $namespace)
         foreach ($dependency in $dependencies) {
             $requiredName = $dependency.GetAttribute('Name')
+            $requiredPublisher = $dependency.GetAttribute('Publisher')
             $minimum = [Version]$dependency.GetAttribute('MinVersion')
             $matches = @()
             foreach ($file in $candidates) {
+                $framework = Read-FrameworkPackageIdentity $file
+                if ($null -eq $framework) { continue }
+                if ($framework.Name -ne $requiredName -or $framework.Architecture -ne $architecture) { continue }
+                if ($requiredPublisher -and $framework.Publisher -ne $requiredPublisher) { continue }
+                if ($framework.Version -lt $minimum) { continue }
+                $matches += $framework
+            }
+
+            $selected = $matches | Sort-Object Version -Descending | Select-Object -First 1
+            if ($null -eq $selected -and $requiredName -eq 'Microsoft.VCLibs.140.00.UWPDesktop' -and $minimum -le [Version]'14.0.33728.0') {
+                # GitHub runners do not guarantee the optional UWP C++ workload.
+                # winget-pkgs pins a Microsoft-published 14.0.33728.0 x64 APPX
+                # inside this specific winget-cli release archive. Verify the
+                # official SHA256 before extracting, then inspect APPX identity.
+                $dependencyTemp = Join-Path ([IO.Path]::GetTempPath()) ('hutao-vclibs-' + [guid]::NewGuid().ToString('N'))
+                New-Item -ItemType Directory -Path $dependencyTemp -Force | Out-Null
                 try {
-                    $archive = [IO.Compression.ZipFile]::OpenRead($file.FullName)
+                    $archivePath = Join-Path $dependencyTemp 'DesktopAppInstaller_Dependencies.zip'
+                    $downloadUrl = 'https://github.com/microsoft/winget-cli/releases/download/v1.9.25180/DesktopAppInstaller_Dependencies.zip'
+                    Invoke-WebRequest -Uri $downloadUrl -OutFile $archivePath
+                    $expectedHash = 'EEBA62F08531C8669B3E5FB895CE8800AE66D798739CDA2B4AEF2A1D80A5F3C5'
+                    if ((Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash -ne $expectedHash) {
+                        throw 'Downloaded Microsoft VCLibs dependency archive failed SHA256 verification.'
+                    }
+                    $fallbackPath = Join-Path $dependencyTemp 'Microsoft.VCLibs.140.00.UWPDesktop_14.0.33728.0_x64.appx'
+                    $archive = [IO.Compression.ZipFile]::OpenRead($archivePath)
                     try {
-                        $entry = $archive.GetEntry('AppxManifest.xml')
-                        if ($null -eq $entry) { continue }
-                        $reader = [IO.StreamReader]::new($entry.Open())
-                        try { [xml]$frameworkManifest = $reader.ReadToEnd() } finally { $reader.Dispose() }
-                        $frameworkIdentity = $frameworkManifest.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Identity']")
-                        if ($null -eq $frameworkIdentity) { continue }
-                        if ($frameworkIdentity.GetAttribute('Name') -ne $requiredName) { continue }
-                        if ($frameworkIdentity.GetAttribute('ProcessorArchitecture') -ne $architecture) { continue }
-                        if ([Version]$frameworkIdentity.GetAttribute('Version') -lt $minimum) { continue }
-                        $matches += [pscustomobject]@{
-                            Path=$file.FullName
-                            Name=$frameworkIdentity.GetAttribute('Name')
-                            Publisher=$frameworkIdentity.GetAttribute('Publisher')
-                            Version=[Version]$frameworkIdentity.GetAttribute('Version')
-                        }
+                        $entry = $archive.GetEntry('x64/Microsoft.VCLibs.140.00.UWPDesktop_14.0.33728.0_x64.appx')
+                        if ($null -eq $entry) { throw 'Microsoft VCLibs x64 APPX is missing from the verified archive.' }
+                        $inputStream = $entry.Open()
+                        try {
+                            $outputStream = [IO.File]::Create($fallbackPath)
+                            try { $inputStream.CopyTo($outputStream) } finally { $outputStream.Dispose() }
+                        } finally { $inputStream.Dispose() }
                     } finally { $archive.Dispose() }
-                } catch [IO.InvalidDataException] {
-                    continue
+
+                    $framework = Read-FrameworkPackageIdentity (Get-Item -LiteralPath $fallbackPath)
+                    if ($null -eq $framework -or $framework.Name -ne $requiredName -or
+                        $framework.Architecture -ne $architecture -or $framework.Version -lt $minimum -or
+                        ($requiredPublisher -and $framework.Publisher -ne $requiredPublisher)) {
+                        throw 'Downloaded Microsoft VCLibs APPX does not satisfy the manifest dependency.'
+                    }
+                    $selected = $framework
+
+                    # Copy immediately: the temporary download is removed below.
+                    $destination = Join-Path $folder 'Dependencies\x64'
+                    New-Item -ItemType Directory -Path $destination -Force | Out-Null
+                    Copy-Item -LiteralPath $selected.Path -Destination (Join-Path $destination ([IO.Path]::GetFileName($selected.Path))) -Force
+                    $selected.Path = Join-Path $destination ([IO.Path]::GetFileName($selected.Path))
+                } finally {
+                    Remove-Item -LiteralPath $dependencyTemp -Recurse -Force -ErrorAction SilentlyContinue
                 }
             }
-            $selected = $matches | Sort-Object Version -Descending | Select-Object -First 1
             if ($null -eq $selected) { throw "Missing x64 framework dependency: $requiredName (minimum $minimum)" }
             $destination = Join-Path $folder 'Dependencies\x64'
             New-Item -ItemType Directory -Path $destination -Force | Out-Null
             $filename = [IO.Path]::GetFileName($selected.Path)
-            Copy-Item -LiteralPath $selected.Path -Destination (Join-Path $destination $filename) -Force
+            $targetPath = Join-Path $destination $filename
+            if ($selected.Path -ne $targetPath) {
+                Copy-Item -LiteralPath $selected.Path -Destination $targetPath -Force
+            }
             $element = $document.CreateElement('Package', $namespace)
             foreach ($attr in @{ Name=$selected.Name; Version=$selected.Version.ToString(); Publisher=$selected.Publisher; ProcessorArchitecture=$architecture; Uri="$origin$folderName/Dependencies/x64/$filename" }.GetEnumerator()) {
                 $element.SetAttribute($attr.Key, [string]$attr.Value)
