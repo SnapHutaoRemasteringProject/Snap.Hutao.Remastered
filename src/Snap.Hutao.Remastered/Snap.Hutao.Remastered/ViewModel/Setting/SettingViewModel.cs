@@ -300,6 +300,7 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
             CheckUpdateResultKind.UpdateAvailable => SH.FormatViewModelSettingUpdateAvailable(result.PackageInformation?.Version.ToString()),
             CheckUpdateResultKind.AlreadyUpdated => SH.ViewModelSettingAlreadyUpdated,
             CheckUpdateResultKind.VersionApiInvalidResponse or CheckUpdateResultKind.VersionApiInvalidSha256 => SH.ViewModelSettingCheckUpdateFailed,
+            CheckUpdateResultKind.AppInstallerUnavailable => SH.ServiceUpdateAppInstallerUnavailable,
             _ => default!,
         }).ConfigureAwait(false);
 

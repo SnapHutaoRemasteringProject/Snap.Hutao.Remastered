@@ -2,6 +2,7 @@ param(
     [Parameter(Mandatory)][string]$AppPackagesPath,
     [Parameter(Mandatory)][ValidateSet('Publish', 'Alpha', 'Canary')][string]$Channel,
     [Parameter(Mandatory)][ValidateSet('R2R', 'NativeAOT')][string]$RuntimeKind,
+    [ValidateRange(1, 720)][int]$PreviousVersionRetentionHours = 48,
     [string]$RclonePath = 'rclone'
 )
 $ErrorActionPreference = 'Stop'
@@ -106,19 +107,42 @@ if (Test-Path -LiteralPath $index -PathType Leaf) {
     if ($LASTEXITCODE -ne 0) { throw 'Channel landing page upload failed.' }
 }
 
-# Reclaim R2 storage only AFTER the new pointer has been published and verified.
-# Purge only old version directories matching the current channel/runtime.
+# Reclaim storage only after the descriptor points to a verified package.
+# A client may already have downloaded the prior descriptor and still be
+# requesting its versioned MSIX. Retain recently published versions for a
+# bounded grace period; otherwise publishing a new version breaks that client.
+$cutoff = [DateTimeOffset]::UtcNow.AddHours(-$PreviousVersionRetentionHours)
 $folders = @(& $RclonePath lsf $remote --config $config --dirs-only)
 if ($LASTEXITCODE -ne 0) { throw 'Cannot list old package directories for cleanup.' }
 foreach ($entry in $folders) {
-    $folder = $entry.Trim().TrimEnd('/')
-    if ($folder -match $folderPattern -and $folder -ne $versionFolder) {
-        Write-Host "Pruning old $Channel/$RuntimeKind version: $folder"
-        & $RclonePath purge ($remote + $folder) --config $config --retries 5 --low-level-retries 10
-        if ($LASTEXITCODE -ne 0) { throw "Unable to remove old version: $folder" }
+    $oldFolder = $entry.Trim().TrimEnd('/')
+    if ($oldFolder -notmatch $folderPattern -or $oldFolder -eq $versionFolder) {
+        continue
     }
+
+    $oldRemote = "$remote$oldFolder/"
+    $metadataJson = @(& $RclonePath lsjson $oldRemote --config $config --files-only --recursive)
+    if ($LASTEXITCODE -ne 0) { throw "Cannot inspect old package for cleanup: $oldFolder" }
+    $objects = @($metadataJson -join [Environment]::NewLine | ConvertFrom-Json)
+    if ($objects.Count -eq 0 -or @($objects | Where-Object { !$_.ModTime }).Count -gt 0) {
+        # Never delete objects with unknown timestamps: cannot prove they are old.
+        Write-Host "Keeping $oldFolder: missing timestamp metadata"
+        continue
+    }
+
+    $lastModified = @($objects | ForEach-Object {
+        [DateTimeOffset]::Parse($_.ModTime, [Globalization.CultureInfo]::InvariantCulture)
+    } | Sort-Object -Descending | Select-Object -First 1)[0]
+    if ($lastModified -gt $cutoff) {
+        Write-Host "Keeping $oldFolder until its $PreviousVersionRetentionHours-hour grace period expires"
+        continue
+    }
+
+    Write-Host "Pruning expired $Channel/$RuntimeKind version: $oldFolder"
+    & $RclonePath purge $oldRemote --config $config --retries 5 --low-level-retries 10
+    if ($LASTEXITCODE -ne 0) { throw "Unable to remove old version: $oldFolder" }
 }
-Write-Host "Published and pruned: $expectedUri"
+Write-Host "Published and pruned expired versions: $expectedUri"
 if ($env:GITHUB_STEP_SUMMARY) {
     $summary = [Environment]::NewLine + '### R2 ' + $Channel + '/' + $RuntimeKind + [Environment]::NewLine + $expectedUri + [Environment]::NewLine
     $summary | Out-File -LiteralPath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8

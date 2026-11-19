@@ -53,9 +53,27 @@ public sealed partial class UpdateService : IUpdateService
                 if (RuntimeEnvironment.IsPackaged && !IsStorePackage)
                 {
                     Uri? descriptorUri = GetPackagedAppInstallerUri();
-                    Version? remoteVersion = descriptorUri is null
-                        ? null
-                        : await GetRemoteAppInstallerVersionAsync(descriptorUri, token).ConfigureAwait(false);
+                    if (descriptorUri is null)
+                    {
+                        checkUpdateResult.Kind = CheckUpdateResultKind.AppInstallerUnavailable;
+                        return checkUpdateResult;
+                    }
+
+                    Version? remoteVersion;
+                    try
+                    {
+                        remoteVersion = await GetRemoteAppInstallerVersionAsync(descriptorUri, token).ConfigureAwait(false);
+                    }
+                    catch (Exception ex) when (ex is HttpRequestException or IOException or System.Xml.XmlException
+                        || (ex is OperationCanceledException && !token.IsCancellationRequested))
+                    {
+                        // Offline, HTTP and malformed remote responses are normal check failures;
+                        // the caller needs a result to display rather than an unhandled command exception.
+                        SentrySdk.CaptureException(ex);
+                        checkUpdateResult.Kind = CheckUpdateResultKind.VersionApiInvalidResponse;
+                        return checkUpdateResult;
+                    }
+
                     if (remoteVersion is null)
                     {
                         checkUpdateResult.Kind = CheckUpdateResultKind.VersionApiInvalidResponse;
@@ -102,6 +120,7 @@ public sealed partial class UpdateService : IUpdateService
                     CheckUpdateResultKind.UpdateAvailable => SH.FormatViewModelSettingUpdateAvailable(checkUpdateResult.PackageInformation?.Version.ToString()),
                     CheckUpdateResultKind.AlreadyUpdated => SH.ViewModelSettingAlreadyUpdated,
                     CheckUpdateResultKind.VersionApiInvalidResponse or CheckUpdateResultKind.VersionApiInvalidSha256 => SH.ViewModelSettingCheckUpdateFailed,
+                    CheckUpdateResultKind.AppInstallerUnavailable => SH.ServiceUpdateAppInstallerUnavailable,
                     _ => default,
                 };
             }
@@ -110,6 +129,14 @@ public sealed partial class UpdateService : IUpdateService
 
     public async ValueTask TriggerUpdateAsync(CheckUpdateResult result, bool isAutomatic = false, CancellationToken token = default)
     {
+        if (result.Kind is CheckUpdateResultKind.AppInstallerUnavailable)
+        {
+            using IServiceScope unavailableScope = serviceProvider.CreateScope();
+            unavailableScope.ServiceProvider.GetRequiredService<IMessenger>()
+                .Send(InfoBarMessage.Error(SH.ServiceUpdateAppInstallerUnavailable));
+            return;
+        }
+
         if (result.Kind is not CheckUpdateResultKind.UpdateAvailable)
         {
             return;
@@ -245,7 +272,9 @@ public sealed partial class UpdateService : IUpdateService
         using Stream stream = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false);
         XDocument descriptor = await XDocument.LoadAsync(stream, LoadOptions.None, token).ConfigureAwait(false);
         XElement? root = descriptor.Root;
-        XElement? main = root?.Elements().SingleOrDefault(element => element.Name.LocalName == "MainPackage");
+        // Duplicate MainPackage elements are also a malformed remote descriptor.
+        XElement[] mainPackages = root?.Elements().Where(element => element.Name.LocalName == "MainPackage").Take(2).ToArray() ?? [];
+        XElement? main = mainPackages.Length == 1 ? mainPackages[0] : null;
         if (root is null
             || root.Name.LocalName != "AppInstaller"
             || (string?)root.Attribute("Uri") != uri.AbsoluteUri
@@ -311,9 +340,11 @@ public sealed partial class UpdateService : IUpdateService
 
             return uri;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Reject legacy, malformed or incompatible package descriptors.
+            // Reject legacy, malformed or incompatible package descriptors, but
+            // report file access and XML failures instead of silently swallowing them.
+            SentrySdk.CaptureException(ex);
             return null;
         }
     }
