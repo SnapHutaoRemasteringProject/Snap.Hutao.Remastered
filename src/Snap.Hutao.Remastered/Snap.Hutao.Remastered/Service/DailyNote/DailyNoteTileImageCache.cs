@@ -141,6 +141,12 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         {
             // 先读进内存再解码：GDI+ 从文件路径解码会持有文件句柄，导致临时文件删不掉。
             byte[] bytes = await File.ReadAllBytesAsync(temporaryFile, token).ConfigureAwait(false);
+
+            // 裁剪是「宽版 + 大版」两次独立写盘，中间失败会留下 A/B 混合的缓存。
+            // 先删掉来源记录：之后若替换中断，.src 缺失会让下一次请求走下载路径修复，
+            // 而不是误把混合缓存当作「来源一致」直接复用。
+            TryDeleteFile(BackgroundSourceFile(avatarId));
+
             using (MemoryStream stream = new(bytes))
             {
                 using (Image image = Image.FromStream(stream))
@@ -155,6 +161,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
             TryDeleteFile(temporaryFile);
         }
 
+        // 两张裁剪图都落盘后才写来源记录：缓存与来源一起提交，替换才算完成。
         await WriteBackgroundSourceAsync(avatarId, nameCardUri, token).ConfigureAwait(false);
         return TileBackgroundImageOutcome.Downloaded;
     }
@@ -178,24 +185,29 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     /// 判断缓存对应的名片图是否已经变了。
     /// 没有 <c>.src</c>（升级前生成的缓存）时返回 <see langword="false"/>：那批缓存本来就是该角色的图，
     /// 按可用处理即可，不必为了补记录而重新下载。
+    /// 但读取 <c>.src</c> 失败时返回 <see langword="true"/>：读失败意味着无法确认来源，
+    /// 不能当作「来源一致」直接复用，必须走下载路径重新确认。
     /// </summary>
     private async ValueTask<bool> IsSourceChangedAsync(string avatarId, Uri nameCardUri, CancellationToken token)
     {
+        string path = BackgroundSourceFile(avatarId);
+
+        // 明确区分「文件不存在」与「读取失败」：前者是升级迁移场景，视为可用；
+        // 后者是 IO 故障，视为来源未知，走下载。
+        if (!File.Exists(path))
+        {
+            return false;
+        }
+
         try
         {
-            string path = BackgroundSourceFile(avatarId);
-            if (!File.Exists(path))
-            {
-                return false;
-            }
-
             string recorded = await File.ReadAllTextAsync(path, token).ConfigureAwait(false);
             return !string.Equals(recorded.Trim(), nameCardUri.OriginalString, StringComparison.Ordinal);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {
-            logger.LogDebug(ex, "Unable to read tile background source for avatar {AvatarId}", avatarId);
-            return false;
+            logger.LogWarning(ex, "Unable to read tile background source for avatar {AvatarId}; treat as changed", avatarId);
+            return true;
         }
     }
 

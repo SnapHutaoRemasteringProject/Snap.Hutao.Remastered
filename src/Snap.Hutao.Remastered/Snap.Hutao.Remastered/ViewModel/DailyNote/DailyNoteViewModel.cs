@@ -326,25 +326,32 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             all.Add(new TileBackgroundAvatarItem(userAndUid.Uid.Value, avatarId, avatar.Name, nameCard, cachedPreview, searchKeyword));
         }
 
-        allTileBackgroundAvatars = all;
-
-        string? selectedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
-
         await taskContext.SwitchToMainThreadAsync();
         if (cts.IsCancellationRequested || cts != loadTileBackgroundCts)
         {
+            // 过期加载：不能把候选列表（供搜索用）发布出去，否则会用旧账户的角色覆盖新账户。
             return;
         }
+
+        // 通过取消与请求身份检查后才发布候选列表：
+        // 防止被取消的旧账户加载污染后续搜索。
+        allTileBackgroundAvatars = all;
 
         _suppressSelectionChange = true;
         try
         {
             // 重新加载后必须重新应用当前搜索文本：否则搜索框仍显示关键词，
             // 列表却展示了全部角色，两者不一致。
-            TileBackgroundAvatars = [.. FilterBySearch(all, TileBackgroundAvatarSearchText)];
+            List<TileBackgroundAvatarItem> visible = FilterBySearch(all, TileBackgroundAvatarSearchText);
+            TileBackgroundAvatars = [.. visible];
 
-            // 未设置过背景时（null 或空串）默认选中「无背景」占位项。
-            SelectedTileBackgroundAvatar = all.FirstOrDefault(i => i.AvatarId == selectedAvatarId) ?? all[0];
+            // 未设置过背景（null/空串）时默认选中「无背景」占位项；
+            // 已设置背景但该角色被当前搜索隐藏时留空，让占位项保持可操作，
+            // 与 RestoreSelectionToApplied 的策略一致。
+            string? appliedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
+            SelectedTileBackgroundAvatar = string.IsNullOrEmpty(appliedAvatarId)
+                ? all.FirstOrDefault(static i => i.IsNone)
+                : visible.FirstOrDefault(i => i.AvatarId == appliedAvatarId);
         }
         finally
         {
@@ -630,13 +637,16 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
 
     /// <summary>
     /// 把列表选择恢复为「已应用的角色」，而不是清空用户的持久化选择。
-    /// 过滤期间被隐藏的角色在清空搜索后能重新被选中。
+    /// 若已应用角色被搜索过滤掉了，则留空（不选「无背景」占位项）：
+    /// 占位项保持可操作，预览与磁贴都继续显示已应用的背景，
+    /// 用户清空搜索后应用角色会重新出现。
     /// </summary>
     private void RestoreSelectionToApplied(List<TileBackgroundAvatarItem> filtered)
     {
         string? appliedAvatarId = DailyNoteOptions.TileBackgroundAvatarId.Value;
-        TileBackgroundAvatarItem? applied = filtered.FirstOrDefault(i => i.AvatarId == appliedAvatarId)
-            ?? filtered.FirstOrDefault(static i => i.IsNone);
+
+        // 只在应用角色可见时选中它；被隐藏时留空，让占位项保持可点击。
+        TileBackgroundAvatarItem? applied = filtered.FirstOrDefault(i => i.AvatarId == appliedAvatarId);
 
         _suppressSelectionChange = true;
         try
