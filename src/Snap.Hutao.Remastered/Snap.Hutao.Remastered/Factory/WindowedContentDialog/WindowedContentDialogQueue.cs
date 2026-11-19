@@ -38,7 +38,7 @@ public sealed partial class WindowedContentDialogQueue : IWindowedContentDialogQ
         }
     }
 
-    public ValueContentDialogTask EnqueueAndShowAsync(ContentDialog contentDialog)
+    public ValueContentDialogTask EnqueueAndShowAsync(Microsoft.UI.Xaml.Controls.ContentDialog contentDialog)
     {
         TaskCompletionSource queueSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
         TaskCompletionSource<ContentDialogResult> resultSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -48,9 +48,9 @@ public sealed partial class WindowedContentDialogQueue : IWindowedContentDialogQ
     }
 
     [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI3Package.WindowedContentDialog))]
-    private async Task PrivateEnqueueAndShowAsync(ContentDialog contentDialog, TaskCompletionSource queueSource, TaskCompletionSource<ContentDialogResult> resultSource)
+    private async Task PrivateEnqueueAndShowAsync(Microsoft.UI.Xaml.Controls.ContentDialog contentDialog, TaskCompletionSource queueSource, TaskCompletionSource<ContentDialogResult> resultSource)
     {
-        void OnOpened(ContentDialog sender, ContentDialogOpenedEventArgs args) => queueSource.TrySetResult();
+        void OnOpened(Microsoft.UI.Xaml.Controls.ContentDialog sender, ContentDialogOpenedEventArgs args) => queueSource.TrySetResult();
 
         try
         {
