@@ -188,8 +188,8 @@ Task("Sign MSIX")
 
 Task("Build AppPackages")
     .IsDependentOn("Sign MSIX")
-    // Preserve the Store package; Publish/R2R gets the separately signed sideload package.
-    .WithCriteria(GitHubActions.IsRunningOnGitHubActions && !publishAot)
+    // Preserve Store identity, and generate a signed R2 sideload MSIX for both runtimes.
+    .WithCriteria(GitHubActions.IsRunningOnGitHubActions)
     .Does(() =>
 {
     var arguments = new ProcessArgumentBuilder()
@@ -202,7 +202,7 @@ Task("Build AppPackages")
         .Append("-MakeAppxPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "makeappx.exe"))
         .Append("-SignToolPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "signtool.exe"))
         .Append("-Channel").Append("Publish")
-        .Append("-RuntimeKind").Append("R2R")
+        .Append("-RuntimeKind").Append(publishAot ? "NativeAOT" : "R2R")
         .Append("-PasswordEnvironmentVariable").Append("PUBLISH_PW")
         .Append("-ExportCertificatePath").AppendQuoted(codeSigningCertificatePath);
     var result = StartProcess("pwsh", new ProcessSettings { Arguments = arguments });

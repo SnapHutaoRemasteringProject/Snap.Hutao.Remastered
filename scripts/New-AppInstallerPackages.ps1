@@ -38,7 +38,10 @@ try {
         throw 'Publish R2 cannot reuse the Microsoft Store publisher.'
     }
     $stage = [IO.Path]::GetFullPath($StagingDirectory)
-    $output = Join-Path ([IO.Path]::GetFullPath($AppPackagesDirectory)) (Join-Path $Channel $RuntimeKind)
+    # The default (R2R) feed has no runtime suffix in its public path or filenames.
+    $runtimeSegment = if ($RuntimeKind -eq 'NativeAOT') { 'AOT' } else { '' }
+    $channelPath = if ($runtimeSegment) { Join-Path $Channel $runtimeSegment } else { $Channel }
+    $output = Join-Path ([IO.Path]::GetFullPath($AppPackagesDirectory)) $channelPath
     if (Test-Path -LiteralPath $stage) { Remove-Item -LiteralPath $stage -Recurse -Force }
     if (Test-Path -LiteralPath $output) { Remove-Item -LiteralPath $output -Recurse -Force }
     New-Item -ItemType Directory -Path $stage, $output -Force | Out-Null
@@ -72,12 +75,15 @@ try {
     }
     $manifest.Save($manifestPath)
 
-    $folderName = "Snap.Hutao.Remastered_$($version)_x64_$($Channel)_$($RuntimeKind)"
+    $runtimeSuffix = if ($runtimeSegment) { "_$runtimeSegment" } else { '' }
+    $descriptorSuffix = if ($runtimeSegment) { ".$runtimeSegment" } else { '' }
+    $folderName = "Snap.Hutao.Remastered_$($version)_x64_$Channel$runtimeSuffix"
     $msixName = "$folderName.msix"
-    $descriptorName = "Snap.Hutao.Remastered.$Channel.$RuntimeKind.x64.appinstaller"
+    $descriptorName = "Snap.Hutao.Remastered.$Channel$descriptorSuffix.x64.appinstaller"
     $folder = Join-Path $output $folderName
     New-Item -ItemType Directory -Path $folder -Force | Out-Null
-    $origin = "https://package.snaphutaorp.org/$Channel/$RuntimeKind/"
+    $origin = "https://package.snaphutaorp.org/$Channel/"
+    if ($runtimeSegment) { $origin += "$runtimeSegment/" }
     $namespace = 'http://schemas.microsoft.com/appx/appinstaller/2021'
     $document = [xml]('<?xml version="1.0" encoding="utf-8"?><AppInstaller xmlns="' + $namespace + '"></AppInstaller>')
     $root = $document.DocumentElement
@@ -163,7 +169,7 @@ try {
     if ($ExportCertificatePath) {
         [IO.File]::WriteAllBytes([IO.Path]::GetFullPath($ExportCertificatePath), $certBytes)
     }
-    ('<!doctype html><html lang="en"><meta charset="utf-8"><title>Snap Hutao Remastered ' + $Channel + ' ' + $RuntimeKind + '</title><a href="./' + $descriptorName + '">Download ' + $Channel + ' ' + $RuntimeKind + '</a></html>') |
+    ('<!doctype html><html lang="en"><meta charset="utf-8"><title>Snap Hutao Remastered ' + $Channel + $descriptorSuffix + '</title><a href="./' + $descriptorName + '">Download ' + $Channel + $descriptorSuffix + '</a></html>') |
         Set-Content -LiteralPath (Join-Path $output 'index.html') -Encoding utf8
 
     # Validate that the signed package contains the same descriptor and publisher.

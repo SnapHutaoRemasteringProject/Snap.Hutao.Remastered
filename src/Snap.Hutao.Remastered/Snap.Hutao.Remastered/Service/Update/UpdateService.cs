@@ -293,11 +293,18 @@ public sealed partial class UpdateService : IUpdateService
             }
 
             string[] parts = uri.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length != 3
+            // The default (R2R) feed lives directly beneath the channel,
+            // while native AOT has a separate /AOT/ subdirectory and .AOT filename.
+            if (parts.Length is not (2 or 3)
                 || parts[0] is not ("Publish" or "Alpha" or "Canary")
-                || parts[1] is not ("R2R" or "NativeAOT")
-                || filename != $"Snap.Hutao.Remastered.{parts[0]}.{parts[1]}.x64.appinstaller"
-                || parts[2] != filename)
+                || (parts.Length == 3 && parts[1] != "AOT"))
+            {
+                return null;
+            }
+
+            string runtimeSuffix = parts.Length == 3 ? ".AOT" : string.Empty;
+            string expectedFilename = $"Snap.Hutao.Remastered.{parts[0]}{runtimeSuffix}.x64.appinstaller";
+            if (filename != expectedFilename || parts[^1] != expectedFilename)
             {
                 return null;
             }

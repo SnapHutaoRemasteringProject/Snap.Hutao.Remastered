@@ -9,15 +9,20 @@ Set-StrictMode -Version Latest
 
 # Restrict all actions to one channel AND one runtime. Never purge r2:package/.
 $root = (Resolve-Path -LiteralPath $AppPackagesPath).Path
-$directory = Join-Path $root (Join-Path $Channel $RuntimeKind)
-$descriptorName = "Snap.Hutao.Remastered.$Channel.$RuntimeKind.x64.appinstaller"
+$runtimeSegment = if ($RuntimeKind -eq 'NativeAOT') { 'AOT' } else { '' }
+$channelPath = if ($runtimeSegment) { Join-Path $Channel $runtimeSegment } else { $Channel }
+$runtimeSuffix = if ($runtimeSegment) { "_$runtimeSegment" } else { '' }
+$descriptorSuffix = if ($runtimeSegment) { ".$runtimeSegment" } else { '' }
+$directory = Join-Path $root $channelPath
+$descriptorName = "Snap.Hutao.Remastered.$Channel$descriptorSuffix.x64.appinstaller"
 $descriptorPath = Join-Path $directory $descriptorName
 if (!(Test-Path -LiteralPath $descriptorPath -PathType Leaf)) { throw "Missing App Installer file: $descriptorPath" }
 
 [xml]$descriptor = Get-Content -LiteralPath $descriptorPath -Raw
 $main = $descriptor.DocumentElement.SelectSingleNode("*[local-name()='MainPackage']")
 if ($null -eq $main) { throw 'App Installer MainPackage is missing.' }
-$origin = "https://package.snaphutaorp.org/$Channel/$RuntimeKind/"
+$origin = "https://package.snaphutaorp.org/$Channel/"
+if ($runtimeSegment) { $origin += "$runtimeSegment/" }
 $expectedUri = "$origin$descriptorName"
 if ($descriptor.DocumentElement.GetAttribute('Uri') -ne $expectedUri) { throw 'Unexpected App Installer update URL.' }
 $msixUri = [Uri]$main.GetAttribute('Uri')
@@ -27,7 +32,7 @@ if ($msixUri.Scheme -ne 'https' -or !$msixUri.AbsoluteUri.StartsWith($origin, [S
 $relative = $msixUri.AbsoluteUri.Substring($origin.Length)
 $pieces = $relative.Split('/')
 $versionFolder = $pieces[0]
-$folderPattern = '^Snap\.Hutao\.Remastered_\d+\.\d+\.\d+\.\d+_x64_' + $Channel + '_' + $RuntimeKind + '$'
+$folderPattern = '^Snap\.Hutao\.Remastered_\d+\.\d+\.\d+\.\d+_x64_' + $Channel + $runtimeSuffix + '$'
 if ($pieces.Length -ne 2 -or $versionFolder -notmatch $folderPattern -or $pieces[1] -ne "$versionFolder.msix") {
     throw 'Unexpected versioned MSIX path.'
 }
@@ -52,7 +57,8 @@ if (!$endpoint.Host.EndsWith('.r2.cloudflarestorage.com', [StringComparison]::Or
 }
 Get-Command $RclonePath -ErrorAction Stop | Out-Null
 $config = if ($IsWindows) { 'NUL' } else { '/dev/null' }
-$remote = "r2:package/$Channel/$RuntimeKind/"
+$remote = "r2:package/$Channel/"
+if ($runtimeSegment) { $remote += "$runtimeSegment/" }
 $remoteVersion = "$remote$versionFolder/"
 
 # Prevent older queued CI jobs from rolling back a newer successfully

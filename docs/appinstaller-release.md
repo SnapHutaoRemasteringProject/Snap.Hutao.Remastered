@@ -4,33 +4,36 @@
 
 The Store MSIX in `src/output` retains its Microsoft Store Package Name and Publisher. If the release PFX does not match the Store Publisher, that MSIX is **unsigned and Store-submission only**. R2 Publish uses the same Package Name, but substitutes the self-hosted signing certificate's Publisher. Store and self-hosted installations therefore have different Windows package identities and cannot update each other.
 
-Files uses separate `/files/stable/` and `/files/preview/` delivery paths. Our distribution additionally separates runtime variants so their stable update descriptors never overwrite each other:
+The default build uses ReadyToRun (R2R, .NET precompilation). Public paths and filenames omit its runtime name. The optional NativeAOT (native ahead-of-time compilation) variant uses the concise `AOT` suffix so developers and users can distinguish the packages and update feeds. Both variants are published for Publish and Alpha:
 
 ```text
 r2:package/
 ├── Publish/
-│   └── R2R/
-│       ├── Snap.Hutao.Remastered.Publish.R2R.x64.appinstaller
-│       ├── index.html
-│       └── Snap.Hutao.Remastered_<version>_x64_Publish_R2R/
-│           ├── Snap.Hutao.Remastered_<version>_x64_Publish_R2R.msix
-│           ├── Snap.Hutao.Remastered.cer
-│           └── Dependencies/x64/*.appx (if required)
+│   ├── Snap.Hutao.Remastered.Publish.x64.appinstaller
+│   ├── Snap.Hutao.Remastered_<version>_x64_Publish/
+│   │   ├── Snap.Hutao.Remastered_<version>_x64_Publish.msix
+│   │   ├── Snap.Hutao.Remastered.cer
+│   │   └── Dependencies/x64/*.appx (if required)
+│   └── AOT/
+│       ├── Snap.Hutao.Remastered.Publish.AOT.x64.appinstaller
+│       └── Snap.Hutao.Remastered_<version>_x64_Publish_AOT/
 ├── Alpha/
-│   ├── R2R/
-│   │   ├── Snap.Hutao.Remastered.Alpha.R2R.x64.appinstaller
-│   │   └── Snap.Hutao.Remastered_<version>_x64_Alpha_R2R/
-│   └── NativeAOT/
-│       ├── Snap.Hutao.Remastered.Alpha.NativeAOT.x64.appinstaller
-│       └── Snap.Hutao.Remastered_<version>_x64_Alpha_NativeAOT/
-└── Canary/ (reserved; R2 workflow is disabled)
+│   ├── Snap.Hutao.Remastered.Alpha.x64.appinstaller
+│   ├── Snap.Hutao.Remastered_<version>_x64_Alpha/
+│   └── AOT/
+│       ├── Snap.Hutao.Remastered.Alpha.AOT.x64.appinstaller
+│       └── Snap.Hutao.Remastered_<version>_x64_Alpha_AOT/
+└── Canary/ (R2 workflow remains disabled)
 ```
 
-R2R means ReadyToRun (.NET native precompilation); NativeAOT means Native Ahead-of-Time compilation. Alpha R2R and NativeAOT retain the **same existing Alpha package identity**, so Windows will not install them side by side. Choosing one runtime is a distribution choice. Each package embeds a descriptor pointing to its own R2R or NativeAOT URL; updating that installation through App Installer does not silently change runtime. To use the other runtime, explicitly install that distribution. The Canary package likewise retains its existing identity.
+The R2R and AOT packages in **each** channel share that channel's existing Windows package identity (name and publisher) and therefore cannot be installed side by side. Their update descriptors point to separate immutable runtime feeds. Installing a different runtime is an explicit distribution change, not an update in the same feed.
 
-- Publish R2R descriptor: `https://package.snaphutaorp.org/Publish/R2R/Snap.Hutao.Remastered.Publish.R2R.x64.appinstaller`
-- Alpha R2R descriptor: `https://package.snaphutaorp.org/Alpha/R2R/Snap.Hutao.Remastered.Alpha.R2R.x64.appinstaller`
-- Alpha NativeAOT descriptor: `https://package.snaphutaorp.org/Alpha/NativeAOT/Snap.Hutao.Remastered.Alpha.NativeAOT.x64.appinstaller`
+- Publish default: `https://package.snaphutaorp.org/Publish/Snap.Hutao.Remastered.Publish.x64.appinstaller`
+- Publish AOT: `https://package.snaphutaorp.org/Publish/AOT/Snap.Hutao.Remastered.Publish.AOT.x64.appinstaller`
+- Alpha default: `https://package.snaphutaorp.org/Alpha/Snap.Hutao.Remastered.Alpha.x64.appinstaller`
+- Alpha AOT: `https://package.snaphutaorp.org/Alpha/AOT/Snap.Hutao.Remastered.Alpha.AOT.x64.appinstaller`
+
+The same naming convention is reserved for Canary if R2 uploads are enabled later.
 
 The packaging script reads the **generated** `AppxManifest.xml`, checks Package Name / Publisher / Version / architecture, and creates a signed MSIX containing the matching channel-specific descriptor in its installation root. It does not reuse the provided Debug descriptor, nor does it modify the Store artifact. Missing required framework dependencies fail packaging instead of publishing a broken installer.
 
@@ -62,17 +65,17 @@ Reference: [Microsoft: updating non-Store apps from code](https://learn.microsof
 
 ## CI publication and storage cleanup
 
-- **Publish:** the existing manually triggered `publish.yml` preserves Store MSIX artifacts and publishes the signed self-hosted `Publish/R2R` AppPackages directory to R2. NativeAOT continues as a separate GitHub artifact, not a Publish R2 feed.
-- **Alpha:** `alpha.yml` builds signed Alpha R2R and NativeAOT packages in separate matrix jobs. Both AppPackages outputs are saved as GitHub artifacts. A single downstream `publish_r2` job, after build and tests pass, downloads **both** and publishes them sequentially to their independent R2 paths. Pull requests never publish to R2.
-- **Canary:** produces channel-specific packages as GitHub CI artifacts for validation. The R2 publication job is present but explicitly disabled by `if: false`.
+- **Publish:** `publish.yml` preserves both Store MSIX artifacts. The default and NativeAOT builds each produce their own signed self-hosted AppPackages artifact. A downstream `publish_r2` job publishes and cleans `Publish/` and `Publish/AOT/` sequentially **only after both builds succeed**.
+- **Alpha:** `alpha.yml` builds signed default and NativeAOT variants in separate matrix jobs. A single downstream `publish_r2` job, after both builds and tests pass, publishes and cleans `Alpha/` and `Alpha/AOT/` sequentially. Pull requests never publish to R2.
+- **Canary:** continues generating both variants as GitHub CI artifacts for validation. The R2 publication job is still explicitly disabled by `if: false`.
 
-Each R2 publication validates the target channel/runtime and versioned MSIX, uploads immutable versioned MSIX/dependencies/certificate files, verifies them, and **only then** overwrites the stable `.appinstaller` descriptor. After the new pointer is verified, the script purges older version directories matching **only that exact channel and runtime**, leaving one version in each feed. This order achieves the requested storage cleanup **without an interval where the existing update URL points to a deleted package**. CI serializes concurrent publication jobs; stale workflow runs must not roll back the current version. The R2 bucket root, other channels, and pre-existing legacy download files are never purged.
+Each R2 publication validates the target channel/runtime and versioned MSIX, uploads immutable versioned MSIX/dependencies/certificate files, verifies them, and **only then** overwrites the stable `.appinstaller` descriptor. After the new pointer is verified, the script purges older version directories matching **only that exact channel and runtime**, leaving one version in each feed. For the default feed this occurs directly under `<Channel>/`; the script only deletes matching version directories, never its sibling `AOT/` directory. This order achieves the requested storage cleanup **without an interval where the existing update URL points to a deleted package**. CI serializes concurrent publication jobs; stale workflow runs must not roll back the current version. The R2 bucket root, other channels, and pre-existing legacy download files are never purged.
 
 The public endpoint must serve `.appinstaller` as `application/appinstaller`, `.msix` as `application/msix` and framework `.appx` as `application/appx`. The mutable descriptor should not be cached for long; versioned objects may be cached immutably. Code-signing certificates must be trusted by the target device for sideload installation.
 
 ## Verification checklist
 
-1. Validate generated XML `Uri`, `MainPackage`, `Version`, signature and dependencies for Publish/R2R and **both** Alpha runtimes.
+1. Validate generated XML `Uri`, `MainPackage`, `Version`, signature and dependencies for **both** Publish and Alpha runtimes.
 2. From a clean Windows machine, download/open the HTTPS `.appinstaller` per channel and verify installation and certificate trust.
 3. Check the installed package's associated source with `Get-AppxPackageAutoUpdateSettings`, then publish a higher version and test `OnLaunch` auto-updates.
 4. Confirm the in-app update check compares against the corresponding **online channel**, not a different channel's API, and that the in-app update button invokes Windows deployment.

@@ -62,9 +62,11 @@ jobs:
           - runtime: R2R
             publish_aot: false
             suffix: ''
+            appinstaller_subdir: ''
           - runtime: NativeAOT
             publish_aot: true
             suffix: '-AOT'
+            appinstaller_subdir: 'AOT'
     runs-on: windows-latest
     permissions:
       contents: read
@@ -145,7 +147,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: Canary-AppPackages-${{ matrix.runtime }}
-          path: ${{ github.workspace }}/AppPackages/Canary/${{ matrix.runtime }}/
+          path: ${{ github.workspace }}/AppPackages/Canary/${{ matrix.appinstaller_subdir }}
           if-no-files-found: error
 
       - name: Export sideload trust certificate
@@ -197,13 +199,13 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: Canary-AppPackages-R2R
-          path: ${{ github.workspace }}/AppPackages/Canary/R2R
+          path: ${{ github.workspace }}/AppPackages/Canary
 
       - name: Download Canary NativeAOT AppPackages
         uses: actions/download-artifact@v8
         with:
           name: Canary-AppPackages-NativeAOT
-          path: ${{ github.workspace }}/AppPackages/Canary/NativeAOT
+          path: ${{ github.workspace }}/AppPackages/Canary/AOT
 
       - name: Install rclone
         shell: pwsh

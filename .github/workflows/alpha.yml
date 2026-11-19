@@ -90,9 +90,11 @@ jobs:
           - runtime: R2R
             publish_aot: false
             suffix: ''
+            appinstaller_subdir: ''
           - runtime: NativeAOT
             publish_aot: true
             suffix: '-AOT'
+            appinstaller_subdir: 'AOT'
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -148,7 +150,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: Alpha-AppPackages-${{ matrix.runtime }}
-          path: ${{ github.workspace }}/AppPackages/Alpha/${{ matrix.runtime }}/
+          path: ${{ github.workspace }}/AppPackages/Alpha/${{ matrix.appinstaller_subdir }}
           if-no-files-found: error
 
       - name: Export sideload trust certificate
@@ -198,13 +200,13 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: Alpha-AppPackages-R2R
-          path: ${{ github.workspace }}/AppPackages/Alpha/R2R
+          path: ${{ github.workspace }}/AppPackages/Alpha
 
       - name: Download Alpha NativeAOT AppPackages
         uses: actions/download-artifact@v8
         with:
           name: Alpha-AppPackages-NativeAOT
-          path: ${{ github.workspace }}/AppPackages/Alpha/NativeAOT
+          path: ${{ github.workspace }}/AppPackages/Alpha/AOT
 
       - name: Install rclone
         shell: pwsh
