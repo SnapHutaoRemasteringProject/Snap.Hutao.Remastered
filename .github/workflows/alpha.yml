@@ -214,7 +214,7 @@ jobs:
           choco install rclone --yes --no-progress
           if ($LASTEXITCODE -ne 0) { throw 'rclone installation failed.' }
 
-      - name: Publish and prune Alpha App Installer channels
+      - name: Replace Alpha App Installer feeds
         shell: pwsh
         env:
           RCLONE_CONFIG_R2_TYPE: s3

@@ -26,7 +26,7 @@ r2:package/
 └── Canary/ (R2 workflow remains disabled)
 ```
 
-The R2R and AOT packages in **each** channel share that channel's existing Windows package identity (name and publisher) and therefore cannot be installed side by side. Their update descriptors point to separate immutable runtime feeds. Installing a different runtime is an explicit distribution change, not an update in the same feed.
+The R2R and AOT packages in **each** channel share that channel's existing Windows package identity (name and publisher) and therefore cannot be installed side by side. Their update descriptors point to separate runtime feeds. Installing a different runtime is an explicit distribution change, not an update in the same feed.
 
 - Publish default: `https://package.snaphutaorp.org/Publish/Snap.Hutao.Remastered.Publish.x64.appinstaller`
 - Publish AOT: `https://package.snaphutaorp.org/Publish/AOT/Snap.Hutao.Remastered.Publish.AOT.x64.appinstaller`
@@ -69,9 +69,11 @@ Reference: [Microsoft: updating non-Store apps from code](https://learn.microsof
 - **Alpha:** `alpha.yml` builds signed default and NativeAOT variants in separate matrix jobs. A single downstream `publish_r2` job, after both builds and tests pass, publishes and cleans `Alpha/` and `Alpha/AOT/` sequentially. Pull requests never publish to R2.
 - **Canary:** continues generating both variants as GitHub CI artifacts for validation. The R2 publication job is still explicitly disabled by `if: false`.
 
-Each R2 publication validates the target channel/runtime and versioned MSIX, uploads immutable versioned MSIX/dependencies/certificate files, verifies them, and **only then** overwrites the stable `.appinstaller` descriptor. After the new pointer is verified, the script purges old version directories matching **only that exact channel and runtime**, after a default **48-hour retention window** based on their uploaded objects' timestamps. A client may already have obtained an earlier descriptor and still be downloading its versioned MSIX, so immediately removing every old version would break that installation. Versions with missing timestamp information are retained rather than deleted without proof that they are old. The retention window is configurable through `-PreviousVersionRetentionHours` (1–720). This bounds long-term R2 usage while tolerating in-progress downloads; recently published versions temporarily remain. For the default feed this occurs directly under `<Channel>/`; the script only deletes matching version directories, never its sibling `AOT/` directory. This order achieves the requested storage cleanup **without an interval where the existing update URL points to a deleted package**. CI serializes concurrent publication jobs; stale workflow runs must not roll back the current version. The R2 bucket root, other channels, and pre-existing legacy download files are never purged.
+Each R2 publication validates the selected channel/runtime and versioned MSIX, checks the currently published descriptor to prevent a stale workflow from rolling back a newer version, and **clears the selected feed before uploading** the new MSIX, dependencies, certificate, and stable `.appinstaller` descriptor. No older versions are retained, and there is no time-based cleanup or grace period.
 
-The public endpoint must serve `.appinstaller` as `application/appinstaller`, `.msix` as `application/msix` and framework `.appx` as `application/appx`. The mutable descriptor should not be cached for long; versioned objects may be cached immutably. Code-signing certificates must be trusted by the target device for sideload installation.
+The default runtime feed uses `<Channel>/`, with the NativeAOT feed nested at `<Channel>/AOT/`. Clearing the default feed therefore deletes its existing objects **except** the `AOT/` subtree; clearing NativeAOT purges only its own `AOT/` directory. Other channels and the R2 bucket root are never touched. Any other files in the selected default channel directory (outside `AOT/`) are removed.
+
+**Availability trade-off:** During a replacement the stable descriptor and its previous MSIX are temporarily unavailable. If upload or verification fails after cleanup, that feed remains incomplete until publication is rerun. Clients using an older cached descriptor may fail to download its deleted package; this behavior is intentional under the no-retention policy.
 
 ## Verification checklist
 

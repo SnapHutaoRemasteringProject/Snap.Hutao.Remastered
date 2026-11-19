@@ -2,7 +2,6 @@ param(
     [Parameter(Mandatory)][string]$AppPackagesPath,
     [Parameter(Mandatory)][ValidateSet('Publish', 'Alpha', 'Canary')][string]$Channel,
     [Parameter(Mandatory)][ValidateSet('R2R', 'NativeAOT')][string]$RuntimeKind,
-    [ValidateRange(1, 720)][int]$PreviousVersionRetentionHours = 48,
     [string]$RclonePath = 'rclone'
 )
 $ErrorActionPreference = 'Stop'
@@ -78,10 +77,21 @@ if ($existing -contains $descriptorName) {
     }
 }
 
-# Publish and verify all versioned objects BEFORE changing the stable pointer.
-# The App Installer can still download the previous version during this stage.
+# Ensure the new version is present before clearing the currently published feed.
 $files = @(Get-ChildItem -LiteralPath $folderPath -File -Recurse)
 if ($files.Count -eq 0) { throw 'The versioned package directory is empty.' }
+
+# The R2R feed shares the channel root with the AOT/ subdirectory.
+# Clear all R2R objects while excluding AOT; NativeAOT owns its entire subdirectory.
+if ($runtimeSegment) {
+    Write-Host "Clearing $Channel/$RuntimeKind feed: $remote"
+    & $RclonePath purge $remote --config $config --retries 5 --low-level-retries 10
+} else {
+    Write-Host "Clearing $Channel/$RuntimeKind feed (preserving AOT/): $remote"
+    & $RclonePath delete $remote --config $config --exclude '/AOT/**' --retries 5 --low-level-retries 10
+}
+if ($LASTEXITCODE -ne 0) { throw "Unable to clear $Channel/$RuntimeKind feed." }
+
 foreach ($file in $files) {
     $relativeFile = [IO.Path]::GetRelativePath($folderPath, $file.FullName).Replace('\', '/')
     $mime = switch ($file.Extension.ToLowerInvariant()) {
@@ -107,42 +117,7 @@ if (Test-Path -LiteralPath $index -PathType Leaf) {
     if ($LASTEXITCODE -ne 0) { throw 'Channel landing page upload failed.' }
 }
 
-# Reclaim storage only after the descriptor points to a verified package.
-# A client may already have downloaded the prior descriptor and still be
-# requesting its versioned MSIX. Retain recently published versions for a
-# bounded grace period; otherwise publishing a new version breaks that client.
-$cutoff = [DateTimeOffset]::UtcNow.AddHours(-$PreviousVersionRetentionHours)
-$folders = @(& $RclonePath lsf $remote --config $config --dirs-only)
-if ($LASTEXITCODE -ne 0) { throw 'Cannot list old package directories for cleanup.' }
-foreach ($entry in $folders) {
-    $oldFolder = $entry.Trim().TrimEnd('/')
-    if ($oldFolder -notmatch $folderPattern -or $oldFolder -eq $versionFolder) {
-        continue
-    }
-
-    $oldRemote = "$remote$oldFolder/"
-    $metadataJson = @(& $RclonePath lsjson $oldRemote --config $config --files-only --recursive)
-    if ($LASTEXITCODE -ne 0) { throw "Cannot inspect old package for cleanup: $oldFolder" }
-    $objects = @($metadataJson -join [Environment]::NewLine | ConvertFrom-Json)
-    if ($objects.Count -eq 0 -or @($objects | Where-Object { !$_.ModTime }).Count -gt 0) {
-        # Never delete objects with unknown timestamps: cannot prove they are old.
-        Write-Host "Keeping $oldFolder: missing timestamp metadata"
-        continue
-    }
-
-    $lastModified = @($objects | ForEach-Object {
-        [DateTimeOffset]::Parse($_.ModTime, [Globalization.CultureInfo]::InvariantCulture)
-    } | Sort-Object -Descending | Select-Object -First 1)[0]
-    if ($lastModified -gt $cutoff) {
-        Write-Host "Keeping $oldFolder until its $PreviousVersionRetentionHours-hour grace period expires"
-        continue
-    }
-
-    Write-Host "Pruning expired $Channel/$RuntimeKind version: $oldFolder"
-    & $RclonePath purge $oldRemote --config $config --retries 5 --low-level-retries 10
-    if ($LASTEXITCODE -ne 0) { throw "Unable to remove old version: $oldFolder" }
-}
-Write-Host "Published and pruned expired versions: $expectedUri"
+Write-Host "Replaced $Channel/$RuntimeKind feed: $expectedUri"
 if ($env:GITHUB_STEP_SUMMARY) {
     $summary = [Environment]::NewLine + '### R2 ' + $Channel + '/' + $RuntimeKind + [Environment]::NewLine + $expectedUri + [Environment]::NewLine
     $summary | Out-File -LiteralPath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
