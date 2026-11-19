@@ -92,7 +92,8 @@ public sealed partial class PrivateNamedPipeServer : IDisposable
             switch (header.Type, header.Command)
             {
                 case (PipePacketType.Request, PipePacketCommand.RequestElevationStatus):
-                    ElevationStatusResponse resp = new(HutaoRuntime.IsProcessElevated, Environment.ProcessId);
+                    // Report the actual token elevation, not OverrideElevationRequirement.
+                    ElevationStatusResponse resp = new(Environment.IsPrivilegedProcess, Environment.ProcessId);
                     serverStream.WritePacketWithJsonContent(PrivateNamedPipe.PrivateVersion, PipePacketType.Response, PipePacketCommand.ResponseElevationStatus, resp);
                     serverStream.Flush();
                     break;

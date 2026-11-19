@@ -54,7 +54,18 @@ public static partial class Bootstrap
 
         // WinAppSDK atomically assigns the single-instance key. Unlike the old
         // open-then-create event check, concurrent launches cannot both become the owner.
-        AppInstance keyInstance = AppInstance.FindOrRegisterForKey("Snap.Hutao.Remastered" + AppDataPaths.InstanceSuffix);
+        string instanceKey = "Snap.Hutao.Remastered" + AppDataPaths.InstanceSuffix;
+        AppInstance keyInstance = AppInstance.FindOrRegisterForKey(instanceKey);
+
+        // An explicitly elevated restart must replace the unelevated owner, not
+        // redirect back to it. Ask the existing pipe server to shut it down,
+        // wait for the old process to exit, then claim the now-free key.
+        if (!keyInstance.IsCurrent && IsRunningAsAdministrator()
+            && ElevationInstanceHandoff.TryReplaceUnelevatedInstance(keyInstance.ProcessId))
+        {
+            keyInstance = AppInstance.FindOrRegisterForKey(instanceKey);
+        }
+
         if (!keyInstance.IsCurrent)
         {
             using (SentrySpanScope redirect = SentrySpanScope.StartTransaction("app.startup.redirect", "app.startup"))
