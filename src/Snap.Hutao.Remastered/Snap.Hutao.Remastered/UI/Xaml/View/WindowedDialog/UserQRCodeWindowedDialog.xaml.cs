@@ -1,20 +1,23 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
+// Copyright (c) Snap Hutao RP. All rights reserved.
+// Licensed under the MIT license.
 
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Snap.Hutao.Remastered.Core.Logging;
-using Snap.Hutao.Remastered.Factory.ContentDialog;
+using Snap.Hutao.Remastered.Factory.WindowedContentDialog;
 using Snap.Hutao.Remastered.Factory.QuickResponse;
 using Snap.Hutao.Remastered.Web.Hoyolab.Passport;
 using Snap.Hutao.Remastered.Web.Response;
 using System.IO;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
-public sealed partial class UserQRCodeDialog : ContentDialog, IDisposable
+namespace Snap.Hutao.Remastered.UI.Xaml.View.WindowedDialog;
+
+public sealed partial class UserQRCodeWindowedDialog : WinUI3Package.WindowedContentDialog, IDisposable
 {
     private readonly HoyoPlayPassportClient hoyoPlayPassportClient;
-    private readonly IContentDialogFactory contentDialogFactory;
+    private readonly IWindowedContentDialogFactory windowedContentDialogFactory;
     private readonly IQRCodeFactory qrCodeFactory;
     private readonly ITaskContext taskContext;
     private readonly IMessenger messenger;
@@ -22,10 +25,25 @@ public sealed partial class UserQRCodeDialog : ContentDialog, IDisposable
     private readonly CancellationTokenSource userManualCancellationTokenSource = new();
     private bool disposed;
 
-    [GeneratedConstructor(InitializeComponent = true)]
-    public partial UserQRCodeDialog(IServiceProvider serviceProvider);
+    [ObservableProperty]
+    private BitmapImage? QRCodeSource;
 
-    ~UserQRCodeDialog()
+    // WindowedContentDialog doesn't have initialize
+    public UserQRCodeWindowedDialog(
+        HoyoPlayPassportClient hoyoPlayPassportClient,
+        IWindowedContentDialogFactory windowedContentDialogFactory,
+        IQRCodeFactory qrCodeFactory,
+        ITaskContext taskContext,
+        IMessenger messenger)
+    {
+        this.hoyoPlayPassportClient = hoyoPlayPassportClient;
+        this.windowedContentDialogFactory = windowedContentDialogFactory;
+        this.qrCodeFactory = qrCodeFactory;
+        this.taskContext = taskContext;
+        this.messenger = messenger;
+    }
+
+    ~UserQRCodeWindowedDialog()
     {
         Dispose();
     }
@@ -62,7 +80,7 @@ public sealed partial class UserQRCodeDialog : ContentDialog, IDisposable
 
     private async ValueTask<ValueResult<bool, QrLoginResult?>> PrivateGetQRLoginResultAsync()
     {
-        await contentDialogFactory.EnqueueAndShowAsync(this).QueueTask.ConfigureAwait(false);
+        await windowedContentDialogFactory.EnqueueAndShowAsync(this).QueueTask.ConfigureAwait(false);
 
         while (!userManualCancellationTokenSource.IsCancellationRequested)
         {
@@ -78,7 +96,7 @@ public sealed partial class UserQRCodeDialog : ContentDialog, IDisposable
                 }
 
                 await taskContext.SwitchToMainThreadAsync();
-                Hide();
+                // Close?
                 return new(true, uidGameToken);
             }
             catch (OperationCanceledException)
