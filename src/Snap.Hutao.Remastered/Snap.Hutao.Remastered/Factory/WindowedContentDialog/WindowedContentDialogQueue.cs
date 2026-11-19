@@ -3,7 +3,9 @@
 // Copyright (c) Snap Hutao RP. All rights reserved.
 // Licensed under the MIT license.
 
+using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Core.LifeCycle;
+using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Windows.Foundation;
 
 namespace Snap.Hutao.Remastered.Factory.WindowedContentDialog;
@@ -23,11 +25,6 @@ public sealed partial class WindowedContentDialogQueue : IWindowedContentDialogQ
     {
         get
         {
-            if (currentWindowReference.Window is null)
-            {
-                return false;
-            }
-
             if (dialogShowLock.TryLock(out AsyncLock.Releaser releaser))
             {
                 using (releaser)
@@ -41,25 +38,57 @@ public sealed partial class WindowedContentDialogQueue : IWindowedContentDialogQ
         }
     }
 
-    public ValueWindowedContentDialogTask EnqueueAndShowAsync(WinUI3Package.WindowedContentDialog windowedContentDialog)
+    public ValueContentDialogTask EnqueueAndShowAsync(ContentDialog contentDialog)
     {
-        TaskCompletionSource queueSource = new();
-        TaskCompletionSource<Microsoft.UI.Xaml.Controls.ContentDialogResult> resultSource = new();
+        TaskCompletionSource queueSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        TaskCompletionSource<ContentDialogResult> resultSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        PrivateEnqueueAndShowAsync(windowedContentDialog, queueSource, resultSource).SafeForget();
+        PrivateEnqueueAndShowAsync(contentDialog, queueSource, resultSource).SafeForget();
         return new(queueSource.Task, resultSource.Task);
     }
 
     [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI3Package.WindowedContentDialog))]
-    private async Task PrivateEnqueueAndShowAsync(WinUI3Package.WindowedContentDialog windowedContentDialog, TaskCompletionSource queueSource, TaskCompletionSource<Microsoft.UI.Xaml.Controls.ContentDialogResult> resultSource)
+    private async Task PrivateEnqueueAndShowAsync(ContentDialog contentDialog, TaskCompletionSource queueSource, TaskCompletionSource<ContentDialogResult> resultSource)
     {
-        using (await dialogShowLock.LockAsync().ConfigureAwait(false))
-        {
-            await taskContext.SwitchToMainThreadAsync();
-            queueSource.TrySetResult();
+        void OnOpened(ContentDialog sender, ContentDialogOpenedEventArgs args) => queueSource.TrySetResult();
 
-            IAsyncOperation<Microsoft.UI.Xaml.Controls.ContentDialogResult> operation = windowedContentDialog.ShowAsync();
-            resultSource.SetResult(await operation);
+        try
+        {
+            using (await dialogShowLock.LockAsync().ConfigureAwait(false))
+            {
+                await taskContext.SwitchToMainThreadAsync();
+
+                // An independent WindowedContentDialog owns this XAML ContentDialog.
+                // Never attach the hosted dialog to the parent window's XamlRoot.
+                WinUI3Package.WindowedContentDialog windowedDialog = new(contentDialog);
+                contentDialog.Opened += OnOpened;
+
+                try
+                {
+                    IAsyncOperation<ContentDialogResult> operation = currentWindowReference.Window is { } parentWindow
+                        ? windowedDialog.ShowAsync(parentWindow)
+                        : windowedDialog.ShowAsync();
+
+                    ContentDialogResult result = await operation;
+                    if (!queueSource.Task.IsCompleted)
+                    {
+                        queueSource.TrySetException(new InvalidOperationException("The windowed dialog closed before its content was opened."));
+                    }
+
+                    resultSource.TrySetResult(result);
+                }
+                finally
+                {
+                    await taskContext.SwitchToMainThreadAsync();
+                    contentDialog.Opened -= OnOpened;
+                }
+            }
+        }
+        catch (Exception exception)
+        {
+            // Both awaiters must finish even when native window creation or ShowAsync fails.
+            queueSource.TrySetException(exception);
+            resultSource.TrySetException(exception);
         }
     }
 }

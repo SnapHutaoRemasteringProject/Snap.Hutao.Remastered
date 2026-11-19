@@ -1,20 +1,18 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
-// Copyright (c) Snap Hutao RP. All rights reserved.
-// Licensed under the MIT license.
 
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Snap.Hutao.Remastered.Core.Logging;
+using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Factory.WindowedContentDialog;
 using Snap.Hutao.Remastered.Factory.QuickResponse;
 using Snap.Hutao.Remastered.Web.Hoyolab.Passport;
 using Snap.Hutao.Remastered.Web.Response;
 using System.IO;
-using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Snap.Hutao.Remastered.UI.Xaml.View.WindowedDialog;
-
-public sealed partial class UserQRCodeWindowedDialog : WinUI3Package.WindowedContentDialog, IDisposable
+namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
+public sealed partial class UserQRCodeDialog : ContentDialog, IDisposable
 {
     private readonly HoyoPlayPassportClient hoyoPlayPassportClient;
     private readonly IWindowedContentDialogFactory windowedContentDialogFactory;
@@ -25,25 +23,10 @@ public sealed partial class UserQRCodeWindowedDialog : WinUI3Package.WindowedCon
     private readonly CancellationTokenSource userManualCancellationTokenSource = new();
     private bool disposed;
 
-    [ObservableProperty]
-    private BitmapImage? QRCodeSource;
+    [GeneratedConstructor(InitializeComponent = true)]
+    public partial UserQRCodeDialog(IServiceProvider serviceProvider);
 
-    // WindowedContentDialog doesn't have initialize
-    public UserQRCodeWindowedDialog(
-        HoyoPlayPassportClient hoyoPlayPassportClient,
-        IWindowedContentDialogFactory windowedContentDialogFactory,
-        IQRCodeFactory qrCodeFactory,
-        ITaskContext taskContext,
-        IMessenger messenger)
-    {
-        this.hoyoPlayPassportClient = hoyoPlayPassportClient;
-        this.windowedContentDialogFactory = windowedContentDialogFactory;
-        this.qrCodeFactory = qrCodeFactory;
-        this.taskContext = taskContext;
-        this.messenger = messenger;
-    }
-
-    ~UserQRCodeWindowedDialog()
+    ~UserQRCodeDialog()
     {
         Dispose();
     }
@@ -61,13 +44,40 @@ public sealed partial class UserQRCodeWindowedDialog : WinUI3Package.WindowedCon
 
     public async ValueTask<ValueResult<bool, QrLoginResult?>> GetQrLoginResultAsync()
     {
+        // The wrapper, not the main window, will set the ContentDialog's XamlRoot.
+        await taskContext.SwitchToMainThreadAsync();
+        ValueContentDialogTask dialogTask = windowedContentDialogFactory.EnqueueAndShowAsync(this);
+        bool started = false;
+
         try
         {
-            return await PrivateGetQRLoginResultAsync().ConfigureAwait(false);
+            await dialogTask.QueueTask.ConfigureAwait(false);
+            started = true;
+
+            // Closing the native window also closes its hosted ContentDialog.
+            // Race the login loop against ShowTask so external window closure cancels polling.
+            Task<ValueResult<bool, QrLoginResult?>> loginTask = PrivateGetQRLoginResultAsync().AsTask();
+            if (await Task.WhenAny(loginTask, dialogTask.ShowTask).ConfigureAwait(false) == dialogTask.ShowTask)
+            {
+                userManualCancellationTokenSource.Cancel();
+            }
+
+            return await loginTask.ConfigureAwait(false);
         }
         finally
         {
-            userManualCancellationTokenSource.Dispose();
+            userManualCancellationTokenSource.Cancel();
+            if (started)
+            {
+                await taskContext.SwitchToMainThreadAsync();
+                if (!dialogTask.ShowTask.IsCompleted)
+                {
+                    Hide();
+                }
+
+                // Do not dispose the login scope before the host window is gone.
+                await dialogTask.ShowTask.ConfigureAwait(false);
+            }
         }
     }
 
@@ -80,8 +90,6 @@ public sealed partial class UserQRCodeWindowedDialog : WinUI3Package.WindowedCon
 
     private async ValueTask<ValueResult<bool, QrLoginResult?>> PrivateGetQRLoginResultAsync()
     {
-        await windowedContentDialogFactory.EnqueueAndShowAsync(this).QueueTask.ConfigureAwait(false);
-
         while (!userManualCancellationTokenSource.IsCancellationRequested)
         {
             try
@@ -95,8 +103,6 @@ public sealed partial class UserQRCodeWindowedDialog : WinUI3Package.WindowedCon
                     continue;
                 }
 
-                await taskContext.SwitchToMainThreadAsync();
-                // Close?
                 return new(true, uidGameToken);
             }
             catch (OperationCanceledException)

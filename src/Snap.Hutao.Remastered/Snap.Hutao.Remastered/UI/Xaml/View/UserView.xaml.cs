@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.ViewModel.User;
 using System.Runtime.CompilerServices;
@@ -14,6 +15,15 @@ public sealed partial class UserView : UserControl, INotifyPropertyChanged
     {
         InitializeComponent();
         DataContextChanged += (_, _) => PropertyChanged?.Invoke(this, new(nameof(ViewModel)));
+    }
+
+    // Close both nested and parent flyouts when an account action launches a dialog.
+    // Preserve ICommand bindings so CanExecute still controls the AppBarButtons.
+    private void DismissAccountFlyouts(object sender, RoutedEventArgs e)
+    {
+        MiHoYoLoginFlyout.Hide();
+        HoYoLabLoginFlyout.Hide();
+        AccountFlyout.Hide();
     }
 
     public string GetUserNickname(User? user) => user?.UserInfo?.Nickname ?? SH.ViewUserNoUserHint;

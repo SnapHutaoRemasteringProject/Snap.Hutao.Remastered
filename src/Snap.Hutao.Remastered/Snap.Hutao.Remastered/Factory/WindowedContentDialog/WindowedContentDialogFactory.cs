@@ -3,6 +3,8 @@
 // Copyright (c) Snap Hutao RP. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Factory.ContentDialog;
+
 namespace Snap.Hutao.Remastered.Factory.WindowedContentDialog;
 
 [Service(ServiceLifetime.Singleton, typeof(IWindowedContentDialogFactory))]
@@ -10,7 +12,6 @@ public sealed partial class WindowedContentDialogFactory : IWindowedContentDialo
 {
     private readonly IWindowedContentDialogQueue windowedContentDialogQueue;
     public partial ITaskContext TaskContext { get; }
-
 
     [GeneratedConstructor]
     public partial WindowedContentDialogFactory(IServiceProvider serviceProvider);
@@ -24,8 +25,8 @@ public sealed partial class WindowedContentDialogFactory : IWindowedContentDialo
         return ActivatorUtilities.CreateInstance<TDialog>(serviceProvider, parameters);
     }
 
-    public ValueWindowedContentDialogTask EnqueueAndShowAsync(WinUI3Package.WindowedContentDialog windowedContentDialog)
+    public ValueContentDialogTask EnqueueAndShowAsync(Microsoft.UI.Xaml.Controls.ContentDialog contentDialog)
     {
-        return windowedContentDialogQueue.EnqueueAndShowAsync(windowedContentDialog);
+        return windowedContentDialogQueue.EnqueueAndShowAsync(contentDialog);
     }
 }

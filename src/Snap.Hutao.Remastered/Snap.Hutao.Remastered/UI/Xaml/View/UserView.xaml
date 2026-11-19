@@ -211,6 +211,7 @@
                 Width="{StaticResource LargeAppBarButtonWidth}"
                 MaxWidth="{StaticResource LargeAppBarButtonWidth}"
                 Margin="0,-4"
+                Click="DismissAccountFlyouts"
                 Command="{x:Bind ((shvu:UserViewModel)ViewContent.DataContext).LoginByThirdPartyOverseaCommand, Mode=OneWay}"
                 CommandParameter="{x:Bind Value, Mode=OneTime}"
                 Icon="{x:Bind Name, Converter={StaticResource ThirdPartyIconConverter}, Mode=OneTime}"
@@ -304,6 +305,7 @@
             </wl:LiquidGlassButton.Content>
             <wl:LiquidGlassButton.Flyout>
                 <Flyout
+                    x:Name="AccountFlyout"
                     essential:FlyoutHelper.AcrylicWorkaround="True"
                     FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding0Style}"
                     LightDismissOverlayMode="On"
@@ -330,6 +332,7 @@
                                 Label="{shuxm:ResourceString Name=ViewUserCookieOperation}">
                                 <AppBarButton.Flyout>
                                     <Flyout
+                                        x:Name="MiHoYoLoginFlyout"
                                         essential:FlyoutHelper.AcrylicWorkaround="True"
                                         FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding2Style}"
                                         Placement="Right">
@@ -338,6 +341,7 @@
                                                 Width="{StaticResource LargeAppBarButtonWidth}"
                                                 MaxWidth="{StaticResource LargeAppBarButtonWidth}"
                                                 Margin="0,-4"
+                                                Click="DismissAccountFlyouts"
                                                 Command="{x:Bind ViewModel.LoginByQRCodeCommand, Mode=OneWay}"
                                                 Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentQRCode}}"
                                                 Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginQRCodeAction}"/>
@@ -345,6 +349,7 @@
                                                 Width="{StaticResource LargeAppBarButtonWidth}"
                                                 MaxWidth="{StaticResource LargeAppBarButtonWidth}"
                                                 Margin="0,-4"
+                                                Click="DismissAccountFlyouts"
                                                 Command="{x:Bind ViewModel.LoginByMobileCaptchaCommand, Mode=OneWay}"
                                                 Icon="{shuxm:FontIcon Glyph=&#xE8EA;}"
                                                 Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginMobileCaptchaAction}"/>
@@ -352,6 +357,7 @@
                                                 Width="{StaticResource LargeAppBarButtonWidth}"
                                                 MaxWidth="{StaticResource LargeAppBarButtonWidth}"
                                                 Margin="0,-4"
+                                                Click="DismissAccountFlyouts"
                                                 Command="{x:Bind ViewModel.AddUserCommand, Mode=OneWay}"
                                                 Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentAdd}}"
                                                 Label="{shuxm:ResourceString Name=ViewUserCookieOperationManualInputAction}"/>
@@ -368,6 +374,7 @@
                                 Label="{shuxm:ResourceString Name=ViewUserCookieOperation2}">
                                 <AppBarButton.Flyout>
                                     <Flyout
+                                        x:Name="HoYoLabLoginFlyout"
                                         essential:FlyoutHelper.AcrylicWorkaround="True"
                                         FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding2Style}"
                                         Placement="Right">
@@ -386,6 +393,7 @@
                                                     Width="{StaticResource LargeAppBarButtonWidth}"
                                                     MaxWidth="{StaticResource LargeAppBarButtonWidth}"
                                                     Margin="0,-4"
+                                                    Click="DismissAccountFlyouts"
                                                     Command="{x:Bind ViewModel.LoginByPasswordOverseaCommand, Mode=OneWay}"
                                                     Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentOtherUser}}"
                                                     Label="{shuxm:ResourceString Name=ViewUserCookieOperationLoginByPasswordAction}"/>
@@ -393,6 +401,7 @@
                                                     Width="{StaticResource LargeAppBarButtonWidth}"
                                                     MaxWidth="{StaticResource LargeAppBarButtonWidth}"
                                                     Margin="0,-4"
+                                                    Click="DismissAccountFlyouts"
                                                     Command="{x:Bind ViewModel.AddOverseaUserCommand, Mode=OneWay}"
                                                     Icon="{shuxm:FontIcon Glyph={StaticResource FontIconContentAdd}}"
                                                     Label="{shuxm:ResourceString Name=ViewUserCookieOperationManualInputAction}"/>

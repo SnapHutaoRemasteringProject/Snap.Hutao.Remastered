@@ -22,7 +22,6 @@ using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 using Snap.Hutao.Remastered.UI.Xaml.Data.Converter.Specialized;
 using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
-using Snap.Hutao.Remastered.UI.Xaml.View.WindowedDialog;
 using Snap.Hutao.Remastered.Web;
 using Snap.Hutao.Remastered.Web.Hoyolab;
 using Snap.Hutao.Remastered.Web.Hoyolab.Passport;
@@ -266,8 +265,8 @@ public sealed partial class UserViewModel : ObservableObject
 
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
-            UserQRCodeWindowedDialog windowedDialog = await windowedContentDialogFactory.CreateInstanceAsync<UserQRCodeWindowedDialog>(scope.ServiceProvider).ConfigureAwait(false);
-            (bool isOk, QrLoginResult? qrLoginResult) = await windowedDialog.GetQrLoginResultAsync().ConfigureAwait(false);
+            using UserQRCodeDialog dialog = await windowedContentDialogFactory.CreateInstanceAsync<UserQRCodeDialog>(scope.ServiceProvider).ConfigureAwait(false);
+            (bool isOk, QrLoginResult? qrLoginResult) = await dialog.GetQrLoginResultAsync().ConfigureAwait(false);
 
             if (!isOk)
             {

@@ -15,5 +15,5 @@ public interface IWindowedContentDialogFactory
         IServiceProvider serviceProvider, params object[] parameters)
         where TDialog : Microsoft.UI.Xaml.Controls.ContentDialog;
 
-    public ValueWindowedContentDialogTask EnqueueAndShowAsync(WinUI3Package.WindowedContentDialog windowedContentDialog);
+    ValueContentDialogTask EnqueueAndShowAsync(Microsoft.UI.Xaml.Controls.ContentDialog contentDialog);
 }
