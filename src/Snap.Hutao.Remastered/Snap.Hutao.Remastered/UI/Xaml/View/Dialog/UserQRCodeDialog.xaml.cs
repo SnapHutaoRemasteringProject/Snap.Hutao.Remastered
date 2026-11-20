@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -14,7 +15,7 @@ using System.IO;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 
-[DependencyProperty<ImageSource>("QRCodeSource")]
+[INotifyPropertyChanged]
 public sealed partial class UserQRCodeDialog : ContentDialog, IDisposable
 {
     private readonly HoyoPlayPassportClient hoyoPlayPassportClient;
@@ -25,6 +26,9 @@ public sealed partial class UserQRCodeDialog : ContentDialog, IDisposable
 
     private readonly CancellationTokenSource userManualCancellationTokenSource = new();
     private bool disposed;
+
+    [ObservableProperty]
+    private BitmapImage? qRCodeSource;
 
     [GeneratedConstructor(InitializeComponent = true)]
     public partial UserQRCodeDialog(IServiceProvider serviceProvider);
