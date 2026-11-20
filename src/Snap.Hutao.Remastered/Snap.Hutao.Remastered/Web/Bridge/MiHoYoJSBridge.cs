@@ -106,39 +106,52 @@ public class MiHoYoJSBridge
 
     protected virtual ValueTask<IJsBridgeResult> GetCookieInfoAsync(JsParam param)
     {
-        ArgumentNullException.ThrowIfNull(userAndUid.User.LToken);
-
-        IJsBridgeResult result = new JsResult<Dictionary<string, string>>()
+        bool isOversea = userAndUid.IsOversea;
+        if (userAndUid.User.LToken is not { } lToken || !lToken.TryGetLToken(isOversea, out Cookie? credential))
         {
-            Data = new()
-            {
-                [Cookie.LTUID] = userAndUid.User.LToken[Cookie.LTUID],
-                [Cookie.LTOKEN] = userAndUid.User.LToken[Cookie.LTOKEN],
-                [Cookie.LOGIN_TICKET] = string.Empty,
-            },
-        };
+            return ValueTask.FromResult<IJsBridgeResult>(new Response<Dictionary<string, string>>((int)KnownReturnCode.RET_TOKEN_INVALID, SH.ViewModelUserInvalid, null));
+        }
 
-        return ValueTask.FromResult(result);
+        Dictionary<string, string> data = new() { [Cookie.LOGIN_TICKET] = string.Empty };
+        if (isOversea)
+        {
+            data[Cookie.LTUID] = credential[Cookie.LTUID];
+            data[Cookie.LTOKEN] = credential[Cookie.LTOKEN];
+        }
+        else
+        {
+            data[Cookie.LTUID_V2] = credential[Cookie.LTUID_V2];
+            data[Cookie.LTOKEN_V2] = credential[Cookie.LTOKEN_V2];
+            data[Cookie.LTMID_V2] = credential[Cookie.LTMID_V2];
+        }
+
+        return ValueTask.FromResult<IJsBridgeResult>(new JsResult<Dictionary<string, string>> { Data = data });
     }
 
     protected virtual async ValueTask<IJsBridgeResult> GetCookieTokenAsync(JsParam<CookieTokenPayload> param)
     {
         IUserService userService = serviceProvider.GetRequiredService<IUserService>();
-        if (param.Payload.ForceRefresh)
+        if (param.Payload.ForceRefresh && !await userService.RefreshCookieTokenAsync(userAndUid.User).ConfigureAwait(false))
         {
-            await userService.RefreshCookieTokenAsync(userAndUid.User).ConfigureAwait(false);
+            return new Response<Dictionary<string, string>>((int)KnownReturnCode.RET_TOKEN_INVALID, SH.ViewModelUserInvalid, null);
+        }
+
+        bool isOversea = userAndUid.IsOversea;
+        if (userAndUid.User.CookieToken is not { } cookieToken || !cookieToken.TryGetCookieToken(isOversea, out Cookie? credential))
+        {
+            return new Response<Dictionary<string, string>>((int)KnownReturnCode.RET_TOKEN_INVALID, SH.ViewModelUserInvalid, null);
         }
 
         await taskContext.SwitchToMainThreadAsync();
         ArgumentNullException.ThrowIfNull(coreWebView2);
-        coreWebView2.SetCookie(userAndUid.User.CookieToken, userAndUid.User.LToken);
+        coreWebView2.SetCookie(credential, userAndUid.User.LToken, isOversea);
 
-        ArgumentNullException.ThrowIfNull(userAndUid.User.CookieToken);
+        string tokenName = isOversea ? Cookie.COOKIE_TOKEN : Cookie.COOKIE_TOKEN_V2;
         return new JsResult<Dictionary<string, string>>()
         {
             Data = new()
             {
-                [Cookie.COOKIE_TOKEN] = userAndUid.User.CookieToken[Cookie.COOKIE_TOKEN],
+                [tokenName] = credential[tokenName],
             },
         };
     }
@@ -201,7 +214,7 @@ public class MiHoYoJSBridge
             { "x-rpc-client_type", "5" },
             { "x-rpc-device_id", HoyolabOptions.DeviceId36 },
             { "x-rpc-app_version", userAndUid.IsOversea ? SaltConstants.OSVersion : SaltConstants.CNVersion },
-            { "x-rpc-sdk_version", "2.16.0" },
+            { "x-rpc-sdk_version", "2.44.0" },
         };
 
         if (!userAndUid.IsOversea)
@@ -378,13 +391,21 @@ public class MiHoYoJSBridge
 
     private static void OnNavigationStarting(CoreWebView2 coreWebView2, CoreWebView2NavigationStartingEventArgs args)
     {
-        SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Navigate to uri", "WebView2 MiHoYoJSBridge", [("Uri", args.Uri)]));
-        string uriHost = args.Uri.ToUri().Host;
-        ReadOnlySpan<char> uriHostSpan = uriHost.AsSpan();
-        if (uriHostSpan.EndsWith("mihoyo.com") || uriHostSpan.EndsWith("hoyolab.com"))
+        if (Uri.TryCreate(args.Uri, UriKind.Absolute, out Uri? uri)
+            && uri.Scheme == Uri.UriSchemeHttps
+            && (IsTrustedHost(uri.Host, isOversea: false) || IsTrustedHost(uri.Host, isOversea: true)))
         {
+            SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateUI("Navigate to uri", "WebView2 MiHoYoJSBridge", [("Uri", uri.GetLeftPart(UriPartial.Path))]));
             coreWebView2.ExecuteScriptAsync(MiHoYoJavaScripts.InitializeJsInterfaceScript).AsTask().SafeForget();
         }
+    }
+
+    private static bool IsTrustedHost(string host, bool isOversea)
+    {
+        static bool Matches(string host, string domain) => string.Equals(host, domain, StringComparison.OrdinalIgnoreCase)
+            || host.EndsWith("." + domain, StringComparison.OrdinalIgnoreCase);
+
+        return isOversea ? Matches(host, "hoyolab.com") : Matches(host, "mihoyo.com") || Matches(host, "miyoushe.com");
     }
 
     private async ValueTask<string> ExecuteCallbackScriptAsync(string callback, string? payload = null)
@@ -405,7 +426,7 @@ public class MiHoYoJSBridge
             .Append(')')
             .ToString();
 
-        logger.LogInformation("[{Id}][ExecuteScript: {callback}]\n{payload}", bridgeId, callback, payload);
+        logger.LogInformation("[{Id}][ExecuteScript: {callback}]", bridgeId, callback);
 
         await taskContext.SwitchToMainThreadAsync();
 
@@ -434,12 +455,18 @@ public class MiHoYoJSBridge
     // ReSharper disable once AsyncVoidMethod
     private async void OnWebMessageReceived(CoreWebView2 webView2, CoreWebView2WebMessageReceivedEventArgs args)
     {
+        if (!Uri.TryCreate(args.Source, UriKind.Absolute, out Uri? uri)
+            || uri.Scheme != Uri.UriSchemeHttps
+            || !IsTrustedHost(uri.Host, userAndUid.IsOversea))
+        {
+            return;
+        }
+
         string message = args.TryGetWebMessageAsString();
-        logger.LogInformation("[{Id}][OnRawMessage]\n{message}", bridgeId, message);
         JsParam? param = JsonSerializer.Deserialize<JsParam>(message, serviceProvider.GetRequiredService<JsonSerializerOptions>());
 
         ArgumentNullException.ThrowIfNull(param);
-        logger.LogInformation("[OnMessage]\nMethod  : {method}\nPayload : {payload}\nCallback: {callback}", param.Method, param.Payload, param.Callback);
+        logger.LogInformation("[{Id}][OnMessage: {method}]", bridgeId, param.Method);
 
         try
         {

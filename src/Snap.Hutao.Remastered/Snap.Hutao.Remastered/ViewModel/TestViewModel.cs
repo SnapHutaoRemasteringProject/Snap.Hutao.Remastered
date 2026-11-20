@@ -414,15 +414,6 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
         }
     }
 
-    [Command("OpenStoreTestCommand")]
-    private async Task OpenStoreTestAsync()
-    {
-        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Open Microsoft Store test", "TestViewModel.Command"));
-        using IServiceScope scope = serviceProvider.CreateScope();
-        IUpdateService updateService = scope.ServiceProvider.GetRequiredService<IUpdateService>();
-        await updateService.OpenStoreAsync().ConfigureAwait(false);
-    }
-
     [Command("OpenSpeedGraphTestWindowCommand")]
     private void OpenSpeedGraphTestWindow()
     {

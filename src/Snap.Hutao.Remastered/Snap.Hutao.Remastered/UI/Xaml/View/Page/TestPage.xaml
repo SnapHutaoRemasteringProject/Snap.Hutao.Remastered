@@ -112,12 +112,6 @@
                     Header="Force Show Update Dialog"
                     IsClickEnabled="True"/>
 
-                <cwc:SettingsCard
-                    Command="{x:Bind DataContext.OpenStoreTestCommand, Mode=OneWay}"
-                    Description="Open product 9P1LDJFJFJQQ using the same Store link and web fallback as updates; works in packaged and unpackaged builds"
-                    Header="Open Microsoft Store (Test)"
-                    IsClickEnabled="True"/>
-
                 <cwc:SettingsCard Header="Override Package Convert Directory Permission Requirement">
                     <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind DataContext.OverridePackageConvertDirectoryPermissionsRequirement, Mode=TwoWay}"/>
                 </cwc:SettingsCard>

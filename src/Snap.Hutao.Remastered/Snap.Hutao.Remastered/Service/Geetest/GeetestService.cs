@@ -1,7 +1,9 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Microsoft.UI.Xaml;
 using Snap.Hutao.Remastered.Core.LifeCycle;
+using Snap.Hutao.Remastered.UI.Content;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
 using Snap.Hutao.Remastered.Web.Hoyolab.Passport;
@@ -80,25 +82,59 @@ public sealed partial class GeetestService : IGeetestService
             return false;
         }
 
-        AigisSession? session = JsonSerializer.Deserialize<AigisSession>(rawSession, jsonOptions);
-        ArgumentNullException.ThrowIfNull(session);
-
-        GeetestVerification? verification = JsonSerializer.Deserialize<GeetestVerification>(session.Data, jsonOptions);
-        ArgumentNullException.ThrowIfNull(verification);
-
-        if (await TryVerifyGtChallengeAsync(verification.Gt, verification.Challenge, isOversea, token).ConfigureAwait(false) is not { } data)
+        AigisSession? session;
+        string? gt;
+        string? challenge;
+        try
         {
-            // Custom Geetest failed and user closed the window without completing the verification
+            session = JsonSerializer.Deserialize<AigisSession>(rawSession, jsonOptions);
+            if (session is null || string.IsNullOrWhiteSpace(session.SessionId))
+            {
+                return false;
+            }
+
+            // Aigis can wrap the challenge as either a JSON object or a string containing JSON.
+            using JsonDocument? nestedData = session.Data.ValueKind == JsonValueKind.String
+                ? JsonDocument.Parse(session.Data.GetString()!)
+                : null;
+            JsonElement data = nestedData?.RootElement ?? session.Data;
+            gt = GetChallengeField(data, "gt");
+            challenge = GetChallengeField(data, "challenge");
+        }
+        catch (JsonException)
+        {
             return false;
         }
 
-        GeetestWebResponse result = new(data.Challenge, data.Validate);
+        if (string.IsNullOrWhiteSpace(gt) || string.IsNullOrWhiteSpace(challenge))
+        {
+            return false;
+        }
+
+        string? webResult = await PrivateVerifyByWebViewAsync(gt, challenge, isOversea, token, provider as FrameworkElement).ConfigureAwait(false);
+        if (string.IsNullOrEmpty(webResult))
+        {
+            return false;
+        }
+
+        GeetestWebResponse? result = JsonSerializer.Deserialize<GeetestWebResponse>(webResult, jsonOptions);
+        if (result is null || string.IsNullOrWhiteSpace(result.Challenge) || string.IsNullOrWhiteSpace(result.Validate))
+        {
+            return false;
+        }
 
         provider.Aigis = $"{session.SessionId};{Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(result))}";
         return true;
     }
 
-    private async ValueTask<string?> PrivateVerifyByWebViewAsync(string gt, string challenge, bool isOversea, CancellationToken token)
+    private static string? GetChallengeField(JsonElement data, string name)
+    {
+        return data.ValueKind == JsonValueKind.Object && data.TryGetProperty(name, out JsonElement field) && field.ValueKind == JsonValueKind.String
+            ? field.GetString()
+            : null;
+    }
+
+    private async ValueTask<string?> PrivateVerifyByWebViewAsync(string gt, string challenge, bool isOversea, CancellationToken token, FrameworkElement? owner = null)
     {
         if (XamlApplicationLifetime.Exiting)
         {
@@ -107,7 +143,9 @@ public sealed partial class GeetestService : IGeetestService
 
         await taskContext.SwitchToMainThreadAsync();
         token.ThrowIfCancellationRequested();
-        if (currentXamlWindowReference.XamlRoot is { } xamlRoot)
+        XamlRoot? ownerRoot = owner?.XamlRoot;
+        XamlRoot? xamlRoot = ownerRoot?.XamlContext() is not null ? ownerRoot : currentXamlWindowReference.XamlRoot;
+        if (xamlRoot?.XamlContext() is not null)
         {
             GeetestWebView2ContentProvider contentProvider = new(gt, challenge, isOversea);
             ShowWebView2WindowAction.Show(contentProvider, xamlRoot);

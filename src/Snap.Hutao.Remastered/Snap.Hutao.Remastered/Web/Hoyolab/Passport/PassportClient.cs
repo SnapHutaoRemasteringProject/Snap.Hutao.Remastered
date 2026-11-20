@@ -5,20 +5,32 @@ using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation.HttpClient;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Web.Endpoint.Hoyolab;
 using Snap.Hutao.Remastered.Web.Hoyolab.DataSigning;
+using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
 using Snap.Hutao.Remastered.Web.Response;
 using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json.Serialization.Metadata;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Passport;
 
-[HttpClient(HttpClientConfiguration.XRpc2)]
+[HttpClient(HttpClientConfiguration.XRpcPassport)]
+[PrimaryHttpMessageHandler(UseCookies = false)]
 public sealed partial class PassportClient : IPassportClient
 {
+    private const string AndroidVersion = "12";
+    private static readonly string LifecycleId = Guid.NewGuid().ToString();
+    private static readonly InfrastructureJsonContext PassportJson = new(new JsonSerializerOptions
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+    });
+
     private readonly IHttpRequestMessageBuilderFactory httpRequestMessageBuilderFactory;
     [FromKeyed(ApiEndpointsKind.Chinese)]
     private readonly IApiEndpoints apiEndpoints;
@@ -29,34 +41,18 @@ public sealed partial class PassportClient : IPassportClient
 
     public async ValueTask<Response<UidCookieToken>> GetCookieAccountInfoBySTokenAsync(User user, CancellationToken token = default)
     {
-        HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
-            .SetRequestUri(apiEndpoints.AccountGetCookieTokenBySToken())
-            .SetUserCookieAndFpHeader(user, CookieType.SToken)
-            .Get();
-
-        await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.PROD, true).ConfigureAwait(false);
-
-        Response<UidCookieToken>? resp = await builder
-            .SendAsync<Response<UidCookieToken>>(httpClient, token)
-            .ConfigureAwait(false);
-
-        return Response.Response.DefaultIfNull(resp);
+        Response<PassportTokenExchange.Result> response = await ExchangeTokenAsync(user, PassportTokenExchange.TokenKind.CookieToken, token).ConfigureAwait(false);
+        UidCookieToken? credential = response.Data?.Token?.Value is { } value
+            ? new() { Uid = user.Aid!, CookieToken = value }
+            : null;
+        return new(response.ReturnCode, response.Message, credential);
     }
 
     public async ValueTask<Response<LTokenWrapper>> GetLTokenBySTokenAsync(User user, CancellationToken token = default)
     {
-        HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
-            .SetRequestUri(apiEndpoints.AccountGetLTokenBySToken())
-            .SetUserCookieAndFpHeader(user, CookieType.SToken)
-            .Get();
-
-        await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.PROD, true).ConfigureAwait(false);
-
-        Response<LTokenWrapper>? resp = await builder
-            .SendAsync<Response<LTokenWrapper>>(httpClient, token)
-            .ConfigureAwait(false);
-
-        return Response.Response.DefaultIfNull(resp);
+        Response<PassportTokenExchange.Result> response = await ExchangeTokenAsync(user, PassportTokenExchange.TokenKind.LToken, token).ConfigureAwait(false);
+        LTokenWrapper? credential = response.Data?.Token?.Value is { } value ? new() { LToken = value } : null;
+        return new(response.ReturnCode, response.Message, credential);
     }
 
     public async ValueTask<Response<UserInfoWrapper>> VerifyLtokenAsync(User user, CancellationToken token = default)
@@ -64,7 +60,8 @@ public sealed partial class PassportClient : IPassportClient
         HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
             .SetRequestUri(apiEndpoints.AccountVerifyLtoken())
             .SetUserCookieAndFpHeader(user, CookieType.LToken)
-            .PostJson(new Timestamp());
+            .PostJson(new Dictionary<string, string> { ["ltoken"] = user.LToken?.GetValueOrDefault(Cookie.LTOKEN_V2) ?? string.Empty });
+        await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.X4, false).ConfigureAwait(false);
 
         Response<UserInfoWrapper>? resp = await builder
             .SendAsync<Response<UserInfoWrapper>>(httpClient, token)
@@ -116,22 +113,20 @@ public sealed partial class PassportClient : IPassportClient
             ["mobile"] = Encrypt(mobile),
         };
 
-        HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
-            .SetRequestUri(apiEndpoints.AccountCreateLoginCaptcha())
-            .PostJson(data);
+        HttpRequestMessageBuilder builder = CreatePassportRequest(apiEndpoints.AccountCreateLoginCaptcha(), data, PassportJson.StringDictionary);
 
         if (!string.IsNullOrEmpty(aigis))
         {
             builder.SetXrpcAigis(aigis);
         }
 
-        await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.PROD, true).ConfigureAwait(false);
+        await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.Passport, true).ConfigureAwait(false);
 
         (HttpResponseHeaders? headers, Response<MobileCaptcha>? resp) = await builder
             .SendAsync<Response<MobileCaptcha>>(httpClient, token)
             .ConfigureAwait(false);
 
-        string? rpcAigis = headers?.GetValuesOrDefault("X-Rpc-Aigis")?.SingleOrDefault();
+        string? rpcAigis = headers?.GetValuesOrDefault("X-Rpc-Aigis")?.FirstOrDefault(static value => !string.IsNullOrWhiteSpace(value));
         return (rpcAigis, Response.Response.DefaultIfNull(resp));
     }
 
@@ -154,16 +149,14 @@ public sealed partial class PassportClient : IPassportClient
             ["mobile"] = Encrypt(mobile),
         };
 
-        HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
-            .SetRequestUri(apiEndpoints.AccountLoginByMobileCaptcha())
-            .PostJson(data);
+        HttpRequestMessageBuilder builder = CreatePassportRequest(apiEndpoints.AccountLoginByMobileCaptcha(), data, PassportJson.StringDictionary);
 
         if (!string.IsNullOrEmpty(aigis))
         {
             builder.SetXrpcAigis(aigis);
         }
 
-        await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.PROD, true).ConfigureAwait(false);
+        await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.Passport, true).ConfigureAwait(false);
 
         Response<LoginResult>? resp = await builder
             .SendAsync<Response<LoginResult>>(httpClient, token)
@@ -187,6 +180,48 @@ public sealed partial class PassportClient : IPassportClient
         return ValueTask.FromException<(string? Aigis, Response.Response Response)>(new NotSupportedException());
     }
 
+    private async ValueTask<Response<PassportTokenExchange.Result>> ExchangeTokenAsync(User user, PassportTokenExchange.TokenKind destination, CancellationToken token)
+    {
+        string? sToken = user.SToken?.GetValueOrDefault(Cookie.STOKEN);
+        if (string.IsNullOrWhiteSpace(sToken) || string.IsNullOrWhiteSpace(user.Mid) || string.IsNullOrWhiteSpace(user.Aid))
+        {
+            return new(Response.Response.publicFailure, SH.ServiceUserProcessCookieRequestUserInfoFailed, null);
+        }
+
+        PassportTokenExchange.Request data = new(destination, new(sToken, PassportTokenExchange.TokenKind.SToken), user.Mid);
+        HttpRequestMessageBuilder builder = CreatePassportRequest(apiEndpoints.AccountExchangeToken(), data, PassportJson.PassportExchangeRequest);
+        if (!string.IsNullOrEmpty(user.Fingerprint))
+        {
+            builder.SetHeader("x-rpc-device_fp", Uri.EscapeDataString(user.Fingerprint));
+        }
+
+        await builder.SignDataAsync(DataSignAlgorithmVersion.Gen2, SaltType.Passport, true).ConfigureAwait(false);
+        Response<PassportTokenExchange.Result>? result = await builder.SendAsync<Response<PassportTokenExchange.Result>>(httpClient, token).ConfigureAwait(false);
+        Response<PassportTokenExchange.Result> response = Response.Response.DefaultIfNull(result);
+        if (response.ReturnCode is not 0)
+        {
+            return response;
+        }
+
+        if (response.Data?.Matches(destination, user.Aid) is not true)
+        {
+            return new(Response.Response.publicFailure, SH.ServiceUserProcessCookieRequestUserInfoFailed, null);
+        }
+
+        return response;
+    }
+
+    private HttpRequestMessageBuilder CreatePassportRequest<T>(string endpoint, T data, JsonTypeInfo<T> typeInfo)
+    {
+        return httpRequestMessageBuilderFactory.Create()
+            .SetRequestUri(endpoint)
+            .SetHeader("User-Agent", $"Mozilla/5.0 (Linux; Android {AndroidVersion}) Mobile miHoYoBBS/{SaltConstants.CNVersion}")
+            .SetHeader("x-rpc-sys_version", AndroidVersion)
+            .SetHeader("x-rpc-lifecycle_id", LifecycleId)
+            .SetStringContent(PassportTokenExchange.SerializeBody(data, typeInfo), Encoding.UTF8, MediaTypeNames.Application.Json)
+            .Post();
+    }
+
     private static string Encrypt(string source)
     {
         using (RSA rsa = RSA.Create())
@@ -203,11 +238,5 @@ public sealed partial class PassportClient : IPassportClient
                 """);
             return Convert.ToBase64String(rsa.Encrypt(Encoding.UTF8.GetBytes(source), RSAEncryptionPadding.Pkcs1));
         }
-    }
-
-    private class Timestamp
-    {
-        [JsonPropertyName("t")]
-        public long Time { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
     }
 }

@@ -55,11 +55,7 @@ public sealed partial class UserInitializationService : IUserInitializationServi
     {
         // 这里只负责创建实体用户，稍后在用户服务中保存到数据库
         (Cookie cookie, bool isOversea, string? deviceFp) = inputCookie;
-        Model.Entity.User entity = Model.Entity.User.From(cookie);
-
-        entity.Aid = cookie.GetValueOrDefault(Cookie.STUID);
-        entity.Mid = cookie.GetValueOrDefault(Cookie.MID);
-        entity.IsOversea = isOversea;
+        Model.Entity.User entity = Model.Entity.User.From(cookie, isOversea);
         entity.TryUpdateFingerprint(deviceFp);
 
         if (entity.Aid is not null && entity.Mid is not null)
@@ -73,69 +69,67 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         return null;
     }
 
-    private static async ValueTask<bool> TrySetUserLTokenAsync(IServiceProvider serviceProvider, ViewModel.User.User user, CancellationToken token)
+    private static async ValueTask<bool> TryRefreshCredentialsAsync(IServiceProvider serviceProvider, ViewModel.User.User user, CancellationToken token)
     {
-        if (user.LToken is not null)
+        bool isOversea = user.IsOversea;
+        Cookie? lToken = user.LToken;
+        Cookie? cookieToken = user.CookieToken;
+        bool refreshLToken = lToken is null || (!isOversea && !lToken.TryGetLToken(false, out _));
+        bool refreshCookieToken = cookieToken is null || (!isOversea && !cookieToken.TryGetCookieToken(false, out _))
+            || user.Entity.CookieTokenLastUpdateTime <= DateTimeOffset.UtcNow - TimeSpan.FromDays(1);
+        if (!refreshLToken && !refreshCookieToken)
         {
             return true;
+        }
+
+        string? accountId = user.Entity.Aid;
+        string? mid = user.Entity.Mid;
+        if (string.IsNullOrEmpty(accountId) || string.IsNullOrEmpty(mid))
+        {
+            return false;
         }
 
         IPassportClient passportClient = serviceProvider
             .GetRequiredService<IOverseaSupportFactory<IPassportClient>>()
-            .Create(user.IsOversea);
+            .Create(isOversea);
 
-        Response<LTokenWrapper> lTokenResponse = await passportClient
-            .GetLTokenBySTokenAsync(user.Entity, token)
-            .ConfigureAwait(false);
-
-        if (ResponseValidator.TryValidate(lTokenResponse, serviceProvider, out LTokenWrapper? wrapper))
+        if (refreshLToken)
         {
-            user.LToken = new()
+            Response<LTokenWrapper> response = await passportClient.GetLTokenBySTokenAsync(user.Entity, token).ConfigureAwait(false);
+            if (!ResponseValidator.TryValidate(response, serviceProvider, out LTokenWrapper? result))
             {
-                [Cookie.LTUID] = user.Entity.Aid ?? string.Empty,
-                [Cookie.LTOKEN] = wrapper.LToken,
-            };
-            return true;
-        }
-
-        return false;
-    }
-
-    private static async ValueTask<bool> TrySetUserCookieTokenAsync(IServiceProvider serviceProvider, ViewModel.User.User user, CancellationToken token)
-    {
-        if (user.Entity.CookieTokenLastUpdateTime > DateTimeOffset.UtcNow - TimeSpan.FromDays(1))
-        {
-            if (user.CookieToken is not null)
-            {
-                return true;
+                return false;
             }
+
+            lToken = Cookie.FromLToken(accountId, mid, result.LToken, isOversea);
         }
 
-        IPassportClient passportClient = serviceProvider
-            .GetRequiredService<IOverseaSupportFactory<IPassportClient>>()
-            .Create(user.IsOversea);
-
-        Response<UidCookieToken> cookieTokenResponse = await passportClient
-            .GetCookieAccountInfoBySTokenAsync(user.Entity, token)
-            .ConfigureAwait(false);
-
-        if (ResponseValidator.TryValidate(cookieTokenResponse, serviceProvider, out UidCookieToken? uidCookieToken))
+        DateTimeOffset? refreshedAt = null;
+        if (refreshCookieToken)
         {
-            user.CookieToken = new()
+            Response<UidCookieToken> response = await passportClient.GetCookieAccountInfoBySTokenAsync(user.Entity, token).ConfigureAwait(false);
+            if (!ResponseValidator.TryValidate(response, serviceProvider, out UidCookieToken? result))
             {
-                [Cookie.ACCOUNT_ID] = user.Entity.Aid ?? string.Empty,
-                [Cookie.COOKIE_TOKEN] = uidCookieToken.CookieToken,
-            };
+                return false;
+            }
 
-            user.Entity.CookieTokenLastUpdateTime = DateTimeOffset.UtcNow;
-            user.NeedDbUpdateAfterResume = true;
-            return true;
+            cookieToken = Cookie.FromCookieToken(accountId, mid, result.CookieToken, isOversea);
+            refreshedAt = DateTimeOffset.UtcNow;
         }
 
-        return false;
+        token.ThrowIfCancellationRequested();
+        user.LToken = lToken;
+        user.CookieToken = cookieToken;
+        if (refreshedAt is { } timestamp)
+        {
+            user.Entity.CookieTokenLastUpdateTime = timestamp;
+        }
+
+        user.NeedDbUpdateAfterResume = true;
+        return true;
     }
 
-    private async ValueTask TrySetUserUserInfoAsync(IServiceProvider serviceProvider, ViewModel.User.User user, CancellationToken token)
+    private async ValueTask<bool> TrySetUserUserInfoAsync(IServiceProvider serviceProvider, ViewModel.User.User user, CancellationToken token)
     {
         IUserClient userClient = serviceProvider
             .GetRequiredService<IOverseaSupportFactory<IUserClient>>()
@@ -152,15 +146,15 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         if (ResponseValidator.TryValidate(response, serviceProvider, out UserFullInfoWrapper? wrapper))
         {
             user.UserInfo = wrapper.UserInfo;
+            return true;
         }
-        else
+
+        user.UserInfo = new()
         {
-            user.UserInfo = new()
-            {
-                Uid = SH.ModelBindingUserInitializationFailed,
-                Nickname = SH.ModelBindingUserInitializationFailed,
-            };
-        }
+            Uid = SH.ModelBindingUserInitializationFailed,
+            Nickname = SH.ModelBindingUserInitializationFailed,
+        };
+        return user.IsOversea;
     }
 
     private async ValueTask<bool> TrySetUserUserGameRolesAsync(IServiceProvider serviceProvider, ViewModel.User.User user, CancellationToken token)
@@ -199,19 +193,13 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         {
             IServiceProvider serviceProvider = scope.ServiceProvider;
 
-            if (!await TrySetUserLTokenAsync(serviceProvider, user, token).ConfigureAwait(false))
+            if (!await TryRefreshCredentialsAsync(serviceProvider, user, token).ConfigureAwait(false))
             {
                 return false;
             }
 
-            if (!await TrySetUserCookieTokenAsync(serviceProvider, user, token).ConfigureAwait(false))
-            {
-                return false;
-            }
-
-            await TrySetUserUserInfoAsync(serviceProvider, user, token).ConfigureAwait(false);
-
-            if (!await TrySetUserUserGameRolesAsync(serviceProvider, user, token).ConfigureAwait(false))
+            if (!await TrySetUserUserInfoAsync(serviceProvider, user, token).ConfigureAwait(false)
+                || !await TrySetUserUserGameRolesAsync(serviceProvider, user, token).ConfigureAwait(false))
             {
                 return false;
             }

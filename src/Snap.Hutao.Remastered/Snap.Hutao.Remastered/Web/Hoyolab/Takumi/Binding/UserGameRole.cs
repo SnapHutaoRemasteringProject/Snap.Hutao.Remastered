@@ -23,6 +23,7 @@ public sealed partial class UserGameRole : ObservableObject, IPropertyValuesProv
     public string Nickname { get; set; } = default!;
 
     [JsonPropertyName("level")]
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public int Level { get; set; }
 
     [JsonPropertyName("is_chosen")]

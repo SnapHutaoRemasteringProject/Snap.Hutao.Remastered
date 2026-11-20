@@ -21,7 +21,6 @@ namespace Snap.Hutao.Remastered.Service.Update;
 public sealed partial class UpdateService : IUpdateService
 {
     private const string UpdaterFilename = "Snap.Hutao.Remastered.Deployment.exe";
-    private const string StoreProductId = "9P1LDJFJFJQQ";
 
     // Avoid injecting services directly
     private readonly IServiceProvider serviceProvider;
@@ -66,8 +65,7 @@ public sealed partial class UpdateService : IUpdateService
                     }
                 }
 
-                // Packaged apps update through the Store and never download this installer.
-                if (RuntimeEnvironment.IsUnpackaged && checkUpdateResult.PackageInformation.Validation is not { Length: > 0 })
+                if (checkUpdateResult.PackageInformation.Validation is not { Length: > 0 })
                 {
                     checkUpdateResult.Kind = CheckUpdateResultKind.VersionApiInvalidSha256;
                 }
@@ -119,7 +117,7 @@ public sealed partial class UpdateService : IUpdateService
                 ContentDialogResult installUpdateUserConsentResult = await contentDialogFactory
                     .CreateForConfirmCancelWithSecondaryAsync(
                         SH.FormatViewTitleUpdatePackageAvailableTitle(result.PackageInformation?.Version),
-                        RuntimeEnvironment.IsPackaged ? SH.ServiceUpdateOpenStoreContent : SH.ViewTitileUpdatePackageAvailableContent,
+                        SH.ViewTitileUpdatePackageAvailableContent,
                         SH.ViewTitleUpdatePackageSkipVersionButtonText)
                     .ConfigureAwait(false);
 
@@ -131,12 +129,6 @@ public sealed partial class UpdateService : IUpdateService
 
                 if (installUpdateUserConsentResult is not ContentDialogResult.Primary)
                 {
-                    return;
-                }
-
-                if (RuntimeEnvironment.IsPackaged)
-                {
-                    await OpenStoreAsync().ConfigureAwait(false);
                     return;
                 }
 
@@ -184,31 +176,6 @@ public sealed partial class UpdateService : IUpdateService
                 // 0x80070005 Attempted to perform an unauthorized operation.
                 messenger.Send(InfoBarMessage.Error(ex));
             }
-        }
-    }
-
-    public async ValueTask OpenStoreAsync()
-    {
-        using IServiceScope scope = serviceProvider.CreateScope();
-        IMessenger messenger = scope.ServiceProvider.GetRequiredService<IMessenger>();
-        try
-        {
-            ITaskContext taskContext = scope.ServiceProvider.GetRequiredService<ITaskContext>();
-            await taskContext.SwitchToMainThreadAsync();
-            bool launched = await Windows.System.Launcher.LaunchUriAsync(new Uri($"ms-windows-store://pdp/?ProductId={StoreProductId}"));
-            if (!launched)
-            {
-                launched = await Windows.System.Launcher.LaunchUriAsync(new Uri($"https://apps.microsoft.com/detail/{StoreProductId}"));
-            }
-
-            if (!launched)
-            {
-                messenger.Send(InfoBarMessage.Error(SH.ServiceUpdateOpenStoreFailed));
-            }
-        }
-        catch (Exception ex)
-        {
-            messenger.Send(InfoBarMessage.Error(SH.ServiceUpdateOpenStoreFailed, ex));
         }
     }
 

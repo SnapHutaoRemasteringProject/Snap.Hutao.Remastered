@@ -69,13 +69,17 @@ public sealed partial class UserMobileCaptchaDialog : ContentDialog, IPassportMo
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Send captcha", "UserMobileCaptchaDialog.Command"));
 
         ArgumentNullException.ThrowIfNull(Mobile);
+        Aigis = null;
 
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             IPassportClient passportClient = scope.ServiceProvider.GetRequiredService<IOverseaSupportFactory<IPassportClient>>().Create(false);
             (string? rawSession, Response<MobileCaptcha> response) = await passportClient.CreateLoginCaptchaAsync(Mobile, null).ConfigureAwait(false);
 
-            if (await geetestService.TryVerifyAigisSessionAsync(this, rawSession, false).ConfigureAwait(false))
+            bool hasChallenge = !string.IsNullOrWhiteSpace(rawSession);
+            System.Diagnostics.Debug.WriteLine($"Passport SMS: retcode={response.ReturnCode}, challenge header present={hasChallenge}");
+            if (response.ReturnCode is not 0 && hasChallenge
+                && await geetestService.TryVerifyAigisSessionAsync(this, rawSession, false).ConfigureAwait(false))
             {
                 (_, response) = await passportClient.CreateLoginCaptchaAsync(Mobile, Aigis).ConfigureAwait(false);
             }

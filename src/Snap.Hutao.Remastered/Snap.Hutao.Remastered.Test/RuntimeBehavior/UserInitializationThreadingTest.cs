@@ -1,7 +1,9 @@
 using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.ViewModel.User;
+using Snap.Hutao.Remastered.Web.Hoyolab;
 using Snap.Hutao.Remastered.Web.Hoyolab.Bbs.User;
+using Snap.Hutao.Remastered.Web.Hoyolab.Passport;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Binding;
 using Snap.Hutao.Remastered.Web.Response;
 using System.Collections.Concurrent;
@@ -33,15 +35,51 @@ public sealed class UserInitializationThreadingTest
     }
 
     [TestMethod]
-    public async Task ARejectedUserInfoResponsePublishesItsFallbackOnUiThread()
+    public async Task ARejectedOverseasUserInfoResponsePublishesItsFallbackOnUiThread()
     {
         using Scenario scenario = new();
-        BindingUser user = await scenario.CreateDisplayedUserAsync();
+        BindingUser user = await scenario.CreateDisplayedUserAsync(isOversea: true);
         Task<BindingUser> operation = Task.Run(() => scenario.Service.ResumeUserAsync(user).AsTask());
         await scenario.CompleteRequestsAsync(operation, userInfoValid: false, rolesValid: true);
         await operation.WaitAsync(TimeSpan.FromSeconds(5));
         Assert.AreEqual(SH.ModelBindingUserInitializationFailed, user.UserInfo?.Nickname);
         Assert.IsTrue(user.IsInitialized);
+    }
+
+    [TestMethod]
+    public async Task AStoredChineseAccountExchangesBothLegacyCredentials()
+    {
+        using Scenario scenario = new();
+        BindingUser user = await scenario.CreateDisplayedUserAsync(legacy: true);
+        Task<BindingUser> operation = Task.Run(() => scenario.Service.ResumeUserAsync(user).AsTask());
+        await scenario.CompleteRequestsAsync(operation, userInfoValid: true, rolesValid: true);
+        await operation.WaitAsync(TimeSpan.FromSeconds(5));
+
+        CollectionAssert.AreEqual(new[] { "LToken", "CookieToken" }, scenario.PassportClient.Requests);
+        Assert.AreEqual("test-ltoken", user.LToken?[Cookie.LTOKEN_V2]);
+        Assert.AreEqual("test-cookie-token", user.CookieToken?[Cookie.COOKIE_TOKEN_V2]);
+        Assert.AreEqual("test-mid", user.LToken?[Cookie.LTMID_V2]);
+        Assert.AreEqual("test-mid", user.CookieToken?[Cookie.ACCOUNT_MID_V2]);
+        Assert.IsTrue(user.NeedDbUpdateAfterResume);
+        Assert.IsTrue(user.IsInitialized);
+    }
+
+    [TestMethod]
+    public async Task AFailedSecondExchangeDoesNotReplaceEitherStoredCredential()
+    {
+        using Scenario scenario = new();
+        scenario.PassportClient.RejectCookieToken = true;
+        BindingUser user = await scenario.CreateDisplayedUserAsync(legacy: true);
+        Cookie? previousLToken = user.LToken;
+        Cookie? previousCookieToken = user.CookieToken;
+
+        await Task.Run(() => scenario.Service.ResumeUserAsync(user).AsTask()).WaitAsync(TimeSpan.FromSeconds(5));
+        CollectionAssert.AreEqual(new[] { "LToken", "CookieToken" }, scenario.PassportClient.Requests);
+        Assert.AreSame(previousLToken, user.LToken);
+        Assert.AreSame(previousCookieToken, user.CookieToken);
+        Assert.IsFalse(user.NeedDbUpdateAfterResume);
+        Assert.IsFalse(user.IsInitialized);
+        Assert.IsFalse(scenario.UserClient.Requested.Task.IsCompleted);
     }
 
     [TestMethod]
@@ -98,6 +136,7 @@ public sealed class UserInitializationThreadingTest
                 .AddSingleton<IProfilePictureService>(Dependencies)
                 .AddSingleton<IAutoSignInService>(Dependencies)
                 .AddSingleton<IOverseaSupportFactory<IUserClient>>(new UserClientFactory(UserClient))
+                .AddSingleton<IOverseaSupportFactory<IPassportClient>>(PassportClient)
                 .AddSingleton(BindingClient)
                 .BuildServiceProvider();
             Service = new(provider);
@@ -106,13 +145,19 @@ public sealed class UserInitializationThreadingTest
         public UiThread Ui { get; } = new();
         public DelayedUserClient UserClient { get; } = new();
         public BindingClient BindingClient { get; } = new();
+        public TestPassportClient PassportClient { get; } = new();
         public TestDependencies Dependencies { get; }
         public UserInitializationService Service { get; }
         public List<string> Notifications { get; } = [];
 
-        public Task<BindingUser> CreateDisplayedUserAsync() => Ui.RunAsync(() =>
+        public Task<BindingUser> CreateDisplayedUserAsync(bool isOversea = false, bool legacy = false) => Ui.RunAsync(() =>
         {
             BindingUser user = new() { UserInfo = new() { Nickname = "existing nickname" } };
+            user.Entity.Aid = "101";
+            user.Entity.Mid = "test-mid";
+            user.Entity.IsOversea = isOversea;
+            user.LToken = Cookie.FromLToken("101", "test-mid", "stored-ltoken", isOversea || legacy);
+            user.CookieToken = Cookie.FromCookieToken("101", "test-mid", "stored-cookie-token", isOversea || legacy);
             user.PropertyChanged += (_, args) =>
             {
                 // This is the thread-affine consumer corresponding to x:Bind's
@@ -155,6 +200,26 @@ public sealed class UserInitializationThreadingTest
     private sealed class UserClientFactory(IUserClient client) : IOverseaSupportFactory<IUserClient>
     {
         public IUserClient Create(bool isOversea) => client;
+    }
+
+    private sealed class TestPassportClient : IPassportClient, IOverseaSupportFactory<IPassportClient>
+    {
+        public List<string> Requests { get; } = [];
+        public bool RejectCookieToken { get; set; }
+
+        public IPassportClient Create(bool isOversea) => this;
+
+        public ValueTask<Response<LTokenWrapper>> GetLTokenBySTokenAsync(Model.Entity.User user, CancellationToken token)
+        {
+            Requests.Add("LToken");
+            return new(new Response<LTokenWrapper>(new()));
+        }
+
+        public ValueTask<Response<UidCookieToken>> GetCookieAccountInfoBySTokenAsync(Model.Entity.User user, CancellationToken token)
+        {
+            Requests.Add("CookieToken");
+            return new(new Response<UidCookieToken>(RejectCookieToken ? null : new()));
+        }
     }
 
     private sealed class TestDependencies(UiThread ui) : IUserFingerprintService, IProfilePictureService, IAutoSignInService

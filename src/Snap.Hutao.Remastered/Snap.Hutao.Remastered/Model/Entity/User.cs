@@ -41,12 +41,20 @@ public sealed class User : ISelectable, IReorderable
 
     public string? PreferredUid { get; set; }
 
-    public static User From(Cookie cookie)
+    public static User From(Cookie cookie, bool isOversea)
     {
         _ = cookie.TryGetSToken(out Cookie? sToken);
-        _ = cookie.TryGetLToken(out Cookie? lToken);
-        _ = cookie.TryGetCookieToken(out Cookie? cookieToken);
+        _ = cookie.TryGetLToken(isOversea, out Cookie? lToken);
+        _ = cookie.TryGetCookieToken(isOversea, out Cookie? cookieToken);
 
-        return new() { SToken = sToken, LToken = lToken, CookieToken = cookieToken };
+        return new()
+        {
+            Aid = sToken?.GetValueOrDefault(Cookie.STUID),
+            Mid = sToken?.GetValueOrDefault(Cookie.MID),
+            IsOversea = isOversea,
+            SToken = sToken,
+            LToken = lToken,
+            CookieToken = cookieToken,
+        };
     }
 }

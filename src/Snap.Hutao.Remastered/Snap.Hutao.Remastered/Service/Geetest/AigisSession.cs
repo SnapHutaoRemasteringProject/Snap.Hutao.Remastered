@@ -9,8 +9,9 @@ public sealed class AigisSession
     public string SessionId { get; set; } = default!;
 
     [JsonPropertyName("mmt_type")]
+    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public int MmtType { get; set; }
 
     [JsonPropertyName("data")]
-    public string Data { get; set; } = default!;
+    public JsonElement Data { get; set; }
 }

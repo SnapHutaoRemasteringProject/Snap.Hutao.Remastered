@@ -57,18 +57,13 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Data
     }
 }
 
+namespace Microsoft.Web.WebView2.Core
+{
+    public sealed record CoreWebView2Cookie(string Name, string Value);
+}
+
 namespace Snap.Hutao.Remastered.Web.Hoyolab
 {
-    public sealed class Cookie : Dictionary<string, string>
-    {
-        public const string STUID = "stuid";
-        public const string MID = "mid";
-        public const string LTUID = "ltuid";
-        public const string LTOKEN = "ltoken";
-        public const string ACCOUNT_ID = "account_id";
-        public const string COOKIE_TOKEN = "cookie_token";
-    }
-
     public sealed class ListWrapper<T>
     {
         public List<T> List { get; set; } = [];
@@ -85,7 +80,7 @@ namespace Snap.Hutao.Remastered.Model.Entity
         public string? Fingerprint { get; set; }
         public DateTimeOffset FingerprintLastUpdateTime { get; set; }
         public DateTimeOffset CookieTokenLastUpdateTime { get; set; } = DateTimeOffset.UtcNow;
-        public static User From(Web.Hoyolab.Cookie cookie) => new();
+        public static User From(Web.Hoyolab.Cookie cookie, bool isOversea) => new() { IsOversea = isOversea };
     }
 }
 
@@ -137,6 +132,14 @@ namespace Snap.Hutao.Remastered.Web.Hoyolab.Bbs.User
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Passport
 {
+    public sealed record LoginResult(LoginAccount? UserInfo, LoginToken? Token);
+
+    public sealed record QrLoginResult(LoginAccount UserInfo, List<LoginToken> Tokens);
+
+    public sealed record LoginAccount(string Aid, string Mid);
+
+    public sealed record LoginToken(string Token, int TokenType);
+
     public sealed class LTokenWrapper
     {
         public string LToken { get; set; } = "test-ltoken";

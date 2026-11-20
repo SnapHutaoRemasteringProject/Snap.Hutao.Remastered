@@ -8,6 +8,7 @@ using Snap.Hutao.Remastered.Web.Hoyolab.DataSigning;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
 using Snap.Hutao.Remastered.Web.Response;
+using System.Collections.Immutable;
 using System.Net.Http;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Binding;
@@ -27,16 +28,22 @@ public sealed partial class BindingClient2
     public async ValueTask<Response<ListWrapper<UserGameRole>>> GetUserGameRolesBySTokenAsync(User user, CancellationToken token = default)
     {
         HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
-            .SetRequestUri(apiEndpoints.AccountGetCookieTokenBySToken())
+            .SetRequestUri(apiEndpoints.UserGameRolesBySToken())
             .SetUserCookieAndFpHeader(user, CookieType.SToken)
+            .SetHeader("x-rpc-client_type", "2")
             .SetReferer(apiEndpoints.AppReferer())
             .Get();
 
-        await builder.SignDataAsync(DataSignAlgorithmVersion.Gen1, SaltType.LK2, true).ConfigureAwait(false);
+        await builder.SignDataAsync(DataSignAlgorithmVersion.Gen1, SaltType.K2, true).ConfigureAwait(false);
 
         Response<ListWrapper<UserGameRole>>? resp = await builder
             .SendAsync<Response<ListWrapper<UserGameRole>>>(httpClient, token)
             .ConfigureAwait(false);
+
+        if (resp?.Data is { List.IsDefault: false } data)
+        {
+            data.List = data.List.Where(static role => string.Equals(role.GameBiz, "hk4e_cn", StringComparison.Ordinal)).ToImmutableArray();
+        }
 
         return Response.Response.DefaultIfNull(resp);
     }

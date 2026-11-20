@@ -4,6 +4,7 @@
 using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation.HttpClient;
 using Snap.Hutao.Remastered.Core.IO.Http;
 using Snap.Hutao.Remastered.Web.Endpoint.Hoyolab;
+using Snap.Hutao.Remastered.Web.Hoyolab.DataSigning;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
 using Snap.Hutao.Remastered.Web.Response;
@@ -27,11 +28,15 @@ public sealed partial class UserClient : IUserClient
         ArgumentException.ThrowIfNullOrEmpty(user.Aid);
 
         HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create()
-            .SetRequestUri(apiEndpoints.UserFullInfoQuery(user.Aid))
+            .SetRequestUri(apiEndpoints.CurrentUserFullInfo(user.Aid))
+            .SetUserCookieAndFpHeader(user, CookieType.SToken)
+            .SetHeader("User-Agent", HoyolabOptions.MobileUserAgent)
+            .SetHeader("x-rpc-client_type", "2")
             .SetReferer(apiEndpoints.BbsReferer())
             .SetOptions(RetryHttpHandler.DisableRetry, true)
             .Get();
 
+        await builder.SignDataAsync(DataSignAlgorithmVersion.Gen1, SaltType.K2, true).ConfigureAwait(false);
         Response<UserFullInfoWrapper>? resp = await builder
             .SendAsync<Response<UserFullInfoWrapper>>(httpClient, token)
             .ConfigureAwait(false);

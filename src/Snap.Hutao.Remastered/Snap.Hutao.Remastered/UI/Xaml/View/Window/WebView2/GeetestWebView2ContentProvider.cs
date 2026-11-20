@@ -12,7 +12,7 @@ public sealed class GeetestWebView2ContentProvider : DependencyObject, IWebView2
     private readonly string gt;
     private readonly string challenge;
     private readonly bool isOversea;
-    private readonly TaskCompletionSource resultTcs = new();
+    private readonly TaskCompletionSource resultTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
     private string? result;
 
@@ -36,39 +36,61 @@ public sealed class GeetestWebView2ContentProvider : DependencyObject, IWebView2
         CoreWebView2.WebMessageReceived += OnWebMessageReceived;
 
         CoreWebView2.NavigateToString($$"""
+            <!doctype html>
             <html>
                 <head>
-                    <title>{{SH.UIXamlViewWindowWebView2GeetestHeader}}</title>
+                    <meta charset="utf-8">
+                    <title>{{System.Net.WebUtility.HtmlEncode(SH.UIXamlViewWindowWebView2GeetestHeader)}}</title>
                     <style>
-                        #geetest-div {
-                            aligin-items:center
-                        }
+                        body { color-scheme: light dark; font-family: system-ui, sans-serif; text-align: center; margin-top: 3rem; }
                     </style>
                 </head>
                 <body>
+                    <p id="status" role="status">{{System.Net.WebUtility.HtmlEncode(SH.UIXamlViewWindowWebView2GeetestHeader)}}</p>
                     <div id="geetest-div"></div>
                 </body>
-                <script src="https://static.geetest.com/static/js/gt.0.5.2.js"></script>
                 <script>
-                    initGeetest(
-                        {
-                            protocol: "https://",
-                            gt: "{{gt}}",
-                            challenge: "{{challenge}}",
-                            new_captcha: true,
-                            product: 'bind',
-                            api_server: '{{(isOversea ? "api-na.geetest.com" : "api.geetest.com")}}'
-                        },
-                        function (captchaObj) {
-                            captchaObj.onReady(function () {
-                                captchaObj.verify();
-                            });
-                            captchaObj.onSuccess(function () {
-                                var result = captchaObj.getValidate();
-                                chrome.webview.postMessage(result);
-                            });
+                    const status = document.getElementById("status");
+                    const timeout = setTimeout(() => showError(), 20000);
+                    const showError = () => {
+                        clearTimeout(timeout);
+                        status.hidden = false;
+                        status.textContent = {{JsonSerializer.Serialize(SH.ViewWebView2WindowLoadFailedHint)}};
+                    };
+                    const loader = document.createElement("script");
+                    loader.src = "https://static.geetest.com/static/js/gt.0.5.0.js";
+                    loader.onerror = showError;
+                    loader.onload = () => {
+                        if (typeof window.initGeetest !== "function") {
+                            showError();
+                            return;
                         }
-                    );
+                        try {
+                            window.initGeetest({
+                                protocol: "https://",
+                                gt: {{JsonSerializer.Serialize(gt)}},
+                                challenge: {{JsonSerializer.Serialize(challenge)}},
+                                new_captcha: true,
+                                offline: false,
+                                product: "float",
+                                api_server: {{JsonSerializer.Serialize(isOversea ? "api-na.geetest.com" : "api.geetest.com")}}
+                            }, (captcha) => {
+                                captcha.onError(showError);
+                                captcha.onReady(() => {
+                                    clearTimeout(timeout);
+                                    status.hidden = true;
+                                });
+                                captcha.onSuccess(() => {
+                                    const result = captcha.getValidate();
+                                    if (result) chrome.webview.postMessage(result);
+                                });
+                                captcha.appendTo("#geetest-div");
+                            });
+                        } catch {
+                            showError();
+                        }
+                    };
+                    document.head.appendChild(loader);
               </script>
             </html>
             """);
@@ -78,6 +100,11 @@ public sealed class GeetestWebView2ContentProvider : DependencyObject, IWebView2
 
     public void Unload()
     {
+        if (CoreWebView2 is { } webView)
+        {
+            webView.WebMessageReceived -= OnWebMessageReceived;
+        }
+
         resultTcs.TrySetResult();
     }
 

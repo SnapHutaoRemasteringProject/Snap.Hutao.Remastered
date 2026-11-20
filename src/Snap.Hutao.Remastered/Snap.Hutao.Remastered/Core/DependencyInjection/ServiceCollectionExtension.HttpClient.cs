@@ -85,17 +85,30 @@ public static partial class ServiceCollectionExtension
     [UsedImplicitly]
     private static void XRpc2Configuration(HttpClient client)
     {
+        ConfigureMiYouSheAppClient(client);
+        client.DefaultRequestHeaders.Add("x-rpc-aigis", string.Empty);
+        client.DefaultRequestHeaders.Add("x-rpc-sdk_version", "2.16.0");
+    }
+
+    [UsedImplicitly]
+    private static void XRpcPassportConfiguration(HttpClient client)
+    {
+        ConfigureMiYouSheAppClient(client);
+        client.DefaultRequestHeaders.Add("x-rpc-sdk_version", HoyolabOptions.PassportSdkVersion);
+        client.DefaultRequestHeaders.Add("x-rpc-account_version", HoyolabOptions.PassportSdkVersion);
+    }
+
+    private static void ConfigureMiYouSheAppClient(HttpClient client)
+    {
         client.Timeout = Timeout.InfiniteTimeSpan;
         client.DefaultRequestHeaders.UserAgent.ParseAdd(HoyolabOptions.UserAgent);
         client.DefaultRequestHeaders.Accept.ParseAdd(MediaTypeNames.Application.Json);
-        client.DefaultRequestHeaders.Add("x-rpc-aigis", string.Empty);
         client.DefaultRequestHeaders.Add("x-rpc-app_id", "bll8iq97cem8");
         client.DefaultRequestHeaders.Add("x-rpc-app_version", SaltConstants.CNVersion);
         client.DefaultRequestHeaders.Add("x-rpc-client_type", "2");
         client.DefaultRequestHeaders.Add("x-rpc-device_id", HoyolabOptions.DeviceId36);
         client.DefaultRequestHeaders.Add("x-rpc-device_name", string.Empty);
         client.DefaultRequestHeaders.Add("x-rpc-game_biz", "bbs_cn");
-        client.DefaultRequestHeaders.Add("x-rpc-sdk_version", "2.16.0");
     }
 
     [UsedImplicitly]

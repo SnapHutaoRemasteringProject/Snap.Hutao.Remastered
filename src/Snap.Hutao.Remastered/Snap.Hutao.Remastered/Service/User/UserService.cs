@@ -7,8 +7,10 @@ using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
 using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Service.Abstraction;
+using Snap.Hutao.Remastered.UI.Xaml.Data;
 using Snap.Hutao.Remastered.ViewModel.User;
 using Snap.Hutao.Remastered.Web.Hoyolab;
+using Snap.Hutao.Remastered.Web.Hoyolab.Bbs.User;
 using Snap.Hutao.Remastered.Web.Hoyolab.Passport;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Binding;
 using Snap.Hutao.Remastered.Web.Response;
@@ -53,9 +55,9 @@ public sealed partial class UserService : IUserService
         using (await contentDialogFactory.BlockAsync(dialog).ConfigureAwait(false))
         {
             await TaskContext.SwitchToBackgroundAsync();
-            (Cookie cookie, bool _, string? deviceFp) = inputCookie;
+            (Cookie cookie, bool isOversea, string? deviceFp) = inputCookie;
 
-            string? mid = cookie.GetValueOrDefault(Cookie.MID);
+            string? mid = cookie.GetAccountMid();
 
             if (string.IsNullOrEmpty(mid))
             {
@@ -67,29 +69,67 @@ public sealed partial class UserService : IUserService
                 return await userCollectionService.TryCreateAndAddUserFromInputCookieAsync(inputCookie).ConfigureAwait(false);
             }
 
-            if (!cookie.TryGetSToken(out Cookie? sToken))
+            if (user.IsOversea != isOversea || !cookie.TryGetSToken(out Cookie? sToken)
+                || !string.Equals(user.Entity.Aid, sToken.GetValueOrDefault(Cookie.STUID), StringComparison.Ordinal))
             {
                 return new(UserOptionResultKind.CookieInvalid, SH.ServiceUserProcessCookieNoSToken);
             }
 
             // Re-adding an account updates the same instance displayed by UserView.
             await TaskContext.SwitchToMainThreadAsync();
-            user.IsInitialized = false;
-            user.SToken = sToken;
-            user.LToken = cookie.TryGetLToken(out Cookie? lToken) ? lToken : user.LToken;
-            user.CookieToken = cookie.TryGetCookieToken(out Cookie? cookieToken) ? cookieToken : user.CookieToken;
-            user.TryUpdateFingerprint(deviceFp);
+            (Cookie?, Cookie?, Cookie?, DateTimeOffset) previousCredentials = (user.SToken, user.LToken, user.CookieToken, user.Entity.CookieTokenLastUpdateTime);
+            (UserInfo?, IAdvancedCollectionView<UserGameRole>, string?, DateTimeOffset) previousProfile = (user.UserInfo, user.UserGameRoles, user.Entity.Fingerprint, user.Entity.FingerprintLastUpdateTime);
+            (bool, bool) previousInitialization = (user.IsInitialized, user.NeedDbUpdateAfterResume);
+            bool saved = false;
+            try
+            {
+                user.IsInitialized = false;
+                user.SToken = sToken;
+                user.LToken = cookie.TryGetLToken(isOversea, out Cookie? lToken) ? lToken : (isOversea ? user.LToken : null);
+                user.CookieToken = cookie.TryGetCookieToken(isOversea, out Cookie? cookieToken) ? cookieToken : (isOversea ? user.CookieToken : null);
+                if (!isOversea)
+                {
+                    user.Entity.CookieTokenLastUpdateTime = user.CookieToken is null ? default : DateTimeOffset.UtcNow;
+                }
 
-            await TaskContext.SwitchToBackgroundAsync();
-            await userInitializationService.ResumeUserAsync(user).ConfigureAwait(false);
-            await TaskContext.SwitchToBackgroundAsync();
-            userRepository.UpdateUser(user.Entity);
-            return new(UserOptionResultKind.CookieUpdated, mid);
+                user.TryUpdateFingerprint(deviceFp);
+
+                await TaskContext.SwitchToBackgroundAsync();
+                await userInitializationService.ResumeUserAsync(user).ConfigureAwait(false);
+                await TaskContext.SwitchToBackgroundAsync();
+                if (!user.IsInitialized)
+                {
+                    return new(UserOptionResultKind.CookieInvalid, SH.ServiceUserProcessCookieRequestUserInfoFailed);
+                }
+
+                userRepository.UpdateUser(user.Entity);
+                user.NeedDbUpdateAfterResume = false;
+                saved = true;
+                return new(UserOptionResultKind.CookieUpdated, mid);
+            }
+            finally
+            {
+                if (!saved)
+                {
+                    await TaskContext.SwitchToMainThreadAsync();
+                    (user.SToken, user.LToken, user.CookieToken, user.Entity.CookieTokenLastUpdateTime) = previousCredentials;
+                    (user.UserInfo, user.UserGameRoles, user.Entity.Fingerprint, user.Entity.FingerprintLastUpdateTime) = previousProfile;
+                    (user.IsInitialized, user.NeedDbUpdateAfterResume) = previousInitialization;
+                }
+            }
         }
     }
 
     public async ValueTask<bool> RefreshCookieTokenAsync(EntityUser user)
     {
+        string? aid = user.Aid;
+        string? mid = user.Mid;
+        Cookie? sToken = user.SToken;
+        if (string.IsNullOrEmpty(aid) || string.IsNullOrEmpty(mid) || sToken is null)
+        {
+            return false;
+        }
+
         using SentrySpanScope span = SentrySpanScope.StartOperation("user.refresh_cookie", "user");
         span.SetData("user.is_oversea", user.IsOversea);
 
@@ -110,18 +150,13 @@ public sealed partial class UserService : IUserService
             }
         }
 
-        string cookieToken = uidCookieToken.CookieToken;
-
-        // Check null and create a new one to avoid System.NullReferenceException
-        user.CookieToken ??= new();
-        user.CookieToken[Cookie.COOKIE_TOKEN] = cookieToken;
-
-        string? mid = user.Mid;
-        if (!userRepository.Execute(query => query.Any(u => u.Mid == mid)))
+        if (!ReferenceEquals(sToken, user.SToken) || !userRepository.Execute(query => query.Any(u => u.Mid == mid)))
         {
             return false;
         }
 
+        user.CookieToken = Cookie.FromCookieToken(aid, mid, uidCookieToken.CookieToken, user.IsOversea);
+        user.CookieTokenLastUpdateTime = DateTimeOffset.UtcNow;
         userRepository.UpdateUser(user);
         return true;
     }

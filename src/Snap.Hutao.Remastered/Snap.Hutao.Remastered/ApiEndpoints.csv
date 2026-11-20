@@ -5,6 +5,7 @@ Extra:{ "Namespace": "Snap.Hutao.Remastered.Web.Endpoint.Hoyolab" }
 "string AccountCreateEmailCaptchaByActionTicket()",,https://sg-public-api.hoyoverse.com/account/ma-verifier/api/createEmailCaptchaByActionTicket,
 "string AccountCreateLoginCaptcha()",https://passport-api.mihoyo.com/account/ma-cn-verifier/verifier/createLoginCaptcha,
 "string AccountCreateQrLogin()",https://passport-api.mihoyo.com/account/ma-cn-passport/app/createQRLogin,
+"string AccountExchangeToken()",https://passport-api.mihoyo.com/account/ma-cn-session/app/exchange,
 "string AccountGetActionTicketInfo()",,https://sg-public-api.hoyoverse.com/account/ma-verifier/api/getActionTicketInfo,
 "string AccountGetCookieTokenBySToken()",https://passport-api.mihoyo.com/account/auth/api/getCookieAccountInfoBySToken,https://api-account-os.hoyoverse.com/account/auth/api/getCookieAccountInfoBySToken
 "string AccountGetLTokenBySToken()",https://passport-api.mihoyo.com/account/auth/api/getLTokenBySToken,https://api-account-os.hoyoverse.com/account/auth/api/getLTokenBySToken
@@ -80,10 +81,11 @@ Extra:{ "Namespace": "Snap.Hutao.Remastered.Web.Endpoint.Hoyolab" }
 "string SophonChunkGetPatchBuild()",https://downloader-api.mihoyo.com/downloader/sophon_chunk/api/getPatchBuild,https://sg-downloader-api.hoyoverse.com/downloader/sophon_chunk/api/getPatchBuild
 "string UserFullInfo()",https://bbs-api.mihoyo.com/user/wapi/getUserFullInfo?gids=2,https://bbs-api-os.hoyolab.com/community/user/wapi/getUserFullInfo?gid=2
 "string UserFullInfoQuery(string accountId)",https://bbs-api.mihoyo.com/user/wapi/getUserFullInfo?uid={accountId}&gids=2,https://bbs-api-os.hoyolab.com/community/painter/wapi/user/full
+"string CurrentUserFullInfo(string accountId)",https://bbs-api.miyoushe.com/user/api/getUserFullInfo?uid={accountId},
 "string UserGameRolesByActionTicket(string actionTicket)",https://api-takumi.mihoyo.com/binding/api/getUserGameRoles?action_ticket={actionTicket}&game_biz=hk4e_cn,
 "string UserGameRolesByCookie()",https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie?game_biz=hk4e_cn,https://api-os-takumi.hoyoverse.com/binding/api/getUserGameRolesByCookie?game_biz=hk4e_global
 "string UserGameRolesByLtoken(Snap.Hutao.Remastered.Web.Hoyolab.Region region)",,https://api-account-os.hoyoverse.com/binding/api/getUserGameRolesByLtoken?game_biz=hk4e_global&region={region}
-"string UserGameRolesBySToken()",https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByStoken,
+"string UserGameRolesBySToken()",https://api-takumi.miyoushe.com/binding/api/getUserGameRolesByStoken,
 "string WebApiOsAccountLoginByCookie()",,https://webapi-os.account.hoyoverse.com/Api/login_by_cookie
 "string WebLoginByPassword()",,https://api-account-os.hoyoverse.com/account/auth/api/webLoginByPassword
 "string WebStaticReferer()",https://webstatic.mihoyo.com,https://webstatic-sea.mihoyo.com

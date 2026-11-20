@@ -30,13 +30,15 @@ public sealed partial class Cookie
     public static Cookie Parse(string cookieString)
     {
         SortedDictionary<string, string> cookieMap = [];
-        cookieString = cookieString.Replace(" ", string.Empty, StringComparison.Ordinal);
-        string[] values = cookieString.Split(';', StringSplitOptions.RemoveEmptyEntries);
+        string[] values = cookieString.Split([';', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         foreach (string[] parts in values.Select(c => c.Split('=', 2)))
         {
             string name = parts[0].Trim();
             string value = parts.Length == 1 ? string.Empty : parts[1].Trim();
-            cookieMap.TryAdd(name, value);
+            if (name.Length > 0)
+            {
+                cookieMap.TryAdd(name, value);
+            }
         }
 
         return new(cookieMap);
@@ -107,6 +109,20 @@ public sealed partial class Cookie
     public bool IsEmpty()
     {
         return inner.Count <= 0;
+    }
+
+    public static Cookie FromLToken(string accountId, string mid, string token, bool isOversea)
+    {
+        return isOversea
+            ? new() { [LTUID] = accountId, [LTOKEN] = token }
+            : new() { [LTUID_V2] = accountId, [LTMID_V2] = mid, [LTOKEN_V2] = token };
+    }
+
+    public static Cookie FromCookieToken(string accountId, string mid, string token, bool isOversea)
+    {
+        return isOversea
+            ? new() { [ACCOUNT_ID] = accountId, [COOKIE_TOKEN] = token }
+            : new() { [ACCOUNT_ID_V2] = accountId, [ACCOUNT_MID_V2] = mid, [COOKIE_TOKEN_V2] = token };
     }
 
     public bool TryGetValue(string key, [NotNullWhen(true)] out string? value)

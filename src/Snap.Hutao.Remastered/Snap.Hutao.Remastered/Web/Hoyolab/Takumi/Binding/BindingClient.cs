@@ -4,7 +4,6 @@
 using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation.HttpClient;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Web.Endpoint.Hoyolab;
-using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Auth;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
 using Snap.Hutao.Remastered.Web.Response;
@@ -30,18 +29,10 @@ public sealed partial class BindingClient
             return await GetUserGameRolesByCookieAsync(user, token).ConfigureAwait(false);
         }
 
-        Response<ActionTicketWrapper> actionTicketResponse = await serviceProvider
-            .GetRequiredService<AuthClient>()
-            .GetActionTicketBySTokenAsync("game_role", user, token)
+        return await serviceProvider
+            .GetRequiredService<BindingClient2>()
+            .GetUserGameRolesBySTokenAsync(user, token)
             .ConfigureAwait(false);
-
-        if (ResponseValidator.TryValidate(actionTicketResponse, serviceProvider, out ActionTicketWrapper? wrapper))
-        {
-            string actionTicket = wrapper.Ticket;
-            return await GetUserGameRolesByActionTicketAsync(actionTicket, user, token).ConfigureAwait(false);
-        }
-
-        return Response.Response.CloneReturnCodeAndMessage<ListWrapper<UserGameRole>, ActionTicketWrapper>(actionTicketResponse);
     }
 
     public async ValueTask<Response<ListWrapper<UserGameRole>>> GetUserGameRolesByActionTicketAsync(string actionTicket, User user, CancellationToken token = default)

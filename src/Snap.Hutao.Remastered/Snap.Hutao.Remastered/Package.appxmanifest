@@ -12,15 +12,13 @@
   IgnorableNamespaces="com uap uap3 desktop desktop6 rescap mp">
 
   <Identity
-    Name="SnapHutaoRemasteringProje.SnapHutaoRemastered"
-    Publisher="CN=469D671A-3AED-4488-AC4F-75E5394BC7FA"
-    Version="2.1.0.0" />
-
-  <mp:PhoneIdentity PhoneProductId="383ddba9-22eb-4b35-91f8-84951953ccd7" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+    Name="E8B6E2B3-D2A0-4435-A81D-2A16AAF405C8"
+    Publisher="CN=SnapHutaoRemasteringProject"
+    Version="2.0.2.0" />
 
   <Properties>
     <DisplayName>Snap Hutao Remastered</DisplayName>
-    <PublisherDisplayName>SnapHutao Remastering Project</PublisherDisplayName>
+    <PublisherDisplayName>SnapHutaoRemasteringProject</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
     <desktop6:RegistryWriteVirtualization>disabled</desktop6:RegistryWriteVirtualization>
   </Properties>

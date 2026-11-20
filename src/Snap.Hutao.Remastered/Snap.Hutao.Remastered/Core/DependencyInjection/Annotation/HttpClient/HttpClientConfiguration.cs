@@ -34,4 +34,9 @@ public enum HttpClientConfiguration
     /// HoyoPlay 登录请求配置
     /// </summary>
     XRpc6,
+
+    /// <summary>
+    /// 国服通行证请求配置
+    /// </summary>
+    XRpcPassport,
 }

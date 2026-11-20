@@ -21,6 +21,8 @@ public static class HoyolabOptions
 
     public const string HoyoPlayUserAgent = $"HYPContainer/1.1.4.133";
 
+    internal const string PassportSdkVersion = "2.44.0";
+
     public const string ToolVersion = "v4.2.2-ys";
 
     public static string DeviceId36 { get; } = Guid.NewGuid().ToString();
@@ -38,7 +40,8 @@ public static class HoyolabOptions
         KeyValuePair.Create(SaltType.LK2, SaltConstants.CNLK2),
         KeyValuePair.Create(SaltType.X4, "xV8v4Qu54lUKrEYFZkJhB8cuOh9Asafs"),
         KeyValuePair.Create(SaltType.X6, "t0qEgfub6cvueAPgR5m9aQWWVciEer7v"),
-        KeyValuePair.Create(SaltType.PROD, "JwYDpKvLj6MrMqqYU6jTKF17KNO2PXoS"),
+        KeyValuePair.Create(SaltType.PROD, "t0qEgfub6cvueAPgR5m9aQWWVciEer7v"),
+        KeyValuePair.Create(SaltType.Passport, "JwYDpKvLj6MrMqqYU6jTKF17KNO2PXoS"),
 
         // Oversea
         KeyValuePair.Create(SaltType.OSK2, SaltConstants.OSK2),
