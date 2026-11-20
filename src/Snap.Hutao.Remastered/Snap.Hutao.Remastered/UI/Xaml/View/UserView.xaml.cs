@@ -15,6 +15,27 @@ public sealed partial class UserView : UserControl
         InitializeComponent();
     }
 
+    // Close both nested and parent flyouts when an account action launches a dialog. Preserve ICommand bindings so CanExecute still controls the AppBarButtons.
+    // This is a temporary workaround for the lack of a FlyoutManager in WinUI 3. We'll need to manage the closing event like this manually:
+
+    /*
+    private bool preserveAccountFlyouts;
+
+    private void OnFlyoutClosing(FlyoutBase sender, FlyoutBaseClosingEventArgs args)
+    {
+        if (preserveAccountFlyouts)
+        {
+            args.Cancel = true;
+        }
+    }
+    */
+    private void DismissAccountFlyouts(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+    {
+        MiHoYoLoginFlyout.Hide();
+        HoYoLabLoginFlyout.Hide();
+        AccountFlyout.Hide();
+    }
+
     public string GetUserNickname(User? user) => user?.UserInfo?.Nickname ?? SH.ViewUserNoUserHint;
 
     public new UserViewModel DataContext { get => Unsafe.As<UserViewModel>(base.DataContext); set => base.DataContext = value; }
