@@ -62,9 +62,11 @@ jobs:
           - runtime: R2R
             publish_aot: false
             suffix: ''
+            appinstaller_subdir: ''
           - runtime: NativeAOT
             publish_aot: true
             suffix: '-AOT'
+            appinstaller_subdir: 'AOT'
     runs-on: windows-latest
     permissions:
       contents: read
@@ -120,7 +122,7 @@ jobs:
         if: ${{ needs.prepare.outputs.continue == 'true' }}
         id: cake
         shell: pwsh
-        run: dotnet tool restore && dotnet cake --publishAot=${{ matrix.publish_aot }}
+        run: dotnet tool restore && dotnet cake --publishAot=${{ matrix.publish_aot }} --enableCanaryAppPackages=true
         env:
           CERTIFICATE: ${{ secrets.CERTIFICATE }}
           PW: ${{ secrets.PW }}
@@ -133,24 +135,6 @@ jobs:
           path: ${{ github.workspace }}/artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
           if-no-files-found: error
 
-      - name: Build installer
-        if: ${{ needs.prepare.outputs.continue == 'true' }}
-        id: installer
-        shell: pwsh
-        run: dotnet cake build-installer.cake --publishAot=${{ matrix.publish_aot }} --appVersion=${{ steps.cake.outputs.version }}
-        env:
-          CERTIFICATE: ${{ secrets.CERTIFICATE }}
-          PW: ${{ secrets.PW }}
-
-      - name: Upload Native AOT installer symbols
-        if: ${{ matrix.runtime == 'NativeAOT' }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: NativeAOT-Installer-Symbols-${{ steps.cake.outputs.version }}
-          path: ${{ github.workspace }}/artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
-          if-no-files-found: error
-
-
       - name: Upload signed msix
         if: ${{ success() && needs.prepare.outputs.continue == 'true' }}
         uses: actions/upload-artifact@v7
@@ -158,18 +142,26 @@ jobs:
           name: Snap.Hutao.Remastered.Canary-${{ steps.cake.outputs.version }}${{ matrix.suffix }}
           path: ${{ github.workspace }}/src/output/Snap.Hutao.Remastered.Canary-${{ steps.cake.outputs.version }}${{ matrix.suffix }}.msix
 
-      - name: Upload installer
+      - name: Upload Canary AppPackages (GitHub artifact only)
         if: ${{ success() && needs.prepare.outputs.continue == 'true' }}
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered.Canary-Setup-${{ steps.cake.outputs.version }}${{ matrix.suffix }}
-          path: ${{ github.workspace }}/publish/Snap.Hutao.Remastered-*.exe
+          name: Canary-AppPackages-${{ matrix.runtime }}
+          path: ${{ github.workspace }}/AppPackages/Canary/${{ matrix.appinstaller_subdir }}
+          if-no-files-found: error
+
+      - name: Export sideload trust certificate
+        if: ${{ success() && needs.prepare.outputs.continue == 'true' }}
+        shell: pwsh
+        run: ./scripts/Export-PackageCertificate.ps1 -PfxPath 'temp.pfx' -OutputPath 'temp-code-signing.cer'
+        env:
+          PW: ${{ secrets.PW }}
 
       - name: Upload code-signing certificate
         if: ${{ success() && needs.prepare.outputs.continue == 'true' }}
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered.Canary-SnapHutaoRemasteringProject-${{ steps.installer.outputs.version }}${{ matrix.suffix }}
+          name: Snap.Hutao.Remastered.Canary-SnapHutaoRemasteringProject-${{ steps.cake.outputs.version }}${{ matrix.suffix }}
           path: ${{ github.workspace }}/temp-code-signing.cer
 
       - name: Add summary
@@ -187,3 +179,53 @@ jobs:
           "
 
           echo $summary >> $Env:GITHUB_STEP_SUMMARY
+  
+  publish_r2:
+    name: Publish Canary App Installer (disabled)
+    needs: build
+    # Canary AppPackages are built for CI verification but intentionally not copied to R2.
+    if: ${{ false }}
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    concurrency:
+      group: r2-canary
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Download Canary R2R AppPackages
+        uses: actions/download-artifact@v8
+        with:
+          name: Canary-AppPackages-R2R
+          path: ${{ github.workspace }}/AppPackages/Canary
+
+      - name: Download Canary NativeAOT AppPackages
+        uses: actions/download-artifact@v8
+        with:
+          name: Canary-AppPackages-NativeAOT
+          path: ${{ github.workspace }}/AppPackages/Canary/AOT
+
+      - name: Install rclone
+        shell: pwsh
+        run: |
+          choco install rclone --yes --no-progress
+          if ($LASTEXITCODE -ne 0) { throw 'rclone installation failed.' }
+
+      - name: Replace Canary App Installer feeds
+        shell: pwsh
+        env:
+          RCLONE_CONFIG_R2_TYPE: s3
+          RCLONE_CONFIG_R2_PROVIDER: Cloudflare
+          RCLONE_CONFIG_R2_REGION: auto
+          RCLONE_CONFIG_R2_NO_CHECK_BUCKET: 'true'
+          RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+        run: |
+          ./scripts/Publish-AppPackagesToR2.ps1 -AppPackagesPath 'AppPackages' -Channel Canary -RuntimeKind R2R
+          if ($LASTEXITCODE -ne 0) { throw 'Canary R2R publication failed.' }
+          ./scripts/Publish-AppPackagesToR2.ps1 -AppPackagesPath 'AppPackages' -Channel Canary -RuntimeKind NativeAOT
+          if ($LASTEXITCODE -ne 0) { throw 'Canary NativeAOT publication failed.' }
+

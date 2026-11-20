@@ -77,7 +77,12 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
   Alpha, Canary and both Publish workflows build both modes in independent matrix jobs;
   AOT packages and artifact names carry `-AOT`. `scripts/Test-PackageRuntime.ps1` verifies
   the selected runtime before packaging, and Native AOT retains its required `App.xbf`.
-  Canary prepares one merged commit for both modes; only R2R publishes the default installer to R2.
+  Canary prepares one merged commit for both modes. Publish and Alpha upload both R2R (default path)
+  and NativeAOT (`AOT/` path) signed App Installer feeds to Cloudflare R2; Canary R2 uploads
+  remain disabled. Each publication clears the selected feed before uploading its replacement,
+  retaining no previous package versions. Clearing the default feed preserves its sibling `AOT/`
+  subtree; see [App Installer release distribution](docs/appinstaller-release.md) for the
+  layout, updater behavior and temporary-unavailability trade-offs.
   Private runtime packages explicitly set `Publish=true`: the SDK excludes `PrivateAssets=all`
   references from publish by default. Publishing also validates the Native, HPatch, Yae and
   deployment payloads before either Cake packager can consume the output.

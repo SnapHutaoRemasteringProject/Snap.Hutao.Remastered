@@ -6323,4 +6323,10 @@
   <data name="ServiceGameIslandVerificationUnavailable" xml:space="preserve">
     <value>暂时无法连接 Island 账户检查服务，本次检查未完成，游戏将继续运行。请在网络恢复后重试。</value>
   </data>
+  <data name="ServiceUpdateUnpackagedUnsupported" xml:space="preserve">
+    <value>非打包版已停止支持自动更新，请重新安装 MSIX 打包版本。</value>
+  </data>
+  <data name="ServiceUpdateAppInstallerUnavailable" xml:space="preserve">
+    <value>当前安装版本不包含受支持的 App Installer 更新源。请使用发布页面提供的 .appinstaller 文件重新安装。</value>
+  </data>
 </root>

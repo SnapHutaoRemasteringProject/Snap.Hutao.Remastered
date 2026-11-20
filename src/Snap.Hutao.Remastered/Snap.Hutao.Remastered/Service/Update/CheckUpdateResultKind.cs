@@ -11,4 +11,5 @@ public enum CheckUpdateResultKind
     AlreadyUpdated = 3,
 
     UpdateAvailable = 4,
+    AppInstallerUnavailable = 5,
 }
