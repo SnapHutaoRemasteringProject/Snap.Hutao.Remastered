@@ -3,12 +3,13 @@
 
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Core;
+using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Factory.Picker;
+using Snap.Hutao.Remastered.Factory.Progress;
 using Snap.Hutao.Remastered.Service.Notification;
 using System.IO;
-using Windows.Storage;
 
 namespace Snap.Hutao.Remastered.ViewModel.Setting;
 
@@ -17,6 +18,8 @@ public sealed class SettingStorageSetDataFolderOperation
     public required IFileSystemPickerInteraction FileSystemPickerInteraction { private get; init; }
 
     public required IContentDialogFactory ContentDialogFactory { private get; init; }
+
+    public required IProgressFactory ProgressFactory { private get; init; }
 
     public required IMessenger Messenger { get; init; }
 
@@ -27,8 +30,10 @@ public sealed class SettingStorageSetDataFolderOperation
             return false;
         }
 
-        string oldFolderPath = HutaoRuntime.DataDirectory;
-        if (UrlPath.IsEqualOrSubdirectory(oldFolderPath, newFolderPath))
+        string oldFolderPath = Path.GetFullPath(HutaoRuntime.DataDirectory);
+        newFolderPath = Path.TrimEndingDirectorySeparator(Path.GetFullPath(newFolderPath));
+        if (UrlPath.IsEqualOrSubdirectory(oldFolderPath, newFolderPath)
+            || UrlPath.IsEqualOrSubdirectory(newFolderPath, oldFolderPath))
         {
             return false;
         }
@@ -43,35 +48,46 @@ public sealed class SettingStorageSetDataFolderOperation
             return false;
         }
 
-        Directory.CreateDirectory(newFolderPath);
-        IEnumerable<string> entries;
         try
         {
-            entries = Directory.EnumerateDirectories(newFolderPath);
-        }
-        catch (DirectoryNotFoundException)
-        {
-            return false;
-        }
-
-        if (entries.Any())
-        {
-            ContentDialogResult result = await ContentDialogFactory.CreateForConfirmCancelAsync(
-                    SH.ViewModelSettingStorageSetDataFolderTitle,
-                    SH.FormatViewModelSettingStorageSetDataFolderDescription3(newFolderPath))
-                .ConfigureAwait(false);
-
-            if (result is not ContentDialogResult.Primary)
+            bool replaceExisting = Directory.Exists(newFolderPath) && Directory.EnumerateFileSystemEntries(newFolderPath).Any();
+            if (replaceExisting && await ContentDialogFactory.CreateForConfirmCancelAsync(
+                SH.ViewModelSettingStorageSetDataFolderTitle,
+                SH.FormatViewModelSettingStorageMigrationReplaceConfirmation(newFolderPath)).ConfigureAwait(false) is not ContentDialogResult.Primary)
             {
                 return false;
             }
-        }
 
-        try
-        {
-            Directory.SetReadOnly(oldFolderPath, false);
-            StorageFolder oldFolder = await StorageFolder.GetFolderFromPathAsync(oldFolderPath);
-            await oldFolder.CopyAsync(newFolderPath).ConfigureAwait(false);
+            ContentDialog dialog = await ContentDialogFactory
+                .CreateForIndeterminateProgressAsync(SH.ViewModelSettingStorageMigrationProgress)
+                .ConfigureAwait(false);
+            await ContentDialogFactory.TaskContext.SwitchToMainThreadAsync();
+            DevWinUI.AnimatedToc stages = new() { IsEnabled = false };
+            stages.Items.Add(new DevWinUI.AnimatedTocItem { Label = SH.ViewModelSettingStorageMigrationCompress });
+            stages.Items.Add(new DevWinUI.AnimatedTocItem { Label = SH.ViewModelSettingStorageMigrationTransfer });
+            stages.Items.Add(new DevWinUI.AnimatedTocItem { Label = SH.ViewModelSettingStorageMigrationExtract });
+            stages.SelectedIndex = (int)UserDataMigrationStage.Compress;
+
+            ProgressBar progressBar = new() { IsIndeterminate = true, Maximum = 100 };
+            StackPanel content = new() { Spacing = 12 };
+            content.Children.Add(stages);
+            content.Children.Add(progressBar);
+            dialog.Content = content;
+
+            IProgress<(UserDataMigrationStage Stage, double? Percentage)> progress = ProgressFactory.CreateForMainThread<(UserDataMigrationStage Stage, double? Percentage)>(value =>
+            {
+                stages.SelectedIndex = (int)value.Stage;
+                progressBar.IsIndeterminate = value.Percentage is null;
+                progressBar.Value = value.Percentage ?? 0;
+            });
+
+            using (await ContentDialogFactory.BlockAsync(dialog).ConfigureAwait(false))
+            {
+                await ContentDialogFactory.TaskContext.SwitchToBackgroundAsync();
+                Directory.CreateDirectory(newFolderPath);
+                UserDataTransfer.CopyToDataFolder(oldFolderPath, newFolderPath, replaceExisting, progress);
+                LocalSetting.Set(AppDataPaths.DataDirectorySettingKey, newFolderPath);
+            }
         }
         catch (Exception ex)
         {
@@ -79,8 +95,6 @@ public sealed class SettingStorageSetDataFolderOperation
             return false;
         }
 
-        LocalSetting.Set(SettingKeys.PreviousDataDirectoryToDelete, oldFolderPath);
-        LocalSetting.Set(SettingKeys.DataDirectory, newFolderPath);
         return true;
     }
 }

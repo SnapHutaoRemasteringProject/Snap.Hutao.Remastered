@@ -487,6 +487,14 @@
                             Description="{x:Bind DataContext.RuntimeOptions.DataFolder, Mode=OneWay}"
                             Header="{shuxm:ResourceString Name=ViewPageSettingSetDataFolderHeader}"
                             IsClickEnabled="{x:Bind DataContext.IsSetDataFolderEnabled, Mode=OneWay}"/>
+                        <cwc:SettingsCard
+                            HorizontalAlignment="Stretch"
+                            ActionIcon="{shuxm:FontIcon Glyph=&#xE76C;}"
+                            ActionIconToolTip="{shuxm:ResourceString Name=ViewGuideImportUserDatabaseHeader}"
+                            Command="{x:Bind DataContext.ImportUserDatabaseCommand, Mode=OneWay}"
+                            Description="{shuxm:ResourceString Name=ViewGuideImportUserDatabaseDescription}"
+                            Header="{shuxm:ResourceString Name=ViewGuideImportUserDatabaseHeader}"
+                            IsClickEnabled="{x:Bind DataContext.IsSetDataFolderEnabled, Mode=OneWay}"/>
                     </StackPanel>
 
                     <TextBlock

@@ -1757,6 +1757,30 @@ Space Available: {2}</value>
   <data name="ViewGuideStepDataFolderHint" xml:space="preserve">
     <value>* The default data folder will be deleted during uninstallation, you can change it in settings later</value>
   </data>
+  <data name="ViewGuideImportUserDatabaseHeader" xml:space="preserve">
+    <value>Import data from an older version</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseDescription" xml:space="preserve">
+    <value>Select the folder containing Userdata.db to copy it into the data folder shown above.</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseAlreadyActive" xml:space="preserve">
+    <value>This is the current data folder. Select the folder containing the old database.</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseReplaceConfirmation" xml:space="preserve">
+    <value>The imported database will be used after restart. The current database will be saved in the current data folder with a filename starting with Userdata.before-import. Continue importing?</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseMissing" xml:space="preserve">
+    <value>Userdata.db was not found. Select the folder that contains the database.</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseSuccess" xml:space="preserve">
+    <value>The imported database is ready and will be used after restart.</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseFailed" xml:space="preserve">
+    <value>Could not import your data. {0}</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseDeferred" xml:space="preserve">
+    <value>The current database will be used for this session. The imported copy was kept and will be retried on the next launch. {0}</value>
+  </data>
   <data name="ViewGuideStepEnvironment" xml:space="preserve">
     <value>Environments</value>
   </data>
@@ -2326,6 +2350,36 @@ Space Available: {2}</value>
   </data>
   <data name="ViewModelSettingStorageSetDataFolderDescription3" xml:space="preserve">
     <value>The selected folder '{0}' is not empty. Existing files will be overwritten.</value>
+  </data>
+  <data name="ViewModelSettingStorageSetDataFolderHasDatabase" xml:space="preserve">
+    <value>The current folder has no database to move, and the selected folder contains an existing database. Use Import data from an older version in the setup guide.</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationProgress" xml:space="preserve">
+    <value>Moving data to a new folder</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationCompress" xml:space="preserve">
+    <value>Compress data</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationTransfer" xml:space="preserve">
+    <value>Move the archive</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationExtract" xml:space="preserve">
+    <value>Extract to the new folder</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationConflict" xml:space="preserve">
+    <value>A file or folder appeared at {0} during migration. Select the folder again and confirm to retry.</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationReplaceConfirmation" xml:space="preserve">
+    <value>The selected folder already contains data: {0}. Conflicting files and folders will be moved to a Hutao.MigrationBackup folder in the destination. Continue changing the data folder?</value>
+  </data>
+  <data name="ViewModelSettingStorageBackupProgress" xml:space="preserve">
+    <value>Creating a local backup</value>
+  </data>
+  <data name="ViewModelSettingStorageBackupLocation" xml:space="preserve">
+    <value>Choose a location outside the data folder for the backup.</value>
+  </data>
+  <data name="ViewModelSettingStorageBackupSuccess" xml:space="preserve">
+    <value>Backup saved to {0}</value>
   </data>
   <data name="ViewModelSettingStorageSetDataFolderTitle" xml:space="preserve">
     <value>Copy Data Files</value>
@@ -3649,6 +3703,15 @@ Space Available: {2}</value>
   </data>
   <data name="ViewPageSettingSetDataFolderDescription" xml:space="preserve">
     <value>Folder will be automatically copied and the program will restart and delete the former folder automatically</value>
+  </data>
+  <data name="ViewPageSettingMigrateDataFolderDescription" xml:space="preserve">
+    <value>Copy your data to a new folder and restart to use it. The original folder is kept.</value>
+  </data>
+  <data name="ViewPageSettingUserDataBackupHeader" xml:space="preserve">
+    <value>Create a local data backup</value>
+  </data>
+  <data name="ViewPageSettingUserDataBackupDescription" xml:space="preserve">
+    <value>Save a ZIP containing the database and data files to a folder you choose.</value>
   </data>
   <data name="ViewPageSettingSetDataFolderHeader" xml:space="preserve">
     <value>Change Data Directory</value>

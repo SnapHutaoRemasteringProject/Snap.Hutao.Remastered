@@ -4,13 +4,16 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.AppLifecycle;
 using Snap.Hutao.Remastered.Core;
+using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Core.Shell;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Factory.Picker;
+using Snap.Hutao.Remastered.Factory.Progress;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.Notification;
@@ -21,6 +24,8 @@ using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
 using Snap.Hutao.Remastered.Web.Response;
 using System.Collections.ObjectModel;
+using System.Data.Common;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace Snap.Hutao.Remastered.ViewModel.Guide;
@@ -31,6 +36,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
 {
     private readonly IFileSystemPickerInteraction fileSystemPickerInteraction;
     private readonly IContentDialogFactory contentDialogFactory;
+    private readonly IProgressFactory progressFactory;
     private readonly IServiceProvider serviceProvider;
     private readonly ITaskContext taskContext;
     private readonly IMessenger messenger;
@@ -324,6 +330,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         }
 
         IsSetDataFolderEnabled = false;
+        IsNextOrCompleteButtonEnabled = false;
         try
         {
             SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Set data folder path", "GuideViewModel.Command"));
@@ -332,6 +339,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
             {
                 FileSystemPickerInteraction = fileSystemPickerInteraction,
                 ContentDialogFactory = contentDialogFactory,
+                ProgressFactory = progressFactory,
                 Messenger = messenger,
             };
 
@@ -355,6 +363,75 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
             // or failure. x:Bind observes this property synchronously.
             await taskContext.SwitchToMainThreadAsync();
             IsSetDataFolderEnabled = true;
+            IsNextOrCompleteButtonEnabled = true;
+        }
+    }
+
+    [Command("ImportUserDatabaseCommand")]
+    private async Task ImportUserDatabaseAsync()
+    {
+        if (!IsSetDataFolderEnabled)
+        {
+            return;
+        }
+
+        IsSetDataFolderEnabled = false;
+        IsNextOrCompleteButtonEnabled = false;
+        try
+        {
+            string destination = HutaoRuntime.DataDirectory;
+            if (!fileSystemPickerInteraction.PickFolder().TryGetValue(out string? source))
+            {
+                return;
+            }
+
+            if (string.Equals(Path.TrimEndingDirectorySeparator(Path.GetFullPath(source)),
+                Path.TrimEndingDirectorySeparator(Path.GetFullPath(destination)), StringComparison.OrdinalIgnoreCase))
+            {
+                messenger.Send(InfoBarMessage.Warning(SH.ViewGuideImportUserDatabaseAlreadyActive));
+                return;
+            }
+
+            if (!File.Exists(Path.Combine(source, DatabaseSchema.UserDatabaseFileName)))
+            {
+                messenger.Send(InfoBarMessage.Warning(SH.ViewGuideImportUserDatabaseMissing));
+                return;
+            }
+
+            if (DatabaseSchema.HasUserDatabase(destination)
+                && await contentDialogFactory.CreateForConfirmCancelAsync(
+                    SH.ViewGuideImportUserDatabaseHeader,
+                    SH.ViewGuideImportUserDatabaseReplaceConfirmation).ConfigureAwait(false) is not ContentDialogResult.Primary)
+            {
+                return;
+            }
+
+            ContentDialog dialog = await contentDialogFactory
+                .CreateForIndeterminateProgressAsync(SH.ViewGuideImportUserDatabaseHeader)
+                .ConfigureAwait(false);
+            using (await contentDialogFactory.BlockAsync(dialog).ConfigureAwait(false))
+            {
+                await taskContext.SwitchToBackgroundAsync();
+                DatabaseSchema.StageUserDatabaseImport(source, destination);
+            }
+
+            messenger.Send(InfoBarMessage.Success(SH.ViewGuideImportUserDatabaseSuccess));
+            await taskContext.SwitchToMainThreadAsync();
+            AppInstance.Restart(string.Empty);
+        }
+        catch (Exception ex) when (ex is DbException or IOException or InvalidDataException or UnauthorizedAccessException)
+        {
+            messenger.Send(InfoBarMessage.Error(SH.FormatViewGuideImportUserDatabaseFailed(ex.Message)));
+        }
+        catch (COMException ex)
+        {
+            messenger.Send(InfoBarMessage.Error(ex));
+        }
+        finally
+        {
+            await taskContext.SwitchToMainThreadAsync();
+            IsSetDataFolderEnabled = true;
+            IsNextOrCompleteButtonEnabled = true;
         }
     }
 

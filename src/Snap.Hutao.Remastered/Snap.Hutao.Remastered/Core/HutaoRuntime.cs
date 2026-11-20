@@ -146,8 +146,9 @@ public static class HutaoRuntime
     {
         if (AppDataPaths.ProfileRoot is { } profileRoot)
         {
-            Directory.CreateDirectory(profileRoot);
-            return profileRoot;
+            string directory = LocalSetting.Get(AppDataPaths.DataDirectorySettingKey, profileRoot);
+            Directory.CreateDirectory(directory);
+            return directory;
         }
 
         // Delete the previous data folder if it exists

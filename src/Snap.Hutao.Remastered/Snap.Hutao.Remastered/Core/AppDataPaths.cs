@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Setting;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -15,6 +16,8 @@ internal static class AppDataPaths
 
     public static string UnpackagedRoot { get; } = ProfileRoot
         ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SnapHutaoRemastered");
+
+    public static string DataDirectorySettingKey => ProfileRoot is null ? SettingKeys.DataDirectory : SettingKeys.ProfileDataDirectory;
 
     public static string InstanceSuffix { get; } = ProfileRoot is null ? string.Empty
         : "." + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(ProfileRoot.ToUpperInvariant()))).Substring(0, 24);

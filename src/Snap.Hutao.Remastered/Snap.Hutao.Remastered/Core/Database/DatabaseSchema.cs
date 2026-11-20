@@ -10,7 +10,110 @@ namespace Snap.Hutao.Remastered.Core.Database;
 
 internal static class DatabaseSchema
 {
+    public const string UserDatabaseFileName = "Userdata.db";
+
+    public const string PendingUserDatabaseFileName = "Userdata.pending-import.db";
+
     public static int Upgrade(string connectionString, string? targetMigration = null)
+    {
+        return Upgrade(connectionString, targetMigration, requireHistory: false);
+    }
+
+    public static bool HasUserDatabase(string directory)
+    {
+        string path = Path.Combine(directory, UserDatabaseFileName);
+        return File.Exists(path) || HasJournalFiles(path);
+    }
+
+    public static void StageUserDatabaseImport(string sourceDirectory, string destinationDirectory)
+    {
+        string stagingPath = Path.Combine(destinationDirectory, $"Userdata.import-{Guid.NewGuid():N}.db");
+        try
+        {
+            CopyUserDatabase(Path.Combine(sourceDirectory, UserDatabaseFileName), stagingPath);
+            Upgrade(new SqliteConnectionStringBuilder { DataSource = stagingPath }.ToString(), targetMigration: null, requireHistory: true);
+            File.Move(stagingPath, Path.Combine(destinationDirectory, PendingUserDatabaseFileName), overwrite: true);
+        }
+        finally
+        {
+            File.Delete(stagingPath);
+        }
+    }
+
+    public static void ApplyPendingUserDatabaseImport(string databasePath)
+    {
+        string directory = Path.GetDirectoryName(databasePath)!;
+        string pendingPath = Path.Combine(directory, PendingUserDatabaseFileName);
+        if (!File.Exists(pendingPath))
+        {
+            return;
+        }
+
+        string pendingConnectionString = new SqliteConnectionStringBuilder { DataSource = pendingPath, Mode = SqliteOpenMode.ReadWrite }.ToString();
+        Upgrade(pendingConnectionString, targetMigration: null, requireHistory: true);
+
+        if (HasJournalFiles(databasePath) && File.Exists(databasePath))
+        {
+            // Fold the old WAL into the old database before storing it as a standalone backup.
+            SqliteConnectionStringBuilder builder = new() { DataSource = databasePath, Mode = SqliteOpenMode.ReadWrite, Pooling = false };
+            using SqliteConnection existing = new(builder.ToString());
+            existing.Open();
+            SetDeleteJournalMode(existing);
+        }
+
+        if (HasJournalFiles(databasePath))
+        {
+            throw new IOException("The current user database still has journal files. Close other clients using that folder and try again.");
+        }
+
+        if (File.Exists(databasePath))
+        {
+            string backupPath = Path.Combine(directory, $"Userdata.before-import-{Guid.NewGuid():N}.db");
+            File.Replace(pendingPath, databasePath, backupPath);
+        }
+        else
+        {
+            File.Move(pendingPath, databasePath);
+        }
+    }
+
+    private static bool HasJournalFiles(string databasePath)
+    {
+        return File.Exists(databasePath + "-wal") || File.Exists(databasePath + "-shm") || File.Exists(databasePath + "-journal");
+    }
+
+    public static void CopyUserDatabase(string sourcePath, string destinationPath)
+    {
+        SqliteConnectionStringBuilder builder = new()
+        {
+            DataSource = sourcePath,
+            Mode = SqliteOpenMode.ReadOnly,
+            Pooling = false,
+        };
+        using SqliteConnection source = new(builder.ToString());
+        source.Open();
+
+        builder.DataSource = destinationPath;
+        builder.Mode = SqliteOpenMode.ReadWriteCreate;
+        using SqliteConnection destination = new(builder.ToString());
+        destination.Open();
+        source.BackupDatabase(destination);
+
+        // Publish a standalone file even if the source uses write-ahead logging.
+        SetDeleteJournalMode(destination);
+    }
+
+    private static void SetDeleteJournalMode(SqliteConnection connection)
+    {
+        using SqliteCommand command = connection.CreateCommand();
+        command.CommandText = "PRAGMA journal_mode = DELETE;";
+        if (command.ExecuteScalar() is not "delete")
+        {
+            throw new InvalidDataException("Could not close the database journal.");
+        }
+    }
+
+    private static int Upgrade(string connectionString, string? targetMigration, bool requireHistory)
     {
         int targetCount = DatabaseMigrations.All.Length;
         if (targetMigration is not null)
@@ -33,6 +136,11 @@ internal static class DatabaseSchema
         // decide that the same migration is pending. Disposal rolls back every failure.
         using SqliteTransaction transaction = connection.BeginTransaction(deferred: false);
         List<string> applied = ReadHistory(connection, transaction);
+        if (requireHistory && applied.Count == 0)
+        {
+            throw new InvalidDataException("The selected database has no Snap Hutao migration history.");
+        }
+
         if (applied.Count > targetCount)
         {
             throw new InvalidDataException($"This build cannot accept the database migration history: the database has {applied.Count} records ending at '{applied[^1]}'; the requested target recognizes {targetCount} records ending at '{DatabaseMigrations.All[targetCount - 1].Id}'. Unknown histories and schema downgrades are not supported. The database was not changed.");

@@ -605,9 +605,15 @@
                                             ActionIcon="{shuxm:FontIcon Glyph=&#xE76C;}"
                                             ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingStorageSetAction}"
                                             Command="{x:Bind DataContext.Storage.SetDataFolderCommand, Mode=OneWay}"
-                                            Description="{shuxm:ResourceString Name=ViewPageSettingSetDataFolderDescription}"
+                                            Description="{shuxm:ResourceString Name=ViewPageSettingMigrateDataFolderDescription}"
                                             Header="{shuxm:ResourceString Name=ViewPageSettingSetDataFolderHeader}"
-                                            IsClickEnabled="True"/>
+                                            IsClickEnabled="{x:Bind DataContext.Storage.IsDataTransferEnabled, Mode=OneWay}"/>
+                                        <cwc:SettingsCard
+                                            ActionIcon="{shuxm:FontIcon Glyph=&#xE76C;}"
+                                            Command="{x:Bind DataContext.Storage.SaveUserDataBackupCommand, Mode=OneWay}"
+                                            Description="{shuxm:ResourceString Name=ViewPageSettingUserDataBackupDescription}"
+                                            Header="{shuxm:ResourceString Name=ViewPageSettingUserDataBackupHeader}"
+                                            IsClickEnabled="{x:Bind DataContext.Storage.IsDataTransferEnabled, Mode=OneWay}"/>
                                         <cwc:SettingsCard
                                             ActionIcon="{shuxm:FontIcon Glyph=&#xE76C;}"
                                             Command="{x:Bind DataContext.Storage.DeleteServerCacheFolderCommand, Mode=OneWay}"

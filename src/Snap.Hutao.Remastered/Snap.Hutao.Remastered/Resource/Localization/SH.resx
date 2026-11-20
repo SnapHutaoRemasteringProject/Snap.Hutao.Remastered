@@ -1769,6 +1769,30 @@
   <data name="ViewGuideStepDataFolderHint" xml:space="preserve">
     <value>* 默认的数据文件夹会在卸载时一同删除，稍后可以在设置中修改</value>
   </data>
+  <data name="ViewGuideImportUserDatabaseHeader" xml:space="preserve">
+    <value>导入旧版数据</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseDescription" xml:space="preserve">
+    <value>选择含有 Userdata.db 的旧数据文件夹，将数据库复制到上方显示的数据文件夹。</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseAlreadyActive" xml:space="preserve">
+    <value>所选文件夹是当前的数据文件夹。请选择旧版数据库所在的位置。</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseReplaceConfirmation" xml:space="preserve">
+    <value>重启后将使用导入的数据库。当前数据库会以 Userdata.before-import 开头的文件名备份在当前数据文件夹中。继续导入吗？</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseMissing" xml:space="preserve">
+    <value>所选文件夹中找不到 Userdata.db。请选择数据库所在的文件夹。</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseSuccess" xml:space="preserve">
+    <value>旧版数据库已准备好，重启后生效。</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseFailed" xml:space="preserve">
+    <value>无法导入旧版数据。{0}</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseDeferred" xml:space="preserve">
+    <value>本次启动仍使用当前数据库。待导入的数据已保留，下次启动时会重试。{0}</value>
+  </data>
   <data name="ViewGuideStepEnvironment" xml:space="preserve">
     <value>环境</value>
   </data>
@@ -2374,6 +2398,36 @@
   </data>
   <data name="ViewModelSettingStorageSetDataFolderDescription3" xml:space="preserve">
     <value>选择的文件夹'{0}'不为空，将会覆盖已存在的文件</value>
+  </data>
+  <data name="ViewModelSettingStorageSetDataFolderHasDatabase" xml:space="preserve">
+    <value>当前文件夹没有可迁移的数据库，所选文件夹已有旧数据库。请在首次启动引导中导入旧版数据。</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationProgress" xml:space="preserve">
+    <value>正在迁移数据</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationCompress" xml:space="preserve">
+    <value>压缩数据</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationTransfer" xml:space="preserve">
+    <value>移动压缩包</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationExtract" xml:space="preserve">
+    <value>解包到新文件夹</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationConflict" xml:space="preserve">
+    <value>迁移期间目标位置出现同名项目：{0}。请重新选择目录并确认后再试。</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationReplaceConfirmation" xml:space="preserve">
+    <value>目标文件夹已有内容：{0}。迁移时，目标中同名的文件和文件夹会移入 Hutao.MigrationBackup 文件夹。继续更改数据目录吗？</value>
+  </data>
+  <data name="ViewModelSettingStorageBackupProgress" xml:space="preserve">
+    <value>正在创建本地备份</value>
+  </data>
+  <data name="ViewModelSettingStorageBackupLocation" xml:space="preserve">
+    <value>请选择数据文件夹以外的位置保存备份。</value>
+  </data>
+  <data name="ViewModelSettingStorageBackupSuccess" xml:space="preserve">
+    <value>备份已保存到 {0}</value>
   </data>
   <data name="ViewModelSettingStorageSetDataFolderTitle" xml:space="preserve">
     <value>复制数据文件</value>
@@ -3719,6 +3773,15 @@
   </data>
   <data name="ViewPageSettingSetDataFolderDescription" xml:space="preserve">
     <value>更改目录后将会自动复制文件夹并自动重启，重启后自动删除之前的文件夹</value>
+  </data>
+  <data name="ViewPageSettingMigrateDataFolderDescription" xml:space="preserve">
+    <value>复制数据到新文件夹，重启后使用新位置。原文件夹会保留。</value>
+  </data>
+  <data name="ViewPageSettingUserDataBackupHeader" xml:space="preserve">
+    <value>创建本地数据备份</value>
+  </data>
+  <data name="ViewPageSettingUserDataBackupDescription" xml:space="preserve">
+    <value>将数据库和数据文件打包成 ZIP，保存到指定文件夹。</value>
   </data>
   <data name="ViewPageSettingSetDataFolderHeader" xml:space="preserve">
     <value>更改数据目录</value>
