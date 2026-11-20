@@ -251,7 +251,7 @@
                                 shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                 Header="ServiceType"
                                 ItemsSource="{x:Bind RedeemCodeTargetServiceTypes}"
-                                SelectedItem="{x:Bind DataContext.RedeemCodeGenerateOption.ServiceType, Mode=TwoWay}"/>
+                                SelectedItem="{x:Bind DataContext.RedeemCodeGenerateOption.ServiceTypeName, Mode=TwoWay}"/>
                         </shuxc:SizeRestrictedContentControl>
                         <NumberBox
                             Header="Value"
@@ -371,7 +371,7 @@
                                 shuxcth:ComboBoxPopupLifetime.IsManaged="True"
                                 Header="Severity"
                                 ItemsSource="{x:Bind InfoBarSeverities}"
-                                SelectedItem="{x:Bind DataContext.Announcement.Severity, Mode=TwoWay}"/>
+                                SelectedItem="{x:Bind DataContext.Announcement.SeverityName, Mode=TwoWay}"/>
                         </shuxc:SizeRestrictedContentControl>
                         <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Command="{x:Bind DataContext.UploadAnnouncementCommand, Mode=OneWay}" Content="Upload"/>
                     </StackPanel>

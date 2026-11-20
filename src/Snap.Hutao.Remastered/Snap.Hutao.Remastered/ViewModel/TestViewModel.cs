@@ -688,7 +688,29 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
 
         public string Content { get; set => SetProperty(ref field, value); } = default!;
 
-        public InfoBarSeverity Severity { get; set => SetProperty(ref field, value); } = InfoBarSeverity.Informational;
+        public InfoBarSeverity Severity
+        {
+            get;
+            set
+            {
+                if (SetProperty(ref field, value))
+                {
+                    OnPropertyChanged(nameof(SeverityName));
+                }
+            }
+        } = InfoBarSeverity.Informational;
+
+        public string SeverityName
+        {
+            get => Severity.ToString();
+            set
+            {
+                if (Enum.TryParse(value, out InfoBarSeverity severity))
+                {
+                    Severity = severity;
+                }
+            }
+        }
 
         public string Link { get; set => SetProperty(ref field, value); } = default!;
 
@@ -728,7 +750,29 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
         [ObservableProperty]
         public partial bool IsTimesLimited { get; set; }
 
-        public RedeemCodeTargetServiceType ServiceType { get; set => SetProperty(ref field, value); }
+        public RedeemCodeTargetServiceType ServiceType
+        {
+            get;
+            set
+            {
+                if (SetProperty(ref field, value))
+                {
+                    OnPropertyChanged(nameof(ServiceTypeName));
+                }
+            }
+        }
+
+        public string ServiceTypeName
+        {
+            get => ServiceType.ToString();
+            set
+            {
+                if (Enum.TryParse(value, out RedeemCodeTargetServiceType type))
+                {
+                    ServiceType = type;
+                }
+            }
+        }
 
         public int Value { get; set => SetProperty(ref field, value); }
 

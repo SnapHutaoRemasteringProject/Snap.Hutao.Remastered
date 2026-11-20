@@ -23,7 +23,7 @@ public sealed partial class TestPage : ScopedPage
 
     public new TestViewModel DataContext { get => Unsafe.As<TestViewModel>(base.DataContext); set => base.DataContext = value; }
 
-    public RedeemCodeTargetServiceType[] RedeemCodeTargetServiceTypes { get; } = Enum.GetValues<RedeemCodeTargetServiceType>();
+    public List<object?>? RedeemCodeTargetServiceTypes { get; } = ItemsSourceHelper.Create(Enum.GetNames<RedeemCodeTargetServiceType>(), false);
 
-    public InfoBarSeverity[] InfoBarSeverities { get; } = Enum.GetValues<InfoBarSeverity>();
+    public List<object?>? InfoBarSeverities { get; } = ItemsSourceHelper.Create(Enum.GetNames<InfoBarSeverity>(), false);
 }
