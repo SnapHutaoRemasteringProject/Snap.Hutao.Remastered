@@ -1247,6 +1247,9 @@ Space Available: {2}</value>
   <data name="ServiceUserProcessInputCookieDialogTitle" xml:space="preserve">
     <value>Retrieving user information, please wait...</value>
   </data>
+  <data name="ServiceUserGameRolesInvalidResponse" xml:space="preserve">
+    <value>MiYouShe returned Genshin Impact character data in an unreadable format.</value>
+  </data>
   <data name="ServiceUserUserInfoContainsNoGameRole" xml:space="preserve">
     <value>This account is not yet bound to any Genshin Impact game character</value>
   </data>
@@ -2434,6 +2437,9 @@ Space Available: {2}</value>
   </data>
   <data name="ViewModelUserInvalid" xml:space="preserve">
     <value>This cookie is invalid, operation failed</value>
+  </data>
+  <data name="ViewModelUserSmsChallengeUnavailable" xml:space="preserve">
+    <value>The response did not include a verification challenge. Try again later or sign in with a QR code.</value>
   </data>
   <data name="ViewModelUserRemoved" xml:space="preserve">
     <value>User [{0}] removed successfully</value>
