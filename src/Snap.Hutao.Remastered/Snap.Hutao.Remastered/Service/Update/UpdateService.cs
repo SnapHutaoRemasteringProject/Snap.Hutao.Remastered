@@ -23,8 +23,6 @@ namespace Snap.Hutao.Remastered.Service.Update;
 public sealed partial class UpdateService : IUpdateService
 {
     private const string AppInstallerHost = "package.snaphutaorp.org";
-    private const string StorePublisher = "CN=469D671A-3AED-4488-AC4F-75E5394BC7FA";
-    private const string StoreProductId = "9P1LDJFJFJQQ";
 
     // Avoid injecting services directly
     private readonly IServiceProvider serviceProvider;
@@ -50,7 +48,7 @@ public sealed partial class UpdateService : IUpdateService
                 // Self-hosted releases must compare against THEIR own channel.
                 // The infrastructure version API represents Store/Publish, not Alpha/Canary
                 // or the selected R2R/NativeAOT stream.
-                if (RuntimeEnvironment.IsPackaged && !IsStorePackage)
+                if (RuntimeEnvironment.IsPackaged)
                 {
                     Uri? descriptorUri = GetPackagedAppInstallerUri();
                     if (descriptorUri is null)
@@ -166,7 +164,7 @@ public sealed partial class UpdateService : IUpdateService
                 ContentDialogResult installUpdateUserConsentResult = await contentDialogFactory
                     .CreateForConfirmCancelWithSecondaryAsync(
                         SH.FormatViewTitleUpdatePackageAvailableTitle(result.PackageInformation?.Version),
-                        IsStorePackage ? SH.ServiceUpdateOpenStoreContent : SH.ViewTitileUpdatePackageAvailableContent,
+                        SH.ViewTitileUpdatePackageAvailableContent,
                         SH.ViewTitleUpdatePackageSkipVersionButtonText)
                     .ConfigureAwait(false);
 
@@ -184,12 +182,6 @@ public sealed partial class UpdateService : IUpdateService
                 if (RuntimeEnvironment.IsUnpackaged)
                 {
                     messenger.Send(InfoBarMessage.Error(SH.ServiceUpdateUnpackagedUnsupported));
-                    return;
-                }
-
-                if (IsStorePackage)
-                {
-                    await OpenStoreAsync().ConfigureAwait(false);
                     return;
                 }
 
@@ -235,9 +227,6 @@ public sealed partial class UpdateService : IUpdateService
         LocalSetting.Set(SettingKeys.SkippedUpdateVersion, version.ToString());
         messenger.Send(InfoBarMessage.Success(SH.FormatViewTitleUpdatePackageSkipVersionInfoBarMessage(version)));
     }
-
-    private static bool IsStorePackage => RuntimeEnvironment.IsPackaged
-        && string.Equals(Package.Current.Id.Publisher, StorePublisher, StringComparison.Ordinal);
 
     private static async ValueTask<Version?> GetRemoteAppInstallerVersionAsync(Uri uri, CancellationToken token)
     {

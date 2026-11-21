@@ -145,4 +145,8 @@ namespace Snap.Hutao.Remastered.Core.Text.Json;
 [JsonSerializable(typeof(global::System.Text.Json.JsonElement))]
 [JsonSerializable(typeof(global::System.Text.Json.Nodes.JsonObject))]
 [JsonSerializable(typeof(global::System.Text.Json.Nodes.JsonArray))]
+[JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Hoyolab.Passport.PassportTokenExchange.Request), TypeInfoPropertyName = "PassportExchangeRequest")]
+[JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Response.Response<global::Snap.Hutao.Remastered.Web.Hoyolab.Passport.PassportTokenExchange.Result>), TypeInfoPropertyName = "PassportExchangeResponse")]
+[JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Response.Response<global::System.Text.Json.JsonElement>), TypeInfoPropertyName = "JsonElementResponse")]
+[JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Binding.UserGameRole), TypeInfoPropertyName = "BindingUserGameRole")]
 internal sealed partial class HttpApiJsonContext : JsonSerializerContext;

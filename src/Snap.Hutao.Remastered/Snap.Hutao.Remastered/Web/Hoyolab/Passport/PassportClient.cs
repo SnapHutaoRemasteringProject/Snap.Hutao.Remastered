@@ -2,10 +2,10 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation.HttpClient;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Web.Endpoint.Hoyolab;
 using Snap.Hutao.Remastered.Web.Hoyolab.DataSigning;
-using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
 using Snap.Hutao.Remastered.Web.Response;
@@ -26,7 +26,7 @@ public sealed partial class PassportClient : IPassportClient
 {
     private const string AndroidVersion = "12";
     private static readonly string LifecycleId = Guid.NewGuid().ToString();
-    private static readonly InfrastructureJsonContext PassportJson = new(new JsonSerializerOptions
+    private static readonly HttpApiJsonContext PassportJson = new(new JsonSerializerOptions
     {
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
     });
@@ -113,7 +113,7 @@ public sealed partial class PassportClient : IPassportClient
             ["mobile"] = Encrypt(mobile),
         };
 
-        HttpRequestMessageBuilder builder = CreatePassportRequest(apiEndpoints.AccountCreateLoginCaptcha(), data, PassportJson.StringDictionary)
+        HttpRequestMessageBuilder builder = CreatePassportRequest(apiEndpoints.AccountCreateLoginCaptcha(), data, PassportJson.HttpRequest032)
             .SetReferer("https://user.miyoushe.com/");
 
         if (!string.IsNullOrEmpty(aigis))
@@ -150,7 +150,7 @@ public sealed partial class PassportClient : IPassportClient
             ["mobile"] = Encrypt(mobile),
         };
 
-        HttpRequestMessageBuilder builder = CreatePassportRequest(apiEndpoints.AccountLoginByMobileCaptcha(), data, PassportJson.StringDictionary);
+        HttpRequestMessageBuilder builder = CreatePassportRequest(apiEndpoints.AccountLoginByMobileCaptcha(), data, PassportJson.HttpRequest032);
 
         if (!string.IsNullOrEmpty(aigis))
         {

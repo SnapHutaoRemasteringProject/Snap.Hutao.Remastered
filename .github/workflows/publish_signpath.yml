@@ -50,7 +50,7 @@ jobs:
         id: build
         shell: pwsh
         run: dotnet tool restore && dotnet cake publish_signpath.cake --publishAot=${{ matrix.publish_aot }} --target=BuildAndZip
-        
+
       - name: Upload Native AOT symbols
         if: ${{ matrix.runtime == 'NativeAOT' }}
         uses: actions/upload-artifact@v7

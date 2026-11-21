@@ -112,7 +112,12 @@ public class MiHoYoJSBridge
         bool isOversea = userAndUid.IsOversea;
         if (userAndUid.User.LToken is not { } lToken || !lToken.TryGetLToken(isOversea, out Cookie? credential))
         {
-            return ValueTask.FromResult<IJsBridgeResult>(new Response<Dictionary<string, string>>((int)KnownReturnCode.RET_TOKEN_INVALID, SH.ViewModelUserInvalid, null));
+            return ValueTask.FromResult<IJsBridgeResult>(
+                new JsResult<Dictionary<string, string>>
+                {
+                    ReturnCode = (int)KnownReturnCode.RET_TOKEN_INVALID,
+                    Message = SH.ViewModelUserInvalid,
+                });
         }
 
         Dictionary<string, string> data = new() { [Cookie.LOGIN_TICKET] = string.Empty };
@@ -136,13 +141,21 @@ public class MiHoYoJSBridge
         IUserService userService = serviceProvider.GetRequiredService<IUserService>();
         if (param.Payload.ForceRefresh && !await userService.RefreshCookieTokenAsync(userAndUid.User).ConfigureAwait(false))
         {
-            return new Response<Dictionary<string, string>>((int)KnownReturnCode.RET_TOKEN_INVALID, SH.ViewModelUserInvalid, null);
+            return new JsResult<Dictionary<string, string>>
+            {
+                ReturnCode = (int)KnownReturnCode.RET_TOKEN_INVALID,
+                Message = SH.ViewModelUserInvalid,
+            };
         }
 
         bool isOversea = userAndUid.IsOversea;
         if (userAndUid.User.CookieToken is not { } cookieToken || !cookieToken.TryGetCookieToken(isOversea, out Cookie? credential))
         {
-            return new Response<Dictionary<string, string>>((int)KnownReturnCode.RET_TOKEN_INVALID, SH.ViewModelUserInvalid, null);
+            return new JsResult<Dictionary<string, string>>
+            {
+                ReturnCode = (int)KnownReturnCode.RET_TOKEN_INVALID,
+                Message = SH.ViewModelUserInvalid,
+            };
         }
 
         await taskContext.SwitchToMainThreadAsync();
