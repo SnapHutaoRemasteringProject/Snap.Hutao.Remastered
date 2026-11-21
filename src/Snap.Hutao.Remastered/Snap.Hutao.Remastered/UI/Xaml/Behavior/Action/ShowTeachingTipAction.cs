@@ -7,6 +7,7 @@ using Microsoft.Xaml.Interactivity;
 namespace Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
 public sealed partial class ShowTeachingTipAction : DependencyObject, IAction
 {
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.TeachingTip))]
     public object? Execute(object? sender, object parameter)
     {
         if (sender is null)
