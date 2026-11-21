@@ -79,11 +79,13 @@ public sealed partial class UserService : IUserService
             await TaskContext.SwitchToMainThreadAsync();
             (Cookie?, Cookie?, Cookie?, DateTimeOffset) previousCredentials = (user.SToken, user.LToken, user.CookieToken, user.Entity.CookieTokenLastUpdateTime);
             (UserInfo?, IAdvancedCollectionView<UserGameRole>, string?, DateTimeOffset) previousProfile = (user.UserInfo, user.UserGameRoles, user.Entity.Fingerprint, user.Entity.FingerprintLastUpdateTime);
-            (bool, bool) previousInitialization = (user.IsInitialized, user.NeedDbUpdateAfterResume);
+            (bool, bool, bool) previousInitialization = (user.IsInitialized, user.NeedDbUpdateAfterResume, user.IsCookieInvalid);
             bool saved = false;
             try
             {
                 user.IsInitialized = false;
+                // A freshly supplied cookie deserves a new attempt even if the previous one was rejected.
+                user.IsCookieInvalid = false;
                 user.SToken = sToken;
                 user.LToken = cookie.TryGetLToken(isOversea, out Cookie? lToken) ? lToken : (isOversea ? user.LToken : null);
                 user.CookieToken = cookie.TryGetCookieToken(isOversea, out Cookie? cookieToken) ? cookieToken : (isOversea ? user.CookieToken : null);
@@ -114,7 +116,7 @@ public sealed partial class UserService : IUserService
                     await TaskContext.SwitchToMainThreadAsync();
                     (user.SToken, user.LToken, user.CookieToken, user.Entity.CookieTokenLastUpdateTime) = previousCredentials;
                     (user.UserInfo, user.UserGameRoles, user.Entity.Fingerprint, user.Entity.FingerprintLastUpdateTime) = previousProfile;
-                    (user.IsInitialized, user.NeedDbUpdateAfterResume) = previousInitialization;
+                    (user.IsInitialized, user.NeedDbUpdateAfterResume, user.IsCookieInvalid) = previousInitialization;
                 }
             }
         }

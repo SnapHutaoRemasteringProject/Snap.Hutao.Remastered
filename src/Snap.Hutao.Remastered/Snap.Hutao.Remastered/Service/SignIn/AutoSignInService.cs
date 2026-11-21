@@ -100,6 +100,13 @@ public sealed partial class AutoSignInService : IAutoSignInService
                     return;
                 }
 
+                // A rejected cookie cannot refresh or sign in; retrying it every scheduled run
+                // only reproduces the same -100 response.
+                if (user.IsCookieInvalid)
+                {
+                    continue;
+                }
+
                 // Cookie token is refreshed while resuming a user, do the same for the accounts
                 // which are not the current one and may hold an expired cookie token.
                 await userService.RefreshCookieTokenAsync(user).ConfigureAwait(false);
