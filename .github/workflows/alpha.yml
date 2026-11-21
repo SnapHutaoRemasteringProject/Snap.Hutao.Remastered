@@ -82,19 +82,7 @@ jobs:
           retention-days: 14
 
   build:
-    name: Build (${{ matrix.runtime }})
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - runtime: R2R
-            publish_aot: false
-            suffix: ''
-            appinstaller_subdir: ''
-          - runtime: NativeAOT
-            publish_aot: true
-            suffix: '-AOT'
-            appinstaller_subdir: 'AOT'
+    name: Build Native AOT
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -124,14 +112,13 @@ jobs:
       - name: Cake (MSIX)
         id: cake
         shell: pwsh
-        run: dotnet tool restore && dotnet cake --publishAot=${{ matrix.publish_aot }}
+        run: dotnet tool restore && dotnet cake --publishAot=true
         env:
           VERSION_API_TOKEN: ${{ secrets.VERSION_API_TOKEN }}
           CERTIFICATE: ${{ secrets.CERTIFICATE }}
           PW: ${{ secrets.PW }}
 
       - name: Upload Native AOT MSIX symbols
-        if: ${{ matrix.runtime == 'NativeAOT' }}
         uses: actions/upload-artifact@v7
         with:
           name: NativeAOT-MSIX-Symbols-${{ steps.cake.outputs.version }}
@@ -142,15 +129,15 @@ jobs:
         if: success() && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered.Alpha-${{ steps.cake.outputs.version }}${{ matrix.suffix }}
-          path: ${{ github.workspace }}/src/output/Snap.Hutao.Remastered.Alpha-${{ steps.cake.outputs.version }}${{ matrix.suffix }}.msix
+          name: Snap.Hutao.Remastered.Alpha-${{ steps.cake.outputs.version }}
+          path: ${{ github.workspace }}/src/output/Snap.Hutao.Remastered.Alpha-${{ steps.cake.outputs.version }}.msix
 
       - name: Upload Alpha AppPackages for R2 publication
         if: ${{ success() && github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v7
         with:
-          name: Alpha-AppPackages-${{ matrix.runtime }}
-          path: ${{ github.workspace }}/AppPackages/Alpha/${{ matrix.appinstaller_subdir }}
+          name: Alpha-AppPackages
+          path: ${{ github.workspace }}/AppPackages/Alpha
           if-no-files-found: error
 
       - name: Export sideload trust certificate
@@ -164,7 +151,7 @@ jobs:
         if: success() && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered.Alpha-SnapHutaoRemasteringProject-${{ steps.cake.outputs.version }}${{ matrix.suffix }}
+          name: Snap.Hutao.Remastered.Alpha-SnapHutaoRemasteringProject-${{ steps.cake.outputs.version }}
           path: ${{ github.workspace }}/temp-code-signing.cer
 
       - name: Add summary
@@ -172,7 +159,7 @@ jobs:
         shell: pwsh
         run: |
           $summary = "
-          构建模式：${{ matrix.runtime }}
+          构建模式：Native AOT
 
           > [!WARNING]
           > 该版本是由 CI 程序自动打包生成的 Alpha 测试版本，包含已经基本完工的新功能及问题修复
@@ -183,7 +170,7 @@ jobs:
           echo $summary >> $Env:GITHUB_STEP_SUMMARY
 
   publish_r2:
-    name: Publish Alpha App Installer (R2R + NativeAOT)
+    name: Publish Alpha App Installer
     needs: [build, test]
     if: ${{ github.event_name != 'pull_request' }}
     runs-on: windows-latest
@@ -196,17 +183,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Download Alpha R2R AppPackages
+      - name: Download Alpha AppPackages
         uses: actions/download-artifact@v8
         with:
-          name: Alpha-AppPackages-R2R
+          name: Alpha-AppPackages
           path: ${{ github.workspace }}/AppPackages/Alpha
-
-      - name: Download Alpha NativeAOT AppPackages
-        uses: actions/download-artifact@v8
-        with:
-          name: Alpha-AppPackages-NativeAOT
-          path: ${{ github.workspace }}/AppPackages/Alpha/AOT
 
       - name: Install rclone
         shell: pwsh
@@ -225,7 +206,5 @@ jobs:
           RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
         run: |
-          ./scripts/Publish-AppPackagesToR2.ps1 -AppPackagesPath 'AppPackages' -Channel Alpha -RuntimeKind R2R
-          if ($LASTEXITCODE -ne 0) { throw 'Alpha R2R publication failed.' }
-          ./scripts/Publish-AppPackagesToR2.ps1 -AppPackagesPath 'AppPackages' -Channel Alpha -RuntimeKind NativeAOT
-          if ($LASTEXITCODE -ne 0) { throw 'Alpha NativeAOT publication failed.' }
+          ./scripts/Publish-AppPackagesToR2.ps1 -AppPackagesPath 'AppPackages' -Channel Alpha
+          if ($LASTEXITCODE -ne 0) { throw 'Alpha publication failed.' }

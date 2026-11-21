@@ -1,8 +1,4 @@
-// Shared by every packaging entry point. Keep the normal build explicitly R2R;
-// AOT is a separate CI leg and must use matching restore/publish properties.
-var publishAot = Argument("publishAot", false);
-var artifactSuffix = publishAot ? "-AOT" : "";
-var installerFlavorArgument = publishAot ? "/dBuildFlavorSuffix=\"-AOT\" " : "";
+var publishAot = Argument("publishAot", true);
 var publishFolder = publishAot ? "publish-aot" : "publish";
 var nativeAotSymbolsDir = System.IO.Path.Combine("artifacts", "nativeaot-symbols");
 

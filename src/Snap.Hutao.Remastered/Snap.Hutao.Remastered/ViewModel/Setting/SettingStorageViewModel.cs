@@ -94,9 +94,11 @@ public sealed partial class SettingStorageViewModel : Abstraction.ViewModel
                 {
                     AppInstance.Restart(string.Empty);
                 }
-                catch (COMException)
+                catch (COMException ex)
                 {
-                    // The location is saved. The user can restart manually.
+                    SentrySdk.CaptureException(ex);
+                    messenger.Send(InfoBarMessage.Warning(SH.ViewModelSettingStorageRestartFailed));
+                    return;
                 }
 
                 messenger.Send(InfoBarMessage.Success(SH.ViewModelSettingSetDataFolderSuccess));

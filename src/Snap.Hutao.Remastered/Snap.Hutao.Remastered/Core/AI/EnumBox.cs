@@ -61,7 +61,7 @@ internal static class EnumBoxJsonConverters
     }
 }
 
-[SuppressMessage("", "SA1402")]
+[SuppressMessage("", "SA1402", Justification = "The factory and converters are the shared JSON implementation for EnumBox.")]
 internal sealed class EnumBoxJsonConverterFactory : JsonConverterFactory
 {
     public override bool CanConvert(Type typeToConvert)
@@ -75,7 +75,7 @@ internal sealed class EnumBoxJsonConverterFactory : JsonConverterFactory
     }
 }
 
-[SuppressMessage("", "SA1402")]
+[SuppressMessage("", "SA1402", Justification = "Keep the closed enum converter with the EnumBox JSON factory that creates it.")]
 internal sealed class EnumBoxJsonConverter<T> : JsonConverter<EnumBox<T>>
     where T : struct, Enum
 {

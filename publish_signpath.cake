@@ -38,7 +38,7 @@ var winsdkPath = (string)winsdkRegistry.GetValue("KitsRoot10");
 var winsdkBinPath = System.IO.Path.Combine(winsdkPath, "bin", winsdkVersion, "x64");
 Information($"Windows SDK: {winsdkPath}");
 
-var zipPath = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}{artifactSuffix}-unsigned.zip");
+var zipPath = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}-unsigned.zip");
 
 // ============================================================
 // BuildAndZip (default target): build project and zip loose files
@@ -223,12 +223,12 @@ Task("Compile installer")
     if (string.IsNullOrEmpty(iscc)) { throw new Exception("Inno Setup not found"); }
 
     var iss = System.IO.Path.Combine(repoDir, "Installer", "installer.iss");
-    var p = StartProcess(iscc, new ProcessSettings { Arguments = $"{installerFlavorArgument}/dMyAppVersion=\"{version}\" \"{iss}\"", WorkingDirectory = repoDir });
+    var p = StartProcess(iscc, new ProcessSettings { Arguments = $"/dMyAppVersion=\"{version}\" \"{iss}\"", WorkingDirectory = repoDir });
 
     if (p != 0) { throw new InvalidOperationException($"Inno Setup failed ({p})"); }
     if (System.IO.File.Exists(System.IO.Path.Combine(repoDir, "Installer", "Publish", "BundledImages", "manifest.json")))
     {
-        p = StartProcess(iscc, new ProcessSettings { Arguments = $"/dIncludeBundledImages=1 {installerFlavorArgument}/dMyAppVersion=\"{version}\" \"{iss}\"", WorkingDirectory = repoDir });
+        p = StartProcess(iscc, new ProcessSettings { Arguments = $"/dIncludeBundledImages=1 /dMyAppVersion=\"{version}\" \"{iss}\"", WorkingDirectory = repoDir });
         if (p != 0) { throw new InvalidOperationException($"Cache installer failed ({p})"); }
     }
     Information("Installer compiled.");
@@ -249,7 +249,7 @@ Task("Build MSIX")
     .Does(() =>
 {
     var makeappx = System.IO.Path.Combine(winsdkBinPath, "makeappx.exe");
-    var msix = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}{artifactSuffix}.msix");
+    var msix = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}.msix");
     var p = StartProcess(makeappx, new ProcessSettings { Arguments = $"pack /d \"{binPath}\" /p \"{msix}\"" });
 
     if (p != 0) { throw new InvalidOperationException($"MSIX build failed ({p})"); }
@@ -280,18 +280,12 @@ Task("Sign MSIX")
     {
         if (!string.Equals(certificate.Subject, packagePublisher, System.StringComparison.Ordinal))
         {
-            if (packagePublisher != "CN=469D671A-3AED-4488-AC4F-75E5394BC7FA")
-            {
-                throw new InvalidOperationException("MSIX Publisher does not match the signing certificate.");
-            }
-            Warning("Store MSIX retains its Store Publisher and is UNSIGNED. It is for Store submission, not sideload installation. Setup signing is unchanged.");
-            GitHubActions.Commands.SetOutputParameter("msix-signed", "false");
-            return;
+            throw new InvalidOperationException("MSIX Publisher does not match the signing certificate.");
         }
     }
     GitHubActions.Commands.SetOutputParameter("msix-signed", "true");
     var signtool = System.IO.Path.Combine(winsdkBinPath, "signtool.exe");
-    var msix = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}{artifactSuffix}.msix");
+    var msix = System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}.msix");
     var p = StartProcess(signtool, new ProcessSettings { Arguments = $"sign /debug /v /fd SHA256 /tr http://timestamp.digicert.com /td SHA256 /f \"{pfxPath}\" /p \"{pw}\" \"{msix}\"" });
 
     if (p != 0) { throw new InvalidOperationException($"MSIX sign failed ({p})"); }

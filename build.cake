@@ -1,5 +1,4 @@
 #load "./build-runtime.cake"
-#tool "nuget:?package=nuget.commandline&version=6.9.1"
 
 var target = Argument("target", "Build");
 var configuration = Argument("configuration", "Release");
@@ -23,10 +22,6 @@ static ProcessArgumentBuilder AppendIf(this ProcessArgumentBuilder builder, stri
 
 // Properties
 
-string solution
-{
-    get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered.sln");
-}
 string project
 {
     get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered.csproj");
@@ -323,11 +318,11 @@ Task("Build MSIX")
     {
         if (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Alpha")
         {
-            arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Alpha-{version}{artifactSuffix}.msix");
+            arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Alpha-{version}.msix");
         }
         else if (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Canary")
         {
-            arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Canary-{version}{artifactSuffix}.msix");
+            arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Canary-{version}.msix");
         }
         else
         {
@@ -336,11 +331,11 @@ Task("Build MSIX")
     }
     else if (AppVeyor.IsRunningOnAppVeyor)
     {
-        arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}{artifactSuffix}.msix");
+        arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered-{version}.msix");
     }
     else
     {
-        arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Local-{version}{artifactSuffix}.msix");
+        arguments = "pack /d " + binPath + " /p " + System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Local-{version}.msix");
     }
 
     var makeappxPath = System.IO.Path.Combine(winsdkBinPath, "makeappx.exe");
@@ -380,11 +375,11 @@ Task("Sign")
 
         if (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Alpha")
         {
-            arguments = $"sign /debug /v /a /fd SHA256 /f {pfxPath} /p {pw} {System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Alpha-{version}{artifactSuffix}.msix")}";
+            arguments = $"sign /debug /v /a /fd SHA256 /f {pfxPath} /p {pw} {System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Alpha-{version}.msix")}";
         }
         else if (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Canary")
         {
-            arguments = $"sign /debug /v /a /fd SHA256 /f {pfxPath} /p {pw} {System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Canary-{version}{artifactSuffix}.msix")}";
+            arguments = $"sign /debug /v /a /fd SHA256 /f {pfxPath} /p {pw} {System.IO.Path.Combine(outputPath, $"Snap.Hutao.Remastered.Canary-{version}.msix")}";
         }
         else
         {
@@ -433,7 +428,6 @@ Task("Build AppPackages")
         .Append("-MakeAppxPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "makeappx.exe"))
         .Append("-SignToolPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "signtool.exe"))
         .Append("-Channel").Append(channel)
-        .Append("-RuntimeKind").Append(publishAot ? "NativeAOT" : "R2R")
         .Append("-PasswordEnvironmentVariable").Append("PW");
     var exitCode = StartProcess("pwsh", new ProcessSettings { Arguments = arguments });
     if (exitCode != 0)

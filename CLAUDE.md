@@ -68,21 +68,15 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
 - **AOT branch scope** — `feat/aot-compatible` has removed the plugin system, its SDK/sample
   and Harmony. At the user's explicit request, it has also removed the runtime C# scripting
   window and developer test command; do not add a CoreCLR scripting side process.
-- **ReadyToRun** — enabled by default for every configuration, including Debug. The SDK keeps
-  the IL compiler input in `obj`; `Build/ReadyToRun.targets` delivers the selected R2R images to
-  the runnable bin output. VS MSIX deployment consumes the WinUI SDK's publish-item list. All four
-  Cake entry points use `DotNetPublish` and default to untrimmed R2R. Their shared
-  `--publishAot=true` switch selects Native AOT, disables R2R and selects a separate
-  `publish-aot` payload; `--publishAot=false` explicitly keeps R2R and disables trimming.
-  Alpha, Canary and both Publish workflows build both modes in independent matrix jobs;
-  AOT packages and artifact names carry `-AOT`. `scripts/Test-PackageRuntime.ps1` verifies
-  the selected runtime before packaging, and Native AOT retains its required `App.xbf`.
-  Canary prepares one merged commit for both modes. Publish and Alpha upload both R2R (default path)
-  and NativeAOT (`AOT/` path) signed App Installer feeds to Cloudflare R2; Canary R2 uploads
-  remain disabled. Each publication clears the selected feed before uploading its replacement,
-  retaining no previous package versions. Clearing the default feed preserves its sibling `AOT/`
-  subtree; see [App Installer release distribution](docs/appinstaller-release.md) for the
-  layout, updater behavior and temporary-unavailability trade-offs.
+- **Packaging runtime** — Cake publishes Native AOT by default for Alpha, Canary, Publish
+  and SignPath. Public filenames and update paths use the channel name. Use
+  `--publishAot=false` for an explicit local R2R build. Native AOT packages retain
+  `App.xbf` and are verified by `scripts/Test-PackageRuntime.ps1`.
+- **Release distribution** — Publish keeps the established Windows package Name and a
+  matching signing Publisher. Publish and Alpha publish one App Installer feed per channel
+  to R2. Canary builds CI artifacts. Publish also produces the signed legacy Setup EXE,
+  optional image-cache Setup and standalone MSIX. See [release distribution](docs/appinstaller-release.md)
+  for update and retention rules.
   Private runtime packages explicitly set `Publish=true`: the SDK excludes `PrivateAssets=all`
   references from publish by default. Publishing also validates the Native, HPatch, Yae and
   deployment payloads before either Cake packager can consume the output.
@@ -98,7 +92,7 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
   - AOT-only MSBuild patches live in
     [`Build/AotPublish.targets`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Build/AotPublish.targets)
     (`MarkupCompilePass1DependsOn` ordering fix and the `Deployment.exe` publish payload), gated on
-    `PublishAot`; the default R2R build must stay untouched.
+    `PublishAot`; explicit managed R2R builds use the regular build path.
   - Unpackaged validation can set the child process environment variable `SNAP_HUTAO_PROFILE_ROOT`
     to an absolute directory. Settings, diagnostics, data/cache and the private instance/IPC namespace
     use that profile, and it does not replace the normal URI handler. Use

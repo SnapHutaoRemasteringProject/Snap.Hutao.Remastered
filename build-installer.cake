@@ -331,7 +331,7 @@ Task("Compile installer")
         isccPath,
         new ProcessSettings
         {
-            Arguments = $"{installerFlavorArgument}/dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{issFile}\"",
+            Arguments = $"/dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{issFile}\"",
             WorkingDirectory = repoDir
         }
     );
@@ -346,7 +346,7 @@ Task("Compile installer")
     {
         p = StartProcess(isccPath, new ProcessSettings
         {
-            Arguments = $"/dIncludeBundledImages=1 {installerFlavorArgument}/dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{issFile}\"",
+            Arguments = $"/dIncludeBundledImages=1 /dMyAppVersion=\"{version}\" {codeSigningCertificatePathArgument}{codeSigningCertificateThumbprintArgument}\"{issFile}\"",
             WorkingDirectory = repoDir
         });
         if (p != 0) { throw new InvalidOperationException($"Cache installer failed ({p})"); }

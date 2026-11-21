@@ -159,80 +159,8 @@ INamedValue 增加只读的对象值接口，NameValue<T> 显式实现它，不�
 不加入 CoreCLR 脚本进程；应用无 Roslyn 脚本/Workspace/EF Design 运行时依赖，构建期分析器和数据库设计工具仍保留。
 CsWinRT 维持 2.3.1；3.0 的资产问题与包适配见 [独立评估](cswinrt3-assessment.md)，不是本次 Native AOT 的前置条件。
 
-## 2026-11-17：CI 同时交付 R2R 与 Native AOT
+## 当前发布流程
 
-Alpha、Canary、Publish 和 Publish (SignPath) 的打包 job 均使用两个独立 runner 的矩阵，关闭 fail-fast，
-以免 AOT 失败取消正常 R2R 产物。Alpha 的原 Debug/Release 测试任务保留。
+Alpha、Canary、Publish 和 Publish (SignPath) 默认打包 Native AOT。发布文件沿用原频道名称，不添加运行时后缀。内部原生发布目录为 `publish-aot`，显式指定 `--publishAot=false` 仍可在本地构建 R2R 供开发调试。
 
-| 模式 | Cake 参数 | MSBuild 属性 | 发布目录 |
-|---|---|---|---|
-| 非 AOT / R2R | `--publishAot=false`（本地默认） | PublishAot=false, PublishTrimmed=false, PublishReadyToRun=true | `bin/x64/Release/<TFM>/win-x64/publish` |
-| Native AOT | `--publishAot=true` | PublishAot=true, PublishTrimmed=true, PublishReadyToRun=false | `bin/x64/Release/<TFM>/win-x64/publish-aot` |
-
-四个 Cake 入口共享 build-runtime.cake，分别把同一模式传给还原与发布；本地仍需自行准备依赖和签名配置。
-这保留了将来在非 AOT 构建恢复插件功能的构建路径，并不表示当前分支已恢复插件系统。
-
-保留原有非 AOT MSIX、Setup、缓存图片 Setup、证书以及 SignPath 中间工件；删除独立 Store-upload 工件的生成和上传。
-AOT 的工件名追加 `-AOT`，实际 MSIX/Setup 文件名也带后缀，例如 `Snap.Hutao.Remastered-<version>-AOT.msix`、
-`Snap.Hutao.Remastered-<version>-AOT-Setup.exe` 和 `...-AOT-Setup-cache.exe`。Alpha/Canary 的 MSIX 继续带原频道前缀。
-证书策略与 MSIX Publisher 校验保留；未签名 MSIX 仍不可旁加载。
-
-打包清理保留 AOT 的 App.xbf，普通 R2R 清理策略不变。Test-PackageRuntime.ps1 在打包前检查：
-
-- Native AOT：复用 Test-NativePublish.ps1，检查原生 x64 PE、无 CLR 头、无主托管 DLL/三个 CoreCLR 主机文件，以及 PRI/XBF/资源/运行时附属文件完整性。
-- R2R：检查主托管 DLL 的 CLR 头及 ReadyToRun 签名，以及 CoreCLR/主应用/PRI 文件存在，避免把 native apphost 当成 AOT 证据。
-
-SignPath 在重新解压签名 ZIP 后再次验证模式。Canary 的 prepare job 只合并一次，把确切提交通过短期保留的 git bundle
-共享给两个构建任务，两者校验同一 source-sha。Alpha/Canary 的安装器复用各自 MSIX 的版本号。
-R2 默认安装包上传只允许 R2R job 执行，AOT 不覆盖现有自动更新下载地址。
-
-本轮验证：YAML 矩阵/步骤引用/旧工件名保留检查、25 个内联 PowerShell 块和门禁脚本语法检查、7 组运行时门禁接受/拒绝样本，
-以及现有本地 Native AOT 发布目录的只读检查。未编译应用或 Cake、未还原、未运行签名/打包/上传、未触发 GitHub Actions；
-远程 CI、签名服务对新增 AOT 文件名的接受，以及安装运行效果仍待实际构建验证。
-
-## 2026-11-16：新发布警告与事件订阅
-
-用户提供的原生发布日志共 119 条：CS8305 75、WMC1510 7、WMC1501 1、NU1507 1，
-IL2026 7、IL3050 13、IL2104 6、IL3053 5、IL3002 4。编译与原生分析阶段的重复诊断保留原口径，
-不能与此前仅托管编译的 84 条直接相减。
-
-本轮将 13 个视图中的 32 个 EventTriggerBehavior 替换成限定 UI 事件的 StaticEventTriggerBehavior。
-原行为按事件名反射订阅，SDK 明确标为不支持裁剪；新实现直接订阅 Click、QuerySubmitted、Tapped、
-PointerEntered、PointerExited、PointerPressed，包含 SettingsCard 和 LiquidGlassSearchBox 的具体事件。
-保留 Actions 的依赖属性集合、原事件参数，以及 Detach/更换事件名时的解绑；没有 SourceObject 或反射回退。
-页面上下文、命令参数、模板结构和动作集合均未迁移。没有改依赖、包源或手写生成文件。
-
-这些是源码修改与 XML/事件覆盖检查，未编译或运行。下一次构建应复核 EventTriggerBehavior 的应用激活器及
-静态初始化诊断是否消失；当前没有新的警告总数。EF、Anthropic、DevWinUI 等原生分析诊断仍需继续处理。
-日志中十条枚举动态代码警告对应的位置，当前 EF 生成源码已无直接 Enum.GetValues(Type)，
-需要结合下一次实际编译输入/内联调用定位，不能据日志行号直接改生成文件。
-
-## 2026-11-16：最新 XAML 编译阻塞与警告口径
-
-最新用户日志在 XAML 编译阶段失败：1 条 WMC1110、31 条构建警告，另有还原阶段重复报告的 1 条 NU1507。
-31 条分为 CS8305 22、WMC1510 7、WMC1501 1、NU1507 1；该次没有进入完整原生分析，不能据此推断最终 ILC 警告数。
-
-WMC1110 是本分支上次修改的语法错误：x:Bind 函数的 Boolean 实参须写 `x:False`，裸 `false` 会被视为页面属性路径。
-已按 [WinUI 函数绑定文档](https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/function-bindings)修正，保留 ItemsSourceHelper 在 WinRT setter 前转换迭代器的修复。
-
-七条 WMC1510 的当前处理（替代上次局部抑制方案）：
-
-- 菜单模板的 TemplateSettings.KeyboardAcceleratorTextMinWidth 保留编译绑定。
-- 删除全部 `x:SuppressXamlTrimWarnings`。用户实测该指令使当前 XBF 编译器报 WMC0612/0x09C4，[WinUI #12708](https://github.com/microsoft/microsoft-ui-xaml/issues/12708)记录了相同现象；该 issue 尚无维护者确认的修复，不能再以诊断文案为依据加入此属性。
-- SegmentedOverride 补齐 `x:Class`、调用 InitializeComponent 的 code-behind，并在 App.xaml 原位置实例化。`ControlTemplate TargetType=Segmented` 中以 OneWay x:Bind 把 HorizontalAlignment 传给 ItemsPresenter；其 ItemsPanelTemplate 内的 EqualPanel 用原生 TemplateBinding 读取该值。
-- AutoSuggestTokenBox 在其强类型 ControlTemplate 中以 OneWay x:Bind 把 TokenSpacing 写到 ItemsPresenter 的附加 DP；新 AutoSuggestTokenPanelHelper 使用现有 DependencyProperty<double> 源生成器（IsAttached=true、TargetType=ItemsPresenter）。WrapPanel 通过 TemplateBinding 读取两个间距值。ItemsPresenter 是 sealed 类型，没有派生新控件。
-- 两处布局模板均不再查询 Ancestor。局部 XAML 编译器源码只为 ControlTemplate/DataTemplate 建立专用强类型绑定源，不能把 ItemsPanelTemplate 内的 Binding 直接替换为 x:Bind 再假定字典的 x:Class 能补足数据源。原生 ItemsPresenter 加载面板时将自身作为 templated parent，因而这里使用 TemplateBinding。
-- 建议框的 DisplayMemberPath/TextMemberPath 字符串转发保留；相应位置本来已经使用 x:Bind/TemplateBinding。绑定字符串并不等于编译字符串所指的成员访问，这三条原有 WMC1510 可能仍存在，不以删除通用功能或抑制来隐藏。
-
-仍保留的其他诊断是 22 条 SDK 实验 API CS8305、1 条实验图表资源 WMC1501，以及 1 条多包源集中版本管理 NU1507。
-没有全局 NoWarn，未移除图表/窗口位置功能，未更改 NuGet.Config。
-本轮只做源码/XML/差异检查，尚无修正后的编译或 Native AOT 发布警告总数。
-
-## 验证口径
-
-完整原生发布、生产数据库原生测试和最新普通构建已通过。
-2026-11-11 的 Debug 全量测试 274/274、关闭 JSON 反射回归 16/16；细节记录在 CODE_REVIEW.md。
-
-未验证：原生 GUI 启动/导航/退出、完整网络/AI/COM 路径、真实无对应运行时机器、MSIX 安装/卸载及性能。
-该历史构建记录的编译警告为 84 条；最新用户失败构建口径见上节，不与原生链接诊断混算，也不写“全部原生功能完成”。
-历史 JSON/扫描材料见 [归档](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/32976c2f4b7ef2f8053b34131ffd7fdbae5b5722/docs/aot-blockers.md)；R2R 旧验证保留于 CODE_REVIEW.md。
+`Test-PackageRuntime.ps1` 在打包前检查实际运行时。原生包检查 x64 PE、CLR 头、PRI/XBF、资源及运行时附属文件。SignPath 重新解压签名 ZIP 后也重新验证。发布渠道、App Installer 与 EXE 更新方式见 [分发说明](appinstaller-release.md)。

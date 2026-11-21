@@ -145,7 +145,7 @@ public static class BridgeShare
     }
 }
 
-[SuppressMessage("", "SA1402")]
+[SuppressMessage("", "SA1402", Justification = "This private bridge protocol payload belongs with the screenshot handler that reads it.")]
 internal sealed class CaptureScreenshotResult
 {
     [JsonPropertyName("data")]

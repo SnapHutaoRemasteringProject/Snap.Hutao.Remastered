@@ -8,11 +8,10 @@
 | 文档 | 用途 |
 |---|---|
 | [开发报告](aot-development-report.md) | dev 对比、交付、证据、清理与未验收范围 |
-| [构建与交付](aot-readiness.md) | 默认 R2R、原生发布、独立目录和文件门禁 |
+| [构建与交付](aot-readiness.md) | 默认 Native AOT、独立发布目录和文件门禁 |
 | [当前阻塞项](aot-blockers.md) | 后续按优先级验收/修复的工作 |
 | [数据库实现](database-aot.md) / [状态](database-aot-progress.md) | 升级、模型、查询、生成及业务边界 |
 | [CsWinRT 3 评估](cswinrt3-assessment.md) | 实际资产选择、已知原因和 issue 提示词 |
-| [历史扫描](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/32976c2f4b7ef2f8053b34131ffd7fdbae5b5722/docs/aot-blockers.md) | 旧 194 条基线及早期实验，不是当前结论 |
 
 ## 起点与用户决策
 

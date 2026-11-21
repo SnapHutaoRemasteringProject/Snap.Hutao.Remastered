@@ -10,7 +10,7 @@
 
 | 安装包 | 是否附带图片 | 首次引导是否整包下载图片 |
 | --- | --- | --- |
-| MSIX / 商店版本 | CI 配置了资源快照就附带 | 始终跳过资源设置、下载步骤 |
+| MSIX 打包版 | CI 配置了资源快照就附带 | 始终跳过资源设置、下载步骤 |
 | `…-Setup-cache.exe` | 附带 | 跳过资源设置、下载步骤 |
 | `…-Setup.exe` | 不附带 | 保留原来的整包下载，可由用户跳过 |
 
@@ -115,30 +115,11 @@ CI 会下载 7z、验证压缩包 SHA256、解压并生成图片清单，再将�
 
 | 文件 | 用途 |
 | --- | --- |
-| `Snap.Hutao.Remastered-<应用版本>.msix` | 已签名时可旁加载；未签名时仅作商店上传载荷 |
-| `Snap.Hutao.Remastered-<应用版本>.msixupload` | 上传到 Microsoft Partner Center |
-| `Snap.Hutao.Remastered-<应用版本>-Setup.exe` | 普通安装包，不附带图片 |
-| `Snap.Hutao.Remastered-<应用版本>-Setup-cache.exe` | 附带图片的安装包 |
+| `Snap.Hutao.Remastered-<应用版本>.msix` | 已签名的打包版 |
+| `Snap.Hutao.Remastered-<应用版本>-Setup.exe` | 普通 EXE 安装包，不附带图片 |
+| `Snap.Hutao.Remastered-<应用版本>-Setup-cache.exe` | 附带图片的 EXE 安装包 |
 
-`.msixupload` 位于 Actions 的 **Snap.Hutao.Remastered-Store-upload** 工件中。GitHub 下载工件时可能外面还有一层 ZIP：先解开 GitHub 的 ZIP，再把其中的 `.msixupload` 上传到商店，不要解开 `.msixupload` 再上传内部文件。
-
-上传文件包含原 MSIX，以及找到应用 PDB 时生成的 `.appxsym` 符号包。缺少 PDB 会在 CI 中给出警告，不阻止生成上传文件。它采用微软文档规定的 ZIP 容器结构，**不是将 MSIX 直接改后缀**。
-
-Alpha/Canary CI 也会生成上传格式，方便检查流程，**商店提交请使用正式 Publish 产物**。格式正确不代表包标识、版本和签名一定符合商店要求。
-
-### 第 3 步：提交商店前核对标识
-
-正式包应匹配 Partner Center 中的：
-
-```text
-Name:      SnapHutaoRemasteringProje.SnapHutaoRemastered
-Publisher: CN=469D671A-3AED-4488-AC4F-75E5394BC7FA
-Store ID:  9P1LDJFJFJQQ
-```
-
-在 Partner Center 打开对应产品，新建或编辑提交，在 Packages 页面上传 `.msixupload`，按商店反馈完成检查。**CI 不会替你自动提交或发布商店版本。**
-
-MSIX 的 Publisher 必须与旁加载证书的 Subject 一致。现有 `CN=SnapHutaoRemasteringProject` 证书可继续签名 Setup，但与商店 Publisher 不匹配。因此正式 CI 会保留商店 MSIX 未签名，工件标注 `unsigned-store-only`，继续生成 `.msixupload`，由商店在发布时签名。此未签名包不能直接旁加载；不要为了迁就旧证书修改商店包标识。需要旁加载的正式 MSIX 时，应提供 Subject 匹配的可信证书。Alpha/Canary 测试包的原签名流程不变。
+Publish MSIX 使用既有包名 `E8B6E2B3-D2A0-4435-A81D-2A16AAF405C8`，Publisher 必须与发布签名证书一致。下载和更新方式见 [发布说明](appinstaller-release.md)。
 
 ## 五、图片到底放在哪里，什么时候生效？
 

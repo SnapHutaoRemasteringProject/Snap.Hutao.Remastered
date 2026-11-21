@@ -6353,12 +6353,6 @@
 
 普通启动不受 Island 版本支持限制；启用 Island 增强功能时会单独检查兼容性。</value>
   </data>
-  <data name="ServiceUpdateOpenStoreContent" xml:space="preserve">
-    <value>是否打开 Microsoft Store 获取更新？此版本通过商店更新。如果新版仍在审核或分批发布，商店可能暂时不提供更新，请稍后重试。</value>
-  </data>
-  <data name="ServiceUpdateOpenStoreFailed" xml:space="preserve">
-    <value>无法打开 Microsoft Store 或产品网页。请在 Microsoft Store 中搜索 Snap Hutao Remastered 并检查更新。</value>
-  </data>
   <data name="ViewGuideBundledImagesHeader" xml:space="preserve">
     <value>图片资源</value>
   </data>
@@ -6386,10 +6380,13 @@
   <data name="ServiceGameIslandVerificationUnavailable" xml:space="preserve">
     <value>暂时无法连接 Island 账户检查服务，本次检查未完成，游戏将继续运行。请在网络恢复后重试。</value>
   </data>
-  <data name="ServiceUpdateUnpackagedUnsupported" xml:space="preserve">
-    <value>非打包版已停止支持自动更新，请重新安装 MSIX 打包版本。</value>
+  <data name="ServiceUpdateRecommendPackaged" xml:space="preserve">
+    <value>推荐安装 MSIX 打包版，获得更顺畅的安装和更新体验。你也可以继续用 EXE 更新当前解包版。</value>
+  </data>
+  <data name="ViewDialogDownloadSourceAppInstaller" xml:space="preserve">
+    <value>安装 MSIX 打包版（推荐）</value>
   </data>
   <data name="ServiceUpdateAppInstallerUnavailable" xml:space="preserve">
-    <value>当前安装版本不包含受支持的 App Installer 更新源。请使用发布页面提供的 .appinstaller 文件重新安装。</value>
+    <value>没有找到当前程序受支持的更新源。请使用发布页面提供的 .appinstaller 文件重新安装。</value>
   </data>
 </root>

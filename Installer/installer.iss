@@ -10,9 +10,6 @@
 
 #define MyAppName "Snap.Hutao.Remastered"
 #define MyAppShortName "Snap.Hutao.Remastered"
-#ifndef BuildFlavorSuffix
-  #define BuildFlavorSuffix ""
-#endif
 #ifndef MyAppVersion
   #define MyAppVersion "1.19.4.0"
 #endif
@@ -41,9 +38,9 @@ AllowNoIcons=yes
 LicenseFile=..\LICENSE
 OutputDir={#OutputDir}
 #ifdef IncludeBundledImages
-OutputBaseFilename=Snap.Hutao.Remastered-{#MyAppVersion}{#BuildFlavorSuffix}-Setup-cache
+OutputBaseFilename=Snap.Hutao.Remastered-{#MyAppVersion}-Setup-cache
 #else
-OutputBaseFilename=Snap.Hutao.Remastered-{#MyAppVersion}{#BuildFlavorSuffix}-Setup
+OutputBaseFilename=Snap.Hutao.Remastered-{#MyAppVersion}-Setup
 #endif
 Compression=lzma2/ultra64
 SolidCompression=yes

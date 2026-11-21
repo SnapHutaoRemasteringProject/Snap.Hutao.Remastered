@@ -6,7 +6,6 @@ param(
     [Parameter(Mandatory)][string]$MakeAppxPath,
     [Parameter(Mandatory)][string]$SignToolPath,
     [ValidateSet('Publish', 'Alpha', 'Canary')][string]$Channel = 'Publish',
-    [ValidateSet('R2R', 'NativeAOT')][string]$RuntimeKind = 'R2R',
     [string]$PasswordEnvironmentVariable = 'PUBLISH_PW',
     [string]$ExportCertificatePath
 )
@@ -59,14 +58,8 @@ try {
     }).Count -gt 0
     if (!$hasCodeSigningEku) { throw 'Release certificate must have the code-signing EKU.' }
     $publisher = $certificate.Subject
-    if ($Channel -eq 'Publish' -and $publisher -eq 'CN=469D671A-3AED-4488-AC4F-75E5394BC7FA') {
-        throw 'Publish R2 cannot reuse the Microsoft Store publisher.'
-    }
     $stage = [IO.Path]::GetFullPath($StagingDirectory)
-    # The default (R2R) feed has no runtime suffix in its public path or filenames.
-    $runtimeSegment = if ($RuntimeKind -eq 'NativeAOT') { 'AOT' } else { '' }
-    $channelPath = if ($runtimeSegment) { Join-Path $Channel $runtimeSegment } else { $Channel }
-    $output = Join-Path ([IO.Path]::GetFullPath($AppPackagesDirectory)) $channelPath
+    $output = Join-Path ([IO.Path]::GetFullPath($AppPackagesDirectory)) $Channel
     if (Test-Path -LiteralPath $stage) { Remove-Item -LiteralPath $stage -Recurse -Force }
     if (Test-Path -LiteralPath $output) { Remove-Item -LiteralPath $output -Recurse -Force }
     New-Item -ItemType Directory -Path $stage, $output -Force | Out-Null
@@ -81,17 +74,14 @@ try {
     [xml]$manifest = Get-Content -LiteralPath $manifestPath -Raw
     $identity = $manifest.SelectSingleNode("/*[local-name()='Package']/*[local-name()='Identity']")
     if ($null -eq $identity) { throw 'No AppxManifest package identity.' }
-    if ($Channel -eq 'Publish') {
-        # Repackage the Store release under the independently signed R2 publisher.
-        $identity.SetAttribute('Publisher', $publisher)
-    } elseif ($identity.GetAttribute('Publisher') -ne $publisher) {
+    if ($identity.GetAttribute('Publisher') -ne $publisher) {
         throw "The $Channel package publisher differs from the signing certificate."
     }
     $name = $identity.GetAttribute('Name')
     $version = $identity.GetAttribute('Version')
     $architecture = $identity.GetAttribute('ProcessorArchitecture')
     $expectedName = switch ($Channel) {
-        'Publish' { 'SnapHutaoRemasteringProje.SnapHutaoRemastered' }
+        'Publish' { 'E8B6E2B3-D2A0-4435-A81D-2A16AAF405C8' }
         'Alpha' { '7f0db578-026f-4e0b-a75b-d5d06bb0a74c' }
         'Canary' { '52127695-c6a7-406e-916a-693b905e8ba7' }
     }
@@ -100,15 +90,12 @@ try {
     }
     $manifest.Save($manifestPath)
 
-    $runtimeSuffix = if ($runtimeSegment) { "_$runtimeSegment" } else { '' }
-    $descriptorSuffix = if ($runtimeSegment) { ".$runtimeSegment" } else { '' }
-    $folderName = "Snap.Hutao.Remastered_$($version)_x64_$Channel$runtimeSuffix"
+    $folderName = "Snap.Hutao.Remastered_$($version)_x64_$Channel"
     $msixName = "$folderName.msix"
-    $descriptorName = "Snap.Hutao.Remastered.$Channel$descriptorSuffix.x64.appinstaller"
+    $descriptorName = "Snap.Hutao.Remastered.$Channel.x64.appinstaller"
     $folder = Join-Path $output $folderName
     New-Item -ItemType Directory -Path $folder -Force | Out-Null
     $origin = "https://package.snaphutaorp.org/$Channel/"
-    if ($runtimeSegment) { $origin += "$runtimeSegment/" }
     $namespace = 'http://schemas.microsoft.com/appx/appinstaller/2021'
     $document = [xml]('<?xml version="1.0" encoding="utf-8"?><AppInstaller xmlns="' + $namespace + '"></AppInstaller>')
     $root = $document.DocumentElement

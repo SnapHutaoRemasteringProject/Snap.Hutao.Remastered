@@ -97,6 +97,7 @@
     <Compile Include="../Snap.Hutao.Remastered/Core/Setting/LocalSettingsJson.cs" Link="Production/LocalSettingsJson.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Shell/UnpackagedStartupTask.cs" Link="Production/UnpackagedStartupTask.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/User/UserInitializationService.cs" Link="Production/UserInitializationService.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Web/Response/KnownReturnCode*.cs" Link="Production/%(Filename)%(Extension)" />
     <Compile Include="../Snap.Hutao.Remastered/Web/Hoyolab/Cookie.cs" Link="Production/Hoyolab/Cookie.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Web/Hoyolab/Cookie.Constant.cs" Link="Production/Hoyolab/Cookie.Constant.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Web/Hoyolab/CookieExtension.cs" Link="Production/Hoyolab/CookieExtension.cs" />

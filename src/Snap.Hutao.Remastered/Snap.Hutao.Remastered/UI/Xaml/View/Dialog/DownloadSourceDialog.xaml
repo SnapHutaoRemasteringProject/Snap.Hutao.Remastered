@@ -40,6 +40,11 @@
                         Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceMirrorChyanDescription}"/>
                 </StackPanel>
             </wl:LiquidGlassRadioButton>
+            <wl:LiquidGlassRadioButton
+                x:Name="PackagedOption"
+                shuxcth:ControlMaterialState.IsManaged="True"
+                Content="{shuxm:ResourceString Name=ViewDialogDownloadSourceAppInstaller}"
+                Visibility="Collapsed"/>
         </RadioButtons>
     </StackPanel>
 </ContentDialog>
