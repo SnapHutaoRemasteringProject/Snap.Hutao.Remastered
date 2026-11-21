@@ -1247,6 +1247,9 @@ Dung lượng còn trống: {2}</value>
   <data name="ServiceUserProcessInputCookieDialogTitle" xml:space="preserve">
     <value>Đang lấy thông tin người dùng, vui lòng chờ...</value>
   </data>
+  <data name="ServiceUserGameRolesInvalidResponse" xml:space="preserve">
+    <value>米游社返回的原神角色数据格式异常，无法读取角色列表。</value>
+  </data>
   <data name="ServiceUserUserInfoContainsNoGameRole" xml:space="preserve">
     <value>Tài khoản này chưa liên kết với nhân vật Genshin Impact</value>
   </data>
@@ -2434,6 +2437,9 @@ Dung lượng còn trống: {2}</value>
   </data>
   <data name="ViewModelUserInvalid" xml:space="preserve">
     <value>Cookie này không hợp lệ, thao tác thất bại</value>
+  </data>
+  <data name="ViewModelUserSmsChallengeUnavailable" xml:space="preserve">
+    <value>本次响应未附带验证挑战。请稍后再试，或使用扫码登录。</value>
   </data>
   <data name="ViewModelUserRemoved" xml:space="preserve">
     <value>Đã gỡ thành công người dùng [{0}]</value>
