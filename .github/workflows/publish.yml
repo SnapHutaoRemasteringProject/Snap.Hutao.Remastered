@@ -38,29 +38,12 @@ jobs:
           PUBLISH_CERT: ${{ secrets.PUBLISH_CERT }}
           PUBLISH_PW: ${{ secrets.PUBLISH_PW }}
 
-      - name: Create Store upload
-        shell: pwsh
-        run: |
-          $symbols = Get-ChildItem src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/bin/x64/Release -Recurse -Filter Snap.Hutao.Remastered.pdb |
-            Where-Object { $_.Directory.Name -eq 'publish' } | Select-Object -First 1
-          Get-ChildItem src/output -Filter *.msix | ForEach-Object {
-            $arguments = @{ PackagePath = $_.FullName }
-            if ($symbols) { $arguments.SymbolsPath = $symbols.FullName }
-            ./scripts/New-MsixUpload.ps1 @arguments
-          }
-
-      - name: Upload Store submission files
-        uses: actions/upload-artifact@v7
-        with:
-          name: Snap.Hutao.Remastered-Store-upload
-          path: ${{ github.workspace }}/src/output/*.msixupload
-          if-no-files-found: error
-
       - name: Upload MSIX
         uses: actions/upload-artifact@v7
         with:
           name: Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}-MSIX-${{ steps.publish.outputs.msix-signed == 'true' && 'signed' || 'unsigned-store-only' }}
           path: ${{ github.workspace }}/src/output/Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}.msix
+          archive: false
 
       - name: Upload installer
         uses: actions/upload-artifact@v7
@@ -73,6 +56,7 @@ jobs:
         with:
           name: Snap.Hutao.Remastered-SnapHutaoRemasteringProject-${{ steps.publish.outputs.version }}
           path: ${{ github.workspace }}/temp-code-signing.cer
+          archive: false
 
       - name: Install rclone
         shell: pwsh
@@ -80,7 +64,7 @@ jobs:
           choco install rclone --yes --no-progress
           if ($LASTEXITCODE -ne 0) { throw 'rclone installation failed.' }
 
-      - name: Publish default installer to R2
+      - name: Publish default installer and MSIX to R2
         id: r2
         shell: pwsh
         env:
@@ -94,7 +78,8 @@ jobs:
           RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
         run: |
           $installer = Join-Path 'publish' "Snap.Hutao.Remastered-$env:RELEASE_VERSION-Setup.exe"
-          ./scripts/Publish-InstallerToR2.ps1 -InstallerPath $installer
+          $msix = Join-Path 'src/output' "Snap.Hutao.Remastered-$env:RELEASE_VERSION.msix"
+          ./scripts/Publish-InstallerToR2.ps1 -InstallerPath $installer -MsixPath $msix
 
       - name: Add summary
         shell: pwsh
@@ -109,6 +94,6 @@ jobs:
           - **Installer signed:** Yes
 
           > [!IMPORTANT]
-          > MSIX 未签名时仅用于商店提交，不可直接旁加载；请提交 Store-upload 工件内的 .msixupload。Setup 安装包仍已签名，可直接安装。
+          > MSIX 未签名时仅用于商店提交，不可直接旁加载。Setup 安装包已签名，可直接安装。
           "@
           echo $summary >> $Env:GITHUB_STEP_SUMMARY
