@@ -1247,6 +1247,9 @@
   <data name="ServiceUserProcessInputCookieDialogTitle" xml:space="preserve">
     <value>사용자 정보를 가져오는 중, 잠시만 기다려 주세요...</value>
   </data>
+  <data name="ServiceUserGameRolesInvalidResponse" xml:space="preserve">
+    <value>米游社返回的原神角色数据格式异常，无法读取角色列表。</value>
+  </data>
   <data name="ServiceUserUserInfoContainsNoGameRole" xml:space="preserve">
     <value>이 계정에는 아직 원신 게임 캐릭터가 연결되어 있지 않습니다</value>
   </data>
@@ -2434,6 +2437,9 @@
   </data>
   <data name="ViewModelUserInvalid" xml:space="preserve">
     <value>Cookie가 유효하지 않습니다. 작업에 실패했습니다</value>
+  </data>
+  <data name="ViewModelUserSmsChallengeUnavailable" xml:space="preserve">
+    <value>本次响应未附带验证挑战。请稍后再试，或使用扫码登录。</value>
   </data>
   <data name="ViewModelUserRemoved" xml:space="preserve">
     <value>사용자 [{0}]가 제거되었습니다</value>
