@@ -158,7 +158,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
     public override void Dispose()
     {
         AppOptions.ControlMaterial.PropertyChanged -= OnControlMaterialChanged;
-        downloadCts?.Cancel();
+        CancelDownload();
         base.Dispose();
     }
 
@@ -440,7 +440,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Skip static resource download", "GuideViewModel.Command"));
         skipDownloadRequested = true;
-        downloadCts?.Cancel();
+        CancelDownload();
     }
 
     [SuppressMessage("", "SH003")]
@@ -450,10 +450,12 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         skipDownloadRequested = false;
         IsDownloading = true;
 
+        CancellationTokenSource? downloadCtsLocal = null;
         try
         {
-            downloadCts = CancellationTokenSource.CreateLinkedTokenSource(CancellationToken, XamlApplicationLifetime.ShutdownToken);
-            CancellationToken token = downloadCts.Token;
+            downloadCtsLocal = CancellationTokenSource.CreateLinkedTokenSource(CancellationToken, XamlApplicationLifetime.ShutdownToken);
+            downloadCts = downloadCtsLocal;
+            CancellationToken token = downloadCtsLocal.Token;
 
             // Pass a collection copy, so that we can remove element in loop
             await Parallel.ForEachAsync((DownloadSummary[])[.. DownloadSummaries], async (summary, ct) =>
@@ -472,8 +474,12 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         {
             await taskContext.SwitchToMainThreadAsync();
             IsDownloading = false;
-            downloadCts?.Dispose();
+
+            // Release the field before disposing: a concurrent Dispose()/SkipDownload() must
+            // either observe a live source or no source. CancelDownload() tolerates the brief
+            // window where a reader still observes the source while it is being disposed.
             downloadCts = null;
+            downloadCtsLocal?.Dispose();
         }
 
         if (XamlApplicationLifetime.Exiting || IsViewUnloaded.Value) return;
@@ -491,6 +497,19 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         UnsafeLocalSetting.Set(SettingKeys.GuideState, GuideState.Material);
         State = (uint)GuideState.Material;
         // Continue in this window; only the explicit final step restarts the app.
+    }
+
+    private void CancelDownload()
+    {
+        try
+        {
+            downloadCts?.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+            // The transfer completed and released its source before this cancellation arrived.
+            // Cancel and Dispose are not guaranteed to be safe concurrently.
+        }
     }
 
     private static ObservableCollection<DownloadSummary> GetUnfulfilledCategoryCollection(IServiceProvider serviceProvider)
