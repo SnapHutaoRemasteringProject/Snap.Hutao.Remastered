@@ -935,6 +935,18 @@
   <data name="ServiceDailyNoteNotifierExpeditionHint" xml:space="preserve">
     <value>Expeditionen abgeschlossen</value>
   </data>
+  <data name="ServiceDailyNoteNotifierExpeditionCount" xml:space="preserve">
+    <value>探索派遣 {0}/{1}</value>
+  </data>
+  <data name="ServiceDailyNoteNotifierExpeditionProgress" xml:space="preserve">
+    <value>{0}/{1}</value>
+  </data>
+  <data name="ServiceDailyNoteTileLabelValue" xml:space="preserve">
+    <value>{0} {1}</value>
+  </data>
+  <data name="ServiceDailyNoteTileImageDownloadFailed" xml:space="preserve">
+    <value>下载图片失败：{0}</value>
+  </data>
   <data name="ServiceDailyNoteNotifierHomeCoin" xml:space="preserve">
     <value>Reichs-Mora</value>
   </data>
@@ -1234,6 +1246,9 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ServiceUserProcessInputCookieDialogTitle" xml:space="preserve">
     <value>Benutzerinformationen werden abgerufen, bitte warten...</value>
+  </data>
+  <data name="ServiceUserGameRolesInvalidResponse" xml:space="preserve">
+    <value>米游社返回的原神角色数据格式异常，无法读取角色列表。</value>
   </data>
   <data name="ServiceUserUserInfoContainsNoGameRole" xml:space="preserve">
     <value>Dieses Konto ist noch nicht mit einem Genshin Impact-Spielcharakter verknüpft</value>
@@ -2033,6 +2048,42 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewModelDailyNoteRequestProgressTitle" xml:space="preserve">
     <value>Echtzeitnotizen werden abgerufen, bitte warten</value>
   </data>
+  <data name="ViewModelDailyNoteUpdateTileCompleteHint" xml:space="preserve">
+    <value>磁贴已更新，实时便笺仅在宽磁贴和大磁贴上显示</value>
+  </data>
+  <data name="ViewModelDailyNoteUpdateTileFailed" xml:space="preserve">
+    <value>更新磁贴失败</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundFailed" xml:space="preserve">
+    <value>设置磁贴背景失败，请稍后重试</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundLoadFailed" xml:space="preserve">
+    <value>加载磁贴背景角色列表失败</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundSet" xml:space="preserve">
+    <value>磁贴背景设置成功</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundDownloading" xml:space="preserve">
+    <value>正在下载「{0}」的背景图…</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundDownloadCompleted" xml:space="preserve">
+    <value>「{0}」的背景图已更新</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundDownloadFallback" xml:space="preserve">
+    <value>未获取到「{0}」的最新背景图，已沿用原有背景</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundDownloadFailed" xml:space="preserve">
+    <value>「{0}」的背景图下载失败，磁贴暂时没有背景</value>
+  </data>
+  <data name="ViewModelDailyNoteClearTileComplete" xml:space="preserve">
+    <value>磁贴已清除</value>
+  </data>
+  <data name="ViewModelDailyNoteClearTileFailed" xml:space="preserve">
+    <value>清除磁贴失败</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundCleared" xml:space="preserve">
+    <value>磁贴背景已清除</value>
+  </data>
   <data name="ViewModelExportSuccessMessage" xml:space="preserve">
     <value>Erfolgreich am angegebenen Ort gespeichert</value>
   </data>
@@ -2387,6 +2438,9 @@ Verfügbarer Speicherplatz: {2}</value>
   <data name="ViewModelUserInvalid" xml:space="preserve">
     <value>Dieser Cookie ist ungültig, Vorgang fehlgeschlagen</value>
   </data>
+  <data name="ViewModelUserSmsChallengeUnavailable" xml:space="preserve">
+    <value>本次响应未附带验证挑战。请稍后再试，或使用扫码登录。</value>
+  </data>
   <data name="ViewModelUserRemoved" xml:space="preserve">
     <value>Benutzer [{0}] erfolgreich entfernt</value>
   </data>
@@ -2692,6 +2746,27 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ViewPageDailyNoteRemoveToolTip" xml:space="preserve">
     <value>Rolle entfernen</value>
+  </data>
+  <data name="ViewPageDailyNotePinTileToolTip" xml:space="preserve">
+    <value>更新磁贴</value>
+  </data>
+  <data name="ViewPageDailyNoteTileBackgroundDescription" xml:space="preserve">
+    <value>选择角色后，其名片图片将用作开始菜单磁贴背景</value>
+  </data>
+  <data name="ViewPageDailyNoteTileBackgroundHeader" xml:space="preserve">
+    <value>磁贴背景</value>
+  </data>
+  <data name="ViewPageDailyNoteTileBackgroundSearchPlaceholder" xml:space="preserve">
+    <value>搜索角色（拼音/英文）</value>
+  </data>
+  <data name="ViewPageDailyNoteTileMsixOnlyHint" xml:space="preserve">
+    <value>磁贴功能仅支持 MSIX 安装包。请将胡桃启动器固定到开始菜单，然后右击磁贴调整大小为「宽」或「大」即可生效。</value>
+  </data>
+  <data name="ViewPageDailyNoteTileBackgroundNone" xml:space="preserve">
+    <value>无背景</value>
+  </data>
+  <data name="ViewPageDailyNoteUnpinTileToolTip" xml:space="preserve">
+    <value>清除磁贴</value>
   </data>
   <data name="ViewPageDailyNoteResinDiscountUsed" xml:space="preserve">
     <value>Verbrauchte Halbierungschancen diese Woche</value>
@@ -4351,6 +4426,12 @@ Verfügbarer Speicherplatz: {2}</value>
   </data>
   <data name="ViewPageLaunchGameIslandRedirectCatherineTeachingTipSubtitle" xml:space="preserve">
     <value>Ändert im Abenteurerhandbuch den Einstieg zu Katheryne für tägliche Aufträge, sodass direkt Katherynes Bestätigungsfenster für Auftragsbelohnungen geöffnet wird. Beim ersten Klick auf „Belohnung abholen“ wird zuerst die Expeditionsseite geöffnet; beim zweiten Klick wird, wenn der Auftrag abgeschlossen ist, die Oberfläche zum Abholen der Belohnung geöffnet.</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuHeader" xml:space="preserve">
+    <value>旧版派蒙菜单</value>
+  </data>
+  <data name="ViewPageLaunchGameIslandLegacyPaimonMenuDescription" xml:space="preserve">
+    <value>恢复“千星商城”和“人气奇域”在派蒙菜单的位置</value>
   </data>
   <data name="ViewDialogFastSkipTalkConfirmTitle" xml:space="preserve">
     <value>Cooldown beim Dialogüberspringen entfernen</value>
