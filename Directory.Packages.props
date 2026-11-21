@@ -42,11 +42,11 @@
     <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.4314.35" />
     <PackageVersion Include="Microsoft.Windows.CsWinRT" Version="2.3.1" />
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2957" />
-    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools.MSIX" Version="1.7.261102100" />
+    <PackageVersion Include="Microsoft.Windows.SDK.BuildTools.MSIX" Version="1.7.261119100" />
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.6.6-experimental" />
     <PackageVersion Include="MSTest.TestAdapter" Version="4.5.3" />
     <PackageVersion Include="MSTest.TestFramework" Version="4.5.3" />
-    <PackageVersion Include="QRCoder" Version="1.8.1" />
+    <PackageVersion Include="QRCoder" Version="1.9.0" />
     <PackageVersion Include="Quartz" Version="4.7.3" />
     <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="4.7.3" />
     <PackageVersion Include="Sentry.Extensions.Logging" Version="7.0.1" />
@@ -54,7 +54,7 @@
     <PackageVersion Include="Snap.Hutao.FileUnlocker" Version="1.2.0" />
     <PackageVersion Include="Snap.Hutao.Remastered.Deployment.Runtime" Version="1.8.1" />
     <PackageVersion Include="Snap.Hutao.Remastered.Native" Version="1.5.0" />
-    <PackageVersion Include="Snap.Hutao.Remastered.SourceGeneration" Version="1.3.17" />
+    <PackageVersion Include="Snap.Hutao.Remastered.SourceGeneration" Version="1.3.18" />
     <PackageVersion Include="Snap.LibGit2Sharp" Version="0.31.1-preview.0.4" />
     <PackageVersion Include="Snap.ZStandard" Version="1.5.7" />
     <PackageVersion Include="System.Drawing.Common" Version="$(HutaoDotNetPackageVersion)" />
