@@ -113,7 +113,8 @@ public sealed partial class PassportClient : IPassportClient
             ["mobile"] = Encrypt(mobile),
         };
 
-        HttpRequestMessageBuilder builder = CreatePassportRequest(apiEndpoints.AccountCreateLoginCaptcha(), data, PassportJson.StringDictionary);
+        HttpRequestMessageBuilder builder = CreatePassportRequest(apiEndpoints.AccountCreateLoginCaptcha(), data, PassportJson.StringDictionary)
+            .SetReferer("https://user.miyoushe.com/");
 
         if (!string.IsNullOrEmpty(aigis))
         {

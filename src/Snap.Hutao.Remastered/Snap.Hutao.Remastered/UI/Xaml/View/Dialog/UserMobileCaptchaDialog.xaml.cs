@@ -68,20 +68,32 @@ public sealed partial class UserMobileCaptchaDialog : ContentDialog, IPassportMo
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Send captcha", "UserMobileCaptchaDialog.Command"));
 
-        ArgumentNullException.ThrowIfNull(Mobile);
+        string mobile = Mobile ?? throw new ArgumentNullException(nameof(Mobile));
         Aigis = null;
 
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             IPassportClient passportClient = scope.ServiceProvider.GetRequiredService<IOverseaSupportFactory<IPassportClient>>().Create(false);
-            (string? rawSession, Response<MobileCaptcha> response) = await passportClient.CreateLoginCaptchaAsync(Mobile, null).ConfigureAwait(false);
+            (string? rawSession, Response<MobileCaptcha> response) = await passportClient.CreateLoginCaptchaAsync(mobile, null).ConfigureAwait(false);
+            string? previousSession = null;
+            for (int attempt = 0; attempt < 2 && response.ReturnCode is not 0 && !string.IsNullOrWhiteSpace(rawSession); attempt++)
+            {
+                if (string.Equals(rawSession, previousSession, StringComparison.Ordinal)
+                    || !await geetestService.TryVerifyAigisSessionAsync(this, rawSession, false).ConfigureAwait(false)
+                    || string.IsNullOrWhiteSpace(Aigis))
+                {
+                    break;
+                }
+
+                previousSession = rawSession;
+                (rawSession, response) = await passportClient.CreateLoginCaptchaAsync(mobile, Aigis).ConfigureAwait(false);
+            }
 
             bool hasChallenge = !string.IsNullOrWhiteSpace(rawSession);
             System.Diagnostics.Debug.WriteLine($"Passport SMS: retcode={response.ReturnCode}, challenge header present={hasChallenge}");
-            if (response.ReturnCode is not 0 && hasChallenge
-                && await geetestService.TryVerifyAigisSessionAsync(this, rawSession, false).ConfigureAwait(false))
+            if ((KnownReturnCode)response.ReturnCode is KnownReturnCode.RET_NEED_AIGIS && !hasChallenge)
             {
-                (_, response) = await passportClient.CreateLoginCaptchaAsync(Mobile, Aigis).ConfigureAwait(false);
+                response.Message = $"{response.Message}\n{SH.ViewModelUserSmsChallengeUnavailable}";
             }
 
             try

@@ -10,7 +10,9 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
 public sealed class GeetestWebView2ContentProvider : DependencyObject, IWebView2ContentProvider
 {
     private readonly string gt;
-    private readonly string challenge;
+    private readonly string? challenge;
+    private readonly string? sessionId;
+    private readonly string? riskType;
     private readonly bool isOversea;
     private readonly TaskCompletionSource resultTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
@@ -21,6 +23,13 @@ public sealed class GeetestWebView2ContentProvider : DependencyObject, IWebView2
         this.gt = gt;
         this.challenge = challenge;
         this.isOversea = isOversea;
+    }
+
+    public GeetestWebView2ContentProvider(string captchaId, string sessionId, string? riskType)
+    {
+        gt = captchaId;
+        this.sessionId = sessionId;
+        this.riskType = riskType;
     }
 
     public ElementTheme ActualTheme { get; set; }
@@ -34,20 +43,26 @@ public sealed class GeetestWebView2ContentProvider : DependencyObject, IWebView2
         ArgumentNullException.ThrowIfNull(CoreWebView2);
 
         CoreWebView2.WebMessageReceived += OnWebMessageReceived;
+        bool isV4 = sessionId is not null;
 
         CoreWebView2.NavigateToString($$"""
             <!doctype html>
             <html>
                 <head>
                     <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
                     <title>{{System.Net.WebUtility.HtmlEncode(SH.UIXamlViewWindowWebView2GeetestHeader)}}</title>
                     <style>
-                        body { color-scheme: light dark; font-family: system-ui, sans-serif; text-align: center; margin-top: 3rem; }
+                        body { color-scheme: light dark; font-family: system-ui, sans-serif; margin: 0; }
+                        main { box-sizing: border-box; min-height: 100vh; display: grid; place-content: center; padding: 1rem; text-align: center; }
+                        #geetest-div { display: flex; justify-content: center; }
                     </style>
                 </head>
                 <body>
-                    <p id="status" role="status">{{System.Net.WebUtility.HtmlEncode(SH.UIXamlViewWindowWebView2GeetestHeader)}}</p>
-                    <div id="geetest-div"></div>
+                    <main>
+                        <p id="status" role="status">{{System.Net.WebUtility.HtmlEncode(SH.UIXamlViewWindowWebView2GeetestHeader)}}</p>
+                        <div id="geetest-div"></div>
+                    </main>
                 </body>
                 <script>
                     const status = document.getElementById("status");
@@ -57,24 +72,37 @@ public sealed class GeetestWebView2ContentProvider : DependencyObject, IWebView2
                         status.hidden = false;
                         status.textContent = {{JsonSerializer.Serialize(SH.ViewWebView2WindowLoadFailedHint)}};
                     };
+                    const isV4 = {{(isV4 ? "true" : "false")}};
                     const loader = document.createElement("script");
-                    loader.src = "https://static.geetest.com/static/js/gt.0.5.0.js";
+                    loader.src = isV4
+                        ? "https://static.geetest.com/v4/gt4.js"
+                        : "https://static.geetest.com/static/js/gt.0.5.0.js";
                     loader.onerror = showError;
                     loader.onload = () => {
-                        if (typeof window.initGeetest !== "function") {
+                        const initializeCaptcha = isV4 ? window.initGeetest4 : window.initGeetest;
+                        if (typeof initializeCaptcha !== "function") {
                             showError();
                             return;
                         }
                         try {
-                            window.initGeetest({
+                            const options = isV4 ? {
+                                captchaId: {{JsonSerializer.Serialize(gt)}},
+                                riskType: {{JsonSerializer.Serialize(riskType)}} || undefined,
+                                userInfo: JSON.stringify({ session_id: {{JsonSerializer.Serialize(sessionId)}} }),
+                                protocol: "https://",
+                                https: true,
+                                product: "popup",
+                                onError: showError
+                            } : {
                                 protocol: "https://",
                                 gt: {{JsonSerializer.Serialize(gt)}},
                                 challenge: {{JsonSerializer.Serialize(challenge)}},
                                 new_captcha: true,
                                 offline: false,
-                                product: "float",
+                                product: "popup",
                                 api_server: {{JsonSerializer.Serialize(isOversea ? "api-na.geetest.com" : "api.geetest.com")}}
-                            }, (captcha) => {
+                            };
+                            initializeCaptcha(options, (captcha) => {
                                 captcha.onError(showError);
                                 captcha.onReady(() => {
                                     clearTimeout(timeout);

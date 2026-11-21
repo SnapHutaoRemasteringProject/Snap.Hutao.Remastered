@@ -11,6 +11,7 @@ using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord;
 using Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.Verification;
 using Snap.Hutao.Remastered.Web.Hutao.Geetest;
 using Snap.Hutao.Remastered.Web.Response;
+using System.Text;
 
 namespace Snap.Hutao.Remastered.Service.Geetest;
 
@@ -36,7 +37,7 @@ public sealed partial class GeetestService : IGeetestService
             return data;
         }
 
-        string? result = await PrivateVerifyByWebViewAsync(gt, challenge, isOversea, token).ConfigureAwait(false);
+        string? result = await PrivateVerifyByWebViewAsync(() => new(gt, challenge, isOversea), token).ConfigureAwait(false);
         if (string.IsNullOrEmpty(result))
         {
             return default;
@@ -82,14 +83,17 @@ public sealed partial class GeetestService : IGeetestService
             return false;
         }
 
-        AigisSession? session;
+        string sessionId;
         string? gt;
         string? challenge;
+        string? captchaId;
+        string? riskType;
         try
         {
-            session = JsonSerializer.Deserialize<AigisSession>(rawSession, jsonOptions);
+            AigisSession? session = JsonSerializer.Deserialize<AigisSession>(rawSession, jsonOptions);
             if (session is null || string.IsNullOrWhiteSpace(session.SessionId))
             {
+                System.Diagnostics.Debug.WriteLine("Passport Aigis: response has no verification session ID.");
                 return false;
             }
 
@@ -98,32 +102,82 @@ public sealed partial class GeetestService : IGeetestService
                 ? JsonDocument.Parse(session.Data.GetString()!)
                 : null;
             JsonElement data = nestedData?.RootElement ?? session.Data;
+            sessionId = session.SessionId;
             gt = GetChallengeField(data, "gt");
             challenge = GetChallengeField(data, "challenge");
+            captchaId = GetChallengeField(data, "captcha_id");
+            riskType = GetChallengeField(data, "risk_type");
+        }
+        catch (JsonException)
+        {
+            System.Diagnostics.Debug.WriteLine("Passport Aigis: challenge JSON could not be read.");
+            return false;
+        }
+
+        // Some Passport V4 challenges supply the CAPTCHA identifier as gt and omit the V3 challenge string.
+        if (string.IsNullOrWhiteSpace(captchaId) && string.IsNullOrWhiteSpace(challenge))
+        {
+            captchaId = gt;
+        }
+
+        Func<GeetestWebView2ContentProvider> createProvider;
+        if (!string.IsNullOrWhiteSpace(captchaId))
+        {
+            createProvider = () => new(captchaId, sessionId, riskType);
+        }
+        else if (!string.IsNullOrWhiteSpace(gt) && !string.IsNullOrWhiteSpace(challenge))
+        {
+            createProvider = () => new(gt, challenge, isOversea);
+        }
+        else
+        {
+            System.Diagnostics.Debug.WriteLine("Passport Aigis: unsupported CAPTCHA fields.");
+            return false;
+        }
+
+        bool isV4 = !string.IsNullOrWhiteSpace(captchaId);
+        System.Diagnostics.Debug.WriteLine($"Passport Aigis: opening GeeTest {(isV4 ? "V4" : "V3")}.");
+        string? webResult = await PrivateVerifyByWebViewAsync(createProvider, token, provider as FrameworkElement).ConfigureAwait(false);
+        if (string.IsNullOrEmpty(webResult))
+        {
+            return false;
+        }
+
+        string verification = webResult;
+        try
+        {
+            if (isV4)
+            {
+                using JsonDocument document = JsonDocument.Parse(webResult);
+                JsonElement data = document.RootElement;
+                if (string.IsNullOrWhiteSpace(GetChallengeField(data, "lot_number"))
+                    || string.IsNullOrWhiteSpace(GetChallengeField(data, "captcha_output"))
+                    || string.IsNullOrWhiteSpace(GetChallengeField(data, "pass_token"))
+                    || !data.TryGetProperty("gen_time", out JsonElement time)
+                    || time.ValueKind is not (JsonValueKind.String or JsonValueKind.Number)
+                    || string.IsNullOrWhiteSpace(time.ToString())
+                    || (GetChallengeField(data, "captcha_id") is { } returnedId && !string.Equals(returnedId, captchaId, StringComparison.Ordinal)))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                GeetestWebResponse? result = JsonSerializer.Deserialize<GeetestWebResponse>(webResult, jsonOptions);
+                if (result is null || string.IsNullOrWhiteSpace(result.Challenge) || string.IsNullOrWhiteSpace(result.Validate))
+                {
+                    return false;
+                }
+
+                verification = JsonSerializer.Serialize(result);
+            }
         }
         catch (JsonException)
         {
             return false;
         }
 
-        if (string.IsNullOrWhiteSpace(gt) || string.IsNullOrWhiteSpace(challenge))
-        {
-            return false;
-        }
-
-        string? webResult = await PrivateVerifyByWebViewAsync(gt, challenge, isOversea, token, provider as FrameworkElement).ConfigureAwait(false);
-        if (string.IsNullOrEmpty(webResult))
-        {
-            return false;
-        }
-
-        GeetestWebResponse? result = JsonSerializer.Deserialize<GeetestWebResponse>(webResult, jsonOptions);
-        if (result is null || string.IsNullOrWhiteSpace(result.Challenge) || string.IsNullOrWhiteSpace(result.Validate))
-        {
-            return false;
-        }
-
-        provider.Aigis = $"{session.SessionId};{Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(result))}";
+        provider.Aigis = $"{sessionId};{Convert.ToBase64String(Encoding.UTF8.GetBytes(verification))}";
         return true;
     }
 
@@ -134,7 +188,7 @@ public sealed partial class GeetestService : IGeetestService
             : null;
     }
 
-    private async ValueTask<string?> PrivateVerifyByWebViewAsync(string gt, string challenge, bool isOversea, CancellationToken token, FrameworkElement? owner = null)
+    private async ValueTask<string?> PrivateVerifyByWebViewAsync(Func<GeetestWebView2ContentProvider> createProvider, CancellationToken token, FrameworkElement? owner = null)
     {
         if (XamlApplicationLifetime.Exiting)
         {
@@ -147,7 +201,7 @@ public sealed partial class GeetestService : IGeetestService
         XamlRoot? xamlRoot = ownerRoot?.XamlContext() is not null ? ownerRoot : currentXamlWindowReference.XamlRoot;
         if (xamlRoot?.XamlContext() is not null)
         {
-            GeetestWebView2ContentProvider contentProvider = new(gt, challenge, isOversea);
+            GeetestWebView2ContentProvider contentProvider = createProvider();
             ShowWebView2WindowAction.Show(contentProvider, xamlRoot);
 
             await taskContext.SwitchToBackgroundAsync();
@@ -155,6 +209,7 @@ public sealed partial class GeetestService : IGeetestService
             return await contentProvider.GetResultAsync().ConfigureAwait(false);
         }
 
-        return default!;
+        System.Diagnostics.Debug.WriteLine("GeeTest: no XAML host is available for the verification window.");
+        return default;
     }
 }

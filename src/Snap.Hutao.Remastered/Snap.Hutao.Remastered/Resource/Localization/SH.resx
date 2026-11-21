@@ -1247,6 +1247,9 @@
   <data name="ServiceUserProcessInputCookieDialogTitle" xml:space="preserve">
     <value>获取用户信息中，请稍候...</value>
   </data>
+  <data name="ServiceUserGameRolesInvalidResponse" xml:space="preserve">
+    <value>米游社返回的原神角色数据格式异常，无法读取角色列表。</value>
+  </data>
   <data name="ServiceUserUserInfoContainsNoGameRole" xml:space="preserve">
     <value>此账号尚未绑定原神游戏角色</value>
   </data>
@@ -2434,6 +2437,9 @@
   </data>
   <data name="ViewModelUserInvalid" xml:space="preserve">
     <value>此 Cookie 无效，操作失败</value>
+  </data>
+  <data name="ViewModelUserSmsChallengeUnavailable" xml:space="preserve">
+    <value>本次响应未附带验证挑战。请稍后再试，或使用扫码登录。</value>
   </data>
   <data name="ViewModelUserRemoved" xml:space="preserve">
     <value>用户 [{0}] 成功移除</value>
