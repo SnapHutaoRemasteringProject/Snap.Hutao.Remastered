@@ -9,6 +9,7 @@ using Snap.Hutao.Remastered.Core.AI.Threading;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Service.AI.Migration;
 using Snap.Hutao.Remastered.Core.Setting;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using System.IO;
 using System.Reflection;
 
@@ -16,7 +17,7 @@ namespace Snap.Hutao.Remastered.Service.AI.Settings;
 
 // A single change in the options can trigger the whole object graph to be serialized and written to disk,
 // so it's recommended to use this provider only for relatively small options objects and avoid putting large data in them.
-internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, IDisposable
+internal partial class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, IDisposable
     where TSettings : class, INotifyPropertyChanged, ICopyFrom<TSettings>, new()
 {
     private const int LoadRetryCount = 3;
@@ -39,7 +40,16 @@ internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, I
 
     public JsonSettingsProvider(string fileNameWithoutExtension, JsonSerializerOptions jsonOptions)
     {
-        this.jsonOptions = jsonOptions;
+        // Preserve legacy formatting options without opting into reflection.
+        // Other settings types must supply their own generated resolver.
+        this.jsonOptions = jsonOptions.TypeInfoResolver is null
+            ? new JsonSerializerOptions(jsonOptions)
+            {
+                TypeInfoResolver = AgentSettingsJsonContext.Default
+            }
+            : jsonOptions;
+
+        _ = JsonSerialize.GetTypeInfo<TSettings>(this.jsonOptions);
 
         string directory = WellKnownLocations.Settings;
         Directory.CreateDirectory(directory);
@@ -286,7 +296,7 @@ internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, I
 
                 using (FileStream stream = File.OpenRead(filePath))
                 {
-                    value = JsonSerializer.Deserialize<TSettings>(stream, jsonOptions)
+                    value = JsonSerialize.Deserialize<TSettings>(stream, jsonOptions)
                         ?? throw new JsonException("Settings root must not be null.");
                     return true;
                 }
@@ -332,7 +342,7 @@ internal class JsonSettingsProvider<TSettings> : ISettingsProvider<TSettings>, I
             if (value is AgentSettings settings) { AgentCredentialStore.Save(settings); }
             using (FileStream stream = File.Open(tempFile, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                JsonSerializer.Serialize(stream, value, jsonOptions);
+                JsonSerialize.Serialize(stream, value, jsonOptions);
             }
 
             File.ClearReadOnlyAttribute(filePath);

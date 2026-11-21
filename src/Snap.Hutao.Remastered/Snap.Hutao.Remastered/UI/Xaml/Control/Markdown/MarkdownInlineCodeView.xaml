@@ -13,6 +13,6 @@
         <TextBlock
             FontFamily="Cascadia Code, Consolas, Courier New"
             Opacity="0.7"
-            Text="{Binding Text, ElementName=Root}" />
+            Text="{x:Bind Text, Mode=OneWay}" />
     </Border>
 </UserControl>

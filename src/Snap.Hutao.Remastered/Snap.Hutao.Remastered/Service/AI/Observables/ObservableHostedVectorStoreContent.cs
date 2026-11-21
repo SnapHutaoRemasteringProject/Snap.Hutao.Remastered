@@ -4,4 +4,4 @@
 
 namespace Snap.Hutao.Remastered.Service.AI.Observables;
 
-internal sealed class ObservableHostedVectorStoreContent : ObservableAIContent;
+internal sealed partial class ObservableHostedVectorStoreContent : ObservableAIContent;

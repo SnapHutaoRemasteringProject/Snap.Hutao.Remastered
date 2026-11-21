@@ -45,7 +45,7 @@
 ## 2. Build & Run
 
 ```bash
-# Restore (solution: 2 projects — the WinUI app and the test project)
+# Restore (solution: WinUI app, unit tests and two AOT generation projects)
 dotnet restore src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx
 
 # Build Debug (x64 is the only declared platform)
@@ -65,30 +65,44 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
   as startup, select `x64`, `F5`. The Debug build deploys
   `Package.development.appxmanifest`; the built exe is also directly runnable (unpackaged) at
   `src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/bin/x64/Debug/net11.0-windows10.0.26100.0/win-x64/Snap.Hutao.Remastered.exe`.
-- **Plugin SDK** — has its own solution,
-  [`src/Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.slnx`](src/Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.slnx),
-  which pulls in the main app project, the SDK project and the `TestPlugin` sample.
-- **ReadyToRun** — enabled by default for every configuration, including Debug. The SDK keeps
-  the IL compiler input in `obj`; `Build/ReadyToRun.targets` delivers the selected R2R images to
-  the runnable bin output. VS MSIX deployment consumes the WinUI SDK's publish-item list. All four
-  Cake entry points use `DotNetPublish` and package its `publish` tree, with final-image validation.
+- **AOT branch scope** — `feat/aot-compatible` has removed the plugin system, its SDK/sample
+  and Harmony. At the user's explicit request, it has also removed the runtime C# scripting
+  window and developer test command; do not add a CoreCLR scripting side process.
+- **Packaging runtime** — Cake publishes Native AOT by default for Alpha, Canary, Publish
+  and SignPath. Public filenames and update paths use the channel name. Use
+  `--publishAot=false` for an explicit local R2R build. Native AOT packages retain
+  `App.xbf` and are verified by `scripts/Test-PackageRuntime.ps1`.
+- **Release distribution** — Publish keeps the established Windows package Name and a
+  matching signing Publisher. Publish and Alpha publish one App Installer feed per channel
+  to R2. Canary builds CI artifacts. Publish also produces the signed legacy Setup EXE,
+  optional image-cache Setup and standalone MSIX. See [release distribution](docs/appinstaller-release.md)
+  for update and retention rules.
   Private runtime packages explicitly set `Publish=true`: the SDK excludes `PrivateAssets=all`
   references from publish by default. Publishing also validates the Native, HPatch, Yae and
   deployment payloads before either Cake packager can consume the output.
   See [deployment details and debugger limits](docs/aot-readiness.md). Do not add AnyCPU mappings,
   force Debug optimization, or mistake a stale `obj/R2R` file for the actual deployed image.
 - **Build quirks (do not "clean up" blindly)**
-  - The app csproj contains a `UsePatchedXamlCompiler` target that byte-patches
-    `XamlCompiler.exe` on `dotnet build` (MSBuild Core) to work around
-    [`microsoft/microsoft-ui-xaml#11157`](https://github.com/microsoft/microsoft-ui-xaml/issues/11157)
+  - The app project carries a `UsePatchedXamlCompiler` target (in
+    [`Build/PatchedXamlCompiler.targets`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Build/PatchedXamlCompiler.targets),
+    imported by the csproj) that byte-patches `XamlCompiler.exe` on `dotnet build` (MSBuild Core) to
+    work around [`microsoft/microsoft-ui-xaml#11157`](https://github.com/microsoft/microsoft-ui-xaml/issues/11157)
     — without it, CLI builds die with `WMC9999: Could not find any resources...` while Visual
-    Studio builds succeed. Keep the comment in the csproj if you touch it.
+    Studio builds succeed. Keep the explanation comment in that file if you touch it.
+  - AOT-only MSBuild patches live in
+    [`Build/AotPublish.targets`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Build/AotPublish.targets)
+    (`MarkupCompilePass1DependsOn` ordering fix and the `Deployment.exe` publish payload), gated on
+    `PublishAot`; explicit managed R2R builds use the regular build path.
+  - Unpackaged validation can set the child process environment variable `SNAP_HUTAO_PROFILE_ROOT`
+    to an absolute directory. Settings, diagnostics, data/cache and the private instance/IPC namespace
+    use that profile, and it does not replace the normal URI handler. Use
+    `scripts/Test-NativePublish.ps1` to verify the native payload and launch it with a fresh profile.
   - A `DeleteLibsAfterBuild` target removes stray `*.lib` from the output; a
     `CopyContentForUnpackaged` target copies `Resource/` and `Assets/` next to the exe for the
     unpackaged mode.
 - **Test caveat (important)** — the test project has **no `ProjectReference` to the app**
-  (`CODE_REVIEW.md#BUG-02`). It compiles a hand-picked set of 39 production files through
-  `<Compile Include="..\Snap.Hutao.Remastered\...">` links and holds 167 `[TestMethod]`s across
+  (`CODE_REVIEW.md#BUG-02`). It compiles an explicit set of production files through
+  `<Compile Include="..\Snap.Hutao.Remastered\...">` links and holds regression tests across
   `BaseClassLibrary/`, `RuntimeBehavior/`, `IncomingFeature/` and `PlatformExtensions/`.
   Consequence: **a new test can only touch code that is already source-linked**; anything else
   needs another `<Compile Include>` link. Windows dependencies must either be absent or supplied
@@ -121,17 +135,15 @@ src/
     Snap.Hutao.Remastered.slnx        Solution (app + test), x64 only
     .editorconfig  .vsconfig  settings.xamlstyler  ResXManager.config.xml
     Snap.Hutao.Remastered/            Main app project (WinUI 3)
-      API/                 Plugin contract handed to third parties: HutaoPlugin, PluginManifest,
-                           PluginContext, [PluginMain], PluginSetting, PluginScopedPage
       Assets/              MSIX tile/splash images, Logo.ico
-      Core/                Infrastructure: DI, lifecycle, IO/Http, threading, settings, logging, scripting
+      Core/                Infrastructure: DI, lifecycle, IO/Http, threading, settings, logging
       Extension/           Extension methods and helpers
       Factory/             Factory types (process, QR code, …)
       Migrations/          EF Core migrations
       Model/               Domain models, DTOs, EF entities (Model/Entity/Database)
       Properties/          AssemblyInfo.cs, launchSettings.json, FolderProfile.pubxml
       Resource/            Icons, fonts, images, Localization/*.resx
-      Service/             Business logic: metadata, git, network, background, plugins, backpack, …
+      Service/             Business logic: metadata, git, network, background, backpack, …
       UI/                  Xaml/ (View, Control, Behavior, Data, Markup, Media), Shell/, Windowing/, Input/
       ViewModel/           MVVM ViewModels (+ ViewModel/Abstraction)
       Web/                 HTTP clients, endpoints, request builders, response validation
@@ -140,10 +152,6 @@ src/
       Package.appxmanifest  Package.development.appxmanifest  app.manifest
       BannedSymbols.txt  CodeMetricsConfig.txt  ApiEndpoints.csv  IdentityStructs.json
     Snap.Hutao.Remastered.Test/       Test project (net11.0, source-linked production files)
-  Snap.Hutao.Plugin.SDK/
-    Snap.Hutao.Plugin.SDK.slnx        Plugin SDK solution (app + SDK + sample)
-    Snap.Hutao.Plugin.SDK/            SDK package (build/*.targets, README)
-    TestPlugin/                       Sample plugin (manifest.json, TestPluginPage.hxaml, inject/)
 ```
 
 ## 4. Key Files
@@ -173,7 +181,7 @@ src/
 ### 5.1 Dependency injection
 
 Everything is registered by the `Snap.Hutao.Remastered.SourceGeneration` source generator
-(package `1.3.16`, `PrivateAssets=all`). **Do not hand-wire registrations.** Attribute forms that
+(package `1.3.17`, `PrivateAssets=all`). **Do not hand-wire registrations.** Attribute forms that
 actually exist in the repo (counts as of the audit):
 
 | Attribute | Forms in use | Count |
@@ -289,8 +297,10 @@ the build fails with `CS9275`); write a normal constructor in that case.
   aliases (as the 2026-10-24 material rewrite did) leaves the `TextBlock` styles on MiSans but
   silently switches *control content* to Segoe UI / Microsoft YaHei UI — both materials inherit the
   mismatch, so it is a global font regression, not a material bug.
-- **Glass pointer motion lives on the control, not the template** — `PointerMotionHelper` writes
-  `Scale`/`Translation` on the control element itself, so swapping in a native style does not stop a
+- **Glass pointer motion lives on the control, not the template** — in WinUI.LiquidGlass v1.3.1,
+  `PointerMotionHelper` calls `MotionAnimation.hpp`, which sets Scale on the control's backing Visual
+  and uses the enabled XAML Translation channel. Never write UIElement.Scale on these controls:
+  the library has already called GetElementVisual. Swapping in a native style does not stop a
   glass button's float/sway. `MaterialAppearance` neutralizes `RestScale`, `PointerOverScale`,
   `PressedScale`, `FocusedScale`, `Elasticity` and `PointerDisplacement`, stops the composition
   animations in the native material, and restores the values captured at load when glass returns.
@@ -380,37 +390,75 @@ the build fails with `CS9275`); write a normal constructor in that case.
   (re-runs startup work after the network recovers — this one is the best-quality recent code in
   the repo and a good template).
 
-### 5.6 Plugin system
+### 5.6 Native AOT branch and JSON contracts
 
-- The plugin-facing contract lives in
-  [`API/`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/API): `HutaoPlugin` (base class),
-  `PluginManifest`, `PluginContext`, `[PluginMain]` (marks the entry type), `PluginSetting`,
-  `PluginScopedPage`, `PluginInfo`.
-- A plugin package is a directory with a `manifest.json` plus its assemblies; the entry type is the
-  class tagged `[PluginMain]` and **must have a public parameterless constructor**.
-- [`Service/Plugin/PluginAssemblyLoadContext.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Plugin/PluginAssemblyLoadContext.cs)
-  gives **every plugin its own collectible `AssemblyLoadContext`** (`isCollectible: true`, name
-  `HutaoPlugin:<id>`): assemblies shipped in the package load there and die with it, while anything
-  the plugin does not ship resolves from the host. The host contract assembly is *always* forced
-  back to the host so a package can never introduce a second `HutaoPlugin` identity.
-  **Never load plugin assemblies with `Assembly.LoadFrom`** (that was the old bug,
-  `CODE_REVIEW.md#BUG-11`); go through `PluginAssemblyLoadContext`.
-- Enabling/disabling/uninstalling goes through `IPluginService` and is observable via its
-  `PluginsChanged` event (raised on the UI thread), because a page may be open before the background
-  scan finishes. `GetAllPluginInfos()` = installed (enabled and disabled);
-  `GetAllPlugins()` = live instances only.
-- **Enable/disable commits after the plugin hook** — `OnEnable`/`OnDisable` run *before* the package
-  move and before `PluginInfo.IsEnabled` changes, so a hook that throws leaves the plugin exactly as
-  the manager describes it (enabled and loaded) instead of half-applied. `PluginInfo` is an
-  `ObservableObject` bound by `PluginPage`, so its observable properties (`IsEnabled`, `IconPath`)
-  are only written on the main thread — `SetPluginEnabledAsync`/`SetPluginIconPathAsync` — because
-  enabling runs past `await … ConfigureAwait(false)`; assigning them there raised `PropertyChanged`
-  on a pool thread and faulted the binding (review N1 in
-  [`docs/code-review-contributors-2026-10.md`](docs/code-review-contributors-2026-10.md)).
-- Plugins receive the **root** service provider through `PluginContext` (full trust — document it
-  when writing plugin docs).
-- The SDK ships as a NuGet package built from
-  [`src/Snap.Hutao.Plugin.SDK/`](src/Snap.Hutao.Plugin.SDK); `TestPlugin/` is the reference sample.
+- This branch removed the plugin system and Harmony. The historical plugin review entries below
+  describe earlier releases; they are not instructions to restore dynamic assembly loading.
+- Runtime C# scripting was removed with user authorization. Roslyn workspace/EF design-time
+  packages belong to the database generation host, not the application runtime. Keep the
+  production query/model generation entry in `scripts/Generate-DatabaseAot.ps1`.
+- Current local validation uses SDK 11.0.100; all .NET/EF 11 package references share
+  `HutaoDotNetPackageVersion=11.*` in the repository's `Directory.Packages.props` (last validated resolution
+  to 11.0.0). The build rejects an EF version different from the generated schema metadata;
+  regenerate schema/model/query output after dependency changes. No separate pinned dotnet-ef
+  tool is needed: the generation project directly uses the official EF design services. At the user's
+  request, use Debug for builds and Native AOT publishes; do not build Release. The database
+  generation script defaults to Debug. Neither configuration alone selects Native AOT.
+- Database startup uses `DatabaseSchema.Upgrade`, not EF's runtime migration discovery. Generated
+  SQL is derived from the 48 registered migration snapshots, including restored published
+  migration `20261022144006_MakeBackpackEquippedAvatarIdNullable`; migration source changes require
+  regeneration through `src/Snap.Hutao.Remastered/Snap.Hutao.Database.Schema`. Do not edit the generated SQL/catalog.
+  The build validates source fingerprints; runtime validates SQL hashes, history and foreign keys
+  within one write transaction. See [database implementation and verification](docs/database-aot.md).
+- AOT development/validation projects live under `src/Snap.Hutao.Remastered` and are included
+  in the solution. Their purpose, commands and standard EF AOT migration alternatives are
+  documented in [AOT development](src/Snap.Hutao.Remastered/AOT.md). They are not app payloads.
+- All csproj package versions are centrally declared in the root `Directory.Packages.props`;
+  retain package-specific asset/publish metadata in the projects. Do not reintroduce inline versions.
+  The user removed the two standalone AotSmoke test projects. Keep the production generation
+  projects and their verification entry points; do not describe removed native JSON checks as current tests.
+  For this central-management change the user explicitly requested no restore/build validation;
+  dependency review and upgrades are manual.
+- Regenerate the Native AOT EF model/accessors and official query interceptors
+  with `scripts/Generate-DatabaseAot.ps1`; `-Check -Native` checks for stale output and runs the real
+  production data host as a Windows native executable. `GenerateEfQueries=true` is only a bootstrap
+  option for generation: ordinary builds and acceptance must include the interceptors. Keep database
+  filtering/ordering in SQL; captured gacha enum parameters use `long` numeric comparisons because
+  rc.3 otherwise dynamically constructs enum type mappings. Never edit generated output by hand.
+- External persistence Fixtures and their generator/check commands were removed at the user's
+  request. The model host retains direct production-DTO CRUD payloads and basic JSON round trips;
+  previous deep legacy-fixture validation is historical, not current coverage.
+- `JsonSerializeContexts.Generated` combines generated contexts as `IJsonTypeInfoResolver`s on
+  the caller's options. Do not construct each context with a cloned options instance: nested
+  converters must resolve contracts through the same options and resolver chain.
+- XAML binding annotations for entities/DTOs also compiled by `Snap.Hutao.Database.Model` must
+  stay in application-only partial declarations (`Model/Entity/*.Presentation.cs` or
+  `UI/Xaml/Data/BindingProperties`). The database host must not acquire WinUI/WinRT dependencies
+  merely to expose a display property in the application.
+- Generic selection models cannot use `GeneratedBindableCustomProperty`. Their application-only
+  partials explicitly implement `IBindableCustomPropertyImplementation`; use the shared
+  `NameValueItemTemplate` for named selections and preserve the original typed item/value.
+- WinRT reference/enum DP getters needing cast roots use explicit declarations in `*.Properties.cs`
+  with `DynamicWindowsRuntimeCast` on the actual getter. Do not reintroduce duplicate declarative
+  generator requests for those properties or remove their registration defaults/callbacks.
+- `JsonSerialize` freezes the options on first use and retrieves their cached `JsonTypeInfo`.
+  An unconfigured resolver, missing contract or resolver error is reported to the caller; the
+  facade never creates reflection options or catches those errors to retry with a different policy.
+- `JsonOptions.Default` and `JsonOptions.Create` use generated contracts in both managed and native
+  builds. Managed-only reflection compatibility requires an explicit `JsonOptions.CreateReflection`
+  call (annotated for trimming/dynamic-code requirements) and an enabled reflection feature switch.
+  Custom options must supply their own resolver; configuring a new resolver deliberately replaces
+  the generated registry. Register new roots instead of adding an implicit reflection fallback.
+- Legacy AI files use `AgentJsonContext.Default.Options` for their two list roots, preserving the
+  serializer defaults instead of the application's permissive network JSON policy.
+- Current AI conversation options use `AgentConversationJsonOptions.Create`: generated application
+  contracts precede the SDK resolver, while SDK types use their own contracts to retain internal
+  JSON-included approval state. Keep the previous SDK naming/number/converter policy. Native checks
+  cover all 24 observable content discriminators and conversation/checkpoint/approval round trips.
+- Source-linked JSON tests cover the real facade, converters and the small diagnostics/legacy
+  contexts. They do not validate the other domain contexts or Windows XAML generation.
+  See [current development report](docs/aot-development-report.md) and the
+  [historical resolver verification](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/32976c2f4b7ef2f8053b34131ffd7fdbae5b5722/docs/aot-blockers.md#14-2026-11-10json-解析器契约修复).
 
 ### 5.7 Localization
 
@@ -525,7 +573,7 @@ the build fails with `CS9275`); write a normal constructor in that case.
   properties, resx accessors and dependency properties come from the source generator. Never
   hand-write what a generator produces, and never edit files under `obj/`.
 - **Visibility** — use the narrowest visibility that works. `public` is required only where it is
-  genuinely part of a contract: the plugin API (`API/`), XAML-facing types, and members bound from
+  genuinely part of a contract: documented external contracts, XAML-facing types, and members bound from
   XAML. For implementation details, `internal`/`private` are acceptable and preferred (the
   generator's `SH001` even demands `internal` for non-contract types).
   **Never perform a repository-wide visibility rewrite** — the last one (a single commit touching
@@ -573,10 +621,9 @@ ID — do not "fix" these by documenting them as if they were intended.
 | 3 | Repository-wide `internal` removal (0 occurrences left) + 12 `SH001` suppressions; `public` was mandated uniformly, which is what caused #1/#2 | whole repo | BUG-10 |
 | 4 | Two ViewModel lifecycle state machines (`ViewModel` vs `ViewModelSlim`), derived classes assign `IsInitialized` on their own | `ViewModel/Abstraction/*` | ARCH-03 |
 | 5 | Analyzer severities are advisory: 54 `suggestion`, 18 `none`, 2 `warning`, **0** `error`; no `TreatWarningsAsErrors`/`AnalysisLevel`; `NoWarn` swallows `CA2012`; `SA1404` disabled | `src/Snap.Hutao.Remastered/.editorconfig`, app csproj | ENG-01, ENG-02 |
-| 6 | Test project cannot reference the app (0 `ProjectReference`, 39 source links, TFM `net11.0` vs `net11.0-windows…`) | `Snap.Hutao.Remastered.Test.csproj` | BUG-02 |
+| 6 | Test project cannot reference the app (0 `ProjectReference`, explicit source links, TFM `net11.0` vs `net11.0-windows…`) | `Snap.Hutao.Remastered.Test.csproj` | BUG-02 |
 | 7 | Manifest allows Windows 10 `10.0.19041.0` while the public support statement says Windows 10 22H2 (Jan-2025) / Windows 11 22H2 — reconcile one of the two | `Package*.appxmanifest`, project docs site | — |
 | 8 | No CI quality gate: none of the 8 workflows runs `dotnet test` or `dotnet format --verify-no-changes` | `.github/workflows/` | ENG-05 |
-| 9 | No central package management (`Directory.Build.props` / `Directory.Packages.props` absent, 61 `PackageReference`s across the 4 csproj files carry inline versions) | `src/**/*.csproj` | ENG-04 |
 | 10 | `dependabot.yml` NuGet entry still points at the pre-rename path `/src/Snap.Hutao` → no NuGet updates since the rename | `.github/dependabot.yml` | ENG-06 |
 | 11 | Dead code / stale config: `LegacyMetadataService` (396 lines, `[Service]` commented out), `build.cake` targets a non-existent `.sln`, commented-out `#pragma` block | `Service/Metadata/LegacyMetadataService.cs`, `build.cake`, `Web/Hoyolab/SaltConstants.cs` | ENG-08 |
 | 12 | Normal builds do not emit generator source copies; `AotAnalysis=true` enables diagnostics only, without another generated-source output tree | app csproj | ENG-09 |
@@ -590,9 +637,12 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
+| 2026-11-10 | Replaced runtime EF migrations with generated versioned SQL and an atomic, history-validating SQLite upgrade runner; added source fingerprint checks, EF-created legacy database parity verification, and an actual Native AOT database test project. EF model/query work remains separate. |
+| 2026-11-10 | Replaced cloned per-context JSON options and the hidden reflection retry with a shared generated resolver chain; preserved resolver errors and first-use freezing, registered dictionary/legacy list roots, source-linked their real contexts, and documented the AOT branch's removed plugin scope and validation limits. |
 | 2026-11-08 | Added Sentry performance instrumentation (§5.9): every page load and the startup named-pipe redirect start a transaction, and HTTP, SQL, repository/save, EF migration, metadata/git/update/gacha/achievement/user/daily-note/record/plugin/inventory/cultivation/backpack/game-launch/game-package work is captured as nested spans through `SentrySpanScope`; documented the transaction-vs-child policy and the "no user-controlled waits in a transaction" rule. |
 | 2026-11-08 | All 30 typed `DataContext` shadow properties in the binding views read the base dependency property through `Unsafe.As<T>` instead of a checked `(T)base.DataContext` cast, and every such view imports `System.Runtime.CompilerServices`; documented in §6. |
 | 2026-11-08 | `MaterialCardButton` no longer copies the host's resolved `Foreground` onto its inner buttons as a local value; it forwards only a caller-defined color and otherwise clears the local value, so home-card text keeps `ButtonForeground`'s theme expression instead of the application theme captured at construction (black text on dark cards). Documented the rule in §5.3. |
+| 2026-11-08 | Added per-domain generated JSON contexts (`InterProcessJsonContext`, `UserJsonContext`, `UigfJsonContext`, …) composed by `JsonSerializeContexts`, plus the `JsonSerialize` AOT facade; migrated the remaining direct `JsonSerializer` reflection call sites, made `JsonSerialize` consult generated contexts directly and `JsonOptions.Default` keep the reflection resolver, and linked `JsonSerialize.cs` into the test project. |
 | 2026-10-31 | Removed the `global.json` SDK pin (`chore: do not use global.json to control dotnet version`) and dropped TODO #18: the build uses the installed .NET 11 SDK, CI installs major `11`, and §1/§2/§7 now forbid reintroducing a pin. |
 | 2026-10-31 | Restored the pre-rename names `InitializeInternalAsync` (metadata initialization) and `ReadInternal`/`WriteInternal`/`FlushInternal` (Zstandard streams), removed TODOs #1/#2 and renumbered the drift table; §5.5 no longer records the rename defect. |
 | 2026-10-31 | Restored the `ContentControlThemeFontFamily` / `PivotHeaderItemFontFamily` → `MiSans` aliases and the MiSans fallback in `CascadiaMonoAndMiSans` that the 2026-10-24 material rewrite deleted; documented in §5.3 that those aliases are the only thing that makes framework control content MiSans. |

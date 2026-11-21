@@ -49,7 +49,7 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
         createPreset = createPresetCallback;
         deleteCallback = deleteConfigCallback;
         comboItems = BuildComboItems();
-        PresetComboBox.ItemsSource = comboItems;
+        PresetComboBox.ItemsSource = ItemsSourceHelper.Create(comboItems, false);
         BindConfigToControls();
 
         isClosing = false;
@@ -285,7 +285,7 @@ public sealed partial class BackpackReliquaryScoreConfigDialog : ContentDialog
         deletedConfigIds.Add(configId);
         savedConfigs = savedConfigs.Where(c => c.InnerId != configId).ToImmutableArray();
         comboItems = BuildComboItems();
-        PresetComboBox.ItemsSource = comboItems;
+        PresetComboBox.ItemsSource = ItemsSourceHelper.Create(comboItems, false);
         selectedComboItem = null;
 
         currentConfig = createPreset(ReliquaryScoreConfigPreset.Default);

@@ -70,7 +70,7 @@ public sealed class GeetestWebView2ContentProvider : DependencyObject, IWebView2
                     const showError = () => {
                         clearTimeout(timeout);
                         status.hidden = false;
-                        status.textContent = {{JsonSerializer.Serialize(SH.ViewWebView2WindowLoadFailedHint)}};
+                        status.textContent = {{ToScriptString(SH.ViewWebView2WindowLoadFailedHint)}};
                     };
                     const isV4 = {{(isV4 ? "true" : "false")}};
                     const loader = document.createElement("script");
@@ -86,21 +86,21 @@ public sealed class GeetestWebView2ContentProvider : DependencyObject, IWebView2
                         }
                         try {
                             const options = isV4 ? {
-                                captchaId: {{JsonSerializer.Serialize(gt)}},
-                                riskType: {{JsonSerializer.Serialize(riskType)}} || undefined,
-                                userInfo: JSON.stringify({ session_id: {{JsonSerializer.Serialize(sessionId)}} }),
+                                captchaId: {{ToScriptString(gt)}},
+                                riskType: {{ToScriptString(riskType)}} || undefined,
+                                userInfo: JSON.stringify({ session_id: {{ToScriptString(sessionId)}} }),
                                 protocol: "https://",
                                 https: true,
                                 product: "popup",
                                 onError: showError
                             } : {
                                 protocol: "https://",
-                                gt: {{JsonSerializer.Serialize(gt)}},
-                                challenge: {{JsonSerializer.Serialize(challenge)}},
+                                gt: {{ToScriptString(gt)}},
+                                challenge: {{ToScriptString(challenge)}},
                                 new_captcha: true,
                                 offline: false,
                                 product: "popup",
-                                api_server: {{JsonSerializer.Serialize(isOversea ? "api-na.geetest.com" : "api.geetest.com")}}
+                                api_server: {{ToScriptString(isOversea ? "api-na.geetest.com" : "api.geetest.com")}}
                             };
                             initializeCaptcha(options, (captcha) => {
                                 captcha.onError(showError);
@@ -145,6 +145,11 @@ public sealed class GeetestWebView2ContentProvider : DependencyObject, IWebView2
     {
         await resultTcs.Task.ConfigureAwait(false);
         return result;
+    }
+
+    private static string ToScriptString(string? value)
+    {
+        return value is null ? "null" : $"\"{JsonEncodedText.Encode(value)}\"";
     }
 
     private void OnWebMessageReceived(CoreWebView2 sender, CoreWebView2WebMessageReceivedEventArgs args)

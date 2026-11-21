@@ -1,3 +1,4 @@
+#load "./build-runtime.cake"
 
 var target = Argument("target", "BuildAndZip");
 var configuration = Argument("configuration", "Release");
@@ -13,7 +14,7 @@ var manifest = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "
 
 var targetFramework = XmlPeek(project, "/Project/PropertyGroup/TargetFramework/text()").Trim();
 var runtimeIdentifier = XmlPeek(project, "/Project/PropertyGroup/RuntimeIdentifier/text()").Trim();
-var binPath = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, "publish");
+var binPath = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, publishFolder);
 var outputPath = System.IO.Path.Combine(repoDir, "src", "output");
 
 // Version: read from Package.appxmanifest
@@ -56,12 +57,14 @@ Task("Build binary package")
 
     var settings = new DotNetPublishSettings
     {
-        Configuration = configuration
+        Configuration = configuration,
+        Runtime = runtimeIdentifier,
+        OutputDirectory = binPath
     };
 
     settings.MSBuildSettings = new DotNetMSBuildSettings
     {
-        ArgumentCustomization = args => args.Append("/p:Platform=x64")
+        ArgumentCustomization = args => withRuntimeProperties(args)
                                             .Append("/p:UapAppxPackageBuildMode=SideloadOnly")
                                             .Append("/p:AppxPackageSigningEnabled=false")
                                             .Append("/p:AppxBundle=Never")
@@ -98,13 +101,15 @@ Task("Remove unused files")
         System.IO.Path.Combine(binPath, "onnxruntime.dll"),
     };
 
-    foreach (var file in files)
+    foreach (var file in files.Where(file => !publishAot || System.IO.Path.GetFileName(file) != "App.xbf"))
     {
         if (System.IO.File.Exists(file))
         {
             System.IO.File.Delete(file);
         }
     }
+    separateNativeAotSymbols(repoDir, binPath);
+    verifyPublishRuntime(repoDir, binPath);
 });
 
 Task("Zip loose files")
@@ -168,6 +173,7 @@ Task("Extract signed zip")
 
     System.IO.Compression.ZipFile.ExtractToDirectory(signedZip, binPath);
     Information($"Extracted to: {binPath}");
+    verifyPublishRuntime(repoDir, binPath);
 });
 
 Task("Prepare installer output")
@@ -274,13 +280,7 @@ Task("Sign MSIX")
     {
         if (!string.Equals(certificate.Subject, packagePublisher, System.StringComparison.Ordinal))
         {
-            if (packagePublisher != "CN=469D671A-3AED-4488-AC4F-75E5394BC7FA")
-            {
-                throw new InvalidOperationException("MSIX Publisher does not match the signing certificate.");
-            }
-            Warning("Store MSIX retains its Store Publisher and is UNSIGNED. It is for Store submission, not sideload installation. Setup signing is unchanged.");
-            GitHubActions.Commands.SetOutputParameter("msix-signed", "false");
-            return;
+            throw new InvalidOperationException("MSIX Publisher does not match the signing certificate.");
         }
     }
     GitHubActions.Commands.SetOutputParameter("msix-signed", "true");

@@ -1,0 +1,173 @@
+<Project>
+  <Target Name="ExplainNativeAotBuildOutput" AfterTargets="Build" Condition="'$(PublishAot)' == 'true'">
+    <Message Importance="high" Text="Native AOT: Build refreshes managed input and XAML. The native executable is updated by Publish. Use a fresh PublishDir and launch its executable; an existing bin/native executable can still be from an earlier publish." />
+  </Target>
+
+  <Target Name="ValidateAotCompilerReady" BeforeTargets="PrepareForPublish" Condition="'$(PublishAot)' == 'true'">
+    <Error Condition="'$(IlcCompileDependsOn)' == ''"
+           Text="Native AOT compiler targets are not active. Restore this project with -r win-x64 -p:PublishAot=true -p:PublishReadyToRun=false before using --no-restore publish. No native executable can be produced from the current restore assets." />
+  </Target>
+
+  <!--
+    Native AOT publishing patches.
+
+    Every AOT-only MSBuild tweak lives here so Snap.Hutao.Remastered.csproj and the
+    default R2R build stay untouched. Targets are gated on `PublishAot`; an ordinary
+    AOT-analysis Build only reports that native output requires Publish.
+
+    Keep this file imported *after* Build/ReadyToRun.targets: the payload targets below
+    must be able to act on the same build state that the R2R payload check validates.
+  -->
+
+  <!--
+    1. The XAML compiler needs the reference set.
+
+    MarkupCompilePass1 only depends on $(MarkupCompilePass1DependsOn), which does not
+    include ResolveReferences. In a PublishAot build graph ResolveReferences is
+    scheduled later than the XAML pass, so the compiler receives an empty
+    @(ReferencePath) and fails with:
+
+        WMC1007: Cannot resolve metadata for WinUI types.
+
+    Appending ResolveReferences restores the ordering a normal build already has.
+    MarkupCompilePass1DependsOn is self-appending inside the XAML targets, so the
+    default dependencies are preserved.
+  -->
+  <PropertyGroup Condition="'$(PublishAot)' == 'true'">
+    <MarkupCompilePass1DependsOn>$(MarkupCompilePass1DependsOn);ResolveReferences</MarkupCompilePass1DependsOn>
+  </PropertyGroup>
+
+  <!-- Native publishing does not execute PrepareForRun/CopyFilesToOutputDirectory.
+       The WinUI PRI target normally runs after that copy and already depends on it.
+       Run the SDK's real resource pipeline before calculating the publish payload,
+       including the current XBFs and compiler XML documentation in the output. -->
+  <Target Name="PrepareAotPublishResources"
+          BeforeTargets="IlcCompile;ComputeFilesToPublish"
+          DependsOnTargets="GenerateProjectPriFile"
+          Condition="'$(PublishAot)' == 'true'">
+    <Error Condition="!Exists('$(ProjectPriFullPath)')" Text="Native AOT publish did not generate the application PRI: $(ProjectPriFullPath)" />
+  </Target>
+
+  <!-- The SDK adds the managed apphost to build-copy items even though Native AOT
+       intentionally never creates it. The executable is supplied by ILC instead.
+       Remove only this managed-host item so the real PRI pipeline can run its
+       CopyFilesToOutputDirectory dependency, including documentation and XBFs. -->
+  <Target Name="RemoveManagedAppHostFromAotBuildCopy"
+          AfterTargets="_ComputeNETCoreBuildOutputFiles"
+          Condition="'$(PublishAot)' == 'true'">
+    <ItemGroup>
+      <None Remove="$(AppHostIntermediatePath)" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    2. AOT publish drops the deployment payload.
+
+    Snap.Hutao.Remastered.Deployment.exe ships as a `lib/` asset of the
+    Snap.Hutao.Remastered.Deployment.Runtime package. A normal publish copies it; an
+    AOT publish does not, and VerifyRequiredPublishRuntimeFiles (Build/ReadyToRun.targets)
+    then fails with "Required runtime file is missing from publish output".
+
+    IncludeAotPublishRuntimePayload re-adds the file to @(ResolvedFileToPublish) so the
+    SDK puts it into the publish folder and the MSIX payload.
+    EnsureAotPublishRuntimePayload copies it as a safety net right before the check,
+    which also covers hosts that ship their own publish-copy pipeline.
+  -->
+  <Target Name="IncludeAotPublishRuntimePayload"
+          AfterTargets="ComputeFilesToPublish"
+          Condition="'$(PublishAot)' == 'true'">
+    <ItemGroup>
+      <_HutaoAotAssets Include="$(MSBuildProjectDirectory)\Assets\**\*" />
+      <_HutaoAotResources Include="$(MSBuildProjectDirectory)\Resource\**\*" Exclude="$(MSBuildProjectDirectory)\Resource\Localization\**\*" />
+      <_HutaoAotContent Include="@(_HutaoAotAssets)">
+        <RelativePath>Assets\%(_HutaoAotAssets.RecursiveDir)%(_HutaoAotAssets.Filename)%(_HutaoAotAssets.Extension)</RelativePath>
+      </_HutaoAotContent>
+      <_HutaoAotContent Include="@(_HutaoAotResources)">
+        <RelativePath>Resource\%(_HutaoAotResources.RecursiveDir)%(_HutaoAotResources.Filename)%(_HutaoAotResources.Extension)</RelativePath>
+      </_HutaoAotContent>
+      <ResolvedFileToPublish Remove="@(_HutaoAotContent)" MatchOnMetadata="RelativePath" MatchOnMetadataOptions="PathLike" />
+      <ResolvedFileToPublish Include="@(_HutaoAotContent)" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+      <_HutaoAotPayload Include="$(OutDir)Snap.Hutao.Remastered.Deployment.exe"
+                        Condition="Exists('$(OutDir)Snap.Hutao.Remastered.Deployment.exe')" />
+      <_HutaoAotPayload Include="$(PkgSnap_Hutao_Remastered_Deployment_Runtime)\lib\**\Snap.Hutao.Remastered.Deployment.exe"
+                        Condition="'@(_HutaoAotPayload)' == '' and '$(PkgSnap_Hutao_Remastered_Deployment_Runtime)' != ''" />
+      <_HutaoAotPayloadInPublish Include="@(ResolvedFileToPublish)"
+                                 Condition="'%(ResolvedFileToPublish.Filename)%(ResolvedFileToPublish.Extension)' == 'Snap.Hutao.Remastered.Deployment.exe'" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'@(_HutaoAotPayload)' != '' and '@(_HutaoAotPayloadInPublish)' == ''">
+      <ResolvedFileToPublish Include="@(_HutaoAotPayload)">
+        <RelativePath>%(Filename)%(Extension)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+
+    <Error Condition="'@(_HutaoAotPayload)' == ''"
+           Text="AOT publish expects Snap.Hutao.Remastered.Deployment.exe in '$(OutDir)'. Build the project before publishing." />
+    <Error Condition="'@(_HutaoAotPayload->Count())' != '1'" Text="AOT publish requires exactly one deployment executable from the resolved runtime package." />
+
+    <Message Importance="normal"
+             Text="AOT payload injected: '@(_HutaoAotPayload)' (already published: '@(_HutaoAotPayloadInPublish)')" />
+  </Target>
+
+  <Target Name="VerifyAotPublishResources" AfterTargets="Publish" Condition="'$(PublishAot)' == 'true'">
+    <Error Condition="!Exists('$(PublishDir)resources.pri')" Text="Native AOT publish is missing the application resources.pri." />
+    <Error Condition="!Exists('$(PublishDir)Assets\Logo.ico')" Text="Native AOT publish is missing the application assets." />
+    <Error Condition="!Exists('$(PublishDir)Resource')" Text="Native AOT publish is missing the application resources." />
+    <VerifyHutaoNativePublish ImagePath="$(PublishDir)$(TargetName).exe" PublishDirectory="$(PublishDir)" />
+  </Target>
+
+  <!-- Catch stale/non-AOT restore assets as well as old CoreCLR files left in a
+       reused publish directory. A PublishAot property alone is not proof that the
+       compiler package was imported or the executable is actually native. -->
+  <UsingTask TaskName="VerifyHutaoNativePublish" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <ImagePath ParameterType="System.String" Required="true" />
+      <PublishDirectory ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        try
+        {
+            using (var stream = File.OpenRead(ImagePath))
+            using (var reader = new BinaryReader(stream))
+            {
+                stream.Position = 0x3c;
+                uint peOffset = reader.ReadUInt32();
+                stream.Position = peOffset;
+                if (reader.ReadUInt32() != 0x4550 || reader.ReadUInt16() != 0x8664)
+                    throw new InvalidDataException("Expected an x64 PE executable.");
+                stream.Position = peOffset + 24;
+                if (reader.ReadUInt16() != 0x20b)
+                    throw new InvalidDataException("Expected a PE32+ executable.");
+                stream.Position = peOffset + 24 + 112 + 14 * 8;
+                if (reader.ReadUInt32() != 0 || reader.ReadUInt32() != 0)
+                    throw new InvalidDataException("Native AOT executable still contains a CLR header.");
+            }
+            foreach (string file in new[] { "coreclr.dll", "hostfxr.dll", "hostpolicy.dll" })
+                if (File.Exists(Path.Combine(PublishDirectory, file)))
+                    throw new InvalidDataException("Native AOT output contains " + file + ". Restore with PublishAot=true and use a fresh publish directory.");
+            if (File.Exists(Path.Combine(PublishDirectory, Path.GetFileNameWithoutExtension(ImagePath) + ".dll")))
+                throw new InvalidDataException("Native AOT output still contains the primary managed assembly. An apphost PE alone is not a native application.");
+        }
+        catch (Exception ex)
+        {
+            Log.LogError("Invalid Native AOT publish: {0}", ex.Message);
+        }
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="EnsureAotPublishRuntimePayload"
+          BeforeTargets="VerifyRequiredPublishRuntimeFiles"
+          DependsOnTargets="IncludeAotPublishRuntimePayload"
+          Condition="'$(PublishAot)' == 'true' and '@(_HutaoAotPayload)' != ''">
+    <Copy SourceFiles="@(_HutaoAotPayload)"
+          DestinationFolder="$(PublishDir)"
+          SkipUnchangedFiles="true" />
+    <Message Importance="normal" Text="AOT payload copied to $(PublishDir)" />
+  </Target>
+</Project>

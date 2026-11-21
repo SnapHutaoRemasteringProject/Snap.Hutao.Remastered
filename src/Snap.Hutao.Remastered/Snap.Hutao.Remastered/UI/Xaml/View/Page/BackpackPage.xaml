@@ -8,11 +8,13 @@
     xmlns:essential="using:WinUI3Package"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
+    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxba="using:Snap.Hutao.Remastered.UI.Xaml.Behavior.Action"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxca="using:Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox"
     xmlns:shuxcas="using:Snap.Hutao.Remastered.UI.Xaml.Control.AutoSortBox"
+    xmlns:shuxcb="using:Snap.Hutao.Remastered.UI.Xaml.Control.Button"
     xmlns:shuxcc="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"
     xmlns:shuxci="using:Snap.Hutao.Remastered.UI.Xaml.Control.Image"
     xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
@@ -70,7 +72,7 @@
                         <Setter Property="Padding" Value="0"/>
                     </Style>
                 </Flyout.FlyoutPresenterStyle>
-                <shuxc:ItemFlyoutContent/>
+                <shuxc:ItemFlyoutContent Item="{Binding Mode=OneWay}"/>
             </Flyout>
 
             <!--  Properties defined by 祝圣之霜, only reachable from a reliquary crafted with it  -->
@@ -90,7 +92,7 @@
                                 Style="{StaticResource BodyStrongTextBlockStyle}"
                                 Text="{shuxm:ResourceString Name=ViewPageBackpackPurchasedAppendPropTitle}"/>
                         </StackPanel>
-                        <ItemsControl ItemsSource="{Binding PurchasedAppendPropNames}">
+                        <ItemsControl x:DataType="shv:BackpackReliquaryItemView" ItemsSource="{Binding PurchasedAppendPropItems}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{Binding}"/>
@@ -106,7 +108,7 @@
                 <Grid
                     Width="24"
                     Height="24"
-                    Visibility="{Binding HasEquippedAvatar, Converter={StaticResource BoolToVisibilityConverter}}">
+                    Visibility="{x:Bind HasEquippedAvatar, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
                     <Grid.Clip>
                         <!--  Keep equal to the Width/Height above: the image is larger than the plate, a bigger Rect would clip nothing and let it spill onto the card  -->
                         <RectangleGeometry Rect="0,0,24,24"/>
@@ -119,66 +121,69 @@
                         Margin="-4,-6,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Top"
-                        Source="{Binding EquippedAvatarIconUri}"/>
+                        Source="{x:Bind EquippedAvatarIconUri, Mode=OneWay}"/>
                 </Grid>
             </DataTemplate>
 
             <!--  Weapon card  -->
             <DataTemplate x:Key="WeaponCardTemplate" x:DataType="shv:BackpackWeaponItemView">
-                <shuxcc:HorizontalCard Width="270">
-                    <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="Tapped">
-                            <shuxba:ShowAttachedFlyoutAction/>
-                        </mxi:EventTriggerBehavior>
-                    </mxi:Interaction.Behaviors>
-                    <FlyoutBase.AttachedFlyout>
-                        <StaticResource ResourceKey="ItemDetailFlyout"/>
-                    </FlyoutBase.AttachedFlyout>
-                    <shuxcc:HorizontalCard.Left>
-                        <Grid Margin="4,0" VerticalAlignment="Center">
-                            <shuxc:ItemIcon
-                                Width="54"
-                                Height="54"
-                                Icon="{x:Bind Weapon.Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}"
-                                Quality="{x:Bind Weapon.RankLevel, Mode=OneWay}"/>
-                            <ContentControl
-                                HorizontalContentAlignment="Right"
-                                VerticalContentAlignment="Bottom"
-                                Content="{Binding}"
-                                ContentTemplate="{StaticResource EquippedAvatarBadgeTemplate}"/>
-                        </Grid>
-                    </shuxcc:HorizontalCard.Left>
-                    <shuxcc:HorizontalCard.Right>
-                        <Grid Margin="16,0">
-                            <StackPanel VerticalAlignment="Center" Spacing="2">
-                                <TextBlock
-                                    Text="{x:Bind Weapon.Name, Mode=OneWay}"
-                                    TextTrimming="CharacterEllipsis"
-                                    TextWrapping="NoWrap"/>
-                                <TextBlock
-                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                    Style="{StaticResource CaptionTextBlockStyle}"
-                                    Text="{x:Bind WeaponTypeName, Mode=OneWay}"/>
-                                <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind LevelRefinementInfo, Mode=OneWay}"/>
-                            </StackPanel>
-                            <shuxc:LockIcon
-                                Width="20"
-                                Height="20"
-                                Margin="0,0,-10,4"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Bottom"
-                                IsLocked="{x:Bind IsLocked, Mode=OneWay}"/>
-                        </Grid>
-                    </shuxcc:HorizontalCard.Right>
-                </shuxcc:HorizontalCard>
+                <!--  https://github.com/microsoft/microsoft-ui-xaml/issues/7810 workaround  -->
+                <Grid>
+                    <shuxcc:HorizontalCard Width="270">
+                        <mxi:Interaction.Behaviors>
+                            <shuxb:StaticEventTriggerBehavior EventName="Tapped">
+                                <shuxba:ShowAttachedFlyoutAction/>
+                            </shuxb:StaticEventTriggerBehavior>
+                        </mxi:Interaction.Behaviors>
+                        <FlyoutBase.AttachedFlyout>
+                            <StaticResource ResourceKey="ItemDetailFlyout"/>
+                        </FlyoutBase.AttachedFlyout>
+                        <shuxcc:HorizontalCard.Left>
+                            <Grid Margin="4,0" VerticalAlignment="Center">
+                                <shuxc:ItemIcon
+                                    Width="54"
+                                    Height="54"
+                                    Icon="{x:Bind Weapon.Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}"
+                                    Quality="{x:Bind Weapon.RankLevel, Mode=OneWay}"/>
+                                <ContentControl
+                                    HorizontalContentAlignment="Right"
+                                    VerticalContentAlignment="Bottom"
+                                    Content="{x:Bind Mode=OneWay}"
+                                    ContentTemplate="{StaticResource EquippedAvatarBadgeTemplate}"/>
+                            </Grid>
+                        </shuxcc:HorizontalCard.Left>
+                        <shuxcc:HorizontalCard.Right>
+                            <Grid Margin="16,0">
+                                <StackPanel VerticalAlignment="Center" Spacing="2">
+                                    <TextBlock
+                                        Text="{x:Bind Weapon.Name, Mode=OneWay}"
+                                        TextTrimming="CharacterEllipsis"
+                                        TextWrapping="NoWrap"/>
+                                    <TextBlock
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Style="{StaticResource CaptionTextBlockStyle}"
+                                        Text="{x:Bind WeaponTypeName, Mode=OneWay}"/>
+                                    <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Text="{x:Bind LevelRefinementInfo, Mode=OneWay}"/>
+                                </StackPanel>
+                                <shuxc:LockIcon
+                                    Width="20"
+                                    Height="20"
+                                    Margin="0,0,-10,4"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    IsLocked="{x:Bind IsLocked, Mode=OneWay}"/>
+                            </Grid>
+                        </shuxcc:HorizontalCard.Right>
+                    </shuxcc:HorizontalCard>
+                </Grid>
             </DataTemplate>
 
             <DataTemplate x:Key="ReliquaryCardTemplate" x:DataType="shv:BackpackReliquaryItemView">
                 <Border Width="320" Style="{StaticResource BorderShimmerStyle}">
                     <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="Tapped">
+                        <shuxb:StaticEventTriggerBehavior EventName="Tapped">
                             <shuxba:ShowAttachedFlyoutAction/>
-                        </mxi:EventTriggerBehavior>
+                        </shuxb:StaticEventTriggerBehavior>
                     </mxi:Interaction.Behaviors>
                     <FlyoutBase.AttachedFlyout>
                         <StaticResource ResourceKey="ItemDetailFlyout"/>
@@ -209,7 +214,7 @@
                                 VerticalAlignment="Bottom"
                                 FlyoutBase.AttachedFlyout="{StaticResource PurchasedAppendPropFlyout}"
                                 Tapped="OnPurchasedAppendPropIconTapped"
-                                Visibility="{Binding HasPurchasedAppendProp, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                Visibility="{x:Bind HasPurchasedAppendProp, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                             <shuxc:LockIcon
                                 Grid.Column="1"
                                 Width="20"
@@ -243,7 +248,7 @@
                                 <ContentControl
                                     HorizontalContentAlignment="Right"
                                     VerticalContentAlignment="Bottom"
-                                    Content="{Binding}"
+                                    Content="{x:Bind Mode=OneWay}"
                                     ContentTemplate="{StaticResource EquippedAvatarBadgeTemplate}"/>
                             </Grid>
                             <Grid Grid.Column="1">
@@ -305,7 +310,7 @@
                             Grid.Row="4"
                             Margin="0,12"
                             ItemTemplate="{StaticResource BackpackReliquarySubStatTemplate}"
-                            ItemsSource="{x:Bind PaddedSubStats, Mode=OneWay}"/>
+                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(PaddedSubStats, PaddedSubStats.IsDefaultOrEmpty), Mode=OneWay}"/>
                     </Grid>
                 </Border>
             </DataTemplate>
@@ -363,41 +368,44 @@
 
             <!--  Default card  -->
             <DataTemplate x:Key="DefaultCardTemplate" x:DataType="shv:BackpackItemView">
-                <shuxcc:HorizontalCard Width="270">
-                    <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="Tapped">
-                            <shuxba:ShowAttachedFlyoutAction/>
-                        </mxi:EventTriggerBehavior>
-                    </mxi:Interaction.Behaviors>
-                    <FlyoutBase.AttachedFlyout>
-                        <StaticResource ResourceKey="ItemDetailFlyout"/>
-                    </FlyoutBase.AttachedFlyout>
-                    <shuxcc:HorizontalCard.Left>
-                        <shuxc:ItemIcon
-                            Width="40"
-                            Height="40"
-                            Icon="{x:Bind Material.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
-                            Quality="{x:Bind Material.RankLevel, Mode=OneWay}"/>
-                    </shuxcc:HorizontalCard.Left>
-                    <shuxcc:HorizontalCard.Right>
-                        <Grid Margin="16,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition Width="auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                Text="{x:Bind Material.Name, Mode=OneWay}"
-                                TextTrimming="CharacterEllipsis"/>
-                            <TextBlock
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{x:Bind DisplayCount, Mode=OneWay}"/>
-                        </Grid>
-                    </shuxcc:HorizontalCard.Right>
-                </shuxcc:HorizontalCard>
+                <!--  https://github.com/microsoft/microsoft-ui-xaml/issues/7810 workaround  -->
+                <Grid>
+                    <shuxcc:HorizontalCard Width="270">
+                        <mxi:Interaction.Behaviors>
+                            <shuxb:StaticEventTriggerBehavior EventName="Tapped">
+                                <shuxba:ShowAttachedFlyoutAction/>
+                            </shuxb:StaticEventTriggerBehavior>
+                        </mxi:Interaction.Behaviors>
+                        <FlyoutBase.AttachedFlyout>
+                            <StaticResource ResourceKey="ItemDetailFlyout"/>
+                        </FlyoutBase.AttachedFlyout>
+                        <shuxcc:HorizontalCard.Left>
+                            <shuxc:ItemIcon
+                                Width="40"
+                                Height="40"
+                                Icon="{x:Bind Material.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                                Quality="{x:Bind Material.RankLevel, Mode=OneWay}"/>
+                        </shuxcc:HorizontalCard.Left>
+                        <shuxcc:HorizontalCard.Right>
+                            <Grid Margin="16,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    Text="{x:Bind Material.Name, Mode=OneWay}"
+                                    TextTrimming="CharacterEllipsis"/>
+                                <TextBlock
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                    Text="{x:Bind DisplayCount, Mode=OneWay}"/>
+                            </Grid>
+                        </shuxcc:HorizontalCard.Right>
+                    </shuxcc:HorizontalCard>
+                </Grid>
             </DataTemplate>
 
             <shv:BackpackItemTemplateSelector
@@ -480,9 +488,9 @@
                             Text="{shuxm:ResourceString Name=ViewPageBackpackAddArchiveHint}"/>
                         <wl:LiquidGlassButton
                             Margin="0,16,0,0"
-                            shuxcth:ControlMaterialState.IsManaged="True"
                             Padding="16,8"
                             HorizontalAlignment="Stretch"
+                            shuxcth:ControlMaterialState.IsManaged="True"
                             Command="{x:Bind DataContext.AddArchiveCommand, Mode=OneWay}"
                             Content="{shuxm:ResourceString Name=ViewPageBackpackAddArchive}"/>
                     </StackPanel>
@@ -520,7 +528,7 @@
                             QueryIcon="{cw:FontIconSource Glyph=&#xE721;}"
                             Style="{StaticResource DefaultAutoSuggestTokenBoxStyle}"
                             SuggestedItemTemplate="{StaticResource TokenTemplate}"
-                            SuggestedItemsSource="{x:Bind DataContext.SearchData.AvailableTokens.Values, Mode=OneWay}"
+                            SuggestedItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.SearchData.AvailableTokens.Values, DataContext.SearchData.AvailableTokens.Values.IsDefaultOrEmpty), Mode=OneWay}"
                             Text="{x:Bind DataContext.SearchData.FilterToken, Mode=TwoWay}"
                             TokenItemTemplate="{StaticResource TokenTemplate}"/>
                         <StackPanel
@@ -528,12 +536,12 @@
                             VerticalAlignment="Center"
                             Orientation="Horizontal"
                             Spacing="6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" VerticalAlignment="Center">
+                            <wl:LiquidGlassButton VerticalAlignment="Center" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True">
                                         <shuxcas:AutoSortList
                                             Width="260"
-                                            AvailableTokens="{x:Bind DataContext.AvailableSortTokens, Mode=OneWay}"
+                                            AvailableTokens="{x:Bind DataContext.AvailableSortTokenItems, Mode=OneWay}"
                                             SortCommand="{x:Bind DataContext.ApplySortCommand, Mode=OneWay}"/>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
@@ -556,9 +564,9 @@
                         <AppBarElementContainer AllowFocusOnInteraction="True">
                             <shuxc:SizeRestrictedContentControl Margin="2,6,3,6">
                                 <wl:LiquidGlassComboBox
-                                    shuxcth:ControlMaterialState.IsManaged="True"
                                     shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                    DisplayMemberPath="Name"
+                                    shuxcth:ControlMaterialState.IsManaged="True"
+                                    ItemTemplate="{StaticResource BackpackArchiveNameTemplate}"
                                     ItemsSource="{x:Bind DataContext.Archives, Mode=OneWay}"
                                     SelectedItem="{x:Bind DataContext.Archives.CurrentItem, Mode=TwoWay}"
                                     Style="{ThemeResource CommandBarComboBoxStyle}"/>
@@ -587,146 +595,226 @@
 
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryWeapon}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
-                            <GridView
-                                Padding="16,16,10,10"
-                                ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
-                                SelectionMode="None">
-                                <GridView.ItemContainerStyle>
-                                    <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        <Setter Property="Margin" Value="0,0,6,6"/>
-                                    </Style>
-                                </GridView.ItemContainerStyle>
-                            </GridView>
-                        </Border>
+                        <Grid>
+                            <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                                <GridView
+                                    x:Name="WeaponGridView"
+                                    Padding="16,16,10,10"
+                                    ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
+                                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
+                                    SelectionMode="None">
+                                    <GridView.ItemContainerStyle>
+                                        <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="Margin" Value="0,0,6,6"/>
+                                        </Style>
+                                    </GridView.ItemContainerStyle>
+                                </GridView>
+                            </Border>
+                            <shuxcb:GotoTop
+                                Margin="0,0,20,20"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Animated="True"
+                                AutoHiding="True"
+                                Target="{x:Bind WeaponGridView}"/>
+                        </Grid>
                     </Border>
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryReliquary}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
-                            <GridView
-                                Padding="16,16,10,10"
-                                ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
-                                SelectionMode="None">
-                                <GridView.ItemContainerStyle>
-                                    <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        <Setter Property="Margin" Value="0,0,6,6"/>
-                                    </Style>
-                                </GridView.ItemContainerStyle>
-                            </GridView>
-                        </Border>
+                        <Grid>
+                            <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                                <GridView
+                                    x:Name="ReliquaryGridView"
+                                    Padding="16,16,10,10"
+                                    ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
+                                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
+                                    SelectionMode="None">
+                                    <GridView.ItemContainerStyle>
+                                        <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="Margin" Value="0,0,6,6"/>
+                                        </Style>
+                                    </GridView.ItemContainerStyle>
+                                </GridView>
+                            </Border>
+                            <shuxcb:GotoTop
+                                Margin="0,0,20,20"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Animated="True"
+                                AutoHiding="True"
+                                Target="{x:Bind ReliquaryGridView}"/>
+                        </Grid>
                     </Border>
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryUpgradeItem}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
-                            <GridView
-                                Padding="16,16,10,10"
-                                ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
-                                SelectionMode="None">
-                                <GridView.ItemContainerStyle>
-                                    <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        <Setter Property="Margin" Value="0,0,6,6"/>
-                                    </Style>
-                                </GridView.ItemContainerStyle>
-                            </GridView>
-                        </Border>
+                        <Grid>
+                            <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                                <GridView
+                                    x:Name="UpgradeGridView"
+                                    Padding="16,16,10,10"
+                                    ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
+                                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
+                                    SelectionMode="None">
+                                    <GridView.ItemContainerStyle>
+                                        <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="Margin" Value="0,0,6,6"/>
+                                        </Style>
+                                    </GridView.ItemContainerStyle>
+                                </GridView>
+                            </Border>
+                            <shuxcb:GotoTop
+                                Margin="0,0,20,20"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Animated="True"
+                                AutoHiding="True"
+                                Target="{x:Bind UpgradeGridView}"/>
+                        </Grid>
                     </Border>
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryFood}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
-                            <GridView
-                                Padding="16,16,10,10"
-                                ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
-                                SelectionMode="None">
-                                <GridView.ItemContainerStyle>
-                                    <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        <Setter Property="Margin" Value="0,0,6,6"/>
-                                    </Style>
-                                </GridView.ItemContainerStyle>
-                            </GridView>
-                        </Border>
+                        <Grid>
+                            <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                                <GridView
+                                    x:Name="FoodGridView"
+                                    Padding="16,16,10,10"
+                                    ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
+                                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
+                                    SelectionMode="None">
+                                    <GridView.ItemContainerStyle>
+                                        <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="Margin" Value="0,0,6,6"/>
+                                        </Style>
+                                    </GridView.ItemContainerStyle>
+                                </GridView>
+                            </Border>
+                            <shuxcb:GotoTop
+                                Margin="0,0,20,20"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Animated="True"
+                                AutoHiding="True"
+                                Target="{x:Bind FoodGridView}"/>
+                        </Grid>
                     </Border>
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryMaterial}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
-                            <GridView
-                                Padding="16,16,10,10"
-                                ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
-                                SelectionMode="None">
-                                <GridView.ItemContainerStyle>
-                                    <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        <Setter Property="Margin" Value="0,0,6,6"/>
-                                    </Style>
-                                </GridView.ItemContainerStyle>
-                            </GridView>
-                        </Border>
+                        <Grid>
+                            <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                                <GridView
+                                    x:Name="MaterialGridView"
+                                    Padding="16,16,10,10"
+                                    ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
+                                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
+                                    SelectionMode="None">
+                                    <GridView.ItemContainerStyle>
+                                        <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="Margin" Value="0,0,6,6"/>
+                                        </Style>
+                                    </GridView.ItemContainerStyle>
+                                </GridView>
+                            </Border>
+                            <shuxcb:GotoTop
+                                Margin="0,0,20,20"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Animated="True"
+                                AutoHiding="True"
+                                Target="{x:Bind MaterialGridView}"/>
+                        </Grid>
                     </Border>
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryGadget}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
-                            <GridView
-                                Padding="16,16,10,10"
-                                ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
-                                SelectionMode="None">
-                                <GridView.ItemContainerStyle>
-                                    <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        <Setter Property="Margin" Value="0,0,6,6"/>
-                                    </Style>
-                                </GridView.ItemContainerStyle>
-                            </GridView>
-                        </Border>
+                        <Grid>
+                            <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                                <GridView
+                                    x:Name="GadgetGridView"
+                                    Padding="16,16,10,10"
+                                    ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
+                                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
+                                    SelectionMode="None">
+                                    <GridView.ItemContainerStyle>
+                                        <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="Margin" Value="0,0,6,6"/>
+                                        </Style>
+                                    </GridView.ItemContainerStyle>
+                                </GridView>
+                            </Border>
+                            <shuxcb:GotoTop
+                                Margin="0,0,20,20"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Animated="True"
+                                AutoHiding="True"
+                                Target="{x:Bind GadgetGridView}"/>
+                        </Grid>
                     </Border>
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryQuest}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
-                            <GridView
-                                Padding="16,16,10,10"
-                                ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
-                                SelectionMode="None">
-                                <GridView.ItemContainerStyle>
-                                    <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        <Setter Property="Margin" Value="0,0,6,6"/>
-                                    </Style>
-                                </GridView.ItemContainerStyle>
-                            </GridView>
-                        </Border>
+                        <Grid>
+                            <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                                <GridView
+                                    x:Name="QuestGridView"
+                                    Padding="16,16,10,10"
+                                    ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
+                                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
+                                    SelectionMode="None">
+                                    <GridView.ItemContainerStyle>
+                                        <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="Margin" Value="0,0,6,6"/>
+                                        </Style>
+                                    </GridView.ItemContainerStyle>
+                                </GridView>
+                            </Border>
+                            <shuxcb:GotoTop
+                                Margin="0,0,20,20"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Animated="True"
+                                AutoHiding="True"
+                                Target="{x:Bind QuestGridView}"/>
+                        </Grid>
                     </Border>
                 </PivotItem>
                 <PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryPreciousItem}">
                     <Border Margin="16" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                        <Border Style="{ThemeResource AcrylicBorderCardStyle}">
-                            <GridView
-                                Padding="16,16,10,10"
-                                ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
-                                ItemsSource="{x:Bind DataContext.Items, Mode=OneWay}"
-                                SelectionMode="None">
-                                <GridView.ItemContainerStyle>
-                                    <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        <Setter Property="Margin" Value="0,0,6,6"/>
-                                    </Style>
-                                </GridView.ItemContainerStyle>
-                            </GridView>
-                        </Border>
+                        <Grid>
+                            <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                                <GridView
+                                    x:Name="PreciousItemGridView"
+                                    Padding="16,16,10,10"
+                                    ItemTemplateSelector="{StaticResource BackpackItemTemplateSelector}"
+                                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Items, DataContext.Items.IsDefaultOrEmpty), Mode=OneWay}"
+                                    SelectionMode="None">
+                                    <GridView.ItemContainerStyle>
+                                        <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="Margin" Value="0,0,6,6"/>
+                                        </Style>
+                                    </GridView.ItemContainerStyle>
+                                </GridView>
+                            </Border>
+                            <shuxcb:GotoTop
+                                Margin="0,0,20,20"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Animated="True"
+                                AutoHiding="True"
+                                Target="{x:Bind PreciousItemGridView}"/>
+                        </Grid>
                     </Border>
                 </PivotItem>
                 <!--<PivotItem Header="{shuxm:ResourceString Name=ViewPageBackpackCategoryFurniture}">

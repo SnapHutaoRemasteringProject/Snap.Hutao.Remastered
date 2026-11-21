@@ -8,15 +8,18 @@ using Microsoft.UI.Xaml;
 namespace Snap.Hutao.Remastered.UI.Xaml.Behavior;
 
 /// <summary>
-/// Makes the header presenter of a switch accept hit tests so a click on its text
-/// toggles the switch. The liquid glass switch derives from ToggleButton instead of
-/// ToggleSwitch, so the behavior targets any FrameworkElement and looks the presenter
-/// up by name, which both the native and the glass templates provide.
+/// Enables hit testing for interactive switch headers.
 /// </summary>
-public sealed class ToggleSwitchHeaderHitTestVisibleBehavior : BehaviorBase<FrameworkElement>
+[DependencyProperty<bool>("IsHeaderHitTestVisible", DefaultValue = false, IsAttached = true, TargetType = typeof(FrameworkElement), NotNull = true)]
+public sealed partial class ToggleSwitchHeaderHitTestVisibleBehavior : BehaviorBase<FrameworkElement>
 {
     protected override void OnAssociatedObjectLoaded()
     {
+        // The native appearance can replace its template after Loaded or on a theme change.
+        // Set the value on the switch so every new native header presenter receives it.
+        SetIsHeaderHitTestVisible(AssociatedObject, true);
+
+        // The library's glass template does not bind the attached property.
         if (AssociatedObject.FindDescendant("HeaderContentPresenter") is { } presenter)
         {
             presenter.IsHitTestVisible = true;

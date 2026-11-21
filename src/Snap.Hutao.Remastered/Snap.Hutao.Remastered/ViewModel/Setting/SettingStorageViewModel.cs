@@ -6,10 +6,12 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.AppLifecycle;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Caching;
+using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Factory.Picker;
+using Snap.Hutao.Remastered.Factory.Progress;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.ViewModel.Guide;
 using Snap.Hutao.Remastered.Win32;
@@ -26,6 +28,7 @@ public sealed partial class SettingStorageViewModel : Abstraction.ViewModel
 {
     private readonly IFileSystemPickerInteraction fileSystemPickerInteraction;
     private readonly IContentDialogFactory contentDialogFactory;
+    private readonly IProgressFactory progressFactory;
     private readonly ITaskContext taskContext;
     private readonly IMessenger messenger;
     private readonly IImageCache imageCache;
@@ -38,6 +41,9 @@ public sealed partial class SettingStorageViewModel : Abstraction.ViewModel
 
     [ObservableProperty]
     public partial SettingFolderViewModel? DataFolderView { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsDataTransferEnabled { get; set; } = true;
 
     [Command("OpenBackgroundImageFolderCommand")]
     private static async Task OpenBackgroundImageFolderAsync()
@@ -63,18 +69,91 @@ public sealed partial class SettingStorageViewModel : Abstraction.ViewModel
     [Command("SetDataFolderCommand")]
     private async Task SetDataFolderAsync()
     {
+        if (!IsDataTransferEnabled)
+        {
+            return;
+        }
+
+        IsDataTransferEnabled = false;
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Set data folder path", "SettingStorageViewModel.Command"));
 
-        SettingStorageSetDataFolderOperation operation = new()
+        try
         {
-            FileSystemPickerInteraction = fileSystemPickerInteraction,
-            ContentDialogFactory = contentDialogFactory,
-            Messenger = messenger,
-        };
+            SettingStorageSetDataFolderOperation operation = new()
+            {
+                FileSystemPickerInteraction = fileSystemPickerInteraction,
+                ContentDialogFactory = contentDialogFactory,
+                ProgressFactory = progressFactory,
+                Messenger = messenger,
+            };
 
-        if (await operation.TryExecuteAsync().ConfigureAwait(false))
+            if (await operation.TryExecuteAsync().ConfigureAwait(false))
+            {
+                await taskContext.SwitchToMainThreadAsync();
+                try
+                {
+                    AppInstance.Restart(string.Empty);
+                }
+                catch (COMException ex)
+                {
+                    SentrySdk.CaptureException(ex);
+                    messenger.Send(InfoBarMessage.Warning(SH.ViewModelSettingStorageRestartFailed));
+                    return;
+                }
+
+                messenger.Send(InfoBarMessage.Success(SH.ViewModelSettingSetDataFolderSuccess));
+            }
+        }
+        finally
         {
-            messenger.Send(InfoBarMessage.Success(SH.ViewModelSettingSetDataFolderSuccess));
+            await taskContext.SwitchToMainThreadAsync();
+            IsDataTransferEnabled = true;
+        }
+    }
+
+    [Command("SaveUserDataBackupCommand")]
+    private async Task SaveUserDataBackupAsync()
+    {
+        if (!IsDataTransferEnabled)
+        {
+            return;
+        }
+
+        IsDataTransferEnabled = false;
+        try
+        {
+            if (!fileSystemPickerInteraction.PickFolder(SH.ViewPageSettingUserDataBackupHeader).TryGetValue(out string? folder))
+            {
+                return;
+            }
+
+            string source = HutaoRuntime.DataDirectory;
+            if (UrlPath.IsEqualOrSubdirectory(source, folder))
+            {
+                messenger.Send(InfoBarMessage.Warning(SH.ViewModelSettingStorageBackupLocation));
+                return;
+            }
+
+            string archivePath = Path.Combine(folder, $"Snap.Hutao.Backup-{DateTime.Now:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}.zip");
+            ContentDialog dialog = await contentDialogFactory
+                .CreateForIndeterminateProgressAsync(SH.ViewModelSettingStorageBackupProgress)
+                .ConfigureAwait(false);
+            using (await contentDialogFactory.BlockAsync(dialog).ConfigureAwait(false))
+            {
+                await taskContext.SwitchToBackgroundAsync();
+                UserDataTransfer.SaveBackup(source, archivePath);
+            }
+
+            messenger.Send(InfoBarMessage.Success(SH.FormatViewModelSettingStorageBackupSuccess(archivePath)));
+        }
+        catch (Exception ex)
+        {
+            messenger.Send(InfoBarMessage.Error(ex));
+        }
+        finally
+        {
+            await taskContext.SwitchToMainThreadAsync();
+            IsDataTransferEnabled = true;
         }
     }
 

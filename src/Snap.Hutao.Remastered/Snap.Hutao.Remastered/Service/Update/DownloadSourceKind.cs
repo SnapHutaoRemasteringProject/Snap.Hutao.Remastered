@@ -7,4 +7,5 @@ public enum DownloadSourceKind
 {
     Official,
     MirrorChyan,
+    AppInstaller,
 }

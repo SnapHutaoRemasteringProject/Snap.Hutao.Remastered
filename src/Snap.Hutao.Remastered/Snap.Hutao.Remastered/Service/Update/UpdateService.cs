@@ -14,12 +14,19 @@ using Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
 using Snap.Hutao.Remastered.Web.Response;
+using System.IO;
+using System.Net.Http;
+using System.Xml.Linq;
+using Windows.ApplicationModel;
+using Windows.Management.Deployment;
 
 namespace Snap.Hutao.Remastered.Service.Update;
 
 [Service(ServiceLifetime.Singleton, typeof(IUpdateService))]
 public sealed partial class UpdateService : IUpdateService
 {
+    private const string AppInstallerHost = "package.snaphutaorp.org";
+    private const string PublishPackageName = "E8B6E2B3-D2A0-4435-A81D-2A16AAF405C8";
     private const string UpdaterFilename = "Snap.Hutao.Remastered.Deployment.exe";
 
     // Avoid injecting services directly
@@ -43,6 +50,44 @@ public sealed partial class UpdateService : IUpdateService
                 ITaskContext taskContext = scope.ServiceProvider.GetRequiredService<ITaskContext>();
                 await taskContext.SwitchToBackgroundAsync();
 
+                if (RuntimeEnvironment.IsPackaged)
+                {
+                    Uri? descriptorUri = GetPackagedAppInstallerUri();
+                    if (descriptorUri is null)
+                    {
+                        checkUpdateResult.Kind = CheckUpdateResultKind.AppInstallerUnavailable;
+                        return checkUpdateResult;
+                    }
+
+                    Version? remoteVersion = null;
+                    try
+                    {
+                        remoteVersion = await GetRemoteAppInstallerVersionAsync(descriptorUri, token).ConfigureAwait(false);
+                    }
+                    catch (Exception ex) when (ex is HttpRequestException or IOException or System.Xml.XmlException
+                        || (ex is OperationCanceledException && !token.IsCancellationRequested))
+                    {
+                        SentrySdk.CaptureException(ex);
+                    }
+
+                    if (remoteVersion is not null)
+                    {
+                        checkUpdateResult.PackageInformation = new HutaoPackageInformation { Version = remoteVersion };
+                        checkUpdateResult.Kind = !LocalSetting.Get(SettingKeys.OverrideUpdateVersionComparison, false)
+                            && HutaoRuntime.Version >= remoteVersion
+                            ? CheckUpdateResultKind.AlreadyUpdated
+                            : CheckUpdateResultKind.UpdateAvailable;
+                        return checkUpdateResult;
+                    }
+
+                    // Only public packages can fall back to the public release metadata and Mirror Chyan.
+                    if (!IsPublishPackage())
+                    {
+                        checkUpdateResult.Kind = CheckUpdateResultKind.VersionApiInvalidResponse;
+                        return checkUpdateResult;
+                    }
+                }
+
                 HutaoInfrastructureClient infrastructureClient = scope.ServiceProvider.GetRequiredService<HutaoInfrastructureClient>();
                 HutaoResponse<HutaoPackageInformation> response = await infrastructureClient.GetHutaoVersionInformationAsync(token).ConfigureAwait(false);
 
@@ -65,11 +110,6 @@ public sealed partial class UpdateService : IUpdateService
                     }
                 }
 
-                if (checkUpdateResult.PackageInformation.Validation is not { Length: > 0 })
-                {
-                    checkUpdateResult.Kind = CheckUpdateResultKind.VersionApiInvalidSha256;
-                }
-
                 return checkUpdateResult;
             }
             finally
@@ -80,6 +120,7 @@ public sealed partial class UpdateService : IUpdateService
                     CheckUpdateResultKind.UpdateAvailable => SH.FormatViewModelSettingUpdateAvailable(checkUpdateResult.PackageInformation?.Version.ToString()),
                     CheckUpdateResultKind.AlreadyUpdated => SH.ViewModelSettingAlreadyUpdated,
                     CheckUpdateResultKind.VersionApiInvalidResponse or CheckUpdateResultKind.VersionApiInvalidSha256 => SH.ViewModelSettingCheckUpdateFailed,
+                    CheckUpdateResultKind.AppInstallerUnavailable => SH.ServiceUpdateAppInstallerUnavailable,
                     _ => default,
                 };
             }
@@ -88,6 +129,14 @@ public sealed partial class UpdateService : IUpdateService
 
     public async ValueTask TriggerUpdateAsync(CheckUpdateResult result, bool isAutomatic = false, CancellationToken token = default)
     {
+        if (result.Kind is CheckUpdateResultKind.AppInstallerUnavailable)
+        {
+            using IServiceScope unavailableScope = serviceProvider.CreateScope();
+            unavailableScope.ServiceProvider.GetRequiredService<IMessenger>()
+                .Send(InfoBarMessage.Error(SH.ServiceUpdateAppInstallerUnavailable));
+            return;
+        }
+
         if (result.Kind is not CheckUpdateResultKind.UpdateAvailable)
         {
             return;
@@ -117,7 +166,7 @@ public sealed partial class UpdateService : IUpdateService
                 ContentDialogResult installUpdateUserConsentResult = await contentDialogFactory
                     .CreateForConfirmCancelWithSecondaryAsync(
                         SH.FormatViewTitleUpdatePackageAvailableTitle(result.PackageInformation?.Version),
-                        SH.ViewTitileUpdatePackageAvailableContent,
+                        RuntimeEnvironment.IsUnpackaged ? SH.ServiceUpdateRecommendPackaged : SH.ViewTitileUpdatePackageAvailableContent,
                         SH.ViewTitleUpdatePackageSkipVersionButtonText)
                     .ConfigureAwait(false);
 
@@ -132,41 +181,56 @@ public sealed partial class UpdateService : IUpdateService
                     return;
                 }
 
+                bool isUnpackaged = RuntimeEnvironment.IsUnpackaged;
+                Uri? descriptorUri = isUnpackaged ? null : GetPackagedAppInstallerUri();
+                if (!isUnpackaged && descriptorUri is null)
+                {
+                    messenger.Send(InfoBarMessage.Warning(SH.ServiceUpdateAppInstallerUnavailable));
+                    return;
+                }
+
+                // Preview packages update from their own feeds. Mirror Chyan serves the public release.
+                if (!isUnpackaged && !IsPublishPackage())
+                {
+                    await InstallFromFeedAsync(descriptorUri!).ConfigureAwait(false);
+                    return;
+                }
+
                 DownloadSourceDialog sourceDialog = await contentDialogFactory
                     .CreateInstanceAsync<DownloadSourceDialog>(scope.ServiceProvider)
                     .ConfigureAwait(false);
-
-                (bool isOk, DownloadSourceKind downloadSource) = await sourceDialog.GetDownloadSourceAsync().ConfigureAwait(false);
-
-                if (!isOk)
+                (bool confirmed, DownloadSourceKind source) = await sourceDialog.GetDownloadSourceAsync(offerPackaged: isUnpackaged).ConfigureAwait(false);
+                if (!confirmed)
                 {
                     return;
                 }
 
-                if (downloadSource is DownloadSourceKind.MirrorChyan)
+                if (source is DownloadSourceKind.AppInstaller || (!isUnpackaged && source is DownloadSourceKind.Official))
+                {
+                    await InstallFromFeedAsync(descriptorUri ?? GetAppInstallerUri("Publish")).ConfigureAwait(false);
+                    return;
+                }
+
+                if (source is DownloadSourceKind.MirrorChyan)
                 {
                     MirrorChyanCdkDialog cdkDialog = await contentDialogFactory
                         .CreateInstanceAsync<MirrorChyanCdkDialog>(scope.ServiceProvider)
                         .ConfigureAwait(false);
-
-                    (bool cdkOk, string cdk) = await cdkDialog.GetCdkAsync().ConfigureAwait(false);
-
-                    if (!cdkOk)
+                    (bool accepted, string cdk) = await cdkDialog.GetCdkAsync().ConfigureAwait(false);
+                    if (!accepted)
                     {
                         return;
                     }
 
                     LocalSetting.Set(SettingKeys.MirrorChyanCdk, cdk);
                 }
-
-#if IS_ALPHA_BUILD
-                if (result.PackageInformation?.Mirrors.SingleOrDefault() is { MirrorType: Web.Hutao.HutaoPackageMirrorType.Browser } mirror)
+                else if (result.PackageInformation?.Validation is not { Length: > 0 })
                 {
-                    await Windows.System.Launcher.LaunchUriAsync(mirror.Url.ToUri());
+                    messenger.Send(InfoBarMessage.Error(SH.ViewModelSettingCheckUpdateFailed));
+                    return;
                 }
-#else
-                await LaunchUpdaterAsync(downloadSource).ConfigureAwait(false);
-#endif
+
+                await LaunchUpdaterAsync(source).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -193,6 +257,56 @@ public sealed partial class UpdateService : IUpdateService
 
         LocalSetting.Set(SettingKeys.SkippedUpdateVersion, version.ToString());
         messenger.Send(InfoBarMessage.Success(SH.FormatViewTitleUpdatePackageSkipVersionInfoBarMessage(version)));
+    }
+
+    private static async ValueTask<Version?> GetRemoteAppInstallerVersionAsync(Uri uri, CancellationToken token)
+    {
+        using HttpClient client = new();
+        using HttpResponseMessage response = await client.GetAsync(uri, token).ConfigureAwait(false);
+        response.EnsureSuccessStatusCode();
+        using Stream stream = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false);
+        XDocument descriptor = await XDocument.LoadAsync(stream, LoadOptions.None, token).ConfigureAwait(false);
+        XElement? root = descriptor.Root;
+        // Duplicate MainPackage elements are also a malformed remote descriptor.
+        XElement[] mainPackages = root?.Elements().Where(element => element.Name.LocalName == "MainPackage").Take(2).ToArray() ?? [];
+        XElement? main = mainPackages.Length == 1 ? mainPackages[0] : null;
+        if (root is null
+            || root.Name.LocalName != "AppInstaller"
+            || (string?)root.Attribute("Uri") != uri.AbsoluteUri
+            || (string?)main?.Attribute("Name") != Package.Current.Id.Name
+            || (string?)main?.Attribute("Publisher") != Package.Current.Id.Publisher)
+        {
+            return null;
+        }
+
+        string? value = (string?)main?.Attribute("Version");
+        return Version.TryParse(value, out Version? remoteVersion) ? remoteVersion : null;
+    }
+
+    private static bool IsPublishPackage() => string.Equals(Package.Current.Id.Name, PublishPackageName, StringComparison.Ordinal);
+
+    private static Uri GetAppInstallerUri(string channel) => new($"https://{AppInstallerHost}/{channel}/Snap.Hutao.Remastered.{channel}.x64.appinstaller");
+
+    private static Uri? GetPackagedAppInstallerUri()
+    {
+        return Package.Current.Id.Name switch
+        {
+            PublishPackageName => GetAppInstallerUri("Publish"),
+            "7f0db578-026f-4e0b-a75b-d5d06bb0a74c" => GetAppInstallerUri("Alpha"),
+            "52127695-c6a7-406e-916a-693b905e8ba7" => GetAppInstallerUri("Canary"),
+            _ => null,
+        };
+    }
+
+    private static async ValueTask InstallFromFeedAsync(Uri descriptorUri)
+    {
+        // Use the Windows deployment API with the hosted XML. This does not require
+        // a local descriptor or the browser's ms-appinstaller protocol handler.
+        PackageManager packageManager = new();
+        await packageManager.RequestAddPackageByAppInstallerFileAsync(
+            descriptorUri,
+            AddPackageByAppInstallerOptions.ForceTargetAppShutdown,
+            packageManager.GetDefaultPackageVolume());
     }
 
     private async ValueTask LaunchUpdaterAsync(DownloadSourceKind downloadSource = DownloadSourceKind.Official)

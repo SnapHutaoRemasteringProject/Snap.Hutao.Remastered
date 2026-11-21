@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Helpers;
 using Microsoft.UI.Input;
@@ -17,23 +18,14 @@ using WinRT;
 using VirtualKey = Windows.System.VirtualKey;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox;
-
-[DependencyProperty<Style>("AutoSuggestBoxStyle")]
-[DependencyProperty<Style>("AutoSuggestBoxTextBoxStyle")]
 [DependencyProperty<IReadOnlyDictionary<string, SearchToken>>("AvailableTokens")]
 [DependencyProperty<ICommand>("FilterCommand")]
 [DependencyProperty<object>("FilterCommandParameter")]
 [DependencyProperty<int>("MaximumTokens", DefaultValue = -1, PropertyChangedCallbackName = nameof(OnMaximumTokensChanged), NotNull = true)]
 [DependencyProperty<string>("PlaceholderText")]
-[DependencyProperty<IconSource>("QueryIcon")]
 [DependencyProperty<object>("SuggestedItemsSource")]
-[DependencyProperty<DataTemplate>("SuggestedItemTemplate")]
-[DependencyProperty<DataTemplateSelector>("SuggestedItemTemplateSelector")]
-[DependencyProperty<Style>("SuggestedItemContainerStyle")]
 [DependencyProperty<bool>("TabNavigateBackOnArrow", DefaultValue = false, NotNull = true)]
 [DependencyProperty<string>("TextMemberPath")]
-[DependencyProperty<DataTemplate>("TokenItemTemplate")]
-[DependencyProperty<DataTemplateSelector>("TokenItemTemplateSelector")]
 [DependencyProperty<string>("TokenDelimiter", DefaultValue = " ")]
 [DependencyProperty<double>("TokenSpacing", NotNull = true)]
 [TemplatePart(Name = NormalState, Type = typeof(VisualState))]
@@ -42,6 +34,12 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox;
 [TemplatePart(Name = UnfocusedState, Type = typeof(VisualState))]
 [TemplatePart(Name = MaxReachedState, Type = typeof(VisualState))]
 [TemplatePart(Name = MaxUnreachedState, Type = typeof(VisualState))]
+// The context menu in AutoSuggestTokenBox.xaml binds these two commands through a classic
+// {Binding RelativeSource=TemplatedParent}. Non-x:Bind paths need an AOT property provider,
+// and only the two command properties are bound, so the scoped form is used instead of the
+// repository generator (which walks every inherited Control property and emits a nullable
+// value type setter that does not compile).
+[WinRT.GeneratedBindableCustomProperty([nameof(SelectAllTokensAndTextCommand), nameof(RemoveItemCommand)], [])]
 public sealed partial class AutoSuggestTokenBox : ListViewBase
 {
     // Compiled TwoWay bindings require the target DP identifier to be public.
@@ -193,6 +191,7 @@ public sealed partial class AutoSuggestTokenBox : ListViewBase
         return innerItemsSource.ItemsSource.Count >= MaximumTokens;
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.TextBlock))]
     public void RefreshTokenCounter()
     {
         if (ContainerFromIndex(Items.Count - 1) is not AutoSuggestTokenBoxItem { AutoSuggestBox: { } autoSuggestBox, AutoSuggestTextBox: { } autoSuggestTextBox })
@@ -227,22 +226,12 @@ public sealed partial class AutoSuggestTokenBox : ListViewBase
 
         if (string.IsNullOrWhiteSpace(Text))
         {
-            sender.ItemsSource = AvailableTokens?
-                .ExceptBy(Tokens, kvp => kvp.Value)
-                .OrderBy(kvp => kvp.Value.Kind)
-                .ThenBy(kvp => kvp.Value.Order)
-                .Select(kvp => kvp.Value);
+            sender.ItemsSource = CreateSuggestionItemSource(match: default);
         }
 
         if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
         {
-            sender.ItemsSource = AvailableTokens?
-                .ExceptBy(Tokens, kvp => kvp.Value)
-                .Where(kvp => kvp.Value.Value.Contains(Text ?? string.Empty, StringComparison.OrdinalIgnoreCase))
-                .OrderBy(kvp => kvp.Value.Kind)
-                .ThenBy(kvp => kvp.Value.Order)
-                .Select(kvp => kvp.Value)
-                .DefaultIfEmpty(SearchToken.NotFound);
+            sender.ItemsSource = CreateSuggestionItemSource(Text ?? string.Empty);
         }
     }
 
@@ -348,7 +337,9 @@ public sealed partial class AutoSuggestTokenBox : ListViewBase
         }
     }
 
-    [Command("SelectAllTokensAndTextCommand")]
+    [field: MaybeNull]
+    public IRelayCommand SelectAllTokensAndTextCommand => field ??= new RelayCommand(SelectAllTokensAndText);
+
     public void SelectAllTokensAndText()
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Select all tokens and text", "AutoSuggestTokenBox.Command"));
@@ -512,6 +503,35 @@ public sealed partial class AutoSuggestTokenBox : ListViewBase
             dataPackage.SetText(tokenString);
             Clipboard.SetContent(dataPackage);
         }
+    }
+
+    private List<object?>? CreateSuggestionItemSource(string? match)
+    {
+        if (AvailableTokens is not { } availableTokens)
+        {
+            return default;
+        }
+
+        IEnumerable<KeyValuePair<string, SearchToken>> candidates = availableTokens.ExceptBy(Tokens, kvp => kvp.Value);
+
+        // A null match lists every token that is still available, without a fallback row.
+        if (match is not null)
+        {
+            candidates = candidates.Where(kvp => kvp.Value.Value.Contains(match, StringComparison.OrdinalIgnoreCase));
+        }
+
+        List<SearchToken> suggestions = candidates
+            .OrderBy(kvp => kvp.Value.Kind)
+            .ThenBy(kvp => kvp.Value.Order)
+            .Select(kvp => kvp.Value)
+            .ToList();
+
+        if (match is not null && suggestions.Count is 0)
+        {
+            suggestions.Add(SearchToken.NotFound);
+        }
+
+        return ItemsSourceHelper.Create(suggestions, suggestions.Count is 0);
     }
 
     private void FocusPrimaryAutoSuggestBox()
@@ -897,7 +917,9 @@ public sealed partial class AutoSuggestTokenBox : ListViewBase
         return tokenString;
     }
 
-    [Command("RemoveItemCommand")]
+    [field: MaybeNull]
+    public IRelayCommand<AutoSuggestTokenBoxItem> RemoveItemCommand => field ??= new RelayCommand<AutoSuggestTokenBoxItem>(RemoveToken);
+
     private void RemoveToken(AutoSuggestTokenBoxItem? item)
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Remove token", "AutoSuggestTokenBox.Command"));
@@ -925,6 +947,7 @@ public sealed partial class AutoSuggestTokenBox : ListViewBase
         return true;
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.ListViewItem))]
     private bool SelectNewItem(AutoSuggestTokenBoxItem item, int increment, Func<int, bool> testFunc)
     {
         // find the item in the list

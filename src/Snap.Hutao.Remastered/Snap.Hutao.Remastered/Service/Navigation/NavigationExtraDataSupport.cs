@@ -17,6 +17,7 @@ public static class NavigationExtraDataSupport
         return token.IsCancellationRequested ? Task.FromCanceled<bool>(token) : Task.FromResult(false);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     public static async Task<bool> NotifyRecipientAsync(object? target, INavigationExtraData extra, CancellationToken token)
     {
         bool result = false;

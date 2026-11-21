@@ -86,6 +86,7 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         string? mid = user.Entity.Mid;
         if (string.IsNullOrEmpty(accountId) || string.IsNullOrEmpty(mid))
         {
+            user.IsCookieInvalid = true;
             return false;
         }
 
@@ -98,6 +99,7 @@ public sealed partial class UserInitializationService : IUserInitializationServi
             Response<LTokenWrapper> response = await passportClient.GetLTokenBySTokenAsync(user.Entity, token).ConfigureAwait(false);
             if (!ResponseValidator.TryValidate(response, serviceProvider, out LTokenWrapper? result))
             {
+                user.IsCookieInvalid |= ((KnownReturnCode)response.ReturnCode).IsAuthenticationFailure();
                 return false;
             }
 
@@ -110,6 +112,7 @@ public sealed partial class UserInitializationService : IUserInitializationServi
             Response<UidCookieToken> response = await passportClient.GetCookieAccountInfoBySTokenAsync(user.Entity, token).ConfigureAwait(false);
             if (!ResponseValidator.TryValidate(response, serviceProvider, out UidCookieToken? result))
             {
+                user.IsCookieInvalid |= ((KnownReturnCode)response.ReturnCode).IsAuthenticationFailure();
                 return false;
             }
 
@@ -149,12 +152,17 @@ public sealed partial class UserInitializationService : IUserInitializationServi
             return true;
         }
 
+        user.IsCookieInvalid |= ((KnownReturnCode)response.ReturnCode).IsAuthenticationFailure();
+
         user.UserInfo = new()
         {
             Uid = SH.ModelBindingUserInitializationFailed,
             Nickname = SH.ModelBindingUserInitializationFailed,
         };
-        return user.IsOversea;
+
+        // Oversea accounts keep going to the game role request for a transient failure,
+        // but a rejected cookie has no chance to produce a role list at all.
+        return user.IsOversea && !user.IsCookieInvalid;
     }
 
     private async ValueTask<bool> TrySetUserUserGameRolesAsync(IServiceProvider serviceProvider, ViewModel.User.User user, CancellationToken token)
@@ -173,6 +181,7 @@ public sealed partial class UserInitializationService : IUserInitializationServi
             return true;
         }
 
+        user.IsCookieInvalid |= ((KnownReturnCode)userGameRolesResponse.ReturnCode).IsAuthenticationFailure();
         return false;
     }
 
@@ -184,8 +193,17 @@ public sealed partial class UserInitializationService : IUserInitializationServi
             return true;
         }
 
+        if (user.IsCookieInvalid)
+        {
+            // The stored cookie was already rejected. Only a newly supplied cookie — which
+            // clears this flag — can make another request meaningful.
+            return false;
+        }
+
         if (user.SToken is null)
         {
+            // Without a login token the account can never be resumed by retrying.
+            user.IsCookieInvalid = true;
             return false;
         }
 
@@ -221,6 +239,7 @@ public sealed partial class UserInitializationService : IUserInitializationServi
 
         await taskContext.SwitchToMainThreadAsync();
         token.ThrowIfCancellationRequested();
+        user.IsCookieInvalid = false;
         return user.IsInitialized = true;
     }
 }

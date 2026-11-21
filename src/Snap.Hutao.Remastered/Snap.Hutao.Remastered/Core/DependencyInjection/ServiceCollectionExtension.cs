@@ -1,6 +1,7 @@
-// Copyright (c) DGP Studio. All rights reserved.
+﻿// Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.Diagnostics;
@@ -31,30 +32,31 @@ public static partial class ServiceCollectionExtension
 
             static void AddDbContext(IServiceProvider serviceProvider, DbContextOptionsBuilder builder)
             {
-                string dbFile = HutaoRuntime.GetDataDirectoryFile("Userdata.db");
-                string sqlConnectionString = $"Data Source={dbFile}";
+                string dbFile = HutaoRuntime.GetDataDirectoryFile(DatabaseSchema.UserDatabaseFileName);
+                string sqlConnectionString = new SqliteConnectionStringBuilder { DataSource = dbFile }.ToString();
 
                 try
                 {
-                    using (AppDbContext context = AppDbContext.Create(serviceProvider, sqlConnectionString))
+                    using SentrySpanScope migration = SentrySpanScope.StartOperation("db.migration", "db.migration");
+                    migration.SetData("db.file", Path.GetFileName(dbFile));
+                    try
                     {
-                        List<string> pendingMigrations = [.. context.Database.GetPendingMigrations()];
-                        if (pendingMigrations.Count > 0)
-                        {
-                            serviceProvider.GetRequiredService<ILogger<AppDbContext>>().LogInformation("[Database] Performing AppDbContext Migrations");
+                        DatabaseSchema.ApplyPendingUserDatabaseImport(dbFile);
+                    }
+                    catch (Exception ex) when ((ex is DbException or InvalidDataException or IOException or UnauthorizedAccessException) && File.Exists(dbFile))
+                    {
+                        serviceProvider.GetRequiredService<ILogger<AppDbContext>>().LogWarning(ex, "Could not apply the pending user database import");
+                        HutaoNative.Instance.ShowErrorMessage("Warning | 警告", SH.FormatViewGuideImportUserDatabaseDeferred(ex.Message));
+                    }
 
-                            using (SentrySpanScope migration = SentrySpanScope.StartTransaction("db.migration", "db.migration"))
-                            {
-                                migration
-                                    .SetData("db.pending_migrations", pendingMigrations.Count)
-                                    .SetData("db.file", Path.GetFileName(dbFile));
-
-                                context.Database.Migrate();
-                            }
-                        }
+                    int applied = DatabaseSchema.Upgrade(sqlConnectionString);
+                    migration.SetData("db.applied_migrations", applied);
+                    if (applied > 0)
+                    {
+                        serviceProvider.GetRequiredService<ILogger<AppDbContext>>().LogInformation("[Database] Applied {Count} schema migrations", applied);
                     }
                 }
-                catch (DbException ex)
+                catch (Exception ex) when (ex is DbException or InvalidDataException or IOException or UnauthorizedAccessException)
                 {
                     string message = $"""
                         Snap Hutao 在执行数据库迁移时发生错误。

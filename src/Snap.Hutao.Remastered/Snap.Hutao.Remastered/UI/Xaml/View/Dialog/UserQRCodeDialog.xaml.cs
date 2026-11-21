@@ -3,7 +3,6 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
@@ -28,7 +27,7 @@ public sealed partial class UserQRCodeDialog : ContentDialog, IDisposable
     private bool disposed;
 
     [ObservableProperty]
-    private BitmapImage? qRCodeSource;
+    public partial BitmapImage? QRCodeSource { get; set; }
 
     [GeneratedConstructor(InitializeComponent = true)]
     public partial UserQRCodeDialog(IServiceProvider serviceProvider);

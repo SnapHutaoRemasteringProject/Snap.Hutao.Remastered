@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
 
@@ -29,7 +30,7 @@ public sealed partial class DefaultClipboardSource : IClipboardProvider
         string json = await view.GetTextAsync();
 
         await taskContext.SwitchToBackgroundAsync();
-        return JsonSerializer.Deserialize<T>(json, options);
+        return JsonSerialize.Deserialize<T>(json, options);
     }
 
     public async ValueTask<bool> SetTextAsync(string text)

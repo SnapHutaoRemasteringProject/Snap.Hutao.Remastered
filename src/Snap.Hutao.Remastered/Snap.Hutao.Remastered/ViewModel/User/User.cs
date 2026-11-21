@@ -30,6 +30,13 @@ public sealed partial class User : ObservableObject, IEntityAccess<EntityUser>,
 
     public bool IsInitialized { get; set; }
 
+    /// <summary>
+    /// The server rejected this account's stored cookie. Repeating the same request cannot
+    /// succeed until the user supplies a new cookie, so background retries skip the account
+    /// instead of refreshing it forever.
+    /// </summary>
+    public bool IsCookieInvalid { get; set; }
+
     [ObservableProperty]
     public partial UserInfo? UserInfo { get; set; }
 

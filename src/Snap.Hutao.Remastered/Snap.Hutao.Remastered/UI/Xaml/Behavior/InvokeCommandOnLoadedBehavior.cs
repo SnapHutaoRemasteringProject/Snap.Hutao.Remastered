@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using JetBrains.Annotations;
 using Microsoft.UI.Xaml;
 using Snap.Hutao.Remastered.UI.Input;
+using System.Diagnostics;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Behavior;
 
@@ -19,6 +20,7 @@ public sealed partial class InvokeCommandOnLoadedBehavior : BehaviorBase<UIEleme
     protected override void OnAttached()
     {
         base.OnAttached();
+        TraceLifecycle("Attached");
 
         // FrameworkElement in a ItemsRepeater gets attached twice
         if (AssociatedObject is FrameworkElement { IsLoaded: true })
@@ -29,12 +31,14 @@ public sealed partial class InvokeCommandOnLoadedBehavior : BehaviorBase<UIEleme
 
     protected override void OnAssociatedObjectLoaded()
     {
+        TraceLifecycle("Loaded");
         TryExecuteCommand();
     }
 
     private static void OnCommandChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
     {
         InvokeCommandOnLoadedBehavior behavior = (InvokeCommandOnLoadedBehavior)sender;
+        behavior.TraceLifecycle("Command changed");
         if (behavior.AssociatedObject is not FrameworkElement { IsLoaded: true } element)
         {
             return;
@@ -55,6 +59,7 @@ public sealed partial class InvokeCommandOnLoadedBehavior : BehaviorBase<UIEleme
 
     private void TryExecuteCommand()
     {
+        TraceLifecycle("Checking command");
         if (XamlApplicationLifetime.Exiting || AssociatedObject is not FrameworkElement { IsLoaded: true })
         {
             return;
@@ -70,6 +75,7 @@ public sealed partial class InvokeCommandOnLoadedBehavior : BehaviorBase<UIEleme
             if (asyncCommand.CanExecute(CommandParameter))
             {
                 executedCommand = Command;
+                TraceLifecycle("Executing async command");
                 // Execute() uses async-void exception dispatch back to XAML.
                 // Observe the task so cancellation during unloading is handled.
                 asyncCommand.ExecuteAsync(CommandParameter).SafeForget();
@@ -79,5 +85,11 @@ public sealed partial class InvokeCommandOnLoadedBehavior : BehaviorBase<UIEleme
         {
             if (Command.TryExecute(CommandParameter)) executedCommand = Command;
         }
+    }
+
+    [Conditional("DEBUG")]
+    private void TraceLifecycle(string stage)
+    {
+        Debug.WriteLine($"[InvokeCommandOnLoadedBehavior] {stage}; Host={AssociatedObject?.GetType().FullName ?? "<detached>"}; Loaded={(AssociatedObject as FrameworkElement)?.IsLoaded}; Command={Command?.GetType().FullName ?? "<null>"}");
     }
 }

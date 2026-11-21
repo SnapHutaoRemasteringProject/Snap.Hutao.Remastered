@@ -5,7 +5,8 @@ using Snap.Hutao.Remastered.Model.Intrinsic;
 
 namespace Snap.Hutao.Remastered.Model.Calculable;
 
-public interface ICalculable : INameIcon<Uri>
+// Level editors bind through this interface and must observe changes made by other editors.
+public interface ICalculable : INameIcon<Uri>, INotifyPropertyChanged
 {
     QualityType Quality { get; }
 

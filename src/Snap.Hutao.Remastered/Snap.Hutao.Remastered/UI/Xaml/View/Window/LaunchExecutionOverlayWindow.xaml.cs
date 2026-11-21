@@ -26,6 +26,7 @@ public sealed partial class LaunchExecutionOverlayWindow : Microsoft.UI.Xaml.Win
     private readonly LowLevelKeyOptions lowLevelKeyOptions;
     private readonly ITaskContext taskContext;
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Windowing.OverlappedPresenter))]
     public LaunchExecutionOverlayWindow(IServiceProvider serviceProvider)
     {
         InitializeComponent();

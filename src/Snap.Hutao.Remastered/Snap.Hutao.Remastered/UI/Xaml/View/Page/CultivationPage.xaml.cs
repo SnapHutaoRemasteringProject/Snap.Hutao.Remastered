@@ -7,17 +7,22 @@ using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 
-public sealed partial class CultivationPage : ScopedPage
+public sealed partial class CultivationPage : ScopedPage, INotifyPropertyChanged
 {
     public CultivationPage()
     {
         InitializeComponent();
+        DataContextChanged += (_, _) => PropertyChanged?.Invoke(this, new(nameof(ViewModel)));
     }
 
     protected override void LoadingOverride()
     {
         InitializeDataContext<CultivationViewModel>();
     }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public CultivationViewModel ViewModel => DataContext;
 
     public new CultivationViewModel DataContext { get => Unsafe.As<CultivationViewModel>(base.DataContext); set => base.DataContext = value; }
 }

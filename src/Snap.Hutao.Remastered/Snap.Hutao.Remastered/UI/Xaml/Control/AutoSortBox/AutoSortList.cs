@@ -22,6 +22,7 @@ public sealed partial class AutoSortList : WinUIControl
         DefaultStyleKey = typeof(AutoSortList);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.ListView))]
     protected override void OnApplyTemplate()
     {
         base.OnApplyTemplate();
@@ -50,14 +51,14 @@ public sealed partial class AutoSortList : WinUIControl
 
         if (args.InRecycleQueue)
         {
-            if (args.ItemContainer.FindDescendant<Button>() is { } removeButton)
+            if (args.ItemContainer.FindDescendant<Microsoft.UI.Xaml.Controls.Button>() is { } removeButton)
             {
                 removeButton.Click -= OnRemoveButtonClick;
             }
         }
         else
         {
-            if (args.ItemContainer.FindDescendant<Button>() is { } removeButton)
+            if (args.ItemContainer.FindDescendant<Microsoft.UI.Xaml.Controls.Button>() is { } removeButton)
             {
                 removeButton.Click += OnRemoveButtonClick;
             }
@@ -66,7 +67,7 @@ public sealed partial class AutoSortList : WinUIControl
 
     private void OnRemoveButtonClick(object sender, RoutedEventArgs e)
     {
-        if (sender is Button { DataContext: AutoSortToken token })
+        if (sender is Microsoft.UI.Xaml.Controls.Button { DataContext: AutoSortToken token })
         {
             RemoveSort(token);
         }

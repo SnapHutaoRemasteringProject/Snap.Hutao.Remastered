@@ -47,11 +47,6 @@ public class Response : ICommonResponse<Response>
         string message = SH.FormatWebResponseRequestException(callerName, TypeNameHelper.GetTypeDisplayName(typeof(TResponse)));
         response ??= TResponse.CreateDefault(publicFailure, message);
 
-        if ((KnownReturnCode)response.ReturnCode is KnownReturnCode.PleaseLogin or KnownReturnCode.RET_TOKEN_INVALID)
-        {
-            response.Message = SH.FormatWebResponseRefreshCookieHint(response.Message);
-        }
-
         switch ((KnownReturnCode)response.ReturnCode)
         {
             case KnownReturnCode.PleaseLogin:

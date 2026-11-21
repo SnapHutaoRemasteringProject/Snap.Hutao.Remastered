@@ -2,6 +2,7 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.WikiWeaponPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
@@ -99,21 +100,23 @@
         </DataTemplate>
 
         <DataTemplate x:Key="CultivationItemTemplate" x:DataType="shmmi:Material">
-            <shuxcc:HorizontalCard>
-                <shuxcc:HorizontalCard.Left>
-                    <shuxc:ItemIcon
-                        Width="40"
-                        Height="40"
-                        Icon="{x:Bind Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
-                        Quality="{x:Bind RankLevel, Mode=OneWay}"/>
-                </shuxcc:HorizontalCard.Left>
-                <shuxcc:HorizontalCard.Right>
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="{x:Bind Name, Mode=OneWay}"/>
-                </shuxcc:HorizontalCard.Right>
-            </shuxcc:HorizontalCard>
+            <Grid>
+                <shuxcc:HorizontalCard>
+                    <shuxcc:HorizontalCard.Left>
+                        <shuxc:ItemIcon
+                            Width="40"
+                            Height="40"
+                            Icon="{x:Bind Icon, Converter={StaticResource ItemIconConverter}, Mode=OneWay}"
+                            Quality="{x:Bind RankLevel, Mode=OneWay}"/>
+                    </shuxcc:HorizontalCard.Left>
+                    <shuxcc:HorizontalCard.Right>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Text="{x:Bind Name, Mode=OneWay}"/>
+                    </shuxcc:HorizontalCard.Right>
+                </shuxcc:HorizontalCard>
+            </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="AffixPivotHeaderTemplate" x:DataType="shmmw:LevelDescription">
@@ -121,59 +124,65 @@
         </DataTemplate>
 
         <DataTemplate x:Key="AffixPivotItemTemplate" x:DataType="shmmw:LevelDescription">
-            <shuxct:DescriptionTextBlock
-                Margin="16,8,0,0"
-                Description="{x:Bind Description, Mode=OneWay}"
-                TextStyle="{StaticResource BodyTextBlockStyle}"/>
+            <Grid>
+                <shuxct:DescriptionTextBlock
+                    Margin="16,8,0,0"
+                    Description="{x:Bind Description, Mode=OneWay}"
+                    TextStyle="{StaticResource BodyTextBlockStyle}"/>
+            </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="CollocationTemplate" x:DataType="shvc:CollocationView">
-            <shuxcc:HorizontalCard>
-                <shuxcc:HorizontalCard.Left>
-                    <shuxc:ItemIcon
-                        Width="48"
-                        Height="48"
-                        Icon="{x:Bind Icon, Mode=OneWay}"
-                        Quality="{x:Bind Quality, Mode=OneWay}"/>
-                </shuxcc:HorizontalCard.Left>
-                <shuxcc:HorizontalCard.Right>
-                    <StackPanel Margin="8,0,0,0" HorizontalAlignment="Left">
-                        <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
-                        <StackPanel Orientation="Horizontal" Spacing="4">
-                            <TextBlock
-                                Opacity="0.7"
-                                Style="{StaticResource CaptionTextBlockStyle}"
-                                Text="{x:Bind Rate, Mode=OneWay}"/>
-                            <shuxct:RateDeltaTextBlock
-                                Opacity="0.7"
-                                Text="{x:Bind RateDelta, Mode=OneWay}"
-                                TextStyle="{StaticResource CaptionTextBlockStyle}"/>
+            <Grid>
+                <shuxcc:HorizontalCard>
+                    <shuxcc:HorizontalCard.Left>
+                        <shuxc:ItemIcon
+                            Width="48"
+                            Height="48"
+                            Icon="{x:Bind Icon, Mode=OneWay}"
+                            Quality="{x:Bind Quality, Mode=OneWay}"/>
+                    </shuxcc:HorizontalCard.Left>
+                    <shuxcc:HorizontalCard.Right>
+                        <StackPanel Margin="8,0,0,0" HorizontalAlignment="Left">
+                            <TextBlock Text="{x:Bind Name, Mode=OneWay}"/>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <TextBlock
+                                    Opacity="0.7"
+                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                    Text="{x:Bind Rate, Mode=OneWay}"/>
+                                <shuxct:RateDeltaTextBlock
+                                    Opacity="0.7"
+                                    Text="{x:Bind RateDelta, Mode=OneWay}"
+                                    TextStyle="{StaticResource CaptionTextBlockStyle}"/>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </shuxcc:HorizontalCard.Right>
-            </shuxcc:HorizontalCard>
+                    </shuxcc:HorizontalCard.Right>
+                </shuxcc:HorizontalCard>
+            </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="WeaponGridTemplate" x:DataType="shmmw:Weapon">
-            <shuxcc:VerticalCard Width="82">
-                <shuxcc:VerticalCard.ContextFlyout>
-                    <MenuFlyout>
-                        <MenuFlyoutItem
-                            Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
-                            CommandParameter="{x:Bind Mode=OneWay}"
-                            Text="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
-                    </MenuFlyout>
-                </shuxcc:VerticalCard.ContextFlyout>
-                <shuxcc:VerticalCard.Top>
-                    <shuxc:ItemIcon Icon="{x:Bind Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}" Quality="{x:Bind Quality, Mode=OneWay}"/>
-                </shuxcc:VerticalCard.Top>
-                <shuxcc:VerticalCard.Bottom>
-                    <TextBlock
-                        Margin="2,0"
-                        Text="{x:Bind Name, Mode=OneWay}"
-                        TextTrimming="CharacterEllipsis"/>
-                </shuxcc:VerticalCard.Bottom>
-            </shuxcc:VerticalCard>
+            <Grid>
+                <shuxcc:VerticalCard Width="82">
+                    <shuxcc:VerticalCard.ContextFlyout>
+                        <MenuFlyout>
+                            <MenuFlyoutItem
+                                Command="{Binding ElementName=RootPage, Path=DataContext.CultivateCommand}"
+                                CommandParameter="{x:Bind Mode=OneWay}"
+                                Text="{shuxm:ResourceString Name=ViewPageWiKiGeneralAddToDevPlanButtonLabel}"/>
+                        </MenuFlyout>
+                    </shuxcc:VerticalCard.ContextFlyout>
+                    <shuxcc:VerticalCard.Top>
+                        <shuxc:ItemIcon Icon="{x:Bind Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}" Quality="{x:Bind Quality, Mode=OneWay}"/>
+                    </shuxcc:VerticalCard.Top>
+                    <shuxcc:VerticalCard.Bottom>
+                        <TextBlock
+                            Margin="2,0"
+                            Text="{x:Bind Name, Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis"/>
+                    </shuxcc:VerticalCard.Bottom>
+                </shuxcc:VerticalCard>
+            </Grid>
         </DataTemplate>
     </Page.Resources>
 
@@ -214,7 +223,7 @@
                                 QueryIcon="{cw:FontIconSource Glyph=&#xE721;}"
                                 Style="{StaticResource DefaultAutoSuggestTokenBoxStyle}"
                                 SuggestedItemTemplate="{StaticResource TokenTemplate}"
-                                SuggestedItemsSource="{x:Bind DataContext.SearchData.AvailableTokens.Values, Mode=OneWay}"
+                                SuggestedItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.SearchData.AvailableTokens.Values, DataContext.SearchData.AvailableTokens.Values.IsDefaultOrEmpty), Mode=OneWay}"
                                 Text="{x:Bind DataContext.SearchData.FilterToken, Mode=TwoWay}"
                                 TokenItemTemplate="{StaticResource TokenTemplate}"/>
                         </AppBarElementContainer>
@@ -375,7 +384,7 @@
                                                             Margin="-16,-16,0,0"
                                                             HeaderTemplate="{StaticResource AffixPivotHeaderTemplate}"
                                                             ItemTemplate="{StaticResource AffixPivotItemTemplate}"
-                                                            ItemsSource="{x:Bind DataContext.Weapons.CurrentItem.Affix.Descriptions, Mode=OneWay}"/>
+                                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Weapons.CurrentItem.Affix.Descriptions, DataContext.Weapons.CurrentItem.Affix.Descriptions.IsDefaultOrEmpty), Mode=OneWay}"/>
                                                     </StackPanel>
                                                 </Border>
 
@@ -386,7 +395,7 @@
                                                     Visibility="{x:Bind DataContext.Weapons.CurrentItem.CollocationView, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                                                     <StackPanel Spacing="16">
                                                         <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPageWiKiAvatarTeamCombinationHeader}"/>
-                                                        <ItemsControl ItemTemplate="{StaticResource CollocationTemplate}" ItemsSource="{x:Bind DataContext.Weapons.CurrentItem.CollocationView.Avatars, Mode=OneWay}">
+                                                        <ItemsControl ItemTemplate="{StaticResource CollocationTemplate}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Weapons.CurrentItem.CollocationView.Avatars, DataContext.Weapons.CurrentItem.CollocationView.Avatars.IsDefaultOrEmpty), Mode=OneWay}">
                                                             <ItemsControl.ItemsPanel>
                                                                 <ItemsPanelTemplate>
                                                                     <cwc:UniformGrid

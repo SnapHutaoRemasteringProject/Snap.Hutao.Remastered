@@ -46,6 +46,7 @@ public sealed partial class TitleCard : Microsoft.UI.Xaml.Controls.Control
 
     public Visibility DividerVisibility
     {
+        [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Visibility))]
         get => (Visibility)GetValue(DividerVisibilityProperty);
         set => SetValue(DividerVisibilityProperty, value);
     }

@@ -3,7 +3,6 @@
 // Copyright (c) Snap Hutao RP. All rights reserved.
 // Licensed under the MIT license.
 
-using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Model.Entity.Database;
@@ -101,6 +100,13 @@ public sealed partial class AutoSignInService : IAutoSignInService
                     return;
                 }
 
+                // A rejected cookie cannot refresh or sign in; retrying it every scheduled run
+                // only reproduces the same -100 response.
+                if (user.IsCookieInvalid)
+                {
+                    continue;
+                }
+
                 // Cookie token is refreshed while resuming a user, do the same for the accounts
                 // which are not the current one and may hold an expired cookie token.
                 await userService.RefreshCookieTokenAsync(user).ConfigureAwait(false);
@@ -171,13 +177,12 @@ public sealed partial class AutoSignInService : IAutoSignInService
 
     private static string? GetSettingValue(AppDbContext appDbContext, string key)
     {
-        return appDbContext.Settings.AsNoTracking().Where(e => e.Key == key).Select(e => e.Value).SingleOrDefault();
+        return AppDbQueries.ReadSetting(appDbContext, key)?.Value;
     }
 
     private static void SetSettingValue(AppDbContext appDbContext, string key, string value)
     {
-        appDbContext.Settings.Where(e => e.Key == key).ExecuteDelete();
-        appDbContext.Settings.AddAndSave(new(key, value));
+        AppDbQueries.WriteSetting(appDbContext, key, value);
     }
 
     private static string GetCompletedDayKeySetting(UserAndUid userAndUid)

@@ -1,9 +1,10 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Service.Abstraction;
 using System.Collections.Immutable;
+
+using Snap.Hutao.Remastered.Core.Database;
 
 namespace Snap.Hutao.Remastered.Service.User;
 
@@ -32,6 +33,6 @@ public sealed partial class UserRepository : IUserRepository
 
     public void ClearUserSelection()
     {
-        this.Execute(dbSet => dbSet.ExecuteUpdate(update => update.SetProperty(user => user.IsSelected, user => false)));
+        this.WithDatabase(AppDbQueries.ClearSelection<Model.Entity.User>);
     }
 }

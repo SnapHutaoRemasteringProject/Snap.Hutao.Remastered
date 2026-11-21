@@ -5,6 +5,7 @@ using Microsoft.Web.WebView2.Core;
 using Snap.Hutao.Remastered.Core.DataTransfer;
 using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
 using Snap.Hutao.Remastered.Core.Logging;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Factory.Picker;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.User;
@@ -25,6 +26,8 @@ namespace Snap.Hutao.Remastered.Web.Bridge;
 
 public class MiHoYoJSBridge
 {
+    private static readonly JsonSerializerOptions CompactJsonOptions = JsonOptions.CreateCompact();
+
     private readonly Guid bridgeId = Guid.NewGuid();
     private readonly AsyncLock webMessageLock = new();
     private readonly UserAndUid userAndUid;
@@ -109,7 +112,12 @@ public class MiHoYoJSBridge
         bool isOversea = userAndUid.IsOversea;
         if (userAndUid.User.LToken is not { } lToken || !lToken.TryGetLToken(isOversea, out Cookie? credential))
         {
-            return ValueTask.FromResult<IJsBridgeResult>(new Response<Dictionary<string, string>>((int)KnownReturnCode.RET_TOKEN_INVALID, SH.ViewModelUserInvalid, null));
+            return ValueTask.FromResult<IJsBridgeResult>(
+                new JsResult<Dictionary<string, string>>
+                {
+                    ReturnCode = (int)KnownReturnCode.RET_TOKEN_INVALID,
+                    Message = SH.ViewModelUserInvalid,
+                });
         }
 
         Dictionary<string, string> data = new() { [Cookie.LOGIN_TICKET] = string.Empty };
@@ -133,13 +141,21 @@ public class MiHoYoJSBridge
         IUserService userService = serviceProvider.GetRequiredService<IUserService>();
         if (param.Payload.ForceRefresh && !await userService.RefreshCookieTokenAsync(userAndUid.User).ConfigureAwait(false))
         {
-            return new Response<Dictionary<string, string>>((int)KnownReturnCode.RET_TOKEN_INVALID, SH.ViewModelUserInvalid, null);
+            return new JsResult<Dictionary<string, string>>
+            {
+                ReturnCode = (int)KnownReturnCode.RET_TOKEN_INVALID,
+                Message = SH.ViewModelUserInvalid,
+            };
         }
 
         bool isOversea = userAndUid.IsOversea;
         if (userAndUid.User.CookieToken is not { } cookieToken || !cookieToken.TryGetCookieToken(isOversea, out Cookie? credential))
         {
-            return new Response<Dictionary<string, string>>((int)KnownReturnCode.RET_TOKEN_INVALID, SH.ViewModelUserInvalid, null);
+            return new JsResult<Dictionary<string, string>>
+            {
+                ReturnCode = (int)KnownReturnCode.RET_TOKEN_INVALID,
+                Message = SH.ViewModelUserInvalid,
+            };
         }
 
         await taskContext.SwitchToMainThreadAsync();
@@ -463,7 +479,7 @@ public class MiHoYoJSBridge
         }
 
         string message = args.TryGetWebMessageAsString();
-        JsParam? param = JsonSerializer.Deserialize<JsParam>(message, serviceProvider.GetRequiredService<JsonSerializerOptions>());
+        JsParam? param = JsonSerialize.Deserialize<JsParam>(message, serviceProvider.GetRequiredService<JsonSerializerOptions>());
 
         ArgumentNullException.ThrowIfNull(param);
         logger.LogInformation("[{Id}][OnMessage: {method}]", bridgeId, param.Method);
@@ -476,7 +492,16 @@ public class MiHoYoJSBridge
 
                 if (result is not null && param.Callback is not null)
                 {
-                    await ExecuteCallbackScriptAsync(param.Callback, JsonSerializer.Serialize(result, result.GetType())).ConfigureAwait(false);
+                    // Known-type dispatch replaces the runtime-type reflection serializer for the JS bridge.
+                    string resultJson = result switch
+                    {
+                        JsResult<Dictionary<string, string>> stringResult => JsonSerialize.Serialize(stringResult, CompactJsonOptions),
+                        JsResult<Dictionary<string, object>> objectResult => JsonSerialize.Serialize(objectResult, CompactJsonOptions),
+                        Response<ActionTicketWrapper> actionTicketResult => JsonSerialize.Serialize(actionTicketResult, CompactJsonOptions),
+                        _ => throw new NotSupportedException($"The JS bridge result type '{result.GetType()}' is not registered."),
+                    };
+
+                    await ExecuteCallbackScriptAsync(param.Callback, resultJson).ConfigureAwait(false);
                 }
             }
         }

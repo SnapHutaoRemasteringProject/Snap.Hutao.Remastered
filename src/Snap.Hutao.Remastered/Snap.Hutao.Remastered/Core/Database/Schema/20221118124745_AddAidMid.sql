@@ -1,0 +1,3 @@
+ALTER TABLE "users" ADD "Aid" TEXT NULL;
+
+ALTER TABLE "users" ADD "Mid" TEXT NULL;

@@ -1,0 +1,1 @@
+ALTER TABLE "GachaItems" ADD "QueryType" INTEGER NOT NULL DEFAULT 0;

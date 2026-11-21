@@ -16,7 +16,7 @@ using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Window;
 
 [Service(ServiceLifetime.Transient)]
-public sealed class SpeedGraphTestWindow : Microsoft.UI.Xaml.Window,
+public sealed partial class SpeedGraphTestWindow : Microsoft.UI.Xaml.Window,
     IXamlWindowExtendContentIntoTitleBar,
     IXamlWindowHasInitSize,
     IDisposable
@@ -32,6 +32,7 @@ public sealed class SpeedGraphTestWindow : Microsoft.UI.Xaml.Window,
     private bool hasAutoStarted;
     private bool isRunning;
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Windowing.OverlappedPresenter))]
     public SpeedGraphTestWindow(IServiceProvider serviceProvider)
     {
         Title = SH.ViewWindowSpeedGraphTestTitle;

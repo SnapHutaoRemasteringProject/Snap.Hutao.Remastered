@@ -1,6 +1,7 @@
 // Copyright (c) Millennium-Science-Technology-R-D-Inst. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Text.Json;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 
@@ -22,7 +23,7 @@ public sealed class LiquidGlassOverrideStore
         ranges = parameterRanges.ToDictionary(static range => range.Key);
         try
         {
-            Dictionary<string, double>? stored = JsonSerializer.Deserialize<Dictionary<string, double>>(
+            Dictionary<string, double>? stored = JsonSerialize.Deserialize<Dictionary<string, double>>(
                 serialized, LiquidGlassProfileJsonContext.Default.Options);
             if (stored is not null)
                 foreach (KeyValuePair<string, double> item in stored)
@@ -100,8 +101,8 @@ public sealed class LiquidGlassOverrideStore
         return true;
     }
 
-    public string Serialize() => JsonSerializer.Serialize(values, LiquidGlassProfileJsonContext.Default.Options);
-    public string SerializeCommitted() => JsonSerializer.Serialize(committedValues, LiquidGlassProfileJsonContext.Default.Options);
+    public string Serialize() => JsonSerialize.Serialize(values, LiquidGlassProfileJsonContext.Default.Options);
+    public string SerializeCommitted() => JsonSerialize.Serialize(committedValues, LiquidGlassProfileJsonContext.Default.Options);
 }
 
 [JsonSerializable(typeof(Dictionary<string, double>))]

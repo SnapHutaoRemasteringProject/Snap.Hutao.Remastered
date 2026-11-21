@@ -10,6 +10,7 @@ public static class SettingKeys
     // Application
     public const string LowWindowsVersionWarningShown   = "Snap::Hutao::Application::LowWindowsVersionWarningShown";
     public const string DataDirectory                   = "Snap::Hutao::Application::DataFolderPath";
+    public const string ProfileDataDirectory            = "Snap::Hutao::Application::ProfileDataFolderPath";
     public const string IsUnpackagedNotificationRegistered = "Snap::Hutao::Application::Notification::Unpackaged::Registered";
     public const string OverrideElevationRequirement    = "Snap::Hutao::Application::Elevation::Override";
     public const string AutoRestartAsAdmin              = "Snap::Hutao::Application::Elevation::AutoRestartAsAdmin";

@@ -146,7 +146,9 @@ public sealed partial class UserCollectionService : IUserCollectionService, IDis
         bool recovered = false;
         foreach (BindingUser user in snapshot)
         {
-            if (user.IsInitialized)
+            // A rejected cookie is a permanent failure: repeating the request only produces
+            // the same -100 response again. The account resumes once a new cookie is added.
+            if (user.IsInitialized || user.IsCookieInvalid)
             {
                 continue;
             }

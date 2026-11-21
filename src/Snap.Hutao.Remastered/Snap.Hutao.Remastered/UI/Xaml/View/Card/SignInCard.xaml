@@ -39,41 +39,49 @@
             </cwconv:BoolToObjectConverter.FalseValue>
         </cwconv:BoolToObjectConverter>
 
+        <!--
+            The template root must stay a framework type. A DataTemplate whose root is an
+            app control makes the generated x:Bind connector cast that root with
+            WinRT.CastExtensions.As, which throws E_NOINTERFACE (0x80004002) in Native AOT.
+            The other home cards root their keyed templates at Grid for the same reason.
+        -->
         <DataTemplate x:Key="AwardTemplate" x:DataType="shvs:AwardView">
-            <shuxcc:VerticalCard>
-                <shuxcc:VerticalCard.Top>
-                    <Grid Margin="4">
-                        <shuxci:CachedImage
-                            Grid.Row="0"
-                            Width="32"
-                            Height="32"
-                            Opacity="{x:Bind IsClaimed, Converter={StaticResource BoolToOpacityConverter}, Mode=OneWay}"
-                            Source="{x:Bind Icon, Mode=OneWay}"/>
-                        <StackPanel
-                            Grid.Row="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Opacity="{x:Bind IsClaimed, Converter={StaticResource BoolToOpacityConverter}, Mode=OneWay}"
-                            Orientation="Horizontal">
-                            <TextBlock FontSize="10" Text="×"/>
-                            <TextBlock FontSize="10" Text="{x:Bind Count, Mode=OneWay}"/>
-                        </StackPanel>
-                        <FontIcon
-                            Grid.Row="0"
-                            FontSize="16"
-                            Glyph="&#xE73E;"
-                            Visibility="{x:Bind IsClaimed, Mode=OneWay}"/>
-                    </Grid>
-                </shuxcc:VerticalCard.Top>
-                <shuxcc:VerticalCard.Bottom>
-                    <TextBlock
-                        Grid.Row="1"
-                        HorizontalAlignment="Center"
-                        Opacity="0.7"
-                        Style="{StaticResource CaptionTextBlockStyle}"
-                        Text="{x:Bind Index, Mode=OneWay}"/>
-                </shuxcc:VerticalCard.Bottom>
-            </shuxcc:VerticalCard>
+            <Grid>
+                <shuxcc:VerticalCard>
+                    <shuxcc:VerticalCard.Top>
+                        <Grid Margin="4">
+                            <shuxci:CachedImage
+                                Grid.Row="0"
+                                Width="32"
+                                Height="32"
+                                Opacity="{x:Bind IsClaimed, Converter={StaticResource BoolToOpacityConverter}, Mode=OneWay}"
+                                Source="{x:Bind Icon, Mode=OneWay}"/>
+                            <StackPanel
+                                Grid.Row="0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Opacity="{x:Bind IsClaimed, Converter={StaticResource BoolToOpacityConverter}, Mode=OneWay}"
+                                Orientation="Horizontal">
+                                <TextBlock FontSize="10" Text="×"/>
+                                <TextBlock FontSize="10" Text="{x:Bind Count, Mode=OneWay}"/>
+                            </StackPanel>
+                            <FontIcon
+                                Grid.Row="0"
+                                FontSize="16"
+                                Glyph="&#xE73E;"
+                                Visibility="{x:Bind IsClaimed, Mode=OneWay}"/>
+                        </Grid>
+                    </shuxcc:VerticalCard.Top>
+                    <shuxcc:VerticalCard.Bottom>
+                        <TextBlock
+                            Grid.Row="1"
+                            HorizontalAlignment="Center"
+                            Opacity="0.7"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Text="{x:Bind Index, Mode=OneWay}"/>
+                    </shuxcc:VerticalCard.Bottom>
+                </shuxcc:VerticalCard>
+            </Grid>
         </DataTemplate>
     </shuxcth:MaterialCardButton.Resources>
 
@@ -143,6 +151,7 @@
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <cwc:UniformGrid
+                                    Margin="0,12"
                                     ColumnSpacing="4"
                                     Columns="7"
                                     RowSpacing="4"/>

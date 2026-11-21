@@ -3,6 +3,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Snap.Hutao.Remastered.Core.Database.Abstraction;
 using Snap.Hutao.Remastered.Core.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -10,7 +11,7 @@ namespace Snap.Hutao.Remastered.Core.Database;
 
 public static class DbSetExtension
 {
-    extension<TEntity>(DbSet<TEntity> dbSet)
+    extension<[DynamicallyAccessedMembers(DatabaseEntityContract.Members)] TEntity>(DbSet<TEntity> dbSet)
         where TEntity : class
     {
         public int AddAndSave(TEntity entity)

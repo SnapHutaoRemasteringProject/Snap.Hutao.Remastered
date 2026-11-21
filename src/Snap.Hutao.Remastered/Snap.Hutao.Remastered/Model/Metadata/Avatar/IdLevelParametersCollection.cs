@@ -2,13 +2,12 @@
 // Licensed under the MIT license.
 
 using System.Collections.Immutable;
-using System.Runtime.CompilerServices;
 using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Model.Primitive;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Avatar;
 
-[JsonConverter(typeof(ConverterFactory))]
+[JsonConverter(typeof(IdLevelParametersCollectionConverterFactory))]
 public sealed class IdLevelParametersCollection<TId, TLevel, TParameter>
     where TId : notnull
     where TLevel : notnull
@@ -44,10 +43,8 @@ public sealed class IdLevelParametersCollection<TId, TLevel, TParameter>
 }
 
 [SuppressMessage("", "SA1402")]
-file sealed class ConverterFactory : JsonConverterFactory
+internal sealed class IdLevelParametersCollectionConverterFactory : JsonConverterFactory
 {
-    private static readonly Type ConverterType = typeof(Converter<,,>);
-
     public override bool CanConvert(Type typeToConvert)
     {
         return typeToConvert.IsGenericType && typeToConvert.GetGenericTypeDefinition() == typeof(IdLevelParametersCollection<,,>);
@@ -56,8 +53,7 @@ file sealed class ConverterFactory : JsonConverterFactory
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
         if (typeToConvert == typeof(IdLevelParametersCollection<ProudSkillId, SkillLevel, float>)) return new Converter<ProudSkillId, SkillLevel, float>();
-        if (!RuntimeFeature.IsDynamicCodeSupported) throw new NotSupportedException("Unregistered Native AOT metadata parameter type.");
-        return Activator.CreateInstance(ConverterType.MakeGenericType(typeToConvert.GetGenericArguments())) as JsonConverter;
+        throw new NotSupportedException("Unregistered metadata parameter type; add a closed converter before using it.");
     }
 }
 
@@ -71,7 +67,7 @@ file sealed class Converter<TId, TLevel, TParameter> : JsonConverter<IdLevelPara
         // NullReferenceException inside System.Text.Json
         return typeof(TId) == typeof(ProudSkillId) && typeof(TLevel) == typeof(SkillLevel) && typeof(TParameter) == typeof(float)
             ? new(MetadataCollectionJson.Deserialize<ImmutableArray<IdLevelParameters<TId, TLevel, TParameter>>>(ref reader, options))
-            : new(JsonSerializer.Deserialize<ImmutableArray<IdLevelParameters<TId, TLevel, TParameter>>>(ref reader, options));
+            : new(JsonSerialize.Deserialize<ImmutableArray<IdLevelParameters<TId, TLevel, TParameter>>>(ref reader, options));
     }
 
     public override void Write(Utf8JsonWriter writer, IdLevelParametersCollection<TId, TLevel, TParameter> value, JsonSerializerOptions options)

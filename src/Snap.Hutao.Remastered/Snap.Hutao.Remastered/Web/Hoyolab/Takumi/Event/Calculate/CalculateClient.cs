@@ -200,7 +200,7 @@ public sealed partial class CalculateClient
         return [];
     }
 
-    private class SyncAvatarFilter
+    internal class SyncAvatarFilter
     {
         [JsonPropertyName("element_attr_ids")]
         public List<int>? ElementAttrIds { get; set; } = [];
@@ -224,7 +224,7 @@ public sealed partial class CalculateClient
         public Region? Region { get; set; }
     }
 
-    private class SyncWeaponFilter
+    internal class SyncWeaponFilter
     {
         [JsonPropertyName("weapon_cat_ids")]
         public List<int>? WeaponCatIds { get; set; } = [];
@@ -239,7 +239,7 @@ public sealed partial class CalculateClient
         public int Size { get; set; } = 1000;
     }
 
-    private class IdCount
+    internal class IdCount
     {
         [JsonPropertyName("cnt")]
         public uint Count { get; set; }
@@ -248,7 +248,7 @@ public sealed partial class CalculateClient
         public uint Id { get; set; }
     }
 
-    private class BatchConsumptionData
+    internal class BatchConsumptionData
     {
         [JsonPropertyName("items")]
         public required ImmutableArray<AvatarPromotionDelta> Items { get; init; }

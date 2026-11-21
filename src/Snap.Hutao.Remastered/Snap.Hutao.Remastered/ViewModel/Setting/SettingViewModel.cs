@@ -29,6 +29,7 @@ using Windows.Foundation;
 namespace Snap.Hutao.Remastered.ViewModel.Setting;
 
 [Service(ServiceLifetime.Scoped)]
+[BindableCustomPropertyProvider]
 public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigationRecipient
 {
     public const string UIGFImportExport = nameof(UIGFImportExport);
@@ -299,6 +300,7 @@ public sealed partial class SettingViewModel : Abstraction.ViewModel, INavigatio
             CheckUpdateResultKind.UpdateAvailable => SH.FormatViewModelSettingUpdateAvailable(result.PackageInformation?.Version.ToString()),
             CheckUpdateResultKind.AlreadyUpdated => SH.ViewModelSettingAlreadyUpdated,
             CheckUpdateResultKind.VersionApiInvalidResponse or CheckUpdateResultKind.VersionApiInvalidSha256 => SH.ViewModelSettingCheckUpdateFailed,
+            CheckUpdateResultKind.AppInstallerUnavailable => SH.ServiceUpdateAppInstallerUnavailable,
             _ => default!,
         }).ConfigureAwait(false);
 

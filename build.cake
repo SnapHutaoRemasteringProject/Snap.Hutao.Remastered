@@ -1,4 +1,4 @@
-#tool "nuget:?package=nuget.commandline&version=6.9.1"
+#load "./build-runtime.cake"
 
 var target = Argument("target", "Build");
 var configuration = Argument("configuration", "Release");
@@ -22,10 +22,6 @@ static ProcessArgumentBuilder AppendIf(this ProcessArgumentBuilder builder, stri
 
 // Properties
 
-string solution
-{
-    get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered.sln");
-}
 string project
 {
     get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered.csproj");
@@ -40,7 +36,7 @@ string runtimeIdentifier
 }
 string binPath
 {
-    get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, "publish");
+    get => System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, publishFolder);
 }
 string manifest
 {
@@ -118,7 +114,8 @@ Task("Build")
     .IsDependentOn("Copy files")
     .IsDependentOn("Remove unused files")
     .IsDependentOn("Build MSIX")
-    .IsDependentOn("Sign");
+    .IsDependentOn("Sign")
+    .IsDependentOn("Build AppPackages");
 
 Task("NuGet Restore")
     .Does(() =>
@@ -130,7 +127,9 @@ Task("NuGet Restore")
     {
         Verbosity = DotNetVerbosity.Detailed,
         Interactive = false,
-        ConfigFile = nugetConfig
+        ConfigFile = nugetConfig,
+        Runtime = runtimeIdentifier,
+        MSBuildSettings = new DotNetMSBuildSettings { ArgumentCustomization = withRuntimeProperties }
     });
 });
 
@@ -201,12 +200,14 @@ Task("Build binary package")
 
     var settings = new DotNetPublishSettings
     {
-        Configuration = configuration
+        Configuration = configuration,
+        Runtime = runtimeIdentifier,
+        OutputDirectory = binPath
     };
 
     settings.MSBuildSettings = new DotNetMSBuildSettings
     {
-        ArgumentCustomization = args => args.Append("/p:Platform=x64")
+        ArgumentCustomization = args => withRuntimeProperties(args)
                                             .Append("/p:UapAppxPackageBuildMode=SideloadOnly")
                                             .Append("/p:AppxPackageSigningEnabled=false")
                                             .Append("/p:AppxBundle=Never")
@@ -243,7 +244,7 @@ Task("Remove unused files")
     Information("Removing unused files...");
 
     Information("Removing xbf...");
-    System.IO.File.Delete(System.IO.Path.Combine(binPath, "App.xbf"));
+    if (!publishAot) System.IO.File.Delete(System.IO.Path.Combine(binPath, "App.xbf"));
 
     Information("Removing appxrecipe...");
     System.IO.File.Delete(System.IO.Path.Combine(binPath, "Snap.Hutao.Remastered.build.appxrecipe"));
@@ -254,6 +255,8 @@ Task("Remove unused files")
     {
         System.IO.File.Delete(onnxruntimePath);
     }
+    separateNativeAotSymbols(repoDir, binPath);
+    verifyPublishRuntime(repoDir, binPath);
 });
 
 Task("Inner Sign")
@@ -399,6 +402,37 @@ Task("Sign")
     {
         Information("Local configuration. Skip signing.");
         return;
+    }
+});
+
+// The CI-signed Alpha MSIX continues to be published as an unchanged artifact.
+// Only the App Installer variant is repacked with an embedded channel descriptor.
+// Canary can opt in later, but remains disabled by default.
+Task("Build AppPackages")
+    .IsDependentOn("Sign")
+    .WithCriteria(GitHubActions.IsRunningOnGitHubActions
+        && !GitHubActions.Environment.PullRequest.IsPullRequest
+        && (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Alpha"
+            || (GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Canary"
+                && Argument("enableCanaryAppPackages", false))))
+    .Does(() =>
+{
+    var channel = GitHubActions.Environment.Workflow.Workflow == "Snap Hutao Remastered Alpha" ? "Alpha" : "Canary";
+    var arguments = new ProcessArgumentBuilder()
+        .Append("-NoProfile").Append("-NonInteractive").Append("-File")
+        .AppendQuoted(System.IO.Path.Combine(repoDir, "scripts", "New-AppInstallerPackages.ps1"))
+        .Append("-PublishDirectory").AppendQuoted(binPath)
+        .Append("-AppPackagesDirectory").AppendQuoted(System.IO.Path.Combine(repoDir, "AppPackages"))
+        .Append("-StagingDirectory").AppendQuoted(System.IO.Path.Combine(repoDir, "artifacts", "appinstaller-staging"))
+        .Append("-CertificatePath").AppendQuoted(pfxPath)
+        .Append("-MakeAppxPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "makeappx.exe"))
+        .Append("-SignToolPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "signtool.exe"))
+        .Append("-Channel").Append(channel)
+        .Append("-PasswordEnvironmentVariable").Append("PW");
+    var exitCode = StartProcess("pwsh", new ProcessSettings { Arguments = arguments });
+    if (exitCode != 0)
+    {
+        throw new InvalidOperationException(channel + " AppPackages generation failed (exit " + exitCode + ").");
     }
 });
 

@@ -19,7 +19,7 @@
                 FontFamily="Cascadia Code, Consolas, Courier New"
                 FontSize="13"
                 IsTextSelectionEnabled="True"
-                Text="{Binding Code, ElementName=Root}"
+                Text="{x:Bind Code, Mode=OneWay}"
                 TextWrapping="NoWrap" />
         </ScrollViewer>
     </Border>

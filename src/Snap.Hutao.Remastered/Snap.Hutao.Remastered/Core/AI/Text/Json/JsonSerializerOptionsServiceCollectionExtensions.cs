@@ -4,6 +4,7 @@
 
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using System.Text.Encodings.Web;
 
 namespace Snap.Hutao.Remastered.Core.AI.Text.Json;
@@ -15,7 +16,7 @@ internal static class JsonSerializerOptionsServiceCollectionExtensions
         public IServiceCollection AddJsonSerializerOptions()
         {
             services.TryAddKeyedSingleton(JsonSerializerOptionsKey.Settings, CreateSettingsOptions());
-            services.TryAddKeyedSingleton(JsonSerializerOptionsKey.AgentConversation, CreateAgentConversationOptions());
+            services.TryAddKeyedSingleton(JsonSerializerOptionsKey.AgentConversation, AgentConversationJsonOptions.Create());
             services.TryAddKeyedSingleton(JsonSerializerOptionsKey.AIFunctionContent, CreateAIFunctionContentOptions());
 
             return services;
@@ -28,15 +29,7 @@ internal static class JsonSerializerOptionsServiceCollectionExtensions
         {
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             WriteIndented = true,
-        };
-    }
-
-    private static JsonSerializerOptions CreateAgentConversationOptions()
-    {
-        return new(AIJsonUtilities.DefaultOptions)
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            WriteIndented = true,
+            TypeInfoResolver = AgentSettingsJsonContext.Default,
         };
     }
 
@@ -44,4 +37,5 @@ internal static class JsonSerializerOptionsServiceCollectionExtensions
     {
         return new(AIJsonUtilities.DefaultOptions);
     }
+
 }

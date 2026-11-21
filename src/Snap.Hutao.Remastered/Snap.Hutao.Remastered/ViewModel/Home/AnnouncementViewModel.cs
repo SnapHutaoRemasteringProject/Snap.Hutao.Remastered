@@ -73,7 +73,12 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
     public partial string GreetingText { get; set; } = SH.ViewPageHomeGreetingTextDefault;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(RedeemCodeItems))]
     public partial ImmutableArray<CodeWrapper> RedeemCodes { get; set; } = [];
+
+    // Keep immutable service results inside the view model; cross the WinRT
+    // ItemsSource boundary with a reference-type list rather than a boxed struct.
+    public List<CodeWrapper> RedeemCodeItems => RedeemCodes.IsDefaultOrEmpty ? [] : new(RedeemCodes);
 
     [ObservableProperty]
     public partial List<CardReference>? Cards { get; set; }
@@ -87,7 +92,10 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
     public partial bool IsActivityCalendarLoading { get; set; } = true;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayedActivityCardItems))]
     public partial ImmutableArray<Act> DisplayedActivityCards { get; set; } = [];
+
+    public List<Act> DisplayedActivityCardItems => DisplayedActivityCards.IsDefaultOrEmpty ? [] : new(DisplayedActivityCards);
 
     public bool IsHomeAnnouncementActivityCalendarPresented
     {
@@ -133,13 +141,15 @@ public sealed partial class AnnouncementViewModel : Abstraction.ViewModel, IReci
             networkRetryCoordinator.Register(MiyoliveRetryKey, RetryMiyoliveAsync),
             networkRetryCoordinator.Register(CalendarRetryKey, RetryCalendarAsync),
         ];
-        // Navigation must not unlock while the metadata/Git prerequisite is pending.
-        await metadataService.InitializeAsync().AsTask().WaitAsync(token).ConfigureAwait(false);
-        token.ThrowIfCancellationRequested();
+        // Show the dashboard/loading cards while metadata is being prepared.
+        // Its load operation still stays pending, keeping navigation locked.
         await taskContext.SwitchToMainThreadAsync();
         token.ThrowIfCancellationRequested();
         RefreshDashboard();
         UpdateGreetingText();
+
+        await metadataService.InitializeAsync().AsTask().WaitAsync(token).ConfigureAwait(false);
+        token.ThrowIfCancellationRequested();
 
         // Metadata/Git and the dashboard are the navigation prerequisites.
         // Slow optional feeds must not keep the whole NavigationView disabled.

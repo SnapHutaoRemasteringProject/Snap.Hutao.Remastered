@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Model.Entity.Database;
 
@@ -56,8 +55,7 @@ public sealed partial class NullableStringDbProperty : DbProperty<string?>
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             AppDbContext appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            appDbContext.Settings.Where(e => e.Key == key).ExecuteDelete();
-            appDbContext.Settings.AddAndSave(new(key, value));
+            AppDbQueries.WriteSetting(appDbContext, key, value);
         }
     }
 }

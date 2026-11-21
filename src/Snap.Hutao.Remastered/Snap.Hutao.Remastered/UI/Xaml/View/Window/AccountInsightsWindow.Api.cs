@@ -6,6 +6,7 @@ using Windows.ApplicationModel.DataTransfer;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Window;
 
+[SuppressMessage("Design", "CA1001", Justification = "The XAML window shutdown path disposes lifetime after pending operations finish in DisposeClosedResources.")]
 public sealed partial class AccountInsightsWindow
 {
     private void OnCopyClicked(object sender, RoutedEventArgs args)

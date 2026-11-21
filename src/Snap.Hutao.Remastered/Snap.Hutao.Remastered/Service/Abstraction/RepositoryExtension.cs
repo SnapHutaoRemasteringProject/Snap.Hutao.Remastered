@@ -3,16 +3,22 @@
 
 using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Core.Database;
+using Snap.Hutao.Remastered.Core.Database.Abstraction;
 using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Model.Entity.Database;
-using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.Service.Abstraction;
 
 public static class RepositoryExtension
 {
-    extension<TEntity>(IRepository<TEntity> repository)
+    public static TResult WithDatabase<TResult>(this IAppInfrastructureService repository, Func<AppDbContext, TResult> operation)
+    {
+        using IServiceScope scope = repository.ServiceProvider.CreateScope();
+        return operation(scope.GetAppDbContext());
+    }
+
+    extension<[DynamicallyAccessedMembers(DatabaseEntityContract.Members)] TEntity>(IRepository<TEntity> repository)
         where TEntity : class
     {
         public TResult Execute<TResult>(Func<DbSet<TEntity>, TResult> func, [CallerMemberName] string caller = "")
@@ -29,6 +35,11 @@ public static class RepositoryExtension
             }
         }
 
+        public TEntity[] ReadAll()
+        {
+            return repository.WithDatabase(AppDbQueries.All<TEntity>);
+        }
+
         public int Add(TEntity entity)
         {
             return repository.Execute(dbSet => dbSet.AddAndSave(entity));
@@ -41,37 +52,12 @@ public static class RepositoryExtension
 
         public int Delete()
         {
-            return repository.Execute(dbSet => dbSet.ExecuteDelete());
+            return repository.WithDatabase(AppDbQueries.DeleteAll<TEntity>);
         }
 
         public int Delete(TEntity entity)
         {
             return repository.Execute(dbSet => dbSet.RemoveAndSave(entity));
-        }
-
-        public int Delete(Expression<Func<TEntity, bool>> predicate)
-        {
-            return repository.Execute(dbSet => dbSet.Where(predicate).ExecuteDelete());
-        }
-
-        public TResult Query<TResult>(Func<IQueryable<TEntity>, TResult> func)
-        {
-            return repository.Execute(dbSet => func(dbSet.AsNoTracking()));
-        }
-
-        public TEntity Single(Expression<Func<TEntity, bool>> predicate)
-        {
-            return repository.Query(query => query.Single(predicate));
-        }
-
-        public TResult Single<TResult>(Func<IQueryable<TEntity>, IQueryable<TResult>> query)
-        {
-            return repository.Query(query1 => query(query1).Single());
-        }
-
-        public TEntity? SingleOrDefault(Expression<Func<TEntity, bool>> predicate)
-        {
-            return repository.Query(query => query.SingleOrDefault(predicate));
         }
 
         public int Update(TEntity entity)

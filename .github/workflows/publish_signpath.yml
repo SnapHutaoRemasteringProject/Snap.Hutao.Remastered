@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   publish:
+    name: Build Native AOT
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -38,7 +39,14 @@ jobs:
       - name: Build and zip
         id: build
         shell: pwsh
-        run: dotnet tool restore && dotnet cake publish_signpath.cake --target=BuildAndZip
+        run: dotnet tool restore && dotnet cake publish_signpath.cake --publishAot=true --target=BuildAndZip
+
+      - name: Upload Native AOT symbols
+        uses: actions/upload-artifact@v7
+        with:
+          name: NativeAOT-SignPath-Symbols-${{ steps.build.outputs.version }}
+          path: ${{ github.workspace }}/artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
+          if-no-files-found: error
 
       - name: Upload unsigned zip
         id: upload-zip
@@ -65,7 +73,7 @@ jobs:
       - name: Package installer and MSIX from signed files
         id: package
         shell: pwsh
-        run: dotnet cake publish_signpath.cake --target=PackageFromSigned --signedZipDir="${{ github.workspace }}/src/output/signed-zip"
+        run: dotnet cake publish_signpath.cake --publishAot=true --target=PackageFromSigned --signedZipDir="${{ github.workspace }}/src/output/signed-zip"
         env:
           PUBLISH_CERT: ${{ secrets.PUBLISH_CERT }}
           PUBLISH_PW: ${{ secrets.PUBLISH_PW }}
@@ -90,29 +98,13 @@ jobs:
           wait-for-completion: true
           output-artifact-directory: ${{ github.workspace }}/src/output/signed-installer
 
-      - name: Create Store upload
-        shell: pwsh
-        run: |
-          $symbols = Get-ChildItem src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/bin/x64/Release -Recurse -Filter Snap.Hutao.Remastered.pdb |
-            Where-Object { $_.Directory.Name -eq 'publish' } | Select-Object -First 1
-          Get-ChildItem src/output -Filter *.msix | ForEach-Object {
-            $arguments = @{ PackagePath = $_.FullName }
-            if ($symbols) { $arguments.SymbolsPath = $symbols.FullName }
-            ./scripts/New-MsixUpload.ps1 @arguments
-          }
-
-      - name: Upload Store submission files
-        uses: actions/upload-artifact@v7
-        with:
-          name: Snap.Hutao.Remastered-Store-upload
-          path: ${{ github.workspace }}/src/output/*.msixupload
-          if-no-files-found: error
-
       - name: Upload MSIX
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-MSIX-${{ steps.package.outputs.msix-signed == 'true' && 'signed' || 'unsigned-store-only' }}
+          name: Snap.Hutao.Remastered-${{ steps.build.outputs.version }}-MSIX-signed
           path: ${{ steps.package.outputs.msix-path }}
+          archive: false
+          if-no-files-found: error
 
       - name: Upload signed installer
         uses: actions/upload-artifact@v7
@@ -126,11 +118,12 @@ jobs:
           choco install rclone --yes --no-progress
           if ($LASTEXITCODE -ne 0) { throw 'rclone installation failed.' }
 
-      - name: Publish default installer to R2
+      - name: Publish default installer and MSIX to R2
         id: r2
         shell: pwsh
         env:
           RELEASE_VERSION: ${{ steps.build.outputs.version }}
+          MSIX_PATH: ${{ steps.package.outputs.msix-path }}
           RCLONE_CONFIG_R2_TYPE: s3
           RCLONE_CONFIG_R2_PROVIDER: Cloudflare
           RCLONE_CONFIG_R2_REGION: auto
@@ -142,7 +135,7 @@ jobs:
           $filename = "Snap.Hutao.Remastered-$env:RELEASE_VERSION-Setup.exe"
           $installers = @(Get-ChildItem 'src/output/signed-installer' -Recurse -File -Filter $filename)
           if ($installers.Count -ne 1) { throw "Expected exactly one signed default installer: $filename" }
-          ./scripts/Publish-InstallerToR2.ps1 -InstallerPath $installers[0].FullName
+          ./scripts/Publish-InstallerToR2.ps1 -InstallerPath $installers[0].FullName -MsixPath $env:MSIX_PATH
 
       - name: Add summary
         shell: pwsh
@@ -150,6 +143,7 @@ jobs:
           $summary = @"
           ## Snap Hutao Remastered Publish Build (SignPath Release Signing)
 
+          - **Runtime:** Native AOT
           - **Version:** ${{ steps.build.outputs.version }}
           - **Signing Policy:** release-signing (zip / installer)
           - **MSIX signed:** ${{ steps.package.outputs.msix-signed }}
@@ -157,6 +151,6 @@ jobs:
           - **Installer Signing Request:** ${{ steps.signpath-installer.outputs.signing-request-web-url }}
 
           > [!IMPORTANT]
-          > zip/安装器使用 SignPath 签名。MSIX 证书与商店 Publisher 不匹配时保持未签名，仅用于商店提交，不可旁加载；请提交 Store-upload 工件内的 .msixupload。
+          > ZIP 和 EXE 使用 SignPath 签名，MSIX 使用发布证书签名。
           "@
           echo $summary >> $Env:GITHUB_STEP_SUMMARY

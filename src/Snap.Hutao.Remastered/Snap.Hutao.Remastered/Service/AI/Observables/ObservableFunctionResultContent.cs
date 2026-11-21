@@ -4,6 +4,7 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.AI;
+using Snap.Hutao.Remastered.Core.Text.Json;
 
 namespace Snap.Hutao.Remastered.Service.AI.Observables;
 
@@ -35,7 +36,7 @@ internal sealed partial class ObservableFunctionResultContent : ObservableToolRe
 
         try
         {
-            return JsonSerializer.Serialize(value, jsonOptions);
+            return JsonSerialize.Serialize(value, jsonOptions);
         }
         catch (Exception exception)
         {

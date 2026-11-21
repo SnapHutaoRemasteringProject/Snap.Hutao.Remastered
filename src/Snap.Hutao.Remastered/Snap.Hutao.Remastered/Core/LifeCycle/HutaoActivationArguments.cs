@@ -2,10 +2,11 @@
 // Licensed under the MIT license.
 
 using Microsoft.Windows.AppLifecycle;
+using System.Runtime.InteropServices;
 
 namespace Snap.Hutao.Remastered.Core.LifeCycle;
 
-public sealed class HutaoActivationArguments
+public sealed partial class HutaoActivationArguments
 {
     public bool IsRedirectTo { get; set; }
 
@@ -33,7 +34,22 @@ public sealed class HutaoActivationArguments
                     result.Kind = HutaoActivationKind.Launch;
                     if (args.TryGetLaunchActivatedArguments(out string? arguments))
                     {
-                        result.LaunchActivatedArguments = arguments;
+                        // Unpackaged protocol launches use the raw Win32 command line
+                        // and may be classified as Launch by Windows App SDK.
+                        string launchArgument = RuntimeEnvironment.IsUnpackaged
+                            ? GetFirstUnpackagedArgument(arguments)
+                            : arguments;
+
+                        if (RuntimeEnvironment.IsUnpackaged && launchArgument.StartsWith("hutao://", StringComparison.OrdinalIgnoreCase)
+                            && Uri.TryCreate(launchArgument, UriKind.Absolute, out Uri? uri))
+                        {
+                            result.Kind = HutaoActivationKind.Protocol;
+                            result.ProtocolActivatedUri = uri;
+                        }
+                        else
+                        {
+                            result.LaunchActivatedArguments = launchArgument;
+                        }
                     }
 
                     break;
@@ -66,4 +82,30 @@ public sealed class HutaoActivationArguments
 
         return result;
     }
+
+    private static string GetFirstUnpackagedArgument(string commandLine)
+    {
+        // The SDK supplies the *full* command line, including the executable.
+        // CommandLineToArgvW implements the shell's Windows quoting rules.
+        nint argv = CommandLineToArgvW(commandLine, out int count);
+        if (argv == 0)
+        {
+            return string.Empty;
+        }
+
+        try
+        {
+            return count > 1 ? Marshal.PtrToStringUni(Marshal.ReadIntPtr(argv, IntPtr.Size)) ?? string.Empty : string.Empty;
+        }
+        finally
+        {
+            _ = LocalFree(argv);
+        }
+    }
+
+    [LibraryImport("shell32.dll", EntryPoint = "CommandLineToArgvW", StringMarshalling = StringMarshalling.Utf16)]
+    private static partial nint CommandLineToArgvW(string commandLine, out int argumentCount);
+
+    [LibraryImport("kernel32.dll")]
+    private static partial nint LocalFree(nint handle);
 }

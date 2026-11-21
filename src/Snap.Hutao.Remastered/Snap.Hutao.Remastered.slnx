@@ -3,6 +3,8 @@
     <Platform Name="x64" />
   </Configurations>
   <Folder Name="/Solution Items/">
+    <File Path="AOT.md" />
+    <File Path="../../Directory.Packages.props" />
     <File Path=".editorconfig" />
     <File Path=".vsconfig" />
   </Folder>
@@ -28,6 +30,10 @@
     <File Path="../../.github/workflows/publish_signpath.yml" />
   </Folder>
   <Project Path="Snap.Hutao.Remastered.Test/Snap.Hutao.Remastered.Test.csproj" />
+  <Folder Name="/AOT Development/">
+    <Project Path="Snap.Hutao.Database.Schema/Snap.Hutao.Database.Schema.csproj" />
+    <Project Path="Snap.Hutao.Database.Model/Snap.Hutao.Database.Model.csproj" />
+  </Folder>
   <Project Path="Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj">
     <Platform Project="x64" />
     <Deploy />

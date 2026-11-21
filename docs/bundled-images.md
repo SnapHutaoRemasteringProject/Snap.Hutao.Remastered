@@ -2,25 +2,6 @@
 
 [中文分步操作指南](bundled-images.zh-CN.md)
 
-## Store submission output
-
-Formal Publish/SignPath packaging keeps the Store Publisher. When the configured
-certificate subject differs from that known Store Publisher, it skips MSIX signing,
-exports `msix-signed=false` and labels the artifact `unsigned-store-only`. Setup
-signing continues with the existing certificate. This unsigned MSIX is a Store
-submission payload, not an installable sideload package. Other identity mismatches
-remain errors; the Store manifest is never rewritten to match an old certificate.
-
-All four MSIX workflows also run `scripts/New-MsixUpload.ps1` after packaging/signing.
-It creates a ZIP-format `.msixupload` containing the original MSIX and, when the
-application PDB is available, a nested `.appxsym` symbol archive. Missing symbols
-produce a warning. The `Snap.Hutao.Remastered-Store-upload` artifact contains these
-files; retain `.msix` for installation and use the formal Publish upload for Store
-submission. Alpha/Canary uploads are test outputs and may have different identities.
-This does not automatically submit or publish anything in Partner Center.
-
-See [Microsoft's manual upload instructions](https://learn.microsoft.com/en-us/windows/msix/package/packaging-uwp-apps#create-your-app-package-upload-file-manually).
-
 The application can ship a read-only `BundledImages` directory beside the executable.
 This is a loose-file payload, not an archive extracted into the user's cache.
 MSIX identity and the Inno Setup AppId are identical with and without this payload.

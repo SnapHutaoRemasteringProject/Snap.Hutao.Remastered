@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.AutoSortBox;
 
+[WinRT.GeneratedBindableCustomProperty]
 public sealed partial class AutoSortToken : ObservableObject
 {
     public AutoSortToken(AutoSortTokenKind kind, string value, Uri? iconUri = null)

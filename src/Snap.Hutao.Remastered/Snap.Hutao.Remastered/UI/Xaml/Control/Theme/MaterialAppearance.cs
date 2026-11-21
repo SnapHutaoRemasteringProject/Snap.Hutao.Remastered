@@ -38,6 +38,7 @@ internal static class MaterialAppearance
         Apply(element);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Control))]
     internal static void Release(FrameworkElement element)
     {
         TrackedControls.Remove(element);
@@ -66,6 +67,8 @@ internal static class MaterialAppearance
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Control))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.Composition.Hlsl.LiquidGlassBrush))]
     private static ElementState CaptureState(FrameworkElement element)
     {
         // Capture what the glass control was handed by its own constructor. Every
@@ -117,6 +120,8 @@ internal static class MaterialAppearance
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Control))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.Composition.Hlsl.LiquidGlassBrush))]
     private static void ApplyCore(FrameworkElement element)
     {
         if (XamlApplicationLifetime.Exiting) return;
@@ -243,11 +248,15 @@ internal static class MaterialAppearance
 
     private static void ResetMotion(FrameworkElement element, Vector3 scale)
     {
+        // Match WinUI.LiquidGlass MotionAnimation.hpp: PointerMotionHelper already owns the backing Visual's Scale. UIElement.Scale is forbidden
+        // after GetElementVisual, even when this method did not acquire it first.
+        ElementCompositionPreview.SetIsTranslationEnabled(element, true);
         Visual visual = ElementCompositionPreview.GetElementVisual(element);
         visual.StopAnimation("Scale");
         visual.StopAnimation("Translation");
         visual.Scale = scale;
-        element.Scale = scale;
+        // Translation is the library's enabled XAML translation channel; unlike
+        // Scale it is reset through UIElement after stopping the Visual animation.
         element.Translation = Vector3.Zero;
     }
 

@@ -7,7 +7,6 @@ using Microsoft.UI.Xaml.Controls;
 namespace Snap.Hutao.Remastered.UI.Xaml.Control;
 
 [SuppressMessage("", "SH001")]
-[DependencyProperty<UIElement>("RightPanel", IsAttached = true, TargetType = typeof(ScrollViewer))]
 [DependencyProperty<object>("ScrollToTopAssociatedObject", PropertyChangedCallbackName = nameof(OnScrollToTopAssociatedObjectChanged), IsAttached = true, TargetType = typeof(ScrollViewer))]
 public sealed partial class ScrollViewerHelper
 {

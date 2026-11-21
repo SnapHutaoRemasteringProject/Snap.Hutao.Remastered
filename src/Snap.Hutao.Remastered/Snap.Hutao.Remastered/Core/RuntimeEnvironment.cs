@@ -27,9 +27,10 @@ public static class RuntimeEnvironment
 
     public static void TryRegisterProtocol()
     {
-        if (IsPackaged)
+        if (IsPackaged || AppDataPaths.ProfileRoot is not null)
         {
-            // In packaged mode, protocol is registered via Package.appxmanifest
+            // MSIX owns packaged registration. An explicit test/profile directory
+            // must not replace the normal installation's system-wide URI handler.
             return;
         }
 

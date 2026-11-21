@@ -26,6 +26,7 @@ using System.Collections.Immutable;
 namespace Snap.Hutao.Remastered.ViewModel.Backpack;
 
 [Service(ServiceLifetime.Scoped)]
+[BindableCustomPropertyProvider]
 public sealed partial class BackpackViewModel : Abstraction.ViewModel
 {
     private readonly BackpackViewModelScopeContext scopeContext;
@@ -74,7 +75,11 @@ public sealed partial class BackpackViewModel : Abstraction.ViewModel
     public partial SearchData? SearchData { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(AvailableSortTokenItems))]
     public partial ImmutableArray<AutoSortToken> AvailableSortTokens { get; set; } = [];
+
+    [JsonIgnore]
+    public List<AutoSortToken> AvailableSortTokenItems => AvailableSortTokens.IsDefaultOrEmpty ? [] : new(AvailableSortTokens);
 
     public BackpackReliquaryScoreConfig? ScoreConfig { get; private set; }
 

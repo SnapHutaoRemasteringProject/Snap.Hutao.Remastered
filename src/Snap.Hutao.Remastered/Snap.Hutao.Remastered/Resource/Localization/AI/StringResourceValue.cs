@@ -7,7 +7,8 @@ using Snap.Hutao.Remastered.Core.AI.ComponentModel;
 
 namespace Snap.Hutao.Remastered.Resource.Localization.AI;
 
-internal sealed class StringResourceValue : ObservableObject
+[WinRT.GeneratedBindableCustomProperty([nameof(Value)], [])]
+internal sealed partial class StringResourceValue : ObservableObject
 {
     private static readonly List<WeakReference<StringResourceValue>> registeredValues = [];
 

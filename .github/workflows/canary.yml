@@ -16,7 +16,45 @@ on:
       - '**.yml'
 
 jobs:
+  prepare:
+    name: Prepare shared Canary source
+    runs-on: windows-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      continue: ${{ steps.merge.outputs.continue }}
+      source-sha: ${{ steps.merge.outputs.source-sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Merge all branches into dev locally
+        id: merge
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./scripts/PrepareCanarySource.ps1
+      - name: Bundle the exact merged source
+        if: ${{ steps.merge.outputs.continue == 'true' }}
+        shell: pwsh
+        run: |
+          git bundle create "$env:RUNNER_TEMP/source.bundle" HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot bundle prepared Canary source' }
+      - name: Share prepared source with both runtimes
+        if: ${{ steps.merge.outputs.continue == 'true' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: Canary-Prepared-Source
+          path: ${{ runner.temp }}/source.bundle
+          if-no-files-found: error
+          retention-days: 1
+
   build:
+    needs: prepare
+    if: ${{ needs.prepare.outputs.continue == 'true' }}
+    name: Build Native AOT
     runs-on: windows-latest
     permissions:
       contents: read
@@ -27,15 +65,25 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Merge all branches into dev locally
-        id: merge
+      - name: Download prepared Canary source
+        uses: actions/download-artifact@v8
+        with:
+          name: Canary-Prepared-Source
+          path: ${{ runner.temp }}/canary-source
+
+      - name: Check out the shared merged commit
         shell: pwsh
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./scripts/PrepareCanarySource.ps1
+          SOURCE_SHA: ${{ needs.prepare.outputs.source-sha }}
+        run: |
+          git fetch "$env:RUNNER_TEMP/canary-source/source.bundle" HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot fetch prepared Canary source' }
+          git checkout --detach $env:SOURCE_SHA
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot check out prepared Canary source' }
+          if ((git rev-parse HEAD) -ne $env:SOURCE_SHA) { throw 'Canary source mismatch' }
 
       - name: Prepare optional bundled image snapshot
-        if: ${{ steps.merge.outputs.continue == 'true' }}
+        if: ${{ needs.prepare.outputs.continue == 'true' }}
         shell: pwsh
         run: ./scripts/Get-BundledImages.ps1
         env:
@@ -44,13 +92,13 @@ jobs:
           BUNDLED_IMAGES_SHA256: ${{ vars.BUNDLED_IMAGES_SHA256 }}
 
       - name: Setup .NET
-        if: ${{ steps.merge.outputs.continue == 'true' }}
+        if: ${{ needs.prepare.outputs.continue == 'true' }}
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 11
 
       - name: Cache NuGet packages
-        if: ${{ steps.merge.outputs.continue == 'true' }}
+        if: ${{ needs.prepare.outputs.continue == 'true' }}
         uses: actions/cache@v6
         with:
           path: ~/.nuget/packages
@@ -59,69 +107,57 @@ jobs:
             ${{ runner.os }}-nuget-
 
       - name: Cake (MSIX)
-        if: ${{ steps.merge.outputs.continue == 'true' }}
+        if: ${{ needs.prepare.outputs.continue == 'true' }}
         id: cake
         shell: pwsh
-        run: dotnet tool restore && dotnet cake
+        run: dotnet tool restore && dotnet cake --publishAot=true --enableCanaryAppPackages=true
         env:
           CERTIFICATE: ${{ secrets.CERTIFICATE }}
           PW: ${{ secrets.PW }}
 
-      - name: Build installer
-        if: ${{ steps.merge.outputs.continue == 'true' }}
-        id: installer
-        shell: pwsh
-        run: dotnet cake build-installer.cake
-        env:
-          CERTIFICATE: ${{ secrets.CERTIFICATE }}
-          PW: ${{ secrets.PW }}
-
-      - name: Create Store upload
-        if: ${{ success() && steps.merge.outputs.continue == 'true' }}
-        shell: pwsh
-        run: |
-          $symbols = Get-ChildItem src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/bin/x64/Release -Recurse -Filter Snap.Hutao.Remastered.pdb |
-            Where-Object { $_.Directory.Name -eq 'publish' } | Select-Object -First 1
-          Get-ChildItem src/output -Filter *.msix | ForEach-Object {
-            $arguments = @{ PackagePath = $_.FullName }
-            if ($symbols) { $arguments.SymbolsPath = $symbols.FullName }
-            ./scripts/New-MsixUpload.ps1 @arguments
-          }
-
-      - name: Upload Store submission files
-        if: ${{ success() && steps.merge.outputs.continue == 'true' }}
+      - name: Upload Native AOT MSIX symbols
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered-Store-upload
-          path: ${{ github.workspace }}/src/output/*.msixupload
+          name: NativeAOT-MSIX-Symbols-${{ steps.cake.outputs.version }}
+          path: ${{ github.workspace }}/artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
           if-no-files-found: error
 
       - name: Upload signed msix
-        if: ${{ success() && steps.merge.outputs.continue == 'true' }}
+        if: ${{ success() && needs.prepare.outputs.continue == 'true' }}
         uses: actions/upload-artifact@v7
         with:
           name: Snap.Hutao.Remastered.Canary-${{ steps.cake.outputs.version }}
           path: ${{ github.workspace }}/src/output/Snap.Hutao.Remastered.Canary-${{ steps.cake.outputs.version }}.msix
 
-      - name: Upload installer
-        if: ${{ success() && steps.merge.outputs.continue == 'true' }}
+      - name: Upload Canary AppPackages (GitHub artifact only)
+        if: ${{ success() && needs.prepare.outputs.continue == 'true' }}
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered.Canary-Setup-${{ steps.cake.outputs.version }}
-          path: ${{ github.workspace }}/publish/Snap.Hutao.Remastered-*.exe
+          name: Canary-AppPackages
+          path: ${{ github.workspace }}/AppPackages/Canary
+          if-no-files-found: error
+
+      - name: Export sideload trust certificate
+        if: ${{ success() && needs.prepare.outputs.continue == 'true' }}
+        shell: pwsh
+        run: ./scripts/Export-PackageCertificate.ps1 -PfxPath 'temp.pfx' -OutputPath 'temp-code-signing.cer'
+        env:
+          PW: ${{ secrets.PW }}
 
       - name: Upload code-signing certificate
-        if: ${{ success() && steps.merge.outputs.continue == 'true' }}
+        if: ${{ success() && needs.prepare.outputs.continue == 'true' }}
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered.Canary-SnapHutaoRemasteringProject-${{ steps.installer.outputs.version }}
+          name: Snap.Hutao.Remastered.Canary-SnapHutaoRemasteringProject-${{ steps.cake.outputs.version }}
           path: ${{ github.workspace }}/temp-code-signing.cer
 
       - name: Add summary
-        if: ${{ success() && steps.merge.outputs.continue == 'true' }}
+        if: ${{ success() && needs.prepare.outputs.continue == 'true' }}
         shell: pwsh
         run: |
           $summary = "
+          构建模式：Native AOT
+
           > [!WARNING]
           > 该版本是由 CI 程序自动打包生成的 Canary 测试版本，包含新功能原型及问题修复
 

@@ -26,6 +26,7 @@
     xmlns:shvh="using:Snap.Hutao.Remastered.ViewModel.Home"
     xmlns:shwhh="using:Snap.Hutao.Remastered.Web.Hutao.HutaoAsAService"
     xmlns:shwhhca="using:Snap.Hutao.Remastered.Web.Hoyolab.Hk4e.Common.Announcement"
+    xmlns:shwhtem="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Event.Miyolive"
     xmlns:shwhtga="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar"
     xmlns:wl="using:WinUI.LiquidGlass"
     d:DataContext="{d:DesignInstance shvh:AnnouncementViewModel}"
@@ -37,7 +38,6 @@
     </mxi:Interaction.Behaviors>
 
     <shuxc:ScopedPage.Resources>
-        <shux:BindingProxy x:Key="ViewModelBindingProxy" DataContext="{x:Bind DataContext, Mode=OneWay}"/>
 
         <DataTemplate x:Key="HutaoAnnouncementTemplate" x:DataType="shwhh:Announcement">
             <InfoBar
@@ -52,10 +52,10 @@
                 Severity="{x:Bind Severity, Mode=OneWay}">
                 <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
                     <wl:LiquidGlassHyperlinkButton
-                        Visibility="{x:Bind Link, Converter={StaticResource EmptyStringToBoolConverter}, Mode=OneWay}"
                         shuxcth:ControlMaterialState.IsManaged="True"
                         Content="{shuxm:ResourceString Name=ViewPageAnnouncementViewDetails}"
-                        NavigateUri="{x:Bind Link, Mode=OneWay}"/>
+                        NavigateUri="{x:Bind Link, Mode=OneWay}"
+                        Visibility="{x:Bind Link, Converter={StaticResource EmptyStringToBoolConverter}, Mode=OneWay}"/>
                     <TextBlock
                         Margin="8,0,0,2"
                         VerticalAlignment="Center"
@@ -140,26 +140,26 @@
                     </Grid>
 
                     <mxi:Interaction.Behaviors>
-                        <mxi:EventTriggerBehavior EventName="Tapped">
+                        <shuxb:StaticEventTriggerBehavior EventName="Tapped">
                             <shuxba:ShowWebView2WindowAction>
                                 <shuxba:ShowWebView2WindowAction.ContentProvider>
                                     <shuxvww:AnnouncementWebView2ContentProvider Announcement="{x:Bind Mode=OneWay}"/>
                                 </shuxba:ShowWebView2WindowAction.ContentProvider>
                             </shuxba:ShowWebView2WindowAction>
-                        </mxi:EventTriggerBehavior>
-                        <mxi:EventTriggerBehavior EventName="PointerEntered">
+                        </shuxb:StaticEventTriggerBehavior>
+                        <shuxb:StaticEventTriggerBehavior EventName="PointerEntered">
                             <shuxba:StartAnimationActionNoThrow Animation="{x:Bind ImageZoomInAnimation, Mode=OneWay}" TargetObject="{x:Bind ImageZoomBorder, Mode=OneWay}"/>
-                        </mxi:EventTriggerBehavior>
-                        <mxi:EventTriggerBehavior EventName="PointerExited">
+                        </shuxb:StaticEventTriggerBehavior>
+                        <shuxb:StaticEventTriggerBehavior EventName="PointerExited">
                             <shuxba:StartAnimationActionNoThrow Animation="{x:Bind ImageZoomOutAnimation, Mode=OneWay}" TargetObject="{x:Bind ImageZoomBorder, Mode=OneWay}"/>
-                        </mxi:EventTriggerBehavior>
+                        </shuxb:StaticEventTriggerBehavior>
                     </mxi:Interaction.Behaviors>
                 </Border>
             </ItemContainer>
         </DataTemplate>
 
         <DataTemplate x:Key="AnnouncementPivotItemContentTemplate" x:DataType="shwhhca:AnnouncementListWrapper">
-            <ItemsControl ItemTemplate="{StaticResource AnnouncementTemplate}" ItemsSource="{x:Bind List, Mode=OneWay}">
+            <ItemsControl ItemTemplate="{StaticResource AnnouncementTemplate}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(List, List.IsDefaultOrEmpty), Mode=OneWay}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <shuxcp:UniformPanel
@@ -211,18 +211,18 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -233,7 +233,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -241,12 +241,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -256,7 +256,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -307,18 +307,18 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -329,7 +329,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -337,12 +337,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -352,7 +352,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -403,18 +403,18 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -425,7 +425,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -433,12 +433,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -448,7 +448,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -499,18 +499,18 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -521,7 +521,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -529,12 +529,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -544,7 +544,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -595,18 +595,18 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -617,7 +617,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -625,12 +625,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -640,7 +640,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -692,18 +692,18 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -714,7 +714,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -722,12 +722,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -737,7 +737,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -789,18 +789,18 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -811,7 +811,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -819,12 +819,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -834,7 +834,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -886,18 +886,18 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Margin="0,6">
-                            <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True" Padding="0">
+                            <wl:LiquidGlassButton Padding="0" shuxcth:ControlMaterialState.IsManaged="True">
                                 <wl:LiquidGlassButton.Flyout>
                                     <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding6Style}">
-                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind RewardList, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(RewardList, RewardList.IsDefaultOrEmpty), Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:ActReward">
                                                     <Grid>
                                                         <shuxc:ItemIcon
                                                             Width="48"
                                                             Height="48"
-                                                            Icon="{Binding Icon}"
-                                                            Quality="{Binding Rarity}"/>
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
                                                         <Border
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Bottom"
@@ -908,7 +908,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 Foreground="#FFFFFFFF"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Number}"/>
+                                                                Text="{x:Bind Number, Mode=OneTime}"/>
                                                         </Border>
                                                     </Grid>
                                                 </DataTemplate>
@@ -916,12 +916,12 @@
                                         </ItemsControl>
                                     </Flyout>
                                 </wl:LiquidGlassButton.Flyout>
-                                <Grid DataContext="{Binding RewardList[0]}">
+                                <Grid>
                                     <shuxc:ItemIcon
                                         Width="36"
                                         Height="36"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Rarity}"/>
+                                        Icon="{x:Bind FirstReward.Icon, Mode=OneTime}"
+                                        Quality="{x:Bind FirstReward.Rarity, Mode=OneTime}"/>
                                     <Border
                                         HorizontalAlignment="Stretch"
                                         VerticalAlignment="Bottom"
@@ -931,7 +931,7 @@
                                             HorizontalAlignment="Center"
                                             Foreground="#FFFFFFFF"
                                             Style="{ThemeResource CaptionTextBlockStyle}"
-                                            Text="{Binding Number}"/>
+                                            Text="{x:Bind FirstReward.Number, Mode=OneTime}"/>
                                     </Border>
                                 </Grid>
                             </wl:LiquidGlassButton>
@@ -981,15 +981,15 @@
                             <AppBarButton
                                 Icon="{shuxm:FontIcon Glyph=&#xE728;}"
                                 Label="{shuxm:ResourceString Name=ViewPageAnnouncementRedeemCodeLabel}"
-                                Visibility="{x:Bind DataContext.RedeemCodes, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}">
+                                Visibility="{x:Bind DataContext.RedeemCodeItems, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}">
                                 <AppBarButton.Flyout>
                                     <Flyout
                                         essential:FlyoutHelper.AcrylicWorkaround="True"
                                         FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding12Style}"
                                         Placement="BottomEdgeAlignedRight">
-                                        <ItemsControl ItemsPanel="{ThemeResource StackPanelSpacing8Template}" ItemsSource="{x:Bind DataContext.RedeemCodes, Mode=OneWay}">
+                                        <ItemsControl ItemsPanel="{ThemeResource StackPanelSpacing8Template}" ItemsSource="{x:Bind DataContext.RedeemCodeItems, Mode=OneWay}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
+                                                <DataTemplate x:DataType="shwhtem:CodeWrapper">
                                                     <Grid
                                                         Padding="8"
                                                         ColumnSpacing="12"
@@ -1002,26 +1002,27 @@
                                                             <TextBlock
                                                                 IsTextSelectionEnabled="True"
                                                                 Style="{ThemeResource BaseTextBlockStyle}"
-                                                                Text="{Binding Code}"
+                                                                Text="{x:Bind Code, Mode=OneTime}"
                                                                 TextTrimming="CharacterEllipsis"
                                                                 TextWrapping="NoWrap"/>
                                                             <TextBlock
                                                                 Opacity="0.7"
                                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                                Text="{Binding Title}"
+                                                                Text="{x:Bind Title, Mode=OneTime}"
                                                                 TextTrimming="CharacterEllipsis"
                                                                 TextWrapping="NoWrap"/>
                                                         </StackPanel>
                                                         <wl:LiquidGlassButton
                                                             Grid.Column="1"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             VerticalAlignment="Stretch"
+                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             Background="Transparent"
-                                                            Command="{Binding DataContext.CopyCodeCommand, Source={StaticResource ViewModelBindingProxy}}"
-                                                            CommandParameter="{Binding Code}"
+                                                            CommandParameter="{x:Bind Code, Mode=OneTime}"
                                                             Content="{StaticResource FontIconContentCopy}"
                                                             FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                                            Style="{StaticResource ButtonRevealStyle}"/>
+                                                            Loaded="OnCopyCodeLoaded"
+                                                            Style="{StaticResource ButtonRevealStyle}"
+                                                            Unloaded="OnCopyCodeUnloaded"/>
                                                     </Grid>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
@@ -1048,10 +1049,10 @@
                     Padding="8"
                     x:FieldModifier="internal"
                     Style="{ThemeResource AcrylicGridCardStyle}"
-                    Visibility="{Binding DataContext.IsActivityCalendarPresented, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}">
+                    Visibility="{x:Bind DataContext.IsActivityCalendarPresented, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
 
                     <!--  Placeholder shown while the activity calendar is loading  -->
-                    <Grid ColumnSpacing="8" Visibility="{Binding DataContext.ActivityCalendar, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}}">
+                    <Grid ColumnSpacing="8" Visibility="{x:Bind DataContext.ActivityCalendar, Converter={StaticResource EmptyObjectToVisibilityRevertConverter}, Mode=OneWay}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition/>
@@ -1091,15 +1092,15 @@
                     <Grid
                         ColumnSpacing="8"
                         DataContext="{x:Bind DataContext.ActivityCalendar, Mode=OneWay}"
-                        Visibility="{Binding DataContext.ActivityCalendar, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource EmptyObjectToVisibilityConverter}}">
+                        Visibility="{x:Bind DataContext.ActivityCalendar, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
-                        <ItemsControl ItemsPanel="{ThemeResource StackPanelSpacing8Template}" ItemsSource="{x:Bind DataContext.ActivityCalendar.CompositeCardPools, Mode=OneWay}">
+                        <ItemsControl ItemsPanel="{ThemeResource StackPanelSpacing8Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.ActivityCalendar.CompositeCardPools, DataContext.ActivityCalendar.CompositeCardPools.IsDefaultOrEmpty), Mode=OneWay}">
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate x:DataType="shwhtga:CardPool">
                                     <Grid RowSpacing="6" Style="{ThemeResource GridShimmerStyle}">
                                         <Grid.RowDefinitions>
                                             <RowDefinition/>
@@ -1123,30 +1124,38 @@
                                                     FontSize="10"
                                                     IsTextSelectionEnabled="True"
                                                     Style="{StaticResource CaptionTextBlockStyle}"
-                                                    Text="{Binding VersionName}"
+                                                    Text="{x:Bind VersionName, Mode=OneTime}"
                                                     TextTrimming="None"
                                                     TextWrapping="NoWrap"/>
                                             </Border>
-                                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{Binding PoolName}"/>
+                                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="{x:Bind PoolName, Mode=OneTime}"/>
                                         </StackPanel>
                                         <TextBlock
                                             Grid.Row="0"
                                             Margin="0,6,6,0"
                                             HorizontalAlignment="Right"
                                             Style="{ThemeResource BodyTextBlockStyle}"
-                                            Text="{Binding FormattedCountdown}"/>
+                                            Text="{x:Bind FormattedCountdown, Mode=OneTime}"/>
                                         <ItemsControl
                                             Grid.Row="1"
                                             Margin="6,0"
                                             ItemsPanel="{ThemeResource HorizontalStackPanelSpacing6Template}"
-                                            ItemsSource="{Binding CompositeItems}">
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(CompositeItems, CompositeItems.IsDefaultOrEmpty), Mode=OneTime}">
                                             <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <shuxc:ItemIcon
-                                                        Width="40"
-                                                        Height="40"
-                                                        Icon="{Binding Icon}"
-                                                        Quality="{Binding Rarity}"/>
+                                                <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar" x:DataType="aot:CardPoolItem">
+                                                    <!--
+                                                        The template root must stay a framework type. A DataTemplate whose root is an
+                                                        app control makes the generated x:Bind connector cast that root with
+                                                        WinRT.CastExtensions.As, which throws E_NOINTERFACE (0x80004002) in Native AOT.
+                                                        See the same workaround in SignInCard's award template.
+                                                    -->
+                                                    <Grid>
+                                                        <shuxc:ItemIcon
+                                                            Width="40"
+                                                            Height="40"
+                                                            Icon="{x:Bind Icon, Mode=OneTime}"
+                                                            Quality="{x:Bind Rarity, Mode=OneTime}"/>
+                                                    </Grid>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
@@ -1160,7 +1169,7 @@
                                                 HorizontalAlignment="Center"
                                                 Opacity="0.7"
                                                 Style="{ThemeResource CaptionTextBlockStyle}"
-                                                Text="{Binding FormattedDuration}"/>
+                                                Text="{x:Bind FormattedDuration, Mode=OneTime}"/>
                                         </Border>
                                     </Grid>
                                 </DataTemplate>
@@ -1173,7 +1182,7 @@
                                     Margin="8"
                                     VerticalAlignment="Top"
                                     ItemTemplateSelector="{StaticResource ActivityTemplateSelector}"
-                                    ItemsSource="{Binding DataContext.DisplayedActivityCards, Source={StaticResource ViewModelBindingProxy}}">
+                                    ItemsSource="{x:Bind DataContext.DisplayedActivityCardItems, Mode=OneWay}">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <shuxcp:UniformPanel
@@ -1189,6 +1198,7 @@
                 </Grid>
 
                 <ItemsControl
+                    IsHitTestVisible="{x:Bind DataContext.IsInitialized, Mode=OneWay}"
                     ItemTemplate="{StaticResource CardTemplate}"
                     ItemsSource="{x:Bind DataContext.Cards, Mode=OneWay}"
                     Visibility="{x:Bind DataContext.Cards, Converter={StaticResource EmptyCollectionToVisibilityConverter}, Mode=OneWay}">
@@ -1211,17 +1221,17 @@
                         Transitions="{ThemeResource EntranceThemeTransitions}"
                         Visibility="{x:Bind DataContext.Announcement, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                         <PivotItem
-                            Content="{Binding Announcement.List[1]}"
+                            Content="{x:Bind GetAnnouncementCategory(DataContext.Announcement, 1), Mode=OneWay}"
                             ContentTemplate="{StaticResource AnnouncementPivotItemContentTemplate}"
-                            Header="{Binding Announcement.TypeList[1].MI18NName}"/>
+                            Header="{x:Bind GetAnnouncementHeader(DataContext.Announcement, 1), Mode=OneWay}"/>
                         <PivotItem
-                            Content="{Binding Announcement.List[0]}"
+                            Content="{x:Bind GetAnnouncementCategory(DataContext.Announcement, 0), Mode=OneWay}"
                             ContentTemplate="{StaticResource AnnouncementPivotItemContentTemplate}"
-                            Header="{Binding Announcement.TypeList[0].MI18NName}"/>
+                            Header="{x:Bind GetAnnouncementHeader(DataContext.Announcement, 0), Mode=OneWay}"/>
                         <PivotItem
-                            Content="{Binding Announcement.List[2]}"
+                            Content="{x:Bind GetAnnouncementCategory(DataContext.Announcement, 2), Mode=OneWay}"
                             ContentTemplate="{StaticResource AnnouncementPivotItemContentTemplate}"
-                            Header="{Binding Announcement.TypeList[2].MI18NName}"/>
+                            Header="{x:Bind GetAnnouncementHeader(DataContext.Announcement, 2), Mode=OneWay}"/>
                     </Pivot>
                 </ScrollViewer>
             </StackPanel>

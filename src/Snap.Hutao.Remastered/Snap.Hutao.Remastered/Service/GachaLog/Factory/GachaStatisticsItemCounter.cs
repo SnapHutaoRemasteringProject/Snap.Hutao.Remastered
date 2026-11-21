@@ -21,9 +21,9 @@ public sealed class GachaStatisticsItemCounter
             OrangeWeapon = [];
             PurpleWeapon = [];
             BlueWeapon = [];
-            OrangeBeyondItem = [];
-            PurpleBeyondItem = [];
-            BlueBeyondItem = [];
+            OrangeBydMaterial = [];
+            PurpleBydMaterial = [];
+            BlueBydMaterial = [];
             return;
         }
 
@@ -63,15 +63,15 @@ public sealed class GachaStatisticsItemCounter
         PurpleWeapon = purpleWeapons.ToDictionary(weapon => weapon, _ => 0);
         BlueWeapon = blueWeapons.ToDictionary(weapon => weapon, _ => 0);
 
-        OrangeBeyondItem = context.Metadata.IdBeyondItemMap.Values
-            .Where(beyondItem => beyondItem.Quality == QualityType.QUALITY_ORANGE)
-            .ToDictionary(beyondItem => beyondItem, _ => 0);
-        PurpleBeyondItem = context.Metadata.IdBeyondItemMap.Values
-            .Where(beyondItem => beyondItem.Quality == QualityType.QUALITY_PURPLE)
-            .ToDictionary(beyondItem => beyondItem, _ => 0);
-        BlueBeyondItem = context.Metadata.IdBeyondItemMap.Values
-            .Where(beyondItem => beyondItem.Quality == QualityType.QUALITY_BLUE)
-            .ToDictionary(beyondItem => beyondItem, _ => 0);
+        OrangeBydMaterial = context.Metadata.IdBydMaterialMap.Values
+            .Where(bydMaterial => bydMaterial.Quality == QualityType.QUALITY_ORANGE)
+            .ToDictionary(bydMaterial => bydMaterial, _ => 0);
+        PurpleBydMaterial = context.Metadata.IdBydMaterialMap.Values
+            .Where(bydMaterial => bydMaterial.Quality == QualityType.QUALITY_PURPLE)
+            .ToDictionary(bydMaterial => bydMaterial, _ => 0);
+        BlueBydMaterial = context.Metadata.IdBydMaterialMap.Values
+            .Where(bydMaterial => bydMaterial.Quality == QualityType.QUALITY_BLUE)
+            .ToDictionary(bydMaterial => bydMaterial, _ => 0);
     }
 
     public Dictionary<Avatar, int> OrangeAvatar { get; }
@@ -84,9 +84,9 @@ public sealed class GachaStatisticsItemCounter
 
     public Dictionary<Weapon, int> BlueWeapon { get; }
 
-    public Dictionary<BeyondItem, int> OrangeBeyondItem { get; }
+    public Dictionary<BydMaterial, int> OrangeBydMaterial { get; }
 
-    public Dictionary<BeyondItem, int> PurpleBeyondItem { get; }
+    public Dictionary<BydMaterial, int> PurpleBydMaterial { get; }
 
-    public Dictionary<BeyondItem, int> BlueBeyondItem { get; }
+    public Dictionary<BydMaterial, int> BlueBydMaterial { get; }
 }

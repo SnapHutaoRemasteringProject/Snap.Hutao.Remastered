@@ -1,9 +1,7 @@
 // Copyright (c) Snap Hutao RP. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Web.Hutao;
-using Snap.Hutao.Remastered.Web.Hutao.Response;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Service.Git;
@@ -24,6 +22,6 @@ public static class BuiltInRepositoryCatalog
 
     public static ImmutableArray<GitRepository> Create()
     {
-        return JsonSerializer.Deserialize<HutaoResponse<ImmutableArray<GitRepository>>>(Snapshot, JsonOptions.Default)!.Data;
+        return JsonSerializer.Deserialize(Snapshot, InfrastructureJsonContext.Wire.GitRepositoriesResponse)!.Data;
     }
 }

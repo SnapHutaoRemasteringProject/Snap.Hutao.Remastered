@@ -5,6 +5,7 @@ namespace Snap.Hutao.Remastered.Service.Game.Package.Advanced;
 
 public sealed class PredownloadStatus
 {
+    [JsonConstructor]
     public PredownloadStatus(string tag, bool finished, int totalBlocks)
     {
         Tag = tag;

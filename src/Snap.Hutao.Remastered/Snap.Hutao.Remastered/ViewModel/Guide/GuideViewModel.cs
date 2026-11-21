@@ -4,13 +4,16 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.Windows.AppLifecycle;
 using Snap.Hutao.Remastered.Core;
+using Snap.Hutao.Remastered.Core.Database;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Core.Shell;
 using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Factory.Picker;
+using Snap.Hutao.Remastered.Factory.Progress;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.Service.Notification;
@@ -21,6 +24,8 @@ using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
 using Snap.Hutao.Remastered.Web.Response;
 using System.Collections.ObjectModel;
+using System.Data.Common;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace Snap.Hutao.Remastered.ViewModel.Guide;
@@ -31,6 +36,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
 {
     private readonly IFileSystemPickerInteraction fileSystemPickerInteraction;
     private readonly IContentDialogFactory contentDialogFactory;
+    private readonly IProgressFactory progressFactory;
     private readonly IServiceProvider serviceProvider;
     private readonly ITaskContext taskContext;
     private readonly IMessenger messenger;
@@ -152,7 +158,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
     public override void Dispose()
     {
         AppOptions.ControlMaterial.PropertyChanged -= OnControlMaterialChanged;
-        downloadCts?.Cancel();
+        CancelDownload();
         base.Dispose();
     }
 
@@ -324,6 +330,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         }
 
         IsSetDataFolderEnabled = false;
+        IsNextOrCompleteButtonEnabled = false;
         try
         {
             SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Set data folder path", "GuideViewModel.Command"));
@@ -332,11 +339,14 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
             {
                 FileSystemPickerInteraction = fileSystemPickerInteraction,
                 ContentDialogFactory = contentDialogFactory,
+                ProgressFactory = progressFactory,
                 Messenger = messenger,
             };
 
             if (await operation.TryExecuteAsync().ConfigureAwait(false))
             {
+                // Restart and any UI-bound updates must run on the XAML thread.
+                await taskContext.SwitchToMainThreadAsync();
                 try
                 {
                     AppInstance.Restart(string.Empty);
@@ -349,7 +359,79 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         }
         finally
         {
+            // ConfigureAwait(false) can resume on a worker thread even on cancellation
+            // or failure. x:Bind observes this property synchronously.
+            await taskContext.SwitchToMainThreadAsync();
             IsSetDataFolderEnabled = true;
+            IsNextOrCompleteButtonEnabled = true;
+        }
+    }
+
+    [Command("ImportUserDatabaseCommand")]
+    private async Task ImportUserDatabaseAsync()
+    {
+        if (!IsSetDataFolderEnabled)
+        {
+            return;
+        }
+
+        IsSetDataFolderEnabled = false;
+        IsNextOrCompleteButtonEnabled = false;
+        try
+        {
+            string destination = HutaoRuntime.DataDirectory;
+            if (!fileSystemPickerInteraction.PickFolder().TryGetValue(out string? source))
+            {
+                return;
+            }
+
+            if (string.Equals(Path.TrimEndingDirectorySeparator(Path.GetFullPath(source)),
+                Path.TrimEndingDirectorySeparator(Path.GetFullPath(destination)), StringComparison.OrdinalIgnoreCase))
+            {
+                messenger.Send(InfoBarMessage.Warning(SH.ViewGuideImportUserDatabaseAlreadyActive));
+                return;
+            }
+
+            if (!File.Exists(Path.Combine(source, DatabaseSchema.UserDatabaseFileName)))
+            {
+                messenger.Send(InfoBarMessage.Warning(SH.ViewGuideImportUserDatabaseMissing));
+                return;
+            }
+
+            if (DatabaseSchema.HasUserDatabase(destination)
+                && await contentDialogFactory.CreateForConfirmCancelAsync(
+                    SH.ViewGuideImportUserDatabaseHeader,
+                    SH.ViewGuideImportUserDatabaseReplaceConfirmation).ConfigureAwait(false) is not ContentDialogResult.Primary)
+            {
+                return;
+            }
+
+            ContentDialog dialog = await contentDialogFactory
+                .CreateForIndeterminateProgressAsync(SH.ViewGuideImportUserDatabaseHeader)
+                .ConfigureAwait(false);
+            using (await contentDialogFactory.BlockAsync(dialog).ConfigureAwait(false))
+            {
+                await taskContext.SwitchToBackgroundAsync();
+                DatabaseSchema.StageUserDatabaseImport(source, destination);
+            }
+
+            messenger.Send(InfoBarMessage.Success(SH.ViewGuideImportUserDatabaseSuccess));
+            await taskContext.SwitchToMainThreadAsync();
+            AppInstance.Restart(string.Empty);
+        }
+        catch (Exception ex) when (ex is DbException or IOException or InvalidDataException or UnauthorizedAccessException)
+        {
+            messenger.Send(InfoBarMessage.Error(SH.FormatViewGuideImportUserDatabaseFailed(ex.Message)));
+        }
+        catch (COMException ex)
+        {
+            messenger.Send(InfoBarMessage.Error(ex));
+        }
+        finally
+        {
+            await taskContext.SwitchToMainThreadAsync();
+            IsSetDataFolderEnabled = true;
+            IsNextOrCompleteButtonEnabled = true;
         }
     }
 
@@ -358,7 +440,7 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Skip static resource download", "GuideViewModel.Command"));
         skipDownloadRequested = true;
-        downloadCts?.Cancel();
+        CancelDownload();
     }
 
     [SuppressMessage("", "SH003")]
@@ -368,10 +450,12 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         skipDownloadRequested = false;
         IsDownloading = true;
 
+        CancellationTokenSource? downloadCtsLocal = null;
         try
         {
-            downloadCts = CancellationTokenSource.CreateLinkedTokenSource(CancellationToken, XamlApplicationLifetime.ShutdownToken);
-            CancellationToken token = downloadCts.Token;
+            downloadCtsLocal = CancellationTokenSource.CreateLinkedTokenSource(CancellationToken, XamlApplicationLifetime.ShutdownToken);
+            downloadCts = downloadCtsLocal;
+            CancellationToken token = downloadCtsLocal.Token;
 
             // Pass a collection copy, so that we can remove element in loop
             await Parallel.ForEachAsync((DownloadSummary[])[.. DownloadSummaries], async (summary, ct) =>
@@ -390,8 +474,12 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         {
             await taskContext.SwitchToMainThreadAsync();
             IsDownloading = false;
-            downloadCts?.Dispose();
+
+            // Release the field before disposing: a concurrent Dispose()/SkipDownload() must
+            // either observe a live source or no source. CancelDownload() tolerates the brief
+            // window where a reader still observes the source while it is being disposed.
             downloadCts = null;
+            downloadCtsLocal?.Dispose();
         }
 
         if (XamlApplicationLifetime.Exiting || IsViewUnloaded.Value) return;
@@ -409,6 +497,19 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         UnsafeLocalSetting.Set(SettingKeys.GuideState, GuideState.Material);
         State = (uint)GuideState.Material;
         // Continue in this window; only the explicit final step restarts the app.
+    }
+
+    private void CancelDownload()
+    {
+        try
+        {
+            downloadCts?.Cancel();
+        }
+        catch (ObjectDisposedException)
+        {
+            // The transfer completed and released its source before this cancellation arrived.
+            // Cancel and Dispose are not guaranteed to be safe concurrently.
+        }
     }
 
     private static ObservableCollection<DownloadSummary> GetUnfulfilledCategoryCollection(IServiceProvider serviceProvider)

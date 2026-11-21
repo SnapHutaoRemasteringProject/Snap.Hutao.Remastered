@@ -58,19 +58,19 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
             .Select(group => new InsightPoint(GetWishPoolLabel(group.Key), group.Count()))
             .ToList(), failures);
 
-        List<BeyondGachaItem> beyondItems = ReadSafely("ChartBeyond", () =>
+        List<BeyondGachaItem> bydMaterials = ReadSafely("ChartBeyond", () =>
             gachaRepository.GetGachaArchiveByUid(uid) is { } beyondArchive
                 ? gachaRepository.GetBeyondGachaItemImmutableArrayByArchiveId(beyondArchive.InnerId).ToList()
                 : [], failures);
 
-        List<InsightPoint> monthlyBeyondWishes = ReadSafely("ChartBeyond", () => beyondItems
+        List<InsightPoint> monthlyBeyondWishes = ReadSafely("ChartBeyond", () => bydMaterials
             .GroupBy(item => item.Time.ToString("yyyy-MM", CultureInfo.InvariantCulture))
             .OrderBy(group => group.Key, StringComparer.Ordinal)
             .Select(group => new InsightPoint(group.Key, group.Count()))
             .TakeLast(12)
             .ToList(), failures);
 
-        List<InsightPoint> beyondPoolWishes = ReadSafely("ChartBeyond", () => beyondItems
+        List<InsightPoint> beyondPoolWishes = ReadSafely("ChartBeyond", () => bydMaterials
             .GroupBy(item => item.QueryType)
             .OrderBy(group => (int)group.Key)
             .Select(group => new InsightPoint(GetWishPoolLabel(group.Key), group.Count()))
@@ -97,7 +97,7 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
             .ToList(), failures);
 
         // Keep different difficulty levels in separate series and snapshots.
-        var challenge = ReadSafely("ChartChallenge", () => challengeRepository.GetHardChallengeMapByUid(uid).Values
+        List<Model.Entity.HardChallengeEntry> challenge = ReadSafely("ChartChallenge", () => challengeRepository.GetHardChallengeMapByUid(uid).Values
             .Where(entry => entry.HardChallengeData?.Schedule is not null
                 && entry.HardChallengeData.SinglePlayer is { HasData: true, Best: not null })
             .OrderBy(entry => entry.ScheduleId).ToList(), failures);
@@ -111,7 +111,7 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
             new(Translate("ChartAbyss", culture), Translate("MetricAbyss", culture), Translate("UnitStar", culture), abyss, InsightDirection.HigherIsBetter),
             new(Translate("ChartTheater", culture), Translate("MetricTheater", culture), Translate("UnitMedal", culture), theater, InsightDirection.HigherIsBetter),
         ];
-        foreach (var difficulty in challenge.GroupBy(entry => entry.HardChallengeData.SinglePlayer.Best!.Difficulty))
+        foreach (IGrouping<Model.Intrinsic.HardChallengeDifficultyLevel, Model.Entity.HardChallengeEntry> difficulty in challenge.GroupBy(entry => entry.HardChallengeData.SinglePlayer.Best!.Difficulty))
         {
             List<InsightPoint> points = difficulty.Select(entry => new InsightPoint(
                 FormatScheduleDate(entry.HardChallengeData.Schedule.StartDateTime),
@@ -120,7 +120,7 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
                 Translate("MetricChallenge", culture) + " (" + difficulty.Key + ")",
                 Translate("UnitSeconds", culture), points, InsightDirection.LowerIsBetter, Difficulty: (int)difficulty.Key));
         }
-        return new InsightLoadResult(series, failures.Distinct().ToList(), gachaItems, beyondItems);
+        return new InsightLoadResult(series, failures.Distinct().ToList(), gachaItems, bydMaterials);
     }
 
     private static string GetWishPoolLabel(GachaType type)
@@ -152,7 +152,7 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
             JsonArray points = [];
             foreach (InsightPoint point in item.Points)
             {
-                points.Add(new JsonObject { ["period"] = point.Period, ["value"] = point.Value });
+                points.Add((JsonNode)new JsonObject { ["period"] = point.Period, ["value"] = point.Value });
             }
 
             double[] values = item.Points.Select(point => point.Value).ToArray();
@@ -166,7 +166,7 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
                 ["latest_change_from_previous"] = item.IsTimeSeries && values.Length > 1 ? JsonValue.Create(values[^1] - values[^2]) : null,
             };
 
-            data.Add(new JsonObject
+            data.Add((JsonNode)new JsonObject
             {
                 ["summary"] = summary,
                 ["difficulty"] = item.Difficulty,

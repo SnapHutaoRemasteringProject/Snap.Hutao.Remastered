@@ -74,7 +74,7 @@ public sealed class BeyondGachaLogFetchContext
     {
         ArgumentNullException.ThrowIfNull(TargetArchive);
         ItemsToAdd.Add(BeyondGachaItem.From(TargetArchive.InnerId, item));
-        Status.Items.Add(serviceContext.GetBeyondItem(uint.Parse(item.ItemId)).GetOrCreateItem());
+        Status.Items.Add(serviceContext.GetBydMaterial(uint.Parse(item.ItemId)).GetOrCreateItem());
         TypedQueryOptions.EndId = item.Id;
     }
 

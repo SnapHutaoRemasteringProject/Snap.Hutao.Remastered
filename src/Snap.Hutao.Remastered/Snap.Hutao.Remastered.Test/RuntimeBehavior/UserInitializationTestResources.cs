@@ -90,6 +90,8 @@ namespace Snap.Hutao.Remastered.ViewModel.User
     {
         public bool IsInitialized { get; set; }
 
+        public bool IsCookieInvalid { get; set; }
+
         [ObservableProperty]
         public partial Web.Hoyolab.Bbs.User.UserInfo? UserInfo { get; set; }
 
@@ -176,7 +178,12 @@ namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.Binding
 
 namespace Snap.Hutao.Remastered.Web.Response
 {
-    public sealed record Response<T>(T? Data) where T : class;
+    public sealed record Response<T>(T? Data) where T : class
+    {
+        // The real response carries the server return code; the portable double only needs
+        // it because the initialization service distinguishes rejected credentials.
+        public int ReturnCode { get; set; }
+    }
 
     public static class ResponseValidator
     {

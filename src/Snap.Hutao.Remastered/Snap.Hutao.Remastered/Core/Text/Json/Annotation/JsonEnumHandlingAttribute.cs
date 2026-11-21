@@ -26,6 +26,8 @@ public sealed class JsonEnumHandlingAttribute : Attribute
         this.writeAs = writeAs;
     }
 
+    [RequiresUnreferencedCode("Reflection enum conversion requires preserving converter constructors.")]
+    [RequiresDynamicCode("Reflection enum conversion creates closed generic converters at runtime.")]
     public JsonConverter CreateConverter(JsonPropertyInfo info)
     {
         Type converterType = UnsafeEnumConverterType.MakeGenericType(info.PropertyType);

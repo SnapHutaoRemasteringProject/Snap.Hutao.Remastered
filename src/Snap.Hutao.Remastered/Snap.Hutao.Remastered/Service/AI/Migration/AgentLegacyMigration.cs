@@ -3,6 +3,7 @@
 
 using Microsoft.Extensions.AI;
 using Snap.Hutao.Remastered.Core.AI;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Service.AI.Models;
 using Snap.Hutao.Remastered.Service.AI.Observables;
 using Snap.Hutao.Remastered.Service.AI.Settings;
@@ -120,7 +121,9 @@ internal static class AgentLegacyMigration
         {
             throw new InvalidDataException("Legacy account insights data exceeds the size limit");
         }
-        return JsonSerializer.Deserialize<T>(stream);
+        // Legacy files used the serializer defaults, not the application's permissive wire
+        // options. Keep that contract while using metadata for both supported list roots.
+        return JsonSerialize.Deserialize<T>(stream, AgentJsonContext.Default.Options);
     }
 
     private static string NormalizeEndpoint(string endpoint, ModelProviderType provider)

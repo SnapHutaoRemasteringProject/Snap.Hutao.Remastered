@@ -11,8 +11,6 @@ using Windows.Foundation;
 using Windows.System;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox;
-
-[DependencyProperty<Style>("ClearButtonStyle")]
 [DependencyProperty<AutoSuggestTokenBox>("Owner", NotNull = true)]
 [TemplatePart(Name = TokenRemoveButton, Type = typeof(ButtonBase))]
 [TemplatePart(Name = TextAutoSuggestBox, Type = typeof(Microsoft.UI.Xaml.Controls.AutoSuggestBox))]
@@ -78,6 +76,7 @@ public partial class AutoSuggestTokenBoxItem : ListViewItem
     }
 
     /// <inheritdoc/>
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox))]
     protected override void OnApplyTemplate()
     {
         base.OnApplyTemplate();
@@ -88,6 +87,7 @@ public partial class AutoSuggestTokenBoxItem : ListViewItem
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.FontIconSource))]
     private void OnAutoSuggestBoxApplyTemplate(Microsoft.UI.Xaml.Controls.AutoSuggestBox asb)
     {
         // Revoke previous events
@@ -172,10 +172,11 @@ public partial class AutoSuggestTokenBoxItem : ListViewItem
         VisualStateManager.GoToState(Owner, AutoSuggestTokenBox.FocusedState, true);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Button))]
     private void OnAutoSuggestBoxLoaded(object sender, RoutedEventArgs e)
     {
         ArgumentNullException.ThrowIfNull(AutoSuggestBox);
-        if (AutoSuggestBox.FindDescendant(QueryButton) is Button queryButton)
+        if (AutoSuggestBox.FindDescendant(QueryButton) is Microsoft.UI.Xaml.Controls.Button queryButton)
         {
             queryButton.Visibility = Owner.QueryIcon is not null ? Visibility.Visible : Visibility.Collapsed;
         }
@@ -289,6 +290,7 @@ public partial class AutoSuggestTokenBoxItem : ListViewItem
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.TextBox))]
     private void OnAutoSuggestTextBoxPreviewKeyDown(object sender, KeyRoutedEventArgs e)
     {
         if (sender is not TextBox autoSuggestTextBox)

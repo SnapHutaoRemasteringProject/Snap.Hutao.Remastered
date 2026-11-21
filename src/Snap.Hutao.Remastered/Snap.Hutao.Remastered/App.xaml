@@ -13,24 +13,24 @@
                 <ResourceDictionary Source="ms-appx:///CommunityToolkit.Labs.WinUI.TokenView/TokenItem/TokenItem.xaml"/>
                 <ResourceDictionary Source="ms-appx:///DevWinUI/Themes/Generic.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/VisualMaterials.xaml"/>
-                <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/MaterialNative.xaml"/>
+                <MaterialNativeResources xmlns="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Elevation.xaml"/>
-                <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/ItemIcon.xaml"/>
+                <ItemIconResources xmlns="using:Snap.Hutao.Remastered.UI.Xaml.Control"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Loading.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/LockIcon.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/MarkIcon.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/SanctifyingElixirIcon.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/StandardView.xaml"/>
-                <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/AutoSuggestBox/AutoSuggestTokenBox.xaml"/>
-                <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/AutoSortBox/AutoSortList.xaml"/>
+                <AutoSuggestTokenBoxResources xmlns="using:Snap.Hutao.Remastered.UI.Xaml.Control.AutoSuggestBox"/>
+                <AutoSortListResources xmlns="using:Snap.Hutao.Remastered.UI.Xaml.Control.AutoSortBox"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Card/CardBlock.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Card/CardProgressBar.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Card/HorizontalCard.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Card/TitleCard.xaml"/>
-                <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Card/VerticalCard.xaml"/>
+                <VerticalCardResources xmlns="using:Snap.Hutao.Remastered.UI.Xaml.Control.Card"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Effect/TextMorphEffect.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Image/CachedImage.xaml"/>
-                <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/ItemFlyoutContent.xaml"/>
+                <ItemFlyoutContentResources xmlns="using:Snap.Hutao.Remastered.UI.Xaml.Control"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Panel/DataTable/DataColumn.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/TextBlock/LinkPresenter.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/TextBlock/RateDeltaTextBlock.xaml"/>
@@ -48,13 +48,16 @@
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/PageOverride.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/PivotOverride.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/ScrollViewer.xaml"/>
-                <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/SegmentedOverride.xaml"/>
+                <SegmentedOverrideResources xmlns="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/SettingsStyle.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/Thickness.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/TransitionCollection.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/Uri.xaml"/>
                 <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Theme/WindowOverride.xaml"/>
+                <NamedValueTemplates xmlns="using:Snap.Hutao.Remastered.UI.Xaml"/>
+                <SelectionItemTemplates xmlns="using:Snap.Hutao.Remastered.UI.Xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
 
             <Style
                 x:Key="LargeGridViewItemStyle"

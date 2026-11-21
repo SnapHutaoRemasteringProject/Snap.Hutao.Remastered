@@ -1,25 +1,22 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Text.Json;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text;
 using System.Text.Json.Serialization.Metadata;
-using Snap.Hutao.Remastered.Web.Hutao;
 
 namespace Snap.Hutao.Remastered.Web.Request.Builder;
 
 [Service(ServiceLifetime.Singleton)]
 public sealed class JsonHttpContentSerializer : HttpContentSerializer
 {
-    private readonly InfrastructureJsonContext generatedContext;
-
     public JsonHttpContentSerializer(JsonSerializerOptions jsonSerializerOptions)
     {
         ArgumentNullException.ThrowIfNull(jsonSerializerOptions);
         JsonSerializerOptions = jsonSerializerOptions;
-        generatedContext = new(new JsonSerializerOptions(jsonSerializerOptions) { TypeInfoResolver = null });
     }
 
     public JsonSerializerOptions JsonSerializerOptions { get; }
@@ -83,8 +80,6 @@ public sealed class JsonHttpContentSerializer : HttpContentSerializer
 
     private JsonTypeInfo GetTypeInfo(Type contentType)
     {
-        // Known generated contracts never fall back within their object graph. Other clients retain their existing options.
-        return generatedContext.GetTypeInfo(contentType)
-            ?? JsonSerializerOptions.GetTypeInfo(contentType);
+        return JsonSerialize.GetTypeInfo(contentType, JsonSerializerOptions);
     }
 }

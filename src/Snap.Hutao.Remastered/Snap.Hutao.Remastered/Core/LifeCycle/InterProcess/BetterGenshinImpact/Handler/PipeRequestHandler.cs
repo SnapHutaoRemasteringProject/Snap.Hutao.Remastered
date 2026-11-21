@@ -1,6 +1,8 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.Text.Json;
+
 namespace Snap.Hutao.Remastered.Core.LifeCycle.InterProcess.BetterGenshinImpact.Handler;
 
 public abstract class PipeRequestHandler<TRequest> : IPipeRequestHandler
@@ -16,7 +18,7 @@ public abstract class PipeRequestHandler<TRequest> : IPipeRequestHandler
 
     public async ValueTask<PipeResponse> HandleRequest(PipeRequest<JsonElement> request)
     {
-        if (request.Data.Deserialize<TRequest>() is { } data)
+        if (JsonSerialize.Deserialize<TRequest>(request.Data, JsonOptions.Default) is { } data)
         {
             return await HandleAsync(data).ConfigureAwait(false);
         }

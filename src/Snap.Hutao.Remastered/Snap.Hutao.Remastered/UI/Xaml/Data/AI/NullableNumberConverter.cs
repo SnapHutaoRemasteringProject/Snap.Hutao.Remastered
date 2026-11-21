@@ -8,7 +8,7 @@ using System.Globalization;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.Data.AI;
 
-internal sealed class NullableNumberConverter : IValueConverter
+internal sealed partial class NullableNumberConverter : IValueConverter
 {
     public NullableNumberType ValueType { get; set; }
 

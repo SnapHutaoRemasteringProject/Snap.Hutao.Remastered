@@ -463,6 +463,7 @@ public sealed partial class ControlMaterialState : DependencyObject
     public static bool GetIsManaged(DependencyObject target) => (bool)target.GetValue(IsManagedProperty);
     public static void SetIsManaged(DependencyObject target, bool value) => target.SetValue(IsManagedProperty, value);
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private static void OnIsManagedChanged(DependencyObject target, DependencyPropertyChangedEventArgs args)
     {
         if (target is not FrameworkElement element) return;
@@ -481,6 +482,21 @@ public sealed partial class ControlMaterialState : DependencyObject
         }
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassButton))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassCard))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassCheckBox))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassComboBox))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassFloatingPanel))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassHyperlinkButton))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassPasswordBox))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassRadioButton))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassSearchBox))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassSlider))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassTabBar))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassTextBox))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassToggleButton))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassToggleSwitch))]
     private static void OnManagedLoaded(object sender, RoutedEventArgs args)
     {
         if (XamlApplicationLifetime.Exiting) return;
@@ -516,6 +532,7 @@ public sealed partial class ControlMaterialState : DependencyObject
     }
 
     // Detach without writing composition properties while the brush is disconnecting.
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private static void OnManagedUnloaded(object sender, RoutedEventArgs args)
     {
         if (sender is not FrameworkElement element) return;
@@ -530,6 +547,20 @@ public sealed partial class ControlMaterialState : DependencyObject
         MaterialAppearance.Release(element);
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassButton))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassCard))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassCheckBox))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassComboBox))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassFloatingPanel))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassHyperlinkButton))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassPasswordBox))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassRadioButton))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassSearchBox))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassSlider))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassTabBar))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassTextBox))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassToggleButton))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassToggleSwitch))]
     internal static string LibraryKind(FrameworkElement element)
     {
         string explicitKind = GetProfileKind(element);
@@ -557,6 +588,7 @@ public sealed partial class ControlMaterialState : DependencyObject
     private static bool ApplyOptics(BrushDefaults defaults) =>
         LiquidGlassProfiles.Get(defaults.Kind).Apply(defaults.Brush, defaults.Values) != LiquidGlassApplyResult.Unsupported;
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::WinUI.LiquidGlass.LiquidGlassToggleSwitch))]
     private static void ApplyControlSettings(FrameworkElement element)
     {
         LiquidGlassProfile profile = LiquidGlassProfiles.Get(LibraryKind(element));

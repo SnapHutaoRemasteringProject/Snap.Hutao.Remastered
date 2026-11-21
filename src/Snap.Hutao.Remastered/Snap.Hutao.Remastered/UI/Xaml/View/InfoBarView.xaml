@@ -83,12 +83,12 @@
             CornerRadius="{ThemeResource ControlCornerRadius}">
             <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True">
                 <mxi:Interaction.Behaviors>
-                    <mxi:EventTriggerBehavior EventName="Click">
+                    <shuxb:StaticEventTriggerBehavior EventName="Click">
                         <cw:StartTransitionAction
                             Source="{x:Bind ShowButtonBorder}"
                             Target="{x:Bind InfoBarItemsBorder}"
                             Transition="{StaticResource InfoBarPanelTransitionHelper}"/>
-                    </mxi:EventTriggerBehavior>
+                    </shuxb:StaticEventTriggerBehavior>
                 </mxi:Interaction.Behaviors>
                 <Grid cw:TransitionHelper.Id="Header">
                     <Grid.ColumnDefinitions>
@@ -128,7 +128,7 @@
                             ItemContainerTransitions="{StaticResource AddDeleteThemeTransitions}"
                             ItemTemplateSelector="{StaticResource InfoBarTemplateSelector}"
                             ItemsPanel="{StaticResource StackPanelSpacing8Template}"
-                            ItemsSource="{Binding InfoBars, Mode=OneWay}"/>
+                            ItemsSource="{x:Bind InfoBars, Mode=OneWay}"/>
                     </ScrollView>
 
                     <Grid Grid.Row="1" ColumnSpacing="8">
@@ -160,12 +160,12 @@
                             </wl:LiquidGlassButton>
                             <wl:LiquidGlassButton shuxcth:ControlMaterialState.IsManaged="True">
                                 <mxi:Interaction.Behaviors>
-                                    <mxi:EventTriggerBehavior EventName="Click">
+                                    <shuxb:StaticEventTriggerBehavior EventName="Click">
                                         <cw:StartTransitionAction
                                             Source="{x:Bind InfoBarItemsBorder}"
                                             Target="{x:Bind ShowButtonBorder}"
                                             Transition="{StaticResource InfoBarPanelTransitionHelper}"/>
-                                    </mxi:EventTriggerBehavior>
+                                    </shuxb:StaticEventTriggerBehavior>
                                 </mxi:Interaction.Behaviors>
                                 <Grid ColumnSpacing="8">
                                     <Grid.ColumnDefinitions>

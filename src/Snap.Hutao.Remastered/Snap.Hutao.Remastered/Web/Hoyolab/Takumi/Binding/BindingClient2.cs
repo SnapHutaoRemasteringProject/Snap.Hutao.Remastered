@@ -2,10 +2,10 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation.HttpClient;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Model.Entity;
 using Snap.Hutao.Remastered.Web.Endpoint.Hoyolab;
 using Snap.Hutao.Remastered.Web.Hoyolab.DataSigning;
-using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
 using Snap.Hutao.Remastered.Web.Response;
@@ -80,7 +80,7 @@ public sealed partial class BindingClient2
 
             try
             {
-                if (item.Deserialize(InfrastructureJsonContext.Wire.BindingUserGameRole) is { } role
+                if (JsonSerialize.Deserialize<UserGameRole>(item, JsonOptions.Default) is { } role
                     && !string.IsNullOrWhiteSpace(role.GameUid))
                 {
                     roles.Add(role);

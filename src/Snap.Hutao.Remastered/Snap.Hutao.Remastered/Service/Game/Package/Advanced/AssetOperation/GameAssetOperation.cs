@@ -7,6 +7,7 @@ using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Core.IO.Compression.Zstandard;
 using Snap.Hutao.Remastered.Core.IO.Hashing;
 using Snap.Hutao.Remastered.Core.IO.HPatch;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Factory.IO;
 using Snap.Hutao.Remastered.Service.Game.FileSystem;
 using Snap.Hutao.Remastered.Service.Game.Package.Advanced.Model;
@@ -63,7 +64,7 @@ public abstract partial class GameAssetOperation : IGameAssetOperation
                     {
                         while (await reader.ReadLineAsync(token).ConfigureAwait(false) is { Length: > 0 } row)
                         {
-                            VersionItem? item = JsonSerializer.Deserialize<VersionItem>(row, jsonOptions);
+                            VersionItem? item = JsonSerialize.Deserialize<VersionItem>(row, jsonOptions);
                             ArgumentNullException.ThrowIfNull(item);
 
                             string path = Path.Combine(context.Operation.GameFileSystem.GameDirectory, item.RelativePath);

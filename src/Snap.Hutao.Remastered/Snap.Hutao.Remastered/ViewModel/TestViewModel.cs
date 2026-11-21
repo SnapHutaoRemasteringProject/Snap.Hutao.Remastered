@@ -4,8 +4,6 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.CodeAnalysis.CSharp.Scripting;
-using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Core.DataTransfer;
 using Snap.Hutao.Remastered.Core.ExceptionService;
@@ -378,25 +376,6 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
         }
     }
 
-    [Command("RunCodeCommand")]
-    private async Task RunCodeAsync()
-    {
-        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Test run code", "TestViewModel.Command"));
-
-        try
-        {
-            string script = """
-                            return 1 + 1;
-                            """;
-            object? result = await CSharpScript.EvaluateAsync(script, ScriptOptions.Default).ConfigureAwait(false);
-            logger.LogInformation("Run Code Result: '{Result}'", result);
-        }
-        catch (CompilationErrorException ex)
-        {
-            logger.LogCritical(ex, "Compilation Error");
-        }
-    }
-
     [Command("ForceUpdateDialogCommand")]
     private async Task ForceUpdateDialogAsync()
     {
@@ -703,13 +682,35 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
 
     // Keep the wire DTO unchanged; the editable UI model supplies notifications
     // so inactive native/glass branches also observe edits to announcement fields.
-    public sealed class AnnouncementEditor : ObservableObject
+    public sealed partial class AnnouncementEditor : ObservableObject
     {
         public string Title { get; set => SetProperty(ref field, value); } = default!;
 
         public string Content { get; set => SetProperty(ref field, value); } = default!;
 
-        public InfoBarSeverity Severity { get; set => SetProperty(ref field, value); } = InfoBarSeverity.Informational;
+        public InfoBarSeverity Severity
+        {
+            get;
+            set
+            {
+                if (SetProperty(ref field, value))
+                {
+                    OnPropertyChanged(nameof(SeverityName));
+                }
+            }
+        } = InfoBarSeverity.Informational;
+
+        public string SeverityName
+        {
+            get => Severity.ToString();
+            set
+            {
+                if (Enum.TryParse(value, out InfoBarSeverity severity))
+                {
+                    Severity = severity;
+                }
+            }
+        }
 
         public string Link { get; set => SetProperty(ref field, value); } = default!;
 
@@ -725,14 +726,14 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
         };
     }
 
-    public sealed class ExtractOptions : ObservableObject
+    public sealed partial class ExtractOptions : ObservableObject
     {
         public bool IsOversea { get; set => SetProperty(ref field, value); }
 
         public bool IsPreDownload { get; set => SetProperty(ref field, value); }
     }
 
-    public sealed class DesignationOptions : ObservableObject
+    public sealed partial class DesignationOptions : ObservableObject
     {
         public string UserName { get; set => SetProperty(ref field, value); } = default!;
 
@@ -749,7 +750,29 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
         [ObservableProperty]
         public partial bool IsTimesLimited { get; set; }
 
-        public RedeemCodeTargetServiceType ServiceType { get; set => SetProperty(ref field, value); }
+        public RedeemCodeTargetServiceType ServiceType
+        {
+            get;
+            set
+            {
+                if (SetProperty(ref field, value))
+                {
+                    OnPropertyChanged(nameof(ServiceTypeName));
+                }
+            }
+        }
+
+        public string ServiceTypeName
+        {
+            get => ServiceType.ToString();
+            set
+            {
+                if (Enum.TryParse(value, out RedeemCodeTargetServiceType type))
+                {
+                    ServiceType = type;
+                }
+            }
+        }
 
         public int Value { get; set => SetProperty(ref field, value); }
 

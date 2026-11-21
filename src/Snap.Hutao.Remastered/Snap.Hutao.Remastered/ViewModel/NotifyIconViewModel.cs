@@ -60,6 +60,7 @@ public sealed partial class NotifyIconViewModel : ObservableObject
         return CloseNotifyIconContextMenuWithAnimationAsync();
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Media.ScaleTransform))]
     public void NotifyIconContextMenuClosed()
     {
         // Ensure next open has correct visual state.
@@ -266,13 +267,6 @@ public sealed partial class NotifyIconViewModel : ObservableObject
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Exit application", "NotifyIconViewModel.Command"));
         app.Exit();
-    }
-
-    [Command("OpenScriptingWindowCommand")]
-    private void OpenScriptingWindow()
-    {
-        SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Open Scripting Window", "NotifyIconViewModel.Command"));
-        _ = serviceProvider.GetRequiredService<ScriptingWindow>();
     }
 
     [Command("TakeScreenshotCommand")]

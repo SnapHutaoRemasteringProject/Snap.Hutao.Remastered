@@ -82,6 +82,7 @@ jobs:
           retention-days: 14
 
   build:
+    name: Build Native AOT
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -111,38 +112,17 @@ jobs:
       - name: Cake (MSIX)
         id: cake
         shell: pwsh
-        run: dotnet tool restore && dotnet cake
+        run: dotnet tool restore && dotnet cake --publishAot=true
         env:
           VERSION_API_TOKEN: ${{ secrets.VERSION_API_TOKEN }}
           CERTIFICATE: ${{ secrets.CERTIFICATE }}
           PW: ${{ secrets.PW }}
 
-      - name: Build installer
-        id: build
-        shell: pwsh
-        run: dotnet cake build-installer.cake
-        env:
-          CERTIFICATE: ${{ secrets.CERTIFICATE }}
-          PW: ${{ secrets.PW }}
-
-      - name: Create Store upload
-        if: success() && github.event_name != 'pull_request'
-        shell: pwsh
-        run: |
-          $symbols = Get-ChildItem src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/bin/x64/Release -Recurse -Filter Snap.Hutao.Remastered.pdb |
-            Where-Object { $_.Directory.Name -eq 'publish' } | Select-Object -First 1
-          Get-ChildItem src/output -Filter *.msix | ForEach-Object {
-            $arguments = @{ PackagePath = $_.FullName }
-            if ($symbols) { $arguments.SymbolsPath = $symbols.FullName }
-            ./scripts/New-MsixUpload.ps1 @arguments
-          }
-
-      - name: Upload Store submission files
-        if: success() && github.event_name != 'pull_request'
+      - name: Upload Native AOT MSIX symbols
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered-Store-upload
-          path: ${{ github.workspace }}/src/output/*.msixupload
+          name: NativeAOT-MSIX-Symbols-${{ steps.cake.outputs.version }}
+          path: ${{ github.workspace }}/artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
           if-no-files-found: error
 
       - name: Upload signed msix
@@ -152,18 +132,26 @@ jobs:
           name: Snap.Hutao.Remastered.Alpha-${{ steps.cake.outputs.version }}
           path: ${{ github.workspace }}/src/output/Snap.Hutao.Remastered.Alpha-${{ steps.cake.outputs.version }}.msix
 
-      - name: Upload installer
-        if: success() && github.event_name != 'pull_request'
+      - name: Upload Alpha AppPackages for R2 publication
+        if: ${{ success() && github.event_name != 'pull_request' }}
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered.Alpha-Setup-${{ steps.build.outputs.version }}
-          path: ${{ github.workspace }}/publish/Snap.Hutao.Remastered-*.exe
+          name: Alpha-AppPackages
+          path: ${{ github.workspace }}/AppPackages/Alpha
+          if-no-files-found: error
+
+      - name: Export sideload trust certificate
+        if: ${{ success() && github.event_name != 'pull_request' }}
+        shell: pwsh
+        run: ./scripts/Export-PackageCertificate.ps1 -PfxPath 'temp.pfx' -OutputPath 'temp-code-signing.cer'
+        env:
+          PW: ${{ secrets.PW }}
 
       - name: Upload code-signing certificate
         if: success() && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered.Alpha-SnapHutaoRemasteringProject-${{ steps.build.outputs.version }}
+          name: Snap.Hutao.Remastered.Alpha-SnapHutaoRemasteringProject-${{ steps.cake.outputs.version }}
           path: ${{ github.workspace }}/temp-code-signing.cer
 
       - name: Add summary
@@ -171,6 +159,8 @@ jobs:
         shell: pwsh
         run: |
           $summary = "
+          构建模式：Native AOT
+
           > [!WARNING]
           > 该版本是由 CI 程序自动打包生成的 Alpha 测试版本，包含已经基本完工的新功能及问题修复
 
@@ -178,3 +168,43 @@ jobs:
           > 直接旁加载 MSIX 时，请将 SnapHutaoRemasteringProject 工件中的证书安装到 **受信任的人员（TrustedPeople）** 存储
           "
           echo $summary >> $Env:GITHUB_STEP_SUMMARY
+
+  publish_r2:
+    name: Publish Alpha App Installer
+    needs: [build, test]
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    concurrency:
+      group: r2-alpha
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Download Alpha AppPackages
+        uses: actions/download-artifact@v8
+        with:
+          name: Alpha-AppPackages
+          path: ${{ github.workspace }}/AppPackages/Alpha
+
+      - name: Install rclone
+        shell: pwsh
+        run: |
+          choco install rclone --yes --no-progress
+          if ($LASTEXITCODE -ne 0) { throw 'rclone installation failed.' }
+
+      - name: Replace Alpha App Installer feeds
+        shell: pwsh
+        env:
+          RCLONE_CONFIG_R2_TYPE: s3
+          RCLONE_CONFIG_R2_PROVIDER: Cloudflare
+          RCLONE_CONFIG_R2_REGION: auto
+          RCLONE_CONFIG_R2_NO_CHECK_BUCKET: 'true'
+          RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+        run: |
+          ./scripts/Publish-AppPackagesToR2.ps1 -AppPackagesPath 'AppPackages' -Channel Alpha
+          if ($LASTEXITCODE -ne 0) { throw 'Alpha publication failed.' }

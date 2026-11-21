@@ -30,8 +30,6 @@
     </mxi:Interaction.Behaviors>
 
     <shuxcth:MaterialCardButton.Resources>
-        <shux:BindingProxy x:Key="ViewModelBindingProxy" DataContext="{x:Bind DataContext, Mode=OneWay}"/>
-
         <DataTemplate x:Key="DailyNoteTemplate" x:DataType="shme:DailyNoteEntry">
             <Grid
                 Margin="12"
@@ -94,8 +92,8 @@
                         VerticalAlignment="Center"
                         AutomationProperties.Name="{shuxm:ResourceString Name=ViewPageDailyNoteRefresh}"
                         BorderThickness="0"
-                        Command="{Binding DataContext.RefreshCommand, Source={StaticResource ViewModelBindingProxy}}"
-                        IsEnabled="{Binding DataContext.IsRefreshing, Converter={StaticResource BoolNegationConverter}, Source={StaticResource ViewModelBindingProxy}}"
+                        Command="{x:Bind ((shvd:DailyNoteViewModelSlim)RootFlipView.DataContext).RefreshCommand, Mode=OneWay}"
+                        IsEnabled="{x:Bind ((shvd:DailyNoteViewModelSlim)RootFlipView.DataContext).IsRefreshing, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
                         Style="{ThemeResource DefaultButtonStyle}"
                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageDailyNoteRefresh}">
                         <Button.Resources>
@@ -122,12 +120,12 @@
                             <FontIcon
                                 FontSize="14"
                                 Glyph="{StaticResource FontIconContentRefresh}"
-                                Visibility="{Binding DataContext.IsRefreshing, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource BoolToVisibilityRevertConverter}}"/>
+                                Visibility="{x:Bind ((shvd:DailyNoteViewModelSlim)RootFlipView.DataContext).IsRefreshing, Converter={StaticResource BoolToVisibilityRevertConverter}, Mode=OneWay}"/>
                             <ProgressRing
                                 Width="14"
                                 Height="14"
-                                IsActive="{Binding DataContext.IsRefreshing, Source={StaticResource ViewModelBindingProxy}}"
-                                Visibility="{Binding DataContext.IsRefreshing, Source={StaticResource ViewModelBindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                IsActive="{x:Bind ((shvd:DailyNoteViewModelSlim)RootFlipView.DataContext).IsRefreshing, Mode=OneWay}"
+                                Visibility="{x:Bind ((shvd:DailyNoteViewModelSlim)RootFlipView.DataContext).IsRefreshing, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
                         </Grid>
                     </Button>
                 </Grid>

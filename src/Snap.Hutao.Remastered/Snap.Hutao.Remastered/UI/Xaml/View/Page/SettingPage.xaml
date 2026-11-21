@@ -7,12 +7,14 @@
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:cwcvt="using:CommunityToolkit.WinUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dev="using:DevWinUI"
     xmlns:essential="using:WinUI3Package"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
     xmlns:shs="using:Snap.Hutao.Remastered.Service"
     xmlns:shsu="using:Snap.Hutao.Remastered.Service.UIGF"
     xmlns:shuih="using:Snap.Hutao.Remastered.UI.Input.HotKey"
+    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
     xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
@@ -73,21 +75,21 @@
                                         Columns="2"
                                         RowSpacing="8">
                                         <wl:LiquidGlassHyperlinkButton
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             HorizontalAlignment="Stretch"
                                             HorizontalContentAlignment="Left"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             Content="{shuxm:ResourceString Name=ViewPageSettingOfficialSiteNavigate}"
                                             NavigateUri="{StaticResource DocumentLink_Home}"/>
                                         <wl:LiquidGlassHyperlinkButton
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             HorizontalAlignment="Stretch"
                                             HorizontalContentAlignment="Left"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             Content="{shuxm:ResourceString Name=ViewPageSettingFeedbackNavigate}"
                                             NavigateUri="{StaticResource DocumentLink_BugReport}"/>
                                         <wl:LiquidGlassHyperlinkButton
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             HorizontalAlignment="Stretch"
                                             HorizontalContentAlignment="Left"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             Content="{shuxm:ResourceString Name=ViewPageSettingSponsorNavigate}"
                                             NavigateUri="{StaticResource DocumentLink_Sponsor}"/>
                                     </cwc:UniformGrid>
@@ -125,8 +127,8 @@
                                     </cwc:SettingsExpander.Header>
                                     <StackPanel Orientation="Horizontal">
                                         <wl:LiquidGlassButton
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             HorizontalAlignment="Right"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             Command="{x:Bind DataContext.RestartAsElevatedCommand, Mode=OneWay}"
                                             Content="{shuxm:ResourceString Name=ViewPageSettingElevatedModeRestartAction}"
                                             IsEnabled="{shuxm:IsProcessNotElevated}"/>
@@ -228,21 +230,21 @@
                                                 Columns="2"
                                                 RowSpacing="8">
                                                 <wl:LiquidGlassHyperlinkButton
-                                                    shuxcth:ControlMaterialState.IsManaged="True"
                                                     HorizontalAlignment="Stretch"
                                                     HorizontalContentAlignment="Left"
+                                                    shuxcth:ControlMaterialState.IsManaged="True"
                                                     Content="{shuxm:ResourceString Name=ViewPageSettingOfficialSiteNavigate}"
                                                     NavigateUri="{StaticResource DocumentLink_Home}"/>
                                                 <wl:LiquidGlassHyperlinkButton
-                                                    shuxcth:ControlMaterialState.IsManaged="True"
                                                     HorizontalAlignment="Stretch"
                                                     HorizontalContentAlignment="Left"
+                                                    shuxcth:ControlMaterialState.IsManaged="True"
                                                     Content="{shuxm:ResourceString Name=ViewPageSettingFeedbackNavigate}"
                                                     NavigateUri="{StaticResource DocumentLink_BugReport}"/>
                                                 <wl:LiquidGlassHyperlinkButton
-                                                    shuxcth:ControlMaterialState.IsManaged="True"
                                                     HorizontalAlignment="Stretch"
                                                     HorizontalContentAlignment="Left"
+                                                    shuxcth:ControlMaterialState.IsManaged="True"
                                                     Content="{shuxm:ResourceString Name=ViewPageSettingSponsorNavigate}"
                                                     NavigateUri="{StaticResource DocumentLink_Sponsor}"/>
                                             </cwc:UniformGrid>
@@ -277,8 +279,8 @@
                                     </cwc:SettingsExpander.Header>
                                     <StackPanel Orientation="Horizontal">
                                         <wl:LiquidGlassButton
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             HorizontalAlignment="Right"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             Command="{x:Bind DataContext.RestartAsElevatedCommand, Mode=OneWay}"
                                             Content="{shuxm:ResourceString Name=ViewPageSettingElevatedModeRestartAction}"
                                             IsEnabled="{shuxm:IsProcessNotElevated}"/>
@@ -366,10 +368,10 @@
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xF2B7;}">
                                     <shuxc:SizeRestrictedContentControl>
                                         <wl:LiquidGlassComboBox
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
-                                            ItemsSource="{x:Bind shs:CultureOptions.Cultures}"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(shs:CultureOptions.Cultures, shs:CultureOptions.Cultures.IsDefaultOrEmpty)}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedCulture, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
@@ -379,10 +381,10 @@
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE8C0;}">
                                     <shuxc:SizeRestrictedContentControl>
                                         <wl:LiquidGlassComboBox
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
-                                            ItemsSource="{x:Bind DataContext.Appearance.CultureOptions.DayOfWeeks, Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Appearance.CultureOptions.DayOfWeeks, DataContext.Appearance.CultureOptions.DayOfWeeks.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedFirstDayOfWeek, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
@@ -392,11 +394,11 @@
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE7F7;}">
                                     <shuxc:SizeRestrictedContentControl>
                                         <wl:LiquidGlassComboBox
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             IsEnabled="{x:Bind DataContext.Appearance.IsBackdropSelectionEnabled, Mode=OneWay}"
-                                            ItemsSource="{x:Bind DataContext.Appearance.AppOptions.BackdropTypes, Mode=OneWay}"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Appearance.AppOptions.BackdropTypes, DataContext.Appearance.AppOptions.BackdropTypes.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedBackdropType, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
@@ -406,10 +408,10 @@
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE790;}">
                                     <shuxc:SizeRestrictedContentControl>
                                         <wl:LiquidGlassComboBox
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
-                                            ItemsSource="{x:Bind DataContext.Appearance.AppOptions.LazyElementThemes.Value, Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Appearance.AppOptions.LazyElementThemes.Value, DataContext.Appearance.AppOptions.LazyElementThemes.Value.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedElementTheme, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
@@ -419,10 +421,10 @@
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE790;}">
                                     <shuxc:SizeRestrictedContentControl>
                                         <wl:LiquidGlassComboBox
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
-                                            ItemsSource="{x:Bind DataContext.Appearance.AppOptions.ControlMaterials, Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Appearance.AppOptions.ControlMaterials, DataContext.Appearance.AppOptions.ControlMaterials.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedControlMaterial, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
@@ -445,10 +447,10 @@
                                     IsExpanded="{x:Bind DataContext.Appearance.BackgroundImageOptions.Wallpaper, Converter={StaticResource EmptyObjectToBoolConverter}, Mode=OneWay}">
                                     <shuxc:SizeRestrictedContentControl VerticalAlignment="Center">
                                         <wl:LiquidGlassComboBox
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
-                                            ItemsSource="{x:Bind DataContext.Appearance.AppOptions.BackgroundImageTypes, Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Appearance.AppOptions.BackgroundImageTypes, DataContext.Appearance.AppOptions.BackgroundImageTypes.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedBackgroundImageType, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                     <cwc:SettingsExpander.Items>
@@ -468,9 +470,9 @@
                                             IsClickEnabled="True"
                                             Visibility="{x:Bind DataContext.Appearance.BackgroundImageOptions.Wallpaper, Converter={StaticResource EmptyObjectToVisibilityConverter}, Mode=OneWay}">
                                             <mxi:Interaction.Behaviors>
-                                                <mxi:EventTriggerBehavior EventName="Click">
+                                                <shuxb:StaticEventTriggerBehavior EventName="Click">
                                                     <cwb:NavigateToUriAction NavigateUri="{x:Bind DataContext.Appearance.BackgroundImageOptions.Wallpaper.SourceUrl, Mode=OneWay}"/>
-                                                </mxi:EventTriggerBehavior>
+                                                </shuxb:StaticEventTriggerBehavior>
                                             </mxi:Interaction.Behaviors>
                                         </cwc:SettingsCard>
                                     </cwc:SettingsExpander.Items>
@@ -484,10 +486,10 @@
                                     IsExpanded="False">
                                     <shuxc:SizeRestrictedContentControl>
                                         <wl:LiquidGlassComboBox
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
-                                            ItemsSource="{x:Bind DataContext.Appearance.AppOptions.BackgroundMediaTypes, Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Appearance.AppOptions.BackgroundMediaTypes, DataContext.Appearance.AppOptions.BackgroundMediaTypes.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedBackgroundMediaType, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                     <cwc:SettingsExpander.Items>
@@ -519,10 +521,10 @@
                                     IsEnabled="{x:Bind shs:AppOptions.NotifyIconCreated, Mode=OneWay}">
                                     <shuxc:SizeRestrictedContentControl>
                                         <wl:LiquidGlassComboBox
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
-                                            ItemsSource="{x:Bind DataContext.Appearance.AppOptions.LastWindowCloseBehaviors, Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Appearance.AppOptions.LastWindowCloseBehaviors, DataContext.Appearance.AppOptions.LastWindowCloseBehaviors.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Appearance.SelectedLastWindowCloseBehavior, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
@@ -548,10 +550,10 @@
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE774;}">
                                     <shuxc:SizeRestrictedContentControl>
                                         <wl:LiquidGlassComboBox
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
-                                            ItemsSource="{x:Bind DataContext.AppOptions.ServerDomainModes, Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.AppOptions.ServerDomainModes, DataContext.AppOptions.ServerDomainModes.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.SelectedServerDomainMode, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
@@ -603,9 +605,15 @@
                                             ActionIcon="{shuxm:FontIcon Glyph=&#xE76C;}"
                                             ActionIconToolTip="{shuxm:ResourceString Name=ViewPageSettingStorageSetAction}"
                                             Command="{x:Bind DataContext.Storage.SetDataFolderCommand, Mode=OneWay}"
-                                            Description="{shuxm:ResourceString Name=ViewPageSettingSetDataFolderDescription}"
+                                            Description="{shuxm:ResourceString Name=ViewPageSettingMigrateDataFolderDescription}"
                                             Header="{shuxm:ResourceString Name=ViewPageSettingSetDataFolderHeader}"
-                                            IsClickEnabled="True"/>
+                                            IsClickEnabled="{x:Bind DataContext.Storage.IsDataTransferEnabled, Mode=OneWay}"/>
+                                        <cwc:SettingsCard
+                                            ActionIcon="{shuxm:FontIcon Glyph=&#xE76C;}"
+                                            Command="{x:Bind DataContext.Storage.SaveUserDataBackupCommand, Mode=OneWay}"
+                                            Description="{shuxm:ResourceString Name=ViewPageSettingUserDataBackupDescription}"
+                                            Header="{shuxm:ResourceString Name=ViewPageSettingUserDataBackupHeader}"
+                                            IsClickEnabled="{x:Bind DataContext.Storage.IsDataTransferEnabled, Mode=OneWay}"/>
                                         <cwc:SettingsCard
                                             ActionIcon="{shuxm:FontIcon Glyph=&#xE76C;}"
                                             Command="{x:Bind DataContext.Storage.DeleteServerCacheFolderCommand, Mode=OneWay}"
@@ -665,9 +673,9 @@
                                     Header="{shuxm:ResourceString Name=ViewPageSettingKeyShortcutInGameOnlyHeader}"
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE7FC;}">
                                     <wl:LiquidGlassToggleSwitch
-                                        shuxcth:ControlMaterialState.IsManaged="True"
                                         MinWidth="120"
                                         VerticalAlignment="Center"
+                                        shuxcth:ControlMaterialState.IsManaged="True"
                                         IsOn="{x:Bind shuih:HotKeyOptions.IsInGameOnly, Mode=TwoWay}"/>
                                 </cwc:SettingsCard>
                                 <InfoBar
@@ -683,11 +691,11 @@
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <shuxc:Elevation Margin="0,0,16,0" Visibility="{shuxm:CollapsedWhenProcessElevated}"/>
                                         <wl:LiquidGlassButton
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             MinWidth="32"
                                             MinHeight="32"
                                             Padding="0"
                                             VerticalAlignment="Center"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             Content="&#xEDA7;"
                                             FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                             Style="{ThemeResource SettingButtonStyle}">
@@ -702,27 +710,27 @@
                                                         Orientation="Horizontal"
                                                         RowSpacing="0">
                                                         <wl:LiquidGlassCheckBox
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             MinWidth="64"
                                                             VerticalAlignment="Center"
+                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             Content="Win"
                                                             IsEnabled="False"/>
                                                         <wl:LiquidGlassCheckBox
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             MinWidth="64"
                                                             VerticalAlignment="Center"
+                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             Content="Ctrl"
                                                             IsChecked="{x:Bind DataContext.HotKey.HotKeyOptions.MouseClickRepeatForeverKeyCombination.ModifierHasControl, Mode=TwoWay}"/>
                                                         <wl:LiquidGlassCheckBox
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             MinWidth="64"
                                                             VerticalAlignment="Center"
+                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             Content="Shift"
                                                             IsChecked="{x:Bind DataContext.HotKey.HotKeyOptions.MouseClickRepeatForeverKeyCombination.ModifierHasShift, Mode=TwoWay}"/>
                                                         <wl:LiquidGlassCheckBox
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             MinWidth="64"
                                                             VerticalAlignment="Center"
+                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             Content="Alt"
                                                             IsChecked="{x:Bind DataContext.HotKey.HotKeyOptions.MouseClickRepeatForeverKeyCombination.ModifierHasAlt, Mode=TwoWay}"/>
                                                     </cwc:UniformGrid>
@@ -733,9 +741,9 @@
                                             <shuxc:KeyComboBox SelectedItem="{x:Bind DataContext.HotKey.HotKeyOptions.MouseClickRepeatForeverKeyCombination.KeyNameValue, Mode=TwoWay}"/>
                                         </shuxc:SizeRestrictedContentControl>
                                         <wl:LiquidGlassToggleSwitch
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             MinWidth="120"
                                             VerticalAlignment="Center"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             IsOn="{x:Bind DataContext.HotKey.HotKeyOptions.MouseClickRepeatForeverKeyCombination.IsEnabled, Mode=TwoWay}"/>
                                     </StackPanel>
                                 </cwc:SettingsCard>
@@ -747,11 +755,11 @@
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <shuxc:Elevation Margin="0,0,16,0" Visibility="{shuxm:CollapsedWhenProcessElevated}"/>
                                         <wl:LiquidGlassButton
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             MinWidth="32"
                                             MinHeight="32"
                                             Padding="0"
                                             VerticalAlignment="Center"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             Content="&#xEDA7;"
                                             FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                             Style="{ThemeResource SettingButtonStyle}">
@@ -766,27 +774,27 @@
                                                         Orientation="Horizontal"
                                                         RowSpacing="0">
                                                         <wl:LiquidGlassCheckBox
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             MinWidth="64"
                                                             VerticalAlignment="Center"
+                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             Content="Win"
                                                             IsEnabled="False"/>
                                                         <wl:LiquidGlassCheckBox
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             MinWidth="64"
                                                             VerticalAlignment="Center"
+                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             Content="Ctrl"
                                                             IsChecked="{x:Bind DataContext.HotKey.HotKeyOptions.KeyPressRepeatForeverKeyCombination.ModifierHasControl, Mode=TwoWay}"/>
                                                         <wl:LiquidGlassCheckBox
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             MinWidth="64"
                                                             VerticalAlignment="Center"
+                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             Content="Shift"
                                                             IsChecked="{x:Bind DataContext.HotKey.HotKeyOptions.KeyPressRepeatForeverKeyCombination.ModifierHasShift, Mode=TwoWay}"/>
                                                         <wl:LiquidGlassCheckBox
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             MinWidth="64"
                                                             VerticalAlignment="Center"
+                                                            shuxcth:ControlMaterialState.IsManaged="True"
                                                             Content="Alt"
                                                             IsChecked="{x:Bind DataContext.HotKey.HotKeyOptions.KeyPressRepeatForeverKeyCombination.ModifierHasAlt, Mode=TwoWay}"/>
                                                     </cwc:UniformGrid>
@@ -797,9 +805,9 @@
                                             <shuxc:KeyComboBox SelectedItem="{x:Bind DataContext.HotKey.HotKeyOptions.KeyPressRepeatForeverKeyCombination.KeyNameValue, Mode=TwoWay}"/>
                                         </shuxc:SizeRestrictedContentControl>
                                         <wl:LiquidGlassToggleSwitch
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             MinWidth="120"
                                             VerticalAlignment="Center"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             IsOn="{x:Bind DataContext.HotKey.HotKeyOptions.KeyPressRepeatForeverKeyCombination.IsEnabled, Mode=TwoWay}"/>
                                     </StackPanel>
                                 </cwc:SettingsCard>
@@ -955,10 +963,10 @@
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xEC92;}">
                                     <shuxc:SizeRestrictedContentControl>
                                         <wl:LiquidGlassComboBox
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
-                                            ItemsSource="{x:Bind DataContext.Home.AppOptions.LazyCalendarServerTimeZoneOffsets.Value, Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Home.AppOptions.LazyCalendarServerTimeZoneOffsets.Value, DataContext.Home.AppOptions.LazyCalendarServerTimeZoneOffsets.Value.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Home.SelectedCalendarServerTimeZoneOffset, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
@@ -968,10 +976,10 @@
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE8E4;}">
                                     <shuxc:SizeRestrictedContentControl>
                                         <wl:LiquidGlassComboBox
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
-                                            ItemsSource="{x:Bind DataContext.Home.AppOptions.LazyRegions.Value, Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Home.AppOptions.LazyRegions.Value, DataContext.Home.AppOptions.LazyRegions.Value.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.Home.SelectedRegion, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
@@ -1104,14 +1112,14 @@
                                             Content="{shuxm:ResourceString Name=ViewPageSettingUIGFUpgradeLegacyVersionContent}"
                                             NavigateUri="https://upgrader.uigf.org/"/>
                                         <wl:LiquidGlassComboBox
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             MinWidth="100"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            ItemsSource="{x:Bind DataContext.GachaLog.UIGFVersions, Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.GachaLog.UIGFVersions, DataContext.GachaLog.UIGFVersions.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedIndex="{x:Bind DataContext.GachaLog.SelectedUIGFVersionIndex, Mode=TwoWay}">
                                             <wl:LiquidGlassComboBox.ItemTemplate>
                                                 <DataTemplate x:DataType="shsu:UIGFVersion">
-                                                    <TextBlock Text="{Binding Converter={StaticResource UIGFVersionToStringConverter}, Mode=OneWay}"/>
+                                                    <TextBlock Text="{x:Bind Converter={StaticResource UIGFVersionToStringConverter}, Mode=OneTime}"/>
                                                 </DataTemplate>
                                             </wl:LiquidGlassComboBox.ItemTemplate>
                                         </wl:LiquidGlassComboBox>
@@ -1142,10 +1150,10 @@
                                     HeaderIcon="{shuxm:FontIcon Glyph=&#xE792;}">
                                     <shuxc:SizeRestrictedContentControl>
                                         <wl:LiquidGlassComboBox
-                                            shuxcth:ControlMaterialState.IsManaged="True"
                                             shuxcth:ComboBoxPopupLifetime.IsManaged="True"
-                                            DisplayMemberPath="Name"
-                                            ItemsSource="{x:Bind DataContext.WebView.AppOptions.BridgeShareSaveTypes, Mode=OneWay}"
+                                            shuxcth:ControlMaterialState.IsManaged="True"
+                                            ItemTemplate="{StaticResource NameValueItemTemplate}"
+                                            ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.WebView.AppOptions.BridgeShareSaveTypes, DataContext.WebView.AppOptions.BridgeShareSaveTypes.IsDefaultOrEmpty), Mode=OneWay}"
                                             SelectedItem="{x:Bind DataContext.WebView.SelectedShareSaveType, Mode=TwoWay}"/>
                                     </shuxc:SizeRestrictedContentControl>
                                 </cwc:SettingsCard>
@@ -1155,6 +1163,13 @@
                 </StackPanel>
             </Grid>
         </ScrollViewer>
+        <dev:GotoTop
+            Margin="0,0,20,20"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Animated="True"
+            AutoHiding="True"
+            Target="{x:Bind RootScrollViewer}"/>
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>

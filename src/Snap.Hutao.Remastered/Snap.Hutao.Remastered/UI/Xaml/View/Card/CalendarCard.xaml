@@ -2,6 +2,7 @@
     x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Card.CalendarCard"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:cwconv="using:CommunityToolkit.WinUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -122,19 +123,19 @@
                 <ItemsControl
                     HorizontalAlignment="Left"
                     ItemsPanel="{StaticResource WrapPanelSpacing6Template}"
-                    ItemsSource="{x:Bind DataContext.WeekDays.CurrentItem.BirthDayAvatars, Mode=OneWay}">
+                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.WeekDays.CurrentItem.BirthDayAvatars, DataContext.WeekDays.CurrentItem.BirthDayAvatars.IsDefaultOrEmpty), Mode=OneWay}">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.Model" x:DataType="aot:Item">
                             <shuxcc:HorizontalCard>
                                 <shuxcc:HorizontalCard.Left>
                                     <shuxc:ItemIcon
                                         Width="32"
                                         Height="32"
-                                        Icon="{Binding Icon}"
-                                        Quality="{Binding Quality}"/>
+                                        Icon="{x:Bind Icon, Mode=OneWay}"
+                                        Quality="{x:Bind Quality, Mode=OneWay}"/>
                                 </shuxcc:HorizontalCard.Left>
                                 <shuxcc:HorizontalCard.Right>
-                                    <TextBlock Margin="6,0" Text="{Binding Name}"/>
+                                    <TextBlock Margin="6,0" Text="{x:Bind Name, Mode=OneWay}"/>
                                 </shuxcc:HorizontalCard.Right>
                             </shuxcc:HorizontalCard>
                         </DataTemplate>
@@ -157,7 +158,7 @@
                 Grid.Row="1"
                 HorizontalScrollBarVisibility="Disabled"
                 VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{x:Bind DataContext.WeekDays.CurrentItem.Materials, Mode=OneWay}" Visibility="{x:Bind DataContext.WeekDays.CurrentItem.Materials.IsEmpty, Converter={StaticResource BoolToVisibilityRevertConverter}, Mode=OneWay}">
+                <ItemsControl ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.WeekDays.CurrentItem.Materials, DataContext.WeekDays.CurrentItem.Materials.IsDefaultOrEmpty), Mode=OneWay}" Visibility="{x:Bind DataContext.WeekDays.CurrentItem.Materials.IsEmpty, Converter={StaticResource BoolToVisibilityRevertConverter}, Mode=OneWay}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <cwc:UniformGrid
@@ -192,16 +193,16 @@
                                                                 <shuxc:ItemIcon
                                                                     Width="48"
                                                                     Height="48"
-                                                                    Icon="{Binding Inner.Icon, Converter={StaticResource ItemIconConverter}}"
-                                                                    Quality="{Binding Inner.RankLevel}"/>
+                                                                    Icon="{x:Bind Inner.Icon, Converter={StaticResource ItemIconConverter}, Mode=OneTime}"
+                                                                    Quality="{x:Bind Inner.RankLevel, Mode=OneTime}"/>
                                                             </shuxcc:HorizontalCard.Left>
                                                             <shuxcc:HorizontalCard.Right>
                                                                 <StackPanel Margin="12,0">
-                                                                    <TextBlock Text="{Binding Inner.Name}"/>
+                                                                    <TextBlock Text="{x:Bind Inner.Name, Mode=OneTime}"/>
                                                                     <TextBlock
                                                                         Opacity="0.7"
                                                                         Style="{StaticResource CaptionTextBlockStyle}"
-                                                                        Text="{Binding Inner.TypeDescription}"/>
+                                                                        Text="{x:Bind Inner.TypeDescription, Mode=OneTime}"/>
                                                                 </StackPanel>
                                                             </shuxcc:HorizontalCard.Right>
                                                         </shuxcc:HorizontalCard>
@@ -209,15 +210,15 @@
                                                             Grid.Row="1"
                                                             HorizontalAlignment="Stretch"
                                                             Style="{ThemeResource BorderShimmerStyle}">
-                                                            <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{Binding Items}">
+                                                            <ItemsControl ItemsPanel="{StaticResource UniformGridColumns4Spacing6Template}" ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(Items, Items.IsDefaultOrEmpty), Mode=OneTime}">
                                                                 <ItemsControl.ItemTemplate>
-                                                                    <DataTemplate>
+                                                                    <DataTemplate xmlns:aot="using:Snap.Hutao.Remastered.ViewModel.Calendar" x:DataType="aot:CalendarItem">
                                                                         <shuxc:ItemIcon
                                                                             Width="48"
                                                                             Height="48"
-                                                                            Icon="{Binding Icon}"
-                                                                            Opacity="{Binding Highlight, Converter={StaticResource BoolToOpacityConverter}}"
-                                                                            Quality="{Binding Quality}"/>
+                                                                            Icon="{x:Bind Icon, Mode=OneWay}"
+                                                                            Opacity="{x:Bind Highlight, Converter={StaticResource BoolToOpacityConverter}, Mode=OneWay}"
+                                                                            Quality="{x:Bind Quality, Mode=OneWay}"/>
                                                                     </DataTemplate>
                                                                 </ItemsControl.ItemTemplate>
                                                             </ItemsControl>

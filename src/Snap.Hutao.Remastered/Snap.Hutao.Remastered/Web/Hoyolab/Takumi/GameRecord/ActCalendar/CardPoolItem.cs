@@ -5,7 +5,7 @@ using Snap.Hutao.Remastered.Model.Intrinsic;
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.ActCalendar;
 
-public class CardPoolItem
+public partial class CardPoolItem
 {
     [JsonPropertyName("icon")]
     public required Uri Icon { get; set; }

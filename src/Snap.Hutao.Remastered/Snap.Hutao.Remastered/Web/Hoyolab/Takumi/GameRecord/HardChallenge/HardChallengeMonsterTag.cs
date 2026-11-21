@@ -3,7 +3,7 @@
 
 namespace Snap.Hutao.Remastered.Web.Hoyolab.Takumi.GameRecord.HardChallenge;
 
-public sealed class HardChallengeMonsterTag
+public sealed partial class HardChallengeMonsterTag
 {
     [JsonPropertyName("type")]
     public required int Type { get; init; }

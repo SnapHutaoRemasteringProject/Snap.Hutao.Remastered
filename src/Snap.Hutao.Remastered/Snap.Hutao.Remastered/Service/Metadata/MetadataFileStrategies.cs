@@ -10,7 +10,9 @@ public static class MetadataFileStrategies
     public static readonly MetadataFileStrategy Avatar = new("Avatar", true);
     public static readonly MetadataFileStrategy AvatarCurve = new("AvatarCurve");
     public static readonly MetadataFileStrategy AvatarPromote = new("AvatarPromote");
-    public static readonly MetadataFileStrategy BeyondItem = new("BeyondItem");
+    // "BeyondItem" is the metadata file name published by Snap.Metadata. The model was renamed
+    // to BydMaterial, but the external file contract keeps the old name.
+    public static readonly MetadataFileStrategy BydMaterial = new("BeyondItem");
     public static readonly MetadataFileStrategy Chapter = new("Chapter");
     public static readonly MetadataFileStrategy Combine = new("Combine");
     public static readonly MetadataFileStrategy CookRecipe = new("CookRecipe");

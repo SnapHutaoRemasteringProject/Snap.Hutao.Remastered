@@ -17,6 +17,7 @@ public static class CurrentXamlWindowReferenceExtension
 
         public ElementTheme RequestedTheme
         {
+            [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
             get
             {
                 ArgumentNullException.ThrowIfNull(reference.Window);

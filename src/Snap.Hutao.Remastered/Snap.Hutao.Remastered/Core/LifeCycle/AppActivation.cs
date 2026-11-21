@@ -13,7 +13,6 @@ using Snap.Hutao.Remastered.Service.Job;
 using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.Service.Notification;
-using Snap.Hutao.Remastered.Service.Plugin;
 using Snap.Hutao.Remastered.UI.Input.HotKey;
 using Snap.Hutao.Remastered.UI.Shell;
 using Snap.Hutao.Remastered.UI.Windowing;
@@ -56,17 +55,13 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
 
         async ValueTask HandleActivationExclusivelyAsync(HutaoActivationArguments args)
         {
-            if (Interlocked.CompareExchange(ref isActivating, 1, 0) is not 0)
-            {
-                return;
-            }
-
+            // Serialize *all* redirects with initial activation/initialization. Dropping
+            // a redirect while initialization is active loses the launch URI.
             using (await activateLock.LockAsync().ConfigureAwait(false))
             {
                 await UnsynchronizedHandleActivationAsync(args).ConfigureAwait(false);
             }
 
-            // Bring the main window to foreground after handling redirect activation
             await taskContext.SwitchToMainThreadAsync();
             if (currentXamlWindowReference.Window is { } window)
             {
@@ -74,8 +69,6 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
                 window.AppWindow?.MoveInZOrderAtTop();
                 window.Activate();
             }
-
-            Interlocked.Exchange(ref isActivating, 0);
         }
     }
 
@@ -254,7 +247,6 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
 
         // Start named pipe server
         serviceProvider.GetRequiredService<PrivateNamedPipeServer>().Start();
-        Bootstrap.UseNamedPipeRedirection();
 
         // Notify icon
         App app = serviceProvider.GetRequiredService<App>();
@@ -302,7 +294,6 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
             [
                 serviceProvider.GetRequiredService<HutaoUserOptions>().InitializeAsync().AsTask(),
                 serviceProvider.GetRequiredService<IMetadataService>().InitializeInternalAsync().AsTask(),
-                serviceProvider.GetRequiredService<IPluginService>().LoadAllPluginsAsync()
             ]).ConfigureAwait(false);
 
             SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateInfo("Background initialization completed", "Application"));
@@ -480,6 +471,7 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
         return window;
     }
 
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
     private async ValueTask WaitForContentLoadedAsync()
     {
         if (currentXamlWindowReference.Window is not { Content: FrameworkElement content })

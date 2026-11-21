@@ -1,9 +1,14 @@
-﻿name: Snap Hutao Remastered Publish
+name: Snap Hutao Remastered Publish
 on:
   workflow_dispatch:
 
+concurrency:
+  group: r2-publish
+  cancel-in-progress: false
+
 jobs:
   publish:
+    name: Build Native AOT
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -30,49 +35,58 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Publish (MSIX + Installer)
+      - name: Build signed MSIX, App Installer feed and legacy EXE
         id: publish
         shell: pwsh
-        run: dotnet tool restore && dotnet cake publish.cake
+        run: dotnet tool restore && dotnet cake publish.cake --publishAot=true
         env:
           PUBLISH_CERT: ${{ secrets.PUBLISH_CERT }}
           PUBLISH_PW: ${{ secrets.PUBLISH_PW }}
 
-      - name: Create Store upload
-        shell: pwsh
-        run: |
-          $symbols = Get-ChildItem src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/bin/x64/Release -Recurse -Filter Snap.Hutao.Remastered.pdb |
-            Where-Object { $_.Directory.Name -eq 'publish' } | Select-Object -First 1
-          Get-ChildItem src/output -Filter *.msix | ForEach-Object {
-            $arguments = @{ PackagePath = $_.FullName }
-            if ($symbols) { $arguments.SymbolsPath = $symbols.FullName }
-            ./scripts/New-MsixUpload.ps1 @arguments
-          }
-
-      - name: Upload Store submission files
+      - name: Upload Native AOT symbols
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered-Store-upload
-          path: ${{ github.workspace }}/src/output/*.msixupload
+          name: NativeAOT-Symbols-${{ steps.publish.outputs.version }}
+          path: ${{ github.workspace }}/artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
           if-no-files-found: error
 
       - name: Upload MSIX
         uses: actions/upload-artifact@v7
         with:
-          name: Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}-MSIX-${{ steps.publish.outputs.msix-signed == 'true' && 'signed' || 'unsigned-store-only' }}
+          name: Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}-MSIX-signed
           path: ${{ github.workspace }}/src/output/Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}.msix
+          archive: false
 
       - name: Upload installer
         uses: actions/upload-artifact@v7
         with:
           name: Snap.Hutao.Remastered-Setup-${{ steps.publish.outputs.version }}
-          path: ${{ github.workspace }}/publish/Snap.Hutao.Remastered-*.exe
+          path: ${{ github.workspace }}/publish/Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}-Setup.exe
+          archive: false
+          if-no-files-found: error
+
+      - name: Upload installer with bundled images
+        if: ${{ hashFiles(format('publish/Snap.Hutao.Remastered-{0}-Setup-cache.exe', steps.publish.outputs.version)) != '' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: Snap.Hutao.Remastered-Setup-cache-${{ steps.publish.outputs.version }}
+          path: ${{ github.workspace }}/publish/Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}-Setup-cache.exe
+          archive: false
+          if-no-files-found: error
+
+      - name: Upload R2 AppPackages
+        uses: actions/upload-artifact@v7
+        with:
+          name: Publish-AppPackages
+          path: ${{ github.workspace }}/AppPackages/Publish
+          if-no-files-found: error
 
       - name: Upload code-signing certificate
         uses: actions/upload-artifact@v7
         with:
           name: Snap.Hutao.Remastered-SnapHutaoRemasteringProject-${{ steps.publish.outputs.version }}
           path: ${{ github.workspace }}/temp-code-signing.cer
+          archive: false
 
       - name: Install rclone
         shell: pwsh
@@ -80,7 +94,7 @@ jobs:
           choco install rclone --yes --no-progress
           if ($LASTEXITCODE -ne 0) { throw 'rclone installation failed.' }
 
-      - name: Publish default installer to R2
+      - name: Publish default installer and MSIX to R2
         id: r2
         shell: pwsh
         env:
@@ -94,7 +108,8 @@ jobs:
           RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
         run: |
           $installer = Join-Path 'publish' "Snap.Hutao.Remastered-$env:RELEASE_VERSION-Setup.exe"
-          ./scripts/Publish-InstallerToR2.ps1 -InstallerPath $installer
+          $msix = Join-Path 'src/output' "Snap.Hutao.Remastered-$env:RELEASE_VERSION.msix"
+          ./scripts/Publish-InstallerToR2.ps1 -InstallerPath $installer -MsixPath $msix
 
       - name: Add summary
         shell: pwsh
@@ -102,13 +117,49 @@ jobs:
           $summary = @"
           ## Snap Hutao Remastered Release Build
 
+          - **Runtime:** Native AOT
           - **Version:** ${{ steps.publish.outputs.version }}
           - **MSIX:** Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}.msix
           - **Installer:** Snap.Hutao.Remastered-${{ steps.publish.outputs.version }}-Setup.exe
-          - **MSIX signed:** ${{ steps.publish.outputs.msix-signed }}
-          - **Installer signed:** Yes
+          - **R2 App Installer:** Snap.Hutao.Remastered.Publish.x64.appinstaller
 
           > [!IMPORTANT]
-          > MSIX 未签名时仅用于商店提交，不可直接旁加载；请提交 Store-upload 工件内的 .msixupload。Setup 安装包仍已签名，可直接安装。
+          > 正式版提供 MSIX、App Installer 更新源和供旧解包版使用的 EXE。
           "@
           echo $summary >> $Env:GITHUB_STEP_SUMMARY
+
+  publish_r2:
+    name: Publish App Installer feed to R2
+    needs: publish
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Download Publish AppPackages
+        uses: actions/download-artifact@v8
+        with:
+          name: Publish-AppPackages
+          path: ${{ github.workspace }}/AppPackages/Publish
+
+      - name: Install rclone
+        shell: pwsh
+        run: |
+          choco install rclone --yes --no-progress
+          if ($LASTEXITCODE -ne 0) { throw 'rclone installation failed.' }
+
+      - name: Publish update feed
+        shell: pwsh
+        env:
+          RCLONE_CONFIG_R2_TYPE: s3
+          RCLONE_CONFIG_R2_PROVIDER: Cloudflare
+          RCLONE_CONFIG_R2_REGION: auto
+          RCLONE_CONFIG_R2_NO_CHECK_BUCKET: 'true'
+          RCLONE_CONFIG_R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          RCLONE_CONFIG_R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          RCLONE_CONFIG_R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+        run: |
+          ./scripts/Publish-AppPackagesToR2.ps1 -AppPackagesPath 'AppPackages' -Channel Publish
+          if ($LASTEXITCODE -ne 0) { throw 'Publish upload failed.' }

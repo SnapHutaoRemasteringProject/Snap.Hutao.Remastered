@@ -23,7 +23,7 @@ public sealed class GachaLogServiceMetadataContext : IMetadataContext,
     IMetadataDictionaryIdWeaponSource,
     IMetadataDictionaryNameAvatarSource,
     IMetadataDictionaryNameWeaponSource,
-    IMetadataDictionaryIdBeyondItemSource
+    IMetadataDictionaryIdBydMaterialSource
 {
     public ImmutableArray<GachaEvent> GachaEvents { get; set; } = default!;
 
@@ -34,7 +34,7 @@ public sealed class GachaLogServiceMetadataContext : IMetadataContext,
     public ImmutableDictionary<string, Avatar> NameAvatarMap { get; set; } = default!;
 
     public ImmutableDictionary<string, Weapon> NameWeaponMap { get; set; } = default!;
-    public ImmutableDictionary<BeyondItemId, BeyondItem> IdBeyondItemMap { get; set; } = default!;
+    public ImmutableDictionary<BydMaterialId, BydMaterial> IdBydMaterialMap { get; set; } = default!;
 
     public Item GetItemByNameAndType(string name, string type)
     {

@@ -3,6 +3,7 @@
 
 namespace Snap.Hutao.Remastered.ViewModel.GachaLog;
 
+[WinRT.GeneratedBindableCustomProperty]
 public sealed partial class TypedWishSummary : Wish
 {
     public required string TypeName { get; init; }

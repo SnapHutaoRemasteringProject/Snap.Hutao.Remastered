@@ -4,6 +4,7 @@
 
 using Snap.Hutao.Remastered.Core.AI.IO;
 using Snap.Hutao.Remastered.Core.AI.Text.Json;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using Snap.Hutao.Remastered.Service.AI.Models;
 using Snap.Hutao.Remastered.Service.AI.Migration;
 using Snap.Hutao.Remastered.Service.AI.Settings;
@@ -46,7 +47,7 @@ internal sealed class AgentConversationFileProvider(IServiceProvider serviceProv
             {
                 using (FileStream stream = File.OpenRead(filePath))
                 {
-                    if (JsonSerializer.Deserialize<AgentConversation>(stream, jsonOptions) is { } conversation)
+                    if (JsonSerialize.Deserialize<AgentConversation>(stream, jsonOptions) is { } conversation)
                     {
                         conversations.Add(conversation);
                     }
@@ -70,7 +71,7 @@ internal sealed class AgentConversationFileProvider(IServiceProvider serviceProv
 
         using (FileStream stream = File.Open(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
         {
-            JsonSerializer.Serialize(stream, conversation, jsonOptions);
+            JsonSerialize.Serialize(stream, conversation, jsonOptions);
         }
 
         File.Move(tempFilePath, filePath, true);

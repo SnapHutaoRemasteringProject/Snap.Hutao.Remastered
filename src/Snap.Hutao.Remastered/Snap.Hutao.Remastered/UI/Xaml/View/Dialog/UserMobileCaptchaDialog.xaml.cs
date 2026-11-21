@@ -1,6 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Snap.Hutao.Remastered.Core.DependencyInjection.Abstraction;
@@ -9,52 +10,33 @@ using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Snap.Hutao.Remastered.Service.Geetest;
 using Snap.Hutao.Remastered.Web.Hoyolab.Passport;
 using Snap.Hutao.Remastered.Web.Response;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using Windows.System;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Dialog;
 
-public sealed partial class UserMobileCaptchaDialog : ContentDialog, IPassportMobileCaptchaProvider, INotifyPropertyChanged
+[INotifyPropertyChanged]
+public sealed partial class UserMobileCaptchaDialog : ContentDialog, IPassportMobileCaptchaProvider
 {
     private readonly IContentDialogFactory contentDialogFactory;
     private readonly IServiceProvider serviceProvider;
     private readonly IGeetestService geetestService;
+    private readonly ITaskContext taskContext;
 
     [GeneratedConstructor(InitializeComponent = true)]
     public partial UserMobileCaptchaDialog(IServiceProvider serviceProvider);
 
-    public event PropertyChangedEventHandler? PropertyChanged;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsSendCaptchaEnabled))]
+    public partial string? Mobile { get; set; }
 
-    public string? Mobile
-    {
-        get;
-        set
-        {
-            if (SetProperty(ref field, value) && value is not null)
-            {
-                IsSendCaptchaEnabled = MobilePhoneRegex.IsMatch(value);
-                OnPropertyChanged(nameof(IsSendCaptchaEnabled));
-            }
-        }
-    }
+    public bool IsSendCaptchaEnabled => Mobile is { } mobile && MobilePhoneRegex.IsMatch(mobile);
 
-    public bool IsSendCaptchaEnabled { get; private set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsLoginEnabled))]
+    public partial string? Captcha { get; set; }
 
-    public string? Captcha
-    {
-        get;
-        set
-        {
-            if (SetProperty(ref field, value))
-            {
-                IsLoginEnabled = !string.IsNullOrEmpty(value) && !string.IsNullOrEmpty(ActionType);
-                OnPropertyChanged(nameof(IsLoginEnabled));
-            }
-        }
-    }
-
-    public bool IsLoginEnabled { get; private set; }
+    public bool IsLoginEnabled => Captcha?.Length == 6 && !string.IsNullOrEmpty(ActionType);
 
     public string? ActionType { get; private set; }
 
@@ -100,7 +82,9 @@ public sealed partial class UserMobileCaptchaDialog : ContentDialog, IPassportMo
             {
                 if (ResponseValidator.TryValidate(response, scope.ServiceProvider, out MobileCaptcha? mobileCaptcha))
                 {
+                    await taskContext.SwitchToMainThreadAsync();
                     ActionType = mobileCaptcha.ActionType;
+                    OnPropertyChanged(nameof(IsLoginEnabled));
                 }
             }
             catch (ObjectDisposedException)
@@ -133,22 +117,5 @@ public sealed partial class UserMobileCaptchaDialog : ContentDialog, IPassportMo
         {
             e.Handled = true;
         }
-    }
-
-    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-    {
-        PropertyChanged?.Invoke(this, new(propertyName));
-    }
-
-    private bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
-    {
-        if (!EqualityComparer<T>.Default.Equals(field, value))
-        {
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
-        return false;
     }
 }

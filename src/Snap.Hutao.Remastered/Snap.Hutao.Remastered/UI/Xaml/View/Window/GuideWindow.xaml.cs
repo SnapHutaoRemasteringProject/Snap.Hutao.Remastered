@@ -16,6 +16,7 @@ public sealed partial class GuideWindow : Microsoft.UI.Xaml.Window,
     IXamlWindowExtendContentIntoTitleBar,
     IXamlWindowHasInitSize
 {
+    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Windowing.OverlappedPresenter))]
     public GuideWindow(IServiceProvider serviceProvider)
     {
         InitializeComponent();

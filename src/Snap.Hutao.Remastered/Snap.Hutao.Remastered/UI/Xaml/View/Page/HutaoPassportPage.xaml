@@ -119,9 +119,9 @@
                                 Content="{shuxm:ResourceString Name=ViewPageHutaoPassportSponsorAction}"
                                 Style="{ThemeResource SettingButtonStyle}">
                                 <mxi:Interaction.Behaviors>
-                                    <mxi:EventTriggerBehavior EventName="Click">
+                                    <shuxb:StaticEventTriggerBehavior EventName="Click">
                                         <cwb:NavigateToUriAction NavigateUri="https://afdian.com/item/80d3b9decf9011edb5f452540025c377"/>
-                                    </mxi:EventTriggerBehavior>
+                                    </shuxb:StaticEventTriggerBehavior>
                                 </mxi:Interaction.Behaviors>
                             </wl:LiquidGlassButton>
                         </cwc:SettingsCard>
@@ -140,9 +140,9 @@
                                 Content="{shuxm:ResourceString Name=ViewPageHutaoPassportSponsorAction}"
                                 Style="{ThemeResource SettingButtonStyle}">
                                 <mxi:Interaction.Behaviors>
-                                    <mxi:EventTriggerBehavior EventName="Click">
+                                    <shuxb:StaticEventTriggerBehavior EventName="Click">
                                         <cwb:NavigateToUriAction NavigateUri="https://afdian.com/item/274f5a7cbe9911efab6552540025c377"/>
-                                    </mxi:EventTriggerBehavior>
+                                    </shuxb:StaticEventTriggerBehavior>
                                 </mxi:Interaction.Behaviors>
                             </wl:LiquidGlassButton>
                         </cwc:SettingsCard>

@@ -22,7 +22,9 @@ public sealed partial class BackpackArchivePickerDialog : ContentDialog
         IAdvancedDbCollectionView<BackpackArchive> archives = await backpackService.GetArchiveCollectionAsync().ConfigureAwait(false);
         await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
 
-        ArchiveComboBox.ItemsSource = archives.Source;
+        // The service's IList<T> source can be an ObservableCollection<T>. Keep
+        // that concrete generic collection off the WinRT object boundary.
+        ArchiveComboBox.ItemsSource = ItemsSourceHelper.Create(archives.Source, false);
         if (archives.Source.Count > 0)
         {
             ArchiveComboBox.SelectedIndex = 0;

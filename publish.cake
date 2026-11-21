@@ -1,3 +1,4 @@
+#load "./build-runtime.cake"
 
 var target = Argument("target", "Publish");
 var configuration = Argument("configuration", "Release");
@@ -13,7 +14,7 @@ var manifest = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "
 
 var targetFramework = XmlPeek(project, "/Project/PropertyGroup/TargetFramework/text()").Trim();
 var runtimeIdentifier = XmlPeek(project, "/Project/PropertyGroup/RuntimeIdentifier/text()").Trim();
-var binPath = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, "publish");
+var binPath = System.IO.Path.Combine(repoDir, "src", "Snap.Hutao.Remastered", "Snap.Hutao.Remastered", "bin", "x64", configuration, targetFramework, runtimeIdentifier, publishFolder);
 var outputPath = System.IO.Path.Combine(repoDir, "src", "output");
 
 // Version: read from Package.appxmanifest
@@ -62,9 +63,7 @@ Task("Publish")
     .IsDependentOn("Inner Sign")
     .IsDependentOn("Build MSIX")
     .IsDependentOn("Sign MSIX")
-    .IsDependentOn("Prepare installer output")
-    .IsDependentOn("VC Redist")
-    .IsDependentOn("Compile installer")
+    .IsDependentOn("Build AppPackages")
     .IsDependentOn("Sign installer");
 
 Task("Build binary package")
@@ -74,12 +73,14 @@ Task("Build binary package")
 
     var settings = new DotNetPublishSettings
     {
-        Configuration = configuration
+        Configuration = configuration,
+        Runtime = runtimeIdentifier,
+        OutputDirectory = binPath
     };
 
     settings.MSBuildSettings = new DotNetMSBuildSettings
     {
-        ArgumentCustomization = args => args.Append("/p:Platform=x64")
+        ArgumentCustomization = args => withRuntimeProperties(args)
                                             .Append("/p:UapAppxPackageBuildMode=SideloadOnly")
                                             .Append("/p:AppxPackageSigningEnabled=false")
                                             .Append("/p:AppxBundle=Never")
@@ -116,13 +117,15 @@ Task("Remove unused files")
         System.IO.Path.Combine(binPath, "onnxruntime.dll"),
     };
 
-    foreach (var file in files)
+    foreach (var file in files.Where(file => !publishAot || System.IO.Path.GetFileName(file) != "App.xbf"))
     {
         if (System.IO.File.Exists(file))
         {
             System.IO.File.Delete(file);
         }
     }
+    separateNativeAotSymbols(repoDir, binPath);
+    verifyPublishRuntime(repoDir, binPath);
 });
 
 Task("Inner Sign")
@@ -167,13 +170,7 @@ Task("Sign MSIX")
     {
         if (!string.Equals(certificate.Subject, packagePublisher, System.StringComparison.Ordinal))
         {
-            if (packagePublisher != "CN=469D671A-3AED-4488-AC4F-75E5394BC7FA")
-            {
-                throw new InvalidOperationException("MSIX Publisher does not match the signing certificate.");
-            }
-            Warning("Store MSIX retains its Store Publisher and is UNSIGNED. It is for Store submission, not sideload installation. Setup signing is unchanged.");
-            GitHubActions.Commands.SetOutputParameter("msix-signed", "false");
-            return;
+            throw new InvalidOperationException("MSIX Publisher does not match the signing certificate.");
         }
     }
     GitHubActions.Commands.SetOutputParameter("msix-signed", "true");
@@ -184,8 +181,32 @@ Task("Sign MSIX")
     if (p != 0) { throw new InvalidOperationException($"MSIX sign failed ({p})"); }
 });
 
+Task("Build AppPackages")
+    .IsDependentOn("Sign MSIX")
+    .WithCriteria(GitHubActions.IsRunningOnGitHubActions)
+    .Does(() =>
+{
+    var arguments = new ProcessArgumentBuilder()
+        .Append("-NoProfile").Append("-NonInteractive").Append("-File")
+        .AppendQuoted(System.IO.Path.Combine(repoDir, "scripts", "New-AppInstallerPackages.ps1"))
+        .Append("-PublishDirectory").AppendQuoted(binPath)
+        .Append("-AppPackagesDirectory").AppendQuoted(System.IO.Path.Combine(repoDir, "AppPackages"))
+        .Append("-StagingDirectory").AppendQuoted(System.IO.Path.Combine(repoDir, "artifacts", "appinstaller-staging"))
+        .Append("-CertificatePath").AppendQuoted(pfxPath)
+        .Append("-MakeAppxPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "makeappx.exe"))
+        .Append("-SignToolPath").AppendQuoted(System.IO.Path.Combine(winsdkBinPath, "signtool.exe"))
+        .Append("-Channel").Append("Publish")
+        .Append("-PasswordEnvironmentVariable").Append("PUBLISH_PW")
+        .Append("-ExportCertificatePath").AppendQuoted(codeSigningCertificatePath);
+    var result = StartProcess("pwsh", new ProcessSettings { Arguments = arguments });
+    if (result != 0)
+    {
+        throw new InvalidOperationException("R2 AppPackages generation or signing failed (exit " + result + ").");
+    }
+});
+
 Task("Prepare installer output")
-    .IsDependentOn("Copy files")
+    .IsDependentOn("Sign MSIX")
     .Does(() =>
 {
     var publishDir = System.IO.Path.Combine(repoDir, "Installer", "Publish");
@@ -287,13 +308,13 @@ Task("Sign installer")
     var signtool = Context.Tools.Resolve("signtool.exe")?.FullPath
         ?? System.IO.Path.Combine(winsdkBinPath, "signtool.exe");
 
-    if (!System.IO.File.Exists(signtool)) { Information("signtool not found, skipping."); return; }
+    if (!System.IO.File.Exists(signtool)) { throw new FileNotFoundException("signtool not found.", signtool); }
 
     var installerDir = System.IO.Path.Combine(repoDir, "publish");
     foreach (var installer in System.IO.Directory.GetFiles(installerDir, "Snap.Hutao.Remastered-*.exe"))
     {
         var p = StartProcess(signtool, new ProcessSettings { Arguments = $"sign /debug /v /a /fd SHA256 /f \"{pfxPath}\" /p \"{pw}\" /tr http://timestamp.digicert.com /td SHA256 \"{installer}\"" });
-        Information(p == 0 ? $"Signed: {System.IO.Path.GetFileName(installer)}" : $"Failed: {System.IO.Path.GetFileName(installer)}");
+        if (p != 0) { throw new InvalidOperationException($"Installer signing failed ({p}): {installer}"); }
     }
 });
 

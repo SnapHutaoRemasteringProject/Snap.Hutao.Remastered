@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Microsoft.EntityFrameworkCore;
 using Snap.Hutao.Remastered.Core.Database.Abstraction;
 using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Model.Entity.Database;
@@ -9,7 +8,7 @@ using Snap.Hutao.Remastered.UI.Xaml.Data;
 
 namespace Snap.Hutao.Remastered.Core.Database;
 
-public sealed partial class AdvancedDbCollectionView<TEntity> : AdvancedCollectionView<TEntity>,
+public sealed partial class AdvancedDbCollectionView<[DynamicallyAccessedMembers(DatabaseEntityContract.Members)] TEntity> : AdvancedCollectionView<TEntity>,
     IAdvancedDbCollectionView<TEntity>
     where TEntity : class, IPropertyValuesProvider, ISelectable
 {
@@ -50,7 +49,7 @@ public sealed partial class AdvancedDbCollectionView<TEntity> : AdvancedCollecti
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             AppDbContext dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            dbContext.Set<TEntity>().ExecuteUpdate(static update => update.SetProperty(entity => entity.IsSelected, false));
+            AppDbQueries.ClearSelection<TEntity>(dbContext);
 
             if (currentItem is not null)
             {
@@ -84,7 +83,7 @@ public sealed partial class AdvancedDbCollectionView<TEntity> : AdvancedCollecti
 }
 
 [SuppressMessage("", "SA1402")]
-public sealed partial class AdvancedDbCollectionView<TEntityAccess, TEntity> : AdvancedCollectionView<TEntityAccess>,
+public sealed partial class AdvancedDbCollectionView<TEntityAccess, [DynamicallyAccessedMembers(DatabaseEntityContract.Members)] TEntity> : AdvancedCollectionView<TEntityAccess>,
     IAdvancedDbCollectionView<TEntityAccess>
     where TEntityAccess : class, IEntityAccess<TEntity>, IPropertyValuesProvider
     where TEntity : class, ISelectable
@@ -126,7 +125,7 @@ public sealed partial class AdvancedDbCollectionView<TEntityAccess, TEntity> : A
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             AppDbContext dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            dbContext.Set<TEntity>().ExecuteUpdate(static update => update.SetProperty(entity => entity.IsSelected, false));
+            AppDbQueries.ClearSelection<TEntity>(dbContext);
 
             if (currentItem is not null)
             {

@@ -92,7 +92,8 @@ public sealed partial class PrivateNamedPipeServer : IDisposable
             switch (header.Type, header.Command)
             {
                 case (PipePacketType.Request, PipePacketCommand.RequestElevationStatus):
-                    ElevationStatusResponse resp = new(HutaoRuntime.IsProcessElevated, Environment.ProcessId);
+                    // Report the actual token elevation, not OverrideElevationRequirement.
+                    ElevationStatusResponse resp = new(Environment.IsPrivilegedProcess, Environment.ProcessId);
                     serverStream.WritePacketWithJsonContent(PrivateNamedPipe.PrivateVersion, PipePacketType.Response, PipePacketCommand.ResponseElevationStatus, resp);
                     serverStream.Flush();
                     break;
@@ -105,7 +106,7 @@ public sealed partial class PrivateNamedPipeServer : IDisposable
                 case (PipePacketType.Request, PipePacketCommand.BetterGenshinImpactToSnapHutaoRequest):
                     PipeRequest<JsonElement>? request = serverStream.ReadJsonContent<PipeRequest<JsonElement>>(in header);
                     PipeResponse response = await betterGenshinImpactNamedPipeServer.DispatchRequest(request).ConfigureAwait(false);
-                    serverStream.WritePacketWithJsonContent(PrivateNamedPipe.PrivateVersion, PipePacketType.Response, PipePacketCommand.SnapHutaoToBetterGenshinImpactResponse, response);
+                    serverStream.WritePacketWithJsonResponse(PrivateNamedPipe.PrivateVersion, PipePacketType.Response, PipePacketCommand.SnapHutaoToBetterGenshinImpactResponse, response);
                     serverStream.Flush();
                     break;
 

@@ -28,7 +28,6 @@ using Snap.Hutao.Remastered.Web.Hoyolab.Passport;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Response;
 using System.Net.Http;
-using System.Collections.Immutable;
 using System.Text;
 using EntityUser = Snap.Hutao.Remastered.Model.Entity.User;
 
@@ -58,7 +57,8 @@ public sealed partial class UserViewModel : ObservableObject
     [ObservableProperty]
     public partial AdvancedDbCollectionView<User, EntityUser>? Users { get; set; }
 
-    public ImmutableArray<NameValue<OverseaThirdPartyKind>> OverseaThirdPartyKinds { get; } = ImmutableCollectionsNameValue.FromEnum<OverseaThirdPartyKind>(static kind => kind is OverseaThirdPartyKind.Twitter ? ThirdPartyIconConverter.TwitterName : kind.ToString());
+    // WinUI ItemsSource cannot consume a boxed ImmutableArray under Native AOT.
+    public List<NameValue<OverseaThirdPartyKind>> OverseaThirdPartyKinds { get; } = new(ImmutableCollectionsNameValue.FromEnum<OverseaThirdPartyKind>(static kind => kind is OverseaThirdPartyKind.Twitter ? ThirdPartyIconConverter.TwitterName : kind.ToString()));
 
     public IProperty<bool> IsViewUnloaded { get; } = Property.Create(false);
 
@@ -134,7 +134,10 @@ public sealed partial class UserViewModel : ObservableObject
         Users = users;
         Users.Refresh();
 
-        bool hasUninitializedUsers = Users.Source.Any(static user => !user.IsInitialized);
+        // An account whose cookie was rejected can never become initialized by retrying.
+        // Keeping it out of the pending condition stops the network retry loop from
+        // flooding the same -100 responses until the user supplies a new cookie.
+        bool hasUninitializedUsers = Users.Source.Any(static user => !user.IsInitialized && !user.IsCookieInvalid);
         if (needsRetry || hasUninitializedUsers)
         {
             networkRetryCoordinator.MarkPending("UserViewModel.LoadUsers", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
@@ -361,13 +364,22 @@ public sealed partial class UserViewModel : ObservableObject
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Refresh cookie token", "UserViewModel.Command"));
 
-        if (Users?.CurrentItem is null)
+        User? user = Users?.CurrentItem;
+        if (user is null)
         {
             return;
         }
 
-        _ = await userService.RefreshCookieTokenAsync(Users.CurrentItem).ConfigureAwait(false)
-            ? messenger.Send(InfoBarMessage.Success(SH.ViewUserRefreshCookieTokenSuccess))
-            : messenger.Send(InfoBarMessage.Warning(SH.ViewUserRefreshCookieTokenWarning));
+        if (await userService.RefreshCookieTokenAsync(user).ConfigureAwait(false))
+        {
+            // A successful refresh proves the stored credentials are accepted again,
+            // so let the next resume attempt initialize the account.
+            user.IsCookieInvalid = false;
+            messenger.Send(InfoBarMessage.Success(SH.ViewUserRefreshCookieTokenSuccess));
+        }
+        else
+        {
+            messenger.Send(InfoBarMessage.Warning(SH.ViewUserRefreshCookieTokenWarning));
+        }
     }
 }

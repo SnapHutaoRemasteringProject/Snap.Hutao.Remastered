@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dev="using:DevWinUI"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
     xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
@@ -54,25 +55,9 @@
                 IsEnabled="{x:Bind IsSendCaptchaEnabled, Mode=OneWay}"/>
         </Grid>
 
-        <shuxcth:MaterialSwap>
-            <shuxcth:MaterialSwap.Native>
-                <PasswordBox
-                    x:Name="GlassNative_2301"
-                    KeyDown="OnTextKeyDown"
-                    KeyUp="OnTextKeyUp"
-                    Password="{x:Bind Captcha, Mode=TwoWay}"
-                    PasswordChar="*"
-                    PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaCaptchaHint}"/>
-            </shuxcth:MaterialSwap.Native>
-            <shuxcth:MaterialSwap.Glass>
-                <wl:LiquidGlassPasswordBox
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    KeyDown="OnTextKeyDown"
-                    KeyUp="OnTextKeyUp"
-                    Password="{x:Bind Captcha, Mode=TwoWay}"
-
-                    PlaceholderText="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaCaptchaHint}"/>
-            </shuxcth:MaterialSwap.Glass>
-        </shuxcth:MaterialSwap>
+        <dev:PinBox
+            Header="{shuxm:ResourceString Name=ViewDialogUserMobileCaptchaCaptchaHint}"
+            Password="{x:Bind Captcha, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            PasswordLength="6"/>
     </StackPanel>
 </ContentDialog>

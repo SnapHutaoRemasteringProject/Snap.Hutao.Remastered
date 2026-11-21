@@ -1,91 +1,166 @@
-# R2R 部署与 Native AOT 兼容性准备
+# 构建、原生发布与交付说明
 
-## 默认构建与部署
+更新：2026-11-14。当前按用户要求只构建/发布 Debug。现状与证据见 [开发报告](aot-development-report.md)，剩余工作见 [当前阻塞项](aot-blockers.md)。
 
-所有配置（包括 Debug）默认启用 `PublishReadyToRun`。不启用 Native AOT、裁剪或单文件发布；插件、运行时 C# 脚本和 CoreCLR/JIT 功能保持不变。
-`Release` 是构建配置，`publish` 是部署产物生成阶段；两者不是二选一，Debug 也可以发布 R2R。
+## 构建模式
+
+默认 Debug/Release 都启用 ReadyToRun，使用 .NET 运行时，不默认裁剪或 Native AOT。
+Native AOT 是显式发布模式；Release 是配置，publish 是交付阶段，不能混为一谈。
+应用只声明 x64，不增加 AnyCPU 映射，不固定 SDK feature band。
 
 ```powershell
-dotnet build src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx -c Debug
+dotnet restore src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx
+dotnet build src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx -c Debug -p:Platform=x64
+dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.Test -c Debug --logger trx
 ```
 
-应用及解决方案只声明 x64，不在 csproj 中添加 AnyCPU 映射。
-本地 Build 通过 SDK 的 `ComputeFilesToPublish` 生成本轮 R2R，随后把 SDK 选择的 R2R 文件同步到普通 bin。
-`obj` 中的 IL 编译输入保持不变；非打包 F5 配置和直接运行 bin 中 exe 也能取得 R2R 文件。
-VS 的 MSIX Deploy 使用 WinUI 打包 SDK 的发布文件清单，清单应引用本轮 R2R，而不是旧 AppX 副本。
-仅生成编译产物不等于已经部署，必须核对部署清单/最终 AppX 中主 DLL 的 R2R 头。
+同目录旧实例会锁住普通 bin，先由用户关闭或选独立编译输出；独立 OutDir 编译检查不等于已经生成完整可部署布局。
+测试项目源码链接生产文件，没有引用整个 WinUI 应用，测试 PASS 不覆盖所有页面。
 
-四个 Cake 入口使用 `DotNetPublish`，签名、MSIX、SignPath ZIP 和安装器统一消费 `bin/x64/<Configuration>/<TargetFramework>/win-x64/publish`。
-SDK 发布不包含生成后的 AppxManifest.xml，四个入口的 Copy files 步骤显式复制它，并继续补齐 Assets/Resource；不能只改发布命令而遗漏 MSIX 清单。
-构建结束和发布结束均自动检查最终主 DLL 的 R2R 文件头；启用 R2R 却没有对应产物时直接报错。
-验证不依赖额外工具安装，也不加载应用。显式指定 `-p:PublishReadyToRun=false` 可临时恢复普通 IL 构建。
+## Native AOT 发布
 
-首次 R2R 编译会增加构建时间和文件大小。F5 可以加载 R2R 产物，但不保证所有方法始终执行预编译代码；
-调试器、运行时回退、分层 JIT 以及 `DOTNET_ReadyToRun` / `COMPlus_ReadyToRun` 环境变量都会影响实际执行。
-不自动修改 VS 调试设置或强制优化 Debug 代码；比较启动性能时应同时检查无调试器启动。
-现有下载功能使用 Cake.Common 自带的 DownloadFile，不需要 Cake.Http addin。
+`dotnet build -p:PublishAot=true` 只更新托管编译输入和 XAML，不会替代原生发布。`bin/.../native` 中可能保留旧 EXE/PDB；源码和生成代码已经修复，并不表示该文件已经更新。请完整 publish 到新目录，并从该目录使用匹配的 EXE、PRI/XBF 和资源。
 
-## 已接入的 JSON 路径
+在 Windows、.NET 11 SDK、Windows SDK、VC++ 工具和 WinUI 构建工具齐备的环境执行完整发布：
 
-- 非打包设置文件：读取使用 `Dictionary<string, JsonElement>` 的源生成元数据，写入使用有限类型编码器。
-  覆盖 LocalSetting 已声明的 19 种类型，包括 Windows Point/Size/Rect 与复合设置；格式、缓存值表示、文件位置和原子替换方式不变。
-- 数据库 JSON：`JsonTextValueConverter<T>` 使用 `PersistenceJsonContext`，覆盖角色详情、实时便笺、深渊、幻想真境剧诗、幽境危战五种载荷。
-  使用原有命名、数字字符串、空值、字符串转义和未知字段策略；不修改 SQL 表结构或旧 JSON 格式。
-- 124 种传递闭包类型已检查注册。ID 类型的空 partial 声明供 JSON 生成器识别，字段和运算符仍由 IdentityGenerator 生成；
-  显式注册封闭的 ID 转换器，防止另一个生成器看不到转换器属性时把 ID 写成空对象。
-- 相关六个枚举属性改用泛型 `JsonStringEnumConverter<TEnum>`，避免运行时构造枚举转换器。
-- 公共 `JsonWireOptions` 不创建反射 resolver，持久化上下文不再通过复制 `JsonOptions.Default` 初始化。
-- 仓库列表的直接读取及 HTTP 序列化入口使用基础设施源生成上下文；编码、声明类型和数字字符串策略保留。
-- 已知的三种属性曲线集合、技能参数集合、武器曲线集合使用生成的数组元数据和静态封闭转换器。
-  普通运行时保留插件自定义泛型的兼容路径；无动态代码的运行时不尝试构造未知泛型。
-- 字符串枚举/数字字符串枚举使用标准 `JsonConverter` 属性及封闭泛型转换器；ID 转换器显式获取 UInt32 元数据。
-  严格数字、自定义 UInt32 转换器与未知枚举数值均有回归测试。
-- 养成页三个导航目标改为显式 typeof 映射，不再通过字符串发现类型。
+```powershell
+$nativeOutput = Join-Path $PWD ('artifacts/aot/publish-' + (Get-Date -Format yyyyMMdd-HHmmss))
+dotnet restore src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj -r win-x64 -p:PublishAot=true -p:PublishReadyToRun=false
+dotnet publish src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Snap.Hutao.Remastered.csproj -c Debug -p:Platform=x64 -r win-x64 -p:PublishAot=true -p:PublishReadyToRun=false -p:SelfContained=true -p:JsonSerializerIsReflectionEnabledByDefault=false "-p:PublishDir=$nativeOutput/"
+./scripts/Test-NativePublish.ps1 -PublishDirectory $nativeOutput
+```
 
-未知的新数据库 JSON 类型必须显式登记，不能静默回退到反射。
-其他网络接口、插件自定义数据等尚未迁移的 JSON 路径仍保留旧实现，不能因此宣称全项目 JSON 已兼容 Native AOT。
+仅先还原普通解决方案，再带 --no-restore 发布 AOT，可能没有导入原生编译器，无法产生原生 EXE。以上 AOT 参数必须同时用于还原；之后才可在相同配置下加 --no-restore。项目现在会在 PrepareForPublish 前明确拒绝未激活的原生编译器。当前用户要求不自动还原时，须由用户执行该定向还原或明确授权。
 
-## EF 编译模型
+原生和普通构建的隐式包不同，不要并行还原同一项目、覆盖同一个 obj/project.assets.json 后再跳过还原。
+此前 rc.3 的 ILC 目标在 --no-build 下仍调用 Compile，曾遇到 WinUI 生成项未初始化；当前继续使用完整发布，不依赖该组合。
+使用新目录，避免旧 R2R/CoreCLR 文件混入交付；不跳过检查来容忍旧文件。
 
-`Model/Entity/Database/Compiled` 是官方 EF 工具生成的模型，25 个实体由 EF 11 的程序集属性自动发现。
-设计时工厂使用内存 SQLite，不访问开发者个人数据库。
-原有迁移路径保留；编译模型不等同于查询预编译，也不消除迁移 API 的 Native AOT 限制。
+## 构建目标的职责
 
-增删实体、属性、关系或更改模型配置后，使用清单中固定版本的 EF 工具重新生成并提交结果，不手改生成文件：
+| 文件 | 职责 |
+|---|---|
+| Build/PatchedXamlCompiler.targets | 在私有副本修正 WinUI 编译器资源名；副本按配置/TFM/RID 隔离，避免执行中的文件互锁 |
+| Build/ReadyToRun.targets | 默认 R2R 输出、最终 PE 检查与必需载荷检查 |
+| Build/AotPublish.targets | AOT 引用顺序、ILC 前 PRI/XBF 准备、正确时间加入发布清单、部署辅助程序补齐、最终原生检查 |
+| Build/DatabaseSchema.targets | 历史迁移源指纹及 SQL 资源接线 |
+| Build/BundledImages.targets | 可选不可变图片快照 |
 
-日常维护使用工具清单固定版本的 `dotnet ef dbcontext optimize`，选择 Debug/x64，输出到现有 Compiled 目录。
-直接调用 EF 项目工具时给工具进程传入 Platform=x64，不修改项目的平台配置。
+AOT 生成/复制使用 SDK 的真实流水线，不手补生成结果。
+XBF 清单来自当前 XAML 输入，不扫描旧 publish/AppX 文件，因此已删除脚本窗口的旧缓存不会重新打包。
+发布门禁检查 x64 PE、CLR 数据目录为空、没有主托管 DLL/根目录 CoreCLR 宿主，及 PRI/XBF、Assets/Resource 和原生载荷。
+单独的 apphost 本来也可能没有 CLR 头，不能只看这一项就认定 Native AOT。
+Cake/MSIX/安装器必须消费同一轮完整发布树，不能改用旧 AppX 副本；本轮尚未验收打包安装。
 
-本轮对 Debug 执行 `--precompile-queries --no-scaffold`，独立重试后仍在 MSBuildWorkspace 加载 XAML 的
-`.g.i.cs`/`.g.cs` 时发生重复定义（XamlGeneratedProgram、InitializeComponent 等）。未把这个失败的查询生成流程
-加入默认构建，也未修改生成文件或用 `EF.CompileQuery` 冒充 Native AOT 查询预编译。后续需要解耦 EF 查询与 UI 设计时编译。
+## JSON 与数据库维护
 
-## 验证与边界
+JsonSerialize 从调用方同一份 options/生成解析链取得 JsonTypeInfo；未知类型或解析器异常明确失败，不静默反射重试。
+JsonOptions.Default/Create 在普通运行时与原生运行时均使用生成契约，让缺失契约在普通调试中也能暴露。
+显式托管兼容入口 CreateReflection 带有裁剪/动态代码要求标记，且仍要求 IsReflectionEnabledByDefault 开启；原生发布关闭该开关。
+新网络响应、元数据、AI 会话和工具类型必须补齐根与嵌套闭包，并验证旧格式跨读写。
+当前会话通过 AgentConversationJsonOptions 登记应用契约；SDK 类型仍由 SDK 自身契约处理，以保留其内部审批状态字段。旧文件双向读写、24 种可观察内容、重试与待审批恢复均有验证；这不代替实际模型服务/工具执行验收。
 
-2026-10-20 R2R 部署接通验证：
+2026-11-15 最新源码检查：完整 Debug 重编译通过，0 错误、84 个警告；绑定警告 WMC1510 剩 7 个。
+构建记录为 `artifacts/aot-typed-binding-contracts.log`，分类见下表。
+使用 `--no-restore`、`PublishAot=true`、`AotAnalysis=true`，未关闭裁剪或 AOT 分析器。
+这是编译和分析检查，没有执行新的原生发布或启动应用。关闭默认 JSON 反射的相关回归 44/44；
+旧 AI 会话格式对照单独在托管反射模式验证，3/3 通过。
+本轮选择项/控件模型的属性分派、WinRT 转换元数据、集合赋值、页面 VM 属性提供器声明及 HTTP/元数据契约检查均按最终程序集复核。
+GachaArchive.Uid 的异常来自 DisplayMemberPath：即使 ItemsSource 使用 x:Bind，显示属性仍通过 ICustomPropertyProvider 查找。
+三个存档类型已补齐对应属性的生成访问器，且修复前程序集会被新增的分派检查拒绝。
+手写源码中的转换位置使用 CsWinRT 官方 DynamicWindowsRuntimeCast 标注；编译产物检查确认 71 个目标类型具有实际 DynamicDependency 根。
+泛型 NameValue<T>、LevelParameters<TLevel,TParam> 的 UI 部分显式实现 IBindableCustomPropertyImplementation，
+从而不依赖不支持泛型声明的属性生成器；语言选项也保留维护来源等派生属性的分派。
+20 处已确认的 NameValue 选择器改用应用范围的共享编译模板，保持原选项实例、类型化值、选择和相等性逻辑。
+其余已确认的启动方案、账户、养成计划、评分预设、楼层、世界等级与技能等级显示字段均有实际编译出的属性访问器。
+45 个存在转换警告的依赖属性改为显式源码声明，getter 直接标注需要保留的类型；
+注册字段、默认值、回调和访问器语句与迁移前生成定义作逐 token 对照，45 项均一致。未修改生成器包或生成文件。
+背景图片像素访问改为已知 IMemoryBufferByteAccess IID 的 QueryInterface 和原生槽位调用，避免传统 ComImport RCW；
+4 项缓冲区回归覆盖内存读写、HRESULT 失败、空缓冲区与非法长度。文件扩展名忽略大小写，
+本地文件夹变化触发刷新，过渡完成后才提交上一张图片状态，避免取消后单图不再重试；非退出时的 COM 呈现失败会记录错误。
+养成编辑接口现在声明既有实现提供的属性通知及突破状态写入契约，编译绑定仍跟踪等级变更和双向编辑。
+统计卡片在 DataContext 变化时刷新私有类型化入口；下载窗口使用函数绑定，避开 Window 转换器查找根被当作 FrameworkElement 的生成代码错误。
+AutoSuggestTokenBox 的 ControlTemplate 上下文菜单命令改为源码声明的命令属性，并用限定范围的 `WinRT.GeneratedBindableCustomProperty` 暴露；生成结果包含两个命令访问器。控件不能直接套用仓库属性提供器：它同时遍历继承的 Control 属性，其中 nullable 值类型 setter 会产生 `Unsafe.Unbox<bool?>`（CS0453）。
+数据库生成宿主同样通过 Debug --no-restore 编译，仅余 NU1507；共享 DTO 的 WinRT 标注移到应用 UI 部分，未增加宿主依赖。
+当前完整重编译的实际警告如下；没有新增全局或局部警告屏蔽：
 
-- dotnet CLI 和本机 VS MSBuild 的完整 Debug Build 均成功；普通 bin 主 DLL 与 SDK 本轮 R2R 输出哈希一致，obj 中 IL 编译输入保持原样。
-- Debug Publish 成功；四个 Cake 入口编译及 dry-run 均通过。
-- 读取 VS 生成的部署清单并按其文件映射暂存 953 个文件到 Debug/AppX；bin、AppX、publish 三处主 DLL 哈希一致且均有 R2R 头。
-- 按完整 Copy files 步骤生成未签名 Debug MSIX，核对包内主 DLL 与发布 DLL 完全一致，并检查生成清单、PRI 和图标资源。验证包随后删除。
-- 新增的最终文件头检查在 dotnet MSBuild 和 VS MSBuild 下均能接受 R2R，并能拒绝普通 IL。
-- 167 项 Debug 回归测试通过（排除两项注册表/外网环境依赖测试）；实际加载 AppX 中本轮 R2R 后，JSON、临时数据库、插件和脚本兼容检查通过。
+| 类别 | 数量 | 后续范围 |
+|---|---:|---|
+| WMC1510 | 7 | 原生菜单 TemplateSettings 宽度 1；ItemsPanel 的祖先属性路径 3；AutoSuggest 通用 DisplayMemberPath/TextMemberPath 3 |
+| CsWinRT1034 / CsWinRT1035 | 0 | 71 个手写标注类型的实际裁剪根已复核 |
+| CS8305 | 75 | SDK 实验性图表、窗口布局和控件 API |
+| WMC1501 | 1 | SDK 实验性 XamlChartsResources |
+| IDE0005 | 0 | 数据库重复导入已清理，官方查询生成与校验通过 |
+| NU1507 | 1 | 保留原有包源策略 |
 
-未执行远端 CI、正式签名/安装，未附加 VS 调试器实际测量 F5，也未在该验证过程中启动交互 WinUI。清单暂存检查不等同于已经注册安装包。
+7 个绑定警告来自通用控件的运行时路径与原生属性通知；AutoSuggest 当前六个调用页面均提供编译的 SuggestedItemTemplate，
+未删掉控件对 DisplayMemberPath/TextMemberPath 的通用支持。ItemsPanelTemplate 也未为消除警告改换视觉结构。
+本次检查实际覆盖 24 类属性分派，包括五个页面/用户视图的 ViewModel 和 CultivateItemView.IsToday；
+149 个生成 XAML 文件没有直接向 WinRT setter 传递 ImmutableArray；HTTP/元数据契约及 VM 声明检查通过。
+本次完整重编译未报告 IL2026/IL3050，但这不证明上游要求已解决：此前记录的 EF Core 和 EventTriggerBehavior 分析要求，
+以及第三方程序集、EF 生成枚举的原生链接诊断，仍须在新的原生发布中复核。没有关闭分析器，也没有为这些路径新增屏蔽。
+修复依据为 [CsWinRT 绑定说明](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/docs/aot-trimming.md#icustompropertyprovider-type-support-on-aot-winui-binding)
+和当前版本的 [转换标注生成器](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/Authoring/WinRT.SourceGenerator/DynamicWindowsRuntimeCastGenerator.cs)。
+泛型属性分派使用当前版本公开的 [ICustomPropertyProvider 实现契约](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/WinRT.Runtime/Projections/ICustomPropertyProvider.net5.cs)，没有启用反射回退。
 
-验证不接触用户实际设置或数据库：设置用内存样例，数据库使用独立临时文件。
-已验证新旧 JSON 跨读写、数字字符串、未知字段、Windows 复合值，以及编译模型与设计模型的实体、列、键、关系及索引一致性。
-设置编码器还已独立编译并运行成 Native AOT 程序，关闭 JSON 反射，实际完成读写。
-现有测试项目新增的设置兼容性测试直接链接生产编码器。
+NuGet.Config 保持原配置；本轮没有执行依赖还原或修改包版本。NU1507 的包源策略警告暂不处理。
 
-2026-10-20 本轮只验证 Debug：真实仓库响应及 UTF-16 HTTP 字符集、五种元数据集合、插件泛型兼容路径、
-124 类型旧 JSON、25 实体设计模型一致性及五个实际 JSON 列的临时库读写均通过。
-相关 Debug 回归测试 21 项通过；Debug 扩展回归 167 项通过（显式排除既有的注册表与外网 HTTPS 环境依赖项）。
-生产设置/ID/枚举编码器作为 Debug Native AOT 程序在关闭 JSON 反射时运行通过。
-前一轮曾检查实验生成 DLL 的 R2R 头，并直接加载 obj 中的 R2R 程序集完成上述运行检查；该记录不能证明随后更改配置后的 VS/CI 产物仍然启用了 R2R。
-AppX 目录要在部署时才会刷新，不能把其中旧部署副本的验证当作本轮构建验证。
-未执行正式签名/安装和交互 UI 测试，也未读取真实历史用户数据。
+13c608180 是应用仓库的 AutoSuggestTokenBox 命令访问修复，不是生成器版本提交。
+已核对 NuGet 官方索引、应用中央版本与实际 assets，SourceGeneration 均为最新已发布版 1.3.17；
+本地生成器仓库从 1.3.16 快进到 9d2d256（1.3.17），该版本只修正 DP 标识符公开性，尚不包含 DP getter 的裁剪标注改造。
+当前两个显式命令确已进入编译后的属性分派，先前程序集会被回归检查拒绝；不能把报告 Build=aae23dca9 当作已验证 13c608180 的运行结果。
+原 obj 程序集被用户侧映射占用，本轮使用 obj/aot-menu-check 和 artifacts/menu-check-bin 独立验证，没有终止用户进程。
+托盘菜单内容由 UserControl 承载九处编译绑定，Flyout 保留呈现和关闭生命周期；另有七处抽卡卡片可见性改用编译绑定。
+这些是编译/契约验证，没有重新发布或启动原生程序。
 
-这些验证不是实际 WinUI 启动、退出、导航或性能实测，不能据此给出启动加速百分比。
-完整 Native AOT 仍需继续处理网络 JSON、动态转换器、查询预编译、迁移执行以及 WinRT 封送；未来纯 Native AOT 版才按授权禁用插件/脚本入口。
-需要查看剩余编译器诊断时，Debug 构建添加 `-p:AotAnalysis=true`；不额外导出生成源码副本，也不改变运行功能。
+2026-11-15 的模板实现保留原 ResourceDictionary 和模板视觉树。AutoSortList、ItemFlyoutContent、
+AutoSuggestTokenBox/Item、ItemIcon、MaterialNative、VerticalCard 仅增加字典的 x:Class/InitializeComponent，
+并在合并字典中实例化相应类型；模板绑定由生成的 IDataTemplateComponent.ProcessBindings 驱动，
+没有给 ResourceDictionary 添加 Loading 生命周期，也没有重新抽取 UserControl。
+页面模板通过带 x:DataType 的 ElementName Binding 直接引用页面公开的强类型 ViewModel；五个视图的 BindingProxy 全部移除，原代理类也已删除。
+ViewModel 暴露既有作用域实例，DataContext 更换时发出属性通知，保留服务容器的创建、取消与释放流程；不在 XAML 中另建 VM。
+五个视图使用限定为 ViewModel 属性的 GeneratedBindableCustomProperty，并检查最终程序集中的实际分派。
+本机编译器对模板中的 x:Bind 根页面引用生成了错误的 WeakReference 参数（CS1503）；该路径没有修改生成文件，改为上述有类型声明及静态分派的 Binding。
+ItemsRepeater 的 ElementName 跨模板问题 [#560](https://github.com/microsoft/microsoft-ui-xaml/issues/560) 已标记在 WinAppSDK 1.6 修复；本项目使用更新版本。
+15 处 DisplayMemberPath 改用 11 个共享强类型文本模板，仍显示原 Name/DisplayName/Uid/WorldLevel/Floor，
+保留原选项对象、类型化值、选择和相等性行为；会通知的账户名称继续 OneWay，快照选项使用 OneTime。
+AutoSuggest 编辑内容使用 PreTokenStringContainer.Text 的编译双向绑定，菜单命令与删除参数直接来自模板父控件。
+INamedValue 增加只读的对象值接口，NameValue<T> 显式实现它，不改变公共泛型 Value 或 JSON 字段。
+四种带输出的 AI 工具结果共用只读通知接口，原 JSON 契约保持不变。
+补齐 CultivateItemView.IsToday 的静态属性分派；修复 VerticalCard 不存在的 ElementName 宽度来源，
+以及中文引导页引用不存在的协议属性、导致真正的下游协议确认未能更新的问题。
+评分颜色转换器在明暗主题中原本完全相同，合并成一份后使用强类型绑定；其他主题相关配置保留。
+托盘菜单 TemplateSettings 宽度仍用原生运行时绑定，避免 OneTime 丢失后续宽度更新。
+字典实现遵循 [官方资源字典编译绑定说明](https://learn.microsoft.com/en-us/windows/apps/develop/data-binding/data-binding-in-depth#resource-dictionaries-with-xbind)。
+这些变更没有改动 NuGet.Config、依赖版本、源生成器包或还原依赖；数据库查询产物由官方生成工具更新。
+
+数据库运行时升级使用版本化 SQL；生产查询具体化并由官方工具预生成。
+统一入口为 Generate-DatabaseAot.ps1，维护及回滚/边界覆盖见 [数据库实现](database-aot.md)。
+不要直接对含 WinUI XAML 的主项目重走旧 Workspace 查询生成路线，设计/Workspace 依赖保留在独立工具。
+
+## 独立数据目录与启动
+
+非打包应用接受进程环境变量 SNAP_HUTAO_PROFILE_ROOT，必须是绝对路径。
+设置、诊断设置、数据库、缓存及基于 DataDirectory 的业务文件进入该目录。
+显式 profile 不读取旧设置中的个人数据目录/待删除目录；单实例锁与私有 IPC 按目录隔离，也不替换普通安装的 URI 注册。
+它不会自动隔离游戏、外部辅助进程或全部系统集成。MSIX 与默认启动路径保持原行为。
+
+```powershell
+./scripts/Test-NativePublish.ps1 -PublishDirectory <发布目录> -Launch -ProfileRoot <独立目录绝对路径>
+```
+
+-Launch 启动完整应用，并把 stdout/stderr 写入 profile；它不自动证明导航、账户、数据库和主要功能通过。
+用户物理 Esc 已停止本轮界面操作，未恢复前不自动启动/操控新的测试窗口。
+认证、验证码和真实账户步骤由用户完成，不拿个人数据做破坏性验证。
+
+## 当前产品范围
+
+插件/Harmony 已在此前分支移除。用户现已授权移除 C# 脚本调试功能：菜单、窗口、上下文、执行器与测试入口均删除。
+不加入 CoreCLR 脚本进程；应用无 Roslyn 脚本/Workspace/EF Design 运行时依赖，构建期分析器和数据库设计工具仍保留。
+CsWinRT 维持 2.3.1；3.0 的资产问题与包适配见 [独立评估](cswinrt3-assessment.md)，不是本次 Native AOT 的前置条件。
+
+## 当前发布流程
+
+Alpha、Canary、Publish 和 Publish (SignPath) 默认打包 Native AOT。发布文件沿用原频道名称，不添加运行时后缀。内部原生发布目录为 `publish-aot`，显式指定 `--publishAot=false` 仍可在本地构建 R2R 供开发调试。
+
+`Test-PackageRuntime.ps1` 在打包前检查实际运行时。原生包检查 x64 PE、CLR 头、PRI/XBF、资源及运行时附属文件。SignPath 重新解压签名 ZIP 后也重新验证。发布渠道、App Installer 与 EXE 更新方式见 [分发说明](appinstaller-release.md)。

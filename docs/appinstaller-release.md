@@ -1,0 +1,25 @@
+# App Installer 与旧版 EXE 分发
+
+正式版默认使用 Native AOT。Publish MSIX 使用原正式版包名 `E8B6E2B3-D2A0-4435-A81D-2A16AAF405C8` 和 Publisher `CN=SnapHutaoRemasteringProject`，发布证书须与 Publisher 一致。Alpha 和 Canary 保留各自的包标识。安装和更新由 Windows 校验包身份与签名。
+
+## 下载和更新
+
+| 用途 | 文件或入口 |
+| --- | --- |
+| 推荐安装和自动更新 | [正式版 App Installer](https://package.snaphutaorp.org/Publish/Snap.Hutao.Remastered.Publish.x64.appinstaller) |
+| 手动安装打包版 | `Snap.Hutao.Remastered-<version>.msix` |
+| 继续使用旧解包版 | `Snap.Hutao.Remastered-<version>-Setup.exe` |
+| 安装时一并获取图片资源 | `Snap.Hutao.Remastered-<version>-Setup-cache.exe`，在构建配置提供图片快照时生成 |
+
+打开下载后的 `.appinstaller` 文件可以关联 Windows 更新源。胡桃也能通过 Windows 部署 API 直接打开托管描述文件，无需把 XML 写入用户数据目录。独立 MSIX 的用户仍能在胡桃里检查和安装对应频道的更新。Windows 的浏览器 `ms-appinstaller:` 协议默认关闭。 [Microsoft App Installer 文件说明](https://learn.microsoft.com/en-us/windows/msix/app-installer/app-installer-file-overview) · [Windows SDK 接口说明](https://learn.microsoft.com/en-us/windows/msix/app-installer/app-installer-documentation)
+
+解包版检查到更新时，会推荐安装 MSIX 打包版。选择官方源或 Mirror 酱仍可继续用 EXE 更新原安装。打包版的公开发布包可以使用官方 App Installer 更新，也可选择 Mirror 酱下载 MSIX。测试频道使用自己的官方更新地址。Mirror 酱继续使用 `SnapHutaoRemastered` 和 `SnapHutaoRemastered_msix` 两个资源 ID。
+
+## CI 和 R2
+
+- Publish 校验并上传已签名的 MSIX、标准 EXE 和可选缓存 EXE。标准 EXE 和独立 MSIX 同步到 R2 桶根，供旧版更新器及直接下载使用。
+- Publish 与 Alpha 各使用一个频道目录，公开文件名不带运行时后缀。Canary 生成工件供 CI 验证。
+- 自托管发布先上传并校验版本目录下的 MSIX、证书及框架依赖，再替换固定的 `.appinstaller`。只有替换验证通过后，才清理同一频道内匹配的旧版本目录。
+- SignPath 工作流提供相同命名的原生安装包。正式版 Mirror 酱工作流从 GitHub Release 选择标准 EXE 和 MSIX，分别上传到各自的资源。
+
+发布验收需要在 Windows 上覆盖三种情况：已有关联更新源的 MSIX、直接安装的 MSIX、使用 EXE 的旧解包版。对每种情况核对包身份、证书、升级选项及用户数据目录。
