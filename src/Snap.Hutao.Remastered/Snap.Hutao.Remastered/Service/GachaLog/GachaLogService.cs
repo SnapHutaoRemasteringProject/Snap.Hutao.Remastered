@@ -54,9 +54,9 @@ public sealed partial class GachaLogService : IGachaLogService
         using SentrySpanScope span = SentrySpanScope.StartChild("gacha.statistics", $"Beyond gacha statistics {archive.Uid}");
         using (ValueStopwatch.MeasureExecution(logger))
         {
-            ImmutableArray<BeyondGachaItem> beyondItems = gachaLogRepository.GetBeyondGachaItemImmutableArrayByArchiveId(archive.InnerId);
-            span.SetData("gacha.items", beyondItems.Length);
-            return await gachaStatisticsFactory.CreateAsync(context, default!, beyondItems).ConfigureAwait(false);
+            ImmutableArray<BeyondGachaItem> bydMaterials = gachaLogRepository.GetBeyondGachaItemImmutableArrayByArchiveId(archive.InnerId);
+            span.SetData("gacha.items", bydMaterials.Length);
+            return await gachaStatisticsFactory.CreateAsync(context, default!, bydMaterials).ConfigureAwait(false);
         }
     }
 

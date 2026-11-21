@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Service.Metadata.ContextAbstraction.ImmutableDictionary;
 
-public interface IMetadataDictionaryIdBeyondItemSource
+public interface IMetadataDictionaryIdBydMaterialSource
 {
-    ImmutableDictionary<BeyondItemId, BeyondItem> IdBeyondItemMap { get; set; }
+    ImmutableDictionary<BydMaterialId, BydMaterial> IdBydMaterialMap { get; set; }
 }

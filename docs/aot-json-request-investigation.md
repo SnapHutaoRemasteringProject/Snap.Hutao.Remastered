@@ -18,7 +18,7 @@
 
 `scripts/Test-HttpJsonContracts.ps1` 读取编译程序集的实际泛型调用和生成 resolver 的 IL，核对 HTTP 请求/响应、元数据集合及元素契约，并验证默认 resolver 确实注册了相应 context。它不加载或执行应用程序集。先前只登记响应的中间构建被此检查报告缺少 31 个请求契约；补齐后的构建通过。
 
-2026-11-13 追加：`MetadataFileStrategies` 里的 `BeyondItem`、`HardChallengeSchedule`、`RoleCombatSchedule`、`Combine` 四个文件此前只有策略而没有 `MetadataFileJsonContext` 根契约，颂愿（千星奇域）页面因此在读取 `ImmutableArray<BeyondItem>` 时抛 `NotSupportedException`，同类的幽境危战、剧诗和合成页面也会失败。已补齐这四个根契约，并为 `BeyondItemId`、`CombineId` 增加源声明和闭合 `IdentityConverter`。验证方式：用编译后的 `JsonSerializeContexts.CreateOptions()` 反序列化 CHS 元数据仓库中全部 27 个文件根（含这 4 个），全部成功且 `Id` 非零。`Test-HttpJsonContracts.ps1` 依赖 PowerShell 7（其 `Add-Type` 源使用 C# 6 语法），在只有 Windows PowerShell 5.1 的环境中无法运行，本轮未执行该脚本。
+2026-11-13 追加：`MetadataFileStrategies` 里的 `BydMaterial`、`HardChallengeSchedule`、`RoleCombatSchedule`、`Combine` 四个文件此前只有策略而没有 `MetadataFileJsonContext` 根契约，颂愿（千星奇域）页面因此在读取 `ImmutableArray<BydMaterial>` 时抛 `NotSupportedException`，同类的幽境危战、剧诗和合成页面也会失败。已补齐这四个根契约，并为 `BydMaterialId`、`CombineId` 增加源声明和闭合 `IdentityConverter`。验证方式：用编译后的 `JsonSerializeContexts.CreateOptions()` 反序列化 CHS 元数据仓库中全部 27 个文件根（含这 4 个），全部成功且 `Id` 非零。`Test-HttpJsonContracts.ps1` 依赖 PowerShell 7（其 `Add-Type` 源使用 C# 6 语法），在只有 Windows PowerShell 5.1 的环境中无法运行，本轮未执行该脚本。
 
 ## 主页显示
 

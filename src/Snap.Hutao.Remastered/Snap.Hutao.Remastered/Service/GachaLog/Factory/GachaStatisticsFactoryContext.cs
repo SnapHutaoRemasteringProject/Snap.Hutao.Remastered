@@ -10,16 +10,16 @@ public readonly struct GachaStatisticsFactoryContext
 {
     public readonly IServiceProvider ServiceProvider;
     public readonly ImmutableArray<GachaItem> Items;
-    public readonly ImmutableArray<BeyondGachaItem> BeyondItems;
+    public readonly ImmutableArray<BeyondGachaItem> BydMaterials;
     public readonly ImmutableArray<HistoryWishBuilder> HistoryWishBuilders;
     public readonly GachaLogServiceMetadataContext Metadata;
     private readonly AppOptions appOptions;
 
-    public GachaStatisticsFactoryContext(IServiceProvider serviceProvider, ImmutableArray<GachaItem> items, ImmutableArray<BeyondGachaItem> beyondItems, ImmutableArray<HistoryWishBuilder> historyWishBuilders, GachaLogServiceMetadataContext metadata)
+    public GachaStatisticsFactoryContext(IServiceProvider serviceProvider, ImmutableArray<GachaItem> items, ImmutableArray<BeyondGachaItem> bydMaterials, ImmutableArray<HistoryWishBuilder> historyWishBuilders, GachaLogServiceMetadataContext metadata)
     {
         ServiceProvider = serviceProvider;
         Items = items;
-        BeyondItems = beyondItems;
+        BydMaterials = bydMaterials;
         HistoryWishBuilders = historyWishBuilders;
         Metadata = metadata;
         appOptions = serviceProvider.GetRequiredService<AppOptions>();

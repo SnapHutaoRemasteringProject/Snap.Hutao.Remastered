@@ -92,12 +92,12 @@ public sealed partial class GachaLogHutaoCloudService : IGachaLogHutaoCloudServi
         Guid archiveId = archive.InnerId;
 
         List<Web.Hutao.GachaLog.GachaItem> regularItems = [];
-        List<Web.Hutao.GachaLog.GachaItem> beyondItems = [];
+        List<Web.Hutao.GachaLog.GachaItem> bydMaterials = [];
         foreach (Web.Hutao.GachaLog.GachaItem item in array)
         {
             if (BeyondGachaLog.QueryTypes.Contains(item.QueryType))
             {
-                beyondItems.Add(item);
+                bydMaterials.Add(item);
             }
             else
             {
@@ -106,7 +106,7 @@ public sealed partial class GachaLogHutaoCloudService : IGachaLogHutaoCloudServi
         }
 
         gachaLogRepository.AddGachaItemRange(regularItems.Select(item => Model.Entity.GachaItem.From(archiveId, item)));
-        gachaLogRepository.AddBeyondGachaItemRange(beyondItems.Select(item => BeyondGachaItem.From(archiveId, item)));
+        gachaLogRepository.AddBeyondGachaItemRange(bydMaterials.Select(item => BeyondGachaItem.From(archiveId, item)));
         return new(true, archive.InnerId);
     }
 

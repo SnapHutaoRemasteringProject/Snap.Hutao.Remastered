@@ -103,6 +103,8 @@
     <Compile Include="../Snap.Hutao.Remastered/Web/Hoyolab/CookieExtension.cs" Link="Production/Hoyolab/CookieExtension.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Web/Hoyolab/Passport/PassportTokenExchange.cs" Link="Production/Hoyolab/PassportTokenExchange.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/User/IUserInitializationService.cs" Link="Production/IUserInitializationService.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Web/Response/KnownReturnCode.cs" Link="Production/KnownReturnCode.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Web/Response/KnownReturnCodeExtension.cs" Link="Production/KnownReturnCodeExtension.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/User/IUserFingerprintService.cs" Link="Production/IUserFingerprintService.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/User/IProfilePictureService.cs" Link="Production/IProfilePictureService.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Model/Entity/Extension/UserExtension.cs" Link="Production/UserExtension.cs" />

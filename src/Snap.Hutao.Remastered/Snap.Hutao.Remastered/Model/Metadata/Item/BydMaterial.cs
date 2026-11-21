@@ -6,13 +6,13 @@ using Snap.Hutao.Remastered.ViewModel.GachaLog;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Item;
 
-public partial class BeyondItem : 
-    IDefaultIdentity<BeyondItemId>,
+public partial class BydMaterial : 
+    IDefaultIdentity<BydMaterialId>,
     ISummaryItemConvertible,
     IStatisticsItemConvertible,
     IItemConvertible
 {
-    public required BeyondItemId Id { get; init; }
+    public required BydMaterialId Id { get; init; }
 
     public required QualityType RankLevel { get; init; }
 
@@ -35,7 +35,7 @@ public partial class BeyondItem :
         {
             Id = Id,
             Name = Name,
-            Icon = BeyondItemNameIconConverter.IconNameToUri(Icon),
+            Icon = BydMaterialNameIconConverter.IconNameToUri(Icon),
             Time = time,
             Quality = RankLevel,
             LastPull = lastPull,
@@ -49,7 +49,7 @@ public partial class BeyondItem :
         {
             Id = Id,
             Name = Name,
-            Icon = BeyondItemNameIconConverter.IconNameToUri(Icon),
+            Icon = BydMaterialNameIconConverter.IconNameToUri(Icon),
             Quality = RankLevel,
             Count = count,
         };
@@ -62,7 +62,7 @@ public partial class BeyondItem :
         {
             Id = Id,
             Name = Name,
-            Icon = BeyondItemNameIconConverter.IconNameToUri(Icon),
+            Icon = BydMaterialNameIconConverter.IconNameToUri(Icon),
             Quality = Quality,
         };
     }

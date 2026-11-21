@@ -58,19 +58,19 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
             .Select(group => new InsightPoint(GetWishPoolLabel(group.Key), group.Count()))
             .ToList(), failures);
 
-        List<BeyondGachaItem> beyondItems = ReadSafely("ChartBeyond", () =>
+        List<BeyondGachaItem> bydMaterials = ReadSafely("ChartBeyond", () =>
             gachaRepository.GetGachaArchiveByUid(uid) is { } beyondArchive
                 ? gachaRepository.GetBeyondGachaItemImmutableArrayByArchiveId(beyondArchive.InnerId).ToList()
                 : [], failures);
 
-        List<InsightPoint> monthlyBeyondWishes = ReadSafely("ChartBeyond", () => beyondItems
+        List<InsightPoint> monthlyBeyondWishes = ReadSafely("ChartBeyond", () => bydMaterials
             .GroupBy(item => item.Time.ToString("yyyy-MM", CultureInfo.InvariantCulture))
             .OrderBy(group => group.Key, StringComparer.Ordinal)
             .Select(group => new InsightPoint(group.Key, group.Count()))
             .TakeLast(12)
             .ToList(), failures);
 
-        List<InsightPoint> beyondPoolWishes = ReadSafely("ChartBeyond", () => beyondItems
+        List<InsightPoint> beyondPoolWishes = ReadSafely("ChartBeyond", () => bydMaterials
             .GroupBy(item => item.QueryType)
             .OrderBy(group => (int)group.Key)
             .Select(group => new InsightPoint(GetWishPoolLabel(group.Key), group.Count()))
@@ -120,7 +120,7 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
                 Translate("MetricChallenge", culture) + " (" + difficulty.Key + ")",
                 Translate("UnitSeconds", culture), points, InsightDirection.LowerIsBetter, Difficulty: (int)difficulty.Key));
         }
-        return new InsightLoadResult(series, failures.Distinct().ToList(), gachaItems, beyondItems);
+        return new InsightLoadResult(series, failures.Distinct().ToList(), gachaItems, bydMaterials);
     }
 
     private static string GetWishPoolLabel(GachaType type)

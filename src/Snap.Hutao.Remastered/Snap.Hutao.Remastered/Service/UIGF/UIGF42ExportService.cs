@@ -75,8 +75,8 @@ public sealed partial class UIGF42ExportService : AbstractUIGF40ExportService
                     TimeZone = timezone,
                     List = beyondDbItems.SelectAsArray(item =>
                     {
-                        BeyondItem beyondItem = metadataContext.GetBeyondItem(item.ItemId);
-                        return Hk4eUGCItem.From(item, beyondItem.Name, beyondItem.TypeDescription ?? string.Empty, ((int)beyondItem.RankLevel).ToString(), timezone);
+                        BydMaterial bydMaterial = metadataContext.GetBydMaterial(item.ItemId);
+                        return Hk4eUGCItem.From(item, bydMaterial.Name, bydMaterial.TypeDescription ?? string.Empty, ((int)bydMaterial.RankLevel).ToString(), timezone);
                     }),
                 };
                 hk4eUgcResults.Add(hk4eUgcEntry);

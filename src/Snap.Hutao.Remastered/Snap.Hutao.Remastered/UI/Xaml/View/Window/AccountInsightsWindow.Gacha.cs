@@ -15,7 +15,7 @@ public sealed partial class AccountInsightsWindow
 {
     private async Task LoadHuTaoStatisticsAsync(InsightLoadResult result)
     {
-        if (result.GachaItems.Count == 0 && result.BeyondItems.Count == 0)
+        if (result.GachaItems.Count == 0 && result.BydMaterials.Count == 0)
         {
             return;
         }
@@ -36,7 +36,7 @@ public sealed partial class AccountInsightsWindow
                 await metadataService.GetContextAsync<GachaLogServiceMetadataContext>(lifetime.Token);
 
             GachaStatistics statistics = await statisticsFactory.CreateAsync(
-                metadata, result.GachaItems.ToImmutableArray(), result.BeyondItems.ToImmutableArray());
+                metadata, result.GachaItems.ToImmutableArray(), result.BydMaterials.ToImmutableArray());
 
             lifetime.Token.ThrowIfCancellationRequested();
 

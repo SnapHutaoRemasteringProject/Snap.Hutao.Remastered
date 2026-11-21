@@ -19,7 +19,7 @@ namespace Snap.Hutao.Remastered.Core.Text.Json;
 [JsonSerializable(typeof(global::System.Collections.Immutable.ImmutableArray<global::Snap.Hutao.Remastered.Model.Metadata.GrowCurve>), TypeInfoPropertyName = "MetadataFile009")]
 [JsonSerializable(typeof(global::System.Collections.Immutable.ImmutableArray<global::Snap.Hutao.Remastered.Model.Metadata.HardChallengeSchedule>), TypeInfoPropertyName = "MetadataFile010")]
 [JsonSerializable(typeof(global::System.Collections.Immutable.ImmutableArray<global::Snap.Hutao.Remastered.Model.Metadata.HyperLinkName>), TypeInfoPropertyName = "MetadataFile011")]
-[JsonSerializable(typeof(global::System.Collections.Immutable.ImmutableArray<global::Snap.Hutao.Remastered.Model.Metadata.Item.BeyondItem>), TypeInfoPropertyName = "MetadataFile012")]
+[JsonSerializable(typeof(global::System.Collections.Immutable.ImmutableArray<global::Snap.Hutao.Remastered.Model.Metadata.Item.BydMaterial>), TypeInfoPropertyName = "MetadataFile012")]
 [JsonSerializable(typeof(global::System.Collections.Immutable.ImmutableArray<global::Snap.Hutao.Remastered.Model.Metadata.Item.DisplayItem>), TypeInfoPropertyName = "MetadataFile013")]
 [JsonSerializable(typeof(global::System.Collections.Immutable.ImmutableArray<global::Snap.Hutao.Remastered.Model.Metadata.Item.Material>), TypeInfoPropertyName = "MetadataFile014")]
 [JsonSerializable(typeof(global::System.Collections.Immutable.ImmutableArray<global::Snap.Hutao.Remastered.Model.Metadata.MainQuest>), TypeInfoPropertyName = "MetadataFile015")]

@@ -27,13 +27,13 @@ public sealed partial class GachaStatisticsFactory : IGachaStatisticsFactory
     public partial GachaStatisticsFactory(IServiceProvider serviceProvider);
 
     /// <inheritdoc/>
-    public async ValueTask<GachaStatistics> CreateAsync(GachaLogServiceMetadataContext metadata, ImmutableArray<GachaItem> items, ImmutableArray<BeyondGachaItem> beyondItems)
+    public async ValueTask<GachaStatistics> CreateAsync(GachaLogServiceMetadataContext metadata, ImmutableArray<GachaItem> items, ImmutableArray<BeyondGachaItem> bydMaterials)
     {
         await taskContext.SwitchToBackgroundAsync();
 
         ImmutableArray<HistoryWishBuilder> historyWishBuilders = metadata.GachaEvents
             .SelectAsArray(static (gachaEvent, metadata) => HistoryWishBuilder.Create(gachaEvent, metadata), metadata);
-        return SynchronizedCreate(new(serviceProvider, items, beyondItems, historyWishBuilders, metadata));
+        return SynchronizedCreate(new(serviceProvider, items, bydMaterials, historyWishBuilders, metadata));
     }
 
     private static GachaStatistics SynchronizedCreate(GachaStatisticsFactoryContext context)
@@ -127,7 +127,7 @@ public sealed partial class GachaStatisticsFactory : IGachaStatisticsFactory
             }
         }
 
-        foreach (ref readonly BeyondGachaItem item in context.BeyondItems.AsSpan())
+        foreach (ref readonly BeyondGachaItem item in context.BydMaterials.AsSpan())
         {
             // Find target history wish to operate. // banner.From <= item.Time <= banner.To
             HistoryWishBuilder? targetHistoryWishBuilder = default;
@@ -140,23 +140,23 @@ public sealed partial class GachaStatisticsFactory : IGachaStatisticsFactory
             {
                 case 6u:
                     {
-                        BeyondItem beyondItem = context.Metadata.GetBeyondItem(item.ItemId);
+                        BydMaterial bydMaterial = context.Metadata.GetBydMaterial(item.ItemId);
 
                         bool isUp = false;
-                        switch (beyondItem.Quality)
+                        switch (bydMaterial.Quality)
                         {
                             case QualityType.QUALITY_ORANGE:
-                                itemCounter.OrangeBeyondItem.IncreaseByOne(beyondItem);
-                                isUp = targetHistoryWishBuilder?.IncreaseOrange(beyondItem) ?? false;
+                                itemCounter.OrangeBydMaterial.IncreaseByOne(bydMaterial);
+                                isUp = targetHistoryWishBuilder?.IncreaseOrange(bydMaterial) ?? false;
                                 break;
                             case QualityType.QUALITY_PURPLE:
-                                itemCounter.PurpleBeyondItem.IncreaseByOne(beyondItem);
-                                targetHistoryWishBuilder?.IncreasePurple(beyondItem);
+                                itemCounter.PurpleBydMaterial.IncreaseByOne(bydMaterial);
+                                targetHistoryWishBuilder?.IncreasePurple(bydMaterial);
                                 break;
                         }
 
-                        beyondStandardWishBuilder.Track(item, beyondItem, isUp);
-                        beyondEventWishBuilder.Track(item, beyondItem, isUp);
+                        beyondStandardWishBuilder.Track(item, bydMaterial, isUp);
+                        beyondEventWishBuilder.Track(item, bydMaterial, isUp);
                         break;
                     }
 

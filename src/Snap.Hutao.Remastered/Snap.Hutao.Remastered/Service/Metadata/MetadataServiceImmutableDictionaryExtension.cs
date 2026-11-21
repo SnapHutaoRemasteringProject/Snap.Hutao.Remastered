@@ -47,10 +47,10 @@ public static class MetadataServiceImmutableDictionaryExtension
                 token);
         }
 
-        public ValueTask<ImmutableDictionary<BeyondItemId, BeyondItem>> GetIdToBeyondItemMapAsync(CancellationToken token = default)
+        public ValueTask<ImmutableDictionary<BydMaterialId, BydMaterial>> GetIdToBydMaterialMapAsync(CancellationToken token = default)
         {
-            return metadataService.FromCacheAsDictionaryAsync<BeyondItemId, BeyondItem>(
-                MetadataFileStrategies.BeyondItem,
+            return metadataService.FromCacheAsDictionaryAsync<BydMaterialId, BydMaterial>(
+                MetadataFileStrategies.BydMaterial,
                 token);
         }
 
