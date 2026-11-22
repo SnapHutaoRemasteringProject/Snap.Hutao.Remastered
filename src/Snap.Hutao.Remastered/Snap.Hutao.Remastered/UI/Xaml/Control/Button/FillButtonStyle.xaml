@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Snap.Hutao.Remastered.UI.Xaml.Control.Button">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+            <SolidColorBrush x:Key="FillButtonForeground" Color="{ThemeResource TextFillColorPrimary}"/>
+            <SolidColorBrush x:Key="FillButtonBackground" Color="{ThemeResource AcrylicInAppFillColorDefaultBrush}"/>
+            <SolidColorBrush x:Key="FillButtonPrimary" Color="{ThemeResource SystemAccentColor}"/>
+            <SolidColorBrush x:Key="FillButtonPrimaryForeground" Color="{ThemeResource TextOnAccentFillColorDefault}"/>
+            <SolidColorBrush x:Key="FillButtonSoftBackground" Color="{ThemeResource AcrylicInAppFillColorDefaultBrush}"/>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="FillButtonForeground" Color="{ThemeResource TextFillColorPrimary}"/>
+            <SolidColorBrush x:Key="FillButtonBackground" Color="{ThemeResource AcrylicInAppFillColorDefaultBrush}"/>
+            <SolidColorBrush x:Key="FillButtonPrimary" Color="{ThemeResource SystemAccentColor}"/>
+            <SolidColorBrush x:Key="FillButtonPrimaryForeground" Color="{ThemeResource TextOnAccentFillColorDefault}"/>
+            <SolidColorBrush x:Key="FillButtonSoftBackground" Color="{ThemeResource AcrylicInAppFillColorDefaultInverseBrush}"/>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

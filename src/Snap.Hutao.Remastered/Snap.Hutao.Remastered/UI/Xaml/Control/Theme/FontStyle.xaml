@@ -60,6 +60,7 @@
         TargetType="TextBlock">
         <Setter Property="FontSize" Value="{StaticResource CaptionTextBlockFontSize}"/>
         <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="TextWrapping" Value="WrapWholeWords"/>
     </Style>
     <Style
         x:Key="BodyStrongTextBlockStyle"

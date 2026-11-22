@@ -34,45 +34,78 @@
     </mxi:Interaction.Behaviors>
 
     <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ms-appx:///UI/Xaml/Control/Button/FillButtonStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
 
-        <DataTemplate x:Key="GameAccountListTemplate" x:DataType="shme:GameAccount">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
+            <DataTemplate x:Key="GameAccountListTemplate" x:DataType="shme:GameAccount">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <StackPanel
-                    Grid.Column="0"
-                    Margin="0,16"
-                    VerticalAlignment="Center">
-                    <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{x:Bind Name, Mode=OneWay}"/>
+                    <StackPanel
+                        Grid.Column="0"
+                        Margin="0,16"
+                        VerticalAlignment="Center">
+                        <TextBlock Style="{StaticResource BaseTextBlockStyle}" Text="{x:Bind Name, Mode=OneWay}"/>
+                        <TextBlock
+                            Style="{ThemeResource CaptionTextBlockStyle}"
+                            Text="{shuxm:ResourceString Name=ViewPageLaunchGameSwitchAccountExpired}"
+                            Visibility="{x:Bind IsExpired, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
+                    </StackPanel>
+                    <StackPanel
+                        x:Name="ButtonPanel"
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                        <wl:LiquidGlassButton
+                            MinWidth="35.2"
+                            Margin="4,8"
+                            VerticalAlignment="Stretch"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            CommandParameter="{x:Bind Mode=OneWay}"
+                            Content="&#xE8AC;"
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            Loaded="OnTemplateCommandLoaded"
+                            Tag="ModifyGameAccountCommand"
+                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameSwitchAccountRenameToolTip}"
+                            Unloaded="OnTemplateCommandUnloaded"/>
+                        <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                        <wl:LiquidGlassButton
+                            MinWidth="35.2"
+                            Margin="4,8,0,8"
+                            VerticalAlignment="Stretch"
+                            shuxcth:ControlMaterialState.IsManaged="True"
+                            CommandParameter="{x:Bind Mode=OneWay}"
+                            Content="&#xE74D;"
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"
+                            Loaded="OnTemplateCommandLoaded"
+                            Tag="RemoveGameAccountCommand"
+                            ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameSwitchAccountRemoveToolTip}"
+                            Unloaded="OnTemplateCommandUnloaded"/>
+                    </StackPanel>
+                </Grid>
+            </DataTemplate>
+
+            <DataTemplate x:Key="GamePathEntryListTemplate" x:DataType="shsgp:GamePathEntry">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
                     <TextBlock
-                        Style="{ThemeResource CaptionTextBlockStyle}"
-                        Text="{shuxm:ResourceString Name=ViewPageLaunchGameSwitchAccountExpired}"
-                        Visibility="{x:Bind IsExpired, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}"/>
-                </StackPanel>
-                <StackPanel
-                    x:Name="ButtonPanel"
-                    Grid.Column="1"
-                    HorizontalAlignment="Right"
-                    Orientation="Horizontal">
+                        Grid.Column="0"
+                        Padding="0,16"
+                        VerticalAlignment="Center"
+                        Text="{x:Bind Path, Mode=OneWay}"/>
                     <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
                     <wl:LiquidGlassButton
-                        MinWidth="35.2"
-                        Margin="4,8"
-                        VerticalAlignment="Stretch"
-                        shuxcth:ControlMaterialState.IsManaged="True"
-                        CommandParameter="{x:Bind Mode=OneWay}"
-                        Content="&#xE8AC;"
-                        FontFamily="{StaticResource SymbolThemeFontFamily}"
-                        Loaded="OnTemplateCommandLoaded"
-                        Tag="ModifyGameAccountCommand"
-                        ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameSwitchAccountRenameToolTip}"
-                        Unloaded="OnTemplateCommandUnloaded"/>
-                    <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                    <wl:LiquidGlassButton
-                        MinWidth="35.2"
+                        Grid.Column="1"
+                        MinWidth="48"
                         Margin="4,8,0,8"
                         VerticalAlignment="Stretch"
                         shuxcth:ControlMaterialState.IsManaged="True"
@@ -80,73 +113,45 @@
                         Content="&#xE74D;"
                         FontFamily="{StaticResource SymbolThemeFontFamily}"
                         Loaded="OnTemplateCommandLoaded"
-                        Tag="RemoveGameAccountCommand"
+                        Tag="RemoveGamePathEntryCommand"
                         ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameSwitchAccountRemoveToolTip}"
                         Unloaded="OnTemplateCommandUnloaded"/>
-                </StackPanel>
-            </Grid>
-        </DataTemplate>
+                </Grid>
+            </DataTemplate>
 
-        <DataTemplate x:Key="GamePathEntryListTemplate" x:DataType="shsgp:GamePathEntry">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock
-                    Grid.Column="0"
-                    Padding="0,16"
-                    VerticalAlignment="Center"
-                    Text="{x:Bind Path, Mode=OneWay}"/>
-                <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                <wl:LiquidGlassButton
-                    Grid.Column="1"
-                    MinWidth="48"
-                    Margin="4,8,0,8"
-                    VerticalAlignment="Stretch"
-                    shuxcth:ControlMaterialState.IsManaged="True"
-                    CommandParameter="{x:Bind Mode=OneWay}"
-                    Content="&#xE74D;"
-                    FontFamily="{StaticResource SymbolThemeFontFamily}"
-                    Loaded="OnTemplateCommandLoaded"
-                    Tag="RemoveGamePathEntryCommand"
-                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameSwitchAccountRemoveToolTip}"
-                    Unloaded="OnTemplateCommandUnloaded"/>
-            </Grid>
-        </DataTemplate>
+            <shvg:AspectRatioComboBoxTemplateSelector x:Key="AspectRatioComboBoxTemplateSelector">
+                <shvg:AspectRatioComboBoxTemplateSelector.ListTemplate>
+                    <DataTemplate x:DataType="shsg:AspectRatio">
+                        <!--  ComboBoxItemThemePadding 11,5,11,7  -->
+                        <Grid Margin="1,-1,-7,-3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
 
-        <shvg:AspectRatioComboBoxTemplateSelector x:Key="AspectRatioComboBoxTemplateSelector">
-            <shvg:AspectRatioComboBoxTemplateSelector.ListTemplate>
-                <DataTemplate x:DataType="shsg:AspectRatio">
-                    <!--  ComboBoxItemThemePadding 11,5,11,7  -->
-                    <Grid Margin="1,-1,-7,-3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="auto"/>
-                        </Grid.ColumnDefinitions>
+                            <TextBlock VerticalAlignment="Center" Text="{x:Bind Mode=OneTime}"/>
+                            <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
+                            <wl:LiquidGlassButton
+                                Grid.Column="1"
+                                MinWidth="32"
+                                MinHeight="32"
+                                Padding="0"
+                                VerticalAlignment="Center"
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                CommandParameter="{x:Bind Mode=OneTime}"
+                                Content="&#xE711;"
+                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                Loaded="OnTemplateCommandLoaded"
+                                Style="{ThemeResource SettingButtonStyle}"
+                                Tag="RemoveAspectRatioCommand"
+                                Unloaded="OnTemplateCommandUnloaded"/>
+                        </Grid>
+                    </DataTemplate>
+                </shvg:AspectRatioComboBoxTemplateSelector.ListTemplate>
+            </shvg:AspectRatioComboBoxTemplateSelector>
 
-                        <TextBlock VerticalAlignment="Center" Text="{x:Bind Mode=OneTime}"/>
-                        <!--  ReSharper disable once Xaml.BindingWithContextNotResolved  -->
-                        <wl:LiquidGlassButton
-                            Grid.Column="1"
-                            MinWidth="32"
-                            MinHeight="32"
-                            Padding="0"
-                            VerticalAlignment="Center"
-                            shuxcth:ControlMaterialState.IsManaged="True"
-                            CommandParameter="{x:Bind Mode=OneTime}"
-                            Content="&#xE711;"
-                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                            Loaded="OnTemplateCommandLoaded"
-                            Style="{ThemeResource SettingButtonStyle}"
-                            Tag="RemoveAspectRatioCommand"
-                            Unloaded="OnTemplateCommandUnloaded"/>
-                    </Grid>
-                </DataTemplate>
-            </shvg:AspectRatioComboBoxTemplateSelector.ListTemplate>
-        </shvg:AspectRatioComboBoxTemplateSelector>
-
-        <shuxdcs:IntToNameValueVirtualKeyConverter x:Key="IntToNameValueVirtualKeyConverter"/>
+            <shuxdcs:IntToNameValueVirtualKeyConverter x:Key="IntToNameValueVirtualKeyConverter"/>
+        </ResourceDictionary>
     </Page.Resources>
 
     <shuxc:StandardView ShowCondition="{x:Bind DataContext.GamePathEntryValid.Value, Mode=OneWay}" Style="{ThemeResource DefaultStandardViewStyle}">
@@ -230,14 +235,17 @@
                             ToolTipService.ToolTip="{x:Bind DataContext.DisplayGamePath.Value, Mode=OneWay}"/>
                         <AppBarButton
                             Command="{x:Bind DataContext.KillGameProcessCommand, Mode=OneWay}"
+                            Foreground="{ThemeResource SystemControlErrorTextForegroundBrush}"
                             Icon="{shuxm:FontIcon Glyph=&#xE733;}"
                             IsEnabled="{x:Bind shsg:LaunchOptions.CanKillGameProcess.Value, Mode=OneWay}"
                             Label="{shuxm:ResourceString Name=ViewPageLaunchGameKillGameProcessAction}"/>
                         <AppBarSeparator/>
                     </CommandBar>
                     <dev:FillButton
+                        Margin="0,0,2,0"
                         Command="{x:Bind DataContext.LaunchCommand, Mode=OneWay}"
                         Content="{shuxm:ResourceString Name=ViewPageLaunchGameAction}"
+                        CornerRadius="{ThemeResource ControlCornerRadius}"
                         Icon="{shuxm:FontIcon Glyph=&#xE7FC;}"
                         IsEnabled="{x:Bind shsg:LaunchOptions.IsGameRunning.Value, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"/>
                 </StackPanel>
@@ -974,7 +982,7 @@
                     Margin="16,16,16,0"
                     Padding="0"
                     cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
-                    <Grid Style="{ThemeResource AcrylicGridCardStyle}">
+                    <Grid x:Name="IslandOptionsGrid" Style="{ThemeResource AcrylicGridCardStyle}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
@@ -1012,17 +1020,19 @@
                             Background="{ThemeResource InfoBarErrorSeverityBackgroundBrush}"
                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                             BorderThickness="0,0,0,1">
-                            <StackPanel
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal">
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
                                 <FontIcon Foreground="{ThemeResource SystemControlErrorTextForegroundBrush}" Glyph="&#xE7BA;"/>
                                 <TextBlock
+                                    Grid.Column="1"
                                     Margin="6"
                                     HorizontalAlignment="Center"
                                     Style="{ThemeResource CaptionTextBlockStyle}"
                                     Text="{shuxm:ResourceString Name=ViewPageLaunchGameDangerousDescriptionHint}"/>
-                            </StackPanel>
+                            </Grid>
                         </Border>
                         <Border
                             Grid.Row="2"
