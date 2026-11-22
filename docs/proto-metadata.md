@@ -2,8 +2,13 @@
 
 > 状态：**设计稿，未实现**。本文只描述目标结构与迁移步骤，当前代码仍是
 > [`Service/Metadata/MetadataService.cs`](../src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Metadata/MetadataService.cs) 的 Git + JSON 单一实现。
-> 文中所有"当前"事实均来自 `feat/aot-compatible` @ `fd3ca655e`；所有"产物"事实均来自
-> `D:\SnapHutaoRemasteringProject\MetadataBuilder` @ `fc306eb` 的 `Proto/` 与 `Core/Builder/ProtoBuilder.cs`。
+> 文中"应用"事实来自 `feat/aot-compatible` @ `b08006116`；"产物"事实来自
+> `D:\SnapHutaoRemasteringProject\MetadataBuilder` @ `cb1eb30` 的 `Proto/`、`Core/Builder/ProtoBuilder.cs`
+> 与 `Core/Builder/*CurveBuilder.cs`。
+>
+> **2026-11-22 更新**：产物已补齐 `AvatarCurve` / `MonsterCurve` / `WeaponCurve`（builder `89ddba9`）并引入
+> `LegacyJsonFileNames`（builder `cb1eb30`），Proto 的类别覆盖达到 30/30；本文已同步覆盖矩阵、字段数、
+> 映射规则与实施计划。仍缺 `schema_version`、清单文件、语言目录输出与"缺失类别致命"（见 §10）。
 >
 > 关联：`CODE_REVIEW.md#ENG-08`（`LegacyMetadataService` 死代码）、`CODE_REVIEW.md#ARCH-01`（避免新增 `IServiceProvider` 服务定位）、
 > `CLAUDE.md` §5.5（元数据初始化）、§5.9（Sentry span）、§6（parse-first / 事务式替换）。
@@ -20,16 +25,17 @@
    `InitializeAsync` 变为**可自启动、幂等**，不再依赖 `AppActivation` 的调用顺序。
 5. 新增 `MetadataCache`（带来源/语言前缀 + 代际号）与 **`ClearCache()`** 契约：
    清派生缓存、释放解析后的 bundle、代际 +1，保证清理与并发加载不会互相污染。
-6. 二进制包当前**不覆盖** `AvatarCurve` / `WeaponCurve` / `MonsterCurve` 三个类别，也没有
-   `schema_version` 与清单文件；这些是 `MetadataBuilder` 侧必须补的（见 §10），否则 Proto 源不能独立成立。
+6. 二进制包已覆盖全部 30 个应用类别（schema 共 35 个 message 字段，5 个暂不消费）。
+   仍缺的是**版本与分发契约**：`MetadataInfo` 没有 `schema_version`、没有清单文件、单语言包不在语言目录、
+   缺失类别不致命（见 §10）。这些不阻塞映射层开发，但阻塞把 Proto 设为默认源。
 
 ## 1. 为什么要改（本机实测数据，7.2 版本）
 
 | 指标 | JSON / git（现状） | proto bundle（新） |
 |---|---|---|
 | 单语言文件数 | 158 个（CHS） | 1 个 |
-| 单语言体积 | 19.3 MiB（CHS） | 3.57 MiB（CHS） |
-| 全仓库工作树 | 351.1 MiB / 2,378 文件 | — |
+| 单语言体积 | 19.2 MiB（CHS） | 3.60 MiB（CHS） |
+| 全仓库工作树 | 349.9 MiB / 2,378 文件 | — |
 | 拉取方式 | 整仓 `git` shallow clone + fetch（含 `.git`，本机 388 MiB） | 单文件条件请求（约 3.6 MiB，未变化时仅清单） |
 | 解析方式 | 每个类别一次 `JsonSerializer` 反序列化 | 一次 protobuf 解析，类别按需映射 |
 | 分散文件 | `Avatar/` 目录 122 个文件 / 6.32 MiB，逐文件打开 | 无 |
@@ -102,30 +108,32 @@ AppActivation (后台)
 | 项 | 值 |
 |---|---|
 | 输出目录 | `MetadataOptions.ProtoOutputDirectory`（默认 `D:\SnapHutaoRemasteringProject\Snap.Metadata.Hutaobin`） |
-| 合并包 | `GenshinMetadata.hutaobin`（62,201,920 B ≈ 59.3 MiB，全部语言） |
-| 单语言包 | `GenshinMetadata.{locale}.hutaobin`（CHS 3,742,784 B ≈ 3.57 MiB；15 个语言 3.57–4.71 MiB） |
+| 合并包 | `GenshinMetadata.hutaobin`（62,633,616 B ≈ 59.7 MiB，全部语言） |
+| 单语言包 | `GenshinMetadata.{locale}.hutaobin`（CHS 3,771,744 B ≈ 3.60 MiB；15 个语言 3.60–4.73 MiB） |
 | 磁盘布局 | `EncryptProtoOutput = true` 时：`IV(16) ‖ AES-256-CBC(zlib(protobuf)), PKCS7`；`false` 时明文 protobuf |
 | 密钥 | `ProtoBuilder.AesKeyHex`（32 字节，硬编码），注释要求与客户端同步 |
 | 顶层消息 | `MetadataBundle { GameVersion version; MetadataInfo info; repeated LanguageMetadata languages }` |
 | `MetadataInfo` | 只有 `publisher`、`generated_at`；**没有 schema/format 版本** |
 | 单语言包内容 | `languages` 恰好 1 项，`language` 为 locale 名（`CHS`/`EN`/…） |
-| 类别字段 | `LanguageMetadata` 共 32 个 message 字段 |
+| 类别字段 | `LanguageMetadata` 共 35 个 message 字段（字段号 2–36） |
+| 曲线消息 | `AvatarCurve` / `MonsterCurve` / `WeaponCurve` 各为 `{ repeated GrowCurvePoint curves; int32 level }`，共享 `common.proto` 的 `GrowCurvePoint { GrowCurveValue type; double value }` |
 
 > 加密只是**混淆**：AES-CBC 无认证标签，密钥随客户端分发。它不构成安全边界，
 > 客户端必须把包当不可信输入处理（见 §7.2）。
 
 ### 3.2 类别覆盖矩阵（对当前 app）
 
-应用 `MetadataFileStrategies` 共 30 个类别；`MetadataFileJsonContext` 注册 27 个根类型（`GrowCurve` 服务 3 个类别、`Promote` 服务 2 个）。
+应用 `MetadataFileStrategies` 共 30 个类别；`MetadataFileJsonContext` 注册 27 个根类型（`GrowCurve` 服务 3 个曲线类别、`Promote` 服务 2 个类别）。
+proto 的 `LanguageMetadata` 共 35 个类别字段，其中 30 个被应用消费、5 个暂未消费。
 
 | 应用类别（JSON 文件名） | proto 字段 | 状态 |
 |---|---|---|
 | `Achievement` | `achievements` | ✅ |
 | `AchievementGoal` | `achievement_goals` | ✅ |
 | `Avatar`（分散，122 文件） | `avatars` | ✅ |
-| `AvatarCurve` | — | ✅ |
+| `AvatarCurve` | `avatar_curves` | ✅ |
 | `AvatarPromote` | `avatar_promotes` | ✅ |
-| `BeyondItem`（`BydMaterial`） | `byd_materials` | ✅（名称不一致） |
+| `BeyondItem`（proto 类别名 `BydMaterial`） | `byd_materials` | ✅（名称不一致，见下） |
 | `Chapter` | `chapters` | ✅ |
 | `Combine` | `combines` | ✅ |
 | `CookRecipe` | `cook_recipes` | ✅ |
@@ -136,7 +144,7 @@ AppActivation (后台)
 | `MainQuest` | `main_quests` | ✅ |
 | `Material` | `materials` | ✅ |
 | `Monster` | `monsters` | ✅ |
-| `MonsterCurve` | — | ✅ |
+| `MonsterCurve` | `monster_curves` | ✅ |
 | `ProfilePicture` | `profile_pictures` | ✅ |
 | `Reliquary` | `reliquaries` | ✅ |
 | `ReliquaryMainAffix` | `reliquary_main_affixes` | ✅ |
@@ -148,13 +156,16 @@ AppActivation (后台)
 | `TowerLevel` | `tower_levels` | ✅ |
 | `TowerSchedule` | `tower_schedules` | ✅ |
 | `Weapon` | `weapons` | ✅ |
-| `WeaponCurve` | — | ✅ |
+| `WeaponCurve` | `weapon_curves` | ✅ |
 | `WeaponPromote` | `weapon_promotes` | ✅ |
 
-proto 中另有 5 个应用当前**不消费**的类别：`furnitures`、`furniture_makes`、`furniture_suites`、`furniture_types`、`reliquary_affix_weights`
-（`Model/Metadata/Furniture/*` 已存在，但没有对应的 `MetadataFileStrategy`）。
+- `BydMaterial`：proto 类别名与 JSON 文件名不同（JSON 仍发布 `BeyondItem.json`，所以 Git 源的
+  `MetadataFileStrategy` 继续叫 `BeyondItem`）。`ProtoBuilder.LegacyJsonFileNames` 负责两侧解析；
+  客户端同样需要一张"类别 → proto 名"的表（§7.3 的 `MetadataCategory.ProtoName`）。
+- 暂未消费的 5 个 proto 类别：`furnitures`、`furniture_makes`、`furniture_suites`、`furniture_types`、
+  `reliquary_affix_weights`（`Model/Metadata/Furniture/*` 已存在，但没有对应的 `MetadataFileStrategy`）。
 
-结论：**Proto 源覆盖 30/30 个类别**。
+结论：**Proto 源覆盖 30/30 个应用类别**，映射层不再需要"部分委托给 Git"的混合方案。
 
 ## 4. 目标数据流
 
@@ -217,7 +228,7 @@ proto 中另有 5 个应用当前**不消费**的类别：`furnitures`、`furnit
 | `MetadataServiceBase` | 抽象基类（不注册） | 初始化闸门 + TCS 语义 + logger + `MetadataCache` 实例 |
 | `GitMetadataService` | 实现（原 `MetadataService`） | JSON + git 仓库读取 |
 | `ProtoMetadataService` | 实现（新增） | bundle 确保/解析/类别映射 |
-| `MetadataCategory` / `MetadataCategories` | 值类型 + 静态表 | 原 `MetadataFileStrategy` / `MetadataFileStrategies` |
+| `MetadataCategory` / `MetadataCategories` | 值类型 + 静态表 | 原 `MetadataFileStrategy` / `MetadataFileStrategies`；新增 `ProtoName`（默认 = `Name`，`BydMaterial` 例外） |
 | `MetadataCache` | sealed | 前缀 + 代际 + 键跟踪 + `Clear()` |
 | `MetadataSourceKind` | enum | `Auto/Git/Proto`；**`Auto` 永不作为 DI key** |
 | `MetadataSourceOptions` | 选项 | 持久化来源偏好，`IObservableProperty<MetadataSourceKind>` |
@@ -631,7 +642,7 @@ internal static class MetadataBundleCodec
 - `BoundedReadStream` 防解压炸弹：AES-CBC 无认证，输入来自网络，解压上限必须显式。
 - `Google.Protobuf` 的 `MessageParser` + 生成类是 AOT 友好的（应用已用它解析 Yae/Sophon）；
   **不要**用 `JsonFormatter`/`JsonParser` 把消息转 JSON 再交给现有反序列化——那条路反射重、还要先构造
-  一份 19.3 MiB 量级的 JSON 字符串，既违背 AOT 也丢掉体积收益。
+  一份 19.2 MiB 量级的 JSON 字符串，既违背 AOT 也丢掉体积收益。
 
 ### 7.2 头部与完整性校验（顺序即失败优先级）
 
@@ -645,7 +656,9 @@ internal static class MetadataBundleCodec
 3. `Version.Major > 0`（否则警告，不致命）。
 4. `Info.Publisher` 非空（仅日志）。
 5. 类别内容：某类别**首次映射**后至少 1 条；为 0 记警告并按空数组缓存，避免每次访问都重试映射。
-6. 反向：`LanguageMetadata` 有 message 字段但没有注册适配器 → 记一次"本版本忽略该类别"。
+6. 覆盖性：30 个已注册适配器必须都能在 `LanguageMetadata` 找到对应 message 字段
+   （按 `ProtoName` 匹配）；另外 5 个明确列在 `IgnoredProtoCategories` 的类别跳过；
+   出现两者都不属于的未知 message 字段 → 记一次"本版本忽略该类别"。
 
 映射失败策略：
 
@@ -670,9 +683,14 @@ internal abstract class ProtoCategoryAdapter<TProto, TModel> : IProtoCategoryAda
 }
 ```
 
-- 注册表按 `MetadataCategory.Name` 建 `ImmutableDictionary<string, IProtoCategoryAdapter>`（`Ordinal`）。
+- 注册表按 `MetadataCategory.ProtoName` 建 `ImmutableDictionary<string, IProtoCategoryAdapter>`（`Ordinal`）。
   用名字而不是对象引用，避免"两个 `MetadataFileStrategy` 实例相等性不同"导致的查表失败。
-- 一个类别一个 `sealed class`（当前 27 个；§10.2 补齐曲线后为 30 个），每个只写 `Enumerate` + `Map` 两个成员。
+  `ProtoName` 默认等于 `Name`，只有 `BydMaterial` 例外：`Name = "BeyondItem"`（JSON 文件名）、
+  `ProtoName = "BydMaterial"`（proto 类别名），与 `ProtoBuilder.LegacyJsonFileNames` 对称。
+- `IgnoredProtoCategories`：`Furniture` / `FurnitureMake` / `FurnitureSuite` / `FurnitureType` /
+  `ReliquaryAffixWeight` 五个消息名，显式声明"本版本不消费"。这样覆盖性测试能区分
+  "故意忽略"与"漏注册"，而不是把两者都当成未知字段。
+- 一个类别一个 `sealed class`（30 个），每个只写 `Enumerate` + `Map` 两个成员。
   **不做反射泛型映射**（`ProtoMapper` 那种反射只允许留在构建器里）。
 - `MetadataConvert` 集中处理下表这些易错点：
 
@@ -688,8 +706,12 @@ internal abstract class ProtoCategoryAdapter<TProto, TModel> : IProtoCategoryAda
 | 字符串驻留 | 所有字符串字段 `string.Intern`（JSON 路径经 `InternStringConverter` 已驻留；不驻留会让 proto 源的内存优势消失） |
 | `IJsonOnDeserialized` | `Avatar` 是该接口的实现（`VisionOverride` 依赖它）；映射后显式调用 `avatar.OnDeserialized()`，否则 JSON / Proto 两源行为不一致 |
 
-- `Avatar`、`Weapon`、`Monster` 的曲线字段在 proto 里是 `repeated { type, value }`，应用模型是
+- `Avatar`、`Weapon`、`Monster` 的内嵌曲线字段在 proto 里是 `repeated { type, value }`，应用模型是
   `TypeValueCollection`；`Weapon.grow_curves` 还有 `init_value` → `WeaponTypeValue`。
+- 三个曲线类别（`AvatarCurve` / `MonsterCurve` / `WeaponCurve`）→ 应用 `GrowCurve { Level, Curves }`：
+  proto 的 `repeated GrowCurvePoint { GrowCurveValue type; double value }` 对应
+  `TypeValueCollection<GrowCurveType, float>`（`double → float` 显式收窄），`level` 对应 `Level`。
+  这三类是"整表"数据（每个等级一条），不是按角色/武器拆分的。
 - `Avatar.SkillDepot.Proud.parameters` 是 `repeated SkillParameter{id, level, parameters}` →
   `IdLevelParametersCollection<ProudSkillId, SkillLevel, float>`。
 
@@ -708,8 +730,8 @@ internal abstract class ProtoCategoryAdapter<TProto, TModel> : IProtoCategoryAda
 | 方案 | 首次启动 | 更新粒度 | 需要服务器/目录变更 | 结论 |
 |---|---|---|---|---|
 | **HTTP：metadata 端点 / CDN**（复用模板 + `Metadata(locale, file)`） | 1 个文件（CHS ≈ 3.6 MiB） | 清单哈希；未变化不下载 | 只需把产物放进现有 metadata 树 | **推荐** |
-| 新 git 仓库 `Snap.Metadata.Hutaobin` | 整仓（15 个语言包 + 59.3 MiB 合并包） | `git fetch`，可能重下多文件 | 需要 catalog 行、`BackgroundActivity`、镜像配置 | 备选；保留 `IMetadataBundleSource` 缝隙 |
-| 复用 `Snap.Metadata` 仓库 | 351.1 MiB 工作树 | 同上 | 无 | 否 |
+| 新 git 仓库 `Snap.Metadata.Hutaobin` | 整仓（15 个语言包 + 59.7 MiB 合并包） | `git fetch`，可能重下多文件 | 需要 catalog 行、`BackgroundActivity`、镜像配置 | 备选；保留 `IMetadataBundleSource` 缝隙 |
+| 复用 `Snap.Metadata` 仓库 | 349.9 MiB 工作树 | 同上 | 无 | 否 |
 
 推荐 HTTP 的理由：只需要一个语言包；`RetryHttpHandler` / 代理 / 域名回退 / 限时都已具备；
 不引入第二个 git 仓库与 catalog 维护成本。仓库方案留作 `IMetadataBundleSource` 的第二个实现，
@@ -793,66 +815,97 @@ public enum MetadataSourceKind
 | 单条目异常 | 映射 | 该类别失败抛出（带类别/条目 id），不写半截缓存 |
 | 磁盘写失败 / 磁盘满 | 原子替换 | 保留旧包，回退，记日志 |
 
-## 10. `MetadataBuilder` 侧需要配合的变更
+## 10. `MetadataBuilder` 侧契约
 
-### 10.1 版本与清单（必须）
+对 builder `cb1eb30` 的状态：
+
+| 项 | 状态 |
+|---|---|
+| 曲线类别（`AvatarCurve` / `MonsterCurve` / `WeaponCurve`） | ✅ 已完成（`89ddba9`，2026-11-21） |
+| proto 类别名与 JSON 文件名解耦（`BydMaterial` ↔ `BeyondItem`） | ✅ 已完成（`cb1eb30`，`ProtoBuilder.LegacyJsonFileNames`） |
+| `schema_version` | ❌ 仍缺（§10.1） |
+| 清单文件（size/hash/schema/categories） | ❌ 仍缺（§10.1） |
+| 单语言包写进语言目录 | ❌ 仍缺（§10.3） |
+| 缺失类别致命 | ❌ 仍缺（§10.4） |
+| 客户端 schema 分发方式 | ❌ 待定（§10.5） |
+| 密钥/格式常量 | ⚠️ 两端硬编码（§10.6） |
+
+### 10.1 版本与清单（仍需）
 
 1. `MetadataInfo` 增加 `int32 schema_version = 3;`。
-   规则：**新增可选字段不升版本；字段改名/删除/语义变化必须升版本**。客户端
+   规则：**新增可选字段不升版本；字段改名/删除/语义变化/字段号变动必须升版本**。客户端
    `MetadataBundleSchemaVersion = 1`，接受 `<= 1`，大于则拒绝并回退。
    过渡期（生产者未发布该字段）`0` 视为"未版本化"，接受但记一次警告。
+   注意：本轮补曲线时，`byd_materials` 之后的字段号整体后移（`avatar_promotes` 5→6、
+   `byd_materials` 6→7、`materials` 19→20、`weapons` 32→34…）。schema 没有版本，这种变更只能靠
+   "客户端和包同时更新"兜底；一旦发布过任何 bundle，就必须先补 `schema_version`。
 2. 每个语言目录写 `GenshinMetadata.manifest.json`（PascalCase，与现有 `MetadataOptions.JsonSerializerOptions` 一致）：
 
 ```json
 {
   "SchemaVersion": 1,
   "GameVersion": { "Major": 7, "Minor": 2, "Patch": 0 },
-  "GeneratedAt": "2026-11-21T12:00:00Z",
+  "GeneratedAt": "2026-11-21T15:00:24Z",
   "File": "GenshinMetadata.hutaobin",
-  "Size": 3742784,
+  "Size": 3771744,
   "XxHash64": "0123456789ABCDEF",
-  "Categories": ["Achievement", "Avatar", "..."]
+  "Categories": ["Achievement", "AchievementGoal", "Avatar", "AvatarCurve", "..."]
 }
 ```
 
    客户端据此在下载 3.6 MiB 之前判断"是否变化 + 是否能读"。清单本身很小，每次初始化取一次。
 
-### 10.2 曲线类别（必须，否则 Proto 不能独立）
+### 10.2 曲线类别（已完成 2026-11-21）
 
-`bundle.proto` 增加：
+实际落地的 schema（以代码为准）：
 
 ```proto
-message GrowCurve {
-  int32 level = 1;
-  repeated GrowCurveValueEntry curves = 2;
-}
-message GrowCurveValueEntry {
+// common.proto —— 三个曲线类别共享
+message GrowCurvePoint {
   GrowCurveValue type = 1;
-  float value = 2;
+  double value = 2;
 }
-// LanguageMetadata
-repeated GrowCurve avatar_curves = 34;
-repeated GrowCurve weapon_curves = 35;
-repeated GrowCurve monster_curves = 36;
+
+// avatar_curve.proto / monster_curve.proto / weapon_curve.proto
+message AvatarCurve {                 // MonsterCurve / WeaponCurve 同构
+  repeated GrowCurvePoint curves = 1;
+  int32 level = 2;
+}
+
+// bundle.proto —— LanguageMetadata
+repeated AvatarCurve avatar_curves = 5;
+repeated MonsterCurve monster_curves = 22;
+repeated WeaponCurve weapon_curves = 35;
 ```
 
-`ProtoBuilder` 已经会为"本次未运行的构建器"回读 JSON 树；把 `AvatarCurve.json` / `WeaponCurve.json` /
-`MonsterCurve.json` 纳入回读即可，不需要新的 Excel 解析逻辑。
+- 数据源是 `AvatarCurveExcelConfigData.json` / `MonsterCurveExcelConfigData.json` /
+  `WeaponCurveExcelConfigData.json`，由新增的 `AvatarCurveBuilder` / `MonsterCurveBuilder` /
+  `WeaponCurveBuilder` 生成 JSON 后再进入 bundle（不依赖 `ProtoBuilder` 的"从 JSON 树回读"分支）。
+- 三个 builder 已加入 `MetadataBuilder.BuildAll` 的启用列表，且排在 `MetaBuilder` 之前，
+  因此 `Meta.json` 现在也包含这三个类别的哈希。
+- 输出文件名仍是 `AvatarCurve.json` / `MonsterCurve.json` / `WeaponCurve.json`，
+  Git 源的 `MetadataFileStrategy` 与读取路径完全不变，两源可做逐条平价。
+- 曲线值在 builder 模型、JSON 与 proto 里都是 `double`；应用模型是 `float`，映射时显式收窄到
+  `TypeValueCollection<GrowCurveType, float>`（与现有 JSON 反序列化路径的精度损失一致，见 §7.3）。
+- `GrowCurvePoint.type` 用 `GrowCurveValue` 枚举（不是 `FightProperty`）；与应用 `GrowCurveType`
+  数值一致，可直接数值转换。
+- 类别改名映射（builder 的 `LegacyJsonFileNames` 与客户端 `MetadataCategory.ProtoName`）目前各存一份；
+  以后再有改名必须同时改，并在覆盖性测试里断言 `BydMaterial ↔ BeyondItem` 这组对应关系。
 
-### 10.3 单语言包放进语言目录（必须，为了 HTTP 布局）
+### 10.3 单语言包放进语言目录（仍需，为了 HTTP 布局）
 
 - 产物写到 `{OutputPath}/{locale}/GenshinMetadata.hutaobin`（而非只在平铺的 `ProtoOutputDirectory`）。
   平铺目录与合并包可以保留给工具/离线用途。
 - 这样 URL 与本地缓存路径同构：`Genshin/{locale}/GenshinMetadata.hutaobin`，
   清单与包在同一个目录，排查时不需要解释"为什么路径里有两次 locale"。
 
-### 10.4 类别缺失必须致命（建议）
+### 10.4 类别缺失必须致命（仍需，建议）
 
 `ProtoBuilder.OnFinalize` 现在对缺失类别只 `Console.WriteLine` 后继续发布；客户端无法区分
 "这个类别本来就空"与"构建器漏跑"。发布模式应直接 **build fail**，或在 `MetadataInfo` 增加
 `repeated string missing_categories` 供客户端拒绝。否则 §7.2 的第 5 条校验只能降级成警告。
 
-### 10.5 schema 分发（必须，二选一）
+### 10.5 schema 分发（仍需，二选一）
 
 - **推荐**：从所有 `.proto` 删除 `option csharp_namespace`（包名 `snap.hutao.metadata` 会派生
   `Snap.Hutao.Metadata`），客户端把 `Proto/*.proto` 原样 vendor 进应用仓库，构建时用 `Grpc.Tools` 生成。
@@ -884,7 +937,7 @@ repeated GrowCurve monster_curves = 36;
 | `IMetadataService` | `IMetadataService` | 语义扩展，不改名（避免 27 处改动） |
 | `MetadataService` | `GitMetadataService` | 用户明确要求 |
 | `MetadataOptions` | `GitMetadataOptions` | git 路径 / 仓库名 |
-| `MetadataFileStrategy` | `MetadataCategory` | 可选；"文件"对 proto 不成立 |
+| `MetadataFileStrategy` | `MetadataCategory` | 可选；"文件"对 proto 不成立；新增 `ProtoName`（默认 = `Name`，`BydMaterial` ↔ `BeyondItem`） |
 | `MetadataFileStrategies` | `MetadataCategories` | 30 个类别常量 |
 | `FromCacheOrFileAsync<T>` | `FromCacheOrSourceAsync<T>` | 两个扩展文件（26 + 28 个方法）机械替换 |
 | `IMetadataService.MemoryCache` | `IMetadataService.Cache`（`MetadataCache`） | 唯一使用点在字典扩展 |
@@ -926,12 +979,15 @@ repeated GrowCurve monster_curves = 36;
 
 ### Phase 2：Proto 读取器
 
-- `ProtoMetadataService`、`ProtoCategoryTable` + 适配器（27 个；§10.2 完成后 30 个）、`MetadataBundleOptions`、
+- `ProtoMetadataService`、`ProtoCategoryTable` + 30 个适配器、`MetadataBundleOptions`、
   `HttpMetadataBundleSource`、`MetadataBundleInitialization` 后台活动 + 文案。
 - keyed `Proto` 注册；门面按 `Auto` 优先 Proto。
-- `MetadataBuilder` 侧完成 §10.1–10.3（否则 Proto 不可用，此阶段无法验收）。
+- 映射层开发不依赖 §10.1/§10.3：用 §8.2 的 `Snap::Hutao::Metadata::BundlePath` 本地开关，
+  直接读当前 builder 产出的 `GenshinMetadata.CHS.hutaobin` 即可联调；但**上线** Proto 仍需
+  §10.1（版本 + 清单）与 §10.3（语言目录布局）。
+- `MetadataBuilder` 侧 §10.2 已完成；剩余契约见 §10 状态表。
 
-验收：`Snap.Metadata` 仓库**不被 clone**（删除本地仓库后启动验证）；全部类别（27 或 30）读取成功；
+验收：`Snap.Metadata` 仓库**不被 clone**（删除本地仓库后启动验证）；30 个类别全部读取成功；
 数量与 JSON 源一致；离线（本地已有包）可启动。
 
 ### Phase 3：切换、回退、刷新与清理
@@ -954,12 +1010,12 @@ repeated GrowCurve monster_curves = 36;
 |---|---|---|
 | 构建 / DI | `dotnet build src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx -c Debug -p:Platform=x64` | `ValidateOnBuild` 无异常；两个 keyed + 一个非 keyed 注册齐全 |
 | codec | 测试项目：构造小 `MetadataBundle` → 加密（同常量）→ `Read` | 字段 round-trip；截断/超限/坏 IV 三种负例抛明确异常 |
-| 类别覆盖 | 测试：`LanguageMetadata.Descriptor` 的 message 字段集合 == 适配器声明的字段集合 | 无遗漏、无重复 |
-| 转换辅助 | 测试：枚举越界、`long→uint` 溢出、ISO 时间、`TypeValueCollection` 构造 | 行为符合 §7.2/§7.3 表 |
+| 类别覆盖 | 测试：`LanguageMetadata.Descriptor` 的 35 个 message 字段 == 30 个适配器的 `ProtoName` + 5 个 `IgnoredProtoCategories` | 无遗漏、无重复、无未知字段 |
+| 转换辅助 | 测试：枚举越界、`long→uint` 溢出、ISO 时间、`TypeValueCollection` 构造、`double→float` 曲线收窄 | 行为符合 §7.2/§7.3 表 |
 | 缓存 | 测试：`MetadataCache.Clear` 与并发 `SetIfCurrent` | 清理后不残留旧键；旧代际结果不入缓存 |
 | 选源/回退 | 断网 + 无本地包启动（Auto / Proto / Git 三种设置） | 行为符合 §9.2；Auto 静默、Proto 只提示一次、Git 不回退 |
 | 网络重试 | 断网启动 → 恢复网络 | `NetworkRetryCoordinator` 重跑初始化并完成 TCS；页面无需重进 |
-| 平价 | Debug 本地开关：同时初始化 Git 与 Proto，逐类别比较条数与稳定投影（id + 关键字段） | 已注册类别（27，补齐曲线后 30）0 差异；差异日志带类别与首个不同 id |
+| 平价 | Debug 本地开关：同时初始化 Git 与 Proto，逐类别比较条数与稳定投影（id + 关键字段） | 30 个类别 0 差异；差异日志带类别与首个不同 id |
 | 手动 | Wiki 角色/武器/怪物、成就、日历、深渊、幻想真境、幽境危战、培养、背包、抽卡记录、UIGF 导出 | 数据完整、无异常、切换来源后一致 |
 | 性能 | Sentry span：`metadata.bundle.ensure`、`metadata.bundle.parse`、`metadata.category.map` | 初始化在 3 s 内（3.6 MiB + 解析）；首次类别 < 300 ms（以实机测量为准） |
 | 内存 | 任务管理器/`GC.GetTotalMemory` 对比两源稳态 | 记录数值并决定 §7.4 是否保留 L1 |
@@ -976,6 +1032,7 @@ WinUI 类型的模型（`Avatar`、`Weapon` 等）的完整映射只能靠平价
 | 枚举未定义值 | 显示错误或抛异常 | 收敛 + 一次性警告；不因单个枚举丢条目 |
 | AES-CBC 无认证 | 恶意包可触发解析/内存攻击 | HTTPS + 清单哈希 + 尺寸/解压上限 + 解析后结构校验 |
 | 解析内存峰值 | 3.6 MiB 包解析后对象图可能数十 MiB | §7.4 测量后决定是否提前释放 L1 |
+| schema 无版本、字段号已整体后移 | 旧客户端按字段号解析新包会静默错位 | 发布前补 §10.1；解码后仍按语言/类别名/条目数做结构校验 |
 | `Grpc.Tools` 构建依赖 | 新增原生 protoc 与构建时间 | 版本集中管理；CI 缓存 NuGet；失败时回退到提交生成 `.cs` |
 | 双源行为漂移 | 同一页面两源数据不一致 | 平价校验；以 JSON 源为基准，Proto 修复对齐 |
 | 设置项默认 `Auto` | 发布端尚未就绪时首启回退一次 | 回退只在无本地包时发生；提示一次性；可在设置中固定 Git |
@@ -983,7 +1040,7 @@ WinUI 类型的模型（`Avatar`、`Weapon` 等）的完整映射只能靠平价
 未决问题：
 
 1. 单语言包最终托管在 metadata CDN 还是新 git 仓库？（本文推荐前者；`IMetadataBundleSource` 已隔离该决定）
-2. 是否保留 Git 源长期作为回退，还是在某个版本后下线 JSON 路径（影响 `MetadataFileJsonContext` 与 19.3 MiB JSON 维护成本）。
+2. 是否保留 Git 源长期作为回退，还是在某个版本后下线 JSON 路径（影响 `MetadataFileJsonContext` 与 19.2 MiB JSON 维护成本）。
 3. "重新加载元数据"放在设置页何处、是否需要取消正在进行的初始化。
 4. `schema_version` 的所有权与发布流程：由谁在 `MetadataBuilder` 里决定升版本（建议：改 proto 的 PR 必须动版本并在 PR 描述写原因）。
 5. 平价校验是否长期保留在 Debug（建议保留，成本低、收益高）。
@@ -1017,11 +1074,11 @@ Service/Metadata/
     ProtoCategoryTable.cs              (新)
     ProtoCategoryAdapter.cs            (新)
     MetadataConvert.cs                 (新)
-    Mapper/*.cs                        (新：27 个类别适配器)
+    Mapper/*.cs                        (新：30 个类别适配器)
   ContextAbstraction/…                 (不变)
   MetadataServiceImmutable*Extension.cs (改：键走 Cache.CreateKey，方法名 FromCacheOrSourceAsync)
 Proto/                                  (新：vendored schema，§10.5)
-  *.proto                               (从 MetadataBuilder/Proto 原样复制，36 个文件)
+  *.proto                               (从 MetadataBuilder/Proto 原样复制，38 个文件)
 ```
 
 ## 附录 B：与现有文档的衔接
@@ -1029,3 +1086,10 @@ Proto/                                  (新：vendored schema，§10.5)
 - 实现落地时更新 `CLAUDE.md` §5.5：两个 keyed 源 + 门面、`ClearCache` 语义、bundle 格式与来源。
 - `CODE_REVIEW.md` §14 追加一行；ENG-08（`LegacyMetadataService`）随 Phase 1 关闭。
 - 若 Phase 2 引入 `Grpc.Tools`，`Directory.Packages.props` 与 `CLAUDE.md` §2 的构建说明需要同步。
+
+## 附录 C：本文变更记录
+
+| 日期 | 变更 |
+|---|---|
+| 2026-11-22 | 同步 builder `cb1eb30`：曲线类别（`89ddba9`）已补齐，`LanguageMetadata` 变为 35 个字段、应用覆盖 30/30；新增 `GrowCurvePoint` 与三个曲线类别映射、`MetadataCategory.ProtoName`（`BydMaterial` ↔ `BeyondItem`，对应 `ProtoBuilder.LegacyJsonFileNames`）；更新包体积（CHS 3.60 MiB、15 语言 3.60–4.73 MiB、合并 59.7 MiB）与 JSON 树实测（19.2 MiB / 349.9 MiB）；§10.2 标记完成，`schema_version`、清单、语言目录、缺失类别致命仍待做；实施计划与验收改为 30 个适配器。 |
+| 2026-11-21 | 初稿：现状、目标数据流、keyed 双源 + 门面、缓存与 `ClearCache`、传输方案、映射规则、分阶段计划。 |
