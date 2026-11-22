@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "common.proto";
+
+// ============================================================================
+// Achievement
+// ============================================================================
+
+message Achievement {
+  uint32 id = 1;
+  uint32 goal = 2;
+  uint32 order = 3;
+  uint32 previous_id = 4;
+  string title = 5;
+  string description = 6;
+  RewardItem finish_reward = 7;
+  bool is_delete_watcher_after_finish = 8;
+  uint32 progress = 9;
+  string icon = 10;
+  string version = 11;
+  bool is_daily_quest = 12;
+}

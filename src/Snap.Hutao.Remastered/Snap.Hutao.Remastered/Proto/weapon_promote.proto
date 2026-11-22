@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "enums.proto";
+
+// ============================================================================
+// Weapon promote
+// ============================================================================
+
+message WeaponPromote {
+  uint32 id = 1;
+  uint32 level = 2;
+  repeated WeaponAddProperty add_properties = 3;
+}
+
+message WeaponAddProperty {
+  FightProperty type = 1;
+  double value = 2;
+}

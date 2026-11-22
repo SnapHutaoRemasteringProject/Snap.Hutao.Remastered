@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+// ============================================================================
+// Furniture make
+// ============================================================================
+
+message FurnitureMake {
+  int32 id = 1;
+  int32 item_id = 2;
+  int32 experience = 3;
+  repeated FurnitureMakeMaterial materials = 4;
+}
+
+message FurnitureMakeMaterial {
+  int32 id = 1;
+  int32 count = 2;
+}

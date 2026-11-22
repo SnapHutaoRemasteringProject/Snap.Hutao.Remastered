@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "enums.proto";
+
+// ============================================================================
+// Weapon
+// ============================================================================
+
+message Weapon {
+  uint32 id = 1;
+  uint32 promote_id = 2;
+  uint32 sort = 3;
+  WeaponType weapon_type = 4;
+  QualityType rank_level = 5;
+  string name = 6;
+  string description = 7;
+  string icon = 8;
+  string awaken_icon = 9;
+  repeated WeaponGrowCurveData grow_curves = 10;
+  WeaponAffix affix = 11;
+  repeated uint32 cultivation_items = 12;
+}
+
+message WeaponGrowCurveData {
+  double init_value = 1;
+  FightProperty type = 2;
+  GrowCurveValue value = 3;
+}
+
+message WeaponAffix {
+  string name = 1;
+  repeated WeaponAffixDescription descriptions = 2;
+}
+
+message WeaponAffixDescription {
+  int32 level = 1;
+  string description = 2;
+}

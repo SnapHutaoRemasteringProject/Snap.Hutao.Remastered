@@ -10,4 +10,5 @@ public enum ProfilePictureUnlockBy
     Avatar,
     Costume,
     ParentQuest,
+    Default = 5,
 }

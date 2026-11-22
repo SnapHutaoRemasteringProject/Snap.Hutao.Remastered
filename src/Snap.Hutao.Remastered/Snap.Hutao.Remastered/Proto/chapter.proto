@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "enums.proto";
+
+// ============================================================================
+// Chapter
+// ============================================================================
+
+message Chapter {
+  uint32 id = 1;
+  uint32 group_id = 2;
+  uint32 begin_quest_id = 3;
+  uint32 end_quest_id = 4;
+  uint32 need_player_level = 5;
+  string number = 6;
+  string title = 7;
+  string icon = 8;
+  string chapter_icon = 9;
+  string image_title = 10;
+  string serial_number_icon = 11;
+  uint32 city_id = 12;
+  QuestType quest_type = 13;
+}

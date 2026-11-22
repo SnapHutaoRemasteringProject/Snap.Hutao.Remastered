@@ -1,8 +1,10 @@
 # 元数据服务重构：IMetadataProvider / IMetadataService 两层设计
 
-> 状态：**设计稿，未实现**。本文只描述目标结构与迁移步骤，当前代码仍是
-> [`Service/Metadata/MetadataService.cs`](../src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Metadata/MetadataService.cs) 的 Git + JSON 单一实现。
-> 文中"应用"事实来自 `feat/aot-compatible` @ `b08006116`；"产物"事实来自
+> 状态：**已实现（2026-11-22）**。`IMetadataProvider` / `IMetadataService` 两层、keyed Git/Proto provider、
+> `MetadataCache` 与 `ClearCache`、proto bundle 解码与 30 个类别适配器、HTTP bundle 源、选源/回退/切换/
+> 网络重试均已落地；**例外**：缓存的新鲜度/远端更新检测尚未实现（本地包存在即信任，见 §8.3）。
+> 与本文设计的差异、验证结果和仍是 builder 侧的待办见 §15。
+> 本文其余部分保留为设计依据；"应用"原始事实来自 `feat/aot-compatible` @ `b08006116`，"产物"事实来自
 > `D:\SnapHutaoRemasteringProject\MetadataBuilder` @ `cb1eb30` 的 `Proto/`、`Core/Builder/ProtoBuilder.cs`
 > 与 `Core/Builder/*CurveBuilder.cs`。
 >
@@ -15,6 +17,11 @@
 > `GitMetadataProvider` / `ProtoMetadataProvider`，`MetadataServiceBase` 改名为 `MetadataProviderBase`；
 > keyed 注册落在 `IMetadataProvider` 上，`IMetadataService` 负责创建、选源、`SwitchAsync`、清理广播
 > 与网络重试（§5）。
+>
+> **2026-11-22 更新（三）**：**缓存机制还没有完全实现好**——L2/L3 内存缓存与 `ClearCache` 已可用，但 L0
+> 磁盘 bundle 的"新鲜度"层仍是空的：本地包存在即直接信任，**当前无法侦测远程服务器的更新**，服务端发布
+> 新包不会到达已安装的客户端（除非删除本地包或使用开发覆盖路径）。后续计划用服务器返回的 **`ETag`** +
+> `If-None-Match` 条件请求判断是否更新（§8.3）。
 >
 > 关联：`CODE_REVIEW.md#ENG-08`（`LegacyMetadataService` 死代码）、`CODE_REVIEW.md#ARCH-01`（避免新增 `IServiceProvider` 服务定位）、
 > `CLAUDE.md` §5.5（元数据初始化）、§5.9（Sentry span）、§6（parse-first / 事务式替换）。
@@ -35,6 +42,9 @@
 6. 二进制包已覆盖全部 30 个应用类别（schema 共 35 个 message 字段，5 个暂不消费）。
    仍缺的是**版本与分发契约**：`MetadataInfo` 没有 `schema_version`、没有清单文件、单语言包不在语言目录、
    缺失类别不致命（见 §10）。这些不阻塞映射层开发，但阻塞把 Proto 设为默认源。
+7. **缓存机制还没有完全实现好**：内存侧的 L2/L3 与 `ClearCache` 已可用，但磁盘侧没有新鲜度检查——
+   **当前无法侦测远程服务器的更新**。后续用服务器返回的 **`ETag`** 配 `If-None-Match` 条件请求判断
+   是否更新（`304` 复用本地包，`200` 才下载并原子替换），详见 §8.3。
 
 ## 1. 为什么要改（本机实测数据，7.2 版本）
 
@@ -43,7 +53,7 @@
 | 单语言文件数 | 158 个（CHS） | 1 个 |
 | 单语言体积 | 19.2 MiB（CHS） | 3.60 MiB（CHS） |
 | 全仓库工作树 | 349.9 MiB / 2,378 文件 | — |
-| 拉取方式 | 整仓 `git` shallow clone + fetch（含 `.git`，本机 388 MiB） | 单文件条件请求（约 3.6 MiB，未变化时仅清单） |
+| 拉取方式 | 整仓 `git` shallow clone + fetch（含 `.git`，本机 388 MiB） | 单文件下载（约 3.6 MiB；条件请求/ETag 尚未实现，见 §8.3） |
 | 解析方式 | 每个类别一次 `JsonSerializer` 反序列化 | 一次 protobuf 解析，类别按需映射 |
 | 分散文件 | `Avatar/` 目录 122 个文件 / 6.32 MiB，逐文件打开 | 无 |
 | 缓存失效 | 无（只能重启） | `ClearCache()` |
@@ -499,7 +509,7 @@ public abstract class MetadataProviderBase : IMetadataProvider
   （`IMetadataService`）里统一处理，避免两层 TCS 语义漂移。
 - `InitializeCoreAsync` 对 Proto 是"确保文件 + 解码 + 头部校验"，对 Git 是"clone/fetch 仓库"；
   失败返回 `false`（不抛）由管理者决定是否换源；只有取消会抛出。
-- `ClearCache` 负责清自己的 L2/L3；Proto 覆盖它并额外释放 L1 `LanguageMetadata`（§6.4）。
+- `ClearCache` 负责清自己的 L2/L3；Proto 保留 L1 `LanguageMetadata`（实现选择，见 §15.2 第 7 条），不重新解码。
 
 ### 5.5 管理者：创建 provider、选源、切换与网络重试
 
@@ -788,16 +798,20 @@ public sealed class MetadataCache
 |---|---|
 | 签名 | `void ClearCache()`（同步、幂等、线程安全；不抛异常） |
 | 清理范围 | **仅元数据服务的键**：`Metadata.{Git|Proto}.{locale}.…` 前缀下、`MetadataCache` 跟踪的键；不触碰 `AnnouncementService` 等共享 `IMemoryCache` 的其他使用者 |
-| 释放 | provider 释放自己的 L1（仅 Proto 的 `LanguageMetadata`）；Git provider 无需释放 |
+| 释放 | Proto **保留** L1 `LanguageMetadata`（本地包在进程内不变，重新解码没有收益；见 §15.2 第 7 条）；Git provider 无需释放 |
 | 初始化状态 | **不重置** `IsInitialized`。磁盘/网络来源仍然有效，下一次类别读取会重新解析/重读文件；页面的 `InitializeAsync()` 快路径继续成立。改变来源要显式 `SwitchAsync`，它不是 `ClearCache` 的副作用 |
 | 失败 | 单键 `Remove` 失败不影响其余键（`IMemoryCache.Remove` 本身不抛业务异常） |
 | Sentry | `metadata.cache.clear` span，仅记录被清理的键数量与来源，不写路径 |
 | 调用时机 | ① 用户"重新加载元数据"命令（新增，见 §12 Phase 3）；② `SwitchAsync` 内部先清旧 provider；③ 成功替换 bundle 后（刷新流程）；④ 语言切换（当前靠 `AppInstance.Restart`，重启后天然干净；保留此调用以备将来取消重启） |
-| 不负责 | 删磁盘文件、重新下载、改变来源 |
+| 不负责 | 删磁盘文件、重新下载、更新检测、改变来源 |
+
+**当前实现缺口**：`ClearCache` 只清内存里的已解析结果，**不**发网络请求、也不判断远端 bundle 是否更新。
+L0 磁盘 bundle 的新鲜度检查（ETag 条件请求）尚未实现（§8.3），因此它落地前 `ClearCache` 只会让下一轮
+重新解析**同一份**本地包，服务端的新数据仍然到不了客户端。
 
 管理者的 `ClearCache()` 广播给**所有已创建**的 provider（`created` 字典，来自
 `IMetadataProviderFactory`）：清理非活动源是幂等且廉价的操作，能避免"切到 Proto → 切回 Git"时
-命中旧的 L2/L3 数据。provider 自己只清自己的缓存（Proto 额外释放 L1），管理者不接触具体缓存键。
+命中旧的 L2/L3 数据。provider 自己只清自己的缓存（Proto 保留 L1），管理者不接触具体缓存键。
 
 > 命名说明：`ClearCache` 只清"缓存"，不叫 `Refresh`。需要"重新拉取并清缓存"时，由调用方组合
 > `IMetadataBundleSource.EnsureLocalBundleAsync` + `ClearCache`（Phase 3 的刷新命令），两者职责分开。
@@ -912,7 +926,7 @@ internal abstract class ProtoCategoryAdapter<TProto, TModel> : IProtoCategoryAda
 
 | 方案 | 首次启动 | 更新粒度 | 需要服务器/目录变更 | 结论 |
 |---|---|---|---|---|
-| **HTTP：metadata 端点 / CDN**（复用模板 + `Metadata(locale, file)`） | 1 个文件（CHS ≈ 3.6 MiB） | 清单哈希；未变化不下载 | 只需把产物放进现有 metadata 树 | **推荐** |
+| **HTTP：static metadata 目录**（`{apiRoot}/static/metadata/GenshinMetadata.{locale}.hutaobin`） | 1 个文件（CHS ≈ 3.6 MiB） | 本地优先；无清单，无法自动检测变化 | 只需把产物放进 `static/metadata` | **推荐（已实现）** |
 | 新 git 仓库 `Snap.Metadata.Hutaobin` | 整仓（15 个语言包 + 59.7 MiB 合并包） | `git fetch`，可能重下多文件 | 需要 catalog 行、`BackgroundActivity`、镜像配置 | 备选；保留 `IMetadataBundleSource` 缝隙 |
 | 复用 `Snap.Metadata` 仓库 | 349.9 MiB 工作树 | 同上 | 无 | 否 |
 
@@ -922,31 +936,76 @@ internal abstract class ProtoCategoryAdapter<TProto, TModel> : IProtoCategoryAda
 
 ### 8.2 `HttpMetadataBundleSource`
 
+实际分发（2026-11-22 起）：
+
 ```
-GET {apiRoot}/metadata/template                     → Response<MetadataTemplate>
-GET {template}/Genshin/{locale}/GenshinMetadata.manifest.json   （禁止缓存：Cache-Control: no-cache）
-本地 {Data}/Metadata/{locale}/GenshinMetadata.hutaobin 存在且 xxHash64 == 清单 → 直接返回
-否则 GET {template}/Genshin/{locale}/GenshinMetadata.hutaobin
+GET {apiRoot}/static/metadata/GenshinMetadata.{locale}.hutaobin
+本地 {Data}/Metadata/{locale}/GenshinMetadata.hutaobin 存在 → 直接返回（不再下载）
+否则 GET 上述 URL
   → 写 {path}.tmp（流式 + 进度）
-  → size / xxHash64 / schemaVersion / language 校验
-  → File.Move(tmp, path, overwrite: true)           ← 原子替换；校验失败删除 tmp，保留旧文件
+  → 尺寸上限 + 解码 + language 校验
+  → File.Move(tmp, path, overwrite: true)            ← 原子替换；校验失败删除 tmp
 ```
 
 约束：
 
-- **先校验后替换**：与 `CLAUDE.md` §6 "parse-first、事务式替换" 同一条规则。不能用"先覆盖再校验"，
-  否则一次网络抖动会让用户失去可用的旧包。
-- 超时：`HttpClient.Timeout = InfiniteTimeSpan` 是全局策略，下载必须自带
-  `CancellationTokenSource.CancelAfter`（建议 120 s）并链接 `ShutdownToken`。
-- 进度：通过计数流回调 `BackgroundActivityOptions.MetadataBundleInitialization`（新增），
-  在 UI 上表现为和现在 git clone 一样的后台活动。
-- 模板缓存：模板短期内不变，缓存 24 h 于本地设置；失败时退回 `Metadata(locale, file)` 直连形式。
-  模板是含 `{0}` 的 `string.Format` 串，格式化时用 `CultureInfo.InvariantCulture`
-  （现有 `LegacyMetadataOptions.GetLocalizedRemoteFile` 用的是 `CurrentCulture`，迁移时一并修正）。
+- **没有清单。** 生产者目前不输出 `GenshinMetadata.manifest.json`，因此客户端不做清单哈希/版本预检，也无法在"远端已更新"时自动刷新；本地包存在即优先使用。需要更新时删除本地包（或等 Phase 3 的"重新加载元数据"命令）。清单仍是 §10.1 的生产者待办；在清单落地之前，更新检测计划改用 ETag 条件请求（§8.3）。
+- `{locale}` 是元数据 locale 名（`CHS`/`CHT`/`EN`/…），不是 language code；URL 由 `IInfrastructureMetadataEndpoints.MetadataBundle(locale)` 生成。
+- **先校验后替换**：与 `CLAUDE.md` §6 "parse-first、事务式替换" 同一规则。不能用"先覆盖再校验"，否则一次网络抖动会让用户失去可用的旧包。
+- 超时：`HttpClient.Timeout = InfiniteTimeSpan` 是全局策略，下载自带 `CancellationTokenSource.CancelAfter`（120 s）并链接 `ShutdownToken`。
+- 进度：通过计数流回调 `BackgroundActivityOptions.MetadataInitialization`（`MainView.xaml` 唯一绑定的元数据活动）设置 `HasProgress` / `IsIndeterminate` / `ProgressValue`，描述显示下载百分比。
 - 失败时**不清空**已有 bundle：没有网络但本地有旧包时，Proto 源仍可初始化（离线可用）。
 - 只在 `Auto`/`Proto` 下调用；`Git` 模式完全不碰网络下载。
-- 开发联调：读取本地设置 `Snap::Hutao::Metadata::BundlePath`（绝对路径）时跳过下载与清单，
-  直接从该文件解码；让 Phase 2 不必等发布端就绪就能验证映射。该开关不暴露 UI。
+- 开发联调：读取本地设置 `Snap::Hutao::Metadata::BundlePath`（绝对路径）时跳过下载，直接从该文件解码；该开关不暴露 UI。
+
+### 8.3 缓存新鲜度与远端更新检测（尚未实现，计划用 ETag）
+
+**结论：缓存机制还没有完全实现好。** 已经实现的是"已解析结果"的缓存（L1/L2/L3 与 `ClearCache` 广播），
+缺的是 **L0 磁盘层的"新鲜度"判定**——本地 bundle 存在就直接信任，此后不再询问服务器，
+因此**当前无法侦测远程服务器的更新**。
+
+| 层 | 现状 | 缺口 |
+|---|---|---|
+| L0 磁盘 bundle | 下载"先校验后原子替换"；`File.Exists` 命中即返回 | **没有新鲜度检查**：`EnsureLocalBundleAsync` 在本地包存在时直接返回，不发任何请求，服务端发布新包无从得知 |
+| L0 磁盘 JSON 树（Git 源） | `GitRepositoryService` 每次初始化 clone/fetch，能发现远端更新 | 代价是整仓拉取（§1），不是 bundle 方案想要的路径 |
+| L1 `LanguageMetadata` | 进程内保留，`ClearCache` 不释放（§15.2 第 7 条） | 与 L0 同生共死：磁盘包不变就不会重新解码，天然无法带来新数据 |
+| L2/L3 `MetadataCache` | 前缀 + 代际 + 键跟踪，`ClearCache` 可清 | 只能清"已解析结果"，不能判断"上游是否有新数据" |
+
+实际行为：**首次启动下载一次，此后一直使用本地包**。服务端发布新 bundle（新游戏版本、类别修复）时，
+已安装的客户端不会察觉；只有删除 `{Data}/Metadata/{locale}/GenshinMetadata.hutaobin`、使用
+`SettingKeys.MetadataBundlePath` 开发覆盖，或等 Phase 3"重新加载元数据"命令（在无清单/无 ETag 时同样只能
+**无条件全量重下**）才会更新。这不是缓存策略调优问题，而是"更新检测"这一整块还没写。
+
+**后续方案：服务器返回的 `ETag` + `If-None-Match`**
+
+1. 下载成功后把响应头 `ETag`（连同 `Last-Modified`、locale、大小、`XxHash64`、下载时间）保存到
+   `{BundlePath}.state.json`（PascalCase JSON；先写 `.tmp` 再 `File.Move(overwrite: true)`，与 bundle
+   本身同一套原子替换规则）。state 与 bundle 必须成对更新，避免"包新 state 旧"。
+2. `EnsureLocalBundleAsync` 的"本地包存在"分支不再直接返回，改为发**条件 GET**：
+   `If-None-Match: <etag>`（有 `Last-Modified` 时同时带 `If-Modified-Since`）。
+   用 GET 而不是 HEAD：未变化时服务器回 `304`（响应体几乎为空），变化时直接回 `200` + 新包正文，
+   省掉一次往返。
+3. 按状态码分支：
+   - `304 Not Modified` → 继续用本地包，只刷新 state 里的"上次检查时间"。
+   - `200 OK` → 走现有下载/校验路径，成功原子替换 bundle 后同步替换 state。
+   - `412 Precondition Failed`、或响应缺 `ETag` → 退回无条件下载（服务端没配 ETag 时仍必须能更新）。
+   - 其他失败（离线、5xx、超时）→ 保留本地包并静默降级，维持"离线可用"契约（§8.2）。
+4. 触发时机与频率：只在初始化时检查一次，**不随页面加载重复请求**；同一进程最多检查一次；两次检查之间设
+   最短间隔（建议 6–24 h，具体值待定），避免每次启动都打 CDN。`ClearCache` 不触发检查（§6.4）。
+5. 不检查的情况：`MetadataBundlePath` 开发覆盖路径（直接读指定文件，不发请求），以及本地包缺失
+   （此时本来就必须无条件下载）。
+6. 结果校验：`304` 之后仍要确认本地文件存在且可解码，失败则改走无条件下载；ETag 只作"是否变化"的提示，
+   **不能**替代解码与 language 校验（AES-CBC 无认证，§7.2）。
+7. 可行性：`HttpMetadataBundleSource` 已用 `HttpRequestMessageBuilder` + `HttpClient` 直连，请求头可写
+   （`builder.SetHeader(...)`）、响应头可读（`response.Headers.ETag`），`RetryHttpHandler` 对 `GET` 幂等
+   重试，不需要新基础设施；也**不能依赖 HTTP 缓存层**——当前 `HttpClient` 未配任何响应缓存，`304` 语义
+   必须自己处理。
+8. 为什么现在没做：分发侧还没有清单与 `schema_version`（§10.1），ETag 属于同一条"分发契约"待办；
+   在确认服务端会稳定返回并保留 ETag 之前，客户端写条件请求只会退化为"每次全量重下"，没有收益。
+
+实现时的验收：假 `HttpMessageHandler` 覆盖 `200`（新包）/ `304` / `412` / 无 `ETag` / 离线五种情况；
+`304` 不写 bundle、只写 state；`200` 与 state 成对原子替换；离线保留旧包且不报错；
+`ClearCache` 不碰 L0（§6.4）。
 
 ## 9. 源选择与失败矩阵
 
@@ -1143,7 +1202,7 @@ repeated WeaponCurve weapon_curves = 35;
 | `ServiceMetadataSourceFallback` | 显式 Proto 偏好回退到 Git 后的一次性警告 |
 | `ServiceMetadataBundleDownloadFailed` | 清单/包下载失败（带原因占位符） |
 | `ServiceMetadataBundleInvalid` | 校验失败（大小/哈希/语言/解析） |
-| `ServiceBackgroundActivityMetadataBundleInitialization`（+ `…Description`） | 后台活动：下载/校验 bundle |
+| `ServiceMetadataBundleDownloading` / `ServiceMetadataBundleValidating` / `ServiceMetadataDecoding` | 下载百分比、校验、解析进度文案 |
 
 `ServiceMetadataNotInitialized`、`ServiceMetadataFileNotFound`、`ServiceMetadataVersionNotSupported`
 已存在，直接复用；其余语言文件不在同一 PR 修改（`CLAUDE.md` §5.7）。
@@ -1173,7 +1232,7 @@ repeated WeaponCurve weapon_curves = 35;
 ### Phase 2：Proto provider
 
 - `ProtoMetadataProvider`、`ProtoCategoryTable` + 30 个适配器、`MetadataBundleOptions`、
-  `HttpMetadataBundleSource`、`MetadataBundleInitialization` 后台活动 + 文案。
+  `HttpMetadataBundleSource`、`MetadataInitialization` 进度文案。
 - keyed `Proto` 注册；工厂 `AvailableKinds` 变为 `{Git, Proto}`；管理者按 `Auto` 优先 Proto。
 - 映射层开发不依赖 §10.1/§10.3：用 §8.2 的 `Snap::Hutao::Metadata::BundlePath` 本地开关，
   直接读当前 builder 产出的 `GenshinMetadata.CHS.hutaobin` 即可联调；但**上线** Proto 仍需
@@ -1226,11 +1285,12 @@ WinUI 类型的模型（`Avatar`、`Weapon` 等）的完整映射只能靠平价
 | 30 个适配器 = 长期维护面 | schema 变更时容易漏改 | 覆盖性测试 + Debug 平价校验 + §10.1 版本规则 |
 | 枚举未定义值 | 显示错误或抛异常 | 收敛 + 一次性警告；不因单个枚举丢条目 |
 | AES-CBC 无认证 | 恶意包可触发解析/内存攻击 | HTTPS + 清单哈希 + 尺寸/解压上限 + 解析后结构校验 |
-| 解析内存峰值 | 3.6 MiB 包解析后对象图可能数十 MiB | §7.4 测量后决定是否提前释放 L1 |
+| 解析内存峰值 | 3.6 MiB 包解析后对象图可能数十 MiB | 当前保留 L1（§15.2 第 7 条）；内存测量仍开放 |
 | schema 无版本、字段号已整体后移 | 旧客户端按字段号解析新包会静默错位 | 发布前补 §10.1；解码后仍按语言/类别名/条目数做结构校验 |
 | `Grpc.Tools` 构建依赖 | 新增原生 protoc 与构建时间 | 版本集中管理；CI 缓存 NuGet；失败时回退到提交生成 `.cs` |
 | 双源行为漂移 | 同一页面两源数据不一致 | 平价校验；以 JSON 源为基准，Proto 修复对齐 |
 | 设置项默认 `Auto` | 发布端尚未就绪时首启回退一次 | 回退只在无本地包时发生；提示一次性；可在设置中固定 Git |
+| **无远端更新检测（缓存缺口）** | 服务端发布的元数据修复/新版本到不了已安装客户端：本地包被永久信任，除非删除文件或手动刷新 | 现状如此（§8.3）；后续用 `ETag` + `If-None-Match` 条件请求，`304` 复用、`200` 替换 |
 
 未决问题：
 
@@ -1241,8 +1301,124 @@ WinUI 类型的模型（`Avatar`、`Weapon` 等）的完整映射只能靠平价
 5. 平价校验是否长期保留在 Debug（建议保留，成本低、收益高）。
 6. 是否允许将来新增更多 provider（内置快照、HTTP 元数据……）：工厂 + keyed 注册已经支持，
    但 `MetadataSourceKind`、设置文案与 `AvailableSources` 展示需要同步扩展，不打算做成插件点。
+7. ETag 检查的触发点与最短间隔（建议启动时一次、进程内一次、间隔 6–24 h），以及分发端能否稳定返回并
+   保留 `ETag` / `Last-Modified`——需要与 metadata 发布流程一起确认（§8.3）。
 
+## 15. 实现记录（2026-11-22）
+
+实现范围：Phase 0 / 1 / 2 与 Phase 3 的服务侧（选源、静默回退、`SwitchAsync`、`ClearCache`、网络重试）。
+设置页 UI（"重新加载元数据"命令、来源下拉框）未实现，因此 `SwitchAsync` / `ActiveSource` /
+`AvailableSources` / `ClearCache` 目前只有服务代码与测试调用方。
+
+### 15.1 落地的文件
+
+| 区域 | 文件 |
+|---|---|
+| 契约 | `Service/Metadata/IMetadataService.cs`、`IMetadataServiceInitialization.cs`、`Provider/IMetadataProvider.cs`、`Provider/IMetadataProviderFactory.cs` |
+| 管理者 | `Service/Metadata/MetadataService.cs`、`MetadataSourceOptions.cs` |
+| provider | `Provider/MetadataProviderBase.cs`、`Provider/MetadataProviderFactory.cs`、`Provider/Git/*`、`Provider/Proto/*` |
+| 缓存 / 类别 | `MetadataCache.cs`、`MetadataCategory.cs`、`MetadataCategories.cs`、`MetadataSourceKind.cs` |
+| 解码 / 传输 | `Provider/Proto/MetadataBundleCodec.cs`、`BoundedReadStream.cs`、`MetadataBundleConstants.cs`、`MetadataBundleInfo.cs`、`HttpMetadataBundleSource.cs`、`IMetadataBundleSource.cs` |
+| 映射 | `Provider/Proto/ProtoCategoryTable.cs`、`ProtoCategoryAdapter.cs`、`MetadataConvert.cs`、`Mapper/*.cs`（30 个） |
+| 协议 | `Proto/*.proto`（38 个，vendored）、`Proto/Generated/*.cs`（提交的 protoc 输出）、`Proto/README.md`、`scripts/Generate-MetadataProto.ps1` |
+
+`LegacyMetadataService` / `LegacyMetadataOptions` 已删除（ENG-08）；`MetadataOptions` 改名为
+`GitMetadataProviderOptions`；`MetadataFileStrategy` / `MetadataFileStrategies` 改名为
+`MetadataCategory` / `MetadataCategories`；`FromCacheOrFileAsync` 改名为 `FromCacheOrSourceAsync`。
+
+### 15.2 与本文设计的差异
+
+1. **标识 / 等级 / 计数改为 `uint32`（builder 与客户端同时改）。** 应用模型用 `uint` 承载 id、等级、排名与
+   数量（identity 结构体的底层类型是 `uint`），原 schema 的 `int64` / `int32` 让映射层必须做范围检查并可能
+   丢条目。`MetadataBuilder/Proto` 中这些字段已改为 `uint32`，builder 的 `ProtoMapper` /
+   `ProtoJsonMapper` 增加 `UInt32` / `UInt64` 转换。小于 `2^31` 的数值在 varint 编码下与 `int64` 完全一致，
+   因此本次改动前生成的旧 bundle 仍可被新客户端读取（已用本机 CHS 包验证）。
+2. **生成代码提交进仓库，构建期不运行 protoc。** `Grpc.Tools` 只在"本次构建真的运行了 protoc"时把生成
+   文件加入 `@(Compile)`；一次"生成成功但编译未完成"的构建会让后续增量构建永久缺少这些文件
+   （`CS0234`）。因此 `Proto/Generated` 作为普通源码提交，`scripts/Generate-MetadataProto.ps1` 负责重生成，
+   `Grpc.Tools` 仅以 `ExcludeAssets=all` 保留用于取得 `protoc`。这是 §10.5 的备选方案。
+3. **未定义枚举值保留原数值，而不是收敛到 `NONE`。** JSON 源（System.Text.Json）同样保留原始数字，
+   现有数据依赖它：`Chapter.CityId` 已出现 8 / 105，`ProfilePicture.UnlockType` 已出现 5。收敛会让两个源
+   产生可观测差异。`MetadataConvert.ToEnum` 保留数值并对每个 `(枚举, 字段, 值)` 只记一次警告；
+   `ProfilePictureUnlockBy` 增补 `Default = 5`，让该值成为已定义成员。
+4. **proto3 空字符串在可空模型属性上映射为 `null`。** proto3 无法区分"缺失"与空串；JSON 源对
+   `WhenWritingNull` 省略的属性是 `null`。少数 builder 显式写 `""` 的属性（如
+   `MainQuest.UnlockDescription`）在 proto 源会变成 `null`，消费方均按 `IsNullOrEmpty` 处理，行为一致。
+5. **`MetadataBundleInfo.SchemaVersion` 固定为 `0`。** bundle 本身没有 `schema_version` 字段，生产者也没有清单；客户端只在下载后解码校验，不做版本预检（§10.1 仍是 builder 待办）。
+6. **分发使用 static 目录，没有模板与清单。** `GET {apiRoot}/static/metadata/GenshinMetadata.{locale}.hutaobin`；本地包存在即优先使用，因此**当前无法侦测远端更新**：需要删除本地包、走开发覆盖路径或等 Phase 3 的刷新命令（见 §8.2）。缓存新鲜度这一层尚未实现，后续用服务器返回的 `ETag` + `If-None-Match` 判断是否更新（§8.3）。
+7. **L1 保留、映射移出调用线程。** 不再在"全部类别映射一次"后释放 `LanguageMetadata`，`ClearCache` 也只清 L2/L3；类别映射通过 `Task.Run` 在后台执行，并由 `MetadataCache.GetOrCreateAsync` 按 key 去重，页面加载不再在 UI 线程同步映射大类。
+8. **平价校验没有内置到 Debug 启动路径。** 本次用一次性外部工具完成（见 15.4）；如果长期保留，应把
+   它做成 Debug-only 命令，而不是每次启动都跑。
+
+10. **启动自检修复。** `AttemptAsync` 的局部变量 `bool initialized` 遮蔽了同名字段 `initialized`（`TaskCompletionSource`），使每次成功初始化都被判定为"stale attempt"并丢弃，表现为页面一直等待元数据、Proto/Git 反复初始化。局部变量已改名为 `providerInitialized`，字段比较恢复正确；同时把分发 URL 从旧的模板/镜像路径改为 `{apiRoot}/static/metadata/GenshinMetadata.{locale}.hutaobin`。
+
+11. **下载进度写在 `MetadataInitialization` 上。** 该活动是 `MainView.xaml` 唯一绑定的元数据活动；下载时设置 `HasProgress` / `IsIndeterminate` / `ProgressValue`，描述同时显示百分比和已下载/总大小（例如 `28%，1.0 MiB / 3.6 MiB`）；响应没有 `Content-Length` 时退化为"已下载 N MiB"并按 256 KiB 刷新；探测/解析阶段显示不确定进度。
+
+### 15.3 构建与生成
+
+```powershell
+powershell -File scripts/Generate-MetadataProto.ps1          # 重生成 Proto/Generated
+powershell -File scripts/Generate-MetadataProto.ps1 -Check   # 校验生成结果是否过期
+dotnet build src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx -c Debug -p:Platform=x64
+dotnet test  src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "FullyQualifiedName~Metadata"
+```
+
+`MetadataBuilder` 侧同样已构建通过（`dotnet build MetadataBuilder.csproj -c Debug`）。
+
+### 15.4 验证结果
+
+| 项 | 方法 | 结果 |
+|---|---|---|
+| 构建 / DI | Debug x64 构建（app 与测试项目） | 通过，0 错误；新增/改写文件 0 警告 |
+| codec 单测 | 加密 → 解码 round-trip、截断 IV、坏密文、解压上限 | 4/4 通过 |
+| 缓存单测 | 代际号、`SetIfCurrent`、`Clear` 只清自己的键 | 5/5 通过 |
+| schema 覆盖 | `LanguageMetadata` 的 35 个 message 字段 == 30 个类别 + 5 个显式忽略 | 通过 |
+| 映射平价 | 用本机 `GenshinMetadata.CHS.hutaobin` + `Snap.Metadata.Work/Genshin/CHS` 逐类别比较条数、键集合与标量投影 | 30/30 类别全等（`null` ↔ `""` 归一后，见 15.6） |
+| 真实 bundle | 本机 CHS 包（旧 schema、`int64` 字段）用新 `uint32` 客户端解码 | 通过（见 15.2 第 1 条） |
+| 真实下载 | 从 `{apiRoot}/static/metadata/GenshinMetadata.CHS.hutaobin` 下载并初始化（3,771,744 B） | 通过；首页抽卡/深渊卡片正常显示 |
+| 全量测试 | `dotnet test`（app 测试项目） | 321/321 通过 |
+
+### 15.5 仍未完成
+
+**客户端侧（见 §8.3）**：
+
+- **缓存机制还没有完全实现好**：L2/L3 内存缓存与 `ClearCache` 已可用，但 L0 磁盘 bundle 没有新鲜度检查，
+  **当前无法侦测远程服务器的更新**。后续用服务器返回的 `ETag` + `If-None-Match` 条件请求判断是否更新
+  （`304` 复用本地包，`200` 才下载并成对原子替换 state，`412`/无 `ETag` 退化为无条件下载）；
+  前提是分发端稳定返回 ETag。
+- 设置页 UI（"重新加载元数据"命令、来源下拉框）未实现，`SwitchAsync` / `ActiveSource` /
+  `AvailableSources` / `ClearCache` 目前只有服务代码与测试调用方（§15.1 已注明）。即使命令上线，
+  在 ETag/清单落地前它也只能无条件全量重下。
+
+**builder 侧（见 §10）**：`schema_version`、清单文件、单语言包写入语言目录、缺失类别致命、schema 分发方式。
+这些不阻塞客户端；但 Proto 成为默认源之前必须补上版本与清单，否则发布端与客户端的字段错位无法被发现。
+
+### 15.6 平价结果
+
+用一次性外部工具（`MetaParity`，引用 app 项目并链接 30 个适配器与解码器）对本机
+`GenshinMetadata.CHS.hutaobin`（旧 schema、`int64` 字段，2026-11-21 产物）与
+`Snap.Metadata.Work/Genshin/CHS` 逐类别比较：
+
+- 30 个类别的条目数全部相等（例：Achievement 1909、Avatar 122、Material 7219、MainQuest 2760、
+  Monster 572、TowerLevel 435、Weapon 253、GachaEvent 304）。
+- 以 `Id` / `DescribeId` / `SetId` / `Rank+Level` / `Name+Version+Order` / `Reliquary.Ids[0]` 为键的
+  集合完全一致；每个条目的标量投影（字符串、数值、枚举、`DateTimeOffset`、`Uri`、字符串数组）也
+  一致。
+- 唯一差异是 proto3 的 `null` ↔ JSON `""`（可空字符串，见 §15.2 第 4 条）；比较器把两者归一为同一
+  空值后，30/30 类别 0 差异。
+- `Avatar`（122 条，含技能、天赋、命座、服装、名刺、游迹）与 `Weapon` / `Monster` 的嵌套映射首次
+  运行即全等，说明 `OnDeserialized`、曲线集合与排序字典语义与 JSON 路径一致。
+- 空数组与 JSON 缺省一致：`TowerFloor.FirstDescriptions` / `SecondDescriptions`、
+  `TowerLevel.FirstMonsters` / `SecondMonsters`、`TowerMonster.Affixes`、`Monster.Drops` 在 proto 侧
+  为空时映射为 `default(ImmutableArray<T>)`，与 JSON 缺省相同。
+
+工具没有提交：它通过 `ProjectReference` 引用 WinUI app 项目，与测试项目"不引用 app"的约束冲突；
+如果长期保留，应改成 Debug-only 的服务命令（见 §15.2 第 8 条）。
+
+旧 bundle 兼容性：上述 CHS 包由 `cb1eb30` 的 `int64` schema 生成；新客户端以 `uint32` 解析后全部字段
+与期望一致（小于 `2^31` 的 varint 编码相同），因此 `uint32` 迁移不需要重建包即可验证。
 ## 附录 A：文件清单（目标结构）
+9. **keyed 注册只落在 `IMetadataProvider` 上。** `IGitMetadataProvider` / `IProtoMetadataProvider` 没有单独注册（两个 keyed 注册会产生两个实例），目前也没有诊断页消费它们；将来需要时应通过工厂取到 `IMetadataProvider` 再转换，或让 provider 以工厂方式共用同一实例。
 
 ```
 Service/Metadata/
@@ -1293,6 +1469,7 @@ Proto/                                  (新：vendored schema，§10.5)
 
 | 日期 | 变更 |
 |---|---|
+| 2026-11-22（三） | 记录缓存机制尚未完全实现：L2/L3 与 `ClearCache` 已可用，L0 磁盘 bundle 无新鲜度检查，**当前无法侦测远程服务器的更新**；新增 §8.3（现状表、实际行为、后续 `ETag` + `If-None-Match` 条件请求方案、触发频率、兼容与验收），同步更新状态行、TL;DR 第 7 条、§6.4（修正"释放 L1"表述并补缺口说明）、§8.2、§15.2 第 6 条与 §15.5（拆出客户端侧待办）。 |
 | 2026-11-22（二） | 按"服务管理 provider"重新分层：新增 `IMetadataProvider` / `IMetadataProviderFactory`，原 `IGit/IProtoMetadataService` 改为 `IGit/IProtoMetadataProvider`，`GitMetadataService` / `ProtoMetadataService` 改为 `GitMetadataProvider` / `ProtoMetadataProvider`，`MetadataServiceBase` 改为 `MetadataProviderBase`；keyed 注册移到 `IMetadataProvider`；`IMetadataService` 增加 `SwitchAsync` / `ActiveSource` / `AvailableSources`，provider 不再持有 TCS；`ClearCache` 广播给所有已创建 provider；同步更新数据流、DI、契约、实施与验收。 |
 | 2026-11-22（一） | 同步 builder `cb1eb30`：曲线类别（`89ddba9`）已补齐，`LanguageMetadata` 变为 35 个字段、应用覆盖 30/30；新增 `GrowCurvePoint` 与三个曲线类别映射、`MetadataCategory.ProtoName`（`BydMaterial` ↔ `BeyondItem`，对应 `ProtoBuilder.LegacyJsonFileNames`）；更新包体积（CHS 3.60 MiB、15 语言 3.60–4.73 MiB、合并 59.7 MiB）与 JSON 树实测（19.2 MiB / 349.9 MiB）；§10.2 标记完成，`schema_version`、清单、语言目录、缺失类别致命仍待做；实施计划与验收改为 30 个适配器。 |
 | 2026-11-21 | 初稿：现状、目标数据流、keyed 双源 + 门面、缓存与 `ClearCache`、传输方案、映射规则、分阶段计划。 |

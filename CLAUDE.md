@@ -375,20 +375,49 @@ the build fails with `CS9275`); write a normal constructor in that case.
 
 ### 5.5 Metadata initialization
 
-- [`Service/Metadata/IMetadataService.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Metadata/IMetadataService.cs)
-  — singleton (`[Service(ServiceLifetime.Singleton, typeof(IMetadataService))]`), exposes
-  `InitializeAsync()`, `FromCacheOrFileAsync<T>(MetadataFileStrategy, CancellationToken)` and the
-  underlying `IMemoryCache`.
-- `serviceProvider.GetRequiredService<IMetadataService>().InitializeInternalAsync()` at startup; pages then
-  read through the `GetContextAsync` extensions
-  (`Service/Metadata/ContextAbstraction/MetadataServiceContextExtension.cs`, dictionary/list caches —
-  see the PERF items in `CODE_REVIEW.md`).
+- **Two layers.** `IMetadataProvider`
+  (`Service/Metadata/Provider/IMetadataProvider.cs`) is one data source: `Kind` / `IsInitialized` /
+  `Cache` / `InitializeAsync` / `FromCacheOrSourceAsync<T>` / `ClearCache`. `IMetadataService` is the
+  manager and the only type consumers inject: it creates and holds providers, picks a source, falls
+  back, switches, broadcasts cache clears and schedules retries. `MetadataProviderFactory` is the only
+  keyed resolution point (`GetRequiredKeyedService`), so no page or view model sees a provider.
+- **Providers** are keyed singletons registered on `IMetadataProvider`: `GitMetadataProvider`
+  (key `MetadataSourceKind.Git`, diagnostics interface `IGitMetadataProvider`) reads the JSON tree from
+  a shallow clone of `Snap.Metadata`; `ProtoMetadataProvider` (key `MetadataSourceKind.Proto`,
+  diagnostics interface `IProtoMetadataProvider`) reads `GenshinMetadata.{locale}.hutaobin`
+  (`IV(16) ‖ AES-256-CBC(zlib(protobuf)), PKCS7`) and maps 30 categories on demand.
+  `MetadataSourceKind.Auto` is a preference only and is never a DI key.
+- **Startup.** `AppActivation` warms the service in the background
+  (`IMetadataService.InitializeInternalAsync()`), but `InitializeAsync()` is self-starting and
+  idempotent, so a page can never wait on initialization nobody triggered. `MetadataSourceOptions`
+  (`SettingKeys.MetadataSource`) stores `Auto`/`Proto`/`Git`; `Auto` tries `[Proto, Git]` and an
+  explicit `Proto` fallback reports once. A failed start is registered with
+  `INetworkRetryCoordinator`, which re-runs it after the network recovers.
+- **Caching.** `MetadataCache` keys are `Metadata.{Git|Proto}.{locale}.…` and carry a generation
+  counter; they are the only keys `ClearCache` removes. `SwitchAsync` clears the previous provider
+  first, and the manager broadcasts `ClearCache` to every provider it created. Proto keeps its parsed
+  `LanguageMetadata` for the process lifetime and maps categories in the background, so pages never
+  decode or map the bundle on the UI thread.
+- **Bundle transport.** `HttpMetadataBundleSource` downloads
+  `{apiRoot}/static/metadata/GenshinMetadata.{locale}.hutaobin` (one file per locale; there is no
+  manifest yet), writes a `.tmp` file, validates it by bounded size and by decoding, then replaces the
+  local bundle atomically. A local bundle is trusted as-is, so a network failure keeps the previous
+  bundle and a remote update requires deleting the local file (or the Phase 3 reload command).
+  `SettingKeys.MetadataBundlePath` is a developer override that skips the download.
+- Pages read through the `GetContextAsync` extensions
+  (`Service/Metadata/ContextAbstraction/MetadataServiceContextExtension.cs`) and the
+  `Service/Metadata/MetadataServiceImmutable*Extension.cs` projections; both go through
+  `FromCacheOrSourceAsync<T>`.
 - Supporting services: `GitRepositoryService` (clones/updates the metadata repositories),
   [`Service/BackgroundActivity/BackgroundActivity.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/BackgroundActivity/BackgroundActivity.cs)
-  (observable activity state for the UI),
+  (observable activity state for the UI; metadata download progress is reported on `MetadataInitialization`, the activity `MainView` binds),
   [`Service/Network/NetworkRetryCoordinator.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Network/NetworkRetryCoordinator.cs)
   (re-runs startup work after the network recovers — this one is the best-quality recent code in
   the repo and a good template).
+- The proto schema is vendored under `Proto/*.proto`; the generated C# is committed under
+  `Proto/Generated` and regenerated with `scripts/Generate-MetadataProto.ps1` (the build does not run
+  protoc). Identifier/level/count fields are `uint32` in the schema; see
+  [`docs/proto-metadata.md`](docs/proto-metadata.md) §15 for the design-to-implementation record.
 
 ### 5.6 Native AOT branch and JSON contracts
 
@@ -625,7 +654,7 @@ ID — do not "fix" these by documenting them as if they were intended.
 | 7 | Manifest allows Windows 10 `10.0.19041.0` while the public support statement says Windows 10 22H2 (Jan-2025) / Windows 11 22H2 — reconcile one of the two | `Package*.appxmanifest`, project docs site | — |
 | 8 | No CI quality gate: none of the 8 workflows runs `dotnet test` or `dotnet format --verify-no-changes` | `.github/workflows/` | ENG-05 |
 | 10 | `dependabot.yml` NuGet entry still points at the pre-rename path `/src/Snap.Hutao` → no NuGet updates since the rename | `.github/dependabot.yml` | ENG-06 |
-| 11 | Dead code / stale config: `LegacyMetadataService` (396 lines, `[Service]` commented out), `build.cake` targets a non-existent `.sln`, commented-out `#pragma` block | `Service/Metadata/LegacyMetadataService.cs`, `build.cake`, `Web/Hoyolab/SaltConstants.cs` | ENG-08 |
+| 11 | Dead code / stale config: `build.cake` targets a non-existent `.sln`, commented-out `#pragma` block in `Web/Hoyolab/SaltConstants.cs`; the 396-line `LegacyMetadataService` was removed with the metadata provider rework (its part of ENG-08 is resolved) | `build.cake`, `Web/Hoyolab/SaltConstants.cs` | ENG-08 |
 | 12 | Normal builds do not emit generator source copies; `AotAnalysis=true` enables diagnostics only, without another generated-source output tree | app csproj | ENG-09 |
 | 13 | 171 `[SuppressMessage]` + 90 `#pragma warning disable`, several without `Justification` | repo-wide | ENG-03 |
 | 14 | Hard-coded Chinese UI text still present in `.cs` string literals and XAML attribute values (`TestPage`, `LaunchGamePage` worst) and no gate against new ones | repo-wide | LOC-01/02/03 |
@@ -637,6 +666,7 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
+| 2026-11-22 | Split metadata into `IMetadataProvider` (keyed Git/Proto providers) and the `IMetadataService` manager, added the proto bundle source (codec, HTTP bundle source, 30 category adapters, `MetadataCache` with generation-based `ClearCache`, source switching/fallback/network retry), vendored the `uint32` schema with committed generated C#, and deleted `LegacyMetadataService`; §5.5 rewritten, §8 #11 updated. |
 | 2026-11-10 | Replaced runtime EF migrations with generated versioned SQL and an atomic, history-validating SQLite upgrade runner; added source fingerprint checks, EF-created legacy database parity verification, and an actual Native AOT database test project. EF model/query work remains separate. |
 | 2026-11-10 | Replaced cloned per-context JSON options and the hidden reflection retry with a shared generated resolver chain; preserved resolver errors and first-use freezing, registered dictionary/legacy list roots, source-linked their real contexts, and documented the AOT branch's removed plugin scope and validation limits. |
 | 2026-11-08 | Added Sentry performance instrumentation (§5.9): every page load and the startup named-pipe redirect start a transaction, and HTTP, SQL, repository/save, EF migration, metadata/git/update/gacha/achievement/user/daily-note/record/plugin/inventory/cultivation/backpack/game-launch/game-package work is captured as nested spans through `SentrySpanScope`; documented the transaction-vs-child policy and the "no user-controlled waits in a transaction" rule. |

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "enums.proto";
+
+// ============================================================================
+// Profile picture
+// ============================================================================
+
+message ProfilePicture {
+  uint32 id = 1;
+  string icon = 2;
+  string name = 3;
+  ProfilePictureUnlockBy unlock_type = 4;
+  uint32 unlock_parameter = 5;
+}

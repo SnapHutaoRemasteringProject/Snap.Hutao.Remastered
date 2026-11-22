@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "enums.proto";
+
+// ============================================================================
+// Gacha event
+// ============================================================================
+
+message GachaEvent {
+  string name = 1;
+  string version = 2;
+  uint32 order = 3;
+  string banner = 4;
+  string banner2 = 5;
+  string from = 6;
+  string to = 7;
+  GachaType type = 8;
+  repeated uint32 up_orange_list = 9;
+  repeated uint32 up_purple_list = 10;
+}

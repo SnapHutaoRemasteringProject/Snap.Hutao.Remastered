@@ -4,15 +4,20 @@
 using Snap.Hutao.Remastered.Core;
 using System.IO;
 
-namespace Snap.Hutao.Remastered.Service.Metadata;
+namespace Snap.Hutao.Remastered.Service.Metadata.Provider.Git;
 
+/// <summary>
+/// Local layout of the git/JSON metadata source.
+/// </summary>
 [Service(ServiceLifetime.Singleton)]
-public sealed partial class MetadataOptions
+public sealed partial class GitMetadataProviderOptions
 {
     private readonly CultureOptions cultureOptions;
 
     [GeneratedConstructor]
-    public partial MetadataOptions(IServiceProvider serviceProvider);
+    public partial GitMetadataProviderOptions(IServiceProvider serviceProvider);
+
+    public string RepositoryName { get; } = "Snap.Metadata";
 
     [field: MaybeNull]
     public string LocalizedDataFolder
@@ -21,7 +26,7 @@ public sealed partial class MetadataOptions
         {
             if (field is null)
             {
-                field = Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), "Snap.Metadata", "Genshin", cultureOptions.LocaleName);
+                field = Path.Combine(HutaoRuntime.GetDataRepositoryDirectory(), RepositoryName, "Genshin", cultureOptions.LocaleName);
                 Directory.CreateDirectory(field);
             }
 

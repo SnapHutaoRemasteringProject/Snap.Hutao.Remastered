@@ -82,6 +82,10 @@
     <Message Text="Copying @(_ResourceFiles-&gt;Count()) resource files and @(_AssetFiles-&gt;Count()) asset files to $(OutDir)" Importance="high" />
   </Target>
 
+  <!-- Metadata bundle schema: the vendored .proto files under Proto/ are the contract copied from
+       MetadataBuilder/Proto. The generated C# is committed under Proto/Generated (see Proto/README.md)
+       and regenerated with scripts/Generate-MetadataProto.ps1. -->
+
   <!-- Analyzer Files -->
   <ItemGroup>
     <AdditionalFiles Include="ApiEndpoints.csv" />
@@ -288,6 +292,12 @@
     <PackageReference Include="CommunityToolkit.WinUI.Media" />
     <PackageReference Include="DevWinUI" />
     <PackageReference Include="Google.Protobuf" />
+    <PackageReference Include="Grpc.Tools">
+      <PrivateAssets>all</PrivateAssets>
+      <!-- Only pins/provides protoc for scripts/Generate-MetadataProto.ps1; the app compiles the
+           committed Proto/Generated sources and must not run protoc during a normal build. -->
+      <ExcludeAssets>all</ExcludeAssets>
+    </PackageReference>
     <PackageReference Include="JetBrains.Annotations" />
     <PackageReference Include="Microsoft.Agents.AI.Anthropic" />
     <PackageReference Include="Microsoft.Agents.AI.Harness" />

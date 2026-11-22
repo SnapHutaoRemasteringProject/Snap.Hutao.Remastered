@@ -1,24 +1,12 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using System.Globalization;
-
 namespace Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 
 public interface IInfrastructureMetadataEndpoints : IInfrastructureRootAccess
 {
-    string Metadata(string locale, string fileName)
+    string MetadataBundle(string locale)
     {
-        return $"{Root}/metadata/Genshin/{locale}/{fileName}";
-    }
-
-    string Metadata(string template, string locale, string fileName)
-    {
-        return string.Format(CultureInfo.CurrentCulture, template, $"Genshin/{locale}/{fileName}");
-    }
-
-    string MetadataTemplate()
-    {
-        return $"{Root}/metadata/template";
+        return $"{Root}/static/metadata/GenshinMetadata.{locale}.hutaobin";
     }
 }

@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "enums.proto";
+
+// ============================================================================
+// Furniture
+// ============================================================================
+
+message Furniture {
+  repeated int32 types = 1;
+  FurnitureDeploySurfaceType surface_type = 2;
+  bool is_special = 3;
+  SpecialFurnitureType special_type = 4;
+  int32 comfort = 5;
+  int32 cost = 6;
+  int32 discount_cost = 7;
+  bool can_float = 8;
+  bool is_unique = 9;
+  string item_icon = 10;
+  string effect_icon = 11;
+  QualityType rank_level = 12;
+  repeated int32 group_units = 13;
+  GroupRecordType group_record_type = 14;
+  repeated string source_texts = 15;
+  int32 id = 16;
+  string name = 17;
+  string description = 18;
+  string icon = 19;
+  int32 rank = 20;
+}

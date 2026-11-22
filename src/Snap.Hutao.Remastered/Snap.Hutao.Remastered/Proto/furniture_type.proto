@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "enums.proto";
+
+// ============================================================================
+// Furniture type
+// ============================================================================
+
+message FurnitureType {
+  int32 id = 1;
+  int32 category = 2;
+  string name = 3;
+  string name2 = 4;
+  string tab_icon = 5;
+  FurnitureDeployType scene_type = 6;
+  bool bag_page_only = 7;
+  bool is_show_in_bag = 8;
+  int32 sort = 9;
+}

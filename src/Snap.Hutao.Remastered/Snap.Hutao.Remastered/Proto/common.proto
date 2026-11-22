@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "enums.proto";
+
+// ============================================================================
+// Shared messages
+// ============================================================================
+
+message GameVersion {
+  int32 major = 1;
+  int32 minor = 2;
+  int32 patch = 3;
+}
+
+// One grow curve entry, shared by the avatar, monster and weapon curve tables.
+message GrowCurvePoint {
+  GrowCurveValue type = 1;
+  double value = 2;
+}
+
+message MetadataInfo {
+  string publisher = 1;
+  string generated_at = 2;
+}
+
+message RewardItem {
+  uint32 id = 1;
+  uint32 count = 2;
+}

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "enums.proto";
+
+// ============================================================================
+// Combine
+// ============================================================================
+
+message Combine {
+  uint32 id = 1;
+  uint32 type = 2;
+  uint32 sub_type = 3;
+  CombineItem result = 4;
+  uint32 cost = 5;
+  repeated CombineItem materials = 6;
+  string effect_description = 7;
+  RecipeType recipe_type = 8;
+}
+
+message CombineItem {
+  uint32 id = 1;
+  uint32 count = 2;
+}

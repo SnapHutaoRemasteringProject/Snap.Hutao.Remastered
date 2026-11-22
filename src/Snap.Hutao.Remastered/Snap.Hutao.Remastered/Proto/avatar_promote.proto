@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "enums.proto";
+
+// ============================================================================
+// Avatar promote
+// ============================================================================
+
+message AvatarPromote {
+  uint32 id = 1;
+  uint32 level = 2;
+  repeated AvatarAddProperty add_properties = 3;
+}
+
+message AvatarAddProperty {
+  FightProperty type = 1;
+  double value = 2;
+}

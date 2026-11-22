@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+// ============================================================================
+// Reliquary main affix
+// ============================================================================
+
+message ReliquaryMainAffix {
+  uint32 id = 1;
+  uint32 type = 2;
+}

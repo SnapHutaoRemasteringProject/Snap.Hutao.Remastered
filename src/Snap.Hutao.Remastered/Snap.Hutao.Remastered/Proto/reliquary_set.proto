@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+// ============================================================================
+// Reliquary set
+// ============================================================================
+
+message ReliquarySet {
+  uint32 set_id = 1;
+  uint32 equip_affix_id = 2;
+  repeated uint32 equip_affix_ids = 3;
+  repeated uint32 need_number = 4;
+  string name = 5;
+  string icon = 6;
+  repeated string descriptions = 7;
+}

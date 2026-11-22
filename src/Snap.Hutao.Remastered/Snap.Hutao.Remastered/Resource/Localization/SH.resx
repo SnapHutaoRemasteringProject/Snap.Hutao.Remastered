@@ -887,6 +887,9 @@
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
     <value>准备中，若长时间无反应请尝试重启或检查网络与服务器状态</value>
   </data>
+  <data name="ServiceBackgroundActivityMetadataInitializationCompleted" xml:space="preserve">
+    <value>元数据已就绪</value>
+  </data>
   <data name="ServiceBackgroundImageDecodeFailed" xml:space="preserve">
     <value>无法解码背景图片：系统缺少可用的图像解码组件，已跳过本次壁纸切换</value>
   </data>
@@ -1204,6 +1207,30 @@
   </data>
   <data name="ServiceMetadataVersionNotSupported" xml:space="preserve">
     <value>你的胡桃版本过低，请尽快升级</value>
+  </data>
+  <data name="ServiceMetadataInitializationFailed" xml:space="preserve">
+    <value>元数据初始化失败，网络恢复后将自动重试</value>
+  </data>
+  <data name="ServiceMetadataSourceFallback" xml:space="preserve">
+    <value>已回退到 Git 元数据源</value>
+  </data>
+  <data name="ServiceMetadataBundleDownloadFailed" xml:space="preserve">
+    <value>元数据包下载失败</value>
+  </data>
+  <data name="ServiceMetadataBundleInvalid" xml:space="preserve">
+    <value>元数据包校验失败</value>
+  </data>
+  <data name="ServiceMetadataBundleDownloading" xml:space="preserve">
+    <value>正在下载({0}% {1}/{2})</value>
+  </data>
+  <data name="ServiceMetadataBundleDownloadingIndeterminate" xml:space="preserve">
+    <value>正在下载(已下载 {0})</value>
+  </data>
+  <data name="ServiceMetadataBundleValidating" xml:space="preserve">
+    <value>正在校验元数据包</value>
+  </data>
+  <data name="ServiceMetadataDecoding" xml:space="preserve">
+    <value>正在解析元数据</value>
   </data>
   <data name="ServicePackageAdvancedExecuteOperationCanceledTitle" xml:space="preserve">
     <value>游戏资源操作已取消</value>

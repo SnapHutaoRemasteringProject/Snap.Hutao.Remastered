@@ -3,10 +3,10 @@
 
 namespace Snap.Hutao.Remastered.Core.Text.Json;
 
-// Root file contracts used by MetadataService, including scattered element files.
-// Every MetadataFileStrategy read through MetadataService.FromCacheOrFileAsync<T> must have a
+// Root file contracts used by the git metadata provider, including scattered element files.
+// Every MetadataCategory read through GitMetadataProvider.FromCacheOrSourceAsync<T> must have a
 // root here. scripts/Test-HttpJsonContracts.ps1 verifies the compiled assembly, so run it after
-// building when a metadata strategy or model is added.
+// building when a metadata category or model is added.
 [JsonSourceGenerationOptions(GenerationMode = JsonSourceGenerationMode.Metadata)]
 [JsonSerializable(typeof(global::System.Collections.Immutable.ImmutableArray<global::Snap.Hutao.Remastered.Model.Metadata.Achievement.Achievement>), TypeInfoPropertyName = "MetadataFile001")]
 [JsonSerializable(typeof(global::System.Collections.Immutable.ImmutableArray<global::Snap.Hutao.Remastered.Model.Metadata.Achievement.AchievementGoal>), TypeInfoPropertyName = "MetadataFile002")]

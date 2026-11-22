@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "common.proto";
+
+// ============================================================================
+// Weapon curve
+// ============================================================================
+
+message WeaponCurve {
+  repeated GrowCurvePoint curves = 1;
+  uint32 level = 2;
+}

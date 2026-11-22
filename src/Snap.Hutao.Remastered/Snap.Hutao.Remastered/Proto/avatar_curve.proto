@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "common.proto";
+
+// ============================================================================
+// Avatar curve
+// ============================================================================
+
+message AvatarCurve {
+  repeated GrowCurvePoint curves = 1;
+  uint32 level = 2;
+}

@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "common.proto";
+import "achievement.proto";
+import "achievement_goal.proto";
+import "avatar.proto";
+import "avatar_curve.proto";
+import "avatar_promote.proto";
+import "byd_material.proto";
+import "chapter.proto";
+import "combine.proto";
+import "cook_recipe.proto";
+import "display_item.proto";
+import "furniture.proto";
+import "furniture_make.proto";
+import "furniture_suite.proto";
+import "furniture_type.proto";
+import "gacha_event.proto";
+import "hard_challenge_schedule.proto";
+import "hyper_link_name.proto";
+import "main_quest.proto";
+import "material.proto";
+import "monster.proto";
+import "monster_curve.proto";
+import "profile_picture.proto";
+import "reliquary.proto";
+import "reliquary_affix_weight.proto";
+import "reliquary_main_affix.proto";
+import "reliquary_main_affix_level.proto";
+import "reliquary_set.proto";
+import "reliquary_sub_affix.proto";
+import "role_combat_schedule.proto";
+import "tower_floor.proto";
+import "tower_level.proto";
+import "tower_schedule.proto";
+import "weapon.proto";
+import "weapon_curve.proto";
+import "weapon_promote.proto";
+
+// ============================================================================
+// Top level bundle
+// ============================================================================
+
+message MetadataBundle {
+  GameVersion version = 1;
+  MetadataInfo info = 2;
+  repeated LanguageMetadata languages = 3;
+}
+
+// All metadata categories for a single locale, ordered by type name.
+message LanguageMetadata {
+  string language = 1;
+
+  repeated Achievement achievements = 2;
+  repeated AchievementGoal achievement_goals = 3;
+  repeated Avatar avatars = 4;
+  repeated AvatarCurve avatar_curves = 5;
+  repeated AvatarPromote avatar_promotes = 6;
+  repeated BydMaterial byd_materials = 7;
+  repeated Chapter chapters = 8;
+  repeated Combine combines = 9;
+  repeated CookRecipe cook_recipes = 10;
+  repeated DisplayItem display_items = 11;
+  repeated Furniture furnitures = 12;
+  repeated FurnitureMake furniture_makes = 13;
+  repeated FurnitureSuite furniture_suites = 14;
+  repeated FurnitureType furniture_types = 15;
+  repeated GachaEvent gacha_events = 16;
+  repeated HardChallengeSchedule hard_challenge_schedules = 17;
+  repeated HyperLinkName hyper_link_names = 18;
+  repeated MainQuest main_quests = 19;
+  repeated Material materials = 20;
+  repeated Monster monsters = 21;
+  repeated MonsterCurve monster_curves = 22;
+  repeated ProfilePicture profile_pictures = 23;
+  repeated Reliquary reliquaries = 24;
+  repeated ReliquaryAffixWeight reliquary_affix_weights = 25;
+  repeated ReliquaryMainAffix reliquary_main_affixes = 26;
+  repeated ReliquaryMainAffixLevel reliquary_main_affix_levels = 27;
+  repeated ReliquarySet reliquary_sets = 28;
+  repeated ReliquarySubAffix reliquary_sub_affixes = 29;
+  repeated RoleCombatSchedule role_combat_schedules = 30;
+  repeated TowerFloor tower_floors = 31;
+  repeated TowerLevel tower_levels = 32;
+  repeated TowerSchedule tower_schedules = 33;
+  repeated Weapon weapons = 34;
+  repeated WeaponCurve weapon_curves = 35;
+  repeated WeaponPromote weapon_promotes = 36;
+}

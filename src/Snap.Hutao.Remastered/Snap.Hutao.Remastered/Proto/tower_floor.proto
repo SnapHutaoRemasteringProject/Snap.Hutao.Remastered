@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+// ============================================================================
+// Tower floor
+// ============================================================================
+
+message TowerFloor {
+  uint32 id = 1;
+  uint32 index = 2;
+  uint32 level_group_id = 3;
+  string background = 4;
+  repeated string descriptions = 5;
+  repeated string first_descriptions = 6;
+  repeated string second_descriptions = 7;
+}

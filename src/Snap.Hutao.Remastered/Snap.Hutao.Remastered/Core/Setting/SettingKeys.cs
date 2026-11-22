@@ -201,4 +201,9 @@ public static class SettingKeys
 
     // Auto Sign-In
     public const string AutoSignInEnabled                       = "Snap::Hutao::SignIn::AutoSignIn::Enabled";
+
+    // Metadata
+    public const string MetadataSource                          = "Snap::Hutao::Metadata::Source";
+    
+    public const string MetadataBundlePath                      = "Snap::Hutao::Metadata::BundlePath";
 }

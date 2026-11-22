@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+// ============================================================================
+// Hard challenge schedule
+// ============================================================================
+
+message HardChallengeSchedule {
+  uint32 id = 1;
+  string begin = 2;
+  string end = 3;
+  string name = 4;
+}

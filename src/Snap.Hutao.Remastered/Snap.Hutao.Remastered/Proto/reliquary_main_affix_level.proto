@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+// ============================================================================
+// Reliquary main affix level
+// ============================================================================
+
+message ReliquaryMainAffixLevel {
+  uint32 rank = 1;
+  uint32 level = 2;
+  repeated ReliquaryMainAffixLevelProperty properties = 3;
+}
+
+message ReliquaryMainAffixLevelProperty {
+  uint32 type = 1;
+  double value = 2;
+}

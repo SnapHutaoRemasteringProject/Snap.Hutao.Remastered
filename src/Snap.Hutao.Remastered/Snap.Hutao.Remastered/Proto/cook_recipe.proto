@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "enums.proto";
+
+// ============================================================================
+// Cook recipe
+// ============================================================================
+
+message CookRecipe {
+  uint32 id = 1;
+  string name = 2;
+  string description = 3;
+  repeated string effect_description = 4;
+  CookMethod cook_method = 5;
+  CookFoodType food_type = 6;
+  string icon = 7;
+  bool is_default_unlocked = 8;
+  uint32 max_proficiency = 9;
+  uint32 rank_level = 10;
+  repeated CookItem quality_output = 11;
+  repeated CookItem input = 12;
+}
+
+message CookItem {
+  uint32 count = 1;
+  uint32 id = 2;
+}

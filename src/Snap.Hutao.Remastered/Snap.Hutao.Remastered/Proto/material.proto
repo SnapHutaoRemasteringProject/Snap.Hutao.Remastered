@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "enums.proto";
+
+// ============================================================================
+// Material
+// ============================================================================
+
+message Material {
+  uint32 rank = 1;
+  MaterialType material_type = 2;
+  string effect_description = 3;
+  uint32 id = 4;
+  QualityType rank_level = 5;
+  ItemType item_type = 6;
+  string name = 7;
+  string description = 8;
+  string type_description = 9;
+  string icon = 10;
+}

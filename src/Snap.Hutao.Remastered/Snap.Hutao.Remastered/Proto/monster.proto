@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "enums.proto";
+
+// ============================================================================
+// Monster
+// ============================================================================
+
+message Monster {
+  uint32 id = 1;
+  uint32 describe_id = 2;
+  string monster_name = 3;
+  string name = 4;
+  string title = 5;
+  string description = 6;
+  string icon = 7;
+  MonsterType type = 8;
+  Arkhe arkhe = 9;
+  repeated string affixes = 10;
+  repeated uint32 drops = 11;
+  MonsterBaseValue base_value = 12;
+  repeated MonsterGrowCurveData grow_curves = 13;
+}
+
+message MonsterBaseValue {
+  float hp_base = 1;
+  float attack_base = 2;
+  float defense_base = 3;
+  float fire_sub_hurt = 4;
+  float grass_sub_hurt = 5;
+  float water_sub_hurt = 6;
+  float elec_sub_hurt = 7;
+  float wind_sub_hurt = 8;
+  float ice_sub_hurt = 9;
+  float rock_sub_hurt = 10;
+  float physical_sub_hurt = 11;
+}
+
+message MonsterGrowCurveData {
+  FightProperty type = 1;
+  GrowCurveValue value = 2;
+}

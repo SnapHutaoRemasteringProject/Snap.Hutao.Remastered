@@ -21,6 +21,7 @@
     <PackageVersion Include="coverlet.collector" Version="10.1.1" />
     <PackageVersion Include="DevWinUI" Version="11.0.0" />
     <PackageVersion Include="Google.Protobuf" Version="3.36.2" />
+    <PackageVersion Include="Grpc.Tools" Version="2.72.0" />
     <PackageVersion Include="JetBrains.Annotations" Version="2026.2.0" />
     <PackageVersion Include="Microsoft.Agents.AI.Anthropic" Version="1.28.0" />
     <PackageVersion Include="Microsoft.Agents.AI.Harness" Version="1.28.0" />

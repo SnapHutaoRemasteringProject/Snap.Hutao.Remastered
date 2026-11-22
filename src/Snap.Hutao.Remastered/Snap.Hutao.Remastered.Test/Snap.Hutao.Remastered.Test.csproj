@@ -139,10 +139,21 @@
     <Compile Include="../Snap.Hutao.Remastered/ViewModel/AvatarProperty/NameIconDescription.cs" Link="Production/NameIconDescription.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Model/Metadata/ParameterDescription.cs" Link="Production/ParameterDescription.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/Game/PathAbstraction/GamePathEntry.cs" Link="Production/GamePathEntry.cs" />
+    <!-- Metadata bundle: committed protobuf output + the source-linked codec/cache/schema types. -->
+    <Compile Include="../Snap.Hutao.Remastered/Proto/Generated/*.cs" Link="Production/Proto/%(Filename)%(Extension)" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/Metadata/MetadataCategory.cs" Link="Production/Metadata/MetadataCategory.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/Metadata/MetadataCategories.cs" Link="Production/Metadata/MetadataCategories.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/Metadata/MetadataSourceKind.cs" Link="Production/Metadata/MetadataSourceKind.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/Metadata/MetadataCache.cs" Link="Production/Metadata/MetadataCache.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/Metadata/Provider/Proto/MetadataBundleConstants.cs" Link="Production/Metadata/MetadataBundleConstants.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/Metadata/Provider/Proto/BoundedReadStream.cs" Link="Production/Metadata/BoundedReadStream.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Service/Metadata/Provider/Proto/MetadataBundleCodec.cs" Link="Production/Metadata/MetadataBundleCodec.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
+    <PackageReference Include="Google.Protobuf" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
     <PackageReference Include="Microsoft.Agents.AI.Anthropic" />
     <PackageReference Include="Microsoft.Agents.AI.Harness" />
     <PackageReference Include="Microsoft.Agents.AI.OpenAI" />

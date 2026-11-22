@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "enums.proto";
+
+// ============================================================================
+// Role combat schedule
+// ============================================================================
+
+message RoleCombatSchedule {
+  uint32 id = 1;
+  string begin = 2;
+  string end = 3;
+  repeated ElementName elements = 4;
+  repeated uint32 special_avatars = 5;
+  repeated uint32 initial_avatars = 6;
+}

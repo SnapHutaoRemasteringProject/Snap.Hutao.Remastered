@@ -36,7 +36,6 @@ namespace Snap.Hutao.Remastered.Core.Text.Json;
 [JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Hutao.Response.HutaoResponse<global::System.Collections.Immutable.ImmutableDictionary<global::Snap.Hutao.Remastered.Model.Primitive.AvatarId, global::Snap.Hutao.Remastered.Web.Hutao.Strategy.Strategy>>), TypeInfoPropertyName = "HttpResponse028")]
 [JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Response.Response), TypeInfoPropertyName = "HttpResponse029")]
 [JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Response.Response<global::Snap.Hutao.Remastered.Service.Geetest.GeetestVerification>), TypeInfoPropertyName = "HttpResponse030")]
-[JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Response.Response<global::Snap.Hutao.Remastered.Service.Metadata.MetadataTemplate>), TypeInfoPropertyName = "HttpResponse031")]
 [JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Response.Response<global::Snap.Hutao.Remastered.Web.Hoyolab.Bbs.Home.NewHomeNewInfo>), TypeInfoPropertyName = "HttpResponse032")]
 [JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Response.Response<global::Snap.Hutao.Remastered.Web.Hoyolab.Bbs.User.UserFullInfoWrapper>), TypeInfoPropertyName = "HttpResponse033")]
 [JsonSerializable(typeof(global::Snap.Hutao.Remastered.Web.Response.Response<global::Snap.Hutao.Remastered.Web.Hoyolab.Downloader.SophonBuild>), TypeInfoPropertyName = "HttpResponse034")]

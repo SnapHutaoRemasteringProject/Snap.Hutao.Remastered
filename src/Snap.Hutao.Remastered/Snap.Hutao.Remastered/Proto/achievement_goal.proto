@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "common.proto";
+
+// ============================================================================
+// Achievement goal
+// ============================================================================
+
+message AchievementGoal {
+  uint32 id = 1;
+  uint32 order = 2;
+  string name = 3;
+  RewardItem finish_reward = 4;
+  string icon = 5;
+}

@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+// ============================================================================
+// Hyper link name
+// ============================================================================
+
+message HyperLinkName {
+  uint32 id = 1;
+  string name = 2;
+  string description = 3;
+}

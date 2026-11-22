@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+// ============================================================================
+// Display item
+// ============================================================================
+
+message DisplayItem {
+  uint32 id = 1;
+  uint32 rank_level = 2;
+  uint32 rank = 3;
+  uint32 item_type = 4;
+  string name = 5;
+  string description = 6;
+  string type_description = 7;
+  string icon = 8;
+}

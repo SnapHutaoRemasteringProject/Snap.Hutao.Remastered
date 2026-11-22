@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+// ============================================================================
+// Furniture suite
+// ============================================================================
+
+message FurnitureSuite {
+  int32 id = 1;
+  repeated int32 types = 2;
+  string name = 3;
+  string description = 4;
+  string item_icon = 5;
+  string map_icon = 6;
+  repeated int32 favorite_npcs = 7;
+
+  // Not populated from the client Excel config, see FurnitureSuiteBuilder.
+  repeated int32 units = 8;
+}

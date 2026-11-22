@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+import "common.proto";
+import "enums.proto";
+
+// ============================================================================
+// Main quest
+// ============================================================================
+
+message MainQuest {
+  uint32 id = 1;
+  QuestType type = 2;
+  string title = 3;
+  string description = 4;
+  string unlock_description = 5;
+  uint32 chapter_id = 6;
+  uint32 sort_weight = 7;
+  uint32 recommend_level = 8;
+  uint32 activity_id = 9;
+  MainQuestTag main_quest_tag = 10;
+  QuestShowType show_type = 11;
+  bool repeatable = 12;
+  uint32 series = 13;
+  uint32 task_id = 14;
+  repeated RewardItem reward_list = 15;
+}

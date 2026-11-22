@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+// ============================================================================
+// Tower level
+// ============================================================================
+
+message TowerLevel {
+  uint32 id = 1;
+  uint32 group_id = 2;
+  uint32 index = 3;
+  uint32 monster_level = 4;
+  uint32 goal = 5;
+  repeated uint32 first_monsters = 6;
+  repeated uint32 second_monsters = 7;
+  repeated TowerWave first_waves = 8;
+  NameDescription first_gadget = 9;
+  repeated TowerWave second_waves = 10;
+  NameDescription second_gadget = 11;
+}
+
+message TowerWave {
+  uint32 type = 1;
+  string description = 2;
+  repeated TowerWaveMonster monsters = 3;
+}
+
+message TowerWaveMonster {
+  bool attack_monolith = 1;
+  repeated NameDescription affixes = 2;
+  uint32 id = 3;
+  uint32 count = 4;
+}
+
+message NameDescription {
+  string name = 1;
+  string description = 2;
+}

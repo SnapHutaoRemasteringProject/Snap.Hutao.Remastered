@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package snap.hutao.remastered.metadata;
+
+// ============================================================================
+// Reliquary affix weight
+// ============================================================================
+
+message ReliquaryAffixWeight {
+  int64 avatar_id = 1;
+  int32 hp_percent = 2;
+  int32 attack_percent = 3;
+  int32 defense_percent = 4;
+  int32 critical = 5;
+  int32 critical_hurt = 6;
+  int32 element_mastery = 7;
+  int32 charge_efficiency = 8;
+  int32 heal_add = 9;
+  int32 physical_add_hurt = 10;
+  int32 add_hurt = 11;
+  int32 element_type = 12;
+}
