@@ -2,7 +2,9 @@
 // Licensed under the MIT license.
 
 using Microsoft.Windows.AppLifecycle;
-using System.Runtime.InteropServices;
+using Win32LocalHandle = global::Windows.Win32.Foundation.HLOCAL;
+using Win32PInvoke = global::Windows.Win32.PInvoke;
+using Win32String = global::Windows.Win32.Foundation.PWSTR;
 
 namespace Snap.Hutao.Remastered.Core.LifeCycle;
 
@@ -83,29 +85,24 @@ public sealed partial class HutaoActivationArguments
         return result;
     }
 
-    private static string GetFirstUnpackagedArgument(string commandLine)
+    private static unsafe string GetFirstUnpackagedArgument(string commandLine)
     {
         // The SDK supplies the *full* command line, including the executable.
         // CommandLineToArgvW implements the shell's Windows quoting rules.
-        nint argv = CommandLineToArgvW(commandLine, out int count);
-        if (argv == 0)
+        Win32String* argv = Win32PInvoke.CommandLineToArgv(commandLine, out int count);
+        if (argv is null)
         {
             return string.Empty;
         }
 
         try
         {
-            return count > 1 ? Marshal.PtrToStringUni(Marshal.ReadIntPtr(argv, IntPtr.Size)) ?? string.Empty : string.Empty;
+            return count > 1 ? new string(argv[1].Value) : string.Empty;
         }
         finally
         {
-            _ = LocalFree(argv);
+            _ = Win32PInvoke.LocalFree(new Win32LocalHandle(argv));
         }
     }
 
-    [LibraryImport("shell32.dll", EntryPoint = "CommandLineToArgvW", StringMarshalling = StringMarshalling.Utf16)]
-    private static partial nint CommandLineToArgvW(string commandLine, out int argumentCount);
-
-    [LibraryImport("kernel32.dll")]
-    private static partial nint LocalFree(nint handle);
 }

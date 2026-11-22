@@ -174,6 +174,29 @@ public sealed class GameLifeCycleConnectionTest
     }
 
     [TestMethod]
+    public async Task EndingTheGameRefreshesAnObserverStillWaitingOnAnOlderProcess()
+    {
+        FakeProcess previouslyObserved = new();
+        FakeProcess current = new() { KillError = new Win32Exception(5) };
+        ProcessFactory.Current = previouslyObserved;
+        using CancellationTokenSource stop = new();
+        Task observing = GameLifeCycle.ObserveGameRunningAsync(new TaskContext(), stop.Token);
+        try
+        {
+            await WaitUntilAsync(() => previouslyObserved.ExitWaitCount > 0);
+            ProcessFactory.Current = current;
+            Assert.IsFalse(await GameLifeCycle.TryKillGameProcessAsync(new TaskContext()));
+            await WaitUntilAsync(() => current.ExitWaitCount > 0);
+            Assert.IsTrue(GameLifeCycle.IsGameRunningProperty.Value);
+        }
+        finally
+        {
+            stop.Cancel();
+            await observing.WaitAsync(TimeSpan.FromSeconds(5));
+        }
+    }
+
+    [TestMethod]
     public async Task WaitingForGameExitDoesNotSpinEnumerateProcesses()
     {
         FakeProcess process = new();
@@ -209,9 +232,11 @@ public sealed class GameLifeCycleConnectionTest
     private sealed class FakeProcess : IProcess
     {
         private readonly TaskCompletionSource exited = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private int exitWaitCount;
         public bool ExitOnKill { get; set; } = true;
         public Exception? KillError { get; set; }
         public int KillCount { get; private set; }
+        public int ExitWaitCount => Volatile.Read(ref exitWaitCount);
         public bool HasExited { get; private set; }
         public void Kill()
         {
@@ -220,7 +245,11 @@ public sealed class GameLifeCycleConnectionTest
             if (ExitOnKill) { Exit(); }
         }
         public void Exit() { HasExited = true; exited.TrySetResult(); }
-        public Task WaitForExitAsync(CancellationToken token = default) => exited.Task.WaitAsync(token);
+        public Task WaitForExitAsync(CancellationToken token = default)
+        {
+            Interlocked.Increment(ref exitWaitCount);
+            return exited.Task.WaitAsync(token);
+        }
         public void Dispose() { }
     }
 

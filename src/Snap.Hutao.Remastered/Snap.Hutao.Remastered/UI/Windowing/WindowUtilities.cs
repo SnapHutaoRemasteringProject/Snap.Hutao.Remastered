@@ -1,15 +1,17 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Win32;
 using Snap.Hutao.Remastered.Win32.Foundation;
 using System.Runtime.InteropServices;
 
 namespace Snap.Hutao.Remastered.UI.Windowing;
 
-[SuppressMessage("", "SYSLIB1054")]
 public static unsafe class WindowUtilities
 {
+    private static readonly AppLocalNativeLibrary Library = new(HutaoNativeMethods.DllName);
+
     public static void SwitchToWindow(HWND hWnd)
     {
         Marshal.ThrowExceptionForHR(WindowUtilitiesSwitchToWindow(hWnd));
@@ -57,30 +59,30 @@ public static unsafe class WindowUtilities
         Marshal.ThrowExceptionForHR(WindowUtilitiesSetWindowOwner(hWnd, hWndOwner));
     }
 
-    [DllImport(HutaoNativeMethods.DllName, CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern HRESULT WindowUtilitiesSwitchToWindow(HWND hWnd);
+    private static readonly delegate* unmanaged[Stdcall]<HWND, HRESULT> WindowUtilitiesSwitchToWindow =
+        (delegate* unmanaged[Stdcall]<HWND, HRESULT>)Library.GetExport(nameof(WindowUtilitiesSwitchToWindow));
 
-    [DllImport(HutaoNativeMethods.DllName, CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern HRESULT WindowUtilitiesAddExtendedStyleLayered(HWND hWnd);
+    private static readonly delegate* unmanaged[Stdcall]<HWND, HRESULT> WindowUtilitiesAddExtendedStyleLayered =
+        (delegate* unmanaged[Stdcall]<HWND, HRESULT>)Library.GetExport(nameof(WindowUtilitiesAddExtendedStyleLayered));
 
-    [DllImport(HutaoNativeMethods.DllName, CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern HRESULT WindowUtilitiesRemoveExtendedStyleLayered(HWND hWnd);
+    private static readonly delegate* unmanaged[Stdcall]<HWND, HRESULT> WindowUtilitiesRemoveExtendedStyleLayered =
+        (delegate* unmanaged[Stdcall]<HWND, HRESULT>)Library.GetExport(nameof(WindowUtilitiesRemoveExtendedStyleLayered));
 
-    [DllImport(HutaoNativeMethods.DllName, CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern HRESULT WindowUtilitiesSetLayeredWindowTransparency(HWND hWnd, byte opacity);
+    private static readonly delegate* unmanaged[Stdcall]<HWND, byte, HRESULT> WindowUtilitiesSetLayeredWindowTransparency =
+        (delegate* unmanaged[Stdcall]<HWND, byte, HRESULT>)Library.GetExport(nameof(WindowUtilitiesSetLayeredWindowTransparency));
 
-    [DllImport(HutaoNativeMethods.DllName, CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern HRESULT WindowUtilitiesAddExtendedStyleToolWindow(HWND hWnd);
+    private static readonly delegate* unmanaged[Stdcall]<HWND, HRESULT> WindowUtilitiesAddExtendedStyleToolWindow =
+        (delegate* unmanaged[Stdcall]<HWND, HRESULT>)Library.GetExport(nameof(WindowUtilitiesAddExtendedStyleToolWindow));
 
-    [DllImport(HutaoNativeMethods.DllName, CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern HRESULT WindowUtilitiesRemoveStyleOverlappedWindow(HWND hWnd);
+    private static readonly delegate* unmanaged[Stdcall]<HWND, HRESULT> WindowUtilitiesRemoveStyleOverlappedWindow =
+        (delegate* unmanaged[Stdcall]<HWND, HRESULT>)Library.GetExport(nameof(WindowUtilitiesRemoveStyleOverlappedWindow));
 
-    [DllImport(HutaoNativeMethods.DllName, CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern HRESULT WindowUtilitiesGetRasterizationScaleForWindow(HWND hWnd, float* scale);
+    private static readonly delegate* unmanaged[Stdcall]<HWND, float*, HRESULT> WindowUtilitiesGetRasterizationScaleForWindow =
+        (delegate* unmanaged[Stdcall]<HWND, float*, HRESULT>)Library.GetExport(nameof(WindowUtilitiesGetRasterizationScaleForWindow));
 
-    [DllImport(HutaoNativeMethods.DllName, CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern HRESULT WindowUtilitiesSetWindowIsEnabled(HWND hWnd, BOOL isEnabled);
+    private static readonly delegate* unmanaged[Stdcall]<HWND, BOOL, HRESULT> WindowUtilitiesSetWindowIsEnabled =
+        (delegate* unmanaged[Stdcall]<HWND, BOOL, HRESULT>)Library.GetExport(nameof(WindowUtilitiesSetWindowIsEnabled));
 
-    [DllImport(HutaoNativeMethods.DllName, CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern HRESULT WindowUtilitiesSetWindowOwner(HWND hWnd, HWND hWndOwner);
+    private static readonly delegate* unmanaged[Stdcall]<HWND, HWND, HRESULT> WindowUtilitiesSetWindowOwner =
+        (delegate* unmanaged[Stdcall]<HWND, HWND, HRESULT>)Library.GetExport(nameof(WindowUtilitiesSetWindowOwner));
 }

@@ -3,12 +3,13 @@
 
 using Snap.Hutao.Remastered.Win32.Foundation;
 using System.IO;
-using System.Runtime.InteropServices;
 
 namespace Snap.Hutao.Remastered.Core.IO.HPatch;
 
 public static unsafe class HPatch
 {
+    private static readonly AppLocalNativeLibrary Library = new("Snap.HPatch.dll");
+
     public static long GetNewDataSize(FileSegment diff)
     {
         using StreamInput diffAdapter = new(diff);
@@ -23,7 +24,7 @@ public static unsafe class HPatch
         using StreamInput diffAdapter = new(diff);
         using StreamOutput targetAdapter = new(target);
 
-        return Patch(&sourceAdapter, &diffAdapter, &targetAdapter);
+        return PatchCore(&sourceAdapter, &diffAdapter, &targetAdapter);
     }
 
     public static bool PatchZstandard(FileSegment source, FileSegment diff, FileSegment target)
@@ -42,7 +43,7 @@ public static unsafe class HPatch
         using StreamInput diffAdapter = new(diff);
         using StreamOutput targetAdapter = new(target);
 
-        return Patch(&sourceAdapter, &diffAdapter, &targetAdapter);
+        return PatchCore(&sourceAdapter, &diffAdapter, &targetAdapter);
     }
 
     public static bool PatchZstandard(FileSegment source, FileSegment diff, Stream target)
@@ -55,15 +56,12 @@ public static unsafe class HPatch
         return PatchWithDecompressor(&sourceAdapter, &diffAdapter, &targetAdapter, &decompressor);
     }
 
-    [SuppressMessage("", "SYSLIB1054")]
-    [DllImport("Snap.HPatch.dll", CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern BOOL NewDataSize(StreamInput* diff, ulong* pSize);
+    private static readonly delegate* unmanaged[Stdcall]<StreamInput*, ulong*, BOOL> NewDataSize =
+        (delegate* unmanaged[Stdcall]<StreamInput*, ulong*, BOOL>)Library.GetExport(nameof(NewDataSize));
 
-    [SuppressMessage("", "SYSLIB1054")]
-    [DllImport("Snap.HPatch.dll", CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern BOOL Patch(StreamInput* source, StreamInput* diff, StreamOutput* target);
+    private static readonly delegate* unmanaged[Stdcall]<StreamInput*, StreamInput*, StreamOutput*, BOOL> PatchCore =
+        (delegate* unmanaged[Stdcall]<StreamInput*, StreamInput*, StreamOutput*, BOOL>)Library.GetExport(nameof(Patch));
 
-    [SuppressMessage("", "SYSLIB1054")]
-    [DllImport("Snap.HPatch.dll", CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern BOOL PatchWithDecompressor(StreamInput* source, StreamInput* diff, StreamOutput* target, Decompress* decompressor);
+    private static readonly delegate* unmanaged[Stdcall]<StreamInput*, StreamInput*, StreamOutput*, Decompress*, BOOL> PatchWithDecompressor =
+        (delegate* unmanaged[Stdcall]<StreamInput*, StreamInput*, StreamOutput*, Decompress*, BOOL>)Library.GetExport(nameof(PatchWithDecompressor));
 }

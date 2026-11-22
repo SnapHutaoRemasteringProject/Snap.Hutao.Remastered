@@ -317,6 +317,7 @@
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" />
     <PackageReference Include="Microsoft.VisualStudio.Validation" />
     <PackageReference Include="Microsoft.Web.WebView2" />
+    <PackageReference Include="Microsoft.Windows.CsWin32" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" />
     <!-- Keep Store-bound PRI generation on a stable SDK toolset; preview makepri versions can be rejected. -->
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />

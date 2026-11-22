@@ -1,0 +1,7 @@
+CoWaitForMultipleHandles
+CommandLineToArgvW
+GetProcAddress
+LoadLibraryExW
+LocalFree
+OpenProcess
+TerminateProcess

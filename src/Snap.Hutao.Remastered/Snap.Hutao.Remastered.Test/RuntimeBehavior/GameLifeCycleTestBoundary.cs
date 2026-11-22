@@ -78,10 +78,16 @@ namespace Snap.Hutao.Remastered.Factory.Process
 
     internal sealed class DiagnosticsProcess(IProcess process) : IProcess
     {
+        public int Id => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(process);
         public bool IsDisposed { get; private set; }
         public bool HasExited => process.HasExited;
         public void Kill() => process.Kill();
         public Task WaitForExitAsync(CancellationToken token = default) => process.WaitForExitAsync(token);
+        public Task KillAndWaitForExitAsync(CancellationToken token)
+        {
+            process.Kill();
+            return process.WaitForExitAsync(token);
+        }
         public void Dispose() => IsDisposed = true;
     }
 }
@@ -107,5 +113,6 @@ namespace Snap.Hutao.Remastered.Service.Game
     {
         public const string ServiceGameLaunchExecutionGameRunningKillFailed = "Game process could not be terminated";
         public const string ServiceGameStopProcessAccessDenied = "Run Snap Hutao as administrator";
+        public const string ServiceGameLaunchPhaseWaitingProcessExit = "Waiting for the game process to exit";
     }
 }

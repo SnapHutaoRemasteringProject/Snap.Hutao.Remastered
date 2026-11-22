@@ -1,14 +1,17 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Snap.Hutao.Remastered.Core.IO;
 using Snap.Hutao.Remastered.Win32;
 using Snap.Hutao.Remastered.Win32.Foundation;
 using System.Runtime.InteropServices;
 
 namespace Snap.Hutao.Remastered.Service.Game.Island;
 
-public static class DllInjectionUtilities
+public static unsafe class DllInjectionUtilities
 {
+    private static readonly AppLocalNativeLibrary Library = new(HutaoNativeMethods.DllName);
+
     public static unsafe void InjectUsingWindowsHook(ReadOnlySpan<char> dllPath, ReadOnlySpan<char> functionName, int processId)
     {
         fixed (char* pDllPath = dllPath)
@@ -50,15 +53,15 @@ public static class DllInjectionUtilities
         }
     }
 
-    [DllImport(HutaoNativeMethods.DllName, CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern HRESULT DllInjectionUtilitiesInjectUsingWindowsHook(PCWSTR dllPath, PCWSTR functionName, int processId);
+    private static readonly delegate* unmanaged[Stdcall]<PCWSTR, PCWSTR, int, HRESULT> DllInjectionUtilitiesInjectUsingWindowsHook =
+        (delegate* unmanaged[Stdcall]<PCWSTR, PCWSTR, int, HRESULT>)Library.GetExport(nameof(DllInjectionUtilitiesInjectUsingWindowsHook));
 
-    [DllImport(HutaoNativeMethods.DllName, CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern HRESULT DllInjectionUtilitiesInjectUsingWindowsHook2(PCWSTR dllPath, PCWSTR functionName, int processId);
+    private static readonly delegate* unmanaged[Stdcall]<PCWSTR, PCWSTR, int, HRESULT> DllInjectionUtilitiesInjectUsingWindowsHook2 =
+        (delegate* unmanaged[Stdcall]<PCWSTR, PCWSTR, int, HRESULT>)Library.GetExport(nameof(DllInjectionUtilitiesInjectUsingWindowsHook2));
 
-    [DllImport(HutaoNativeMethods.DllName, CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern HRESULT DllInjectionUtilitiesInjectUsingRemoteThread(PCWSTR dllPath, int processId);
+    private static readonly delegate* unmanaged[Stdcall]<PCWSTR, int, HRESULT> DllInjectionUtilitiesInjectUsingRemoteThread =
+        (delegate* unmanaged[Stdcall]<PCWSTR, int, HRESULT>)Library.GetExport(nameof(DllInjectionUtilitiesInjectUsingRemoteThread));
 
-    [DllImport(HutaoNativeMethods.DllName, CallingConvention = CallingConvention.Winapi, ExactSpelling = true)]
-    private static extern HRESULT DllInjectionUtilitiesInjectUsingRemoteThreadWithFunction(PCWSTR dllPath, PCWSTR functionName, int processId);
+    private static readonly delegate* unmanaged[Stdcall]<PCWSTR, PCWSTR, int, HRESULT> DllInjectionUtilitiesInjectUsingRemoteThreadWithFunction =
+        (delegate* unmanaged[Stdcall]<PCWSTR, PCWSTR, int, HRESULT>)Library.GetExport(nameof(DllInjectionUtilitiesInjectUsingRemoteThreadWithFunction));
 }

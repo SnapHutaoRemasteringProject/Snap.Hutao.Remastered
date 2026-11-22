@@ -11,6 +11,9 @@ namespace Snap.Hutao.Remastered.Service.Game;
 
 public static class GameLifeCycle
 {
+    private static readonly TimeSpan DiscoveryInterval = TimeSpan.FromSeconds(2);
+    private static TaskCompletionSource refreshRequested = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
     public static IObservableProperty<bool> IsGameRunningProperty { get; } = Property.CreateObservable(PrivateIsGameRunning());
 
     public static IObservableProperty<bool> IsIslandConnected { get; } = Property.CreateObservable(false);
@@ -19,25 +22,30 @@ public static class GameLifeCycle
     {
         while (true)
         {
+            Task refresh = Volatile.Read(ref refreshRequested).Task;
             await taskContext.SwitchToBackgroundAsync();
             List<DiagnosticsProcess> processes = GetGameProcesses();
             if (processes.Count == 0)
             {
-                break;
+                await taskContext.SwitchToMainThreadAsync();
+                if (refresh.IsCompleted)
+                {
+                    continue;
+                }
+
+                UpdateGameRunningState(false);
+                return;
             }
 
             try
             {
-                await WaitForGameProcessesAsync(processes, CancellationToken.None).ConfigureAwait(false);
+                await WaitForGameProcessesAsync(processes, refresh, CancellationToken.None).ConfigureAwait(false);
             }
             finally
             {
                 DisposeProcesses(processes);
             }
         }
-
-        await taskContext.SwitchToMainThreadAsync();
-        UpdateGameRunningState(false);
     }
 
     public static async Task ObserveGameRunningAsync(ITaskContext taskContext, CancellationToken token)
@@ -47,23 +55,21 @@ public static class GameLifeCycle
             while (true)
             {
                 token.ThrowIfCancellationRequested();
+                Task refresh = Volatile.Read(ref refreshRequested).Task;
                 await taskContext.SwitchToBackgroundAsync();
                 List<DiagnosticsProcess> processes = GetGameProcesses();
                 try
                 {
                     await taskContext.SwitchToMainThreadAsync();
                     token.ThrowIfCancellationRequested();
+                    if (refresh.IsCompleted)
+                    {
+                        continue;
+                    }
+
                     UpdateGameRunningState(processes.Count > 0);
                     await taskContext.SwitchToBackgroundAsync();
-                    if (processes.Count == 0)
-                    {
-                        // Discovery is needed only while idle. A running process has an OS exit notification.
-                        await Task.Delay(TimeSpan.FromSeconds(2), token).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await WaitForGameProcessesAsync(processes, token).ConfigureAwait(false);
-                    }
+                    await WaitForGameProcessesAsync(processes, refresh, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -108,26 +114,35 @@ public static class GameLifeCycle
     {
         await taskContext.SwitchToBackgroundAsync();
         List<DiagnosticsProcess> processes = GetGameProcesses();
-        Exception? failure = null;
+        Dictionary<int, Exception> failures = [];
+        HashSet<int> remainingIds = [];
         try
         {
             foreach (DiagnosticsProcess process in processes)
             {
                 try
                 {
-                    process.Kill();
                     using CancellationTokenSource timeout = new(TimeSpan.FromSeconds(5));
-                    await process.WaitForExitAsync(timeout.Token).ConfigureAwait(false);
-                }
-                catch (InvalidOperationException) when (process.HasExited)
-                {
-                    // It already exited after the fresh discovery snapshot.
+                    await process.KillAndWaitForExitAsync(timeout.Token).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
+                    ex.Data["GameProcessId"] = process.Id;
                     SentrySdk.CaptureException(ex);
-                    failure ??= ex;
+                    failures.TryAdd(process.Id, ex);
                 }
+            }
+
+            List<DiagnosticsProcess> remaining = GetGameProcesses();
+            try
+            {
+                remainingIds.UnionWith(remaining.Select(process => process.Id));
+                // A handle we are already tracking can outlast a fresh enumeration snapshot.
+                remainingIds.UnionWith(processes.Where(process => !process.HasExited).Select(process => process.Id));
+            }
+            finally
+            {
+                DisposeProcesses(remaining);
             }
         }
         finally
@@ -135,18 +150,23 @@ public static class GameLifeCycle
             DisposeProcesses(processes);
         }
 
-        bool isRunning = PrivateIsGameRunning();
         await taskContext.SwitchToMainThreadAsync();
+        bool isRunning = remainingIds.Count > 0;
+        Interlocked.Exchange(ref refreshRequested, new(TaskCreationOptions.RunContinuationsAsynchronously)).TrySetResult();
         UpdateGameRunningState(isRunning);
-        if (failure is not null)
+        if (isRunning)
         {
-            string message = failure is Win32Exception { NativeErrorCode: (int)WIN32_ERROR.ERROR_ACCESS_DENIED }
-                ? SH.ServiceGameStopProcessAccessDenied
-                : failure.Message;
+            Exception? failure = failures.FirstOrDefault(entry => remainingIds.Contains(entry.Key)).Value;
+            string message = failure switch
+            {
+                Win32Exception { NativeErrorCode: (int)WIN32_ERROR.ERROR_ACCESS_DENIED } => SH.ServiceGameStopProcessAccessDenied,
+                null or OperationCanceledException => $"{SH.ServiceGameLaunchPhaseWaitingProcessExit} (PID {string.Join(", ", remainingIds)})",
+                _ => failure.Message,
+            };
             HutaoNative.Instance.ShowErrorMessage(SH.ServiceGameLaunchExecutionGameRunningKillFailed, message);
         }
 
-        return processes.Count > 0 && failure is null && !isRunning;
+        return !isRunning;
     }
 
     private static List<DiagnosticsProcess> GetGameProcesses()
@@ -162,11 +182,24 @@ public static class GameLifeCycle
         }
     }
 
-    private static async Task WaitForGameProcessesAsync(List<DiagnosticsProcess> processes, CancellationToken token)
+    private static async Task WaitForGameProcessesAsync(List<DiagnosticsProcess> processes, Task refresh, CancellationToken token)
     {
+        using CancellationTokenSource pending = CancellationTokenSource.CreateLinkedTokenSource(token);
+        Task[] waits = processes.Count == 0
+            ? [Task.Delay(DiscoveryInterval, pending.Token)]
+            : processes.Select(process => process.WaitForExitAsync(pending.Token)).ToArray();
+
+        // Rescan on any exit or after a termination attempt. Cancel the other waits
+        // before releasing their process handles.
+        await Task.WhenAny(waits.Append(refresh)).ConfigureAwait(false);
+        pending.Cancel();
         try
         {
-            await Task.WhenAll(processes.Select(process => process.WaitForExitAsync(token))).ConfigureAwait(false);
+            await Task.WhenAll(waits).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (!token.IsCancellationRequested)
+        {
+            // Another process exited or the caller requested a fresh snapshot.
         }
         catch (InvalidOperationException)
         {
@@ -176,8 +209,10 @@ public static class GameLifeCycle
         {
             // Some elevated processes cannot be watched from a normal-integrity process.
             SentrySdk.CaptureException(ex);
-            await Task.Delay(TimeSpan.FromSeconds(2), token).ConfigureAwait(false);
+            await Task.WhenAny(refresh, Task.Delay(DiscoveryInterval, token)).ConfigureAwait(false);
         }
+
+        token.ThrowIfCancellationRequested();
     }
 
     private static void UpdateGameRunningState(bool isRunning)

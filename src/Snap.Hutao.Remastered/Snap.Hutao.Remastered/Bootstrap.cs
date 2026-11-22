@@ -15,6 +15,8 @@ using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Service.Job;
 using Snap.Hutao.Remastered.Win32;
+using Win32Handle = global::Windows.Win32.Foundation.HANDLE;
+using Win32PInvoke = global::Windows.Win32.PInvoke;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -223,14 +225,11 @@ public static partial class Bootstrap
             }
         });
 
-        nint eventHandle = completed.SafeWaitHandle.DangerousGetHandle();
-        int hr = CoWaitForMultipleHandles(0, uint.MaxValue, 1, in eventHandle, out _);
+        Win32Handle eventHandle = new(completed.SafeWaitHandle.DangerousGetHandle());
+        int hr = Win32PInvoke.CoWaitForMultipleHandles(0, uint.MaxValue, [eventHandle], out _).Value;
         Marshal.ThrowExceptionForHR(hr);
         redirectTask.GetAwaiter().GetResult();
     }
-
-    [LibraryImport("ole32.dll")]
-    private static partial int CoWaitForMultipleHandles(uint flags, uint timeout, uint handleCount, in nint handles, out uint index);
 
     private static void InitializeApp(ApplicationInitializationCallbackParams param)
     {

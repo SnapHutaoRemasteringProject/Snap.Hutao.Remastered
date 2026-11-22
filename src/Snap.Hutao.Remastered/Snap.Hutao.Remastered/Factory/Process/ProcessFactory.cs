@@ -58,6 +58,7 @@ public sealed class ProcessFactory
         {
             foreach (global::System.Diagnostics.Process process in global::System.Diagnostics.Process.GetProcessesByName(name))
             {
+                DiagnosticsProcess candidate = new(process);
                 bool retained = false;
                 try
                 {
@@ -66,19 +67,12 @@ public sealed class ProcessFactory
                         continue;
                     }
 
-                    try
+                    if (candidate.HasExited)
                     {
-                        if (process.HasExited)
-                        {
-                            continue;
-                        }
-                    }
-                    catch (Win32Exception ex) when (ex.NativeErrorCode == (int)WIN32_ERROR.ERROR_ACCESS_DENIED)
-                    {
-                        // Name and session already match. Detection does not require termination rights.
+                        continue;
                     }
 
-                    matches.Add(new(process));
+                    matches.Add(candidate);
                     retained = true;
                 }
                 catch (InvalidOperationException)
@@ -93,7 +87,7 @@ public sealed class ProcessFactory
                 {
                     if (!retained)
                     {
-                        process.Dispose();
+                        candidate.Dispose();
                     }
                 }
             }

@@ -1,27 +1,51 @@
 // Copyright (c) Snap Hutao RP. All rights reserved.
 // Licensed under the MIT license.
 
-using System.Runtime.InteropServices;
+using Snap.Hutao.Remastered.Core.IO;
 
 namespace Snap.Hutao.Remastered.Service.FileUnlocker;
 
-[SuppressMessage("", "SYSLIB1054")]
 public static unsafe class HutaoFileUnlockerInterop
 {
-    private const string DllName = "Snap.Hutao.FileUnlocker.dll";
+    private static readonly AppLocalNativeLibrary Library = new("Snap.Hutao.FileUnlocker.dll");
 
-    [DllImport(DllName, CallingConvention = CallingConvention.StdCall, ExactSpelling = true)]
-    public static extern int HutaoFileUnlocker_QueryZoneIdentifier(char* path, char** metadataJson);
+    private static readonly delegate* unmanaged[Stdcall]<char*, char**, int> QueryZoneIdentifier =
+        (delegate* unmanaged[Stdcall]<char*, char**, int>)Library.GetExport(nameof(HutaoFileUnlocker_QueryZoneIdentifier));
 
-    [DllImport(DllName, CallingConvention = CallingConvention.StdCall, ExactSpelling = true)]
-    public static extern int HutaoFileUnlocker_RemoveZoneIdentifier(char* path, [MarshalAs(UnmanagedType.U1)] bool recursive, char** metadataJson);
+    private static readonly delegate* unmanaged[Stdcall]<char*, byte, char**, int> RemoveZoneIdentifier =
+        (delegate* unmanaged[Stdcall]<char*, byte, char**, int>)Library.GetExport(nameof(HutaoFileUnlocker_RemoveZoneIdentifier));
 
-    [DllImport(DllName, CallingConvention = CallingConvention.StdCall, ExactSpelling = true)]
-    public static extern int HutaoFileUnlocker_QueryFileLocks(char* path, char** metadataJson);
+    private static readonly delegate* unmanaged[Stdcall]<char*, char**, int> QueryFileLocks =
+        (delegate* unmanaged[Stdcall]<char*, char**, int>)Library.GetExport(nameof(HutaoFileUnlocker_QueryFileLocks));
 
-    [DllImport(DllName, CallingConvention = CallingConvention.StdCall, ExactSpelling = true)]
-    public static extern int HutaoFileUnlocker_UnlockFileLocks(char* path, [MarshalAs(UnmanagedType.U1)] bool force, char** metadataJson);
+    private static readonly delegate* unmanaged[Stdcall]<char*, byte, char**, int> UnlockFileLocks =
+        (delegate* unmanaged[Stdcall]<char*, byte, char**, int>)Library.GetExport(nameof(HutaoFileUnlocker_UnlockFileLocks));
 
-    [DllImport(DllName, CallingConvention = CallingConvention.StdCall, ExactSpelling = true)]
-    public static extern void HutaoFileUnlocker_FreeString(char* value);
+    private static readonly delegate* unmanaged[Stdcall]<char*, void> FreeString =
+        (delegate* unmanaged[Stdcall]<char*, void>)Library.GetExport(nameof(HutaoFileUnlocker_FreeString));
+
+    public static int HutaoFileUnlocker_QueryZoneIdentifier(char* path, char** metadataJson)
+    {
+        return QueryZoneIdentifier(path, metadataJson);
+    }
+
+    public static int HutaoFileUnlocker_RemoveZoneIdentifier(char* path, bool recursive, char** metadataJson)
+    {
+        return RemoveZoneIdentifier(path, recursive ? (byte)1 : (byte)0, metadataJson);
+    }
+
+    public static int HutaoFileUnlocker_QueryFileLocks(char* path, char** metadataJson)
+    {
+        return QueryFileLocks(path, metadataJson);
+    }
+
+    public static int HutaoFileUnlocker_UnlockFileLocks(char* path, bool force, char** metadataJson)
+    {
+        return UnlockFileLocks(path, force ? (byte)1 : (byte)0, metadataJson);
+    }
+
+    public static void HutaoFileUnlocker_FreeString(char* value)
+    {
+        FreeString(value);
+    }
 }
