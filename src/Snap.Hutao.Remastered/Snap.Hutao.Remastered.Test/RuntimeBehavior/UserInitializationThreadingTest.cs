@@ -123,6 +123,32 @@ public sealed class UserInitializationThreadingTest
         Assert.AreEqual(0, scenario.Notifications.Count);
     }
 
+    [TestMethod]
+    public async Task ALateRejectedResponseDoesNotInvalidateReplacedCredentials()
+    {
+        using Scenario scenario = new();
+        BindingUser user = await scenario.CreateDisplayedUserAsync();
+        Task<BindingUser> operation = Task.Run(() => scenario.Service.ResumeUserAsync(user).AsTask());
+        await scenario.UserClient.Requested.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        // The account receives a replacement cookie (and its recovered profile) while the
+        // request sent with the previous cookie is still running.
+        await scenario.Ui.RunAsync(() =>
+        {
+            user.SToken = new();
+            user.MarkCredentialsReplaced();
+            user.UserInfo = new() { Nickname = "recovered nickname" };
+            return Task.FromResult(true);
+        });
+
+        scenario.UserClient.Completion.SetResult(new(null) { ReturnCode = (int)KnownReturnCode.RET_TOKEN_INVALID });
+        await operation.WaitAsync(TimeSpan.FromSeconds(5));
+
+        Assert.IsFalse(user.IsCookieInvalid);
+        Assert.AreEqual("recovered nickname", user.UserInfo?.Nickname);
+        Assert.IsFalse(scenario.BindingClient.Requested.Task.IsCompleted);
+    }
+
     private sealed class Scenario : IDisposable
     {
         private readonly ServiceProvider provider;

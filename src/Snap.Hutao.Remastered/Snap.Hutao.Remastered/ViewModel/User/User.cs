@@ -21,6 +21,7 @@ public sealed partial class User : ObservableObject, IEntityAccess<EntityUser>,
     private readonly IServiceProvider serviceProvider;
 
     private bool isCurrentUserGameRoleChangedMessageSuppressed;
+    private readonly OptimisticVersion credentialVersion = new();
 
     private User(EntityUser user, IServiceProvider serviceProvider)
     {
@@ -36,6 +37,13 @@ public sealed partial class User : ObservableObject, IEntityAccess<EntityUser>,
     /// instead of refreshing it forever.
     /// </summary>
     public bool IsCookieInvalid { get; set; }
+
+    /// <summary>
+    /// Current version of the stored credentials. An initialization attempt captures this
+    /// token before it sends a request and must not apply the response once the token is no
+    /// longer current: the account then belongs to a cookie that replaced the request's one.
+    /// </summary>
+    public OptimisticVersionToken CredentialVersion { get => credentialVersion.Capture(); }
 
     [ObservableProperty]
     public partial UserInfo? UserInfo { get; set; }
@@ -99,6 +107,16 @@ public sealed partial class User : ObservableObject, IEntityAccess<EntityUser>,
     public static User From(EntityUser user, IServiceProvider provider)
     {
         return new(user, provider);
+    }
+
+    /// <summary>
+    /// Records that the stored credentials were replaced. Requests that started earlier
+    /// must no longer apply their responses to this account.
+    /// </summary>
+    /// <returns>The token of the new version, so the caller can tell whether a later replacement occurred.</returns>
+    public OptimisticVersionToken MarkCredentialsReplaced()
+    {
+        return credentialVersion.Advance();
     }
 
     public IDisposable SuppressCurrentUserGameRoleChangedMessage()

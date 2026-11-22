@@ -35,10 +35,16 @@ public sealed partial class UserInitializationService : IUserInitializationServi
 
     public async ValueTask<ViewModel.User.User> ResumeUserAsync(ViewModel.User.User user, CancellationToken token = default)
     {
-        if (!await InitializeUserAsync(user, token).ConfigureAwait(false))
+        if (await InitializeUserAsync(user, token).ConfigureAwait(false) is InitializationResult.Failed)
         {
             await taskContext.SwitchToMainThreadAsync();
             token.ThrowIfCancellationRequested();
+            if (user.IsInitialized)
+            {
+                // Another attempt recovered the account while this one was failing.
+                return user;
+            }
+
             user.UserInfo = new()
             {
                 Uid = SH.ModelBindingUserInitializationFailed,
@@ -61,7 +67,7 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         if (entity.Aid is not null && entity.Mid is not null)
         {
             ViewModel.User.User user = ViewModel.User.User.From(entity, serviceProvider);
-            bool initialized = await InitializeUserAsync(user, token).ConfigureAwait(false);
+            bool initialized = await InitializeUserAsync(user, token).ConfigureAwait(false) is InitializationResult.Succeeded;
 
             return initialized ? user : null;
         }
@@ -69,7 +75,7 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         return null;
     }
 
-    private static async ValueTask<bool> TryRefreshCredentialsAsync(IServiceProvider serviceProvider, ViewModel.User.User user, CancellationToken token)
+    private static async ValueTask<bool> TryRefreshCredentialsAsync(IServiceProvider serviceProvider, ViewModel.User.User user, OptimisticVersionToken credentialVersion, CancellationToken token)
     {
         bool isOversea = user.IsOversea;
         Cookie? lToken = user.LToken;
@@ -86,6 +92,11 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         string? mid = user.Entity.Mid;
         if (string.IsNullOrEmpty(accountId) || string.IsNullOrEmpty(mid))
         {
+            if (!credentialVersion.IsCurrent)
+            {
+                return false;
+            }
+
             user.IsCookieInvalid = true;
             return false;
         }
@@ -97,6 +108,11 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         if (refreshLToken)
         {
             Response<LTokenWrapper> response = await passportClient.GetLTokenBySTokenAsync(user.Entity, token).ConfigureAwait(false);
+            if (!credentialVersion.IsCurrent)
+            {
+                return false;
+            }
+
             if (!ResponseValidator.TryValidate(response, serviceProvider, out LTokenWrapper? result))
             {
                 user.IsCookieInvalid |= ((KnownReturnCode)response.ReturnCode).IsAuthenticationFailure();
@@ -110,6 +126,11 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         if (refreshCookieToken)
         {
             Response<UidCookieToken> response = await passportClient.GetCookieAccountInfoBySTokenAsync(user.Entity, token).ConfigureAwait(false);
+            if (!credentialVersion.IsCurrent)
+            {
+                return false;
+            }
+
             if (!ResponseValidator.TryValidate(response, serviceProvider, out UidCookieToken? result))
             {
                 user.IsCookieInvalid |= ((KnownReturnCode)response.ReturnCode).IsAuthenticationFailure();
@@ -121,6 +142,11 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         }
 
         token.ThrowIfCancellationRequested();
+        if (!credentialVersion.IsCurrent)
+        {
+            return false;
+        }
+
         user.LToken = lToken;
         user.CookieToken = cookieToken;
         if (refreshedAt is { } timestamp)
@@ -132,7 +158,7 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         return true;
     }
 
-    private async ValueTask<bool> TrySetUserUserInfoAsync(IServiceProvider serviceProvider, ViewModel.User.User user, CancellationToken token)
+    private async ValueTask<bool> TrySetUserUserInfoAsync(IServiceProvider serviceProvider, ViewModel.User.User user, OptimisticVersionToken credentialVersion, CancellationToken token)
     {
         IUserClient userClient = serviceProvider
             .GetRequiredService<IOverseaSupportFactory<IUserClient>>()
@@ -146,6 +172,14 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         // handlers update XAML controls synchronously on the publishing thread.
         await taskContext.SwitchToMainThreadAsync();
         token.ThrowIfCancellationRequested();
+
+        // The account may already belong to a newer cookie. This response describes the
+        // credential that was replaced, so it must not invalidate the recovered account.
+        if (!credentialVersion.IsCurrent)
+        {
+            return false;
+        }
+
         if (ResponseValidator.TryValidate(response, serviceProvider, out UserFullInfoWrapper? wrapper))
         {
             user.UserInfo = wrapper.UserInfo;
@@ -165,7 +199,7 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         return user.IsOversea && !user.IsCookieInvalid;
     }
 
-    private async ValueTask<bool> TrySetUserUserGameRolesAsync(IServiceProvider serviceProvider, ViewModel.User.User user, CancellationToken token)
+    private async ValueTask<bool> TrySetUserUserGameRolesAsync(IServiceProvider serviceProvider, ViewModel.User.User user, OptimisticVersionToken credentialVersion, CancellationToken token)
     {
         BindingClient bindingClient = serviceProvider.GetRequiredService<BindingClient>();
 
@@ -177,49 +211,70 @@ public sealed partial class UserInitializationService : IUserInitializationServi
         {
             await taskContext.SwitchToMainThreadAsync();
             token.ThrowIfCancellationRequested();
+
+            if (!credentialVersion.IsCurrent)
+            {
+                return false;
+            }
+
             user.UserGameRoles = wrapper.List.AsAdvancedCollectionView();
             return true;
+        }
+
+        if (!credentialVersion.IsCurrent)
+        {
+            return false;
         }
 
         user.IsCookieInvalid |= ((KnownReturnCode)userGameRolesResponse.ReturnCode).IsAuthenticationFailure();
         return false;
     }
 
-    private async ValueTask<bool> InitializeUserAsync(ViewModel.User.User user, CancellationToken token = default)
+    private async ValueTask<InitializationResult> InitializeUserAsync(ViewModel.User.User user, CancellationToken token = default)
     {
         if (user.IsInitialized)
         {
             // Prevent multiple initialization.
-            return true;
+            return InitializationResult.Succeeded;
         }
+
+        // Requests issued by this attempt can outlive the credentials they were sent with.
+        // A response that arrives after the user supplied a new cookie belongs to the
+        // replaced credential and must not touch the account.
+        OptimisticVersionToken credentialVersion = user.CredentialVersion;
 
         if (user.IsCookieInvalid)
         {
             // The stored cookie was already rejected. Only a newly supplied cookie — which
             // clears this flag — can make another request meaningful.
-            return false;
+            return SupersededOrFailed(credentialVersion);
         }
 
         if (user.SToken is null)
         {
+            if (!credentialVersion.IsCurrent)
+            {
+                return InitializationResult.Superseded;
+            }
+
             // Without a login token the account can never be resumed by retrying.
             user.IsCookieInvalid = true;
-            return false;
+            return InitializationResult.Failed;
         }
 
         using (IServiceScope scope = serviceProvider.CreateScope())
         {
             IServiceProvider serviceProvider = scope.ServiceProvider;
 
-            if (!await TryRefreshCredentialsAsync(serviceProvider, user, token).ConfigureAwait(false))
+            if (!await TryRefreshCredentialsAsync(serviceProvider, user, credentialVersion, token).ConfigureAwait(false))
             {
-                return false;
+                return SupersededOrFailed(credentialVersion);
             }
 
-            if (!await TrySetUserUserInfoAsync(serviceProvider, user, token).ConfigureAwait(false)
-                || !await TrySetUserUserGameRolesAsync(serviceProvider, user, token).ConfigureAwait(false))
+            if (!await TrySetUserUserInfoAsync(serviceProvider, user, credentialVersion, token).ConfigureAwait(false)
+                || !await TrySetUserUserGameRolesAsync(serviceProvider, user, credentialVersion, token).ConfigureAwait(false))
             {
-                return false;
+                return SupersededOrFailed(credentialVersion);
             }
         }
 
@@ -239,7 +294,39 @@ public sealed partial class UserInitializationService : IUserInitializationServi
 
         await taskContext.SwitchToMainThreadAsync();
         token.ThrowIfCancellationRequested();
+        if (!credentialVersion.IsCurrent)
+        {
+            // A newer cookie was saved while this attempt was finishing; the flow that
+            // supplied it owns the account state from now on.
+            return InitializationResult.Superseded;
+        }
+
         user.IsCookieInvalid = false;
-        return user.IsInitialized = true;
+        user.IsInitialized = true;
+        return InitializationResult.Succeeded;
+    }
+
+    private static InitializationResult SupersededOrFailed(OptimisticVersionToken credentialVersion)
+    {
+        return credentialVersion.IsCurrent ? InitializationResult.Failed : InitializationResult.Superseded;
+    }
+
+    private enum InitializationResult
+    {
+        /// <summary>
+        /// The account could not be initialized and stays in its failed state.
+        /// </summary>
+        Failed,
+
+        /// <summary>
+        /// The account is initialized with the credentials this attempt was started with.
+        /// </summary>
+        Succeeded,
+
+        /// <summary>
+        /// The credentials were replaced while this attempt was running. The attempting flow
+        /// must not publish its failure over the account the newer credentials now own.
+        /// </summary>
+        Superseded,
     }
 }

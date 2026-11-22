@@ -50,6 +50,8 @@
     <Compile Include="../Snap.Hutao.Remastered/Extension/SpanExtension.cs" Link="Production/Installation/SpanExtension.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Threading/AsyncSemaphore.cs" Link="Production/AsyncSemaphore.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Core/Threading/AsyncKeyedLock.cs" Link="Production/AsyncKeyedLock.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/Threading/OptimisticVersion.cs" Link="Production/OptimisticVersion.cs" />
+    <Compile Include="../Snap.Hutao.Remastered/Core/Threading/OptimisticVersionToken.cs" Link="Production/OptimisticVersionToken.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/AI/Settings/JsonSettingsProvider.cs" Link="Production/Agent/SettingsTests/JsonSettingsProvider.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/AI/Settings/ISettingsProvider.cs" Link="Production/Agent/SettingsTests/ISettingsProvider.cs" />
     <Compile Include="../Snap.Hutao.Remastered/Service/AI/Settings/ObservableObjectHierarchyObserver.cs" Link="Production/Agent/SettingsTests/ObservableObjectHierarchyObserver.cs" />

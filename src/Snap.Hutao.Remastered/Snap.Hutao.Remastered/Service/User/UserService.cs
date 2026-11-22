@@ -80,6 +80,8 @@ public sealed partial class UserService : IUserService
             (Cookie?, Cookie?, Cookie?, DateTimeOffset) previousCredentials = (user.SToken, user.LToken, user.CookieToken, user.Entity.CookieTokenLastUpdateTime);
             (UserInfo?, IAdvancedCollectionView<UserGameRole>, string?, DateTimeOffset) previousProfile = (user.UserInfo, user.UserGameRoles, user.Entity.Fingerprint, user.Entity.FingerprintLastUpdateTime);
             (bool, bool, bool) previousInitialization = (user.IsInitialized, user.NeedDbUpdateAfterResume, user.IsCookieInvalid);
+            OptimisticVersionToken credentialVersion = default;
+            bool credentialsReplaced = false;
             bool saved = false;
             try
             {
@@ -95,6 +97,11 @@ public sealed partial class UserService : IUserService
                 }
 
                 user.TryUpdateFingerprint(deviceFp);
+
+                // Requests that are still running with the previous cookie must not apply
+                // their responses now that this cookie replaces it.
+                credentialVersion = user.MarkCredentialsReplaced();
+                credentialsReplaced = true;
 
                 await TaskContext.SwitchToBackgroundAsync();
                 await userInitializationService.ResumeUserAsync(user).ConfigureAwait(false);
@@ -114,9 +121,22 @@ public sealed partial class UserService : IUserService
                 if (!saved)
                 {
                     await TaskContext.SwitchToMainThreadAsync();
-                    (user.SToken, user.LToken, user.CookieToken, user.Entity.CookieTokenLastUpdateTime) = previousCredentials;
-                    (user.UserInfo, user.UserGameRoles, user.Entity.Fingerprint, user.Entity.FingerprintLastUpdateTime) = previousProfile;
-                    (user.IsInitialized, user.NeedDbUpdateAfterResume, user.IsCookieInvalid) = previousInitialization;
+
+                    // A newer cookie may have replaced this one while the request was running;
+                    // restoring the previous credentials would discard the cookie the user
+                    // supplied in the meantime.
+                    if (!credentialsReplaced || credentialVersion.IsCurrent)
+                    {
+                        (user.SToken, user.LToken, user.CookieToken, user.Entity.CookieTokenLastUpdateTime) = previousCredentials;
+                        (user.UserInfo, user.UserGameRoles, user.Entity.Fingerprint, user.Entity.FingerprintLastUpdateTime) = previousProfile;
+                        (user.IsInitialized, user.NeedDbUpdateAfterResume, user.IsCookieInvalid) = previousInitialization;
+
+                        if (credentialsReplaced)
+                        {
+                            // Requests started with the failed cookie must not apply either.
+                            user.MarkCredentialsReplaced();
+                        }
+                    }
                 }
             }
         }

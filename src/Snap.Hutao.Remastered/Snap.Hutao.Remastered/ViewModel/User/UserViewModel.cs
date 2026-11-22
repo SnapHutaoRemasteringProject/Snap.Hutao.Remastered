@@ -137,7 +137,7 @@ public sealed partial class UserViewModel : ObservableObject
         // An account whose cookie was rejected can never become initialized by retrying.
         // Keeping it out of the pending condition stops the network retry loop from
         // flooding the same -100 responses until the user supplies a new cookie.
-        bool hasUninitializedUsers = Users.Source.Any(static user => !user.IsInitialized && !user.IsCookieInvalid);
+        bool hasUninitializedUsers = HasRecoverableUninitializedUsers();
         if (needsRetry || hasUninitializedUsers)
         {
             networkRetryCoordinator.MarkPending("UserViewModel.LoadUsers", SH.ViewModelMainNetworkConnectionFailedWillAutoRetry);
@@ -146,6 +146,12 @@ public sealed partial class UserViewModel : ObservableObject
 
         networkRetryCoordinator.ClearPending("UserViewModel.LoadUsers");
         return true;
+    }
+
+    private bool HasRecoverableUninitializedUsers()
+    {
+        ArgumentNullException.ThrowIfNull(Users);
+        return Users.Source.Any(static user => !user.IsInitialized && !user.IsCookieInvalid);
     }
 
     private static bool IsNetworkRelatedException(Exception ex)
@@ -372,14 +378,65 @@ public sealed partial class UserViewModel : ObservableObject
 
         if (await userService.RefreshCookieTokenAsync(user).ConfigureAwait(false))
         {
+            await taskContext.SwitchToMainThreadAsync();
+
+            // The refresh replaced the stored cookie token; a request that is still running
+            // with the previous token must not apply its late rejection to the account.
+            user.MarkCredentialsReplaced();
+
             // A successful refresh proves the stored credentials are accepted again,
             // so let the next resume attempt initialize the account.
             user.IsCookieInvalid = false;
             messenger.Send(InfoBarMessage.Success(SH.ViewUserRefreshCookieTokenSuccess));
+
+            if (!user.IsInitialized)
+            {
+                // The account still shows its failed profile. RetryLoadUsersAsync has already
+                // cleared the pending job while only rejected accounts remained, and the
+                // periodic check runs pending jobs only, so the accepted credentials would
+                // otherwise never load.
+                await ResumeRefreshedUserAsync().ConfigureAwait(true);
+            }
         }
         else
         {
             messenger.Send(InfoBarMessage.Warning(SH.ViewUserRefreshCookieTokenWarning));
         }
+    }
+
+    private async ValueTask ResumeRefreshedUserAsync()
+    {
+        bool needsRetry = false;
+        try
+        {
+            await userService.RetryResumeUninitializedUsersAsync(CancellationToken.None).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (IsNetworkRelatedException(ex))
+        {
+            needsRetry = true;
+        }
+        catch (HutaoException ex)
+        {
+            messenger.Send(InfoBarMessage.Error(ex));
+            return;
+        }
+
+        await taskContext.SwitchToMainThreadAsync();
+        ArgumentNullException.ThrowIfNull(Users);
+
+        // The account button renders the nickname through a function of the current
+        // account, which only re-evaluates when the collection property notifies.
+        OnPropertyChanged(nameof(Users));
+
+        if (needsRetry || HasRecoverableUninitializedUsers())
+        {
+            // A transient failure is recoverable through the periodic check; keep the job
+            // armed instead of waiting for another account load.
+            usersRetryRegistration ??= networkRetryCoordinator.Register("UserViewModel.LoadUsers", RetryLoadUsersAsync);
+            networkRetryCoordinator.MarkPending("UserViewModel.LoadUsers", string.Empty);
+            return;
+        }
+
+        networkRetryCoordinator.ClearPending("UserViewModel.LoadUsers");
     }
 }

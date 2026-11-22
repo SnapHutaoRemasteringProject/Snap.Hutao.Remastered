@@ -88,9 +88,13 @@ namespace Snap.Hutao.Remastered.ViewModel.User
 {
     public sealed partial class User : ObservableObject
     {
+        private readonly OptimisticVersion credentialVersion = new();
+
         public bool IsInitialized { get; set; }
 
         public bool IsCookieInvalid { get; set; }
+
+        public OptimisticVersionToken CredentialVersion => credentialVersion.Capture();
 
         [ObservableProperty]
         public partial Web.Hoyolab.Bbs.User.UserInfo? UserInfo { get; set; }
@@ -105,6 +109,11 @@ namespace Snap.Hutao.Remastered.ViewModel.User
         public Web.Hoyolab.Cookie? LToken { get; set; } = new();
         public Web.Hoyolab.Cookie? CookieToken { get; set; } = new();
         public static User From(Model.Entity.User entity, IServiceProvider provider) => new();
+
+        public OptimisticVersionToken MarkCredentialsReplaced()
+        {
+            return credentialVersion.Advance();
+        }
     }
 
     public sealed record UserAndUid(Model.Entity.User User, string Uid)
