@@ -1,4 +1,4 @@
-# 元数据服务重构：GitMetadataService / ProtoMetadataService
+# 元数据服务重构：IMetadataProvider / IMetadataService 两层设计
 
 > 状态：**设计稿，未实现**。本文只描述目标结构与迁移步骤，当前代码仍是
 > [`Service/Metadata/MetadataService.cs`](../src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Metadata/MetadataService.cs) 的 Git + JSON 单一实现。
@@ -6,21 +6,28 @@
 > `D:\SnapHutaoRemasteringProject\MetadataBuilder` @ `cb1eb30` 的 `Proto/`、`Core/Builder/ProtoBuilder.cs`
 > 与 `Core/Builder/*CurveBuilder.cs`。
 >
-> **2026-11-22 更新**：产物已补齐 `AvatarCurve` / `MonsterCurve` / `WeaponCurve`（builder `89ddba9`）并引入
+> **2026-11-22 更新（一）**：产物已补齐 `AvatarCurve` / `MonsterCurve` / `WeaponCurve`（builder `89ddba9`）并引入
 > `LegacyJsonFileNames`（builder `cb1eb30`），Proto 的类别覆盖达到 30/30；本文已同步覆盖矩阵、字段数、
 > 映射规则与实施计划。仍缺 `schema_version`、清单文件、语言目录输出与"缺失类别致命"（见 §10）。
+>
+> **2026-11-22 更新（二）**：按"服务管理 provider"重新分层——新增 `IMetadataProvider` /
+> `IMetadataProviderFactory`，原 `GitMetadataService` / `ProtoMetadataService` 改名为
+> `GitMetadataProvider` / `ProtoMetadataProvider`，`MetadataServiceBase` 改名为 `MetadataProviderBase`；
+> keyed 注册落在 `IMetadataProvider` 上，`IMetadataService` 负责创建、选源、`SwitchAsync`、清理广播
+> 与网络重试（§5）。
 >
 > 关联：`CODE_REVIEW.md#ENG-08`（`LegacyMetadataService` 死代码）、`CODE_REVIEW.md#ARCH-01`（避免新增 `IServiceProvider` 服务定位）、
 > `CLAUDE.md` §5.5（元数据初始化）、§5.9（Sentry span）、§6（parse-first / 事务式替换）。
 
 ## 结论摘要（TL;DR）
 
-1. 现有 `MetadataService`（约 27 处注入、40 次按类别读取）**改名为 `GitMetadataService`**，
-   保留 JSON + git 仓库路径，作为兼容源与回退源；`IMetadataService` 仍是消费方契约，消费方一行不改。
-2. 新增 **`ProtoMetadataService`** 读取 `MetadataBuilder` 产出的 `GenshinMetadata.{locale}.hutaobin`
-   （`IV ‖ AES-256-CBC(zlib(protobuf))`），单文件替代 158 个 JSON 文件。
-3. 两个实现按 **`MetadataSourceKind` keyed singleton** 注册；新增一个**无状态门面 `MetadataService`**
-   负责选源、回退和 `ClearCache` 广播——否则 27 个消费方无法在运行时切换来源。
+1. 现有 `MetadataService`（约 27 处注入、40 次按类别读取）**改名为 `GitMetadataProvider`**，
+   保留 JSON + git 仓库路径，成为 `IMetadataProvider` 的一个实现（keyed `Git`）。
+2. 新增 **`ProtoMetadataProvider`**（keyed `Proto`）读取 `MetadataBuilder` 产出的
+   `GenshinMetadata.{locale}.hutaobin`（`IV ‖ AES-256-CBC(zlib(protobuf))`），单文件替代 158 个 JSON 文件。
+3. **`IMetadataService` 是 provider 的管理者**：通过 `IMetadataProviderFactory` 创建/取得 provider，
+   负责选源、回退、`SwitchAsync` 切换、`ClearCache` 广播与网络重试；27 个消费方只注入它，
+   看不到 provider，也不需要改代码。
 4. 数据流从"页面按需读 JSON 文件"改为"**启动时确保并解析 bundle，页面按需映射类别**"；
    `InitializeAsync` 变为**可自启动、幂等**，不再依赖 `AppActivation` 的调用顺序。
 5. 新增 `MetadataCache`（带来源/语言前缀 + 代际号）与 **`ClearCache()`** 契约：
@@ -171,35 +178,45 @@ proto 的 `LanguageMetadata` 共 35 个类别字段，其中 30 个被应用消�
 
 ```
 启动（AppActivation，后台）
-  └─ IMetadataService.InitializeInternalAsync()                      [门面 MetadataService]
+  └─ IMetadataService.InitializeInternalAsync()                      [管理者 MetadataService]
         ├─ MetadataSourceOptions.Source（默认 Auto）
-        ├─ Auto/Proto → IProtoMetadataService.InitializeInternalAsync
-        │     ├─ IMetadataBundleSource.EnsureLocalBundleAsync
-        │     │     ├─ GET {api}/metadata/template                    （可用本地缓存 24h）
-        │     │     ├─ GET {template}/Genshin/{locale}/GenshinMetadata.manifest.json
-        │     │     ├─ 清单哈希 == 本地文件哈希 → 跳过下载
-        │     │     ├─ 否则 GET …/GenshinMetadata.hutaobin（流式、限时）
-        │     │     ├─ size + xxHash64 + schema + language 校验
-        │     │     └─ 写 .tmp → 原子替换 {Data}/Metadata/{locale}/GenshinMetadata.hutaobin
-        │     ├─ MetadataBundleCodec.Read → 解析 + 头部校验
-        │     └─ 保留 LanguageMetadata（**不映射类别**）
-        ├─ 失败 → IGitMetadataService.InitializeInternalAsync（clone/fetch Snap.Metadata）
-        ├─ 成功 → active = 选中的源；TCS 完成
+        ├─ 候选序列：Auto/Proto → [Proto, Git]；Git → [Git]
+        ├─ IMetadataProviderFactory.GetOrCreate(kind)                 ← keyed provider，首次解析时创建
+        └─ IMetadataProvider.InitializeAsync(token)
+              ├─ ProtoMetadataProvider
+              │     ├─ IMetadataBundleSource.EnsureLocalBundleAsync
+              │     │     ├─ GET {api}/metadata/template                    （可用本地缓存 24h）
+              │     │     ├─ GET {template}/Genshin/{locale}/GenshinMetadata.manifest.json
+              │     │     ├─ 清单哈希 == 本地文件哈希 → 跳过下载
+              │     │     ├─ 否则 GET …/GenshinMetadata.hutaobin（流式、限时）
+              │     │     ├─ size + xxHash64 + schema + language 校验
+              │     │     └─ 写 .tmp → 原子替换 {Data}/Metadata/{locale}/GenshinMetadata.hutaobin
+              │     ├─ MetadataBundleCodec.Read → 解析 + 头部校验
+              │     └─ 保留 LanguageMetadata（**不映射类别**）
+              └─ GitMetadataProvider → clone/fetch Snap.Metadata
+        ├─ 成功 → active = 选中的 provider；TCS 完成
+        ├─ 失败 → 尝试下一个候选；显式 Proto 回退时提示一次
         └─ 全部失败 → 向 INetworkRetryCoordinator 注册/标记 pending；网络恢复后重跑本流程
                         （TCS 保持 pending，等待重试成功或 ShutdownToken）
 
 页面加载
   └─ metadataService.InitializeAsync()          ← 快路径；未启动时**自行启动**初始化
   └─ GetContextAsync<TContext>()                ← 42 个分支 / 40 次按类别读取
-        └─ FromCacheOrSourceAsync<T>(category)
+        └─ IMetadataService.FromCacheOrSourceAsync<T>(category)     ← 转发给 active provider
               ├─ [L2] MetadataCache 命中 → 返回（boxed ImmutableArray<T> 解箱）
               └─ [L2] 未命中
                     ├─ Proto：ProtoCategoryTable[category].Read(language) → 逐条映射
                     └─ Git ：读 {locale}/{Name}.json 或 {Name}/*.json → JsonSerialize
                     → MetadataCache.SetIfCurrent(generation, key, value)
 
-手动刷新 / 数据源切换 /（未来）定时更新
-  └─ IMetadataService.ClearCache()              ← L2/L3 清空 + 释放 bundle + 代际 +1
+切换来源（设置变更 / 手动重试）
+  └─ IMetadataService.SwitchAsync(kind)
+        ├─ 旧 active.ClearCache()（先清旧缓存，让在途结果因代际失效）
+        ├─ active = null；attempt = null；重建 TCS
+        └─ 按 kind 重跑候选序列（Proto 仍允许回退 Git，Git 不回退）
+
+清缓存 / 手动刷新
+  └─ IMetadataService.ClearCache()              ← 广播给已创建的所有 provider
   └─ （可选）IMetadataBundleSource 重新确保文件 → 下次读取重新解析
 ```
 
@@ -211,30 +228,45 @@ proto 的 `LanguageMetadata` 共 35 个类别字段，其中 30 个被应用消�
    网络恢复后自动重跑，而不是像现在这样只能等下一次启动。
 2. **解析与映射分离**：bundle 只在初始化时解析一次；类别映射推迟到第一次访问该类别，
    单页只付出它真正需要的类别成本。
-3. **源可替换**：消费方只看到 `IMetadataService`，选源/回退/清理都在门面内完成。
+3. **职责分层**：`IMetadataProvider` 只管"把某一来源的数据准备好并读出来"；
+   `IMetadataService` 只管"创建/持有 provider、按偏好选源、回退、切换、广播清理"。
+   消费方（27 处）永远只注入 `IMetadataService`，看不到 provider。
 4. **缓存可失效**：所有派生数据都进 `MetadataCache`，`ClearCache` 一次清干净且不误删其他服务的缓存。
 
 ## 5. 类型与职责
+
+**为什么拆成两层**：现有 `IMetadataService` 同时承担"某个数据源的实现"和"消费方入口"两种职责，
+导致新增来源要不断改名/加子接口，且切换、回退、重试与读取逻辑挤在同一个类里。拆开后：
+
+- `IMetadataProvider` 是**可替换的数据源**：Git / Proto 各自独立实现、独立测试，只关心"把数据准备好并读出来"；
+- `IMetadataService` 是**管理者**：创建/持有 provider、按偏好选源、回退、切换、广播清理、网络重试；
+- 消费方（27 处）只看到 `IMetadataService`，与"这次用的是哪个源"解耦。
+
+上一版设计（单接口 + keyed 两个实现 + 门面）也能工作，但"来源"和"服务入口"都叫 `*Service`，
+命名与职责都不清晰；本版以 provider 命名数据源后，keyed 注册、诊断接口和失败策略都各自归位。
 
 ### 5.1 类型表
 
 | 类型 | 种类 | 职责 |
 |---|---|---|
-| `IMetadataService` | 契约（不改名） | `IsInitialized` / `Cache` / `InitializeAsync` / `FromCacheOrSourceAsync<T>` / `ClearCache` |
+| `IMetadataProvider` | 契约（新增） | **数据源**：`Kind` / `IsInitialized` / `Cache` / `InitializeAsync` / `FromCacheOrSourceAsync<T>` / `ClearCache` |
+| `IGitMetadataProvider : IMetadataProvider` | 契约 | keyed `Git`；暴露 `RepositoryDirectory` 便于诊断 |
+| `IProtoMetadataProvider : IMetadataProvider` | 契约 | keyed `Proto`；暴露 `BundleInfo` / `BundleFilePath` |
+| `IMetadataProviderFactory` | 契约（新增） | `AvailableKinds` / `GetOrCreate(kind)`；唯一把 `MetadataSourceKind` 映射到 keyed provider 的地方 |
+| `MetadataProviderFactory` | 实现 | 通过 `IServiceProvider.GetRequiredKeyedService<IMetadataProvider>(kind)` 取单例（仅此一处服务定位） |
+| `MetadataProviderBase` | 抽象基类（不注册） | 单 provider 的初始化闸门 + logger + `MetadataCache` 实例 |
+| `GitMetadataProvider` | 实现（原 `MetadataService`） | JSON + git 仓库读取 |
+| `ProtoMetadataProvider` | 实现（新增） | bundle 确保/解析/类别映射 |
+| `IMetadataService` | 契约（消费方） | **管理者**：`InitializeAsync` / `SwitchAsync` / `ActiveSource` / `AvailableSources` / 转发读取与 `ClearCache` |
 | `IMetadataServiceInitialization` | 契约（不改名） | `InitializeInternalAsync(CancellationToken)`，启动入口 |
-| `IGitMetadataService : IMetadataService` | 契约 | keyed `Git` 注册类型；暴露 `RepositoryDirectory` 便于诊断 |
-| `IProtoMetadataService : IMetadataService` | 契约 | keyed `Proto` 注册类型；暴露 `BundleInfo` / `BundleFilePath` |
-| `MetadataService` | 门面，非 keyed 单例 | 选源、回退、初始化状态机、`ClearCache` 广播、暴露 `ActiveSource` |
-| `MetadataServiceBase` | 抽象基类（不注册） | 初始化闸门 + TCS 语义 + logger + `MetadataCache` 实例 |
-| `GitMetadataService` | 实现（原 `MetadataService`） | JSON + git 仓库读取 |
-| `ProtoMetadataService` | 实现（新增） | bundle 确保/解析/类别映射 |
+| `MetadataService` | 实现（非 keyed 单例） | 创建/持有 provider、选源、回退、切换、网络重试、`ClearCache` 广播 |
 | `MetadataCategory` / `MetadataCategories` | 值类型 + 静态表 | 原 `MetadataFileStrategy` / `MetadataFileStrategies`；新增 `ProtoName`（默认 = `Name`，`BydMaterial` 例外） |
 | `MetadataCache` | sealed | 前缀 + 代际 + 键跟踪 + `Clear()` |
-| `MetadataSourceKind` | enum | `Auto/Git/Proto`；**`Auto` 永不作为 DI key** |
+| `MetadataSourceKind` | enum | `Auto/Git/Proto`；**`Auto` 永不作为 DI key，也不是 provider 的 `Kind`** |
 | `MetadataSourceOptions` | 选项 | 持久化来源偏好，`IObservableProperty<MetadataSourceKind>` |
-| `GitMetadataOptions` | 选项 | git 仓库名（`Snap.Metadata`）与本地 JSON 路径 |
+| `GitMetadataProviderOptions` | 选项 | git 仓库名（`Snap.Metadata`）与本地 JSON 路径 |
 | `MetadataBundleOptions` | 选项 | bundle 文件名、本地目录、schema 上限、下载超时 |
-| `IMetadataBundleSource` | 契约 | 确保本地 bundle 存在并返回路径 |
+| `IMetadataBundleSource` | 契约 | 确保本地 bundle 存在并返回路径（仅 Proto provider 使用） |
 | `HttpMetadataBundleSource` | 实现 | 模板端点 + 清单 + 条件下载 + 原子替换 |
 | `MetadataBundleCodec` | static | 解密/解压/解析 + 头部校验 + 尺寸上限 |
 | `MetadataBundleInfo` | 值对象 | 来源、游戏版本、生成时间、schema 版本、语言、哈希 |
@@ -245,14 +277,16 @@ proto 的 `LanguageMetadata` 共 35 个类别字段，其中 30 个被应用消�
 ### 5.2 契约
 
 ```csharp
-// Service/Metadata/IMetadataService.cs
-public interface IMetadataService : IMetadataServiceInitialization
+// Service/Metadata/Provider/IMetadataProvider.cs
+public interface IMetadataProvider
 {
+    MetadataSourceKind Kind { get; }              // Git / Proto，绝不为 Auto
+
     bool IsInitialized { get; }
 
     MetadataCache Cache { get; }
 
-    ValueTask<bool> InitializeAsync();
+    ValueTask<bool> InitializeAsync(CancellationToken token = default);
 
     ValueTask<ImmutableArray<T>> FromCacheOrSourceAsync<T>(MetadataCategory category, CancellationToken token = default)
         where T : class;
@@ -262,14 +296,14 @@ public interface IMetadataService : IMetadataServiceInitialization
 ```
 
 ```csharp
-// Service/Metadata/Git/IGitMetadataService.cs
-public interface IGitMetadataService : IMetadataService
+// Service/Metadata/Provider/Git/IGitMetadataProvider.cs
+public interface IGitMetadataProvider : IMetadataProvider
 {
     string RepositoryDirectory { get; }
 }
 
-// Service/Metadata/Proto/IProtoMetadataService.cs
-public interface IProtoMetadataService : IMetadataService
+// Service/Metadata/Provider/Proto/IProtoMetadataProvider.cs
+public interface IProtoMetadataProvider : IMetadataProvider
 {
     MetadataBundleInfo? BundleInfo { get; }
 
@@ -277,35 +311,92 @@ public interface IProtoMetadataService : IMetadataService
 }
 ```
 
+```csharp
+// Service/Metadata/Provider/IMetadataProviderFactory.cs
+public interface IMetadataProviderFactory
+{
+    ImmutableArray<MetadataSourceKind> AvailableKinds { get; }
+
+    IMetadataProvider GetOrCreate(MetadataSourceKind kind);
+}
+```
+
+```csharp
+// Service/Metadata/IMetadataService.cs（管理者，不继承 IMetadataProvider）
+public interface IMetadataService : IMetadataServiceInitialization
+{
+    bool IsInitialized { get; }
+
+    MetadataSourceKind ActiveSource { get; }          // 未激活时返回 Auto
+
+    IReadOnlyList<MetadataSourceKind> AvailableSources { get; }
+
+    MetadataCache Cache { get; }                      // 转发 active.Cache
+
+    ValueTask<bool> InitializeAsync();
+
+    ValueTask<bool> SwitchAsync(MetadataSourceKind kind, CancellationToken token = default);
+
+    ValueTask<ImmutableArray<T>> FromCacheOrSourceAsync<T>(MetadataCategory category, CancellationToken token = default)
+        where T : class;
+
+    void ClearCache();
+}
+```
+
+- **不继承**：`IMetadataService` 是 provider 的管理者，把 `IsInitialized` / `Cache` / `FromCacheOrSourceAsync` /
+  `ClearCache` 显式转发给 active provider。这样 27 个消费方只看得到一个"元数据服务"，provider 的类型不会泄漏到页面层；
+  代价是 4 个转发成员（用编译期签名保证两边一致，不需要共享基接口）。
+- `SwitchAsync` 只负责"激活"，**不写设置**；持久化由 `MetadataSourceOptions` 的调用方负责。
+  `SwitchAsync(Auto)` 表示恢复自动选择（等价于重新按 `[Proto, Git]` 选源）；
+  `Auto` 只作为偏好值，绝不能作为 provider 的 `Kind` 或 DI key。
+- `AvailableSources` 来自 `IMetadataProviderFactory.AvailableKinds`，用于设置页/诊断显示"当前构建能用哪些源"。
+
 `FromCacheOrFileAsync` → `FromCacheOrSourceAsync`：proto 源没有"文件"这个概念，继续叫 File 会误导；
 改动只落在两个扩展文件（26 + 28 个方法）+ 实现，消费方（27 处）不受影响。
 
 ### 5.3 DI 注册（全部由生成器产出，不手写）
 
 ```csharp
-[Service(ServiceLifetime.Singleton, typeof(IGitMetadataService), Key = MetadataSourceKind.Git)]
-public sealed partial class GitMetadataService : MetadataServiceBase, IGitMetadataService
+// provider：keyed singleton，key 是 MetadataSourceKind
+[Service(ServiceLifetime.Singleton, typeof(IMetadataProvider), Key = MetadataSourceKind.Git)]
+public sealed partial class GitMetadataProvider : MetadataProviderBase, IGitMetadataProvider
 {
     [GeneratedConstructor(CallBaseConstructor = true)]
-    public partial GitMetadataService(IServiceProvider serviceProvider);
+    public partial GitMetadataProvider(IServiceProvider serviceProvider);
 }
 
-[Service(ServiceLifetime.Singleton, typeof(IProtoMetadataService), Key = MetadataSourceKind.Proto)]
-public sealed partial class ProtoMetadataService : MetadataServiceBase, IProtoMetadataService
+[Service(ServiceLifetime.Singleton, typeof(IMetadataProvider), Key = MetadataSourceKind.Proto)]
+public sealed partial class ProtoMetadataProvider : MetadataProviderBase, IProtoMetadataProvider
 {
     [GeneratedConstructor(CallBaseConstructor = true)]
-    public partial ProtoMetadataService(IServiceProvider serviceProvider);
+    public partial ProtoMetadataProvider(IServiceProvider serviceProvider);
 }
 
+// 工厂：服务通过它"创建/取得" provider，是唯一的 keyed 解析点
+[Service(ServiceLifetime.Singleton, typeof(IMetadataProviderFactory))]
+internal sealed partial class MetadataProviderFactory : IMetadataProviderFactory
+{
+    private readonly IServiceProvider serviceProvider;
+
+    [GeneratedConstructor]
+    public partial MetadataProviderFactory(IServiceProvider serviceProvider);
+
+    // Phase 1 只有 Git；Phase 2 起为 { Git, Proto }
+    public ImmutableArray<MetadataSourceKind> AvailableKinds => [MetadataSourceKind.Git, MetadataSourceKind.Proto];
+
+    public IMetadataProvider GetOrCreate(MetadataSourceKind kind) => kind switch
+    {
+        MetadataSourceKind.Git or MetadataSourceKind.Proto
+            => serviceProvider.GetRequiredKeyedService<IMetadataProvider>(kind),
+        _ => throw HutaoException.Argument("Auto is not a provider kind", nameof(kind)),
+    };
+}
+
+// 管理者：非 keyed，27 个消费方注入的就是它
 [Service(ServiceLifetime.Singleton, typeof(IMetadataService))]
 public sealed partial class MetadataService : IMetadataService, IDisposable
 {
-    [FromKeyed(MetadataSourceKind.Git)]
-    private readonly IGitMetadataService gitMetadataService;
-
-    [FromKeyed(MetadataSourceKind.Proto)]
-    private readonly IProtoMetadataService protoMetadataService;
-
     [GeneratedConstructor]
     public partial MetadataService(IServiceProvider serviceProvider);
 }
@@ -313,67 +404,63 @@ public sealed partial class MetadataService : IMetadataService, IDisposable
 
 要点：
 
-- 门面用 `[FromKeyed]` 注入两个实现（生成器会产出 `GetRequiredKeyedService<T>(key)`，见
-  `NotifyIconViewModel` 的生成构造）。两个 keyed 单例只在门面首次构建时创建；
-  它们的构造函数**不做 I/O**，因此"两个都构造"没有代价，也避免门面注入 `IServiceProvider`
-  （`CODE_REVIEW.md#ARCH-01` 明令不要新增服务定位）。
-- 门面必须保持 **非 keyed** 注册：否则 `ValidateOnBuild = true` 会在启动时报
+- **keyed 注册落在 `IMetadataProvider` 上**：这是"两个实现、一个契约、按 key 选择"的标准形式
+  （仓库里 `IGachaLogQueryProvider` / `IHutaoEndpoints` 同型），不需要为每个源再造一个子接口只为注册。
+  子接口 `IGitMetadataProvider` / `IProtoMetadataProvider` 只用于 provider 特有的诊断成员。
+- **由工厂"创建"而不是由管理者直接注入两个 provider**：
+  - 管理者只依赖 `IMetadataProviderFactory`，不依赖具体 provider，切换/回退逻辑与 DI 细节解耦；
+  - 只有**被选中的** provider 才会被解析（keyed singleton 首次解析时创建），未选中的源不占内存；
+  - 测试可以注入一个假工厂，不需要构造真实 keyed 容器。
+  - 服务定位只存在于 `MetadataProviderFactory.GetOrCreate` 一处；这是运行时按 key 选择的必要例外，
+    不是把 `IServiceProvider` 塞进页面/ViewModel（`CODE_REVIEW.md#ARCH-01`）。
+- 管理者必须保持 **非 keyed** 注册：否则 `ValidateOnBuild = true` 会在启动时报
   `IMetadataService` 不可解析；27 个消费方也全部依赖非 keyed 解析。
-- 两个实现都从 `MetadataServiceBase` 继承，使用
-  `[GeneratedConstructor(CallBaseConstructor = true)] public partial XxxMetadataService(IServiceProvider serviceProvider);`，
+- `MetadataSourceKind.Auto` **不能**出现在任何 `Key` 上，也不能被 provider 的 `Kind` 返回；
+  用一条断言（启动期或测试）保证"keyed 注册集合 == factory 的 `AvailableKinds`"
+  （Phase 1 为 `{Git}`，Phase 2 起为 `{Git, Proto}`）。
+- 两个 provider 都从 `MetadataProviderBase` 继承，使用
+  `[GeneratedConstructor(CallBaseConstructor = true)] public partial XxxProvider(IServiceProvider serviceProvider);`，
   基类构造函数手写（它不是 `[Service]` 类型，生成器不为它生成构造函数）。
-- 为什么 key 在 `IGitMetadataService` / `IProtoMetadataService` 而不是直接 keyed 注册两次
-  `IMetadataService`：Proto 源需要额外暴露 `BundleInfo` / `BundleFilePath`（诊断/设置页），
-  子接口让门面拿得到；如果只 key `IMetadataService`，门面就必须往下转型具体类。
-  备选的"消费方自己写 `[FromKeyed(MetadataSourceKind.Proto)]`"被否决：那会把来源选择固化到 27 个消费方，
-  失去运行时回退能力。
-- `MetadataSourceKind.Auto` 只用于设置与选源逻辑，**永不**作为 DI key（否则 `ValidateOnBuild` 会通过、
-  运行时却解析不到，属于最难排查的一类注册错误）；用一条断言（启动期或测试）保证
-  "keyed 注册集合 == {Git, Proto}"。
+- provider 特有的诊断信息（`BundleInfo` / `RepositoryDirectory`）不进 `IMetadataService`：
+  设置页/诊断页可以直接 `[FromKeyed(MetadataSourceKind.Proto)]` 注入 `IProtoMetadataProvider` 读取，
+  这是仓库既有的 keyed 消费方式，不需要管理者转发。
 
-### 5.4 基类：单个源的初始化闸门
+### 5.4 Provider 基类：单源初始化闸门
 
-把现有"TCS + SemaphoreSlim + isInitialized"（含"失败不完成 TCS、允许后续重试"的语义）抽到基类，
-避免两份实现漂移。基类只负责**单个源**；选源/回退在门面（§5.5）：
+Provider 只负责"把自己的数据准备好、读出来"，**不关心**谁在调用、失败后是否回退：
 
 ```csharp
-public abstract class MetadataServiceBase : IMetadataService
+public abstract class MetadataProviderBase : IMetadataProvider
 {
     private readonly SemaphoreSlim initializationGate = new(1, 1);
-    private TaskCompletionSource initializationCompletionSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
     private bool isInitialized;
 
-    protected MetadataServiceBase(IServiceProvider serviceProvider)
+    protected MetadataProviderBase(IServiceProvider serviceProvider)
     {
-        Logger = serviceProvider.GetRequiredService<ILogger<MetadataService>>();
+        Logger = serviceProvider.GetRequiredService<ILogger<MetadataProviderBase>>();
 
         // 前缀 = Metadata.{Git|Proto}.{locale}
-        // SourceName 只允许返回常量，不得依赖派生类字段（构造函数期虚调用）
+        // Kind 只允许返回常量，不得依赖派生类字段（构造函数期虚调用）
         string locale = serviceProvider.GetRequiredService<CultureOptions>().LocaleName;
-        Cache = new(serviceProvider.GetRequiredService<IMemoryCache>(), $"Metadata.{SourceName}.{locale}");
+        Cache = new(serviceProvider.GetRequiredService<IMemoryCache>(), $"Metadata.{Kind}.{locale}");
     }
 
-    protected ILogger Logger { get; }
+    public abstract MetadataSourceKind Kind { get; }
 
     public MetadataCache Cache { get; }
 
     public bool IsInitialized => Volatile.Read(ref isInitialized);
 
-    public async ValueTask<bool> InitializeAsync()
-    {
-        if (IsInitialized) return true;
-        await initializationCompletionSource.Task.WaitAsync(XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false);
-        return IsInitialized;
-    }
+    protected ILogger Logger { get; }
 
-    public async ValueTask<bool> InitializeInternalAsync(CancellationToken token = default)
+    public async ValueTask<bool> InitializeAsync(CancellationToken token = default)
     {
         using CancellationTokenSource linked = CancellationTokenSource.CreateLinkedTokenSource(token, XamlApplicationLifetime.ShutdownToken);
         await initializationGate.WaitAsync(linked.Token).ConfigureAwait(false);
         try
         {
             if (IsInitialized) return true;
-            using SentrySpanScope span = SentrySpanScope.StartOperation($"{SourceName}.initialize", "metadata");
+            using SentrySpanScope span = SentrySpanScope.StartOperation($"metadata.{Kind}.initialize", "metadata");
             try
             {
                 isInitialized = await InitializeCoreAsync(linked.Token).ConfigureAwait(false);
@@ -381,7 +468,8 @@ public abstract class MetadataServiceBase : IMetadataService
             catch (OperationCanceledException) { throw; }
             catch (Exception exception)
             {
-                Logger.LogWarning(exception, "Metadata initialization failed; awaiting a later retry");
+                // 失败不缓存"已初始化"，管理者可再次调用以重试
+                Logger.LogWarning(exception, "Metadata provider {Kind} initialization failed", Kind);
                 isInitialized = false;
             }
 
@@ -389,14 +477,9 @@ public abstract class MetadataServiceBase : IMetadataService
         }
         finally
         {
-            // 沿用现语义：只有成功才完成 TCS；失败保持 pending，
-            // 由 ShutdownToken 释放挂起的消费者，后续初始化可以重试。
-            if (IsInitialized) initializationCompletionSource.TrySetResult();
             initializationGate.Release();
         }
     }
-
-    protected abstract string SourceName { get; }
 
     protected abstract ValueTask<bool> InitializeCoreAsync(CancellationToken token);
 
@@ -412,37 +495,54 @@ public abstract class MetadataServiceBase : IMetadataService
 
 要点：
 
-- `Cache` 的构造只需要 `IMemoryCache` + 前缀；前缀由基类用 `Metadata.{SourceName}.{locale}` 组装，
-  `SourceName` 在派生类里是常量（`Git` / `Proto`）。
-- `InitializeCoreAsync` 对 Proto 是"确保文件 + 解码 + 头部校验"，对 Git 是"clone/fetch 仓库"。
-- 基类的 TCS 只服务于"有人直接持有 keyed 实例"的场景；门面有自己的一层 TCS（§5.5）。
+- 没有 TCS：provider 的 `InitializeAsync` 只是"确保+返回结果"，等待/重试/回退的语义在管理者
+  （`IMetadataService`）里统一处理，避免两层 TCS 语义漂移。
+- `InitializeCoreAsync` 对 Proto 是"确保文件 + 解码 + 头部校验"，对 Git 是"clone/fetch 仓库"；
+  失败返回 `false`（不抛）由管理者决定是否换源；只有取消会抛出。
+- `ClearCache` 负责清自己的 L2/L3；Proto 覆盖它并额外释放 L1 `LanguageMetadata`（§6.4）。
 
-### 5.5 门面：选源、自启动与网络重试
+### 5.5 管理者：创建 provider、选源、切换与网络重试
 
 ```csharp
 [Service(ServiceLifetime.Singleton, typeof(IMetadataService))]
-public sealed partial class MetadataService : IMetadataService
+public sealed partial class MetadataService : IMetadataService, IDisposable
 {
     private const string RetryKey = "MetadataService.Initialization";
 
+    // 生成构造解析：IMetadataProviderFactory / MetadataSourceOptions /
+    // INetworkRetryCoordinator / IMessenger / ILogger<MetadataService>
+    private readonly IMetadataProviderFactory providerFactory;
     private readonly MetadataSourceOptions sourceOptions;
     private readonly INetworkRetryCoordinator networkRetryCoordinator;
-    private readonly ILogger<MetadataService> logger;
     private readonly IMessenger messenger;
+    private readonly ILogger<MetadataService> logger;
     private readonly Lock gate = new();
-
-    // §5.3 的两个 [FromKeyed] 字段：gitMetadataService / protoMetadataService
-    [GeneratedConstructor]
-    public partial MetadataService(IServiceProvider serviceProvider);
+    private readonly Dictionary<MetadataSourceKind, IMetadataProvider> created = new();
 
     private TaskCompletionSource initialized = new(TaskCreationOptions.RunContinuationsAsynchronously);
     private Task<bool>? attempt;
-    private IMetadataService? active;
+    private MetadataSourceKind? requested;            // SwitchAsync 指定的偏好，优先于设置
+    private volatile IMetadataProvider? active;
     private IDisposable? retryRegistration;
+
+    [GeneratedConstructor]
+    public partial MetadataService(IServiceProvider serviceProvider);
+
+    public MetadataSourceKind ActiveSource => active?.Kind ?? MetadataSourceKind.Auto;
+
+    public IReadOnlyList<MetadataSourceKind> AvailableSources => providerFactory.AvailableKinds;
 
     public bool IsInitialized => active?.IsInitialized is true;
 
-    public MetadataCache Cache => active?.Cache ?? throw HutaoException.InvalidOperation(SH.ServiceMetadataNotInitialized);
+    public MetadataCache Cache => Active.Cache;
+
+    public ValueTask<ImmutableArray<T>> FromCacheOrSourceAsync<T>(MetadataCategory category, CancellationToken token = default)
+        where T : class
+    {
+        return Active.FromCacheOrSourceAsync<T>(category, token);
+    }
+
+    private IMetadataProvider Active => active ?? throw HutaoException.InvalidOperation(SH.ServiceMetadataNotInitialized);
 
     public async ValueTask<bool> InitializeAsync()
     {
@@ -458,22 +558,58 @@ public sealed partial class MetadataService : IMetadataService
 
     public ValueTask<bool> InitializeInternalAsync(CancellationToken token = default)
     {
-        lock (gate) { return new(attempt ??= AttemptAsync(token)); }
+        lock (gate)
+        {
+            MetadataSourceKind preference = requested ?? sourceOptions.Source.Value;
+            return new(attempt ??= AttemptAsync(initialized, preference, token));
+        }
     }
 
-    private async Task<bool> AttemptAsync(CancellationToken token)
+    public async ValueTask<bool> SwitchAsync(MetadataSourceKind kind, CancellationToken token = default)
     {
-        MetadataSourceKind preference = sourceOptions.Source.Value;
+        // kind == Auto 表示恢复自动选择；Git/Proto 表示固定偏好
+        // 先清旧缓存：在途读取的结果会因代际失效而不写入旧 cache
+        if (active is { } previous) previous.ClearCache();
+
+        TaskCompletionSource next = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        lock (gate)
+        {
+            requested = kind;
+            active = null;
+            attempt = null;
+            initialized = next;
+        }
+
+        return await InitializeInternalAsync(token).ConfigureAwait(false);
+    }
+
+    private IMetadataProvider GetProvider(MetadataSourceKind kind)
+    {
+        IMetadataProvider provider = providerFactory.GetOrCreate(kind);   // keyed singleton，首次解析时创建
+        lock (gate) { created[provider.Kind] = provider; }
+        return provider;
+    }
+
+    private async Task<bool> AttemptAsync(TaskCompletionSource completion, MetadataSourceKind preference, CancellationToken token)
+    {
         bool fellBack = false;
         try
         {
-            foreach (IMetadataService candidate in EnumerateCandidates(preference))
+            foreach (MetadataSourceKind kind in EnumerateCandidates(preference))
             {
-                if (await candidate.InitializeInternalAsync(token).ConfigureAwait(false))
+                IMetadataProvider provider = GetProvider(kind);
+                if (await provider.InitializeAsync(token).ConfigureAwait(false))
                 {
-                    active = candidate;
+                    // 初始化期间发生了 SwitchAsync：本次结果作废，不能覆盖新的 active。
+                    // active 与 TCS 必须在同一把锁里提交，否则 SwitchAsync 可能刚好插在中间。
+                    lock (gate)
+                    {
+                        if (!ReferenceEquals(initialized, completion)) return false;
+                        active = provider;
+                        completion.TrySetResult();
+                    }
+
                     networkRetryCoordinator.ClearPending(RetryKey);
-                    lock (gate) { initialized.TrySetResult(); }
 
                     // 只有"想要 Proto 却用了 Git"才提示；Auto 的静默回退不打扰用户
                     if (fellBack && preference is MetadataSourceKind.Proto)
@@ -492,10 +628,37 @@ public sealed partial class MetadataService : IMetadataService
             networkRetryCoordinator.MarkPending(RetryKey, SH.ServiceMetadataInitializationFailed);
             return false;
         }
+        catch (OperationCanceledException) { throw; }
+        catch (Exception exception)
+        {
+            // 自启动路径 `_ = InitializeInternalAsync()` 会丢弃这个 Task，异常必须在这里收敛
+            logger.LogWarning(exception, "Metadata initialization attempt failed");
+            return false;
+        }
         finally
         {
-            lock (gate) { if (!IsInitialized) attempt = null; }
+            lock (gate)
+            {
+                if (!ReferenceEquals(initialized, completion) || !IsInitialized) attempt = null;
+            }
         }
+    }
+
+    public void ClearCache()
+    {
+        IMetadataProvider[] providers;
+        lock (gate) { providers = [.. created.Values]; }
+        foreach (IMetadataProvider provider in providers) provider.ClearCache();
+    }
+
+    private static IEnumerable<MetadataSourceKind> EnumerateCandidates(MetadataSourceKind preference)
+    {
+        if (preference is MetadataSourceKind.Proto or MetadataSourceKind.Auto)
+        {
+            yield return MetadataSourceKind.Proto;
+        }
+
+        yield return MetadataSourceKind.Git;
     }
 
     private async ValueTask<bool> RetryAfterNetworkRecoveryAsync(CancellationToken token)
@@ -507,32 +670,53 @@ public sealed partial class MetadataService : IMetadataService
     partial void PostConstruct(IServiceProvider serviceProvider)
     {
         retryRegistration = networkRetryCoordinator.Register(RetryKey, RetryAfterNetworkRecoveryAsync);
+        sourceOptions.Source.PropertyChanged += OnSourceOptionChanged;
+    }
+
+    private void OnSourceOptionChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName is nameof(IObservableProperty<MetadataSourceKind>.Value))
+        {
+            // 设置已由 MetadataSourceOptions 持久化；这里只负责切换
+            SwitchAsync(sourceOptions.Source.Value).AsTask().SafeForget();
+        }
+    }
+
+    public void Dispose()
+    {
+        sourceOptions.Source.PropertyChanged -= OnSourceOptionChanged;
+        retryRegistration?.Dispose();
     }
 }
 ```
 
-选源/回退策略（完整矩阵见 §9.2）：
+职责边界（完整失败矩阵见 §9.2）：
 
-- `EnumerateCandidates(preference)`：`Auto`/`Proto` → `[protoMetadataService, gitMetadataService]`；
-  `Git` → `[gitMetadataService]`。两个字段都是 `[FromKeyed]` 注入的单例，顺序即优先级。
-- `Auto`：Proto → Git。
-- 显式 `Proto`：先 Proto；失败仍回退 Git，但发一次 `InfoBarMessage.Warning`
-  （不能因为一次发布事故让整个应用不可用，"Proto 偏好"不等于"禁止 Git"）。
-- 显式 `Git`：只用 Git，不回退。
-- 回退只发生在**本次尝试**内；页面访问不会触发对 Proto 的再次尝试。重新选源的入口只有三个：
-  网络恢复时 `NetworkRetryCoordinator` 的重跑、用户刷新 / `ClearCache`、下次启动。
-- 网络恢复后的重试走 `NetworkRetryCoordinator`（与 `RepositoryCatalogService.ReconnectSharedAsync` 同一模式：
-  `Register` + `MarkPending`/`ClearPending`），并且**由元数据自己的 job 产出数据**，
-  不能让等待元数据的页面 job 相互阻塞（该文件 284 行的注释记录的正是这个坑）。
-- 数据源设置变更：顺序必须是 **`ClearCache()`（旧源）→ `active = null` → 重建 TCS**，然后下次
-  `InitializeAsync` 重选。这样在途读取要么因旧缓存代际已变而不写入，要么以 `not initialized` 失败一次；
-  不会把新源数据写进旧源的缓存。TCS 必须整体替换：已完成的旧 TCS 会让 `InitializeAsync` 立刻返回
-  `false`（同样的坑在 `LegacyMetadataService` 里已经用"重建 TCS"处理过一次）。
-- `Cache` 在初始化完成前被访问时，仍然走现有 `SH.ServiceMetadataNotInitialized` 语义
-  （`HutaoException.InvalidOperation`），与 `FromCacheOrFileAsync` 的 `Verify.Operation` 一致。
+- **创建**：`GetProvider` 是唯一的 provider 来源。`MetadataProviderFactory.GetOrCreate` 首次解析时创建
+  keyed singleton，此后切换复用同一实例；未选中的源不会构造。
+- **偏好来源**：候选顺序用 `requested ?? sourceOptions.Source.Value`。`SwitchAsync` 只改 `requested`
+  （内存偏好），设置持久化仍由 `MetadataSourceOptions` 的调用方负责；启动、页面自启动、网络重试都走同一口径。
+- **选源/回退**：`EnumerateCandidates`：`Auto`/`Proto` → `[Proto, Git]`；`Git` → `[Git]`。
+  `Auto` 空闲时静默回退；显式 `Proto` 回退时提示一次；显式 `Git` 不回退。
+- **切换**：`SwitchAsync(kind)` 只激活、不写设置（持久化由 `MetadataSourceOptions` 的调用方负责）。
+  `kind` 是偏好：`Auto` → 自动选择；`Proto`/`Git` → 固定偏好。它按同一套候选规则激活目标源——
+  切到 `Proto` 仍可能以 Git 结束并提示，切到 `Git` 则只试 Git，`Auto` 两个都试。
+  切换时**先清旧缓存、再置空 `active` 并换 TCS、再初始化新 provider**；`AttemptAsync` 捕获自己所属的 TCS，
+  完成时若已不是当前 TCS 就丢弃结果，避免旧 attempt 把 `active` 覆盖回旧源。
+  代价：切换窗口内 `active` 为空，页面读取会收到 `SH.ServiceMetadataNotInitialized`；
+  所以设置页应 `await SwitchAsync(...)` 完成后再刷新页面数据，不要让用户在窗口内打开新的元数据页。
+  （若实测窗口不可接受，再改成"新源就绪后才原子替换 `active`"，本设计不预先增加这个复杂度。）
+- **等待**：`InitializeAsync` 等的是管理者自己的 TCS；provider 不再持有 TCS（§5.4），语义只有一层。
+- **网络重试**：与 `RepositoryCatalogService.ReconnectSharedAsync` 同一模式（`Register` + `MarkPending`/
+  `ClearPending`），并由元数据自己的 job 产出数据，避免等待元数据的页面 job 相互阻塞。
+- **清理**：`ClearCache` 广播给**所有已创建**的 provider（含回退尝试中创建但未激活的），
+  所以"切到 Proto→切回 Git"不会命中旧数据（§6.4）。
+- `Cache` / `FromCacheOrSourceAsync` 在初始化完成前被访问时，仍然走现有
+  `SH.ServiceMetadataNotInitialized` 语义（`HutaoException.InvalidOperation`），与
+  `FromCacheOrFileAsync` 的 `Verify.Operation` 一致。
 - `AttemptAsync` 必须自己吞掉非取消异常并记日志（返回 `false`）：它同时被 `InitializeAsync` 的
   自启动路径 `_ = InitializeInternalAsync()` 丢弃，未观察的异常会变成未处理异常。
-- 门面实现 `IDisposable` 释放 `retryRegistration`；`ValidateOnBuild` 只校验注册可解析，不校验这个引用。
+- 管理者实现 `IDisposable` 释放 `retryRegistration`；`ValidateOnBuild` 只校验注册可解析，不校验这个引用。
 
 ## 6. 缓存与 `ClearCache`
 
@@ -541,7 +725,7 @@ public sealed partial class MetadataService : IMetadataService
 | 层 | 内容 | 位置 | 生命周期 |
 |---|---|---|---|
 | L0 | 磁盘文件（JSON 树 / bundle / 清单） | `{Data}/Repository/Snap.Metadata/…`、`{Data}/Metadata/{locale}/…` | 跨进程 |
-| L1 | 解析后的 `LanguageMetadata`（proto 源） | 服务字段，`AsyncLock` 保护 | 进程内，`ClearCache` 释放 |
+| L1 | 解析后的 `LanguageMetadata`（proto 源） | `ProtoMetadataProvider` 字段，`AsyncLock` 保护 | 进程内，`ClearCache` 释放 |
 | L2 | 类别数组 `ImmutableArray<T>` | `MetadataCache` | 进程内，`ClearCache` 清空 |
 | L3 | 派生字典（id→item、name→item、level→curve） | `MetadataCache`（由扩展方法写入） | 同上 |
 
@@ -604,17 +788,16 @@ public sealed class MetadataCache
 |---|---|
 | 签名 | `void ClearCache()`（同步、幂等、线程安全；不抛异常） |
 | 清理范围 | **仅元数据服务的键**：`Metadata.{Git|Proto}.{locale}.…` 前缀下、`MetadataCache` 跟踪的键；不触碰 `AnnouncementService` 等共享 `IMemoryCache` 的其他使用者 |
-| 释放 | proto 源释放 L1 `LanguageMetadata` 引用；git 源无需释放 |
-| 初始化状态 | **不重置** `IsInitialized`。磁盘/网络来源仍然有效，下一次类别读取会重新解析/重读文件；页面的 `InitializeAsync()` 快路径继续成立 |
+| 释放 | provider 释放自己的 L1（仅 Proto 的 `LanguageMetadata`）；Git provider 无需释放 |
+| 初始化状态 | **不重置** `IsInitialized`。磁盘/网络来源仍然有效，下一次类别读取会重新解析/重读文件；页面的 `InitializeAsync()` 快路径继续成立。改变来源要显式 `SwitchAsync`，它不是 `ClearCache` 的副作用 |
 | 失败 | 单键 `Remove` 失败不影响其余键（`IMemoryCache.Remove` 本身不抛业务异常） |
 | Sentry | `metadata.cache.clear` span，仅记录被清理的键数量与来源，不写路径 |
-| 调用时机 | ① 用户"重新加载元数据"命令（新增，见 §12 Phase 3）；② 数据源设置变更后；③ 成功替换 bundle 后（刷新流程）；④ 语言切换（当前靠 `AppInstance.Restart`，重启后天然干净；保留此调用以备将来取消重启） |
+| 调用时机 | ① 用户"重新加载元数据"命令（新增，见 §12 Phase 3）；② `SwitchAsync` 内部先清旧 provider；③ 成功替换 bundle 后（刷新流程）；④ 语言切换（当前靠 `AppInstance.Restart`，重启后天然干净；保留此调用以备将来取消重启） |
 | 不负责 | 删磁盘文件、重新下载、改变来源 |
 
-门面的 `ClearCache()` 广播到**两个** keyed 源：清理非活动源是幂等且廉价的操作，
-能避免"切到 Proto → 切回 Git"时命中旧的 L2/L3 数据。实现上先 `active?.ClearCache()`，
-再 `gitMetadataService.ClearCache(); protoMetadataService.ClearCache();`（两个引用本来就已注入，
-不需要 `IServiceProvider`）。
+管理者的 `ClearCache()` 广播给**所有已创建**的 provider（`created` 字典，来自
+`IMetadataProviderFactory`）：清理非活动源是幂等且廉价的操作，能避免"切到 Proto → 切回 Git"时
+命中旧的 L2/L3 数据。provider 自己只清自己的缓存（Proto 额外释放 L1），管理者不接触具体缓存键。
 
 > 命名说明：`ClearCache` 只清"缓存"，不叫 `Refresh`。需要"重新拉取并清缓存"时，由调用方组合
 > `IMetadataBundleSource.EnsureLocalBundleAsync` + `ClearCache`（Phase 3 的刷新命令），两者职责分开。
@@ -735,7 +918,7 @@ internal abstract class ProtoCategoryAdapter<TProto, TModel> : IProtoCategoryAda
 
 推荐 HTTP 的理由：只需要一个语言包；`RetryHttpHandler` / 代理 / 域名回退 / 限时都已具备；
 不引入第二个 git 仓库与 catalog 维护成本。仓库方案留作 `IMetadataBundleSource` 的第二个实现，
-`ProtoMetadataService` 不需要改。
+`ProtoMetadataProvider` 不需要改。
 
 ### 8.2 `HttpMetadataBundleSource`
 
@@ -778,10 +961,11 @@ public enum MetadataSourceKind
 }
 ```
 
-- `[Service(..., Key = MetadataSourceKind.Git)]` / `Key = MetadataSourceKind.Proto` 只允许这两个值。
+- `[Service(..., typeof(IMetadataProvider), Key = MetadataSourceKind.Git)]` /
+  `Key = MetadataSourceKind.Proto` 只允许这两个值；`Auto` 不是 provider，也不是 key。
 - 设置项：`SettingKeys.MetadataSource = "Snap::Hutao::Metadata::Source"`，
   `MetadataSourceOptions : DbStoreOptions` 暴露 `IObservableProperty<MetadataSourceKind>`；
-  门面订阅 `PropertyChanged` → `ClearCache()` → 下次 `InitializeAsync` 重新选源。
+  管理者订阅 `PropertyChanged` → `SwitchAsync(newKind)`（切换会先清旧 provider 缓存、再按新偏好激活）。
   另加仅开发用的 `SettingKeys.MetadataBundlePath`（§8.2），不参与 UI。
 - Phase 2/3 先作为**隐藏/开发向设置**（无 UI），避免在发布前冻结 UI 文案；Phase 3 再决定是否进设置页。
 
@@ -799,6 +983,9 @@ public enum MetadataSourceKind
 | Git | 未尝试 | ❌ | 未初始化 | 同上 + 网络恢复后自动重试 |
 
 "网络恢复后自动重试"由 `INetworkRetryCoordinator` 提供（§5.5）；不依赖用户重新进入页面。
+
+`SwitchAsync(kind)` 使用同一张矩阵：`SwitchAsync(Proto)` 失败且 Git 可用时仍会回退并提示；
+`SwitchAsync(Git)` 失败则停留在未初始化状态（不会偷偷回到 Proto）；`SwitchAsync(Auto)` 等价于恢复自动选择。
 
 具体失败点与处理：
 
@@ -934,15 +1121,19 @@ repeated WeaponCurve weapon_curves = 35;
 
 | 现状 | 目标 | 备注 |
 |---|---|---|
-| `IMetadataService` | `IMetadataService` | 语义扩展，不改名（避免 27 处改动） |
-| `MetadataService` | `GitMetadataService` | 用户明确要求 |
-| `MetadataOptions` | `GitMetadataOptions` | git 路径 / 仓库名 |
+| `IMetadataService` | `IMetadataService` | 语义改为"provider 管理者"，不改名（避免 27 处改动） |
+| `MetadataService` | `GitMetadataProvider` | 原实现成为 `IMetadataProvider` 的 Git 实现 |
+| `MetadataOptions` | `GitMetadataProviderOptions` | git 路径 / 仓库名 |
+| `IMetadataServiceInitialization` | `IMetadataServiceInitialization` | 不变；仍是管理者（`IMetadataService`）的启动入口 |
 | `MetadataFileStrategy` | `MetadataCategory` | 可选；"文件"对 proto 不成立；新增 `ProtoName`（默认 = `Name`，`BydMaterial` ↔ `BeyondItem`） |
 | `MetadataFileStrategies` | `MetadataCategories` | 30 个类别常量 |
 | `FromCacheOrFileAsync<T>` | `FromCacheOrSourceAsync<T>` | 两个扩展文件（26 + 28 个方法）机械替换 |
 | `IMetadataService.MemoryCache` | `IMetadataService.Cache`（`MetadataCache`） | 唯一使用点在字典扩展 |
 | `LegacyMetadataService` / `LegacyMetadataOptions` | 删除 | ENG-08；其模板/远端 URL 逻辑迁入 `HttpMetadataBundleSource` |
-| —（新增） | `MetadataSourceKind` / `MetadataSourceOptions` / `MetadataService` 门面 / `MetadataServiceBase` / `ProtoMetadataService` / `MetadataBundleCodec` / `ProtoCategoryTable` / `MetadataCache` / `IMetadataBundleSource` | 见 §5.1 |
+| —（新增） | `IMetadataProvider` / `IGitMetadataProvider` / `IProtoMetadataProvider` / `IMetadataProviderFactory` / `MetadataProviderFactory` / `MetadataProviderBase` / `ProtoMetadataProvider` / `MetadataSourceKind` / `MetadataSourceOptions` / `MetadataBundleCodec` / `ProtoCategoryTable` / `MetadataCache` / `IMetadataBundleSource` | 见 §5.1 |
+
+"门面"这个叫法在本文件里不再使用：`MetadataService` 是**管理者**（创建/持有 provider、选源、切换），
+`IMetadataProvider` 才是数据来源。这两层名字与职责一一对应，避免 `I*Service` 同时指"来源"和"服务入口"。
 
 ### 11.3 新增文案（只改 `SH.resx`）
 
@@ -967,21 +1158,23 @@ repeated WeaponCurve weapon_curves = 35;
 
 验收：`dotnet build` / `dotnet test` 通过；不改变任何现有读取路径。
 
-### Phase 1：拆分、改名、缓存抽象（仍只用 Git）
+### Phase 1：分层、改名、缓存抽象（仍只用 Git）
 
-- `MetadataService` → `GitMetadataService`；`MetadataOptions` → `GitMetadataOptions`；
-  `MetadataServiceBase`；`MetadataCache`；门面 `MetadataService`（此时只注入 Git，Proto 字段在 Phase 2 加）。
+- 新增 `IMetadataProvider` / `MetadataProviderBase` / `IMetadataProviderFactory`；
+  `MetadataService` → `GitMetadataProvider`（keyed `Git`），`MetadataOptions` → `GitMetadataProviderOptions`。
+- `MetadataService` 改为管理者：通过工厂创建 provider、`ActiveSource`、`SwitchAsync`、`ClearCache` 广播；
+  此时 `AvailableKinds` 只有 `Git`。
 - `MetadataCategory`/`MetadataCategories`（可延后）、`FromCacheOrSourceAsync`、`Cache` 替换 `MemoryCache`。
 - 删除 `LegacyMetadataService` / `LegacyMetadataOptions`。
-- `InitializeAsync` 改为自启动；`ClearCache` 落地（Git 源）。
+- `InitializeAsync` 改为自启动；`ClearCache` 落地（Git provider）。
 
 验收：行为与现状一致；`ValidateOnBuild` 通过；手动验证 5 个页面；`ClearCache` 后页面重新读取成功。
 
-### Phase 2：Proto 读取器
+### Phase 2：Proto provider
 
-- `ProtoMetadataService`、`ProtoCategoryTable` + 30 个适配器、`MetadataBundleOptions`、
+- `ProtoMetadataProvider`、`ProtoCategoryTable` + 30 个适配器、`MetadataBundleOptions`、
   `HttpMetadataBundleSource`、`MetadataBundleInitialization` 后台活动 + 文案。
-- keyed `Proto` 注册；门面按 `Auto` 优先 Proto。
+- keyed `Proto` 注册；工厂 `AvailableKinds` 变为 `{Git, Proto}`；管理者按 `Auto` 优先 Proto。
 - 映射层开发不依赖 §10.1/§10.3：用 §8.2 的 `Snap::Hutao::Metadata::BundlePath` 本地开关，
   直接读当前 builder 产出的 `GenshinMetadata.CHS.hutaobin` 即可联调；但**上线** Proto 仍需
   §10.1（版本 + 清单）与 §10.3（语言目录布局）。
@@ -992,12 +1185,12 @@ repeated WeaponCurve weapon_curves = 35;
 
 ### Phase 3：切换、回退、刷新与清理
 
-- `MetadataSourceKind` 设置项 + 门面回退 + 回退警告。
+- `MetadataSourceKind` 设置项 + 管理者回退 + 回退警告 + `SwitchAsync` 入口。
 - "重新加载元数据"命令（`SettingStorageViewModel` 或新的元数据卡片）：
   `EnsureLocalBundleAsync` → `ClearCache`。
-- 诊断信息（`BundleInfo` 版本/生成时间）暴露给设置页（可选）。
+- 诊断信息：`AvailableSources`、`ActiveSource`、`BundleInfo`（版本/生成时间）暴露给设置页（可选）。
 
-验收：三种设置组合行为符合 §9.2；刷新命令后页面数据更新；回退提示只出现一次。
+验收：三种设置组合行为符合 §9.2；`SwitchAsync` 后页面数据更新且不残留旧源数据；回退提示只出现一次。
 
 ### Phase 4：验证与文档
 
@@ -1008,7 +1201,9 @@ repeated WeaponCurve weapon_curves = 35;
 
 | 项 | 方法 | 通过标准 |
 |---|---|---|
-| 构建 / DI | `dotnet build src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx -c Debug -p:Platform=x64` | `ValidateOnBuild` 无异常；两个 keyed + 一个非 keyed 注册齐全 |
+| 构建 / DI | `dotnet build src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx -c Debug -p:Platform=x64` | `ValidateOnBuild` 无异常；两个 keyed provider + 工厂 + 管理者注册齐全 |
+| 工厂 / 选源 | 测试：假 `IMetadataProviderFactory` 返回可控 provider | 管理者只创建被选中的 provider；`AvailableKinds` 与注册一致 |
+| 切换 | 测试：初始化后 `SwitchAsync`；初始化中途 `SwitchAsync` | 旧 attempt 不覆盖新 active；旧缓存已清；未初始化访问抛 `SH.ServiceMetadataNotInitialized` |
 | codec | 测试项目：构造小 `MetadataBundle` → 加密（同常量）→ `Read` | 字段 round-trip；截断/超限/坏 IV 三种负例抛明确异常 |
 | 类别覆盖 | 测试：`LanguageMetadata.Descriptor` 的 35 个 message 字段 == 30 个适配器的 `ProtoName` + 5 个 `IgnoredProtoCategories` | 无遗漏、无重复、无未知字段 |
 | 转换辅助 | 测试：枚举越界、`long→uint` 溢出、ISO 时间、`TypeValueCollection` 构造、`double→float` 曲线收窄 | 行为符合 §7.2/§7.3 表 |
@@ -1044,37 +1239,43 @@ WinUI 类型的模型（`Avatar`、`Weapon` 等）的完整映射只能靠平价
 3. "重新加载元数据"放在设置页何处、是否需要取消正在进行的初始化。
 4. `schema_version` 的所有权与发布流程：由谁在 `MetadataBuilder` 里决定升版本（建议：改 proto 的 PR 必须动版本并在 PR 描述写原因）。
 5. 平价校验是否长期保留在 Debug（建议保留，成本低、收益高）。
+6. 是否允许将来新增更多 provider（内置快照、HTTP 元数据……）：工厂 + keyed 注册已经支持，
+   但 `MetadataSourceKind`、设置文案与 `AvailableSources` 展示需要同步扩展，不打算做成插件点。
 
 ## 附录 A：文件清单（目标结构）
 
 ```
 Service/Metadata/
-  IMetadataService.cs                  (改：+Cache +ClearCache +FromCacheOrSourceAsync)
+  IMetadataService.cs                  (改：管理者契约 +SwitchAsync/ActiveSource/AvailableSources)
   IMetadataServiceInitialization.cs    (不变)
-  MetadataServiceBase.cs               (新)
-  MetadataService.cs                   (门面，重写)
+  MetadataService.cs                   (改：管理者实现)
   MetadataCategory.cs                  (原 MetadataFileStrategy)
   MetadataCategories.cs                (原 MetadataFileStrategies)
   MetadataCache.cs                     (新)
   MetadataSourceKind.cs                (新)
   MetadataSourceOptions.cs             (新)
-  Git/
-    IGitMetadataService.cs             (新)
-    GitMetadataService.cs              (原 MetadataService)
-    GitMetadataOptions.cs              (原 MetadataOptions)
-  Proto/
-    IProtoMetadataService.cs           (新)
-    ProtoMetadataService.cs            (新)
-    MetadataBundleOptions.cs           (新)
-    MetadataBundleInfo.cs              (新)
-    MetadataBundleCodec.cs             (新)
-    BoundedReadStream.cs               (新)
-    IMetadataBundleSource.cs           (新)
-    HttpMetadataBundleSource.cs        (新)
-    ProtoCategoryTable.cs              (新)
-    ProtoCategoryAdapter.cs            (新)
-    MetadataConvert.cs                 (新)
-    Mapper/*.cs                        (新：30 个类别适配器)
+  Provider/
+    IMetadataProvider.cs               (新：数据源契约)
+    MetadataProviderBase.cs            (新：单源初始化闸门/缓存)
+    IMetadataProviderFactory.cs        (新)
+    MetadataProviderFactory.cs         (新：唯一 keyed 解析点)
+    Git/
+      IGitMetadataProvider.cs          (新)
+      GitMetadataProvider.cs           (原 MetadataService)
+      GitMetadataProviderOptions.cs    (原 MetadataOptions)
+    Proto/
+      IProtoMetadataProvider.cs        (新)
+      ProtoMetadataProvider.cs         (新)
+      MetadataBundleOptions.cs         (新)
+      MetadataBundleInfo.cs            (新)
+      MetadataBundleCodec.cs           (新)
+      BoundedReadStream.cs             (新)
+      IMetadataBundleSource.cs         (新)
+      HttpMetadataBundleSource.cs      (新)
+      ProtoCategoryTable.cs            (新)
+      ProtoCategoryAdapter.cs          (新)
+      MetadataConvert.cs               (新)
+      Mapper/*.cs                      (新：30 个类别适配器)
   ContextAbstraction/…                 (不变)
   MetadataServiceImmutable*Extension.cs (改：键走 Cache.CreateKey，方法名 FromCacheOrSourceAsync)
 Proto/                                  (新：vendored schema，§10.5)
@@ -1083,7 +1284,8 @@ Proto/                                  (新：vendored schema，§10.5)
 
 ## 附录 B：与现有文档的衔接
 
-- 实现落地时更新 `CLAUDE.md` §5.5：两个 keyed 源 + 门面、`ClearCache` 语义、bundle 格式与来源。
+- 实现落地时更新 `CLAUDE.md` §5.5：`IMetadataProvider` / `IMetadataService` 两层、keyed provider、
+  `SwitchAsync` 与 `ClearCache` 语义、bundle 格式与来源。
 - `CODE_REVIEW.md` §14 追加一行；ENG-08（`LegacyMetadataService`）随 Phase 1 关闭。
 - 若 Phase 2 引入 `Grpc.Tools`，`Directory.Packages.props` 与 `CLAUDE.md` §2 的构建说明需要同步。
 
@@ -1091,5 +1293,6 @@ Proto/                                  (新：vendored schema，§10.5)
 
 | 日期 | 变更 |
 |---|---|
-| 2026-11-22 | 同步 builder `cb1eb30`：曲线类别（`89ddba9`）已补齐，`LanguageMetadata` 变为 35 个字段、应用覆盖 30/30；新增 `GrowCurvePoint` 与三个曲线类别映射、`MetadataCategory.ProtoName`（`BydMaterial` ↔ `BeyondItem`，对应 `ProtoBuilder.LegacyJsonFileNames`）；更新包体积（CHS 3.60 MiB、15 语言 3.60–4.73 MiB、合并 59.7 MiB）与 JSON 树实测（19.2 MiB / 349.9 MiB）；§10.2 标记完成，`schema_version`、清单、语言目录、缺失类别致命仍待做；实施计划与验收改为 30 个适配器。 |
+| 2026-11-22（二） | 按"服务管理 provider"重新分层：新增 `IMetadataProvider` / `IMetadataProviderFactory`，原 `IGit/IProtoMetadataService` 改为 `IGit/IProtoMetadataProvider`，`GitMetadataService` / `ProtoMetadataService` 改为 `GitMetadataProvider` / `ProtoMetadataProvider`，`MetadataServiceBase` 改为 `MetadataProviderBase`；keyed 注册移到 `IMetadataProvider`；`IMetadataService` 增加 `SwitchAsync` / `ActiveSource` / `AvailableSources`，provider 不再持有 TCS；`ClearCache` 广播给所有已创建 provider；同步更新数据流、DI、契约、实施与验收。 |
+| 2026-11-22（一） | 同步 builder `cb1eb30`：曲线类别（`89ddba9`）已补齐，`LanguageMetadata` 变为 35 个字段、应用覆盖 30/30；新增 `GrowCurvePoint` 与三个曲线类别映射、`MetadataCategory.ProtoName`（`BydMaterial` ↔ `BeyondItem`，对应 `ProtoBuilder.LegacyJsonFileNames`）；更新包体积（CHS 3.60 MiB、15 语言 3.60–4.73 MiB、合并 59.7 MiB）与 JSON 树实测（19.2 MiB / 349.9 MiB）；§10.2 标记完成，`schema_version`、清单、语言目录、缺失类别致命仍待做；实施计划与验收改为 30 个适配器。 |
 | 2026-11-21 | 初稿：现状、目标数据流、keyed 双源 + 门面、缓存与 `ClearCache`、传输方案、映射规则、分阶段计划。 |
