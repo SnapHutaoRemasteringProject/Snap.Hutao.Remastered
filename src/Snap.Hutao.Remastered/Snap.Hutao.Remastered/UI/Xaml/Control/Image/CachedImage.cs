@@ -6,12 +6,10 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Caching;
 using Snap.Hutao.Remastered.Core.DataTransfer;
-using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.UI.Content;
 using Snap.Hutao.Remastered.UI.Xaml.Control.Theme;
 using System.IO;
-using System.Runtime.InteropServices;
 using Windows.Graphics.Imaging;
 using Windows.Storage.Streams;
 
@@ -30,354 +28,389 @@ public sealed partial class CachedImage : Microsoft.UI.Xaml.Controls.Control
 {
     private const string PartImage = "Image";
 
-    private readonly AsyncLock sourceLock = new();
-
-    private CancellationTokenSource? sourceCts;
+    private SourceRequest? sourceRequest;
+    private BitmapImage? displayedBitmap;
+    private Uri? displayedUri;
+    private CachedImageResource? displayedResource;
     private bool isUnloaded;
-    private BitmapImage? pendingImageSource;
-    private Uri? pendingImageUri;
+    private bool sourceUpdateQueued;
 
     public CachedImage()
     {
         DefaultStyleKey = typeof(CachedImage);
         Loaded += OnLoaded;
+        Unloaded += OnUnloaded;
+        ActualThemeChanged += OnActualThemeChanged;
     }
 
     private Microsoft.UI.Xaml.Controls.Image? Image { get; set; }
 
-    private bool IsInitialized { get; set; }
-
     [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Image))]
     protected override void OnApplyTemplate()
     {
-        if (Image is { } oldImage)
-        {
-            oldImage.ImageOpened -= OnImageOpened;
-            oldImage.ImageFailed -= OnImageFailed;
-            oldImage.Loaded -= OnImageElementLoaded;
-        }
-
-        pendingImageSource = null;
-        pendingImageUri = null;
-        Image = GetTemplateChild(PartImage) as Microsoft.UI.Xaml.Controls.Image;
-
-        if (Image is { } newImage)
-        {
-            newImage.ImageOpened += OnImageOpened;
-            newImage.ImageFailed += OnImageFailed;
-            newImage.Loaded += OnImageElementLoaded;
-        }
-
-        IsInitialized = true;
-        SetSourceAsync(Source, false).SafeForget();
-
         base.OnApplyTemplate();
-    }
-
-    private static bool IsHttpUri(Uri uri)
-    {
-        return uri is { IsAbsoluteUri: true, Scheme: "http" or "https" };
-    }
-
-    private static Uri ResolveAppxUriForUnpackaged(Uri uri)
-    {
-        if (Core.RuntimeEnvironment.IsPackaged)
+        Microsoft.UI.Xaml.Controls.Image? previous = Image;
+        Image = GetTemplateChild(PartImage) as Microsoft.UI.Xaml.Controls.Image;
+        if (!Equals(previous, Image))
         {
-            return uri;
+            CancelSourceRequest();
+            ApplyDisplayedImage();
         }
 
-        return InstalledLocation.ToAbsoluteUri(uri);
+        QueueSourceUpdate();
+    }
+
+    private static string? GetSourceText(object? source)
+    {
+        return source switch
+        {
+            null => null,
+            Uri uri => uri.OriginalString,
+            _ => source.ToString() ?? string.Empty,
+        };
+    }
+
+    private static Uri? GetSourceUri(string? source)
+    {
+        if (source is null)
+        {
+            return null;
+        }
+
+        Uri uri = new(source, UriKind.RelativeOrAbsolute);
+        return uri.IsAbsoluteUri ? uri : new("ms-appx:///" + uri.OriginalString.TrimStart('/'));
     }
 
     private static void OnSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
-        if (d is not CachedImage control)
+        if (d is CachedImage control)
         {
-            return;
+            control.QueueSourceUpdate();
         }
-
-        if (Equals(e.OldValue, e.NewValue))
-        {
-            return;
-        }
-
-        control.SetSourceAsync(e.NewValue, false).SafeForget();
     }
 
-    private static void OnActualThemeChanged(FrameworkElement sender, object args)
+    private void OnActualThemeChanged(FrameworkElement sender, object args)
     {
-        if (sender is not CachedImage { ShowAsMonoChrome: true, IsLoaded: true } control || XamlApplicationLifetime.Exiting)
+        if (!isUnloaded && !XamlApplicationLifetime.Exiting && ShowAsMonoChrome)
         {
-            return;
+            QueueSourceUpdate();
         }
-
-        control.SetSourceAsync(control.Source, false).SafeForget();
     }
 
-    private static void OnLoaded(object sender, RoutedEventArgs e)
+    private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        if (sender is not CachedImage control)
-        {
-            return;
-        }
-
-        control.ActualThemeChanged -= OnActualThemeChanged;
-        control.Unloaded -= OnUnloaded;
-        control.ActualThemeChanged += OnActualThemeChanged;
-        control.Unloaded += OnUnloaded;
-        control.isUnloaded = false;
-        // Source may have changed while this control was detached. Resolve the
-        // latest value; the disk cache and URI check avoid downloading/decoding it again.
-        control.SetSourceAsync(control.Source, false).SafeForget();
+        isUnloaded = false;
+        QueueSourceUpdate();
     }
 
-    private static void OnUnloaded(object sender, RoutedEventArgs e)
+    private void OnUnloaded(object sender, RoutedEventArgs e)
     {
-        if (sender is not CachedImage control)
-        {
-            return;
-        }
+        isUnloaded = true;
+        CancelSourceRequest();
+    }
 
-        control.ActualThemeChanged -= OnActualThemeChanged;
-        control.Unloaded -= OnUnloaded;
-        control.isUnloaded = true;
-        control.pendingImageSource = null;
-        control.pendingImageUri = null;
-        CancellationTokenSource? previous = control.sourceCts;
-        control.sourceCts = null;
-        previous?.Cancel();
+    private void CancelSourceRequest()
+    {
+        SourceRequest? previous = sourceRequest;
+        sourceRequest = null;
         previous?.Dispose();
     }
 
-    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
-    private static void OnImageOpened(object sender, RoutedEventArgs e)
+    private ElementTheme GetSourceTheme()
     {
-        if (sender is not FrameworkElement element || XamlApplicationLifetime.Exiting)
+        return ShowAsMonoChrome ? ThemeHelper.ApplicationToElement(ThemeHelper.ElementToApplication(ActualTheme)) : ElementTheme.Default;
+    }
+
+    private void QueueSourceUpdate()
+    {
+        if (isUnloaded || XamlApplicationLifetime.Exiting)
         {
             return;
         }
 
-        // Use one opacity owner. Mixing a zero XAML opacity with compositor
-        // animation and direct XAML writes makes visibility depend on event order.
-        element.Opacity = 1D;
-    }
+        if (sourceRequest is { } current && (current.Source != GetSourceText(Source) || current.Theme != GetSourceTheme()))
+        {
+            CancelSourceRequest();
+        }
 
-    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Controls.Image))]
-    private static void OnImageFailed(object sender, ExceptionRoutedEventArgs e)
-    {
-        if (sender is not Microsoft.UI.Xaml.Controls.Image image || XamlApplicationLifetime.Exiting)
+        if (sourceUpdateQueued)
         {
             return;
         }
 
-        System.Diagnostics.Trace.WriteLine($"CachedImage decode failed: {e.ErrorMessage}");
-        image.Opacity = 0D;
+        // Template, Loaded and binding updates can arrive together. Only load their final value.
+        sourceUpdateQueued = DispatcherQueue.TryEnqueue(() =>
+        {
+            sourceUpdateQueued = false;
+            UpdateSource();
+        });
     }
 
-    private void OnImageElementLoaded(object sender, RoutedEventArgs e)
+    private void UpdateSource()
     {
-        StartPendingImageDecode();
-    }
-
-    private void StartPendingImageDecode()
-    {
-        if (isUnloaded || XamlApplicationLifetime.Exiting || Image is not { IsLoaded: true } target
-            || pendingImageUri is not { } uri || pendingImageSource is not { } bitmap
-            || !ReferenceEquals(target.Source, bitmap)) return;
-
-        pendingImageUri = null;
-        pendingImageSource = null;
-        // URI assignment is the decode trigger. Unlike the old timed fade-out,
-        // this event proves the actual Image is connected to its live visual tree.
-        bitmap.UriSource = uri;
-    }
-
-    private void AttachUriSource(Microsoft.UI.Xaml.Controls.Image? target, Uri? uri)
-    {
-        // As in the original implementation, the template may receive a source
-        // before Loaded. A later unload is guarded by the request's lifetime token.
-        if (target is null || XamlApplicationLifetime.Exiting)
+        if (Image is null || isUnloaded || XamlApplicationLifetime.Exiting || !IsLoaded)
         {
             return;
         }
 
-        if (uri is null)
+        string? source = GetSourceText(Source);
+        ElementTheme theme = GetSourceTheme();
+        if (sourceRequest is { } current && current.Source == source && current.Theme == theme)
         {
-            pendingImageSource = null;
-            pendingImageUri = null;
-            target.Visibility = Visibility.Collapsed;
-            target.Source = null;
-        }
-        else
-        {
-            // https://learn.microsoft.com/en-us/windows/uwp/debug-test-perf/optimize-animations-and-media#optimize-image-resources
-            // Connecting the BitmapImage to the tree before setting its UriSource
-            target.Visibility = Visibility.Visible;
-            target.Opacity = 1D;
-            if (target.Source is BitmapImage { PixelWidth: > 0 } current && Equals(current.UriSource, uri))
-            {
-                target.Opacity = 1D;
-                return;
-            }
-
-            if (ReferenceEquals(target.Source, pendingImageSource) && Equals(pendingImageUri, uri))
-            {
-                StartPendingImageDecode();
-                return;
-            }
-
-            BitmapImage source = new();
-
-            // https://learn.microsoft.com/en-us/windows/uwp/debug-test-perf/optimize-animations-and-media#right-sized-decoding
-            // UriSource should be set after the Image is connected to live XAML tree
-            target.Source = source;
-            source.DecodePixelType = DecodePixelType.Logical;
-            pendingImageSource = source;
-            pendingImageUri = uri;
-            StartPendingImageDecode();
+            return;
         }
 
+        CancelSourceRequest();
+        SourceRequest request = new(source, theme);
+        sourceRequest = request;
+        LoadSourceAsync(request).SafeForget();
     }
 
-    private async Task<Uri?> ProvideCachedResourceAsync(Uri imageUri, ElementTheme theme, CancellationToken token, ITaskContext taskContext)
+    private bool IsCurrent(SourceRequest request)
     {
-        // IImageCache is process-wide, not window-scoped. The ContentIsland's
-        // AppData is only assigned during root Loading; cache hits must not turn
-        // into a null image merely because template creation ran before that event.
-        IImageCache imageCache = Ioc.Default.GetRequiredService<IImageCache>();
-
-        try
-        {
-            HutaoException.ThrowIf(string.IsNullOrEmpty(imageUri.Host), SH.ControlImageCachedImageInvalidResourceUri);
-            // Even a disk-cache hit can synchronously contend with another image.
-            // Do not enter a pumping STA wait from a XAML property/layout callback.
-            await taskContext.SwitchToBackgroundAsync();
-            token.ThrowIfCancellationRequested();
-            string file = await imageCache.GetFileFromCacheAsync(imageUri, theme).ConfigureAwait(false);
-            token.ThrowIfCancellationRequested();
-            return file.ToUri();
-        }
-        catch (OperationCanceledException)
-        {
-            // Ignored
-            throw;
-        }
-        catch (InternalImageCacheException)
-        {
-            // Ignored
-            throw;
-        }
-        catch (Exception ex)
-        {
-            // A UI lifetime error is not evidence of a corrupt cached file.
-            // Never delete a healthy image and start another download for it.
-            System.Diagnostics.Trace.WriteLine($"CachedImage resource load failed: {ex}");
-            SentrySdk.CaptureException(ex);
-            return default;
-        }
+        return !request.Token.IsCancellationRequested && !XamlApplicationLifetime.Exiting;
     }
 
-    private async Task SetSourceAsync(object? source, bool placeholder)
+    private async Task LoadSourceAsync(SourceRequest request)
     {
         ITaskContext taskContext = TaskContext.GetForDependencyObject(this);
         try
         {
-            if (!IsInitialized || isUnloaded || XamlApplicationLifetime.Exiting)
-            {
-                return;
-            }
+            await ApplySourceAsync(request, request.Source, taskContext);
+            return;
+        }
+        catch (Exception ex) when (!IsCurrent(request))
+        {
+            // A recycled item or a closing window has discarded the request.
+            System.Diagnostics.Trace.WriteLine($"Discarded CachedImage request: {ex.Message}");
+            return;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Trace.WriteLine($"CachedImage source load failed: {ex}");
+        }
 
-            CancellationTokenSource? previous = sourceCts;
-            sourceCts = new();
-            CancellationToken token = sourceCts.Token;
-            previous?.Cancel();
-            previous?.Dispose();
-            ElementTheme theme = ShowAsMonoChrome ? ThemeHelper.ApplicationToElement(ThemeHelper.ElementToApplication(ActualTheme)) : ElementTheme.Default;
+        await taskContext.SwitchToMainThreadAsync();
+        if (!IsCurrent(request))
+        {
+            return;
+        }
 
+        string? placeholder = GetSourceText(PlaceholderSource);
+        if (placeholder is not null && placeholder != request.Source)
+        {
             try
             {
-                // Resolve a fallback outside the lock; recursively acquiring sourceLock
-                // from inside it deadlocks when a source is invalid.
-                if (source is not null && source is not Uri && !Uri.TryCreate(source.ToString(), UriKind.RelativeOrAbsolute, out _))
-                {
-                    if (!placeholder) await SetSourceAsync(PlaceholderSource, true).ConfigureAwait(false);
-                    return;
-                }
-
-                using (await sourceLock.LockAsync().ConfigureAwait(false))
-                {
-                    token.ThrowIfCancellationRequested();
-
-                    if (source is null)
-                    {
-                        if (XamlApplicationLifetime.Exiting) return;
-                        await taskContext.SwitchToMainThreadAsync();
-                        token.ThrowIfCancellationRequested();
-                        AttachUriSource(Image, default);
-                        return;
-                    }
-
-                    if (source as Uri is not { } uri)
-                    {
-                        if (!Uri.TryCreate(source as string ?? source.ToString(), UriKind.RelativeOrAbsolute, out uri))
-                        {
-                            return;
-                        }
-                    }
-
-                    if (!IsHttpUri(uri) && !uri.IsAbsoluteUri)
-                    {
-                        uri = new("ms-appx:///" + uri.OriginalString.TrimStart('/'));
-                    }
-
-                    Uri? targetUri = uri.Scheme is "ms-appx" ? ResolveAppxUriForUnpackaged(uri) : await ProvideCachedResourceAsync(uri, theme, token, taskContext).ConfigureAwait(false);
-                    // Do not post a completed download back into a closing XAML
-                    // dispatcher. Only live requests are allowed to touch UI DPs.
-                    token.ThrowIfCancellationRequested();
-                    if (XamlApplicationLifetime.Exiting) return;
-                    await taskContext.SwitchToMainThreadAsync();
-                    if (!token.IsCancellationRequested && !isUnloaded && !XamlApplicationLifetime.Exiting)
-                    {
-                        if (targetUri is { IsFile: true } && IsHttpUri(uri))
-                        {
-                            CachedName = Path.GetFileName(targetUri.LocalPath);
-                            SourceName = Path.GetFileName(uri.AbsolutePath);
-                        }
-                        // Only attach our image if we still have a valid request.
-                        AttachUriSource(Image, targetUri);
-                    }
-                }
+                await ApplySourceAsync(request, placeholder, taskContext);
+                return;
             }
-            catch (OperationCanceledException)
+            catch (Exception ex)
             {
-                // Ignored
-            }
-            catch (Exception exception)
-            {
-                if (isUnloaded || XamlApplicationLifetime.Exiting)
-                {
-                    return;
-                }
-
-                if (!placeholder)
-                {
-                    System.Diagnostics.Trace.WriteLine($"CachedImage could not resolve source: {exception}");
-                    await taskContext.SwitchToMainThreadAsync();
-                    if (!isUnloaded && !XamlApplicationLifetime.Exiting)
-                        await SetSourceAsync(PlaceholderSource, true).ConfigureAwait(false);
-                }
+                System.Diagnostics.Trace.WriteLine($"CachedImage placeholder load failed: {ex}");
             }
         }
-        catch (COMException ex)
+
+        await taskContext.SwitchToMainThreadAsync();
+        if (IsCurrent(request))
         {
-            if (ex.HResult != unchecked((int)0x8000FFFF))
+            ClearImage();
+        }
+    }
+
+    private async Task ApplySourceAsync(SourceRequest request, string? source, ITaskContext taskContext, CachedImageResource? failed = null)
+    {
+        Uri? uri = GetSourceUri(source);
+        Uri? targetUri = uri;
+        CachedImageResource? resource = null;
+        if (uri is { Scheme: "http" or "https" })
+        {
+            // Cache lookups may contend with shared downloads. Keep them off the XAML thread.
+            await taskContext.SwitchToBackgroundAsync();
+            request.Token.ThrowIfCancellationRequested();
+            IImageCache imageCache = Ioc.Default.GetRequiredService<IImageCache>();
+            resource = await imageCache.GetImageAsync(uri, request.Theme, failed).ConfigureAwait(false);
+            targetUri = new Uri(resource.Value.File.ToString());
+        }
+        else if (uri is { Scheme: "ms-appx" } && !Core.RuntimeEnvironment.IsPackaged)
+        {
+            targetUri = InstalledLocation.ToAbsoluteUri(uri);
+        }
+
+        request.Token.ThrowIfCancellationRequested();
+        if (XamlApplicationLifetime.Exiting)
+        {
+            return;
+        }
+
+        await taskContext.SwitchToMainThreadAsync();
+        if (!IsCurrent(request) || Image is not { } target)
+        {
+            return;
+        }
+
+        if (targetUri is null)
+        {
+            ClearImage();
+            return;
+        }
+
+        if (Equals(targetUri, displayedUri) && resource == displayedResource)
+        {
+            ApplyDisplayedImage();
+            return;
+        }
+
+        BitmapImage bitmap;
+        try
+        {
+            // The normal URI path lets WinUI decode to the live layout and reuse
+            // its URI-backed images when a page creates new image controls.
+            bool refresh = failed is not null || (Equals(targetUri, displayedUri) && resource != displayedResource);
+            bitmap = await LoadUriBitmapAsync(target, targetUri, request, refresh);
+        }
+        catch (Exception ex) when (targetUri.IsFile && IsCurrent(request)
+            && ex is IOException or ArgumentException or System.Runtime.InteropServices.COMException)
+        {
+            await taskContext.SwitchToMainThreadAsync();
+            request.Token.ThrowIfCancellationRequested();
+            try
             {
-                throw;
+                // The URI loader can reject a readable local file. Check it using
+                // the stream decoder before asking the cache to remove it.
+                bitmap = await LoadStreamBitmapAsync(target, targetUri, request);
+            }
+            catch (Exception streamError) when (failed is null && resource is not null && IsCurrent(request))
+            {
+                System.Diagnostics.Trace.WriteLine($"CachedImage decode failed for '{targetUri.LocalPath}': {streamError.Message}");
+                await ApplySourceAsync(request, source, taskContext, resource);
+                return;
+            }
+        }
+
+        await taskContext.SwitchToMainThreadAsync();
+        if (IsCurrent(request))
+        {
+            if (resource is { } cached && uri is not null)
+            {
+                CachedName = Path.GetFileName(cached.File);
+                SourceName = Path.GetFileName(uri.AbsolutePath);
+            }
+
+            displayedUri = targetUri;
+            displayedResource = resource;
+            displayedBitmap = bitmap;
+        }
+    }
+
+    private async Task<BitmapImage> LoadUriBitmapAsync(Microsoft.UI.Xaml.Controls.Image target, Uri uri, SourceRequest request, bool refresh)
+    {
+        BitmapImage bitmap = new()
+        {
+            DecodePixelType = DecodePixelType.Logical,
+            CreateOptions = refresh ? BitmapCreateOptions.IgnoreImageCache : BitmapCreateOptions.None,
+        };
+        TaskCompletionSource ready = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        void OnOpened(object sender, RoutedEventArgs args) => ready.TrySetResult();
+        void OnFailed(object sender, ExceptionRoutedEventArgs args) => ready.TrySetException(new IOException(args.ErrorMessage));
+
+        bitmap.ImageOpened += OnOpened;
+        bitmap.ImageFailed += OnFailed;
+        try
+        {
+            await AttachBitmapAsync(target, bitmap, request);
+            bitmap.UriSource = uri;
+            await ready.Task.WaitAsync(request.Token);
+            return bitmap;
+        }
+        finally
+        {
+            bitmap.ImageOpened -= OnOpened;
+            bitmap.ImageFailed -= OnFailed;
+        }
+    }
+
+    private async Task<BitmapImage> LoadStreamBitmapAsync(Microsoft.UI.Xaml.Controls.Image target, Uri uri, SourceRequest request)
+    {
+        BitmapImage bitmap = new() { DecodePixelType = DecodePixelType.Logical };
+        await AttachBitmapAsync(target, bitmap, request);
+        using FileStream file = new(uri.LocalPath, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete);
+        using IRandomAccessStream stream = file.AsRandomAccessStream();
+        await bitmap.SetSourceAsync(stream).AsTask(request.Token);
+        return bitmap;
+    }
+
+    private static async Task AttachBitmapAsync(Microsoft.UI.Xaml.Controls.Image target, BitmapImage bitmap, SourceRequest request)
+    {
+        target.Source = bitmap;
+        target.Visibility = Visibility.Visible;
+
+        if (!target.IsLoaded)
+        {
+            TaskCompletionSource loaded = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            void OnImageLoaded(object sender, RoutedEventArgs args) => loaded.TrySetResult();
+            target.Loaded += OnImageLoaded;
+            try
+            {
+                await loaded.Task.WaitAsync(request.Token);
+            }
+            finally
+            {
+                target.Loaded -= OnImageLoaded;
+            }
+        }
+
+        request.Token.ThrowIfCancellationRequested();
+    }
+
+    private void ClearImage()
+    {
+        displayedUri = null;
+        displayedResource = null;
+        displayedBitmap = null;
+        ApplyDisplayedImage();
+    }
+
+    private void ApplyDisplayedImage()
+    {
+        if (Image is { } target)
+        {
+            if (!ReferenceEquals(target.Source, displayedBitmap))
+            {
+                target.Source = displayedBitmap;
+            }
+
+            Visibility visibility = displayedBitmap is null ? Visibility.Collapsed : Visibility.Visible;
+            if (target.Visibility != visibility)
+            {
+                target.Visibility = visibility;
             }
         }
     }
 
-    [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.Media.Imaging.BitmapImage))]
+    private sealed class SourceRequest : IDisposable
+    {
+        private readonly CancellationTokenSource cancellation = new();
+
+        public SourceRequest(string? source, ElementTheme theme)
+        {
+            Source = source;
+            Theme = theme;
+            Token = cancellation.Token;
+        }
+
+        public string? Source { get; }
+
+        public ElementTheme Theme { get; }
+
+        public CancellationToken Token { get; }
+
+        public void Dispose()
+        {
+            cancellation.Cancel();
+            cancellation.Dispose();
+        }
+    }
+
     [Command("CopyToClipboardCommand")]
     private async Task CopyToClipboard()
     {
@@ -388,9 +421,9 @@ public sealed partial class CachedImage : Microsoft.UI.Xaml.Controls.Control
             return;
         }
 
-        if (Image is { Source: BitmapImage bitmap })
+        if (displayedUri is { IsFile: true } uri)
         {
-            using (FileStream netStream = File.OpenRead(bitmap.UriSource.LocalPath))
+            using (FileStream netStream = File.OpenRead(uri.LocalPath))
             {
                 using (IRandomAccessStream fxStream = netStream.AsRandomAccessStream())
                 {

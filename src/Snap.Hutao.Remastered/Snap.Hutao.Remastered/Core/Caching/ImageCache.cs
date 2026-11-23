@@ -11,7 +11,7 @@ using Snap.Hutao.Remastered.Win32;
 using System.Collections.Frozen;
 using System.Diagnostics;
 using System.IO;
-using ThemeFile = (Microsoft.UI.Xaml.ElementTheme, Snap.Hutao.Remastered.Core.IO.ValueFile);
+using System.Runtime.InteropServices;
 
 namespace Snap.Hutao.Remastered.Core.Caching;
 
@@ -24,7 +24,6 @@ public sealed partial class ImageCache : IImageCache
         Uri.UriSchemeHttps,
     ];
 
-    private readonly AsyncKeyedLock<ThemeFile> themeFileLocks = new();
     private readonly AsyncKeyedLock<string> downloadLocks = new();
 
     private readonly IImageCacheDownloadOperation downloadOperation;
@@ -73,53 +72,39 @@ public sealed partial class ImageCache : IImageCache
 
     public async ValueTask<ValueFile> GetFileFromCacheAsync(Uri uri, ElementTheme theme)
     {
+        return (await GetImageAsync(uri, theme).ConfigureAwait(false)).File;
+    }
+
+    public async ValueTask<CachedImageResource> GetImageAsync(Uri uri, ElementTheme theme, CachedImageResource? failedResource = null)
+    {
         Debug.Assert(SupportedSchemes.Contains(uri.Scheme), "Unsupported URI scheme");
 
-        ImageCacheFile imageCacheFile = ImageCacheFile.Create(CacheFolder, uri);
-        string themedFileFullPath = imageCacheFile.GetThemedFile(theme);
-
-        using (await themeFileLocks.LockAsync((theme, imageCacheFile.HashedFileName)).ConfigureAwait(false))
+        ImageCacheFile cache = ImageCacheFile.Create(CacheFolder, uri);
+        using (await downloadLocks.LockAsync(cache.HashedFileName).ConfigureAwait(false))
         {
-            string sourcePath = imageCacheFile.DefaultFilePath;
-            if (IsFileInvalid(themedFileFullPath) || IsFileInvalid(imageCacheFile.DefaultFilePath))
+            CachedImageResource source = await GetSourceFileAsync(uri, cache, failedResource).ConfigureAwait(false);
+            if (theme == ElementTheme.Default)
             {
-                using (await downloadLocks.LockAsync(imageCacheFile.HashedFileName).ConfigureAwait(false))
-                {
-                    // Preserve existing cache overrides (including newer snapshots and other qualities).
-                    // Only resolve this application's static-image endpoint to the installed snapshot.
-                    string? bundledPath = GetBundledFile(uri);
-                    if (IsFileInvalid(imageCacheFile.DefaultFilePath))
-                    {
-                        if (bundledPath is not null)
-                        {
-                            sourcePath = bundledPath;
-                        }
-                        else
-                        {
-                            SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateInfo("Begin to download file", "Core.Caching.ImageCache", [("Uri", uri.ToString()), ("File", imageCacheFile.DefaultFilePath)]));
-
-                            try
-                            {
-                                await downloadOperation.DownloadFileAsync(uri, imageCacheFile.DefaultFilePath).ConfigureAwait(false);
-                            }
-                            catch (Exception)
-                            {
-                                Remove(uri);
-                                throw;
-                            }
-                        }
-                    }
-                }
+                return source;
             }
 
-            // Default-theme images are read in place. Only derived monochrome images need writable storage.
-            if (theme is ElementTheme.Default)
+            string themedPath = cache.GetThemedFile(theme);
+            if (CachedImageResource.TryRead(themedPath) is { } themed && themed != failedResource
+                && themed.LastWriteTimeUtc >= source.LastWriteTimeUtc)
             {
-                return sourcePath;
+                return themed;
             }
 
-            await EnsureThemedMonochromeFileExistsAsync(imageCacheFile, sourcePath, theme).ConfigureAwait(false);
-            return themedFileFullPath;
+            try
+            {
+                return await CreateThemedMonochromeFileAsync(source.File, themedPath, theme).ConfigureAwait(false);
+            }
+            catch (COMException ex) when (IsInvalidImage(ex.HResult))
+            {
+                // The monochrome converter decodes the cached source before WinUI sees it.
+                source = await GetSourceFileAsync(uri, cache, source).ConfigureAwait(false);
+                return await CreateThemedMonochromeFileAsync(source.File, themedPath, theme).ConfigureAwait(false);
+            }
         }
     }
 
@@ -128,14 +113,27 @@ public sealed partial class ImageCache : IImageCache
         return ImageCacheFile.Create(CacheFolder, StaticResourcesEndpoints.StaticRaw(category, fileName)).DefaultFilePath;
     }
 
-    private static bool IsFileInvalid(string file, bool treatNullFileAsInvalid = true)
+    private async ValueTask<CachedImageResource> GetSourceFileAsync(Uri uri, ImageCacheFile cache, CachedImageResource? failedResource)
     {
-        if (!File.Exists(file))
+        if (CachedImageResource.TryRead(cache.DefaultFilePath) is { } cached)
         {
-            return treatNullFileAsInvalid;
+            if (cached != failedResource)
+            {
+                return cached;
+            }
+
+            File.Delete(cache.DefaultFilePath);
         }
 
-        return new FileInfo(file).Length == 0;
+        if (GetBundledFile(uri) is { } bundledPath && CachedImageResource.TryRead(bundledPath) is { } bundled && bundled != failedResource)
+        {
+            return bundled;
+        }
+
+        SentrySdk.AddBreadcrumb(BreadcrumbFactory2.CreateInfo("Begin to download file", "Core.Caching.ImageCache", [("Uri", uri.ToString()), ("File", cache.DefaultFilePath)]));
+        await downloadOperation.DownloadFileAsync(uri, cache.DefaultFilePath).ConfigureAwait(false);
+        return CachedImageResource.TryRead(cache.DefaultFilePath)
+            ?? throw InternalImageCacheException.Throw($"'{uri.OriginalString}': Image file is empty after download.");
     }
 
     private string? GetBundledFile(Uri uri)
@@ -234,26 +232,36 @@ public sealed partial class ImageCache : IImageCache
         return (files, bytes);
     }
 
-    private static async ValueTask EnsureThemedMonochromeFileExistsAsync(ImageCacheFile imageCacheFile, string sourcePath, ElementTheme theme)
+    private static bool IsInvalidImage(int hresult)
     {
-        if (theme is ElementTheme.Default)
-        {
-            return;
-        }
+        return unchecked((uint)hresult) is 0x88982F07 // WINCODEC_ERR_UNKNOWNIMAGEFORMAT
+            or 0x88982F50 // WINCODEC_ERR_COMPONENTNOTFOUND
+            or 0x88982F60 // WINCODEC_ERR_BADIMAGE
+            or 0x88982F61 // WINCODEC_ERR_BADHEADER
+            or 0x88982F63; // WINCODEC_ERR_BADSTREAMDATA
+    }
 
+    private static async ValueTask<CachedImageResource> CreateThemedMonochromeFileAsync(ValueFile sourceFile, string themedPath, ElementTheme theme)
+    {
+        string temporary = themedPath + "." + Guid.NewGuid().ToString("N") + ".tmp";
         try
         {
-            using (FileStream sourceStream = File.OpenRead(sourcePath))
+            using FileStream sourceStream = File.OpenRead(sourceFile);
+            using (FileStream themeStream = File.Create(temporary))
             {
-                using (FileStream themeStream = File.Create(imageCacheFile.GetThemedFile(theme)))
-                {
-                    await MonoChromeImageConverter.ConvertAndCopyToAsync(theme, sourceStream, themeStream).ConfigureAwait(false);
-                }
+                await MonoChromeImageConverter.ConvertAndCopyToAsync(theme, sourceStream, themeStream).ConfigureAwait(false);
             }
+            File.Move(temporary, themedPath, true);
+            return CachedImageResource.TryRead(themedPath)
+                ?? throw InternalImageCacheException.Throw($"'{themedPath}': Converted image is empty.");
         }
         catch (IOException ex)
         {
             throw InternalImageCacheException.Throw("Failed to convert image", ex);
+        }
+        finally
+        {
+            File.Delete(temporary);
         }
     }
 }

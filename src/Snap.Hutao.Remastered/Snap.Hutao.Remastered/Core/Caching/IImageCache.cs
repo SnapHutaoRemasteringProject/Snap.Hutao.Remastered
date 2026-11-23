@@ -15,6 +15,8 @@ public interface IImageCache
 
     ValueTask<ValueFile> GetFileFromCacheAsync(Uri uri, ElementTheme theme);
 
+    ValueTask<CachedImageResource> GetImageAsync(Uri uri, ElementTheme theme, CachedImageResource? failedResource = null);
+
     void Remove(Uri uriForCachedItem);
 
     ValueTask StoreFileAsync(string category, string fileName, Stream source, CancellationToken token = default);

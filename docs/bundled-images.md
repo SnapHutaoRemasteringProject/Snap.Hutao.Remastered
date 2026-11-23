@@ -2,6 +2,8 @@
 
 [中文分步操作指南](bundled-images.zh-CN.md)
 
+[图片加载与坏缓存恢复的实现说明](image-loading.md)
+
 The application can ship a read-only `BundledImages` directory beside the executable.
 This is a loose-file payload, not an archive extracted into the user's cache.
 MSIX identity and the Inno Setup AppId are identical with and without this payload.
@@ -9,8 +11,9 @@ Only the optional installer filename ends in `-Setup-cache.exe`.
 
 ## Runtime behavior
 
-- Retain the existing URL/SHA1 cache layout. Nonempty cached images take precedence,
-  since they may contain a newer image or a previously selected quality.
+- Retain the existing URL/SHA1 cache layout. Nonempty cached images take precedence
+  on the initial lookup. A decode failure can trigger a one-time recovery that skips
+  the failed file version, as described in the implementation guide above.
 - If there is no cached image, resolve the application's static raw URL to
   `BundledImages/<category>/<filename>` and read the installed file directly.
 - If neither exists, download to the existing writable image cache. A 7.1 snapshot
