@@ -85,6 +85,6 @@ public sealed partial class HotKeyOptions : ObservableObject, IDisposable
     private static BOOL HandleShouldPreventSwitch()
     {
         // This callback should always be called by the public wndproc, so we are on the main thread.
-        return IsInGameOnly && !GameLifeCycle.IsGameRunningRequiresMainThread();
+        return ShortcutCapture.IsActive || (IsInGameOnly && !GameLifeCycle.IsGameRunningRequiresMainThread());
     }
 }

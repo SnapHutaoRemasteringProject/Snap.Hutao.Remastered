@@ -1,0 +1,21 @@
+<UserControl
+    x:Class="Snap.Hutao.Remastered.UI.Xaml.Control.HotKeyEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:dev="using:DevWinUI"
+    xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    Unloaded="OnUnloaded">
+    <dev:Shortcut
+        x:Name="MainShortcut"
+        CloseButtonClick="OnMainShortcutCloseButtonClick"
+        CloseButtonText="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"
+        ClosedContentDialog="OnClosed"
+        ContentDialogTitle="{shuxm:ResourceString Name=ViewShortcutEditorTitle}"
+        OpenedContentDialog="OnOpened"
+        PrimaryButtonClick="OnMainShortcutPrimaryButtonClick"
+        PrimaryButtonText="{shuxm:ResourceString Name=ContentDialogConfirmPrimaryButtonText}"
+        SecondaryButtonClick="OnMainShortcutSecondaryButtonClick"
+        SecondaryButtonText="{shuxm:ResourceString Name=ViewShortcutEditorClear}"
+        UseAutoValidation="False"
+        ValidateShortcut="OnValidateShortcut"/>
+</UserControl>

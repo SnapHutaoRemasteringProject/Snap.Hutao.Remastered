@@ -690,56 +690,7 @@
                                     IsEnabled="{shuxm:IsProcessElevated}">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <shuxc:Elevation Margin="0,0,16,0" Visibility="{shuxm:CollapsedWhenProcessElevated}"/>
-                                        <wl:LiquidGlassButton
-                                            MinWidth="32"
-                                            MinHeight="32"
-                                            Padding="0"
-                                            VerticalAlignment="Center"
-                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                            Content="&#xEDA7;"
-                                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                            Style="{ThemeResource SettingButtonStyle}">
-                                            <wl:LiquidGlassButton.Flyout>
-                                                <Flyout
-                                                    essential:FlyoutHelper.AcrylicWorkaround="True"
-                                                    FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding16And10Style}"
-                                                    ShouldConstrainToRootBounds="False">
-                                                    <cwc:UniformGrid
-                                                        ColumnSpacing="16"
-                                                        Columns="2"
-                                                        Orientation="Horizontal"
-                                                        RowSpacing="0">
-                                                        <wl:LiquidGlassCheckBox
-                                                            MinWidth="64"
-                                                            VerticalAlignment="Center"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                                            Content="Win"
-                                                            IsEnabled="False"/>
-                                                        <wl:LiquidGlassCheckBox
-                                                            MinWidth="64"
-                                                            VerticalAlignment="Center"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                                            Content="Ctrl"
-                                                            IsChecked="{x:Bind DataContext.HotKey.HotKeyOptions.MouseClickRepeatForeverKeyCombination.ModifierHasControl, Mode=TwoWay}"/>
-                                                        <wl:LiquidGlassCheckBox
-                                                            MinWidth="64"
-                                                            VerticalAlignment="Center"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                                            Content="Shift"
-                                                            IsChecked="{x:Bind DataContext.HotKey.HotKeyOptions.MouseClickRepeatForeverKeyCombination.ModifierHasShift, Mode=TwoWay}"/>
-                                                        <wl:LiquidGlassCheckBox
-                                                            MinWidth="64"
-                                                            VerticalAlignment="Center"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                                            Content="Alt"
-                                                            IsChecked="{x:Bind DataContext.HotKey.HotKeyOptions.MouseClickRepeatForeverKeyCombination.ModifierHasAlt, Mode=TwoWay}"/>
-                                                    </cwc:UniformGrid>
-                                                </Flyout>
-                                            </wl:LiquidGlassButton.Flyout>
-                                        </wl:LiquidGlassButton>
-                                        <shuxc:SizeRestrictedContentControl VerticalAlignment="Center">
-                                            <shuxc:KeyComboBox SelectedItem="{x:Bind DataContext.HotKey.HotKeyOptions.MouseClickRepeatForeverKeyCombination.KeyNameValue, Mode=TwoWay}"/>
-                                        </shuxc:SizeRestrictedContentControl>
+                                        <shuxc:HotKeyEditor Combination="{x:Bind DataContext.HotKey.HotKeyOptions.MouseClickRepeatForeverKeyCombination, Mode=OneWay}"/>
                                         <wl:LiquidGlassToggleSwitch
                                             MinWidth="120"
                                             VerticalAlignment="Center"
@@ -754,56 +705,7 @@
                                     IsEnabled="{shuxm:IsProcessElevated}">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <shuxc:Elevation Margin="0,0,16,0" Visibility="{shuxm:CollapsedWhenProcessElevated}"/>
-                                        <wl:LiquidGlassButton
-                                            MinWidth="32"
-                                            MinHeight="32"
-                                            Padding="0"
-                                            VerticalAlignment="Center"
-                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                            Content="&#xEDA7;"
-                                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                            Style="{ThemeResource SettingButtonStyle}">
-                                            <wl:LiquidGlassButton.Flyout>
-                                                <Flyout
-                                                    essential:FlyoutHelper.AcrylicWorkaround="True"
-                                                    FlyoutPresenterStyle="{ThemeResource FlyoutPresenterPadding16And10Style}"
-                                                    ShouldConstrainToRootBounds="False">
-                                                    <cwc:UniformGrid
-                                                        ColumnSpacing="16"
-                                                        Columns="2"
-                                                        Orientation="Horizontal"
-                                                        RowSpacing="0">
-                                                        <wl:LiquidGlassCheckBox
-                                                            MinWidth="64"
-                                                            VerticalAlignment="Center"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                                            Content="Win"
-                                                            IsEnabled="False"/>
-                                                        <wl:LiquidGlassCheckBox
-                                                            MinWidth="64"
-                                                            VerticalAlignment="Center"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                                            Content="Ctrl"
-                                                            IsChecked="{x:Bind DataContext.HotKey.HotKeyOptions.KeyPressRepeatForeverKeyCombination.ModifierHasControl, Mode=TwoWay}"/>
-                                                        <wl:LiquidGlassCheckBox
-                                                            MinWidth="64"
-                                                            VerticalAlignment="Center"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                                            Content="Shift"
-                                                            IsChecked="{x:Bind DataContext.HotKey.HotKeyOptions.KeyPressRepeatForeverKeyCombination.ModifierHasShift, Mode=TwoWay}"/>
-                                                        <wl:LiquidGlassCheckBox
-                                                            MinWidth="64"
-                                                            VerticalAlignment="Center"
-                                                            shuxcth:ControlMaterialState.IsManaged="True"
-                                                            Content="Alt"
-                                                            IsChecked="{x:Bind DataContext.HotKey.HotKeyOptions.KeyPressRepeatForeverKeyCombination.ModifierHasAlt, Mode=TwoWay}"/>
-                                                    </cwc:UniformGrid>
-                                                </Flyout>
-                                            </wl:LiquidGlassButton.Flyout>
-                                        </wl:LiquidGlassButton>
-                                        <shuxc:SizeRestrictedContentControl VerticalAlignment="Center">
-                                            <shuxc:KeyComboBox SelectedItem="{x:Bind DataContext.HotKey.HotKeyOptions.KeyPressRepeatForeverKeyCombination.KeyNameValue, Mode=TwoWay}"/>
-                                        </shuxc:SizeRestrictedContentControl>
+                                        <shuxc:HotKeyEditor Combination="{x:Bind DataContext.HotKey.HotKeyOptions.KeyPressRepeatForeverKeyCombination, Mode=OneWay}"/>
                                         <wl:LiquidGlassToggleSwitch
                                             MinWidth="120"
                                             VerticalAlignment="Center"
@@ -827,9 +729,7 @@
                                     IsEnabled="{shuxm:IsProcessElevated}">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <shuxc:Elevation Margin="0,0,16,0" Visibility="{shuxm:CollapsedWhenProcessElevated}"/>
-                                        <shuxc:SizeRestrictedContentControl VerticalAlignment="Center">
-                                            <shuxc:KeyComboBox SelectedItem="{x:Bind DataContext.HotKey.LowLevelKeyOptions.WebView2VideoPlayPauseKey, Mode=TwoWay}"/>
-                                        </shuxc:SizeRestrictedContentControl>
+                                        <shuxc:HotKeyEditor SelectedKey="{x:Bind DataContext.HotKey.LowLevelKeyOptions.WebView2VideoPlayPauseKey, Mode=TwoWay}"/>
                                     </StackPanel>
                                 </cwc:SettingsCard>
                                 <cwc:SettingsCard
@@ -858,9 +758,7 @@
                                     IsEnabled="{shuxm:IsProcessElevated}">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <shuxc:Elevation Margin="0,0,16,0" Visibility="{shuxm:CollapsedWhenProcessElevated}"/>
-                                        <shuxc:SizeRestrictedContentControl VerticalAlignment="Center">
-                                            <shuxc:KeyComboBox SelectedItem="{x:Bind DataContext.HotKey.LowLevelKeyOptions.WebView2VideoFastForwardKey, Mode=TwoWay}"/>
-                                        </shuxc:SizeRestrictedContentControl>
+                                        <shuxc:HotKeyEditor SelectedKey="{x:Bind DataContext.HotKey.LowLevelKeyOptions.WebView2VideoFastForwardKey, Mode=TwoWay}"/>
                                     </StackPanel>
                                 </cwc:SettingsCard>
                                 <cwc:SettingsCard
@@ -870,9 +768,7 @@
                                     IsEnabled="{shuxm:IsProcessElevated}">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <shuxc:Elevation Margin="0,0,16,0" Visibility="{shuxm:CollapsedWhenProcessElevated}"/>
-                                        <shuxc:SizeRestrictedContentControl VerticalAlignment="Center">
-                                            <shuxc:KeyComboBox SelectedItem="{x:Bind DataContext.HotKey.LowLevelKeyOptions.WebView2VideoRewindKey, Mode=TwoWay}"/>
-                                        </shuxc:SizeRestrictedContentControl>
+                                        <shuxc:HotKeyEditor SelectedKey="{x:Bind DataContext.HotKey.LowLevelKeyOptions.WebView2VideoRewindKey, Mode=TwoWay}"/>
                                     </StackPanel>
                                 </cwc:SettingsCard>
                                 <cwc:SettingsCard
@@ -882,9 +778,7 @@
                                     IsEnabled="{shuxm:IsProcessElevated}">
                                     <StackPanel Orientation="Horizontal" Spacing="8">
                                         <shuxc:Elevation Margin="0,0,16,0" Visibility="{shuxm:CollapsedWhenProcessElevated}"/>
-                                        <shuxc:SizeRestrictedContentControl VerticalAlignment="Center">
-                                            <shuxc:KeyComboBox SelectedItem="{x:Bind DataContext.HotKey.LowLevelKeyOptions.WebView2HideKey, Mode=TwoWay}"/>
-                                        </shuxc:SizeRestrictedContentControl>
+                                        <shuxc:HotKeyEditor SelectedKey="{x:Bind DataContext.HotKey.LowLevelKeyOptions.WebView2HideKey, Mode=TwoWay}"/>
                                     </StackPanel>
                                 </cwc:SettingsCard>
                                 <cwc:SettingsCard

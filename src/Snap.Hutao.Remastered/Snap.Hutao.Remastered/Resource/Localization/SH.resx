@@ -6473,4 +6473,19 @@
   <data name="ViewWindowAlphaUpdateDiffFailed" xml:space="preserve">
     <value>无法加载文件差异。可在 GitHub 查看。</value>
   </data>
+  <data name="ViewShortcutEditorTitle" xml:space="preserve">
+    <value>设置快捷键</value>
+  </data>
+  <data name="ViewShortcutEditorClear" xml:space="preserve">
+    <value>清除快捷键</value>
+  </data>
+  <data name="ViewShortcutEditorSingleKey" xml:space="preserve">
+    <value>请按一个键。</value>
+  </data>
+  <data name="ViewShortcutEditorCombination" xml:space="preserve">
+    <value>请按一个键，可搭配 Ctrl、Shift 或 Alt。</value>
+  </data>
+  <data name="ViewShortcutEditorInvalid" xml:space="preserve">
+    <value>当前按键不适用于此快捷键。</value>
+  </data>
 </root>

@@ -461,7 +461,7 @@
                                                         HeaderIcon="{shuxm:FontIcon Glyph=&#xED1A;}">
                                                         <StackPanel Orientation="Horizontal" Spacing="8">
                                                             <shuxc:SizeRestrictedContentControl VerticalAlignment="Center">
-                                                                <shuxc:KeyComboBox SelectedItem="{x:Bind DataContext.LowLevelKeyOptions.OverlayHideKey, Mode=TwoWay}"/>
+                                                                <shuxc:HotKeyEditor SelectedKey="{x:Bind DataContext.LowLevelKeyOptions.OverlayHideKey, Mode=TwoWay}"/>
                                                             </shuxc:SizeRestrictedContentControl>
                                                         </StackPanel>
                                                     </cwc:SettingsCard>
@@ -1340,13 +1340,15 @@
                                         <Image Source="ms-appx:///Resource/TeachingTip/LaunchGameIslandRedirectCombineEntry.gif"/>
                                     </TeachingTip.HeroContent>
                                 </TeachingTip>
-                                <shuxc:KeyComboBox
+                                <StackPanel
                                     Grid.Row="4"
                                     Grid.Column="1"
                                     VerticalAlignment="Center"
-                                    Header="{shuxm:ResourceString Name=ViewPageLaunchGameIslandCombineMenuHotkeyHeader}"
-                                    SelectedItem="{x:Bind DataContext.LaunchOptions.CombineMenuHotkey.Value, Mode=TwoWay, Converter={StaticResource IntToNameValueVirtualKeyConverter}}"
-                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandCombineMenuHotkeyDescription}"/>
+                                    Spacing="4"
+                                    ToolTipService.ToolTip="{shuxm:ResourceString Name=ViewPageLaunchGameIslandCombineMenuHotkeyDescription}">
+                                    <TextBlock Text="{shuxm:ResourceString Name=ViewPageLaunchGameIslandCombineMenuHotkeyHeader}"/>
+                                    <shuxc:HotKeyEditor SelectedKey="{x:Bind DataContext.LaunchOptions.CombineMenuHotkey.Value, Mode=TwoWay, Converter={StaticResource IntToNameValueVirtualKeyConverter}}"/>
+                                </StackPanel>
 
                                 <wl:LiquidGlassToggleSwitch
                                     Grid.Row="4"

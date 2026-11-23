@@ -4,7 +4,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using JetBrains.Annotations;
 using Snap.Hutao.Remastered.Core.Setting;
-using Snap.Hutao.Remastered.Model;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.Win32;
 using Snap.Hutao.Remastered.Win32.Foundation;
@@ -23,6 +22,7 @@ public sealed partial class HotKeyCombination : ObservableObject, IDisposable
     private GCHandle<HotKeyCombination> handle;
 
     private HutaoNativeHotKeyAction? native;
+    private HotKeyParameter parameter;
     private bool isEnabled;
 
     public HotKeyCombination(IServiceProvider serviceProvider, HutaoNativeHotKeyActionKind kind, string settingKey)
@@ -32,76 +32,19 @@ public sealed partial class HotKeyCombination : ObservableObject, IDisposable
         this.settingKey = settingKey;
         isEnabled = LocalSetting.Get($"{settingKey}.IsEnabled", true);
 
-        // Initialize Property backing fields
-        {
-            HotKeyParameter parameter = HotKeyParameter.Default;
-            long value = LocalSetting.Get(settingKey, Unsafe.As<HotKeyParameter, long>(ref parameter));
-            HotKeyParameter actual = Unsafe.As<long, HotKeyParameter>(ref value);
+        HotKeyParameter fallback = HotKeyParameter.Default;
+        long value = LocalSetting.Get(settingKey, Unsafe.As<HotKeyParameter, long>(ref fallback));
+        HotKeyParameter stored = Unsafe.As<long, HotKeyParameter>(ref value);
 
-            // HOT_KEY_MODIFIERS.MOD_WIN is reserved for use by the OS.
-            // This line should keep exists, we allow user to set it long time ago.
-            FieldRefOfModifiers(this) = actual.Modifiers & ~HOT_KEY_MODIFIERS.MOD_WIN;
-            FieldRefOfModifierHasControl(this) = Modifiers.HasFlag(HOT_KEY_MODIFIERS.MOD_CONTROL);
-            FieldRefOfModifierHasShift(this) = Modifiers.HasFlag(HOT_KEY_MODIFIERS.MOD_SHIFT);
-            FieldRefOfModifierHasAlt(this) = Modifiers.HasFlag(HOT_KEY_MODIFIERS.MOD_ALT);
-
-            FieldRefOfKeyNameValue(this) = VirtualKeys.HotKeyValues.SingleOrDefault(nk => nk.Value == actual.Key) ?? VirtualKeys.HotKeyValues.Last();
-            FieldRefOfKey(this) = KeyNameValue!.Value;
-        }
+        // Windows reserves the Win modifier, but older versions allowed saving it.
+        parameter = new(stored.Modifiers & ~HOT_KEY_MODIFIERS.MOD_WIN, VirtualKeys.First(VirtualKeys.Values, stored.Key).Value);
 
         handle = new(this);
     }
 
-    [FieldAccessor]
-    public bool ModifierHasControl { get; set => _ = SetProperty(ref field, value) && UpdateModifiers(); }
+    public HOT_KEY_MODIFIERS Modifiers => parameter.Modifiers;
 
-    [FieldAccessor]
-    public bool ModifierHasShift { get; set => _ = SetProperty(ref field, value) && UpdateModifiers(); }
-
-    [FieldAccessor]
-    public bool ModifierHasAlt { get; set => _ = SetProperty(ref field, value) && UpdateModifiers(); }
-
-    [AllowNull]
-    [FieldAccessor]
-    public NameValue<VIRTUAL_KEY> KeyNameValue
-    {
-        get;
-        set
-        {
-            if (value is not null && SetProperty(ref field, value))
-            {
-                Key = value.Value;
-            }
-        }
-    }
-
-    [FieldAccessor]
-    public HOT_KEY_MODIFIERS Modifiers
-    {
-        get;
-        private set
-        {
-            if (SetProperty(ref field, value))
-            {
-                OnPropertyChanged(nameof(DisplayName));
-                SaveAndUpdate();
-            }
-        }
-    }
-
-    [FieldAccessor]
-    public VIRTUAL_KEY Key
-    {
-        get;
-        private set
-        {
-            if (SetProperty(ref field, value))
-            {
-                OnPropertyChanged(nameof(DisplayName));
-                SaveAndUpdate();
-            }
-        }
-    }
+    public VIRTUAL_KEY Key => parameter.Key;
 
     /// <summary>
     /// Can perform the action.
@@ -134,7 +77,7 @@ public sealed partial class HotKeyCombination : ObservableObject, IDisposable
         native = HutaoNative.Instance.MakeHotKeyAction(kind, HutaoNativeHotKeyActionCallback.Create(&OnAction), handle);
         native.IsEnabled = isEnabled;
         OnPropertyChanged(nameof(IsEnabled));
-        SaveAndUpdate();
+        TryUpdateNative(parameter);
     }
 
     public void Dispose()
@@ -143,26 +86,58 @@ public sealed partial class HotKeyCombination : ObservableObject, IDisposable
         native = default;
     }
 
-    public override string ToString()
+    public bool TrySetShortcut(HotKeyParameter next)
+    {
+        if (parameter.Modifiers == next.Modifiers && parameter.Key == next.Key)
+        {
+            return true;
+        }
+
+        if (!TryUpdateNative(next))
+        {
+            TryUpdateNative(parameter);
+            return false;
+        }
+
+        try
+        {
+            LocalSetting.Set(settingKey, Unsafe.As<HotKeyParameter, long>(ref next));
+        }
+        catch
+        {
+            TryUpdateNative(parameter);
+            throw;
+        }
+
+        parameter = next;
+        OnPropertyChanged(nameof(Modifiers));
+        OnPropertyChanged(nameof(Key));
+        OnPropertyChanged(nameof(DisplayName));
+        return true;
+    }
+
+    public override string ToString() => FormatShortcut(parameter);
+
+    private static string FormatShortcut(HotKeyParameter value)
     {
         StringBuilder stringBuilder = new();
 
-        if (Modifiers.HasFlag(HOT_KEY_MODIFIERS.MOD_CONTROL))
+        if (value.Modifiers.HasFlag(HOT_KEY_MODIFIERS.MOD_CONTROL))
         {
             stringBuilder.Append("Ctrl").Append(" + ");
         }
 
-        if (Modifiers.HasFlag(HOT_KEY_MODIFIERS.MOD_SHIFT))
+        if (value.Modifiers.HasFlag(HOT_KEY_MODIFIERS.MOD_SHIFT))
         {
             stringBuilder.Append("Shift").Append(" + ");
         }
 
-        if (Modifiers.HasFlag(HOT_KEY_MODIFIERS.MOD_ALT))
+        if (value.Modifiers.HasFlag(HOT_KEY_MODIFIERS.MOD_ALT))
         {
             stringBuilder.Append("Alt").Append(" + ");
         }
 
-        stringBuilder.Append(KeyNameValue.Name);
+        stringBuilder.Append(VirtualKeys.First(VirtualKeys.Values, value.Key).Name);
 
         return stringBuilder.ToString();
     }
@@ -178,48 +153,26 @@ public sealed partial class HotKeyCombination : ObservableObject, IDisposable
         combination.IsOn = isOn;
     }
 
-    private bool UpdateModifiers()
+    private bool TryUpdateNative(HotKeyParameter value)
     {
-        HOT_KEY_MODIFIERS modifiers = default;
-
-        if (ModifierHasControl)
-        {
-            modifiers |= HOT_KEY_MODIFIERS.MOD_CONTROL;
-        }
-
-        if (ModifierHasShift)
-        {
-            modifiers |= HOT_KEY_MODIFIERS.MOD_SHIFT;
-        }
-
-        if (ModifierHasAlt)
-        {
-            modifiers |= HOT_KEY_MODIFIERS.MOD_ALT;
-        }
-
-        Modifiers = modifiers;
-        return true;
-    }
-
-    private unsafe void SaveAndUpdate()
-    {
-        HotKeyParameter current = new(Modifiers, Key);
-        LocalSetting.Set(settingKey, *(long*)&current);
-
         try
         {
-            native?.Update(Modifiers, (uint)Key);
+            uint key = value.Key == VIRTUAL_KEY.VK__none_ ? 0 : (uint)value.Key;
+            native?.Update(value.Modifiers, key);
+            return true;
         }
         catch (Exception ex)
         {
             if (HutaoNative.IsWin32(ex.HResult, WIN32_ERROR.ERROR_HOTKEY_ALREADY_REGISTERED))
             {
-                messenger.Send(InfoBarMessage.Warning(SH.FormatCoreWindowHotkeyCombinationRegisterFailed(kind, DisplayName)));
+                messenger.Send(InfoBarMessage.Warning(SH.FormatCoreWindowHotkeyCombinationRegisterFailed(kind, FormatShortcut(value))));
             }
             else
             {
                 messenger.Send(InfoBarMessage.Error(ex));
             }
+
+            return false;
         }
     }
 }

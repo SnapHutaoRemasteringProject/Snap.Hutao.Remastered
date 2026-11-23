@@ -41,6 +41,11 @@ public static class InputLowLevelKeyboardSource
     [UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
     private static unsafe BOOL ProcessLowLevelKeyboard(uint param, KBDLLHOOKSTRUCT* data)
     {
+        if (ShortcutCapture.IsActive)
+        {
+            return false;
+        }
+
         LowLevelKeyEventArgs args = new(*data);
         switch (param)
         {
