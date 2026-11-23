@@ -297,6 +297,7 @@
       <!-- Only pins/provides protoc for scripts/Generate-MetadataProto.ps1; the app compiles the
            committed Proto/Generated sources and must not run protoc during a normal build. -->
       <ExcludeAssets>all</ExcludeAssets>
+      <IncludeAssets>none</IncludeAssets>
     </PackageReference>
     <PackageReference Include="JetBrains.Annotations" />
     <PackageReference Include="Microsoft.Agents.AI.Anthropic" />
