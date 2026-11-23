@@ -69,7 +69,7 @@ public sealed partial class HttpMetadataBundleSource : IMetadataBundleSource
         timeout.CancelAfter(MetadataBundleConstants.DownloadTimeout);
 
         Uri bundleUri = BuildUri(hutaoEndpointsFactory.Create().MetadataBundle(cultureOptions.LocaleName));
-        string? downloaded = await TryDownloadAsync(bundleUri, bundlePath, timeout.Token).ConfigureAwait(false);
+        string? downloaded = await TryDownloadAsync(bundleUri, bundlePath, timeout.Token, token).ConfigureAwait(false);
         if (downloaded is not null)
         {
             span.SetData("metadata.bundle.downloaded", true);
@@ -86,7 +86,7 @@ public sealed partial class HttpMetadataBundleSource : IMetadataBundleSource
             : throw new ArgumentException($"Metadata URL is not absolute: '{url}'", nameof(url));
     }
 
-    private async ValueTask<string?> TryDownloadAsync(Uri uri, string destination, CancellationToken token)
+    private async ValueTask<string?> TryDownloadAsync(Uri uri, string destination, CancellationToken token, CancellationToken callerToken)
     {
         string temp = $"{destination}{MetadataBundleConstants.TempFileSuffix}";
         BackgroundActivityTask activity = backgroundActivityOptions.MetadataInitialization;
@@ -182,7 +182,7 @@ public sealed partial class HttpMetadataBundleSource : IMetadataBundleSource
             }
 
             activity.Update(taskContext, SH.ServiceMetadataBundleValidating, false, false, true, true);
-            if (!await ValidateDownloadedBundleAsync(temp, copied, token).ConfigureAwait(false))
+            if (!ValidateDownloadedBundle(temp, copied, token))
             {
                 TryDelete(temp);
                 activity.Update(taskContext, SH.ServiceMetadataBundleInvalid, false, false, false, false);
@@ -194,7 +194,7 @@ public sealed partial class HttpMetadataBundleSource : IMetadataBundleSource
             activity.Update(taskContext, SH.ServiceMetadataDecoding, false, false, true, true);
             return destination;
         }
-        catch (OperationCanceledException) when (!token.IsCancellationRequested)
+        catch (OperationCanceledException) when (!callerToken.IsCancellationRequested && !XamlApplicationLifetime.ShutdownToken.IsCancellationRequested)
         {
             logger.LogWarning("Metadata bundle download timed out");
             TryDelete(temp);
@@ -215,7 +215,7 @@ public sealed partial class HttpMetadataBundleSource : IMetadataBundleSource
         }
     }
 
-    private async ValueTask<bool> ValidateDownloadedBundleAsync(string path, long size, CancellationToken token)
+    private bool ValidateDownloadedBundle(string path, long size, CancellationToken token)
     {
         if (size <= 0)
         {

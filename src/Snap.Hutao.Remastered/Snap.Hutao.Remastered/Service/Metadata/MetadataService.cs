@@ -67,51 +67,50 @@ public sealed partial class MetadataService : IMetadataService, IDisposable
 
     public async ValueTask<bool> InitializeAsync()
     {
-        if (IsInitialized)
+        while (true)
         {
-            return true;
+            Task completion;
+            lock (gate)
+            {
+                if (IsInitialized)
+                {
+                    return true;
+                }
+
+                completion = initialized.Task;
+                _ = GetOrStartAttempt(CancellationToken.None);
+            }
+
+            // A switch wakes waiters on the previous completion. Follow the new source.
+            await completion.WaitAsync(XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false);
         }
-
-        Task completion;
-        lock (gate)
-        {
-            completion = initialized.Task;
-        }
-
-        // Self-starting: a page must never wait for initialization that nobody triggered.
-        _ = InitializeInternalAsync();
-
-        await completion.WaitAsync(XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false);
-        return IsInitialized;
     }
 
     public ValueTask<bool> InitializeInternalAsync(CancellationToken token = default)
     {
         lock (gate)
         {
-            MetadataSourceKind preference = requested ?? sourceOptions.Source.Value;
-            return new(attempt ??= AttemptAsync(initialized, preference, token));
+            return new(GetOrStartAttempt(token));
         }
     }
 
     public async ValueTask<bool> SwitchAsync(MetadataSourceKind kind, CancellationToken token = default)
     {
-        // Clear the previous source first so in-flight loads cannot repopulate the old cache.
-        if (active is { } previous)
-        {
-            previous.ClearCache();
-        }
-
-        TaskCompletionSource next = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        Task<bool> switching;
         lock (gate)
         {
+            // Invalidate the old provider before publishing the new generation.
+            active?.ClearCache();
+            TaskCompletionSource previous = initialized;
             requested = kind;
             active = null;
             attempt = null;
-            initialized = next;
+            initialized = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            previous.TrySetResult();
+            switching = GetOrStartAttempt(token);
         }
 
-        return await InitializeInternalAsync(token).ConfigureAwait(false);
+        return await switching.ConfigureAwait(false);
     }
 
     public ValueTask<ImmutableArray<T>> FromCacheOrSourceAsync<T>(MetadataCategory category, CancellationToken token = default)
@@ -167,16 +166,34 @@ public sealed partial class MetadataService : IMetadataService, IDisposable
         return provider;
     }
 
+    // Caller must hold gate so the attempt and its completion source stay paired.
+    private Task<bool> GetOrStartAttempt(CancellationToken token)
+    {
+        MetadataSourceKind preference = requested ?? sourceOptions.Source.Value;
+        return attempt ??= AttemptAsync(initialized, preference, token);
+    }
+
     private async Task<bool> AttemptAsync(TaskCompletionSource completion, MetadataSourceKind preference, CancellationToken token)
     {
-        BackgroundActivityTask activity = backgroundActivityOptions.MetadataInitialization;
-        activity.Update(taskContext, SH.ServiceBackgroundActivityMetadataInitializationDescription, false, false, true, true);
+        // Publish the task before it can finish or dispatch progress to the UI.
+        await Task.CompletedTask.ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
 
+        BackgroundActivityTask activity = backgroundActivityOptions.MetadataInitialization;
         bool fellBack = false;
+        bool retry = false;
         try
         {
+            activity.Update(taskContext, SH.ServiceBackgroundActivityMetadataInitializationDescription, false, false, true, true);
             foreach (MetadataSourceKind kind in EnumerateCandidates(preference))
             {
+                lock (gate)
+                {
+                    if (!ReferenceEquals(initialized, completion))
+                    {
+                        return false;
+                    }
+                }
+
                 IMetadataProvider provider = GetProvider(kind);
                 bool providerInitialized = await provider.InitializeAsync(token).ConfigureAwait(false);
                 if (providerInitialized)
@@ -192,10 +209,10 @@ public sealed partial class MetadataService : IMetadataService, IDisposable
 
                         active = provider;
                         completion.TrySetResult();
+                        networkRetryCoordinator.ClearPending(RetryKey);
                     }
 
                     activity.Update(taskContext, SH.ServiceBackgroundActivityMetadataInitializationCompleted, true, false, false, false);
-                    networkRetryCoordinator.ClearPending(RetryKey);
 
                     // Only an explicit Proto preference is worth telling the user about; Auto falls
                     // back silently.
@@ -210,14 +227,8 @@ public sealed partial class MetadataService : IMetadataService, IDisposable
                 fellBack = true;
             }
 
-            // Keep the completion source pending: a later call or the network retry may succeed.
-            lock (gate)
-            {
-                attempt = null;
-            }
-
-            activity.Update(taskContext, SH.ServiceMetadataInitializationFailed, false, true, false, false);
-            networkRetryCoordinator.MarkPending(RetryKey, SH.ServiceMetadataInitializationFailed);
+            retry = true;
+            ReportInitializationFailure(completion, activity);
             return false;
         }
         catch (OperationCanceledException)
@@ -228,30 +239,43 @@ public sealed partial class MetadataService : IMetadataService, IDisposable
         {
             // The self-start path discards this task, so every non-cancellation failure must be
             // observed here.
-            activity.Update(taskContext, SH.ServiceMetadataInitializationFailed, false, true, false, false);
             logger.LogWarning(exception, "Metadata initialization attempt failed");
+            retry = true;
+            ReportInitializationFailure(completion, activity);
             return false;
         }
         finally
         {
             lock (gate)
             {
-                if (!ReferenceEquals(initialized, completion) || !IsInitialized)
+                if (ReferenceEquals(initialized, completion) && !IsInitialized)
                 {
                     attempt = null;
+                    if (retry)
+                    {
+                        networkRetryCoordinator.MarkPending(RetryKey, SH.ServiceMetadataInitializationFailed);
+                    }
                 }
             }
         }
     }
 
-    private async ValueTask<bool> RetryAfterNetworkRecoveryAsync(CancellationToken token)
+    private void ReportInitializationFailure(TaskCompletionSource completion, BackgroundActivityTask activity)
     {
         lock (gate)
         {
-            attempt = null;
+            if (!ReferenceEquals(initialized, completion))
+            {
+                return;
+            }
         }
 
-        return await InitializeInternalAsync(token).ConfigureAwait(false);
+        activity.Update(taskContext, SH.ServiceMetadataInitializationFailed, false, true, false, false);
+    }
+
+    private ValueTask<bool> RetryAfterNetworkRecoveryAsync(CancellationToken token)
+    {
+        return InitializeInternalAsync(token);
     }
 
     private void OnSourceOptionChanged(object? sender, PropertyChangedEventArgs args)

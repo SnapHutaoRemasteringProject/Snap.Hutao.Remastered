@@ -222,7 +222,7 @@ proto 的 `LanguageMetadata` 共 35 个类别字段，其中 30 个被应用消�
 切换来源（设置变更 / 手动重试）
   └─ IMetadataService.SwitchAsync(kind)
         ├─ 旧 active.ClearCache()（先清旧缓存，让在途结果因代际失效）
-        ├─ active = null；attempt = null；重建 TCS
+        ├─ active = null；attempt = null；重建 TCS 并唤醒旧 TCS 上的页面
         └─ 按 kind 重跑候选序列（Proto 仍允许回退 Git，Git 不回退）
 
 清缓存 / 手动刷新
@@ -232,10 +232,11 @@ proto 的 `LanguageMetadata` 共 35 个类别字段，其中 30 个被应用消�
 
 与现状的关键差异：
 
-1. **初始化不再依赖调用顺序**：`InitializeAsync()` 若发现初始化未启动会自己启动；`AppActivation` 的
-   `SafeForget` 仍是后台预热入口，页面不再可能因为"没人调用 `InitializeInternalAsync`"而永久等待。
-   启动失败改为登记到 `INetworkRetryCoordinator`（与 `RepositoryCatalogService` 同一套模式），
-   网络恢复后自动重跑，而不是像现在这样只能等下一次启动。
+1. **初始化与已有的启动重试共用同一次尝试**。`InitializeAsync()` 可以自行启动元数据初始化。
+   `MainViewModel.RetryStartupAsync` 已经通过 `INetworkRetryCoordinator` 登记启动重试，
+   `RetryStartupCoreAsync` 会调用 `InitializeInternalAsync`，失败时保留启动任务为 pending。
+   元数据管理者的重试任务也在页面独立启动初始化失败后接管。两个任务都加入同一来源代次的
+   `attempt`。启动任务继续负责元数据就绪后的账号恢复和窗口就绪状态。
 2. **解析与映射分离**：bundle 只在初始化时解析一次；类别映射推迟到第一次访问该类别，
    单页只付出它真正需要的类别成本。
 3. **职责分层**：`IMetadataProvider` 只管"把某一来源的数据准备好并读出来"；
@@ -556,41 +557,52 @@ public sealed partial class MetadataService : IMetadataService, IDisposable
 
     public async ValueTask<bool> InitializeAsync()
     {
-        if (IsInitialized) return true;                    // 快路径
+        while (true)
+        {
+            Task completion;
+            lock (gate)
+            {
+                if (IsInitialized) return true;
+                completion = initialized.Task;
+                _ = GetOrStartAttempt(CancellationToken.None);
+            }
 
-        Task completion;
-        lock (gate) { completion = initialized.Task; }
-        _ = InitializeInternalAsync();                     // 自启动；并发调用由 attempt 合并
-
-        await completion.WaitAsync(XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false);
-        return IsInitialized;
+            // 旧代次被替换时也会完成信号。醒来后重新取当前代次。
+            await completion.WaitAsync(XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false);
+        }
     }
 
     public ValueTask<bool> InitializeInternalAsync(CancellationToken token = default)
     {
         lock (gate)
         {
-            MetadataSourceKind preference = requested ?? sourceOptions.Source.Value;
-            return new(attempt ??= AttemptAsync(initialized, preference, token));
+            return new(GetOrStartAttempt(token));
         }
+    }
+
+    // 调用者持有 gate。
+    private Task<bool> GetOrStartAttempt(CancellationToken token)
+    {
+        MetadataSourceKind preference = requested ?? sourceOptions.Source.Value;
+        return attempt ??= AttemptAsync(initialized, preference, token);
     }
 
     public async ValueTask<bool> SwitchAsync(MetadataSourceKind kind, CancellationToken token = default)
     {
-        // kind == Auto 表示恢复自动选择；Git/Proto 表示固定偏好
-        // 先清旧缓存：在途读取的结果会因代际失效而不写入旧 cache
-        if (active is { } previous) previous.ClearCache();
-
-        TaskCompletionSource next = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        Task<bool> switching;
         lock (gate)
         {
+            active?.ClearCache();
+            TaskCompletionSource previous = initialized;
             requested = kind;
             active = null;
             attempt = null;
-            initialized = next;
+            initialized = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            previous.TrySetResult();
+            switching = GetOrStartAttempt(token);
         }
 
-        return await InitializeInternalAsync(token).ConfigureAwait(false);
+        return await switching.ConfigureAwait(false);
     }
 
     private IMetadataProvider GetProvider(MetadataSourceKind kind)
@@ -602,11 +614,19 @@ public sealed partial class MetadataService : IMetadataService, IDisposable
 
     private async Task<bool> AttemptAsync(TaskCompletionSource completion, MetadataSourceKind preference, CancellationToken token)
     {
+        // 让 GetOrStartAttempt 先把 Task 存入 attempt。
+        await Task.CompletedTask.ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
         bool fellBack = false;
+        bool retry = false;
         try
         {
             foreach (MetadataSourceKind kind in EnumerateCandidates(preference))
             {
+                lock (gate)
+                {
+                    if (!ReferenceEquals(initialized, completion)) return false;
+                }
+
                 IMetadataProvider provider = GetProvider(kind);
                 if (await provider.InitializeAsync(token).ConfigureAwait(false))
                 {
@@ -617,9 +637,8 @@ public sealed partial class MetadataService : IMetadataService, IDisposable
                         if (!ReferenceEquals(initialized, completion)) return false;
                         active = provider;
                         completion.TrySetResult();
+                        networkRetryCoordinator.ClearPending(RetryKey);
                     }
-
-                    networkRetryCoordinator.ClearPending(RetryKey);
 
                     // 只有"想要 Proto 却用了 Git"才提示；Auto 的静默回退不打扰用户
                     if (fellBack && preference is MetadataSourceKind.Proto)
@@ -633,23 +652,25 @@ public sealed partial class MetadataService : IMetadataService, IDisposable
                 fellBack = true;
             }
 
-            // 失败：允许下一次调用/网络恢复重开，TCS 保持 pending（沿用现语义）
-            lock (gate) { attempt = null; }
-            networkRetryCoordinator.MarkPending(RetryKey, SH.ServiceMetadataInitializationFailed);
+            retry = true;
             return false;
         }
         catch (OperationCanceledException) { throw; }
         catch (Exception exception)
         {
-            // 自启动路径 `_ = InitializeInternalAsync()` 会丢弃这个 Task，异常必须在这里收敛
             logger.LogWarning(exception, "Metadata initialization attempt failed");
+            retry = true;
             return false;
         }
         finally
         {
             lock (gate)
             {
-                if (!ReferenceEquals(initialized, completion) || !IsInitialized) attempt = null;
+                if (ReferenceEquals(initialized, completion) && !IsInitialized)
+                {
+                    attempt = null;
+                    if (retry) networkRetryCoordinator.MarkPending(RetryKey, SH.ServiceMetadataInitializationFailed);
+                }
             }
         }
     }
@@ -671,10 +692,9 @@ public sealed partial class MetadataService : IMetadataService, IDisposable
         yield return MetadataSourceKind.Git;
     }
 
-    private async ValueTask<bool> RetryAfterNetworkRecoveryAsync(CancellationToken token)
+    private ValueTask<bool> RetryAfterNetworkRecoveryAsync(CancellationToken token)
     {
-        lock (gate) { attempt = null; }
-        return await InitializeInternalAsync(token).ConfigureAwait(false);
+        return InitializeInternalAsync(token);
     }
 
     partial void PostConstruct(IServiceProvider serviceProvider)
@@ -711,21 +731,21 @@ public sealed partial class MetadataService : IMetadataService, IDisposable
 - **切换**：`SwitchAsync(kind)` 只激活、不写设置（持久化由 `MetadataSourceOptions` 的调用方负责）。
   `kind` 是偏好：`Auto` → 自动选择；`Proto`/`Git` → 固定偏好。它按同一套候选规则激活目标源——
   切到 `Proto` 仍可能以 Git 结束并提示，切到 `Git` 则只试 Git，`Auto` 两个都试。
-  切换时**先清旧缓存、再置空 `active` 并换 TCS、再初始化新 provider**；`AttemptAsync` 捕获自己所属的 TCS，
-  完成时若已不是当前 TCS 就丢弃结果，避免旧 attempt 把 `active` 覆盖回旧源。
+  切换在同一把锁内清理旧缓存、置空 `active`、换 TCS、唤醒旧 TCS 的等待者并启动新尝试。
+  `AttemptAsync` 捕获自己所属的 TCS。只有拥有当前 TCS 的尝试才能提交 `active`、登记重试或清除 `attempt`。
   代价：切换窗口内 `active` 为空，页面读取会收到 `SH.ServiceMetadataNotInitialized`；
   所以设置页应 `await SwitchAsync(...)` 完成后再刷新页面数据，不要让用户在窗口内打开新的元数据页。
   （若实测窗口不可接受，再改成"新源就绪后才原子替换 `active`"，本设计不预先增加这个复杂度。）
-- **等待**：`InitializeAsync` 等的是管理者自己的 TCS；provider 不再持有 TCS（§5.4），语义只有一层。
+- **等待**：`InitializeAsync` 等管理者当前的 TCS，醒来后再次检查当前 provider。来源切换会唤醒上一代的等待者。
 - **网络重试**：与 `RepositoryCatalogService.ReconnectSharedAsync` 同一模式（`Register` + `MarkPending`/
-  `ClearPending`），并由元数据自己的 job 产出数据，避免等待元数据的页面 job 相互阻塞。
+  `ClearPending`）。元数据重试可独立产出就绪数据。它与已有的 `MainViewModel` 启动重试通过同一个
+  `InitializeInternalAsync` 合并尝试。
 - **清理**：`ClearCache` 广播给**所有已创建**的 provider（含回退尝试中创建但未激活的），
   所以"切到 Proto→切回 Git"不会命中旧数据（§6.4）。
 - `Cache` / `FromCacheOrSourceAsync` 在初始化完成前被访问时，仍然走现有
   `SH.ServiceMetadataNotInitialized` 语义（`HutaoException.InvalidOperation`），与
   `FromCacheOrFileAsync` 的 `Verify.Operation` 一致。
-- `AttemptAsync` 必须自己吞掉非取消异常并记日志（返回 `false`）：它同时被 `InitializeAsync` 的
-  自启动路径 `_ = InitializeInternalAsync()` 丢弃，未观察的异常会变成未处理异常。
+- `AttemptAsync` 记录非取消异常并返回 `false`。页面自启动只等待就绪信号，失败时保留重试机会。
 - 管理者实现 `IDisposable` 释放 `retryRegistration`；`ValidateOnBuild` 只校验注册可解析，不校验这个引用。
 
 ## 6. 缓存与 `ClearCache`
