@@ -220,7 +220,7 @@ try {
     if ($ExportCertificatePath) {
         [IO.File]::WriteAllBytes([IO.Path]::GetFullPath($ExportCertificatePath), $certBytes)
     }
-    ('<!doctype html><html lang="en"><meta charset="utf-8"><title>Snap Hutao Remastered ' + $Channel + $descriptorSuffix + '</title><a href="./' + $descriptorName + '">Download ' + $Channel + $descriptorSuffix + '</a></html>') |
+    ('<!doctype html><html lang="en"><meta charset="utf-8"><title>Snap Hutao Remastered ' + $Channel + '</title><a href="./' + $descriptorName + '">Download ' + $Channel + '</a></html>') |
         Set-Content -LiteralPath (Join-Path $output 'index.html') -Encoding utf8
 
     # Validate that the signed package contains the same descriptor and publisher.

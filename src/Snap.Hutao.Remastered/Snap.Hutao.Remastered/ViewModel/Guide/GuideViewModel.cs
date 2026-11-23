@@ -505,10 +505,11 @@ public sealed partial class GuideViewModel : Abstraction.ViewModel
         {
             downloadCts?.Cancel();
         }
-        catch (ObjectDisposedException)
+        catch (ObjectDisposedException ex)
         {
             // The transfer completed and released its source before this cancellation arrived.
             // Cancel and Dispose are not guaranteed to be safe concurrently.
+            System.Diagnostics.Trace.WriteLine($"Static resource cancellation arrived after completion: {ex.Message}");
         }
     }
 

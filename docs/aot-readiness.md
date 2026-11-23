@@ -1,6 +1,6 @@
 # 构建、原生发布与交付说明
 
-更新：2026-11-14。当前按用户要求只构建/发布 Debug。现状与证据见 [开发报告](aot-development-report.md)，剩余工作见 [当前阻塞项](aot-blockers.md)。
+历史验证记录见 [Native AOT 开发报告](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/136935ae2171229b2c9b9a4b5194a0fc2eb4390f/docs/aot-development-report.md) 与 [当时的阻塞项](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/136935ae2171229b2c9b9a4b5194a0fc2eb4390f/docs/aot-blockers.md)。正式交付流程见 [发布与更新说明](appinstaller-release.md)。
 
 ## 构建模式
 
@@ -157,7 +157,7 @@ INamedValue 增加只读的对象值接口，NameValue<T> 显式实现它，不�
 
 插件/Harmony 已在此前分支移除。用户现已授权移除 C# 脚本调试功能：菜单、窗口、上下文、执行器与测试入口均删除。
 不加入 CoreCLR 脚本进程；应用无 Roslyn 脚本/Workspace/EF Design 运行时依赖，构建期分析器和数据库设计工具仍保留。
-CsWinRT 维持 2.3.1；3.0 的资产问题与包适配见 [独立评估](cswinrt3-assessment.md)，不是本次 Native AOT 的前置条件。
+CsWinRT 3.0 的资产与包适配实验记录见 [历史评估](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/136935ae2171229b2c9b9a4b5194a0fc2eb4390f/docs/cswinrt3-assessment.md)。
 
 ## 当前发布流程
 

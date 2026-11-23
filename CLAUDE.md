@@ -486,7 +486,7 @@ the build fails with `CS9275`); write a normal constructor in that case.
   cover all 24 observable content discriminators and conversation/checkpoint/approval round trips.
 - Source-linked JSON tests cover the real facade, converters and the small diagnostics/legacy
   contexts. They do not validate the other domain contexts or Windows XAML generation.
-  See [current development report](docs/aot-development-report.md) and the
+  See [Native AOT build and deployment guidance](docs/aot-readiness.md) and the
   [historical resolver verification](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/blob/32976c2f4b7ef2f8053b34131ffd7fdbae5b5722/docs/aot-blockers.md#14-2026-11-10json-解析器契约修复).
 
 ### 5.7 Localization
