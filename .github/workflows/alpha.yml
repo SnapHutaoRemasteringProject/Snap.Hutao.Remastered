@@ -84,6 +84,8 @@ jobs:
   build:
     name: Build Native AOT
     runs-on: windows-latest
+    outputs:
+      version: ${{ steps.cake.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -168,6 +170,31 @@ jobs:
           > 直接旁加载 MSIX 时，请将 SnapHutaoRemasteringProject 工件中的证书安装到 **受信任的人员（TrustedPeople）** 存储
           "
           echo $summary >> $Env:GITHUB_STEP_SUMMARY
+
+  publish_mirrorchyan:
+    name: Publish Alpha MSIX to MirrorChyan
+    needs: [build, test]
+    if: ${{ github.repository_owner == 'SnapHutaoRemasteringProject' && github.ref == 'refs/heads/dev' && github.event_name != 'pull_request' }}
+    runs-on: macos-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Download signed Alpha MSIX
+        uses: actions/download-artifact@v8
+        with:
+          name: Snap.Hutao.Remastered.Alpha-${{ needs.build.outputs.version }}
+
+      - name: Upload Alpha MSIX
+        uses: MirrorChyan/uploading-action@v1
+        with:
+          filetype: local
+          filename: Snap.Hutao.Remastered.Alpha-${{ needs.build.outputs.version }}.msix
+          version_name: ${{ needs.build.outputs.version }}
+          mirrorchyan_rid: SnapHutaoRemastered_msix
+          os: win
+          arch: x64
+          channel: alpha
+          upload_token: ${{ secrets.MirrorChyanUploadToken }}
 
   publish_r2:
     name: Publish Alpha App Installer

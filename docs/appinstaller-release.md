@@ -19,6 +19,7 @@
 
 - Publish 校验并上传已签名的 MSIX、标准 EXE 和可选缓存 EXE。标准 EXE 和独立 MSIX 同步到 R2 桶根，供旧版更新器及直接下载使用。
 - Publish 与 Alpha 各使用一个频道目录，公开文件名不带运行时后缀。Canary 生成工件供 CI 验证。
+- 官方仓库的 `dev` 分支通过构建和测试后，将已签名的 Alpha MSIX 上传到 Mirror 酱 `SnapHutaoRemastered_msix` 的 `alpha` 频道，使用现有的 `MirrorChyanUploadToken`。
 - 自托管发布先上传并校验版本目录下的 MSIX、证书及框架依赖，再替换固定的 `.appinstaller`。只有替换验证通过后，才清理同一频道内匹配的旧版本目录。
 - SignPath 工作流提供相同命名的原生安装包。正式版 Mirror 酱工作流从 GitHub Release 选择标准 EXE 和 MSIX，分别上传到各自的资源。
 
