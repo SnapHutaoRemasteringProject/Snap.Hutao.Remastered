@@ -133,6 +133,12 @@
                     <wl:LiquidGlassToggleSwitch shuxcth:ControlMaterialState.IsManaged="True" IsOn="{x:Bind DataContext.AlwaysIsFirstRunAfterUpdate, Mode=TwoWay}"/>
                 </cwc:SettingsCard>
 
+                <cwc:SettingsCard
+                    Command="{x:Bind DataContext.OpenAlphaUpdatePreviewCommand, Mode=OneWay}"
+                    Description="Compare the latest stable release with the current dev branch"
+                    Header="Preview Alpha Update Window"
+                    IsClickEnabled="True"/>
+
                 <cwc:SettingsCard Header="Alpha Build Generic API Endpoint">
                     <StackPanel Orientation="Horizontal" Spacing="{ThemeResource SettingsCardContentControlSpacing}">
                         <wl:LiquidGlassToggleSwitch

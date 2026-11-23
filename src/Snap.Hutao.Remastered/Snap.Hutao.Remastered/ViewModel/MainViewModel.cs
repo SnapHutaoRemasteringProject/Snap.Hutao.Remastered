@@ -20,6 +20,7 @@ using Snap.Hutao.Remastered.Service.Git;
 using Snap.Hutao.Remastered.Service.Update;
 using Snap.Hutao.Remastered.Service.User;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior.Action;
+using Snap.Hutao.Remastered.UI.Xaml.View.Window;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window.WebView2;
 using Snap.Hutao.Remastered.Web;
 using Snap.Hutao.Remastered.Web.Request.Builder;
@@ -34,7 +35,11 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
 {
     private const string StartupRetryKey = "MainViewModel.Startup";
     private const string UpdateRetryKey = "MainViewModel.CheckUpdate";
+#if IS_ALPHA_BUILD
+    private readonly IServiceProvider serviceProvider;
+#else
     private readonly ICurrentXamlWindowReference currentXamlWindowReference;
+#endif
     private readonly IMetadataService metadataService;
     private readonly IUpdateService updateService;
     private readonly IUserService userService;
@@ -111,6 +116,32 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
 
     private void ShowUpdateLogWindowAfterUpdate()
     {
+#if IS_ALPHA_BUILD
+        string? current = AlphaUpdateHistoryClient.GetBuildCommit();
+        string previous = LocalSetting.Get(SettingKeys.LastAlphaCommit, string.Empty);
+        if (!LocalSetting.Get(SettingKeys.AlwaysIsFirstRunAfterUpdate, false)
+            && !XamlApplicationLifetime.IsFirstRunAfterUpdate
+            && (current is null || string.Equals(previous, current, StringComparison.OrdinalIgnoreCase)))
+        {
+            return;
+        }
+
+        try
+        {
+            AlphaUpdateWindow window = new(serviceProvider, previous, current);
+            window.Activate();
+            if (current is not null && !string.Equals(previous, current, StringComparison.OrdinalIgnoreCase))
+            {
+                LocalSetting.Set(SettingKeys.LastAlphaCommit, current);
+            }
+
+            XamlApplicationLifetime.IsFirstRunAfterUpdate = false;
+        }
+        catch (Exception exception)
+        {
+            SentrySdk.CaptureException(exception);
+        }
+#else
         if (LocalSetting.Get(SettingKeys.AlwaysIsFirstRunAfterUpdate, false) || XamlApplicationLifetime.IsFirstRunAfterUpdate)
         {
             // Check if the window showed, only set to false if it is shown
@@ -120,6 +151,7 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
                 XamlApplicationLifetime.IsFirstRunAfterUpdate = false;
             }
         }
+#endif
     }
 
     private async ValueTask<bool> CheckUpdateAsync(CancellationToken token)

@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using Snap.Hutao.Remastered.Core.IO.Http;
 using Snap.Hutao.Remastered.Core.IO.Http.Proxy;
 using Snap.Hutao.Remastered.Service.Game.Package.Advanced;
+using Snap.Hutao.Remastered.Service.Update;
 using Snap.Hutao.Remastered.Web.Hoyolab;
 using Snap.Hutao.Remastered.Win32;
 using System.Globalization;
@@ -43,6 +44,14 @@ public static partial class ServiceCollectionExtension
                         .AddHttpMessageHandler<RetryHttpHandler>();
                 })
                 .AddHttpClients();
+
+            services.AddHttpClient(AlphaUpdateHistoryClient.HttpClientName, client =>
+            {
+                client.BaseAddress = new($"https://api.github.com/{AlphaUpdateHistoryClient.RepositoryPath}/");
+                client.Timeout = TimeSpan.FromSeconds(15);
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("Snap.Hutao.Remastered");
+                client.DefaultRequestHeaders.Add("X-GitHub-Api-Version", "2022-11-28");
+            });
 
             services
                 .AddHttpClient(GamePackageService.HttpClientName)

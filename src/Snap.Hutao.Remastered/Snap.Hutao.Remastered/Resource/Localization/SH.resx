@@ -6425,4 +6425,52 @@
   <data name="ServiceUpdateAppInstallerUnavailable" xml:space="preserve">
     <value>没有找到当前程序受支持的更新源。请使用发布页面提供的 .appinstaller 文件重新安装。</value>
   </data>
+  <data name="ViewWindowAlphaUpdateTitle" xml:space="preserve">
+    <value>Alpha 更新成功</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateOpenDev" xml:space="preserve">
+    <value>在 GitHub 查看 dev 分支</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateOpenComparison" xml:space="preserve">
+    <value>在 GitHub 查看版本比较</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateNewCommits" xml:space="preserve">
+    <value>本次更新</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateOlderCommits" xml:space="preserve">
+    <value>上次更新及更早</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateLoadOlder" xml:space="preserve">
+    <value>加载更早的提交</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateRetry" xml:space="preserve">
+    <value>重试</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateOpenCommit" xml:space="preserve">
+    <value>在 GitHub 查看提交</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateChangedFiles" xml:space="preserve">
+    <value>变更文件</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateSelectCommit" xml:space="preserve">
+    <value>选择左侧的提交以查看文件差异。</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateMissingRevision" xml:space="preserve">
+    <value>此安装包缺少构建提交，无法计算本次更新的范围。</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateLoadFailed" xml:space="preserve">
+    <value>无法读取 GitHub 提交记录，请检查连接或稍后重试。</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateNoNewCommits" xml:space="preserve">
+    <value>此范围没有新增提交。</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateNoChangedFiles" xml:space="preserve">
+    <value>此提交没有变更文件。</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateNoTextDiff" xml:space="preserve">
+    <value>此文件没有可预览的文本差异，或文件超过 256 KB。可在 GitHub 查看。</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateDiffFailed" xml:space="preserve">
+    <value>无法加载文件差异。可在 GitHub 查看。</value>
+  </data>
 </root>

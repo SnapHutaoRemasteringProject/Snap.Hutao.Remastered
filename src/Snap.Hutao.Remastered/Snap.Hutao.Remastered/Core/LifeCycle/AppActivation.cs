@@ -144,6 +144,28 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
         }
     }
 
+    public async ValueTask NavigateMainWindowAsync(Type pageType)
+    {
+        await taskContext.SwitchToMainThreadAsync();
+        if (XamlApplicationLifetime.Exiting || currentXamlWindowReference.Window is not (MainWindow { AppWindow: not null } or null))
+        {
+            return;
+        }
+
+        if (await WaitWindowAsync<MainWindow>().ConfigureAwait(true) is not MainWindow mainWindow)
+        {
+            return;
+        }
+
+        mainWindow.Activate();
+        await WaitForContentLoadedAsync().ConfigureAwait(true);
+        if (!XamlApplicationLifetime.Exiting && ReferenceEquals(currentXamlWindowReference.Window, mainWindow))
+        {
+            INavigationService navigationService = serviceProvider.GetRequiredService<INavigationService>();
+            navigationService.Navigate(pageType, NavigationExtraData.Default, syncNavigationViewItem: true);
+        }
+    }
+
     public async ValueTask HandleLaunchGameActionAutoLaunchAsync(string? uid, bool isRedirectTo)
     {
         await taskContext.SwitchToMainThreadAsync();

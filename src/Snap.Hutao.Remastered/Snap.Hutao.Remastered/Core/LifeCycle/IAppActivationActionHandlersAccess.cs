@@ -6,4 +6,6 @@ namespace Snap.Hutao.Remastered.Core.LifeCycle;
 public interface IAppActivationActionHandlersAccess
 {
     ValueTask HandleLaunchGameActionAsync(string? uid = null);
+
+    ValueTask NavigateMainWindowAsync(Type pageType);
 }
