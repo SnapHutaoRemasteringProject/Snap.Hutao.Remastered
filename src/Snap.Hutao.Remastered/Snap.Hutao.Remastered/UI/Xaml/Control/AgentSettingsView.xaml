@@ -31,8 +31,8 @@
         <snuxd:EmptyObjectToVisibilityConverter x:Key="ModelProfileEditorVisibilityConverter"/>
         <snuxd:NullableNumberConverter x:Key="NullableInt32NumberConverter" ValueType="Int32"/>
         <snuxd:NullableNumberConverter x:Key="NullableSingleNumberConverter" ValueType="Single"/>
-        <DataTemplate x:Key="SettingsItemLabelTemplate">
-            <TextBlock Text="{Binding Label.Value}"/>
+        <DataTemplate x:Key="SettingsItemLabelTemplate" x:DataType="snvs:SettingsItem">
+            <TextBlock Text="{x:Bind Label.Value, Mode=OneWay}"/>
         </DataTemplate>
     </UserControl.Resources>
     <ScrollViewer>
@@ -176,8 +176,8 @@
                                                     ItemTemplate="{StaticResource SettingsItemLabelTemplate}">
                                                     <mxi:Interaction.Behaviors>
                                                         <snuxb:SelectorSelectedValueBindingWorkaroundBehavior
-                                                            ItemsSource="{Binding ModelProviderTypes}"
-                                                            SelectedValue="{Binding Settings.ModelProviderProfiles.CurrentItem.ProviderType, Mode=TwoWay}"
+                                                            ItemsSource="{x:Bind ((snv:AgentViewModel)DataContext).ModelConfiguration.ModelProviderTypes, Mode=OneWay}"
+                                                            SelectedValue="{x:Bind ((snv:AgentViewModel)DataContext).Settings.ModelProviderProfiles.CurrentItem.ProviderType, Mode=TwoWay}"
                                                             SelectedValuePath="Value"/>
                                                     </mxi:Interaction.Behaviors>
                                                 </ComboBox>
@@ -306,8 +306,8 @@
                                                                         PlaceholderText="{snuxm:ResourceString Name=UIXamlPagesSettingsPagePlaceholderProviderDefault}">
                                                                         <mxi:Interaction.Behaviors>
                                                                             <snuxb:SelectorSelectedValueBindingWorkaroundBehavior
-                                                                                ItemsSource="{Binding ReasoningEfforts}"
-                                                                                SelectedValue="{Binding Settings.ModelProviderProfiles.CurrentItem.ModelProfiles.CurrentItem.AgentOptions.ReasoningEffort, Mode=TwoWay}"
+                                                                                ItemsSource="{x:Bind ((snv:AgentViewModel)DataContext).ModelConfiguration.ReasoningEfforts, Mode=OneWay}"
+                                                                                SelectedValue="{x:Bind ((snv:AgentViewModel)DataContext).Settings.ModelProviderProfiles.CurrentItem.ModelProfiles.CurrentItem.AgentOptions.ReasoningEffort, Mode=TwoWay}"
                                                                                 SelectedValuePath="Value"/>
                                                                         </mxi:Interaction.Behaviors>
                                                                     </ComboBox>

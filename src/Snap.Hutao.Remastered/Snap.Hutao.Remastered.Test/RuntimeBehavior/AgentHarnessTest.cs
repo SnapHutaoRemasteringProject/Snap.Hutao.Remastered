@@ -1,10 +1,14 @@
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.ObjectPool;
+using Snap.Hutao.Remastered.Core.Text.Json;
+using Snap.Hutao.Remastered.Service.AI;
 using Snap.Hutao.Remastered.Service.AI.Models;
 using Snap.Hutao.Remastered.Service.AI.Observables;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.ClientModel.Primitives;
 
 namespace Snap.Hutao.Remastered.Test.RuntimeBehavior;
@@ -90,6 +94,44 @@ public sealed class AgentHarnessTest
         await foreach (AgentResponseUpdate update in agent.RunStreamingAsync([new ChatMessage(ChatRole.User, "second")], restored)) { }
         TextReasoningContent reasoning = client.LastMessages.Last(message => message.Role == ChatRole.Assistant).Contents.OfType<TextReasoningContent>().Single();
         Assert.AreEqual("opaque-reasoning", reasoning.ProtectedData);
+    }
+
+    [TestMethod]
+    public async Task ConversationRestoresAgentSessionFromFileWithGeneratedContracts()
+    {
+        using ServiceProvider services = new ServiceCollection().AddLogging()
+            .AddSingleton<ObjectPool<StringBuilder>>(new DefaultObjectPool<StringBuilder>(new StringBuilderPooledObjectPolicy())).BuildServiceProvider();
+        ScriptedClient client = new() { ReasoningMode = true };
+        ExtendedAgentOptions options = new() { ModelId = "test", MaxOutputTokens = 256, MaxContextWindowTokens = 4096 };
+        HarnessAgent agent = options.CreateHarnessAgent(client, [], services);
+        AgentSession session = await agent.CreateSessionAsync();
+        await foreach (AgentResponseUpdate update in agent.RunStreamingAsync([new ChatMessage(ChatRole.User, "first")], session)) { }
+
+        JsonSerializerOptions fileOptions = AgentConversationJsonOptions.Create();
+        AgentConversation conversation = new() { SerializedSessionState = await AgentSessionSerialization.SerializeAsync(agent, session) };
+        using MemoryStream file = new();
+        JsonSerialize.Serialize(file, conversation, fileOptions);
+        file.Position = 0;
+        AgentConversation reloaded = JsonSerialize.Deserialize<AgentConversation>(file, fileOptions)!;
+
+        Assert.IsNotNull(reloaded.SerializedSessionState);
+        JsonElement serialized = reloaded.SerializedSessionState.Value;
+        if (!JsonSerializer.IsReflectionEnabledByDefault)
+        {
+            Assert.IsFalse(serialized.GetProperty("stateBag").TryGetProperty("ContextWindowCompactionStrategy", out _));
+            // Files written before Native AOT may contain the SDK's compaction index.
+            JsonNode legacy = JsonNode.Parse(serialized.GetRawText())!;
+            legacy["stateBag"]!["ContextWindowCompactionStrategy"] = JsonNode.Parse("""{"messagegroups":[]}""");
+            using JsonDocument legacyDocument = JsonDocument.Parse(legacy.ToJsonString());
+            serialized = legacyDocument.RootElement.Clone();
+        }
+
+        HarnessAgent reopenedAgent = options.CreateHarnessAgent(client, [], services);
+        AgentSession restored = await AgentSessionSerialization.DeserializeAsync(reopenedAgent, serialized);
+        await foreach (AgentResponseUpdate update in reopenedAgent.RunStreamingAsync([new ChatMessage(ChatRole.User, "second")], restored)) { }
+        CollectionAssert.AreEqual(new[] { "first", "second" }, client.LastMessages.Where(message => message.Role == ChatRole.User).Select(message => message.Text).ToArray());
+        Assert.IsTrue(client.LastMessages.Where(message => message.Role == ChatRole.Assistant)
+            .SelectMany(message => message.Contents).OfType<TextReasoningContent>().Any(content => content.Text == "reasoning"));
     }
 
     [TestMethod]
@@ -224,9 +266,8 @@ public sealed class AgentHarnessTest
             first.Add(update);
         }
         ToolApprovalRequestContent request = first.SelectMany(update => update.Contents).OfType<ToolApprovalRequestContent>().Single();
-        JsonSerializerOptions serializerOptions = new(AIJsonUtilities.DefaultOptions);
-        JsonElement serialized = await agent.SerializeSessionAsync(session, serializerOptions);
-        AgentSession restoredSession = await agent.DeserializeSessionAsync(serialized, serializerOptions);
+        JsonElement serialized = await AgentSessionSerialization.SerializeAsync(agent, session);
+        AgentSession restoredSession = await AgentSessionSerialization.DeserializeAsync(agent, serialized);
         List<AgentResponseUpdate> second = [];
         await foreach (AgentResponseUpdate update in agent.RunStreamingAsync([new ChatMessage(ChatRole.User, [request.CreateResponse(approved)])], restoredSession))
         {

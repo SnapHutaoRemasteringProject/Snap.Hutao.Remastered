@@ -22,7 +22,7 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
     }
 
     // A bad saved season must not prevent the other game modes from loading.
-    private List<T> ReadSafely<T>(string source, Func<List<T>> read, List<string> failures)
+    private List<T> ReadSafely<T>(string source, Func<List<T>> read, List<InsightLoadFailure> failures)
     {
         try
         {
@@ -31,14 +31,14 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
         catch (Exception exception)
         {
             logger.LogWarning(exception, "Account insights could not load {Source}", source);
-            failures.Add(source);
+            failures.Add(new(source, exception));
             return [];
         }
     }
 
     public InsightLoadResult CreateSeries(string uid, CultureInfo culture)
     {
-        List<string> failures = [];
+        List<InsightLoadFailure> failures = [];
 
         List<GachaItem> gachaItems = ReadSafely("ChartWish", () =>
             gachaRepository.GetGachaArchiveByUid(uid) is { } archive
@@ -97,10 +97,21 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
             .ToList(), failures);
 
         // Keep different difficulty levels in separate series and snapshots.
-        List<Model.Entity.HardChallengeEntry> challenge = ReadSafely("ChartChallenge", () => challengeRepository.GetHardChallengeMapByUid(uid).Values
+        List<InsightSeries> challenge = ReadSafely("ChartChallenge", () => challengeRepository.GetHardChallengeMapByUid(uid).Values
             .Where(entry => entry.HardChallengeData?.Schedule is not null
                 && entry.HardChallengeData.SinglePlayer is { HasData: true, Best: not null })
-            .OrderBy(entry => entry.ScheduleId).ToList(), failures);
+            .OrderBy(entry => entry.ScheduleId)
+            .GroupBy(entry => entry.HardChallengeData.SinglePlayer.Best!.Difficulty)
+            .Select(difficulty => new InsightSeries(
+                Translate("ChartChallenge", culture),
+                Translate("MetricChallenge", culture) + " (" + difficulty.Key + ")",
+                Translate("UnitSeconds", culture),
+                difficulty.Select(entry => new InsightPoint(
+                    FormatScheduleDate(entry.HardChallengeData.Schedule.StartDateTime),
+                    entry.HardChallengeData.SinglePlayer.Best!.Seconds)).TakeLast(12).ToList(),
+                InsightDirection.LowerIsBetter,
+                Difficulty: (int)difficulty.Key))
+            .ToList(), failures);
 
         List<InsightSeries> series =
         [
@@ -111,16 +122,8 @@ internal sealed class AccountInsightsHistoryService(IGachaLogRepository gachaRep
             new(Translate("ChartAbyss", culture), Translate("MetricAbyss", culture), Translate("UnitStar", culture), abyss, InsightDirection.HigherIsBetter),
             new(Translate("ChartTheater", culture), Translate("MetricTheater", culture), Translate("UnitMedal", culture), theater, InsightDirection.HigherIsBetter),
         ];
-        foreach (IGrouping<Model.Intrinsic.HardChallengeDifficultyLevel, Model.Entity.HardChallengeEntry> difficulty in challenge.GroupBy(entry => entry.HardChallengeData.SinglePlayer.Best!.Difficulty))
-        {
-            List<InsightPoint> points = difficulty.Select(entry => new InsightPoint(
-                FormatScheduleDate(entry.HardChallengeData.Schedule.StartDateTime),
-                entry.HardChallengeData.SinglePlayer.Best!.Seconds)).TakeLast(12).ToList();
-            series.Add(new(Translate("ChartChallenge", culture),
-                Translate("MetricChallenge", culture) + " (" + difficulty.Key + ")",
-                Translate("UnitSeconds", culture), points, InsightDirection.LowerIsBetter, Difficulty: (int)difficulty.Key));
-        }
-        return new InsightLoadResult(series, failures.Distinct().ToList(), gachaItems, bydMaterials);
+        series.AddRange(challenge);
+        return new InsightLoadResult(series, failures, gachaItems, bydMaterials);
     }
 
     private static string GetWishPoolLabel(GachaType type)

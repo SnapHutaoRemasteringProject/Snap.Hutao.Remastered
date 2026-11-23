@@ -25,21 +25,22 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
 
     public AgentSettings Settings { get; } = serviceProvider.GetRequiredService<ISettingsProvider<AgentSettings>>().CurrentValue;
 
-    public List<SettingsItem<EnumBox<ModelProviderType>>> ModelProviderTypes { get; } =
+    // WinUI receives these lists as IInspectable collections.
+    public List<object> ModelProviderTypes { get; } =
     [
-        new("OpenAI Chat Completions | ~/chat/completions", EnumBox.Of(ModelProviderType.OpenAIChatCompletion)),
-        new("OpenAI Responses | ~/responses", EnumBox.Of(ModelProviderType.OpenAIResponses)),
-        new("Anthropic Messages | ~/v1/messages", EnumBox.Of(ModelProviderType.Anthropic)),
+        new SettingsItem("OpenAI Chat Completions | ~/chat/completions", EnumBox.Of(ModelProviderType.OpenAIChatCompletion)),
+        new SettingsItem("OpenAI Responses | ~/responses", EnumBox.Of(ModelProviderType.OpenAIResponses)),
+        new SettingsItem("Anthropic Messages | ~/v1/messages", EnumBox.Of(ModelProviderType.Anthropic)),
     ];
 
-    public List<SettingsItem<EnumBox<ReasoningEffort>?>> ReasoningEfforts { get; } =
+    public List<object> ReasoningEfforts { get; } =
     [
-        new(SHName.UIXamlPagesSettingsPageOptionProviderDefault, null),
-        new(SHName.UIXamlPagesSettingsPageOptionReasoningEffortNone, EnumBox.Of(ReasoningEffort.None)),
-        new(SHName.UIXamlPagesSettingsPageOptionReasoningEffortLow, EnumBox.Of(ReasoningEffort.Low)),
-        new(SHName.UIXamlPagesSettingsPageOptionReasoningEffortMedium, EnumBox.Of(ReasoningEffort.Medium)),
-        new(SHName.UIXamlPagesSettingsPageOptionReasoningEffortHigh, EnumBox.Of(ReasoningEffort.High)),
-        new(SHName.UIXamlPagesSettingsPageOptionReasoningEffortExtraHigh, EnumBox.Of(ReasoningEffort.ExtraHigh)),
+        new SettingsItem(SHName.UIXamlPagesSettingsPageOptionProviderDefault, null),
+        new SettingsItem(SHName.UIXamlPagesSettingsPageOptionReasoningEffortNone, EnumBox.Of(ReasoningEffort.None)),
+        new SettingsItem(SHName.UIXamlPagesSettingsPageOptionReasoningEffortLow, EnumBox.Of(ReasoningEffort.Low)),
+        new SettingsItem(SHName.UIXamlPagesSettingsPageOptionReasoningEffortMedium, EnumBox.Of(ReasoningEffort.Medium)),
+        new SettingsItem(SHName.UIXamlPagesSettingsPageOptionReasoningEffortHigh, EnumBox.Of(ReasoningEffort.High)),
+        new SettingsItem(SHName.UIXamlPagesSettingsPageOptionReasoningEffortExtraHigh, EnumBox.Of(ReasoningEffort.ExtraHigh)),
     ];
 
     [ObservableProperty]

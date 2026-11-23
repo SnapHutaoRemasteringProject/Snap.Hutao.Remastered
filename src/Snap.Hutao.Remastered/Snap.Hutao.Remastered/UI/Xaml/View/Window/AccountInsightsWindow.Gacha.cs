@@ -13,7 +13,7 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View.Window;
 
 public sealed partial class AccountInsightsWindow
 {
-    private async Task LoadHuTaoStatisticsAsync(InsightLoadResult result)
+    private async Task LoadHuTaoStatisticsAsync(InsightLoadResult result, CancellationToken token)
     {
         if (result.GachaItems.Count == 0 && result.BydMaterials.Count == 0)
         {
@@ -26,23 +26,20 @@ public sealed partial class AccountInsightsWindow
             // avoids delaying the dashboard when the metadata repository is offline.
             bool initialized = await metadataService.InitializeAsync()
                 .AsTask()
-                .WaitAsync(TimeSpan.FromSeconds(10), lifetime.Token);
+                .WaitAsync(TimeSpan.FromSeconds(10), token);
             if (!initialized)
             {
                 return;
             }
 
             GachaLogServiceMetadataContext metadata =
-                await metadataService.GetContextAsync<GachaLogServiceMetadataContext>(lifetime.Token);
+                await metadataService.GetContextAsync<GachaLogServiceMetadataContext>(token);
 
             GachaStatistics statistics = await statisticsFactory.CreateAsync(
                 metadata, result.GachaItems.ToImmutableArray(), result.BydMaterials.ToImmutableArray());
 
-            lifetime.Token.ThrowIfCancellationRequested();
-
-            JsonObject package = JsonNode.Parse(snapshotJson!)!.AsObject();
-            package["hu_tao_computed_gacha_statistics"] = BuildComputedGachaStatistics(statistics);
-            snapshotJson = package.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
+            await taskContext.SwitchToMainThreadAsync();
+            token.ThrowIfCancellationRequested();
 
             // Featured characters are metadata-derived; do not treat every 5-star as UP.
             List<InsightPoint> featuredCharacters = statistics.AvatarWish.SummaryList
@@ -59,26 +56,28 @@ public sealed partial class AccountInsightsWindow
                 InsightSeries featured = new(
                     L("ChartWish"), L("MetricFeaturedCharacters"), L("UnitWish"),
                     featuredCharacters, InsightDirection.Neutral, false);
-                try
-                {
-                    ChartsPanel.Children.Add(CreateChart(featured));
-                }
-                catch (Exception exception)
-                {
-                    logger.LogWarning(exception, "Failed to render featured five-star chart");
-                }
+                AddChart(featured);
+            }
+
+            if (snapshotJson is { } snapshot)
+            {
+                JsonObject package = JsonNode.Parse(snapshot)!.AsObject();
+                package["hu_tao_computed_gacha_statistics"] = BuildComputedGachaStatistics(statistics);
+                snapshotJson = package.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
             }
         }
-        catch (OperationCanceledException) when (lifetime.IsCancellationRequested)
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
         {
             // The window was closed.
         }
         catch (Exception exception)
         {
             logger.LogWarning(exception, "Could not load metadata-backed Gacha statistics for account insights");
-            if (!lifetime.IsCancellationRequested)
+            await taskContext.SwitchToMainThreadAsync();
+            if (!token.IsCancellationRequested)
             {
-                StatusText.Text = L("Ready") + " " + L("GachaDetailsUnavailable");
+                StatusText.Text += " " + L("GachaDetailsUnavailable");
+                ShowLoadError(L("ChartWish"), exception);
             }
         }
     }

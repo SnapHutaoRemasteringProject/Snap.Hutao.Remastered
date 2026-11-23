@@ -32,6 +32,11 @@
                         x:Name="StatusText"
                         Text="{shuxm:ResourceString Name=ViewDialogAccountInsightsLoading}"
                         TextWrapping="Wrap"/>
+                    <TextBlock
+                        x:Name="ErrorDetailsText"
+                        IsTextSelectionEnabled="True"
+                        TextWrapping="Wrap"
+                        Visibility="Collapsed"/>
                     <StackPanel x:Name="ChartsPanel" Spacing="24"/>
                     <Button
                         x:Name="CopyButton"
@@ -70,7 +75,7 @@
                                     </Style>
                                 </Flyout.FlyoutPresenterStyle>
                                 <shuxc:AgentSettingsView
-                                    x:Name="AgentSettingsEditor"
+                                    Loaded="OnAgentSettingsLoaded"
                                     MaxWidth="1200"
                                     MaxHeight="Infinity"/>
                             </Flyout>

@@ -7,6 +7,7 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.ObjectPool;
 using Snap.Hutao.Remastered.Core.AI;
 using Snap.Hutao.Remastered.Core.AI.ObjectPool;
+using Snap.Hutao.Remastered.Core.Text.Json;
 using System.Diagnostics;
 using System.Text;
 
@@ -20,8 +21,9 @@ internal sealed class RoundTripInMemoryChatHistoryProvider(ObjectPool<StringBuil
     : ChatHistoryProvider(null, null, StoreInputResponseMessageFilter)
 {
     private const string StateName = "round_trip_chat_history";
+    private static readonly JsonSerializerOptions HistoryJsonOptions = AgentConversationJsonOptions.Create();
     private readonly ObjectPool<StringBuilder> stringBuilderPool = stringBuilderPool;
-    private readonly ProviderSessionState<State> sessionState = new((_ => new()), StateName, null);
+    private readonly ProviderSessionState<State> sessionState = new(static _ => new(), StateName, HistoryJsonOptions);
     private IReadOnlyList<string>? stateKeys;
 
     public override IReadOnlyList<string> StateKeys { get => stateKeys ??= new string[] { sessionState.StateKey }; }

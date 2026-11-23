@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml;
 using Snap.Hutao.Remastered.Core.AI.Threading;
 using Snap.Hutao.Remastered.Service.AI;
 using Snap.Hutao.Remastered.ViewModel.AI;
-using Snap.Hutao.Remastered.ViewModel.AI.Settings;
+using Snap.Hutao.Remastered.ViewModel.User;
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.UI.Windowing;
 using Snap.Hutao.Remastered.UI.Windowing.Abstraction;
@@ -18,6 +18,7 @@ using Snap.Hutao.Remastered.Service.User;
 using System.Globalization;
 
 using Snap.Hutao.Remastered.Service.AccountInsights;
+using Snap.Hutao.Remastered.UI.Xaml.Control;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Window;
 
@@ -36,6 +37,7 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
     private readonly IGachaStatisticsFactory statisticsFactory;
     private readonly IUserService userService;
     private readonly AccountInsightsHistoryService historyService;
+    private readonly ITaskContext taskContext;
     private readonly CancellationTokenSource lifetime = new();
     private readonly IServiceScope windowScope;
     private bool initializationStarted;
@@ -46,11 +48,11 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
     private readonly AgentAccountContext agentAccountContext;
 
     private string? snapshotJson;
-    private bool hasRecordedData;
 
     public AccountInsightsWindow(IServiceProvider serviceProvider)
     {
         InitializeComponent();
+        taskContext = TaskContext.GetForDependencyObject(RootGrid);
         windowScope = serviceProvider.CreateScope();
         IServiceProvider scoped = windowScope.ServiceProvider;
 
@@ -68,7 +70,6 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
         agentAccountContext.SystemPrompt = CreateSystemPrompt();
         agentViewModel = scoped.GetRequiredService<AgentViewModel>();
         AgentWorkspace.ViewModel = agentViewModel;
-        AgentSettingsEditor.DataContext = agentViewModel;
 
         PrivacyInfoButton.Click += (_, _) => PrivacyTeachingTip.IsOpen = true;
         CopyButton.Click += OnCopyClicked;
@@ -109,87 +110,123 @@ public sealed partial class AccountInsightsWindow : Microsoft.UI.Xaml.Window,
         return SH.ResourceManager.GetString("ViewDialogAccountInsights" + name, culture) ?? name;
     }
 
-    private void UpdateGenerateEnabled()
+    private void OnAgentSettingsLoaded(object sender, RoutedEventArgs args)
     {
-        agentAccountContext.Snapshot = snapshotJson;
-        AgentWorkspace.IsEnabled = true;
-        GenerateButton.IsEnabled = hasRecordedData && snapshotJson is not null;
+        if (sender is AgentSettingsView editor)
+        {
+            editor.DataContext = agentViewModel;
+        }
     }
 
     private async void OnLoaded(object sender, RoutedEventArgs args)
     {
         initializationStarted = true;
+        CancellationToken token = lifetime.Token;
+        bool agentReady = false;
+        string operation = "GetCurrentUserAndUidAsync";
         try
         {
             RootGrid.Loaded -= OnLoaded;
-            if (await userService.GetCurrentUserAndUidAsync() is not { } userAndUid)
+            UserAndUid? userAndUid = await userService.GetCurrentUserAndUidAsync(token);
+            await taskContext.SwitchToMainThreadAsync();
+            token.ThrowIfCancellationRequested();
+            if (userAndUid is null)
             {
                 StatusText.Text = L("NoAccount");
                 return;
             }
 
-            lifetime.Token.ThrowIfCancellationRequested();
-            agentViewModel.Initialize(agentAccountContext, userAndUid.Uid.Value.ToString(CultureInfo.InvariantCulture), windowScope.ServiceProvider.GetRequiredService<SettingsModelConfigurationViewModel>());
-            AgentSettingsEditor.DataContext = agentViewModel;
+            try
+            {
+                agentViewModel.Initialize(userAndUid.Uid.Value.ToString(CultureInfo.InvariantCulture));
+                agentReady = true;
+            }
+            catch (Exception exception)
+            {
+                logger.LogError(exception, "Failed to initialize the agent workspace");
+            }
 
-            // Each repository has its own scope. Preserve healthy datasets if another fails.
+            operation = nameof(AccountInsightsHistoryService.CreateSeries);
             CultureInfo culture = cultureOptions.CurrentCulture.Value;
-            InsightLoadResult result = await Task.Run(() => historyService.CreateSeries(userAndUid.Uid.Value, culture), lifetime.Token);
-            lifetime.Token.ThrowIfCancellationRequested();
+            InsightLoadResult result = await Task.Run(() => historyService.CreateSeries(userAndUid.Uid.Value, culture), token);
+            await taskContext.SwitchToMainThreadAsync();
+            token.ThrowIfCancellationRequested();
 
-            hasRecordedData = result.Series.Any(item => item.Points.Count > 0);
-            snapshotJson = hasRecordedData ? AccountInsightsHistoryService.CreateAnonymousJson(result.Series) : null;
-
+            operation = nameof(AddChart);
             ChartsPanel.Children.Clear();
             foreach (InsightSeries item in result.Series.Where(item => item.Points.Count > 0))
             {
-                try
-                {
-                    ChartsPanel.Children.Add(CreateChart(item));
-                }
-                catch (Exception exception)
-                {
-                    logger.LogWarning(exception, "Failed to render account history chart: {Metric}", item.Metric);
-                    ChartsPanel.Children.Add(new TextBlock
-                    {
-                        Text = L("ChartRenderError") + " (" + exception.GetType().Name + ")",
-                        TextWrapping = TextWrapping.Wrap,
-                    });
-                }
+                AddChart(item);
             }
 
+            bool hasRecordedData = result.Series.Any(item => item.Points.Count > 0);
             string state = hasRecordedData ? L("Ready") : L("NoRecords");
-            if (result.FailedSources.Count > 0)
+            if (result.Failures.Count > 0)
             {
-                state += " " + L("PartialError") + ": " +
-                    string.Join(", ", result.FailedSources.Select(source => L(source)));
+                state += " " + L("PartialError") + " (" +
+                    string.Join(", ", result.Failures.Select(failure => L(failure.Source)).Distinct()) + ")";
+                foreach (InsightLoadFailure failure in result.Failures)
+                {
+                    ShowLoadError(L(failure.Source), failure.Error);
+                }
             }
 
             StatusText.Text = state;
-            CopyButton.IsEnabled = hasRecordedData;
+            if (hasRecordedData)
+            {
+                try
+                {
+                    snapshotJson = AccountInsightsHistoryService.CreateAnonymousJson(result.Series);
+                    CopyButton.IsEnabled = true;
+                }
+                catch (Exception exception)
+                {
+                    logger.LogWarning(exception, "Failed to create the account statistics snapshot");
+                    ShowLoadError(nameof(AccountInsightsHistoryService.CreateAnonymousJson), exception);
+                }
+            }
 
             // Keep analysis disabled until metadata-backed wish statistics have been
             // added, so an early click cannot send an incomplete statistics snapshot.
-            await LoadHuTaoStatisticsAsync(result);
-            UpdateGenerateEnabled();
+            await LoadHuTaoStatisticsAsync(result, token);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
         {
             // The dialog was closed while the initial load was running.
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "Failed to initialize account insights");
-            if (!lifetime.IsCancellationRequested)
+            logger.LogError(exception, "Failed to initialize account insights at {Operation}", operation);
+            await taskContext.SwitchToMainThreadAsync();
+            if (!token.IsCancellationRequested)
             {
                 StatusText.Text = L("ReadError");
+                ShowLoadError(operation, exception);
             }
         }
         finally
         {
+            await taskContext.SwitchToMainThreadAsync();
+            if (agentReady && !token.IsCancellationRequested)
+            {
+                agentAccountContext.Snapshot = snapshotJson;
+                AgentWorkspace.IsEnabled = true;
+                GenerateButton.IsEnabled = snapshotJson is not null;
+            }
+
             initializationCompleted = true;
             DisposeClosedResources();
         }
+    }
+
+    private void ShowLoadError(string source, Exception exception)
+    {
+        Exception cause = exception.GetBaseException();
+        string detail = $"{source} — {cause.GetType().Name} (0x{cause.HResult:X8}){Environment.NewLine}{cause.Message}";
+        ErrorDetailsText.Text = string.IsNullOrEmpty(ErrorDetailsText.Text)
+            ? detail
+            : ErrorDetailsText.Text + Environment.NewLine + Environment.NewLine + detail;
+        ErrorDetailsText.Visibility = Visibility.Visible;
     }
 
     private void DisposeClosedResources()

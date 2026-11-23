@@ -34,14 +34,12 @@ internal sealed partial class AgentViewModel : ObservableObject, IDisposable
 
     public AgentSettings Settings { get; }
 
-    public SettingsModelConfigurationViewModel ModelConfiguration { get; private set; } = null!;
+    public SettingsModelConfigurationViewModel ModelConfiguration { get; }
 
-    public void Initialize(AgentAccountContext context, string accountKey, SettingsModelConfigurationViewModel modelConfiguration)
+    public void Initialize(string accountKey)
     {
-        context.AccountKey = accountKey;
-        ModelConfiguration = modelConfiguration;
+        accountContext.AccountKey = accountKey;
         conversationCollectionController.LoadConversations();
-        OnPropertyChanged(nameof(ModelConfiguration));
     }
 
     public AgentConversationViewModel NewConversation()

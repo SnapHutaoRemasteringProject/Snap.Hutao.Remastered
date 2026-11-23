@@ -8,6 +8,7 @@
     xmlns:essential="using:WinUI3Package"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
+    xmlns:snao="using:Snap.Hutao.Remastered.Service.AI.Observables"
     xmlns:snux="using:Snap.Hutao.Remastered.UI.Xaml"
     xmlns:snuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior.AI"
     xmlns:snuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
@@ -15,9 +16,8 @@
     xmlns:snuxd="using:Snap.Hutao.Remastered.UI.Xaml.Data.AI"
     xmlns:snuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:snv="using:Snap.Hutao.Remastered.ViewModel.AI"
-    xmlns:snao="using:Snap.Hutao.Remastered.Service.AI.Observables"
-    x:DataType="snv:AgentViewModel"
     d:DataContext="{d:DesignInstance snv:AgentViewModel}"
+    x:DataType="snv:AgentViewModel"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -29,6 +29,35 @@
                 ApproveCommand="{x:Bind ApproveToolApprovalCommand, Mode=OneWay}"
                 DenyCommand="{x:Bind DenyToolApprovalCommand, Mode=OneWay}"
                 ToolApprovalRequest="{x:Bind ToolApprovalRequest, Mode=OneWay}"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="AgentModelPickerTemplate" x:DataType="snv:AgentViewModel">
+            <StackPanel Spacing="12">
+                <snuxc:SizeRestrictedContentControl>
+                    <ComboBox
+                        HorizontalAlignment="Stretch"
+                        DisplayMemberPath="Name"
+                        Header="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelModelProviderProfile}">
+                        <mxi:Interaction.Behaviors>
+                            <snuxb:SelectorSelectedItemBindingWorkaroundBehavior
+                                ItemsSource="{x:Bind Settings.ModelProviderProfiles, Mode=OneWay}"
+                                SelectedItem="{x:Bind Conversations.CurrentItem.ModelProviderProfile, Mode=TwoWay}"/>
+                        </mxi:Interaction.Behaviors>
+                    </ComboBox>
+                </snuxc:SizeRestrictedContentControl>
+                <snuxc:SizeRestrictedContentControl>
+                    <ComboBox
+                        HorizontalAlignment="Stretch"
+                        DisplayMemberPath="DisplayName"
+                        Header="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelModelProfile}">
+                        <mxi:Interaction.Behaviors>
+                            <snuxb:SelectorSelectedItemBindingWorkaroundBehavior
+                                ItemsSource="{x:Bind Conversations.CurrentItem.ModelProviderProfile.ModelProfiles, Mode=OneWay}"
+                                SelectedItem="{x:Bind Conversations.CurrentItem.ModelProfile, Mode=TwoWay}"/>
+                        </mxi:Interaction.Behaviors>
+                    </ComboBox>
+                </snuxc:SizeRestrictedContentControl>
+            </StackPanel>
         </DataTemplate>
 
         <Style
@@ -172,9 +201,9 @@
                                             <StackPanel Orientation="Horizontal" Spacing="12">
                                                 <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
                                                     <TextBlock.Inlines>
-                                                        <Run Text="{Binding Conversations.CurrentItem.ModelProviderProfile.Name}"/>
+                                                        <Run Text="{x:Bind ((snv:AgentViewModel)DataContext).Conversations.CurrentItem.ModelProviderProfile.Name, Mode=OneWay}"/>
                                                         <Run Text="|"/>
-                                                        <Run Text="{Binding Conversations.CurrentItem.ModelProfile.DisplayName}"/>
+                                                        <Run Text="{x:Bind ((snv:AgentViewModel)DataContext).Conversations.CurrentItem.ModelProfile.DisplayName, Mode=OneWay}"/>
                                                     </TextBlock.Inlines>
                                                 </TextBlock>
                                                 <FontIcon
@@ -191,46 +220,27 @@
                                                             <Setter Property="MinWidth" Value="320"/>
                                                         </Style>
                                                     </Flyout.FlyoutPresenterStyle>
-                                                    <StackPanel DataContext="{Binding DataContext, RelativeSource={RelativeSource TemplatedParent}}" Spacing="12">
-                                                        <snuxc:SizeRestrictedContentControl>
-                                                            <ComboBox
-                                                                HorizontalAlignment="Stretch"
-                                                                DisplayMemberPath="Name"
-                                                                Header="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelModelProviderProfile}">
-                                                                <mxi:Interaction.Behaviors>
-                                                                    <snuxb:SelectorSelectedItemBindingWorkaroundBehavior ItemsSource="{Binding Settings.ModelProviderProfiles}" SelectedItem="{Binding Conversations.CurrentItem.ModelProviderProfile, Mode=TwoWay}"/>
-                                                                </mxi:Interaction.Behaviors>
-                                                            </ComboBox>
-                                                        </snuxc:SizeRestrictedContentControl>
-
-                                                        <snuxc:SizeRestrictedContentControl>
-                                                            <ComboBox
-                                                                HorizontalAlignment="Stretch"
-                                                                DisplayMemberPath="DisplayName"
-                                                                Header="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelModelProfile}">
-                                                                <mxi:Interaction.Behaviors>
-                                                                    <snuxb:SelectorSelectedItemBindingWorkaroundBehavior ItemsSource="{Binding Conversations.CurrentItem.ModelProviderProfile.ModelProfiles, Mode=OneWay}" SelectedItem="{Binding Conversations.CurrentItem.ModelProfile, Mode=TwoWay}"/>
-                                                                </mxi:Interaction.Behaviors>
-                                                            </ComboBox>
-                                                        </snuxc:SizeRestrictedContentControl>
-                                                    </StackPanel>
+                                                    <ContentControl
+                                                        HorizontalContentAlignment="Stretch"
+                                                        Content="{Binding DataContext, RelativeSource={RelativeSource TemplatedParent}}"
+                                                        ContentTemplate="{StaticResource AgentModelPickerTemplate}"/>
                                                 </Flyout>
                                             </Button.Flyout>
                                         </Button>
 
                                         <Button
-                                            Command="{Binding Conversations.CurrentItem.SendMessageCommand}"
+                                            Command="{x:Bind ((snv:AgentViewModel)DataContext).Conversations.CurrentItem.SendMessageCommand, Mode=OneWay}"
                                             Style="{StaticResource AgentInputSendButtonStyle}"
                                             ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelSend}"
-                                            Visibility="{Binding Conversations.CurrentItem.CanStopGeneration, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
+                                            Visibility="{x:Bind ((snv:AgentViewModel)DataContext).Conversations.CurrentItem.CanStopGeneration, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
                                             <FontIcon FontSize="14" Glyph="&#xE74A;"/>
                                         </Button>
 
                                         <Button
-                                            Command="{Binding Conversations.CurrentItem.StopGenerationCommand}"
+                                            Command="{x:Bind ((snv:AgentViewModel)DataContext).Conversations.CurrentItem.StopGenerationCommand, Mode=OneWay}"
                                             Style="{StaticResource AgentInputSendButtonStyle}"
                                             ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelStopGeneration}"
-                                            Visibility="{Binding Conversations.CurrentItem.CanStopGeneration, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            Visibility="{x:Bind ((snv:AgentViewModel)DataContext).Conversations.CurrentItem.CanStopGeneration, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                                             <FontIcon FontSize="12" Glyph="&#xE71A;"/>
                                         </Button>
                                     </StackPanel>
@@ -343,7 +353,7 @@
                     Grid.Row="1"
                     ItemContainerTransitions="{ThemeResource ListViewLikeThemeTransitions}"
                     ItemsSource="{x:Bind ViewModel.Conversations, Mode=OneWay}"
-                    SelectedItem="{Binding Conversations.CurrentItem, Mode=TwoWay}"
+                    SelectedItem="{x:Bind ViewModel.Conversations.CurrentItem, Mode=TwoWay}"
                     SelectionMode="Single">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="snv:AgentConversationViewModel">
@@ -520,11 +530,11 @@
                             </AppBarButton.Flyout>
                         </AppBarButton>
                         <AppBarButton
-                            Command="{Binding Conversations.CurrentItem.RegenerateCommand}"
+                            Command="{x:Bind ViewModel.Conversations.CurrentItem.RegenerateCommand, Mode=OneWay}"
                             Icon="Refresh"
                             Label="{snuxm:ResourceString Name=ViewDialogAccountInsightsRegenerate}"/>
                         <AppBarButton
-                            Command="{Binding CopyConversationCommand}"
+                            Command="{x:Bind ViewModel.CopyConversationCommand, Mode=OneWay}"
                             Icon="Copy"
                             Label="{snuxm:ResourceString Name=ViewDialogAccountInsightsCopyConversation}"/>
                     </CommandBar>
@@ -534,7 +544,7 @@
                     <ItemsControl
                         Margin="16,16,16,8"
                         ItemContainerTransitions="{ThemeResource AddDeleteThemeTransitions}"
-                        ItemsSource="{Binding Conversations.CurrentItem.Messages}">
+                        ItemsSource="{x:Bind ViewModel.Conversations.CurrentItem.Messages, Mode=OneWay}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="snao:ObservableChatMessage">
                                 <snuxcc:ChatMessageView Margin="0,0,0,8" Message="{x:Bind Mode=OneWay}"/>
@@ -554,10 +564,9 @@
                     Spacing="8">
                     <ContentControl
                         HorizontalContentAlignment="Stretch"
-                        Content="{Binding}"
+                        Content="{x:Bind ViewModel.Conversations.CurrentItem, Mode=OneWay}"
                         ContentTemplate="{StaticResource ToolApprovalRequestTemplate}"
-                        DataContext="{Binding Conversations.CurrentItem}"
-                        Visibility="{Binding ToolApprovalRequest, Converter={StaticResource ToolApprovalRequestVisibilityConverter}}"/>
+                        Visibility="{x:Bind ViewModel.Conversations.CurrentItem.ToolApprovalRequest, Converter={StaticResource ToolApprovalRequestVisibilityConverter}, Mode=OneWay}"/>
 
                     <TextBox
                         MaxHeight="240"
@@ -565,10 +574,10 @@
                         IsSpellCheckEnabled="False"
                         PlaceholderText="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelPlaceholder}"
                         Style="{StaticResource AgentInputTextBoxStyle}"
-                        Text="{Binding Conversations.CurrentItem.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{x:Bind ViewModel.Conversations.CurrentItem.InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         TextWrapping="Wrap">
                         <mxi:Interaction.Behaviors>
-                            <snuxb:SubmitOnEnterTextBoxBehavior Command="{Binding Conversations.CurrentItem.SendMessageCommand}"/>
+                            <snuxb:SubmitOnEnterTextBoxBehavior Command="{x:Bind ViewModel.Conversations.CurrentItem.SendMessageCommand, Mode=OneWay}"/>
                         </mxi:Interaction.Behaviors>
                     </TextBox>
                 </StackPanel>

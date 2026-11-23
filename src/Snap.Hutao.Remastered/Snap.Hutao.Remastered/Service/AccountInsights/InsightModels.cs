@@ -10,7 +10,9 @@ internal enum InsightDirection
     LowerIsBetter,
 }
 
-internal sealed record InsightLoadResult(List<InsightSeries> Series, List<string> FailedSources, List<GachaItem> GachaItems, List<BeyondGachaItem> BydMaterials);
+internal sealed record InsightLoadResult(List<InsightSeries> Series, List<InsightLoadFailure> Failures, List<GachaItem> GachaItems, List<BeyondGachaItem> BydMaterials);
+
+internal sealed record InsightLoadFailure(string Source, Exception Error);
 
 internal sealed record InsightPoint(string Period, double Value);
 

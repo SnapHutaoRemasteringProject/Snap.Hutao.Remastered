@@ -12,6 +12,19 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View.Window;
 
 public sealed partial class AccountInsightsWindow
 {
+    private void AddChart(InsightSeries series)
+    {
+        try
+        {
+            ChartsPanel.Children.Add(CreateChart(series));
+        }
+        catch (Exception exception)
+        {
+            logger.LogWarning(exception, "Failed to render account history chart: {Metric}", series.Metric);
+            ShowLoadError($"{L("ChartRenderError")} · {series.Title} · {series.Metric}", exception);
+        }
+    }
+
     private UIElement CreateChart(InsightSeries series)
     {
         StackPanel panel = new() { Spacing = 8 };
@@ -54,11 +67,11 @@ public sealed partial class AccountInsightsWindow
         // registered at application scope, immediately after XamlControlsResources.
         ChartSamples categories = new()
         {
-            ItemsSource = series.Points.Select(point => point.Period).ToArray(),
+            ItemsSource = series.Points.Select(point => point.Period).ToList(),
         };
         ChartSamples values = new()
         {
-            ItemsSource = series.Points.Select(point => point.Value).ToArray(),
+            ItemsSource = series.Points.Select(point => point.Value).ToList(),
         };
         CategoryAxis categoryAxis = new()
         {

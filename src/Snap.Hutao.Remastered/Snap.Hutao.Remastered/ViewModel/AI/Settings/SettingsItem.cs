@@ -6,9 +6,10 @@ using Snap.Hutao.Remastered.Resource.Localization.AI;
 
 namespace Snap.Hutao.Remastered.ViewModel.AI.Settings;
 
-internal sealed record SettingsItem<T>
+[WinRT.GeneratedBindableCustomProperty([nameof(Value)], [])]
+internal sealed partial class SettingsItem
 {
-    public SettingsItem(StringResourceValue label, T value)
+    public SettingsItem(StringResourceValue label, object? value)
     {
         Label = label;
         Value = value;
@@ -16,5 +17,5 @@ internal sealed record SettingsItem<T>
 
     public StringResourceValue Label { get; }
 
-    public T Value { get; }
+    public object? Value { get; }
 }

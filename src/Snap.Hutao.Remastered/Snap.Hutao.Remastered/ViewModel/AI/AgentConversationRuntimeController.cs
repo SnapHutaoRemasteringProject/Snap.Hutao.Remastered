@@ -3,7 +3,6 @@
 // Adapted from Snap.Nicole.
 
 using Microsoft.Agents.AI;
-using Snap.Hutao.Remastered.Core.AI.Text.Json;
 using Snap.Hutao.Remastered.Service.AI;
 using Snap.Hutao.Remastered.Service.AI.Models;
 
@@ -13,7 +12,6 @@ namespace Snap.Hutao.Remastered.ViewModel.AI;
 internal sealed class AgentConversationRuntimeController(IServiceProvider serviceProvider)
 {
     private readonly IAgentService agentService = serviceProvider.GetRequiredService<IAgentService>();
-    private readonly JsonSerializerOptions jsonOptions = serviceProvider.GetRequiredKeyedService<JsonSerializerOptions>(JsonSerializerOptionsKey.AgentConversation);
 
     public async ValueTask<HarnessAgent> EnsureConversationAgentAsync(AgentConversationRuntime runtime, ExtendedAgentOptions requestOptions, CancellationToken cancellationToken)
     {
@@ -36,7 +34,7 @@ internal sealed class AgentConversationRuntimeController(IServiceProvider servic
 
         if (runtime.SerializedSessionState is JsonElement serializedState)
         {
-            runtime.Session = await agent.DeserializeSessionAsync(serializedState, jsonOptions, cancellationToken);
+            runtime.Session = await AgentSessionSerialization.DeserializeAsync(agent, serializedState, cancellationToken);
         }
         else
         {
@@ -48,7 +46,7 @@ internal sealed class AgentConversationRuntimeController(IServiceProvider servic
 
     public async ValueTask SerializeConversationSessionAsync(AgentConversationRuntime runtime, HarnessAgent agent, AgentSession session, CancellationToken cancellationToken)
     {
-        JsonElement serializedState = await agent.SerializeSessionAsync(session, jsonOptions, cancellationToken);
+        JsonElement serializedState = await AgentSessionSerialization.SerializeAsync(agent, session, cancellationToken);
         runtime.SerializedSessionState = serializedState.Clone();
     }
 }
