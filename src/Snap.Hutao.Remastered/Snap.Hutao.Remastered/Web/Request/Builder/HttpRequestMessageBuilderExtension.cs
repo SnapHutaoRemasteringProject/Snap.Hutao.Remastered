@@ -49,7 +49,6 @@ public static class HttpRequestMessageBuilderExtension
 
                 StringBuilder messageBuilder = new();
                 bool showInfo = true;
-                string failureStage = "send";
 
                 try
                 {
@@ -57,7 +56,6 @@ public static class HttpRequestMessageBuilderExtension
                     ArgumentNullException.ThrowIfNull(context.Response);
 
                     showInfo = false;
-                    failureStage = "deserialize";
                     TResult? body = await builder.HttpContentSerializer.DeserializeAsync<TResult>(context.Response.Content, token).ConfigureAwait(false);
                     return new(context.Response.Headers, body);
                 }
@@ -70,7 +68,6 @@ public static class HttpRequestMessageBuilderExtension
                 }
                 catch (Exception ex)
                 {
-                    HttpRequestDiagnostics.Write(ex, typeof(TResult), builder.RequestUri, context.Response, failureStage);
                     if (logException)
                     {
                         HttpRequestExceptionHandling.TryHandle(messageBuilder, builder, ex);

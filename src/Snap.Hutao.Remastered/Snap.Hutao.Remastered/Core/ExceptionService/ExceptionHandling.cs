@@ -8,8 +8,6 @@ using Snap.Hutao.Remastered.UI.Xaml.View.Window;
 using Snap.Hutao.Remastered.Win32;
 using System.Data.Common;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.Core.ExceptionService;
@@ -54,21 +52,6 @@ public sealed partial class ExceptionHandling
 
     private void OnAppUnhandledException(object? sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
     {
-        // Persist the original error before telemetry or the exception window can
-        // throw again and replace it with a secondary stowed exception.
-        try
-        {
-            string directory = Path.Combine(AppDataPaths.UnpackagedRoot, "CrashLogs");
-            Directory.CreateDirectory(directory);
-            string path = Path.Combine(directory, $"unhandled-xaml-{DateTime.UtcNow:yyyyMMddTHHmmssfffffff}-{Environment.ProcessId}.txt");
-            string build = typeof(ExceptionHandling).Assembly.GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "unknown";
-            File.WriteAllText(path, $"UTC: {DateTime.UtcNow:O}\nBuild: {build}\nExecutable: {Environment.ProcessPath}\nDynamicCode: {System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeCompiled}\nHRESULT: {e.Exception?.HResult:X8}\nMessage: {e.Message}\n{e.Exception}");
-        }
-        catch (Exception diagnosticError)
-        {
-            Trace.WriteLine($"Unable to persist the original XAML exception: {diagnosticError}");
-        }
-
         Exception? exception = e.Exception;
 
         if (exception is null)
