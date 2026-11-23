@@ -397,7 +397,7 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
     private void OpenAlphaUpdatePreview()
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Open Alpha update preview", "TestViewModel.Command"));
-        AlphaUpdateWindow.ShowDevPreview(serviceProvider);
+        AlphaUpdateWindow.ShowBuildPreview(serviceProvider);
     }
 
     [Command("OpenSpeedGraphTestWindowCommand")]

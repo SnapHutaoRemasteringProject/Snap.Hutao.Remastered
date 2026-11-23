@@ -19,8 +19,6 @@ internal sealed class AlphaUpdateHistoryClient(IHttpClientFactory clients)
     private const string RepositoryPage = "https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered";
     private const int MaxDiffBytes = 256 * 1024;
 
-    public static Uri DevPage { get; } = new($"{RepositoryPage}/commits/dev");
-
     public static string? GetBuildCommit()
     {
         // The .NET SDK appends SourceRevisionId to InformationalVersion, including for AOT.
@@ -45,12 +43,6 @@ internal sealed class AlphaUpdateHistoryClient(IHttpClientFactory clients)
     public static Uri ComparePage(string baseline, string current) => new($"{RepositoryPage}/compare/{baseline}...{current}");
 
     public static Uri CommitPage(string sha) => new($"{RepositoryPage}/commit/{sha}");
-
-    public async Task<string> GetDevHeadAsync(CancellationToken token)
-    {
-        (AlphaGitHubBranch branch, _) = await GetAsync("branches/dev", AlphaUpdateJsonContext.Default.AlphaGitHubBranch, token).ConfigureAwait(false);
-        return IsCommitSha(branch.Commit.Sha) ? branch.Commit.Sha : throw new JsonException("Invalid dev branch commit SHA.");
-    }
 
     public async Task<(string Sha, string Label)> GetBaselineAsync(string? previousCommit, CancellationToken token)
     {
@@ -173,17 +165,11 @@ internal sealed class AlphaUpdateHistoryClient(IHttpClientFactory clients)
 }
 
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.SnakeCaseLower, GenerationMode = JsonSourceGenerationMode.Metadata, RespectNullableAnnotations = true)]
-[JsonSerializable(typeof(AlphaGitHubBranch))]
 [JsonSerializable(typeof(AlphaGitHubRelease))]
 [JsonSerializable(typeof(AlphaGitHubComparison))]
 [JsonSerializable(typeof(AlphaGitHubCommit))]
 [JsonSerializable(typeof(AlphaGitHubCommit[]))]
 internal sealed partial class AlphaUpdateJsonContext : JsonSerializerContext;
-
-internal sealed class AlphaGitHubBranch
-{
-    public required AlphaGitHubCommitReference Commit { get; init; }
-}
 
 internal sealed class AlphaGitHubRelease
 {

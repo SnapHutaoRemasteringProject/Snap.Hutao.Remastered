@@ -67,7 +67,8 @@
                     x:Name="CompareLink"
                     Padding="0,4"
                     HorizontalAlignment="Center"
-                    Content="{markup:ResourceString Name=ViewWindowAlphaUpdateOpenDev}"/>
+                    Content="{markup:ResourceString Name=ViewWindowAlphaUpdateOpenComparison}"
+                    Visibility="Collapsed"/>
             </StackPanel>
         </Grid>
 

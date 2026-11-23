@@ -27,10 +27,9 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
     private readonly IAppActivation appActivation;
     private readonly ILogger<AlphaUpdateWindow> logger;
     private readonly string? previousCommit;
-    private readonly bool previewDev;
     private readonly Dictionary<string, Type> modulePages = new(StringComparer.Ordinal);
     private readonly CancellationTokenSource lifetime = CancellationTokenSource.CreateLinkedTokenSource(XamlApplicationLifetime.ShutdownToken);
-    private string? currentCommit;
+    private readonly string? currentCommit;
     private CancellationTokenSource? commitLoad;
     private CancellationTokenSource? fileLoad;
     private string? baseline;
@@ -39,27 +38,20 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
     private int olderPage = 1;
 
     public AlphaUpdateWindow(IServiceProvider serviceProvider, string? previousCommit, string? currentCommit)
-        : this(serviceProvider, previousCommit, currentCommit, previewDev: false)
-    {
-    }
-
-    private AlphaUpdateWindow(IServiceProvider serviceProvider, string? previousCommit, string? currentCommit, bool previewDev)
     {
         this.previousCommit = previousCommit;
         this.currentCommit = currentCommit;
-        this.previewDev = previewDev;
         client = serviceProvider.GetRequiredService<AlphaUpdateHistoryClient>();
         appActivation = serviceProvider.GetRequiredService<IAppActivation>();
         logger = serviceProvider.GetRequiredService<ILogger<AlphaUpdateWindow>>();
 
         InitializeComponent();
-        BuildLabel.Text = previewDev ? "dev" : $"{HutaoRuntime.Version}";
+        BuildLabel.Text = $"{HutaoRuntime.Version}";
         if (currentCommit is not null)
         {
             BuildLabel.Text += $"  ·  {currentCommit[..8]}";
         }
 
-        CompareLink.NavigateUri = AlphaUpdateHistoryClient.DevPage;
         DetailStatus.Text = SH.ViewWindowAlphaUpdateSelectCommit;
 
         Hero.Modules =
@@ -95,9 +87,9 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
 
     public SizeInt32 InitSize => ScaledSizeInt32.CreateForWindow(1080, 710, this);
 
-    public static void ShowDevPreview(IServiceProvider serviceProvider)
+    public static void ShowBuildPreview(IServiceProvider serviceProvider)
     {
-        AlphaUpdateWindow window = new(serviceProvider, previousCommit: null, currentCommit: null, previewDev: true);
+        AlphaUpdateWindow window = new(serviceProvider, previousCommit: null, currentCommit: AlphaUpdateHistoryClient.GetBuildCommit());
         window.Activate();
     }
 
@@ -146,7 +138,7 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
     private async Task LoadHistoryAsync()
     {
         RetryButton.Visibility = Visibility.Collapsed;
-        if (currentCommit is null && !previewDev)
+        if (currentCommit is not { } current)
         {
             HistoryStatus.Text = SH.ViewWindowAlphaUpdateMissingRevision;
             return;
@@ -155,14 +147,6 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
         HistoryStatus.Text = SH.ViewControlLoadingText;
         await LoadAsync(async token =>
         {
-            string current = currentCommit ?? await client.GetDevHeadAsync(token);
-            token.ThrowIfCancellationRequested();
-            if (currentCommit is null)
-            {
-                currentCommit = current;
-                BuildLabel.Text = $"dev  ·  {current[..8]}";
-            }
-
             if (baseline is { } existingBaseline)
             {
                 await LoadUpdateCommitsAsync(existingBaseline, current, token);
@@ -174,7 +158,7 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
             baseline = sha;
             RangeLabel.Text = $"{label} → {current[..8]}";
             CompareLink.NavigateUri = AlphaUpdateHistoryClient.ComparePage(sha, current);
-            CompareLink.Content = SH.ViewWindowAlphaUpdateOpenComparison;
+            CompareLink.Visibility = Visibility.Visible;
 
             await Task.WhenAll(LoadUpdateCommitsAsync(sha, current, token), LoadOlderAsync());
         }, () =>

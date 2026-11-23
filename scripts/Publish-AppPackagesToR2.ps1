@@ -13,7 +13,8 @@ $descriptorName = "Snap.Hutao.Remastered.$Channel.x64.appinstaller"
 $descriptorPath = Join-Path $directory $descriptorName
 if (!(Test-Path -LiteralPath $descriptorPath -PathType Leaf)) { throw "Missing App Installer file: $descriptorPath" }
 
-[xml]$descriptor = Get-Content -LiteralPath $descriptorPath -Raw
+$descriptor = [System.Xml.XmlDocument]::new()
+$descriptor.Load($descriptorPath)
 $main = $descriptor.DocumentElement.SelectSingleNode("*[local-name()='MainPackage']")
 if ($null -eq $main) { throw 'App Installer MainPackage is missing.' }
 $origin = "https://package.snaphutaorp.org/$Channel/"
@@ -61,7 +62,8 @@ if ($LASTEXITCODE -ne 0) { throw 'Unable to inspect existing R2 update descripto
 if ($existing -contains $descriptorName) {
     $remoteXml = @(& $RclonePath cat ($remote + $descriptorName) --config $config)
     if ($LASTEXITCODE -ne 0) { throw 'Unable to read existing R2 update descriptor.' }
-    [xml]$active = ($remoteXml -join [Environment]::NewLine)
+    # rclone cat can pass a UTF-8 BOM through PowerShell as a leading character.
+    [xml]$active = ($remoteXml -join [Environment]::NewLine).TrimStart([char]0xFEFF)
     $activeMain = $active.DocumentElement.SelectSingleNode("*[local-name()='MainPackage']")
     if ($null -eq $activeMain) { throw 'Existing R2 update descriptor has no MainPackage.' }
     if ([Version]$activeMain.GetAttribute('Version') -gt [Version]$main.GetAttribute('Version')) {

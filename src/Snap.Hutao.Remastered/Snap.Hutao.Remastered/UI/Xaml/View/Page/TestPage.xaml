@@ -135,7 +135,7 @@
 
                 <cwc:SettingsCard
                     Command="{x:Bind DataContext.OpenAlphaUpdatePreviewCommand, Mode=OneWay}"
-                    Description="Compare the latest stable release with the current dev branch"
+                    Description="Compare the latest stable release with this installed build"
                     Header="Preview Alpha Update Window"
                     IsClickEnabled="True"/>
 
