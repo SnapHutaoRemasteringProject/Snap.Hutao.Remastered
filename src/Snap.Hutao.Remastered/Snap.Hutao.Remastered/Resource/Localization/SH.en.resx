@@ -887,6 +887,9 @@
   <data name="ServiceBackgroundActivityMetadataInitializationDescription" xml:space="preserve">
     <value>Preparing, if there is no response for a long time, please try restarting or checking the server status and network</value>
   </data>
+  <data name="ServiceBackgroundActivityMetadataInitializationCompleted" xml:space="preserve">
+    <value>元数据已就绪</value>
+  </data>
   <data name="ServiceBackgroundImageDecodeFailed" xml:space="preserve">
     <value>Unable to decode the background image: the system is missing a usable image decoding component, so this wallpaper switch has been skipped</value>
   </data>
@@ -1204,6 +1207,30 @@ Space Available: {2}</value>
   </data>
   <data name="ServiceMetadataVersionNotSupported" xml:space="preserve">
     <value>Your Snap Hutao is outdated. Please update as soon as possible.</value>
+  </data>
+  <data name="ServiceMetadataInitializationFailed" xml:space="preserve">
+    <value>元数据初始化失败，网络恢复后将自动重试</value>
+  </data>
+  <data name="ServiceMetadataSourceFallback" xml:space="preserve">
+    <value>已回退到 Git 元数据源</value>
+  </data>
+  <data name="ServiceMetadataBundleDownloadFailed" xml:space="preserve">
+    <value>元数据包下载失败</value>
+  </data>
+  <data name="ServiceMetadataBundleInvalid" xml:space="preserve">
+    <value>元数据包校验失败</value>
+  </data>
+  <data name="ServiceMetadataBundleDownloading" xml:space="preserve">
+    <value>正在下载({0}% {1}/{2})</value>
+  </data>
+  <data name="ServiceMetadataBundleDownloadingIndeterminate" xml:space="preserve">
+    <value>正在下载(已下载 {0})</value>
+  </data>
+  <data name="ServiceMetadataBundleValidating" xml:space="preserve">
+    <value>正在校验元数据包</value>
+  </data>
+  <data name="ServiceMetadataDecoding" xml:space="preserve">
+    <value>正在解析元数据</value>
   </data>
   <data name="ServicePackageAdvancedExecuteOperationCanceledTitle" xml:space="preserve">
     <value>Game resource operation canceled</value>
@@ -1768,6 +1795,30 @@ Space Available: {2}</value>
   </data>
   <data name="ViewGuideStepDataFolderHint" xml:space="preserve">
     <value>* The default data folder will be deleted during uninstallation, you can change it in settings later</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseHeader" xml:space="preserve">
+    <value>Import data from an older version</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseDescription" xml:space="preserve">
+    <value>Select the folder containing Userdata.db to copy it into the data folder shown above.</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseAlreadyActive" xml:space="preserve">
+    <value>This is the current data folder. Select the folder containing the old database.</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseReplaceConfirmation" xml:space="preserve">
+    <value>The imported database will be used after restart. The current database will be saved in the current data folder with a filename starting with Userdata.before-import. Continue importing?</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseMissing" xml:space="preserve">
+    <value>Userdata.db was not found. Select the folder that contains the database.</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseSuccess" xml:space="preserve">
+    <value>The imported database is ready and will be used after restart.</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseFailed" xml:space="preserve">
+    <value>Could not import your data. {0}</value>
+  </data>
+  <data name="ViewGuideImportUserDatabaseDeferred" xml:space="preserve">
+    <value>The current database will be used for this session. The imported copy was kept and will be retried on the next launch. {0}</value>
   </data>
   <data name="ViewGuideStepEnvironment" xml:space="preserve">
     <value>Environments</value>
@@ -2374,6 +2425,36 @@ Space Available: {2}</value>
   </data>
   <data name="ViewModelSettingStorageSetDataFolderDescription3" xml:space="preserve">
     <value>The selected folder '{0}' is not empty. Existing files will be overwritten.</value>
+  </data>
+  <data name="ViewModelSettingStorageSetDataFolderHasDatabase" xml:space="preserve">
+    <value>The current folder has no database to move, and the selected folder contains an existing database. Use Import data from an older version in the setup guide.</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationProgress" xml:space="preserve">
+    <value>Moving data to a new folder</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationCompress" xml:space="preserve">
+    <value>Compress data</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationTransfer" xml:space="preserve">
+    <value>Move the archive</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationExtract" xml:space="preserve">
+    <value>Extract to the new folder</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationConflict" xml:space="preserve">
+    <value>A file or folder appeared at {0} during migration. Select the folder again and confirm to retry.</value>
+  </data>
+  <data name="ViewModelSettingStorageMigrationReplaceConfirmation" xml:space="preserve">
+    <value>The selected folder already contains data: {0}. Conflicting files and folders will be moved to a Hutao.MigrationBackup folder in the destination. Continue changing the data folder?</value>
+  </data>
+  <data name="ViewModelSettingStorageBackupProgress" xml:space="preserve">
+    <value>Creating a local backup</value>
+  </data>
+  <data name="ViewModelSettingStorageBackupLocation" xml:space="preserve">
+    <value>Choose a location outside the data folder for the backup.</value>
+  </data>
+  <data name="ViewModelSettingStorageBackupSuccess" xml:space="preserve">
+    <value>Backup saved to {0}</value>
   </data>
   <data name="ViewModelSettingStorageSetDataFolderTitle" xml:space="preserve">
     <value>Copy Data Files</value>
@@ -3718,6 +3799,15 @@ Space Available: {2}</value>
   </data>
   <data name="ViewPageSettingSetDataFolderDescription" xml:space="preserve">
     <value>Folder will be automatically copied and the program will restart and delete the former folder automatically</value>
+  </data>
+  <data name="ViewPageSettingMigrateDataFolderDescription" xml:space="preserve">
+    <value>Copy your data to a new folder and restart to use it. The original folder is kept.</value>
+  </data>
+  <data name="ViewPageSettingUserDataBackupHeader" xml:space="preserve">
+    <value>Create a local data backup</value>
+  </data>
+  <data name="ViewPageSettingUserDataBackupDescription" xml:space="preserve">
+    <value>Save a ZIP containing the database and data files to a folder you choose.</value>
   </data>
   <data name="ViewPageSettingSetDataFolderHeader" xml:space="preserve">
     <value>Change Data Directory</value>
@@ -5310,6 +5400,15 @@ Space Available: {2}</value>
   <data name="ViewDialogDownloadSourceMirrorChyan" xml:space="preserve">
     <value>Mirror酱</value>
   </data>
+  <data name="ViewDialogDownloadSourceOfficialPackagedDescription" xml:space="preserve">
+    <value>使用 Windows 应用安装程序从 Snap Hutao Remastered 官方源更新</value>
+  </data>
+  <data name="ServiceUpdateMirrorChyanApiError" xml:space="preserve">
+    <value>Mirror 酱暂时无法提供更新（错误码 {0}）。请检查 CDK 或选择官方源。</value>
+  </data>
+  <data name="ServiceUpdateMirrorChyanPackageUnavailable" xml:space="preserve">
+    <value>未获取到 Mirror 酱的 MSIX 下载地址。请检查 CDK 或选择官方源。</value>
+  </data>
   <data name="ViewDialogDownloadSourceMirrorChyanDescription" xml:space="preserve">
     <value>Download via Mirror酱 CDN with excellent connectivity in China (CDK required)</value>
   </data>
@@ -6289,12 +6388,6 @@ After updating through another launcher, select Refresh installation to read the
 
 Ordinary launch does not require Island support. Compatibility is checked separately when Island enhancements are enabled.</value>
   </data>
-  <data name="ServiceUpdateOpenStoreContent" xml:space="preserve">
-    <value>Open Microsoft Store to get the update? This version updates through the Store. If the release is still under review or rolling out, the update may not be available yet. Please try again later.</value>
-  </data>
-  <data name="ServiceUpdateOpenStoreFailed" xml:space="preserve">
-    <value>Unable to open Microsoft Store or the product web page. Search for Snap Hutao Remastered in Microsoft Store and check for updates.</value>
-  </data>
   <data name="ViewGuideBundledImagesHeader" xml:space="preserve">
     <value>Image resources</value>
   </data>
@@ -6321,5 +6414,77 @@ Ordinary launch does not require Island support. Compatibility is checked separa
   </data>
   <data name="ServiceGameIslandVerificationUnavailable" xml:space="preserve">
     <value>The Island account check service is temporarily unavailable. This check could not be completed; the game will keep running. Try again when the connection is restored.</value>
+  </data>
+  <data name="ServiceUpdateRecommendPackaged" xml:space="preserve">
+    <value>推荐安装 MSIX 打包版，获得更顺畅的安装和更新体验。你也可以继续用 EXE 更新当前解包版。</value>
+  </data>
+  <data name="ViewDialogDownloadSourceAppInstaller" xml:space="preserve">
+    <value>安装 MSIX 打包版（推荐）</value>
+  </data>
+  <data name="ServiceUpdateAppInstallerUnavailable" xml:space="preserve">
+    <value>This installation does not contain a supported App Installer update source. Reinstall using the release .appinstaller file.</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateTitle" xml:space="preserve">
+    <value>Alpha 更新成功</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateOpenDev" xml:space="preserve">
+    <value>在 GitHub 查看 dev 分支</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateOpenComparison" xml:space="preserve">
+    <value>在 GitHub 查看版本比较</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateNewCommits" xml:space="preserve">
+    <value>本次更新</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateOlderCommits" xml:space="preserve">
+    <value>上次更新及更早</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateLoadOlder" xml:space="preserve">
+    <value>加载更早的提交</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateRetry" xml:space="preserve">
+    <value>重试</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateOpenCommit" xml:space="preserve">
+    <value>在 GitHub 查看提交</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateChangedFiles" xml:space="preserve">
+    <value>变更文件</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateSelectCommit" xml:space="preserve">
+    <value>选择左侧的提交以查看文件差异。</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateMissingRevision" xml:space="preserve">
+    <value>此安装包缺少构建提交，无法计算本次更新的范围。</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateLoadFailed" xml:space="preserve">
+    <value>无法读取 GitHub 提交记录，请检查连接或稍后重试。</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateNoNewCommits" xml:space="preserve">
+    <value>此范围没有新增提交。</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateNoChangedFiles" xml:space="preserve">
+    <value>此提交没有变更文件。</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateNoTextDiff" xml:space="preserve">
+    <value>此文件没有可预览的文本差异，或文件超过 256 KB。可在 GitHub 查看。</value>
+  </data>
+  <data name="ViewWindowAlphaUpdateDiffFailed" xml:space="preserve">
+    <value>无法加载文件差异。可在 GitHub 查看。</value>
+  </data>
+  <data name="ViewShortcutEditorTitle" xml:space="preserve">
+    <value>设置快捷键</value>
+  </data>
+  <data name="ViewShortcutEditorClear" xml:space="preserve">
+    <value>清除快捷键</value>
+  </data>
+  <data name="ViewShortcutEditorSingleKey" xml:space="preserve">
+    <value>请按一个键。</value>
+  </data>
+  <data name="ViewShortcutEditorCombination" xml:space="preserve">
+    <value>请按一个键，可搭配 Ctrl、Shift 或 Alt。</value>
+  </data>
+  <data name="ViewShortcutEditorInvalid" xml:space="preserve">
+    <value>当前按键不适用于此快捷键。</value>
   </data>
 </root>
