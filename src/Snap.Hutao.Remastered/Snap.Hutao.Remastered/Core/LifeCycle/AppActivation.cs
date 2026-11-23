@@ -289,6 +289,7 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
             {
                 serviceProvider.GetRequiredService<NotifyIconController>().Create();
                 XamlApplicationLifetime.NotifyIconCreated = true;
+                WindowExtension.UpdateEfficiencyMode();
             }
             catch (Exception ex)
             {
