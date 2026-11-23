@@ -205,9 +205,15 @@ public sealed partial class UpdateService : IUpdateService
                     return;
                 }
 
-                if (source is DownloadSourceKind.AppInstaller || (!isUnpackaged && source is DownloadSourceKind.Official))
+                if (source is DownloadSourceKind.AppInstaller && isUnpackaged)
                 {
-                    await InstallFromFeedAsync(descriptorUri ?? GetAppInstallerUri("Publish")).ConfigureAwait(false);
+                    await InstallFromFeedAsync(GetAppInstallerUri("Publish")).ConfigureAwait(false);
+                    return;
+                }
+
+                if (source is DownloadSourceKind.Official && !isUnpackaged)
+                {
+                    await InstallFromFeedAsync(descriptorUri!).ConfigureAwait(false);
                     return;
                 }
 
@@ -223,14 +229,23 @@ public sealed partial class UpdateService : IUpdateService
                     }
 
                     LocalSetting.Set(SettingKeys.MirrorChyanCdk, cdk);
+                    if (!isUnpackaged)
+                    {
+                        await InstallMirrorMsixAsync(cdk, token).ConfigureAwait(false);
+                        return;
+                    }
                 }
-                else if (result.PackageInformation?.Validation is not { Length: > 0 })
+                else if (source is not DownloadSourceKind.Official || result.PackageInformation?.Validation is not { Length: > 0 })
                 {
                     messenger.Send(InfoBarMessage.Error(SH.ViewModelSettingCheckUpdateFailed));
                     return;
                 }
 
-                await LaunchUpdaterAsync(source).ConfigureAwait(false);
+                await LaunchUnpackagedUpdaterAsync(source).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -309,7 +324,7 @@ public sealed partial class UpdateService : IUpdateService
             packageManager.GetDefaultPackageVolume());
     }
 
-    private async ValueTask LaunchUpdaterAsync(DownloadSourceKind downloadSource = DownloadSourceKind.Official)
+    private async ValueTask LaunchUnpackagedUpdaterAsync(DownloadSourceKind downloadSource)
     {
         using SentrySpanScope span = SentrySpanScope.StartChild("update.launch_updater", $"{downloadSource}");
         string updaterTargetPath = HutaoRuntime.GetDataUpdateCacheDirectoryFile(UpdaterFilename);
@@ -321,7 +336,7 @@ public sealed partial class UpdateService : IUpdateService
 
             CommandLineBuilder commandLineBuilder = new();
             commandLineBuilder.Append("--update");
-            commandLineBuilder.Append("--installer-kind", RuntimeEnvironment.IsUnpackaged ? "Installer" : "Msix");
+            commandLineBuilder.Append("--installer-kind", "Installer");
             if (hutaoUserOptions.IsLoggedIn)
             {
                 commandLineBuilder.Append("--api-key", await hutaoUserOptions.GetAccessTokenAsync().ConfigureAwait(false));
@@ -337,27 +352,20 @@ public sealed partial class UpdateService : IUpdateService
                     commandLineBuilder.Append("--cdk", cdk);
                 }
 
-                string resId = RuntimeEnvironment.IsUnpackaged ? "SnapHutaoRemastered" : "SnapHutaoRemastered_msix";
-                commandLineBuilder.Append("--res-id", resId);
+                commandLineBuilder.Append("--res-id", "SnapHutaoRemastered");
             }
 
             // The updater will request UAC permissions itself
             ProcessFactory.StartUsingShellExecute(commandLineBuilder.ToString(), updaterTargetPath);
 
-            if (RuntimeEnvironment.IsUnpackaged)
-            {
-                // After launching the deployer in unpackaged mode, the installer needs to
-                // replace the running executable files. Exit the main application to avoid
-                // file-in-use conflicts during installation.
-                ITaskContext taskContext = scope.ServiceProvider.GetRequiredService<ITaskContext>();
-                App app = serviceProvider.GetRequiredService<App>();
-                taskContext.InvokeOnMainThread(app.Exit);
+            // The EXE installer needs the running executable files to be released.
+            ITaskContext taskContext = scope.ServiceProvider.GetRequiredService<ITaskContext>();
+            App app = serviceProvider.GetRequiredService<App>();
+            taskContext.InvokeOnMainThread(app.Exit);
 
-                // base.Exit() may not fully terminate the process in unpackaged mode,
-                // so force exit to guarantee the process terminates completely.
-                SentrySdk.Flush();
-                Environment.Exit(0);
-            }
+            // base.Exit() may leave the unpackaged process running.
+            SentrySdk.Flush();
+            Environment.Exit(0);
         }
     }
 }

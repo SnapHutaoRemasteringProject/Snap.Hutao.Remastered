@@ -14,10 +14,15 @@ public sealed partial class DownloadSourceDialog : ContentDialog
     [GeneratedConstructor(InitializeComponent = true)]
     public partial DownloadSourceDialog(IServiceProvider serviceProvider);
 
-    public async ValueTask<ValueResult<bool, DownloadSourceKind>> GetDownloadSourceAsync(bool offerPackaged = false)
+    public async ValueTask<ValueResult<bool, DownloadSourceKind>> GetDownloadSourceAsync(bool offerPackaged)
     {
         await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
-        PackagedOption.Visibility = offerPackaged ? Microsoft.UI.Xaml.Visibility.Visible : Microsoft.UI.Xaml.Visibility.Collapsed;
+        if (!offerPackaged)
+        {
+            DownloadSourceSelector.Items.Remove(PackagedOption);
+            OfficialDescription.Text = SH.ViewDialogDownloadSourceOfficialPackagedDescription;
+        }
+
         ContentDialogResult result = await contentDialogFactory.EnqueueAndShowAsync(this).ShowTask.ConfigureAwait(false);
         await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
         return new(result is ContentDialogResult.Primary, (DownloadSourceKind)DownloadSourceSelector.SelectedIndex);

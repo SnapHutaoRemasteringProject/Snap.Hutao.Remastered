@@ -26,6 +26,7 @@
                 <StackPanel Spacing="2">
                     <TextBlock FontWeight="SemiBold" Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceOfficial}"/>
                     <TextBlock
+                        x:Name="OfficialDescription"
                         Opacity="0.7"
                         Style="{ThemeResource CaptionTextBlockStyle}"
                         Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceOfficialDescription}"/>
@@ -43,8 +44,7 @@
             <wl:LiquidGlassRadioButton
                 x:Name="PackagedOption"
                 shuxcth:ControlMaterialState.IsManaged="True"
-                Content="{shuxm:ResourceString Name=ViewDialogDownloadSourceAppInstaller}"
-                Visibility="Collapsed"/>
+                Content="{shuxm:ResourceString Name=ViewDialogDownloadSourceAppInstaller}"/>
         </RadioButtons>
     </StackPanel>
 </ContentDialog>

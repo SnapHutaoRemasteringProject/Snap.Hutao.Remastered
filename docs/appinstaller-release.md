@@ -13,7 +13,7 @@
 
 打开下载后的 `.appinstaller` 文件可以关联 Windows 更新源。胡桃也能通过 Windows 部署 API 直接打开托管描述文件，无需把 XML 写入用户数据目录。独立 MSIX 的用户仍能在胡桃里检查和安装对应频道的更新。Windows 的浏览器 `ms-appinstaller:` 协议默认关闭。 [Microsoft App Installer 文件说明](https://learn.microsoft.com/en-us/windows/msix/app-installer/app-installer-file-overview) · [Windows SDK 接口说明](https://learn.microsoft.com/en-us/windows/msix/app-installer/app-installer-documentation)
 
-解包版检查到更新时，会推荐安装 MSIX 打包版。选择官方源或 Mirror 酱仍可继续用 EXE 更新原安装。打包版的公开发布包可以使用官方 App Installer 更新，也可选择 Mirror 酱下载 MSIX。测试频道使用自己的官方更新地址。Mirror 酱继续使用 `SnapHutaoRemastered` 和 `SnapHutaoRemastered_msix` 两个资源 ID。
+解包版检查到更新时，会提供「安装 MSIX 打包版（推荐）」选项。选择官方源或 Mirror 酱仍可继续用 EXE 更新原安装。正式打包版通过官方 `.appinstaller` 更新，或将 Mirror 酱返回的 MSIX 地址直接交给 Windows 部署。Windows 可以复用未变化的包块。测试频道使用各自的官方更新地址。Mirror 酱继续使用 `SnapHutaoRemastered` 和 `SnapHutaoRemastered_msix` 两个资源 ID。 [Microsoft MSIX 差分更新说明](https://learn.microsoft.com/en-us/windows/msix/desktop/managing-your-msix-deployment-update)
 
 ## CI 和 R2
 

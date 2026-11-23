@@ -5401,6 +5401,15 @@
   <data name="ViewDialogDownloadSourceMirrorChyan" xml:space="preserve">
     <value>Mirror酱源</value>
   </data>
+  <data name="ViewDialogDownloadSourceOfficialPackagedDescription" xml:space="preserve">
+    <value>使用 Windows 应用安装程序从 Snap Hutao Remastered 官方源更新</value>
+  </data>
+  <data name="ServiceUpdateMirrorChyanApiError" xml:space="preserve">
+    <value>Mirror 酱暂时无法提供更新（错误码 {0}）。请检查 CDK 或选择官方源。</value>
+  </data>
+  <data name="ServiceUpdateMirrorChyanPackageUnavailable" xml:space="preserve">
+    <value>未获取到 Mirror 酱的 MSIX 下载地址。请检查 CDK 或选择官方源。</value>
+  </data>
   <data name="ViewDialogDownloadSourceMirrorChyanDescription" xml:space="preserve">
     <value>通过 Mirror酱 CDN 下载，中国大陆连通性极佳（需填入 CDK）</value>
   </data>
