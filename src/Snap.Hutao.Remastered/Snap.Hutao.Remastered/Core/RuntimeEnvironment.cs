@@ -9,6 +9,8 @@ namespace Snap.Hutao.Remastered.Core;
 
 public static class RuntimeEnvironment
 {
+    private const string ProtocolKeyPath = @"Software\Classes\hutao";
+
     public static bool IsPackaged { get; }
     public static bool IsUnpackaged => !IsPackaged;
 
@@ -36,31 +38,34 @@ public static class RuntimeEnvironment
 
         try
         {
-            string? executablePath = Process.GetCurrentProcess().MainModule?.FileName;
+            using Process process = Process.GetCurrentProcess();
+            string? executablePath = process.MainModule?.FileName;
             if (string.IsNullOrEmpty(executablePath))
             {
                 return;
             }
 
-            using (RegistryKey? key = Registry.CurrentUser.CreateSubKey(@"Software\Classes\hutao"))
-            {
-                if (key is null)
-                {
-                    return;
-                }
-
-                key.SetValue(string.Empty, "URL:hutao");
-                key.SetValue("URL Protocol", string.Empty);
-
-                using (RegistryKey? commandKey = key.CreateSubKey(@"shell\open\command"))
-                {
-                    commandKey?.SetValue(string.Empty, $"\"{executablePath}\" \"%1\"");
-                }
-            }
+            SetProtocolValueIfChanged(ProtocolKeyPath, string.Empty, "URL:hutao");
+            SetProtocolValueIfChanged(ProtocolKeyPath, "URL Protocol", string.Empty);
+            SetProtocolValueIfChanged($@"{ProtocolKeyPath}\shell\open\command", string.Empty, $"\"{executablePath}\" \"%1\"");
         }
-        catch
+        catch (Exception ex)
         {
-            // Best effort registration
+            Trace.WriteLine($"Could not register the hutao URL protocol: {ex.Message}");
         }
+    }
+
+    private static void SetProtocolValueIfChanged(string path, string name, string value)
+    {
+        using RegistryKey? existing = Registry.CurrentUser.OpenSubKey(path, writable: false);
+        if (existing?.GetValue(name, null, RegistryValueOptions.DoNotExpandEnvironmentNames) is string current
+            && string.Equals(current, value, StringComparison.Ordinal)
+            && existing.GetValueKind(name) == RegistryValueKind.String)
+        {
+            return;
+        }
+
+        using RegistryKey? writable = Registry.CurrentUser.CreateSubKey(path);
+        writable?.SetValue(name, value, RegistryValueKind.String);
     }
 }
