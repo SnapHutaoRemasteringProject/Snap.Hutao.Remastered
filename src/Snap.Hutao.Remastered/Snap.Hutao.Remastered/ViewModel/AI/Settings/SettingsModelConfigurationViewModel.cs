@@ -60,24 +60,6 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
     public partial InfoBarSeverity ModelListInfoBarSeverity { get; set; } = InfoBarSeverity.Informational;
 
     [field: MaybeNull]
-    public IRelayCommand AddProfileCommand => field ??= new RelayCommand(AddProfile);
-
-    [field: MaybeNull]
-    public IRelayCommand CopyProfileCommand => field ??= new RelayCommand(CopyProfile);
-
-    [field: MaybeNull]
-    public IRelayCommand DeleteProfileCommand => field ??= new RelayCommand(DeleteProfile);
-
-    [field: MaybeNull]
-    public IRelayCommand AddModelCommand => field ??= new RelayCommand(AddModel);
-
-    [field: MaybeNull]
-    public IRelayCommand DeleteModelCommand => field ??= new RelayCommand(DeleteModel);
-
-    [field: MaybeNull]
-    public IRelayCommand ClearModelsCommand => field ??= new RelayCommand(ClearModels);
-
-    [field: MaybeNull]
     public IAsyncRelayCommand RefreshModelsCommand => field ??= new AsyncRelayCommand(RefreshModelsAsync, () => CanRefreshModels);
 
     [field: MaybeNull]
@@ -85,6 +67,7 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
 
     private bool CanRefreshModels { get => !IsModelListBusy; }
 
+    [Command("AddProfileCommand")]
     private void AddProfile()
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Add provider profile", "SettingsModelConfigurationViewModel.Command"));
@@ -99,6 +82,7 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
         Settings.ModelProviderProfiles.CurrentItem = providerProfile;
     }
 
+    [Command("CopyProfileCommand")]
     private void CopyProfile()
     {
         if (Settings.ModelProviderProfiles.CurrentItem is not { } selected)
@@ -128,6 +112,7 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
         Settings.ModelProviderProfiles.CurrentItem = copy;
     }
 
+    [Command("DeleteProfileCommand")]
     private void DeleteProfile()
     {
         if (Settings.ModelProviderProfiles.CurrentItem is not { } selected)
@@ -139,6 +124,7 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
         Settings.ModelProviderProfiles.Remove(selected);
     }
 
+    [Command("AddModelCommand")]
     private void AddModel()
     {
         if (Settings.ModelProviderProfiles.CurrentItem is not { } providerProfile)
@@ -153,6 +139,7 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
         providerProfile.ModelProfiles.CurrentItem = modelProfile;
     }
 
+    [Command("DeleteModelCommand")]
     private void DeleteModel()
     {
         if (Settings.ModelProviderProfiles.CurrentItem?.ModelProfiles is not { } modelProfiles)
@@ -169,6 +156,7 @@ internal sealed partial class SettingsModelConfigurationViewModel(IServiceProvid
         modelProfiles.Remove(selected);
     }
 
+    [Command("ClearModelsCommand")]
     private void ClearModels()
     {
         SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateUI("Clear model profiles", "SettingsModelConfigurationViewModel.Command"));

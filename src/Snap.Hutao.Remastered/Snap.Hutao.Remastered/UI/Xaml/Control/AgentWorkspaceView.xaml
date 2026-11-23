@@ -78,7 +78,7 @@
             <Setter Property="Width" Value="32"/>
         </Style>
 
-        <Style x:Key="AgentInputTextBoxStyle" TargetType="TextBox">
+        <Style x:Key="AgentInputTextBoxStyle" TargetType="snuxc:AgentInputTextBox">
             <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}"/>
             <Setter Property="BackgroundSizing" Value="InnerBorderEdge"/>
             <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}"/>
@@ -99,7 +99,7 @@
             <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}"/>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="TextBox">
+                    <ControlTemplate TargetType="snuxc:AgentInputTextBox">
                         <Grid d:DataContext="{d:DesignInstance snv:AgentViewModel}" DataContext="{Binding DataContext, RelativeSource={RelativeSource TemplatedParent}}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -201,9 +201,9 @@
                                             <StackPanel Orientation="Horizontal" Spacing="12">
                                                 <TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis">
                                                     <TextBlock.Inlines>
-                                                        <Run Text="{x:Bind ((snv:AgentViewModel)DataContext).Conversations.CurrentItem.ModelProviderProfile.Name, Mode=OneWay}"/>
+                                                        <Run Text="{x:Bind DataContext.Conversations.CurrentItem.ModelProviderProfile.Name, Mode=OneWay}"/>
                                                         <Run Text="|"/>
-                                                        <Run Text="{x:Bind ((snv:AgentViewModel)DataContext).Conversations.CurrentItem.ModelProfile.DisplayName, Mode=OneWay}"/>
+                                                        <Run Text="{x:Bind DataContext.Conversations.CurrentItem.ModelProfile.DisplayName, Mode=OneWay}"/>
                                                     </TextBlock.Inlines>
                                                 </TextBlock>
                                                 <FontIcon
@@ -229,18 +229,18 @@
                                         </Button>
 
                                         <Button
-                                            Command="{x:Bind ((snv:AgentViewModel)DataContext).Conversations.CurrentItem.SendMessageCommand, Mode=OneWay}"
+                                            Command="{x:Bind DataContext.Conversations.CurrentItem.SendMessageCommand, Mode=OneWay}"
                                             Style="{StaticResource AgentInputSendButtonStyle}"
                                             ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelSend}"
-                                            Visibility="{x:Bind ((snv:AgentViewModel)DataContext).Conversations.CurrentItem.CanStopGeneration, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
+                                            Visibility="{x:Bind DataContext.Conversations.CurrentItem.CanStopGeneration, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=True}">
                                             <FontIcon FontSize="14" Glyph="&#xE74A;"/>
                                         </Button>
 
                                         <Button
-                                            Command="{x:Bind ((snv:AgentViewModel)DataContext).Conversations.CurrentItem.StopGenerationCommand, Mode=OneWay}"
+                                            Command="{x:Bind DataContext.Conversations.CurrentItem.StopGenerationCommand, Mode=OneWay}"
                                             Style="{StaticResource AgentInputSendButtonStyle}"
                                             ToolTipService.ToolTip="{snuxm:ResourceString Name=UIXamlPagesAgentPageLabelStopGeneration}"
-                                            Visibility="{x:Bind ((snv:AgentViewModel)DataContext).Conversations.CurrentItem.CanStopGeneration, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            Visibility="{x:Bind DataContext.Conversations.CurrentItem.CanStopGeneration, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
                                             <FontIcon FontSize="12" Glyph="&#xE71A;"/>
                                         </Button>
                                     </StackPanel>
@@ -568,7 +568,7 @@
                         ContentTemplate="{StaticResource ToolApprovalRequestTemplate}"
                         Visibility="{x:Bind ViewModel.Conversations.CurrentItem.ToolApprovalRequest, Converter={StaticResource ToolApprovalRequestVisibilityConverter}, Mode=OneWay}"/>
 
-                    <TextBox
+                    <snuxc:AgentInputTextBox
                         MaxHeight="240"
                         AcceptsReturn="True"
                         IsSpellCheckEnabled="False"
@@ -579,7 +579,7 @@
                         <mxi:Interaction.Behaviors>
                             <snuxb:SubmitOnEnterTextBoxBehavior Command="{x:Bind ViewModel.Conversations.CurrentItem.SendMessageCommand, Mode=OneWay}"/>
                         </mxi:Interaction.Behaviors>
-                    </TextBox>
+                    </snuxc:AgentInputTextBox>
                 </StackPanel>
             </Grid>
         </SplitView.Content>

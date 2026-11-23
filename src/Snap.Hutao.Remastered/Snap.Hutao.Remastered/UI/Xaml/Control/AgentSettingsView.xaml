@@ -115,7 +115,7 @@
                                             Grid.Column="0"
                                             HorizontalAlignment="Stretch"
                                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                            Command="{Binding AddProfileCommand}">
+                                            Command="{x:Bind DataContext.ModelConfiguration.AddProfileCommand, Mode=OneWay}">
                                             <StackPanel Orientation="Horizontal" Spacing="8">
                                                 <FontIcon FontSize="16" Glyph="&#xE710;"/>
                                                 <TextBlock Text="{snuxm:ResourceString Name=UIXamlPagesSettingsPageLabelAddProfile}"/>
@@ -125,7 +125,7 @@
                                             Grid.Column="1"
                                             HorizontalAlignment="Stretch"
                                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                            Command="{Binding CopyProfileCommand}">
+                                            Command="{x:Bind DataContext.ModelConfiguration.CopyProfileCommand, Mode=OneWay}">
                                             <StackPanel Orientation="Horizontal" Spacing="8">
                                                 <FontIcon FontSize="16" Glyph="&#xE8C8;"/>
                                                 <TextBlock Text="{snuxm:ResourceString Name=UIXamlPagesSettingsPageLabelCopyProfile}"/>
@@ -135,7 +135,7 @@
                                             Grid.Column="2"
                                             HorizontalAlignment="Stretch"
                                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                            Command="{Binding DeleteProfileCommand}">
+                                            Command="{x:Bind DataContext.ModelConfiguration.DeleteProfileCommand, Mode=OneWay}">
                                             <StackPanel Orientation="Horizontal" Spacing="8">
                                                 <FontIcon FontSize="16" Glyph="&#xE74D;"/>
                                                 <TextBlock Text="{snuxm:ResourceString Name=UIXamlPagesSettingsPageLabelDeleteProfile}"/>
@@ -176,8 +176,8 @@
                                                     ItemTemplate="{StaticResource SettingsItemLabelTemplate}">
                                                     <mxi:Interaction.Behaviors>
                                                         <snuxb:SelectorSelectedValueBindingWorkaroundBehavior
-                                                            ItemsSource="{x:Bind ((snv:AgentViewModel)DataContext).ModelConfiguration.ModelProviderTypes, Mode=OneWay}"
-                                                            SelectedValue="{x:Bind ((snv:AgentViewModel)DataContext).Settings.ModelProviderProfiles.CurrentItem.ProviderType, Mode=TwoWay}"
+                                                            ItemsSource="{x:Bind DataContext.ModelConfiguration.ModelProviderTypes, Mode=OneWay}"
+                                                            SelectedValue="{x:Bind DataContext.Settings.ModelProviderProfiles.CurrentItem.ProviderType, Mode=TwoWay}"
                                                             SelectedValuePath="Value"/>
                                                     </mxi:Interaction.Behaviors>
                                                 </ComboBox>
@@ -213,7 +213,7 @@
                                                             Grid.Column="2"
                                                             VerticalAlignment="Top"
                                                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                                            Command="{Binding AddModelCommand}">
+                                                            Command="{x:Bind DataContext.ModelConfiguration.AddModelCommand, Mode=OneWay}">
                                                             <StackPanel Orientation="Horizontal" Spacing="8">
                                                                 <FontIcon FontSize="16" Glyph="&#xE710;"/>
                                                                 <TextBlock Text="{snuxm:ResourceString Name=UIXamlPagesSettingsPageLabelAddModel}"/>
@@ -223,7 +223,7 @@
                                                             Grid.Column="3"
                                                             VerticalAlignment="Top"
                                                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                                            Command="{Binding DeleteModelCommand}">
+                                                            Command="{x:Bind DataContext.ModelConfiguration.DeleteModelCommand, Mode=OneWay}">
                                                             <StackPanel Orientation="Horizontal" Spacing="8">
                                                                 <FontIcon
                                                                     FontSize="16"
@@ -236,7 +236,7 @@
                                                             Grid.Column="4"
                                                             VerticalAlignment="Top"
                                                             BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                                                            Command="{Binding ClearModelsCommand}">
+                                                            Command="{x:Bind DataContext.ModelConfiguration.ClearModelsCommand, Mode=OneWay}">
                                                             <StackPanel Orientation="Horizontal" Spacing="8">
                                                                 <FontIcon
                                                                     FontSize="16"
@@ -306,8 +306,8 @@
                                                                         PlaceholderText="{snuxm:ResourceString Name=UIXamlPagesSettingsPagePlaceholderProviderDefault}">
                                                                         <mxi:Interaction.Behaviors>
                                                                             <snuxb:SelectorSelectedValueBindingWorkaroundBehavior
-                                                                                ItemsSource="{x:Bind ((snv:AgentViewModel)DataContext).ModelConfiguration.ReasoningEfforts, Mode=OneWay}"
-                                                                                SelectedValue="{x:Bind ((snv:AgentViewModel)DataContext).Settings.ModelProviderProfiles.CurrentItem.ModelProfiles.CurrentItem.AgentOptions.ReasoningEffort, Mode=TwoWay}"
+                                                                                ItemsSource="{x:Bind DataContext.ModelConfiguration.ReasoningEfforts, Mode=OneWay}"
+                                                                                SelectedValue="{x:Bind DataContext.Settings.ModelProviderProfiles.CurrentItem.ModelProfiles.CurrentItem.AgentOptions.ReasoningEffort, Mode=TwoWay}"
                                                                                 SelectedValuePath="Value"/>
                                                                         </mxi:Interaction.Behaviors>
                                                                     </ComboBox>
