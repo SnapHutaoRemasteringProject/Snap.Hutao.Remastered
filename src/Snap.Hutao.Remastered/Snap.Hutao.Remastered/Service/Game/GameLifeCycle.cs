@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Snap.Hutao.Remastered.Core.Diagnostics;
+using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Property;
 using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Win32;
@@ -199,7 +200,10 @@ public static class GameLifeCycle
         }
         catch (OperationCanceledException) when (!token.IsCancellationRequested)
         {
-            // Another process exited or the caller requested a fresh snapshot.
+            SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateDebug(
+                "Canceled the remaining game process waits before refreshing the process snapshot",
+                $"{nameof(GameLifeCycle)}.{nameof(WaitForGameProcessesAsync)}",
+                level: BreadcrumbLevel.Debug));
         }
         catch (InvalidOperationException)
         {
