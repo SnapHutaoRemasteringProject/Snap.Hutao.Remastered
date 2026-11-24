@@ -5,9 +5,7 @@
     xmlns:dev="using:DevWinUI"
     xmlns:markup="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
     xmlns:update="using:Snap.Hutao.Remastered.Service.Update">
-    <Grid
-        x:Name="RootGrid"
-        Loaded="OnLoaded">
+    <Grid x:Name="RootGrid" Loaded="OnLoaded">
         <Grid.Resources>
             <DataTemplate x:Key="CommitTemplate" x:DataType="update:AlphaGitHubCommit">
                 <StackPanel Padding="0,8" Spacing="3">
@@ -77,8 +75,8 @@
             Margin="20,12,20,16"
             ColumnSpacing="16">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
             <Grid RowSpacing="6">
                 <Grid.RowDefinitions>
@@ -145,24 +143,27 @@
                         Padding="0,4"
                         Content="{markup:ResourceString Name=ViewWindowAlphaUpdateOpenCommit}"
                         Visibility="Collapsed"/>
-                    <ComboBox
-                        x:Name="FileList"
-                        HorizontalAlignment="Stretch"
-                        AutomationProperties.Name="{markup:ResourceString Name=ViewWindowAlphaUpdateChangedFiles}"
-                        SelectionChanged="OnFileSelected"
-                        Visibility="Collapsed">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate x:DataType="update:AlphaGitHubFile">
-                                <TextBlock Text="{x:Bind Filename}" TextTrimming="CharacterEllipsis"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
                     <TextBlock x:Name="DetailStatus" TextWrapping="Wrap"/>
                 </StackPanel>
-                <dev:DiffView
-                    x:Name="Diff"
+                <dev:SidebarView
+                    x:Name="FileSidebar"
                     Grid.Row="1"
-                    Visibility="Collapsed"/>
+                    AutomationProperties.Name="{markup:ResourceString Name=ViewWindowAlphaUpdateChangedFiles}"
+                    ExpanderStyle="Tree"
+                    ItemInvoked="OnFileInvoked"
+                    MenuItemsSource="{x:Bind SidebarViewItems, Mode=OneWay}"
+                    OpenPaneLength="200"
+                    SupportsExpansion="True"
+                    Visibility="Collapsed">
+                    <dev:SidebarView.Resources>
+                        <ResourceDictionary Source="ms-appx:///UI/Xaml/View/Window/AlphaUpdateSidebarResources.xaml"/>
+                    </dev:SidebarView.Resources>
+                    <dev:DiffView
+                        x:Name="Diff"
+                        Margin="8,0,0,0"
+                        Visibility="Collapsed"
+                        WrapLines="True"/>
+                </dev:SidebarView>
             </Grid>
         </Grid>
     </Grid>

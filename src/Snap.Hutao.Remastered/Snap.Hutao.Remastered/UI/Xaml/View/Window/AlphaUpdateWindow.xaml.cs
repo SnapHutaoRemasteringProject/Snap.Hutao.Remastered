@@ -4,6 +4,7 @@
 using DevWinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.LifeCycle;
 using Snap.Hutao.Remastered.Core.Setting;
@@ -12,6 +13,7 @@ using Snap.Hutao.Remastered.UI.Windowing;
 using Snap.Hutao.Remastered.UI.Windowing.Abstraction;
 using Snap.Hutao.Remastered.UI.Xaml.View.Page;
 using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
@@ -29,6 +31,8 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
     private readonly ILogger<AlphaUpdateWindow> logger;
     private readonly AlphaUpdateRange? updateRange;
     private readonly bool saveRange;
+    private readonly ObservableCollection<SidebarItemModel> fileItems = [];
+    private readonly Dictionary<SidebarItemModel, AlphaGitHubFile> changedFiles = [];
     private readonly Dictionary<string, Type> modulePages = new(StringComparer.Ordinal);
     private readonly CancellationTokenSource lifetime = CancellationTokenSource.CreateLinkedTokenSource(XamlApplicationLifetime.ShutdownToken);
     private CancellationTokenSource? commitLoad;
@@ -46,6 +50,7 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
         appActivation = serviceProvider.GetRequiredService<IAppActivation>();
         logger = serviceProvider.GetRequiredService<ILogger<AlphaUpdateWindow>>();
 
+        SidebarViewItems = new(fileItems);
         InitializeComponent();
         BuildLabel.Text = $"{HutaoRuntime.Version}";
         if (updateRange is { CurrentCommit: { } current })
@@ -88,6 +93,8 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
 
     public SizeInt32 InitSize => ScaledSizeInt32.CreateForWindow(1080, 710, this);
 
+    public SidebarViewMenuSource SidebarViewItems { get; }
+
     public static void ShowBuildPreview(IServiceProvider serviceProvider)
     {
         string? current = AlphaUpdateHistoryClient.GetBuildCommit();
@@ -105,6 +112,7 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
     public void OnWindowClosed()
     {
         Hero.ModuleInvoked -= OnHeroModuleInvoked;
+        SidebarViewItems.Dispose();
         lifetime.Dispose();
     }
 
@@ -235,8 +243,10 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
         fileLoad?.Cancel();
         selectedCommit = commit;
         selectedParent = null;
-        FileList.ItemsSource = null;
-        FileList.Visibility = Visibility.Collapsed;
+        FileSidebar.SelectedItem = null;
+        FileSidebar.Visibility = Visibility.Collapsed;
+        changedFiles.Clear();
+        fileItems.Clear();
         Diff.Visibility = Visibility.Collapsed;
         CommitMessage.Text = commit.Commit.Message;
         CommitLink.NavigateUri = AlphaUpdateHistoryClient.CommitPage(commit.Sha);
@@ -251,11 +261,11 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
             token.ThrowIfCancellationRequested();
             selectedParent = parent;
             DetailStatus.Text = files.Count == 0 ? SH.ViewWindowAlphaUpdateNoChangedFiles : string.Empty;
-            if (files.Count > 0)
+            if (BuildFileTree(files) is { } first)
             {
-                FileList.ItemsSource = ItemsSourceHelper.Create(files, false);
-                FileList.Visibility = Visibility.Visible;
-                FileList.SelectedIndex = 0;
+                FileSidebar.Visibility = Visibility.Visible;
+                FileSidebar.SelectedItem = first;
+                await LoadFileDiffAsync(commit, changedFiles[first]);
             }
         }, () => DetailStatus.Text = SH.ViewWindowAlphaUpdateLoadFailed, operation.Token);
 
@@ -265,13 +275,105 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
         }
     }
 
-    private async void OnFileSelected(object sender, SelectionChangedEventArgs args)
+    private SidebarItemModel? BuildFileTree(List<AlphaGitHubFile> files)
     {
-        if (FileList.SelectedItem is not AlphaGitHubFile file || selectedCommit is not { } commit)
+        Dictionary<string, SidebarItemModel> folders = new(StringComparer.Ordinal);
+        List<SidebarItemModel> roots = [];
+        SidebarItemModel? first = null;
+        foreach (AlphaGitHubFile file in files.OrderBy(static file => file.Filename, StringComparer.Ordinal))
         {
-            return;
+            string[] segments = file.Filename.Split('/');
+            ICollection<SidebarItemModel> siblings = roots;
+            string path = string.Empty;
+            foreach (string segment in segments.AsSpan(0, segments.Length - 1))
+            {
+                path = path.Length == 0 ? segment : $"{path}/{segment}";
+                if (!folders.TryGetValue(path, out SidebarItemModel? folder))
+                {
+                    folder = new()
+                    {
+                        Text = segment,
+                        ToolTip = path,
+                        IconSource = new FontIconSource
+                        {
+                            FontFamily = new FontFamily("Segoe UI Emoji"),
+                            FontSize = 14,
+                            Glyph = "\U0001F4C1"
+                        },
+                        Children = [],
+                        IsExpanded = true,
+                    };
+                    folders.Add(path, folder);
+                    siblings.Add(folder);
+                }
+
+                siblings = folder.Children!;
+            }
+
+            SidebarItemModel leaf = new() { Text = segments[^1], ToolTip = file.Filename, IconSource = GetFileIcon(segments[^1]) };
+            siblings.Add(leaf);
+            changedFiles.Add(leaf, file);
+            first ??= leaf;
         }
 
+        foreach (SidebarItemModel root in roots)
+        {
+            CompactFolderPath(root);
+            fileItems.Add(root);
+        }
+
+        return first;
+    }
+
+    private static void CompactFolderPath(SidebarItemModel item)
+    {
+        while (item.Children is { Count: 1 } children && children[0] is { Children: { } descendants } folder)
+        {
+            item.Text = $"{item.Text}/{folder.Text}";
+            item.ToolTip = folder.ToolTip;
+            item.Children = descendants;
+        }
+
+        if (item.Children is { } remaining)
+        {
+            foreach (SidebarItemModel child in remaining)
+            {
+                CompactFolderPath(child);
+            }
+        }
+    }
+
+    private static IconSource GetFileIcon(string filename)
+    {
+        return Path.GetExtension(filename).ToLowerInvariant() switch
+        {
+            ".cs" or ".xaml" or ".xml" or ".csproj" or ".props" or ".targets" or ".resx"
+                or ".c" or ".cc" or ".cpp" or ".h" or ".hpp" or ".rs" or ".go" or ".py"
+                or ".js" or ".jsx" or ".ts" or ".tsx" or ".css" or ".html" or ".sql"
+                or ".ps1" or ".psm1" or ".sh" or ".bat" or ".cmd"
+                or ".json" or ".yml" or ".yaml" or ".toml"
+                => new FontIconSource
+                {
+                    FontFamily = new FontFamily("Segoe Fluent Icons"),
+                    FontSize = 14,
+                    Glyph = "\uE943"
+                },
+            _ => new SymbolIconSource { Symbol = Symbol.Document },
+        };
+    }
+
+    private async void OnFileInvoked(object? sender, DevWinUI.ItemInvokedEventArgs args)
+    {
+        if (sender is SidebarItem { Item: SidebarItemModel item }
+            && changedFiles.TryGetValue(item, out AlphaGitHubFile? file)
+            && selectedCommit is { } commit)
+        {
+            await LoadFileDiffAsync(commit, file);
+        }
+    }
+
+    private async Task LoadFileDiffAsync(AlphaGitHubCommit commit, AlphaGitHubFile file)
+    {
         fileLoad?.Cancel();
         using CancellationTokenSource operation = CancellationTokenSource.CreateLinkedTokenSource(lifetime.Token);
         fileLoad = operation;
@@ -288,7 +390,7 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
                 return;
             }
 
-            Diff.Filename = file.Filename;
+            Diff.Filename = Path.GetFileName(file.Filename);
             Diff.OldText = text.OldText;
             Diff.NewText = text.NewText;
             Diff.Visibility = Visibility.Visible;
