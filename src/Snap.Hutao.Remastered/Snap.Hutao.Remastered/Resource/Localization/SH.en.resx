@@ -6304,4 +6304,19 @@ Ordinary launch does not require Island support. Compatibility is checked separa
   <data name="ServiceGameIslandVerificationUnavailable" xml:space="preserve">
     <value>The Island account check service is temporarily unavailable. This check could not be completed; the game will keep running. Try again when the connection is restored.</value>
   </data>
+  <data name="ViewShortcutEditorTitle" xml:space="preserve">
+    <value>Activation shortcut</value>
+  </data>
+  <data name="ViewShortcutEditorClear" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="ViewShortcutEditorCombination" xml:space="preserve">
+    <value>Press a key or combination of keys to change this shortcut</value>
+  </data>
+  <data name="ViewShortcutEditorWarningTitle" xml:space="preserve">
+    <value>Using a single key as a shortcut may interfere with regular typing or system behavior.</value>
+  </data>
+  <data name="ViewShortcutEditorWarningToolTip" xml:space="preserve">
+    <value>It's recommended to use a modifier key (like Ctrl, Alt, or Win) along with it.</value>
+  </data>
 </root>

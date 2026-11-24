@@ -7,15 +7,29 @@
     Unloaded="OnUnloaded">
     <dev:Shortcut
         x:Name="MainShortcut"
-        CloseButtonClick="OnMainShortcutCloseButtonClick"
+        Title="{shuxm:ResourceString Name=ViewShortcutEditorCombination}"
         CloseButtonText="{shuxm:ResourceString Name=ContentDialogCancelCloseButtonText}"
         ClosedContentDialog="OnClosed"
         ContentDialogTitle="{shuxm:ResourceString Name=ViewShortcutEditorTitle}"
+        ErrorTitle="{shuxm:ResourceString Name=ViewShortcutEditorInvalid}"
+        InfoTitle=""
         OpenedContentDialog="OnOpened"
         PrimaryButtonClick="OnMainShortcutPrimaryButtonClick"
-        PrimaryButtonText="{shuxm:ResourceString Name=ContentDialogConfirmPrimaryButtonText}"
+        PrimaryButtonText="{shuxm:ResourceString Name=ContentDialogSavePrimaryButtonText}"
         SecondaryButtonClick="OnMainShortcutSecondaryButtonClick"
         SecondaryButtonText="{shuxm:ResourceString Name=ViewShortcutEditorClear}"
-        UseAutoValidation="False"
-        ValidateShortcut="OnValidateShortcut"/>
+        UseAutoValidation="True"
+        WarningTitle="{shuxm:ResourceString Name=ViewShortcutEditorWarningTitle}"
+        WarningToolTip="{shuxm:ResourceString Name=ViewShortcutEditorWarningToolTip}">
+        <dev:Shortcut.Footer>
+            <Viewbox Margin="8" StretchDirection="DownOnly">
+                <dev:MagicKeyboard
+                    FollowSystemKeyboardLayout="True"
+                    FormFactor="Full"
+                    IsHitTestVisible="False"
+                    IsPreviewVisible="False"
+                    Skin="System"/>
+            </Viewbox>
+        </dev:Shortcut.Footer>
+    </dev:Shortcut>
 </UserControl>

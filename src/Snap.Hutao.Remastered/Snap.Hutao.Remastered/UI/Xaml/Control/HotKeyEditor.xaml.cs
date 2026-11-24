@@ -16,7 +16,6 @@ namespace Snap.Hutao.Remastered.UI.Xaml.Control;
 [DependencyProperty<NameValue<VIRTUAL_KEY>>("SelectedKey", PropertyChangedCallbackName = nameof(OnShortcutChanged))]
 public sealed partial class HotKeyEditor : UserControl
 {
-    private HotKeyParameter? draft;
     private bool isRecording;
 
     public HotKeyEditor()
@@ -59,7 +58,6 @@ public sealed partial class HotKeyEditor : UserControl
 
         MainShortcut.Keys = keys;
         MainShortcut.IsEnabled = combination is not null || SelectedKey is not null;
-        MainShortcut.Title = combination is null ? SH.ViewShortcutEditorSingleKey : SH.ViewShortcutEditorCombination;
     }
 
     private void OnOpened(object? sender, ContentDialogOpenedEventArgs args)
@@ -90,25 +88,18 @@ public sealed partial class HotKeyEditor : UserControl
             ShortcutCapture.End();
         }
 
-        draft = null;
         MainShortcut.IsError = false;
     }
 
-    private void OnValidateShortcut(object? sender, ShortcutValidationEventArgs args)
-    {
-        draft = ReadShortcut(args.KeysInfo, Combination is not null);
-        args.ContentDialog.IsPrimaryButtonEnabled = draft is not null;
-        MainShortcut.ErrorTitle = SH.ViewShortcutEditorInvalid;
-        MainShortcut.IsError = draft is null;
-    }
-
-    private static HotKeyParameter? ReadShortcut(IReadOnlyList<KeyVisualInfo> keys, bool allowModifiers)
+    // The editor validates key combinations. Check that the recorded keys fit
+    // the storage and input rules of the selected Hutao action.
+    private static HotKeyParameter? ReadShortcut(IReadOnlyList<object> keys, bool allowModifiers)
     {
         HOT_KEY_MODIFIERS modifiers = default;
         VIRTUAL_KEY mainKey = VIRTUAL_KEY.VK__none_;
-        foreach (KeyVisualInfo item in keys)
+        foreach (object item in keys)
         {
-            if (item.Key is not { } virtualKey)
+            if (item is not KeyVisualInfo { Key: { } virtualKey })
             {
                 return null;
             }
@@ -153,7 +144,15 @@ public sealed partial class HotKeyEditor : UserControl
 
     private void OnMainShortcutPrimaryButtonClick(object? sender, ContentDialogButtonClickEventArgs args)
     {
-        bool saved = draft is not { } value || ApplyShortcut(value);
+        MainShortcut.UpdatePreviewKeys();
+        bool saved = MainShortcut.Keys.Count == 0
+            || (ReadShortcut(MainShortcut.Keys, Combination is not null) is { } value && ApplyShortcut(value));
+        if (!saved)
+        {
+            RefreshShortcut();
+            MainShortcut.IsError = true;
+        }
+
         MainShortcut.CanCloseContentDialog(saved);
         args.Cancel = !saved;
     }
@@ -162,12 +161,7 @@ public sealed partial class HotKeyEditor : UserControl
     {
         bool saved = ApplyShortcut(HotKeyParameter.Default);
         MainShortcut.CanCloseContentDialog(saved);
-        args.Cancel = !saved;
-    }
-
-    private void OnMainShortcutCloseButtonClick(object? sender, ContentDialogButtonClickEventArgs args)
-    {
-        draft = null;
+        args.Cancel = false;
     }
 
     private bool ApplyShortcut(HotKeyParameter value)
