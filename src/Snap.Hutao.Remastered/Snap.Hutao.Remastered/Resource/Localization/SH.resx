@@ -2855,6 +2855,12 @@
   <data name="ViewPageDailyNoteSettingAutoRefresh" xml:space="preserve">
     <value>自动刷新</value>
   </data>
+  <data name="ServiceDailyNoteTileTransformerHours" xml:space="preserve">
+    <value>{0} h</value>
+  </data>
+  <data name="ServiceDailyNoteTileTransformerMinutes" xml:space="preserve">
+    <value>{0} min</value>
+  </data>
   <data name="ViewPageDailyNoteSettingAutoRefreshDescription" xml:space="preserve">
     <value>间隔选定的时间后刷新添加的实时便笺</value>
   </data>
