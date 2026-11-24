@@ -127,6 +127,16 @@ jobs:
           path: ${{ github.workspace }}/artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
           if-no-files-found: error
 
+      - name: Upload Native AOT symbols to Sentry
+        if: ${{ github.repository_owner == 'SnapHutaoRemasteringProject' && github.ref == 'refs/heads/dev' && github.event_name != 'pull_request' }}
+        continue-on-error: true
+        shell: pwsh
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
+        run: |
+          npx.cmd --yes sentry debug-files upload -o snaphutaoremasteringproject -p snap-hutao-remastered artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
       - name: Upload signed msix
         if: success() && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v7
