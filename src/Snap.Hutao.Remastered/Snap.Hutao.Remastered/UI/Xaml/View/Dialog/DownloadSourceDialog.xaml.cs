@@ -14,7 +14,7 @@ public sealed partial class DownloadSourceDialog : ContentDialog
     [GeneratedConstructor(InitializeComponent = true)]
     public partial DownloadSourceDialog(IServiceProvider serviceProvider);
 
-    public async ValueTask<ValueResult<bool, DownloadSourceKind>> GetDownloadSourceAsync(bool offerPackaged)
+    public async ValueTask<ValueResult<bool, DownloadSourceKind>> GetDownloadSourceAsync(bool offerPackaged, bool offerOfficial = true)
     {
         await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
         if (!offerPackaged)
@@ -23,8 +23,18 @@ public sealed partial class DownloadSourceDialog : ContentDialog
             OfficialDescription.Text = SH.ViewDialogDownloadSourceOfficialPackagedDescription;
         }
 
+        if (!offerOfficial)
+        {
+            DownloadSourceSelector.Items.Remove(OfficialOption);
+            DownloadSourceSelector.SelectedIndex = 0;
+        }
+
         ContentDialogResult result = await contentDialogFactory.EnqueueAndShowAsync(this).ShowTask.ConfigureAwait(false);
         await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
-        return new(result is ContentDialogResult.Primary, (DownloadSourceKind)DownloadSourceSelector.SelectedIndex);
+        object? selected = DownloadSourceSelector.SelectedItem;
+        DownloadSourceKind source = ReferenceEquals(selected, OfficialOption) ? DownloadSourceKind.Official
+            : ReferenceEquals(selected, PackagedOption) ? DownloadSourceKind.AppInstaller
+            : DownloadSourceKind.MirrorChyan;
+        return new(result is ContentDialogResult.Primary && selected is not null, source);
     }
 }

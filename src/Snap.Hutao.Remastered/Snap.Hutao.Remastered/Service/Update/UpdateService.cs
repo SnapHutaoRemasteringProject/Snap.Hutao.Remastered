@@ -27,6 +27,7 @@ public sealed partial class UpdateService : IUpdateService
 {
     private const string AppInstallerHost = "package.snaphutaorp.org";
     private const string PublishPackageName = "E8B6E2B3-D2A0-4435-A81D-2A16AAF405C8";
+    private const string AlphaPackageName = "7f0db578-026f-4e0b-a75b-d5d06bb0a74c";
     private const string UpdaterFilename = "Snap.Hutao.Remastered.Deployment.exe";
 
     // Avoid injecting services directly
@@ -68,6 +69,16 @@ public sealed partial class UpdateService : IUpdateService
                         || (ex is OperationCanceledException && !token.IsCancellationRequested))
                     {
                         SentrySdk.CaptureException(ex);
+                    }
+
+                    if (IsAlphaPackage() && (remoteVersion is null || remoteVersion <= HutaoRuntime.Version))
+                    {
+                        Version? mirrorVersion = await TryGetMirrorAlphaVersionAsync(token).ConfigureAwait(false);
+                        if (mirrorVersion is not null && (remoteVersion is null || mirrorVersion > remoteVersion))
+                        {
+                            remoteVersion = mirrorVersion;
+                            checkUpdateResult.IsMirrorChyanOnly = true;
+                        }
                     }
 
                     if (remoteVersion is not null)
@@ -147,7 +158,9 @@ public sealed partial class UpdateService : IUpdateService
             ICurrentXamlWindowReference currentXamlWindowReference = scope.ServiceProvider.GetRequiredService<ICurrentXamlWindowReference>();
             IContentDialogFactory contentDialogFactory = scope.ServiceProvider.GetRequiredService<IContentDialogFactory>();
             IMessenger messenger = scope.ServiceProvider.GetRequiredService<IMessenger>();
+            MsixUpdateProgress updateProgress = scope.ServiceProvider.GetRequiredService<MsixUpdateProgress>();
 
+            await contentDialogFactory.TaskContext.SwitchToMainThreadAsync();
             if (currentXamlWindowReference.Window is null)
             {
                 return;
@@ -155,6 +168,11 @@ public sealed partial class UpdateService : IUpdateService
 
             try
             {
+                if (updateProgress.IsUpdating)
+                {
+                    return;
+                }
+
                 // The user already skipped this version once, don't prompt again on automatic checks.
                 // A manual check from the setting page always shows the dialog, so the user can
                 // still choose to update.
@@ -189,17 +207,20 @@ public sealed partial class UpdateService : IUpdateService
                     return;
                 }
 
-                // Preview packages update from their own feeds. Mirror Chyan serves the public release.
-                if (!isUnpackaged && !IsPublishPackage())
+                bool isAlphaPackage = !isUnpackaged && IsAlphaPackage();
+                // Canary packages only have their own App Installer feed.
+                if (!isUnpackaged && !isAlphaPackage && !IsPublishPackage())
                 {
-                    await InstallFromFeedAsync(descriptorUri!).ConfigureAwait(false);
+                    await InstallFromFeedAsync(descriptorUri!, updateProgress).ConfigureAwait(false);
                     return;
                 }
 
                 DownloadSourceDialog sourceDialog = await contentDialogFactory
                     .CreateInstanceAsync<DownloadSourceDialog>(scope.ServiceProvider)
                     .ConfigureAwait(false);
-                (bool confirmed, DownloadSourceKind source) = await sourceDialog.GetDownloadSourceAsync(offerPackaged: isUnpackaged).ConfigureAwait(false);
+                (bool confirmed, DownloadSourceKind source) = await sourceDialog
+                    .GetDownloadSourceAsync(offerPackaged: isUnpackaged, offerOfficial: !result.IsMirrorChyanOnly)
+                    .ConfigureAwait(false);
                 if (!confirmed)
                 {
                     return;
@@ -207,13 +228,13 @@ public sealed partial class UpdateService : IUpdateService
 
                 if (source is DownloadSourceKind.AppInstaller && isUnpackaged)
                 {
-                    await InstallFromFeedAsync(GetAppInstallerUri("Publish")).ConfigureAwait(false);
+                    await InstallFromFeedAsync(GetAppInstallerUri("Publish"), updateProgress).ConfigureAwait(false);
                     return;
                 }
 
                 if (source is DownloadSourceKind.Official && !isUnpackaged)
                 {
-                    await InstallFromFeedAsync(descriptorUri!).ConfigureAwait(false);
+                    await InstallFromFeedAsync(descriptorUri!, updateProgress).ConfigureAwait(false);
                     return;
                 }
 
@@ -231,7 +252,8 @@ public sealed partial class UpdateService : IUpdateService
                     LocalSetting.Set(SettingKeys.MirrorChyanCdk, cdk);
                     if (!isUnpackaged)
                     {
-                        await InstallMirrorMsixAsync(cdk, token).ConfigureAwait(false);
+                        await updateProgress.RunAsync(progress =>
+                            InstallMirrorMsixAsync(cdk, isAlphaPackage, result.PackageInformation?.Version, progress, token)).ConfigureAwait(false);
                         return;
                     }
                 }
@@ -300,6 +322,8 @@ public sealed partial class UpdateService : IUpdateService
 
     private static bool IsPublishPackage() => string.Equals(Package.Current.Id.Name, PublishPackageName, StringComparison.Ordinal);
 
+    private static bool IsAlphaPackage() => string.Equals(Package.Current.Id.Name, AlphaPackageName, StringComparison.OrdinalIgnoreCase);
+
     private static Uri GetAppInstallerUri(string channel) => new($"https://{AppInstallerHost}/{channel}/Snap.Hutao.Remastered.{channel}.x64.appinstaller");
 
     private static Uri? GetPackagedAppInstallerUri()
@@ -307,21 +331,24 @@ public sealed partial class UpdateService : IUpdateService
         return Package.Current.Id.Name switch
         {
             PublishPackageName => GetAppInstallerUri("Publish"),
-            "7f0db578-026f-4e0b-a75b-d5d06bb0a74c" => GetAppInstallerUri("Alpha"),
+            AlphaPackageName => GetAppInstallerUri("Alpha"),
             "52127695-c6a7-406e-916a-693b905e8ba7" => GetAppInstallerUri("Canary"),
             _ => null,
         };
     }
 
-    private static async ValueTask InstallFromFeedAsync(Uri descriptorUri)
+    private static ValueTask InstallFromFeedAsync(Uri descriptorUri, MsixUpdateProgress updateProgress)
     {
         // Use the Windows deployment API with the hosted XML. This does not require
         // a local descriptor or the browser's ms-appinstaller protocol handler.
-        PackageManager packageManager = new();
-        await packageManager.RequestAddPackageByAppInstallerFileAsync(
-            descriptorUri,
-            AddPackageByAppInstallerOptions.ForceTargetAppShutdown,
-            packageManager.GetDefaultPackageVolume());
+        return updateProgress.RunAsync(progress =>
+        {
+            PackageManager packageManager = new();
+            return packageManager.RequestAddPackageByAppInstallerFileAsync(
+                descriptorUri,
+                AddPackageByAppInstallerOptions.ForceTargetAppShutdown,
+                packageManager.GetDefaultPackageVolume()).AsTask(progress);
+        });
     }
 
     private async ValueTask LaunchUnpackagedUpdaterAsync(DownloadSourceKind downloadSource)

@@ -22,7 +22,7 @@
             Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceHint}"
             TextWrapping="Wrap"/>
         <RadioButtons x:Name="DownloadSourceSelector" SelectedIndex="0">
-            <wl:LiquidGlassRadioButton shuxcth:ControlMaterialState.IsManaged="True">
+            <wl:LiquidGlassRadioButton x:Name="OfficialOption" shuxcth:ControlMaterialState.IsManaged="True">
                 <StackPanel Spacing="2">
                     <TextBlock FontWeight="SemiBold" Text="{shuxm:ResourceString Name=ViewDialogDownloadSourceOfficial}"/>
                     <TextBlock

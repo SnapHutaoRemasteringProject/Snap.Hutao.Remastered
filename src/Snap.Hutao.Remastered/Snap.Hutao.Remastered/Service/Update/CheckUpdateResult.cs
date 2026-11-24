@@ -10,4 +10,6 @@ public sealed class CheckUpdateResult
     public CheckUpdateResultKind Kind { get; set; }
 
     public HutaoPackageInformation? PackageInformation { get; set; }
+
+    public bool IsMirrorChyanOnly { get; set; }
 }

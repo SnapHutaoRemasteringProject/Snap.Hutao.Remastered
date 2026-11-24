@@ -4,6 +4,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Snap.Hutao.Remastered.Service.Update;
 using Snap.Hutao.Remastered.ViewModel;
 using Snap.Hutao.Remastered.ViewModel.User;
 using System.Runtime.CompilerServices;
@@ -12,6 +13,8 @@ namespace Snap.Hutao.Remastered.UI.Xaml.View;
 
 public sealed partial class MainView : UserControl, IDataContextInitialized
 {
+    private MsixUpdateProgress? updateProgress;
+
     public MainView()
     {
         InitializeComponent();
@@ -21,7 +24,14 @@ public sealed partial class MainView : UserControl, IDataContextInitialized
     public void OnDataContextInitialized(IServiceProvider serviceProvider)
     {
         UserView.InitializeDataContext<UserViewModel>(serviceProvider);
+        updateProgress = serviceProvider.GetRequiredService<MsixUpdateProgress>();
+        if (UpdateGrowlHost.IsLoaded)
+        {
+            updateProgress.Attach(UpdateGrowlHost);
+        }
     }
+
+    private void OnUpdateGrowlHostLoaded(object sender, RoutedEventArgs e) => updateProgress?.Attach(UpdateGrowlHost);
 
     private void OnBackgroundActivityButtonPointerEntered(object sender, PointerRoutedEventArgs e)
     {
@@ -52,6 +62,7 @@ public sealed partial class MainView : UserControl, IDataContextInitialized
     private void OnUnloaded(object sender, RoutedEventArgs e)
     {
         Unloaded -= OnUnloaded;
+        updateProgress?.Detach(UpdateGrowlHost);
         UserView.DataContext<UserViewModel>()?.IsViewUnloaded.Value = true;
         this.DataContext<MainViewModel>()?.Uninitialize();
     }
