@@ -16,6 +16,7 @@ public sealed partial class DailyNoteOptions : DbStoreOptions
     private const int OneMinute = 60;
 
     private readonly IQuartzService quartzService;
+    private readonly ITileRefreshScheduler tileRefreshScheduler;
 
     [GeneratedConstructor(CallBaseConstructor = true)]
     public partial DailyNoteOptions(IServiceProvider serviceProvider);
@@ -87,5 +88,9 @@ public sealed partial class DailyNoteOptions : DbStoreOptions
                 DailyNoteRefreshJobScheduler.BuildJob,
                 jobKey => DailyNoteRefreshJobScheduler.BuildTrigger(jobKey, value)).GetAwaiter().GetResult();
         }
+
+        // 计划任务的间隔也要跟着设置变，否则后台刷新还停留在旧频率。
+        // SyncIntervalAsync 内部会跳过未注册状态，不会悄悄把开关打开。
+        options.tileRefreshScheduler.SyncIntervalAsync(Math.Max(1, value / 60)).AsTask().SafeForget();
     }
 }

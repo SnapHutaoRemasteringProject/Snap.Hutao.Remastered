@@ -228,6 +228,22 @@ public sealed partial class TileRefreshScheduler : ITileRefreshScheduler
         return true;
     }
 
+    public async ValueTask SyncIntervalAsync(int intervalMinutes, CancellationToken token = default)
+    {
+        // 改间隔不应悄悄把开关打开：任务未注册时直接跳过。
+        if (RuntimeEnvironment.IsUnpackaged || !await IsRegisteredAsync(token).ConfigureAwait(false))
+        {
+            return;
+        }
+
+        // 已注册则按新间隔重建（RegisterAsync 内部 /F 覆盖同名任务）。
+        bool synced = await RegisterAsync(intervalMinutes, token).ConfigureAwait(false);
+        if (!synced)
+        {
+            logger.LogWarning("Syncing tile refresh interval to {Minutes} minutes failed", intervalMinutes);
+        }
+    }
+
     private bool TryStageScript(string source, string directory, string destination)
     {
         try

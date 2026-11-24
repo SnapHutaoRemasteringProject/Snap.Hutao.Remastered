@@ -29,6 +29,12 @@ public interface ITileRefreshScheduler
     /// </summary>
     ValueTask<bool> RegisterAsync(int intervalMinutes, CancellationToken token = default);
 
+    /// <summary>
+    /// 设置里的刷新间隔变化时调用：已注册则按新间隔重建任务，未注册则跳过
+    /// （改间隔不应悄悄把开关打开）。
+    /// </summary>
+    ValueTask SyncIntervalAsync(int intervalMinutes, CancellationToken token = default);
+
     /// <summary>移除计划任务。</summary>
     ValueTask<bool> UnregisterAsync(CancellationToken token = default);
 }
