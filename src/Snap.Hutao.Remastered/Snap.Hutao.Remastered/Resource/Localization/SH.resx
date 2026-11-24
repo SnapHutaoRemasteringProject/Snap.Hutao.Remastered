@@ -2882,6 +2882,9 @@
   <data name="ViewModelDailyNoteTileBackgroundRefreshFailed" xml:space="preserve">
     <value>注册后台刷新计划任务失败，请查看日志了解详情</value>
   </data>
+  <data name="ViewModelDailyNoteTileBackgroundRefreshScheduledInterval" xml:space="preserve">
+    <value>已注册后台刷新计划任务（每 {0} 分钟）</value>
+  </data>
   <data name="ViewModelDailyNoteTileBackgroundRefreshScheduled" xml:space="preserve">
     <value>已注册后台刷新计划任务</value>
   </data>

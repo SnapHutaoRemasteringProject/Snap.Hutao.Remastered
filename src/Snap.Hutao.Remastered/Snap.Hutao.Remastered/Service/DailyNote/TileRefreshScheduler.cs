@@ -16,7 +16,7 @@ namespace Snap.Hutao.Remastered.Service.DailyNote;
 /// 而是执行随包分发的脚本，由它通过 AUMID 激活应用并传入 <c>--refresh-tile</c>。
 /// </summary>
 [Service(ServiceLifetime.Singleton, typeof(ITileRefreshScheduler))]
-public sealed partial class TileRefreshScheduler : ITileRefreshScheduler
+internal sealed partial class TileRefreshScheduler : ITileRefreshScheduler
 {
     internal const string TaskName = "Snap Hutao Tile Refresh";
 
@@ -41,6 +41,13 @@ public sealed partial class TileRefreshScheduler : ITileRefreshScheduler
     private const uint ScriptHostFailed = 1;
 
     private readonly ILogger<TileRefreshScheduler> logger;
+
+    /// <summary>
+    /// 串行化所有会改任务/暂存文件的操作（注册、删除、间隔同步）：
+    /// 「改间隔时 Sync 先查询到任务存在，随后用户关闭开关删除了任务，
+    /// Sync 的重建又跑在删除之后」这类交错会让开关显示关闭而任务仍在跑。
+    /// </summary>
+    private readonly AsyncLock taskGate = new();
 
     [GeneratedConstructor]
     public partial TileRefreshScheduler(IServiceProvider serviceProvider);
@@ -112,6 +119,14 @@ public sealed partial class TileRefreshScheduler : ITileRefreshScheduler
 
     public async ValueTask<bool> RegisterAsync(int intervalMinutes, CancellationToken token = default)
     {
+        using (await taskGate.LockAsync().ConfigureAwait(false))
+        {
+            return await RegisterCoreAsync(intervalMinutes, token).ConfigureAwait(false);
+        }
+    }
+
+    private async ValueTask<bool> RegisterCoreAsync(int intervalMinutes, CancellationToken token)
+    {
         using SentrySpanScope span = SentrySpanScope.StartOperation("daily_note.tile_refresh_schedule.register", "daily_note_tile");
 
         if (RuntimeEnvironment.IsUnpackaged)
@@ -153,9 +168,11 @@ public sealed partial class TileRefreshScheduler : ITileRefreshScheduler
         }
 
         // VBS 字符串里的双引号要写成两个：外层一层转义引号，内层再包住路径。
+        // Run 的等待参数用 True：wscript 等 PowerShell 退出后才结束，
+        // 这样任务的 Last Result 能反映真实的刷新结果而不是总是 0。
         string innerCommand = $"\"\"\"{ResolvePowerShellPath()}\"\" -NoProfile -NonInteractive -ExecutionPolicy Bypass" +
             $" -File \"\"{scriptPath}\"\" -Aumid \"\"{Package.Current.Id.FamilyName}!App\"\"\"";
-        string wrapperContent = $"CreateObject(\"WScript.Shell\").Run {innerCommand}, 0, False\r\n";
+        string wrapperContent = $"CreateObject(\"WScript.Shell\").Run {innerCommand}, 0, True\r\n";
 
         if (!TryWriteTextFile(wrapperPath, wrapperContent))
         {
@@ -206,41 +223,47 @@ public sealed partial class TileRefreshScheduler : ITileRefreshScheduler
             logger.LogWarning("Adjusting tile refresh task settings failed with {ExitCode}: {Output}", settingsExit, settingsOutput);
         }
 
-        await Task.CompletedTask.ConfigureAwait(false);
         return true;
     }
 
     public async ValueTask<bool> UnregisterAsync(CancellationToken token = default)
     {
-        if (RuntimeEnvironment.IsUnpackaged)
+        using (await taskGate.LockAsync().ConfigureAwait(false))
         {
-            return false;
-        }
+            if (RuntimeEnvironment.IsUnpackaged)
+            {
+                return false;
+            }
 
-        (int exitCode, string output) = await RunSchtasksAsync(["/Delete", "/TN", TaskName, "/F"], token).ConfigureAwait(false);
-        if (exitCode != 0 && !output.Contains("cannot find", StringComparison.OrdinalIgnoreCase))
-        {
-            logger.LogWarning("Deleting tile refresh task failed with {ExitCode}: {Output}", exitCode, output);
-            return false;
-        }
+            (int exitCode, string output) = await RunSchtasksAsync(["/Delete", "/TN", TaskName, "/F"], token).ConfigureAwait(false);
+            if (exitCode != 0 && !output.Contains("cannot find", StringComparison.OrdinalIgnoreCase))
+            {
+                logger.LogWarning("Deleting tile refresh task failed with {ExitCode}: {Output}", exitCode, output);
+                return false;
+            }
 
-        TryDeleteStagedFiles();
-        return true;
+            TryDeleteStagedFiles();
+            return true;
+        }
     }
 
     public async ValueTask SyncIntervalAsync(int intervalMinutes, CancellationToken token = default)
     {
-        // 改间隔不应悄悄把开关打开：任务未注册时直接跳过。
-        if (RuntimeEnvironment.IsUnpackaged || !await IsRegisteredAsync(token).ConfigureAwait(false))
+        using (await taskGate.LockAsync().ConfigureAwait(false))
         {
-            return;
-        }
+            // 改间隔不应悄悄把开关打开：任务未注册时直接跳过。
+            // 查询与重建同持一把锁，不会被并发的 UnregisterAsync 插队。
+            if (RuntimeEnvironment.IsUnpackaged || !await IsRegisteredAsync(token).ConfigureAwait(false))
+            {
+                return;
+            }
 
-        // 已注册则按新间隔重建（RegisterAsync 内部 /F 覆盖同名任务）。
-        bool synced = await RegisterAsync(intervalMinutes, token).ConfigureAwait(false);
-        if (!synced)
-        {
-            logger.LogWarning("Syncing tile refresh interval to {Minutes} minutes failed", intervalMinutes);
+            // 已注册则按新间隔重建（RegisterCoreAsync 内部 /F 覆盖同名任务）。
+            bool synced = await RegisterCoreAsync(intervalMinutes, token).ConfigureAwait(false);
+            if (!synced)
+            {
+                logger.LogWarning("Syncing tile refresh interval to {Minutes} minutes failed", intervalMinutes);
+            }
         }
     }
 
@@ -286,7 +309,7 @@ public sealed partial class TileRefreshScheduler : ITileRefreshScheduler
         }
     }
 
-    private static void TryDeleteStagedFiles()
+    private void TryDeleteStagedFiles()
     {
         try
         {
@@ -299,9 +322,10 @@ public sealed partial class TileRefreshScheduler : ITileRefreshScheduler
                 }
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // 清理失败无需处理：下次注册会覆盖同一批文件。
+            // 清理失败可诊断但不影响功能：下次注册会覆盖同一批文件。
+            logger.LogWarning(ex, "Unable to delete staged tile refresh files under {Path}", HutaoRuntime.LocalFolderDirectory);
         }
     }
 
@@ -316,7 +340,7 @@ public sealed partial class TileRefreshScheduler : ITileRefreshScheduler
         return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "WindowsPowerShell", "v1.0", "powershell.exe");
     }
 
-    private static async ValueTask<(int ExitCode, string Output)> RunSchtasksAsync(string[] arguments, CancellationToken token)
+    private async ValueTask<(int ExitCode, string Output)> RunSchtasksAsync(string[] arguments, CancellationToken token)
     {
         ProcessStartInfo startInfo = new()
         {
@@ -354,7 +378,7 @@ public sealed partial class TileRefreshScheduler : ITileRefreshScheduler
         return (process.ExitCode, await outputTask.ConfigureAwait(false) + await errorTask.ConfigureAwait(false));
     }
 
-    private static void TryKill(Process process)
+    private void TryKill(Process process)
     {
         try
         {
@@ -365,7 +389,8 @@ public sealed partial class TileRefreshScheduler : ITileRefreshScheduler
         }
         catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception)
         {
-            // 进程已退出或无权结束，调用方继续抛原始异常。
+            // 进程已退出或无权结束，调用方继续抛原始异常；记录便于诊断。
+            logger.LogDebug(ex, "Unable to kill schtasks process {Pid}", process.Id);
         }
     }
 }

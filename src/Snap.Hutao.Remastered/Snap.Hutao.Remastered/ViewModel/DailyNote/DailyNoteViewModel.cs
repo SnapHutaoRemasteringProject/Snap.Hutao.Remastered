@@ -680,16 +680,17 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
 
         await taskContext.SwitchToBackgroundAsync();
 
+        // 任务注册可能跨页面存续：接 ShutdownToken，退出时中止挂起的 schtasks 操作。
         bool ok = enable
-            ? await tileRefreshScheduler.RegisterAsync(intervalMinutes).ConfigureAwait(false)
-            : await tileRefreshScheduler.UnregisterAsync().ConfigureAwait(false);
+            ? await tileRefreshScheduler.RegisterAsync(intervalMinutes, XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false)
+            : await tileRefreshScheduler.UnregisterAsync(XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false);
 
         await taskContext.SwitchToMainThreadAsync();
 
         if (ok)
         {
             messenger.Send(InfoBarMessage.Success(enable
-                ? $"{SH.ViewModelDailyNoteTileBackgroundRefreshScheduled} ({intervalMinutes} min)"
+                ? SH.FormatViewModelDailyNoteTileBackgroundRefreshScheduledInterval(intervalMinutes)
                 : SH.ViewModelDailyNoteTileBackgroundRefreshUnscheduled));
             return;
         }

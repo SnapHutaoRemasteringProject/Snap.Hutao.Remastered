@@ -19,6 +19,9 @@ public static class HutaoAppActivator
     [ComImport, Guid("2e941141-7f97-4756-ba1d-9decde894a3d"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     private interface IApplicationActivationManager
     {
+        // PreserveSig：直接返回 HRESULT。没有它，COM 会把返回值变成隐藏的
+        // out 参数，成功激活会被当成失败。
+        [PreserveSig]
         int ActivateApplication(string appUserModelId, string arguments, int options, out uint processId);
     }
 
@@ -62,6 +65,30 @@ function Remove-OrphanedSchedule
     Start-Process -FilePath 'cmd.exe' -ArgumentList $commandLine -WindowStyle Hidden -ErrorAction SilentlyContinue | Out-Null
 }
 
+function Test-PackageRegistered
+{
+    # 通过包注册表判断应用是否已卸载。Get-AppxPackage 在计划任务上下文
+    # 中不总是可用，这里直接查 Repository\Packages。
+    # 键名是 PackageFullName：Name_<Version>_<Arch>__<PublisherId>，
+    # 而 AUMID 前段是 FamilyName：Name_PublisherId。两者之间隔着版本与架构，
+    # 因此拆出 Name（首段）与 PublisherId（末段）分别匹配，版本变化（升级）
+    # 不影响判定。
+    $familyName = $Aumid.Split('!')[0]
+    $namePart = $familyName.Split('_')[0]
+    $publisherPart = $familyName.Split('_')[-1]
+    $repoRoot = 'HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages'
+    $keys = @(Get-ChildItem $repoRoot -Name -ErrorAction SilentlyContinue)
+    foreach ($key in $keys)
+    {
+        if ($key.StartsWith($namePart) -and $key.EndsWith($publisherPart))
+        {
+            return $true
+        }
+    }
+
+    return $false
+}
+
 if (-not ('HutaoAppActivator' -as [type]))
 {
     Add-Type -TypeDefinition $source -Language CSharp
@@ -83,8 +110,14 @@ catch
     }
     catch
     {
-        # 连续两次失败：应用大概率已卸载，自愈清理。
-        Remove-OrphanedSchedule
+        # 连续两次失败后仍需确认包确实不在：更新期间激活被阻塞属于暂时
+        # 状态，此时删除任务会把后台刷新永久关掉。只有包已从注册表消失
+        # （真正卸载）才自愈清理。
+        if (-not (Test-PackageRegistered))
+        {
+            Remove-OrphanedSchedule
+        }
+
         exit 1
     }
 }

@@ -91,6 +91,7 @@ public sealed partial class DailyNoteOptions : DbStoreOptions
 
         // 计划任务的间隔也要跟着设置变，否则后台刷新还停留在旧频率。
         // SyncIntervalAsync 内部会跳过未注册状态，不会悄悄把开关打开。
-        options.tileRefreshScheduler.SyncIntervalAsync(Math.Max(1, value / 60)).AsTask().SafeForget();
+        // 接 ShutdownToken：应用退出时中止挂起的任务重建。
+        options.tileRefreshScheduler.SyncIntervalAsync(Math.Max(1, value / 60), XamlApplicationLifetime.ShutdownToken).AsTask().SafeForget();
     }
 }

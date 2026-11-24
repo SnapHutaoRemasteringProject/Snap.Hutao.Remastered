@@ -20,7 +20,7 @@ namespace Snap.Hutao.Remastered.Service.DailyNote;
 /// 需要 XAML 线程；这里只读数据库、拉接口、写回、推磁贴。
 /// </summary>
 [Service(ServiceLifetime.Singleton, typeof(ITileRefreshRunner))]
-public sealed partial class TileRefreshRunner : ITileRefreshRunner
+internal sealed partial class TileRefreshRunner : ITileRefreshRunner
 {
     private readonly IDailyNoteTileService dailyNoteTileService;
     private readonly IDailyNoteRepository dailyNoteRepository;

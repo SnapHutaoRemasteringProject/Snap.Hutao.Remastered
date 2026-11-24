@@ -1,8 +1,9 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+using Microsoft.Windows.AppLifecycle;
+using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Service.DailyNote;
-using System.Diagnostics;
 
 namespace Snap.Hutao.Remastered.Core.LifeCycle;
 
@@ -50,21 +51,28 @@ internal static class TileRefreshActivation
         }
     }
 
+    /// <summary>
+    /// 用与应用主入口相同的单实例键判断「本用户的实例」是否已在运行。
+    /// 不能按进程名判断：那会把其他 Windows 用户打开的副本也当成主实例，
+    /// 导致本用户的计划任务刷新被无谓跳过。AppInstance 键是每用户独立的，
+    /// 与用户名一起派生，恰好表达「本用户的主实例」。
+    /// </summary>
     private static bool ShouldRunHeadless()
     {
-        using Process current = Process.GetCurrentProcess();
-
-        foreach (Process other in Process.GetProcessesByName(current.ProcessName))
+        string instanceKey = "Snap.Hutao.Remastered" + AppDataPaths.InstanceSuffix;
+        AppInstance keyInstance = AppInstance.FindOrRegisterForKey(instanceKey);
+        try
         {
-            using (other)
+            // keyInstance 即当前进程（headless 启动时无人持有该键）；
+            // 若已被主实例注册，IsCurrent 为 false。
+            return keyInstance.IsCurrent;
+        }
+        finally
+        {
+            if (keyInstance.IsCurrent)
             {
-                if (other.Id != current.Id)
-                {
-                    return false;
-                }
+                keyInstance.UnregisterKey();
             }
         }
-
-        return true;
     }
 }
