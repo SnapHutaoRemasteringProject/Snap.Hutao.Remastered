@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:cwc="using:CommunityToolkit.WinUI.Controls"
-    xmlns:dev="using:DevWinUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:essential="using:WinUI3Package"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -389,6 +388,5 @@
         </Grid>
 
         <shuxv:InfoBarView Margin="0,44,0,0" VerticalAlignment="Stretch"/>
-        <dev:GrowlHost x:Name="UpdateGrowlHost" DefaultPosition="BottomRight" Loaded="OnUpdateGrowlHostLoaded"/>
     </Grid>
 </UserControl>

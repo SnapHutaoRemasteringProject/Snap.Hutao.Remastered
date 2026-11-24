@@ -14,6 +14,7 @@ using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.UI.Windowing;
 using Snap.Hutao.Remastered.Service.Job;
+using Snap.Hutao.Remastered.Service.Update;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior;
 using System.Diagnostics;
 using System.IO;
@@ -80,6 +81,7 @@ public sealed partial class App : Application
     }
     private async Task ExitAfterContentDetachedAsync()
     {
+        await serviceProvider.GetRequiredService<MsixUpdateProgress>().StopAsync().ConfigureAwait(true);
         // Shutdown must happen before Application.Start returns. Quartz job setup
         // and running jobs may otherwise await a dispatcher already destroyed.
         await serviceProvider.GetRequiredService<IQuartzService>().ShutdownAsync().ConfigureAwait(true);

@@ -13,7 +13,7 @@
 
 打开下载后的 `.appinstaller` 文件可以关联 Windows 更新源。胡桃也能通过 Windows 部署 API 直接打开托管描述文件，无需把 XML 写入用户数据目录。独立 MSIX 的用户仍能在胡桃里检查和安装对应频道的更新。Windows 的浏览器 `ms-appinstaller:` 协议默认关闭。 [Microsoft App Installer 文件说明](https://learn.microsoft.com/en-us/windows/msix/app-installer/app-installer-file-overview) · [Windows SDK 接口说明](https://learn.microsoft.com/en-us/windows/msix/app-installer/app-installer-documentation)
 
-通过 `.appinstaller` 安装并关联更新源后，Windows 会在启动时检查更新，可在后台准备新包。本应用手动发起 MSIX 部署时会持续显示 Windows 返回的进度。对系统发起的更新，胡桃只在运行期间收到自己的包更新事件时显示估算进度。若 Windows 结束旧进程以完成部署，进度提示也随旧进程关闭。 [App Installer 更新设置](https://learn.microsoft.com/en-us/windows/msix/app-installer/update-settings)
+通过 `.appinstaller` 安装并关联更新源后，Windows 会在启动时检查更新，可在后台准备新包。本应用手动发起 MSIX 部署时会在窗口外持续显示 Windows 返回的进度。对系统发起的更新，胡桃只在运行期间收到自己的包更新事件时显示估算进度。若 Windows 结束旧进程以完成部署，进度提示也随旧进程关闭。 [App Installer 更新设置](https://learn.microsoft.com/en-us/windows/msix/app-installer/update-settings)
 
 解包版检查到更新时，会提供「安装 MSIX 打包版（推荐）」选项。选择官方源或 Mirror 酱仍可继续用 EXE 更新原安装。正式版与 Alpha 打包版可走各自的官方 `.appinstaller` 更新，也可在选择 Mirror 酱并输入 CDK 后，将该频道返回的临时 MSIX 地址交给 Windows 部署。Windows 可以复用未变化的包块。Alpha 在官方源未报告更新时也会查询 Mirror 酱，若新版只在 Mirror 酱可用，下载来源只提供 Mirror 酱。Canary 使用自己的官方更新地址。Mirror 酱使用 `SnapHutaoRemastered` 和 `SnapHutaoRemastered_msix` 两个资源 ID。 [Microsoft MSIX 差分更新说明](https://learn.microsoft.com/en-us/windows/msix/desktop/managing-your-msix-deployment-update)
 

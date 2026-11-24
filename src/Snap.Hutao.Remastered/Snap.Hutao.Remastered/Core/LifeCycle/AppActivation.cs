@@ -13,6 +13,7 @@ using Snap.Hutao.Remastered.Service.Job;
 using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.Service.Notification;
+using Snap.Hutao.Remastered.Service.Update;
 using Snap.Hutao.Remastered.UI.Input.HotKey;
 using Snap.Hutao.Remastered.UI.Shell;
 using Snap.Hutao.Remastered.UI.Windowing;
@@ -273,6 +274,7 @@ public sealed partial class AppActivation : IAppActivation, IAppActivationAction
         // Notify icon
         App app = serviceProvider.GetRequiredService<App>();
         await taskContext.SwitchToMainThreadAsync();
+        serviceProvider.GetRequiredService<MsixUpdateProgress>().StartObserving();
         try
         {
             app.DispatcherShutdownMode = DispatcherShutdownMode.OnExplicitShutdown;

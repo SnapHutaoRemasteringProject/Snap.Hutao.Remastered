@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 using DevWinUI;
-using Microsoft.UI.Dispatching;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Logging;
 using Windows.ApplicationModel;
@@ -13,9 +12,7 @@ namespace Snap.Hutao.Remastered.Service.Update;
 [Service(ServiceLifetime.Singleton)]
 public sealed class MsixUpdateProgress(ITaskContext taskContext)
 {
-    private GrowlHost? host;
     private GrowlHandle? card;
-    private DispatcherQueue? dispatcher;
     private PackageCatalog? catalog;
     private Guid? windowsUpdate;
     private bool manualUpdate;
@@ -24,34 +21,18 @@ public sealed class MsixUpdateProgress(ITaskContext taskContext)
     // All state is read and written on the main dispatcher.
     public bool IsUpdating => manualUpdate || windowsUpdate.HasValue || restartPending;
 
-    public void Attach(GrowlHost growlHost)
+    public void StartObserving()
     {
-        if (ReferenceEquals(host, growlHost))
-        {
-            return;
-        }
-
-        if (host is { } previousHost)
-        {
-            Detach(previousHost);
-        }
-
-        host = growlHost;
-        Volatile.Write(ref dispatcher, growlHost.DispatcherQueue);
-        if (restartPending)
-        {
-            ShowRestartNotice();
-        }
-
-        if (!RuntimeEnvironment.IsPackaged)
+        if (catalog is not null || !RuntimeEnvironment.IsPackaged)
         {
             return;
         }
 
         try
         {
-            catalog = PackageCatalog.OpenForCurrentPackage();
-            catalog.PackageUpdating += OnPackageUpdating;
+            PackageCatalog current = PackageCatalog.OpenForCurrentPackage();
+            current.PackageUpdating += OnPackageUpdating;
+            catalog = current;
         }
         catch (Exception exception)
         {
@@ -59,23 +40,18 @@ public sealed class MsixUpdateProgress(ITaskContext taskContext)
         }
     }
 
-    public void Detach(GrowlHost growlHost)
+    public async ValueTask StopAsync()
     {
-        if (!ReferenceEquals(host, growlHost))
-        {
-            return;
-        }
-
+        await taskContext.SwitchToMainThreadAsync();
         if (catalog is { } currentCatalog)
         {
             currentCatalog.PackageUpdating -= OnPackageUpdating;
             catalog = null;
         }
 
-        CloseCard();
+        GrowlGlobal.ClearAll();
+        card = null;
         windowsUpdate = null;
-        Volatile.Write(ref dispatcher, null);
-        host = null;
     }
 
     public async ValueTask RunAsync(Func<IProgress<DeploymentProgress>, Task> deploy)
@@ -95,7 +71,10 @@ public sealed class MsixUpdateProgress(ITaskContext taskContext)
                 isProgressIndeterminate: value.state == DeploymentProgressState.Queued));
             await deploy(progress);
             restartPending = RuntimeEnvironment.IsPackaged;
-            ShowRestartNotice();
+            if (!XamlApplicationLifetime.Exiting)
+            {
+                ShowRestartNotice();
+            }
         }
         catch
         {
@@ -126,7 +105,7 @@ public sealed class MsixUpdateProgress(ITaskContext taskContext)
         double progress = Math.Clamp(args.Progress, 0, 1) * 100;
         bool complete = args.IsComplete;
         bool failed = args.ErrorCode is { HResult: < 0 };
-        Volatile.Read(ref dispatcher)?.TryEnqueue(() => ReportWindowsUpdate(sender, activity, progress, complete, failed));
+        taskContext.DispatcherQueue.TryEnqueue(() => ReportWindowsUpdate(sender, activity, progress, complete, failed));
     }
 
     private void ReportWindowsUpdate(PackageCatalog sender, Guid activity, double progress, bool complete, bool failed)
@@ -166,16 +145,7 @@ public sealed class MsixUpdateProgress(ITaskContext taskContext)
 
     private GrowlHandle? ShowProgress(string title)
     {
-        CloseCard();
-        card = host?.Show(new GrowlOptions
-        {
-            Title = title,
-            Severity = GrowlCardSeverity.Info,
-            AutoClose = GrowlCardAutoClose.None,
-            ShowCloseButton = false,
-            ShowProgress = true,
-            IsProgressIndeterminate = true,
-        });
+        ShowNotice(title, GrowlCardSeverity.Info, showProgress: true);
         return card;
     }
 
@@ -184,14 +154,22 @@ public sealed class MsixUpdateProgress(ITaskContext taskContext)
         ShowNotice(RuntimeEnvironment.IsPackaged ? SH.ServiceUpdateMsixRestart : SH.ServiceUpdateMsixOpenPackaged, GrowlCardSeverity.Success);
     }
 
-    private void ShowNotice(string title, GrowlCardSeverity severity)
+    private void ShowNotice(string title, GrowlCardSeverity severity, bool showProgress = false)
     {
         CloseCard();
-        card = host?.Show(new GrowlOptions
+        card = Growl.Show(new GrowlOptions
         {
             Title = title,
             Severity = severity,
-            AutoClose = GrowlCardAutoClose.None,
+            Scope = GrowlScope.Global,
+            Position = GrowlPosition.BottomRight,
+            Monitor = GrowlMonitor.Cursor,
+            ShowAnimation = GrowlShowAnimation.Push,
+            CloseAnimation = GrowlCloseAnimation.Slide,
+            AutoClose = showProgress ? GrowlCardAutoClose.None : GrowlCardAutoClose.Default,
+            ShowCloseButton = !showProgress,
+            ShowProgress = showProgress,
+            IsProgressIndeterminate = showProgress,
         });
     }
 
