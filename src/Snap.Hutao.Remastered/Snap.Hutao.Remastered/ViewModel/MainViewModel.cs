@@ -128,7 +128,9 @@ public sealed partial class MainViewModel : Abstraction.ViewModel, IDisposable
 
         try
         {
-            AlphaUpdateWindow window = new(serviceProvider, previous, current);
+            AlphaUpdateRange? range = AlphaUpdateRange.ForBuild(current, previous);
+            range?.Save();
+            AlphaUpdateWindow window = new(serviceProvider, range, saveRange: true);
             window.Activate();
             if (current is not null && !string.Equals(previous, current, StringComparison.OrdinalIgnoreCase))
             {

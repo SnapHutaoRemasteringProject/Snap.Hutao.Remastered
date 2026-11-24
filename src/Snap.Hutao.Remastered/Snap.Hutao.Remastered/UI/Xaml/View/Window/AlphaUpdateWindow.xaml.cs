@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.LifeCycle;
+using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Service.Update;
 using Snap.Hutao.Remastered.UI.Windowing;
 using Snap.Hutao.Remastered.UI.Windowing.Abstraction;
@@ -26,10 +27,10 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
     private readonly AlphaUpdateHistoryClient client;
     private readonly IAppActivation appActivation;
     private readonly ILogger<AlphaUpdateWindow> logger;
-    private readonly string? previousCommit;
+    private readonly AlphaUpdateRange? updateRange;
+    private readonly bool saveRange;
     private readonly Dictionary<string, Type> modulePages = new(StringComparer.Ordinal);
     private readonly CancellationTokenSource lifetime = CancellationTokenSource.CreateLinkedTokenSource(XamlApplicationLifetime.ShutdownToken);
-    private readonly string? currentCommit;
     private CancellationTokenSource? commitLoad;
     private CancellationTokenSource? fileLoad;
     private string? baseline;
@@ -37,19 +38,19 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
     private string? selectedParent;
     private int olderPage = 1;
 
-    public AlphaUpdateWindow(IServiceProvider serviceProvider, string? previousCommit, string? currentCommit)
+    internal AlphaUpdateWindow(IServiceProvider serviceProvider, AlphaUpdateRange? updateRange, bool saveRange = false)
     {
-        this.previousCommit = previousCommit;
-        this.currentCommit = currentCommit;
+        this.updateRange = updateRange;
+        this.saveRange = saveRange;
         client = serviceProvider.GetRequiredService<AlphaUpdateHistoryClient>();
         appActivation = serviceProvider.GetRequiredService<IAppActivation>();
         logger = serviceProvider.GetRequiredService<ILogger<AlphaUpdateWindow>>();
 
         InitializeComponent();
         BuildLabel.Text = $"{HutaoRuntime.Version}";
-        if (currentCommit is not null)
+        if (updateRange is { CurrentCommit: { } current })
         {
-            BuildLabel.Text += $"  ·  {currentCommit[..8]}";
+            BuildLabel.Text += $"  ·  {current[..8]}";
         }
 
         DetailStatus.Text = SH.ViewWindowAlphaUpdateSelectCommit;
@@ -89,7 +90,9 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
 
     public static void ShowBuildPreview(IServiceProvider serviceProvider)
     {
-        AlphaUpdateWindow window = new(serviceProvider, previousCommit: null, currentCommit: AlphaUpdateHistoryClient.GetBuildCommit());
+        string? current = AlphaUpdateHistoryClient.GetBuildCommit();
+        string previous = LocalSetting.Get(SettingKeys.LastAlphaCommit, string.Empty);
+        AlphaUpdateWindow window = new(serviceProvider, AlphaUpdateRange.ForBuild(current, previous));
         window.Activate();
     }
 
@@ -138,12 +141,13 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
     private async Task LoadHistoryAsync()
     {
         RetryButton.Visibility = Visibility.Collapsed;
-        if (currentCommit is not { } current)
+        if (updateRange is not { } range)
         {
             HistoryStatus.Text = SH.ViewWindowAlphaUpdateMissingRevision;
             return;
         }
 
+        string current = range.CurrentCommit;
         HistoryStatus.Text = SH.ViewControlLoadingText;
         await LoadAsync(async token =>
         {
@@ -153,8 +157,17 @@ public sealed partial class AlphaUpdateWindow : Microsoft.UI.Xaml.Window,
                 return;
             }
 
-            (string sha, string label) = await client.GetBaselineAsync(previousCommit, token);
+            (string sha, string label) = await client.GetBaselineAsync(range.BaselineCommit, token);
             token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(range.BaselineLabel))
+            {
+                label = range.BaselineLabel;
+            }
+            else if (saveRange)
+            {
+                (range with { BaselineCommit = sha, BaselineLabel = label }).Save();
+            }
+
             baseline = sha;
             RangeLabel.Text = $"{label} → {current[..8]}";
             CompareLink.NavigateUri = AlphaUpdateHistoryClient.ComparePage(sha, current);

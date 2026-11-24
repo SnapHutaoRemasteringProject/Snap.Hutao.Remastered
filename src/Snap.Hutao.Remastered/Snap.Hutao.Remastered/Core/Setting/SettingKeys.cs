@@ -20,6 +20,7 @@ public static class SettingKeys
     public const string PreviousDataDirectoryToDelete   = "Snap::Hutao::Application::PreviousDataFolderToDelete";
     public const string LastVersion                     = "Snap::Hutao::Application::Update::LastVersion";
     public const string LastAlphaCommit                 = "Snap::Hutao::Application::Update::LastAlphaCommit";
+    public const string LastAlphaComparison             = "Snap::Hutao::Application::Update::LastAlphaComparison";
     public const string AlwaysIsFirstRunAfterUpdate     = "Snap::Hutao::Application::Update::LastVersion::TreatAsFirstRun";
     public const string PendingRefreshAutoStartTaskAfterUpdate = "Snap::Hutao::Application::Update::StartupTask::PendingRefresh";
     public const string OverrideUpdateVersionComparison = "Snap::Hutao::Application::Update::VersionComparison::Override";
