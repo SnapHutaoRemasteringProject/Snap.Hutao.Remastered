@@ -14,6 +14,7 @@ public static class GameLifeCycle
 {
     private static readonly TimeSpan DiscoveryInterval = TimeSpan.FromSeconds(2);
     private static TaskCompletionSource refreshRequested = new(TaskCreationOptions.RunContinuationsAsynchronously);
+    private static int reportedInaccessibleProcess;
 
     public static IObservableProperty<bool> IsGameRunningProperty { get; } = Property.CreateObservable(PrivateIsGameRunning());
 
@@ -209,9 +210,22 @@ public static class GameLifeCycle
         {
             // A process exited before the wait was registered. Refresh the snapshot.
         }
+        catch (Win32Exception ex) when (ex.NativeErrorCode == (int)WIN32_ERROR.ERROR_ACCESS_DENIED)
+        {
+            // A normal-integrity app can enumerate an elevated game without being
+            // able to wait on its exit. Poll instead of reporting an error every scan.
+            if (Interlocked.Exchange(ref reportedInaccessibleProcess, 1) == 0)
+            {
+                SentrySdk.AddBreadcrumb(BreadcrumbFactory.CreateDebug(
+                    "Game process exit notification was denied; using process discovery",
+                    $"{nameof(GameLifeCycle)}.{nameof(WaitForGameProcessesAsync)}",
+                    level: BreadcrumbLevel.Debug));
+            }
+
+            await Task.WhenAny(refresh, Task.Delay(DiscoveryInterval, token)).ConfigureAwait(false);
+        }
         catch (Win32Exception ex)
         {
-            // Some elevated processes cannot be watched from a normal-integrity process.
             SentrySdk.CaptureException(ex);
             await Task.WhenAny(refresh, Task.Delay(DiscoveryInterval, token)).ConfigureAwait(false);
         }
