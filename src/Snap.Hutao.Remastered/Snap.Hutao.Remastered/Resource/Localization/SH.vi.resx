@@ -6458,7 +6458,7 @@ Khởi động thông thường không bị giới hạn bởi khả năng hỗ 
     <value>此安装包缺少构建提交，无法计算本次更新的范围。</value>
   </data>
   <data name="ViewWindowAlphaUpdateLoadFailed" xml:space="preserve">
-    <value>无法读取 GitHub 提交记录，请检查连接或稍后重试。</value>
+    <value>无法读取 GitHub 提交记录，请检查连接或达 API 速率限制请稍后重试</value>
   </data>
   <data name="ViewWindowAlphaUpdateNoNewCommits" xml:space="preserve">
     <value>此范围没有新增提交。</value>
@@ -6478,13 +6478,16 @@ Khởi động thông thường không bị giới hạn bởi khả năng hỗ 
   <data name="ViewShortcutEditorClear" xml:space="preserve">
     <value>清除快捷键</value>
   </data>
-  <data name="ViewShortcutEditorSingleKey" xml:space="preserve">
-    <value>请按一个键。</value>
-  </data>
   <data name="ViewShortcutEditorCombination" xml:space="preserve">
-    <value>请按一个键，可搭配 Ctrl、Shift 或 Alt。</value>
+    <value>按一个键或一组键，可搭配 Ctrl、Shift 或 Alt</value>
   </data>
   <data name="ViewShortcutEditorInvalid" xml:space="preserve">
-    <value>当前按键不适用于此快捷键。</value>
+    <value>无效的快捷键：当前按键不适用于此快捷键</value>
+  </data>
+  <data name="ViewShortcutEditorWarningTitle" xml:space="preserve">
+    <value>使用单个快捷键可能会影响正常的操作或系统功能</value>
+  </data>
+  <data name="ViewShortcutEditorWarningToolTip" xml:space="preserve">
+    <value>建议在使用时搭配使用修饰键（如 Ctrl、Alt 或 Win）</value>
   </data>
 </root>
