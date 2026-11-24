@@ -6492,4 +6492,19 @@
   <data name="ViewShortcutEditorWarningToolTip" xml:space="preserve">
     <value>建议在使用时搭配使用修饰键（如 Ctrl、Alt 或 Win）</value>
   </data>
+  <data name="ServiceUpdateMsixDeploymentTitle" xml:space="preserve">
+    <value>正在部署胡桃更新</value>
+  </data>
+  <data name="ServiceUpdateMsixWindowsDeploymentTitle" xml:space="preserve">
+    <value>Windows 正在后台更新胡桃</value>
+  </data>
+  <data name="ServiceUpdateMsixRestart" xml:space="preserve">
+    <value>部署完成，重新打开胡桃即可使用新版本</value>
+  </data>
+  <data name="ServiceUpdateMsixOpenPackaged" xml:space="preserve">
+    <value>部署完成，请打开打包版胡桃</value>
+  </data>
+  <data name="ServiceUpdateMsixWindowsDeploymentFailed" xml:space="preserve">
+    <value>Windows 未能完成后台更新，可以在设置中重试</value>
+  </data>
 </root>
