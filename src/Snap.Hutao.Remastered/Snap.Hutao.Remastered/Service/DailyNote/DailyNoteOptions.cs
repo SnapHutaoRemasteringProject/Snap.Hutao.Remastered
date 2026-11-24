@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Quartz;
 using Snap.Hutao.Remastered.Core.Property;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Model;
@@ -55,13 +54,18 @@ public sealed partial class DailyNoteOptions : DbStoreOptions
     {
         if (value)
         {
-            if (options.SelectedRefreshTime.Value is not null)
+            if (options.SelectedRefreshTime.Value is { } refreshTime)
             {
-                int refreshTime = options.SelectedRefreshTime.Value.Value;
-                options.quartzService.UpdateJobAsync(JobIdentity.DailyNoteGroupName, JobIdentity.DailyNoteRefreshTriggerName, builder =>
-                {
-                    return builder.WithSimpleSchedule(sb => sb.WithInterval(TimeSpan.FromSeconds(refreshTime)));
-                }).GetAwaiter().GetResult();
+                int intervalSeconds = refreshTime.Value;
+
+                // 开启自动刷新时「确保」Job 已注册：启动时开关若是关的，调度器不会注册 Job，
+                // 此时单纯的 UpdateJobAsync 找不到 trigger 会静默无效。EnsureJobAsync 在
+                // trigger 不存在时首次创建，存在时重建触发器以应用最新间隔。
+                options.quartzService.EnsureJobAsync(
+                    JobIdentity.DailyNoteGroupName,
+                    JobIdentity.DailyNoteRefreshTriggerName,
+                    DailyNoteRefreshJobScheduler.BuildJob,
+                    jobKey => DailyNoteRefreshJobScheduler.BuildTrigger(jobKey, intervalSeconds)).GetAwaiter().GetResult();
             }
         }
         else
@@ -72,9 +76,16 @@ public sealed partial class DailyNoteOptions : DbStoreOptions
 
     private static void OnSelectedRefreshTimeChanged(int value, DailyNoteOptions options)
     {
-        options.quartzService.UpdateJobAsync(JobIdentity.DailyNoteGroupName, JobIdentity.DailyNoteRefreshTriggerName, builder =>
+        // 间隔变化只影响「已启用自动刷新」的场景；开关关着时无需调度。
+        // 用 EnsureJobAsync 而非 UpdateJobAsync：切换间隔时 Job 若因开关关闭而从未注册，
+        // UpdateJobAsync 找不到 trigger 会静默无效；EnsureJobAsync 会按需创建。
+        if (options.IsAutoRefreshEnabled.Value)
         {
-            return builder.WithSimpleSchedule(sb => sb.WithInterval(TimeSpan.FromSeconds(value)));
-        }).GetAwaiter().GetResult();
+            options.quartzService.EnsureJobAsync(
+                JobIdentity.DailyNoteGroupName,
+                JobIdentity.DailyNoteRefreshTriggerName,
+                DailyNoteRefreshJobScheduler.BuildJob,
+                jobKey => DailyNoteRefreshJobScheduler.BuildTrigger(jobKey, value)).GetAwaiter().GetResult();
+        }
     }
 }

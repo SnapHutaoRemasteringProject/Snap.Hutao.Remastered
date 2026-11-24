@@ -71,6 +71,25 @@ public sealed partial class QuartzService : IQuartzService, IDisposable
             await current.RescheduleJob(key, configure(old.GetTriggerBuilder()).Build(), token).ConfigureAwait(false);
     }
 
+    public async Task EnsureJobAsync(string group, string triggerName, Func<IJobDetail> jobFactory, Func<JobKey, ITrigger> triggerFactory, CancellationToken token = default)
+    {
+        await startupCompleted.Task.WaitAsync(token).ConfigureAwait(false);
+        if (scheduler is not { } current || lifetime.IsCancellationRequested) return;
+
+        TriggerKey key = new(triggerName, group);
+        if (await current.GetTrigger(key, token).ConfigureAwait(false) is { } existing)
+        {
+            // Job 已注册：只重建触发器，覆盖可能变化的间隔。触发器必须挂到既有 JobKey 上。
+            await current.RescheduleJob(key, triggerFactory(existing.JobKey), token).ConfigureAwait(false);
+        }
+        else
+        {
+            // Job 未注册（启动时开关是关的，之后才打开）：首次创建并排程。
+            IJobDetail job = jobFactory();
+            await current.ScheduleJob(job, triggerFactory(job.Key), cancellationToken: token).ConfigureAwait(false);
+        }
+    }
+
     public async Task StopJobAsync(string group, string triggerName, CancellationToken token = default)
     {
         await startupCompleted.Task.WaitAsync(token).ConfigureAwait(false);

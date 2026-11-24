@@ -21,17 +21,33 @@ public sealed partial class DailyNoteRefreshJobScheduler : IJobScheduler
             return;
         }
 
-        IJobDetail dailyNoteJob = JobBuilder.Create<DailyNoteRefreshJob>()
+        IJobDetail job = BuildJob();
+        await scheduler.ScheduleJob(job, BuildTrigger(job.Key, interval), cancellationToken: token).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// 构造每日便笺刷新 Job。抽出为静态工厂，供启动注册与运行中「确保存在」复用，
+    /// 避免两处各写一份 JobDetail/Trigger 构造。
+    /// </summary>
+    public static IJobDetail BuildJob()
+    {
+        return JobBuilder.Create<DailyNoteRefreshJob>()
             .WithIdentity(JobIdentity.DailyNoteRefreshJobName, JobIdentity.DailyNoteGroupName)
             .Build();
+    }
 
-        ITrigger dailyNoteTrigger = TriggerBuilder.Create()
+    /// <summary>
+    /// 构造每日便笺刷新 Trigger：按 <paramref name="intervalSeconds"/> 周期重复，首次在间隔后触发，
+    /// 并挂到 <paramref name="jobKey"/> 上。
+    /// </summary>
+    public static ITrigger BuildTrigger(JobKey jobKey, int intervalSeconds)
+    {
+        return TriggerBuilder.Create()
             .WithIdentity(JobIdentity.DailyNoteRefreshTriggerName, JobIdentity.DailyNoteGroupName)
-            .WithSimpleSchedule(builder => builder.WithInterval(TimeSpan.FromSeconds(interval)).RepeatForever())
-            .StartAt(DateTimeOffset.Now.AddSeconds(interval))
+            .ForJob(jobKey)
+            .WithSimpleSchedule(builder => builder.WithInterval(TimeSpan.FromSeconds(intervalSeconds)).RepeatForever())
+            .StartAt(DateTimeOffset.Now.AddSeconds(intervalSeconds))
             .Build();
-
-        await scheduler.ScheduleJob(dailyNoteJob, dailyNoteTrigger, cancellationToken: token).ConfigureAwait(false);
     }
 
     private bool TryGetRefreshInterval(out int interval)
