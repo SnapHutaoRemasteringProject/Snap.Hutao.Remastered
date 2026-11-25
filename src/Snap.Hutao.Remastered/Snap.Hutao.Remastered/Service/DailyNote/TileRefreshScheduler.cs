@@ -190,11 +190,10 @@ internal sealed partial class TileRefreshScheduler : ITileRefreshScheduler
         }
 
         // VBS 字符串里的双引号要写成两个：外层一层转义引号，内层再包住路径。
-        // Run 的等待参数用 True：wscript 等 PowerShell 退出后才结束，因此可以用
-        // WScript.Quit 把脚本的退出码交给任务计划——wscript 自身的默认退出码是 0，
-        // 不显式 Quit 的话任务永远显示成功。
+        // innerCommand 本身就是完整的 VBS 字符串字面量，因此必须自带开头和结尾各
+        // 三个引号（"""path"""），少一个就会把字符串留成未闭合、编译失败。
         string innerCommand = $"\"\"\"{ResolvePowerShellPath()}\"\" -NoProfile -NonInteractive -ExecutionPolicy Bypass" +
-            $" -File \"\"{scriptPath}\"\" -Aumid \"\"{Package.Current.Id.FamilyName}!App\"\" -TaskName \"\"{TaskName}\"\"";
+            $" -File \"\"{scriptPath}\"\" -Aumid \"\"{Package.Current.Id.FamilyName}!App\"\" -TaskName \"\"{TaskName}\"\"\"";
         string wrapperContent = $"WScript.Quit CreateObject(\"WScript.Shell\").Run({innerCommand}, 0, True)\r\n";
 
         if (!TryWriteTextFile(wrapperPath, wrapperContent))

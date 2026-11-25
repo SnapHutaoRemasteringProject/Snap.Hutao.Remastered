@@ -80,13 +80,15 @@ public sealed partial class DailyNoteOptions : DbStoreOptions
         // 间隔变化只影响「已启用自动刷新」的场景；开关关着时无需调度。
         // 用 EnsureJobAsync 而非 UpdateJobAsync：切换间隔时 Job 若因开关关闭而从未注册，
         // UpdateJobAsync 找不到 trigger 会静默无效；EnsureJobAsync 会按需创建。
+        // 必须异步派发：本回调跑在 UI 线程上，而注册路径要排队等启动阶段的
+        // 配置任务（它可能正在等 UI 线程），同步等待会互相卡死。
         if (options.IsAutoRefreshEnabled.Value)
         {
             options.quartzService.EnsureJobAsync(
                 JobIdentity.DailyNoteGroupName,
                 JobIdentity.DailyNoteRefreshTriggerName,
                 DailyNoteRefreshJobScheduler.BuildJob,
-                jobKey => DailyNoteRefreshJobScheduler.BuildTrigger(jobKey, value)).GetAwaiter().GetResult();
+                jobKey => DailyNoteRefreshJobScheduler.BuildTrigger(jobKey, value)).SafeForget();
         }
 
         // 计划任务的间隔也要跟着设置变，否则后台刷新还停留在旧频率。

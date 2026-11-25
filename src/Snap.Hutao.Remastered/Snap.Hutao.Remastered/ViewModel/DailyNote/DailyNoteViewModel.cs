@@ -113,6 +113,12 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
     private readonly AsyncLock tileScheduleLock = new();
 
     /// <summary>
+    /// 切换代际。排队中的旧操作完成时不得改写界面——用户可能已经点了更新的选择，
+    /// 旧操作的状态校正只会把开关拉回它那一代的结论。
+    /// </summary>
+    private int tileScheduleGeneration;
+
+    /// <summary>
     /// 当前磁贴背景选择请求；新选择到来时取消旧的，避免晚完成的下载覆盖新选择。
     /// </summary>
     private CancellationTokenSource? tileBackgroundCts;
@@ -683,14 +689,18 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
 
     private async Task ToggleTileBackgroundRefreshAsync(bool enable)
     {
+        // 记录本次操作的代际：排队等待期间用户可能又点了别的，
+        // 只有最新一代的操作才能决定界面最终状态。
+        int generation = Interlocked.Increment(ref tileScheduleGeneration);
+
         // 排队执行：连点时不会有两个切换同时改系统任务。
         using (await tileScheduleLock.LockAsync().ConfigureAwait(false))
         {
-            await ToggleTileBackgroundRefreshCoreAsync(enable).ConfigureAwait(false);
+            await ToggleTileBackgroundRefreshCoreAsync(enable, generation).ConfigureAwait(false);
         }
     }
 
-    private async Task ToggleTileBackgroundRefreshCoreAsync(bool enable)
+    private async Task ToggleTileBackgroundRefreshCoreAsync(bool enable, int generation)
     {
         using SentrySpanScope span = SentrySpanScope.StartCommand(nameof(DailyNoteViewModel));
         span.SetData("daily_note.tile_schedule.enable", enable);
@@ -717,16 +727,28 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
                 ? await tileRefreshScheduler.RegisterAsync(intervalMinutes, XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false)
                 : await tileRefreshScheduler.UnregisterAsync(XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (XamlApplicationLifetime.ShutdownToken.IsCancellationRequested)
         {
             // 应用退出时被取消：既不是成功也不是用户可见的失败，安静结束。
             return;
+        }
+        catch (Exception ex)
+        {
+            // 其余异常（含 schtasks 20 秒超时）都是真实的失败，要让用户看到。
+            logger.LogWarning(ex, "Toggling the tile refresh schedule failed for {Enable}", enable);
+            ok = false;
         }
 
         await taskContext.SwitchToMainThreadAsync();
 
         if (ok)
         {
+            if (generation != Volatile.Read(ref tileScheduleGeneration))
+            {
+                // 期间有更新的切换在排队，本次结论已过期，不要覆盖界面。
+                return;
+            }
+
             messenger.Send(InfoBarMessage.Success(enable
                 ? SH.FormatViewModelDailyNoteTileBackgroundRefreshScheduledInterval(intervalMinutes)
                 : SH.ViewModelDailyNoteTileBackgroundRefreshUnscheduled));
@@ -741,12 +763,22 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             await taskContext.SwitchToBackgroundAsync();
             registered = await tileRefreshScheduler.IsRegisteredAsync(XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false);
         }
-        catch (OperationCanceledException)
+        catch (OperationCanceledException) when (XamlApplicationLifetime.ShutdownToken.IsCancellationRequested)
+        {
+            return;
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Unable to reconcile the tile refresh task state after a failed toggle");
+            registered = false;
+        }
+
+        await taskContext.SwitchToMainThreadAsync();
+        if (generation != Volatile.Read(ref tileScheduleGeneration))
         {
             return;
         }
 
-        await taskContext.SwitchToMainThreadAsync();
         SetTileBackgroundRefreshScheduled(registered);
         messenger.Send(InfoBarMessage.Warning(SH.ViewModelDailyNoteTileBackgroundRefreshFailed));
     }
