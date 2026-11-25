@@ -88,16 +88,22 @@ public sealed partial class QuartzService : IQuartzService, IDisposable
             await current.RescheduleJob(key, configure(old.GetTriggerBuilder()).Build(), token).ConfigureAwait(false);
     }
 
-    public async Task EnsureJobAsync(string group, string triggerName, Func<IJobDetail> jobFactory, Func<JobKey, ITrigger> triggerFactory, CancellationToken token = default)
+    public async Task EnsureJobAsync(string group, string triggerName, Func<IJobDetail> jobFactory, Func<JobKey, ITrigger> triggerFactory, Func<bool>? shouldApply = null, CancellationToken token = default)
     {
         await startupCompleted.Task.WaitAsync(token).ConfigureAwait(false);
         if (scheduler is not { } current || lifetime.IsCancellationRequested) return;
 
-        // 与 ConfigureJobsAsync 串行：避免同一 TriggerKey 被并发 Schedule，
-        // 也保证用户刚选的间隔不会被启动阶段的旧间隔覆盖。
+        // 与 ConfigureJobsAsync / StopJobSerializedAsync 串行：避免同一 TriggerKey 被并发
+        // Schedule，也保证「关闭」不会被排队中的「开启」重新建回来。
         await jobGate.WaitAsync(token).ConfigureAwait(false);
         try
         {
+            // 排队期间用户可能已经关掉开关：此时不能再创建或重建触发器。
+            if (shouldApply is not null && !shouldApply())
+            {
+                return;
+            }
+
             TriggerKey key = new(triggerName, group);
             if (await current.GetTrigger(key, token).ConfigureAwait(false) is { } existing)
             {
@@ -122,6 +128,24 @@ public sealed partial class QuartzService : IQuartzService, IDisposable
         await startupCompleted.Task.WaitAsync(token).ConfigureAwait(false);
         if (scheduler is { } current && !lifetime.IsCancellationRequested)
             await current.UnscheduleJob(new(triggerName, group), token).ConfigureAwait(false);
+    }
+
+    public async Task StopJobSerializedAsync(string group, string triggerName, CancellationToken token = default)
+    {
+        await startupCompleted.Task.WaitAsync(token).ConfigureAwait(false);
+        if (scheduler is not { } current || lifetime.IsCancellationRequested) return;
+
+        // 与注册共用队列：排队中的 EnsureJobAsync 会先执行完，随后这里把它撤掉，
+        // 不会出现「撤销后又冒出一个触发器」。
+        await jobGate.WaitAsync(token).ConfigureAwait(false);
+        try
+        {
+            await current.UnscheduleJob(new(triggerName, group), token).ConfigureAwait(false);
+        }
+        finally
+        {
+            jobGate.Release();
+        }
     }
 
     public Task ShutdownAsync(CancellationToken token = default)
