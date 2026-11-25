@@ -6,11 +6,11 @@ using Snap.Hutao.Remastered.Model.Intrinsic;
 
 namespace Snap.Hutao.Remastered.Model;
 
-public partial class Item : ObservableObject, INameIcon<Uri>
+public partial class Item : ObservableObject, INameIcon<Uri?>
 {
     public string Name { get; init; } = default!;
 
-    public Uri Icon { get; init; } = default!;
+    public Uri? Icon { get; init; }
 
     public Uri? Badge { get; init; }
 

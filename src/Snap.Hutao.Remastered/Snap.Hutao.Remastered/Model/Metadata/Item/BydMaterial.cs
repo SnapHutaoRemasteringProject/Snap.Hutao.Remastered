@@ -26,6 +26,13 @@ public partial class BydMaterial :
 
     public int Type { get; set; }
 
+    internal BydMaterial WithIcon(string icon)
+    {
+        BydMaterial copy = (BydMaterial)MemberwiseClone();
+        copy.Icon = icon;
+        return copy;
+    }
+
     [JsonIgnore]
     public QualityType Quality { get => RankLevel; }
 

@@ -48,9 +48,14 @@ public static class MetadataServiceImmutableDictionaryExtension
 
         public ValueTask<ImmutableDictionary<BydMaterialId, BydMaterial>> GetIdToBydMaterialMapAsync(CancellationToken token = default)
         {
-            return metadataService.FromCacheAsDictionaryAsync<BydMaterialId, BydMaterial>(
-                MetadataCategories.BydMaterial,
-                token);
+            string cacheKey = metadataService.Cache.CreateKey(MetadataCategories.BydMaterial, "Map", nameof(BydMaterialId), "RecoveredIcons");
+            return metadataService.Cache.GetOrCreateAsync(cacheKey, async innerToken =>
+            {
+                ImmutableDictionary<BydMaterialId, BydMaterial> materials = await metadataService
+                    .FromCacheAsDictionaryAsync<BydMaterialId, BydMaterial>(MetadataCategories.BydMaterial, innerToken)
+                    .ConfigureAwait(false);
+                return BydMaterialIconRecovery.RecoverMissingIcons(materials);
+            }, token);
         }
 
         public ValueTask<ImmutableDictionary<AchievementId, Model.Metadata.Achievement.Achievement>> GetIdToAchievementMapAsync(CancellationToken token = default)
