@@ -116,10 +116,6 @@ public sealed partial class XamlWindowSubclass : IDisposable
                     break;
                 }
 
-            case WM_NCRBUTTONDOWN:
-            case WM_NCRBUTTONUP:
-                return BOOL.FALSE;
-
             case WM_NCLBUTTONDBLCLK:
                 {
                     if (state.window.AppWindow.Presenter is OverlappedPresenter { IsMaximizable: false })
