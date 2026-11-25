@@ -1,11 +1,13 @@
 # Snap Hutao Remastered - 后台刷新磁贴激活脚本。
-# 由计划任务 "Snap Hutao Tile Refresh" 通过 TileRefresh.vbs 静默调用，
+# 由计划任务通过 TileRefresh.vbs 静默调用（任务名带用户标识，见 -TaskName），
 # 用 AUMID 激活应用，使新进程获得 MSIX 包身份（磁贴 API 的必要条件）。
 #
 # 自愈：应用卸载后激活必然失败，此时连同计划任务与暂存脚本一起清理，避免残留。
 param(
     [Parameter(Mandatory = $true)][string]$Aumid,
-    [Parameter(Mandatory = $false)][string]$Arguments = '--refresh-tile'
+    [Parameter(Mandatory = $false)][string]$Arguments = '--refresh-tile',
+    # 任务名带用户标识，由注册方传入；自愈删除时必须用同一个名字。
+    [Parameter(Mandatory = $false)][string]$TaskName = 'Snap Hutao Tile Refresh'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -49,7 +51,7 @@ public static class HutaoAppActivator
 function Remove-OrphanedSchedule
 {
     # 应用已不在：删除计划任务和残留文件。
-    & schtasks.exe /Delete /TN 'Snap Hutao Tile Refresh' /F 2>&1 | Out-Null
+    & schtasks.exe /Delete /TN $TaskName /F 2>&1 | Out-Null
 
     # 本脚本执行期间无法删除自身。拼一条完整的 cmd 命令行交给隐藏进程，
     # 它延后几秒再删，那时本进程已经退出。

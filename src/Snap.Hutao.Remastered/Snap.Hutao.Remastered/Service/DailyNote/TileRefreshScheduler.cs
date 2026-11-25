@@ -6,6 +6,9 @@ using Snap.Hutao.Remastered.Core.Diagnostics;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Security.Cryptography;
+using System.Security.Principal;
+using System.Text;
 using Windows.ApplicationModel;
 
 namespace Snap.Hutao.Remastered.Service.DailyNote;
@@ -18,7 +21,15 @@ namespace Snap.Hutao.Remastered.Service.DailyNote;
 [Service(ServiceLifetime.Singleton, typeof(ITileRefreshScheduler))]
 internal sealed partial class TileRefreshScheduler : ITileRefreshScheduler
 {
-    internal const string TaskName = "Snap Hutao Tile Refresh";
+    internal const string TaskNamePrefix = "Snap Hutao Tile Refresh";
+
+    /// <summary>
+    /// 任务名带当前用户标识。计划任务在同一台机器上是共享的：多个 Windows 用户
+    /// 各自开启后台刷新时，固定名字会让后开启者 <c>/F</c> 覆盖前者的任务，
+    /// 也会在任一方关闭开关时删掉对方的任务。SID 哈希只用于区分用户，
+    /// 不包含可识别的账户信息。
+    /// </summary>
+    internal static readonly string TaskName = BuildTaskName();
 
     /// <summary>schtasks 对 <c>/TR</c> 的硬性长度上限，超限会直接拒绝创建任务。</summary>
     private const int MaxTaskCommandLength = 261;
@@ -183,7 +194,7 @@ internal sealed partial class TileRefreshScheduler : ITileRefreshScheduler
         // WScript.Quit 把脚本的退出码交给任务计划——wscript 自身的默认退出码是 0，
         // 不显式 Quit 的话任务永远显示成功。
         string innerCommand = $"\"\"\"{ResolvePowerShellPath()}\"\" -NoProfile -NonInteractive -ExecutionPolicy Bypass" +
-            $" -File \"\"{scriptPath}\"\" -Aumid \"\"{Package.Current.Id.FamilyName}!App\"\"\"";
+            $" -File \"\"{scriptPath}\"\" -Aumid \"\"{Package.Current.Id.FamilyName}!App\"\" -TaskName \"\"{TaskName}\"\"";
         string wrapperContent = $"WScript.Quit CreateObject(\"WScript.Shell\").Run({innerCommand}, 0, True)\r\n";
 
         if (!TryWriteTextFile(wrapperPath, wrapperContent))
@@ -192,7 +203,9 @@ internal sealed partial class TileRefreshScheduler : ITileRefreshScheduler
         }
 
         // wscript.exe 在 System32，路径固定且短。
-        string taskCommand = $"\"{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "wscript.exe")}\" \"{wrapperPath}\"";
+        // //B（批处理模式）抑制脚本宿主的一切界面：脚本被删除或语法出错时不会弹
+        // 「Windows Script Host」错误框阻塞任务，任务只是静默返回非零码。
+        string taskCommand = $"\"{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "wscript.exe")}\" //B \"{wrapperPath}\"";
         span.SetData("daily_note.tile_refresh_schedule.command_length", taskCommand.Length);
 
         if (taskCommand.Length > MaxTaskCommandLength)
@@ -279,6 +292,18 @@ internal sealed partial class TileRefreshScheduler : ITileRefreshScheduler
         }
     }
 
+    private static string BuildTaskName()
+    {
+        string? sid = WindowsIdentity.GetCurrent().User?.Value;
+        if (string.IsNullOrEmpty(sid))
+        {
+            return TaskNamePrefix;
+        }
+
+        string suffix = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(sid)))[..8];
+        return $"{TaskNamePrefix} {suffix}";
+    }
+
     private bool TryStageScript(string source, string directory, string destination)
     {
         try
@@ -299,7 +324,10 @@ internal sealed partial class TileRefreshScheduler : ITileRefreshScheduler
     {
         try
         {
-            File.WriteAllText(path, content);
+            // 必须写成 UTF-16 LE + BOM：wscript 会把无 BOM 的文件按 ANSI 解释，
+            // 用户名含中文时（C:\Users\张三\...）包装脚本里的路径会乱码，
+            // 后台刷新会静默失效。实测只有该编码能正确解析非 ASCII 路径。
+            File.WriteAllText(path, content, Encoding.Unicode);
             return true;
         }
         catch (Exception ex)

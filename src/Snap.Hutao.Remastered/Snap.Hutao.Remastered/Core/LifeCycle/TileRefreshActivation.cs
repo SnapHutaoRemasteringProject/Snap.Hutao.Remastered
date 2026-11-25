@@ -62,7 +62,8 @@ internal static class TileRefreshActivation
                 TileRefreshResult result = runner.RunAsync(timeout.Token).AsTask().GetAwaiter().GetResult();
                 exitCode = result.Outcome switch
                 {
-                    TileRefreshOutcome.Succeeded => 0,
+                    // 没有账户不是失败：任务无事可做，报错只会让用户以为出了问题。
+                    TileRefreshOutcome.Succeeded or TileRefreshOutcome.NoAccounts => 0,
                     TileRefreshOutcome.VerificationRequired => 4,
                     _ => 1,
                 };
