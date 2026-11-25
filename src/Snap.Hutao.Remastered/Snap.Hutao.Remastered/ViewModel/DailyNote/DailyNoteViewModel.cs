@@ -107,6 +107,12 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
     private bool _suppressTileScheduleChange;
 
     /// <summary>
+    /// 串行化开关切换。快速连点时两次操作会并发跑 schtasks，完成顺序不确定，
+    /// 最终的任务状态可能与开关显示不一致；排队后「最后一次操作生效」。
+    /// </summary>
+    private readonly AsyncLock tileScheduleLock = new();
+
+    /// <summary>
     /// 当前磁贴背景选择请求；新选择到来时取消旧的，避免晚完成的下载覆盖新选择。
     /// </summary>
     private CancellationTokenSource? tileBackgroundCts;
@@ -133,7 +139,18 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             // 开关状态以系统里真实存在的计划任务为准。
             // 查询要启动子进程，必须先离开 UI 线程，否则会冻结界面。
             await taskContext.SwitchToBackgroundAsync();
-            bool scheduled = await tileRefreshScheduler.IsRegisteredAsync(token).ConfigureAwait(false);
+            bool scheduled;
+            try
+            {
+                scheduled = await tileRefreshScheduler.IsRegisteredAsync(token).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                // 查询失败不该拖垮整个页面：便笺与头像列表还要继续加载，
+                // 开关按「未注册」显示，用户重新拨动即可再次尝试。
+                logger.LogWarning(ex, "Unable to query the tile refresh task state");
+                scheduled = false;
+            }
             TileRefreshScheduleStatus status = scheduled
                 ? await tileRefreshScheduler.GetStatusAsync(token).ConfigureAwait(false)
                 : TileRefreshScheduleStatus.NotRegistered;
@@ -666,6 +683,15 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
 
     private async Task ToggleTileBackgroundRefreshAsync(bool enable)
     {
+        // 排队执行：连点时不会有两个切换同时改系统任务。
+        using (await tileScheduleLock.LockAsync().ConfigureAwait(false))
+        {
+            await ToggleTileBackgroundRefreshCoreAsync(enable).ConfigureAwait(false);
+        }
+    }
+
+    private async Task ToggleTileBackgroundRefreshCoreAsync(bool enable)
+    {
         using SentrySpanScope span = SentrySpanScope.StartCommand(nameof(DailyNoteViewModel));
         span.SetData("daily_note.tile_schedule.enable", enable);
 
@@ -684,9 +710,18 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
         await taskContext.SwitchToBackgroundAsync();
 
         // 任务注册可能跨页面存续：接 ShutdownToken，退出时中止挂起的 schtasks 操作。
-        bool ok = enable
-            ? await tileRefreshScheduler.RegisterAsync(intervalMinutes, XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false)
-            : await tileRefreshScheduler.UnregisterAsync(XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false);
+        bool ok;
+        try
+        {
+            ok = enable
+                ? await tileRefreshScheduler.RegisterAsync(intervalMinutes, XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false)
+                : await tileRefreshScheduler.UnregisterAsync(XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            // 应用退出时被取消：既不是成功也不是用户可见的失败，安静结束。
+            return;
+        }
 
         await taskContext.SwitchToMainThreadAsync();
 
@@ -698,8 +733,21 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             return;
         }
 
-        // 失败时把开关退回原状，避免界面与实际任务状态不一致。
-        SetTileBackgroundRefreshScheduled(!enable);
+        // 失败时以系统里的真实注册状态为准，而不是把开关简单取反：
+        // 用户快速连点会并发触发多次切换，取反得到的值可能本来就不对。
+        bool registered;
+        try
+        {
+            await taskContext.SwitchToBackgroundAsync();
+            registered = await tileRefreshScheduler.IsRegisteredAsync(XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+
+        await taskContext.SwitchToMainThreadAsync();
+        SetTileBackgroundRefreshScheduled(registered);
         messenger.Send(InfoBarMessage.Warning(SH.ViewModelDailyNoteTileBackgroundRefreshFailed));
     }
 
