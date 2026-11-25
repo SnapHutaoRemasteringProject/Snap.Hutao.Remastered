@@ -128,9 +128,11 @@ internal static class TileRefreshActivation
 
             File.WriteAllText(path, content);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // 结果文件只影响计划任务的退出码上报，写不进去不该让刷新本身失败。
+            // 结果文件只影响计划任务的退出码上报，写不进去不该让刷新本身失败；
+            // 但要留下记录，否则「任务显示成功/失败原因未知」无法排查。
+            SentrySdk.CaptureException(ex);
         }
     }
 }

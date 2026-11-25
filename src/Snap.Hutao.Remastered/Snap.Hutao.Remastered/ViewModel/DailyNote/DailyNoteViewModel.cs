@@ -142,9 +142,12 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             // 抑制回调：否则会把读到的值当成用户操作而去建/删任务。
             SetTileBackgroundRefreshScheduled(scheduled);
 
-            // 已注册但最近一次运行失败时，直接告诉用户原因（脚本被拦截 / 脚本宿主被禁用）。
+            // 已注册但最近一次运行没有成功时，直接告诉用户原因：
+            // 脚本被拦截、脚本宿主被禁用、刷新失败，以及需要在应用内完成人机验证。
             if (status is TileRefreshScheduleStatus.ScriptMissing
                 or TileRefreshScheduleStatus.ScriptHostDisabled
+                or TileRefreshScheduleStatus.RefreshFailed
+                or TileRefreshScheduleStatus.VerificationRequired
                 or TileRefreshScheduleStatus.Failed)
             {
                 messenger.Send(InfoBarMessage.Warning(TileRefreshStatusMessage(status)));
