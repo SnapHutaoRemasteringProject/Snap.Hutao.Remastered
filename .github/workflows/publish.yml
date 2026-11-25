@@ -57,7 +57,7 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
         run: |
-          npx.cmd --yes sentry debug-files upload -o snaphutaoremasteringproject -p snap-hutao-remastered artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
+          npx.cmd --yes --package=@sentry/cli sentry-cli debug-files upload --org snaphutaoremasteringproject --project snap-hutao-remastered artifacts/nativeaot-symbols/Snap.Hutao.Remastered.pdb
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Upload MSIX
