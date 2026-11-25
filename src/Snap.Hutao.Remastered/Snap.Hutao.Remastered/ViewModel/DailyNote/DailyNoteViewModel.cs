@@ -722,6 +722,8 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
         {
             TileRefreshScheduleStatus.ScriptMissing => SH.ViewModelDailyNoteTileScheduleScriptMissing,
             TileRefreshScheduleStatus.ScriptHostDisabled => SH.ViewModelDailyNoteTileScheduleScriptHostDisabled,
+            TileRefreshScheduleStatus.VerificationRequired => SH.ViewModelDailyNoteTileScheduleVerificationRequired,
+            TileRefreshScheduleStatus.RefreshFailed => SH.ViewModelDailyNoteTileScheduleRefreshFailed,
             _ => SH.ViewModelDailyNoteTileScheduleFailed,
         };
     }

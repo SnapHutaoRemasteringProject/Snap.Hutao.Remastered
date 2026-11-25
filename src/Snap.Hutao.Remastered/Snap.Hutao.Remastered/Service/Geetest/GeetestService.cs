@@ -198,6 +198,14 @@ public sealed partial class GeetestService : IGeetestService
             return default;
         }
 
+        // 无 UI 的进程（计划任务触发的后台刷磁贴）没有 DispatcherQueue：
+        // 下面的 SwitchToMainThreadAsync 会因为调度队列为空而抛 NullReferenceException。
+        // 这类进程无法弹出验证窗口，直接放弃让调用方按「验证失败」处理。
+        if ((object?)taskContext.DispatcherQueue is null)
+        {
+            return default;
+        }
+
         await taskContext.SwitchToMainThreadAsync();
         token.ThrowIfCancellationRequested();
         XamlRoot? ownerRoot = owner?.XamlRoot;

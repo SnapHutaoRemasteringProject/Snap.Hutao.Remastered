@@ -2873,6 +2873,12 @@
   <data name="ViewModelDailyNoteTileScheduleScriptHostDisabled" xml:space="preserve">
     <value>系统脚本宿主被禁用（组策略或安全软件），后台刷新无法运行。请允许 wscript.exe 执行后重新开启本功能。</value>
   </data>
+  <data name="ViewModelDailyNoteTileScheduleVerificationRequired" xml:space="preserve">
+    <value>后台刷新需要人机验证：请打开每日便笺页面刷新一次以完成验证</value>
+  </data>
+  <data name="ViewModelDailyNoteTileScheduleRefreshFailed" xml:space="preserve">
+    <value>后台刷新近期失败，请检查网络与登录状态</value>
+  </data>
   <data name="ViewModelDailyNoteTileScheduleFailed" xml:space="preserve">
     <value>后台刷新任务上次运行失败，请查看日志了解详情</value>
   </data>

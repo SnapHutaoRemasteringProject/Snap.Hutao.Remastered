@@ -40,6 +40,15 @@ internal sealed partial class TileRefreshScheduler : ITileRefreshScheduler
     /// </summary>
     private const uint ScriptHostFailed = 1;
 
+    /// <summary>
+    /// 包装脚本的「刷新未成功」码：<c>5</c> 表示被激活的进程报告刷新失败，
+    /// <c>6</c> 表示进程没有写出结果（异常退出），<c>7</c> 表示服务器要求人机验证。
+    /// 三者都说明脚本与任务正常，失败发生在刷新过程中，因此与脚本不可用区分开。
+    /// </summary>
+    private const uint RefreshFailed = 5;
+    private const uint RefreshResultMissing = 6;
+    private const uint VerificationRequired = 7;
+
     private readonly ILogger<TileRefreshScheduler> logger;
 
     /// <summary>
@@ -113,6 +122,8 @@ internal sealed partial class TileRefreshScheduler : ITileRefreshScheduler
             Win32FileNotFound or Win32PathNotFound or Win32SharingViolation or ScriptHostFailed
                 => TileRefreshScheduleStatus.ScriptMissing,
             WshDisabled => TileRefreshScheduleStatus.ScriptHostDisabled,
+            VerificationRequired => TileRefreshScheduleStatus.VerificationRequired,
+            RefreshFailed or RefreshResultMissing => TileRefreshScheduleStatus.RefreshFailed,
             _ => TileRefreshScheduleStatus.Failed,
         };
     }
@@ -168,11 +179,12 @@ internal sealed partial class TileRefreshScheduler : ITileRefreshScheduler
         }
 
         // VBS 字符串里的双引号要写成两个：外层一层转义引号，内层再包住路径。
-        // Run 的等待参数用 True：wscript 等 PowerShell 退出后才结束，
-        // 这样任务的 Last Result 能反映真实的刷新结果而不是总是 0。
+        // Run 的等待参数用 True：wscript 等 PowerShell 退出后才结束，因此可以用
+        // WScript.Quit 把脚本的退出码交给任务计划——wscript 自身的默认退出码是 0，
+        // 不显式 Quit 的话任务永远显示成功。
         string innerCommand = $"\"\"\"{ResolvePowerShellPath()}\"\" -NoProfile -NonInteractive -ExecutionPolicy Bypass" +
             $" -File \"\"{scriptPath}\"\" -Aumid \"\"{Package.Current.Id.FamilyName}!App\"\"\"";
-        string wrapperContent = $"CreateObject(\"WScript.Shell\").Run {innerCommand}, 0, True\r\n";
+        string wrapperContent = $"WScript.Quit CreateObject(\"WScript.Shell\").Run({innerCommand}, 0, True)\r\n";
 
         if (!TryWriteTextFile(wrapperPath, wrapperContent))
         {

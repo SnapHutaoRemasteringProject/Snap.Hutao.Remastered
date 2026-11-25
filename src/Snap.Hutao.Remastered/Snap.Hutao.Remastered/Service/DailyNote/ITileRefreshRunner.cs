@@ -12,6 +12,6 @@ public interface ITileRefreshRunner
     /// <summary>
     /// 刷新所有已保存账户的便笺并更新磁贴。
     /// </summary>
-    /// <returns>至少有一个账户刷新成功并发布了磁贴时为 <see langword="true"/>。</returns>
-    ValueTask<bool> RunAsync(CancellationToken token = default);
+    /// <returns>本次刷新的结果；失败原因用于计划任务的退出码与诊断。</returns>
+    ValueTask<TileRefreshResult> RunAsync(CancellationToken token = default);
 }

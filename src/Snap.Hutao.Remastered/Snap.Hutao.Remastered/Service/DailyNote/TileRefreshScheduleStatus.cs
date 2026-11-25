@@ -28,6 +28,18 @@ public enum TileRefreshScheduleStatus
     /// </summary>
     ScriptHostDisabled,
 
+    /// <summary>
+    /// 任务正常启动并完成，但刷新本身失败（网络、登录失效等）。
+    /// 与 <see cref="Failed"/> 区分：脚本和计划任务都是好的，问题在刷新过程。
+    /// </summary>
+    RefreshFailed,
+
+    /// <summary>
+    /// 服务器在刷新时要求人机验证。验证只能在应用内的窗口完成，
+    /// 后台进程无法通过，需要用户打开每日便笺页面手动刷新一次。
+    /// </summary>
+    VerificationRequired,
+
     /// <summary>其他失败（网络、AUMID 激活失败等），调用方应引导用户查看日志。</summary>
     Failed,
 }

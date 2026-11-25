@@ -10,6 +10,9 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+# 必须与 TileRefreshActivation.ResultFileName 一致：被激活的进程把刷新结果写在这里。
+$resultFileName = 'TileRefresh.last'
+
 $source = @'
 using System;
 using System.Runtime.InteropServices;
@@ -94,10 +97,36 @@ if (-not ('HutaoAppActivator' -as [type]))
     Add-Type -TypeDefinition $source -Language CSharp
 }
 
+function Read-RefreshResult
+{
+    # 被激活的进程无法把退出码回传给调用方，因此它把结果写进本脚本旁的
+    # TileRefresh.last（首行是结果码）。缺失说明进程没能正常收尾。
+    $resultPath = Join-Path $PSScriptRoot $resultFileName
+    if (-not (Test-Path -LiteralPath $resultPath))
+    {
+        return $null
+    }
+
+    $first = Get-Content -LiteralPath $resultPath -TotalCount 1 -ErrorAction SilentlyContinue
+    $code = 0
+    if ([int]::TryParse($first, [ref]$code))
+    {
+        return $code
+    }
+
+    return $null
+}
+
+# 上一次的结果不能当作这一次的结论。
+$staleResult = Join-Path $PSScriptRoot $resultFileName
+if (Test-Path -LiteralPath $staleResult)
+{
+    Remove-Item -LiteralPath $staleResult -Force -ErrorAction SilentlyContinue
+}
+
 try
 {
-    [void][HutaoAppActivator]::Activate($Aumid, $Arguments)
-    exit 0
+    $processId = [HutaoAppActivator]::Activate($Aumid, $Arguments)
 }
 catch
 {
@@ -105,8 +134,7 @@ catch
     Start-Sleep -Seconds 3
     try
     {
-        [void][HutaoAppActivator]::Activate($Aumid, $Arguments)
-        exit 0
+        $processId = [HutaoAppActivator]::Activate($Aumid, $Arguments)
     }
     catch
     {
@@ -121,3 +149,40 @@ catch
         exit 1
     }
 }
+
+# 等被激活的进程收尾：内部超时 2 分钟，这里留出余量。
+$target = Get-Process -Id $processId -ErrorAction SilentlyContinue
+if ($target)
+{
+    try
+    {
+        $target | Wait-Process -Timeout 150 -ErrorAction Stop
+    }
+    catch
+    {
+        # 等不到就按超时处理，交由下面的结果判定。
+    }
+}
+
+$result = Read-RefreshResult
+if ($null -eq $result)
+{
+    # 进程没写出结果：当作刷新失败，避免把异常当成成功。
+    exit 6
+}
+
+# 结果码转成计划任务的退出码。1（脚本宿主/编译失败）与 5（刷新失败）分开：
+#   0 → 成功
+#   4 → 需要人机验证（进程无法完成，需用户在应用内刷新一次）→ 7
+#   其他 → 5（刷新失败）
+if ($result -eq 4)
+{
+    exit 7
+}
+
+if ($result -ne 0)
+{
+    exit 5
+}
+
+exit 0
