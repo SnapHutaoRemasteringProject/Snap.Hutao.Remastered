@@ -119,6 +119,12 @@ public sealed partial class LaunchOptions : DbStoreOptions, IRestrictedGamePathA
     public IObservableProperty<int> TargetFps { get => field ??= CreateProperty(SettingKeys.LaunchTargetFps, InitializeTargetFpsWithScreenFps); }
 
     [field: MaybeNull]
+    public IObservableProperty<bool> IsBackgroundFrameRateEnabled { get => field ??= CreateProperty(SettingKeys.LaunchBackgroundFrameRateEnabled, false); }
+
+    [field: MaybeNull]
+    public IObservableProperty<int> BackgroundTargetFps { get => field ??= CreateProperty(SettingKeys.LaunchBackgroundTargetFps, 25); }
+
+    [field: MaybeNull]
     public IObservableProperty<bool> RemoveOpenTeamProgress { get => field ??= CreateProperty(SettingKeys.LaunchRemoveOpenTeamProgress, false); }
 
     [field: MaybeNull]
