@@ -24,7 +24,7 @@ internal sealed partial class TileRefreshRunner : ITileRefreshRunner
 {
     private readonly IDailyNoteTileService dailyNoteTileService;
     private readonly IDailyNoteRepository dailyNoteRepository;
-    private readonly IServiceProvider serviceProvider;
+    private readonly IServiceScopeFactory serviceScopeFactory;
     private readonly ILogger<TileRefreshRunner> logger;
 
     [GeneratedConstructor]
@@ -53,7 +53,7 @@ internal sealed partial class TileRefreshRunner : ITileRefreshRunner
         int refreshed = 0;
         bool verificationRequired = false;
         string? failure = null;
-        using (IServiceScope scope = serviceProvider.CreateScope())
+        using (IServiceScope scope = serviceScopeFactory.CreateScope())
         {
             foreach (DailyNoteEntry entry in entries)
             {
@@ -112,7 +112,9 @@ internal sealed partial class TileRefreshRunner : ITileRefreshRunner
         await gameRecordClient.GetPlayerInfoAsync(userAndUid, token).ConfigureAwait(false);
 
         Response<WebDailyNote> response = await gameRecordClient.GetDailyNoteAsync(userAndUid, token).ConfigureAwait(false);
-        if (!ResponseValidator.TryValidate(response, serviceProvider, out WebDailyNote? dailyNote))
+
+        // 无 UI 进程没有 InfoBar 订阅者，验证失败也不该往消息总线里丢提示。
+        if (!ResponseValidator.TryValidateWithoutUINotification(response, out WebDailyNote? dailyNote))
         {
             // 1034：服务器要求人机验证。验证窗口只能由用户在应用内完成，
             // 无 UI 进程到此为止，把原因带回去让界面提示用户手动刷新一次。
