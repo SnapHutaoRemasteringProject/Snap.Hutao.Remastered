@@ -93,11 +93,11 @@ internal sealed partial class TileRefreshRunner : ITileRefreshRunner
         }
 
         // 磁贴 XML 只读 entry 的 DailyNote，不触碰任何 UI 集合。
-        bool published = dailyNoteTileService.TryUpdatePrimaryTile(entries);
-        span.SetData("daily_note.tile_refresh.published", published);
-        return published
+        TileUpdateResult published = dailyNoteTileService.UpdatePrimaryTile(entries);
+        span.SetData("daily_note.tile_refresh.published", published.Outcome.ToString());
+        return published.Succeeded
             ? new(TileRefreshOutcome.Succeeded)
-            : new(TileRefreshOutcome.PublishFailed);
+            : new(TileRefreshOutcome.PublishFailed, published.Failure);
     }
 
     private async ValueTask<TileRefreshOutcome> TryRefreshEntryAsync(IServiceProvider scopeProvider, DailyNoteEntry entry, CancellationToken token)

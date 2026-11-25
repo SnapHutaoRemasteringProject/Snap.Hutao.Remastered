@@ -4,6 +4,7 @@
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Caching;
 using Snap.Hutao.Remastered.Core.Diagnostics;
+using Snap.Hutao.Remastered.Core.IO;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -63,6 +64,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
 
     private readonly DailyNoteOptions options;
     private readonly IImageCacheDownloadOperation downloadOperation;
+    private readonly IImageCache imageCache;
     private readonly ILogger<DailyNoteTileImageCache> logger;
 
     /// <summary>
@@ -114,13 +116,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
 
         try
         {
-            // 超时必须作为令牌传进下载器：只做 WaitAsync 的话，被放弃的请求会继续跑，
-            // 占着响应体写入临时文件，也占着共享客户端的连接。
-            using (CancellationTokenSource timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(token))
-            {
-                timeoutSource.CancelAfter(TimeSpan.FromSeconds(DownloadTimeoutSeconds));
-                await downloadOperation.DownloadFileAsync(nameCardUri, temporaryFile, timeoutSource.Token).ConfigureAwait(false);
-            }
+            await PrepareSourceImageAsync(nameCardUri, temporaryFile, token).ConfigureAwait(false);
         }
         catch (Exception ex) when (!token.IsCancellationRequested)
         {
@@ -164,6 +160,58 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         // 两张裁剪图都落盘后才写来源记录：缓存与来源一起提交，替换才算完成。
         await WriteBackgroundSourceAsync(avatarId, nameCardUri, token).ConfigureAwait(false);
         return TileBackgroundImageOutcome.Downloaded;
+    }
+
+    /// <summary>
+    /// 取一张可供裁剪的原始名片图并写到 <paramref name="destination"/>。
+    /// 优先复用程序自己的图片缓存：同一张名片图在角色列表等处早已下载过，
+    /// 直接拷贝本地文件即可，不必再走一次网络。缓存缺失时才真正下载。
+    /// </summary>
+    private async ValueTask PrepareSourceImageAsync(Uri nameCardUri, string destination, CancellationToken token)
+    {
+        // 图片缓存位于 LocalCacheFolder，磁贴引用不到它，但「读取源文件」不受此限制：
+        // 裁剪结果会写到 LocalFolder 下，那才是磁贴真正引用的位置。
+        ValueFile? cached = await TryGetCachedImageAsync(nameCardUri, token).ConfigureAwait(false);
+        if (cached is { } file && File.Exists(file))
+        {
+            try
+            {
+                await using FileStream source = File.OpenRead(file);
+                await using FileStream target = File.Create(destination);
+                await source.CopyToAsync(target, token).ConfigureAwait(false);
+                return;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                // 缓存文件读不了（被占用、权限变化）：退回下载，不让选背景失败。
+                logger.LogDebug(ex, "Unable to reuse cached name card image, falling back to download");
+            }
+        }
+
+        // 超时必须作为令牌传进下载器：只做 WaitAsync 的话，被放弃的请求会继续跑，
+        // 占着响应体写入临时文件，也占着共享客户端的连接。
+        using CancellationTokenSource timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(token);
+        timeoutSource.CancelAfter(TimeSpan.FromSeconds(DownloadTimeoutSeconds));
+        await downloadOperation.DownloadFileAsync(nameCardUri, destination, timeoutSource.Token).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// 尝试从程序图片缓存取这张名片图。缓存里没有时会顺带填充，
+    /// 因此下一次换回同一角色可以直接命中。
+    /// </summary>
+    private async ValueTask<ValueFile?> TryGetCachedImageAsync(Uri nameCardUri, CancellationToken token)
+    {
+        try
+        {
+            // 该接口在缓存缺失时会下载并落盘，正好把「第一次取图」的成本留给图片缓存统一管理。
+            return await imageCache.GetFileFromCacheAsync(nameCardUri).ConfigureAwait(false);
+        }
+        catch (Exception ex) when (!token.IsCancellationRequested)
+        {
+            // 缓存层失败不影响磁贴：下面还会走直连下载。
+            logger.LogDebug(ex, "Image cache lookup failed for {Uri}", nameCardUri);
+            return null;
+        }
     }
 
     /// <summary>

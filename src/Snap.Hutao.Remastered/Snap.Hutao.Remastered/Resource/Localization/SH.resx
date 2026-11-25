@@ -2876,6 +2876,24 @@
   <data name="ViewModelDailyNoteTileScheduleVerificationRequired" xml:space="preserve">
     <value>后台刷新需要人机验证：请打开每日便笺页面刷新一次以完成验证</value>
   </data>
+  <data name="ViewModelDailyNoteUpdateTileNotPackaged" xml:space="preserve">
+    <value>磁贴仅支持 MSIX 安装包：当前以未打包方式运行，无法更新磁贴</value>
+  </data>
+  <data name="ViewModelDailyNoteUpdateTileElevated" xml:space="preserve">
+    <value>磁贴更新被系统拒绝：请以普通权限运行胡桃后重试</value>
+  </data>
+  <data name="ViewModelDailyNoteUpdateTileRejected" xml:space="preserve">
+    <value>系统未接受磁贴更新：可能是通知被系统关闭，请在「设置 - 系统 - 通知」中允许胡桃</value>
+  </data>
+  <data name="ViewModelDailyNoteUpdateTileContentFailed" xml:space="preserve">
+    <value>生成磁贴内容失败：背景图或图标资源不可用，请尝试重新选择背景</value>
+  </data>
+  <data name="ViewModelDailyNoteClearTileNotPackaged" xml:space="preserve">
+    <value>磁贴仅支持 MSIX 安装包：当前以未打包方式运行，无法清除磁贴</value>
+  </data>
+  <data name="ViewModelDailyNoteClearTileElevated" xml:space="preserve">
+    <value>清除磁贴被系统拒绝：请以普通权限运行胡桃后重试</value>
+  </data>
   <data name="ViewModelDailyNoteTileScheduleRefreshFailed" xml:space="preserve">
     <value>后台刷新近期失败，请检查网络与登录状态</value>
   </data>

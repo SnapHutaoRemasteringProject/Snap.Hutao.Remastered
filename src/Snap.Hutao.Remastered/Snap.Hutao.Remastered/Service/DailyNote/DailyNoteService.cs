@@ -45,7 +45,7 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
 
                 // 自动刷新默认关闭，不同步重发磁贴的话，
                 // 已删除账号的便笺会一直留在开始菜单上直到下一次刷新。
-                dailyNoteTileService.TryUpdatePrimaryTile(localEntries);
+                dailyNoteTileService.UpdatePrimaryTile(localEntries);
             });
         }
     }
@@ -82,7 +82,7 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
 
         await taskContext.SwitchToMainThreadAsync();
         entries?.Add(newEntry);
-        dailyNoteTileService.TryUpdatePrimaryTile(entries ?? []);
+        dailyNoteTileService.UpdatePrimaryTile(entries ?? []);
     }
 
     public async ValueTask<ObservableCollection<DailyNoteEntry>> GetDailyNoteEntryCollectionAsync(DailyNoteMetadataContext context, bool forceRefresh = false, CancellationToken token = default)
@@ -117,7 +117,7 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
         await taskContext.SwitchToMainThreadAsync();
         ArgumentNullException.ThrowIfNull(entries);
         entries.Remove(entry);
-        dailyNoteTileService.TryUpdatePrimaryTile(entries);
+        dailyNoteTileService.UpdatePrimaryTile(entries);
 
         await taskContext.SwitchToBackgroundAsync();
         dailyNoteRepository.DeleteDailyNoteEntryById(entry.InnerId);
@@ -200,7 +200,7 @@ public sealed partial class DailyNoteService : IDailyNoteService, IRecipient<Use
             await taskContext.SwitchToMainThreadAsync();
             if (entries is { } localEntries)
             {
-                dailyNoteTileService.TryUpdatePrimaryTile(localEntries);
+                dailyNoteTileService.UpdatePrimaryTile(localEntries);
             }
         }
     }

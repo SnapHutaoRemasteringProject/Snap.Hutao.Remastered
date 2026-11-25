@@ -466,11 +466,11 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             // 清空设置后立即重发磁贴，否则旧背景图会一直留在开始菜单上
             if (DailyNoteEntries is { Count: > 0 } currentEntries)
             {
-                dailyNoteTileService.TryUpdatePrimaryTile(currentEntries);
+                dailyNoteTileService.UpdatePrimaryTile(currentEntries);
             }
             else
             {
-                dailyNoteTileService.TryUpdatePrimaryTile([]);
+                dailyNoteTileService.UpdatePrimaryTile([]);
             }
             messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteTileBackgroundCleared));
             return;
@@ -504,11 +504,11 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             // 后台下载完成后服务会再重发一次换上新图。
             if (DailyNoteEntries is { Count: > 0 } entries)
             {
-                dailyNoteTileService.TryUpdatePrimaryTile(entries);
+                dailyNoteTileService.UpdatePrimaryTile(entries);
             }
             else
             {
-                dailyNoteTileService.TryUpdatePrimaryTile([]);
+                dailyNoteTileService.UpdatePrimaryTile([]);
             }
 
             ShowBackgroundDownloadProgress(item, result.BackgroundReady, cts);
@@ -629,14 +629,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
 
         if (DailyNoteEntries is { Count: > 0 } entries)
         {
-            if (dailyNoteTileService.TryUpdatePrimaryTile(entries))
-            {
-                messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteUpdateTileCompleteHint));
-            }
-            else
-            {
-                messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNoteUpdateTileFailed));
-            }
+            messenger.Send(TileUpdateMessage(dailyNoteTileService.UpdatePrimaryTile(entries), isClear: false));
         }
         else
         {
@@ -644,6 +637,34 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
         }
     }
 
+    /// <summary>
+    /// 按磁贴更新结果给出可区分的提示：环境不支持、提权、被系统拒绝、内容生成失败
+    /// 是四种完全不同的情况，都报「更新失败」会让用户无从下手。
+    /// </summary>
+    private static InfoBarMessage TileUpdateMessage(TileUpdateResult result, bool isClear)
+    {
+        if (result.Succeeded)
+        {
+            return InfoBarMessage.Success(isClear
+                ? SH.ViewModelDailyNoteClearTileComplete
+                : SH.ViewModelDailyNoteUpdateTileCompleteHint);
+        }
+
+        return result.Outcome switch
+        {
+            TileUpdateOutcome.NotPackaged => InfoBarMessage.Warning(isClear
+                ? SH.ViewModelDailyNoteClearTileNotPackaged
+                : SH.ViewModelDailyNoteUpdateTileNotPackaged),
+            TileUpdateOutcome.Elevated => InfoBarMessage.Warning(isClear
+                ? SH.ViewModelDailyNoteClearTileElevated
+                : SH.ViewModelDailyNoteUpdateTileElevated),
+            TileUpdateOutcome.UpdateRejected => InfoBarMessage.Warning(SH.ViewModelDailyNoteUpdateTileRejected),
+            TileUpdateOutcome.ContentFailed => InfoBarMessage.Warning(SH.ViewModelDailyNoteUpdateTileContentFailed),
+            _ => InfoBarMessage.Information(isClear
+                ? SH.ViewModelDailyNoteClearTileFailed
+                : SH.ViewModelDailyNoteUpdateTileFailed),
+        };
+    }
     [Command("UnpinTileCommand")]
     private void UnpinTile()
     {
@@ -663,14 +684,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             _suppressSelectionChange = false;
         }
 
-        if (dailyNoteTileService.TryUpdatePrimaryTile([]))
-        {
-            messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteClearTileComplete));
-        }
-        else
-        {
-            messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNoteClearTileFailed));
-        }
+        messenger.Send(TileUpdateMessage(dailyNoteTileService.UpdatePrimaryTile([]), isClear: true));
     }
 
     /// <summary>

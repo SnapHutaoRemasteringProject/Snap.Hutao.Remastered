@@ -78,7 +78,7 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
         await taskContext.SwitchToMainThreadAsync();
         if (lastPublishedEntries is { } entries)
         {
-            TryUpdatePrimaryTile(entries);
+            UpdatePrimaryTile(entries);
         }
 
         return outcome;
@@ -105,13 +105,13 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
     /// 更新主磁贴；没有内容可发布时清空磁贴。图标缓存尽力而为地后台准备，
     /// 任何一步失败都不影响调用方的数据库写入。
     /// </summary>
-    public bool TryUpdatePrimaryTile(IReadOnlyCollection<DailyNoteEntry> entries)
+    public TileUpdateResult UpdatePrimaryTile(IReadOnlyCollection<DailyNoteEntry> entries)
     {
         using SentrySpanScope span = SentrySpanScope.StartOperation("daily_note_tile.update", "daily_note_tile");
 
         if (RuntimeEnvironment.IsUnpackaged)
         {
-            return false;
+            return new(TileUpdateOutcome.NotPackaged);
         }
 
         // 后台下载新背景图完成后，用它重发磁贴。
@@ -121,24 +121,35 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
         // HutaoRuntime.IsProcessElevated，后者混入了 OverrideElevationRequirement 开关会误判。
         if (Environment.IsPrivilegedProcess)
         {
-            return false;
+            return new(TileUpdateOutcome.Elevated);
         }
 
         imageCache.PrepareIconsIgnoringFailureAsync().SafeForget();
 
+        string? tileXml;
         try
         {
-            string? tileXml = entries.Count == 0
+            tileXml = entries.Count == 0
                 ? contentFactory.BuildBackgroundOnlyTileXml()
                 : contentFactory.BuildTileXml(entries);
+        }
+        catch (Exception ex)
+        {
+            // 内容生成失败与「系统拒绝写入」是两回事：前者是模板/图片地址的问题，
+            // 后者是通知服务或配额的问题，界面提示也不同。
+            logger.LogWarning(ex, "Build tile content failed");
+            return new(TileUpdateOutcome.ContentFailed, ex.Message);
+        }
 
+        try
+        {
             TileUpdater updater = TileUpdateManager.CreateTileUpdaterForApplication();
 
             // 空内容必须用 Clear()：发送 <tile/> 不会清除上一条通知。
             if (string.IsNullOrEmpty(tileXml))
             {
                 updater.Clear();
-                return true;
+                return new(TileUpdateOutcome.Succeeded);
             }
 
             XmlDocument document = new();
@@ -146,12 +157,12 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
 
             TileNotification notification = new(document);
             updater.Update(notification);
-            return true;
+            return new(TileUpdateOutcome.Succeeded);
         }
         catch (Exception ex)
         {
             logger.LogWarning(ex, "Update primary tile failed");
-            return false;
+            return new(TileUpdateOutcome.UpdateRejected, ex.Message);
         }
     }
 }
