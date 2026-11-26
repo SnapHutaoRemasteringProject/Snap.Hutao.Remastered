@@ -38,6 +38,34 @@ try {
         $stream = $entry.Open()
         try { $stream.WriteByte(0) } finally { $stream.Dispose() }
     }
+    function Edit-Manifest($z, [scriptblock] $edit) {
+        $entry = $z.GetEntry('manifest.json')
+        $reader = [IO.StreamReader]::new($entry.Open())
+        try { $manifest = $reader.ReadToEnd() | ConvertFrom-Json -AsHashtable }
+        finally { $reader.Dispose() }
+        & $edit $manifest
+        $entry.Delete()
+        $entry = $z.CreateEntry('manifest.json')
+        $writer = [IO.StreamWriter]::new($entry.Open())
+        try { $writer.Write(($manifest | ConvertTo-Json -Depth 20 -Compress)) }
+        finally { $writer.Dispose() }
+    }
+    Fixture 'game-library-no-capability' {
+        param($z)
+        Edit-Manifest $z { param($m) $m.gameLibraries = @('inject/Example.dll') }
+    }
+    Fixture 'game-library-no-file' {
+        param($z)
+        Edit-Manifest $z { param($m) $m.capabilities += 'game-libraries'; $m.gameLibraries = @('inject/Missing.dll') }
+    }
+    Fixture 'game-library-wrong-path' {
+        param($z)
+        Edit-Manifest $z { param($m) $m.capabilities += 'game-libraries'; $m.gameLibraries = @('bin/x64/Example.dll') }
+    }
+    Fixture 'game-library-duplicate' {
+        param($z)
+        Edit-Manifest $z { param($m) $m.capabilities += 'game-libraries'; $m.gameLibraries = @('inject/Example.dll','inject/example.dll') }
+    }
     Write-Host 'All selected package fixtures passed.'
 }
 finally { Remove-Item -LiteralPath $temp -Recurse -Force }

@@ -103,36 +103,41 @@ public sealed class TestPlugin : HutaoPlugin
         count.Text = counter.Value.ToString();
         edit.Text = message.Value;
         IDisposable subscription = counter.Subscribe(() => count.Text = counter.Value.ToString());
-        async void Click(object sender, RoutedEventArgs args)
+        bool closed = false;
+        async void ClickOnUi(object sender, RoutedEventArgs args)
         {
             try
             {
-                await counter.SetValueAsync(counter.Value + 1);
-                click.Content = "C# AOT plugin click executed";
+                await Context.RunOnUiAsync(async () =>
+                {
+                    if (closed) return;
+                    await counter.SetValueAsync(counter.Value + 1);
+                    if (!closed) click.Content = "C# AOT plugin click executed";
+                });
             }
-            catch (Exception error) { Context.Log(NotificationKind.Error, error.ToString()); }
+            catch (Exception error) { System.Diagnostics.Debug.WriteLine(error); }
         }
-        async void Save(object sender, RoutedEventArgs args)
+
+        async void SaveOnUi(object sender, RoutedEventArgs args)
         {
-            try { await message.SetValueAsync(edit.Text); }
-            catch (Exception error) { Context.Log(NotificationKind.Error, error.ToString()); }
+            try
+            {
+                await Context.RunOnUiAsync(async () =>
+                {
+                    if (!closed) await message.SetValueAsync(edit.Text);
+                });
+            }
+            catch (Exception error) { System.Diagnostics.Debug.WriteLine(error); }
         }
-        // AOT runtime's event continuations need their own dispatcher synchronization context.
-        void ClickOnUi(object sender, RoutedEventArgs args) => RunOnUi(() => Click(sender, args));
-        void SaveOnUi(object sender, RoutedEventArgs args) => RunOnUi(() => Save(sender, args));
         click.Click += ClickOnUi;
         save.Click += SaveOnUi;
         return new(root, () =>
         {
+            closed = true;
             click.Click -= ClickOnUi;
             save.Click -= SaveOnUi;
             subscription.Dispose();
         });
-    }
-
-    private void RunOnUi(Action action)
-    {
-        _ = Context.RunOnUiAsync(() => { action(); return Task.CompletedTask; });
     }
 
     [WinRT.DynamicWindowsRuntimeCast(typeof(FrameworkElement))]

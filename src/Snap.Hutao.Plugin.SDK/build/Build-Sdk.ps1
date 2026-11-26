@@ -25,6 +25,7 @@ $include = Join-Path $native 'include'
 $metadata = Join-Path $native 'metadata'
 foreach ($dir in @($include, $metadata)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
 Copy-Item -LiteralPath (Join-Path $root 'Snap.Hutao.Plugin.SDK.Native\HutaoPlugin.hpp') -Destination $include
+Copy-Item -LiteralPath (Join-Path $root 'Snap.Hutao.Plugin.SDK.Native\PluginXaml.hpp') -Destination $include
 Copy-Item -LiteralPath (Join-Path $root 'Snap.Hutao.Plugin.Contracts\HutaoPluginAbi.h') -Destination $include
 Copy-Item -LiteralPath (Join-Path $root 'Snap.Hutao.Plugin.Contracts\HutaoPlugin.idl') -Destination $metadata
 Copy-Item -LiteralPath (Join-Path $root 'artifacts\metadata\Snap.Hutao.Plugin.Contracts.winmd') -Destination $metadata
@@ -46,6 +47,8 @@ $csproj = Join-Path $out 'templates\CSharpPlugin\MyPlugin.csproj'
 
 - Architecture and development model: docs/PluginSDK2-Architecture.md
 - Developer guide: docs/PluginSDK2-GettingStarted.md
+- V1 to V2 migration: docs/PluginSDK2-Migration.md
+- XAML development: docs/PluginSDK2-Xaml.md
 - API reference: docs/PluginSDK2-API.md
 - Package format: docs/PluginSDK2-Packages.md
 - Validation and migration: docs/PluginSDK2-Testing.md

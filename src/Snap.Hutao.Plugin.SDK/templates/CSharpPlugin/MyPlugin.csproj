@@ -23,4 +23,7 @@
     <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.3.1" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.6.6-experimental" />
   </ItemGroup>
+  <Target Name="RequireNativePluginPublish" BeforeTargets="Publish" Condition="'$(PublishAot)' != 'true' Or '$(NativeLib)' != 'Shared' Or '$(RuntimeIdentifier)' != 'win-x64'">
+    <Error Text="SDK 2.0 C# plugins require Native AOT shared-library Publish targeting win-x64. Ordinary managed Build/Publish is not a plugin entry." />
+  </Target>
 </Project>
