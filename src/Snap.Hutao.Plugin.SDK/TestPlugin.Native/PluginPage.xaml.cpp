@@ -28,7 +28,9 @@ namespace winrt::TestPlugin::Native::implementation
         // The compiler's default URI is relative to the host, not the plugin DLL.
         // Keep the generated Connect/GetBindingConnector and use the actual verified workspace.
         auto uri = hutao::plugin::compiled_xaml_uri(context.PackageDirectory(), L"views/PluginPage.xaml");
-        context.Log(NotificationKind::Information, hstring{ L"[TestPlugin.Native] LoadComponent URI: " } + uri.AbsoluteUri());
+        std::wstring message{ L"[TestPlugin.Native] LoadComponent URI: " };
+        message += uri.AbsoluteUri().c_str();
+        context.Log(NotificationKind::Information, hstring{ message });
         _contentLoaded = true;
         Application::LoadComponent(*this, uri, ComponentResourceLocation::Application);
         context.Log(NotificationKind::Success, L"[TestPlugin.Native] LoadComponent returned successfully");

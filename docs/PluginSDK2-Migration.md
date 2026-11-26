@@ -177,7 +177,26 @@ private PluginView CreateCounterView()
 }
 ```
 
-此处 CounterViewModel 是你自己的类，不引用主程序 ViewModel 基类。可直接复制仓库 TestPlugin.Aot/SampleViewModel.cs 和 BindingPage.hxaml 学习 OneWay、TwoWay、ICommand、INotifyPropertyChanged、GeneratedBindableCustomProperty；完整代码与资源布局见 [XAML 指南](PluginSDK2-Xaml.md)。不要把旧 XAML 的宿主内部控件、markup extension 或反射式绑定视为公共 API。
+此处 CounterViewModel 是你自己的类，不引用主程序 ViewModel 基类。最小的可绑定实现如下（用于 TextBlock Text="{Binding Counter}"）：
+
+```csharp
+[WinRT.GeneratedBindableCustomProperty]
+public sealed partial class CounterViewModel : System.ComponentModel.INotifyPropertyChanged, IDisposable
+{
+    private readonly PluginSetting<int> counter;
+    private readonly IDisposable subscription;
+    public CounterViewModel(PluginSetting<int> counter)
+    {
+        this.counter = counter;
+        subscription = counter.Subscribe(() => PropertyChanged?.Invoke(this, new(nameof(Counter))));
+    }
+    public int Counter => counter.Value;
+    public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+    public void Dispose() => subscription.Dispose();
+}
+```
+
+可直接复制仓库 TestPlugin.Aot/SampleViewModel.cs 和 BindingPage.hxaml 学习 OneWay、TwoWay、ICommand、INotifyPropertyChanged、GeneratedBindableCustomProperty；完整代码与资源布局见 [XAML 指南](PluginSDK2-Xaml.md)。不要把旧 XAML 的宿主内部控件、markup extension 或反射式绑定视为公共 API。
 
 ## 6. 命令、通知和线程
 

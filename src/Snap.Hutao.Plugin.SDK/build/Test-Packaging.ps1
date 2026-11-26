@@ -15,14 +15,14 @@ function Check-Package([string] $Path, [bool] $ShouldPass) {
 Check-Package $Package $true
 $temp = Join-Path ([IO.Path]::GetTempPath()) ('hutao-pack-test-' + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $temp | Out-Null
-function Fixture([string] $Name, [scriptblock] $Modify) {
+function Fixture([string] $Name, [scriptblock] $Modify, [bool] $ShouldPass = $false) {
     $path = Join-Path $temp ($Name + '.hutao')
     Copy-Item -LiteralPath $Package -Destination $path
     $zip = [IO.Compression.ZipFile]::Open($path, [IO.Compression.ZipArchiveMode]::Update)
     try { & $Modify $zip }
     finally { $zip.Dispose() }
-    Check-Package $path $false
-    Write-Host "PASS rejection: $Name"
+    Check-Package $path $ShouldPass
+    Write-Host "PASS expected validation ($ShouldPass): $Name"
 }
 try {
     Fixture 'unlisted' { param($z) $z.CreateEntry('unexpected.txt') | Out-Null }
@@ -49,6 +49,33 @@ try {
         $writer = [IO.StreamWriter]::new($entry.Open())
         try { $writer.Write(($manifest | ConvertTo-Json -Depth 20 -Compress)) }
         finally { $writer.Dispose() }
+    }
+    function Add-GameLibraryFixture($z, [byte[]] $bytes) {
+        # The fixture is only inspected as PE data and is NEVER loaded into any process.
+        $name = 'inject/Fixture.dll'
+        $entry = $z.CreateEntry($name)
+        $stream = $entry.Open()
+        try { $stream.Write($bytes, 0, $bytes.Length) } finally { $stream.Dispose() }
+        $hash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+        Edit-Manifest $z {
+            param($m)
+            $m.capabilities += 'game-libraries'
+            $m.gameLibraries = @($name)
+            $m.files += @{ path = $name; sha256 = $hash }
+        }
+    }
+    Fixture 'game-library-valid-pe' {
+        param($z)
+        $entry = @($z.Entries | Where-Object { $_.FullName -like 'bin/x64/*.dll' })[0]
+        $memory = [IO.MemoryStream]::new()
+        $source = $entry.Open()
+        try { $source.CopyTo($memory); $bytes = $memory.ToArray() }
+        finally { $source.Dispose(); $memory.Dispose() }
+        Add-GameLibraryFixture $z $bytes
+    } $true
+    Fixture 'game-library-invalid-pe-valid-hash' {
+        param($z)
+        Add-GameLibraryFixture $z ([byte[]]@(0, 1, 2, 3))
     }
     Fixture 'game-library-no-capability' {
         param($z)

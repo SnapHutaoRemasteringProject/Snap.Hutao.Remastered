@@ -207,7 +207,7 @@ Pack-Samples.ps1 查找唯一 PluginPage.xbf 并复制到 views/PluginPage.xbf�
 
 ## 6. PRI 到底在哪里，如何验证？
 
-XBF 是二进制 XAML 内容；PRI 是 MRT 的资源映射索引，可能包含嵌入的 XBF 数据，也可能引用外部文件，并负责语言、主题/对比度、缩放等 qualifier（资源限定符）选择。一个组件拥有 PRI 并不意味着它已经被宿主的默认 ResourceManager 发现。
+XBF 是二进制 XAML 内容；PRI 是 MRT 的资源映射索引，可能包含嵌入的 XBF 数据，也可能引用外部文件，并负责语言、对比度、缩放等 qualifier（资源限定符）选择。一个组件拥有 PRI 并不意味着它已经被宿主的默认 ResourceManager 发现。
 
 目前有两个独立事项：
 

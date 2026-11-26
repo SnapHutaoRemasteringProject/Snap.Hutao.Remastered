@@ -17,9 +17,9 @@ foreach ($dir in @($publish, $stage)) {
     if (Test-Path -LiteralPath $dir) { Remove-Item -LiteralPath $dir -Recurse -Force }
 }
 $project = Join-Path $root 'MyPlugin.csproj'
-$args = @('publish', $project, '-c', 'Release', '-r', 'win-x64', '-o', $publish, "-p:RestoreAdditionalProjectSources=$feed")
-if ($Version) { $args += "-p:HutaoSdkVersion=$Version" }
-& dotnet @args
+$publishArgs = @('publish', $project, '-c', 'Release', '-r', 'win-x64', '-p:PublishAot=true', '-o', $publish, "-p:RestoreAdditionalProjectSources=$feed")
+if ($Version) { $publishArgs += "-p:HutaoSdkVersion=$Version" }
+& dotnet @publishArgs
 if ($LASTEXITCODE -ne 0) { throw "Native AOT Publish failed: $LASTEXITCODE" }
 $bin = Join-Path $stage 'bin\x64'
 New-Item -ItemType Directory -Force -Path $bin | Out-Null
