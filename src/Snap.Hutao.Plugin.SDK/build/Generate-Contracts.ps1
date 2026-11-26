@@ -159,5 +159,5 @@ foreach ($ref in $refs) { $midlArgs += @('/reference', $ref) }
 $midlArgs += $idl
 Invoke-Checked $midl $midlArgs
 if (!(Test-Path -LiteralPath $contract)) { throw 'MIDL did not produce the contract.' }
-Get-FileHash -Algorithm SHA256 -LiteralPath (@($contract, $windowsWinmd) + $refs) | Format-Table -AutoSize
+Write-Host "Generated contract: $contract"
 
