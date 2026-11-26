@@ -18,6 +18,7 @@ using Snap.Hutao.Remastered.Web.Response;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using Windows.Devices.Input;
+using Win32PInvoke = global::Windows.Win32.PInvoke;
 
 namespace Snap.Hutao.Remastered.Service.Game.Island;
 
@@ -131,7 +132,7 @@ public sealed class GameIslandInterop : IGameIslandInterop
         UpdateIslandEnvironment(handle, options);
     }
 
-    private static unsafe IslandEnvironmentView UpdateIslandEnvironment(nint handle, LaunchOptions options)
+    private static unsafe IslandEnvironmentView UpdateIslandEnvironment(nint handle, LaunchOptions options, int gameProcessId = 0)
     {
         IslandEnvironment* pIslandEnvironment = (IslandEnvironment*)handle;
         pIslandEnvironment->ProvideOffsets = Win32.Foundation.BOOL.FALSE;
@@ -141,8 +142,26 @@ public sealed class GameIslandInterop : IGameIslandInterop
         pIslandEnvironment->DisablePlayerPerspective = options.DisablePlayerPerspective.Value;
         pIslandEnvironment->DisablePlayerDiveMosaic = options.DisablePlayerDiveMosaic.Value;
         pIslandEnvironment->DisableFog = options.DisableFog.Value;
-        pIslandEnvironment->EnableSetTargetFrameRate = options.IsSetTargetFrameRateEnabled.Value;
-        pIslandEnvironment->TargetFrameRate = options.TargetFps.Value;
+        bool frameRateEnabled = options.IsSetTargetFrameRateEnabled.Value;
+        bool backgroundFrameRateEnabled = options.IsBackgroundFrameRateEnabled.Value;
+        uint foregroundProcessId = 0;
+        if (frameRateEnabled && backgroundFrameRateEnabled && gameProcessId > 0)
+        {
+            global::Windows.Win32.Foundation.HWND foregroundWindow = Win32PInvoke.GetForegroundWindow();
+            if (!foregroundWindow.IsNull && Win32PInvoke.GetWindowThreadProcessId(foregroundWindow, &foregroundProcessId) == 0)
+            {
+                foregroundProcessId = 0;
+            }
+        }
+
+        pIslandEnvironment->EnableSetTargetFrameRate = frameRateEnabled;
+        pIslandEnvironment->TargetFrameRate = IslandFrameRate.SelectTarget(
+            frameRateEnabled,
+            options.TargetFps.Value,
+            backgroundFrameRateEnabled,
+            options.BackgroundTargetFps.Value,
+            gameProcessId,
+            foregroundProcessId);
         pIslandEnvironment->RemoveOpenTeamProgress = options.RemoveOpenTeamProgress.Value;
         pIslandEnvironment->HideQuestBanner = options.HideQuestBanner.Value;
         pIslandEnvironment->DisableEventCameraMove = options.DisableEventCameraMove.Value;
@@ -223,6 +242,7 @@ public sealed class GameIslandInterop : IGameIslandInterop
 
     private async ValueTask PeriodicUpdateIslandEnvironmentAsync(LaunchExecutionContext context, nint handle, CancellationToken token)
     {
+        int gameProcessId = context.Process.Id;
         using (PeriodicTimer timer = new(TimeSpan.FromMilliseconds(500)))
         {
             while (await timer.WaitForNextTickAsync(token).ConfigureAwait(false))
@@ -232,7 +252,7 @@ public sealed class GameIslandInterop : IGameIslandInterop
                     break;
                 }
 
-                IslandEnvironmentView view = UpdateIslandEnvironment(handle, context.LaunchOptions);
+                IslandEnvironmentView view = UpdateIslandEnvironment(handle, context.LaunchOptions, gameProcessId);
                 if (Interlocked.Exchange(ref previousUid, view.Uid) != view.Uid)
                 {
                     await HandleUidChangedAsync(context, view.Uid, token).ConfigureAwait(false);
