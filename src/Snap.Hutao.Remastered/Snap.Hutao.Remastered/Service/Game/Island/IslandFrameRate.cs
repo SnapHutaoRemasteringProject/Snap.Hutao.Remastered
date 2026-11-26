@@ -5,7 +5,7 @@ namespace Snap.Hutao.Remastered.Service.Game.Island;
 
 internal static class IslandFrameRate
 {
-    public static int SelectTarget(
+    internal static int SelectTarget(
         bool frameRateEnabled,
         int foregroundTargetFps,
         bool backgroundEnabled,
