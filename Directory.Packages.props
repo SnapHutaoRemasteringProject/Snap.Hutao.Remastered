@@ -10,14 +10,14 @@
     <PackageVersion Include="CommunityToolkit.Labs.WinUI.TokenView" Version="0.1.250828-build.2223" />
     <PackageVersion Include="CommunityToolkit.Labs.WinUI.TransitionHelper" Version="0.1.261027-build.2704" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <PackageVersion Include="CommunityToolkit.WinUI.Behaviors" Version="8.3.261026-build.1872" />
-    <PackageVersion Include="CommunityToolkit.WinUI.Collections" Version="8.3.261026-build.1872" />
-    <PackageVersion Include="CommunityToolkit.WinUI.Controls.HeaderedControls" Version="8.3.261026-build.1872" />
-    <PackageVersion Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.3.261026-build.1872" />
-    <PackageVersion Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.3.261026-build.1872" />
-    <PackageVersion Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.3.261026-build.1872" />
-    <PackageVersion Include="CommunityToolkit.WinUI.Converters" Version="8.3.261026-build.1872" />
-    <PackageVersion Include="CommunityToolkit.WinUI.Media" Version="8.3.261026-build.1872" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Behaviors" Version="8.3.261126-build.1909" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Collections" Version="8.3.261126-build.1909" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.HeaderedControls" Version="8.3.261126-build.1909" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.3.261126-build.1909" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.Segmented" Version="8.3.261126-build.1909" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.3.261126-build.1909" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Converters" Version="8.3.261126-build.1909" />
+    <PackageVersion Include="CommunityToolkit.WinUI.Media" Version="8.3.261126-build.1909" />
     <PackageVersion Include="coverlet.collector" Version="10.1.1" />
     <PackageVersion Include="DevWinUI" Version="11.1.0" />
     <PackageVersion Include="Google.Protobuf" Version="3.36.2" />
@@ -51,7 +51,7 @@
     <PackageVersion Include="QRCoder" Version="1.9.0" />
     <PackageVersion Include="Quartz" Version="4.8.1" />
     <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="4.8.1" />
-    <PackageVersion Include="Sentry.Extensions.Logging" Version="7.0.1" />
+    <PackageVersion Include="Sentry.Extensions.Logging" Version="7.1.0" />
     <PackageVersion Include="Snap.HPatch" Version="0.0.2" />
     <PackageVersion Include="Snap.Hutao.FileUnlocker" Version="1.2.0" />
     <PackageVersion Include="Snap.Hutao.Remastered.Deployment.Runtime" Version="1.8.1" />
