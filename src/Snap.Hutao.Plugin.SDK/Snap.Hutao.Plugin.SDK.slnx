@@ -17,14 +17,16 @@
   <Project Path="Snap.Hutao.Plugin.Packaging/Snap.Hutao.Plugin.Packaging.csproj">
     <Platform Project="x64" />
   </Project>
+  <Folder Name="/tests/">
+    <Project Path="tests/PrototypeHost/PrototypeHost.csproj" Id="c64c121c-ce00-473b-80c2-9bde2b0ddeac">
+      <Platform Project="x64" />
+      <Deploy Solution="Release|*" />
+    </Project>
+  </Folder>
   <Project Path="Snap.Hutao.Plugin.Host/Snap.Hutao.Plugin.Host.csproj">
     <Platform Project="x64" />
   </Project>
   <Project Path="tools/PluginPack/PluginPack.csproj">
-    <Platform Project="x64" />
-  </Project>
-  <Project Path="tests/PrototypeHost/PrototypeHost.csproj" Id="781580c8-29e5-4c5b-a337-1eb094d42986">
-    <BuildDependency Project="TestPlugin.Native/TestPlugin.Native.vcxproj" />
     <Platform Project="x64" />
   </Project>
 </Solution>

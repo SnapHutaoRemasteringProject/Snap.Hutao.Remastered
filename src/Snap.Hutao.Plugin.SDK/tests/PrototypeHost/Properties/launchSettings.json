@@ -1,8 +1,10 @@
 {
   "profiles": {
-    "PrototypeHost": {
-      "commandName": "Project",
-      "nativeDebugging": true
+    "PrototypeHost (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "PrototypeHost (Unpackaged)": {
+      "commandName": "Project"
     }
   }
 }
