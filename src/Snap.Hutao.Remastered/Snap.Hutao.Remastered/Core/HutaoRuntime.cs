@@ -31,8 +31,10 @@ public static class HutaoRuntime
 
     /// <summary>
     /// 对应 <c>ms-appdata:///local/</c> 的本地数据目录。
-    /// 磁贴通知只支持 <c>ms-appx:///</c>、<c>ms-appdata:///local/</c> 与 http(s):// 三种图片地址，
-    /// 没有 localcache 协议，需要被磁贴引用的文件必须放在这里。
+    /// 磁贴通知的图片地址在官方 schema 里只列出 <c>ms-appx:///</c>、<c>ms-appdata:///local/</c>
+    /// 与 <c>http(s)://</c>，没有 localcache 协议，因此需要被磁贴引用的文件放在这里。
+    /// 实测（2026-11，Windows 11 22631）：<c>ms-appdata:///localcache/</c> 与裸 Windows 路径
+    /// 也能被磁贴渲染，但它们不在文档里、缺少跨版本保证，所以仍用官方形式。
     /// </summary>
     public static string LocalFolderDirectory { get; } = RuntimeEnvironment.IsPackaged
         ? ApplicationData.Current.LocalFolder.Path
