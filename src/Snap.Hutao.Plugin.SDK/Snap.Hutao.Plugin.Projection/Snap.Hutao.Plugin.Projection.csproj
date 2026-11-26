@@ -16,7 +16,10 @@
     <None Include="..\Snap.Hutao.Plugin.Contracts\HutaoPluginAbi.h" Link="Contracts\HutaoPluginAbi.h" />
   </ItemGroup>
   <Target Name="GenerateHutaoContracts" BeforeTargets="CsWinRTGenerateProjection" DependsOnTargets="ResolvePackageAssets" Condition="'$(DesignTimeBuild)' != 'true'">
-    <Exec Command="powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)..\Build-Prototype.ps1&quot; -GenerateOnly -AssetsFile &quot;$(ProjectAssetsFile)&quot; -WindowsSdkVersion &quot;$(HutaoWindowsSdkVersion)&quot;" />
+    <PropertyGroup>
+      <_HutaoVsArgument Condition="'$(VSInstallDir)' != ''">-VisualStudioInstallDir &quot;$(VSInstallDir).&quot;</_HutaoVsArgument>
+    </PropertyGroup>
+    <Exec Command="powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)..\Build-Prototype.ps1&quot; -GenerateOnly -AssetsFile &quot;$(ProjectAssetsFile)&quot; -WindowsSdkVersion &quot;$(HutaoWindowsSdkVersion)&quot; -TargetPlatformVersion &quot;$(TargetPlatformVersion)&quot; $(_HutaoVsArgument)" />
     <ItemGroup>
       <CsWinRTInputs Include="$(HutaoArtifacts)references\*.winmd" />
     </ItemGroup>
