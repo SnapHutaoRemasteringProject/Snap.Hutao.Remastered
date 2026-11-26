@@ -64,7 +64,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
       <WarningLevel>Level4</WarningLevel>
@@ -74,7 +74,7 @@
       <LanguageStandard Condition="'$(VisualStudioVersion)' &gt;= '18.0'">stdcpp23</LanguageStandard>
       <LanguageStandard Condition="'$(VisualStudioVersion)' &lt; '18.0'">stdcpp17</LanguageStandard>
       <AdditionalOptions>%(AdditionalOptions) /bigobj</AdditionalOptions>
-      <PreprocessorDefinitions>_WINRT_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINRT_DLL;WINRT_ENABLE_LEGACY_COM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalUsingDirectories>$(WindowsSDK_WindowsMetadata);$(AdditionalUsingDirectories)</AdditionalUsingDirectories>
     </ClCompile>
     <Link>
@@ -102,13 +102,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="XamlWorkaround.h" />
+    <ClInclude Include="XamlGeneratedWorkaround.h" />
     <ClInclude Include="PluginPage.xaml.h"><DependentUpon>PluginPage.xaml</DependentUpon></ClInclude>
     <ClInclude Include="ModuleCommand.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader>Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="TestPlugin.cpp" />
     <ClCompile Include="PluginPage.xaml.cpp"><DependentUpon>PluginPage.xaml</DependentUpon></ClCompile>
     <ClCompile Include="ModuleCommand.cpp"><PrecompiledHeader>NotUsing</PrecompiledHeader></ClCompile>
@@ -132,6 +131,16 @@
     <Error Condition="!Exists('$(MSBuildThisFileDirectory)..\artifacts\metadata\Snap.Hutao.Plugin.Contracts.winmd')" Text="Build the SDK solution to generate the canonical contract first." />
   </Target>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <!-- Generated XAML sources still emit textual headers. Establish their
+       module boundary before the module scanner and compiler consume them. -->
+  <Target Name="InjectModuleImportsIntoXamlGenerated" AfterTargets="ComputeXamlGeneratedCompileInputs" BeforeTargets="ClCompile">
+    <ItemGroup>
+      <ClCompile Update="@(ClCompile)" Condition="'%(Filename)' == 'XamlTypeInfo.g' or '%(Filename)' == 'XamlTypeInfo.Impl.g' or '%(Filename)' == 'XamlMetaDataProvider' or '%(Filename)' == 'XamlLibMetadataProvider.g'">
+        <PrecompiledHeader>NotUsing</PrecompiledHeader>
+        <ForcedIncludeFiles>windows.h;$(MSBuildProjectDirectory)\XamlGeneratedWorkaround.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      </ClCompile>
+    </ItemGroup>
+  </Target>
   <ImportGroup Label="ExtensionTargets" />
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.WebView2" />

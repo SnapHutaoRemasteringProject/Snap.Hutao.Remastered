@@ -3,8 +3,14 @@
 #ifdef GetCurrentTime
 #undef GetCurrentTime
 #endif
+#ifdef WINRT_IMPORT_MODULE
+import winrt_base;
+import winrt.Windows.Foundation;
+import winrt.Snap.Hutao.Plugin.Contracts;
+#else
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Snap.Hutao.Plugin.Contracts.h>
+#endif
 
 namespace hutao::plugin
 {

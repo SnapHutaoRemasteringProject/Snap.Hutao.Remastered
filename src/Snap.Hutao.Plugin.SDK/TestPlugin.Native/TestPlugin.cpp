@@ -1,19 +1,7 @@
-#include "pch.h"
-#include "PluginPage.xaml.h"
-#include "ModuleCommand.h"
 #include "HutaoPluginAbi.h"
-
-// The Win32 GetCurrentTime macro collides with Timeline's projected method.
-#ifdef GetCurrentTime
-#undef GetCurrentTime
-#endif
-
-#include <winrt/Windows.Foundation.h>
-#include <winrt/Microsoft.UI.Xaml.h>
-#include <winrt/Microsoft.UI.Xaml.Controls.h>
-#include <winrt/Microsoft.UI.Xaml.Controls.Primitives.h>
-#include <winrt/Snap.Hutao.Plugin.Contracts.h>
-#include <vector>
+#include "ModuleCommand.h"
+#include "XamlWorkaround.h"
+#include "PluginPage.xaml.h"
 #include "HutaoPlugin.hpp"
 
 using namespace winrt;
@@ -36,7 +24,7 @@ struct TestView : implements<TestView, IPluginView>
     void OnClosing() { page->ClosePluginView(); }
 };
 
-struct TestPlugin : implements<TestPlugin, IHutaoPlugin, IPluginViewFactory, IPluginCommand, IPluginAction>
+struct TestPluginImpl : implements<TestPluginImpl, IHutaoPlugin, IPluginViewFactory, IPluginCommand, IPluginAction>
 {
     IPluginContext context{ nullptr };
     std::vector<IPluginRegistration> registrations;
@@ -114,5 +102,5 @@ struct TestPlugin : implements<TestPlugin, IHutaoPlugin, IPluginViewFactory, IPl
 
 extern "C" __declspec(dllexport) HRESULT __cdecl HutaoPluginCreate(uint32_t abiMajor, ::IInspectable** plugin)
 {
-    return hutao::plugin::create<TestPlugin>(abiMajor, plugin);
+    return hutao::plugin::create<TestPluginImpl>(abiMajor, plugin);
 }

@@ -1,9 +1,8 @@
-#include "pch.h"
+#include "XamlWorkaround.h"
 #include "PluginPage.xaml.h"
 #if __has_include("PluginPage.g.cpp")
 #include "PluginPage.g.cpp"
 #endif
-#include <string>
 
 using namespace winrt;
 using namespace Microsoft::UI::Xaml;

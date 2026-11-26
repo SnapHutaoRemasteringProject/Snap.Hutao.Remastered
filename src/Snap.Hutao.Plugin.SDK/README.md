@@ -60,8 +60,11 @@ The C++ project uses the original Runtime Component template with C++23,
 `CppWinRTBuildModule=true`, generated module.g.cpp, MIDL and Page items.
 ModuleCommand.cpp imports winrt_base, Windows.Foundation and the contract module,
 and the actual exercise command reads Counter through that projection.
-XAML-generated code still uses the template's PCH/headers in separate translation
-units. The native sample's PluginPage.xaml uses x:Class, x:Bind and a Click handler.
+The sample disables PCH and keeps pch.h empty for generated includes.
+Hand-written XAML code uses XamlWorkaround.h; XamlCompiler-generated metadata
+uses XamlGeneratedWorkaround.h via forced includes. Both use named projections,
+while the SDK export helper also retains its conventional-header mode.
+The native sample's PluginPage.xaml uses x:Class, x:Bind and a Click handler.
 The packer includes PluginPage.xbf in views/. Its implementation uses explicit
 workspace URI and the generated Connect/GetBindingConnector rather than the default
 host-relative InitializeComponent URI. The integration app implements
