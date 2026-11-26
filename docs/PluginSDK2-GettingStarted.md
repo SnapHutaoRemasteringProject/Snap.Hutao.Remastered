@@ -8,6 +8,15 @@
 
 SDK 不是宿主：SDK 提供契约和辅助实现；PrototypeHost 是轻量的独立测试程序；PluginPack 是打包和校验工具；正式宿主负责信任确认、持久化包、启用/停用、更新、UI 和设置。
 
+```text
+C# 插件源码 → SDK NuGet + CsWinRT 投影 → Native AOT Publish → native DLL
+C++ 插件源码 → Contracts.winmd + C++/WinRT → Link → native DLL
+native DLL + manifest + 资源 → PluginPack → .hutao
+.hutao → 宿主校验/解压/加载 → IHutaoPlugin → 真实 WinRT UI 与宿主服务
+```
+
+NuGet 只负责给 C# 开发者分发编译所需的 SDK/投影。它不是运行时加载器，最终用户不需要安装 NuGet 包。仓库内 ProjectReference 可以替代 NuGet；仓库外推荐 NuGet 本地源或以后发布的公开源。C++ 使用同一个 WinMD，不用 C# SDK NuGet。详细依赖方向、ABI 调用链和各项目职责见 [架构](PluginSDK2-Architecture.md)。开发中遇到的构建和运行问题见 [技术记录](PluginSDK2-EngineeringNotes.md)。
+
 ## 2. 工具链与获取 SDK
 
 在 Windows 安装 Visual Studio 2026、Desktop development with C++、C++ WinUI 开发组件、Windows SDK 10.0.28000.0、.NET 11 SDK、PowerShell 7。C# 也需要 C++ 链接工具才能完成 Native AOT 发布。打开 Developer PowerShell for VS 可确保 MSVC 工具可用。
@@ -206,7 +215,7 @@ PrototypeHost 是正常的 WinUI 3 应用，可以从 SDK 分发目录直接启�
 & C:\HutaoSdk\PrototypeHost\PrototypeHost.exe (Resolve-Path .\MyPlugin.hutao).Path
 ```
 
-命令行仅填入路径，不跳过确认。点击 Inspect and load，确认 ID/版本/哈希，选择下拉中的视图并测试。对于你自己的插件，宿主的 Run command 按钮是专门给仓库 TestPlugin 的 exercise 命令的；自定义插件可以在正式插件管理页执行自己注册的命令。使用 VS 调试器 Attach to Process；C++ 选择 Native，C# Native AOT 使用 Native 调试器和对应发布 PDB，普通 C# 托管调试器不能把 AOT DLL 当普通 IL 模块调试。PDB 单独保留，通常不打入用户包。
+命令行仅填入路径，不跳过确认。点击 Inspect and load，确认 ID/版本/哈希，选择下拉中的视图并测试。对于你自己的插件，在 Plugin command 下拉框选择已注册的任意命令，点击 Run command；仓库 TestPlugin 的 Exercise ABI 只是其中一个回归命令。正式插件管理页也可执行已注册的命令。使用 VS 调试器 Attach to Process；C++ 选择 Native，C# Native AOT 使用 Native 调试器和对应发布 PDB，普通 C# 托管调试器不能把 AOT DLL 当普通 IL 模块调试。PDB 单独保留，通常不打入用户包。
 
 更新 DLL：关闭整个 PrototypeHost 进程 → 重新 Build/Publish → 清理并重建 staging → 重新 pack → 启动新进程。Disable and re-enable 只测试同一已映射模块的生命周期，不是重载。松散 XAML 的内容可以编辑后重新打包，重新启动验证；VS XAML Hot Reload 只针对其支持的调试项目和编译资源，不能承诺任意第三方 Native AOT DLL 热替换。
 

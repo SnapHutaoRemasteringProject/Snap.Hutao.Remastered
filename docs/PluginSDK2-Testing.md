@@ -1,5 +1,7 @@
 # SDK 2.0 验收、故障排查和 v1 迁移
 
+先阅读 [架构与开发模型](PluginSDK2-Architecture.md)。历史构建/运行失败、原始诊断、修复提交与验证边界集中在 [开发技术记录](PluginSDK2-EngineeringNotes.md)；本页负责执行当前版本的回归测试，不用历史 Pass 替代当前 Pass。
+
 ## 1. 构建与回归
 
 在干净 checkout，VS 2026 打开 src/Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.slnx，Release|x64，Rebuild。C++ 和 C# 投影由同一 Contracts.winmd 生成；不要并行启动两个独立构建过程同时写 artifacts/metadata/references。C# AOT 发布：

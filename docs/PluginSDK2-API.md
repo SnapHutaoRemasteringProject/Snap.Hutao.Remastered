@@ -2,6 +2,8 @@
 
 本参考以 HutaoPlugin.idl、C# PluginContext.cs / PluginSettings.cs / HutaoPlugin.cs 和正式宿主 PluginHostContext.cs 为准。SDK 产品版本 2.0 与 ABI major 1 / minor 0 是不同的概念；ABI 是 DLL 与宿主二进制接口，不能因 C# 或 C++ 项目重构而改变既有 IID 和 vtable 方法顺序。
 
+先阅读 [架构与开发模型](PluginSDK2-Architecture.md) 了解 ABI、NuGet、宿主和插件的关系；[开发技术记录](PluginSDK2-EngineeringNotes.md) 解释线程、封送、XAML 与构建方面的历史问题。
+
 ## 1. 生命周期与线程
 
 | 回调 | 何时执行 | 可做什么 |

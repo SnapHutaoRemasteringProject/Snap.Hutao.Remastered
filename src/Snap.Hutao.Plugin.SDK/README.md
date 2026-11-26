@@ -2,7 +2,25 @@
 
 SDK 2.0 是 Snap Hutao Remastered 的进程内 WinRT 原生插件开发工具。C++/WinRT 与 C# Native AOT 插件使用同一个 WinMD、同一个 DLL 入口和同一种 .hutao 格式。插件不引用主程序实现程序集。
 
+## 架构：从插件源码到运行
+
+```text
+HutaoPlugin.idl → MIDL → Contracts.winmd
+                          ├─ C++/WinRT → C++ DLL
+                          └─ CsWinRT → C# SDK → Native AOT DLL
+原生 DLL + manifest + resources → PluginPack → .hutao
+.hutao → 宿主校验/解压 → LoadLibraryExW → HutaoPluginCreate
+       → IHutaoPlugin → 生命周期 / IPluginContext / UIElement
+```
+
+正式宿主提供服务、管理插件实例与界面；插件不引用主程序实现程序集。C# SDK NuGet 包只是把公共投影及辅助代码提供给插件作者编译使用，Native AOT 发布会将实际使用的代码编入插件 DLL；用户不需要 NuGet。C++ 使用 WinMD 和头文件，不使用这两个 C# NuGet 包。PrototypeHost 是独立调试和 ABI 回归程序，不是热重载器。
+
+**开发顺序**：选择 C# 或 C++ 模板 → 引用 SDK → 实现生命周期及视图/命令 → C# Native AOT Publish 或 C++ Build → PluginPack 打包 → PrototypeHost 调试 → 正式应用安装验证。原生 DLL 修改后必须重启宿主。
+
 ## 文档入口
+
+- [架构与开发模型：为什么采用 WinRT、SDK/NuGet 的职责、编译和运行调用链](../../docs/PluginSDK2-Architecture.md)
+- [历史技术记录：实际错误、根因、修复提交、复现与回归状态](../../docs/PluginSDK2-EngineeringNotes.md)
 
 - [开发者上手：安装 SDK、C# / C++ 项目、构建、打包与调试](../../docs/PluginSDK2-GettingStarted.md)
 - [API 参考：生命周期、设置、UI、命令、线程与资源所有权](../../docs/PluginSDK2-API.md)
@@ -38,7 +56,7 @@ pwsh -File .\build\Test-Packaging.ps1
 
 生成三份包：`artifacts\TestPlugin.Native.Core.hutao`（C++ 程序式与松散 XAML）、`artifacts\TestPlugin.hutao`（C# AOT 程序式、松散 XAML、Binding），`artifacts\TestPlugin.Native.hutao`（C++ 编译期 Page 实验，仅 PrototypeHost）。正式应用拒绝 compiled 模式，不会自动降级。
 
-使用 PrototypeHost 的 C++ core / C# AOT sample 按钮选择包，Inspect and load 并确认信任。下拉选择每个视图，点击控件、Exercise ABI、完成对话框、Disable and re-enable、Uninstall session。替换 DLL 必须关闭整个宿主进程；不支持原生 DLL 热卸载或热替换。
+使用 PrototypeHost 的 C++ core / C# AOT sample 按钮选择包，Inspect and load 并确认信任。下拉选择每个视图，点击控件、选择 Exercise ABI 命令并点击 Run command、完成对话框、Disable and re-enable、Uninstall session。替换 DLL 必须关闭整个宿主进程；不支持原生 DLL 热卸载或热替换。
 
 本地生成 SDK（不上传 NuGet）：
 
