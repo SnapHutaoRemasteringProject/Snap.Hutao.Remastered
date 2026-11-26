@@ -2,6 +2,10 @@
   <Configurations>
     <Platform Name="x64" />
   </Configurations>
+  <Project Path="RuntimeComponentSample/RuntimeComponentSample.vcxproj" Id="24916c3d-d0f0-4385-8629-00b1e4320e36" />
+  <Project Path="RuntimeComponentSampleCs/RuntimeComponentSampleCs.csproj" Id="d706d063-cc2a-4321-ab65-dc4eb6e74dc0">
+    <Platform Project="x64" />
+  </Project>
   <Project Path="Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj" Id="e92e2537-7f7f-4e05-ad18-8dc6ce51a197">
     <Platform Project="x64" />
   </Project>
@@ -12,7 +16,7 @@
     <BuildDependency Project="Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj" />
   </Project>
   <Project Path="tests/PrototypeHost/PrototypeHost.csproj" Id="781580c8-29e5-4c5b-a337-1eb094d42986">
-    <Platform Project="x64" />
     <BuildDependency Project="TestPlugin.Native/TestPlugin.Native.vcxproj" />
+    <Platform Project="x64" />
   </Project>
 </Solution>
