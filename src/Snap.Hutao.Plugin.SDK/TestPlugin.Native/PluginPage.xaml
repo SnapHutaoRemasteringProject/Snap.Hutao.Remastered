@@ -1,4 +1,4 @@
-<UserControl
+<Page
     x:Class="TestPlugin.Native.PluginPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -7,4 +7,4 @@
         <Button x:Name="ClickButton" Content="Click compiled C++ XAML" Click="OnClick" />
         <TextBlock x:Name="StatusText" Text="XBF loaded" />
     </StackPanel>
-</UserControl>
+</Page>

@@ -1,7 +1,7 @@
 namespace TestPlugin.Native
 {
     [default_interface]
-    runtimeclass PluginPage : Microsoft.UI.Xaml.Controls.UserControl
+    runtimeclass PluginPage : Microsoft.UI.Xaml.Controls.Page
     {
         PluginPage();
         String TitleText{ get; };
