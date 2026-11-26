@@ -640,6 +640,21 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     }
 
 
+    public string? ResolveCachedBackgroundFilePath(string avatarId, bool isWide)
+    {
+        string suffix = isWide ? "_wide" : "_large";
+        foreach (string extension in BackgroundImageExtensions)
+        {
+            string path = Path.Combine(BackgroundCacheDirectory, $"{avatarId}{suffix}{extension}");
+            if (File.Exists(path))
+            {
+                return path;
+            }
+        }
+
+        return null;
+    }
+
     /// <summary>
     /// 解析指定角色已缓存的背景图本地地址，没有缓存时返回 <see langword="null"/>。
     /// </summary>
