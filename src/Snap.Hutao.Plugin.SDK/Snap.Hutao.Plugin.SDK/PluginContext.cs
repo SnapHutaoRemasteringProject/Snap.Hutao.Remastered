@@ -5,7 +5,7 @@ using Windows.Foundation;
 
 namespace Snap.Hutao.Plugin.SDK;
 
-public sealed class PluginContext : IDisposable
+public sealed partial class PluginContext : IDisposable
 {
     private readonly IPluginContext abi;
     private readonly List<IPluginRegistration> registrations = [];
@@ -31,6 +31,14 @@ public sealed class PluginContext : IDisposable
     public UIElement ParseXaml(string markup) => abi.Ui.ParseXaml(markup);
     public async Task<DialogResult> ShowMessageAsync(string title, string message, string primaryText = "OK", string secondaryText = "Cancel")
         => await abi.Dialogs.ShowMessageAsync(title, message, primaryText, secondaryText);
+
+    // Use for external UI events that do not enter through a generated SDK adapter.
+    // This restores the plugin runtime synchronization context across awaits.
+    public Task RunOnUiAsync(Func<Task> callback)
+    {
+        if (!HasThreadAccess) throw new InvalidOperationException("Expected plugin UI thread.");
+        return UiCall.Run(callback);
+    }
 
     public async Task InvokeAsync(Action callback)
     {
@@ -130,7 +138,7 @@ internal sealed partial class CommandAdapter(Func<Task> execute) : IPluginComman
     public IAsyncAction ExecuteAsync(string commandId) => UiCall.Run(execute).AsAsyncAction();
 }
 
-internal sealed class RegistrationHandle(IPluginRegistration registration) : IDisposable
+internal sealed partial class RegistrationHandle(IPluginRegistration registration) : IDisposable
 {
     private IPluginRegistration? value = registration;
     public void Dispose() => Interlocked.Exchange(ref value, null)?.Revoke();

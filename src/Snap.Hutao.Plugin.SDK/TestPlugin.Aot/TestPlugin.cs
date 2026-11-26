@@ -33,6 +33,10 @@ public sealed class TestPlugin : HutaoPlugin
     {
         Context.RegisterView("main", CreateView);
         Context.RegisterNavigationItem("main", "C# AOT plugin", "\uE74C", "main");
+        Context.RegisterView("binding", CreateBindingView);
+        Context.RegisterNavigationItem("binding", "C# AOT Binding", "\uE74C", "binding");
+        Context.RegisterView("programmatic", CreateProgrammaticView);
+        Context.RegisterNavigationItem("programmatic", "C# AOT programmatic UI", "\uE74C", "programmatic");
         Context.RegisterCommand("exercise", "Exercise ABI", ExerciseAsync);
     }
 
@@ -91,15 +95,7 @@ public sealed class TestPlugin : HutaoPlugin
     private PluginView CreateViewCore()
     {
         // Real WinUI controls created by the host's XAML parser, no compiled-XAML resource hooks.
-        StackPanel root = Context.ParseXaml("""
-            <StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Spacing="8">
-                <Button x:Name="ClickButton" Content="Click C# AOT plugin-owned Button"/>
-                <TextBlock x:Name="CounterText"/>
-                <TextBox x:Name="MessageBox" Header="Message"/>
-                <Button x:Name="SaveButton" Content="Save message"/>
-            </StackPanel>
-            """) as StackPanel ?? throw new InvalidCastException("ParseXaml did not return a StackPanel projection.");
+        StackPanel root = Context.LoadXaml("views/PluginPage.hxaml") as StackPanel ?? throw new InvalidCastException("LoadXaml did not return a StackPanel projection.");
         Button click = root.FindName("ClickButton") as Button ?? throw new InvalidCastException("ClickButton is not a Button projection.");
         TextBlock count = root.FindName("CounterText") as TextBlock ?? throw new InvalidCastException("CounterText is not a TextBlock projection.");
         TextBox edit = root.FindName("MessageBox") as TextBox ?? throw new InvalidCastException("MessageBox is not a TextBox projection.");
@@ -134,11 +130,30 @@ public sealed class TestPlugin : HutaoPlugin
         });
     }
 
-    private static void RunOnUi(Action action)
+    private void RunOnUi(Action action)
     {
-        SynchronizationContext? previous = SynchronizationContext.Current;
-        SynchronizationContext.SetSynchronizationContext(new Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext(Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread()));
-        try { action(); }
-        finally { SynchronizationContext.SetSynchronizationContext(previous); }
+        _ = Context.RunOnUiAsync(() => { action(); return Task.CompletedTask; });
+    }
+
+    [WinRT.DynamicWindowsRuntimeCast(typeof(FrameworkElement))]
+    private PluginView CreateBindingView()
+    {
+        FrameworkElement root = Context.LoadXaml("views/BindingPage.hxaml") as FrameworkElement
+            ?? throw new InvalidCastException("Expected FrameworkElement.");
+        SampleViewModel model = new(Context, counter, message);
+        root.DataContext = model;
+        return new(root, () => { root.DataContext = null; model.Dispose(); });
+    }
+
+    private PluginView CreateProgrammaticView()
+    {
+        Button button = new() { Content = "Programmatic C# AOT Button" };
+        void Click(object sender, RoutedEventArgs e)
+        {
+            button.Content = "C# AOT callback completed";
+            Context.Notify(NotificationKind.Success, "C# core click");
+        }
+        button.Click += Click;
+        return new(button, () => button.Click -= Click);
     }
 }

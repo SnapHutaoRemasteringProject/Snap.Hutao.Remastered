@@ -9,6 +9,7 @@ namespace PrototypeHost;
 public sealed partial class MainPage : Page
 {
     private PluginSession? session;
+    private NavigationContribution[] availableViews = [];
     private bool busy;
     private bool restartRequired;
     private string? entryPath;
@@ -33,19 +34,20 @@ public sealed partial class MainPage : Page
         void UpdateButtons()
         {
             bool active = session is not null;
-            load.IsEnabled = pathBox.IsEnabled = nativeChoice.IsEnabled = aotChoice.IsEnabled = !busy && !active && !restartRequired;
+            load.IsEnabled = pathBox.IsEnabled = nativeChoice.IsEnabled = compiledChoice.IsEnabled = aotChoice.IsEnabled = !busy && !active && !restartRequired;
+            views.IsEnabled = !busy && active && !restartRequired;
             exercise.IsEnabled = restart.IsEnabled = uninstall.IsEnabled = !busy && active && !restartRequired;
         }
 
-        void Choose(bool native)
+        void Choose(string packageName, bool native)
         {
             for (DirectoryInfo? directory = new(AppContext.BaseDirectory); directory is not null; directory = directory.Parent)
             {
                 if (!File.Exists(Path.Combine(directory.FullName, "Snap.Hutao.Plugin.SDK.slnx"))) continue;
                 string artifacts = Path.Combine(directory.FullName, "artifacts");
                 string[] candidates = native
-                    ? [Path.Combine(artifacts, "TestPlugin.Native.hutao"), Path.Combine(artifacts, "native", "Debug", "TestPlugin.Native.dll"), Path.Combine(artifacts, "native", "Release", "TestPlugin.Native.dll")]
-                    : [Path.Combine(artifacts, "TestPlugin.hutao"), Path.Combine(artifacts, "aot-plugin", "TestPlugin.Aot.dll")];
+                    ? [Path.Combine(artifacts, packageName), Path.Combine(artifacts, "native", "Debug", "TestPlugin.Native.dll"), Path.Combine(artifacts, "native", "Release", "TestPlugin.Native.dll")]
+                    : [Path.Combine(artifacts, packageName), Path.Combine(artifacts, "aot-plugin", "TestPlugin.Aot.dll")];
                 pathBox.Text = candidates.FirstOrDefault(File.Exists) ?? candidates[1];
                 return;
             }
@@ -72,7 +74,7 @@ public sealed partial class MainPage : Page
                     string settings = Path.Combine(TestRoot, "settings", verified.Manifest.Id);
                     string key = verified.Manifest.Id + ":" + verified.Sha256;
                     session = await PluginSession.ActivateApprovedPackageAsync(path, verified.Sha256, workspace, settings, new Version(1,0,0),
-                        !installed.Contains(key), () => installed.Add(key), DispatcherQueue, () => panel.XamlRoot, Write, Write, ((App)Application.Current).RegisterMetadataProvider);
+                        !installed.Contains(key), () => installed.Add(key), DispatcherQueue, () => panel.XamlRoot, Write, Write, App.CurrentHost.RegisterMetadataProvider);
                     var manifest = verified.Manifest;
                     identity = new(manifest.Id, manifest.Name, manifest.Version.ToString(), workspace, Path.Combine(settings,"data"),
                         settings, manifest.UiMode, manifest.Capabilities, manifest.Files.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase), manifest.MetadataProvider);
@@ -108,12 +110,15 @@ public sealed partial class MainPage : Page
                 string key = approvalKey!;
                 Directory.CreateDirectory(trusted.DataDirectory);
                 session = await PluginSession.ActivateTrustedAsync(entryPath!, trusted, !installed.Contains(key), () => installed.Add(key),
-                    DispatcherQueue, () => panel.XamlRoot, Write, Write, approvedPackageHash, RegisterMetadataProvider);
+                    DispatcherQueue, () => panel.XamlRoot, Write, Write, approvedPackageHash, App.CurrentHost.RegisterMetadataProvider);
             }
             try
             {
-                if (session.Navigation.FirstOrDefault() is { } item)
-                    content.Content = session.OpenView(item.ViewId);
+                availableViews = session.Navigation.ToArray();
+                views.Items.Clear();
+                foreach (NavigationContribution item in availableViews) views.Items.Add(item.Title);
+                views.SelectedIndex = availableViews.Length > 0 ? 0 : -1;
+                OpenSelectedView();
                 Write(NotificationKind.Success, "Activated through the production host sources.");
             }
             catch
@@ -123,13 +128,21 @@ public sealed partial class MainPage : Page
             }
         }
 
+        void OpenSelectedView()
+        {
+            if (session is null || views.SelectedIndex < 0 || views.SelectedIndex >= availableViews.Length) return;
+            session.CloseView();
+            content.Content = null;
+            content.Content = session.OpenView(availableViews[views.SelectedIndex].ViewId);
+        }
+
         async Task StopAsync(bool remove)
         {
             PluginSession? active = session;
             if (active is null) return;
             try { await active.DisableAsync(() => content.Content = null, remove); }
             catch { restartRequired = true; throw; }
-            finally { session = null; }
+            finally { session = null; availableViews = []; views.Items.Clear(); }
         }
 
         async Task RunAsync(Func<Task> action)
@@ -141,8 +154,15 @@ public sealed partial class MainPage : Page
             finally { busy = false; UpdateButtons(); }
         }
 
-        nativeChoice.Click += (_, _) => Choose(true);
-        aotChoice.Click += (_, _) => Choose(false);
+        nativeChoice.Click += (_, _) => Choose("TestPlugin.Native.Core.hutao", true);
+        compiledChoice.Click += (_, _) => Choose("TestPlugin.Native.hutao", true);
+        aotChoice.Click += (_, _) => Choose("TestPlugin.hutao", false);
+        views.SelectionChanged += (_, _) =>
+        {
+            if (busy || session is null) return;
+            try { OpenSelectedView(); }
+            catch (Exception error) { Write(NotificationKind.Error, error.ToString()); }
+        };
         load.Click += async (_, _) => await RunAsync(() => StartAsync(pathBox.Text, false));
         exercise.Click += async (_, _) => await RunAsync(async () =>
         {

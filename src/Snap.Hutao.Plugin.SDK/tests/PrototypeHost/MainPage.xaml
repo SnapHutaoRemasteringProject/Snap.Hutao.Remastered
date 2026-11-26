@@ -5,10 +5,12 @@
         <StackPanel x:Name="panel" Spacing="12" Padding="16">
             <TextBox x:Name="pathBox" Header="Trusted development DLL or .hutao package" />
             <StackPanel Orientation="Horizontal" Spacing="8">
-                <Button x:Name="nativeChoice" Content="C++ sample" />
+                <Button x:Name="nativeChoice" Content="C++ core" />
+                <Button x:Name="compiledChoice" Content="C++ compiled (experimental)" />
                 <Button x:Name="aotChoice" Content="C# AOT sample" />
                 <Button x:Name="load" Content="Inspect and load" />
             </StackPanel>
+            <ComboBox x:Name="views" Header="Plugin view" IsEnabled="False" />
             <ContentControl x:Name="content" HorizontalContentAlignment="Stretch" />
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <Button x:Name="exercise" Content="Exercise ABI" IsEnabled="False" />

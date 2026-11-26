@@ -27,6 +27,22 @@
     <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\PluginSession.cs" Link="Host\PluginSession.cs" />
     <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\SettingStore.cs" Link="Host\SettingStore.cs" />
   </ItemGroup>
+  <PropertyGroup Condition="'$(PublishAot)' == 'true'">
+    <MarkupCompilePass1DependsOn>$(MarkupCompilePass1DependsOn);ResolveReferences</MarkupCompilePass1DependsOn>
+  </PropertyGroup>
+  <Target Name="PreparePrototypePri" BeforeTargets="IlcCompile;ComputeFilesToPublish" DependsOnTargets="GenerateProjectPriFile">
+    <Error Condition="!Exists('$(ProjectPriFullPath)')" Text="PrototypeHost did not generate its PRI: $(ProjectPriFullPath)" />
+  </Target>
+  <Target Name="RemovePrototypeManagedAppHost" AfterTargets="_ComputeNETCoreBuildOutputFiles" Condition="'$(PublishAot)' == 'true'">
+    <ItemGroup><None Remove="$(AppHostIntermediatePath)" /></ItemGroup>
+  </Target>
+  <Target Name="IncludePrototypePri" AfterTargets="ComputeFilesToPublish">
+    <ItemGroup>
+      <_PrototypePri Include="$(ProjectPriFullPath)" RelativePath="resources.pri" />
+      <ResolvedFileToPublish Remove="@(_PrototypePri)" MatchOnMetadata="RelativePath" MatchOnMetadataOptions="PathLike" />
+      <ResolvedFileToPublish Include="@(_PrototypePri)" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    </ItemGroup>
+  </Target>
   <Target Name="VerifyPrototypeResources" AfterTargets="Publish">
     <Error Condition="!Exists('$(PublishDir)resources.pri')" Text="PrototypeHost publish is missing resources.pri. Inspect PRI generation before running." />
   </Target>

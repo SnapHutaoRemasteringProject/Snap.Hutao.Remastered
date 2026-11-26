@@ -8,7 +8,13 @@ public partial class App : Application
     private MainWindow? window;
     private readonly Dictionary<string, string> providers = new(StringComparer.Ordinal);
 
-    public App() => InitializeComponent();
+    internal static App CurrentHost { get; private set; } = null!;
+
+    public App()
+    {
+        CurrentHost = this;
+        InitializeComponent();
+    }
 
     // The generated WinUI App metadata provider retains the component provider.
     // No replacement of the host's built-in XAML metadata or resource hooks.

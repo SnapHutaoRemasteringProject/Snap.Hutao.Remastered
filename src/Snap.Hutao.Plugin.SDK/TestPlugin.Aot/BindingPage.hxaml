@@ -1,0 +1,8 @@
+<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Spacing="8">
+    <TextBlock Text="C# AOT generated binding sample"/>
+    <TextBlock Text="{Binding Counter, Mode=OneWay}"/>
+    <Button Content="Increment counter" Command="{Binding IncrementCommand}"/>
+    <TextBox Header="Message" Text="{Binding Message, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+    <Button Content="Save message" Command="{Binding SaveCommand}"/>
+</StackPanel>

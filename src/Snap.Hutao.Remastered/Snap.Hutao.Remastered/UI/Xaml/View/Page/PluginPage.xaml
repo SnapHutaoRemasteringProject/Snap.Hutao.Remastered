@@ -13,7 +13,8 @@
             </StackPanel>
             <ListView x:Name="Packages" SelectionChanged="SelectionChanged" MinHeight="100" MaxHeight="320" />
             <TextBlock x:Name="Details" TextWrapping="Wrap" IsTextSelectionEnabled="True" />
-            <StackPanel x:Name="Actions" Spacing="8" IsEnabled="False">
+            <ContentControl x:Name="Actions" HorizontalContentAlignment="Stretch" IsEnabled="False">
+                <StackPanel Spacing="8">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <Button Click="EnableClick" Content="{shuxm:ResourceString Name=ViewPagePluginEnableButton}" />
                     <Button Click="DisableClick" Content="{shuxm:ResourceString Name=ViewPagePluginDisableButton}" />
@@ -25,8 +26,9 @@
                     <Button Click="ApplyClick" Content="{shuxm:ResourceString Name=ViewPagePluginApplyUpdateButton}" />
                     <Button Click="RollbackClick" Content="{shuxm:ResourceString Name=ViewPagePluginRollbackButton}" />
                 </StackPanel>
-                <StackPanel x:Name="CommandsPanel" Spacing="6" />
-            </StackPanel>
+                    <StackPanel x:Name="CommandsPanel" Spacing="6" />
+                </StackPanel>
+            </ContentControl>
         </StackPanel>
     </ScrollViewer>
 </shuxc:ScopedPage>

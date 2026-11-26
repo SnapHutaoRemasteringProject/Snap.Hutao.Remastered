@@ -50,7 +50,7 @@ public sealed partial class PluginPage : ScopedPage
 
     private async Task RefreshAsync()
     {
-        string? selectedPath = Selected?.Path;
+        string? selectedId = Selected?.Id;
         InstalledPlugin[] scanned = await service.ScanAsync();
         if (unloaded) return;
         entries = scanned;
@@ -60,7 +60,7 @@ public sealed partial class PluginPage : ScopedPage
             string status = entry.Error is not null ? entry.Error : service.IsActive(entry.Id) ? SH.ViewPagePluginStatusEnabled : SH.ViewPagePluginStatusDisabled;
             Packages.Items.Add($"{entry.Manifest?.Name ?? entry.Id} ({entry.Manifest?.Version}) — {status}");
         }
-        Packages.SelectedIndex = Array.FindIndex(entries, item => string.Equals(item.Path, selectedPath, StringComparison.OrdinalIgnoreCase));
+        Packages.SelectedIndex = Array.FindIndex(entries, item => string.Equals(item.Id, selectedId, StringComparison.OrdinalIgnoreCase));
         if (Packages.SelectedIndex < 0 && entries.Length != 0) Packages.SelectedIndex = 0;
         UpdateSelection();
         if (service.RecoveryMode && !Status.IsOpen)
@@ -71,6 +71,7 @@ public sealed partial class PluginPage : ScopedPage
 
     private void UpdateSelection()
     {
+        if (CommandsPanel is null || service is null) return;
         CommandsPanel.Children.Clear();
         InstalledPlugin? item = Selected;
         Actions.IsEnabled = !busy && item is { Conflict: false };
