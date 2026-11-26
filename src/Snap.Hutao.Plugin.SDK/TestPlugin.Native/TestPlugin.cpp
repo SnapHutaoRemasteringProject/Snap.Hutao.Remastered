@@ -1,7 +1,14 @@
 #include "HutaoPluginAbi.h"
+
+// The Win32 GetCurrentTime macro collides with Timeline's projected method.
+#ifdef GetCurrentTime
+#undef GetCurrentTime
+#endif
+
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Microsoft.UI.Xaml.h>
 #include <winrt/Microsoft.UI.Xaml.Controls.h>
+#include <winrt/Microsoft.UI.Xaml.Controls.Primitives.h>
 #include <winrt/Snap.Hutao.Plugin.Contracts.h>
 #include <vector>
 
@@ -59,9 +66,10 @@ struct TestPlugin : implements<TestPlugin, IHutaoPlugin, IPluginViewFactory, IPl
     void OnEnable()
     {
         auto contributions = context.Contributions();
-        registrations.push_back(contributions.RegisterView(L"main", this->as<IPluginViewFactory>()));
+        auto self = get_strong();
+        registrations.push_back(contributions.RegisterView(L"main", self.as<IPluginViewFactory>()));
         registrations.push_back(contributions.RegisterNavigationItem(L"main", L"C++/WinRT plugin", L"\uE74C", L"main"));
-        registrations.push_back(contributions.RegisterCommand(L"exercise", L"Exercise ABI", this->as<IPluginCommand>()));
+        registrations.push_back(contributions.RegisterCommand(L"exercise", L"Exercise ABI", self.as<IPluginCommand>()));
     }
 
     void OnDisable()
@@ -93,7 +101,7 @@ struct TestPlugin : implements<TestPlugin, IHutaoPlugin, IPluginViewFactory, IPl
         if (settings.GetBoolean(L"Enabled") || settings.GetString(L"Message") != L"C++/WinRT round trip")
             throw hresult_error(E_FAIL, L"Settings round trip failed.");
         auto dispatcher = context.Dispatcher();
-        auto action = this->as<IPluginAction>();
+        auto action = lifetime.as<IPluginAction>();
         if (!dispatcher.try_as<IAgileObject>() || !action.try_as<IAgileObject>())
             throw hresult_error(E_NOINTERFACE, L"Cross-thread interfaces must be agile.");
         apartment_context ui;
