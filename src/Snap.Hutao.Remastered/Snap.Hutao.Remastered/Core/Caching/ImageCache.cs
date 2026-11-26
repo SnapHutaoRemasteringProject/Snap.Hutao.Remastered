@@ -70,6 +70,23 @@ public sealed partial class ImageCache : IImageCache
         return GetFileFromCacheAsync(uri, ElementTheme.Default);
     }
 
+    public ValueFile? TryGetExistingFile(Uri uri)
+    {
+        Debug.Assert(SupportedSchemes.Contains(uri.Scheme), "Unsupported URI scheme");
+
+        // 与 GetSourceFileAsync 的查找顺序一致，只是不做下载那一步：
+        // 先看可写缓存，再看安装包内自带的资源包。
+        ImageCacheFile cache = ImageCacheFile.Create(CacheFolder, uri);
+        if (CachedImageResource.TryRead(cache.DefaultFilePath) is { } cached)
+        {
+            return cached.File;
+        }
+
+        return GetBundledFile(uri) is { } bundledPath && CachedImageResource.TryRead(bundledPath) is { } bundled
+            ? bundled.File
+            : null;
+    }
+
     public async ValueTask<ValueFile> GetFileFromCacheAsync(Uri uri, ElementTheme theme)
     {
         return (await GetImageAsync(uri, theme).ConfigureAwait(false)).File;

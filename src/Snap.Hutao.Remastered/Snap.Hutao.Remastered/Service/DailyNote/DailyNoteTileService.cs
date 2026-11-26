@@ -98,9 +98,7 @@ internal sealed partial class DailyNoteTileService : IDailyNoteTileService
     /// </summary>
     public string? ResolveCachedWideBackground(string avatarId)
     {
-        // 预览要交给 XAML 的 Image 加载，而 ms-appdata:///localcache/ 只有磁贴解析器认识，
-        // XAML 解析不了，所以这里给文件系统路径而不是磁贴 URI。
-        return imageCache.ResolveCachedBackgroundFilePath(avatarId, true);
+        return imageCache.ResolveBackgroundImageSource(avatarId, true);
     }
 
     /// <summary>

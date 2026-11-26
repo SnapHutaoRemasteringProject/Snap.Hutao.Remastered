@@ -35,16 +35,10 @@ internal interface IDailyNoteTileImageCache
 
     /// <summary>
     /// 解析指定角色已缓存的背景图本地地址，没有缓存时返回 <see langword="null"/>。
-    /// 供磁贴 XML 使用，返回 <c>ms-appdata:///localcache/</c> 形式。
+    /// 供磁贴 XML 与设置面板预览使用：返回的是已按磁贴比例裁切好的本地文件，
+    /// 不依赖网络，呈现的也正是磁贴实际会显示的效果。
     /// </summary>
     string? ResolveBackgroundImageSource(string avatarId, bool isWide);
-
-    /// <summary>
-    /// 解析指定角色已缓存的背景图文件系统路径，没有缓存时返回 <see langword="null"/>。
-    /// 供设置面板预览使用：同样是不依赖网络的已裁切文件，但返回真实路径，
-    /// 因为 <c>ms-appdata:///localcache/</c> 只有磁贴解析器认识，XAML 的 Image 加载不了。
-    /// </summary>
-    string? ResolveCachedBackgroundFilePath(string avatarId, bool isWide);
 }
 
 /// <summary>

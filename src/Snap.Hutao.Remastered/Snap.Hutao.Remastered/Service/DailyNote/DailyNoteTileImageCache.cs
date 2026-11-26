@@ -4,8 +4,6 @@
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Caching;
 using Snap.Hutao.Remastered.Core.Diagnostics;
-using Snap.Hutao.Remastered.Core.IO;
-using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -65,7 +63,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
 
     private readonly DailyNoteOptions options;
     private readonly IImageCacheDownloadOperation downloadOperation;
-    private readonly BundledImageResources bundledImages;
+    private readonly IImageCache imageCache;
     private readonly ILogger<DailyNoteTileImageCache> logger;
 
     /// <summary>
@@ -73,26 +71,19 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     /// </summary>
     private Task? iconsPreparedTask;
 
-    /// <summary>
-    /// 旧目录迁移只尝试一次，避免每次判断缓存都去碰文件系统。
-    /// </summary>
-    private bool legacyMigrationDone;
 
     [GeneratedConstructor]
     public partial DailyNoteTileImageCache(IServiceProvider serviceProvider);
 
-    // 背景图与程序图片缓存放在同一个 LocalCache 目录下：磁贴用 ms-appdata:///localcache/
-    // 引用它们。官方 schema 只列出 ms-appx / ms-appdata:///local / http(s) 三种，
-    // 但 localcache 与裸 Windows 路径实测同样能被渲染（Windows 11 22631，2026-11 验证），
-    // 这样就不必再单独维护一份 TileBackgrounds 副本。
+    // 磁贴通知的图片不能通过 localcache 协议引用，缓存目录必须落在 LocalFolder。
     private string BackgroundCacheDirectory
     {
-        get => Path.Combine(HutaoRuntime.LocalCacheDirectory, "TileBackgrounds");
+        get => Path.Combine(HutaoRuntime.LocalFolderDirectory, "TileBackgrounds");
     }
 
     private string IconCacheDirectory
     {
-        get => Path.Combine(HutaoRuntime.LocalCacheDirectory, "TileIcons");
+        get => Path.Combine(HutaoRuntime.LocalFolderDirectory, "TileIcons");
     }
 
     /// <summary>
@@ -180,7 +171,9 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     {
         // 图片缓存位于 LocalCacheFolder，磁贴引用不到它，但读取源文件不受此限制：
         // 裁剪结果会写到磁贴真正引用的位置。
-        if (TryGetCachedImage(nameCardUri) is { } cached && File.Exists(cached))
+        // 用 TryGetExistingFile 而不是 GetFileFromCacheAsync：后者在缓存未命中时会自行
+        // 发起一次没有取消令牌、也没有超时的下载，服务器卡住时整条选背景流程会无限挂起。
+        if (imageCache.TryGetExistingFile(nameCardUri) is { } cached)
         {
             try
             {
@@ -201,46 +194,6 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         using CancellationTokenSource timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(token);
         timeoutSource.CancelAfter(TimeSpan.FromSeconds(DownloadTimeoutSeconds));
         await downloadOperation.DownloadFileAsync(nameCardUri, destination, timeoutSource.Token).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// 尝试取这张名片图的本地文件，只做查找，不触发下载。
-    /// 先查可写缓存，再查安装包内自带的 <c>BundledImages</c>：后者让「离线且首次选背景」
-    /// 也能成功，否则会退化成必须联网下载。
-    /// 这里不能用 <c>IImageCache.GetFileFromCacheAsync</c>：缓存未命中时它会自行发起
-    /// 一次<em>没有取消令牌也没有超时</em>的下载，服务器卡住时整条选背景流程会无限挂起，
-    /// 用户改选别的角色也中止不了。下载统一交给下面的有界下载路径。
-    /// </summary>
-    private ValueFile? TryGetCachedImage(Uri nameCardUri)
-    {
-        try
-        {
-            // 与 ImageCache 相同的哈希命名规则，直接算路径即可。
-            string path = ImageCacheFile.GetHashedFile(HutaoRuntime.GetLocalCacheImageCacheDirectory(), nameCardUri);
-            if (File.Exists(path))
-            {
-                return path;
-            }
-
-            // 安装包内自带的图片包，离线可用。查找规则与 ImageCache.GetBundledFile 一致：
-            // 只接受本资源站的 /static/raw/ 下、且不带查询与片段的地址。
-            Uri root = new(StaticResourcesEndpoints.Root.TrimEnd('/') + "/static/raw/");
-            if (root.IsBaseOf(nameCardUri) && string.IsNullOrEmpty(nameCardUri.Query) && string.IsNullOrEmpty(nameCardUri.Fragment))
-            {
-                string? bundled = bundledImages.Bundle.Find(Uri.UnescapeDataString(root.MakeRelativeUri(nameCardUri).ToString()));
-                if (bundled is not null && File.Exists(bundled))
-                {
-                    return bundled;
-                }
-            }
-
-            return null;
-        }
-        catch (Exception ex)
-        {
-            logger.LogDebug(ex, "Image lookup failed for {Uri}", nameCardUri);
-            return null;
-        }
     }
 
     /// <summary>
@@ -312,64 +265,10 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     }
 
     /// <summary>
-    /// 把旧版本留在 LocalFolder\TileBackgrounds 的裁剪图搬到新的 LocalCache 位置。
-    /// 只做一次：搬完后删掉旧目录，避免用户在磁盘上留两份。
-    /// </summary>
-    private void MigrateLegacyBackgrounds()
-    {
-        if (legacyMigrationDone)
-        {
-            return;
-        }
-
-        legacyMigrationDone = true;
-
-        // 背景图与图标都从 LocalFolder 搬到了 LocalCache。
-        MigrateLegacyDirectory("TileBackgrounds", BackgroundCacheDirectory);
-        MigrateLegacyDirectory("TileIcons", IconCacheDirectory);
-    }
-
-    /// <summary>
-    /// 把旧版本留在 <c>LocalFolder\&lt;name&gt;</c> 的磁贴资源搬到新目录，搬完删掉旧目录。
-    /// </summary>
-    private void MigrateLegacyDirectory(string name, string target)
-    {
-        string legacy = Path.Combine(HutaoRuntime.LocalFolderDirectory, name);
-        if (!Directory.Exists(legacy))
-        {
-            return;
-        }
-
-        try
-        {
-            Directory.CreateDirectory(target);
-
-            foreach (string file in Directory.EnumerateFiles(legacy))
-            {
-                string destination = Path.Combine(target, Path.GetFileName(file));
-                // 新位置已有同名文件说明是更新的结果，不要用旧文件覆盖。
-                if (!File.Exists(destination))
-                {
-                    File.Move(file, destination);
-                }
-            }
-
-            Directory.Delete(legacy, recursive: true);
-        }
-        catch (Exception ex)
-        {
-            // 迁移失败不影响功能：下次启动会重试，最坏情况是重新生成一份资源。
-            logger.LogWarning(ex, "Unable to migrate legacy tile resources from {Path}", legacy);
-        }
-    }
-
-    /// <summary>
     /// 判断该角色的背景图缓存是否完整可用：宽版与大版都必须存在。
     /// </summary>
     private bool HasCachedBackground(string avatarId)
     {
-        MigrateLegacyBackgrounds();
-
         string directory = BackgroundCacheDirectory;
         foreach (string suffix in (string[])["_wide", "_large"])
         {
@@ -536,8 +435,6 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     {
         using SentrySpanScope span = SentrySpanScope.StartOperation("daily_note_tile.prepare_icons", "daily_note_tile");
 
-        // 图标从旧版 LocalFolder\TileIcons 搬过来，避免重复下载。
-        MigrateLegacyBackgrounds();
 
         string directory = IconCacheDirectory;
         Directory.CreateDirectory(directory);
@@ -718,7 +615,6 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     /// </summary>
     public string? ResolveIconSource(string url)
     {
-        MigrateLegacyBackgrounds();
 
         foreach ((string entryUrl, string fileName, _) in IconEntries)
         {
@@ -726,7 +622,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
             {
                 string path = Path.Combine(IconCacheDirectory, fileName);
                 return File.Exists(path)
-                    ? $"ms-appdata:///localcache/TileIcons/{fileName}"
+                    ? $"ms-appdata:///local/TileIcons/{fileName}"
                     : url;
             }
         }
@@ -743,33 +639,6 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         return string.IsNullOrEmpty(avatarId) ? null : ResolveBackgroundImageSource(avatarId, isWide);
     }
 
-    /// <summary>
-    /// 解析指定角色已缓存背景图的文件系统路径，没有缓存时返回 <see langword="null"/>。
-    /// 与 <see cref="ResolveBackgroundImageSource(string, bool)"/> 的区别：这里给的是真实路径，
-    /// 供 XAML 的 Image 直接加载；那边的 ms-appdata 形式只有磁贴解析器认识。
-    /// </summary>
-    public string? ResolveCachedBackgroundFilePath(string avatarId, bool isWide)
-    {
-        string? path = ResolveCachedBackgroundFile(avatarId, isWide);
-        return path;
-    }
-
-    private string? ResolveCachedBackgroundFile(string avatarId, bool isWide)
-    {
-        MigrateLegacyBackgrounds();
-
-        string suffix = isWide ? "_wide" : "_large";
-        foreach (string extension in BackgroundImageExtensions)
-        {
-            string path = Path.Combine(BackgroundCacheDirectory, $"{avatarId}{suffix}{extension}");
-            if (File.Exists(path))
-            {
-                return path;
-            }
-        }
-
-        return null;
-    }
 
     /// <summary>
     /// 解析指定角色已缓存的背景图本地地址，没有缓存时返回 <see langword="null"/>。
@@ -782,7 +651,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
             string fileName = $"{avatarId}{suffix}{extension}";
             if (File.Exists(Path.Combine(BackgroundCacheDirectory, fileName)))
             {
-                return $"ms-appdata:///localcache/TileBackgrounds/{fileName}";
+                return $"ms-appdata:///local/TileBackgrounds/{fileName}";
             }
         }
 
