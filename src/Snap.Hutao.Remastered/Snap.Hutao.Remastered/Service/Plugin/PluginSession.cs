@@ -1,3 +1,4 @@
+using System.IO;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -6,7 +7,7 @@ using Snap.Hutao.Plugin.Packaging;
 using Windows.Foundation;
 using System.Security.Cryptography;
 
-namespace Snap.Hutao.Plugin.Host;
+namespace Snap.Hutao.Remastered.Service.Plugin;
 
 // UI-thread confined owner of one activated instance. Module residency is process-wide.
 // Package approval/transaction and install-marker persistence belong to the caller.

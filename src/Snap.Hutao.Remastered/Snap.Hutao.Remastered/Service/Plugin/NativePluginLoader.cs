@@ -1,3 +1,4 @@
+using System.IO;
 using Microsoft.UI.Xaml.Markup;
 using WinRT;
 using Snap.Hutao.Plugin.Contracts;
@@ -5,7 +6,7 @@ using Snap.Hutao.Plugin.Projection;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
-namespace Snap.Hutao.Plugin.Host;
+namespace Snap.Hutao.Remastered.Service.Plugin;
 
 internal static unsafe partial class NativePluginLoader
 {

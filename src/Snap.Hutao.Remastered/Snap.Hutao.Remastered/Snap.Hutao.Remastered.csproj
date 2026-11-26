@@ -274,6 +274,12 @@
     <Content Include="Resource\WelcomeView_Background.png" />
   </ItemGroup>
 
+  <!-- Plugin contracts and package validation are shared with developer tools; hosting is implemented in Service/Plugin. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Snap.Hutao.Plugin.SDK\Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj" />
+    <ProjectReference Include="..\..\Snap.Hutao.Plugin.SDK\Snap.Hutao.Plugin.Packaging\Snap.Hutao.Plugin.Packaging.csproj" />
+  </ItemGroup>
+
   <!-- Packages -->
   <ItemGroup>
     <!-- https://pkgs.dev.azure.com/dotnet/CommunityToolkit/_packaging/CommunityToolkit-Labs/nuget/v3/index.json -->

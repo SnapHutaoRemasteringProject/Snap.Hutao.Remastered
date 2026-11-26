@@ -1,7 +1,8 @@
+using System.IO;
 using System.Text.Json;
 using Snap.Hutao.Plugin.Packaging;
 
-namespace Snap.Hutao.Plugin.Host;
+namespace Snap.Hutao.Remastered.Service.Plugin;
 
 internal static class SettingStore
 {

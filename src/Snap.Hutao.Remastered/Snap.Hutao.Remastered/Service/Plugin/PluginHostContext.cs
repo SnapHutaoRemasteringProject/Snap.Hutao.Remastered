@@ -1,3 +1,4 @@
+using System.IO;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -10,7 +11,7 @@ using System.Text;
 using System.Text.Json;
 using Windows.Foundation;
 
-namespace Snap.Hutao.Plugin.Host;
+namespace Snap.Hutao.Remastered.Service.Plugin;
 
 public sealed record PluginIdentity(string Id, string Name, string Version, string PackageDirectory, string DataDirectory,
     string SettingsDirectory, string UiMode, IReadOnlySet<string> Capabilities, IReadOnlySet<string> Files, string? MetadataProvider = null);

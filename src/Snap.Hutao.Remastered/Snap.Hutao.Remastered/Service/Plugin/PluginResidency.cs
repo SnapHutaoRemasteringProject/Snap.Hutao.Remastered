@@ -1,4 +1,5 @@
-namespace Snap.Hutao.Plugin.Host;
+using System.IO;
+namespace Snap.Hutao.Remastered.Service.Plugin;
 
 // A mapped native library can never be replaced or unloaded in this process.
 // Reserve before LoadLibrary, reject concurrent sessions and quarantine failed sessions.

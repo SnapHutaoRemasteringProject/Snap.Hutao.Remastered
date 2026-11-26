@@ -1,18 +1,21 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<Page
-    x:Class="PrototypeHost.MainPage"
+<Page x:Class="PrototypeHost.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:PrototypeHost"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
-
-    <!--
-        This is the main content area of your application.
-        Add your UI elements here — for example, controls, layouts, and data-bound views.
-        Use 'dotnet new winui-page' to create additional pages and navigate to them via
-        the Frame in MainWindow (RootFrame).
-    -->
-    <Grid />
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer>
+        <StackPanel x:Name="panel" Spacing="12" Padding="16">
+            <TextBox x:Name="pathBox" Header="Trusted development DLL or .hutao package" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button x:Name="nativeChoice" Content="C++ sample" />
+                <Button x:Name="aotChoice" Content="C# AOT sample" />
+                <Button x:Name="load" Content="Inspect and load" />
+            </StackPanel>
+            <ContentControl x:Name="content" HorizontalContentAlignment="Stretch" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button x:Name="exercise" Content="Exercise ABI" IsEnabled="False" />
+                <Button x:Name="restart" Content="Disable and re-enable" IsEnabled="False" />
+                <Button x:Name="uninstall" Content="Uninstall session" IsEnabled="False" />
+            </StackPanel>
+            <TextBlock x:Name="log" TextWrapping="Wrap" />
+        </StackPanel>
+    </ScrollViewer>
 </Page>

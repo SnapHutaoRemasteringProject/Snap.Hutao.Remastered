@@ -1,10 +1,5 @@
 {
   "profiles": {
-    "PrototypeHost (Package)": {
-      "commandName": "MsixPackage"
-    },
-    "PrototypeHost (Unpackaged)": {
-      "commandName": "Project"
-    }
+    "PrototypeHost": { "commandName": "Project" }
   }
 }
