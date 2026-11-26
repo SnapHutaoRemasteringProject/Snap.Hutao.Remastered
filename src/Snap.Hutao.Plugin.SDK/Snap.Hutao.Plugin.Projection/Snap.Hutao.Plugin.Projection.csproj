@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <CsWinRTIncludes>Snap.Hutao.Plugin.Contracts</CsWinRTIncludes>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.CsWinRT" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+    <CsWinRTInputs Include="$(HutaoContractsWinmd)" />
+    <CsWinRTInputs Include="$(HutaoArtifacts)references\*.winmd" />
+  </ItemGroup>
+  <Target Name="RequireContracts" BeforeTargets="PrepareForBuild">
+    <Error Condition="!Exists('$(HutaoContractsWinmd)')" Text="Run Build-Prototype.ps1 to generate the shared WinMD first." />
+  </Target>
+</Project>

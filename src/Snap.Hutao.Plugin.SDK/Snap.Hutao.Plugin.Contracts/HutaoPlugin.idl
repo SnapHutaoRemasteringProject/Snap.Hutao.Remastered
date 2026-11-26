@@ -1,0 +1,109 @@
+namespace Snap.Hutao.Plugin.Contracts
+{
+    enum NotificationKind { Information = 0, Success = 1, Warning = 2, Error = 3 };
+    enum DialogResult { None = 0, Primary = 1, Secondary = 2 };
+
+    [uuid("790c6149-9ca4-4ec0-a1f7-71cfbe03d451")]
+    interface IPluginAction
+    {
+        void Invoke();
+    }
+    [uuid("790c6149-9ca4-4ec0-a1f7-71cfbe03d452")]
+    interface IPluginCommand
+    {
+        Windows.Foundation.IAsyncAction ExecuteAsync(String commandId);
+    }
+    [uuid("790c6149-9ca4-4ec0-a1f7-71cfbe03d453")]
+    interface IPluginView
+    {
+        Microsoft.UI.Xaml.UIElement Element { get; };
+        void OnClosing();
+    }
+    [uuid("790c6149-9ca4-4ec0-a1f7-71cfbe03d454")]
+    interface IPluginViewFactory
+    {
+        IPluginView CreateView(String viewId);
+    }
+    [uuid("790c6149-9ca4-4ec0-a1f7-71cfbe03d455")]
+    interface IPluginRegistration
+    {
+        void Revoke();
+    }
+    [uuid("790c6149-9ca4-4ec0-a1f7-71cfbe03d456")]
+    interface IPluginSettingObserver
+    {
+        void OnChanged(String name);
+    }
+    [uuid("790c6149-9ca4-4ec0-a1f7-71cfbe03d457")]
+    interface IPluginSettings
+    {
+        void RegisterInt32(String name, Int32 defaultValue, String description);
+        void RegisterBoolean(String name, Boolean defaultValue, String description);
+        void RegisterString(String name, String defaultValue, String description);
+        Int32 GetInt32(String name);
+        Boolean GetBoolean(String name);
+        String GetString(String name);
+        Windows.Foundation.IAsyncAction SetInt32Async(String name, Int32 newValue);
+        Windows.Foundation.IAsyncAction SetBooleanAsync(String name, Boolean newValue);
+        Windows.Foundation.IAsyncAction SetStringAsync(String name, String newValue);
+        Windows.Foundation.IAsyncAction ResetAsync(String name);
+        IPluginRegistration Subscribe(IPluginSettingObserver observer);
+    }
+    [uuid("790c6149-9ca4-4ec0-a1f7-71cfbe03d458")]
+    interface IPluginNotifications
+    {
+        void Show(NotificationKind kind, String message);
+    }
+    [uuid("790c6149-9ca4-4ec0-a1f7-71cfbe03d459")]
+    interface IPluginDispatcher
+    {
+        Boolean HasThreadAccess { get; };
+        Windows.Foundation.IAsyncAction InvokeAsync(IPluginAction action);
+    }
+    [uuid("790c6149-9ca4-4ec0-a1f7-71cfbe03d45a")]
+    interface IPluginDialogs
+    {
+        Windows.Foundation.IAsyncOperation<DialogResult> ShowMessageAsync(String title, String message, String primaryText, String secondaryText);
+    }
+    [uuid("790c6149-9ca4-4ec0-a1f7-71cfbe03d45b")]
+    interface IPluginContributions
+    {
+        IPluginRegistration RegisterCommand(String commandId, String title, IPluginCommand command);
+        IPluginRegistration RegisterNavigationItem(String itemId, String title, String iconGlyph, String viewId);
+        IPluginRegistration RegisterView(String viewId, IPluginViewFactory factory);
+    }
+    [uuid("790c6149-9ca4-4ec0-a1f7-71cfbe03d45c")]
+    interface IPluginUi
+    {
+        Microsoft.UI.Xaml.UIElement LoadXaml(String relativePath);
+        Microsoft.UI.Xaml.UIElement ParseXaml(String markup);
+    }
+    [uuid("790c6149-9ca4-4ec0-a1f7-71cfbe03d45d")]
+    interface IPluginContext
+    {
+        String PluginId { get; };
+        String PluginName { get; };
+        String PluginVersion { get; };
+        String PackageDirectory { get; };
+        String DataDirectory { get; };
+        UInt32 AbiMajor { get; };
+        UInt32 ApiMinor { get; };
+        IPluginSettings Settings { get; };
+        IPluginNotifications Notifications { get; };
+        IPluginDispatcher Dispatcher { get; };
+        IPluginDialogs Dialogs { get; };
+        IPluginContributions Contributions { get; };
+        IPluginUi Ui { get; };
+        void Log(NotificationKind severity, String message);
+        Object GetService(Guid serviceId);
+    }
+    [uuid("790c6149-9ca4-4ec0-a1f7-71cfbe03d45e")]
+    interface IHutaoPlugin
+    {
+        void OnLoad(IPluginContext context);
+        void OnInstall();
+        void OnEnable();
+        void OnDisable();
+        void OnUninstall();
+    }
+}
