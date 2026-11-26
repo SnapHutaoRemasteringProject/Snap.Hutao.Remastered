@@ -308,9 +308,7 @@
                     <NavigationViewItem
                         shuxc:NavigationViewItemHelper.NavigateTo="shuxvp:PluginPage"
                         Content="{shuxm:ResourceString Name=ViewPluginHeader}"
-                        >
-                        <NavigationViewItem.Icon><FontIcon Glyph="&#xE74C;"/></NavigationViewItem.Icon>
-                    </NavigationViewItem>
+                        Icon="{shuxm:BitmapIcon Source=ms-appx:///Resource/Navigation/Plugin.png}"/>
                     <NavigationViewItemHeader Content="{shuxm:ResourceString Name=ViewToolHeader}"/>
 
                     <NavigationViewItem

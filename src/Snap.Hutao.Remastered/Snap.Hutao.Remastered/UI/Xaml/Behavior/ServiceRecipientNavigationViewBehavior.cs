@@ -25,7 +25,7 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
     private IMessenger? messenger;
     private Frame? contentFrame;
     private PluginService? plugins;
-    private readonly List<NavigationViewItem> pluginItems = [];
+    private readonly List<object> pluginItems = [];
 
     public void Receive(NavigationNavigateMessage message)
     {
@@ -99,7 +99,7 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
         }
 
         if (plugins is not null) plugins.Changed -= RefreshPluginNavigation;
-        foreach (NavigationViewItem item in pluginItems) AssociatedObject.MenuItems.Remove(item);
+        foreach (object item in pluginItems) AssociatedObject.MenuItems.Remove(item);
         pluginItems.Clear();
         plugins = null;
         AssociatedObject.ItemInvoked -= OnItemInvoked;
@@ -117,9 +117,16 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
     private void RefreshPluginNavigation()
     {
         if (plugins is null || AssociatedObject is not { } navigationView) return;
-        foreach (NavigationViewItem item in pluginItems) navigationView.MenuItems.Remove(item);
+        foreach (object item in pluginItems) navigationView.MenuItems.Remove(item);
         pluginItems.Clear();
-        foreach (PluginNavigationItem contribution in plugins.Navigation)
+        IReadOnlyList<PluginNavigationItem> contributions = plugins.Navigation;
+        if (contributions.Count != 0)
+        {
+            NavigationViewItemHeader header = new() { Content = SH.ViewPluginHeader };
+            navigationView.MenuItems.Add(header);
+            pluginItems.Add(header);
+        }
+        foreach (PluginNavigationItem contribution in contributions)
         {
             NavigationViewItem item = new()
             {

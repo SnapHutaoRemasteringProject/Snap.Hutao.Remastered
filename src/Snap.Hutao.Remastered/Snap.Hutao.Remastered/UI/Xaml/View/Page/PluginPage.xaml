@@ -10,6 +10,7 @@
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <Button Click="InstallClick" Content="{shuxm:ResourceString Name=ViewPagePluginInstallButton}" />
                 <Button Click="RefreshClick" Content="{shuxm:ResourceString Name=ViewPagePluginRefreshButton}" />
+                <Button Click="OpenDirectoryClick" Content="{shuxm:ResourceString Name=ViewPagePluginOpenDirectoryButton}" />
             </StackPanel>
             <ListView x:Name="Packages" SelectionChanged="SelectionChanged" MinHeight="100" MaxHeight="320" />
             <TextBlock x:Name="Details" TextWrapping="Wrap" IsTextSelectionEnabled="True" />

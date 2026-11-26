@@ -6,7 +6,7 @@ using Snap.Hutao.Remastered.Core;
 namespace Snap.Hutao.Remastered.Service.Plugin;
 
 internal sealed record InstalledPlugin(string Id, string Path, bool Enabled, PluginManifest? Manifest, string? Hash, string? Error, bool Conflict = false);
-internal sealed record PluginDiskState(string? ApprovedHash = null, string? HookHash = null, string? PendingHash = null, string? BackupHash = null, string? LastError = null);
+internal sealed record PluginDiskState(string? ApprovedHash = null, string? HookHash = null, string? PendingHash = null, string? BackupHash = null, string? LastError = null, string? StagedInProcess = null);
 
 internal static class PluginPackageStore
 {
@@ -77,7 +77,7 @@ internal static class PluginPackageStore
         if (input.Length > 65536) throw new InvalidDataException("Plugin state is too large.");
         using JsonDocument doc = JsonDocument.Parse(input);
         string? Read(string key) => doc.RootElement.TryGetProperty(key, out JsonElement value) && value.ValueKind == JsonValueKind.String ? value.GetString() : null;
-        return new(Read("approvedPackageSha256"), Read("installHookCompletedSha256"), Read("pendingPackageSha256"), Read("backupPackageSha256"), Read("lastError"));
+        return new(Read("approvedPackageSha256"), Read("installHookCompletedSha256"), Read("pendingPackageSha256"), Read("backupPackageSha256"), Read("lastError"), Read("stagedInProcess"));
     }
 
     internal static void WriteState(string id, PluginDiskState state)
@@ -98,6 +98,7 @@ internal static class PluginPackageStore
                 writer.WriteString("pendingPackageSha256", state.PendingHash);
                 writer.WriteString("backupPackageSha256", state.BackupHash);
                 writer.WriteString("lastError", state.LastError);
+                writer.WriteString("stagedInProcess", state.StagedInProcess);
                 writer.WriteEndObject();
                 writer.Flush();
                 file.Flush(flushToDisk: true);
@@ -131,6 +132,21 @@ internal static class PluginPackageStore
 
     internal static void VerifyWorkspace(PluginIdentity identity, PluginManifest manifest)
     {
+        HashSet<string> seen = new(StringComparer.OrdinalIgnoreCase);
+        Stack<string> directories = new();
+        directories.Push(identity.PackageDirectory);
+        while (directories.TryPop(out string? directory))
+        {
+            foreach (string path in Directory.EnumerateFileSystemEntries(directory))
+            {
+                PackagePaths.RejectReparseAncestors(path);
+                if (Directory.Exists(path)) { directories.Push(path); continue; }
+                string relative = Path.GetRelativePath(identity.PackageDirectory, path).Replace(Path.DirectorySeparatorChar, '/');
+                if (!manifest.Files.ContainsKey(relative) || !seen.Add(relative))
+                    throw new InvalidDataException("Unexpected workspace file: " + relative);
+            }
+        }
+        if (seen.Count != manifest.Files.Count) throw new InvalidDataException("Workspace file set changed.");
         foreach (var file in manifest.Files)
         {
             string path = PackagePaths.Resolve(identity.PackageDirectory, file.Key);

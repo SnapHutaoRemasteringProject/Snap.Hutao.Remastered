@@ -2,6 +2,8 @@
   <PropertyGroup>
     <IsAotCompatible>true</IsAotCompatible>
     <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
+    <IsPackable>true</IsPackable>
+    <PackageId>Snap.Hutao.Plugin.SDK</PackageId>
     <Description>Snap Hutao in-process WinRT plugin developer SDK.</Description>
   </PropertyGroup>
   <ItemGroup>

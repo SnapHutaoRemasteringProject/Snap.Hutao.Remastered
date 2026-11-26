@@ -2,13 +2,16 @@
   <PropertyGroup>
     <CsWinRTIncludes>Snap.Hutao.Plugin.Contracts</CsWinRTIncludes>
     <IsAotCompatible>true</IsAotCompatible>
+    <IsPackable>true</IsPackable>
+    <PackageId>Snap.Hutao.Plugin.Projection</PackageId>
+    <Description>Canonical C# projection for the Snap Hutao plugin WinRT ABI.</Description>
     <HutaoWindowsSdkVersion Condition="'$(HutaoWindowsSdkVersion)' == ''">10.0.28000.0</HutaoWindowsSdkVersion>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.CsWinRT" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" PrivateAssets="all" />
     <CsWinRTInputs Include="$(HutaoContractsWinmd)" />
   </ItemGroup>
   <ItemGroup>

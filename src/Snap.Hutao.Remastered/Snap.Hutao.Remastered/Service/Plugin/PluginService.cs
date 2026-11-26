@@ -57,6 +57,48 @@ internal sealed partial class PluginService
         instanceLock = new FileStream(lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
         PackagePaths.RejectReparseAncestors(CrashMarker);
         recovery = File.Exists(CrashMarker);
+        // The exclusive root lock proves no other SDK2 process is using these workspaces.
+        CleanupWorkspaces();
+    }
+
+    private void CleanupWorkspaces()
+    {
+        string directory = Path.Combine(PluginPackageStore.StateRoot, "workspaces");
+        if (!Directory.Exists(directory)) return;
+        try
+        {
+            PackagePaths.RejectReparseAncestors(directory);
+            foreach (string workspace in Directory.EnumerateDirectories(directory))
+            {
+                try
+                {
+                    Stack<string> pending = new();
+                    pending.Push(workspace);
+                    while (pending.TryPop(out string? current))
+                    {
+                        PackagePaths.RejectReparseAncestors(current);
+                        foreach (string child in Directory.EnumerateFileSystemEntries(current))
+                        {
+                            PackagePaths.RejectReparseAncestors(child);
+                            if (Directory.Exists(child)) pending.Push(child);
+                        }
+                    }
+                    Directory.Delete(workspace, recursive: true);
+                }
+                catch (Exception error) { Log(NotificationKind.Warning, "Workspace cleanup skipped: " + error.Message); }
+            }
+        }
+        catch (Exception error) { Log(NotificationKind.Warning, "Workspace cleanup skipped: " + error.Message); }
+    }
+
+    private void RaiseChanged()
+    {
+        if (Changed is not { } changed) return;
+        foreach (Action handler in changed.GetInvocationList().Cast<Action>())
+        {
+            try { handler(); }
+            catch (Exception error) { Log(NotificationKind.Error, error.ToString()); }
+        }
     }
 
     internal bool IsActive(string id) => active.ContainsKey(id);
@@ -114,7 +156,7 @@ internal sealed partial class PluginService
             }
         }
         catch (Exception error) { Log(NotificationKind.Error, error.ToString()); }
-        finally { Changed?.Invoke(); }
+        finally { RaiseChanged(); }
     }
 
     internal async Task InstallAsync(string source, VerifiedPackage verified)
@@ -129,7 +171,7 @@ internal sealed partial class PluginService
             if (verified.Manifest.MinHostVersion > HostVersion) throw new InvalidDataException("Host version is too old.");
             await Task.Run(() => PluginPackageStore.CopyApproved(source, PluginPackageStore.PathFor(id, false), verified.Sha256));
         }
-        finally { operationGate.Release(); Changed?.Invoke(); }
+        finally { operationGate.Release(); RaiseChanged(); }
     }
 
     // The caller obtains the approved hash from the trust dialog; automatic startup
@@ -154,47 +196,56 @@ internal sealed partial class PluginService
             if (state.PendingHash is not null) throw new InvalidOperationException("A staged update requires review after restart.");
             state = state with { ApprovedHash = hash, LastError = null };
             PluginPackageStore.WriteState(canonicalId, state);
-            if (!workspaces.TryGetValue(canonicalId, out Workspace? workspace))
-            {
-                string directory = Path.Combine(PluginPackageStore.StateRoot, "workspaces", workspaceId, canonicalId);
-                string settings = Path.Combine(PluginPackageStore.Root, canonicalId);
-                await Task.Run(() =>
-                {
-                    PluginPackage.ExtractApproved(item.Path, hash, directory, HostVersion);
-                    PackagePaths.RejectReparseAncestors(settings);
-                    Directory.CreateDirectory(Path.Combine(settings, "data"));
-                });
-                PluginIdentity identity = new(manifest.Id, manifest.Name, manifest.Version.ToString(), directory, Path.Combine(settings, "data"),
-                    settings, manifest.UiMode, manifest.Capabilities, manifest.Files.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase), manifest.MetadataProvider);
-                workspace = new(identity, PackagePaths.Resolve(directory, manifest.Entry), hash);
-                workspaces.Add(canonicalId, workspace);
-            }
-            else
-            {
-                if (!workspace.Hash.Equals(hash, StringComparison.OrdinalIgnoreCase))
-                    throw new InvalidOperationException("Another version is mapped; restart required.");
-                await Task.Run(() => PluginPackageStore.VerifyWorkspace(workspace.Identity, manifest));
-            }
-
-            // An abrupt process exit leaves the marker and suppresses the next automatic activation.
-            using (FileStream marker = new(CrashMarker, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
-                marker.Flush(flushToDisk: true);
-            void MarkInstalled()
-            {
-                state = state with { HookHash = hash };
-                PluginPackageStore.WriteState(canonicalId, state);
-            }
-            void Commit()
-            {
-                if (!item.Enabled) File.Move(item.Path, PluginPackageStore.PathFor(canonicalId, true));
-            }
-
             try
             {
+                if (!workspaces.TryGetValue(canonicalId, out Workspace? workspace))
+                {
+                    string directory = Path.Combine(PluginPackageStore.StateRoot, "workspaces", workspaceId, canonicalId);
+                    string settings = Path.Combine(PluginPackageStore.Root, canonicalId);
+                    await Task.Run(() =>
+                    {
+                        PluginPackage.ExtractApproved(item.Path, hash, directory, HostVersion);
+                        PackagePaths.RejectReparseAncestors(settings);
+                        Directory.CreateDirectory(Path.Combine(settings, "data"));
+                    });
+                    PluginIdentity identity = new(manifest.Id, manifest.Name, manifest.Version.ToString(), directory, Path.Combine(settings, "data"),
+                        settings, manifest.UiMode, manifest.Capabilities, manifest.Files.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase), manifest.MetadataProvider);
+                    workspace = new(identity, PackagePaths.Resolve(directory, manifest.Entry), hash);
+                    workspaces.Add(canonicalId, workspace);
+                }
+                else
+                {
+                    if (!workspace.Hash.Equals(hash, StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidOperationException("Another version is mapped; restart required.");
+                    await Task.Run(() => PluginPackageStore.VerifyWorkspace(workspace.Identity, manifest));
+                }
+
+                // An abrupt process exit leaves the marker and suppresses the next automatic activation.
+                using (FileStream marker = new(CrashMarker, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read))
+                    marker.Flush(flushToDisk: true);
+                void MarkInstalled()
+                {
+                    state = state with { HookHash = hash };
+                    PluginPackageStore.WriteState(canonicalId, state);
+                }
+                void Commit()
+                {
+                    if (!item.Enabled) File.Move(item.Path, PluginPackageStore.PathFor(canonicalId, true));
+                }
+
                 PluginSession session = await PluginSession.ActivateTrustedAsync(workspace.Entry, workspace.Identity,
                     !string.Equals(state.HookHash, hash, StringComparison.OrdinalIgnoreCase), MarkInstalled, Queue, GetRoot,
                     Log, Notify, hash, commitActivation: Commit);
                 active.Add(canonicalId, new(session, hash));
+                if (state.BackupHash is not null && state.PendingHash is null)
+                {
+                    try
+                    {
+                        File.Delete(Path.Combine(PluginPackageStore.StateDirectory(canonicalId), "backup.hutao"));
+                        PluginPackageStore.WriteState(canonicalId, state with { BackupHash = null });
+                    }
+                    catch (Exception error) { Log(NotificationKind.Warning, "Backup cleanup failed: " + error.Message); }
+                }
             }
             catch (Exception error)
             {
@@ -205,7 +256,7 @@ internal sealed partial class PluginService
                 throw;
             }
         }
-        finally { operationGate.Release(); Changed?.Invoke(); }
+        finally { operationGate.Release(); RaiseChanged(); }
     }
 
     internal async Task DisableAsync(string id, bool uninstall = false)
@@ -227,11 +278,13 @@ internal sealed partial class PluginService
             {
                 File.Delete(disabled);
                 // Keep data/settings. A disabled uninstall never runs third-party code.
-                PluginDiskState state = PluginPackageStore.ReadState(item.Id);
-                PluginPackageStore.WriteState(item.Id, state with { ApprovedHash = null, HookHash = null, LastError = null });
+                string directory = PluginPackageStore.StateDirectory(item.Id);
+                File.Delete(Path.Combine(directory, "pending.hutao"));
+                File.Delete(Path.Combine(directory, "backup.hutao"));
+                PluginPackageStore.WriteState(item.Id, new());
             }
         }
-        finally { operationGate.Release(); Changed?.Invoke(); }
+        finally { operationGate.Release(); RaiseChanged(); }
     }
 
     internal async Task StageUpdateAsync(string id, string source, VerifiedPackage verified)
@@ -248,10 +301,10 @@ internal sealed partial class PluginService
             PluginDiskState state = PluginPackageStore.ReadState(item.Id);
             if (state.PendingHash is not null || state.BackupHash is not null) throw new InvalidOperationException("Resolve the existing pending update or rollback first.");
             string pending = Path.Combine(PluginPackageStore.StateDirectory(item.Id), "pending.hutao");
-            await Task.Run(() => PluginPackageStore.CopyApproved(source, pending, verified.Sha256));
-            PluginPackageStore.WriteState(item.Id, state with { PendingHash = verified.Sha256 });
+            await Task.Run(() => PluginPackageStore.CopyApproved(source, pending, verified.Sha256, overwrite: true));
+            PluginPackageStore.WriteState(item.Id, state with { PendingHash = verified.Sha256, StagedInProcess = workspaceId });
         }
-        finally { operationGate.Release(); Changed?.Invoke(); }
+        finally { operationGate.Release(); RaiseChanged(); }
     }
 
     // Explicitly apply only in a clean process; keep the previous archive for rollback.
@@ -264,19 +317,33 @@ internal sealed partial class PluginService
             if (active.ContainsKey(id) || workspaces.ContainsKey(id)) throw new InvalidOperationException("Restart before applying an update.");
             InstalledPlugin item = await Task.Run(() => PluginPackageStore.Locate(id));
             PluginDiskState state = PluginPackageStore.ReadState(item.Id);
+            if (state.StagedInProcess == workspaceId) throw new InvalidOperationException("Restart before applying an update.");
             if (state.PendingHash is not { } pendingHash || item.Hash is not { } oldHash) throw new InvalidOperationException("No verified pending update.");
             string directory = PluginPackageStore.StateDirectory(item.Id);
             string pending = Path.Combine(directory, "pending.hutao"), backup = Path.Combine(directory, "backup.hutao");
-            // Verify both files before any replacement and keep durable backup metadata.
-            await Task.Run(() => PluginPackageStore.CopyApproved(item.Path, backup, oldHash));
-            PluginPackageStore.WriteState(item.Id, state with { BackupHash = oldHash });
+            // A crash can occur after the backup or replacement has been written.
+            // If the backup exists, trust only its recorded hash (or the still-installed old hash).
+            string backupHash = state.BackupHash ?? oldHash;
+            if (File.Exists(backup))
+            {
+                VerifiedPackage existing = await Task.Run(() => PluginPackage.Verify(backup));
+                if (!existing.Sha256.Equals(backupHash, StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidDataException("Existing update backup differs; manual recovery required.");
+            }
+            else
+            {
+                if (state.BackupHash is not null) throw new InvalidDataException("Recorded update backup is missing.");
+                await Task.Run(() => PluginPackageStore.CopyApproved(item.Path, backup, oldHash));
+            }
+            PluginPackageStore.WriteState(item.Id, state with { BackupHash = backupHash });
             string disabled = PluginPackageStore.PathFor(item.Id, false);
             if (item.Enabled) File.Move(item.Path, disabled);
-            await Task.Run(() => PluginPackageStore.CopyApproved(pending, disabled, pendingHash, overwrite: true));
-            PluginPackageStore.WriteState(item.Id, state with { ApprovedHash = pendingHash, PendingHash = null, BackupHash = oldHash });
+            if (!oldHash.Equals(pendingHash, StringComparison.OrdinalIgnoreCase))
+                await Task.Run(() => PluginPackageStore.CopyApproved(pending, disabled, pendingHash, overwrite: true));
+            PluginPackageStore.WriteState(item.Id, state with { ApprovedHash = pendingHash, PendingHash = null, BackupHash = backupHash, StagedInProcess = null });
             File.Delete(pending);
         }
-        finally { operationGate.Release(); Changed?.Invoke(); }
+        finally { operationGate.Release(); RaiseChanged(); }
     }
 
     internal async Task RollbackAsync(string id)
@@ -285,20 +352,26 @@ internal sealed partial class PluginService
         try
         {
             EnsureStore();
-            if (active.ContainsKey(id) || workspaces.ContainsKey(id)) throw new InvalidOperationException("Restart before rollback.");
             InstalledPlugin item = await Task.Run(() => PluginPackageStore.Locate(id));
             PluginDiskState state = PluginPackageStore.ReadState(item.Id);
-            if (state.BackupHash is not { } hash) throw new InvalidOperationException("No verified backup.");
             string directory = PluginPackageStore.StateDirectory(item.Id);
+            if (state.BackupHash is null && state.PendingHash is not null)
+            {
+                File.Delete(Path.Combine(directory, "pending.hutao"));
+                PluginPackageStore.WriteState(item.Id, state with { PendingHash = null, StagedInProcess = null });
+                return;
+            }
+            if (active.ContainsKey(id)) throw new InvalidOperationException("Disable the plugin before rollback.");
+            if (state.BackupHash is not { } hash) throw new InvalidOperationException("No verified backup.");
             string backup = Path.Combine(directory, "backup.hutao");
             string disabled = PluginPackageStore.PathFor(item.Id, false);
             if (item.Enabled) File.Move(item.Path, disabled);
             await Task.Run(() => PluginPackageStore.CopyApproved(backup, disabled, hash, overwrite: true));
-            PluginPackageStore.WriteState(item.Id, state with { ApprovedHash = null, BackupHash = null, PendingHash = null, LastError = null });
+            PluginPackageStore.WriteState(item.Id, state with { ApprovedHash = null, BackupHash = null, PendingHash = null, LastError = null, StagedInProcess = null });
             File.Delete(backup);
             File.Delete(Path.Combine(directory, "pending.hutao"));
         }
-        finally { operationGate.Release(); Changed?.Invoke(); }
+        finally { operationGate.Release(); RaiseChanged(); }
     }
 
     internal async Task ShutdownAsync()

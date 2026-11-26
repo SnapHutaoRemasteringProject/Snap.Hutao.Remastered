@@ -77,6 +77,14 @@ public sealed partial class PluginPage : ScopedPage
         Actions.IsEnabled = !busy && item is { Conflict: false };
         if (item is null) { Details.Text = string.Empty; return; }
         Details.Text = $"{item.Id}\n{item.Manifest?.Description}\nSHA256: {item.Hash}\n{item.Error}";
+        try
+        {
+            PluginDiskState state = PluginPackageStore.ReadState(item.Id);
+            if (state.PendingHash is not null) Details.Text += "\nPending update SHA256: " + state.PendingHash;
+            if (state.BackupHash is not null) Details.Text += "\nRollback SHA256: " + state.BackupHash;
+            if (state.LastError is not null) Details.Text += "\n" + state.LastError;
+        }
+        catch (Exception error) { Details.Text += "\n" + error.Message; }
         if (!service.IsActive(item.Id)) return;
         foreach (CommandContribution command in service.Commands(item.Id))
         {
@@ -148,6 +156,12 @@ public sealed partial class PluginPage : ScopedPage
     });
 
     private async void RefreshClick(object sender, RoutedEventArgs e) => await RunAsync(RefreshAsync);
+
+    private async void OpenDirectoryClick(object sender, RoutedEventArgs e) => await RunAsync(async () =>
+    {
+        await service.ScanAsync();
+        await Windows.System.Launcher.LaunchFolderAsync(await Windows.Storage.StorageFolder.GetFolderFromPathAsync(PluginPackageStore.Root));
+    });
 
     private async void EnableClick(object sender, RoutedEventArgs e) => await RunAsync(async () =>
     {
