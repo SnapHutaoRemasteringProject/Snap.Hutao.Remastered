@@ -32,12 +32,16 @@ public sealed class PluginSession
 
     public IReadOnlyList<NavigationContribution> Navigation => context.Navigation;
     public bool IsClosing => closing;
+    internal IReadOnlyList<CommandContribution> Commands => context.Commands;
+    internal IReadOnlyList<RegisteredPluginSetting> Settings => context.SettingsSnapshot;
+    internal Task SetSettingAsync(string name, object value) => context.SetSettingAsync(name, value);
+    internal Task ResetSettingAsync(string name) => context.ResetAsync(name).AsTask();
 
     // Explicitly approved native DLL, never call this while enumerating packages.
     public static async Task<PluginSession> ActivateTrustedAsync(string dllPath, PluginIdentity identity, bool runInstallHook,
         Action markInstallCompleted, DispatcherQueue queue, Func<XamlRoot?> xamlRoot,
         Action<NotificationKind, string> log, Action<NotificationKind, string> notify, string? approvedPackageHash = null,
-        Action<string, string, IXamlMetadataProvider>? registerMetadataProvider = null)
+        Action<string, string, IXamlMetadataProvider>? registerMetadataProvider = null, Action? commitActivation = null)
     {
         if (!queue.HasThreadAccess) throw new InvalidOperationException("Activate on the UI thread.");
         if (identity.UiMode == "compiled" && (registerMetadataProvider is null || identity.MetadataProvider is null))
@@ -71,6 +75,8 @@ public sealed class PluginSession
             context.BeginEnable();
             session.enableEntered = true;
             session.plugin.OnEnable();
+            context.ValidateContributions();
+            commitActivation?.Invoke();
             context.Commit();
             return session;
         }

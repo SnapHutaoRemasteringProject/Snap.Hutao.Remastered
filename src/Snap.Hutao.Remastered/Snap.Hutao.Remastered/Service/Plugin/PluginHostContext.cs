@@ -29,9 +29,10 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
     private readonly Action<NotificationKind, string> notify;
     private readonly Dictionary<string, (object Default, object Value)> values = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, JsonElement> snapshot;
-    private readonly Dictionary<string, IPluginViewFactory> views = new(StringComparer.Ordinal);
-    private readonly Dictionary<string, IPluginCommand> commands = new(StringComparer.Ordinal);
-    private readonly Dictionary<string, NavigationContribution> navigation = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, IPluginViewFactory> views = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, (string Title, IPluginCommand Command)> commands = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, string> descriptions = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, NavigationContribution> navigation = new(StringComparer.OrdinalIgnoreCase);
     private readonly List<IPluginRegistration> tokens = [];
     private readonly List<IPluginSettingObserver> observers = [];
     private readonly List<(NotificationKind Kind, string Message)> pendingNotifications = [];
@@ -106,13 +107,21 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
 
     internal void BeginInstall() { Check(); phase = Phase.Installing; }
     internal void BeginEnable() { Check(); phase = Phase.Enabling; }
-    internal void Commit()
+    internal void ValidateContributions()
     {
         Check();
         foreach (var item in navigation.Values)
             if (!views.ContainsKey(item.ViewId)) throw new InvalidOperationException("Unknown navigation view: " + item.ViewId);
+    }
+    internal void Commit()
+    {
+        ValidateContributions();
         phase = Phase.Active;
-        foreach (var item in pendingNotifications) notify(item.Kind, item.Message);
+        foreach (var item in pendingNotifications)
+        {
+            try { notify(item.Kind, item.Message); }
+            catch (Exception error) { log(NotificationKind.Error, error.ToString()); }
+        }
         pendingNotifications.Clear();
     }
 
@@ -120,6 +129,24 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
     {
         get { Active(); return navigation.Values.ToArray(); }
     }
+    internal IReadOnlyList<CommandContribution> Commands
+    {
+        get { Active(); return commands.Select(item => new CommandContribution(item.Key, item.Value.Title)).ToArray(); }
+    }
+
+    internal IReadOnlyList<RegisteredPluginSetting> SettingsSnapshot
+    {
+        get { Active(); return values.Select(item => new RegisteredPluginSetting(item.Key, descriptions[item.Key], item.Value.Default, item.Value.Value)).ToArray(); }
+    }
+
+    internal Task SetSettingAsync(string name, object value) => value switch
+    {
+        int number => SetInt32Async(name, number).AsTask(),
+        bool flag => SetBooleanAsync(name, flag).AsTask(),
+        string text => SetStringAsync(name, text).AsTask(),
+        _ => throw new ArgumentException("Unsupported setting type.", nameof(value)),
+    };
+
     internal IPluginView OpenView(string id)
     {
         Active();
@@ -128,7 +155,7 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
     internal IAsyncAction Execute(string id)
     {
         Active();
-        return commands.TryGetValue(id, out var command) ? command.ExecuteAsync(id) : throw new KeyNotFoundException(id);
+        return commands.TryGetValue(id, out var command) ? command.Command.ExecuteAsync(id) : throw new KeyNotFoundException(id);
     }
     internal void BeginClose()
     {
@@ -217,12 +244,18 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
     private static void ValidateName(string name)
     {
         PackagePaths.ValidateIdentifier(name);
+        if (name.Length > 64) throw new ArgumentException("Local identifier exceeds 64 characters.");
+    }
+    private static void ValidateTitle(string title)
+    {
+        if (title.Length is < 1 or > 128) throw new ArgumentException("Invalid contribution title.");
     }
 
     public IPluginRegistration RegisterView(string viewId, IPluginViewFactory factory)
     {
         Demand("navigation"); Registering(); ValidateName(viewId);
         if (identity.UiMode == "none") throw new InvalidOperationException("UI is not declared.");
+        if (views.Count >= 16) throw new InvalidOperationException("Too many views.");
         if (!views.TryAdd(viewId, factory)) throw new ArgumentException("Duplicate view.", nameof(viewId));
         return RegisterToken(() => views.Remove(viewId));
     }
@@ -230,13 +263,18 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
     {
         Demand("navigation"); Registering(); ValidateName(itemId); ValidateName(viewId);
         if (identity.UiMode == "none") throw new InvalidOperationException("UI is not declared.");
+        if (navigation.Count >= 16) throw new InvalidOperationException("Too many navigation items.");
+        ValidateTitle(title);
+        if (iconGlyph.EnumerateRunes().Count() > 1) throw new ArgumentException("Expected one icon glyph.");
         if (!navigation.TryAdd(itemId, new(itemId, title, iconGlyph, viewId))) throw new ArgumentException("Duplicate navigation.", nameof(itemId));
         return RegisterToken(() => navigation.Remove(itemId));
     }
     public IPluginRegistration RegisterCommand(string commandId, string title, IPluginCommand command)
     {
         Demand("commands"); Registering(); ValidateName(commandId);
-        if (!commands.TryAdd(commandId, command)) throw new ArgumentException("Duplicate command.", nameof(commandId));
+        if (commands.Count >= 64) throw new InvalidOperationException("Too many commands.");
+        ValidateTitle(title);
+        if (!commands.TryAdd(commandId, (title, command))) throw new ArgumentException("Duplicate command.", nameof(commandId));
         return RegisterToken(() => commands.Remove(commandId));
     }
 
@@ -263,7 +301,7 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
         return XamlReader.Load(markup) as UIElement ?? throw new ArgumentException("Expected UIElement.");
     }
 
-    private void Register(string name, object value)
+    private void Register(string name, object value, string description)
     {
         Demand("settings"); ValidateName(name);
         if (phase is not (Phase.Loading or Phase.Installing or Phase.Enabling)) throw new InvalidOperationException("Setting registration is not allowed.");
@@ -275,7 +313,9 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
             else if (value is string && json.ValueKind == JsonValueKind.String) stored = json.GetString()!;
             else log(NotificationKind.Warning, "Invalid saved setting; using default: " + name);
         }
+        if (values.Count >= 128) throw new InvalidOperationException("Too many settings.");
         if (!values.TryAdd(name, (value, stored))) throw new ArgumentException("Duplicate setting.", nameof(name));
+        descriptions.Add(name, description);
     }
     private T Get<T>(string name)
     {
@@ -308,9 +348,9 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
         }
         finally { writeGate.Release(); }
     }
-    public void RegisterInt32(string name, int defaultValue, string description) => Register(name, defaultValue);
-    public void RegisterBoolean(string name, bool defaultValue, string description) => Register(name, defaultValue);
-    public void RegisterString(string name, string defaultValue, string description) => Register(name, defaultValue);
+    public void RegisterInt32(string name, int defaultValue, string description) => Register(name, defaultValue, description);
+    public void RegisterBoolean(string name, bool defaultValue, string description) => Register(name, defaultValue, description);
+    public void RegisterString(string name, string defaultValue, string description) => Register(name, defaultValue, description);
     public int GetInt32(string name) => Get<int>(name);
     public bool GetBoolean(string name) => Get<bool>(name);
     public string GetString(string name) => Get<string>(name);
@@ -327,12 +367,15 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
     {
         Demand("settings");
         if (phase is Phase.Closing or Phase.Closed) throw new InvalidOperationException("Session closing.");
+        if (observers.Count >= 32) throw new InvalidOperationException("Too many setting observers.");
         observers.Add(observer);
         return RegisterToken(() => observers.Remove(observer));
     }
 }
 
 public sealed record NavigationContribution(string Id, string Title, string IconGlyph, string ViewId);
+internal sealed record CommandContribution(string Id, string Title);
+internal sealed record RegisteredPluginSetting(string Name, string Description, object DefaultValue, object Value);
 
 internal sealed partial class Registration(Action revoke) : IPluginRegistration
 {
