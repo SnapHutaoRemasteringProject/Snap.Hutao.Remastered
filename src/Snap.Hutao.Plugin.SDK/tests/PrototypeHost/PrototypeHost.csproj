@@ -21,6 +21,7 @@
     <PackageReference Include="Microsoft.Windows.CsWinRT" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX" PrivateAssets="all" />
     <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\NativePluginLoader.cs" Link="Host\NativePluginLoader.cs" />
     <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\PluginHostContext.cs" Link="Host\PluginHostContext.cs" />
     <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\PluginResidency.cs" Link="Host\PluginResidency.cs" />

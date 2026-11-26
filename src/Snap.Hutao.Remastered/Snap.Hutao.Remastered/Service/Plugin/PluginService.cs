@@ -241,8 +241,8 @@ internal sealed partial class PluginService
                 {
                     try
                     {
-                        File.Delete(Path.Combine(PluginPackageStore.StateDirectory(canonicalId), "backup.hutao"));
                         PluginPackageStore.WriteState(canonicalId, state with { BackupHash = null });
+                        File.Delete(Path.Combine(PluginPackageStore.StateDirectory(canonicalId), "backup.hutao"));
                     }
                     catch (Exception error) { Log(NotificationKind.Warning, "Backup cleanup failed: " + error.Message); }
                 }
@@ -300,7 +300,9 @@ internal sealed partial class PluginService
             if (verified.Manifest.MinHostVersion > HostVersion || verified.Manifest.UiMode == "compiled") throw new InvalidDataException("Update is incompatible with this host.");
             PluginDiskState state = PluginPackageStore.ReadState(item.Id);
             if (state.PendingHash is not null || state.BackupHash is not null) throw new InvalidOperationException("Resolve the existing pending update or rollback first.");
-            string pending = Path.Combine(PluginPackageStore.StateDirectory(item.Id), "pending.hutao");
+            string directory = PluginPackageStore.StateDirectory(item.Id);
+            File.Delete(Path.Combine(directory, "backup.hutao")); // No recorded backup remains.
+            string pending = Path.Combine(directory, "pending.hutao");
             await Task.Run(() => PluginPackageStore.CopyApproved(source, pending, verified.Sha256, overwrite: true));
             PluginPackageStore.WriteState(item.Id, state with { PendingHash = verified.Sha256, StagedInProcess = workspaceId });
         }
@@ -357,8 +359,8 @@ internal sealed partial class PluginService
             string directory = PluginPackageStore.StateDirectory(item.Id);
             if (state.BackupHash is null && state.PendingHash is not null)
             {
-                File.Delete(Path.Combine(directory, "pending.hutao"));
                 PluginPackageStore.WriteState(item.Id, state with { PendingHash = null, StagedInProcess = null });
+                File.Delete(Path.Combine(directory, "pending.hutao"));
                 return;
             }
             if (active.ContainsKey(id)) throw new InvalidOperationException("Disable the plugin before rollback.");

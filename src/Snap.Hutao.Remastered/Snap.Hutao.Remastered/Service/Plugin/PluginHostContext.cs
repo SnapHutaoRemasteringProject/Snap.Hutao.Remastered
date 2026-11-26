@@ -265,7 +265,9 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
         if (identity.UiMode == "none") throw new InvalidOperationException("UI is not declared.");
         if (navigation.Count >= 16) throw new InvalidOperationException("Too many navigation items.");
         ValidateTitle(title);
-        if (iconGlyph.EnumerateRunes().Count() > 1) throw new ArgumentException("Expected one icon glyph.");
+        int glyphCount = 0;
+        foreach (var rune in iconGlyph.EnumerateRunes())
+            if (++glyphCount > 1) throw new ArgumentException("Expected one icon glyph.");
         if (!navigation.TryAdd(itemId, new(itemId, title, iconGlyph, viewId))) throw new ArgumentException("Duplicate navigation.", nameof(itemId));
         return RegisterToken(() => navigation.Remove(itemId));
     }

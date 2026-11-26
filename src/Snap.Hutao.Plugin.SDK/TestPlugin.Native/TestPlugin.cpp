@@ -47,7 +47,7 @@ struct CoreView : implements<CoreView, IPluginView>
             button.Content(box_value(L"Programmatic C++/WinRT Button"));
             root = button;
         }
-        clickToken = button.Click([context](IInspectable const& sender, RoutedEventArgs const&)
+        clickToken = button.Click([context](winrt::Windows::Foundation::IInspectable const& sender, RoutedEventArgs const&)
         {
             try
             {

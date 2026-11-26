@@ -10,6 +10,7 @@ public sealed partial class MainPage : Page
 {
     private PluginSession? session;
     private NavigationContribution[] availableViews = [];
+    private CommandContribution[] availableCommands = [];
     private bool busy;
     private bool restartRequired;
     private string? entryPath;
@@ -36,7 +37,8 @@ public sealed partial class MainPage : Page
             bool active = session is not null;
             load.IsEnabled = pathBox.IsEnabled = nativeChoice.IsEnabled = compiledChoice.IsEnabled = aotChoice.IsEnabled = !busy && !active && !restartRequired;
             views.IsEnabled = !busy && active && !restartRequired;
-            exercise.IsEnabled = restart.IsEnabled = uninstall.IsEnabled = !busy && active && !restartRequired;
+            commands.IsEnabled = exercise.IsEnabled = !busy && active && !restartRequired && availableCommands.Length > 0;
+            restart.IsEnabled = uninstall.IsEnabled = !busy && active && !restartRequired;
         }
 
         void Choose(string packageName, bool native)
@@ -115,6 +117,10 @@ public sealed partial class MainPage : Page
             try
             {
                 availableViews = session.Navigation.ToArray();
+                availableCommands = session.Commands.ToArray();
+                commands.Items.Clear();
+                foreach (CommandContribution item in availableCommands) commands.Items.Add(item.Title);
+                commands.SelectedIndex = availableCommands.Length > 0 ? 0 : -1;
                 views.Items.Clear();
                 foreach (NavigationContribution item in availableViews) views.Items.Add(item.Title);
                 views.SelectedIndex = availableViews.Length > 0 ? 0 : -1;
@@ -142,7 +148,7 @@ public sealed partial class MainPage : Page
             if (active is null) return;
             try { await active.DisableAsync(() => content.Content = null, remove); }
             catch { restartRequired = true; throw; }
-            finally { session = null; availableViews = []; views.Items.Clear(); }
+            finally { session = null; availableViews = []; availableCommands = []; views.Items.Clear(); commands.Items.Clear(); }
         }
 
         async Task RunAsync(Func<Task> action)
@@ -166,9 +172,10 @@ public sealed partial class MainPage : Page
         load.Click += async (_, _) => await RunAsync(() => StartAsync(pathBox.Text, false));
         exercise.Click += async (_, _) => await RunAsync(async () =>
         {
-            if (session is null) return;
-            await session.ExecuteAsync("exercise");
-            Write(NotificationKind.Success, "Counter = " + session.ReadInt32("Counter"));
+            if (session is null || commands.SelectedIndex < 0 || commands.SelectedIndex >= availableCommands.Length) return;
+            CommandContribution command = availableCommands[commands.SelectedIndex];
+            await session.ExecuteAsync(command.Id);
+            Write(NotificationKind.Success, "Command completed: " + command.Title);
         });
         restart.Click += async (_, _) => await RunAsync(async () =>
         {

@@ -206,7 +206,7 @@ PrototypeHost 是正常的 WinUI 3 应用，可以从 SDK 分发目录直接启�
 & C:\HutaoSdk\PrototypeHost\PrototypeHost.exe (Resolve-Path .\MyPlugin.hutao).Path
 ```
 
-命令行仅填入路径，不跳过确认。点击 Inspect and load，确认 ID/版本/哈希，选择下拉中的视图并测试。对于你自己的插件，宿主的 Exercise ABI 按钮是专门给仓库 TestPlugin 的 exercise 命令的；自定义插件可以在正式插件管理页执行自己注册的命令。使用 VS 调试器 Attach to Process；C++ 选择 Native，C# Native AOT 使用 Native 调试器和对应发布 PDB，普通 C# 托管调试器不能把 AOT DLL 当普通 IL 模块调试。PDB 单独保留，通常不打入用户包。
+命令行仅填入路径，不跳过确认。点击 Inspect and load，确认 ID/版本/哈希，选择下拉中的视图并测试。对于你自己的插件，宿主的 Run command 按钮是专门给仓库 TestPlugin 的 exercise 命令的；自定义插件可以在正式插件管理页执行自己注册的命令。使用 VS 调试器 Attach to Process；C++ 选择 Native，C# Native AOT 使用 Native 调试器和对应发布 PDB，普通 C# 托管调试器不能把 AOT DLL 当普通 IL 模块调试。PDB 单独保留，通常不打入用户包。
 
 更新 DLL：关闭整个 PrototypeHost 进程 → 重新 Build/Publish → 清理并重建 staging → 重新 pack → 启动新进程。Disable and re-enable 只测试同一已映射模块的生命周期，不是重载。松散 XAML 的内容可以编辑后重新打包，重新启动验证；VS XAML Hot Reload 只针对其支持的调试项目和编译资源，不能承诺任意第三方 Native AOT DLL 热替换。
 

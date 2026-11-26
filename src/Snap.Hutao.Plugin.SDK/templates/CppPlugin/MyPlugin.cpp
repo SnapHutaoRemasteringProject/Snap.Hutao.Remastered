@@ -19,7 +19,7 @@ struct MyView : implements<MyView, IPluginView>
     MyView(IPluginContext const& context)
     {
         button.Content(box_value(L"Click me"));
-        token = button.Click([context](IInspectable const&, RoutedEventArgs const&)
+        token = button.Click([context](winrt::Windows::Foundation::IInspectable const&, RoutedEventArgs const&)
         {
             context.Notifications().Show(NotificationKind::Success, L"Hello from C++");
         });

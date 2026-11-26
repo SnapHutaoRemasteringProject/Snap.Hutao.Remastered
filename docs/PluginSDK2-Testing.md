@@ -32,7 +32,7 @@ Get-ChildItem .\artifacts\jit-host\resources.pri,.\artifacts\aot-host\resources.
 | UI-01 | 选择 programmatic 视图、点击 Button | 原生控件文字变化、通知；不经 XAML 解析 |
 | UI-02 | 选择 loose 视图、点击按钮 | manifest 中 .hxaml 被加载，命名控件和 Click 回调正常 |
 | UI-03 | C# Binding 视图，点击 Increment，再编辑 Message 并 Save | Counter OneWay 更新、TextBox TwoWay 更新 draft、ICommand 执行；重开视图读到已保存值 |
-| ASYNC-01 | Exercise ABI | 设置 int/bool/string 往返；worker 无 UI access、dispatcher callback 有 access；对话框 OK；C# 两次 Task.Yield 和每阶段断言通过 |
+| ASYNC-01 | 选择 Exercise ABI 命令并点击 Run command | 设置 int/bool/string 往返；worker 无 UI access、dispatcher callback 有 access；对话框 OK；C# 两次 Task.Yield 和每阶段断言通过 |
 | LIFE-01 | Disable and re-enable | OnDisable 后 UI 与贡献消失；同包同模块新实例 OnLoad/OnEnable；不重复 OnInstall |
 | LIFE-02 | Uninstall session | active OnDisable/OnUninstall；不 FreeLibrary |
 | LIFE-03 | 插件故意抛错、重复启停/打开关闭 | HRESULT/日志准确；不重复贡献、不遗留视图、事件、设置观察者；失败模块不能在本进程替换 |
