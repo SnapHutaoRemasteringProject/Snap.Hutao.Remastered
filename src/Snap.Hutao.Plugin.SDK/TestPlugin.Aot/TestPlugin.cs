@@ -40,11 +40,24 @@ public sealed class TestPlugin : HutaoPlugin
 
     private async Task ExerciseAsync()
     {
-        await counter.SetValueAsync(counter.Value + 1);
-        await enabled.SetValueAsync(false);
-        await message.SetValueAsync("C# AOT round trip");
-        if (enabled.Value || message.Value != "C# AOT round trip") throw new InvalidOperationException("Settings round trip failed.");
         PluginDispatcher dispatcher = Context.CaptureDispatcher();
+        void RequireUi(string stage)
+        {
+            if (!dispatcher.HasThreadAccess) throw new InvalidOperationException("Lost plugin UI synchronization context: " + stage);
+        }
+
+        // Two forced asynchronous hops expose a context that only survives the first Post.
+        await Task.Yield();
+        RequireUi("first yield");
+        await Task.Yield();
+        RequireUi("second yield");
+        await counter.SetValueAsync(counter.Value + 1);
+        RequireUi("Counter write");
+        await enabled.SetValueAsync(false);
+        RequireUi("Enabled write");
+        await message.SetValueAsync("C# AOT round trip");
+        RequireUi("Message write");
+        if (enabled.Value || message.Value != "C# AOT round trip") throw new InvalidOperationException("Settings round trip failed.");
         await Task.Run(async () =>
         {
             if (dispatcher.HasThreadAccess) throw new InvalidOperationException("Expected worker.");
@@ -54,8 +67,10 @@ public sealed class TestPlugin : HutaoPlugin
                 Context.Log(NotificationKind.Information, "C# AOT worker callback on UI thread");
             });
         });
-        if (await Context.ShowMessageAsync("C# AOT ABI", "Choose OK to complete the test.") != DialogResult.Primary)
-            throw new OperationCanceledException();
+        RequireUi("worker round trip");
+        DialogResult result = await Context.ShowMessageAsync("C# AOT ABI", "Choose OK to complete the test.");
+        RequireUi("dialog completion");
+        if (result != DialogResult.Primary) throw new OperationCanceledException();
         Context.Notify(NotificationKind.Success, "C# AOT async round trip completed.");
     }
 

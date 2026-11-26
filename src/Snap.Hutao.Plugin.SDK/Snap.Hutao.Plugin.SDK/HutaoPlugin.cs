@@ -52,14 +52,40 @@ internal static class UiCall
 {
     public static T Run<T>(Func<T> callback)
     {
-        SynchronizationContext? previous = SynchronizationContext.Current;
         DispatcherQueue? queue = DispatcherQueue.GetForCurrentThread();
-        if (queue is not null) SynchronizationContext.SetSynchronizationContext(new DispatcherQueueSynchronizationContext(queue));
+        return queue is null ? callback() : RunWithContext(new PluginUiSynchronizationContext(queue), callback);
+    }
+
+    public static void Run(Action callback) => Run(() => { callback(); return true; });
+
+    private static T RunWithContext<T>(SynchronizationContext context, Func<T> callback)
+    {
+        SynchronizationContext? previous = SynchronizationContext.Current;
+        SynchronizationContext.SetSynchronizationContext(context);
         try { return callback(); }
         finally { SynchronizationContext.SetSynchronizationContext(previous); }
     }
 
-    public static void Run(Action callback) => Run(() => { callback(); return true; });
+    // DispatcherQueue is native and shared across runtimes; managed Current is not.
+    // Install the plugin runtime's context for every dispatched continuation, not just
+    // the initial ABI callback, so consecutive awaits keep targeting the UI thread.
+    private sealed class PluginUiSynchronizationContext(DispatcherQueue queue) : SynchronizationContext
+    {
+        public override SynchronizationContext CreateCopy() => this;
+
+        public override void Post(SendOrPostCallback d, object? state)
+        {
+            if (!queue.TryEnqueue(() => RunWithContext(this, () => { d(state); return true; })))
+                throw new InvalidOperationException("Plugin UI dispatcher is closed.");
+        }
+
+        public override void Send(SendOrPostCallback d, object? state)
+        {
+            if (!queue.HasThreadAccess)
+                throw new NotSupportedException("Synchronous cross-thread plugin dispatch is not supported.");
+            RunWithContext(this, () => { d(state); return true; });
+        }
+    }
 }
 
 public static unsafe class PluginExport
