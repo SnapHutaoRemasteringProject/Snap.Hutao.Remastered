@@ -75,6 +75,23 @@ internal sealed partial class PrototypeApp(string[] args) : Application, IXamlMe
 
     protected override void OnLaunched(LaunchActivatedEventArgs launchArgs)
     {
+        try { LaunchCore(); }
+        catch (Exception error)
+        {
+            // OnLaunched failures are otherwise reduced to a XAML stowed exception.
+            System.Diagnostics.Debug.WriteLine(error.ToString());
+            try
+            {
+                Directory.CreateDirectory(TestRoot);
+                File.WriteAllText(Path.Combine(TestRoot, "startup-error.txt"), error.ToString());
+            }
+            catch (Exception logError) { System.Diagnostics.Debug.WriteLine(logError.ToString()); }
+            throw;
+        }
+    }
+
+    private void LaunchCore()
+    {
         // The code-only host has no App.xaml / generated InitializeComponent.
         XamlControlsXamlMetaDataProvider.Initialize();
         Resources.MergedDictionaries.Add(new XamlControlsResources());

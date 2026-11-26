@@ -5,6 +5,8 @@
     <PublishAot Condition="'$(PublishAot)' == ''">false</PublishAot>
     <SelfContained>true</SelfContained>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <!-- Keep unpackaged deployment, but enable the WinUI PRI publish pipeline. -->
+    <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsAppSdkUndockedRegFreeWinRTInitialize>true</WindowsAppSdkUndockedRegFreeWinRTInitialize>
     <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
     <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
