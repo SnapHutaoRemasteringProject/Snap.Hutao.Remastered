@@ -21,7 +21,7 @@ internal sealed partial class PluginService
     [GeneratedConstructor]
     public partial PluginService(IServiceProvider serviceProvider);
 
-    private sealed record Workspace(PluginIdentity Identity, string Entry, string Hash);
+    private sealed record Workspace(PluginIdentity Identity, string Entry, string Hash, PluginManifest Manifest);
     private sealed record ActiveSession(PluginSession Session, string PackageHash)
     {
         internal Action? Detach { get; set; }
@@ -106,6 +106,23 @@ internal sealed partial class PluginService
     internal IReadOnlyList<PluginNavigationItem> Navigation => active.OrderBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
         .SelectMany(x => x.Value.Session.Navigation.OrderBy(n => n.Id, StringComparer.OrdinalIgnoreCase)
             .Select(n => new PluginNavigationItem(new(x.Key, n.ViewId, n.Id), n.Title, n.IconGlyph))).ToArray();
+
+    // Called on the application UI thread by the existing game-launch service.
+    // Only active, approved sessions contribute; never scan a mutable inject directory.
+    internal PluginGameLibrary[] GetGameLibrariesForLaunch()
+    {
+        _ = Queue;
+        if (shuttingDown) return [];
+        return active.OrderBy(item => item.Key, StringComparer.OrdinalIgnoreCase)
+            .Where(item => !item.Value.Session.IsClosing)
+            .SelectMany(item =>
+            {
+                Workspace workspace = workspaces[item.Key];
+                return workspace.Manifest.GameLibraries.Select(relativePath => new PluginGameLibrary(
+                    workspace.Manifest.Name, relativePath, PackagePaths.Resolve(workspace.Identity.PackageDirectory, relativePath),
+                    workspace.Manifest.Files[relativePath]));
+            }).ToArray();
+    }
 
     internal IReadOnlyList<CommandContribution> Commands(string id) => GetActive(id).Session.Commands;
     internal IReadOnlyList<RegisteredPluginSetting> Settings(string id) => GetActive(id).Session.Settings;
@@ -210,7 +227,7 @@ internal sealed partial class PluginService
                     });
                     PluginIdentity identity = new(manifest.Id, manifest.Name, manifest.Version.ToString(), directory, Path.Combine(settings, "data"),
                         settings, manifest.UiMode, manifest.Capabilities, manifest.Files.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase), manifest.MetadataProvider);
-                    workspace = new(identity, PackagePaths.Resolve(directory, manifest.Entry), hash);
+                    workspace = new(identity, PackagePaths.Resolve(directory, manifest.Entry), hash, manifest);
                     workspaces.Add(canonicalId, workspace);
                 }
                 else

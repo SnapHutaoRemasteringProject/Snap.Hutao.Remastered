@@ -68,6 +68,12 @@ public static class PluginPackage
         }
         if (!files.TryGetValue(manifest.Entry, out string? dll)) throw new InvalidDataException("Missing entry DLL.");
         using (FileStream pe = File.OpenRead(dll)) ValidateNativeDll(pe);
+        foreach (string library in manifest.GameLibraries)
+        {
+            if (!files.TryGetValue(library, out string? path)) throw new InvalidDataException("Missing declared game library: " + library);
+            using FileStream pe = File.OpenRead(path);
+            ValidateNativeDll(pe);
+        }
         if (files.Count > 4095) throw new InvalidDataException("Too many files.");
         string temp = output + "." + Guid.NewGuid().ToString("N") + ".tmp";
         Directory.CreateDirectory(Path.GetDirectoryName(output)!);
@@ -189,7 +195,8 @@ public static class PluginPackage
             if (pair.Value.Length > limit) throw new InvalidDataException("Entry too large.");
             // Spool the entry DLL to disk only in extraction; verify-only uses a bounded memory stream for PE headers.
             using Stream source = pair.Value.Open();
-            bool isEntry = pair.Key.Equals(manifest.Entry, StringComparison.OrdinalIgnoreCase);
+            bool isEntry = pair.Key.Equals(manifest.Entry, StringComparison.OrdinalIgnoreCase) ||
+                manifest.GameLibraries.Contains(pair.Key, StringComparer.OrdinalIgnoreCase);
             string? destination = workspace is null ? null : PackagePaths.Resolve(workspace, pair.Key);
             if (destination is not null)
             {

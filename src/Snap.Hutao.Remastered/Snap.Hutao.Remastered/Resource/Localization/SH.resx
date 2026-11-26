@@ -6539,4 +6539,7 @@
   <data name="ViewPagePluginPendingRestart" xml:space="preserve">
     <value>更新已暂存，重启后应用。</value>
   </data>
+  <data name="ViewPagePluginGameLibrariesWarning" xml:space="preserve">
+    <value>此插件还请求向游戏加载第三方 DLL。无法保证与游戏或反作弊系统的兼容性，也无法保证账号安全。请确认来源及游戏的使用规则。</value>
+  </data>
 </root>

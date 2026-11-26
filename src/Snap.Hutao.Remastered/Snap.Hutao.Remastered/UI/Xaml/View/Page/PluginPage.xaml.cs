@@ -126,13 +126,18 @@ public sealed partial class PluginPage : ScopedPage
 
     private async Task<bool> ConfirmTrustAsync(PluginManifest manifest, string hash)
     {
+        string gameLibraries = manifest.GameLibraries.Count == 0 ? string.Empty :
+            "\n\n" + (SH.GetString("ViewPagePluginGameLibrariesWarning") ??
+                "This package also requests loading third-party libraries into the game. Compatibility and account safety are not guaranteed.") +
+            "\n" + string.Join("\n", manifest.GameLibraries);
         ContentDialog dialog = new()
         {
             XamlRoot = XamlRoot,
             Title = SH.GetString("ViewPagePluginTrustTitle") ?? "Trust native plugin?",
             Content = $"{manifest.Name} ({manifest.Id}) {manifest.Version}\nSHA256: {hash}\n\n"
                 + (SH.GetString("ViewPagePluginTrustWarning") ?? "Native code runs with the same permissions as the application.")
-                + (Environment.IsPrivilegedProcess ? "\n" + (SH.GetString("ViewPagePluginElevatedWarning") ?? "This process is elevated.") : string.Empty),
+                + (Environment.IsPrivilegedProcess ? "\n" + (SH.GetString("ViewPagePluginElevatedWarning") ?? "This process is elevated.") : string.Empty)
+                + gameLibraries,
             PrimaryButtonText = SH.GetString("ViewPagePluginTrustButton") ?? "Trust",
             CloseButtonText = "Cancel",
             DefaultButton = ContentDialogButton.Close,

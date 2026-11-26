@@ -6352,4 +6352,7 @@ Ordinary launch does not require Island support. Compatibility is checked separa
   <data name="ViewPagePluginPendingRestart" xml:space="preserve">
     <value>Update staged. Restart before applying it.</value>
   </data>
+  <data name="ViewPagePluginGameLibrariesWarning" xml:space="preserve">
+    <value>This plugin also requests loading third-party DLLs into the game. Game and anti-cheat compatibility and account safety are not guaranteed. Verify the source and the game's rules.</value>
+  </data>
 </root>

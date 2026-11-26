@@ -7,7 +7,10 @@ public sealed record PluginManifest(string Id, string Name, Version Version, IRe
     IReadOnlySet<string> Capabilities, IReadOnlyDictionary<string, string> Files, string? MetadataProvider = null)
 {
     private static readonly HashSet<string> KnownCapabilities = new(StringComparer.Ordinal)
-        { "settings", "notifications", "navigation", "commands", "dialogs", "xaml" };
+        { "settings", "notifications", "navigation", "commands", "dialogs", "xaml", "game-libraries" };
+
+    // Declarative compatibility with the v1 inject/ payload. Not a general process API.
+    public IReadOnlyList<string> GameLibraries { get; init; } = [];
 
     public static PluginManifest Parse(ReadOnlyMemory<byte> bytes, bool template = false)
     {
@@ -58,6 +61,24 @@ public sealed record PluginManifest(string Id, string Name, Version Version, IRe
         }
         if ((mode == "none" && capabilities.Contains("navigation")) || (mode != "loose" && capabilities.Contains("xaml")))
             throw new InvalidDataException("Inconsistent UI mode and capabilities.");
+        List<string> gameLibraries = [];
+        if (root.TryGetProperty("gameLibraries", out JsonElement libraries))
+        {
+            HashSet<string> seen = new(StringComparer.OrdinalIgnoreCase);
+            foreach (JsonElement item in libraries.EnumerateArray())
+            {
+                string path = item.GetString() ?? throw new InvalidDataException("Null game library.");
+                PackagePaths.ValidateRelativePath(path);
+                if (!path.StartsWith("inject/", StringComparison.Ordinal) ||
+                    path.IndexOf('/', "inject/".Length) >= 0 ||
+                    !path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || !seen.Add(path))
+                    throw new InvalidDataException("Game library must be a unique top-level inject/*.dll path.");
+                gameLibraries.Add(path);
+                if (gameLibraries.Count > 16) throw new InvalidDataException("Too many game libraries.");
+            }
+        }
+        if (capabilities.Contains("game-libraries") != (gameLibraries.Count != 0))
+            throw new InvalidDataException("game-libraries capability requires a nonempty gameLibraries list, and vice versa.");
         string? icon = root.TryGetProperty("iconPath", out var iconElement) ? iconElement.GetString() : null;
         if (icon is not null) PackagePaths.ValidateRelativePath(icon);
         Dictionary<string, string> files = new(StringComparer.OrdinalIgnoreCase);
@@ -71,10 +92,11 @@ public sealed record PluginManifest(string Id, string Name, Version Version, IRe
                     hash.Any(c => c is not (>= '0' and <= '9' or >= 'a' and <= 'f')) || !files.TryAdd(path, hash))
                     throw new InvalidDataException("Invalid/duplicate manifest file: " + path);
             }
+            if (gameLibraries.Any(path => !files.ContainsKey(path))) throw new InvalidDataException("Declared game library is missing.");
             if (files.Count is < 1 or > 4095 || !files.ContainsKey(entry) || (icon is not null && !files.ContainsKey(icon)))
                 throw new InvalidDataException("Manifest entry/icon is missing.");
         }
-        return new(id, name, pluginVersion, authors, description, icon, minimum, major, minor, entry, mode, capabilities, files, provider);
+        return new(id, name, pluginVersion, authors, description, icon, minimum, major, minor, entry, mode, capabilities, files, provider) { GameLibraries = gameLibraries.AsReadOnly() };
     }
 
     private static string ReadString(JsonElement root, string key, int limit, bool required)
