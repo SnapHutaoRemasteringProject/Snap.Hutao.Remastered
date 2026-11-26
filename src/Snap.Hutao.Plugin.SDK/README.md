@@ -18,11 +18,23 @@ Open an x64 Native Tools developer PowerShell with the repository's .NET SDK,
 C++ toolchain and Windows SDK (override the kit version if needed). Restore the
 exact Windows App SDK 2.6.6-experimental component packages and collect the native
 WinMD paths, including Microsoft.UI.Xaml.winmd and its metadata dependencies.
-Pass a complete list from one resolved package version set, not managed projection DLLs.
+Pass explicit `.winmd` files, metadata directories, or a mixture of both from one resolved package version set, not managed projection DLLs. Directories are expanded non-recursively; other files (including XML documentation) are ignored. Duplicate WinMD filenames are rejected.
 
 ```powershell
 .\Build-Prototype.ps1 -WinAppSdkWinmd $winmdPaths -WindowsSdkVersion 10.0.28000.0
 ```
+
+For example, the WinUI package's metadata directory can now be passed directly:
+
+```powershell
+$metadata = "$env:USERPROFILE\.nuget\packages\microsoft.windowsappsdk.winui\2.6.6-experimental\metadata"
+.\Build-Prototype.ps1 -WinAppSdkWinmd $metadata
+```
+
+This selects Microsoft.UI.Text.winmd and Microsoft.UI.Xaml.winmd when present. If the
+compilers report missing types from other Windows App SDK components, pass those
+components' metadata directories or individual WinMD files from the exact restored
+dependency versions as additional array entries. The script does not guess versions.
 
 The script stops on compiler failure, generates a single contract and C++ headers,
 prints metadata hashes, builds the C++ DLL, publishes the C# Native AOT shared library

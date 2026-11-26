@@ -20,7 +20,7 @@ function Invoke-Checked([string] $Tool, [string[]] $Arguments) {
     if ($LASTEXITCODE -ne 0) { throw "$Tool failed: $LASTEXITCODE" }
 }
 
-if ($env:VSCMD_ARG_TGT_ARCH -ne 'x64') { throw 'Use an x64 Native Tools developer shell.' }
+if ($env:VSCMD_ARG_TGT_ARCH -notin @('x64', 'amd64')) { throw 'Use an x64 Native Tools developer shell.' }
 $windowsWinmd = Join-Path $WindowsSdkRoot "UnionMetadata\$WindowsSdkVersion\Windows.winmd"
 $sdkBin = Join-Path $WindowsSdkRoot "bin\$WindowsSdkVersion\x64"
 $midl = Join-Path $sdkBin 'midl.exe'
@@ -32,20 +32,44 @@ foreach ($path in @($windowsWinmd, $midl, $cppwinrt, $idl)) {
     if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing $path" }
 }
 
+# Accept explicit WinMD files or metadata directories. Validate all inputs before
+# changing the private reference directory; never choose a different package version.
+$sourceFiles = @(
+    foreach ($path in $WinAppSdkWinmd) {
+        $item = Get-Item -LiteralPath $path
+        if ($item.PSIsContainer) {
+            $matches = @(Get-ChildItem -LiteralPath $item.FullName -Filter '*.winmd' -File | Sort-Object Name)
+            if ($matches.Count -eq 0) { throw "No WinMD files in metadata directory: $($item.FullName)" }
+            $matches
+        } elseif ($item.Extension -eq '.winmd') {
+            $item
+        } else {
+            throw "Not a WinMD file or metadata directory: $($item.FullName)"
+        }
+    }
+)
+$byName = @{}
+foreach ($file in $sourceFiles) {
+    if ($byName.ContainsKey($file.Name)) {
+        throw "Duplicate metadata name '$($file.Name)': $($byName[$file.Name].FullName) and $($file.FullName)"
+    }
+    if ($file.FullName.StartsWith($references.TrimEnd('\') + '\', [StringComparison]::OrdinalIgnoreCase)) {
+        throw "Input metadata cannot be inside the generated references directory: $($file.FullName)"
+    }
+    $byName.Add($file.Name, $file)
+}
+if (!$byName.ContainsKey('Microsoft.UI.Xaml.winmd')) { throw 'Microsoft.UI.Xaml.winmd is required.' }
+
 # Copy exact references into a single private directory for both generators.
 if (Test-Path -LiteralPath $references) { Remove-Item -LiteralPath $references -Recurse -Force }
 foreach ($dir in @($metadata, $references, $headers, $native)) {
     New-Item -ItemType Directory -Path $dir -Force | Out-Null
 }
-foreach ($path in $WinAppSdkWinmd) {
-    $resolved = (Resolve-Path -LiteralPath $path).Path
-    if ([IO.Path]::GetExtension($resolved) -ne '.winmd') { throw "Not WinMD: $resolved" }
-    $destination = Join-Path $references ([IO.Path]::GetFileName($resolved))
-    if (Test-Path -LiteralPath $destination) { throw "Duplicate metadata: $destination" }
-    Copy-Item -LiteralPath $resolved -Destination $destination
+foreach ($file in ($sourceFiles | Sort-Object Name)) {
+    Write-Host "WinMD: $($file.FullName)"
+    Copy-Item -LiteralPath $file.FullName -Destination (Join-Path $references $file.Name)
 }
-$refs = @(Get-ChildItem -LiteralPath $references -Filter '*.winmd' | Sort-Object Name | ForEach-Object FullName)
-if (!(Test-Path (Join-Path $references 'Microsoft.UI.Xaml.winmd'))) { throw 'Microsoft.UI.Xaml.winmd is required.' }
+$refs = @(Get-ChildItem -LiteralPath $references -Filter '*.winmd' -File | Sort-Object Name | ForEach-Object FullName)
 
 $midlArgs = @('/nologo', '/winrt', '/nomidl', '/h', 'nul', '/metadata_dir', (Split-Path $windowsWinmd), '/reference', $windowsWinmd, '/winmd', $contract)
 foreach ($ref in $refs) { $midlArgs += @('/reference', $ref) }
