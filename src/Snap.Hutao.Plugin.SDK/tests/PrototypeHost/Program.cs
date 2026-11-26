@@ -2,6 +2,7 @@ using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.XamlTypeInfo;
 using Snap.Hutao.Plugin.Contracts;
 using Snap.Hutao.Plugin.Host;
 using Snap.Hutao.Plugin.Packaging;
@@ -28,6 +29,8 @@ internal sealed partial class PrototypeApp(string[] args) : Application, IXamlMe
     // Compiled-XAML integration harness only. The WinUI schema may cache types;
     // keep metadata providers alive until process exit, just like the DLLs.
     private readonly Dictionary<string, (string Path, IXamlMetadataProvider Provider)> providers = new(StringComparer.Ordinal);
+    private XamlControlsXamlMetaDataProvider? controlsProvider;
+    private XamlControlsXamlMetaDataProvider ControlsProvider => controlsProvider ??= new();
 
     private void RegisterMetadataProvider(string path, string className, IXamlMetadataProvider provider)
     {
@@ -42,6 +45,7 @@ internal sealed partial class PrototypeApp(string[] args) : Application, IXamlMe
 
     public IXamlType? GetXamlType(Type type)
     {
+        if (ControlsProvider.GetXamlType(type) is { } platformType) return platformType;
         foreach (var item in providers.Values)
             if (item.Provider.GetXamlType(type) is { } result) return result;
         return null;
@@ -49,12 +53,14 @@ internal sealed partial class PrototypeApp(string[] args) : Application, IXamlMe
 
     public IXamlType? GetXamlType(string fullName)
     {
+        if (ControlsProvider.GetXamlType(fullName) is { } platformType) return platformType;
         foreach (var item in providers.Values)
             if (item.Provider.GetXamlType(fullName) is { } result) return result;
         return null;
     }
 
-    public XmlnsDefinition[] GetXmlnsDefinitions() => providers.Values.SelectMany(item => item.Provider.GetXmlnsDefinitions()).ToArray();
+    public XmlnsDefinition[] GetXmlnsDefinitions() => ControlsProvider.GetXmlnsDefinitions()
+        .Concat(providers.Values.SelectMany(item => item.Provider.GetXmlnsDefinitions())).ToArray();
 
     private Window? window;
     private PluginSession? session;
@@ -69,6 +75,10 @@ internal sealed partial class PrototypeApp(string[] args) : Application, IXamlMe
 
     protected override void OnLaunched(LaunchActivatedEventArgs launchArgs)
     {
+        // The code-only host has no App.xaml / generated InitializeComponent.
+        XamlControlsXamlMetaDataProvider.Initialize();
+        Resources.MergedDictionaries.Add(new XamlControlsResources());
+
         window = new Window { Title = "Hutao Plugin SDK 2.0 integration host" };
         StackPanel panel = new() { Spacing = 12, Padding = new Thickness(16) };
         TextBlock log = new() { TextWrapping = TextWrapping.Wrap };
