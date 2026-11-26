@@ -253,6 +253,7 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
         using StreamReader reader = new(stream, new UTF8Encoding(false, true));
         return ParseXaml(reader.ReadToEnd());
     }
+    [WinRT.DynamicWindowsRuntimeCast(typeof(UIElement))]
     public UIElement ParseXaml(string markup)
     {
         Demand("xaml"); Active();

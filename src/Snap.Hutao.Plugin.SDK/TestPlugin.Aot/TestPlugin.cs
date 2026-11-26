@@ -61,8 +61,22 @@ public sealed class TestPlugin : HutaoPlugin
 
     private PluginView CreateView()
     {
+        try { return CreateViewCore(); }
+        catch (Exception error)
+        {
+            Context.Log(NotificationKind.Error, "C# AOT CreateView: " + error);
+            throw;
+        }
+    }
+
+    [WinRT.DynamicWindowsRuntimeCast(typeof(StackPanel))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(Button))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(TextBlock))]
+    [WinRT.DynamicWindowsRuntimeCast(typeof(TextBox))]
+    private PluginView CreateViewCore()
+    {
         // Real WinUI controls created by the host's XAML parser, no compiled-XAML resource hooks.
-        FrameworkElement root = (FrameworkElement)Context.ParseXaml("""
+        StackPanel root = Context.ParseXaml("""
             <StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Spacing="8">
                 <Button x:Name="ClickButton" Content="Click C# AOT plugin-owned Button"/>
@@ -70,11 +84,11 @@ public sealed class TestPlugin : HutaoPlugin
                 <TextBox x:Name="MessageBox" Header="Message"/>
                 <Button x:Name="SaveButton" Content="Save message"/>
             </StackPanel>
-            """);
-        Button click = (Button)root.FindName("ClickButton");
-        TextBlock count = (TextBlock)root.FindName("CounterText");
-        TextBox edit = (TextBox)root.FindName("MessageBox");
-        Button save = (Button)root.FindName("SaveButton");
+            """) as StackPanel ?? throw new InvalidCastException("ParseXaml did not return a StackPanel projection.");
+        Button click = root.FindName("ClickButton") as Button ?? throw new InvalidCastException("ClickButton is not a Button projection.");
+        TextBlock count = root.FindName("CounterText") as TextBlock ?? throw new InvalidCastException("CounterText is not a TextBlock projection.");
+        TextBox edit = root.FindName("MessageBox") as TextBox ?? throw new InvalidCastException("MessageBox is not a TextBox projection.");
+        Button save = root.FindName("SaveButton") as Button ?? throw new InvalidCastException("SaveButton is not a Button projection.");
         count.Text = counter.Value.ToString();
         edit.Text = message.Value;
         IDisposable subscription = counter.Subscribe(() => count.Text = counter.Value.ToString());
