@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsAotCompatible>true</IsAotCompatible>
+    <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
+    <Description>Snap Hutao in-process WinRT plugin developer SDK.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj" />
+    <PackageReference Include="Microsoft.Windows.CsWinRT" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" />
+  </ItemGroup>
+</Project>

@@ -14,6 +14,18 @@
     <VCProjectVersion>18.0</VCProjectVersion>
     <ProjectGuid>{EC240671-AB3A-4575-9B4A-3B22D8035984}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
+    <MinimumVisualStudioVersion>18.7</MinimumVisualStudioVersion>
+    <EnableNativePackageReferenceSupport>true</EnableNativePackageReferenceSupport>
+    <CppWinRTProjectLanguage>C++/WinRT</CppWinRTProjectLanguage>
+    <CppWinRTModernIDL>true</CppWinRTModernIDL>
+    <CppWinRTBuildModule Condition="'$(CppWinRTBuildModule)' == ''">false</CppWinRTBuildModule>
+    <CppWinRTEnableComponentProjection>false</CppWinRTEnableComponentProjection>
+    <AppContainerApplication>false</AppContainerApplication>
+    <ApplicationType>Windows Store</ApplicationType>
+    <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
+    <DesktopCompatible>true</DesktopCompatible>
+    <UseWinUI>true</UseWinUI>
+    <WinUISDKReferences>false</WinUISDKReferences>
     <RootNamespace>TestPlugin.Native</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.28000.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -47,9 +59,9 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp23</LanguageStandard>
       <ExceptionHandling>Sync</ExceptionHandling>
-      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\artifacts\headers;$(MSBuildThisFileDirectory)..\Snap.Hutao.Plugin.Contracts;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\Snap.Hutao.Plugin.Contracts;$(MSBuildThisFileDirectory)..\Snap.Hutao.Plugin.SDK.Native;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -62,8 +74,20 @@
     <ClInclude Include="..\Snap.Hutao.Plugin.Contracts\HutaoPluginAbi.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <Target Name="RequireHutaoHeaders" BeforeTargets="ClCompile">
-    <Error Condition="!Exists('$(MSBuildThisFileDirectory)..\artifacts\headers\winrt\Snap.Hutao.Plugin.Contracts.h')" Text="Build the SDK solution (Projection project generates shared C++/WinRT headers) before compiling the native plugin." />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.CppWinRT" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+    <PackageReference Include="Microsoft.Web.WebView2" />
+    <Reference Include="Snap.Hutao.Plugin.Contracts">
+      <HintPath>$(MSBuildThisFileDirectory)..\artifacts\metadata\Snap.Hutao.Plugin.Contracts.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+      <Private>false</Private>
+    </Reference>
+    <ClCompile Include="ModuleSmoke.cpp" Condition="'$(CppWinRTBuildModule)' == 'true'" />
+  </ItemGroup>
+  <Target Name="RequireHutaoContracts" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(MSBuildThisFileDirectory)..\artifacts\metadata\Snap.Hutao.Plugin.Contracts.winmd')" Text="Build the SDK solution to generate the canonical contract first." />
   </Target>
   <ImportGroup Label="ExtensionTargets" />
 </Project>

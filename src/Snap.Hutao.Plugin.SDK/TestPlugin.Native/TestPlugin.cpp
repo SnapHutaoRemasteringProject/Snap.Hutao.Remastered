@@ -11,6 +11,7 @@
 #include <winrt/Microsoft.UI.Xaml.Controls.Primitives.h>
 #include <winrt/Snap.Hutao.Plugin.Contracts.h>
 #include <vector>
+#include "HutaoPlugin.hpp"
 
 using namespace winrt;
 using namespace Windows::Foundation;
@@ -123,15 +124,5 @@ struct TestPlugin : implements<TestPlugin, IHutaoPlugin, IPluginViewFactory, IPl
 
 extern "C" __declspec(dllexport) HRESULT __cdecl HutaoPluginCreate(uint32_t abiMajor, ::IInspectable** plugin)
 {
-    if (!plugin) return E_POINTER;
-    *plugin = nullptr;
-    if (abiMajor != 1) return HRESULT_FROM_WIN32(ERROR_REVISION_MISMATCH);
-    try
-    {
-        auto instance = make<TestPlugin>();
-        auto inspectable = instance.as<Windows::Foundation::IInspectable>();
-        *plugin = reinterpret_cast<::IInspectable*>(detach_abi(inspectable));
-        return S_OK;
-    }
-    catch (...) { return to_hresult(); }
+    return hutao::plugin::create<TestPlugin>(abiMajor, plugin);
 }

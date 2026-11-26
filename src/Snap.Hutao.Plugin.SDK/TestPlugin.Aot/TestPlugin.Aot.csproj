@@ -8,7 +8,7 @@
     <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj" />
+    <ProjectReference Include="..\Snap.Hutao.Plugin.SDK\Snap.Hutao.Plugin.SDK.csproj" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
   </ItemGroup>

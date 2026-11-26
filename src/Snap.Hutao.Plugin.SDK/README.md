@@ -1,93 +1,101 @@
-# Plugin SDK 2.0 — isolated G1 prototype
+# Snap Hutao Plugin SDK 2.0
 
-Source baseline: `a142ae67236b1d324a6fd369c3a247abab41df96` (`aot/plugin`).
-The design document describes the earlier main branch. This branch has already removed
-the former SDK and plugin service source files. No production code is changed here.
+One plugin architecture: in-process native DLL, one `HutaoPluginCreate` export,
+one canonical WinRT contract, one `.hutao` package format. C++ and C# are
+language projections of the same ABI, not different plugin models.
+The original 14 interfaces and IIDs are unchanged.
 
-**Windows builds and execution are NotRun.** This is prototype source, not a validated
-production implementation. The original IDL is copied from section 3 of the design
-(14 UUIDs and signatures unchanged). No IPC, managed assembly loading, alternate COM
-contract or resource hooks. Central versions remain unchanged: TFM
-net11.0-windows10.0.26100.0, CsWinRT 2.3.1, Windows App SDK 2.6.6-experimental.
-The host is a separate unpackaged/self-contained WinUI test app. Plugins are trusted
-test DLLs explicitly selected by path; this is not a package installer.
+## Developers: choose a language, not an architecture
 
-## Build and debug in Visual Studio 2026
+| C# | C++ |
+|---|---|
+| Reference Snap.Hutao.Plugin.SDK | Reference canonical Contracts.winmd and include HutaoPlugin.hpp |
+| Derive HutaoPlugin, use PluginContext and typed settings | Implement IHutaoPlugin with C++/WinRT |
+| Export forwards to PluginExport.Create<T> | Export forwards to hutao::plugin::create<T> |
+| Native AOT Publish (not ordinary Build output) | Build a native x64 DLL |
+| Both use PluginPack and the same manifest schema | Same .hutao package and host |
 
-Open `Snap.Hutao.Plugin.SDK.slnx`, select Debug or Release and x64, restore NuGet and build the solution. The Projection project invokes MIDL and cppwinrt through an MSBuild target before CsWinRT projection generation; the native project is a Visual Studio 2026 C++ DLL project (VCProjectVersion 18.0, v145 toolset). The script reads the projection project's `obj/project.assets.json` to find WinMDs in the exact restored Windows App SDK component packages (including input, composition and dispatching metadata), not just the WinUI package and not unrelated cached versions. The resolver includes versioned metadata directories (for example InteractiveExperiences) using the target platform version, and the restored WebView2 WinMD if present. MIDL's C preprocessor is located automatically from the VS instance, developer environment or vswhere; no developer shell is required for Visual Studio builds. The installed Windows SDK defaults to 10.0.28000.0; use `HutaoWindowsSdkVersion` to override the projection kit and align the native project's Windows SDK version if necessary.
+Do not reference the application implementation, create a second contract, use
+a managed assembly loader, or register a runtimeclass globally. Standard WinRT
+activation factories may coexist for future compiled UI, but do not replace the
+one mandatory entry. The separate template RuntimeComponentSample projects have
+been removed after their relevant native build settings were incorporated.
 
-Set `PrototypeHost` as startup project and press F5. Choose **C++ sample** or **C# AOT sample**, inspect the selected trusted DLL path and click Load plugin. C++ Debug/Release DLLs are built by the solution. The managed C# project Build output is not a native plugin: right-click `TestPlugin.Aot` → Publish → `NativeAot` folder profile first. For the two release hosts, publish `PrototypeHost` using the `JitRelease` and `NativeAot` profiles. Start each published executable or attach Visual Studio's native debugger; the Debug F5 host is not an AOT release validation. The published host also supports the command-line path below. No manually supplied metadata paths are necessary for the solution build.
+## Repository layout
 
-This VS integration and automatic metadata resolution have not been compiled on Windows yet.
+- Contracts: canonical MIDL and C ABI header.
+- Projection: generated C# WinRT projection and owned-reference ABI helpers.
+- SDK: C# developer facade, typed settings, view/command/dispatcher adapters.
+- SDK.Native: C++ export helper; native compiler consumes Contracts.winmd using
+  the pinned C++/WinRT NuGet package. Named modules are an optional build mode,
+  not another model.
+- Packaging: shared manifest, ZIP, hash, PE validation and approved extraction.
+- Host: reusable activation, scoped contributions, UI dispatch, loose XAML,
+  settings persistence and instance lifecycle. The integration host uses this
+  exact library; there is no parallel ProbeContext.
+- TestPlugin.Native and TestPlugin.Aot: the only two developer samples.
+- tools/PluginPack: common packaging CLI.
+- tests/PrototypeHost: explicit trust/activation and UI integration testing.
 
-## Alternative: command-line build
+## Build and test in VS 2026
 
-The preferred route is the solution above. For the standalone command-line workflow, open an x64 Native Tools developer PowerShell with the repository's .NET SDK,
-C++ toolchain and Windows SDK (override the kit version if needed). Restore the
-exact Windows App SDK 2.6.6-experimental component packages and collect the native
-WinMD paths, including Microsoft.UI.Xaml.winmd and its metadata dependencies.
-With no parameters the script restores the Projection project and resolves its metadata closure automatically. You can also pass explicit `.winmd` files, metadata directories, or a mixture of both from one resolved package version set, not managed projection DLLs. Directories are expanded non-recursively; other files (including XML documentation) are ignored. Duplicate WinMD filenames are rejected.
+1. Open Snap.Hutao.Plugin.SDK.slnx, select Release|x64 and Rebuild Solution.
+   Use the existing repository package versions. The Projection project still
+   invokes the proven MIDL helper internally (build/Generate-Contracts.ps1);
+   native C++ projections are now generated by C++/WinRT NuGet targets, not by
+   the SDK cppwinrt executable. No developer-facing contract generation command.
+2. Right-click TestPlugin.Aot, Publish using NativeAot folder profile.
+3. In the SDK directory, run `pwsh -File .\build\Pack-Samples.ps1`.
+   It stages only the two explicit DLLs and writes artifacts/TestPlugin.Native.hutao
+   and artifacts/TestPlugin.hutao. Add declared native dependencies and other files
+   explicitly for real plugins; never blindly copy all publish output.
+4. Set PrototypeHost as Startup Project, F5. Select a sample, Inspect and load,
+   inspect the SHA256 and confirm trust. Click the plugin-owned UI, Exercise ABI,
+   choose OK in dialog, then Disable and re-enable. Uninstall session invokes the
+   hook and retains settings. Repeat in a fresh process for each sample.
+5. Publish PrototypeHost using both JitRelease and NativeAot profiles; repeat
+   both plugin packages with each host. A command-line package argument only
+   fills the path box; it does not bypass trust confirmation.
+
+To check named-module consumption, build the solution with
+`/p:CppWinRTBuildModule=true` in VS MSBuild (x64 Release). ModuleSmoke.cpp
+imports the generated Windows.Foundation and Hutao.Contracts modules. This
+opt-in is not validated yet; the normal sample uses headers.
+
+To pack a custom plugin, prepare an explicit staging directory containing
+bin/x64/YourPlugin.dll and declared assets (no manifest.json in staging),
+then call the same CLI:
 
 ```powershell
-.\Build-Prototype.ps1
+dotnet run --project .\tools\PluginPack -c Release -- pack .\manifest.template.json .\stage .\YourPlugin.hutao
+dotnet run --project .\tools\PluginPack -c Release -- verify .\YourPlugin.hutao
 ```
 
-For example, the WinUI package's metadata directory can now be passed directly:
+Manifest templates in both samples are authoritative examples. files is filled
+by the packer. minHostVersion 1.0.0 is a test placeholder, not a product support promise.
+Package validation does not sandbox native code or authenticate the publisher.
 
-```powershell
-$metadata = "$env:USERPROFILE\.nuget\packages\microsoft.windowsappsdk.winui\2.6.6-experimental\metadata"
-.\Build-Prototype.ps1 -WinAppSdkWinmd $metadata
-```
+## Validation and release status
 
-This selects Microsoft.UI.Text.winmd and Microsoft.UI.Xaml.winmd when present. If the
-compilers report missing types from other Windows App SDK components, pass those
-components' metadata directories or individual WinMD files from the exact restored
-dependency versions as additional array entries. The script does not guess versions.
+The user reported the preceding ABI prototype tests and DLL production passed.
+That is a baseline, not proof this refactor builds or passes on Windows.
+Re-run the full matrix after rebuilding from a clean checkout.
 
-The script stops on compiler failure, generates a single contract and C++ headers,
-prints metadata hashes, builds the C++ DLL, publishes the C# Native AOT shared library
-and publishes both host modes. Generated binaries are not checked in. MIDL syntax,
-reference resolution, CsWinRT projection and AOT compilation must be verified with the
-real toolchain; do not silently change the public contract to resolve failures.
+The new SDK/Host/Packaging libraries and sample projects are production-oriented
+implementation, not a released or independently verified production SDK.
+This commit does not enable plugin execution in Snap Hutao Remastered itself.
+The test host is intentionally isolated under LocalAppData/Snap.Hutao.Plugin.SDK.Tests.
+It uses per-process workspaces and in-memory install markers, not the production
+transaction journal. It cannot be used as a production package manager.
 
-## Run all four combinations (separate processes)
+Release blockers: real Windows build, four host/plugin combinations, real
+C# AOT loose XAML binding/TwoWay/x:Bind limitations (sample currently uses
+FindName and handlers), error and lifetime tests, manifest/path/PE negative
+fixtures, cross-process transaction/reservation enforcement and process-residency negative fixtures, durable approval and install markers, startup safe mode and update
+rollback, application Navigation/notification/settings UI integration, NuGet
+distribution. Compiled XAML is deliberately rejected until resource/metadata
+activation is tested. Native modules remain mapped until process exit.
 
-```powershell
-$root = (Resolve-Path .\artifacts).Path
-& "$root\jit-host\PrototypeHost.exe" "$root\native\TestPlugin.Native.dll"
-& "$root\jit-host\PrototypeHost.exe" "$root\aot-plugin\TestPlugin.Aot.dll"
-& "$root\aot-host\PrototypeHost.exe" "$root\native\TestPlugin.Native.dll"
-& "$root\aot-host\PrototypeHost.exe" "$root\aot-plugin\TestPlugin.Aot.dll"
-```
-
-Close each host before launching the next. Check activation; click the actual
-plugin-owned Button (label and notification must change); run Exercise async ABI
-and choose OK in the actual ContentDialog; disable and recreate, repeat.
-The exercise checks service lookup, primitive settings round trips, worker-to-UI
-dispatch, agility and async enum results. The loader probes wrong major and null
-output pointer, transfers owned COM references and retains modules until exit.
-Capture logs, compiler errors and screenshots. The harness intentionally recreates
-a test instance including install/uninstall callbacks; this is not production
-enable/disable transaction semantics.
-
-## Gates
-
-| Gate | Status |
-| --- | --- |
-| G0 branch/version/source audit | Source inspection only |
-| G1 MIDL/cppwinrt/CsWinRT generation | NotRun |
-| G1 JIT host / C++ plugin | NotRun |
-| G1 JIT host / C# AOT plugin | NotRun |
-| G1 AOT host / C++ plugin | NotRun |
-| G1 AOT host / C# AOT plugin | NotRun |
-| G1 golden ABI snapshot, malformed-export/QI fixtures, explicit lifetime and error-thread tests | NotRun; not implemented yet |
-| G2/G3/G4/G5 | Not started |
-
-The probe stores settings in memory, tracks contributions in a test registry, and
-logs notifications. It does not implement real navigation, persistence, package
-validation, production lifecycle rollback, cancellation/drain, or full XAML binding.
-Programmatic WinUI Button, dialog, callbacks and interface calls are actual code paths.
-The separate Native AOT DLL installs its own managed dispatcher synchronization
-context for its async continuations. ABI, agility, projection and initialization
-remain risks until Windows execution. If any gate fails, preserve the real compiler
-or runtime error; do not change the design or claim support based on compilation alone.
+See docs/Snap.Hutao.Plugin.SDK-2.0-Design.md for unchanged ABI, packaging and
+production requirements. Build failures must be fixed, never hidden by changing
+the contract or claiming a test passed.

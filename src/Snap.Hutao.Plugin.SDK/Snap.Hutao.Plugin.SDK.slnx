@@ -2,11 +2,10 @@
   <Configurations>
     <Platform Name="x64" />
   </Configurations>
-  <Project Path="RuntimeComponentSample/RuntimeComponentSample.vcxproj" Id="24916c3d-d0f0-4385-8629-00b1e4320e36" />
-  <Project Path="RuntimeComponentSampleCs/RuntimeComponentSampleCs.csproj" Id="d706d063-cc2a-4321-ab65-dc4eb6e74dc0">
+  <Project Path="Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj" Id="e92e2537-7f7f-4e05-ad18-8dc6ce51a197">
     <Platform Project="x64" />
   </Project>
-  <Project Path="Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj" Id="e92e2537-7f7f-4e05-ad18-8dc6ce51a197">
+  <Project Path="Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.csproj">
     <Platform Project="x64" />
   </Project>
   <Project Path="TestPlugin.Aot/TestPlugin.Aot.csproj" Id="38cbe0c1-61db-4d12-a816-39a79e8b6d92">
@@ -14,6 +13,15 @@
   </Project>
   <Project Path="TestPlugin.Native/TestPlugin.Native.vcxproj" Id="ec240671-ab3a-4575-9b4a-3b22d8035984">
     <BuildDependency Project="Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj" />
+  </Project>
+  <Project Path="Snap.Hutao.Plugin.Packaging/Snap.Hutao.Plugin.Packaging.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="Snap.Hutao.Plugin.Host/Snap.Hutao.Plugin.Host.csproj">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="tools/PluginPack/PluginPack.csproj">
+    <Platform Project="x64" />
   </Project>
   <Project Path="tests/PrototypeHost/PrototypeHost.csproj" Id="781580c8-29e5-4c5b-a337-1eb094d42986">
     <BuildDependency Project="TestPlugin.Native/TestPlugin.Native.vcxproj" />

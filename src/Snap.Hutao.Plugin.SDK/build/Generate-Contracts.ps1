@@ -1,9 +1,8 @@
-# Run in an x64 Native Tools developer PowerShell.
+# Internal MSBuild target helper. Do not invoke for ordinary plugin development.
 [CmdletBinding()]
 param(
+    [Parameter(Mandatory)] [string] $AssetsFile,
     [string[]] $WinAppSdkWinmd = @(),
-    [string] $AssetsFile,
-    [switch] $GenerateOnly,
     [version] $TargetPlatformVersion = '10.0.26100.0',
     [string] $VisualStudioInstallDir,
     [string] $WindowsSdkVersion = '10.0.28000.0',
@@ -11,12 +10,10 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
-$root = $PSScriptRoot
+$root = Split-Path -Parent $PSScriptRoot
 $out = Join-Path $root 'artifacts'
 $metadata = Join-Path $out 'metadata'
 $references = Join-Path $out 'references'
-$headers = Join-Path $out 'headers'
-$native = Join-Path $out 'native'
 
 function Invoke-Checked([string] $Tool, [string[]] $Arguments) {
     & $Tool @Arguments
@@ -56,26 +53,18 @@ $compiler = Find-MsvcCompiler
 Write-Host "MIDL preprocessor: $compiler"
 $env:PATH = (Split-Path -Parent $compiler) + ';' + $env:PATH
 
-if (!$GenerateOnly -and $env:VSCMD_ARG_TGT_ARCH -notin @('x64', 'amd64')) { throw 'Use an x64 Native Tools developer shell.' }
 $windowsWinmd = Join-Path $WindowsSdkRoot "UnionMetadata\$WindowsSdkVersion\Windows.winmd"
 $sdkBin = Join-Path $WindowsSdkRoot "bin\$WindowsSdkVersion\x64"
 $midl = Join-Path $sdkBin 'midl.exe'
-$cppwinrt = Join-Path $sdkBin 'cppwinrt.exe'
 $contract = Join-Path $metadata 'Snap.Hutao.Plugin.Contracts.winmd'
 $idl = Join-Path $root 'Snap.Hutao.Plugin.Contracts\HutaoPlugin.idl'
 
-foreach ($path in @($windowsWinmd, $midl, $cppwinrt, $idl)) {
+foreach ($path in @($windowsWinmd, $midl, $idl)) {
     if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing $path" }
 }
 
 # In MSBuild, derive the metadata closure from this project's actual NuGet restore.
 # Do not enumerate all installed versions under the global package cache.
-if (!$AssetsFile -and $WinAppSdkWinmd.Count -eq 0) {
-    if ($GenerateOnly) { throw 'GenerateOnly requires -AssetsFile or explicit WinMD references.' }
-    $projection = Join-Path $root 'Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj'
-    Invoke-Checked 'dotnet' @('restore', $projection, '-r', 'win-x64')
-    $AssetsFile = Join-Path (Split-Path $projection) 'obj\project.assets.json'
-}
 if ($AssetsFile) {
     $assets = Get-Content -LiteralPath $AssetsFile -Raw | ConvertFrom-Json
     $packageFolders = @($assets.packageFolders.PSObject.Properties | ForEach-Object Name)
@@ -154,7 +143,7 @@ if (!$byName.ContainsKey('Microsoft.UI.Xaml.winmd')) { throw 'Microsoft.UI.Xaml.
 
 # Copy exact references into a single private directory for both generators.
 if (Test-Path -LiteralPath $references) { Remove-Item -LiteralPath $references -Recurse -Force }
-foreach ($dir in @($metadata, $references, $headers, $native)) {
+foreach ($dir in @($metadata, $references)) {
     New-Item -ItemType Directory -Path $dir -Force | Out-Null
 }
 foreach ($file in ($sourceFiles | Sort-Object Name)) {
@@ -170,19 +159,5 @@ foreach ($ref in $refs) { $midlArgs += @('/reference', $ref) }
 $midlArgs += $idl
 Invoke-Checked $midl $midlArgs
 if (!(Test-Path -LiteralPath $contract)) { throw 'MIDL did not produce the contract.' }
-Invoke-Checked $cppwinrt (@('-input', $contract, $windowsWinmd) + $refs + @('-output', $headers))
 Get-FileHash -Algorithm SHA256 -LiteralPath (@($contract, $windowsWinmd) + $refs) | Format-Table -AutoSize
 
-if ($GenerateOnly) { return }
-
-Push-Location $native
-try {
-    Invoke-Checked 'cl.exe' @('/nologo', '/std:c++20', '/EHsc', '/MD', '/O2', '/LD', "/I$headers", "/I$(Join-Path $root 'Snap.Hutao.Plugin.Contracts')", (Join-Path $root 'TestPlugin.Native\TestPlugin.cpp'), '/link', '/MACHINE:X64', 'windowsapp.lib', '/OUT:TestPlugin.Native.dll')
-} finally { Pop-Location }
-
-Invoke-Checked 'dotnet' @('publish', (Join-Path $root 'TestPlugin.Aot\TestPlugin.Aot.csproj'), '-c', 'Release', '-r', 'win-x64', '-o', (Join-Path $out 'aot-plugin'))
-foreach ($aot in @('false', 'true')) {
-    $name = if ($aot -eq 'true') { 'aot-host' } else { 'jit-host' }
-    Invoke-Checked 'dotnet' @('publish', (Join-Path $root 'tests\PrototypeHost\PrototypeHost.csproj'), '-c', 'Release', '-r', 'win-x64', "-p:PublishAot=$aot", '-p:PublishReadyToRun=false', '-o', (Join-Path $out $name))
-}
-Write-Host 'Build finished. Follow README.md to run all four combinations; build alone is not a G1 pass.'
