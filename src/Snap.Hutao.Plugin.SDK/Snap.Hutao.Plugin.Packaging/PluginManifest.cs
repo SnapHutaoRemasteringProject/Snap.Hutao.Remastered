@@ -4,7 +4,7 @@ namespace Snap.Hutao.Plugin.Packaging;
 
 public sealed record PluginManifest(string Id, string Name, Version Version, IReadOnlyList<string> Author, string Description,
     string? IconPath, Version MinHostVersion, uint AbiMajor, uint MinMinor, string Entry, string UiMode,
-    IReadOnlySet<string> Capabilities, IReadOnlyDictionary<string, string> Files)
+    IReadOnlySet<string> Capabilities, IReadOnlyDictionary<string, string> Files, string? MetadataProvider = null)
 {
     private static readonly HashSet<string> KnownCapabilities = new(StringComparer.Ordinal)
         { "settings", "notifications", "navigation", "commands", "dialogs", "xaml" };
@@ -39,7 +39,17 @@ public sealed record PluginManifest(string Id, string Name, Version Version, IRe
         if (!entry.StartsWith("bin/x64/", StringComparison.Ordinal) || !entry.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("Entry must be an x64 DLL under bin/x64.");
         string mode = ReadString(root.GetProperty("ui"), "mode", 32, true);
-        if (mode is not ("none" or "loose" or "programmatic")) throw new InvalidDataException("Unsupported UI mode.");
+        if (mode is not ("none" or "loose" or "programmatic" or "compiled")) throw new InvalidDataException("Unsupported UI mode.");
+        // Compiled UI packages can be inspected/packed; activation requires explicit host opt-in.
+        string? provider = null;
+        if (mode == "compiled")
+        {
+            provider = ReadString(root.GetProperty("ui"), "metadataProvider", 256, true);
+            string[] parts = provider.Split('.');
+            if (parts.Length < 2 || parts.Any(part => part.Length == 0 || !(char.IsAsciiLetter(part[0]) || part[0] == '_') ||
+                part.Any(c => !char.IsAsciiLetterOrDigit(c) && c != '_')))
+                throw new InvalidDataException("Invalid XAML metadata provider runtimeclass.");
+        }
         HashSet<string> capabilities = new(StringComparer.Ordinal);
         foreach (JsonElement item in root.GetProperty("capabilities").EnumerateArray())
         {
@@ -64,7 +74,7 @@ public sealed record PluginManifest(string Id, string Name, Version Version, IRe
             if (files.Count is < 1 or > 4095 || !files.ContainsKey(entry) || (icon is not null && !files.ContainsKey(icon)))
                 throw new InvalidDataException("Manifest entry/icon is missing.");
         }
-        return new(id, name, pluginVersion, authors, description, icon, minimum, major, minor, entry, mode, capabilities, files);
+        return new(id, name, pluginVersion, authors, description, icon, minimum, major, minor, entry, mode, capabilities, files, provider);
     }
 
     private static string ReadString(JsonElement root, string key, int limit, bool required)

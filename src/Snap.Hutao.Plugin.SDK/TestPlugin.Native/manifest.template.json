@@ -22,7 +22,8 @@
     "entry": "bin/x64/TestPlugin.Native.dll"
   },
   "ui": {
-    "mode": "programmatic"
+    "mode": "compiled",
+    "metadataProvider": "TestPlugin.Native.XamlMetaDataProvider"
   },
   "capabilities": [
     "settings",

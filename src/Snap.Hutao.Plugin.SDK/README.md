@@ -27,8 +27,7 @@ been removed after their relevant native build settings were incorporated.
 - Projection: generated C# WinRT projection and owned-reference ABI helpers.
 - SDK: C# developer facade, typed settings, view/command/dispatcher adapters.
 - SDK.Native: C++ export helper; native compiler consumes Contracts.winmd using
-  the pinned C++/WinRT NuGet package. Named modules are an optional build mode,
-  not another model.
+  the pinned C++/WinRT NuGet package. The native sample is the WinUI Runtime Component template, with named modules enabled by default and real compiled XAML.
 - Packaging: shared manifest, ZIP, hash, PE validation and approved extraction.
 - Host: reusable activation, scoped contributions, UI dispatch, loose XAML,
   settings persistence and instance lifecycle. The integration host uses this
@@ -46,7 +45,7 @@ been removed after their relevant native build settings were incorporated.
    the SDK cppwinrt executable. No developer-facing contract generation command.
 2. Right-click TestPlugin.Aot, Publish using NativeAot folder profile.
 3. In the SDK directory, run `pwsh -File .\build\Pack-Samples.ps1`.
-   It stages only the two explicit DLLs and writes artifacts/TestPlugin.Native.hutao
+   It stages the two explicit DLLs and native XBF/component metadata and writes artifacts/TestPlugin.Native.hutao
    and artifacts/TestPlugin.hutao. Add declared native dependencies and other files
    explicitly for real plugins; never blindly copy all publish output.
 4. Set PrototypeHost as Startup Project, F5. Select a sample, Inspect and load,
@@ -57,10 +56,26 @@ been removed after their relevant native build settings were incorporated.
    both plugin packages with each host. A command-line package argument only
    fills the path box; it does not bypass trust confirmation.
 
-To check named-module consumption, build the solution with
-`/p:CppWinRTBuildModule=true` in VS MSBuild (x64 Release). ModuleSmoke.cpp
-imports the generated Windows.Foundation and Hutao.Contracts modules. This
-opt-in is not validated yet; the normal sample uses headers.
+The C++ project uses the original Runtime Component template with C++23,
+`CppWinRTBuildModule=true`, generated module.g.cpp, MIDL and Page items.
+ModuleCommand.cpp imports winrt_base, Windows.Foundation and the contract module,
+and the actual exercise command reads Counter through that projection.
+XAML-generated code still uses the template's PCH/headers in separate translation
+units. The native sample's PluginPage.xaml uses x:Class, x:Bind and a Click handler.
+The packer includes PluginPage.xbf in views/. Its implementation uses explicit
+workspace URI and the generated Connect/GetBindingConnector rather than the default
+host-relative InitializeComponent URI. The integration app implements
+IXamlMetadataProvider and registers the component's generated provider by direct
+DllGetActivationFactory/ActivateInstance after trust and module mapping.
+The provider and module stay resident until process exit.
+
+Compiled XAML is an explicit integration-test opt-in: ui.mode=compiled plus
+ui.metadataProvider. The package can be packed and inspected, but activation
+without the host's metadata-registration callback fails. No private hooks, no
+resource copying into the installed host directory, no fallback to programmatic UI.
+WinUI's absolute ms-appx URI resolution, component metadata, x:Bind and resource
+behavior in this SDK version require actual Windows validation. General PRI
+integration, theme dictionaries and localization are not claimed.
 
 To pack a custom plugin, prepare an explicit staging directory containing
 bin/x64/YourPlugin.dll and declared assets (no manifest.json in staging),
@@ -77,7 +92,7 @@ Package validation does not sandbox native code or authenticate the publisher.
 
 ## Validation and release status
 
-The user reported the preceding ABI prototype tests and DLL production passed.
+The user reported the preceding ABI prototype tests and DLL production passed. The subsequent SDK refactor and this compiled-XAML integration have not yet been built on Windows.
 That is a baseline, not proof this refactor builds or passes on Windows.
 Re-run the full matrix after rebuilding from a clean checkout.
 
@@ -93,8 +108,7 @@ C# AOT loose XAML binding/TwoWay/x:Bind limitations (sample currently uses
 FindName and handlers), error and lifetime tests, manifest/path/PE negative
 fixtures, cross-process transaction/reservation enforcement and process-residency negative fixtures, durable approval and install markers, startup safe mode and update
 rollback, application Navigation/notification/settings UI integration, NuGet
-distribution. Compiled XAML is deliberately rejected until resource/metadata
-activation is tested. Native modules remain mapped until process exit.
+distribution. Compiled XAML activation is enabled only in the integration harness until resource/metadata activation is tested. Native modules remain mapped until process exit.
 
 See docs/Snap.Hutao.Plugin.SDK-2.0-Design.md for unchanged ABI, packaging and
 production requirements. Build failures must be fixed, never hidden by changing

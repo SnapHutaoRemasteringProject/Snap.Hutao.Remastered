@@ -1,6 +1,7 @@
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 using Snap.Hutao.Plugin.Contracts;
 using Snap.Hutao.Plugin.Host;
 using Snap.Hutao.Plugin.Packaging;
@@ -22,8 +23,39 @@ internal static class Program
     }
 }
 
-internal sealed partial class PrototypeApp(string[] args) : Application
+internal sealed partial class PrototypeApp(string[] args) : Application, IXamlMetadataProvider
 {
+    // Compiled-XAML integration harness only. The WinUI schema may cache types;
+    // keep metadata providers alive until process exit, just like the DLLs.
+    private readonly Dictionary<string, (string Path, IXamlMetadataProvider Provider)> providers = new(StringComparer.Ordinal);
+
+    private void RegisterMetadataProvider(string path, string className, IXamlMetadataProvider provider)
+    {
+        if (providers.TryGetValue(className, out var existing))
+        {
+            if (!string.Equals(existing.Path, path, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("XAML metadata name collision: " + className);
+            return;
+        }
+        providers.Add(className, (path, provider));
+    }
+
+    public IXamlType? GetXamlType(Type type)
+    {
+        foreach (var item in providers.Values)
+            if (item.Provider.GetXamlType(type) is { } result) return result;
+        return null;
+    }
+
+    public IXamlType? GetXamlType(string fullName)
+    {
+        foreach (var item in providers.Values)
+            if (item.Provider.GetXamlType(fullName) is { } result) return result;
+        return null;
+    }
+
+    public XmlnsDefinition[] GetXmlnsDefinitions() => providers.Values.SelectMany(item => item.Provider.GetXmlnsDefinitions()).ToArray();
+
     private Window? window;
     private PluginSession? session;
     private bool busy;
@@ -103,10 +135,10 @@ internal sealed partial class PrototypeApp(string[] args) : Application
                     string settings = Path.Combine(TestRoot, "settings", verified.Manifest.Id);
                     string key = verified.Manifest.Id + ":" + verified.Sha256;
                     session = await PluginSession.ActivateApprovedPackageAsync(path, verified.Sha256, workspace, settings, new Version(1,0,0),
-                        !installed.Contains(key), () => installed.Add(key), window.DispatcherQueue, () => panel.XamlRoot, Write, Write);
+                        !installed.Contains(key), () => installed.Add(key), window.DispatcherQueue, () => panel.XamlRoot, Write, Write, RegisterMetadataProvider);
                     var manifest = verified.Manifest;
                     identity = new(manifest.Id, manifest.Name, manifest.Version.ToString(), workspace, Path.Combine(settings,"data"),
-                        settings, manifest.UiMode, manifest.Capabilities, manifest.Files.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase));
+                        settings, manifest.UiMode, manifest.Capabilities, manifest.Files.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase), manifest.MetadataProvider);
                     entryPath = PackagePaths.Resolve(workspace, manifest.Entry);
                     approvalKey = key;
                     approvedPackageHash = verified.Sha256;
@@ -114,6 +146,8 @@ internal sealed partial class PrototypeApp(string[] args) : Application
                 else
                 {
                     if (!path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Choose a .hutao package or development DLL.");
+                    if (Path.GetFileName(path).Equals("TestPlugin.Native.dll", StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidOperationException("Pack the native sample first: the compiled XAML requires its verified XBF payload.");
                     ContentDialog confirm = new()
                     {
                         XamlRoot = panel.XamlRoot, Title = "Trust development DLL?",
@@ -137,7 +171,7 @@ internal sealed partial class PrototypeApp(string[] args) : Application
                 string key = approvalKey!;
                 Directory.CreateDirectory(trusted.DataDirectory);
                 session = await PluginSession.ActivateTrustedAsync(entryPath!, trusted, !installed.Contains(key), () => installed.Add(key),
-                    window.DispatcherQueue, () => panel.XamlRoot, Write, Write, approvedPackageHash);
+                    window.DispatcherQueue, () => panel.XamlRoot, Write, Write, approvedPackageHash, RegisterMetadataProvider);
             }
             try
             {

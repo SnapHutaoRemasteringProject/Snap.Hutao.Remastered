@@ -1,3 +1,6 @@
+#include "pch.h"
+#include "PluginPage.xaml.h"
+#include "ModuleCommand.h"
 #include "HutaoPluginAbi.h"
 
 // The Win32 GetCurrentTime macro collides with Timeline's projected method.
@@ -21,29 +24,16 @@ using namespace Snap::Hutao::Plugin::Contracts;
 
 struct TestView : implements<TestView, IPluginView>
 {
-    IPluginContext context;
-    Button button;
-    event_token click{};
-    bool closed{};
+    winrt::com_ptr<winrt::TestPlugin::Native::implementation::PluginPage> page;
 
-    explicit TestView(IPluginContext const& value) : context(value)
+    explicit TestView(IPluginContext const& context)
     {
-        button.Content(box_value(L"Click C++/WinRT plugin-owned Button"));
-        click = button.Click([weak = get_weak()](Windows::Foundation::IInspectable const&, RoutedEventArgs const&)
-        {
-            if (auto self = weak.get())
-            {
-                self->button.Content(box_value(L"C++/WinRT plugin click executed"));
-                self->context.Notifications().Show(NotificationKind::Success, L"C++/WinRT UI callback");
-            }
-        });
+        page = winrt::make_self<winrt::TestPlugin::Native::implementation::PluginPage>();
+        page->InitializePluginView(context);
     }
 
-    UIElement Element() { return button; }
-    void OnClosing()
-    {
-        if (!closed) { closed = true; button.Click(click); }
-    }
+    UIElement Element() { return page.as<UIElement>(); }
+    void OnClosing() { page->ClosePluginView(); }
 };
 
 struct TestPlugin : implements<TestPlugin, IHutaoPlugin, IPluginViewFactory, IPluginCommand, IPluginAction>
@@ -96,7 +86,7 @@ struct TestPlugin : implements<TestPlugin, IHutaoPlugin, IPluginViewFactory, IPl
         auto lifetime = get_strong();
         if (id != L"exercise") throw hresult_invalid_argument();
         auto settings = context.Settings();
-        co_await settings.SetInt32Async(L"Counter", settings.GetInt32(L"Counter") + 1);
+        co_await settings.SetInt32Async(L"Counter", ReadCounterUsingModule(get_abi(context)) + 1);
         co_await settings.SetBooleanAsync(L"Enabled", false);
         co_await settings.SetStringAsync(L"Message", L"C++/WinRT round trip");
         if (settings.GetBoolean(L"Enabled") || settings.GetString(L"Message") != L"C++/WinRT round trip")

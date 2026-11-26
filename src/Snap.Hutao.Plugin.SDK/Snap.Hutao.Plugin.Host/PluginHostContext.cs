@@ -13,7 +13,7 @@ using Windows.Foundation;
 namespace Snap.Hutao.Plugin.Host;
 
 public sealed record PluginIdentity(string Id, string Name, string Version, string PackageDirectory, string DataDirectory,
-    string SettingsDirectory, string UiMode, IReadOnlySet<string> Capabilities, IReadOnlySet<string> Files);
+    string SettingsDirectory, string UiMode, IReadOnlySet<string> Capabilities, IReadOnlySet<string> Files, string? MetadataProvider = null);
 
 // Host owns this context. Do not expose the underlying application IServiceProvider to plugins.
 internal sealed partial class PluginHostContext : IPluginContext, IPluginSettings, IPluginNotifications, IPluginDispatcher,

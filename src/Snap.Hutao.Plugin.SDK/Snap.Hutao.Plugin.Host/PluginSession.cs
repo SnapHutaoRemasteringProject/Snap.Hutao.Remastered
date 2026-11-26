@@ -1,3 +1,4 @@
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Snap.Hutao.Plugin.Contracts;
@@ -34,9 +35,12 @@ public sealed class PluginSession
     // Explicitly approved native DLL, never call this while enumerating packages.
     public static async Task<PluginSession> ActivateTrustedAsync(string dllPath, PluginIdentity identity, bool runInstallHook,
         Action markInstallCompleted, DispatcherQueue queue, Func<XamlRoot?> xamlRoot,
-        Action<NotificationKind, string> log, Action<NotificationKind, string> notify, string? approvedPackageHash = null)
+        Action<NotificationKind, string> log, Action<NotificationKind, string> notify, string? approvedPackageHash = null,
+        Action<string, string, IXamlMetadataProvider>? registerMetadataProvider = null)
     {
         if (!queue.HasThreadAccess) throw new InvalidOperationException("Activate on the UI thread.");
+        if (identity.UiMode == "compiled" && (registerMetadataProvider is null || identity.MetadataProvider is null))
+            throw new NotSupportedException("Compiled XAML requires explicit host opt-in and a metadata provider.");
         PackagePaths.ValidateIdentifier(identity.Id);
         PackagePaths.RejectReparseAncestors(dllPath);
         var preparation = await Task.Run(() =>
@@ -53,6 +57,9 @@ public sealed class PluginSession
         try
         {
             session.plugin = NativePluginLoader.Load(dllPath);
+            if (identity.UiMode == "compiled")
+                registerMetadataProvider!(Path.GetFullPath(dllPath), identity.MetadataProvider!,
+                    NativePluginLoader.GetMetadataProvider(dllPath, identity.MetadataProvider!));
             session.plugin.OnLoad(context);
             if (runInstallHook)
             {
@@ -122,18 +129,21 @@ public sealed class PluginSession
 
     public static async Task<PluginSession> ActivateApprovedPackageAsync(string packagePath, string approvedSha256,
         string workspace, string settingsDirectory, Version hostVersion, bool runInstallHook, Action markInstallCompleted,
-        DispatcherQueue queue, Func<XamlRoot?> xamlRoot, Action<NotificationKind, string> log, Action<NotificationKind, string> notify)
+        DispatcherQueue queue, Func<XamlRoot?> xamlRoot, Action<NotificationKind, string> log, Action<NotificationKind, string> notify,
+        Action<string, string, IXamlMetadataProvider>? registerMetadataProvider = null)
     {
         if (!queue.HasThreadAccess) throw new InvalidOperationException("Activate on the UI thread.");
         var verified = await Task.Run(() => PluginPackage.ExtractApproved(packagePath, approvedSha256, workspace, hostVersion));
         var manifest = verified.Manifest;
+        if (manifest.UiMode == "compiled" && registerMetadataProvider is null)
+            throw new NotSupportedException("Compiled XAML is not enabled by this host.");
         string data = Path.Combine(settingsDirectory, "data");
         PackagePaths.RejectReparseAncestors(data);
         Directory.CreateDirectory(data);
         PluginIdentity identity = new(manifest.Id, manifest.Name, manifest.Version.ToString(), workspace, data, settingsDirectory,
-            manifest.UiMode, manifest.Capabilities, manifest.Files.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase));
+            manifest.UiMode, manifest.Capabilities, manifest.Files.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase), manifest.MetadataProvider);
         return await ActivateTrustedAsync(PackagePaths.Resolve(workspace, manifest.Entry), identity, runInstallHook,
-            markInstallCompleted, queue, xamlRoot, log, notify, verified.Sha256);
+            markInstallCompleted, queue, xamlRoot, log, notify, verified.Sha256, registerMetadataProvider);
     }
 
     public async Task DisableAsync(Action detachContent, bool uninstall = false)
