@@ -1,0 +1,18 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj" Id="e92e2537-7f7f-4e05-ad18-8dc6ce51a197">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="TestPlugin.Aot/TestPlugin.Aot.csproj" Id="38cbe0c1-61db-4d12-a816-39a79e8b6d92">
+    <Platform Project="x64" />
+  </Project>
+  <Project Path="TestPlugin.Native/TestPlugin.Native.vcxproj" Id="ec240671-ab3a-4575-9b4a-3b22d8035984">
+    <BuildDependency Project="Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj" />
+  </Project>
+  <Project Path="tests/PrototypeHost/PrototypeHost.csproj" Id="781580c8-29e5-4c5b-a337-1eb094d42986">
+    <Platform Project="x64" />
+    <BuildDependency Project="TestPlugin.Native/TestPlugin.Native.vcxproj" />
+  </Project>
+</Solution>

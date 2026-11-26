@@ -1,8 +1,9 @@
 # Run in an x64 Native Tools developer PowerShell.
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory)]
-    [string[]] $WinAppSdkWinmd,
+    [string[]] $WinAppSdkWinmd = @(),
+    [string] $AssetsFile,
+    [switch] $GenerateOnly,
     [string] $WindowsSdkVersion = '10.0.28000.0',
     [string] $WindowsSdkRoot = (Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) 'Windows Kits\10')
 )
@@ -20,7 +21,7 @@ function Invoke-Checked([string] $Tool, [string[]] $Arguments) {
     if ($LASTEXITCODE -ne 0) { throw "$Tool failed: $LASTEXITCODE" }
 }
 
-if ($env:VSCMD_ARG_TGT_ARCH -notin @('x64', 'amd64')) { throw 'Use an x64 Native Tools developer shell.' }
+if (!$GenerateOnly -and $env:VSCMD_ARG_TGT_ARCH -notin @('x64', 'amd64')) { throw 'Use an x64 Native Tools developer shell.' }
 $windowsWinmd = Join-Path $WindowsSdkRoot "UnionMetadata\$WindowsSdkVersion\Windows.winmd"
 $sdkBin = Join-Path $WindowsSdkRoot "bin\$WindowsSdkVersion\x64"
 $midl = Join-Path $sdkBin 'midl.exe'
@@ -30,6 +31,36 @@ $idl = Join-Path $root 'Snap.Hutao.Plugin.Contracts\HutaoPlugin.idl'
 
 foreach ($path in @($windowsWinmd, $midl, $cppwinrt, $idl)) {
     if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing $path" }
+}
+
+# In MSBuild, derive the metadata closure from this project's actual NuGet restore.
+# Do not enumerate all installed versions under the global package cache.
+if (!$AssetsFile -and $WinAppSdkWinmd.Count -eq 0) {
+    if ($GenerateOnly) { throw 'GenerateOnly requires -AssetsFile or explicit WinMD references.' }
+    $projection = Join-Path $root 'Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj'
+    Invoke-Checked 'dotnet' @('restore', $projection, '-r', 'win-x64')
+    $AssetsFile = Join-Path (Split-Path $projection) 'obj\project.assets.json'
+}
+if ($AssetsFile) {
+    $assets = Get-Content -LiteralPath $AssetsFile -Raw | ConvertFrom-Json
+    $packageFolders = @($assets.packageFolders.PSObject.Properties | ForEach-Object Name)
+    $resolvedMetadata = @(
+        foreach ($library in $assets.libraries.PSObject.Properties) {
+            if ($library.Name -notmatch '^Microsoft\.WindowsAppSDK(?:\.[^/]+)?/' -or $library.Value.type -ne 'package') { continue }
+            foreach ($relative in $library.Value.files) {
+                if ($relative -notmatch '^metadata/[^/]+\.winmd$') { continue }
+                $found = $null
+                foreach ($folder in $packageFolders) {
+                    $candidate = Join-Path (Join-Path $folder $library.Value.path) $relative
+                    if (Test-Path -LiteralPath $candidate -PathType Leaf) { $found = $candidate; break }
+                }
+                if (!$found) { throw "Restored WinMD missing: $($library.Name)/$relative" }
+                $found
+            }
+        }
+    )
+    if ($resolvedMetadata.Count -eq 0) { throw "No Windows App SDK metadata found in $AssetsFile. Restore the projection project first." }
+    $WinAppSdkWinmd += $resolvedMetadata
 }
 
 # Accept explicit WinMD files or metadata directories. Validate all inputs before
@@ -71,13 +102,17 @@ foreach ($file in ($sourceFiles | Sort-Object Name)) {
 }
 $refs = @(Get-ChildItem -LiteralPath $references -Filter '*.winmd' -File | Sort-Object Name | ForEach-Object FullName)
 
-$midlArgs = @('/nologo', '/winrt', '/nomidl', '/h', 'nul', '/metadata_dir', (Split-Path $windowsWinmd), '/reference', $windowsWinmd, '/winmd', $contract)
+$includeRoot = Join-Path $WindowsSdkRoot "Include\$WindowsSdkVersion"
+$midlArgs = @('/nologo', '/winrt', '/nomidl', '/h', 'nul', '/I', (Join-Path $includeRoot 'winrt'), '/I', (Join-Path $includeRoot 'shared'), '/I', (Join-Path $includeRoot 'um'), '/metadata_dir', (Split-Path $windowsWinmd), '/reference', $windowsWinmd, '/winmd', $contract)
+if (Test-Path -LiteralPath $contract) { Remove-Item -LiteralPath $contract -Force }
 foreach ($ref in $refs) { $midlArgs += @('/reference', $ref) }
 $midlArgs += $idl
 Invoke-Checked $midl $midlArgs
 if (!(Test-Path -LiteralPath $contract)) { throw 'MIDL did not produce the contract.' }
 Invoke-Checked $cppwinrt (@('-input', $contract, $windowsWinmd) + $refs + @('-output', $headers))
 Get-FileHash -Algorithm SHA256 -LiteralPath (@($contract, $windowsWinmd) + $refs) | Format-Table -AutoSize
+
+if ($GenerateOnly) { return }
 
 Push-Location $native
 try {

@@ -2,15 +2,24 @@
   <PropertyGroup>
     <CsWinRTIncludes>Snap.Hutao.Plugin.Contracts</CsWinRTIncludes>
     <IsAotCompatible>true</IsAotCompatible>
+    <HutaoWindowsSdkVersion Condition="'$(HutaoWindowsSdkVersion)' == ''">10.0.28000.0</HutaoWindowsSdkVersion>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.CsWinRT" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
     <CsWinRTInputs Include="$(HutaoContractsWinmd)" />
-    <CsWinRTInputs Include="$(HutaoArtifacts)references\*.winmd" />
   </ItemGroup>
-  <Target Name="RequireContracts" BeforeTargets="PrepareForBuild">
-    <Error Condition="!Exists('$(HutaoContractsWinmd)')" Text="Run Build-Prototype.ps1 to generate the shared WinMD first." />
+  <ItemGroup>
+    <None Include="..\Snap.Hutao.Plugin.Contracts\HutaoPlugin.idl" Link="Contracts\HutaoPlugin.idl" />
+    <None Include="..\Snap.Hutao.Plugin.Contracts\HutaoPluginAbi.h" Link="Contracts\HutaoPluginAbi.h" />
+  </ItemGroup>
+  <Target Name="GenerateHutaoContracts" BeforeTargets="CsWinRTGenerateProjection" DependsOnTargets="ResolvePackageAssets" Condition="'$(DesignTimeBuild)' != 'true'">
+    <Exec Command="powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)..\Build-Prototype.ps1&quot; -GenerateOnly -AssetsFile &quot;$(ProjectAssetsFile)&quot; -WindowsSdkVersion &quot;$(HutaoWindowsSdkVersion)&quot;" />
+    <ItemGroup>
+      <CsWinRTInputs Include="$(HutaoArtifacts)references\*.winmd" />
+    </ItemGroup>
+    <Error Condition="!Exists('$(HutaoContractsWinmd)')" Text="MIDL did not generate the plugin contract." />
   </Target>
 </Project>

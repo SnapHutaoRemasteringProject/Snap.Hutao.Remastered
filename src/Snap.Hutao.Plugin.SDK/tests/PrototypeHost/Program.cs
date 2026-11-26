@@ -36,6 +36,16 @@ internal sealed partial class PrototypeApp(string[] args) : Application
         ContentControl content = new();
         Button exercise = new() { Content = "Exercise async ABI (choose OK)", IsEnabled = false };
         Button restart = new() { Content = "Disable and recreate plugin", IsEnabled = false };
+        TextBox dllPath = new() { Header = "Trusted native plugin DLL", PlaceholderText = "Full path to TestPlugin.Native.dll or TestPlugin.Aot.dll", Text = args.Length == 1 ? args[0] : string.Empty };
+        Button load = new() { Content = "Load plugin" };
+        StackPanel choices = new() { Orientation = Orientation.Horizontal, Spacing = 8 };
+        Button nativeChoice = new() { Content = "C++ sample" };
+        Button aotChoice = new() { Content = "C# AOT sample" };
+        choices.Children.Add(nativeChoice);
+        choices.Children.Add(aotChoice);
+        panel.Children.Add(dllPath);
+        panel.Children.Add(choices);
+        panel.Children.Add(load);
         panel.Children.Add(content);
         panel.Children.Add(exercise);
         panel.Children.Add(restart);
@@ -49,11 +59,32 @@ internal sealed partial class PrototypeApp(string[] args) : Application
             System.Diagnostics.Debug.WriteLine(message);
         }
 
-        void Start()
+        string? activePath = null;
+
+        void ChooseSample(bool native)
         {
-            if (args.Length != 1) throw new ArgumentException("Pass one trusted native plugin DLL.");
-            plugin = NativePluginLoader.Load(args[0]);
-            context = new ProbeContext(window, Path.GetFullPath(args[0]), Write);
+            for (DirectoryInfo? directory = new(AppContext.BaseDirectory); directory is not null; directory = directory.Parent)
+            {
+                if (!File.Exists(Path.Combine(directory.FullName, "Build-Prototype.ps1"))) continue;
+                string artifacts = Path.Combine(directory.FullName, "artifacts");
+                string[] candidates = native
+                    ? [Path.Combine(artifacts, "native", "Debug", "TestPlugin.Native.dll"),
+                       Path.Combine(artifacts, "native", "Release", "TestPlugin.Native.dll"),
+                       Path.Combine(artifacts, "native", "TestPlugin.Native.dll")]
+                    : [Path.Combine(artifacts, "aot-plugin", "TestPlugin.Aot.dll")];
+                dllPath.Text = candidates.FirstOrDefault(File.Exists) ?? candidates[0];
+                return;
+            }
+            Write("Cannot locate the SDK directory. Enter the DLL path manually.");
+        }
+
+        void Start(string path)
+        {
+            if (plugin is not null) throw new InvalidOperationException("Stop the current plugin first.");
+            if (string.IsNullOrWhiteSpace(path)) throw new ArgumentException("Select a trusted native plugin DLL.");
+            activePath = Path.GetFullPath(path);
+            plugin = NativePluginLoader.Load(activePath);
+            context = new ProbeContext(window, activePath, Write);
             plugin.OnLoad(context);
             plugin.OnInstall();
             plugin.OnEnable();
@@ -62,6 +93,7 @@ internal sealed partial class PrototypeApp(string[] args) : Application
             if (context.Command is null || !context.NavigationRegistered) throw new InvalidOperationException("Missing contributions.");
             Write("Activation and UIElement transfer succeeded. Click plugin button and exercise async ABI.");
             exercise.IsEnabled = restart.IsEnabled = true;
+            load.IsEnabled = dllPath.IsEnabled = nativeChoice.IsEnabled = aotChoice.IsEnabled = false;
         }
 
         void Stop()
@@ -75,7 +107,16 @@ internal sealed partial class PrototypeApp(string[] args) : Application
             plugin?.OnUninstall();
             plugin = null;
             context = null;
+            load.IsEnabled = dllPath.IsEnabled = nativeChoice.IsEnabled = aotChoice.IsEnabled = true;
         }
+
+        nativeChoice.Click += (_, _) => ChooseSample(true);
+        aotChoice.Click += (_, _) => ChooseSample(false);
+        load.Click += (_, _) =>
+        {
+            try { Start(dllPath.Text); }
+            catch (Exception ex) { Write(ex.ToString()); }
+        };
 
         exercise.Click += async (_, _) =>
         {
@@ -93,7 +134,7 @@ internal sealed partial class PrototypeApp(string[] args) : Application
         restart.Click += (_, _) =>
         {
             if (busy) return;
-            try { Stop(); Start(); }
+            try { Stop(); Start(activePath ?? throw new InvalidOperationException("No plugin path.")); }
             catch (Exception ex) { Write(ex.ToString()); }
         };
         window.Closed += (_, _) =>
@@ -104,7 +145,10 @@ internal sealed partial class PrototypeApp(string[] args) : Application
                 catch (Exception ex) { System.Diagnostics.Debug.WriteLine(ex); }
             }
         };
-        try { Start(); }
-        catch (Exception ex) { Write(ex.ToString()); }
+        if (args.Length == 1)
+        {
+            try { Start(args[0]); }
+            catch (Exception ex) { Write(ex.ToString()); }
+        }
     }
 }

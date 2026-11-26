@@ -12,16 +12,24 @@ net11.0-windows10.0.26100.0, CsWinRT 2.3.1, Windows App SDK 2.6.6-experimental.
 The host is a separate unpackaged/self-contained WinUI test app. Plugins are trusted
 test DLLs explicitly selected by path; this is not a package installer.
 
-## Build on Windows
+## Build and debug in Visual Studio 2026
 
-Open an x64 Native Tools developer PowerShell with the repository's .NET SDK,
+Open `Snap.Hutao.Plugin.SDK.slnx`, select Debug or Release and x64, restore NuGet and build the solution. The Projection project invokes MIDL and cppwinrt through an MSBuild target before CsWinRT projection generation; the native project is a Visual Studio 2026 C++ DLL project (VCProjectVersion 18.0, v145 toolset). The script reads the projection project's `obj/project.assets.json` to find WinMDs in the exact restored Windows App SDK component packages (including input, composition and dispatching metadata), not just the WinUI package and not unrelated cached versions. The installed Windows SDK defaults to 10.0.28000.0; use `HutaoWindowsSdkVersion` to override the projection kit and align the native project's Windows SDK version if necessary.
+
+Set `PrototypeHost` as startup project and press F5. Choose **C++ sample** or **C# AOT sample**, inspect the selected trusted DLL path and click Load plugin. C++ Debug/Release DLLs are built by the solution. The managed C# project Build output is not a native plugin: right-click `TestPlugin.Aot` → Publish → `NativeAot` folder profile first. For the two release hosts, publish `PrototypeHost` using the `JitRelease` and `NativeAot` profiles. Start each published executable or attach Visual Studio's native debugger; the Debug F5 host is not an AOT release validation. The published host also supports the command-line path below. No manually supplied metadata paths are necessary for the solution build.
+
+This VS integration and automatic metadata resolution have not been compiled on Windows yet.
+
+## Alternative: command-line build
+
+The preferred route is the solution above. For the standalone command-line workflow, open an x64 Native Tools developer PowerShell with the repository's .NET SDK,
 C++ toolchain and Windows SDK (override the kit version if needed). Restore the
 exact Windows App SDK 2.6.6-experimental component packages and collect the native
 WinMD paths, including Microsoft.UI.Xaml.winmd and its metadata dependencies.
-Pass explicit `.winmd` files, metadata directories, or a mixture of both from one resolved package version set, not managed projection DLLs. Directories are expanded non-recursively; other files (including XML documentation) are ignored. Duplicate WinMD filenames are rejected.
+With no parameters the script restores the Projection project and resolves its metadata closure automatically. You can also pass explicit `.winmd` files, metadata directories, or a mixture of both from one resolved package version set, not managed projection DLLs. Directories are expanded non-recursively; other files (including XML documentation) are ignored. Duplicate WinMD filenames are rejected.
 
 ```powershell
-.\Build-Prototype.ps1 -WinAppSdkWinmd $winmdPaths -WindowsSdkVersion 10.0.28000.0
+.\Build-Prototype.ps1
 ```
 
 For example, the WinUI package's metadata directory can now be passed directly:

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PrototypeHost": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
