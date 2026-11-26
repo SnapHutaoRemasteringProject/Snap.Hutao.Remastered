@@ -1,0 +1,14 @@
+<shuxc:ScopedPage x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.PluginSettingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
+    xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup">
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="12">
+            <TextBlock x:Name="TitleText" Style="{StaticResource TitleTextBlockStyle}" />
+            <Button Click="BackClick" Content="{shuxm:ResourceString Name=ViewPagePluginSettingBackButton}" />
+            <InfoBar x:Name="Status" IsOpen="False" />
+            <StackPanel x:Name="SettingsPanel" Spacing="12" />
+        </StackPanel>
+    </ScrollViewer>
+</shuxc:ScopedPage>

@@ -1,0 +1,32 @@
+<shuxc:ScopedPage x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.PluginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
+    xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup">
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="12">
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="{shuxm:ResourceString Name=ViewPluginHeader}" />
+            <InfoBar x:Name="Status" IsOpen="False" IsClosable="True" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="InstallClick" Content="{shuxm:ResourceString Name=ViewPagePluginInstallButton}" />
+                <Button Click="RefreshClick" Content="{shuxm:ResourceString Name=ViewPagePluginRefreshButton}" />
+            </StackPanel>
+            <ListView x:Name="Packages" SelectionChanged="SelectionChanged" MinHeight="100" MaxHeight="320" />
+            <TextBlock x:Name="Details" TextWrapping="Wrap" IsTextSelectionEnabled="True" />
+            <StackPanel x:Name="Actions" Spacing="8" IsEnabled="False">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Click="EnableClick" Content="{shuxm:ResourceString Name=ViewPagePluginEnableButton}" />
+                    <Button Click="DisableClick" Content="{shuxm:ResourceString Name=ViewPagePluginDisableButton}" />
+                    <Button Click="SettingsClick" Content="{shuxm:ResourceString Name=ViewPagePluginSettingsButton}" />
+                    <Button Click="UninstallClick" Content="{shuxm:ResourceString Name=ViewPagePluginUninstallButton}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button Click="UpdateClick" Content="{shuxm:ResourceString Name=ViewPagePluginUpdateButton}" />
+                    <Button Click="ApplyClick" Content="{shuxm:ResourceString Name=ViewPagePluginApplyUpdateButton}" />
+                    <Button Click="RollbackClick" Content="{shuxm:ResourceString Name=ViewPagePluginRollbackButton}" />
+                </StackPanel>
+                <StackPanel x:Name="CommandsPanel" Spacing="6" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</shuxc:ScopedPage>
