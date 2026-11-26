@@ -232,21 +232,10 @@ internal sealed partial class TileRefreshScheduler : ITileRefreshScheduler
 
         span.SetData("daily_note.tile_refresh_schedule.created", true);
 
-        // 磁贴是用户级 Shell 资源，任务必须登录后运行。
-        (int settingsExit, string settingsOutput) = await RunSchtasksAsync(
-        [
-            "/Change",
-            "/TN", TaskName,
-            "/IT",
-            "/RL", "LIMITED",
-        ], token).ConfigureAwait(false);
-
-        if (settingsExit != 0)
-        {
-            // 任务已创建，附加设置失败不影响刷新，仅记录。
-            logger.LogWarning("Adjusting tile refresh task settings failed with {ExitCode}: {Output}", settingsExit, settingsOutput);
-        }
-
+        // 不再额外调 /Change /IT /RL LIMITED：/Create 建出来的任务本来就是
+        // 「当前用户 + Interactive only」，实测直接可用。
+        // 而 /Change 在自动化环境里会提示输入账户密码，标准输入被重定向时它直接挂住，
+        // 等到超时被取消——任务其实已经建好了，界面却报注册失败。
         return true;
     }
 
