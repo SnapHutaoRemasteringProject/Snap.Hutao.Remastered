@@ -16,7 +16,9 @@ struct TestView : implements<TestView, IPluginView>
 
     explicit TestView(IPluginContext const& context)
     {
+        context.Log(NotificationKind::Information, L"[TestPlugin.Native] Creating Page (explicit initialization hook)");
         page = winrt::make_self<winrt::TestPlugin::Native::implementation::PluginPage>();
+        context.Log(NotificationKind::Information, L"[TestPlugin.Native] make_self returned; initializing verified XAML");
         page->InitializePluginView(context);
     }
 

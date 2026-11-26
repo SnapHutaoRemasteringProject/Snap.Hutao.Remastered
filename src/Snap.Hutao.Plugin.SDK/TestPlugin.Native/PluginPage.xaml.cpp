@@ -13,6 +13,13 @@ namespace winrt::TestPlugin::Native::implementation
 {
     PluginPage::PluginPage() = default;
 
+    void PluginPage::InitializeComponent()
+    {
+        // Deliberately hide the generated host-relative loader. Do not set _contentLoaded here.
+        // The verified package directory is only available in InitializePluginView.
+        ::OutputDebugStringW(L"[TestPlugin.Native] PluginPage::InitializeComponent deferred\n");
+    }
+
     void PluginPage::InitializePluginView(IPluginContext const& context)
     {
         if (_contentLoaded) throw hresult_illegal_method_call();
@@ -38,8 +45,10 @@ namespace winrt::TestPlugin::Native::implementation
             uri += L'/';
             start = end + 1;
         }
+        context.Log(NotificationKind::Information, hstring{ L"[TestPlugin.Native] LoadComponent URI: " + uri });
         _contentLoaded = true;
         Application::LoadComponent(*this, Windows::Foundation::Uri{ uri }, ComponentResourceLocation::Application);
+        context.Log(NotificationKind::Success, L"[TestPlugin.Native] LoadComponent returned successfully");
     }
 
     void PluginPage::ClosePluginView()
