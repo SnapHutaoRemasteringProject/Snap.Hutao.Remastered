@@ -34,9 +34,25 @@ if (!(Test-Path -LiteralPath (Join-Path $tool 'PluginPack.exe'))) { throw 'Plugi
 if ($IncludePrototypeHost) {
     Invoke-Dotnet publish (Join-Path $root 'tests\PrototypeHost\PrototypeHost.csproj') -c Release -p:Platform=x64 -p:PublishProfile=JitRelease -o (Join-Path $out 'PrototypeHost')
 }
-Copy-Item -LiteralPath (Join-Path $root 'README.md') -Destination $out
 $docs = Join-Path (Split-Path -Parent (Split-Path -Parent $root)) 'docs'
-Copy-Item -Path (Join-Path $docs 'PluginSDK2-*.md') -Destination $out
+$docOut = Join-Path $out 'docs'
+New-Item -ItemType Directory -Path $docOut | Out-Null
+Copy-Item -Path (Join-Path $docs 'PluginSDK2-*.md') -Destination $docOut
+Copy-Item -LiteralPath (Join-Path $root 'templates') -Destination $out -Recurse
+$csproj = Join-Path $out 'templates\CSharpPlugin\MyPlugin.csproj'
+(Get-Content -LiteralPath $csproj -Raw).Replace('>2.0.0-preview.1</HutaoSdkVersion>', ">$Version</HutaoSdkVersion>") | Set-Content -LiteralPath $csproj -Encoding utf8
+@"
+# Snap Hutao Plugin SDK $Version
+
+- Developer guide: docs/PluginSDK2-GettingStarted.md
+- API reference: docs/PluginSDK2-API.md
+- Package format: docs/PluginSDK2-Packages.md
+- Validation and migration: docs/PluginSDK2-Testing.md
+
+The NuGet packages in nuget/ are a local feed. Native SDK files are in native/.
+Copy a template into your own working directory and follow the developer guide.
+No production host or NuGet publication is implied by creating this directory.
+"@ | Set-Content -LiteralPath (Join-Path $out 'README.md') -Encoding utf8
 Get-ChildItem -LiteralPath $out -Recurse -File | Where-Object { $_.Extension -in '.nupkg', '.zip', '.exe', '.winmd' } |
     Get-FileHash -Algorithm SHA256 | Format-Table -AutoSize
 Write-Host "Local SDK distribution: $out"

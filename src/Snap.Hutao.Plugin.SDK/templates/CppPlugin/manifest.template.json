@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 2,
+  "id": "Example.MyNativePlugin",
+  "name": "My Native Plugin",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "author": [
+    "Example Author"
+  ],
+  "description": "Programmatic UI SDK2 template",
+  "api": {
+    "major": 1,
+    "minMinor": 0
+  },
+  "minHostVersion": "1.0.0",
+  "runtime": {
+    "kind": "winrt-native",
+    "architecture": "x64",
+    "entry": "bin/x64/MyNativePlugin.dll"
+  },
+  "ui": {
+    "mode": "programmatic"
+  },
+  "capabilities": [
+    "navigation",
+    "notifications"
+  ]
+}

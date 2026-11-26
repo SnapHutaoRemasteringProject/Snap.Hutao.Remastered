@@ -1,5 +1,7 @@
 # Snap.Hutao Plugin SDK 2.0 — 实现规范（提案 v1.0）
 
+> 本文件保留原始设计目标和验收门槛。当前实际源码、开发方式及尚未通过的验证项请优先参阅 [开发上手](PluginSDK2-GettingStarted.md)、[API](PluginSDK2-API.md)、[包格式](PluginSDK2-Packages.md)、[验收记录](PluginSDK2-Testing.md)。实现与设计存在的差异在验收记录明确列出。
+
 基线：SnapHutaoRemasteringProject/Snap.Hutao.Remastered `main` @ `b0fa7ce2141abc31fb7e3ae2b65951e0ab40153a`。本文描述目标规范，不代表代码已实现或已通过 Windows 测试。实施前由用户批准；批准后作为规范性设计，代理不得擅自修改。文中 MUST/必须、MUST NOT/禁止、SHOULD/建议分别表示强制、禁止、可解释的建议。本文指定的新命名、接口 UUID、限额及生命周期策略均是设计决策，不是当前仓库事实。
 
 ## 0. 目标及不可变架构决策
