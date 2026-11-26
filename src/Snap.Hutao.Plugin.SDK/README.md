@@ -19,6 +19,9 @@ HutaoPlugin.idl → MIDL → Contracts.winmd
 
 ## 文档入口
 
+- [v1 → v2 详细迁移：项目、生命周期、设置、导航、XAML、游戏附加库的代码对照](../../docs/PluginSDK2-Migration.md)
+- [XAML 开发指南：可复制示例、绑定、XBF、PRI 和路径机制](../../docs/PluginSDK2-Xaml.md)
+
 - [架构与开发模型：为什么采用 WinRT、SDK/NuGet 的职责、编译和运行调用链](../../docs/PluginSDK2-Architecture.md)
 - [历史技术记录：实际错误、根因、修复提交、复现与回归状态](../../docs/PluginSDK2-EngineeringNotes.md)
 

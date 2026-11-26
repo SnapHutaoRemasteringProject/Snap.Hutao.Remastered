@@ -4,6 +4,8 @@
 
 先阅读 [架构与开发模型](PluginSDK2-Architecture.md) 了解 ABI、NuGet、宿主和插件的关系；[开发技术记录](PluginSDK2-EngineeringNotes.md) 解释线程、封送、XAML 与构建方面的历史问题。
 
+具体旧版 API 与新版代码对照见 [迁移](PluginSDK2-Migration.md)，完整 UI 示例与 XBF/PRI 说明见 [XAML 开发指南](PluginSDK2-Xaml.md)。游戏附加库是 [包声明](PluginSDK2-Packages.md) 贡献，不新增任意进程控制 ABI。
+
 ## 1. 生命周期与线程
 
 | 回调 | 何时执行 | 可做什么 |

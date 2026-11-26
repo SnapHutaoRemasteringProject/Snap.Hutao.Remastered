@@ -43,6 +43,8 @@ Get-ChildItem .\artifacts\jit-host\resources.pri,.\artifacts\aot-host\resources.
 | SEC-01 | 拒绝信任、改包字节、管理员启动、异常退出 | 不加载未批准哈希；管理员无自动启用；running marker 触发恢复模式 |
 | SET-01 | 主程序设置页修改、Reset、重启 | 缓存与持久文件一致，插件页面刷新；模拟 IO 失败不假成功 |
 | UPDATE-01 | 安装 v1 测试包、暂存 v2、重启 Apply、启用 | 旧进程不替换，备份直到新版本成功；测试中途退出及 Roll back |
+| GAME-01 | 验证缺失能力、未声明路径、重复声明、错误 PE 与被修改的包 | 验证器拒绝，无游戏执行 |
+| GAME-02 | 在游戏允许的隔离环境验证已批准 active 包的原有 Island 启动扩展 | 仅声明的库进入当前启动流程；未批准、禁用、普通启动及 Resume 不加入；无兼容性保证（NotRun） |
 | NAV-01 | 多插件贡献、跨页面导航/返回、窗口重建 | 内置导航仍正常，插件项有唯一 ID，宿主 PluginHostPage 承载，离开后关闭 view |
 | BUILD-01 | 正式应用 JIT/AOT MSIX 及现有支持的 unpackaged 运行 | 安装、导航、通知、设置、退出均正常；原有发布行为不回归 |
 
@@ -77,6 +79,8 @@ C++ compiled 是单独实验：选择 C++ compiled (experimental)，确认 Initi
 
 ## 6. v1 → v2 迁移
 
+完整逐段代码迁移见 [Migration](PluginSDK2-Migration.md)；编译期资源、PRI、loose XAML 实例见 [Xaml](PluginSDK2-Xaml.md)。
+
 旧 SDK 的 Snap.Hutao.Plugin.SDK 1.0.0 是 netstandard2.0 的 build-only NuGet 包（IncludeBuildOutput=false），通过 .targets/GenerateHutaoPlugin 在普通 Build 后自动生成 .hutao。旧 TestPlugin 还 ProjectReference 主程序，使用 [PluginMain]、AssemblyLoadContext 和宿主内部 API。旧 README 见删除提交 6ce3721469609913121c955c0115a01bde94dca5 的父提交。它并未提供安全 native hot reload。
 
 | 旧 | 新 |
@@ -89,7 +93,8 @@ C++ compiled 是单独实验：选择 C++ compiled (experimental)，确认 Initi
 | 旧 PluginScopedPage/宿主 ViewModel | 返回真实 UIElement，宿主 PluginHostPage 管理视觉树 |
 | Embedded .hxaml + 运行时反射 | manifest 声明的 .hxaml + LoadXaml、事件或 AOT 生成 Binding |
 | 旧设置 API | OnLoad 注册 int/bool/string，PluginSetting<T>，原路径兼容同名同类型 |
-| inject/ 或 Harmony patch | 无对应 SDK2 服务；不是通过改命名空间即可迁移 |
+| inject/ | 显式 gameLibraries + game-libraries 能力，恢复原 Island 扩展；实际游戏验收待完成 |
+| Harmony patch | 没有通用替代；用公开贡献接口，缺少业务扩展单独设计 |
 | ALC 卸载 | 逻辑 disable，native module 驻留到进程退出 |
 
 卸载旧包（不要删除设置/data），重建同 ID 的 SDK2 包、重新信任，确保设置名称和类型不变。不要通过改 manifest schemaVersion 或改 DLL 文件名伪造升级。迁移完成必须以真实包、四组合及主程序回归为证据。

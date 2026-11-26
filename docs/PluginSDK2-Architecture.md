@@ -95,6 +95,8 @@ PrototypeHost 复用加载器、驻留、会话、context 和设置存储的源�
 
 ## 5. 我应该怎样开发？
 
+原有游戏附加库通过已批准包的 gameLibraries 声明进入主程序已有 Island 启动服务，而不是通过插件 ABI 暴露进程操作。完整旧版代码对照见 [迁移](PluginSDK2-Migration.md)，XAML 资源边界及完整例子见 [XAML](PluginSDK2-Xaml.md)。
+
 | 我需要做什么 | 实际操作 |
 |---|---|
 | 写 C# 插件 | 使用 CSharpPlugin 模板，引用本地 SDK NuGet，定义入口与 HutaoPlugin，dotnet publish Native AOT |

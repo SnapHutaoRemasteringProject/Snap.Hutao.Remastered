@@ -204,3 +204,7 @@ if (!dispatcher.HasThreadAccess) throw new InvalidOperationException("setting co
 | 独立模板、NuGet 分发、包负例、引用计数与性能基线 | 源码/脚本 | NotRun |
 
 后续记录应包含 commit、Windows build、VS/MSVC/SDK 版本、配置、宿主 publish 路径、包哈希、完整首个错误、最小复现、修复提交、验证命令和结果。先将错误定位到构建、原生映射、ABI、XAML 资源、类型投影或线程中的具体阶段，再决定修复。不要把所有问题归咎于 AOT，也不要因为 Debug 成功而跳过生产验证。
+
+## 8. 后续迁移补充
+
+[cf77cd8](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/commit/cf77cd8eaf28baf540d53282eee9f21ca36536b8) 恢复原有 Island 游戏附加库扩展，改为已批准 manifest 声明、active 快照与使用前哈希检查，不新增任意进程操作接口。[b03b634](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered/commit/b03b6349fa426ffcb30970f0c9beec3ecdf12cef) 提供复用的 PluginXaml.hpp URI helper、模板 Build-Plugin.ps1、C# 事件 await 修正和包负例。当前全量 Windows 回归 NotRun。v1 示例的 EmbeddedResource/XamlReader.Load、实际导航插入、游戏库声明迁移详见 [Migration](PluginSDK2-Migration.md)；PRI 与 XBF 的区别和未完成的全局资源集成见 [XAML](PluginSDK2-Xaml.md)。

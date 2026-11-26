@@ -2,6 +2,30 @@
 
 本指南针对 SDK 2.0 源码及本地预发布分发目录。适用于 x64 Windows，目标 .NET 11、Windows App SDK 2.6.6-experimental、CsWinRT 2.3.1、C++/WinRT 3.0.260818.1、Windows SDK 10.0.28000.0。实际版本以仓库 Directory.Packages.props 为准。不要独立升级 WinAppSDK 或改用其他架构来解决 ABI 问题。本文中的 2.0.0-preview.1 是本地构建版本示例，不表示包已公开发布。
 
+## 0. 最短路径：先让你的第一个插件出现一个导航项
+
+你只需要 SDK 分发目录，不需要引用整个主程序。假设分发已解压到 C:\HutaoSdk（没有分发时按第 2 节从仓库生成）。
+
+**C#：**
+
+```powershell
+Copy-Item C:\HutaoSdk\templates\CSharpPlugin C:\MyPlugin -Recurse
+cd C:\MyPlugin
+pwsh -File .\Build-Plugin.ps1 -SdkDirectory C:\HutaoSdk
+```
+
+**C++：** 在 VS Developer PowerShell 中：
+
+```powershell
+Copy-Item C:\HutaoSdk\templates\CppPlugin C:\MyNativePlugin -Recurse
+cd C:\MyNativePlugin
+pwsh -File .\Build-Plugin.ps1 -SdkDirectory C:\HutaoSdk
+```
+
+预期产物分别是 artifacts/MyPlugin.hutao、artifacts/MyNativePlugin.hutao。两个模板都在 OnEnable 中注册一个视图和一个导航项，页面有可点击的按钮。打开 PrototypeHost（若分发包含），选择你的包、Inspect and load、批准，选择视图并点击按钮；然后在正式主程序的插件管理页安装并启用，检查导航栏中新增项和通知。原生代码修改后重启整个宿主再测试。
+
+这是实际模板中的构建脚本，不是伪命令；它依次构建/发布、清理 staging、复制 DLL、pack、verify。若添加资源或自有依赖，请在 pack 前把这些文件复制到 staging，并保持 manifest 路径一致。C# 必须 Native AOT Publish（普通 Build 或非 AOT Publish 的托管 DLL 在任何宿主中均不支持），C++ 使用常规原生 DLL Build。若要理解每个项目配置和 API，继续阅读。旧插件直接阅读 [v1→v2 迁移](PluginSDK2-Migration.md)，UI 开发阅读 [XAML 指南](PluginSDK2-Xaml.md)。
+
 ## 1. 先理解构建与运行边界
 
 宿主是已经启动 WinUI 3 的 Snap Hutao Remastered.exe，插件是 Windows 原生 DLL（动态链接库）。宿主使用 LoadLibraryExW 映射 DLL，调用约定为 Cdecl 的 HutaoPluginCreate 导出，取得 IHutaoPlugin 的 WinRT 接口。C# 插件需要 Native AOT（预先把 IL 编译为机器代码），普通 dotnet build 产生的托管 DLL 不是可安装的插件入口。C++ 由 MSVC 链接器直接生成原生 DLL。两者都不需要把宿主的程序集作为编译引用。
@@ -35,6 +59,7 @@ artifacts/sdk/2.0.0-preview.1/
     Snap.Hutao.Plugin.SDK.2.0.0-preview.1.nupkg
     Snap.Hutao.Plugin.Projection.2.0.0-preview.1.nupkg
   native/include/HutaoPlugin.hpp
+  native/include/PluginXaml.hpp
   native/include/HutaoPluginAbi.h
   native/metadata/Snap.Hutao.Plugin.Contracts.winmd
   native/metadata/HutaoPlugin.idl

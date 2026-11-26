@@ -65,7 +65,7 @@ You can download the latest version installer from GitHub Releases page to insta
 
 ## 插件开发 / Plugin Development
 
-SDK 2.0 正在进行 Windows 验收。插件开发者可从 [SDK 文档入口](src/Snap.Hutao.Plugin.SDK/README.md) 开始，了解 [架构](docs/PluginSDK2-Architecture.md)、[开发流程](docs/PluginSDK2-GettingStarted.md)、[API](docs/PluginSDK2-API.md) 和 [开发技术记录](docs/PluginSDK2-EngineeringNotes.md)。
+SDK 2.0 正在进行 Windows 验收。插件开发者可从 [SDK 文档入口](src/Snap.Hutao.Plugin.SDK/README.md) 开始，了解 [架构](docs/PluginSDK2-Architecture.md)、[开发流程](docs/PluginSDK2-GettingStarted.md)、[v1 → v2 迁移](docs/PluginSDK2-Migration.md)、[XAML 开发指南](docs/PluginSDK2-Xaml.md)、[API](docs/PluginSDK2-API.md) 和 [开发技术记录](docs/PluginSDK2-EngineeringNotes.md)。
 
 SDK 2.0 is undergoing Windows validation. Start with the [SDK documentation](src/Snap.Hutao.Plugin.SDK/README.md) for the architecture, C# and C++ development workflow, API reference and engineering notes. This does not announce a public SDK release.
 
