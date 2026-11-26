@@ -147,7 +147,7 @@ public sealed class GameIslandInterop : IGameIslandInterop
         uint foregroundProcessId = 0;
         if (frameRateEnabled && backgroundFrameRateEnabled && gameProcessId > 0)
         {
-            var foregroundWindow = Win32PInvoke.GetForegroundWindow();
+            HWND foregroundWindow = Win32PInvoke.GetForegroundWindow();
             if (!foregroundWindow.IsNull && Win32PInvoke.GetWindowThreadProcessId(foregroundWindow, &foregroundProcessId) == 0)
             {
                 foregroundProcessId = 0;
