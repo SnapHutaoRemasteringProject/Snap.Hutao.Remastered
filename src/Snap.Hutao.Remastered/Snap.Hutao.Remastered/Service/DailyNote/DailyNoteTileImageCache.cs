@@ -5,6 +5,7 @@ using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Core.Caching;
 using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.IO;
+using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -64,6 +65,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
 
     private readonly DailyNoteOptions options;
     private readonly IImageCacheDownloadOperation downloadOperation;
+    private readonly BundledImageResources bundledImages;
     private readonly ILogger<DailyNoteTileImageCache> logger;
 
     /// <summary>
@@ -202,10 +204,12 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     }
 
     /// <summary>
-    /// 尝试从程序图片缓存取这张名片图，只做本地文件查找，不触发下载。
+    /// 尝试取这张名片图的本地文件，只做查找，不触发下载。
+    /// 先查可写缓存，再查安装包内自带的 <c>BundledImages</c>：后者让「离线且首次选背景」
+    /// 也能成功，否则会退化成必须联网下载。
     /// 这里不能用 <c>IImageCache.GetFileFromCacheAsync</c>：缓存未命中时它会自行发起
     /// 一次<em>没有取消令牌也没有超时</em>的下载，服务器卡住时整条选背景流程会无限挂起，
-    /// 用户改选别也中止不了。下载统一交给下面的有界下载路径。
+    /// 用户改选别的角色也中止不了。下载统一交给下面的有界下载路径。
     /// </summary>
     private ValueFile? TryGetCachedImage(Uri nameCardUri)
     {
@@ -213,11 +217,28 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         {
             // 与 ImageCache 相同的哈希命名规则，直接算路径即可。
             string path = ImageCacheFile.GetHashedFile(HutaoRuntime.GetLocalCacheImageCacheDirectory(), nameCardUri);
-            return File.Exists(path) ? path : null;
+            if (File.Exists(path))
+            {
+                return path;
+            }
+
+            // 安装包内自带的图片包，离线可用。查找规则与 ImageCache.GetBundledFile 一致：
+            // 只接受本资源站的 /static/raw/ 下、且不带查询与片段的地址。
+            Uri root = new(StaticResourcesEndpoints.Root.TrimEnd('/') + "/static/raw/");
+            if (root.IsBaseOf(nameCardUri) && string.IsNullOrEmpty(nameCardUri.Query) && string.IsNullOrEmpty(nameCardUri.Fragment))
+            {
+                string? bundled = bundledImages.Bundle.Find(Uri.UnescapeDataString(root.MakeRelativeUri(nameCardUri).ToString()));
+                if (bundled is not null && File.Exists(bundled))
+                {
+                    return bundled;
+                }
+            }
+
+            return null;
         }
         catch (Exception ex)
         {
-            logger.LogDebug(ex, "Image cache lookup failed for {Uri}", nameCardUri);
+            logger.LogDebug(ex, "Image lookup failed for {Uri}", nameCardUri);
             return null;
         }
     }
