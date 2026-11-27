@@ -6,8 +6,6 @@
     <LangVersion>preview</LangVersion>
     <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.EntityFrameworkCore.GeneratedInterceptors</InterceptorsNamespaces>
     <RootNamespace>Snap.Hutao.Remastered</RootNamespace>
-    <!-- Stable name of the XAML compiler-generated provider used in App.PluginXaml.cs. -->
-    <XamlProjectName>Snap_Hutao_Remastered</XamlProjectName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x64</Platforms>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
@@ -53,6 +51,18 @@
     <AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="App.PluginXaml.MetadataProvider.cs" />
+    <UpToDateCheckInput Include="App.PluginXaml.MetadataProvider.cs" />
+  </ItemGroup>
+
+  <!-- App's generated metadata methods do not exist in the intermediate XamlPreCompile assembly. -->
+  <Target Name="IncludePluginXamlMetadataProvider" AfterTargets="MarkupCompilePass2">
+    <ItemGroup>
+      <Compile Include="App.PluginXaml.MetadataProvider.cs" />
+    </ItemGroup>
+  </Target>
 
   <!-- Direct main-assembly Authoring migration. CsWinRT 2.x rejects the whole public
        surface on an invalid declaration; do not turn off its diagnostics. Keep the

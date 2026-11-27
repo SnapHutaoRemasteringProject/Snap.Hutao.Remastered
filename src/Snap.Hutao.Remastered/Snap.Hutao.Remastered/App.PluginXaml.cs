@@ -10,13 +10,10 @@ namespace Snap.Hutao.Remastered;
 
 public sealed partial class App
 {
-    // Keep the XAML compiler's automatic discovery of all referenced control libraries.
-    // The generated provider type is available during both XAML compiler passes.
-    private readonly IXamlMetadataProvider hostMetadata = new global::Snap.Hutao.Remastered.Snap_Hutao_Remastered_XamlTypeInfo.XamlMetaDataProvider();
     private readonly ConcurrentDictionary<string, (string Path, IXamlMetadataProvider Provider)> pluginMetadata = new(StringComparer.Ordinal);
     private PluginPriResources? pluginResources;
 
-    private void OnPluginResourceManagerRequested(Application sender, ResourceManagerRequestedEventArgs args)
+    private void OnPluginResourceManagerRequested(object? sender, ResourceManagerRequestedEventArgs args)
     {
         pluginResources ??= new PluginPriResources();
         args.CustomResourceManager = pluginResources.Manager;
@@ -34,38 +31,5 @@ public sealed partial class App
         (pluginResources ?? throw new InvalidOperationException("WinUI did not request its MRT resource manager.")).Register(path);
         if (!pluginMetadata.TryAdd(name, (path, provider)))
             throw new InvalidOperationException("XAML metadata already registered: " + name);
-    }
-
-    // WinUI queries IXamlMetadataProvider, not the public forwarding methods generated
-    // for App in pass 2. Explicit implementation preserves those methods unchanged.
-    IXamlType IXamlMetadataProvider.GetXamlType(Type type)
-    {
-        IXamlType? result = hostMetadata.GetXamlType(type);
-        if (result?.IsConstructible == true) return result;
-        foreach (var entry in pluginMetadata.Values)
-        {
-            IXamlType? candidate = entry.Provider.GetXamlType(type);
-            if (candidate?.IsConstructible == true) return candidate;
-            result ??= candidate;
-        }
-        return result!;
-    }
-
-    IXamlType IXamlMetadataProvider.GetXamlType(string fullName)
-    {
-        IXamlType? result = hostMetadata.GetXamlType(fullName);
-        if (result?.IsConstructible == true) return result;
-        foreach (var entry in pluginMetadata.Values)
-        {
-            IXamlType? candidate = entry.Provider.GetXamlType(fullName);
-            if (candidate?.IsConstructible == true) return candidate;
-            result ??= candidate;
-        }
-        return result!;
-    }
-
-    XmlnsDefinition[] IXamlMetadataProvider.GetXmlnsDefinitions()
-    {
-        return [.. hostMetadata.GetXmlnsDefinitions(), .. pluginMetadata.Values.SelectMany(static entry => entry.Provider.GetXmlnsDefinitions())];
     }
 }
