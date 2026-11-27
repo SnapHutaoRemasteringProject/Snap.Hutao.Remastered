@@ -8,5 +8,5 @@ public interface IContentDialogQueue
 {
     bool IsDialogShowing { get; }
 
-    ValueContentDialogTask EnqueueAndShowAsync(Microsoft.UI.Xaml.Controls.ContentDialog contentDialog);
+    ValueContentDialogTask EnqueueAndShowAsync(Microsoft.UI.Xaml.Controls.ContentDialog contentDialog, CancellationToken cancellationToken = default);
 }

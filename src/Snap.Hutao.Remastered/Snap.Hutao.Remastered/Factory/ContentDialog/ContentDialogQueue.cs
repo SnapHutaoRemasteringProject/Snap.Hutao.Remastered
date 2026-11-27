@@ -16,7 +16,7 @@ namespace Snap.Hutao.Remastered.Factory.ContentDialog;
 [SuppressMessage("", "RS0030")]
 public sealed partial class ContentDialogQueue : IContentDialogQueue
 {
-    private readonly AsyncLock dialogShowLock = new();
+    private readonly SemaphoreSlim dialogShowLock = new(1, 1);
 
     private readonly ICurrentXamlWindowReference currentWindowReference;
     private readonly ITaskContext taskContext;
@@ -33,63 +33,67 @@ public sealed partial class ContentDialogQueue : IContentDialogQueue
                 return false;
             }
 
-            if (dialogShowLock.TryLock(out AsyncLock.Releaser releaser))
-            {
-                using (releaser)
-                {
-                }
-
-                return false;
-            }
-
-            return true;
+            return dialogShowLock.CurrentCount == 0;
         }
     }
 
-    public ValueContentDialogTask EnqueueAndShowAsync(Microsoft.UI.Xaml.Controls.ContentDialog contentDialog)
+    public ValueContentDialogTask EnqueueAndShowAsync(Microsoft.UI.Xaml.Controls.ContentDialog contentDialog, CancellationToken cancellationToken = default)
     {
-        TaskCompletionSource queueSource = new();
-        TaskCompletionSource<ContentDialogResult> resultSource = new();
+        TaskCompletionSource queueSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        TaskCompletionSource<ContentDialogResult> resultSource = new(TaskCreationOptions.RunContinuationsAsynchronously);
 
-        PrivateEnqueueAndShowAsync(contentDialog, queueSource, resultSource).SafeForget();
+        PrivateEnqueueAndShowAsync(contentDialog, queueSource, resultSource, cancellationToken).SafeForget();
         return new(queueSource.Task, resultSource.Task);
     }
 
     [WinRT.DynamicWindowsRuntimeCast(typeof(global::Microsoft.UI.Xaml.FrameworkElement))]
-    private async Task PrivateEnqueueAndShowAsync(Microsoft.UI.Xaml.Controls.ContentDialog contentDialog, TaskCompletionSource queueSource, TaskCompletionSource<ContentDialogResult> resultSource)
+    private async Task PrivateEnqueueAndShowAsync(Microsoft.UI.Xaml.Controls.ContentDialog contentDialog, TaskCompletionSource queueSource, TaskCompletionSource<ContentDialogResult> resultSource, CancellationToken cancellationToken)
     {
-        using (await dialogShowLock.LockAsync().ConfigureAwait(false))
+        try
         {
-            await taskContext.SwitchToMainThreadAsync();
-            queueSource.TrySetResult();
-
-            if (contentDialog.XamlRoot is null)
+            await dialogShowLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+            try
             {
-                HutaoException.NotSupported("Dialog created without XamlRoot");
-            }
+                await taskContext.SwitchToMainThreadAsync();
+                cancellationToken.ThrowIfCancellationRequested();
 
-            if (contentDialog.XamlRoot != currentWindowReference.XamlRoot)
-            {
-                // User close the window on previous dialog, and this dialog still using old XamlRoot.
-                // And that's why we didn't use dialog's DispatcherQueue to switch thread either.
-                HutaoException.NotSupported("Dialog using different XamlRoot");
-            }
+                XamlRoot root = contentDialog.XamlRoot ?? throw HutaoException.NotSupported("Dialog created without XamlRoot");
 
-            // Dialogs live in a popup and need an explicit theme source. Bind at
-            // show time so queued and already-open dialogs follow the host root.
-            if (contentDialog.XamlRoot.Content is FrameworkElement root)
-            {
-                contentDialog.SetBinding(FrameworkElement.RequestedThemeProperty, new Binding
+                if (root != currentWindowReference.XamlRoot)
                 {
-                    Source = root,
-                    Path = new PropertyPath(nameof(FrameworkElement.RequestedTheme)),
-                    Mode = BindingMode.OneWay,
-                });
-            }
+                    HutaoException.NotSupported("Dialog using different XamlRoot");
+                }
 
-            IAsyncOperation<ContentDialogResult> operation = contentDialog.ShowAsync();
-            contentDialog.Focus(Microsoft.UI.Xaml.FocusState.Programmatic);
-            resultSource.SetResult(await operation);
+                // Queued and open dialogs use the current host theme.
+                if (root.Content is FrameworkElement element)
+                {
+                    contentDialog.SetBinding(FrameworkElement.RequestedThemeProperty, new Binding
+                    {
+                        Source = element,
+                        Path = new PropertyPath(nameof(FrameworkElement.RequestedTheme)),
+                        Mode = BindingMode.OneWay,
+                    });
+                }
+
+                IAsyncOperation<ContentDialogResult> operation = contentDialog.ShowAsync();
+                queueSource.TrySetResult();
+                contentDialog.Focus(FocusState.Programmatic);
+                resultSource.TrySetResult(await operation);
+            }
+            finally
+            {
+                dialogShowLock.Release();
+            }
+        }
+        catch (OperationCanceledException cancelled)
+        {
+            queueSource.TrySetCanceled(cancelled.CancellationToken);
+            resultSource.TrySetCanceled(cancelled.CancellationToken);
+        }
+        catch (Exception error)
+        {
+            queueSource.TrySetException(error);
+            resultSource.TrySetException(error);
         }
     }
 }

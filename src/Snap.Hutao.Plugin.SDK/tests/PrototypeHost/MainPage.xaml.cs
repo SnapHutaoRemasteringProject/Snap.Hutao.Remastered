@@ -8,7 +8,23 @@ namespace PrototypeHost;
 
 public sealed partial class MainPage : Page
 {
+    private readonly SemaphoreSlim dialogGate = new(1, 1);
     private PluginSession? session;
+
+    private async Task<ContentDialogResult> EnqueueDialogAsync(ContentDialog dialog, CancellationToken cancellationToken = default)
+    {
+        await dialogGate.WaitAsync(cancellationToken);
+        try
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return await dialog.ShowAsync();
+        }
+        finally
+        {
+            dialogGate.Release();
+        }
+    }
+
     private NavigationContribution[] availableViews = [];
     private CommandContribution[] availableCommands = [];
     private bool busy;
@@ -79,12 +95,12 @@ public sealed partial class MainPage : Page
                         PrimaryButtonText = "Trust this package",
                         CloseButtonText = "Cancel"
                     };
-                    if (await confirm.ShowAsync() != ContentDialogResult.Primary) return;
+                    if (await EnqueueDialogAsync(confirm) != ContentDialogResult.Primary) return;
                     string workspace = Path.Combine(TestRoot, "workspaces", Environment.ProcessId.ToString(), Guid.NewGuid().ToString("N"));
                     string settings = Path.Combine(TestRoot, "settings", verified.Manifest.Id);
                     string key = verified.Manifest.Id + ":" + verified.Sha256;
                     session = await PluginSession.ActivateApprovedPackageAsync(path, verified.Sha256, workspace, settings, new Version(1, 0, 0),
-                        !installed.Contains(key), () => installed.Add(key), DispatcherQueue, () => panel.XamlRoot, Write, Write, App.CurrentHost.RegisterMetadataProvider, locateGamePath: LocateFixtureGamePathAsync);
+                        !installed.Contains(key), () => installed.Add(key), DispatcherQueue, () => panel.XamlRoot, Write, Write, EnqueueDialogAsync, App.CurrentHost.RegisterMetadataProvider, locateGamePath: LocateFixtureGamePathAsync);
                     var manifest = verified.Manifest;
                     Write(NotificationKind.Information, "Verified XAML: " + string.Join(", ", manifest.Files.Keys.Where(file => file.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase)).OrderBy(file => file, StringComparer.OrdinalIgnoreCase)));
                     identity = new(manifest.Id, manifest.Name, manifest.Version.ToString(), workspace, Path.Combine(settings, "data"),
@@ -106,7 +122,7 @@ public sealed partial class MainPage : Page
                         PrimaryButtonText = "Load",
                         CloseButtonText = "Cancel"
                     };
-                    if (await confirm.ShowAsync() != ContentDialogResult.Primary) return;
+                    if (await EnqueueDialogAsync(confirm) != ContentDialogResult.Primary) return;
                     Write(NotificationKind.Information, "Development DLL (no verified package resources): " + path);
                     string id = Path.GetFileNameWithoutExtension(path);
                     PackagePaths.ValidateIdentifier(id);
@@ -125,7 +141,7 @@ public sealed partial class MainPage : Page
                 Directory.CreateDirectory(trusted.DataDirectory);
                 Write(NotificationKind.Information, "Activating DLL: " + entryPath);
                 session = await PluginSession.ActivateTrustedAsync(entryPath!, trusted, !installed.Contains(key), () => installed.Add(key),
-                    DispatcherQueue, () => panel.XamlRoot, Write, Write, approvedPackageHash, App.CurrentHost.RegisterMetadataProvider, locateGamePath: LocateFixtureGamePathAsync);
+                    DispatcherQueue, () => panel.XamlRoot, Write, Write, EnqueueDialogAsync, approvedPackageHash, App.CurrentHost.RegisterMetadataProvider, locateGamePath: LocateFixtureGamePathAsync);
             }
             try
             {

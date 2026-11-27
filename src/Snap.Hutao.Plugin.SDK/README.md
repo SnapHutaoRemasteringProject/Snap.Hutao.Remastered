@@ -50,7 +50,7 @@ Snap.Hutao.Plugin.SDK/
     CSharpAot/                    # C# 原生 AOT 示例
     CppCore/                      # C++ 程序式/松散 XAML，无 Page/XBF
     CppCompiled/                  # C++ 编译期 Page + 内嵌 PRI
-  templates/                      # 第三方 C#/C++ 独立项目模板
+  templates/                      # C#/C++ 项目模板源码
   tools/PluginPack/                # pack / verify
   tests/PrototypeHost/             # 独立 WinUI 调试宿主
   build/                          # 契约、构建、打包、分发、测试脚本
@@ -89,3 +89,6 @@ pwsh -File .\build\Build-Sdk.ps1 -Version 2.0.0-preview.1 -IncludePrototypeHost
 输出 `artifacts\sdk\2.0.0-preview.1`；开发者可以只使用该分发目录，不需要引用 Snap Hutao 主工程。NuGet.org 发布需要独立的发布决策与验收。
 
 **验证状态**：2026-11-27 用户确认拆分前的 C++ Core 已正常加载；新目录和独立示例仍需重新构建验收。旧 Debug 测试中两种原生插件均已加载并显示 UI，2026-11-27 用户确认新版内嵌 PRI 路径成功：命中 Files/TestPlugin.Native/PluginPage.xbf，生成 InitializeComponent 返回、两次 Click 和 Exercise ABI 成功；主程序新增接入尚待编译/运行验收；C# 后续异步修复、标准模板 Release/AOT、Binding、新正式宿主及本地 SDK 分发尚需真实 Windows 验收。未经过验收的功能不能视作已经发布。详见测试矩阵。
+
+
+`Snap.Hutao.Plugin.SDK.nupkg` 的 `tools/VisualStudio/` 含三个项目模板 ZIP。将 ZIP 放进 Visual Studio 用户项目模板目录，就可以在「创建新项目」中选择 C# Native AOT、C++/WinRT 头文件版或 C++/WinRT 3.0 命名模块版。安装步骤和所需工具见 [开发者上手](../../docs/PluginSDK2-GettingStarted.md)。

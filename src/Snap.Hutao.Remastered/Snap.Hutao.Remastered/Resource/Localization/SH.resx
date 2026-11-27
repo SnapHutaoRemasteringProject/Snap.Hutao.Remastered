@@ -3375,6 +3375,15 @@
   <data name="ViewPageLaunchGameTargetFpsHeader" xml:space="preserve">
     <value>目标帧率</value>
   </data>
+  <data name="ViewPageLaunchGameBackgroundFpsToggleHeader" xml:space="preserve">
+    <value>后台限帧</value>
+  </data>
+  <data name="ViewPageLaunchGameBackgroundFpsHeader" xml:space="preserve">
+    <value>后台目标帧率</value>
+  </data>
+  <data name="ViewPageLaunchGameBackgroundFpsDescription" xml:space="preserve">
+    <value>启用帧率热开关后，切到其他应用时使用后台目标帧率，切回游戏时恢复目标帧率。</value>
+  </data>
   <data name="ViewPageLaunchGameTargetFpsHotSwitchHeader" xml:space="preserve">
     <value>帧率热开关</value>
   </data>
@@ -6541,5 +6550,11 @@
   </data>
   <data name="ViewPagePluginGameLibrariesWarning" xml:space="preserve">
     <value>此插件还请求向游戏加载第三方 DLL。无法保证与游戏或反作弊系统的兼容性，也无法保证账号安全。请确认来源及游戏的使用规则。</value>
+  </data>
+  <data name="ViewPagePluginMoreActions" xml:space="preserve">
+    <value>更多插件操作</value>
+  </data>
+  <data name="ViewPagePluginSettingInvalidInteger" xml:space="preserve">
+    <value>请输入有效的 32 位整数。</value>
   </data>
 </root>

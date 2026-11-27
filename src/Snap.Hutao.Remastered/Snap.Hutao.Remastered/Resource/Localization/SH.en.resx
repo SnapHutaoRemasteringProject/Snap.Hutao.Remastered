@@ -6319,40 +6319,4 @@ Ordinary launch does not require Island support. Compatibility is checked separa
   <data name="ViewShortcutEditorWarningToolTip" xml:space="preserve">
     <value>It's recommended to use a modifier key (like Ctrl, Alt, or Win) along with it.</value>
   </data>
-  <data name="ViewPagePluginUpdateButton" xml:space="preserve">
-    <value>Stage update</value>
-  </data>
-  <data name="ViewPagePluginApplyUpdateButton" xml:space="preserve">
-    <value>Apply staged update</value>
-  </data>
-  <data name="ViewPagePluginRollbackButton" xml:space="preserve">
-    <value>Roll back</value>
-  </data>
-  <data name="ViewPagePluginTrustTitle" xml:space="preserve">
-    <value>Trust native plugin?</value>
-  </data>
-  <data name="ViewPagePluginTrustWarning" xml:space="preserve">
-    <value>Plugins execute arbitrary native code in this process with the application's permissions. Only trust packages from sources you have verified.</value>
-  </data>
-  <data name="ViewPagePluginElevatedWarning" xml:space="preserve">
-    <value>This process is elevated.</value>
-  </data>
-  <data name="ViewPagePluginTrustButton" xml:space="preserve">
-    <value>Trust this plugin</value>
-  </data>
-  <data name="ViewPagePluginKeepData" xml:space="preserve">
-    <value>Plugin settings and data will be retained.</value>
-  </data>
-  <data name="ViewPagePluginEnableFirst" xml:space="preserve">
-    <value>Enable the plugin first.</value>
-  </data>
-  <data name="ViewPagePluginRecovery" xml:space="preserve">
-    <value>Previous plugin host did not shut down cleanly. Automatic activation was skipped.</value>
-  </data>
-  <data name="ViewPagePluginPendingRestart" xml:space="preserve">
-    <value>Update staged. Restart before applying it.</value>
-  </data>
-  <data name="ViewPagePluginGameLibrariesWarning" xml:space="preserve">
-    <value>This plugin also requests loading third-party DLLs into the game. Game and anti-cheat compatibility and account safety are not guaranteed. Verify the source and the game's rules.</value>
-  </data>
 </root>

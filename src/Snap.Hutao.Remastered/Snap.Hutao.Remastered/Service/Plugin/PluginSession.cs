@@ -2,10 +2,10 @@ using System.IO;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Plugin.Contracts;
 using Snap.Hutao.Plugin.Packaging;
 using Windows.Foundation;
-using System.Security.Cryptography;
 
 namespace Snap.Hutao.Remastered.Service.Plugin;
 
@@ -40,7 +40,8 @@ public sealed class PluginSession
     // Explicitly approved native DLL, never call this while enumerating packages.
     public static async Task<PluginSession> ActivateTrustedAsync(string dllPath, PluginIdentity identity, bool runInstallHook,
         Action markInstallCompleted, DispatcherQueue queue, Func<XamlRoot?> xamlRoot,
-        Action<NotificationKind, string> log, Action<NotificationKind, string> notify, string? approvedPackageHash = null,
+        Action<NotificationKind, string> log, Action<NotificationKind, string> notify,
+        Func<ContentDialog, CancellationToken, Task<ContentDialogResult>> enqueueDialog, string? approvedPackageHash = null,
         Action<string, string, IXamlMetadataProvider>? registerMetadataProvider = null, Action? commitActivation = null,
         Func<Task<string>>? locateGamePath = null)
     {
@@ -51,18 +52,18 @@ public sealed class PluginSession
         PackagePaths.RejectReparseAncestors(dllPath);
         var preparation = await Task.Run(() =>
         {
-            using FileStream input = File.OpenRead(dllPath);
-            string entryHash = Convert.ToHexStringLower(SHA256.HashData(input));
-            return (Snapshot: SettingStore.Read(identity.SettingsDirectory), Hash: entryHash);
+            var files = NativePluginLoader.ReadDlls(dllPath);
+            NativePluginLoader.PluginDll entry = files[Path.GetFileName(dllPath)];
+            return (Snapshot: SettingStore.Read(identity.SettingsDirectory), EntryHash: entry.Hash, Files: files);
         });
         var snapshot = preparation.Snapshot;
         if (!queue.HasThreadAccess) throw new InvalidOperationException("Host dispatcher synchronization context is required.");
-        var context = new PluginHostContext(identity, queue, xamlRoot, log, notify, snapshot, locateGamePath);
+        var context = new PluginHostContext(identity, queue, xamlRoot, log, notify, snapshot, enqueueDialog, locateGamePath);
         PluginSession session = new(queue, context, identity.Id);
-        PluginResidency.Acquire(identity.Id, dllPath, identity.Version, (approvedPackageHash ?? "development") + ":" + preparation.Hash);
+        PluginResidency.Acquire(identity.Id, dllPath, identity.Version, (approvedPackageHash ?? "development") + ":" + preparation.EntryHash);
         try
         {
-            session.plugin = NativePluginLoader.Load(dllPath);
+            session.plugin = NativePluginLoader.Load(dllPath, preparation.Files);
             if (identity.UiMode == "compiled")
                 registerMetadataProvider!(Path.GetFullPath(dllPath), identity.MetadataProvider!,
                     NativePluginLoader.GetMetadataProvider(dllPath, identity.MetadataProvider!));
@@ -88,7 +89,11 @@ public sealed class PluginSession
             finally
             {
                 try { context.Close(); }
-                finally { session.plugin = null; PluginResidency.Release(identity.Id, quarantine: true); }
+                finally
+                {
+                    session.plugin = null;
+                    PluginResidency.Release(identity.Id, quarantine: NativePluginLoader.IsMapped(dllPath), removeUnmapped: true);
+                }
             }
             throw;
         }
@@ -138,6 +143,7 @@ public sealed class PluginSession
     public static async Task<PluginSession> ActivateApprovedPackageAsync(string packagePath, string approvedSha256,
         string workspace, string settingsDirectory, Version hostVersion, bool runInstallHook, Action markInstallCompleted,
         DispatcherQueue queue, Func<XamlRoot?> xamlRoot, Action<NotificationKind, string> log, Action<NotificationKind, string> notify,
+        Func<ContentDialog, CancellationToken, Task<ContentDialogResult>> enqueueDialog,
         Action<string, string, IXamlMetadataProvider>? registerMetadataProvider = null, Func<Task<string>>? locateGamePath = null)
     {
         if (!queue.HasThreadAccess) throw new InvalidOperationException("Activate on the UI thread.");
@@ -151,7 +157,7 @@ public sealed class PluginSession
         PluginIdentity identity = new(manifest.Id, manifest.Name, manifest.Version.ToString(), workspace, data, settingsDirectory,
             manifest.UiMode, manifest.Capabilities, manifest.Files.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase), manifest.MetadataProvider);
         return await ActivateTrustedAsync(PackagePaths.Resolve(workspace, manifest.Entry), identity, runInstallHook,
-            markInstallCompleted, queue, xamlRoot, log, notify, verified.Sha256, registerMetadataProvider, locateGamePath: locateGamePath);
+            markInstallCompleted, queue, xamlRoot, log, notify, enqueueDialog, verified.Sha256, registerMetadataProvider, locateGamePath: locateGamePath);
     }
 
     public async Task DisableAsync(Action detachContent, bool uninstall = false)

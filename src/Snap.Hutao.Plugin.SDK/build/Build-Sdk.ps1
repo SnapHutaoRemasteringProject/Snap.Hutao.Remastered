@@ -56,7 +56,7 @@ $csproj = Join-Path $out 'templates\CSharpPlugin\MyPlugin.csproj'
 - Engineering notes: docs/PluginSDK2-EngineeringNotes.md
 
 C# plugins reference the SDK and its WinRT projection at build time through the local NuGet feed in nuget/. Native AOT Publish produces the native plugin DLL; end users do not install the NuGet packages. C++ plugins consume the WinMD and headers in native/. PluginPack creates the .hutao package; PrototypeHost is an optional test host, not a hot-reload runtime.
-Copy a template into your own working directory and follow the developer guide.
+The SDK nupkg contains Visual Studio project templates under tools/VisualStudio/. Copy those ZIPs to the Visual Studio user project templates directory, or copy a source template into your own working directory.
 No production host or NuGet publication is implied by creating this directory.
 "@ | Set-Content -LiteralPath (Join-Path $out 'README.md') -Encoding utf8
 Get-ChildItem -LiteralPath $out -Recurse -File | Where-Object { $_.Extension -in '.nupkg', '.zip', '.exe', '.winmd' } |

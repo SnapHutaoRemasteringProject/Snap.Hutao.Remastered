@@ -4,6 +4,9 @@ using WinRT;
 using Snap.Hutao.Plugin.Contracts;
 using Snap.Hutao.Plugin.Projection;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Security.Cryptography;
+using Snap.Hutao.Plugin.Packaging;
 using System.Runtime.InteropServices;
 using Win32LibraryFlags = global::Windows.Win32.System.LibraryLoader.LOAD_LIBRARY_FLAGS;
 using Win32Module = global::Windows.Win32.Foundation.HMODULE;
@@ -15,6 +18,7 @@ namespace Snap.Hutao.Remastered.Service.Plugin;
 internal static unsafe class NativePluginLoader
 {
     private static readonly Dictionary<string, Win32Module> Modules = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly Dictionary<string, PluginDll> ResidentFiles = new(StringComparer.OrdinalIgnoreCase);
     private static readonly object Gate = new();
     private const Win32LibraryFlags SearchFlags = Win32LibraryFlags.LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR |
         Win32LibraryFlags.LOAD_LIBRARY_SEARCH_APPLICATION_DIR | Win32LibraryFlags.LOAD_LIBRARY_SEARCH_SYSTEM32;
@@ -62,7 +66,55 @@ internal static unsafe class NativePluginLoader
         }
     }
 
-    public static IHutaoPlugin Load(string path)
+    internal sealed record PluginDll(string Path, string Hash);
+
+    // LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR makes only the entry directory eligible.
+    // Reserve all DLLs there, including dependencies which the plugin may delay-load.
+    internal static Dictionary<string, PluginDll> ReadDlls(string entry)
+    {
+        string directory = Path.GetDirectoryName(Path.GetFullPath(entry)) ?? throw new InvalidDataException("Missing DLL directory.");
+        Dictionary<string, PluginDll> files = new(StringComparer.OrdinalIgnoreCase);
+        foreach (string path in Directory.EnumerateFiles(directory, "*.dll", SearchOption.TopDirectoryOnly))
+        {
+            PackagePaths.RejectReparseAncestors(path);
+            files.Add(Path.GetFileName(path), new(path, HashFile(path)));
+        }
+        return files;
+    }
+
+    private static string HashFile(string path)
+    {
+        using FileStream input = File.OpenRead(path);
+        return Convert.ToHexStringLower(SHA256.HashData(input));
+    }
+
+    private static void RequireCompatibleDlls(IReadOnlyDictionary<string, PluginDll> files)
+    {
+        foreach ((string name, PluginDll candidate) in files)
+        {
+            if (ResidentFiles.TryGetValue(name, out PluginDll? resident) && resident.Hash != candidate.Hash)
+                throw new InvalidDataException($"Plugin DLL '{candidate.Path}' conflicts with '{resident.Path}'. Rename the private dependency before packaging the plugin.");
+        }
+
+        using Process process = Process.GetCurrentProcess();
+        foreach (ProcessModule module in process.Modules)
+        {
+            using (module)
+            {
+                if (files.TryGetValue(module.ModuleName, out PluginDll? candidate) &&
+                    !string.Equals(module.FileName, candidate.Path, StringComparison.OrdinalIgnoreCase) &&
+                    HashFile(module.FileName) != candidate.Hash)
+                    throw new InvalidDataException($"Plugin DLL '{candidate.Path}' conflicts with the loaded module '{module.FileName}'. Rename the private dependency before packaging the plugin.");
+            }
+        }
+    }
+
+    internal static bool IsMapped(string path)
+    {
+        lock (Gate) return Modules.ContainsKey(Path.GetFullPath(path));
+    }
+
+    internal static IHutaoPlugin Load(string path, IReadOnlyDictionary<string, PluginDll> files)
     {
         path = Path.GetFullPath(path);
         Win32Module library;
@@ -70,9 +122,11 @@ internal static unsafe class NativePluginLoader
         {
             if (!Modules.TryGetValue(path, out library))
             {
+                RequireCompatibleDlls(files);
                 library = Win32PInvoke.LoadLibraryEx(path, SearchFlags);
                 if (library.IsNull) throw new Win32Exception(Marshal.GetLastPInvokeError());
                 Modules.Add(path, library); // Never unload mapped modules.
+                foreach ((string name, PluginDll file) in files) ResidentFiles.TryAdd(name, file);
             }
         }
 

@@ -1,0 +1,46 @@
+<Project>
+  <PropertyGroup>
+    <_HutaoTemplateSources>$(MSBuildThisFileDirectory)..\templates\</_HutaoTemplateSources>
+    <_HutaoTemplateIcon>$(MSBuildThisFileDirectory)..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Assets\Logo.ico</_HutaoTemplateIcon>
+  </PropertyGroup>
+
+  <Target Name="PackHutaoVisualStudioTemplates" BeforeTargets="_GetPackageFiles">
+    <PropertyGroup>
+      <_HutaoTemplateOutput>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(IntermediateOutputPath)', 'VisualStudioTemplates'))</_HutaoTemplateOutput>
+      <_HutaoCsTemplate>$(_HutaoTemplateOutput)CSharp\</_HutaoCsTemplate>
+      <_HutaoCppTemplate>$(_HutaoTemplateOutput)Cpp\</_HutaoCppTemplate>
+      <_HutaoCppModulesTemplate>$(_HutaoTemplateOutput)CppModules\</_HutaoCppModulesTemplate>
+      <_HutaoCsZip>$(_HutaoTemplateOutput)Snap.Hutao.Plugin.CSharp.zip</_HutaoCsZip>
+      <_HutaoCppZip>$(_HutaoTemplateOutput)Snap.Hutao.Plugin.Cpp.zip</_HutaoCppZip>
+      <_HutaoCppModulesZip>$(_HutaoTemplateOutput)Snap.Hutao.Plugin.CppModules.zip</_HutaoCppModulesZip>
+      <_HutaoCsManifest>$([System.IO.File]::ReadAllText('$(_HutaoTemplateSources)CSharpPlugin/manifest.template.json').Replace('MyPlugin', '$safeprojectname$').Replace('My Plugin', '$safeprojectname$'))</_HutaoCsManifest>
+      <_HutaoCppManifest>$([System.IO.File]::ReadAllText('$(_HutaoTemplateSources)CppPlugin/manifest.template.json').Replace('MyNativePlugin', '$safeprojectname$').Replace('My Native Plugin', '$safeprojectname$'))</_HutaoCppManifest>
+    </PropertyGroup>
+    <ItemGroup>
+      <_HutaoCsFiles Include="$(_HutaoTemplateSources)CSharpPlugin/MyPlugin.csproj;$(_HutaoTemplateSources)CSharpPlugin/Plugin.cs;$(_HutaoTemplateSources)CSharpPlugin/Hutao.CSharp.vstemplate;$(_HutaoTemplateSources)CSharpPlugin/Pack-Plugin.ps1" />
+      <_HutaoCppFiles Include="$(_HutaoTemplateSources)CppPlugin/MyNativePlugin.vcxproj;$(_HutaoTemplateSources)CppPlugin/MyPlugin.cpp;$(_HutaoTemplateSources)CppPlugin/Pack-Plugin.ps1" />
+    </ItemGroup>
+
+    <Copy SourceFiles="@(_HutaoCsFiles)" DestinationFolder="$(_HutaoCsTemplate)" />
+    <Copy SourceFiles="@(_HutaoCppFiles);$(_HutaoTemplateSources)CppPlugin/Hutao.Cpp.vstemplate" DestinationFolder="$(_HutaoCppTemplate)" />
+    <Copy SourceFiles="@(_HutaoCppFiles);$(_HutaoTemplateSources)CppPlugin/Hutao.CppModules.vstemplate" DestinationFolder="$(_HutaoCppModulesTemplate)" />
+    <Copy SourceFiles="$(_HutaoTemplateSources)CSharpPlugin/Properties/PublishProfiles/NativeAot.pubxml" DestinationFolder="$(_HutaoCsTemplate)Properties/PublishProfiles" />
+    <Copy SourceFiles="$(_HutaoTemplateIcon)" DestinationFiles="$(_HutaoCsTemplate)Icon.ico" />
+    <Copy SourceFiles="$(_HutaoTemplateIcon)" DestinationFiles="$(_HutaoCppTemplate)Icon.ico" />
+    <Copy SourceFiles="$(_HutaoTemplateIcon)" DestinationFiles="$(_HutaoCppModulesTemplate)Icon.ico" />
+    <XmlPoke XmlInputPath="$(_HutaoCsTemplate)MyPlugin.csproj" Query="/Project/PropertyGroup/HutaoSdkVersion" Value="$(PackageVersion)" />
+    <XmlPoke XmlInputPath="$(_HutaoCppTemplate)MyNativePlugin.vcxproj" Query="//*[local-name()='ProjectGuid']" Value="{$guid1$}" />
+    <XmlPoke XmlInputPath="$(_HutaoCppModulesTemplate)MyNativePlugin.vcxproj" Query="//*[local-name()='ProjectGuid']" Value="{$guid1$}" />
+    <XmlPoke XmlInputPath="$(_HutaoCppModulesTemplate)MyNativePlugin.vcxproj" Query="//*[local-name()='CppWinRTBuildModule']" Value="true" />
+    <WriteLinesToFile File="$(_HutaoCsTemplate)manifest.template.json" Lines="$(_HutaoCsManifest)" Overwrite="true" />
+    <WriteLinesToFile File="$(_HutaoCppTemplate)manifest.template.json" Lines="$(_HutaoCppManifest)" Overwrite="true" />
+    <WriteLinesToFile File="$(_HutaoCppModulesTemplate)manifest.template.json" Lines="$(_HutaoCppManifest)" Overwrite="true" />
+    <ZipDirectory SourceDirectory="$(_HutaoCsTemplate)" DestinationFile="$(_HutaoCsZip)" Overwrite="true" />
+    <ZipDirectory SourceDirectory="$(_HutaoCppTemplate)" DestinationFile="$(_HutaoCppZip)" Overwrite="true" />
+    <ZipDirectory SourceDirectory="$(_HutaoCppModulesTemplate)" DestinationFile="$(_HutaoCppModulesZip)" Overwrite="true" />
+
+    <ItemGroup>
+      <None Include="$(_HutaoCsZip);$(_HutaoCppZip);$(_HutaoCppModulesZip)" Pack="true" PackagePath="tools/VisualStudio/" />
+    </ItemGroup>
+  </Target>
+</Project>

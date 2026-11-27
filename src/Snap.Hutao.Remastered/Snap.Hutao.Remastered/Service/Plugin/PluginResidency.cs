@@ -34,11 +34,15 @@ internal static class PluginResidency
         }
     }
 
-    internal static void Release(string id, bool quarantine)
+    internal static void Release(string id, bool quarantine, bool removeUnmapped = false)
     {
         lock (Gate)
         {
-            if (Slots.TryGetValue(id, out Slot? slot))
+            if (removeUnmapped && !quarantine)
+            {
+                Slots.Remove(id);
+            }
+            else if (Slots.TryGetValue(id, out Slot? slot))
             {
                 slot.Active = false;
                 slot.Quarantined |= quarantine;

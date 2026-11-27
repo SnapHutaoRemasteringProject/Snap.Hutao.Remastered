@@ -1,8 +1,24 @@
-#include <windows.h>
+#include "HutaoPluginAbi.h"
+#undef GetCurrentTime
+
+#ifdef WINRT_IMPORT_MODULE
+#include <restrictederrorinfo.h>
+#include <hstring.h>
+
+import winrt_base;
+import winrt.Windows.Foundation;
+import winrt.Microsoft.UI.Xaml;
+import winrt.Microsoft.UI.Xaml.Controls;
+import winrt.Microsoft.UI.Xaml.Controls.Primitives;
+import winrt.Snap.Hutao.Plugin.Contracts;
+#else
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Microsoft.UI.Xaml.h>
 #include <winrt/Microsoft.UI.Xaml.Controls.h>
+#include <winrt/Microsoft.UI.Xaml.Controls.Primitives.h>
 #include <winrt/Snap.Hutao.Plugin.Contracts.h>
+#endif
+
 #include "HutaoPlugin.hpp"
 
 using namespace winrt;

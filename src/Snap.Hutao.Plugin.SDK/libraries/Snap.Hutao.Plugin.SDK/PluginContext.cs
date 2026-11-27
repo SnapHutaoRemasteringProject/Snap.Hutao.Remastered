@@ -9,7 +9,7 @@ namespace Snap.Hutao.Plugin.SDK;
 public sealed partial class PluginContext : IDisposable
 {
     private readonly IPluginContext abi;
-    private readonly List<IPluginRegistration> registrations = [];
+    private readonly List<RegistrationHandle> registrations = [];
     private bool disposed;
 
     internal PluginContext(IPluginContext abi)
@@ -68,16 +68,17 @@ public sealed partial class PluginContext : IDisposable
     internal IDisposable Track(IPluginRegistration registration)
     {
         ObjectDisposedException.ThrowIf(disposed, this);
-        registrations.Add(registration);
-        return new RegistrationHandle(registration);
+        RegistrationHandle handle = new(registration, registrations);
+        registrations.Add(handle);
+        return handle;
     }
 
     internal void DisposeRegistrations()
     {
         List<Exception> errors = [];
-        for (int i = registrations.Count - 1; i >= 0; --i)
+        foreach (RegistrationHandle handle in registrations.ToArray().Reverse())
         {
-            try { registrations[i].Revoke(); }
+            try { handle.Dispose(); }
             catch (Exception error) { errors.Add(error); }
         }
         registrations.Clear();
@@ -142,8 +143,17 @@ internal sealed partial class CommandAdapter(Func<Task> execute) : IPluginComman
     public IAsyncAction ExecuteAsync(string commandId) => UiCall.Run(execute).AsAsyncAction();
 }
 
-internal sealed partial class RegistrationHandle(IPluginRegistration registration) : IDisposable
+internal sealed class RegistrationHandle(IPluginRegistration registration, List<RegistrationHandle> registrations) : IDisposable
 {
     private IPluginRegistration? value = registration;
-    public void Dispose() => Interlocked.Exchange(ref value, null)?.Revoke();
+    private List<RegistrationHandle>? owner = registrations;
+
+    public void Dispose()
+    {
+        if (value is not { } current) return;
+        current.Revoke(); // Host validates the UI thread. Keep the handle when revocation fails.
+        value = null;
+        owner?.Remove(this);
+        owner = null;
+    }
 }

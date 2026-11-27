@@ -1,6 +1,8 @@
 CoWaitForMultipleHandles
 CommandLineToArgvW
+GetForegroundWindow
 GetProcAddress
+GetWindowThreadProcessId
 LoadLibraryExW
 LocalFree
 OpenProcess

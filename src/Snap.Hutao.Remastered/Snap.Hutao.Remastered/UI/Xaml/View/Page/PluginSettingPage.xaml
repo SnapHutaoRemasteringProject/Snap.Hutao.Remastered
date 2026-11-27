@@ -1,14 +1,210 @@
-<shuxc:ScopedPage x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.PluginSettingPage"
+<shuxc:ScopedPage
+    x:Class="Snap.Hutao.Remastered.UI.Xaml.View.Page.PluginSettingPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cw="using:CommunityToolkit.WinUI"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:essential="using:WinUI3Package"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mxi="using:Microsoft.Xaml.Interactivity"
+    xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
+    xmlns:shuxb="using:Snap.Hutao.Remastered.UI.Xaml.Behavior"
     xmlns:shuxc="using:Snap.Hutao.Remastered.UI.Xaml.Control"
-    xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup">
-    <ScrollViewer>
-        <StackPanel Padding="16" Spacing="12">
-            <TextBlock x:Name="TitleText" Style="{StaticResource TitleTextBlockStyle}" />
-            <Button Click="BackClick" Content="{shuxm:ResourceString Name=ViewPagePluginSettingBackButton}" />
-            <InfoBar x:Name="Status" IsOpen="False" />
-            <StackPanel x:Name="SettingsPanel" Spacing="12" />
-        </StackPanel>
-    </ScrollViewer>
+    xmlns:shuxcth="using:Snap.Hutao.Remastered.UI.Xaml.Control.Theme"
+    xmlns:shuxm="using:Snap.Hutao.Remastered.UI.Xaml.Markup"
+    xmlns:shvp="using:Snap.Hutao.Remastered.ViewModel.Plugin"
+    xmlns:wl="using:WinUI.LiquidGlass"
+    d:DataContext="{d:DesignInstance shvp:PluginSettingViewModel}"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <mxi:Interaction.Behaviors>
+        <shuxb:InvokeCommandOnLoadedBehavior Command="{x:Bind DataContext.LoadCommand, Mode=OneWay}"/>
+    </mxi:Interaction.Behaviors>
+
+    <Grid x:Name="Root">
+        <shuxc:StandardView ShowCondition="{x:Bind DataContext.IsInitialized, Mode=OneWay}">
+            <shuxc:StandardView.EmptyContent>
+                <Grid>
+                    <ProgressRing
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        IsActive="True"/>
+                </Grid>
+            </shuxc:StandardView.EmptyContent>
+
+            <Grid Margin="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!--  标题栏  -->
+                <Border
+                    Grid.Row="0"
+                    Margin="0,0,0,16"
+                    cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
+                    <Border Style="{ThemeResource AcrylicBorderCardStyle}">
+                        <StackPanel
+                            Padding="16"
+                            Orientation="Horizontal"
+                            Spacing="12">
+                            <wl:LiquidGlassButton
+                                shuxcth:ControlMaterialState.IsManaged="True"
+                                Command="{x:Bind DataContext.GoBackCommand, Mode=OneWay}"
+                                Content="{shuxm:ResourceString Name=ViewPagePluginSettingBackButton}"
+                                Style="{StaticResource DefaultButtonStyle}">
+                                <wl:LiquidGlassButton.ContentTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <FontIcon Glyph="&#xE72B;"/>
+                                            <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginSettingBackButton}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </wl:LiquidGlassButton.ContentTemplate>
+                            </wl:LiquidGlassButton>
+
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Style="{StaticResource TitleTextBlockStyle}"
+                                Text="{x:Bind DataContext.PluginName, Mode=OneWay}"/>
+
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{shuxm:ResourceString Name=ViewPagePluginSettingTitle}"/>
+                        </StackPanel>
+                    </Border>
+                </Border>
+
+                <InfoBar
+                    Grid.Row="1"
+                    IsClosable="True"
+                    IsOpen="{x:Bind DataContext.IsStatusOpen, Mode=TwoWay}"
+                    Message="{x:Bind DataContext.StatusMessage, Mode=OneWay}"
+                    Severity="{x:Bind DataContext.StatusSeverity, Mode=OneWay}"/>
+
+                <!--  设置列表  -->
+                <Border Grid.Row="2" cw:Effects.Shadow="{ThemeResource CompatCardShadow}">
+                    <Grid Style="{ThemeResource AcrylicGridCardStyle}">
+                        <shuxc:StandardView ShowCondition="{x:Bind DataContext.Settings.Count, Converter={StaticResource Int32ToBoolConverter}, Mode=OneWay}">
+                            <shuxc:StandardView.EmptyContent>
+                                <StackPanel
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="16">
+                                    <FontIcon
+                                        FontSize="48"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Glyph="&#xE713;"/>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        Style="{StaticResource SubtitleTextBlockStyle}"
+                                        Text="{shuxm:ResourceString Name=ViewPagePluginSettingEmptyTitle}"/>
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Text="{shuxm:ResourceString Name=ViewPagePluginSettingEmptyDescription}"/>
+                                </StackPanel>
+                            </shuxc:StandardView.EmptyContent>
+
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ItemsControl
+                                    Margin="16"
+                                    ItemContainerTransitions="{ThemeResource ListViewLikeThemeTransitions}"
+                                    ItemsPanel="{ThemeResource StackPanelSpacing8Template}"
+                                    ItemsSource="{x:Bind shux:ItemsSourceHelper.Create(DataContext.Settings, x:False), Mode=OneWay}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="shvp:PluginSettingItem">
+                                            <Border Padding="12" Style="{ThemeResource BorderCardStyle}">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+
+                                                    <!--  设置名称和描述  -->
+                                                    <StackPanel Grid.Row="0">
+                                                        <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="{x:Bind Name}"/>
+
+                                                        <TextBlock
+                                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                            Style="{StaticResource CaptionTextBlockStyle}"
+                                                            Text="{x:Bind Description}"
+                                                            TextWrapping="Wrap"/>
+                                                    </StackPanel>
+
+                                                    <Grid Grid.Row="1" Margin="0,8,0,0">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <StackPanel Grid.Column="0">
+                                                            <!--  字符串类型  -->
+                                                            <wl:LiquidGlassTextBox
+                                                                Visibility="{x:Bind TextVisibility}"
+                                                                shuxcth:ControlMaterialState.IsManaged="True"
+                                                                PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingStringPlaceholder}"
+                                                                Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                                            <!--  整数类型  -->
+                                                            <NumberBox
+                                                                essential:NumberBoxHelper.AcrylicWorkaround="True"
+                                                                PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingIntPlaceholder}"
+                                                                Visibility="{x:Bind NumberVisibility}"
+                                                                Value="{x:Bind Number, Mode=TwoWay}"/>
+
+                                                            <!--  布尔类型  -->
+                                                            <wl:LiquidGlassToggleSwitch
+                                                                Visibility="{x:Bind FlagVisibility}"
+                                                                shuxcth:ControlMaterialState.IsManaged="True"
+                                                                IsOn="{x:Bind Flag, Mode=TwoWay}"
+                                                                OffContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOff}"
+                                                                OnContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOn}"/>
+
+                                                        </StackPanel>
+                                                        <!--  操作按钮  -->
+                                                        <StackPanel
+                                                            Grid.Column="1"
+                                                            Margin="12,0,0,0"
+                                                            Orientation="Horizontal"
+                                                            Spacing="8">
+                                                            <wl:LiquidGlassButton
+                                                                shuxcth:ControlMaterialState.IsManaged="True"
+                                                                Command="{x:Bind SaveCommand}"
+                                                                Content="{shuxm:ResourceString Name=ViewPagePluginSettingSaveButton}"
+                                                                Style="{StaticResource AccentButtonStyle}"/>
+
+                                                            <wl:LiquidGlassButton
+                                                                shuxcth:ControlMaterialState.IsManaged="True"
+                                                                Command="{x:Bind ResetCommand}"
+                                                                Content="{shuxm:ResourceString Name=ViewPagePluginSettingResetButton}"
+                                                                Style="{StaticResource DefaultButtonStyle}"/>
+                                                        </StackPanel>
+                                                    </Grid>
+
+                                                    <!--  默认值提示  -->
+                                                    <TextBlock
+                                                        Grid.Row="2"
+                                                        Margin="0,4,0,0"
+                                                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                                        Style="{StaticResource CaptionTextBlockStyle}">
+                                                        <Run Text="{shuxm:ResourceString Name=ViewPagePluginSettingDefaultValueText}"/>
+                                                        <Run Text="{x:Bind DefaultText}"/>
+                                                    </TextBlock>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </shuxc:StandardView>
+                    </Grid>
+                </Border>
+            </Grid>
+        </shuxc:StandardView>
+    </Grid>
 </shuxc:ScopedPage>

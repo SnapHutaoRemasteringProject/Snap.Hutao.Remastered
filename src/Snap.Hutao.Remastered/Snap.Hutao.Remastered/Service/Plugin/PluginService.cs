@@ -1,3 +1,5 @@
+using Snap.Hutao.Remastered.Core.ExceptionService;
+using Snap.Hutao.Remastered.Factory.ContentDialog;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -46,7 +48,7 @@ internal sealed partial class PluginService
 
     internal void AttachRoot(XamlRoot value) => root = new(value);
     private XamlRoot? GetRoot() => root is not null && root.TryGetTarget(out XamlRoot? value) ? value : null;
-    private DispatcherQueue Queue => DispatcherQueue.GetForCurrentThread() ?? throw new InvalidOperationException("Plugin operation requires the UI thread.");
+    private DispatcherQueue Queue => DispatcherQueue.GetForCurrentThread() ?? throw HutaoException.InvalidOperation("Plugin operation requires the UI thread.");
 
     private void EnsureStore()
     {
@@ -132,7 +134,7 @@ internal sealed partial class PluginService
     internal Task ResetSettingAsync(string id, string name) => GetActive(id).Session.ResetSettingAsync(name);
     internal Task ExecuteAsync(string id, string command) => GetActive(id).Session.ExecuteAsync(command);
 
-    private ActiveSession GetActive(string id) => active.TryGetValue(id, out ActiveSession? value) ? value : throw new InvalidOperationException("Plugin is not active: " + id);
+    private ActiveSession GetActive(string id) => active.TryGetValue(id, out ActiveSession? value) ? value : throw HutaoException.InvalidOperation("Plugin is not active: " + id);
 
     internal UIElement OpenView(PluginNavigationTarget target, Action detach)
     {
@@ -186,8 +188,8 @@ internal sealed partial class PluginService
             EnsureStore();
             string id = verified.Manifest.Id;
             if ((await ScanAsync()).Any(item => item.Id.Equals(id, StringComparison.OrdinalIgnoreCase)))
-                throw new InvalidOperationException("Plugin already exists. Use Update or uninstall the legacy package first.");
-            if (verified.Manifest.MinHostVersion > HostVersion) throw new InvalidDataException("Host version is too old.");
+                throw HutaoException.InvalidOperation("Plugin already exists. Use Update or uninstall the legacy package first.");
+            if (verified.Manifest.MinHostVersion > HostVersion) throw HutaoException.Throw("Host version is too old.");
             await Task.Run(() => PluginPackageStore.CopyApproved(source, PluginPackageStore.PathFor(id, false), verified.Sha256));
         }
         finally { operationGate.Release(); RaiseChanged(); }
@@ -202,16 +204,16 @@ internal sealed partial class PluginService
         try
         {
             EnsureStore();
-            if (shuttingDown) throw new InvalidOperationException("Application is closing.");
+            if (shuttingDown) throw HutaoException.InvalidOperation("Application is closing.");
             if (IsActive(id)) return;
             InstalledPlugin item = await Task.Run(() => PluginPackageStore.Locate(id));
             if (item.Error is not null || item.Manifest is not { } manifest || item.Hash is not { } hash)
-                throw new InvalidDataException(item.Error ?? "Incompatible plugin.");
-            if (!hash.Equals(approvedHash, StringComparison.OrdinalIgnoreCase)) throw new UnauthorizedAccessException("Package has changed; approve the new SHA256.");
-            if (manifest.MinHostVersion > HostVersion) throw new InvalidDataException("Host version is too old.");
+                throw HutaoException.Throw(item.Error ?? "Incompatible plugin.");
+            if (!hash.Equals(approvedHash, StringComparison.OrdinalIgnoreCase)) throw HutaoException.UnauthorizedAccess("Package has changed; approve the new SHA256.");
+            if (manifest.MinHostVersion > HostVersion) throw HutaoException.Throw("Host version is too old.");
             string canonicalId = item.Id;
             PluginDiskState state = PluginPackageStore.ReadState(canonicalId);
-            if (state.PendingHash is not null) throw new InvalidOperationException("A staged update requires review after restart.");
+            if (state.PendingHash is not null) throw HutaoException.InvalidOperation("A staged update requires review after restart.");
             state = state with { ApprovedHash = hash, LastError = null };
             PluginPackageStore.WriteState(canonicalId, state);
             try
@@ -234,7 +236,7 @@ internal sealed partial class PluginService
                 else
                 {
                     if (!workspace.Hash.Equals(hash, StringComparison.OrdinalIgnoreCase))
-                        throw new InvalidOperationException("Another version is mapped; restart required.");
+                        throw HutaoException.InvalidOperation("Another version is mapped; restart required.");
                     await Task.Run(() => PluginPackageStore.VerifyWorkspace(workspace.Identity, manifest));
                 }
 
@@ -253,7 +255,8 @@ internal sealed partial class PluginService
 
                 PluginSession session = await PluginSession.ActivateTrustedAsync(workspace.Entry, workspace.Identity,
                     !string.Equals(state.HookHash, hash, StringComparison.OrdinalIgnoreCase), MarkInstalled, Queue, GetRoot,
-                    Log, Notify, hash, registerMetadataProvider: serviceProvider.GetRequiredService<App>().RegisterPluginMetadataProvider, commitActivation: Commit, locateGamePath: LocateGamePathAsync);
+                    Log, Notify, (dialog, token) => serviceProvider.GetRequiredService<IContentDialogQueue>().EnqueueAndShowAsync(dialog, token).ShowTask,
+                    hash, registerMetadataProvider: serviceProvider.GetRequiredService<App>().RegisterPluginMetadataProvider, commitActivation: Commit, locateGamePath: LocateGamePathAsync);
                 active.Add(canonicalId, new(session, hash));
                 if (state.BackupHash is not null && state.PendingHash is null)
                 {
@@ -312,12 +315,12 @@ internal sealed partial class PluginService
         {
             EnsureStore();
             InstalledPlugin item = await Task.Run(() => PluginPackageStore.Locate(id));
-            if (item.Manifest is null) throw new InvalidOperationException("Legacy package: uninstall without deleting settings, then install its SDK 2.0 replacement.");
+            if (item.Manifest is null) throw HutaoException.InvalidOperation("Legacy package: uninstall without deleting settings, then install its SDK 2.0 replacement.");
             if (!verified.Manifest.Id.Equals(item.Id, StringComparison.OrdinalIgnoreCase) || verified.Manifest.Version <= item.Manifest.Version)
-                throw new InvalidDataException("Update must have the same ID and a higher version.");
-            if (verified.Manifest.MinHostVersion > HostVersion) throw new InvalidDataException("Update is incompatible with this host.");
+                throw HutaoException.Throw("Update must have the same ID and a higher version.");
+            if (verified.Manifest.MinHostVersion > HostVersion) throw HutaoException.Throw("Update is incompatible with this host.");
             PluginDiskState state = PluginPackageStore.ReadState(item.Id);
-            if (state.PendingHash is not null || state.BackupHash is not null) throw new InvalidOperationException("Resolve the existing pending update or rollback first.");
+            if (state.PendingHash is not null || state.BackupHash is not null) throw HutaoException.InvalidOperation("Resolve the existing pending update or rollback first.");
             string directory = PluginPackageStore.StateDirectory(item.Id);
             File.Delete(Path.Combine(directory, "backup.hutao")); // No recorded backup remains.
             string pending = Path.Combine(directory, "pending.hutao");
@@ -334,11 +337,11 @@ internal sealed partial class PluginService
         try
         {
             EnsureStore();
-            if (active.ContainsKey(id) || workspaces.ContainsKey(id)) throw new InvalidOperationException("Restart before applying an update.");
+            if (active.ContainsKey(id) || workspaces.ContainsKey(id)) throw HutaoException.InvalidOperation("Restart before applying an update.");
             InstalledPlugin item = await Task.Run(() => PluginPackageStore.Locate(id));
             PluginDiskState state = PluginPackageStore.ReadState(item.Id);
-            if (state.StagedInProcess == workspaceId) throw new InvalidOperationException("Restart before applying an update.");
-            if (state.PendingHash is not { } pendingHash || item.Hash is not { } oldHash) throw new InvalidOperationException("No verified pending update.");
+            if (state.StagedInProcess == workspaceId) throw HutaoException.InvalidOperation("Restart before applying an update.");
+            if (state.PendingHash is not { } pendingHash || item.Hash is not { } oldHash) throw HutaoException.InvalidOperation("No verified pending update.");
             string directory = PluginPackageStore.StateDirectory(item.Id);
             string pending = Path.Combine(directory, "pending.hutao"), backup = Path.Combine(directory, "backup.hutao");
             // A crash can occur after the backup or replacement has been written.
@@ -348,11 +351,11 @@ internal sealed partial class PluginService
             {
                 VerifiedPackage existing = await Task.Run(() => PluginPackage.Verify(backup));
                 if (!existing.Sha256.Equals(backupHash, StringComparison.OrdinalIgnoreCase))
-                    throw new InvalidDataException("Existing update backup differs; manual recovery required.");
+                    throw HutaoException.Throw("Existing update backup differs; manual recovery required.");
             }
             else
             {
-                if (state.BackupHash is not null) throw new InvalidDataException("Recorded update backup is missing.");
+                if (state.BackupHash is not null) throw HutaoException.Throw("Recorded update backup is missing.");
                 await Task.Run(() => PluginPackageStore.CopyApproved(item.Path, backup, oldHash));
             }
             PluginPackageStore.WriteState(item.Id, state with { BackupHash = backupHash });
@@ -381,8 +384,8 @@ internal sealed partial class PluginService
                 File.Delete(Path.Combine(directory, "pending.hutao"));
                 return;
             }
-            if (active.ContainsKey(id)) throw new InvalidOperationException("Disable the plugin before rollback.");
-            if (state.BackupHash is not { } hash) throw new InvalidOperationException("No verified backup.");
+            if (active.ContainsKey(id)) throw HutaoException.InvalidOperation("Disable the plugin before rollback.");
+            if (state.BackupHash is not { } hash) throw HutaoException.InvalidOperation("No verified backup.");
             string backup = Path.Combine(directory, "backup.hutao");
             string disabled = PluginPackageStore.PathFor(item.Id, false);
             if (item.Enabled) File.Move(item.Path, disabled);

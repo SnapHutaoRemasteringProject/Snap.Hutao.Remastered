@@ -26,6 +26,8 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
     private readonly PluginIdentity identity;
     private readonly DispatcherQueue queue;
     private readonly Func<XamlRoot?> xamlRoot;
+    private readonly Func<ContentDialog, CancellationToken, Task<ContentDialogResult>> enqueueDialog;
+    private readonly CancellationTokenSource closingDialogs = new();
     private readonly Action<NotificationKind, string> log;
     private readonly Action<NotificationKind, string> notify;
     private readonly Func<Task<string>>? locateGamePath;
@@ -41,14 +43,16 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
     private readonly HashSet<Task> pending = [];
     private readonly SemaphoreSlim writeGate = new(1, 1);
     private ContentDialog? dialog;
+    private bool dialogOpened;
 
     internal PluginHostContext(PluginIdentity identity, DispatcherQueue queue, Func<XamlRoot?> xamlRoot,
         Action<NotificationKind, string> log, Action<NotificationKind, string> notify, Dictionary<string, JsonElement> snapshot,
-        Func<Task<string>>? locateGamePath = null)
+        Func<ContentDialog, CancellationToken, Task<ContentDialogResult>> enqueueDialog, Func<Task<string>>? locateGamePath = null)
     {
         this.identity = identity;
         this.queue = queue;
         this.xamlRoot = xamlRoot;
+        this.enqueueDialog = enqueueDialog;
         this.log = log;
         this.notify = notify;
         this.snapshot = snapshot;
@@ -175,7 +179,8 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
     {
         Check();
         phase = Phase.Closing;
-        dialog?.Hide();
+        closingDialogs.Cancel();
+        if (dialogOpened) dialog?.Hide();
     }
     internal Task DrainAsync() { Check(); return Task.WhenAll(pending.ToArray()); }
     internal void Close()
@@ -190,6 +195,7 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
         }
         tokens.Clear(); observers.Clear(); views.Clear(); commands.Clear(); navigation.Clear();
         pendingNotifications.Clear();
+        closingDialogs.Dispose();
         phase = Phase.Closed;
     }
 
@@ -229,16 +235,32 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
             Title = title, Content = message, PrimaryButtonText = primaryText, SecondaryButtonText = secondaryText, CloseButtonText = "Close"
         };
         dialog = current;
+        current.Opened += OnOpened;
         try
         {
-            return (await current.ShowAsync()) switch
+            return (await enqueueDialog(current, closingDialogs.Token)) switch
             {
                 ContentDialogResult.Primary => DialogResult.Primary,
                 ContentDialogResult.Secondary => DialogResult.Secondary,
                 _ => DialogResult.None
             };
         }
-        finally { dialog = null; }
+        catch (OperationCanceledException) when (closingDialogs.IsCancellationRequested)
+        {
+            return DialogResult.None;
+        }
+        finally
+        {
+            current.Opened -= OnOpened;
+            dialogOpened = false;
+            dialog = null;
+        }
+
+        void OnOpened(ContentDialog sender, ContentDialogOpenedEventArgs args)
+        {
+            dialogOpened = true;
+            if (closingDialogs.IsCancellationRequested) sender.Hide();
+        }
     }
     private Task<T> Track<T>(Task<T> task) { _ = TrackTask(task); return task; }
     private Task Track(Task task) { _ = TrackTask(task); return task; }
@@ -251,7 +273,7 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
     }
     private IPluginRegistration RegisterToken(Action revoke)
     {
-        Registration token = new(() => { CheckThread(); revoke(); });
+        Registration token = new(CheckThread, revoke, tokens);
         tokens.Add(token);
         return token;
     }
@@ -395,15 +417,21 @@ public sealed record NavigationContribution(string Id, string Title, string Icon
 internal sealed record CommandContribution(string Id, string Title);
 internal sealed record RegisteredPluginSetting(string Name, string Description, object DefaultValue, object Value);
 
-internal sealed partial class Registration(Action revoke) : IPluginRegistration
+internal sealed partial class Registration(Action checkThread, Action revoke, List<IPluginRegistration> registrations) : IPluginRegistration
 {
     private Action? callback = revoke;
+    private List<IPluginRegistration>? owner = registrations;
+    private Action? validate = checkThread;
     public void Revoke()
     {
         // Do not consume the token if thread validation or removal fails.
         Action? current = callback;
         if (current is null) return;
+        validate?.Invoke();
         current();
+        owner?.Remove(this);
+        owner = null;
+        validate = null;
         callback = null;
     }
 }

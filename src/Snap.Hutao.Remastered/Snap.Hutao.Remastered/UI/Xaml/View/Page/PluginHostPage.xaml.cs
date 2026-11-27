@@ -5,7 +5,6 @@ using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.Service.Plugin;
 using Snap.Hutao.Remastered.UI.Content;
 using Snap.Hutao.Remastered.UI.Xaml.Control;
-using Snap.Hutao.Remastered.ViewModel.Plugin;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 
@@ -29,10 +28,11 @@ public sealed partial class PluginHostPage : ScopedPage
 
     protected override void LoadingOverride()
     {
-        InitializeDataContext<PluginViewModel>();
-        service = XamlRoot.XamlContext()!.ServiceProvider.GetRequiredService<PluginService>();
-        service.AttachRoot(XamlRoot);
-        this.DataContext<PluginViewModel>()!.MarkReady();
+        if (XamlRoot is { } root && root.XamlContext() is { } context)
+        {
+            service = context.ServiceProvider.GetRequiredService<PluginService>();
+            service.AttachRoot(root);
+        }
     }
 
     protected override void OnNavigatedFrom(NavigationEventArgs e)
