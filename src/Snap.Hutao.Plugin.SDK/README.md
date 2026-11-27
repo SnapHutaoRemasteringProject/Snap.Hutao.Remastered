@@ -20,6 +20,8 @@ C# 服务接口 → CsWinRT Authoring → Services.winmd
 
 新增业务服务使用 C# First：主程序提供真实业务实现，C# 接口自动生成 WinMD，C# / C++ 消费同一 ABI。核心 IDL 暂时保留。首个服务为游戏路径定位，详见 [Authoring](../../docs/PluginSDK2-Authoring.md)。
 
+主项目直接 Authoring 迁移可通过 `-p:HutaoMainAuthoring=true` 单独构建；普通构建不启用，以便逐步修复 CsWinRT 2.x 不兼容公开 API。SourceGeneration PR 的本地测试包可使用 `build/Pack-SourceGenerationReview.ps1` 生成，主项目指定测试版本后自动补充本地 NuGet feed。详细命令见 [Authoring](../../docs/PluginSDK2-Authoring.md)。
+
 ## 文档入口
 
 - [v1 → v2 详细迁移：项目、生命周期、设置、导航、XAML、游戏附加库的代码对照](../../docs/PluginSDK2-Migration.md)

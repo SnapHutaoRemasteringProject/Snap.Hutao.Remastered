@@ -27,6 +27,18 @@ CsWinRT 2.3.1 的 Authoring 是扫描公开 API 的组件生成器，而不是�
 
 本轮采用单独的 metadata-only Authoring 编译单元，实际业务仍在主项目。将来如果要直接 Authoring 主程序集，必须先限制/重构公开 API 并验证扫描器、XAML 生成、WinMD 和 Native AOT 发布；当前没有这项实测。不要把全项目打开 Authoring 当成已经实现。
 
+### 主项目直接 Authoring 迁移入口
+
+主项目新增 `HutaoMainAuthoring=true` 构建开关，直接在 Snap.Hutao.Remastered.csproj 启用 CsWinRTComponent，而非仅对独立契约项目开启。此路径生成完整组件的 WinMD/ABI 代码（不是 WinMD-only）；Native AOT 发布时使用 CsWinRT 自身的导出生成策略。现有两个公共 WinMD 作为 Authoring 引用输入；不重复生成它们的 C# 消费投影。
+
+```powershell
+dotnet build .\src\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Snap.Hutao.Remastered.csproj -c Debug -p:Platform=x64 -p:HutaoMainAuthoring=true -tl:off -bl:authoring.binlog
+```
+
+CsWinRT 2.3.1 [Generator.cs](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/Authoring/WinRT.SourceGenerator/Generator.cs#L151-L189) 在 CatchWinRTDiagnostics 返回 true 时提前退出，不会输出部分合法接口的 WinMD。其 [DiagnosticUtils.cs](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/Authoring/WinRT.SourceGenerator/DiagnosticUtils.cs#L87-L153) 检查公开类型；并没有 3.x 的 ExcludeFromWindowsMetadata 排除能力。CsWinRTIncludes 是消费投影的筛选器，不是 Authoring 白名单。
+
+因此该开关暂时默认关闭：可在直接 Authoring 的构建中逐批解决诊断，但日常开发及 dev 合并不应被未迁移的 public CLR API 阻塞。优先将真正内部类型改为 internal（先审查跨程序集消费者），对必须公开的业务 API 设计 WinRT 兼容签名；不要全局关闭诊断。先实际构建得到错误清单，再逐项修改，直至生成的 Snap.Hutao.Remastered.winmd 可被消费、正常/AOT 发布通过，之后才能考虑默认启用并将 SDK 切换到主程序集产出的元数据。当前 SDK 仍以独立业务契约 WinMD 为稳定输入，避免形成主程序 → Projection → 主程序的构建循环。直接 Authoring 模式尚未在 Windows 验证。
+
 ## 第一个真实服务：IHutaoGamePathService
 
 源码：`src/Snap.Hutao.Plugin.SDK/contracts/Services/IHutaoGamePathService.cs`。
@@ -84,19 +96,25 @@ Projection 以 ReferenceOutputAssembly=false 引用 Authoring 项目；生成的
 
 [SourceGeneration PR #2](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered.SourceGeneration/pull/2) 当前处理 BindableCustomProperty、依赖属性、partial、CsWinRT 2.x OptIn、3.x 条件以及 SHSGAOT001–007。它不是 WinMD 生成器。PR 的 Roslyn 测试已报告通过，但真实 WinUI/Native AOT 测试仍未完成。当前主程序中央版本为 1.3.18，不能仅凭版本号断言等于 PR 源码。
 
-如需联合验收，先在 PR 源码 checkout 构建独立本地包：
+### 本地 NuGet 源与联合构建
+
+仓库默认 NuGet.Config 仍只包含远程源。主程序在指定 HutaoSourceGenerationVersion 且本地 feed 目录存在时，通过 RestoreAdditionalProjectSources 追加本地源。默认路径为仓库根目录 artifacts/local-nuget；可通过 HutaoSourceGenerationFeed 指定其他目录。正常构建不依赖该目录。
+
+先在独立 SourceGeneration checkout 中选择 PR #2 的准确提交并保持工作树干净。然后在胡桃仓库根目录执行：
 
 ```powershell
-dotnet pack src/Snap.Hutao.Remastered.SourceGeneration/Snap.Hutao.Remastered.SourceGeneration/Snap.Hutao.Remastered.SourceGeneration.csproj -c Release -p:PackageVersion=1.3.19-authoringreview.1 -o C:\HutaoSourceGenFeed
+pwsh -File .\src\Snap.Hutao.Plugin.SDK\build\Pack-SourceGenerationReview.ps1 -SourceGenerationRoot C:\Repos\Snap.Hutao.Remastered.SourceGeneration
 ```
 
-保留现有 NuGet sources，将上述目录加入本地 feed（若启用 packageSourceMapping，给该包添加对应映射）。主程序支持临时 MSBuild 参数 HutaoSourceGenerationVersion：
+脚本按 Git commit 生成唯一测试包版本（1.3.19-authoringreview.<commit>），输出实际版本和 feed 参数。它不会自动切换 SourceGeneration 分支、合并 PR、上传包，也不会修改用户级 NuGet.Config。将输出的实际版本填入以下命令：
 
 ```powershell
-dotnet publish .\src\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Snap.Hutao.Remastered.csproj -c Release -p:Platform=x64 -r win-x64 -p:PublishAot=true -p:PublishReadyToRun=false -p:HutaoSourceGenerationVersion=1.3.19-authoringreview.1 -tl:off
+$version = '1.3.19-authoringreview.<实际提交哈希>'
+dotnet restore .\src\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Snap.Hutao.Remastered.csproj -r win-x64 -p:HutaoSourceGenerationVersion=$version -p:PublishAot=true -p:PublishReadyToRun=false
+dotnet publish .\src\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Snap.Hutao.Remastered.csproj -c Release -p:Platform=x64 -r win-x64 -p:PublishAot=true -p:PublishReadyToRun=false -p:HutaoSourceGenerationVersion=$version -tl:off
 ```
 
-确认 obj/project.assets.json 解析到本地测试包。正常构建不设置该属性，仍使用仓库中央版本。遵循现有主程序发布配置，不将临时 NuGet 源或测试包版本提交到生产配置。
+确认 obj/project.assets.json 解析到该本地测试包。如果使用自定义 FeedDirectory，restore 和 publish 都传相同的 HutaoSourceGenerationFeed。若使用 packageSourceMapping，需自行使本地源允许这个包；仓库现有 NuGet.Config 未启用映射。正常构建不设置 HutaoSourceGenerationVersion，仍使用中央版本。独立插件作者的 SDK NuGet 源是 Build-Sdk.ps1 输出的 artifacts/sdk/<version>/nuget，不是本 SourceGeneration 测试 feed。
 
 后续优化：若需要自动化大量业务服务注册，让 SourceGeneration 生成强类型 IID → DI 查找/适配器映射及诊断；不要让它重复实现 CsWinRT Authoring，也不要假定两个 Roslyn generator 可以依序读取彼此产生的语法树。2.x 下推荐把源可见的公开 C# 契约放在单独 Authoring 编译阶段；生成的 WinMD 再由后续 Projection 消费。现阶段注册、capability 与生命周期仍由宿主显式实现；没有自动导出全部业务接口。
 
