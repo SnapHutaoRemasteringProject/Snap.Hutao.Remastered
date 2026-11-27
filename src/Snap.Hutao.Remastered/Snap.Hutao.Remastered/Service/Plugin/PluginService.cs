@@ -5,6 +5,7 @@ using Snap.Hutao.Plugin.Contracts;
 using Snap.Hutao.Plugin.Packaging;
 using Snap.Hutao.Remastered.Core;
 using Snap.Hutao.Remastered.Service.Notification;
+using Snap.Hutao.Remastered.Service.Game;
 using System.IO;
 
 namespace Snap.Hutao.Remastered.Service.Plugin;
@@ -252,7 +253,7 @@ internal sealed partial class PluginService
 
                 PluginSession session = await PluginSession.ActivateTrustedAsync(workspace.Entry, workspace.Identity,
                     !string.Equals(state.HookHash, hash, StringComparison.OrdinalIgnoreCase), MarkInstalled, Queue, GetRoot,
-                    Log, Notify, hash, registerMetadataProvider: serviceProvider.GetRequiredService<App>().RegisterPluginMetadataProvider, commitActivation: Commit);
+                    Log, Notify, hash, registerMetadataProvider: serviceProvider.GetRequiredService<App>().RegisterPluginMetadataProvider, commitActivation: Commit, locateGamePath: LocateGamePathAsync);
                 active.Add(canonicalId, new(session, hash));
                 if (state.BackupHash is not null && state.PendingHash is null)
                 {
@@ -414,6 +415,13 @@ internal sealed partial class PluginService
             instanceLock = null;
             operationGate.Release();
         }
+    }
+
+    // Resolve the existing application DI service, never instantiate a plugin-side copy.
+    private async Task<string> LocateGamePathAsync()
+    {
+        var (found, path) = await serviceProvider.GetRequiredService<IGameService>().GetGamePathAsync();
+        return found ? path : string.Empty;
     }
 
     private void Log(NotificationKind kind, string message)

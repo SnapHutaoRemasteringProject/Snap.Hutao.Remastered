@@ -7,6 +7,11 @@
       <Platform Project="x64" />
     </Project>
   </Folder>
+  <Folder Name="/Contracts/">
+    <Project Path="contracts/Services/Snap.Hutao.Plugin.Services.Authoring.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
   <Folder Name="/Libraries/">
     <Project Path="libraries/Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj" Id="e92e2537-7f7f-4e05-ad18-8dc6ce51a197">
       <Platform Project="x64" />

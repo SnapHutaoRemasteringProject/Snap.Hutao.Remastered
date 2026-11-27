@@ -134,7 +134,7 @@ public sealed partial class PluginPage : ScopedPage
         {
             XamlRoot = XamlRoot,
             Title = SH.GetString("ViewPagePluginTrustTitle") ?? "Trust native plugin?",
-            Content = $"{manifest.Name} ({manifest.Id}) {manifest.Version}\nSHA256: {hash}\n\n"
+            Content = $"{manifest.Name} ({manifest.Id}) {manifest.Version}\nSHA256: {hash}\nCapabilities: {string.Join(", ", manifest.Capabilities.OrderBy(value => value, StringComparer.Ordinal))}\n\n"
                 + (SH.GetString("ViewPagePluginTrustWarning") ?? "Native code runs with the same permissions as the application.")
                 + (Environment.IsPrivilegedProcess ? "\n" + (SH.GetString("ViewPagePluginElevatedWarning") ?? "This process is elevated.") : string.Empty)
                 + gameLibraries,

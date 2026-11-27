@@ -11,6 +11,7 @@
     <WindowsPackageType>None</WindowsPackageType>
     <HutaoArtifacts>$(MSBuildThisFileDirectory)artifacts\</HutaoArtifacts>
     <HutaoContractsWinmd>$(HutaoArtifacts)metadata\Snap.Hutao.Plugin.Contracts.winmd</HutaoContractsWinmd>
+    <HutaoServicesWinmd>$(HutaoArtifacts)metadata\Snap.Hutao.Plugin.Services.winmd</HutaoServicesWinmd>
     <WindowsAppSdkBootstrapInitialize>false</WindowsAppSdkBootstrapInitialize>
     <WindowsAppSdkDeploymentManagerInitialize>false</WindowsAppSdkDeploymentManagerInitialize>
     <WindowsAppSdkUndockedRegFreeWinRTInitialize>false</WindowsAppSdkUndockedRegFreeWinRTInitialize>

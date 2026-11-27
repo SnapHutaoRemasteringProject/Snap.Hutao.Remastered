@@ -41,7 +41,8 @@ public sealed class PluginSession
     public static async Task<PluginSession> ActivateTrustedAsync(string dllPath, PluginIdentity identity, bool runInstallHook,
         Action markInstallCompleted, DispatcherQueue queue, Func<XamlRoot?> xamlRoot,
         Action<NotificationKind, string> log, Action<NotificationKind, string> notify, string? approvedPackageHash = null,
-        Action<string, string, IXamlMetadataProvider>? registerMetadataProvider = null, Action? commitActivation = null)
+        Action<string, string, IXamlMetadataProvider>? registerMetadataProvider = null, Action? commitActivation = null,
+        Func<Task<string>>? locateGamePath = null)
     {
         if (!queue.HasThreadAccess) throw new InvalidOperationException("Activate on the UI thread.");
         if (identity.UiMode == "compiled" && (registerMetadataProvider is null || identity.MetadataProvider is null))
@@ -56,7 +57,7 @@ public sealed class PluginSession
         });
         var snapshot = preparation.Snapshot;
         if (!queue.HasThreadAccess) throw new InvalidOperationException("Host dispatcher synchronization context is required.");
-        var context = new PluginHostContext(identity, queue, xamlRoot, log, notify, snapshot);
+        var context = new PluginHostContext(identity, queue, xamlRoot, log, notify, snapshot, locateGamePath);
         PluginSession session = new(queue, context, identity.Id);
         PluginResidency.Acquire(identity.Id, dllPath, identity.Version, (approvedPackageHash ?? "development") + ":" + preparation.Hash);
         try
@@ -137,7 +138,7 @@ public sealed class PluginSession
     public static async Task<PluginSession> ActivateApprovedPackageAsync(string packagePath, string approvedSha256,
         string workspace, string settingsDirectory, Version hostVersion, bool runInstallHook, Action markInstallCompleted,
         DispatcherQueue queue, Func<XamlRoot?> xamlRoot, Action<NotificationKind, string> log, Action<NotificationKind, string> notify,
-        Action<string, string, IXamlMetadataProvider>? registerMetadataProvider = null)
+        Action<string, string, IXamlMetadataProvider>? registerMetadataProvider = null, Func<Task<string>>? locateGamePath = null)
     {
         if (!queue.HasThreadAccess) throw new InvalidOperationException("Activate on the UI thread.");
         var verified = await Task.Run(() => PluginPackage.ExtractApproved(packagePath, approvedSha256, workspace, hostVersion));
@@ -150,7 +151,7 @@ public sealed class PluginSession
         PluginIdentity identity = new(manifest.Id, manifest.Name, manifest.Version.ToString(), workspace, data, settingsDirectory,
             manifest.UiMode, manifest.Capabilities, manifest.Files.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase), manifest.MetadataProvider);
         return await ActivateTrustedAsync(PackagePaths.Resolve(workspace, manifest.Entry), identity, runInstallHook,
-            markInstallCompleted, queue, xamlRoot, log, notify, verified.Sha256, registerMetadataProvider);
+            markInstallCompleted, queue, xamlRoot, log, notify, verified.Sha256, registerMetadataProvider, locateGamePath: locateGamePath);
     }
 
     public async Task DisableAsync(Action detachContent, bool uninstall = false)

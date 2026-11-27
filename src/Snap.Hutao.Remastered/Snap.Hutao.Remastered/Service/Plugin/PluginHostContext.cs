@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Markup;
 using Snap.Hutao.Plugin.Contracts;
 using Snap.Hutao.Plugin.Packaging;
 using Snap.Hutao.Plugin.Projection;
+using Snap.Hutao.Plugin.Services;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
@@ -18,7 +19,7 @@ public sealed record PluginIdentity(string Id, string Name, string Version, stri
 
 // Host owns this context. Do not expose the underlying application IServiceProvider to plugins.
 internal sealed partial class PluginHostContext : IPluginContext, IPluginSettings, IPluginNotifications, IPluginDispatcher,
-    IPluginDialogs, IPluginContributions, IPluginUi
+    IPluginDialogs, IPluginContributions, IPluginUi, IHutaoGamePathService
 {
     private enum Phase { Loading, Installing, Enabling, Active, Closing, Closed }
     private Phase phase = Phase.Loading;
@@ -27,6 +28,7 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
     private readonly Func<XamlRoot?> xamlRoot;
     private readonly Action<NotificationKind, string> log;
     private readonly Action<NotificationKind, string> notify;
+    private readonly Func<Task<string>>? locateGamePath;
     private readonly Dictionary<string, (object Default, object Value)> values = new(StringComparer.OrdinalIgnoreCase);
     private readonly Dictionary<string, JsonElement> snapshot;
     private readonly Dictionary<string, IPluginViewFactory> views = new(StringComparer.OrdinalIgnoreCase);
@@ -41,7 +43,8 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
     private ContentDialog? dialog;
 
     internal PluginHostContext(PluginIdentity identity, DispatcherQueue queue, Func<XamlRoot?> xamlRoot,
-        Action<NotificationKind, string> log, Action<NotificationKind, string> notify, Dictionary<string, JsonElement> snapshot)
+        Action<NotificationKind, string> log, Action<NotificationKind, string> notify, Dictionary<string, JsonElement> snapshot,
+        Func<Task<string>>? locateGamePath = null)
     {
         this.identity = identity;
         this.queue = queue;
@@ -49,6 +52,7 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
         this.log = log;
         this.notify = notify;
         this.snapshot = snapshot;
+        this.locateGamePath = locateGamePath;
     }
 
     public string PluginId { get { Check(); return identity.Id; } }
@@ -75,7 +79,17 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
             id == typeof(IPluginDialogs).GUID && Allowed("dialogs") ||
             id == typeof(IPluginContributions).GUID && (Allowed("navigation") || Allowed("commands")) ||
             id == typeof(IPluginUi).GUID && Allowed("xaml")) return this;
+        if (id == typeof(IHutaoGamePathService).GUID && Allowed("game-path") && locateGamePath is not null) return this;
         return null;
+    }
+
+    // Recheck phase and capability on every ABI call, including calls through cached/QI interfaces.
+    public IAsyncOperation<string> LocateAsync()
+    {
+        Demand("game-path");
+        Active();
+        if (locateGamePath is null) throw new NotSupportedException("Game path service is unavailable in this host.");
+        return Track(locateGamePath()).AsAsyncOperation();
     }
 
     public bool HasThreadAccess => queue.HasThreadAccess;

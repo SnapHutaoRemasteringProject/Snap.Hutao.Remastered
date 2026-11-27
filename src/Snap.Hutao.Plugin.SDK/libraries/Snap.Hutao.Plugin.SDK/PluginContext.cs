@@ -1,6 +1,7 @@
 using Microsoft.UI.Xaml;
 using Snap.Hutao.Plugin.Contracts;
 using Snap.Hutao.Plugin.Projection;
+using Snap.Hutao.Plugin.Services;
 using Windows.Foundation;
 
 namespace Snap.Hutao.Plugin.SDK;
@@ -24,6 +25,9 @@ public sealed partial class PluginContext : IDisposable
     public uint ApiMinor => abi.ApiMinor;
     public PluginSettings Settings => new(this, abi.Settings);
     public bool HasThreadAccess => abi.Dispatcher.HasThreadAccess;
+
+    // Concrete projected interface: keep the Native AOT cast statically analyzable.
+    public IHutaoGamePathService? GamePath => abi.GetService(typeof(IHutaoGamePathService).GUID) as IHutaoGamePathService;
 
     public void Log(NotificationKind kind, string message) => abi.Log(kind, message);
     public void Notify(NotificationKind kind, string message) => abi.Notifications.Show(kind, message);

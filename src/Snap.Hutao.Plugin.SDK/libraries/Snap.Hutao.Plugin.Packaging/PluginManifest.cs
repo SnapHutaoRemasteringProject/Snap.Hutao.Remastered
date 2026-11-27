@@ -7,7 +7,7 @@ public sealed record PluginManifest(string Id, string Name, Version Version, IRe
     IReadOnlySet<string> Capabilities, IReadOnlyDictionary<string, string> Files, string? MetadataProvider = null)
 {
     private static readonly HashSet<string> KnownCapabilities = new(StringComparer.Ordinal)
-        { "settings", "notifications", "navigation", "commands", "dialogs", "xaml", "game-libraries" };
+        { "settings", "notifications", "navigation", "commands", "dialogs", "xaml", "game-libraries", "game-path" };
 
     // Declarative compatibility with the v1 inject/ payload. Not a general process API.
     public IReadOnlyList<string> GameLibraries { get; init; } = [];

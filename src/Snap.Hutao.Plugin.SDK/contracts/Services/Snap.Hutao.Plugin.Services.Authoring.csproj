@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>Snap.Hutao.Plugin.Services</AssemblyName>
+    <RootNamespace>Snap.Hutao.Plugin.Services</RootNamespace>
+    <CsWinRTComponent>true</CsWinRTComponent>
+    <!-- Metadata-only authoring. Every runtime consumer uses the canonical projection. -->
+    <CsWinRTGenerateWinMDOnly>true</CsWinRTGenerateWinMDOnly>
+    <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
+    <CsWinRTAotExportsEnabled>false</CsWinRTAotExportsEnabled>
+    <IsPackable>false</IsPackable>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.CsWinRT" PrivateAssets="all" />
+    <CompilerVisibleProperty Include="CsWinRTGenerateWinMDOnly" />
+  </ItemGroup>
+  <Target Name="StageAuthoredServicesWinMD" AfterTargets="Build" Condition="'$(DesignTimeBuild)' != 'true'">
+    <Error Condition="!Exists('$(TargetDir)$(AssemblyName).winmd')" Text="CsWinRT Authoring did not generate the services WinMD." />
+    <MakeDir Directories="$(HutaoArtifacts)metadata" />
+    <Copy SourceFiles="$(TargetDir)$(AssemblyName).winmd" DestinationFiles="$(HutaoServicesWinmd)" SkipUnchangedFiles="true" />
+  </Target>
+</Project>
