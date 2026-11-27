@@ -6,6 +6,8 @@
     <LangVersion>preview</LangVersion>
     <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.EntityFrameworkCore.GeneratedInterceptors</InterceptorsNamespaces>
     <RootNamespace>Snap.Hutao.Remastered</RootNamespace>
+    <!-- Stable name of the XAML compiler-generated provider used in App.PluginXaml.cs. -->
+    <XamlProjectName>Snap_Hutao_Remastered</XamlProjectName>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Platforms>x64</Platforms>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>

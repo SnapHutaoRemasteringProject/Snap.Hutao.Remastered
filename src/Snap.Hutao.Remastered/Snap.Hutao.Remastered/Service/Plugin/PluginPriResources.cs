@@ -1,13 +1,17 @@
 using Microsoft.Windows.ApplicationModel.Resources;
+using System;
+using System.Collections.Concurrent;
+using System.IO;
+using Snap.Hutao.Plugin.Packaging;
 
-namespace PrototypeHost;
+namespace Snap.Hutao.Remastered.Service.Plugin;
 
 // Use the real MRT Core manager, not a replacement IResourceMap implementation.
 // Only a missing resource in a registered component namespace is routed to its PRI.
 internal sealed class PluginPriResources
 {
     private sealed record Component(string Path, ResourceManager Manager);
-    private readonly Dictionary<string, Component> components = new(StringComparer.OrdinalIgnoreCase);
+    private readonly ConcurrentDictionary<string, Component> components = new(StringComparer.OrdinalIgnoreCase);
     private readonly ResourceManager host = new();
 
     internal PluginPriResources()
@@ -30,11 +34,13 @@ internal sealed class PluginPriResources
             return;
         }
 
+        PackagePaths.RejectReparseAncestors(priPath);
         if (!File.Exists(priPath)) throw new FileNotFoundException("Compiled plugin PRI missing.", priPath);
         ResourceManager manager = new(priPath);
         if (manager.MainResourceMap.ResourceCount == 0)
             throw new InvalidDataException("Compiled plugin PRI has no resources: " + priPath);
-        components.Add(name, new(priPath, manager));
+        if (!components.TryAdd(name, new(priPath, manager)))
+            throw new InvalidOperationException("PRI component already registered: " + name);
         System.Diagnostics.Debug.WriteLine("[PluginPRI] Registered " + name + ": " + priPath);
     }
 

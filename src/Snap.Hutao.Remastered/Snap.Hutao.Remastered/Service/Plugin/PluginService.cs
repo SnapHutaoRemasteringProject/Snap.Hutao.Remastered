@@ -15,6 +15,7 @@ internal sealed record PluginNavigationItem(PluginNavigationTarget Target, strin
 [Service(ServiceLifetime.Singleton)]
 internal sealed partial class PluginService
 {
+    private readonly IServiceProvider serviceProvider;
     private readonly IMessenger messenger;
     private readonly ILogger<PluginService> logger;
 
@@ -161,7 +162,7 @@ internal sealed partial class PluginService
             if (recovery || Environment.IsPrivilegedProcess) return;
             foreach (InstalledPlugin item in await ScanAsync())
             {
-                if (!item.Enabled || item.Error is not null || item.Hash is null || item.Manifest?.UiMode == "compiled") continue;
+                if (!item.Enabled || item.Error is not null || item.Hash is null) continue;
                 try
                 {
                     PluginDiskState state = PluginPackageStore.ReadState(item.Id);
@@ -207,7 +208,6 @@ internal sealed partial class PluginService
                 throw new InvalidDataException(item.Error ?? "Incompatible plugin.");
             if (!hash.Equals(approvedHash, StringComparison.OrdinalIgnoreCase)) throw new UnauthorizedAccessException("Package has changed; approve the new SHA256.");
             if (manifest.MinHostVersion > HostVersion) throw new InvalidDataException("Host version is too old.");
-            if (manifest.UiMode == "compiled") throw new NotSupportedException("Compiled XAML is experimental in PrototypeHost; production hosting is not enabled.");
             string canonicalId = item.Id;
             PluginDiskState state = PluginPackageStore.ReadState(canonicalId);
             if (state.PendingHash is not null) throw new InvalidOperationException("A staged update requires review after restart.");
@@ -252,7 +252,7 @@ internal sealed partial class PluginService
 
                 PluginSession session = await PluginSession.ActivateTrustedAsync(workspace.Entry, workspace.Identity,
                     !string.Equals(state.HookHash, hash, StringComparison.OrdinalIgnoreCase), MarkInstalled, Queue, GetRoot,
-                    Log, Notify, hash, commitActivation: Commit);
+                    Log, Notify, hash, registerMetadataProvider: serviceProvider.GetRequiredService<App>().RegisterPluginMetadataProvider, commitActivation: Commit);
                 active.Add(canonicalId, new(session, hash));
                 if (state.BackupHash is not null && state.PendingHash is null)
                 {
@@ -314,7 +314,7 @@ internal sealed partial class PluginService
             if (item.Manifest is null) throw new InvalidOperationException("Legacy package: uninstall without deleting settings, then install its SDK 2.0 replacement.");
             if (!verified.Manifest.Id.Equals(item.Id, StringComparison.OrdinalIgnoreCase) || verified.Manifest.Version <= item.Manifest.Version)
                 throw new InvalidDataException("Update must have the same ID and a higher version.");
-            if (verified.Manifest.MinHostVersion > HostVersion || verified.Manifest.UiMode == "compiled") throw new InvalidDataException("Update is incompatible with this host.");
+            if (verified.Manifest.MinHostVersion > HostVersion) throw new InvalidDataException("Update is incompatible with this host.");
             PluginDiskState state = PluginPackageStore.ReadState(item.Id);
             if (state.PendingHash is not null || state.BackupHash is not null) throw new InvalidOperationException("Resolve the existing pending update or rollback first.");
             string directory = PluginPackageStore.StateDirectory(item.Id);

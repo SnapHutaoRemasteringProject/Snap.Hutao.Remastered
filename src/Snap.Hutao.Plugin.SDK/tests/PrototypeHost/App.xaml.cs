@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Markup;
+using Snap.Hutao.Remastered.Service.Plugin;
 
 namespace PrototypeHost;
 

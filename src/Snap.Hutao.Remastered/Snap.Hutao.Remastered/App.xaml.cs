@@ -2,6 +2,7 @@
 // Licensed under the MIT license.
 
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.Windows.AppLifecycle;
 using Microsoft.Windows.AppNotifications;
 using Snap.Hutao.Remastered.Core;
@@ -24,7 +25,7 @@ namespace Snap.Hutao.Remastered;
 
 [Service(ServiceLifetime.Singleton)]
 [SuppressMessage("", "SH001", Justification = "The App must be public")]
-public sealed partial class App : Application
+public sealed partial class App : Application, IXamlMetadataProvider
 {
     private const string ConsoleBanner = """
         ----------------------------------------------------------------
@@ -63,6 +64,11 @@ public sealed partial class App : Application
     /// Shortcut to get the <see cref="AppOptions"/> instance.
     /// </summary>
     public partial AppOptions Options { get; }
+
+    partial void PreConstruct(IServiceProvider serviceProvider)
+    {
+        ResourceManagerRequested += OnPluginResourceManagerRequested;
+    }
 
     partial void PostConstruct(IServiceProvider serviceProvider)
     {

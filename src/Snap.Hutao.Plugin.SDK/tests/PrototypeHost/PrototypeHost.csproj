@@ -30,6 +30,7 @@
     <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\PluginHostContext.cs" Link="Host\PluginHostContext.cs" />
     <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\PluginResidency.cs" Link="Host\PluginResidency.cs" />
     <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\PluginSession.cs" Link="Host\PluginSession.cs" />
+    <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\PluginPriResources.cs" Link="Host\PluginPriResources.cs" />
     <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\SettingStore.cs" Link="Host\SettingStore.cs" />
   </ItemGroup>
   <PropertyGroup Condition="'$(PublishAot)' == 'true'">
