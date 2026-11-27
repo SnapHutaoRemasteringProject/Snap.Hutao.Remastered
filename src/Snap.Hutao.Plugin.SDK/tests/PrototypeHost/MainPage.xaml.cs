@@ -67,18 +67,20 @@ public sealed partial class MainPage : Page
                     VerifiedPackage verified = await Task.Run(() => PluginPackage.Verify(path));
                     ContentDialog confirm = new()
                     {
-                        XamlRoot = panel.XamlRoot, Title = "Trust native plugin?",
+                        XamlRoot = panel.XamlRoot,
+                        Title = "Trust native plugin?",
                         Content = $"{verified.Manifest.Name} ({verified.Manifest.Id})\nSHA256: {verified.Sha256}\nThis plugin executes arbitrary native code in this process.",
-                        PrimaryButtonText = "Trust this package", CloseButtonText = "Cancel"
+                        PrimaryButtonText = "Trust this package",
+                        CloseButtonText = "Cancel"
                     };
                     if (await confirm.ShowAsync() != ContentDialogResult.Primary) return;
                     string workspace = Path.Combine(TestRoot, "workspaces", Environment.ProcessId.ToString(), Guid.NewGuid().ToString("N"));
                     string settings = Path.Combine(TestRoot, "settings", verified.Manifest.Id);
                     string key = verified.Manifest.Id + ":" + verified.Sha256;
-                    session = await PluginSession.ActivateApprovedPackageAsync(path, verified.Sha256, workspace, settings, new Version(1,0,0),
+                    session = await PluginSession.ActivateApprovedPackageAsync(path, verified.Sha256, workspace, settings, new Version(1, 0, 0),
                         !installed.Contains(key), () => installed.Add(key), DispatcherQueue, () => panel.XamlRoot, Write, Write, App.CurrentHost.RegisterMetadataProvider);
                     var manifest = verified.Manifest;
-                    identity = new(manifest.Id, manifest.Name, manifest.Version.ToString(), workspace, Path.Combine(settings,"data"),
+                    identity = new(manifest.Id, manifest.Name, manifest.Version.ToString(), workspace, Path.Combine(settings, "data"),
                         settings, manifest.UiMode, manifest.Capabilities, manifest.Files.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase), manifest.MetadataProvider);
                     entryPath = PackagePaths.Resolve(workspace, manifest.Entry);
                     approvalKey = key;
@@ -91,15 +93,17 @@ public sealed partial class MainPage : Page
                         throw new InvalidOperationException("Pack the native sample first: the compiled XAML requires its verified XBF payload.");
                     ContentDialog confirm = new()
                     {
-                        XamlRoot = panel.XamlRoot, Title = "Trust development DLL?",
+                        XamlRoot = panel.XamlRoot,
+                        Title = "Trust development DLL?",
                         Content = path + "\nThis DLL executes native code in this process.",
-                        PrimaryButtonText = "Load", CloseButtonText = "Cancel"
+                        PrimaryButtonText = "Load",
+                        CloseButtonText = "Cancel"
                     };
                     if (await confirm.ShowAsync() != ContentDialogResult.Primary) return;
                     string id = Path.GetFileNameWithoutExtension(path);
                     PackagePaths.ValidateIdentifier(id);
                     string settings = Path.Combine(TestRoot, "settings", id);
-                    identity = new(id, id, "2.0.0", Path.GetDirectoryName(path)!, Path.Combine(settings,"data"), settings, "loose",
+                    identity = new(id, id, "2.0.0", Path.GetDirectoryName(path)!, Path.Combine(settings, "data"), settings, "loose",
                         new HashSet<string>(StringComparer.Ordinal) { "settings", "notifications", "navigation", "commands", "dialogs", "xaml" },
                         new HashSet<string>(StringComparer.OrdinalIgnoreCase));
                     entryPath = path;
