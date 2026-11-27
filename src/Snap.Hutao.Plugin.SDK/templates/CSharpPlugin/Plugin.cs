@@ -1,9 +1,10 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Snap.Hutao.Plugin.Contracts;
 using Snap.Hutao.Plugin.SDK;
+
+namespace Example.MyPlugin;
 
 public static unsafe class Exports
 {
@@ -23,9 +24,9 @@ public sealed class MyPlugin : HutaoPlugin
 
     private PluginView CreateView()
     {
-        Button button = new() { Content = "Click me" };
+        PluginPage page = new();
         void Click(object sender, RoutedEventArgs args) => Context.Notify(NotificationKind.Success, "Hello from plugin");
-        button.Click += Click;
-        return new(button, () => button.Click -= Click);
+        page.ActionButton.Click += Click;
+        return new(page, () => page.ActionButton.Click -= Click);
     }
 }

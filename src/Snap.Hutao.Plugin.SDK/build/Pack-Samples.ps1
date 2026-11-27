@@ -20,26 +20,23 @@ foreach ($item in @(
     Write-Host "Packing $($item.Id) from $($item.Dll)"
     Write-Host "Entry SHA256: $((Get-FileHash -LiteralPath $item.Dll -Algorithm SHA256).Hash)"
     Copy-Item -LiteralPath $item.Dll -Destination $bin
-    if ($item.Id -eq 'TestPlugin.Native') {
+    if ($item.Id -in @('TestPlugin.Native', 'TestPlugin')) {
         # Only the component PRI is distributed; XBF must be embedded in it.
-        $outputDir = Split-Path -Parent $item.Dll
-        $pri = Join-Path $outputDir 'TestPlugin.Native.pri'
-        if (!(Test-Path -LiteralPath $pri -PathType Leaf)) {
-            $pri = Join-Path $outputDir 'resources.pri'
+        $pri = [IO.Path]::ChangeExtension($item.Dll, '.pri')
+        if ($item.Id -eq 'TestPlugin.Native' -and !(Test-Path -LiteralPath $pri -PathType Leaf)) {
+            $pri = Join-Path (Split-Path -Parent $item.Dll) 'resources.pri'
         }
         if (!(Test-Path -LiteralPath $pri -PathType Leaf)) {
-            throw "Compiled sample PRI missing. Build CppCompiled in VS and inspect PRI generation; do not package standalone XBF."
+            throw "Compiled sample PRI missing: $pri. Build or publish the sample with embedded XBF enabled."
         }
-        Copy-Item -LiteralPath $pri -Destination (Join-Path $bin 'TestPlugin.Native.pri')
-        Write-Host "Compiled XAML PRI: $pri (no standalone XBF is packaged)"
+        $packagePri = [IO.Path]::ChangeExtension([IO.Path]::GetFileName($item.Dll), '.pri')
+        Copy-Item -LiteralPath $pri -Destination (Join-Path $bin $packagePri)
+        Write-Host "Compiled XAML PRI: $pri (no standalone XAML or XBF is packaged)"
     }
-    if ($item.Id -ne 'TestPlugin.Native') {
+    if ($item.Id -eq 'TestPlugin.Native.Core') {
         $views = Join-Path $staging 'views'
         New-Item -ItemType Directory -Path $views -Force | Out-Null
-        $names = if ($item.Id -eq 'TestPlugin.Native.Core') { @('CoreView.xaml') } else { @('PluginPage.xaml', 'BindingPage.xaml') }
-        foreach ($name in $names) {
-            Copy-Item -LiteralPath (Join-Path $root ($item.Project + '\' + $name)) -Destination $views
-        }
+        Copy-Item -LiteralPath (Join-Path $root 'samples\CppCore\CoreView.xaml') -Destination $views
     }
     $template = Join-Path $root ($item.Project + '\' + $item.Template)
     $output = Join-Path $artifacts ($item.Id + '.hutao')

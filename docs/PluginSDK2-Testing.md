@@ -78,7 +78,7 @@ pwsh -File .\build\Test-Packaging.ps1 -ManagedDll .\artifacts\managed-fixture\Te
 
 测试脚本将普通托管 DLL 替换合法包入口并重新计算正确的 SHA256，再要求 verify 拒绝；因此失败不能被简单归因于哈希错误。随后分别启动 JIT/AOT PrototypeHost，手动填入该裸 DLL 完整路径（不要打包），Inspect and load，确认仅加载本地自己构建的可信样本。记录 LoadLibraryExW 是否成功；若失败，记录 Win32Exception.NativeErrorCode；若映射成功但没有 HutaoPluginCreate 导出，则记录 CsWin32 GetProcAddress 的 EntryPointNotFoundException。2026-11-27 用户报告两种宿主均不能加载普通 IL DLL；提供的 AOT 日志显示 LoadLibraryExW 成功，GetProcAddress(HutaoPluginCreate) 返回 ERROR_PROC_NOT_FOUND (127)，JIT 也报告失败但未提供完整栈。这证实普通 Build 不会生成原生导出，不恢复 ALC 托管加载器。每项记录 commit、SDK 版本、宿主路径、包 SHA256、Windows build、日志及 Pass/Fail/NotRun。正式 Snap Hutao 已接入 compiled 模式，仍需真实编译与运行验收。
 
-C++ compiled 是单独实验：重建 CppCompiled 并打包仅含 DLL + PRI 的新包，选择 C++ compiled (experimental)，确认 Generated InitializeComponent returned、[PluginPRI] Last embedded resource 为组件资源（不是 none）、x:Bind 文本和 Click；然后测试主题、嵌套控件、相同名称资源、多插件、两个发布宿主。标准模板的 App 生成的 AddOtherProvider 接入亦需验证。失败不影响 core 的程序式/loose 测试。正式应用现可安装启用 compiled；C# compiled 尚无实现。
+C++ compiled 是单独实验：重建 CppCompiled 并打包仅含 DLL + PRI 的新包，选择 C++ compiled (experimental)，确认 Generated InitializeComponent returned、[PluginPRI] Last embedded resource 为组件资源（不是 none）、x:Bind 文本和 Click；然后测试主题、嵌套控件、相同名称资源、多插件、两个发布宿主。标准模板的 App 生成的 AddOtherProvider 接入亦需验证。失败不影响 core 的程序式/loose 测试。正式应用现可安装启用 compiled；对 C# 重复相同步骤。额外用 `dumpbin /exports` 验证两个导出，用 `makepri dump` 检查两页的 XBF 都是 EmbeddedData，并在 Binding 页面验证计数和主题文字更新。
 
 ## 3. 当前状态与发布门槛
 

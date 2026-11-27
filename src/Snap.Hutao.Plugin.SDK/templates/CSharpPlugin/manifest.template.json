@@ -10,7 +10,7 @@
   "author": [
     "Example Author"
   ],
-  "description": "Programmatic UI SDK2 template",
+  "description": "Compiled WinUI XAML SDK2 template",
   "api": {
     "major": 1,
     "minMinor": 0
@@ -22,7 +22,8 @@
     "entry": "bin/x64/MyPlugin.dll"
   },
   "ui": {
-    "mode": "programmatic"
+    "mode": "compiled",
+    "metadataProvider": "Example.MyPlugin.Plugin_XamlTypeInfo.XamlMetaDataProvider"
   },
   "capabilities": [
     "navigation",

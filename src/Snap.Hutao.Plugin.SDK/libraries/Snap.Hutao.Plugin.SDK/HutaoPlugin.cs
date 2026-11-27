@@ -90,7 +90,7 @@ internal static class UiCall
 
 public static unsafe class PluginExport
 {
-    // Call from the plugin assembly's only UnmanagedCallersOnly export.
+    // Call from the plugin assembly's HutaoPluginCreate export.
     public static int Create<T>(uint abiMajor, nint* result) where T : HutaoPlugin, new()
     {
         if (result == null) return PluginAbi.PointerError;

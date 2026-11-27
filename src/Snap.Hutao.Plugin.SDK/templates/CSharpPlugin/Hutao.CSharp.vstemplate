@@ -2,7 +2,7 @@
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
     <Name>Snap Hutao Plugin (C# Native AOT)</Name>
-    <Description>Creates an x64 C# Native AOT plugin for Snap Hutao Plugin SDK 2.0.</Description>
+    <Description>Creates an x64 C# Native AOT plugin with compiled WinUI XAML.</Description>
     <Icon>Icon.ico</Icon>
     <TemplateID>Snap.Hutao.Plugin.CSharp.NativeAot</TemplateID>
     <ProjectType>CSharp</ProjectType>
@@ -15,7 +15,10 @@
   </TemplateData>
   <TemplateContent>
     <Project File="MyPlugin.csproj" TargetFileName="$safeprojectname$.csproj" ReplaceParameters="true">
-      <ProjectItem ReplaceParameters="false">Plugin.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true">Plugin.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true">PluginPage.xaml</ProjectItem>
+      <ProjectItem ReplaceParameters="true">PluginPage.xaml.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true">XamlExports.cs</ProjectItem>
       <ProjectItem ReplaceParameters="true">manifest.template.json</ProjectItem>
       <ProjectItem ReplaceParameters="false">Pack-Plugin.ps1</ProjectItem>
       <Folder Name="Properties">

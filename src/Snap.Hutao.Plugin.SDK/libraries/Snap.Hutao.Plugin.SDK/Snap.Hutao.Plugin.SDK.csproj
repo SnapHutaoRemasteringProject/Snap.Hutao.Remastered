@@ -10,6 +10,7 @@
     <ProjectReference Include="..\Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <None Include="..\..\build\CompiledPluginXaml.targets" Pack="true" PackagePath="build/Snap.Hutao.Plugin.SDK.targets" />
     <None Include="$(HutaoContractsWinmd);$(HutaoServicesWinmd)" Pack="true" PackagePath="tools/native/metadata/" />
     <None Include="..\..\contracts\HutaoPluginAbi.h;..\Snap.Hutao.Plugin.SDK.Native\HutaoPlugin.hpp" Pack="true" PackagePath="tools/native/include/" />
   </ItemGroup>

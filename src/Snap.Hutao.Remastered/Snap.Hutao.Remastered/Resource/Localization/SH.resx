@@ -6551,6 +6551,12 @@
   <data name="ViewPagePluginGameLibrariesWarning" xml:space="preserve">
     <value>此插件还请求向游戏加载第三方 DLL。无法保证与游戏或反作弊系统的兼容性，也无法保证账号安全。请确认来源及游戏的使用规则。</value>
   </data>
+  <data name="ViewPagePluginLegacyStatus" xml:space="preserve">
+    <value>旧版插件（SDK 1.x）</value>
+  </data>
+  <data name="ViewPagePluginLegacyDescription" xml:space="preserve">
+    <value>此插件使用旧版 SDK，无法在当前宿主中运行。请安装使用 Plugin SDK 2.0 构建的版本。</value>
+  </data>
   <data name="ViewPagePluginMoreActions" xml:space="preserve">
     <value>更多插件操作</value>
   </data>

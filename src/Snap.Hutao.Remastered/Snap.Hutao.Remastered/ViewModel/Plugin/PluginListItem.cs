@@ -13,7 +13,7 @@ public sealed class PluginListItem
     internal PluginListItem(PluginViewModel viewModel, InstalledPlugin entry, PluginDiskState state, BitmapImage? icon, bool enabled, string? stateError, IReadOnlyList<CommandContribution> commands)
     {
         Name = entry.Manifest?.Name ?? entry.Id;
-        Description = entry.Manifest?.Description ?? string.Empty;
+        Description = entry.IsLegacy ? SH.ViewPagePluginLegacyDescription : entry.Manifest?.Description ?? string.Empty;
         Version = entry.Manifest?.Version.ToString() ?? string.Empty;
         Author = entry.Manifest is { } manifest ? string.Join(", ", manifest.Author) : string.Empty;
         Icon = icon;
@@ -22,12 +22,14 @@ public sealed class PluginListItem
         CanEnable = CanChangePackage && entry.Manifest is not null && state.PendingHash is null;
         CanApply = CanChangePackage && state.PendingHash is not null && !enabled;
         CanRollback = CanChangePackage && (state.BackupHash is null ? state.PendingHash is not null : !enabled);
-        Status = enabled ? SH.ViewPagePluginStatusEnabled : SH.ViewPagePluginStatusDisabled;
+        Status = entry.IsLegacy
+            ? SH.ViewPagePluginLegacyStatus
+            : enabled ? SH.ViewPagePluginStatusEnabled : SH.ViewPagePluginStatusDisabled;
         List<string> details = [entry.Id];
         if (entry.Hash is { } hash) details.Add("SHA256: " + hash);
         if (state.PendingHash is { } pending) details.Add($"{SH.ViewPagePluginUpdateButton} SHA256: {pending}");
         if (state.BackupHash is { } backup) details.Add($"{SH.ViewPagePluginRollbackButton} SHA256: {backup}");
-        if (entry.Error is { } error) details.Add(error);
+        if (!entry.IsLegacy && entry.Error is { } error) details.Add(error);
         if (state.LastError is { } lastError) details.Add(lastError);
         if (stateError is not null) details.Add(stateError);
         Details = string.Join("\n", details);

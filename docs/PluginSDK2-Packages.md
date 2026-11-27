@@ -22,7 +22,7 @@
 
 | 字段 | 类型及约束 |
 |---|---|
-| schemaVersion | 整数 2；旧 1 或缺失不兼容 |
+| schemaVersion | 整数 2，标记包清单格式 |
 | id | 1–128 ASCII 字符，字母/数字起始，其余允许字母数字 ._-；禁止 ..、结尾点、设备名；唯一性大小写不敏感 |
 | name | 1–128 字符；可读名称不是 ID |
 | version | major/minor/patch，三个非负 Int32 |
@@ -34,11 +34,13 @@
 | runtime | kind=winrt-native，architecture=x64，entry=bin/x64/xxx.dll |
 | ui.mode | none / programmatic / loose / compiled |
 | ui.metadataProvider | 仅 compiled 必需；组件 WinRT runtimeclass 全名，如 TestPlugin.Native.XamlMetaDataProvider |
-
-compiled 包必须包含与 runtime.entry 同路径同文件名（扩展名 .pri）的组件 PRI，并列入 files；不接受独立 .xbf。组件 DLL 文件名（不含扩展名）与 XAML URI 的组件前缀一致。PRI 中 XBF 必须实际为 EmbeddedData；包校验只检查路径和完整性，运行时使用 MRT 检查候选，正式应用已接入 compiled，尚待 Windows 验收。
 | capabilities | 唯一能力字符串数组，见下表 |
 | gameLibraries | 可选数组，最多 16 个唯一顶层 inject/*.dll 路径；与 game-libraries 能力同时声明，全部列入 files 并通过 native x64 PE 校验 |
 | files | 打包器生成 [{path,sha256}]；小写 64 个十六进制字符；不得列 manifest.json 本身 |
+
+`schemaVersion` 表示清单格式，`api.major/minMinor` 表示宿主和插件使用的二进制接口（ABI）版本，`version` 则由插件作者为每次发布递增。SDK 1.x 的历史清单无 `schemaVersion`，也没有 V2 的 `runtime`、`api`、`ui` 和 `files` 字段。宿主将这类包显示为 SDK 1.x，并提示安装作者用 V2 SDK 重新构建的包。缺少 `schemaVersion` 但含 V2 字段时报告清单错误。
+
+编译型包的同名 PRI 放在入口 DLL 旁边并登记在 `files` 中。组件 DLL 的文件名不含扩展名时，应与 XAML URI 中的组件前缀一致。XBF 作为 EmbeddedData 写入 PRI，供宿主的 MRT（现代资源管理系统）读取。
 
 能力映射：
 

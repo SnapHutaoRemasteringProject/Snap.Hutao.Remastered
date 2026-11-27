@@ -166,7 +166,7 @@ public sealed partial class Model : System.ComponentModel.INotifyPropertyChanged
 
 ### 编译期 XAML 实验
 
-C++ runtime component 的 Page 使用正常 IDL、x:Class、x:Bind、编译器生成的 Connect/GetBindingConnector 与 InitializeComponent。组件 PRI 内嵌 XBF，不分发独立 XBF。两个宿主共享 PluginPriResources：ResourceManagerRequested 接入普通 MRT manager，ResourceNotFound 将未找到的组件资源路由到其 PRI，返回 EmbeddedData。PrototypeHost 使用生成的 AddOtherProvider；主程序保留原有自动 provider 生成并显式实现 IXamlMetadataProvider 补充插件查找。C++ PRI 页面、Click 与 Exercise ABI 已有用户成功日志；主程序编译、两种发布及完整资源行为待验证。C# compiled 尚未实现，保留 Loose XAML，详见 [XAML 指南](PluginSDK2-Xaml.md)。
+C++ runtime component 的 Page 使用正常 IDL、x:Class、x:Bind、编译器生成的 Connect/GetBindingConnector 与 InitializeComponent。组件 PRI 内嵌 XBF，不分发独立 XBF。两个宿主共享 PluginPriResources：ResourceManagerRequested 接入普通 MRT manager，ResourceNotFound 将未找到的组件资源路由到其 PRI，返回 EmbeddedData。PrototypeHost 使用生成的 AddOtherProvider；主程序保留原有自动 provider 生成并显式实现 IXamlMetadataProvider 补充插件查找。C++ PRI 页面、Click 与 Exercise ABI 已有用户成功日志；主程序编译、两种发布及完整资源行为待验证。C# 编译型模板使用相同的 PRI 路由和 WinRT 激活接口，详见 [XAML 指南](PluginSDK2-Xaml.md)。
 
 ## 4. C++/WinRT ABI 参考
 

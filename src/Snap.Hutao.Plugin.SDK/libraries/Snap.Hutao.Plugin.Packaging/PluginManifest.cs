@@ -19,7 +19,7 @@ public sealed record PluginManifest(string Id, string Name, Version Version, IRe
         using JsonDocument document = JsonDocument.Parse(bytes, new() { MaxDepth = 16 });
         JsonElement root = document.RootElement;
         RejectDuplicates(root);
-        if (root.GetProperty("schemaVersion").GetInt32() != 2) throw new InvalidDataException("Unsupported plugin schema.");
+        ValidateSchema(root);
         string id = ReadString(root, "id", 128, true);
         PackagePaths.ValidateIdentifier(id);
         string name = ReadString(root, "name", 128, true);
@@ -43,7 +43,6 @@ public sealed record PluginManifest(string Id, string Name, Version Version, IRe
             throw new InvalidDataException("Entry must be an x64 DLL under bin/x64.");
         string mode = ReadString(root.GetProperty("ui"), "mode", 32, true);
         if (mode is not ("none" or "loose" or "programmatic" or "compiled")) throw new InvalidDataException("Unsupported UI mode.");
-        // Compiled UI packages can be inspected/packed; activation requires explicit host opt-in.
         string? provider = null;
         if (mode == "compiled")
         {
@@ -106,6 +105,30 @@ public sealed record PluginManifest(string Id, string Name, Version Version, IRe
         return new(id, name, pluginVersion, authors, description, icon, minimum, major, minor, entry, mode, capabilities, files, provider) { GameLibraries = gameLibraries.AsReadOnly() };
     }
 
+    private static void ValidateSchema(JsonElement root)
+    {
+        if (root.ValueKind != JsonValueKind.Object)
+            throw new InvalidDataException("The plugin manifest must be a JSON object.");
+
+        if (!root.TryGetProperty("schemaVersion", out JsonElement schema))
+        {
+            // SDK 1.x used the same package extension and root manifest, without a schema marker.
+            if (root.TryGetProperty("id", out JsonElement id) && id.ValueKind == JsonValueKind.String &&
+                root.TryGetProperty("name", out JsonElement name) && name.ValueKind == JsonValueKind.String &&
+                root.TryGetProperty("version", out JsonElement version) && version.ValueKind == JsonValueKind.Object &&
+                !root.TryGetProperty("runtime", out _) && !root.TryGetProperty("api", out _) &&
+                !root.TryGetProperty("ui", out _) && !root.TryGetProperty("files", out _))
+                throw new LegacyPluginPackageException();
+
+            throw new InvalidDataException("The plugin manifest is missing schemaVersion.");
+        }
+
+        if (schema.ValueKind != JsonValueKind.Number || !schema.TryGetInt32(out int number))
+            throw new InvalidDataException("Plugin schemaVersion must be an integer.");
+        if (number == 1) throw new LegacyPluginPackageException();
+        if (number != 2) throw new InvalidDataException($"Unsupported plugin schemaVersion {number}. Expected 2.");
+    }
+
     private static string ReadString(JsonElement root, string key, int limit, bool required)
     {
         string value = root.GetProperty(key).GetString() ?? throw new InvalidDataException("Null " + key);
@@ -128,3 +151,6 @@ public sealed record PluginManifest(string Id, string Name, Version Version, IRe
             foreach (JsonElement child in element.EnumerateArray()) RejectDuplicates(child);
     }
 }
+
+public sealed class LegacyPluginPackageException()
+    : NotSupportedException("This plugin uses SDK 1.x. Install a package built for Plugin SDK 2.0.");

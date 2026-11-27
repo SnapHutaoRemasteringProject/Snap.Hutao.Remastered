@@ -95,18 +95,13 @@ public sealed class TestPlugin : HutaoPlugin
         }
     }
 
-    [WinRT.DynamicWindowsRuntimeCast(typeof(StackPanel))]
-    [WinRT.DynamicWindowsRuntimeCast(typeof(Button))]
-    [WinRT.DynamicWindowsRuntimeCast(typeof(TextBlock))]
-    [WinRT.DynamicWindowsRuntimeCast(typeof(TextBox))]
     private PluginView CreateViewCore()
     {
-        // Real WinUI controls created by the host's XAML parser, no compiled-XAML resource hooks.
-        StackPanel root = Context.LoadXaml("views/PluginPage.xaml") as StackPanel ?? throw new InvalidCastException("LoadXaml did not return a StackPanel projection.");
-        Button click = root.FindName("ClickButton") as Button ?? throw new InvalidCastException("ClickButton is not a Button projection.");
-        TextBlock count = root.FindName("CounterText") as TextBlock ?? throw new InvalidCastException("CounterText is not a TextBlock projection.");
-        TextBox edit = root.FindName("MessageBox") as TextBox ?? throw new InvalidCastException("MessageBox is not a TextBox projection.");
-        Button save = root.FindName("SaveButton") as Button ?? throw new InvalidCastException("SaveButton is not a Button projection.");
+        PluginPage root = new();
+        Button click = root.CounterButton;
+        TextBlock count = root.CounterLabel;
+        TextBox edit = root.MessageEditor;
+        Button save = root.SaveMessageButton;
         count.Text = counter.Value.ToString();
         edit.Text = message.Value;
         IDisposable subscription = counter.Subscribe(() => count.Text = counter.Value.ToString());
@@ -147,11 +142,9 @@ public sealed class TestPlugin : HutaoPlugin
         });
     }
 
-    [WinRT.DynamicWindowsRuntimeCast(typeof(FrameworkElement))]
     private PluginView CreateBindingView()
     {
-        FrameworkElement root = Context.LoadXaml("views/BindingPage.xaml") as FrameworkElement
-            ?? throw new InvalidCastException("Expected FrameworkElement.");
+        BindingPage root = new();
         SampleViewModel model = new(Context, counter, message);
         root.DataContext = model;
         return new(root, () => { root.DataContext = null; model.Dispose(); });

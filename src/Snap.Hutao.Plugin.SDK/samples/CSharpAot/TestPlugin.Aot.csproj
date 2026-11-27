@@ -1,6 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
+    <RootNamespace>TestPlugin.Aot</RootNamespace>
+    <XamlProjectName>Plugin</XamlProjectName>
+    <HutaoCompiledPluginXaml>true</HutaoCompiledPluginXaml>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <EnablePriGenTooling>true</EnablePriGenTooling>
+    <AppxGeneratePriEnabled>true</AppxGeneratePriEnabled>
+    <DisableEmbeddedXbf>false</DisableEmbeddedXbf>
+    <EnableTypeInfoReflection>false</EnableTypeInfoReflection>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
     <PublishAot>true</PublishAot>
@@ -10,10 +19,14 @@
     <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
   </PropertyGroup>
   <ItemGroup>
-    <Page Remove="PluginPage.xaml;BindingPage.xaml" />
-    <None Update="PluginPage.xaml;BindingPage.xaml" />
+    <Compile Remove="XamlExports.cs" />
+    <UpToDateCheckInput Include="XamlExports.cs" />
+    <Page Include="PluginPage.xaml;BindingPage.xaml" />
     <ProjectReference Include="..\..\libraries\Snap.Hutao.Plugin.SDK\Snap.Hutao.Plugin.SDK.csproj" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX" PrivateAssets="all" />
   </ItemGroup>
+  <Import Project="..\..\build\CompiledPluginXaml.targets" />
 </Project>

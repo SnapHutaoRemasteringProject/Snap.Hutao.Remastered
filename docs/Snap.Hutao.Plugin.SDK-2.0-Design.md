@@ -309,7 +309,7 @@ V1 测试支持范围：Grid、StackPanel、Border、TextBlock、TextBox、Butto
 
 ### 6.3 完整编译期 XAML（G3）
 
-2026-11-27 实现更新：C++ PrototypeHost 已实测 PRI 内嵌 XBF 页面及 Click/ABI；按用户要求生产宿主已接入，正式 Windows 回归仍是发布门槛。插件包只部署同名组件 PRI，不允许独立 .xbf。C# compiled 尚未实现，保留 .xaml loose。下文为原设计验收目标，具体当前状态见 PluginSDK2-Testing.md。
+2026-11-27 实现更新：C++ PrototypeHost 已实测 PRI 内嵌 XBF 页面及 Click/ABI；按用户要求生产宿主已接入，正式 Windows 回归仍是发布门槛。插件包只部署同名组件 PRI，不允许独立 .xbf。C# 模板和样例使用相同的内嵌 XBF 方案，Windows 验收待执行。下文为原设计验收目标，具体当前状态见 PluginSDK2-Testing.md。
 
 插件自定义 WinRT Page/UserControl 可以用其自身 IDL、XAML、code-behind、WinMD 及 PRI/XBF 构建，工厂 CreateView 通过 UIElement 交接，宿主不用认识具体 class。研究顺序：程序式 C++/WinRT 控件 → 插件 compiled UserControl → XBF/PRI 资源发现 → 自定义控件元数据/绑定/主题资源 → C# Native AOT compiled WinRT component。动态激活可由插件内部直接构造 runtimeclass 或标准 DllGetActivationFactory；不修改核心入口。验证 ResourceManager(path) 只实例化资源管理器不等同把资源自动加入 WinUI 当前资源图；必须验证实际 InitializeComponent、主题切换、x:Bind、事件、名称作用域、不同插件同名资源。参考 DynamicXAML，但其 DynamicLoader.cpp 使用 Detours 及固定 vtable 索引，禁止将它的资源 Hook 作为生产必需；禁止修改 WinUI 内部函数、硬编码偏移或私有 ABI、全局 XAML metadata 注入猜测。若受支持 API 无法满足，则 compiled mode 保持拒绝，附最小复现与上游问题链接，绝不悄悄降级。C# compiled WinRT component 的 AOT authoring 单独验证，不能由 C++ 成功推出。
 

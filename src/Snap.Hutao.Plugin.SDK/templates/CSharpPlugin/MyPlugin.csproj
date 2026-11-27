@@ -3,6 +3,15 @@
     <TargetFramework>net11.0-windows10.0.26100.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <OutputType>Library</OutputType>
+    <RootNamespace>Example.MyPlugin</RootNamespace>
+    <XamlProjectName>Plugin</XamlProjectName>
+    <HutaoCompiledPluginXaml>true</HutaoCompiledPluginXaml>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <EnablePriGenTooling>true</EnablePriGenTooling>
+    <AppxGeneratePriEnabled>true</AppxGeneratePriEnabled>
+    <DisableEmbeddedXbf>false</DisableEmbeddedXbf>
+    <EnableTypeInfoReflection>false</EnableTypeInfoReflection>
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
     <WindowsPackageType>None</WindowsPackageType>
@@ -23,9 +32,14 @@
     <HutaoSdkVersion Condition="'$(HutaoSdkVersion)' == ''">2.0.0-preview.1</HutaoSdkVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="XamlExports.cs" />
+    <UpToDateCheckInput Include="XamlExports.cs" />
+    <Page Include="PluginPage.xaml" />
     <PackageReference Include="Snap.Hutao.Plugin.SDK" Version="$(HutaoSdkVersion)" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.3.1" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.6.6-experimental" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2957" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX" Version="1.7.261119100" PrivateAssets="all" />
   </ItemGroup>
   <Target Name="RequireNativePluginPublish" BeforeTargets="Publish" Condition="'$(PublishAot)' != 'true' Or '$(NativeLib)' != 'Shared' Or '$(RuntimeIdentifier)' != 'win-x64'">
     <Error Text="SDK 2.0 C# plugins require Native AOT shared-library Publish targeting win-x64. Ordinary managed Build/Publish is not a plugin entry." />

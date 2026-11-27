@@ -185,6 +185,10 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
         {
             logger.LogDebug("Plugin page operation cancelled.");
         }
+        catch (LegacyPluginPackageException)
+        {
+            Show(InfoBarSeverity.Warning, SH.ViewPagePluginLegacyDescription);
+        }
         catch (Exception error)
         {
             Show(InfoBarSeverity.Error, error.Message);

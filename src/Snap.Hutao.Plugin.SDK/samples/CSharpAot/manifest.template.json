@@ -22,7 +22,8 @@
     "entry": "bin/x64/TestPlugin.Aot.dll"
   },
   "ui": {
-    "mode": "loose"
+    "mode": "compiled",
+    "metadataProvider": "TestPlugin.Aot.Plugin_XamlTypeInfo.XamlMetaDataProvider"
   },
   "capabilities": [
     "settings",
@@ -30,7 +31,6 @@
     "navigation",
     "commands",
     "dialogs",
-    "xaml",
     "game-path"
   ]
 }

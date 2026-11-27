@@ -1,18 +1,94 @@
 # 插件 XAML 开发指南：loose XAML、Binding、XBF 与 PRI
 
-## 1. 先选择正确的 UI 方式
+## 1. 选择页面构建方式
 
-| 目标 | 选择 | 编译产物 |
+| 目标 | 选择 | 打包内容 |
 |---|---|---|
-| 简单 UI、排除资源问题 | programmatic | native DLL |
-| 与 v1 .hxaml 页面等价 | loose | native DLL + .xaml |
-| C# MVVM | loose + 生成 Binding 元数据 | native DLL + .xaml；AOT 验收待完成 |
-| C++ x:Class、x:Bind、生成事件、独立 runtime class | compiled（推荐 C++ 完整 UI） | native DLL + 内嵌 XBF 的 PRI |
-| C# 编译期 XAML runtime component | 尚未实现验收 | 不承诺支持 |
+| 用代码创建控件、排查资源问题 | `programmatic` | 原生 DLL |
+| C# 或 C++ 的 `x:Class`、`x:Bind`、XAML 事件 | `compiled` | 原生 DLL + 内嵌 XBF 的同名 PRI |
+| 维护已采用运行时解析的 V2 页面 | `loose` | 原生 DLL + 包内文本 `.xaml` |
 
-正式宿主现在也接收 compiled（与 PrototypeHost 共享 PRI 路由）；主程序接入仍待验收。C++ 完整 UI 推荐 compiled；C# 仍需 loose，直到 C# Native AOT 编译期 XAML 得到实际验证。保留两种 UI 能力及既有 ABI。**v1 的示例本来就不是编译期 XAML。** v1 的 TestPlugin.csproj 将 TestPluginPage.hxaml 嵌入托管程序集；PluginScopedPage.LoadXamlManually 读取字符串并调用 XamlReader.Load。v2 保留这条基本路径，只将资源改为验证过的外部包文件，不需要 XBF 或插件 PRI 来实现它。
+### C# 编译型页面
 
-## 2. 创建一个 loose XAML 页面（完整代码）
+从 SDK 的 C# 项目模板开始，先打开默认页面并验证点击通知，再添加自己的页面。普通应用与插件使用同一套 WinUI XAML 编译器。插件由胡桃已有的 WinUI 应用实例打开，因此项目输出 DLL，由宿主管理窗口及线程。
+
+#### 1. 把页面加入编译
+
+例如项目的 `RootNamespace` 为 `Example.MyPlugin`。在 `PluginPage.xaml` 声明页面类型和按钮：
+
+```xml
+<Page x:Class="Example.MyPlugin.PluginPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Spacing="8">
+        <TextBlock Text="{x:Bind Title}" />
+        <Button x:Name="ClickButton" Content="发送通知" />
+    </StackPanel>
+</Page>
+```
+
+项目文件中的 `<Page Include="PluginPage.xaml" />` 把它交给 XAML 编译器。编译器根据 `x:Class` 生成同名 partial class，提供 `InitializeComponent`、`x:Bind` 访问代码和 `ClickButton` 字段。你在同一个命名空间中补上自己的 partial class：
+
+```csharp
+using Microsoft.UI.Xaml.Controls;
+
+namespace Example.MyPlugin;
+
+public sealed partial class PluginPage : Page
+{
+    public PluginPage() => InitializeComponent();
+
+    public string Title => "My Plugin";
+
+    internal Button ActionButton => ClickButton;
+}
+```
+
+这里的 `x:Bind Title` 默认读取一次页面自己的属性。修改为运行时会变化的值时，按需要设置 `Mode=OneWay` 并为源提供属性变更通知。传统 `{Binding ...}` 按名字从 `DataContext` 找属性。在 Native AOT 下，自定义绑定源需要 `[WinRT.GeneratedBindableCustomProperty]` 和 `partial`，让 CsWinRT 在编译时生成 XAML 所需的属性查询。两种方式可以在同一页面上使用，仓库的 `samples/CSharpAot/BindingPage.xaml` 展示了后一种。
+
+#### 2. 注册页面并绑定生命周期
+
+模板在 `OnEnable` 里注册视图工厂，然后把导航项指向它。每次打开都调用工厂，构造独立的控件树。下面是 `Plugin.cs` 中的核心代码：
+
+```csharp
+private PluginView CreateView()
+{
+    PluginPage page = new();
+
+    void Click(object sender, RoutedEventArgs args)
+    {
+        Context.Notify(NotificationKind.Success, "Hello from plugin");
+    }
+
+    page.ActionButton.Click += Click;
+    return new(page, () => page.ActionButton.Click -= Click);
+}
+```
+
+`InitializeComponent` 在构造时加载页面资源。宿主关闭页面后会调用 `PluginView` 的清理回调。新增第二页时，再添加一个 `Page` 项并注册不同的视图键。同一个插件的两个页面共享这份 PRI 和元数据提供程序。
+
+#### 3. 核对元数据名称与两阶段编译
+
+模板配置 `XamlProjectName=Plugin`，所以 WinUI 生成的提供程序完整类型名是 `Example.MyPlugin.Plugin_XamlTypeInfo.XamlMetaDataProvider`。这个提供程序实现 `IXamlMetadataProvider`，把 XAML 类型名、属性和激活行为交给宿主。将该完整名称填在 `manifest.template.json` 的 `ui.metadataProvider`，并保持 `ui.mode=compiled`。改命名空间时，同时改页面的 `x:Class`、C# 文件和 manifest。Visual Studio 模板会替换这些位置。
+
+插件有两个原生导出。宿主先用 `HutaoPluginCreate` 取得插件实例；编译型 UI 再使用 `DllGetActivationFactory` 取得上述元数据提供程序。模板的 `XamlExports.cs` 通过 SDK 的 `PluginXamlExport.GetActivationFactory<T>` 转发到 WinUI 生成的类型。项目先从默认编译项中移除此文件，由 SDK 的 `CompiledPluginXaml.targets` 在 `MarkupCompilePass2` 后加入。第一阶段先生成供 XAML 编译器读取的托管元数据，第二阶段补齐最终生成代码。导出跟随第二阶段编译，引用的是最终提供程序。
+
+#### 4. 发布、检查资源、打开页面
+
+在 Developer PowerShell 中使用模板的 `NativeAot` 配置：
+
+```powershell
+dotnet publish .\MyPlugin.csproj -c Release -p:Platform=x64 -p:PublishProfile=NativeAot -r win-x64
+dumpbin /exports .\publish\MyPlugin.dll
+makepri dump /if .\publish\MyPlugin.pri /of .\plugin-pri.xml /dt detailed /o
+pwsh -File .\Pack-Plugin.ps1 -SdkDirectory C:\HutaoSdk
+```
+
+`DisableEmbeddedXbf=false` 让生成的 XBF 作为二进制数据进入 PRI（包资源索引）。在 `plugin-pri.xml` 中找到 `Files/MyPlugin/PluginPage.xbf` 对应的 `EmbeddedData`。XBF 是编译后的页面数据，包内保留 `bin/x64/MyPlugin.dll` 和 `bin/x64/MyPlugin.pri`。宿主加载 DLL，并把该组件的资源查询路由到 PRI。
+
+用 PrototypeHost 打开 `artifacts/MyPlugin.hutao`，依次检查页面加载、标题和按钮点击。最终在普通版及 Native AOT 版主程序重复安装、启用和打开页面。若加载失败，先检查包中 DLL/PRI 是否同名，再对照清单的完整提供程序类型名与生成的 `XamlTypeInfo.g.cs`，最后检查 PRI 的 XBF 是否确实为内嵌数据。
+
+## 2. 维护使用 loose XAML 的 V2 插件
 
 现在松散与编译期 XAML 都使用标准 .xaml 扩展名。决定是否编译的是项目项类型（Build Action），不是文件后缀。C# 模板已关闭默认 Page 项；若添加松散 XAML，确保其 Build Action 为 None。C++ Core 项目将 CoreView.xaml 标为 None，只有 CppCompiled 的 PluginPage.xaml 是 Page。松散 XAML 不生成 XBF、代码连接或自己的 PRI；编译期 XAML 则由 XAML compiler 处理。SDK 2.0 不兼容旧 .hxaml 文件；迁移时重命名为 .xaml，并同步修改项目项、打包路径和 LoadXaml 参数。
 
@@ -36,7 +112,7 @@
 
 两种资源仍应在 pack 前复制到 staging；loose 复制 .xaml 源文件，compiled 复制包含 XBF 的组件 PRI（不复制独立 .xbf）。不要将同一文件同时作为 None 和 Page。
 
-在 [C# 模板](../src/Snap.Hutao.Plugin.SDK/templates/CSharpPlugin) 基础上创建 resources/views/Main.xaml：
+以下示例针对已使用 `ui.mode=loose` 且声明 `xaml` 能力的旧 V2 项目。创建 `resources/views/Main.xaml`：
 
 ```xml
 <StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -246,7 +322,7 @@ if (candidate?.Kind == ResourceCandidateKind.EmbeddedData)
 
 完整代码见 [PluginPriResources.cs](../src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Plugin/PluginPriResources.cs)。MRT Context 属于创建它的 Manager，因此不能把宿主 context 原样传给另一个 PRI；需复制语言、缩放、主题等限定值。组件路由使用 DLL 文件名（不含 .dll）作为唯一资源前缀，示例 TestPlugin.Native.dll 对应 Files/TestPlugin.Native/...；组件自己的 PRI 可以使用此前缀或相对组件根路径。编译器生成的 URI 前缀须与 DLL 名一致，不能与宿主或其他组件重复。默认宿主查找优先，不覆盖已有资源。不处理 FilePath 候选、不写出临时 XBF、不修改宿主 PRI。资源映射与已驻留的 DLL 一起保留到进程退出。
 
-Metadata Provider 仍是必须的：manifest.ui.mode=compiled、metadataProvider=TestPlugin.Native.XamlMetaDataProvider；两个宿主通过 DllGetActivationFactory 获取 provider。PrototypeHost 仍用已验证的 App.AddOtherProvider；主程序不能关闭现有控件库自动注册，故 App.PluginXaml.cs 显式实现 IXamlMetadataProvider，优先查询编译器生成的完整宿主 provider，再查询插件 provider。PreConstruct 在源生成构造函数 InitializeComponent 之前订阅 ResourceManagerRequested。两者共享 PluginPriResources，不改变宿主 PRI 文件。主程序接入待验收；C# 编译期 XAML 尚未实现。
+Metadata Provider 仍是必须的：manifest.ui.mode=compiled、metadataProvider=TestPlugin.Native.XamlMetaDataProvider；两个宿主通过 DllGetActivationFactory 获取 provider。PrototypeHost 仍用已验证的 App.AddOtherProvider；主程序不能关闭现有控件库自动注册，故 App.PluginXaml.cs 显式实现 IXamlMetadataProvider，优先查询编译器生成的完整宿主 provider，再查询插件 provider。PreConstruct 在源生成构造函数 InitializeComponent 之前订阅 ResourceManagerRequested。两者共享 PluginPriResources，不改变宿主 PRI 文件。C# 编译型项目也通过该导出和相同的宿主 PRI 路由加载。主程序的普通版、AOT 版及 C# 新路径仍待 Windows 验收。
 
 ## 6. PRI 与 XBF：部署及验证
 

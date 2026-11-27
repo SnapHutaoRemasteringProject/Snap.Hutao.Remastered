@@ -5,7 +5,7 @@ using Snap.Hutao.Remastered.Core;
 
 namespace Snap.Hutao.Remastered.Service.Plugin;
 
-internal sealed record InstalledPlugin(string Id, string Path, bool Enabled, PluginManifest? Manifest, string? Hash, string? Error, bool Conflict = false);
+internal sealed record InstalledPlugin(string Id, string Path, bool Enabled, PluginManifest? Manifest, string? Hash, string? Error, bool Conflict = false, bool IsLegacy = false);
 internal sealed record PluginDiskState(string? ApprovedHash = null, string? HookHash = null, string? PendingHash = null, string? BackupHash = null, string? LastError = null, string? StagedInProcess = null);
 
 internal static class PluginPackageStore
@@ -54,6 +54,10 @@ internal static class PluginPackageStore
             if (!package.Manifest.Id.Equals(id, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidDataException("Manifest ID differs from the installed filename.");
             return new(id, path, enabled, package.Manifest, package.Sha256, conflict ? "Conflicting package files." : null, conflict);
+        }
+        catch (LegacyPluginPackageException)
+        {
+            return new(id, path, enabled, null, null, SH.ViewPagePluginLegacyDescription, conflict, IsLegacy: true);
         }
         catch (Exception error)
         {

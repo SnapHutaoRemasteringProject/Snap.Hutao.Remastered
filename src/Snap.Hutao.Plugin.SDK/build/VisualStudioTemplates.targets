@@ -4,6 +4,24 @@
     <_HutaoTemplateIcon>$(MSBuildThisFileDirectory)..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Assets\Logo.ico</_HutaoTemplateIcon>
   </PropertyGroup>
 
+  <UsingTask TaskName="WriteHutaoCSharpTemplateSources" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Sources ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <Destination ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.IO" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        foreach (var source in Sources)
+        {
+            string path = source.GetMetadata("FullPath");
+            string contents = File.ReadAllText(path).Replace("Example.MyPlugin", "Example.$safeprojectname$");
+            File.WriteAllText(Path.Combine(Destination, Path.GetFileName(path)), contents);
+        }
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
   <Target Name="PackHutaoVisualStudioTemplates" BeforeTargets="_GetPackageFiles">
     <PropertyGroup>
       <_HutaoTemplateOutput>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(IntermediateOutputPath)', 'VisualStudioTemplates'))</_HutaoTemplateOutput>
@@ -17,7 +35,8 @@
       <_HutaoCppManifest>$([System.IO.File]::ReadAllText('$(_HutaoTemplateSources)CppPlugin/manifest.template.json').Replace('MyNativePlugin', '$safeprojectname$').Replace('My Native Plugin', '$safeprojectname$'))</_HutaoCppManifest>
     </PropertyGroup>
     <ItemGroup>
-      <_HutaoCsFiles Include="$(_HutaoTemplateSources)CSharpPlugin/MyPlugin.csproj;$(_HutaoTemplateSources)CSharpPlugin/Plugin.cs;$(_HutaoTemplateSources)CSharpPlugin/Hutao.CSharp.vstemplate;$(_HutaoTemplateSources)CSharpPlugin/Pack-Plugin.ps1" />
+      <_HutaoCsFiles Include="$(_HutaoTemplateSources)CSharpPlugin/MyPlugin.csproj;$(_HutaoTemplateSources)CSharpPlugin/Hutao.CSharp.vstemplate;$(_HutaoTemplateSources)CSharpPlugin/Pack-Plugin.ps1" />
+      <_HutaoCsNamespaceFiles Include="$(_HutaoTemplateSources)CSharpPlugin/Plugin.cs;$(_HutaoTemplateSources)CSharpPlugin/PluginPage.xaml;$(_HutaoTemplateSources)CSharpPlugin/PluginPage.xaml.cs;$(_HutaoTemplateSources)CSharpPlugin/XamlExports.cs" />
       <_HutaoCppFiles Include="$(_HutaoTemplateSources)CppPlugin/MyNativePlugin.vcxproj;$(_HutaoTemplateSources)CppPlugin/MyPlugin.cpp;$(_HutaoTemplateSources)CppPlugin/Pack-Plugin.ps1" />
     </ItemGroup>
 
@@ -29,6 +48,8 @@
     <Copy SourceFiles="$(_HutaoTemplateIcon)" DestinationFiles="$(_HutaoCppTemplate)Icon.ico" />
     <Copy SourceFiles="$(_HutaoTemplateIcon)" DestinationFiles="$(_HutaoCppModulesTemplate)Icon.ico" />
     <XmlPoke XmlInputPath="$(_HutaoCsTemplate)MyPlugin.csproj" Query="/Project/PropertyGroup/HutaoSdkVersion" Value="$(PackageVersion)" />
+    <XmlPoke XmlInputPath="$(_HutaoCsTemplate)MyPlugin.csproj" Query="/Project/PropertyGroup/RootNamespace" Value="Example.$safeprojectname$" />
+    <WriteHutaoCSharpTemplateSources Sources="@(_HutaoCsNamespaceFiles)" Destination="$(_HutaoTemplateOutput)CSharp" />
     <XmlPoke XmlInputPath="$(_HutaoCppTemplate)MyNativePlugin.vcxproj" Query="//*[local-name()='ProjectGuid']" Value="{$guid1$}" />
     <XmlPoke XmlInputPath="$(_HutaoCppModulesTemplate)MyNativePlugin.vcxproj" Query="//*[local-name()='ProjectGuid']" Value="{$guid1$}" />
     <XmlPoke XmlInputPath="$(_HutaoCppModulesTemplate)MyNativePlugin.vcxproj" Query="//*[local-name()='CppWinRTBuildModule']" Value="true" />

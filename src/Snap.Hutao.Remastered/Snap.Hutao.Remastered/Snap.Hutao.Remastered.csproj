@@ -64,28 +64,6 @@
     </ItemGroup>
   </Target>
 
-  <!-- Direct main-assembly Authoring migration. CsWinRT 2.x rejects the whole public
-       surface on an invalid declaration; do not turn off its diagnostics. Keep the
-       normal app build available until the public API has been migrated. -->
-  <PropertyGroup Condition="'$(HutaoMainAuthoring)' == 'true'">
-    <CsWinRTComponent>true</CsWinRTComponent>
-    <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
-    <CsWinRTEnableLogging>true</CsWinRTEnableLogging>
-    <CsWinRTAotWarningLevel>3</CsWinRTAotWarningLevel>
-  </PropertyGroup>
-
-  <ItemGroup Condition="'$(HutaoMainAuthoring)' == 'true'">
-    <CsWinRTInputs Include="$(MSBuildThisFileDirectory)..\..\Snap.Hutao.Plugin.SDK\artifacts\metadata\Snap.Hutao.Plugin.Contracts.winmd" />
-    <CsWinRTInputs Include="$(MSBuildThisFileDirectory)..\..\Snap.Hutao.Plugin.SDK\artifacts\metadata\Snap.Hutao.Plugin.Services.winmd" />
-  </ItemGroup>
-
-  <!-- A local review feed is opt-in and supplements (not replaces) NuGet.Config.
-       Never require a workstation-specific directory for normal builds or CI. -->
-  <PropertyGroup>
-    <HutaoSourceGenerationFeed Condition="'$(HutaoSourceGenerationFeed)' == ''">$(MSBuildThisFileDirectory)..\..\..\artifacts\local-nuget</HutaoSourceGenerationFeed>
-    <RestoreAdditionalProjectSources Condition="'$(HutaoSourceGenerationVersion)' != '' and Exists('$(HutaoSourceGenerationFeed)')">$(RestoreAdditionalProjectSources);$(HutaoSourceGenerationFeed)</RestoreAdditionalProjectSources>
-  </PropertyGroup>
-
   <!-- Report future Native AOT blockers without trimming, disabling features, or changing runtime behavior. -->
   <PropertyGroup Condition="'$(AotAnalysis)' == 'true'">
     <EnableAotAnalyzer>true</EnableAotAnalyzer>
@@ -386,8 +364,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Snap.Hutao.Remastered.SourceGeneration">
-      <!-- Optional local review feed override; the central version remains the production default. -->
-      <VersionOverride Condition="'$(HutaoSourceGenerationVersion)' != ''">$(HutaoSourceGenerationVersion)</VersionOverride>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
