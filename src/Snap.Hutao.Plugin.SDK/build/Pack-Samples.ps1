@@ -1,7 +1,7 @@
 # Explicit sample staging: never package the entire Publish or Build output tree.
 [CmdletBinding()]
 param([Parameter(Mandatory)][ValidateSet('Debug','Release')][string] $Configuration,
-      [ValidateSet('All','CSharpAot')][string] $Sample = 'All')
+      [ValidateSet('All','CSharpAot','CppCore','CppCompiled')][string] $Sample = 'All')
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $artifacts = Join-Path $root 'artifacts'
@@ -11,8 +11,8 @@ foreach ($item in @(
     @{ Project = 'samples\CppCore'; Dll = (Join-Path $artifacts "native\$Configuration\core\TestPlugin.Native.Core.dll"); Id = 'TestPlugin.Native.Core'; Template = 'manifest.template.json' },
     @{ Project = 'samples\CSharpAot'; Dll = (Join-Path $artifacts 'aot-plugin\TestPlugin.Aot.dll'); Id = 'TestPlugin'; Template = 'manifest.template.json' }
 )) {
-    if ($Sample -eq 'CSharpAot' -and $item.Id -ne 'TestPlugin') { continue }
-    if (!(Test-Path -LiteralPath $item.Dll -PathType Leaf)) { throw "Build/publish first: $($item.Dll)" }
+    if ($Sample -ne 'All' -and $item.Project -ne "samples\$Sample") { continue }
+    if (!(Test-Path -LiteralPath $item.Dll -PathType Leaf)) { throw "Missing $($item.Dll). In Visual Studio build the selected C++ project ($Configuration|x64), or Publish CSharpAot using NativeAot. This script only packages existing outputs." }
     $staging = Join-Path $artifacts ("stage\" + $item.Id)
     if (Test-Path -LiteralPath $staging) { Remove-Item -LiteralPath $staging -Recurse -Force }
     $bin = Join-Path $staging 'bin\x64'

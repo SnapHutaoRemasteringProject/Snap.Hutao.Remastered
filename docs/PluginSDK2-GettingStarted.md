@@ -6,25 +6,19 @@
 
 你只需要 SDK 分发目录，不需要引用整个主程序。假设分发已解压到 C:\HutaoSdk（没有分发时按第 2 节从仓库生成）。
 
-**C#：**
+**C#：** 复制 templates/CSharpPlugin 到 C:\MyPlugin。在 Visual Studio 的 Tools → NuGet Package Manager → Package Manager Settings → Package Sources 添加 C:\HutaoSdk\nuget（保留 Windows App SDK 所需源）。打开 MyPlugin.csproj，右键项目 → Publish → NativeAot → Publish，输出 publish/MyPlugin.dll。然后在项目目录运行：
 
 ```powershell
-Copy-Item C:\HutaoSdk\templates\CSharpPlugin C:\MyPlugin -Recurse
-cd C:\MyPlugin
-pwsh -File .\Build-Plugin.ps1 -SdkDirectory C:\HutaoSdk
+pwsh -File .\Pack-Plugin.ps1 -SdkDirectory C:\HutaoSdk
 ```
 
-**C++：** 在 VS Developer PowerShell 中：
+**C++：** 复制 templates/CppPlugin 到 C:\MyNativePlugin。打开 MyNativePlugin.vcxproj，把 HutaoNativeSdkRoot 属性设为 C:\HutaoSdk\native，选择 Release | x64，Build 项目。然后在项目目录运行：
 
 ```powershell
-Copy-Item C:\HutaoSdk\templates\CppPlugin C:\MyNativePlugin -Recurse
-cd C:\MyNativePlugin
-pwsh -File .\Build-Plugin.ps1 -SdkDirectory C:\HutaoSdk
+pwsh -File .\Pack-Plugin.ps1 -SdkDirectory C:\HutaoSdk -Configuration Release
 ```
 
-预期产物分别是 artifacts/MyPlugin.hutao、artifacts/MyNativePlugin.hutao。两个模板都在 OnEnable 中注册一个视图和一个导航项，页面有可点击的按钮。打开 PrototypeHost（若分发包含），选择你的包、Inspect and load、批准，选择视图并点击按钮；然后在正式主程序的插件管理页安装并启用，检查导航栏中新增项和通知。原生代码修改后重启整个宿主再测试。
-
-这是实际模板中的构建脚本，不是伪命令；它依次构建/发布、清理 staging、复制 DLL、pack、verify。若添加资源或自有依赖，请在 pack 前把这些文件复制到 staging，并保持 manifest 路径一致。C# 必须 Native AOT Publish（普通 Build 或非 AOT Publish 的托管 DLL 在任何宿主中均不支持），C++ 使用常规原生 DLL Build。若要理解每个项目配置和 API，继续阅读。旧插件直接阅读 [v1→v2 迁移](PluginSDK2-Migration.md)，UI 开发阅读 [XAML 指南](PluginSDK2-Xaml.md)。
+这两个打包脚本只消费已有构建产物，不调用 dotnet publish 或 MSBuild。预期包分别为 artifacts/MyPlugin.hutao、artifacts/MyNativePlugin.hutao。打开 PrototypeHost → 填入包路径 → Inspect and load → 信任 → 点击视图按钮；正式主程序安装后会创建真实导航项。添加资源可放到项目 resources/views 等目录，脚本将 resources 的内容复制到包根目录（例如 resources/views/Main.xaml → views/Main.xaml）；如需其他依赖请明确设置 staging 内容。原生 DLL 修改后必须重启宿主。C# 必须 Native AOT Publish，普通 Build 仅供编译检查。旧插件参见 [迁移指南](PluginSDK2-Migration.md)，UI 参见 [XAML 指南](PluginSDK2-Xaml.md)。
 
 新版示例源码位于 samples/，共享契约位于 contracts/，SDK 项目位于 libraries/。松散 XAML 使用标准 .xaml 扩展名，在项目中作为 None（不经 XAML 编译器）处理；参见 [XAML 指南](PluginSDK2-Xaml.md)。
 
@@ -74,11 +68,7 @@ artifacts/sdk/2.0.0-preview.1/
 
 投影包提供 C# 类型定义及 ABI 封送代码，SDK 包依赖投影包并封装生命周期、设置和回调。C++ 直接消费 WinMD（Windows Metadata，Windows 运行时元数据），由 C++/WinRT 生成头文件或模块。不要自己重新定义 IID（接口标识 GUID）或从宿主反编译契约。
 
-若已有分发产物，直接使用它，无需克隆仓库。以 PowerShell 在你的开发机器上设置本地源：
-
-```powershell
-dotnet nuget add source "C:\HutaoSdk\nuget" --name HutaoPluginSDK
-```
+若已有分发产物，直接使用它，无需克隆仓库。在 Visual Studio 的 Tools → NuGet Package Manager → Package Manager Settings → Package Sources 添加 C:\HutaoSdk\nuget，名称可设为 HutaoPluginSDK。
 
 保留 nuget.org 及获取所需预览 Windows App SDK 的仓库包源。使用 Central Package Management 的项目应在自己的 Directory.Packages.props 中声明版本并按实际源设置 packageSourceMapping；不要把浮动版本写入可复现构建。
 
@@ -160,11 +150,7 @@ public sealed class MyPlugin : HutaoPlugin
 
 OnLoad 初始化和注册设置；OnEnable 注册贡献；CreateView 每次宿主打开页面时创建新的 UIElement；返回 PluginView 的第二个参数是关闭回调，用于解除事件订阅。不要缓存一个 Page 给两个不同的宿主位置。
 
-构建与发布：
-
-```powershell
-dotnet publish .\MyPlugin.csproj -c Release -r win-x64 -o .\publish
-```
+构建与发布：在 VS 右键 MyPlugin 项目 → Publish → 选择随模板提供的 NativeAot profile → Publish。该 profile 指定 Release、win-x64、Native AOT，输出到项目 publish 目录。Ctrl+Shift+B 只构建普通托管中间程序集，不能替代 Publish。
 
 确认 `publish\MyPlugin.dll` 是 native DLL（可用 Developer PowerShell 的 dumpbin /exports 检查 HutaoPluginCreate）。不要使用 bin\Debug 或 bin\Release 中的普通 managed DLL 作为入口。
 
@@ -208,12 +194,7 @@ extern "C" __declspec(dllexport) HRESULT __cdecl HutaoPluginCreate(uint32_t abiM
 
 完整的程序式 Button 和 IPluginViewFactory 示例在 templates/CppPlugin/MyPlugin.cpp。若改成纯生命周期示例，manifest 的 ui.mode 应为 none，移除 navigation、xaml 等不使用的能力。
 
-在 Developer PowerShell：
-
-```powershell
-msbuild .\MyNativePlugin.vcxproj /restore /p:Configuration=Release /p:Platform=x64 /p:HutaoNativeSdkRoot=C:\HutaoSdk\native
-dumpbin /exports .\bin\Release\MyNativePlugin.dll
-```
+在 VS 编辑 MyNativePlugin.vcxproj 中的 HutaoNativeSdkRoot 指向 C:\HutaoSdk\native，选择 Release | x64 后右键 Build。产物为 bin/Release/MyNativePlugin.dll。必要时在 Developer PowerShell 用 dumpbin /exports 检查入口。
 
 C++ 模块模式开发者可参考 samples/CppCore/ModuleCommand.cpp 与 WinRTModules.h。不要直接编辑生成的 .g.h/.g.cpp；生成器重新执行会覆盖它们。Release DLL 需满足目标机器上的 VC 运行时依赖。Debug CRT DLL 只适合本地调试，不作为发布包。
 
@@ -221,7 +202,7 @@ C++ 模块模式开发者可参考 samples/CppCore/ModuleCommand.cpp 与 WinRTMo
 
 使用 [包格式参考](PluginSDK2-Packages.md) 中的 schemaVersion 2。C# 模板已包含与上面程序式示例一致的 manifest，id 是开发者自己唯一选择的标识，不能与其他插件重复。id 不是 DLL 文件名，入口路径由 runtime.entry 决定。
 
-在 C# 示例项目目录，将明确需要的文件复制到 staging；下面命令假设分发工具位于 C:\HutaoSdk：
+日常只需使用第 0 节的 Pack-Plugin.ps1。以下为脚本等价的手动打包过程，供自定义包结构时参考（无需重复执行）：
 
 ```powershell
 New-Item -ItemType Directory -Force .\stage\bin\x64 | Out-Null
@@ -232,7 +213,7 @@ Copy-Item .\publish\MyPlugin.dll .\stage\bin\x64\MyPlugin.dll
 
 C++ 替换入口文件为 bin\Release\MyNativePlugin.dll，保持 staging 的相对路径与其 manifest 一致。只复制插件自己的依赖和资源。不要复制宿主、Windows App SDK 整套 DLL 或 Native AOT 的普通 managed Build 输出。
 
-打包器生成根 manifest.json 中的 files SHA256 列表，校验 ZIP 路径及原生 PE DLL。不要手工改打包后的文件；任何字节改变均需要重新打包和信任确认。可以通过显式 PowerShell 脚本或项目的 Publish 后续 Target 自动化上述命令；V2 没有 v1 的 GenerateHutaoPlugin Build 自动打包语义，因为 C# Build 产物不等于 Native AOT Publish 产物。
+打包器生成根 manifest.json 中的 files SHA256 列表，校验 ZIP 路径及原生 PE DLL。不要手工改打包后的文件；任何字节改变均需要重新打包和信任确认。模板 Pack-Plugin.ps1 已封装上述操作，不需要自己编写构建脚本。V2 不在普通 C# Build 后自动打包，因为其产物不等于 Native AOT Publish 产物。
 
 ## 6. 调试、快速迭代与安装
 

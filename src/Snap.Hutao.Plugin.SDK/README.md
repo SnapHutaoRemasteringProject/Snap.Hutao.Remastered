@@ -56,18 +56,24 @@ Snap.Hutao.Plugin.SDK/
 
 ## 快速开始（维护者）
 
-日常调试先运行 `pwsh -File .\build\Build-Samples.ps1 -Configuration Debug`，仅重建 C# 时追加 `-Sample CSharpAot`。然后 F5 启动 PrototypeHost，点 C# AOT sample / C++ core / C++ compiled，再点 Inspect and load；正常测试使用 `.hutao`，不要直接加载 C# 发布 DLL（没有已验证的 XAML 文件清单）。逐步操作和 Release 宿主、普通 IL DLL 诊断见 [测试指南](../../docs/PluginSDK2-Testing.md#1-构建与回归)。
+日常开发只使用 Visual Studio 2026，**不运行构建脚本**：
 
-Visual Studio 2026 Developer PowerShell 进入本目录，执行：
+1. 打开 Snap.Hutao.Plugin.SDK.slnx，选择 Debug | x64（发布时使用 Release）。
+2. Build Solution：自动生成 WinMD / C# 与 C++ 投影、构建 C++ DLL 和 PrototypeHost。C# 普通 Build 仅供编辑与编译诊断。
+3. 右键 Samples/TestPlugin.Aot → Publish → 选择 NativeAot profile → Publish，输出到 artifacts/aot-plugin。只修改 C++ 时无需重新 Publish C#。
+4. 在 SDK 根目录执行唯一的日常打包命令：
 
 ```powershell
-pwsh -File .\build\Build-Samples.ps1 -Configuration Release
-pwsh -File .\build\Test-Packaging.ps1
+pwsh -File .\build\Pack-Samples.ps1 -Configuration Debug
 ```
 
-生成三份包：`artifacts\TestPlugin.Native.Core.hutao`（C++ 程序式与松散 XAML）、`artifacts\TestPlugin.hutao`（C# AOT 程序式、松散 XAML、Binding），`artifacts\TestPlugin.Native.hutao`（C++ 编译期 Page 实验，仅 PrototypeHost）。正式应用拒绝 compiled 模式，不会自动降级。
+只打包一个样例时追加 -Sample CSharpAot、CppCore 或 CppCompiled。Configuration 指 C++ 的 VS 构建配置，C# 一律使用已 Publish 的原生 DLL。打包脚本不编译任何插件；若输出不存在，回到 VS 构建或发布。
 
-使用 PrototypeHost 的 C++ core / C# AOT sample 按钮选择包，Inspect and load 并确认信任。下拉选择每个视图，点击控件、选择 Exercise ABI 命令并点击 Run command、完成对话框、Disable and re-enable、Uninstall session。替换 DLL 必须关闭整个宿主进程；不支持原生 DLL 热卸载或热替换。
+生成三份包：artifacts/TestPlugin.Native.Core.hutao、artifacts/TestPlugin.hutao、artifacts/TestPlugin.Native.hutao（compiled 仅 PrototypeHost 实验）。将 PrototypeHost 设置为启动项目，F5，选择对应样例按钮 → Inspect and load → 信任。测试所有视图、Exercise ABI、Disable and re-enable、Uninstall session。修改 DLL 后关闭整个宿主进程再 Build/Publish/pack；不支持热卸载。正常 UI 测试使用 .hutao，不要直接加载裸 DLL。
+
+生成 JIT/AOT 测试宿主：右键 PrototypeHost → Publish，分别选择 JitRelease / NativeAot。完整流程及已报告结果见 [测试指南](../../docs/PluginSDK2-Testing.md)。
+
+Generate-Contracts.ps1 是 MSBuild 自动调用的内部实现，作者无需运行；Test-Packaging.ps1 是维护者回归测试；Build-Sdk.ps1 是 SDK 分发打包，不是插件日常开发步骤。旧 Build-Samples.ps1 已移除。
 
 本地生成 SDK（不上传 NuGet）：
 

@@ -120,7 +120,7 @@ manifest 修改为：
 "capabilities": ["navigation", "settings", "xaml"]
 ```
 
-在模板 Build-Plugin.ps1 复制入口 DLL 后、执行 pack 前，把资源复制到 staging（或直接参照下列命令；不要在 pack 后追加文件）：
+推荐直接把 Main.xaml 放在模板项目的 resources/views/Main.xaml，Pack-Plugin.ps1 自动复制 resources 下的内容到 staging 根目录。不需要编辑脚本。手工 staging 时，等价命令如下（不要在 pack 后追加文件）：
 
 ```powershell
 New-Item -ItemType Directory -Force (Join-Path $stage 'views') | Out-Null
@@ -228,6 +228,8 @@ void PluginPage::InitializePluginView(IPluginContext const& context)
 Pack-Samples.ps1 查找唯一 PluginPage.xbf 并复制到 views/PluginPage.xbf；同时保留输出目录存在的 TestPlugin.Native.winmd、TestPlugin.Native.pri、resources.pri。manifest.ui.mode=compiled、metadataProvider=TestPlugin.Native.XamlMetaDataProvider。PrototypeHost 在调用插件生命周期前，从 DLL 的 DllGetActivationFactory 激活 metadata provider，使用 App 生成的 AddOtherProvider 注册。metadata 让 XAML 引擎认识插件类型，**不是**资源根重定向。`AddOtherProvider` 是条件生成方法：PrototypeHost.csproj 必须配置 `EnableTypeInfoReflection=false` 与 `XamlCodeGenerationControlFlags=DoNotGenerateOtherProviders`，并在 `App.InitializeComponent()` 前手动注册 WinUI 控件 provider；见 [E16](PluginSDK2-EngineeringNotes.md#e16标准-prototypehost-编译-cs0103addotherprovider-不存在)。C++ 示例代码支持 x:Bind 和生成事件连接的实验；C# 编译期 XAML 不可用，不能把普通 C# WinUI class library 的 Publish 当作已支持功能。
 
 ## 6. PRI 到底在哪里，如何验证？
+
+XBF 是运行时使用的二进制界面数据，不只是可丢弃的编译中间文件；PRI 可以记录外部文件路径，也可以直接内嵌数据。DisableEmbeddedXbf=false 允许将 XBF 嵌入 PRI；只要 PRI 可被 WinUI 正确解析且包含实际数据，就无需额外部署物理 XBF。当前 compiled 实验走外部绝对 URI，未接入插件 PRI，因此必须保留独立 XBF。不能仅凭存在 PRI 就删除 XBF。参见 [Microsoft File resources in MRM](https://learn.microsoft.com/windows/win32/menurc/mrmfiles) 和 [WinUI #10308](https://github.com/microsoft/microsoft-ui-xaml/issues/10308)。
 
 XBF 是二进制 XAML 内容；PRI 是 MRT 的资源映射索引，可能包含嵌入的 XBF 数据，也可能引用外部文件，并负责语言、对比度、缩放等 qualifier（资源限定符）选择。一个组件拥有 PRI 并不意味着它已经被宿主的默认 ResourceManager 发现。
 

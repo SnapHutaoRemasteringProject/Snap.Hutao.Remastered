@@ -6,6 +6,7 @@
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <EnableDefaultApplicationDefinition>false</EnableDefaultApplicationDefinition>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <Platforms>x64</Platforms>
     <PlatformTarget>x64</PlatformTarget>
     <PublishAot>true</PublishAot>
     <NativeLib>Shared</NativeLib>

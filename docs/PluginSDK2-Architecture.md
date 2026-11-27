@@ -95,6 +95,8 @@ PrototypeHost 复用加载器、驻留、会话、context 和设置存储的源�
 
 ## 5. 我应该怎样开发？
 
+日常在 VS Build / Publish（C# NativeAot profile），然后运行 Pack-Samples.ps1（仓库样例）或 Pack-Plugin.ps1（外部模板）生成 .hutao。MIDL 生成由项目自动执行。Build-Sdk.ps1 仅供 SDK 发行者，Test-Packaging.ps1 仅供维护者回归，不要求插件开发者运行。
+
 SDK 源码根目录按职责分为 contracts（IDL/ABI）、libraries（可复用库）、samples（独立可运行示例）、templates（外部项目起点）、tools（命令行工具）、tests（测试宿主）和 build（构建脚本）。CppCore 与 CppCompiled 是不同 DLL；不再由 ID 选择是否加载 XBF。
 
 原有游戏附加库通过已批准包的 gameLibraries 声明进入主程序已有 Island 启动服务，而不是通过插件 ABI 暴露进程操作。完整旧版代码对照见 [迁移](PluginSDK2-Migration.md)，XAML 资源边界及完整例子见 [XAML](PluginSDK2-Xaml.md)。

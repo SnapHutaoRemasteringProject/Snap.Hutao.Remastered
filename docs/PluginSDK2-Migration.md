@@ -22,7 +22,7 @@
 | Harmony、私有字段与任意宿主 API | 使用公开 API；缺少业务能力时单独设计契约 | 没有通用替代，不兼容 |
 | 用户脚本（动态编译 C#） | 将所需功能改写为原生插件 | 不恢复旧脚本运行时 |
 | ALC 卸载或替换 DLL | 逻辑禁用；重启进程后替换 | 不支持热卸载 |
-| GenerateHutaoPlugin | 模板 Build-Plugin.ps1：构建→staging→pack→verify | 已提供脚本，本地验收待完成 |
+| GenerateHutaoPlugin | VS Build/Native AOT Publish + Pack-Plugin.ps1：staging→pack→verify | 已提供脚本，本地验收待完成 |
 | 编译期 .xaml / x:Bind | C++ runtime component 实验；C# 先用 loose + Binding | v1 示例原本不是 XBF；详见 XAML 指南 |
 
 “已实现”只表示有代码路径，不是所有 Windows/AOT 组合的 Pass。
@@ -223,6 +223,6 @@ v1 的 [GameIslandInterop](https://github.com/SnapHutaoRemasteringProject/Snap.H
 
 ## 8. 生成新包、安装并验证
 
-按照 [Getting Started](PluginSDK2-GettingStarted.md) 生成或取得 SDK 分发，运行模板 Build-Plugin.ps1，检查产物 .hutao。正式应用中卸载旧插件（保留 Plugins/<id> 数据），重新安装同 ID 的新包，确认来源和哈希。依次测试：启用、导航项可见、视图打开、命令、设置读写、禁用、重新启用、重启、卸载。若有游戏附加组件，只在允许且受控的测试环境验证其兼容性；不能由包验证通过推断游戏运行正常。
+按照 [Getting Started](PluginSDK2-GettingStarted.md) 生成或取得 SDK 分发，在 VS Build/Publish 后运行模板 Pack-Plugin.ps1，检查产物 .hutao。正式应用中卸载旧插件（保留 Plugins/<id> 数据），重新安装同 ID 的新包，确认来源和哈希。依次测试：启用、导航项可见、视图打开、命令、设置读写、禁用、重新启用、重启、卸载。若有游戏附加组件，只在允许且受控的测试环境验证其兼容性；不能由包验证通过推断游戏运行正常。
 
 不要修改主程序安装文件、恢复 Harmony/ALC、使用未公开的内部对象或绕过游戏安全机制。缺少必要业务接口时，提交最小复现和期望公共服务，而不是依赖内部实现。

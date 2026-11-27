@@ -225,3 +225,9 @@ SDK 2.0 不要求向后兼容：LoadXaml 仅允许 .xaml，并保留 verified ma
 ### E19：标准 .xaml 切换后 C# AOT LoadXaml 拒绝
 
 2026-11-27 实际日志显示 C# OnInstall/OnLoad 已完成，但 CreateViewCore 调用 LoadXaml 在扩展名或已验证文件清单检查处抛 UnauthorizedAccessException，尚未调用 XamlReader。当前源码和 Pack-Samples 均使用 views/PluginPage.xaml；旧 DLL、旧包或无资源清单的裸 DLL 路径需要靠实际请求和 manifest 证据区分。将两项检查拆开并输出路径、插件 ID 与已声明 XAML；Build-Samples 清理旧 C# 发布输出及包、显式指定 publish 输出，提供仅重建 CSharpAot 的选项。共享 NativePluginLoader 改用 CsWin32 PInvoke，主程序与 PrototypeHost 分别生成相同的必要 Win32 调用，不改变 ABI、模块驻留、搜索 flags 或普通裸 DLL 的诊断路径。修复后 Windows 验收 NotRun。
+
+### E20：普通 C# IL DLL 实际加载结果与 VS 优先开发流程
+
+用户报告 JIT 与 AOT 宿主均无法加载 managed-fixture/TestPlugin.Aot.dll，AOT 日志明确为 EntryPointNotFoundException: HutaoPluginCreate / Win32 127。LoadLibraryExW 已成功映射，但普通 Build 的 UnmanagedCallersOnly 仅为元数据，Native AOT Publish 才生成 native export。没有新增托管插件加载路径。保留 .hutao 原有 PE 校验和裸 DLL 诊断行为。
+
+简化日常流程：移除 Build-Samples.ps1，VS Build Solution 自动生成契约与 C++ DLL，C# 使用 VS NativeAot Publish profile；三个样例按需 Pack-Samples，两个外部模板仅 Pack-Plugin（不构建），新增 C# template Publish profile。内部 Generate-Contracts 仍自动调用；分发和负例脚本不属于日常开发。插件 compiled XAML 仍依赖物理 XBF，PRI-only 尚未验证，不改变已通过的外部 URI 方案。新 VS 流程 Windows 验收 NotRun。
