@@ -86,7 +86,7 @@ if (service)
 
 ## 构建机制与 AOT
 
-Authoring 项目设置 CsWinRTComponent=true，CsWinRTGenerateWinMDOnly=true，并显式将后者传给生成器（CompilerVisibleProperty）。该模式在固定的 2.3.1 源码中存在，属于工具链实现细节，升级时必须复验；关闭 CsWinRTGenerateProjection 和 CsWinRTAotExportsEnabled，因为它只产生元数据，不作为运行时组件被链接或激活。源码参考 [Generator.cs](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/Authoring/WinRT.SourceGenerator/Generator.cs)、[Helper.cs](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/Authoring/WinRT.SourceGenerator/Helper.cs)、[Authoring.targets](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/nuget/Microsoft.Windows.CsWinRT.Authoring.targets)。
+Authoring 项目设置 CsWinRTComponent=true，使用完整组件生成流程；不启用 CsWinRTGenerateWinMDOnly。CsWinRT 2.3.1 同时开启二者会生成 ExportsType.g.cs，却跳过生成它依赖的 WinRT.Module，导致 CS0234。关闭 CsWinRTGenerateProjection 和 CsWinRTAotExportsEnabled；尽管生成组件代码，消费者仍只使用其 WinMD，不链接或激活 Authoring 程序集。详见 [技术记录](PluginSDK2-EngineeringNotes.md)。源码参考 [Generator.cs](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/Authoring/WinRT.SourceGenerator/Generator.cs)、[Helper.cs](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/Authoring/WinRT.SourceGenerator/Helper.cs)、[Authoring.targets](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/nuget/Microsoft.Windows.CsWinRT.Authoring.targets)。
 
 Projection 以 ReferenceOutputAssembly=false 引用 Authoring 项目；生成的 Services.winmd 放到 artifacts/metadata，与现有 Contracts.winmd 一起成为 CsWinRTInputs，两者的命名空间进入 CsWinRTIncludes。主程序和 C# 插件只消费 Projection；C++ Core 和外部 C++ 模板引用两个 WinMD。Build-Sdk.ps1 随 native SDK 分发 Services.winmd；C# NuGet 的投影 DLL 包含新增接口，不增加运行时依赖于 Authoring DLL。
 

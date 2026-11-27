@@ -3,8 +3,9 @@
     <AssemblyName>Snap.Hutao.Plugin.Services</AssemblyName>
     <RootNamespace>Snap.Hutao.Plugin.Services</RootNamespace>
     <CsWinRTComponent>true</CsWinRTComponent>
-    <!-- Metadata-only authoring. Every runtime consumer uses the canonical projection. -->
-    <CsWinRTGenerateWinMDOnly>true</CsWinRTGenerateWinMDOnly>
+    <!-- Generate the complete component: CsWinRT 2.3.1 emits ExportsType.g.cs
+         even in WinMD-only mode, where its WinRT.Module dependency is absent.
+         Consumers still use only the staged WinMD, not this assembly. -->
     <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
     <CsWinRTAotExportsEnabled>false</CsWinRTAotExportsEnabled>
     <IsPackable>false</IsPackable>
@@ -13,7 +14,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.CsWinRT" PrivateAssets="all" />
-    <CompilerVisibleProperty Include="CsWinRTGenerateWinMDOnly" />
   </ItemGroup>
   <Target Name="StageAuthoredServicesWinMD" AfterTargets="Build" Condition="'$(DesignTimeBuild)' != 'true'">
     <Error Condition="!Exists('$(TargetDir)$(AssemblyName).winmd')" Text="CsWinRT Authoring did not generate the services WinMD." />

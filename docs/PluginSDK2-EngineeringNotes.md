@@ -243,3 +243,9 @@ SDK 2.0 不要求向后兼容：LoadXaml 仅允许 .xaml，并保留 verified ma
 ## C# First 后续架构决策
 
 新增业务契约改用 CsWinRT 2.3.1 C# Authoring → WinMD → 统一消费投影。保留已验证的核心 ABI，避免整个主程序集 public API 不符合 WinRT 类型规范以及生成器阶段依赖冲突。见 [Authoring 架构和验证](PluginSDK2-Authoring.md)。SourceGeneration PR #2 是 XAML/AOT 分析与源生成，不替代 WinMD authoring。当前 Windows 实测 NotRun。
+
+## E16：CsWinRT 2.3.1 Authoring + WinMDOnly 生成缺失的 WinRT.Module
+
+实际 Windows 构建（主程序 Debug / win-x64 / PublishAot=true）在 Services.Authoring 项目报 `ExportsType.g.cs(16,20): error CS0234: The type or namespace name 'Module' does not exist in the namespace 'WinRT'`。本地 SourceGeneration 测试包已成功生成，restore 成功；错误发生在 Authoring 项目编译，主项目和 Native AOT 本机编译尚未开始。
+
+[Generator.cs](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/Authoring/WinRT.SourceGenerator/Generator.cs#L183-L190) 在 WinMDOnly 模式跳过 GenerateSources；但 [Execute](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/Authoring/WinRT.SourceGenerator/Generator.cs#L539-L551) 仍在 CsWinRTComponent=true 时生成 ExportsType.g.cs，其中调用 global::WinRT.Module.GetActivationFactory。该 Module 原本由 cswinrt.exe -component 产生。修复：移除 CsWinRTGenerateWinMDOnly 及其 CompilerVisibleProperty，保留完整 Authoring，仍通过 ReferenceOutputAssembly=false 的构建依赖仅消费 WinMD。不手写 Module、不升级依赖、不关闭 AOT 诊断。原始失败已观察，修复后的 Windows 构建 NotRun。
