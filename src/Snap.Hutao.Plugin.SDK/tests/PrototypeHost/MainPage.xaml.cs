@@ -90,6 +90,7 @@ public sealed partial class MainPage : Page
                     if (!path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Choose a .hutao package or development DLL.");
                     if (Path.GetFileName(path).Equals("TestPlugin.Native.dll", StringComparison.OrdinalIgnoreCase) || Path.GetFileName(path).Equals("TestPlugin.Native.Core.dll", StringComparison.OrdinalIgnoreCase))
                         throw new InvalidOperationException("Pack the native sample first: its resources require the verified package.");
+                    PluginPackage.ValidateNativeEntry(path);
                     ContentDialog confirm = new()
                     {
                         XamlRoot = panel.XamlRoot,

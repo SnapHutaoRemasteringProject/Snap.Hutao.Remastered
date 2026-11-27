@@ -215,7 +215,7 @@ public static class PluginPackage
         return manifest;
     }
 
-    private static long Limit(string path, string? icon) => path.EndsWith(".hxaml", StringComparison.OrdinalIgnoreCase) ? MiB
+    private static long Limit(string path, string? icon) => (path.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase) || path.EndsWith(".hxaml", StringComparison.OrdinalIgnoreCase)) ? MiB
         : path.Equals(icon, StringComparison.OrdinalIgnoreCase) ? 4 * MiB : MaxEntry;
 
     private static ZipArchiveEntry CreateEntry(ZipArchive archive, string path)
@@ -243,6 +243,12 @@ public static class PluginPackage
     }
 
     private static string Hash(Stream input) => Convert.ToHexStringLower(SHA256.HashData(input));
+
+    public static void ValidateNativeEntry(string path)
+    {
+        using FileStream stream = File.OpenRead(path);
+        ValidateNativeDll(stream);
+    }
 
     private static void ValidateNativeDll(Stream stream)
     {

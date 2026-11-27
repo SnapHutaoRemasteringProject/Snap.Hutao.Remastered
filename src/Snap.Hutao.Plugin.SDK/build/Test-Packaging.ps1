@@ -1,6 +1,6 @@
 # Negative fixtures use a locally built sample. No plugin is executed.
 [CmdletBinding()]
-param([string] $Package)
+param([string] $Package, [string] $ManagedDll)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 if (!$Package) { $Package = Join-Path $root 'artifacts\TestPlugin.hutao' }
@@ -25,6 +25,27 @@ function Fixture([string] $Name, [scriptblock] $Modify, [bool] $ShouldPass = $fa
     Write-Host "PASS expected validation ($ShouldPass): $Name"
 }
 try {
+    if ($ManagedDll) {
+        $managed = (Resolve-Path -LiteralPath $ManagedDll).Path
+        Fixture 'managed-entry-valid-hash' {
+            param($z)
+            $manifestEntry = $z.GetEntry('manifest.json')
+            $reader = [IO.StreamReader]::new($manifestEntry.Open())
+            try { $manifest = $reader.ReadToEnd() | ConvertFrom-Json -AsHashtable }
+            finally { $reader.Dispose() }
+            $entryName = $manifest.runtime.entry
+            $z.GetEntry($entryName).Delete()
+            $entry = $z.CreateEntry($entryName)
+            $bytes = [IO.File]::ReadAllBytes($managed)
+            $stream = $entry.Open()
+            try { $stream.Write($bytes, 0, $bytes.Length) } finally { $stream.Dispose() }
+            ($manifest.files | Where-Object { $_.path -eq $entryName }).sha256 = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+            $manifestEntry.Delete()
+            $manifestEntry = $z.CreateEntry('manifest.json')
+            $writer = [IO.StreamWriter]::new($manifestEntry.Open())
+            try { $writer.Write(($manifest | ConvertTo-Json -Depth 20 -Compress)) } finally { $writer.Dispose() }
+        }
+    }
     Fixture 'unlisted' { param($z) $z.CreateEntry('unexpected.txt') | Out-Null }
     Fixture 'traversal' { param($z) $z.CreateEntry('../outside.txt') | Out-Null }
     Fixture 'case-collision' { param($z) $z.CreateEntry('MANIFEST.JSON') | Out-Null }

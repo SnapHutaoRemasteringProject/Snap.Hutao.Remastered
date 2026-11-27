@@ -54,6 +54,7 @@
   </ImportGroup>
   <PropertyGroup>
     <MultiProcMIDL>true</MultiProcMIDL>
+    <TargetName>TestPlugin.Native.Core</TargetName>
     <OutDir>$(MSBuildThisFileDirectory)..\..\artifacts\native\$(Configuration)\core\</OutDir>
     <IntDir>$(MSBuildThisFileDirectory)obj\$(Configuration)\</IntDir>
     <WindowsAppSDKSelfContained>false</WindowsAppSDKSelfContained>
