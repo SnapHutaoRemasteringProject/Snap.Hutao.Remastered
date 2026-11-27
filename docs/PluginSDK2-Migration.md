@@ -160,13 +160,13 @@ public TestPluginPage(HutaoPlugin plugin) : base(plugin)
 
 旧 PluginScopedPage.LoadXamlManually 先调用 Assembly.GetManifestResourceStream 读取 EmbeddedResource，找不到就尝试 Assembly.Location 旁的文件；再 XamlReader.Load(string)，将结果赋给 Page.Content。这不是 XAML 编译器生成的 InitializeComponent，也没有使用该插件自己的 XBF/PRI。
 
-v2 将 .hxaml 放到 staging/views/，调用：
+v2 把松散 XAML 改为标准 .xaml，作为 None 项而不是 Page，放到 staging/views/，调用：
 
 ```csharp
 [WinRT.DynamicWindowsRuntimeCast(typeof(FrameworkElement))]
 private PluginView CreateCounterView()
 {
-    FrameworkElement root = (FrameworkElement)Context.LoadXaml("views/Counter.hxaml");
+    FrameworkElement root = (FrameworkElement)Context.LoadXaml("views/Counter.xaml");
     CounterViewModel model = new(counter);
     root.DataContext = model;
     return new(root, () =>
@@ -196,7 +196,7 @@ public sealed partial class CounterViewModel : System.ComponentModel.INotifyProp
 }
 ```
 
-可直接复制仓库 TestPlugin.Aot/SampleViewModel.cs 和 BindingPage.hxaml 学习 OneWay、TwoWay、ICommand、INotifyPropertyChanged、GeneratedBindableCustomProperty；完整代码与资源布局见 [XAML 指南](PluginSDK2-Xaml.md)。不要把旧 XAML 的宿主内部控件、markup extension 或反射式绑定视为公共 API。
+可直接复制仓库 samples/CSharpAot/SampleViewModel.cs 和 BindingPage.xaml 学习 OneWay、TwoWay、ICommand、INotifyPropertyChanged、GeneratedBindableCustomProperty；完整代码与资源布局见 [XAML 指南](PluginSDK2-Xaml.md)。不要把旧 XAML 的宿主内部控件、markup extension 或反射式绑定视为公共 API。
 
 ## 6. 命令、通知和线程
 

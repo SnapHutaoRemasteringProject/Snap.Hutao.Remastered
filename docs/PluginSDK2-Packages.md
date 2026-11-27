@@ -58,13 +58,13 @@ none 不允许 navigation；compiled 不允许 xaml。Dispatcher、Log、生命�
 stage/
   bin/x64/MyPlugin.dll
   bin/x64/OptionalNativeDependency.dll
-  views/Main.hxaml
+  views/Main.xaml
   assets/icon.png
 ```
 
 把 manifest.template.json 放在 staging 外；入口必须存在且为 x64 native PE DLL，不能含 CLR CorHeader。打包器遍历 staging 的普通文件，按 ordinal 路径排序并使用固定 ZIP entry timestamp。用同一工具链和完全相同字节输入才能比较可重现哈希。
 
-路径以 / 分隔，相对路径 ≤1024，单段 ≤255；不允许 ..、反斜杠、冒号、尾随空格/点、设备名、控制字符、reparse point、大小写重复或文件/目录冲突。校验限制：压缩包 256 MiB、单条目 256 MiB、解压总量 512 MiB、总 ZIP 条目 ≤4096、manifest 256 KiB、hxaml 1 MiB、icon 4 MiB。JSON 重复属性拒绝。验证不执行第三方 DLL。PE 格式校验不保证所有导出/依赖/ABI 兼容，激活时仍需检查 HutaoPluginCreate 与 IHutaoPlugin IID。
+路径以 / 分隔，相对路径 ≤1024，单段 ≤255；不允许 ..、反斜杠、冒号、尾随空格/点、设备名、控制字符、reparse point、大小写重复或文件/目录冲突。校验限制：压缩包 256 MiB、单条目 256 MiB、解压总量 512 MiB、总 ZIP 条目 ≤4096、manifest 256 KiB、.xaml（兼容旧 .hxaml）1 MiB、icon 4 MiB。JSON 重复属性拒绝。验证不执行第三方 DLL。PE 格式校验不保证所有导出/依赖/ABI 兼容，激活时仍需检查 HutaoPluginCreate 与 IHutaoPlugin IID。
 
 PluginPack.exe pack <manifest-template> <staging-dir> <output.hutao>：生成并验证包、输出 SHA256；verify <package>：输出 ID、版本与 SHA256。退出码 0 成功，1 操作失败，2 命令用法错误。ZIP SHA256 不是签名或发布者认证，用户必须确认来源。
 

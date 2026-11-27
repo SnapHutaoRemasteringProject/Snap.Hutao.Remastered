@@ -26,6 +26,8 @@ pwsh -File .\Build-Plugin.ps1 -SdkDirectory C:\HutaoSdk
 
 这是实际模板中的构建脚本，不是伪命令；它依次构建/发布、清理 staging、复制 DLL、pack、verify。若添加资源或自有依赖，请在 pack 前把这些文件复制到 staging，并保持 manifest 路径一致。C# 必须 Native AOT Publish（普通 Build 或非 AOT Publish 的托管 DLL 在任何宿主中均不支持），C++ 使用常规原生 DLL Build。若要理解每个项目配置和 API，继续阅读。旧插件直接阅读 [v1→v2 迁移](PluginSDK2-Migration.md)，UI 开发阅读 [XAML 指南](PluginSDK2-Xaml.md)。
 
+新版示例源码位于 samples/，共享契约位于 contracts/，SDK 项目位于 libraries/。松散 XAML 使用标准 .xaml 扩展名，在项目中作为 None（不经 XAML 编译器）处理；参见 [XAML 指南](PluginSDK2-Xaml.md)。
+
 ## 1. 先理解构建与运行边界
 
 宿主是已经启动 WinUI 3 的 Snap Hutao Remastered.exe，插件是 Windows 原生 DLL（动态链接库）。宿主使用 LoadLibraryExW 映射 DLL，调用约定为 Cdecl 的 HutaoPluginCreate 导出，取得 IHutaoPlugin 的 WinRT 接口。C# 插件需要 Native AOT（预先把 IL 编译为机器代码），普通 dotnet build 产生的托管 DLL 不是可安装的插件入口。C++ 由 MSVC 链接器直接生成原生 DLL。两者都不需要把宿主的程序集作为编译引用。
@@ -168,7 +170,7 @@ dotnet publish .\MyPlugin.csproj -c Release -r win-x64 -o .\publish
 
 ## 4. 从零创建 C++/WinRT 插件
 
-使用分发目录 templates/CppPlugin，或者在 VS 创建 x64 C++ DLL 项目；不需要为了程序式 UI 创建 WinUI Application。参考仓库 TestPlugin.Native.vcxproj 的工具链配置。外部模板使用普通 C++/WinRT 头文件（非 named modules），有意保持简单。若模板移到其他目录，设置 MSBuild 属性 HutaoNativeSdkRoot 指向 SDK 分发目录中的 native 文件夹。
+使用分发目录 templates/CppPlugin，或者在 VS 创建 x64 C++ DLL 项目；不需要为了程序式 UI 创建 WinUI Application。参考仓库 samples/CppCore/TestPlugin.Native.Core.vcxproj 的工具链配置。外部模板使用普通 C++/WinRT 头文件（非 named modules），有意保持简单。若模板移到其他目录，设置 MSBuild 属性 HutaoNativeSdkRoot 指向 SDK 分发目录中的 native 文件夹。
 
 关键配置是 CppWinRT NuGet 包、Windows App SDK NuGet 包、Windows SDK、windowsapp.lib、契约 WinMD 的 Reference/HintPath，以及 SDK include 路径。C++/WinRT 的投影生成器从 WinMD 产生 `winrt/Snap.Hutao.Plugin.Contracts.h`。传统头文件模式无需 XamlGeneratedWorkaround.h；它仅用于仓库编译期 XAML + C++20 modules 的实验项目。
 
@@ -213,7 +215,7 @@ msbuild .\MyNativePlugin.vcxproj /restore /p:Configuration=Release /p:Platform=x
 dumpbin /exports .\bin\Release\MyNativePlugin.dll
 ```
 
-C++ 模块模式开发者可参考 TestPlugin.Native/ModuleCommand.cpp 与 XamlWorkaround.h。不要直接编辑生成的 .g.h/.g.cpp；生成器重新执行会覆盖它们。Release DLL 需满足目标机器上的 VC 运行时依赖。Debug CRT DLL 只适合本地调试，不作为发布包。
+C++ 模块模式开发者可参考 samples/CppCore/ModuleCommand.cpp 与 WinRTModules.h。不要直接编辑生成的 .g.h/.g.cpp；生成器重新执行会覆盖它们。Release DLL 需满足目标机器上的 VC 运行时依赖。Debug CRT DLL 只适合本地调试，不作为发布包。
 
 ## 5. 制作 manifest 和 .hutao 包
 

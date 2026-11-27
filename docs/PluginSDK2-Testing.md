@@ -4,16 +4,16 @@
 
 ## 1. 构建与回归
 
-在干净 checkout，VS 2026 打开 src/Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.slnx，Release|x64，Rebuild。C++ 和 C# 投影由同一 Contracts.winmd 生成；不要并行启动两个独立构建过程同时写 artifacts/metadata/references。C# AOT 发布：
+在干净 checkout，VS 2026 打开 src/Snap.Hutao.Plugin.SDK/libraries/Snap.Hutao.Plugin.SDK.slnx，Release|x64，Rebuild。C++ 和 C# 投影由同一 Contracts.winmd 生成；不要并行启动两个独立构建过程同时写 artifacts/metadata/references。C# AOT 发布：
 
 ```powershell
 cd src\Snap.Hutao.Plugin.SDK
-dotnet publish .\TestPlugin.Aot\TestPlugin.Aot.csproj -c Release -p:Platform=x64 -p:PublishProfile=NativeAot -tl:off
+dotnet publish .\samples\CSharpAot\TestPlugin.Aot.csproj -c Release -p:Platform=x64 -p:PublishProfile=NativeAot -tl:off
 pwsh -File .\build\Pack-Samples.ps1 -Configuration Release
 pwsh -File .\build\Test-Packaging.ps1
 ```
 
-Pack-Samples 默认 Release，生成 C++ core、C++ compiled、C# AOT 三个明确区分的包。C++ core 与 compiled 包使用同一示例 DLL，但不同 manifest ID 及资源清单；示例代码显式按 ID 选择工厂，不是 SDK 的自动降级机制。正式应用测试使用 Core 包。
+Pack-Samples 必须显式指定 Debug 或 Release。CppCore 与 CppCompiled 是独立项目和独立 DLL，分别在 artifacts/native/<Configuration>/core 与 compiled；CSharpAot 一律 Release Native AOT Publish。正式应用测试只用 Core 和 C# AOT 包。推荐从 VS Developer PowerShell 执行 build/Build-Samples.ps1 -Configuration Release，自动生成契约、重建两个 C++ 项目、发布 C# 并打包。
 
 重建发布目录：
 
@@ -32,7 +32,7 @@ Get-ChildItem .\artifacts\jit-host\resources.pri,.\artifacts\aot-host\resources.
 |---|---|---|
 | ABI-01 | 每种宿主加载 C++ core / C# AOT | 导出、QI、OnLoad、OnInstall、OnEnable 完成；真实 UIElement 显示 |
 | UI-01 | 选择 programmatic 视图、点击 Button | 原生控件文字变化、通知；不经 XAML 解析 |
-| UI-02 | 选择 loose 视图、点击按钮 | manifest 中 .hxaml 被加载，命名控件和 Click 回调正常 |
+| UI-02 | 选择 loose 视图、点击按钮 | manifest 中 .xaml 被加载，命名控件和 Click 回调正常 |
 | UI-03 | C# Binding 视图，点击 Increment，再编辑 Message 并 Save | Counter OneWay 更新、TextBox TwoWay 更新 draft、ICommand 执行；重开视图读到已保存值 |
 | ASYNC-01 | 选择 Exercise ABI 命令并点击 Run command | 设置 int/bool/string 往返；worker 无 UI access、dispatcher callback 有 access；对话框 OK；C# 两次 Task.Yield 和每阶段断言通过 |
 | LIFE-01 | Disable and re-enable | OnDisable 后 UI 与贡献消失；同包同模块新实例 OnLoad/OnEnable；不重复 OnInstall |
@@ -48,13 +48,29 @@ Get-ChildItem .\artifacts\jit-host\resources.pri,.\artifacts\aot-host\resources.
 | NAV-01 | 多插件贡献、跨页面导航/返回、窗口重建 | 内置导航仍正常，插件项有唯一 ID，宿主 PluginHostPage 承载，离开后关闭 view |
 | BUILD-01 | 正式应用 JIT/AOT MSIX 及现有支持的 unpackaged 运行 | 安装、导航、通知、设置、退出均正常；原有发布行为不回归 |
 
-四种 Release 组合应独立记录：JIT host × C++ core、JIT × C# AOT、AOT host × C++ core、AOT × C# AOT。每个记录 commit、SDK 版本、宿主路径、包 SHA256、Windows build、测试日志。Result 仅可写 Pass / Fail / NotRun，不以源码推断 Pass。
+### 宿主 × 插件完整矩阵
+
+| 插件产物 | JIT PrototypeHost | Native AOT PrototypeHost |
+|---|---|---|
+| C++ Core（程序式 UI、loose .xaml） | 正向运行 | 正向运行 |
+| C++ Compiled（XBF、x:Bind） | 正向实验 | 正向实验 |
+| C# Native AOT | 正向运行 | 正向运行 |
+| C# 普通 IL DLL（PublishAot=false） | 拒绝 | 拒绝 |
+
+前六项应分别记录真实运行结果；编译期 XAML 仍是实验。后两项不是遗漏的功能，而是负向测试：宿主只加载 native x64 PE DLL，CorHeader 非空的托管程序集在加载前拒绝。使用以下命令构建独立的负例，不覆盖 Native AOT 发布输出：
+
+```powershell
+dotnet build .\samples\CSharpAot\TestPlugin.Aot.csproj -c Release -p:Platform=x64 -p:PublishAot=false -p:SelfContained=false -o .\artifacts\managed-fixture
+pwsh -File .\build\Test-Packaging.ps1 -ManagedDll .\artifacts\managed-fixture\TestPlugin.Aot.dll
+```
+
+测试脚本将普通托管 DLL 替换合法包入口并重新计算正确的 SHA256，再要求 verify 拒绝；因此失败不能被简单归因于哈希错误。随后分别启动 JIT/AOT PrototypeHost，手动填入该 DLL 完整路径，Inspect and load，应在信任/映射之前报告 native x64 PE DLL 验证错误。无需安装 .NET 运行时或恢复 ALC 托管加载器。每项记录 commit、SDK 版本、宿主路径、包 SHA256、Windows build、日志及 Pass/Fail/NotRun。正式 Snap Hutao 本身仍不支持 compiled 模式。
 
 C++ compiled 是单独实验：选择 C++ compiled (experimental)，确认 InitializeComponent deferred、绝对 URI、LoadComponent returned successfully、x:Bind 文本和 Click；然后测试主题、嵌套控件、相同名称资源、多插件、两个发布宿主。标准模板的 App 生成的 AddOtherProvider 接入亦需验证。失败不影响 core 的程序式/loose 测试。正式应用拒绝 compiled，C# compiled 尚无实现。
 
 ## 3. 当前状态与发布门槛
 
-已报告的真实测试（旧 Debug harness）：两种 DLL 编译/发布与打包成功，两种插件加载 UI 成功；C++ compiled Page 在显式 InitializeComponent 延迟方案中成功。C# Exercise ABI 曾报 Expected UI STA，随后提交的同步上下文修复尚无完整回归证据。旧 JIT/AOT Publish 宿主启动均 FailFast，随后用户引入标准 WinUI 模板。
+已报告的真实测试（旧 Debug harness）：两种 DLL 编译/发布与打包成功，两种插件加载 UI 成功；C++ compiled Page 在显式 InitializeComponent 延迟方案中成功。2026-11-27 用户随后确认 C++ Core 已正常加载（拆分前的代码）。拆分后的三项目、标准扩展名与六正两负矩阵仍需重新验证。C# Exercise ABI 曾报 Expected UI STA，随后提交的同步上下文修复尚无完整回归证据。旧 JIT/AOT Publish 宿主启动均 FailFast，随后用户引入标准 WinUI 模板。
 
 本轮结构调整、主程序接入、三种核心 UI、Binding 示例、本地 SDK 分发、更新恢复与测试脚本是源码实现，**没有 Windows 执行环境中的新构建/运行结果**。不得把实现完成当作测试通过。正式合并/发布前必须运行上述测试；特别是标准 WinUI 生成的 metadata provider、资源发布、C# AOT Binding、主程序 DI 生成器、退出与更新故障注入。原始 Design.md 是目标规范，实际差异：更新显式重启应用、旧包先卸载保留数据再安装；编译期 XAML 未正式启用；未发布 NuGet；缺少真实 ABI 引用计数压力测试、全部事务故障注入及生产性能基线。需要后续真实 Windows 日志才能关掉这些门槛，不是隐藏的兼容承诺。
 
@@ -91,7 +107,7 @@ C++ compiled 是单独实验：选择 C++ compiled (experimental)，确认 Initi
 | Build 生成 managed DLL | PublishAot/NativeLib=Shared 生成 native DLL |
 | GenerateHutaoPlugin / HutaoPluginOutputPath | Publish 后显式 staging 与 PluginPack |
 | 旧 PluginScopedPage/宿主 ViewModel | 返回真实 UIElement，宿主 PluginHostPage 管理视觉树 |
-| Embedded .hxaml + 运行时反射 | manifest 声明的 .hxaml + LoadXaml、事件或 AOT 生成 Binding |
+| Embedded .hxaml + 运行时反射 | manifest 声明的 .xaml + LoadXaml、事件或 AOT 生成 Binding |
 | 旧设置 API | OnLoad 注册 int/bool/string，PluginSetting<T>，原路径兼容同名同类型 |
 | inject/ | 显式 gameLibraries + game-libraries 能力，恢复原 Island 扩展；实际游戏验收待完成 |
 | Harmony patch | 没有通用替代；用公开贡献接口，缺少业务扩展单独设计 |

@@ -36,7 +36,7 @@ View 生命周期：RegisterView 仅注册工厂；导航时调用 CreateView(vi
 | HasThreadAccess | bool | UI 回调内可用；后台使用事先 CaptureDispatcher 得到的对象 |
 | Log(kind,message) | void | UI STA 日志；无需 notifications 权限 |
 | Notify(kind,message) | void | notifications；激活时暂存，active 时宿主显示通知 |
-| LoadXaml(relativePath) | UIElement | xaml + loose；必须是 manifest 声明的 .hxaml 文件 |
+| LoadXaml(relativePath) | UIElement | xaml + loose；必须是 manifest 声明的 .xaml 文件 |
 | ParseXaml(markup) | UIElement | xaml + loose；宿主 XamlReader.Load 解析，最多 1 MiB |
 | ShowMessageAsync(title,message,primaryText="OK",secondaryText="Cancel") | Task<DialogResult> | dialogs；active；宿主已有 XamlRoot，返回用户选择 |
 | RegisterView(id,factory) | IDisposable | navigation；注册 Func<PluginView>，viewId 局部唯一 |
@@ -109,7 +109,9 @@ WinUI 自身的 Click、Command 等事件未必经 SDK ABI adapter，异步事�
 | loose | 程序式控件、LoadXaml/ParseXaml | xaml capability；松散 XAML 不含 x:Class 或编译事件 |
 | compiled | 独立 WinUI runtime component + XBF | 仅 PrototypeHost 实验；正式宿主明确拒绝 |
 
-### 松散 XAML（.hxaml）
+### 松散 XAML（.xaml）
+
+标准扩展名并不表示编译：C# 项目关闭 EnableDefaultPageItems，将这些文件作为 None，C++ 项目使用 None 而非 Page。旧 .hxaml 仅作兼容输入。
 
 ```xml
 <StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -118,14 +120,14 @@ WinUI 自身的 Click、Command 等事件未必经 SDK ABI adapter，异步事�
 </StackPanel>
 ```
 
-放在 staging/views/Main.hxaml，使用 Context.LoadXaml("views/Main.hxaml")。XamlReader.Load 返回原生控件，经 WinRT ABI 跨运行时投影为 UIElement。C# Native AOT 可能裁剪掉动态目标类型的投影，必须在发生转换的方法上标注目标类型：
+放在 staging/views/Main.xaml，使用 Context.LoadXaml("views/Main.xaml")。XamlReader.Load 返回原生控件，经 WinRT ABI 跨运行时投影为 UIElement。C# Native AOT 可能裁剪掉动态目标类型的投影，必须在发生转换的方法上标注目标类型：
 
 ```csharp
 [WinRT.DynamicWindowsRuntimeCast(typeof(FrameworkElement))]
 [WinRT.DynamicWindowsRuntimeCast(typeof(Button))]
 private PluginView CreateView()
 {
-    FrameworkElement root = (FrameworkElement)Context.LoadXaml("views/Main.hxaml");
+    FrameworkElement root = (FrameworkElement)Context.LoadXaml("views/Main.xaml");
     Button button = (Button)root.FindName("RunButton");
     void Click(object sender, RoutedEventArgs e) => Context.Notify(NotificationKind.Success, "Run");
     button.Click += Click;
@@ -137,7 +139,7 @@ DynamicWindowsRuntimeCast 是 CsWinRT 为裁剪保留运行时类转换元数据
 
 ### C# AOT Binding / MVVM
 
-Binding 通过 ICustomPropertyProvider 读取 C# 属性，不同于 x:Bind 的编译代码。C# AOT 自定义 ViewModel 必须 partial 并标注 [WinRT.GeneratedBindableCustomProperty]；实现 INotifyPropertyChanged 用于属性通知。ICommand 实现也应 partial，使 CsWinRT 生成相应 ABI 包装器。不要依赖 reflection 发现属性。仓库 TestPlugin.Aot/SampleViewModel.cs 与 BindingPage.hxaml 给出完整示例（Counter OneWay、Message TwoWay UpdateSourceTrigger=PropertyChanged、Increment/Save 命令、清理）。TwoWay 编辑只改变草稿，Save 显式持久化。
+Binding 通过 ICustomPropertyProvider 读取 C# 属性，不同于 x:Bind 的编译代码。C# AOT 自定义 ViewModel 必须 partial 并标注 [WinRT.GeneratedBindableCustomProperty]；实现 INotifyPropertyChanged 用于属性通知。ICommand 实现也应 partial，使 CsWinRT 生成相应 ABI 包装器。不要依赖 reflection 发现属性。仓库 samples/CSharpAot/SampleViewModel.cs 与 BindingPage.xaml 给出完整示例（Counter OneWay、Message TwoWay UpdateSourceTrigger=PropertyChanged、Increment/Save 命令、清理）。TwoWay 编辑只改变草稿，Save 显式持久化。
 
 ```csharp
 [WinRT.GeneratedBindableCustomProperty]
@@ -201,7 +203,7 @@ co_await ui;
 auto result = co_await context.Dialogs().ShowMessageAsync(L"Plugin", L"Done", L"OK", L"Cancel");
 ```
 
-完整 coroutine、IPluginAction、注册 token 与 get_strong 的例子见 TestPlugin.Native/TestPlugin.cpp。协程跨挂起前持有自身生命周期，worker 不使用 Context；回调及 Dispatcher 必须支持 IAgileObject（可跨 COM apartment 的对象）或已验证的封送方案。不要在 UI 上阻塞等待 co_await。
+完整 coroutine、IPluginAction、注册 token 与 get_strong 的例子见 samples/CppCore/TestPlugin.cpp。协程跨挂起前持有自身生命周期，worker 不使用 Context；回调及 Dispatcher 必须支持 IAgileObject（可跨 COM apartment 的对象）或已验证的封送方案。不要在 UI 上阻塞等待 co_await。
 
 ## 5. 错误处理与约束
 

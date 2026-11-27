@@ -33,27 +33,33 @@ HutaoPlugin.idl → MIDL → Contracts.winmd
 
 ## 目录和职责
 
-| 目录 | 职责 |
-|---|---|
-| Snap.Hutao.Plugin.Contracts | 唯一 MIDL 契约和 C ABI 头文件 |
-| Snap.Hutao.Plugin.Projection | 由 CsWinRT 生成的 C# 投影，宿主和 C# SDK 共同使用 |
-| Snap.Hutao.Plugin.SDK | C# facade（HutaoPlugin、PluginContext、PluginSetting、PluginExport） |
-| Snap.Hutao.Plugin.SDK.Native | C++ 入口辅助头文件 |
-| Snap.Hutao.Plugin.Packaging | 宿主和打包工具共用的纯包解析、哈希、PE 校验 |
-| TestPlugin.Aot / TestPlugin.Native | 可运行示例、测试资源和 manifest 模板 |
-| templates | 仓库外开发的项目起点 |
-| tools/PluginPack | pack/verify 命令行工具 |
-| tests/PrototypeHost | 标准 WinUI 3 独立开发/回归宿主；不负责正式安装 |
-| build | 生成契约、示例包、本地 SDK 分发和包验证测试 |
-| ../Snap.Hutao.Remastered/.../Service/Plugin | 正式宿主实现；PrototypeHost 链接同一源码，不存在独立 Host 运行时程序集 |
+```text
+Snap.Hutao.Plugin.SDK/
+  contracts/                      # 唯一 IDL 和 C ABI
+  libraries/
+    Snap.Hutao.Plugin.Projection/ # C# WinRT 投影
+    Snap.Hutao.Plugin.SDK/        # C# SDK facade
+    Snap.Hutao.Plugin.SDK.Native/ # C++ SDK 头文件
+    Snap.Hutao.Plugin.Packaging/  # 共用包校验
+  samples/
+    CSharpAot/                    # C# 原生 AOT 示例
+    CppCore/                      # C++ 程序式/松散 XAML，无 Page/XBF
+    CppCompiled/                  # C++ 编译期 Page/XBF 实验
+  templates/                      # 第三方 C#/C++ 独立项目模板
+  tools/PluginPack/                # pack / verify
+  tests/PrototypeHost/             # 独立 WinUI 调试宿主
+  build/                          # 契约、构建、打包、分发、测试脚本
+  artifacts/                      # 生成产物（gitignore）
+```
+
+正式宿主实现仍位于主程序 Service/Plugin，PrototypeHost 通过 Compile Link 复用核心宿主源码，不存在独立 Host 运行时程序集。三个示例都有独立入口 DLL；C++ Core 不依赖 compiled 的 Page 生成代码。新松散 XAML 使用标准 .xaml 扩展名、Build Action=None；旧 .hxaml 仅兼容读取。
 
 ## 快速开始（维护者）
 
-Visual Studio 2026 打开 `Snap.Hutao.Plugin.SDK.slnx`，Release|x64，Rebuild Solution。然后在本目录：
+Visual Studio 2026 Developer PowerShell 进入本目录，执行：
 
 ```powershell
-dotnet publish .\TestPlugin.Aot\TestPlugin.Aot.csproj -c Release -p:Platform=x64 -p:PublishProfile=NativeAot
-pwsh -File .\build\Pack-Samples.ps1 -Configuration Release
+pwsh -File .\build\Build-Samples.ps1 -Configuration Release
 pwsh -File .\build\Test-Packaging.ps1
 ```
 
@@ -69,4 +75,4 @@ pwsh -File .\build\Build-Sdk.ps1 -Version 2.0.0-preview.1 -IncludePrototypeHost
 
 输出 `artifacts\sdk\2.0.0-preview.1`；开发者可以只使用该分发目录，不需要引用 Snap Hutao 主工程。NuGet.org 发布需要独立的发布决策与验收。
 
-**验证状态**：旧 Debug 测试中两种原生插件均已加载并显示 UI，C++ compiled Page 曾成功；C# 后续异步修复、标准模板 Release/AOT、Binding、新正式宿主及本地 SDK 分发尚需真实 Windows 验收。未经过验收的功能不能视作已经发布。详见测试矩阵。
+**验证状态**：2026-11-27 用户确认拆分前的 C++ Core 已正常加载；新目录和独立示例仍需重新构建验收。旧 Debug 测试中两种原生插件均已加载并显示 UI，C++ compiled Page 曾成功；C# 后续异步修复、标准模板 Release/AOT、Binding、新正式宿主及本地 SDK 分发尚需真实 Windows 验收。未经过验收的功能不能视作已经发布。详见测试矩阵。

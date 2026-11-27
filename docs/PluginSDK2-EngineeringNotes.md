@@ -35,7 +35,7 @@ MIDL 调用 C/C++ 预处理器 cl.exe 处理 IDL。C# MSBuild Exec 的 PATH 不�
 复现/诊断（SDK 根目录）：
 
 ```powershell
-dotnet publish .\TestPlugin.Aot\TestPlugin.Aot.csproj -c Release -p:Platform=x64 -p:PublishProfile=NativeAot -tl:off -v:normal
+dotnet publish .\samples\CSharpAot\TestPlugin.Aot.csproj -c Release -p:Platform=x64 -p:PublishProfile=NativeAot -tl:off -v:normal
 ```
 
 MSB3073 是外部命令失败的包装错误，先找其之前的第一个具体异常。不要盲改 TFM、SDK 包版本或禁用目标。Build-Sdk.ps1 的分发末尾仍在 PowerShell 7 下输出文件 SHA256；它与契约生成的 Windows PowerShell 5.1 路径不同，须分别验收。
@@ -212,3 +212,8 @@ if (!dispatcher.HasThreadAccess) throw new InvalidOperationException("setting co
 ### E16：标准 PrototypeHost 编译 CS0103：AddOtherProvider 不存在
 
 AddOtherProvider 不是 Application 公共 API，而是 XAML 编译器条件生成的 App partial 成员。上游 [CSharpAppPass1.tt](https://github.com/microsoft/microsoft-ui-xaml/blob/main/src/XamlCompiler/BuildTasks/Microsoft/Xaml/XamlCompiler/CodeGenerators/CSharpAppPass1.tt#L90-L99) 的生成条件为 `!ProjectInfo.GenerateProviderCode && !ProjectInfo.EnableTypeInfoReflection`；Pass2 的 `_AddOtherProvider` 转发实现采用相同条件。`DoNotGenerateOtherProviders` 将 GenerateProviderCode 设为 false。PrototypeHost 项目显式设置 `EnableTypeInfoReflection=false` 和 `XamlCodeGenerationControlFlags=DoNotGenerateOtherProviders`，并在 App.InitializeComponent 前调用 AddOtherProvider 注册 `Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider`。这是因为禁用自动 OtherProviders 生成后，必须主动恢复平台控件 provider，否则标准 App.xaml 的 XamlControlsResources 可能无法解析。后续插件 provider 仍由 RegisterMetadataProvider 动态追加。不修改生成文件、不用反射。参考微软 [#5318](https://github.com/microsoft/microsoft-ui-xaml/issues/5318)。当前实际错误 CS0103 已确认；修复后的 Windows Debug、Release、JIT/AOT Publish 仍 NotRun。清理 PrototypeHost obj/bin 再构建；检查生成 App.g.i.cs 的 AddOtherProvider 声明、XamlTypeInfo.g.cs 的 `_AddOtherProvider` 实现以及空宿主启动、外部 Page 加载。该修复不等于 PRI 资源映射已集成。
+
+
+### E17：C++ Core 错误进入编译期 Page
+
+日志中 Core 执行 Creating Page / LoadComponent URI，说明实际运行进入了原本只属于 compiled 的代码。此前两个包共用 TestPlugin.Native.dll，由 PluginId 选择工厂；旧 DLL、错误包或构建配置混用可能导致该现象，但实际根因没有得到断点或哈希证据。用户随后确认 Core 已恢复正常。为消除示例耦合，`d8979f7` 将两者拆成不同工程与不同 DLL，`cb53dcb` 将工程分别移到 samples/CppCore、samples/CppCompiled，`f7bbe39` 允许标准 .xaml 文件并保留旧 .hxaml 输入兼容；PrototypeHost 的样例按钮不再回退到裸 DLL，记录包 ID、模式、入口、哈希、viewId。Pack-Samples 明确要求构建配置，Build-Samples 自动构建并打包。未修改已验证的外部 Page/XBF URI 机制，也不将 compiled 模式开放到正式宿主。拆分后的六种正向运行组合及普通 IL DLL 拒绝测试为 NotRun；旧 Debug Core 成功不能替代新项目编译验收。

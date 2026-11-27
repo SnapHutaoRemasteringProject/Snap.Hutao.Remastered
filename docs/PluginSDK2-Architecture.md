@@ -81,19 +81,21 @@ sequenceDiagram
 
 | 路径 | 职责 |
 |---|---|
-| Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.Contracts | 唯一 HutaoPlugin.idl、HutaoPluginAbi.h |
-| Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.Projection | GenerateHutaoContracts → CsWinRTGenerateProjection；PluginAbi |
-| Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK | C# facade 与 adapter；不引用宿主 |
-| Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.Native | C++ 入口辅助头文件 |
-| Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.Packaging | 独立包校验库；不加载 DLL |
+| Snap.Hutao.Plugin.SDK/contracts | 唯一 HutaoPlugin.idl、HutaoPluginAbi.h |
+| Snap.Hutao.Plugin.SDK/libraries/Snap.Hutao.Plugin.Projection | GenerateHutaoContracts → CsWinRTGenerateProjection；PluginAbi |
+| Snap.Hutao.Plugin.SDK/libraries/Snap.Hutao.Plugin.SDK | C# facade 与 adapter；不引用宿主 |
+| Snap.Hutao.Plugin.SDK/libraries/Snap.Hutao.Plugin.SDK.Native | C++ 入口辅助头文件 |
+| Snap.Hutao.Plugin.SDK/libraries/Snap.Hutao.Plugin.Packaging | 独立包校验库；不加载 DLL |
 | Snap.Hutao.Plugin.SDK/tools/PluginPack | 使用 Packaging 的命令行程序 |
 | Snap.Hutao.Plugin.SDK/tests/PrototypeHost | 标准 WinUI App.xaml、MainWindow、MainPage；链接正式核心宿主源码 |
 | Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Plugin | 正式宿主：NativePluginLoader、PluginResidency、PluginSession、PluginHostContext、SettingStore、PluginService、PluginPackageStore |
 | Snap.Hutao.Remastered/Snap.Hutao.Remastered/UI/Xaml/View/Page | PluginPage、PluginSettingPage、PluginHostPage；管理、编辑设置、承载视图 |
 
-PrototypeHost 复用加载器、驻留、会话、context 和设置存储的源码，但并不运行正式 PluginService 的安装/更新事务或主程序导航逻辑。它是独立调试和 ABI 回归工具，不是生产宿主的替代品。项目模板在 templates/CSharpPlugin 与 templates/CppPlugin；TestPlugin.Aot、TestPlugin.Native 是回归示例而不是第三方插件的必需依赖。
+PrototypeHost 复用加载器、驻留、会话、context 和设置存储的源码，但并不运行正式 PluginService 的安装/更新事务或主程序导航逻辑。它是独立调试和 ABI 回归工具，不是生产宿主的替代品。项目模板在 templates/CSharpPlugin 与 templates/CppPlugin；samples/CSharpAot、samples/CppCore、samples/CppCompiled 是独立回归示例而不是第三方插件的必需依赖。
 
 ## 5. 我应该怎样开发？
+
+SDK 源码根目录按职责分为 contracts（IDL/ABI）、libraries（可复用库）、samples（独立可运行示例）、templates（外部项目起点）、tools（命令行工具）、tests（测试宿主）和 build（构建脚本）。CppCore 与 CppCompiled 是不同 DLL；不再由 ID 选择是否加载 XBF。
 
 原有游戏附加库通过已批准包的 gameLibraries 声明进入主程序已有 Island 启动服务，而不是通过插件 ABI 暴露进程操作。完整旧版代码对照见 [迁移](PluginSDK2-Migration.md)，XAML 资源边界及完整例子见 [XAML](PluginSDK2-Xaml.md)。
 
@@ -101,7 +103,7 @@ PrototypeHost 复用加载器、驻留、会话、context 和设置存储的源�
 |---|---|
 | 写 C# 插件 | 使用 CSharpPlugin 模板，引用本地 SDK NuGet，定义入口与 HutaoPlugin，dotnet publish Native AOT |
 | 写 C++ 插件 | 使用 CppPlugin 模板，引用 canonical WinMD 和头文件，MSBuild x64 DLL |
-| 创建 UI | 程序式控件，或 loose 模式中的 .hxaml；C# Binding 参考 AOT 示例，仍需验证 |
+| 创建 UI | 程序式控件，或 loose 模式中的 .xaml；C# Binding 参考 AOT 示例，仍需验证 |
 | 测试插件 | 准备 staging → PluginPack pack → PrototypeHost Inspect and load → 选择视图/命令 |
 | 修改插件代码 | 关闭测试宿主，重新构建、打包、启动；Disable and re-enable 只测试生命周期 |
 | 发布给用户 | 分发 .hutao；用户在正式插件管理页检查来源和哈希，确认后启用 |

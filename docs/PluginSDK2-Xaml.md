@@ -5,8 +5,8 @@
 | 目标 | 选择 | 编译产物 |
 |---|---|---|
 | 简单 UI、排除资源问题 | programmatic | native DLL |
-| 与 v1 .hxaml 页面等价 | loose | native DLL + .hxaml |
-| C# MVVM | loose + 生成 Binding 元数据 | native DLL + .hxaml；AOT 验收待完成 |
+| 与 v1 .hxaml 页面等价 | loose | native DLL + .xaml |
+| C# MVVM | loose + 生成 Binding 元数据 | native DLL + .xaml；AOT 验收待完成 |
 | C++ x:Class、x:Bind、生成事件、独立 runtime class | compiled 实验 | native DLL + XBF + 对应元数据/资源 |
 | C# 编译期 XAML runtime component | 尚未实现验收 | 不承诺支持 |
 
@@ -14,7 +14,29 @@
 
 ## 2. 创建一个 loose XAML 页面（完整代码）
 
-在 [C# 模板](../src/Snap.Hutao.Plugin.SDK/templates/CSharpPlugin) 基础上创建 views/Main.hxaml：
+现在松散与编译期 XAML 都使用标准 .xaml 扩展名。决定是否编译的是项目项类型（Build Action），不是文件后缀。C# 模板已关闭默认 Page 项；若添加松散 XAML，确保其 Build Action 为 None。C++ Core 项目将 CoreView.xaml 标为 None，只有 CppCompiled 的 PluginPage.xaml 是 Page。松散 XAML 不生成 XBF、代码连接或自己的 PRI；编译期 XAML 则由 XAML compiler 处理。旧 .hxaml 仅作为兼容输入。
+
+```xml
+<!-- C#：不让 WinUI 把文本资源当 Page 编译 -->
+<PropertyGroup>
+  <EnableDefaultPageItems>false</EnableDefaultPageItems>
+</PropertyGroup>
+<ItemGroup>
+  <Page Remove="views\Main.xaml" />
+  <None Update="views\Main.xaml" />
+</ItemGroup>
+```
+
+```xml
+<!-- C++：两种独立项目分别声明 -->
+<None Include="CoreView.xaml" />
+<!-- CppCompiled 项目中才有： -->
+<Page Include="PluginPage.xaml" />
+```
+
+两种资源仍应在 pack 前复制到 staging；loose 复制 .xaml 源文件，compiled 复制编译产物 .xbf。不要将同一文件同时作为 None 和 Page。
+
+在 [C# 模板](../src/Snap.Hutao.Plugin.SDK/templates/CSharpPlugin) 基础上创建 views/Main.xaml：
 
 ```xml
 <StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -55,7 +77,7 @@ public sealed class MyPlugin : HutaoPlugin
     [WinRT.DynamicWindowsRuntimeCast(typeof(Button))]
     private PluginView CreateView()
     {
-        FrameworkElement root = (FrameworkElement)Context.LoadXaml("views/Main.hxaml");
+        FrameworkElement root = (FrameworkElement)Context.LoadXaml("views/Main.xaml");
         TextBlock count = (TextBlock)root.FindName("CountText");
         Button button = (Button)root.FindName("IncrementButton");
         bool closed = false;
@@ -102,10 +124,10 @@ manifest 修改为：
 
 ```powershell
 New-Item -ItemType Directory -Force (Join-Path $stage 'views') | Out-Null
-Copy-Item -LiteralPath (Join-Path $root 'views\Main.hxaml') -Destination (Join-Path $stage 'views\Main.hxaml')
+Copy-Item -LiteralPath (Join-Path $root 'views\Main.xaml') -Destination (Join-Path $stage 'views\Main.xaml')
 ```
 
-最终包内文件：manifest.json、bin/x64/MyPlugin.dll、views/Main.hxaml。文件名必须与 LoadXaml 参数一致。每次打开视图创建新的控件树；关闭时撤销事件和设置订阅。
+最终包内文件：manifest.json、bin/x64/MyPlugin.dll、views/Main.xaml。文件名必须与 LoadXaml 参数一致。每次打开视图创建新的控件树；关闭时撤销事件和设置订阅。
 
 LoadXaml 的宿主实现：检查 xaml 能力、active 状态和 loose 模式 → 按 manifest 相对路径解析至 PackageDirectory → 读取文本 → XamlReader.Load → 返回 UIElement。它并不调用插件程序集的 GetManifestResourceStream，也不会执行 XAML 编译器生成的代码。不要写 x:Class、x:Bind 或 Click="Increment"；事件由 C# 或 C++ 显式连接。DynamicWindowsRuntimeCast 使 AOT 保留 WinRT runtime class 的转换支持，不是绑定属性的生成器。
 
@@ -113,9 +135,9 @@ LoadXaml 的宿主实现：检查 xaml 能力、active 状态和 loose 模式 �
 
 需要把控件和业务状态分开时，使用插件自己的 ViewModel。完整参考：
 
-- [SampleViewModel.cs](../src/Snap.Hutao.Plugin.SDK/TestPlugin.Aot/SampleViewModel.cs)
-- [BindingPage.hxaml](../src/Snap.Hutao.Plugin.SDK/TestPlugin.Aot/BindingPage.hxaml)
-- [TestPlugin.cs](../src/Snap.Hutao.Plugin.SDK/TestPlugin.Aot/TestPlugin.cs) 的 CreateBindingView()
+- [SampleViewModel.cs](../src/Snap.Hutao.Plugin.SDK/samples/CSharpAot/SampleViewModel.cs)
+- [BindingPage.xaml](../src/Snap.Hutao.Plugin.SDK/samples/CSharpAot/BindingPage.xaml)
+- [TestPlugin.cs](../src/Snap.Hutao.Plugin.SDK/samples/CSharpAot/TestPlugin.cs) 的 CreateBindingView()
 
 XAML：
 
@@ -133,11 +155,11 @@ XAML：
 
 | 路径 | 由谁解析 |
 |---|---|
-| Context.LoadXaml("views/Main.hxaml") | SDK 宿主，按该插件工作区的 manifest 路径 |
+| Context.LoadXaml("views/Main.xaml") | SDK 宿主，按该插件工作区的 manifest 路径 |
 | ms-appx:///Assets/Logo.png | WinUI 包/应用资源解析器，默认是宿主资源 |
 | ms-resource:///Resources/Title 或 x:Uid | MRT Core（资源管理器），依赖资源映射/PRI |
 
-插件 DLL 被 LoadLibrary 映射到宿主进程，不意味着 WinUI 的应用资源根切换到了该 DLL 旁边。XamlReader.Load(string) 也不会自动根据 .hxaml 文件在磁盘的位置，为其中的相对 Source URI 建立插件私有根。不要用宿主安装目录当作插件工作区。
+插件 DLL 被 LoadLibrary 映射到宿主进程，不意味着 WinUI 的应用资源根切换到了该 DLL 旁边。XamlReader.Load(string) 也不会自动根据 .xaml 文件在磁盘的位置，为其中的相对 Source URI 建立插件私有根。不要用宿主安装目录当作插件工作区。
 
 对于普通图片，显式读取插件目录中的已随包分发文件。例如 C# 在 UI 线程创建位图：
 
@@ -158,7 +180,7 @@ image.Source = bitmap;
 
 ## 5. 编译期 XAML：当前 C++ 实验到底做了什么？
 
-参考真实源码 [TestPlugin.Native](../src/Snap.Hutao.Plugin.SDK/TestPlugin.Native)。该项目是 WinUI Runtime Component（不是独立 Application），包含 PluginPage.idl、PluginPage.xaml、PluginPage.xaml.h/.cpp。IDL 定义 runtime class，XAML 的 x:Class 连接生成代码：
+参考真实源码 [TestPlugin.Native](../src/Snap.Hutao.Plugin.SDK/samples/CppCompiled)。该项目是 WinUI Runtime Component（不是独立 Application），包含 PluginPage.idl、PluginPage.xaml、PluginPage.xaml.h/.cpp。IDL 定义 runtime class，XAML 的 x:Class 连接生成代码：
 
 ```xml
 <Page x:Class="TestPlugin.Native.PluginPage"
@@ -221,7 +243,7 @@ XBF 是二进制 XAML 内容；PRI 是 MRT 的资源映射索引，可能包含�
 检查 PRI 内容，不要只看文件名。在 Developer PowerShell 或明确使用 Windows SDK 工具：
 
 ```powershell
-$pri = Get-ChildItem .\artifacts\native\Release -Filter *.pri -Recurse -File
+$pri = Get-ChildItem .\artifacts\native\Release\compiled -Filter *.pri -Recurse -File
 foreach ($file in $pri) {
     $dump = $file.FullName + '.xml'
     makepri dump /if $file.FullName /of $dump /o
