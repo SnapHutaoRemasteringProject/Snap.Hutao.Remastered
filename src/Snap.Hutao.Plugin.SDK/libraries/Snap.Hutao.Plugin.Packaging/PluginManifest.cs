@@ -92,6 +92,13 @@ public sealed record PluginManifest(string Id, string Name, Version Version, IRe
                     hash.Any(c => c is not (>= '0' and <= '9' or >= 'a' and <= 'f')) || !files.TryAdd(path, hash))
                     throw new InvalidDataException("Invalid/duplicate manifest file: " + path);
             }
+            if (mode == "compiled")
+            {
+                string pri = Path.ChangeExtension(entry, ".pri");
+                if (!files.ContainsKey(pri)) throw new InvalidDataException("Compiled UI requires a component PRI next to its entry DLL: " + pri);
+                if (files.Keys.Any(path => path.EndsWith(".xbf", StringComparison.OrdinalIgnoreCase)))
+                    throw new InvalidDataException("Compiled UI must embed XBF in PRI; standalone XBF is not supported.");
+            }
             if (gameLibraries.Any(path => !files.ContainsKey(path))) throw new InvalidDataException("Declared game library is missing.");
             if (files.Count is < 1 or > 4095 || !files.ContainsKey(entry) || (icon is not null && !files.ContainsKey(icon)))
                 throw new InvalidDataException("Manifest entry/icon is missing.");

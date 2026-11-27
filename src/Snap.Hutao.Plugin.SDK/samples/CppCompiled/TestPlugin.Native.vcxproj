@@ -17,6 +17,9 @@
     <WindowsTargetPlatformMinVersion>10.0.19041.0</WindowsTargetPlatformMinVersion>
     <DesktopCompatible>true</DesktopCompatible>
     <UseWinUI>true</UseWinUI>
+    <EnablePriGenTooling>true</EnablePriGenTooling>
+    <AppxGeneratePriEnabled>true</AppxGeneratePriEnabled>
+    <DisableEmbeddedXbf>false</DisableEmbeddedXbf>
     <WinUISDKReferences>false</WinUISDKReferences>
     <CppWinRTProjectLanguage>C++/WinRT</CppWinRTProjectLanguage>
     <CppWinRTModernIDL>true</CppWinRTModernIDL>

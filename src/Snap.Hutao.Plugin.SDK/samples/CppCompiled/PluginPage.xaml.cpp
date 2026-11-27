@@ -1,6 +1,5 @@
 #include "XamlWorkaround.h"
 #include "PluginPage.xaml.h"
-#include "PluginXaml.hpp"
 #if __has_include("PluginPage.g.cpp")
 #include "PluginPage.g.cpp"
 #endif
@@ -16,8 +15,8 @@ namespace winrt::TestPlugin::Native::implementation
 
     void PluginPage::InitializeComponent()
     {
-        // Deliberately hide the generated host-relative loader. Do not set _contentLoaded here.
-        // The verified package directory is only available in InitializePluginView.
+        // Defer until the view has its plugin context. The generated initializer
+        // will resolve its normal component URI through the host's MRT manager.
         ::OutputDebugStringW(L"[TestPlugin.Native] PluginPage::InitializeComponent deferred\n");
     }
 
@@ -25,15 +24,10 @@ namespace winrt::TestPlugin::Native::implementation
     {
         if (_contentLoaded) throw hresult_illegal_method_call();
         m_context = context;
-        // The compiler's default URI is relative to the host, not the plugin DLL.
-        // Keep the generated Connect/GetBindingConnector and use the actual verified workspace.
-        auto uri = hutao::plugin::compiled_xaml_uri(context.PackageDirectory(), L"views/PluginPage.xaml");
-        std::wstring message{ L"[TestPlugin.Native] LoadComponent URI: " };
-        message += uri.AbsoluteUri().c_str();
-        context.Log(NotificationKind::Information, hstring{ message });
-        _contentLoaded = true;
-        Application::LoadComponent(*this, uri, ComponentResourceLocation::Application);
-        context.Log(NotificationKind::Success, L"[TestPlugin.Native] LoadComponent returned successfully");
+        // The host has registered the component PRI before OnLoad.
+        // Use the standard compiler-generated logical URI and connector code.
+        PluginPageT<PluginPage>::InitializeComponent();
+        context.Log(NotificationKind::Success, L"[TestPlugin.Native] Generated InitializeComponent returned");
     }
 
     void PluginPage::ClosePluginView()

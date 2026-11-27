@@ -6,7 +6,7 @@ namespace winrt::TestPlugin::Native::implementation
     struct PluginPage : PluginPageT<PluginPage>
     {
         PluginPage();
-        // make_self calls this hook after construction. The plugin context is supplied later.
+        // make_self calls this hook after construction. InitializePluginView calls the generated loader.
         void InitializeComponent();
         void InitializePluginView(Snap::Hutao::Plugin::Contracts::IPluginContext const& context);
         void ClosePluginView();

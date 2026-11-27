@@ -21,24 +21,17 @@ foreach ($item in @(
     Write-Host "Entry SHA256: $((Get-FileHash -LiteralPath $item.Dll -Algorithm SHA256).Hash)"
     Copy-Item -LiteralPath $item.Dll -Destination $bin
     if ($item.Id -eq 'TestPlugin.Native') {
-        # Explicit native component payload; never copy the host's dependency tree.
+        # Only the component PRI is distributed; XBF must be embedded in it.
         $outputDir = Split-Path -Parent $item.Dll
-        $candidates = @(Get-ChildItem -LiteralPath $outputDir -Filter 'PluginPage.xbf' -Recurse -File)
-        if ($candidates.Count -eq 0) {
-            $intermediate = Join-Path $root "samples\CppCompiled\obj\$Configuration"
-            if (Test-Path -LiteralPath $intermediate) {
-                $candidates = @(Get-ChildItem -LiteralPath $intermediate -Filter 'PluginPage.xbf' -Recurse -File)
-            }
+        $pri = Join-Path $outputDir 'TestPlugin.Native.pri'
+        if (!(Test-Path -LiteralPath $pri -PathType Leaf)) {
+            $pri = Join-Path $outputDir 'resources.pri'
         }
-        if ($candidates.Count -ne 1) { throw "Expected one PluginPage.xbf; found $($candidates.Count). Inspect the XAML compiler output." }
-        $views = Join-Path $staging 'views'
-        New-Item -ItemType Directory -Path $views -Force | Out-Null
-        Copy-Item -LiteralPath $candidates[0].FullName -Destination (Join-Path $views 'PluginPage.xbf')
-        # Retain the component metadata and PRI for diagnostics / later resource integration.
-        foreach ($name in @('TestPlugin.Native.winmd', 'TestPlugin.Native.pri', 'resources.pri')) {
-            $file = Join-Path $outputDir $name
-            if (Test-Path -LiteralPath $file -PathType Leaf) { Copy-Item -LiteralPath $file -Destination $bin }
+        if (!(Test-Path -LiteralPath $pri -PathType Leaf)) {
+            throw "Compiled sample PRI missing. Build CppCompiled in VS and inspect PRI generation; do not package standalone XBF."
         }
+        Copy-Item -LiteralPath $pri -Destination (Join-Path $bin 'TestPlugin.Native.pri')
+        Write-Host "Compiled XAML PRI: $pri (no standalone XBF is packaged)"
     }
     if ($item.Id -ne 'TestPlugin.Native') {
         $views = Join-Path $staging 'views'

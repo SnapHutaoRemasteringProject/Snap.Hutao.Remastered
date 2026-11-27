@@ -6,6 +6,7 @@ namespace PrototypeHost;
 public partial class App : Application
 {
     private MainWindow? window;
+    private PluginPriResources? pluginResources;
     private readonly Dictionary<string, string> providers = new(StringComparer.Ordinal);
 
     internal static App CurrentHost { get; private set; } = null!;
@@ -13,6 +14,12 @@ public partial class App : Application
     public App()
     {
         CurrentHost = this;
+        // WinUI asks before its first resource lookup (including App.xaml).
+        ResourceManagerRequested += (_, args) =>
+        {
+            pluginResources ??= new PluginPriResources();
+            args.CustomResourceManager = pluginResources.Manager;
+        };
         // DoNotGenerateOtherProviders disables automatic provider construction.
         // Restore the platform provider before parsing App.xaml (XamlControlsResources).
         AddOtherProvider(new global::Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider());
@@ -20,7 +27,7 @@ public partial class App : Application
     }
 
     // The generated WinUI App metadata provider retains the component provider.
-    // The platform provider is explicitly registered above; resource resolution is unchanged.
+    // The matching component PRI is registered before any plugin page is initialized.
     internal void RegisterMetadataProvider(string path, string name, IXamlMetadataProvider provider)
     {
         if (providers.TryGetValue(name, out string? existing))
@@ -29,6 +36,7 @@ public partial class App : Application
                 throw new InvalidOperationException("XAML metadata name collision: " + name);
             return;
         }
+        (pluginResources ?? throw new InvalidOperationException("WinUI did not request its MRT resource manager.")).Register(path);
         AddOtherProvider(provider);
         providers.Add(name, path);
     }
