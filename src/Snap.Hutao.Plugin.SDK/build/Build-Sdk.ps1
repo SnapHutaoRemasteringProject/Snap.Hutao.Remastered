@@ -17,17 +17,17 @@ function Invoke-Dotnet {
     if ($LASTEXITCODE -ne 0) { throw "dotnet failed: $LASTEXITCODE" }
 }
 foreach ($project in @('Snap.Hutao.Plugin.Projection', 'Snap.Hutao.Plugin.SDK')) {
-    Invoke-Dotnet pack (Join-Path $root "$project\$project.csproj") -c Release -p:Platform=x64 "-p:Version=$Version" "-p:PackageVersion=$Version" -o $nuget
+    Invoke-Dotnet pack (Join-Path $root "libraries\$project\$project.csproj") -c Release -p:Platform=x64 "-p:Version=$Version" "-p:PackageVersion=$Version" -o $nuget
     $package = Join-Path $nuget "$project.$Version.nupkg"
     if (!(Test-Path -LiteralPath $package)) { throw "Missing expected package: $package" }
 }
 $include = Join-Path $native 'include'
 $metadata = Join-Path $native 'metadata'
 foreach ($dir in @($include, $metadata)) { New-Item -ItemType Directory -Path $dir -Force | Out-Null }
-Copy-Item -LiteralPath (Join-Path $root 'Snap.Hutao.Plugin.SDK.Native\HutaoPlugin.hpp') -Destination $include
-Copy-Item -LiteralPath (Join-Path $root 'Snap.Hutao.Plugin.SDK.Native\PluginXaml.hpp') -Destination $include
-Copy-Item -LiteralPath (Join-Path $root 'Snap.Hutao.Plugin.Contracts\HutaoPluginAbi.h') -Destination $include
-Copy-Item -LiteralPath (Join-Path $root 'Snap.Hutao.Plugin.Contracts\HutaoPlugin.idl') -Destination $metadata
+Copy-Item -LiteralPath (Join-Path $root 'libraries\Snap.Hutao.Plugin.SDK.Native\HutaoPlugin.hpp') -Destination $include
+Copy-Item -LiteralPath (Join-Path $root 'libraries\Snap.Hutao.Plugin.SDK.Native\PluginXaml.hpp') -Destination $include
+Copy-Item -LiteralPath (Join-Path $root 'contracts\HutaoPluginAbi.h') -Destination $include
+Copy-Item -LiteralPath (Join-Path $root 'contracts\HutaoPlugin.idl') -Destination $metadata
 Copy-Item -LiteralPath (Join-Path $root 'artifacts\metadata\Snap.Hutao.Plugin.Contracts.winmd') -Destination $metadata
 Compress-Archive -Path (Join-Path $native '*') -DestinationPath (Join-Path $out "Snap.Hutao.Plugin.Native.$Version.zip")
 Invoke-Dotnet publish (Join-Path $root 'tools\PluginPack\PluginPack.csproj') -c Release -r win-x64 --self-contained true -p:Platform=x64 -p:PublishSingleFile=true -o $tool

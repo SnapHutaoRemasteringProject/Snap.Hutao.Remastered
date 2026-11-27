@@ -22,7 +22,7 @@ struct CoreView : implements<CoreView, IPluginView>
         context.Log(NotificationKind::Information, loose ? L"[CppCore] Creating loose XAML view" : L"[CppCore] Creating programmatic view");
         if (loose)
         {
-            root = context.Ui().LoadXaml(L"views/CoreView.hxaml");
+            root = context.Ui().LoadXaml(L"views/CoreView.xaml");
             button = root.as<FrameworkElement>().FindName(L"ClickButton").as<Button>();
         }
         else

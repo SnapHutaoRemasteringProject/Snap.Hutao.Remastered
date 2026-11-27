@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
     <PublishAot>true</PublishAot>
     <NativeLib>Shared</NativeLib>
     <SelfContained>true</SelfContained>
@@ -8,7 +9,7 @@
     <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Snap.Hutao.Plugin.SDK\Snap.Hutao.Plugin.SDK.csproj" />
+    <ProjectReference Include="..\..\libraries\Snap.Hutao.Plugin.SDK\Snap.Hutao.Plugin.SDK.csproj" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
   </ItemGroup>

@@ -95,7 +95,7 @@ public sealed class TestPlugin : HutaoPlugin
     private PluginView CreateViewCore()
     {
         // Real WinUI controls created by the host's XAML parser, no compiled-XAML resource hooks.
-        StackPanel root = Context.LoadXaml("views/PluginPage.hxaml") as StackPanel ?? throw new InvalidCastException("LoadXaml did not return a StackPanel projection.");
+        StackPanel root = Context.LoadXaml("views/PluginPage.xaml") as StackPanel ?? throw new InvalidCastException("LoadXaml did not return a StackPanel projection.");
         Button click = root.FindName("ClickButton") as Button ?? throw new InvalidCastException("ClickButton is not a Button projection.");
         TextBlock count = root.FindName("CounterText") as TextBlock ?? throw new InvalidCastException("CounterText is not a TextBlock projection.");
         TextBox edit = root.FindName("MessageBox") as TextBox ?? throw new InvalidCastException("MessageBox is not a TextBox projection.");
@@ -143,7 +143,7 @@ public sealed class TestPlugin : HutaoPlugin
     [WinRT.DynamicWindowsRuntimeCast(typeof(FrameworkElement))]
     private PluginView CreateBindingView()
     {
-        FrameworkElement root = Context.LoadXaml("views/BindingPage.hxaml") as FrameworkElement
+        FrameworkElement root = Context.LoadXaml("views/BindingPage.xaml") as FrameworkElement
             ?? throw new InvalidCastException("Expected FrameworkElement.");
         SampleViewModel model = new(Context, counter, message);
         root.DataContext = model;

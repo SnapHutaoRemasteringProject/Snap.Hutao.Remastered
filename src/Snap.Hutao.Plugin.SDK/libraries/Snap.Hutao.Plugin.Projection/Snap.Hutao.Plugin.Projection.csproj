@@ -15,14 +15,14 @@
     <CsWinRTInputs Include="$(HutaoContractsWinmd)" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Snap.Hutao.Plugin.Contracts\HutaoPlugin.idl" Link="Contracts\HutaoPlugin.idl" />
-    <None Include="..\Snap.Hutao.Plugin.Contracts\HutaoPluginAbi.h" Link="Contracts\HutaoPluginAbi.h" />
+    <None Include="..\..\contracts\HutaoPlugin.idl" Link="Contracts\HutaoPlugin.idl" />
+    <None Include="..\..\contracts\HutaoPluginAbi.h" Link="Contracts\HutaoPluginAbi.h" />
   </ItemGroup>
   <Target Name="GenerateHutaoContracts" BeforeTargets="CsWinRTGenerateProjection" DependsOnTargets="ResolvePackageAssets" Condition="'$(DesignTimeBuild)' != 'true'">
     <PropertyGroup>
       <_HutaoVsArgument Condition="'$(VSInstallDir)' != ''">-VisualStudioInstallDir &quot;$(VSInstallDir).&quot;</_HutaoVsArgument>
     </PropertyGroup>
-    <Exec Command="powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)..\build\Generate-Contracts.ps1&quot; -AssetsFile &quot;$(ProjectAssetsFile)&quot; -WindowsSdkVersion &quot;$(HutaoWindowsSdkVersion)&quot; -TargetPlatformVersion &quot;$(TargetPlatformVersion)&quot; $(_HutaoVsArgument)" />
+    <Exec Command="powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)..\..\build\Generate-Contracts.ps1&quot; -AssetsFile &quot;$(ProjectAssetsFile)&quot; -WindowsSdkVersion &quot;$(HutaoWindowsSdkVersion)&quot; -TargetPlatformVersion &quot;$(TargetPlatformVersion)&quot; $(_HutaoVsArgument)" />
     <ItemGroup>
       <CsWinRTInputs Include="$(HutaoArtifacts)references\*.winmd" />
     </ItemGroup>

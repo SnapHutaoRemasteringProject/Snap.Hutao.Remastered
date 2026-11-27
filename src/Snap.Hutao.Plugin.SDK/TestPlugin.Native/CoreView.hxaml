@@ -1,5 +1,0 @@
-<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Spacing="8">
-    <TextBlock Text="C++/WinRT loose XAML" />
-    <Button x:Name="ClickButton" Content="Click C++/WinRT" />
-</StackPanel>

@@ -35,10 +35,10 @@
     <Project Path="Snap.Hutao.Database.Model/Snap.Hutao.Database.Model.csproj" />
   </Folder>
   <Folder Name="/Plugin SDK/">
-    <Project Path="../Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj">
+    <Project Path="../Snap.Hutao.Plugin.SDK/libraries/Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj">
       <Platform Project="x64" />
     </Project>
-    <Project Path="../Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.Packaging/Snap.Hutao.Plugin.Packaging.csproj">
+    <Project Path="../Snap.Hutao.Plugin.SDK/libraries/Snap.Hutao.Plugin.Packaging/Snap.Hutao.Plugin.Packaging.csproj">
       <Platform Project="x64" />
     </Project>
   </Folder>

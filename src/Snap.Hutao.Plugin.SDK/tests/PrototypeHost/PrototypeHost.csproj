@@ -19,8 +19,8 @@
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />
     <Content Include="Assets\AppIcon.ico" />
-    <ProjectReference Include="..\..\Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj" />
-    <ProjectReference Include="..\..\Snap.Hutao.Plugin.Packaging\Snap.Hutao.Plugin.Packaging.csproj" />
+    <ProjectReference Include="..\..\libraries\Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj" />
+    <ProjectReference Include="..\..\libraries\Snap.Hutao.Plugin.Packaging\Snap.Hutao.Plugin.Packaging.csproj" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" />
     <PackageReference Include="Microsoft.WindowsAppSDK" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />

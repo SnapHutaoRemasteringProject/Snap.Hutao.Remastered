@@ -2,30 +2,36 @@
   <Configurations>
     <Platform Name="x64" />
   </Configurations>
-  <Project Path="Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj" Id="e92e2537-7f7f-4e05-ad18-8dc6ce51a197">
-    <Platform Project="x64" />
-  </Project>
-  <Project Path="Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.csproj">
-    <Platform Project="x64" />
-  </Project>
-  <Project Path="TestPlugin.Aot/TestPlugin.Aot.csproj" Id="38cbe0c1-61db-4d12-a816-39a79e8b6d92">
-    <Platform Project="x64" />
-  </Project>
-  <Project Path="TestPlugin.Native.Core/TestPlugin.Native.Core.vcxproj" Id="f4c6cf26-ba69-4460-9b37-308ed4535397">
-    <BuildDependency Project="Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj" />
-  </Project>
-  <Project Path="TestPlugin.Native/TestPlugin.Native.vcxproj" Id="ec240671-ab3a-4575-9b4a-3b22d8035984">
-    <BuildDependency Project="Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj" />
-  </Project>
-  <Project Path="Snap.Hutao.Plugin.Packaging/Snap.Hutao.Plugin.Packaging.csproj">
-    <Platform Project="x64" />
-  </Project>
   <Folder Name="/tests/">
     <Project Path="tests/PrototypeHost/PrototypeHost.csproj" Id="c64c121c-ce00-473b-80c2-9bde2b0ddeac">
       <Platform Project="x64" />
     </Project>
   </Folder>
-  <Project Path="tools/PluginPack/PluginPack.csproj">
-    <Platform Project="x64" />
-  </Project>
+  <Folder Name="/Libraries/">
+    <Project Path="libraries/Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj" Id="e92e2537-7f7f-4e05-ad18-8dc6ce51a197">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="libraries/Snap.Hutao.Plugin.SDK/Snap.Hutao.Plugin.SDK.csproj">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="libraries/Snap.Hutao.Plugin.Packaging/Snap.Hutao.Plugin.Packaging.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
+  <Folder Name="/Samples/">
+    <Project Path="samples/CSharpAot/TestPlugin.Aot.csproj" Id="38cbe0c1-61db-4d12-a816-39a79e8b6d92">
+      <Platform Project="x64" />
+    </Project>
+    <Project Path="samples/CppCore/TestPlugin.Native.Core.vcxproj" Id="f4c6cf26-ba69-4460-9b37-308ed4535397">
+      <BuildDependency Project="libraries/Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj" />
+    </Project>
+    <Project Path="samples/CppCompiled/TestPlugin.Native.vcxproj" Id="ec240671-ab3a-4575-9b4a-3b22d8035984">
+      <BuildDependency Project="libraries/Snap.Hutao.Plugin.Projection/Snap.Hutao.Plugin.Projection.csproj" />
+    </Project>
+  </Folder>
+  <Folder Name="/Tools/">
+    <Project Path="tools/PluginPack/PluginPack.csproj">
+      <Platform Project="x64" />
+    </Project>
+  </Folder>
 </Solution>

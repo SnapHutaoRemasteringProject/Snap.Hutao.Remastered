@@ -277,8 +277,8 @@
 
   <!-- Plugin contracts and package validation are shared with developer tools; hosting is implemented in Service/Plugin. -->
   <ItemGroup>
-    <ProjectReference Include="..\..\Snap.Hutao.Plugin.SDK\Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj" />
-    <ProjectReference Include="..\..\Snap.Hutao.Plugin.SDK\Snap.Hutao.Plugin.Packaging\Snap.Hutao.Plugin.Packaging.csproj" />
+    <ProjectReference Include="..\..\Snap.Hutao.Plugin.SDK\libraries\Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj" />
+    <ProjectReference Include="..\..\Snap.Hutao.Plugin.SDK\libraries\Snap.Hutao.Plugin.Packaging\Snap.Hutao.Plugin.Packaging.csproj" />
   </ItemGroup>
 
   <!-- Packages -->

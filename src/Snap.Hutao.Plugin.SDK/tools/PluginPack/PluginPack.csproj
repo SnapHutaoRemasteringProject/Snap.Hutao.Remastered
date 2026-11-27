@@ -4,6 +4,6 @@
     <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Snap.Hutao.Plugin.Packaging\Snap.Hutao.Plugin.Packaging.csproj" />
+    <ProjectReference Include="..\..\libraries\Snap.Hutao.Plugin.Packaging\Snap.Hutao.Plugin.Packaging.csproj" />
   </ItemGroup>
 </Project>

@@ -57,7 +57,7 @@ $windowsWinmd = Join-Path $WindowsSdkRoot "UnionMetadata\$WindowsSdkVersion\Wind
 $sdkBin = Join-Path $WindowsSdkRoot "bin\$WindowsSdkVersion\x64"
 $midl = Join-Path $sdkBin 'midl.exe'
 $contract = Join-Path $metadata 'Snap.Hutao.Plugin.Contracts.winmd'
-$idl = Join-Path $root 'Snap.Hutao.Plugin.Contracts\HutaoPlugin.idl'
+$idl = Join-Path $root 'contracts\HutaoPlugin.idl'
 
 foreach ($path in @($windowsWinmd, $midl, $idl)) {
     if (!(Test-Path -LiteralPath $path -PathType Leaf)) { throw "Missing $path" }

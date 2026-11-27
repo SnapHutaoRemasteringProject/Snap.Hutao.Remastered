@@ -6,9 +6,9 @@ $root = Split-Path -Parent $PSScriptRoot
 $artifacts = Join-Path $root 'artifacts'
 $tool = Join-Path $root 'tools\PluginPack\PluginPack.csproj'
 foreach ($sample in @(
-    @{ Project = 'TestPlugin.Native'; Dll = (Join-Path $artifacts "native\$Configuration\compiled\TestPlugin.Native.dll"); Id = 'TestPlugin.Native'; Template = 'manifest.template.json' },
-    @{ Project = 'TestPlugin.Native.Core'; Dll = (Join-Path $artifacts "native\$Configuration\core\TestPlugin.Native.Core.dll"); Id = 'TestPlugin.Native.Core'; Template = 'manifest.template.json' },
-    @{ Project = 'TestPlugin.Aot'; Dll = (Join-Path $artifacts 'aot-plugin\TestPlugin.Aot.dll'); Id = 'TestPlugin'; Template = 'manifest.template.json' }
+    @{ Project = 'samples\CppCompiled'; Dll = (Join-Path $artifacts "native\$Configuration\compiled\TestPlugin.Native.dll"); Id = 'TestPlugin.Native'; Template = 'manifest.template.json' },
+    @{ Project = 'samples\CppCore'; Dll = (Join-Path $artifacts "native\$Configuration\core\TestPlugin.Native.Core.dll"); Id = 'TestPlugin.Native.Core'; Template = 'manifest.template.json' },
+    @{ Project = 'samples\CSharpAot'; Dll = (Join-Path $artifacts 'aot-plugin\TestPlugin.Aot.dll'); Id = 'TestPlugin'; Template = 'manifest.template.json' }
 )) {
     if (!(Test-Path -LiteralPath $sample.Dll -PathType Leaf)) { throw "Build/publish first: $($sample.Dll)" }
     $staging = Join-Path $artifacts ("stage\" + $sample.Id)
@@ -22,7 +22,7 @@ foreach ($sample in @(
         $outputDir = Split-Path -Parent $sample.Dll
         $candidates = @(Get-ChildItem -LiteralPath $outputDir -Filter 'PluginPage.xbf' -Recurse -File)
         if ($candidates.Count -eq 0) {
-            $intermediate = Join-Path $root "TestPlugin.Native\obj\$Configuration"
+            $intermediate = Join-Path $root "samples\CppCompiled\obj\$Configuration"
             if (Test-Path -LiteralPath $intermediate) {
                 $candidates = @(Get-ChildItem -LiteralPath $intermediate -Filter 'PluginPage.xbf' -Recurse -File)
             }
@@ -40,7 +40,7 @@ foreach ($sample in @(
     if ($sample.Id -ne 'TestPlugin.Native') {
         $views = Join-Path $staging 'views'
         New-Item -ItemType Directory -Path $views -Force | Out-Null
-        $names = if ($sample.Id -eq 'TestPlugin.Native.Core') { @('CoreView.hxaml') } else { @('PluginPage.hxaml', 'BindingPage.hxaml') }
+        $names = if ($sample.Id -eq 'TestPlugin.Native.Core') { @('CoreView.xaml') } else { @('PluginPage.xaml', 'BindingPage.xaml') }
         foreach ($name in $names) {
             Copy-Item -LiteralPath (Join-Path $root ($sample.Project + '\' + $name)) -Destination $views
         }
