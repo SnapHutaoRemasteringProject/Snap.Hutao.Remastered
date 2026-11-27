@@ -10,6 +10,7 @@ public partial class App : Application
     private readonly Dictionary<string, string> providers = new(StringComparer.Ordinal);
 
     internal static App CurrentHost { get; private set; } = null!;
+    internal string? LastResolvedPluginResource => pluginResources?.LastResolvedResource;
 
     public App()
     {

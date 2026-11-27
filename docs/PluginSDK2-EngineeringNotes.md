@@ -231,3 +231,7 @@ SDK 2.0 不要求向后兼容：LoadXaml 仅允许 .xaml，并保留 verified ma
 用户报告 JIT 与 AOT 宿主均无法加载 managed-fixture/TestPlugin.Aot.dll，AOT 日志明确为 EntryPointNotFoundException: HutaoPluginCreate / Win32 127。LoadLibraryExW 已成功映射，但普通 Build 的 UnmanagedCallersOnly 仅为元数据，Native AOT Publish 才生成 native export。没有新增托管插件加载路径。保留 .hutao 原有 PE 校验和裸 DLL 诊断行为。
 
 简化日常流程：移除 Build-Samples.ps1，VS Build Solution 自动生成契约与 C++ DLL，C# 使用 VS NativeAot Publish profile；三个样例按需 Pack-Samples，两个外部模板仅 Pack-Plugin（不构建），新增 C# template Publish profile。内部 Generate-Contracts 仍自动调用；分发和负例脚本不属于日常开发。插件 compiled XAML 仍依赖物理 XBF，PRI-only 尚未验证，不改变已通过的外部 URI 方案。新 VS 流程 Windows 验收 NotRun。
+
+### E21：从物理 XBF 转向 PRI 内嵌资源
+
+旧绝对 URI 方案已成功加载 Page，但重复部署 XBF 且需要自定义 URI。43dd0ce 改用标准 generated InitializeComponent、DisableEmbeddedXbf=false、组件 PRI 打包和 PrototypeHost ResourceManagerRequested + ResourceNotFound 路由。上游 MRT ResourceMap.cpp 证明 TryGetValueWithContext 失败也触发 ResourceNotFound；WinUI ModernResourceProvider.cpp 查询 Files/ 路径，MRTResource.cpp 能加载 EmbeddedData。使用独立 ResourceManager 及其 Context，复制 qualifier；不修改宿主 PRI、不实现 sealed ResourceMap、不使用私有 Hook。包要求同名 PRI 并拒绝独立 XBF；新增负例及实际命中日志。ResourceMap.TryGetSubtree 不走该回调，x:Uid 和完整资源限定行为未验收。旧 Debug Pass 不代表 PRI-only Pass；新路径 Windows NotRun。主程序继续拒绝 compiled，C# compiled 未实现。

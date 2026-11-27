@@ -148,6 +148,8 @@ public sealed partial class MainPage : Page
             string viewId = availableViews[views.SelectedIndex].ViewId;
             Write(NotificationKind.Information, $"Opening {identity?.Id}/{viewId}");
             content.Content = session.OpenView(viewId);
+            if (identity?.UiMode == "compiled")
+                Write(NotificationKind.Information, "[PluginPRI] Last embedded resource: " + (App.CurrentHost.LastResolvedPluginResource ?? "none (check MRT resolution)"));
         }
 
         async Task StopAsync(bool remove)

@@ -71,6 +71,29 @@ try {
         try { $writer.Write(($manifest | ConvertTo-Json -Depth 20 -Compress)) }
         finally { $writer.Dispose() }
     }
+    $inspection = [IO.Compression.ZipFile]::OpenRead($Package)
+    try {
+        $reader = [IO.StreamReader]::new($inspection.GetEntry('manifest.json').Open())
+        try { $packageManifest = $reader.ReadToEnd() | ConvertFrom-Json -AsHashtable }
+        finally { $reader.Dispose() }
+    } finally { $inspection.Dispose() }
+    if ($packageManifest.ui.mode -eq 'compiled') {
+        Fixture 'compiled-missing-pri' {
+            param($z)
+            $pri = [IO.Path]::ChangeExtension($packageManifest.runtime.entry, '.pri')
+            $z.GetEntry($pri).Delete()
+            Edit-Manifest $z { param($m) $m.files = @($m.files | Where-Object { $_.path -ne $pri }) }
+        }
+        Fixture 'compiled-standalone-xbf' {
+            param($z)
+            $name = 'views/Fixture.xbf'
+            $bytes = [byte[]]@(1,2,3)
+            $stream = $z.CreateEntry($name).Open()
+            try { $stream.Write($bytes, 0, $bytes.Length) } finally { $stream.Dispose() }
+            $hash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+            Edit-Manifest $z { param($m) $m.files += @{ path = $name; sha256 = $hash } }
+        }
+    }
     function Add-GameLibraryFixture($z, [byte[]] $bytes) {
         # The fixture is only inspected as PE data and is NEVER loaded into any process.
         $name = 'inject/Fixture.dll'

@@ -76,11 +76,11 @@ pwsh -File .\build\Test-Packaging.ps1 -ManagedDll .\artifacts\managed-fixture\Te
 
 测试脚本将普通托管 DLL 替换合法包入口并重新计算正确的 SHA256，再要求 verify 拒绝；因此失败不能被简单归因于哈希错误。随后分别启动 JIT/AOT PrototypeHost，手动填入该裸 DLL 完整路径（不要打包），Inspect and load，确认仅加载本地自己构建的可信样本。记录 LoadLibraryExW 是否成功；若失败，记录 Win32Exception.NativeErrorCode；若映射成功但没有 HutaoPluginCreate 导出，则记录 CsWin32 GetProcAddress 的 EntryPointNotFoundException。2026-11-27 用户报告两种宿主均不能加载普通 IL DLL；提供的 AOT 日志显示 LoadLibraryExW 成功，GetProcAddress(HutaoPluginCreate) 返回 ERROR_PROC_NOT_FOUND (127)，JIT 也报告失败但未提供完整栈。这证实普通 Build 不会生成原生导出，不恢复 ALC 托管加载器。每项记录 commit、SDK 版本、宿主路径、包 SHA256、Windows build、日志及 Pass/Fail/NotRun。正式 Snap Hutao 本身仍不支持 compiled 模式。
 
-C++ compiled 是单独实验：选择 C++ compiled (experimental)，确认 InitializeComponent deferred、绝对 URI、LoadComponent returned successfully、x:Bind 文本和 Click；然后测试主题、嵌套控件、相同名称资源、多插件、两个发布宿主。标准模板的 App 生成的 AddOtherProvider 接入亦需验证。失败不影响 core 的程序式/loose 测试。正式应用拒绝 compiled，C# compiled 尚无实现。
+C++ compiled 是单独实验：重建 CppCompiled 并打包仅含 DLL + PRI 的新包，选择 C++ compiled (experimental)，确认 Generated InitializeComponent returned、[PluginPRI] Last embedded resource 为组件资源（不是 none）、x:Bind 文本和 Click；然后测试主题、嵌套控件、相同名称资源、多插件、两个发布宿主。标准模板的 App 生成的 AddOtherProvider 接入亦需验证。失败不影响 core 的程序式/loose 测试。正式应用拒绝 compiled，C# compiled 尚无实现。
 
 ## 3. 当前状态与发布门槛
 
-已报告的真实测试（旧 Debug harness）：两种 DLL 编译/发布与打包成功，两种插件加载 UI 成功；C++ compiled Page 在显式 InitializeComponent 延迟方案中成功。2026-11-27 用户随后确认 C++ Core 已正常加载（拆分前的代码）。拆分后的三项目、标准扩展名与六正两负矩阵仍需重新验证。C# Exercise ABI 曾报 Expected UI STA，随后提交的同步上下文修复尚无完整回归证据。旧 JIT/AOT Publish 宿主启动均 FailFast，随后用户引入标准 WinUI 模板。
+已报告的真实测试（旧 Debug harness）：两种 DLL 编译/发布与打包成功，两种插件加载 UI 成功；C++ compiled Page 在旧独立 XBF / 绝对 URI 方案中成功；新版 PRI-only 路径仍 NotRun。2026-11-27 用户随后确认 C++ Core 已正常加载（拆分前的代码）。拆分后的三项目、标准扩展名与六正两负矩阵仍需重新验证。C# Exercise ABI 曾报 Expected UI STA，随后提交的同步上下文修复尚无完整回归证据。旧 JIT/AOT Publish 宿主启动均 FailFast，随后用户引入标准 WinUI 模板。
 
 本轮结构调整、主程序接入、三种核心 UI、Binding 示例、本地 SDK 分发、更新恢复与测试脚本是源码实现，**没有 Windows 执行环境中的新构建/运行结果**。不得把实现完成当作测试通过。正式合并/发布前必须运行上述测试；特别是标准 WinUI 生成的 metadata provider、资源发布、C# AOT Binding、主程序 DI 生成器、退出与更新故障注入。原始 Design.md 是目标规范，实际差异：更新显式重启应用、旧包先卸载保留数据再安装；编译期 XAML 未正式启用；未发布 NuGet；缺少真实 ABI 引用计数压力测试、全部事务故障注入及生产性能基线。需要后续真实 Windows 日志才能关掉这些门槛，不是隐藏的兼容承诺。
 
@@ -95,7 +95,7 @@ C++ compiled 是单独实验：选择 C++ compiled (experimental)，确认 Initi
 | MSB3073 Generate-Contracts.ps1 | 外部脚本退出码；使用 -tl:off -v:normal 查看实际 MIDL/MSVC/WinMD 错误 |
 | Package entry must be native x64 DLL | C# 普通 Build、错误架构或损坏 PE；重新 Native AOT Publish |
 | LoadLibrary / missing export | dumpbin /exports、/dependents；入口、VC runtime、native dependencies |
-| XAML parsing failed / Cannot locate resource | 确认 ui.mode、manifest paths、资源哈希；compiled 检查绝对 URI 和 XBF，不能推断 ABI 失败 |
+| XAML parsing failed / Cannot locate resource | 确认 ui.mode、manifest paths、资源哈希；compiled 检查组件 PRI、逻辑资源键及 EmbeddedData 候选，不能推断 ABI 失败 |
 | Specified cast is not valid / CsWinRT1034 | Native AOT 动态 runtimeclass 投影被裁剪；对真正转换目标标注 DynamicWindowsRuntimeCast |
 | Expected UI STA / 0x8001010E | worker 访问宿主服务，或者插件独立运行时的同步上下文在续体中丢失；检查 CaptureDispatcher、UiCall 与每个 await；不要去掉 CheckThread |
 | 0xC000027B / 0xC0000602 | XAML stowed exception / fail-fast；查看调试器 $stowedexception、原始 HRESULT、startup-error.txt，而非最终 RaiseFailFastException 栈 |
@@ -124,3 +124,7 @@ C++ compiled 是单独实验：选择 C++ compiled (experimental)，确认 Initi
 | ALC 卸载 | 逻辑 disable，native module 驻留到进程退出 |
 
 卸载旧包（不要删除设置/data），重建同 ID 的 SDK2 包、重新信任，确保设置名称和类型不变。不要通过改 manifest schemaVersion 或改 DLL 文件名伪造升级。迁移完成必须以真实包、四组合及主程序回归为证据。
+
+### PRI-only 包验证（维护者）
+
+在 SDK 根目录执行 `pwsh -File .\build\Test-Packaging.ps1 -Package .\artifacts\TestPlugin.Native.hutao`，应通过合法包并拒绝已同步修改 manifest 的 missing PRI 和 standalone XBF 两个负例。它只验证包规则；嵌入数据须用实际 WinUI 运行和 makepri dump 验证，见 XAML 指南。

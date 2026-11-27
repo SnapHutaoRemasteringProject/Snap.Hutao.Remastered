@@ -7,7 +7,7 @@
 | 简单 UI、排除资源问题 | programmatic | native DLL |
 | 与 v1 .hxaml 页面等价 | loose | native DLL + .xaml |
 | C# MVVM | loose + 生成 Binding 元数据 | native DLL + .xaml；AOT 验收待完成 |
-| C++ x:Class、x:Bind、生成事件、独立 runtime class | compiled 实验 | native DLL + XBF + 对应元数据/资源 |
+| C++ x:Class、x:Bind、生成事件、独立 runtime class | compiled 实验 | native DLL + 内嵌 XBF 的 PRI |
 | C# 编译期 XAML runtime component | 尚未实现验收 | 不承诺支持 |
 
 正式宿主接收 none、programmatic 和 loose；compiled 当前只能在 PrototypeHost 实验，不能将其写成已发布的能力。**v1 的示例本来就不是编译期 XAML。** v1 的 TestPlugin.csproj 将 TestPluginPage.hxaml 嵌入托管程序集；PluginScopedPage.LoadXamlManually 读取字符串并调用 XamlReader.Load。v2 保留这条基本路径，只将资源改为验证过的外部包文件，不需要 XBF 或插件 PRI 来实现它。
@@ -34,7 +34,7 @@
 <Page Include="PluginPage.xaml" />
 ```
 
-两种资源仍应在 pack 前复制到 staging；loose 复制 .xaml 源文件，compiled 复制编译产物 .xbf。不要将同一文件同时作为 None 和 Page。
+两种资源仍应在 pack 前复制到 staging；loose 复制 .xaml 源文件，compiled 复制包含 XBF 的组件 PRI（不复制独立 .xbf）。不要将同一文件同时作为 None 和 Page。
 
 在 [C# 模板](../src/Snap.Hutao.Plugin.SDK/templates/CSharpPlugin) 基础上创建 views/Main.xaml：
 
@@ -196,76 +196,89 @@ image.Source = bitmap;
 
 XAML 编译器生成 .g.h/.g.cpp、Connect/GetBindingConnector 等连接代码和 PluginPage.xbf。默认 InitializeComponent 中的逻辑 URI 类似 ms-appx:///TestPlugin.Native/PluginPage.xaml；宿主资源查找失败时曾报告 0x80004005 Cannot locate resource，最终 XamlParseException。单纯把 UserControl 改成 Page 并不能解决。
 
-我们实际验证过的旧 Debug 实验修复：
+旧 Debug 实验通过绝对 URI 加载独立 XBF，证明了外部 Page 与 Metadata Provider 的基本链路。新版取消这种部署方式：组件项目明确设置如下属性，仍然使用正常 WinUI 编译流程：
 
-1. PluginPage 在 implementation 类内声明空的 InitializeComponent，防止 make_self 自动调用生成的宿主相对 loader。此处不要设置 _contentLoaded。
-2. make_self 返回后将已验证的 IPluginContext 传入 InitializePluginView。
-3. 使用 PluginXaml.hpp 的 compiled_xaml_uri，把实际 PackageDirectory 与 logical .xaml 路径组合，保留盘符并逐段转义。
-4. 调用 Application::LoadComponent，保留生成的 Connect/GetBindingConnector，而不是手写所有控件连接。
+```xml
+<EnablePriGenTooling>true</EnablePriGenTooling>
+<AppxGeneratePriEnabled>true</AppxGeneratePriEnabled>
+<DisableEmbeddedXbf>false</DisableEmbeddedXbf>
+```
 
-关键代码（对应仓库 PluginPage.xaml.cpp）：
+插件开发者不需要拼接插件工作区绝对 URI。C++ 示例保留延迟初始化，仅用于先设置插件 context，然后调用编译器原生生成的方法：
 
 ```cpp
-#include "PluginXaml.hpp"
-
 void PluginPage::InitializeComponent()
 {
-    // 此处刻意延迟，尚无插件 context。
+    // make_self 的初始调用延迟，等待插件 context。
 }
 
 void PluginPage::InitializePluginView(IPluginContext const& context)
 {
     if (_contentLoaded) throw winrt::hresult_illegal_method_call();
     m_context = context;
-    auto uri = hutao::plugin::compiled_xaml_uri(context.PackageDirectory(), L"views/PluginPage.xaml");
-    _contentLoaded = true;
-    Application::LoadComponent(*this, uri, ComponentResourceLocation::Application);
+    PluginPageT<PluginPage>::InitializeComponent();
 }
 ```
 
-物理文件是 views/PluginPage.xbf，传给 WinUI 的逻辑 URI 仍然是 views/PluginPage.xaml。不要把两者反过来。该 URI 形式是当前 WinUI 实验路径，不是微软对任意外部 URI、UNC 路径和所有包环境的稳定承诺。SDK helper 拒绝 ..、空路径段、冒号和反斜杠，按 local drive 生成 URI；资源必须由包验证与 staging 保证存在。
+生成的方法继续使用原来的 ms-appx:///TestPlugin.Native/PluginPage.xaml，以及原来的 Connect、GetBindingConnector 与 x:Bind 代码。无需手工编写 LoadComponent URI；旧 PluginXaml.hpp 已删除。
 
-Pack-Samples.ps1 查找唯一 PluginPage.xbf 并复制到 views/PluginPage.xbf；同时保留输出目录存在的 TestPlugin.Native.winmd、TestPlugin.Native.pri、resources.pri。manifest.ui.mode=compiled、metadataProvider=TestPlugin.Native.XamlMetaDataProvider。PrototypeHost 在调用插件生命周期前，从 DLL 的 DllGetActivationFactory 激活 metadata provider，使用 App 生成的 AddOtherProvider 注册。metadata 让 XAML 引擎认识插件类型，**不是**资源根重定向。`AddOtherProvider` 是条件生成方法：PrototypeHost.csproj 必须配置 `EnableTypeInfoReflection=false` 与 `XamlCodeGenerationControlFlags=DoNotGenerateOtherProviders`，并在 `App.InitializeComponent()` 前手动注册 WinUI 控件 provider；见 [E16](PluginSDK2-EngineeringNotes.md#e16标准-prototypehost-编译-cs0103addotherprovider-不存在)。C++ 示例代码支持 x:Bind 和生成事件连接的实验；C# 编译期 XAML 不可用，不能把普通 C# WinUI class library 的 Publish 当作已支持功能。
+### 宿主怎样识别 PRI？
 
-## 6. PRI 到底在哪里，如何验证？
+原生 DLL、Metadata Provider 和 PRI 各自解决不同问题。PrototypeHost 在 App 构造函数中、InitializeComponent 前订阅 Application.ResourceManagerRequested，把一个普通 MRT Core ResourceManager 交给 WinUI：
 
-XBF 是运行时使用的二进制界面数据，不只是可丢弃的编译中间文件；PRI 可以记录外部文件路径，也可以直接内嵌数据。DisableEmbeddedXbf=false 允许将 XBF 嵌入 PRI；只要 PRI 可被 WinUI 正确解析且包含实际数据，就无需额外部署物理 XBF。当前 compiled 实验走外部绝对 URI，未接入插件 PRI，因此必须保留独立 XBF。不能仅凭存在 PRI 就删除 XBF。参见 [Microsoft File resources in MRM](https://learn.microsoft.com/windows/win32/menurc/mrmfiles) 和 [WinUI #10308](https://github.com/microsoft/microsoft-ui-xaml/issues/10308)。
+```csharp
+ResourceManagerRequested += (_, args) =>
+{
+    pluginResources ??= new PluginPriResources();
+    args.CustomResourceManager = pluginResources.Manager;
+};
+```
 
-XBF 是二进制 XAML 内容；PRI 是 MRT 的资源映射索引，可能包含嵌入的 XBF 数据，也可能引用外部文件，并负责语言、对比度、缩放等 qualifier（资源限定符）选择。一个组件拥有 PRI 并不意味着它已经被宿主的默认 ResourceManager 发现。
+PluginPriResources 内部订阅真实 ResourceManager 的 ResourceNotFound。普通宿主资源仍走原有 PRI；只有宿主查找失败且名称属于已注册的插件组件时，才查询插件自己的 PRI。注册发生在已批准包加载后、OnLoad 前（与 AddOtherProvider 注册一起）。关键逻辑为：
 
-目前有两个独立事项：
+```csharp
+ResourceContext context = component.Manager.CreateResourceContext();
+// 实际实现将宿主的 qualifier 值复制到该组件的 context。
+ResourceCandidate? candidate = component.Manager.MainResourceMap.TryGetValue(key, context);
+if (candidate?.Kind == ResourceCandidateKind.EmbeddedData)
+    args.SetResolvedCandidate(candidate);
+```
 
-| 对象 | 当前实现 |
-|---|---|
-| PrototypeHost 自身 resources.pri | 标准 App.xaml，EnableMsixTooling，GenerateProjectPriFile 和 Publish 复制/存在性校验；新发布实际启动待验收 |
-| C++ 插件自己的 PRI | Pack-Samples 保存可用 PRI 供检查；没有注册到宿主 WinUI 的全局 resource map |
-| 插件 Page XBF | 通过外部绝对逻辑 URI 加载物理 XBF；旧 Debug 成功，新代码/Release/AOT 待验证 |
-| 插件 x:Uid、嵌套 ResourceDictionary.Source、跨组件/语言/缩放资源 | 未证明支持，不应宣传为已修复 |
+完整代码见 [PluginPriResources.cs](../src/Snap.Hutao.Plugin.SDK/tests/PrototypeHost/PluginPriResources.cs)。MRT Context 属于创建它的 Manager，因此不能把宿主 context 原样传给另一个 PRI；需复制语言、缩放、主题等限定值。组件路由使用 DLL 文件名（不含 .dll）作为唯一资源前缀，示例 TestPlugin.Native.dll 对应 Files/TestPlugin.Native/...；组件自己的 PRI 可以使用此前缀或相对组件根路径。编译器生成的 URI 前缀须与 DLL 名一致，不能与宿主或其他组件重复。默认宿主查找优先，不覆盖已有资源。不处理 FilePath 候选、不写出临时 XBF、不修改宿主 PRI。资源映射与已驻留的 DLL 一起保留到进程退出。
 
-检查 PRI 内容，不要只看文件名。在 Developer PowerShell 或明确使用 Windows SDK 工具：
+Metadata Provider 仍是必须的：manifest.ui.mode=compiled、metadataProvider=TestPlugin.Native.XamlMetaDataProvider；宿主通过 DllGetActivationFactory 获取 provider，再用 App.AddOtherProvider 注册。参见 [E16](PluginSDK2-EngineeringNotes.md)。它负责类型信息，不负责资源数据。当前生产宿主仍不开放 compiled；C# 编译期 XAML 尚未实现。
+
+## 6. PRI 与 XBF：部署及验证
+
+XBF 是实际运行时二进制界面数据；PRI 可以存放数据（EmbeddedData）或文件路径（FilePath）。DisableEmbeddedXbf=false 允许把 XBF 数据嵌入 PRI，**不表示构建目录不再产生 .xbf**。独立 .xbf 只可能作为工具链构建中间文件存在，不是 SDK 2.0 compiled 包的部署文件。
+
+示例包结构：
+
+```text
+TestPlugin.Native.hutao
+  manifest.json
+  bin/x64/
+    TestPlugin.Native.dll
+    TestPlugin.Native.pri
+```
+
+PRI 路径必须与 runtime.entry 同名同目录，仅扩展名改为 .pri，并列入 files 哈希清单。Pack-Samples.ps1 从组件 Build 输出读取 PRI，统一命名为 TestPlugin.Native.pri；不存在就失败，不从 obj 搜索 XBF。包校验拒绝缺少对应 PRI 或包含独立 .xbf 的 compiled 包。PRI 存在并不证明已经嵌入数据，最终由 MRT 的 EmbeddedData 候选和实际 Page 初始化验证。
+
+检查方法（仅故障诊断，不是日常开发必做步骤）：在 Developer PowerShell 执行：
 
 ```powershell
-$pri = Get-ChildItem .\artifacts\native\Release\compiled -Filter *.pri -Recurse -File
+$pri = Get-ChildItem .\artifacts\native\Debug\compiled -Filter *.pri -File
 foreach ($file in $pri) {
-    $dump = $file.FullName + '.xml'
-    makepri dump /if $file.FullName /of $dump /o
+    makepri dump /if $file.FullName /of ($file.FullName + '.xml') /o
     if ($LASTEXITCODE -ne 0) { throw "makepri dump failed: $($file.FullName)" }
 }
 ```
 
-查看 ResourceMap 的 name、Files 子树、PluginPage.xbf 的候选类型和文件路径、Resources 子树及 qualifiers。若编译器将 XBF 嵌入 PRI，外部物理 XBF 方案需要对应构建输出，不能假设每种 DisableEmbeddedXbf 设置都产生相同文件。仓库打包脚本在找不到唯一物理 XBF 时直接失败。
+在 XML dump 中查找 PluginPage.xbf 的资源名称与候选类型，确认实际为内嵌数据而不是 Path。运行 PrototypeHost 时确认 [PluginPRI] Last embedded resource 显示该插件资源名（不能是 none），且 Generated InitializeComponent returned、x:Bind 文本和 Click 均成功。使用不含独立 XBF 的新包测试；不能沿用旧绝对 URI 的 Pass。
 
-对插件自己的 PRI，可在代码中直接创建独立的 MRT Core ResourceManager，按 dump 得到的资源 key 读取。以下为 C# API 示例（假设你已将该 PRI 作为已声明包资源，确切 key 以实际 PRI 为准）：
+上游依据： [ResourceManagerRequested](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.application.resourcemanagerrequested)、[MRT ResourceMap.cpp](https://github.com/microsoft/WindowsAppSDK/blob/main/dev/MRTCore/mrt/Microsoft.Windows.ApplicationModel.Resources/src/ResourceMap.cpp)、[WinUI ModernResourceProvider.cpp](https://github.com/microsoft/microsoft-ui-xaml/blob/main/dxaml/xcp/components/mrt/ModernResourceProvider.cpp)、[MRTResource.cpp](https://github.com/microsoft/microsoft-ui-xaml/blob/main/dxaml/xcp/components/mrt/MRTResource.cpp)。TryGetValue 失败也会触发 ResourceNotFound，WinUI 能直接消费 EmbeddedData。参考 [WinUI #10308](https://github.com/microsoft/microsoft-ui-xaml/issues/10308) 关于 XBF 重复部署的报告。
 
-```csharp
-using Microsoft.Windows.ApplicationModel.Resources;
-
-string priPath = Path.Combine(Context.PackageDirectory, "assets", "Plugin.pri");
-ResourceManager manager = new(priPath);
-string title = manager.MainResourceMap.GetValue("Resources/Title").ValueAsString;
-```
-
-这能让插件明确访问自己的资源映射，但不会让 WinUI 自动解析该 PRI 中的 x:Uid 或 .xbf。微软提供的 [Application.ResourceManagerRequested](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.application.resourcemanagerrequested) 能在 WinUI 线程初始化时提供自定义 IResourceManager；需要在宿主初始化阶段设计并验证按组件路由、保留默认资源、qualifier、名称冲突及生命周期。参考 [WinUI 设计说明](https://github.com/microsoft/microsoft-ui-xaml/blob/main/docs/design-notes/custom-mrt-resourcemanager.md) 和 [外部 UserControl 问题 #6299](https://github.com/microsoft/microsoft-ui-xaml/issues/6299)。这属于新的全局资源解析设计，不是拷贝一个 PRI 或改 URI 就自动解决，也不应让插件替换整个宿主资源管理器。本轮不将其引入生产宿主，避免破坏宿主正常 XAML 初始化。
+当前只是 PrototypeHost 的 PRI-backed compiled 实验，尚无新 Windows 实测。x:Uid 使用的 TryGetSubtree 路径不触发上述回调，故本实现不承诺自动本地化属性包；普通文件候选、跨组件资源、嵌套字典、多线程、多插件和 JIT/AOT 宿主仍需独立验证。主程序资源初始化不在本轮改动范围内。
 
 ## 7. 测试顺序
 

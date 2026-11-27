@@ -17,6 +17,8 @@ internal sealed class PluginPriResources
 
     internal ResourceManager Manager => host;
 
+    internal string? LastResolvedResource { get; private set; }
+
     internal void Register(string modulePath)
     {
         string name = Path.GetFileNameWithoutExtension(modulePath);
@@ -78,6 +80,7 @@ internal sealed class PluginPriResources
         }
 
         args.SetResolvedCandidate(candidate);
+        LastResolvedResource = key;
         System.Diagnostics.Debug.WriteLine("[PluginPRI] EmbeddedData: " + key);
     }
 }

@@ -55,7 +55,6 @@ artifacts/sdk/2.0.0-preview.1/
     Snap.Hutao.Plugin.SDK.2.0.0-preview.1.nupkg
     Snap.Hutao.Plugin.Projection.2.0.0-preview.1.nupkg
   native/include/HutaoPlugin.hpp
-  native/include/PluginXaml.hpp
   native/include/HutaoPluginAbi.h
   native/metadata/Snap.Hutao.Plugin.Contracts.winmd
   native/metadata/HutaoPlugin.idl

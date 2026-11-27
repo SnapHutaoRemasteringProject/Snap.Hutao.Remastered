@@ -111,4 +111,4 @@ SDK 源码根目录按职责分为 contracts（IDL/ABI）、libraries（可复�
 | 发布给用户 | 分发 .hutao；用户在正式插件管理页检查来源和哈希，确认后启用 |
 | 扩展宿主 API | 先设计并审核 ABI/IID、capability、线程、所有权、版本和测试，不直接引用内部业务类型 |
 
-正式宿主拒绝 compiled XAML；C++ 编译期 Page / x:Bind 当前仅是 PrototypeHost 实验，C# compiled 尚无实现。程序式与 loose 路径独立验收。完整开发命令见 [开发者上手](PluginSDK2-GettingStarted.md)，接口见 [API](PluginSDK2-API.md)，包规范见 [Packages](PluginSDK2-Packages.md)，历史技术问题见 [Engineering Notes](PluginSDK2-EngineeringNotes.md)，验证证据见 [Testing](PluginSDK2-Testing.md)。
+正式宿主拒绝 compiled XAML；C++ 编译期 Page / x:Bind 当前仅是 PrototypeHost 的内嵌 PRI 实验（不部署独立 XBF），C# compiled 尚无实现。程序式与 loose 路径独立验收。完整开发命令见 [开发者上手](PluginSDK2-GettingStarted.md)，接口见 [API](PluginSDK2-API.md)，包规范见 [Packages](PluginSDK2-Packages.md)，历史技术问题见 [Engineering Notes](PluginSDK2-EngineeringNotes.md)，验证证据见 [Testing](PluginSDK2-Testing.md)。
