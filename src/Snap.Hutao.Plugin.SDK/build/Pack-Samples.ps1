@@ -1,13 +1,13 @@
 # Explicit sample staging: never package the entire Publish or Build output tree.
 [CmdletBinding()]
-param([ValidateSet('Debug','Release')][string] $Configuration = 'Release')
+param([Parameter(Mandatory)][ValidateSet('Debug','Release')][string] $Configuration)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $artifacts = Join-Path $root 'artifacts'
 $tool = Join-Path $root 'tools\PluginPack\PluginPack.csproj'
 foreach ($sample in @(
-    @{ Project = 'TestPlugin.Native'; Dll = (Join-Path $artifacts "native\$Configuration\TestPlugin.Native.dll"); Id = 'TestPlugin.Native'; Template = 'manifest.template.json' },
-    @{ Project = 'TestPlugin.Native'; Dll = (Join-Path $artifacts "native\$Configuration\TestPlugin.Native.dll"); Id = 'TestPlugin.Native.Core'; Template = 'manifest.core.template.json' },
+    @{ Project = 'TestPlugin.Native'; Dll = (Join-Path $artifacts "native\$Configuration\compiled\TestPlugin.Native.dll"); Id = 'TestPlugin.Native'; Template = 'manifest.template.json' },
+    @{ Project = 'TestPlugin.Native.Core'; Dll = (Join-Path $artifacts "native\$Configuration\core\TestPlugin.Native.Core.dll"); Id = 'TestPlugin.Native.Core'; Template = 'manifest.template.json' },
     @{ Project = 'TestPlugin.Aot'; Dll = (Join-Path $artifacts 'aot-plugin\TestPlugin.Aot.dll'); Id = 'TestPlugin'; Template = 'manifest.template.json' }
 )) {
     if (!(Test-Path -LiteralPath $sample.Dll -PathType Leaf)) { throw "Build/publish first: $($sample.Dll)" }
@@ -15,6 +15,7 @@ foreach ($sample in @(
     if (Test-Path -LiteralPath $staging) { Remove-Item -LiteralPath $staging -Recurse -Force }
     $bin = Join-Path $staging 'bin\x64'
     New-Item -ItemType Directory -Path $bin -Force | Out-Null
+    Write-Host "Packing $($sample.Id) from $($sample.Dll)"
     Copy-Item -LiteralPath $sample.Dll -Destination $bin
     if ($sample.Id -eq 'TestPlugin.Native') {
         # Explicit native component payload; never copy the host's dependency tree.

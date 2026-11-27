@@ -41,19 +41,17 @@ public sealed partial class MainPage : Page
             restart.IsEnabled = uninstall.IsEnabled = !busy && active && !restartRequired;
         }
 
-        void Choose(string packageName, bool native)
+        void Choose(string packageName)
         {
             for (DirectoryInfo? directory = new(AppContext.BaseDirectory); directory is not null; directory = directory.Parent)
             {
                 if (!File.Exists(Path.Combine(directory.FullName, "Snap.Hutao.Plugin.SDK.slnx"))) continue;
-                string artifacts = Path.Combine(directory.FullName, "artifacts");
-                string[] candidates = native
-                    ? [Path.Combine(artifacts, packageName), Path.Combine(artifacts, "native", "Debug", "TestPlugin.Native.dll"), Path.Combine(artifacts, "native", "Release", "TestPlugin.Native.dll")]
-                    : [Path.Combine(artifacts, packageName), Path.Combine(artifacts, "aot-plugin", "TestPlugin.Aot.dll")];
-                pathBox.Text = candidates.FirstOrDefault(File.Exists) ?? candidates[1];
+                string path = Path.Combine(directory.FullName, "artifacts", packageName);
+                pathBox.Text = path;
+                if (!File.Exists(path)) Write(NotificationKind.Warning, "Package not found. Build and pack samples: " + path);
                 return;
             }
-            Write(NotificationKind.Warning, "Enter the full DLL or package path.");
+            Write(NotificationKind.Warning, "Enter the full package path.");
         }
 
         async Task StartAsync(string input, bool reenable)
@@ -65,6 +63,7 @@ public sealed partial class MainPage : Page
                 if (path.EndsWith(".hutao", StringComparison.OrdinalIgnoreCase))
                 {
                     VerifiedPackage verified = await Task.Run(() => PluginPackage.Verify(path));
+                    Write(NotificationKind.Information, $"Package: {path}\nID: {verified.Manifest.Id}; UI: {verified.Manifest.UiMode}; entry: {verified.Manifest.Entry}\nSHA256: {verified.Sha256}");
                     ContentDialog confirm = new()
                     {
                         XamlRoot = panel.XamlRoot,
@@ -89,8 +88,8 @@ public sealed partial class MainPage : Page
                 else
                 {
                     if (!path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)) throw new InvalidDataException("Choose a .hutao package or development DLL.");
-                    if (Path.GetFileName(path).Equals("TestPlugin.Native.dll", StringComparison.OrdinalIgnoreCase))
-                        throw new InvalidOperationException("Pack the native sample first: the compiled XAML requires its verified XBF payload.");
+                    if (Path.GetFileName(path).Equals("TestPlugin.Native.dll", StringComparison.OrdinalIgnoreCase) || Path.GetFileName(path).Equals("TestPlugin.Native.Core.dll", StringComparison.OrdinalIgnoreCase))
+                        throw new InvalidOperationException("Pack the native sample first: its resources require the verified package.");
                     ContentDialog confirm = new()
                     {
                         XamlRoot = panel.XamlRoot,
@@ -143,7 +142,9 @@ public sealed partial class MainPage : Page
             if (session is null || views.SelectedIndex < 0 || views.SelectedIndex >= availableViews.Length) return;
             session.CloseView();
             content.Content = null;
-            content.Content = session.OpenView(availableViews[views.SelectedIndex].ViewId);
+            string viewId = availableViews[views.SelectedIndex].ViewId;
+            Write(NotificationKind.Information, $"Opening {identity?.Id}/{viewId}");
+            content.Content = session.OpenView(viewId);
         }
 
         async Task StopAsync(bool remove)
@@ -164,9 +165,9 @@ public sealed partial class MainPage : Page
             finally { busy = false; UpdateButtons(); }
         }
 
-        nativeChoice.Click += (_, _) => Choose("TestPlugin.Native.Core.hutao", true);
-        compiledChoice.Click += (_, _) => Choose("TestPlugin.Native.hutao", true);
-        aotChoice.Click += (_, _) => Choose("TestPlugin.hutao", false);
+        nativeChoice.Click += (_, _) => Choose("TestPlugin.Native.Core.hutao");
+        compiledChoice.Click += (_, _) => Choose("TestPlugin.Native.hutao");
+        aotChoice.Click += (_, _) => Choose("TestPlugin.hutao");
         views.SelectionChanged += (_, _) =>
         {
             if (busy || session is null) return;

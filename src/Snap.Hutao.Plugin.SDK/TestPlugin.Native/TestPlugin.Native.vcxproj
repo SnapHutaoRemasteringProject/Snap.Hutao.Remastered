@@ -58,7 +58,7 @@
   </ImportGroup>
   <PropertyGroup>
     <MultiProcMIDL>true</MultiProcMIDL>
-    <OutDir>$(MSBuildThisFileDirectory)..\artifacts\native\$(Configuration)\</OutDir>
+    <OutDir>$(MSBuildThisFileDirectory)..\artifacts\native\$(Configuration)\compiled\</OutDir>
     <IntDir>$(MSBuildThisFileDirectory)obj\$(Configuration)\</IntDir>
     <WindowsAppSDKSelfContained>false</WindowsAppSDKSelfContained>
   </PropertyGroup>

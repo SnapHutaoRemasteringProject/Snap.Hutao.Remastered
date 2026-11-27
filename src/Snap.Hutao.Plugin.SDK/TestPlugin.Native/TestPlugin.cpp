@@ -26,48 +26,6 @@ struct TestView : implements<TestView, IPluginView>
     void OnClosing() { page->ClosePluginView(); }
 };
 
-// Independent core test: no compiled XAML metadata or PRI dependency.
-struct CoreView : implements<CoreView, IPluginView>
-{
-    UIElement root{ nullptr };
-    Button button{ nullptr };
-    event_token clickToken{};
-    bool connected{};
-
-    CoreView(IPluginContext const& context, bool loose)
-    {
-        if (loose)
-        {
-            root = context.Ui().LoadXaml(L"views/CoreView.hxaml");
-            button = root.as<FrameworkElement>().FindName(L"ClickButton").as<Button>();
-        }
-        else
-        {
-            button = Button();
-            button.Content(box_value(L"Programmatic C++/WinRT Button"));
-            root = button;
-        }
-        clickToken = button.Click([context](winrt::Windows::Foundation::IInspectable const& sender, RoutedEventArgs const&)
-        {
-            try
-            {
-                sender.as<Button>().Content(box_value(L"C++/WinRT callback completed"));
-                context.Notifications().Show(NotificationKind::Success, L"C++ core click");
-            }
-            catch (hresult_error const& error) { context.Log(NotificationKind::Error, error.message()); }
-        });
-        connected = true;
-    }
-
-    UIElement Element() { return root; }
-    void OnClosing()
-    {
-        if (connected) { button.Click(clickToken); connected = false; }
-        button = nullptr;
-        root = nullptr;
-    }
-};
-
 struct TestPluginImpl : implements<TestPluginImpl, IHutaoPlugin, IPluginViewFactory, IPluginCommand, IPluginAction>
 {
     IPluginContext context{ nullptr };
@@ -76,6 +34,8 @@ struct TestPluginImpl : implements<TestPluginImpl, IHutaoPlugin, IPluginViewFact
     void OnLoad(IPluginContext const& value)
     {
         context = value;
+        if (context.PluginId() != L"TestPlugin.Native") throw hresult_invalid_argument(L"Compiled sample requires TestPlugin.Native package.");
+        context.Log(NotificationKind::Information, L"[CppCompiled] OnLoad");
         if (value.AbiMajor() != 1 || value.ApiMinor() != 0) throw hresult_invalid_argument();
         value.Settings().RegisterInt32(L"Counter", 0, L"Counter");
         value.Settings().RegisterBoolean(L"Enabled", true, L"Boolean");
@@ -92,11 +52,6 @@ struct TestPluginImpl : implements<TestPluginImpl, IHutaoPlugin, IPluginViewFact
         auto self = get_strong();
         registrations.push_back(contributions.RegisterView(L"main", self.as<IPluginViewFactory>()));
         registrations.push_back(contributions.RegisterNavigationItem(L"main", L"C++/WinRT plugin", L"\uE74C", L"main"));
-        if (context.PluginId() == L"TestPlugin.Native.Core")
-        {
-            registrations.push_back(contributions.RegisterView(L"programmatic", self.as<IPluginViewFactory>()));
-            registrations.push_back(contributions.RegisterNavigationItem(L"programmatic", L"C++ programmatic UI", L"\uE74C", L"programmatic"));
-        }
         registrations.push_back(contributions.RegisterCommand(L"exercise", L"Exercise ABI", self.as<IPluginCommand>()));
     }
 
@@ -114,12 +69,6 @@ struct TestPluginImpl : implements<TestPluginImpl, IHutaoPlugin, IPluginViewFact
 
     IPluginView CreateView(hstring const& id)
     {
-        if (context.PluginId() == L"TestPlugin.Native.Core")
-        {
-            if (id == L"main") return make<CoreView>(context, true);
-            if (id == L"programmatic") return make<CoreView>(context, false);
-            throw hresult_invalid_argument();
-        }
         if (id != L"main") throw hresult_invalid_argument();
         return make<TestView>(context);
     }
