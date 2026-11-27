@@ -21,7 +21,7 @@ public sealed class PluginListItem
         CanChangePackage = !entry.Conflict;
         CanEnable = CanChangePackage && entry.Manifest is not null && state.PendingHash is null;
         CanApply = CanChangePackage && state.PendingHash is not null && !enabled;
-        CanRollback = CanChangePackage && state.BackupHash is not null && !enabled;
+        CanRollback = CanChangePackage && (state.BackupHash is null ? state.PendingHash is not null : !enabled);
         Status = enabled ? SH.ViewPagePluginStatusEnabled : SH.ViewPagePluginStatusDisabled;
         List<string> details = [entry.Id];
         if (entry.Hash is { } hash) details.Add("SHA256: " + hash);

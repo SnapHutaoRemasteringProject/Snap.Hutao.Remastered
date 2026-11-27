@@ -18,6 +18,7 @@ using System.Security.Cryptography;
 
 namespace Snap.Hutao.Remastered.ViewModel.Plugin;
 
+[BindableCustomPropertyProvider]
 [Service(ServiceLifetime.Scoped)]
 public sealed partial class PluginViewModel : Abstraction.ViewModel
 {
@@ -29,6 +30,7 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
     private readonly IContentDialogQueue contentDialogQueue;
     private readonly IFileSystemPickerInteraction picker;
     private readonly INavigationService navigationService;
+    private readonly ILogger<PluginViewModel> logger;
     private bool refreshing;
     private bool refreshRequested;
 
@@ -88,7 +90,7 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
                     if (CancellationToken.IsCancellationRequested) return;
                     InstalledPlugin entry = entries[i];
                     (PluginDiskState state, byte[]? icon, string? stateError) = details[i];
-                    BitmapImage? image = await DecodeIconAsync(icon);
+                    BitmapImage? image = await DecodeIconAsync(entry.Id, icon);
                     bool enabled = pluginService.IsActive(entry.Id);
                     items.Add(new PluginListItem(this, entry, state, image, enabled, stateError,
                         enabled ? pluginService.Commands(entry.Id) : []));
@@ -105,7 +107,7 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
         }
     }
 
-    private static (PluginDiskState State, byte[]? Icon, string? Error) ReadDetails(InstalledPlugin entry)
+    private (PluginDiskState State, byte[]? Icon, string? Error) ReadDetails(InstalledPlugin entry)
     {
         byte[]? icon = null;
         try
@@ -117,21 +119,25 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
                 if (package.Length > 256L * 1024 * 1024) throw new InvalidDataException("Plugin package size changed.");
                 using ZipArchive archive = new(package, ZipArchiveMode.Read);
                 ZipArchiveEntry? image = archive.Entries.FirstOrDefault(item => item.FullName.Equals(path, StringComparison.OrdinalIgnoreCase));
-                if (image is { Length: > 0 and <= MaxIconSize })
+                if (image is not { Length: > 0 and <= MaxIconSize })
                 {
-                    byte[] bytes = new byte[(int)image.Length];
-                    using Stream stream = image.Open();
-                    stream.ReadExactly(bytes);
-                    if (stream.ReadByte() == -1 && Convert.ToHexStringLower(SHA256.HashData(bytes)).Equals(manifest.Files[path], StringComparison.OrdinalIgnoreCase))
-                    {
-                        icon = bytes;
-                    }
+                    throw new InvalidDataException("Plugin icon is missing or has an invalid size.");
                 }
+
+                byte[] bytes = new byte[(int)image.Length];
+                using Stream stream = image.Open();
+                stream.ReadExactly(bytes);
+                if (stream.ReadByte() != -1 || !Convert.ToHexStringLower(SHA256.HashData(bytes)).Equals(manifest.Files[path], StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidDataException("Plugin icon no longer matches its verified manifest.");
+                }
+
+                icon = bytes;
             }
         }
         catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException)
         {
-            // The package can disappear between scan and icon read. Keep its card usable.
+            logger.LogWarning(error, "Could not read the icon for plugin {PluginId}", entry.Id);
         }
 
         try { return (PluginPackageStore.ReadState(entry.Id), icon, null); }
@@ -141,7 +147,7 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
         }
     }
 
-    private static async Task<BitmapImage?> DecodeIconAsync(byte[]? bytes)
+    private async Task<BitmapImage?> DecodeIconAsync(string pluginId, byte[]? bytes)
     {
         if (bytes is null) return null;
         using MemoryStream stream = new(bytes, writable: false);
@@ -154,6 +160,7 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
         }
         catch (Exception exception) when (exception is ArgumentException or System.Runtime.InteropServices.COMException)
         {
+            logger.LogWarning(exception, "Could not decode the icon for plugin {PluginId}", pluginId);
             return null;
         }
     }
@@ -176,6 +183,7 @@ public sealed partial class PluginViewModel : Abstraction.ViewModel
         }
         catch (OperationCanceledException) when (CancellationToken.IsCancellationRequested)
         {
+            logger.LogDebug("Plugin page operation cancelled.");
         }
         catch (Exception error)
         {

@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.UI.Xaml.Control;
 using Snap.Hutao.Remastered.ViewModel.Plugin;
+using System.Runtime.CompilerServices;
 
 namespace Snap.Hutao.Remastered.UI.Xaml.View.Page;
 
@@ -14,7 +15,11 @@ public sealed partial class PluginSettingPage : ScopedPage
 
     public PluginSettingPage() => InitializeComponent();
 
-    public new PluginSettingViewModel? DataContext => base.DataContext as PluginSettingViewModel;
+    public new PluginSettingViewModel? DataContext
+    {
+        get => Unsafe.As<PluginSettingViewModel>(base.DataContext);
+        set => base.DataContext = value;
+    }
 
     protected override void OnNavigatedTo(NavigationEventArgs e)
     {

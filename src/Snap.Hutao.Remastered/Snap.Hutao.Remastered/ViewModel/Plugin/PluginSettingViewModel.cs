@@ -15,6 +15,7 @@ namespace Snap.Hutao.Remastered.ViewModel.Plugin;
 
 internal sealed record PluginSettingTarget(string Id, string Name);
 
+[BindableCustomPropertyProvider]
 [Service(ServiceLifetime.Scoped)]
 public sealed partial class PluginSettingViewModel : Abstraction.ViewModel
 {

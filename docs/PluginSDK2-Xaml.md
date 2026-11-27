@@ -22,8 +22,8 @@
   <EnableDefaultPageItems>false</EnableDefaultPageItems>
 </PropertyGroup>
 <ItemGroup>
-  <Page Remove="views\Main.xaml" />
-  <None Update="views\Main.xaml" />
+  <Page Remove="resources\views\Main.xaml" />
+  <None Update="resources\views\Main.xaml" />
 </ItemGroup>
 ```
 
@@ -36,7 +36,7 @@
 
 两种资源仍应在 pack 前复制到 staging；loose 复制 .xaml 源文件，compiled 复制包含 XBF 的组件 PRI（不复制独立 .xbf）。不要将同一文件同时作为 None 和 Page。
 
-在 [C# 模板](../src/Snap.Hutao.Plugin.SDK/templates/CSharpPlugin) 基础上创建 views/Main.xaml：
+在 [C# 模板](../src/Snap.Hutao.Plugin.SDK/templates/CSharpPlugin) 基础上创建 resources/views/Main.xaml：
 
 ```xml
 <StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -77,7 +77,7 @@ public sealed class MyPlugin : HutaoPlugin
     [WinRT.DynamicWindowsRuntimeCast(typeof(Button))]
     private PluginView CreateView()
     {
-        FrameworkElement root = (FrameworkElement)Context.LoadXaml("views/Main.xaml");
+        FrameworkElement root = (FrameworkElement)Context.LoadXaml("resources/views/Main.xaml");
         TextBlock count = (TextBlock)root.FindName("CountText");
         Button button = (Button)root.FindName("IncrementButton");
         bool closed = false;
@@ -120,14 +120,14 @@ manifest 修改为：
 "capabilities": ["navigation", "settings", "xaml"]
 ```
 
-推荐直接把 Main.xaml 放在模板项目的 resources/views/Main.xaml，Pack-Plugin.ps1 自动复制 resources 下的内容到 staging 根目录。不需要编辑脚本。手工 staging 时，等价命令如下（不要在 pack 后追加文件）：
+推荐直接把 Main.xaml 放在模板项目的 resources/views/Main.xaml，Pack-Plugin.ps1 将整个 resources 目录复制到 staging，保留 resources/views/Main.xaml 路径。不需要编辑脚本。手工 staging 时，等价命令如下（不要在 pack 后追加文件）：
 
 ```powershell
-New-Item -ItemType Directory -Force (Join-Path $stage 'views') | Out-Null
-Copy-Item -LiteralPath (Join-Path $root 'views\Main.xaml') -Destination (Join-Path $stage 'views\Main.xaml')
+New-Item -ItemType Directory -Force (Join-Path $stage 'resources\views') | Out-Null
+Copy-Item -LiteralPath (Join-Path $root 'resources\views\Main.xaml') -Destination (Join-Path $stage 'resources\views\Main.xaml')
 ```
 
-最终包内文件：manifest.json、bin/x64/MyPlugin.dll、views/Main.xaml。文件名必须与 LoadXaml 参数一致。每次打开视图创建新的控件树；关闭时撤销事件和设置订阅。
+最终包内文件：manifest.json、bin/x64/MyPlugin.dll、resources/views/Main.xaml。文件名必须与 LoadXaml 参数一致。每次打开视图创建新的控件树；关闭时撤销事件和设置订阅。
 
 LoadXaml 的宿主实现：检查 xaml 能力、active 状态和 loose 模式 → 按 manifest 相对路径解析至 PackageDirectory → 读取文本 → XamlReader.Load → 返回 UIElement。它并不调用插件程序集的 GetManifestResourceStream，也不会执行 XAML 编译器生成的代码。不要写 x:Class、x:Bind 或 Click="Increment"；事件由 C# 或 C++ 显式连接。DynamicWindowsRuntimeCast 使 AOT 保留 WinRT runtime class 的转换支持，不是绑定属性的生成器。
 
@@ -155,7 +155,7 @@ XAML：
 
 | 路径 | 由谁解析 |
 |---|---|
-| Context.LoadXaml("views/Main.xaml") | SDK 宿主，按该插件工作区的 manifest 路径 |
+| Context.LoadXaml("resources/views/Main.xaml") | SDK 宿主，按该插件工作区的 manifest 路径 |
 | ms-appx:///Assets/Logo.png | WinUI 包/应用资源解析器，默认是宿主资源 |
 | ms-resource:///Resources/Title 或 x:Uid | MRT Core（资源管理器），依赖资源映射/PRI |
 

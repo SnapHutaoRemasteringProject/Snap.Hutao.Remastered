@@ -145,10 +145,10 @@
                                                         <StackPanel Grid.Column="0">
                                                             <!--  字符串类型  -->
                                                             <wl:LiquidGlassTextBox
-                                                                Visibility="{x:Bind TextVisibility}"
                                                                 shuxcth:ControlMaterialState.IsManaged="True"
                                                                 PlaceholderText="{shuxm:ResourceString Name=ViewPagePluginSettingStringPlaceholder}"
-                                                                Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                                Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                Visibility="{x:Bind TextVisibility}"/>
 
                                                             <!--  整数类型  -->
                                                             <NumberBox
@@ -159,11 +159,11 @@
 
                                                             <!--  布尔类型  -->
                                                             <wl:LiquidGlassToggleSwitch
-                                                                Visibility="{x:Bind FlagVisibility}"
                                                                 shuxcth:ControlMaterialState.IsManaged="True"
                                                                 IsOn="{x:Bind Flag, Mode=TwoWay}"
                                                                 OffContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOff}"
-                                                                OnContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOn}"/>
+                                                                OnContent="{shuxm:ResourceString Name=ViewPagePluginSettingToggleOn}"
+                                                                Visibility="{x:Bind FlagVisibility}"/>
 
                                                         </StackPanel>
                                                         <!--  操作按钮  -->

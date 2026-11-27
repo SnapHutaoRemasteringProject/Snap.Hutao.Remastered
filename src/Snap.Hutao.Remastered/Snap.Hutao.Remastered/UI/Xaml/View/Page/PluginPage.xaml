@@ -6,6 +6,7 @@
     xmlns:cw="using:CommunityToolkit.WinUI"
     xmlns:cwconv="using:CommunityToolkit.WinUI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:essential="using:WinUI3Package"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mxi="using:Microsoft.Xaml.Interactivity"
     xmlns:shux="using:Snap.Hutao.Remastered.UI.Xaml"
@@ -113,21 +114,21 @@
                         Orientation="Horizontal"
                         Spacing="8">
                         <wl:LiquidGlassButton
-                            Visibility="{x:Bind EnableVisibility}"
                             shuxcth:ControlMaterialState.IsManaged="True"
                             Command="{x:Bind EnableCommand}"
                             IsEnabled="{x:Bind CanEnable}"
-                            Style="{StaticResource AccentButtonStyle}">
+                            Style="{StaticResource AccentButtonStyle}"
+                            Visibility="{x:Bind EnableVisibility}">
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginEnableButton}"/>
                             </StackPanel>
                         </wl:LiquidGlassButton>
                         <wl:LiquidGlassButton
-                            Visibility="{x:Bind DisableVisibility}"
                             shuxcth:ControlMaterialState.IsManaged="True"
                             Command="{x:Bind DisableCommand}"
                             IsEnabled="{x:Bind CanChangePackage}"
-                            Style="{StaticResource DangerButtonStyle}">
+                            Style="{StaticResource DangerButtonStyle}"
+                            Visibility="{x:Bind DisableVisibility}">
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <TextBlock Text="{shuxm:ResourceString Name=ViewPagePluginDisableButton}"/>
                             </StackPanel>
@@ -152,17 +153,36 @@
                             </StackPanel>
                         </wl:LiquidGlassButton>
                         <wl:LiquidGlassButton
-                            AutomationProperties.Name="{shuxm:ResourceString Name=ViewPagePluginMoreActions}"
                             shuxcth:ControlMaterialState.IsManaged="True"
+                            AutomationProperties.Name="{shuxm:ResourceString Name=ViewPagePluginMoreActions}"
                             Style="{StaticResource DefaultButtonStyle}">
                             <FontIcon Glyph="&#xE712;"/>
                             <wl:LiquidGlassButton.Flyout>
-                                <Flyout>
+                                <Flyout essential:FlyoutHelper.AcrylicWorkaround="True" Placement="BottomEdgeAlignedRight">
+                                    <Flyout.FlyoutPresenterStyle>
+                                        <Style BasedOn="{StaticResource DefaultFlyoutPresenterStyle}" TargetType="FlyoutPresenter">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="MaxHeight" Value="Infinity"/>
+                                            <Setter Property="MaxWidth" Value="Infinity"/>
+                                        </Style>
+                                    </Flyout.FlyoutPresenterStyle>
                                     <StackPanel MaxWidth="480" Spacing="8">
-                                        <TextBlock IsTextSelectionEnabled="True" Text="{x:Bind Details}" TextWrapping="Wrap"/>
-                                        <Button Command="{x:Bind UpdateCommand}" Content="{shuxm:ResourceString Name=ViewPagePluginUpdateButton}" IsEnabled="{x:Bind CanChangePackage}"/>
-                                        <Button Command="{x:Bind ApplyUpdateCommand}" Content="{shuxm:ResourceString Name=ViewPagePluginApplyUpdateButton}" IsEnabled="{x:Bind CanApply}"/>
-                                        <Button Command="{x:Bind RollbackCommand}" Content="{shuxm:ResourceString Name=ViewPagePluginRollbackButton}" IsEnabled="{x:Bind CanRollback}"/>
+                                        <TextBlock
+                                            IsTextSelectionEnabled="True"
+                                            Text="{x:Bind Details}"
+                                            TextWrapping="Wrap"/>
+                                        <Button
+                                            Command="{x:Bind UpdateCommand}"
+                                            Content="{shuxm:ResourceString Name=ViewPagePluginUpdateButton}"
+                                            IsEnabled="{x:Bind CanChangePackage}"/>
+                                        <Button
+                                            Command="{x:Bind ApplyUpdateCommand}"
+                                            Content="{shuxm:ResourceString Name=ViewPagePluginApplyUpdateButton}"
+                                            IsEnabled="{x:Bind CanApply}"/>
+                                        <Button
+                                            Command="{x:Bind RollbackCommand}"
+                                            Content="{shuxm:ResourceString Name=ViewPagePluginRollbackButton}"
+                                            IsEnabled="{x:Bind CanRollback}"/>
                                         <ItemsControl ItemsSource="{x:Bind Commands}">
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:DataType="shvp:PluginListCommand">
@@ -216,8 +236,8 @@
                             <wl:LiquidGlassButton
                                 shuxcth:ControlMaterialState.IsManaged="True"
                                 Command="{x:Bind DataContext.InstallPluginCommand, Mode=OneWay}"
-                                IsEnabled="{x:Bind DataContext.ActionsEnabled, Mode=OneWay}"
                                 Content="{shuxm:ResourceString Name=ViewPagePluginInstallButton}"
+                                IsEnabled="{x:Bind DataContext.ActionsEnabled, Mode=OneWay}"
                                 Style="{StaticResource AccentButtonStyle}">
                                 <wl:LiquidGlassButton.ContentTemplate>
                                     <DataTemplate>
@@ -232,8 +252,8 @@
                             <wl:LiquidGlassButton
                                 shuxcth:ControlMaterialState.IsManaged="True"
                                 Command="{x:Bind DataContext.RefreshPluginsCommand, Mode=OneWay}"
-                                IsEnabled="{x:Bind DataContext.ActionsEnabled, Mode=OneWay}"
                                 Content="{shuxm:ResourceString Name=ViewPagePluginRefreshButton}"
+                                IsEnabled="{x:Bind DataContext.ActionsEnabled, Mode=OneWay}"
                                 Style="{StaticResource DefaultButtonStyle}">
                                 <wl:LiquidGlassButton.ContentTemplate>
                                     <DataTemplate>
@@ -248,8 +268,8 @@
                             <wl:LiquidGlassButton
                                 shuxcth:ControlMaterialState.IsManaged="True"
                                 Command="{x:Bind DataContext.OpenPluginDirectoryCommand, Mode=OneWay}"
-                                IsEnabled="{x:Bind DataContext.ActionsEnabled, Mode=OneWay}"
                                 Content="{shuxm:ResourceString Name=ViewPagePluginOpenDirectoryButton}"
+                                IsEnabled="{x:Bind DataContext.ActionsEnabled, Mode=OneWay}"
                                 Style="{StaticResource DefaultButtonStyle}">
                                 <wl:LiquidGlassButton.ContentTemplate>
                                     <DataTemplate>
