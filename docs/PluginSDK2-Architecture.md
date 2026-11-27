@@ -29,14 +29,14 @@ flowchart TD
 
 新增业务 API 采用 **C# First**：C# 接口经 CsWinRT Authoring 生成 Services.winmd，和核心 Contracts.winmd 一起生成投影；插件通过 GetService 访问宿主真实服务。第一项服务是游戏路径定位。详见 [Authoring 架构、开发与联合验收](PluginSDK2-Authoring.md)。核心 IDL 暂不迁移。
 
-## 2. NuGet SDK 是什么？一定要用吗？
+## 2. SDK 分发与 Visual Studio 项目模板
 
 C# 插件代码需要编译器认识 `HutaoPlugin`、`PluginContext` 和 `IPluginContext` 等类型。我们将现成的 C# 投影和开发辅助代码作为 NuGet 包分发，插件作者用 PackageReference 引用即可，不需要编译或引用 Snap Hutao 主程序。Native AOT 发布会将插件所使用的托管代码编译进插件自身的原生 DLL；安装和运行 .hutao 时不需要 NuGet 客户端、SDK nupkg、宿主源码或额外加载一个 SDK 托管 DLL。NuGet 只是分发和依赖解析手段，不是插件运行时，也不提供热重载。
 
 | 组件 | 实际内容 | 谁使用 |
 |---|---|---|
 | Snap.Hutao.Plugin.Projection.nupkg | 由 CsWinRT 生成的接口投影与 PluginAbi 封送辅助代码 | C# SDK；宿主源码通过同一投影项目获取等价代码 |
-| Snap.Hutao.Plugin.SDK.nupkg | HutaoPlugin、PluginContext、PluginSetting、PluginExport、回调 adapter；依赖投影 | C# 插件作者，通常只需直接引用此 SDK，再按模板配置 WinAppSDK 和 CsWinRT |
+| Snap.Hutao.Plugin.SDK.nupkg | C# SDK 和投影依赖、`tools/VisualStudio/` 项目模板、`tools/native/` 原生契约与头文件 | C# 项目引用此包；C# 和 C++ 作者都可从该包获取 Visual Studio 模板 |
 | native/include + native/metadata | HutaoPlugin.hpp、C ABI 头文件、WinMD、IDL | C++ 插件作者；C++ 不依赖上述两个 C# 包 |
 | PluginPack.exe | ZIP 生成、文件哈希、manifest 和 PE 验证 | 两种语言开发者 |
 | PrototypeHost.exe | 运行、显示、调试真实插件 DLL | 两种语言开发者，可选 |
@@ -45,6 +45,18 @@ C# 插件代码需要编译器认识 `HutaoPlugin`、`PluginContext` 和 `IPlugi
 SDK facade（外观封装层）不改变 WinRT ABI。例如 C# 的 `Context.Settings.Register("Counter", 0, "Counter")` 会调用公共 `IPluginSettings.RegisterInt32`，后者真正由宿主实现；不是 NuGet 包自己保存宿主设置。`PluginExport.Create<T>` 将作者的普通 C# 类包装成实现 IHutaoPlugin 的 WinRT 对象。C++ 作者可直接实现 IHutaoPlugin，不需要 C# facade。
 
 三种开发方式：仓库内示例使用 ProjectReference；仓库外推荐本地或公开 NuGet feed；也可以手工引用两个投影/SDK 托管 DLL 并管理所有匹配依赖和 AOT 分析器，但不作为推荐路线。保留两个可打包项目是有价值的，公开发布到 NuGet.org 却不是完成 ABI 或安装插件的前置条件。现有 Build-Sdk.ps1 仅生成本地分发，未公开发布、未完成仓库外验收。v1 的同名 NuGet 1.0.0 是 build-only 包，主要通过 MSBuild targets 自动打包，不能混用。
+
+### 从 Visual Studio 创建插件项目
+
+用 `Build-Sdk.ps1` 生成分发后，在 `nuget/` 下打开 `Snap.Hutao.Plugin.SDK.<版本>.nupkg`。其 `tools/VisualStudio/` 目录包含三份项目模板 ZIP：
+
+| 模板 ZIP | 建出的项目 |
+|---|---|
+| `Snap.Hutao.Plugin.CSharp.zip` | C# Native AOT，引用对应版本的 SDK NuGet，使用编译型 XAML 和同名组件 PRI |
+| `Snap.Hutao.Plugin.Cpp.zip` | 传统 C++/WinRT，通过 `#include` 使用生成的头文件 |
+| `Snap.Hutao.Plugin.CppModules.zip` | C++/WinRT 3.0 命名模块，通过 `import` 使用生成的模块 |
+
+将所需 ZIP 原样复制到 Visual Studio 的用户项目模板目录，重启后在「创建新项目」中搜索 **Snap Hutao Plugin**。此流程无需安装 VSIX（Visual Studio 扩展）。两份 C++ 模板使用同一套 WinMD 接口契约，生成的项目按 `CppWinRTBuildModule` 选择投影方式。完整的构建、导入和打包步骤见 [从 SDK 创建第一个插件](PluginSDK2-GettingStarted.md)。
 
 ## 3. 运行时调用链
 
@@ -109,9 +121,9 @@ SDK 源码根目录按职责分为 contracts（IDL/ABI）、libraries（可复�
 
 | 我需要做什么 | 实际操作 |
 |---|---|
-| 写 C# 插件 | 使用 CSharpPlugin 模板，引用本地 SDK NuGet，定义入口与 HutaoPlugin，dotnet publish Native AOT |
-| 写 C++ 插件 | 使用 CppPlugin 模板，引用 canonical WinMD 和头文件，MSBuild x64 DLL |
-| 创建 UI | 程序式控件，或 loose 模式中的 .xaml；C# Binding 参考 AOT 示例，仍需验证 |
+| 写 C# 插件 | 使用 C# Native AOT 项目模板，配置 SDK NuGet 源，发布 x64 原生 DLL |
+| 写 C++ 插件 | 使用头文件或模块项目模板，指向 SDK 的 WinMD 和原生头文件，构建 x64 DLL |
+| 创建 UI | 用代码创建控件，或将编译型 XAML 的 XBF 嵌入同名组件 PRI。C# 从模板自带的页面开始 |
 | 测试插件 | 准备 staging → PluginPack pack → PrototypeHost Inspect and load → 选择视图/命令 |
 | 修改插件代码 | 关闭测试宿主，重新构建、打包、启动；Disable and re-enable 只测试生命周期 |
 | 发布给用户 | 分发 .hutao；用户在正式插件管理页检查来源和哈希，确认后启用 |
