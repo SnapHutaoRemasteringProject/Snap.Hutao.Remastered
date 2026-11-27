@@ -182,8 +182,8 @@ src/
 ### 5.1 Dependency injection
 
 Everything is registered by the `Snap.Hutao.Remastered.SourceGeneration` source generator
-(package `1.3.17`, `PrivateAssets=all`). **Do not hand-wire registrations.** Attribute forms that
-actually exist in the repo (counts as of the audit):
+(package `1.3.19`, pinned in `Directory.Packages.props`, `PrivateAssets=all`).
+**Do not hand-wire registrations.** Attribute forms that actually exist in the repo (counts as of the audit):
 
 | Attribute | Forms in use | Count |
 |---|---|---|
