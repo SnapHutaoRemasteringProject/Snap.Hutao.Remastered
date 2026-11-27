@@ -46,6 +46,7 @@ $csproj = Join-Path $out 'templates\CSharpPlugin\MyPlugin.csproj'
 # Snap Hutao Plugin SDK $Version
 
 - Architecture and development model: docs/PluginSDK2-Architecture.md
+- C# First business service authoring: docs/PluginSDK2-Authoring.md
 - Developer guide: docs/PluginSDK2-GettingStarted.md
 - V1 to V2 migration: docs/PluginSDK2-Migration.md
 - XAML development: docs/PluginSDK2-Xaml.md

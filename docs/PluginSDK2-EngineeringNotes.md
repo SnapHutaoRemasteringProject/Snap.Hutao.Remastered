@@ -239,3 +239,7 @@ SDK 2.0 不要求向后兼容：LoadXaml 仅允许 .xaml，并保留 verified ma
 ### E22：PRI-only C++ 实测通过，正式宿主接入
 
 2026-11-27 用户报告 TestPlugin.Native.hutao（SHA256 585dd2390d3d29a887caf2ffffde072d620b0c9764f9e8c16b96fd9dfae030dc）：Generated InitializeComponent returned、Last embedded resource: Files/TestPlugin.Native/PluginPage.xbf、两次 Click、worker UI callback、async round trip 与 Exercise ABI completed。确认上述 PRI-only 项目 Pass，宿主发布模式未注明。c95e27c 将 PluginPriResources 移入生产 Service/Plugin，PrototypeHost Compile Link 复用；生产 App 在 GeneratedConstructor 的 PreConstruct 阶段订阅 ResourceManagerRequested，App.PluginXaml.cs 显式实现 IXamlMetadataProvider，复用生成 provider 的自动依赖查找并追加插件 provider，不采用 DoNotGenerateOtherProviders，不硬编码第三方控件 provider 列表。上游 CSharpTypeInfoPass2.tt 中独立 XamlMetaDataProvider 在 pass1/pass2 均生成，App 的公开转发方法只在 pass2 生成；因此显式接口转发使用独立生成 provider。XamlProjectName 固定为原项目名安全化结果 Snap_Hutao_Remastered。启用、启动、更新删除 compiled gate。新的生产编译及运行 NotRun；保留 loose / IPluginUi，因为 C# compiled 尚未实现。历史 E16/E21 仅记录当时状态，以本条和当前 API/XAML 指南为准。
+
+## C# First 后续架构决策
+
+新增业务契约改用 CsWinRT 2.3.1 C# Authoring → WinMD → 统一消费投影。保留已验证的核心 ABI，避免整个主程序集 public API 不符合 WinRT 类型规范以及生成器阶段依赖冲突。见 [Authoring 架构和验证](PluginSDK2-Authoring.md)。SourceGeneration PR #2 是 XAML/AOT 分析与源生成，不替代 WinMD authoring。当前 Windows 实测 NotRun。

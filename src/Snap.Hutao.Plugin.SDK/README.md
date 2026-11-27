@@ -1,11 +1,12 @@
 # Snap Hutao Plugin SDK 2.0
 
-SDK 2.0 是 Snap Hutao Remastered 的进程内 WinRT 原生插件开发工具。C++/WinRT 与 C# Native AOT 插件使用同一个 WinMD、同一个 DLL 入口和同一种 .hutao 格式。插件不引用主程序实现程序集。
+SDK 2.0 是 Snap Hutao Remastered 的进程内 WinRT 原生插件开发工具。C++/WinRT 与 C# Native AOT 插件使用同一套 WinMD、同一个 DLL 入口和同一种 .hutao 格式。插件不引用主程序实现程序集。
 
 ## 架构：从插件源码到运行
 
 ```text
 HutaoPlugin.idl → MIDL → Contracts.winmd
+C# 服务接口 → CsWinRT Authoring → Services.winmd
                           ├─ C++/WinRT → C++ DLL
                           └─ CsWinRT → C# SDK → Native AOT DLL
 原生 DLL + manifest + resources → PluginPack → .hutao
@@ -16,6 +17,8 @@ HutaoPlugin.idl → MIDL → Contracts.winmd
 正式宿主提供服务、管理插件实例与界面；插件不引用主程序实现程序集。C# SDK NuGet 包只是把公共投影及辅助代码提供给插件作者编译使用，Native AOT 发布会将实际使用的代码编入插件 DLL；用户不需要 NuGet。C++ 使用 WinMD 和头文件，不使用这两个 C# NuGet 包。PrototypeHost 是独立调试和 ABI 回归程序，不是热重载器。
 
 **开发顺序**：选择 C# 或 C++ 模板 → 引用 SDK → 实现生命周期及视图/命令 → C# Native AOT Publish 或 C++ Build → PluginPack 打包 → PrototypeHost 调试 → 正式应用安装验证。原生 DLL 修改后必须重启宿主。
+
+新增业务服务使用 C# First：主程序提供真实业务实现，C# 接口自动生成 WinMD，C# / C++ 消费同一 ABI。核心 IDL 暂时保留。首个服务为游戏路径定位，详见 [Authoring](../../docs/PluginSDK2-Authoring.md)。
 
 ## 文档入口
 
@@ -35,7 +38,7 @@ HutaoPlugin.idl → MIDL → Contracts.winmd
 
 ```text
 Snap.Hutao.Plugin.SDK/
-  contracts/                      # 唯一 IDL 和 C ABI
+  contracts/                      # 核心 IDL、C ABI 与 C# Authoring 业务服务
   libraries/
     Snap.Hutao.Plugin.Projection/ # C# WinRT 投影
     Snap.Hutao.Plugin.SDK/        # C# SDK facade

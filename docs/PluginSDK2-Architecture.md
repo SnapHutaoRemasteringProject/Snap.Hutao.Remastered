@@ -6,9 +6,12 @@ Snap Hutao 的插件是一个由宿主加载到自身进程的 x64 原生 DLL，
 
 ```mermaid
 flowchart TD
-    IDL["HutaoPlugin.idl：唯一公共接口定义"] --> MIDL["MIDL 编译器"]
+    IDL["HutaoPlugin.idl：核心生命周期契约"] --> MIDL["MIDL 编译器"]
     MIDL --> WM["Contracts.winmd"]
+    AUTH["C# 业务接口：contracts/Services"] --> AW["CsWinRT Authoring → Services.winmd"]
     WM --> CPP["C++/WinRT 投影"]
+    AW --> CPP
+    AW --> CS
     WM --> CS["CsWinRT C# 投影"]
     CS --> SDK["C# SDK facade"]
     CPP --> CP["C++ 插件 Link"]
@@ -23,6 +26,8 @@ flowchart TD
 ```
 
 上图中的箭头是构建产物或使用关系，不代表宿主在运行时启动 MIDL、NuGet 或其他构建工具。
+
+新增业务 API 采用 **C# First**：C# 接口经 CsWinRT Authoring 生成 Services.winmd，和核心 Contracts.winmd 一起生成投影；插件通过 GetService 访问宿主真实服务。第一项服务是游戏路径定位。详见 [Authoring 架构、开发与联合验收](PluginSDK2-Authoring.md)。核心 IDL 暂不迁移。
 
 ## 2. NuGet SDK 是什么？一定要用吗？
 
@@ -81,7 +86,8 @@ sequenceDiagram
 
 | 路径 | 职责 |
 |---|---|
-| Snap.Hutao.Plugin.SDK/contracts | 唯一 HutaoPlugin.idl、HutaoPluginAbi.h |
+| Snap.Hutao.Plugin.SDK/contracts | 核心 HutaoPlugin.idl、HutaoPluginAbi.h |
+| Snap.Hutao.Plugin.SDK/contracts/Services | C# Authoring 业务契约，生成 Services.winmd |
 | Snap.Hutao.Plugin.SDK/libraries/Snap.Hutao.Plugin.Projection | GenerateHutaoContracts → CsWinRTGenerateProjection；PluginAbi |
 | Snap.Hutao.Plugin.SDK/libraries/Snap.Hutao.Plugin.SDK | C# facade 与 adapter；不引用宿主 |
 | Snap.Hutao.Plugin.SDK/libraries/Snap.Hutao.Plugin.SDK.Native | C++ 入口辅助头文件 |

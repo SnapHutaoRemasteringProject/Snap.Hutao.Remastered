@@ -6,6 +6,8 @@
 
 具体旧版 API 与新版代码对照见 [迁移](PluginSDK2-Migration.md)，完整 UI 示例与 XBF/PRI 说明见 [XAML 开发指南](PluginSDK2-Xaml.md)。游戏附加库是 [包声明](PluginSDK2-Packages.md) 贡献，不新增任意进程控制 ABI。
 
+新增业务服务由 C# Authoring 生成契约，参见 [C# First 业务 API](PluginSDK2-Authoring.md)。C# 的 `Context.GamePath` 返回 `IHutaoGamePathService?`；C++ 使用 `GetService(guid_of<IHutaoGamePathService>())`；`LocateAsync()` 要求 game-path 能力及 active UI STA，调用实际主程序服务，未定位返回空串。
+
 ## 1. 生命周期与线程
 
 | 回调 | 何时执行 | 可做什么 |
@@ -207,7 +209,7 @@ auto result = co_await context.Dialogs().ShowMessageAsync(L"Plugin", L"Done", L"
 
 ## 5. 错误处理与约束
 
-- 14 个固定 IID：以 IDL 为唯一来源；新增接口需新 IID，不能重排原接口。
+- 14 个核心固定 IID 以 IDL 为来源；新增业务接口以 C# Authoring 源码为来源，显式固定 IID，不能重排原接口。
 - HRESULT 错误：入口参数错误、ABI mismatch、权限、线程、资源等由生成投影转换为语言异常。C++ 使用 hresult_error / check_hresult，C# 使用异常与 Task；在插件边界和事件中保留原始消息。
 - 贡献：每个插件 16 个视图、16 导航、64 命令；局部 ID 最大 64 字符（ASCII，字母/数字起始，允许 ._-），大小写不敏感。标题 1–128 字符；导航 glyph 单个 Unicode scalar 或空。
 - 模块驻留：同一进程同 ID 只允许同一版本、路径、哈希；禁用后撤销贡献而非卸载 DLL。故障模块隔离到下次进程启动，不声称 native code 安全沙箱。

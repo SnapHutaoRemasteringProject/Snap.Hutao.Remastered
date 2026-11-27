@@ -50,6 +50,7 @@ compiled 包必须包含与 runtime.entry 同路径同文件名（扩展名 .pri
 | commands | IPluginContributions.RegisterCommand |
 | dialogs | IPluginDialogs |
 | xaml | IPluginUi；仅 loose 允许 |
+| game-path | C# First 游戏路径定位服务；可能同步主程序已定位的路径，要求 active UI STA |
 | game-libraries | 声明原有 Island 游戏启动流程的第三方库；不是 WinRT 任意进程操作服务 |
 
 none 不允许 navigation；compiled 不允许 xaml。Dispatcher、Log、生命周期元数据不需要独立 capability。能力只约束 SDK API，**不能阻止进程内原生代码直接访问文件、网络和内存**，不是沙箱。

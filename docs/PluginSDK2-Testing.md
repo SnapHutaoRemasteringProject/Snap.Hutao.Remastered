@@ -2,6 +2,8 @@
 
 先阅读 [架构与开发模型](PluginSDK2-Architecture.md)。历史构建/运行失败、原始诊断、修复提交与验证边界集中在 [开发技术记录](PluginSDK2-EngineeringNotes.md)；本页负责执行当前版本的回归测试，不用历史 Pass 替代当前 Pass。
 
+新增 C# First 服务的 WinMD/IID、四组合与真实 DI 测试见 [Authoring 验收](PluginSDK2-Authoring.md)。运行两个 core 示例的 Exercise C# First service 命令，PrototypeHost 使用 fixture，主程序必须实际断点验证 IGameService.GetGamePathAsync。
+
 ## 1. 构建与回归
 
 ### A. Visual Studio 日常调试

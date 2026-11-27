@@ -2,6 +2,8 @@
 
 本指南针对 SDK 2.0 源码及本地预发布分发目录。适用于 x64 Windows，目标 .NET 11、Windows App SDK 2.6.6-experimental、CsWinRT 2.3.1、C++/WinRT 3.0.260818.1、Windows SDK 10.0.28000.0。实际版本以仓库 Directory.Packages.props 为准。不要独立升级 WinAppSDK 或改用其他架构来解决 ABI 问题。本文中的 2.0.0-preview.1 是本地构建版本示例，不表示包已公开发布。
 
+如果需要访问胡桃真实业务服务而不只是开发自己的 UI，请阅读 [C# First Authoring 与业务服务调用](PluginSDK2-Authoring.md)。当前新增 IHutaoGamePathService；C# SDK 和 C++ WinMD 均提供该接口。
+
 ## 0. 最短路径：先让你的第一个插件出现一个导航项
 
 你只需要 SDK 分发目录，不需要引用整个主程序。假设分发已解压到 C:\HutaoSdk（没有分发时按第 2 节从仓库生成）。
