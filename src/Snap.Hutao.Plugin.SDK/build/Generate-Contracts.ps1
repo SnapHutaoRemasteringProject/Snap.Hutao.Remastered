@@ -53,6 +53,34 @@ $compiler = Find-MsvcCompiler
 Write-Host "MIDL preprocessor: $compiler"
 $env:PATH = (Split-Path -Parent $compiler) + ';' + $env:PATH
 
+function Test-WindowsSdk([string] $Version) {
+    return (Test-Path -LiteralPath (Join-Path $WindowsSdkRoot "UnionMetadata\$Version\Windows.winmd") -PathType Leaf) -and
+        (Test-Path -LiteralPath (Join-Path $WindowsSdkRoot "bin\$Version\x64\midl.exe") -PathType Leaf) -and
+        (Test-Path -LiteralPath (Join-Path $WindowsSdkRoot "Include\$Version\winrt") -PathType Container) -and
+        (Test-Path -LiteralPath (Join-Path $WindowsSdkRoot "Include\$Version\shared") -PathType Container) -and
+        (Test-Path -LiteralPath (Join-Path $WindowsSdkRoot "Include\$Version\um") -PathType Container)
+}
+
+if (!(Test-WindowsSdk $WindowsSdkVersion)) {
+    if ($PSBoundParameters.ContainsKey('WindowsSdkVersion')) {
+        throw "Windows SDK $WindowsSdkVersion is incomplete in $WindowsSdkRoot. MIDL, WinRT metadata and headers are required."
+    }
+    $unionMetadata = Join-Path $WindowsSdkRoot 'UnionMetadata'
+    $compatible = $null
+    if (Test-Path -LiteralPath $unionMetadata -PathType Container) {
+        $compatible = Get-ChildItem -LiteralPath $unionMetadata -Directory |
+            Where-Object {
+                $version = $null
+                [version]::TryParse($_.Name, [ref]$version) -and $version -ge $TargetPlatformVersion -and (Test-WindowsSdk $_.Name)
+            } |
+            Sort-Object -Property { [version]$_.Name } -Descending |
+            Select-Object -First 1
+    }
+    if (!$compatible) { throw "No complete Windows SDK $TargetPlatformVersion or newer was found in $WindowsSdkRoot." }
+    $WindowsSdkVersion = $compatible.Name
+}
+
+Write-Host "MIDL Windows SDK: $WindowsSdkVersion ($WindowsSdkRoot)"
 $windowsWinmd = Join-Path $WindowsSdkRoot "UnionMetadata\$WindowsSdkVersion\Windows.winmd"
 $sdkBin = Join-Path $WindowsSdkRoot "bin\$WindowsSdkVersion\x64"
 $midl = Join-Path $sdkBin 'midl.exe'
