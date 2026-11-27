@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 2,
+  "id": "TestPlugin.Native.Core",
+  "name": "C++/WinRT Core Sample",
+  "version": {
+    "major": 2,
+    "minor": 0,
+    "patch": 0
+  },
+  "author": [
+    "SnapHutaoRemasteringProject"
+  ],
+  "description": "Programmatic and loose XAML core integration sample",
+  "api": {
+    "major": 1,
+    "minMinor": 0
+  },
+  "minHostVersion": "1.0.0",
+  "runtime": {
+    "kind": "winrt-native",
+    "architecture": "x64",
+    "entry": "bin/x64/TestPlugin.Native.Core.dll"
+  },
+  "ui": {
+    "mode": "loose"
+  },
+  "capabilities": [
+    "settings",
+    "notifications",
+    "navigation",
+    "commands",
+    "dialogs",
+    "xaml",
+    "game-path"
+  ]
+}

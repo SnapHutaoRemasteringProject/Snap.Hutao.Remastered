@@ -7,3 +7,5 @@ LoadLibraryExW
 LocalFree
 OpenProcess
 TerminateProcess
+WindowsCreateString
+WindowsDeleteString

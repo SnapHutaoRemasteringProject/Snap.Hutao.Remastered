@@ -9,6 +9,7 @@ using Snap.Hutao.Remastered.Core.Logging;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Service.Navigation;
 using Snap.Hutao.Remastered.Service.Navigation.Message;
+using Snap.Hutao.Remastered.Service.Plugin;
 using Snap.Hutao.Remastered.UI.Content;
 using Snap.Hutao.Remastered.UI.Xaml.Control;
 using Snap.Hutao.Remastered.UI.Xaml.View.Page;
@@ -23,6 +24,8 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
 {
     private IMessenger? messenger;
     private Frame? contentFrame;
+    private PluginService? plugins;
+    private readonly List<object> pluginItems = [];
 
     public void Receive(NavigationNavigateMessage message)
     {
@@ -46,7 +49,7 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
         if (frame.CanGoBack)
         {
             frame.GoBack();
-            message.Result = SyncSelectedNavigationViewItem(navigationView, frame.Content?.GetType());
+            message.Result = SyncSelectedNavigationViewItem(navigationView, frame.Content?.GetType(), (frame.Content as PluginHostPage)?.Target);
         }
     }
 
@@ -70,6 +73,9 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
             messenger.Register<NavigationNavigateMessage>(this);
             messenger.Register<NavigationGoBackMessage>(this);
             messenger.Register<NavigationPaneToggleMessage>(this);
+            plugins = serviceProvider.GetRequiredService<PluginService>();
+            plugins.AttachRoot(AssociatedObject.XamlRoot);
+            plugins.Changed += RefreshPluginNavigation;
         }
 
         AssociatedObject.ItemInvoked += OnItemInvoked;
@@ -80,6 +86,8 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
             contentFrame.Navigated += OnFrameNavigated;
 
         Navigate(AssociatedObject, typeof(AnnouncementPage), NavigationExtraData.Default, true);
+        RefreshPluginNavigation();
+        plugins?.StartAsync().SafeForget();
     }
 
     protected override bool Uninitialize()
@@ -90,6 +98,11 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
             contentFrame = null;
         }
 
+        if (plugins is not null) plugins.Changed -= RefreshPluginNavigation;
+        foreach (object item in pluginItems) AssociatedObject.MenuItems.Remove(item);
+        pluginItems.Clear();
+        plugins = null;
+        AssociatedObject.ItemInvoked -= OnItemInvoked;
         messenger?.UnregisterAll(this);
         AssociatedObject.PaneOpened -= OnPaneStateChanged;
         AssociatedObject.PaneClosed -= OnPaneStateChanged;
@@ -98,7 +111,38 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
 
     private void OnFrameNavigated(object sender, NavigationEventArgs e)
     {
-        SyncSelectedNavigationViewItem(AssociatedObject, e.Content?.GetType());
+        SyncSelectedNavigationViewItem(AssociatedObject, e.Content?.GetType(), (e.Parameter as INavigationExtraData)?.Data as PluginNavigationTarget);
+    }
+
+    private void RefreshPluginNavigation()
+    {
+        if (plugins is null || AssociatedObject is not { } navigationView) return;
+        foreach (object item in pluginItems) navigationView.MenuItems.Remove(item);
+        pluginItems.Clear();
+        IReadOnlyList<PluginNavigationItem> contributions = plugins.Navigation;
+        if (contributions.Count != 0)
+        {
+            NavigationViewItemHeader header = new() { Content = SH.ViewPluginHeader };
+            navigationView.MenuItems.Add(header);
+            pluginItems.Add(header);
+        }
+        foreach (PluginNavigationItem contribution in contributions)
+        {
+            NavigationViewItem item = new()
+            {
+                Content = contribution.Title,
+                Icon = new FontIcon { Glyph = string.IsNullOrEmpty(contribution.IconGlyph) ? "\uE74C" : contribution.IconGlyph },
+            };
+            NavigationViewItemHelper.SetNavigateTo(item, typeof(PluginHostPage));
+            NavigationViewItemHelper.SetExtraData(item, contribution.Target);
+            navigationView.MenuItems.Add(item);
+            pluginItems.Add(item);
+        }
+        if (contentFrame?.Content is PluginHostPage host)
+        {
+            if (!SyncSelectedNavigationViewItem(navigationView, typeof(PluginHostPage), host.Target))
+                Navigate(navigationView, typeof(PluginPage), NavigationExtraData.Default, true);
+        }
     }
 
     private static IEnumerable<NavigationViewItem> EnumerateMenuItems(IList<object> items)
@@ -158,14 +202,14 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
             TypeNameHelper.GetTypeDisplayName(pageType, fullName: false),
             "Navigation"));
 
-        if (currentPageType == pageType)
+        if (currentPageType == pageType && pageType != typeof(PluginHostPage) && pageType != typeof(PluginSettingPage))
         {
             CancellationToken token = currentPage is ScopedPage scopedPage ? scopedPage.CancellationToken : CancellationToken.None;
             NavigationExtraDataSupport.NotifyRecipientAsync(frame.Content, data, token).SafeForget();
             return NavigationResult.AlreadyNavigatedTo;
         }
 
-        _ = syncNavigationViewItem && SyncSelectedNavigationViewItem(navigationView, pageType);
+        _ = syncNavigationViewItem && SyncSelectedNavigationViewItem(navigationView, pageType, (data as INavigationExtraData)?.Data as PluginNavigationTarget);
 
         bool navigated = false;
         try
@@ -182,7 +226,7 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
         return navigated ? NavigationResult.Succeed : NavigationResult.Failed;
     }
 
-    private static bool SyncSelectedNavigationViewItem(NavigationView navigationView, Type? pageType)
+    private static bool SyncSelectedNavigationViewItem(NavigationView navigationView, Type? pageType, PluginNavigationTarget? pluginTarget = null)
     {
         if (pageType is null)
         {
@@ -196,7 +240,8 @@ public sealed class ServiceRecipientNavigationViewBehavior : BehaviorBase<Naviga
         }
 
         NavigationViewItem? target = EnumerateMenuItems(navigationView.MenuItems)
-            .SingleOrDefault(menuItem => NavigationViewItemHelper.GetNavigateTo(menuItem) == pageType);
+            .FirstOrDefault(menuItem => NavigationViewItemHelper.GetNavigateTo(menuItem) == pageType &&
+                (pageType != typeof(PluginHostPage) || Equals(NavigationViewItemHelper.GetExtraData(menuItem), pluginTarget)));
 
         if (target is null)
         {

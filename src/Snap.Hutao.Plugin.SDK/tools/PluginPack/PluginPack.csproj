@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\libraries\Snap.Hutao.Plugin.Packaging\Snap.Hutao.Plugin.Packaging.csproj" />
+  </ItemGroup>
+</Project>

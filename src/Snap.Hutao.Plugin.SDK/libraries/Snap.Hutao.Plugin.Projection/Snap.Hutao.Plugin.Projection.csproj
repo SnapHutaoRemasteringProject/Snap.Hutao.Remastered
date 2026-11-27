@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <CsWinRTIncludes>Snap.Hutao.Plugin.Contracts;Snap.Hutao.Plugin.Services</CsWinRTIncludes>
+    <IsAotCompatible>true</IsAotCompatible>
+    <IsPackable>true</IsPackable>
+    <PackageId>Snap.Hutao.Plugin.Projection</PackageId>
+    <Description>Canonical C# projection for the Snap Hutao plugin WinRT ABI.</Description>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.CsWinRT" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" PrivateAssets="all" />
+    <CsWinRTInputs Include="$(HutaoContractsWinmd);$(HutaoServicesWinmd)" />
+    <ProjectReference Include="..\..\contracts\Services\Snap.Hutao.Plugin.Services.Authoring.csproj" ReferenceOutputAssembly="false" Private="false" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\contracts\HutaoPlugin.idl" Link="Contracts\HutaoPlugin.idl" />
+    <None Include="..\..\contracts\HutaoPluginAbi.h" Link="Contracts\HutaoPluginAbi.h" />
+  </ItemGroup>
+  <Target Name="GenerateHutaoContracts" BeforeTargets="CsWinRTGenerateProjection" DependsOnTargets="ResolvePackageAssets;ResolveProjectReferences" Condition="'$(DesignTimeBuild)' != 'true'">
+    <PropertyGroup>
+      <_HutaoVsArgument Condition="'$(VSInstallDir)' != ''">-VisualStudioInstallDir &quot;$(VSInstallDir).&quot;</_HutaoVsArgument>
+    </PropertyGroup>
+    <Exec Command="powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)..\..\build\Generate-Contracts.ps1&quot; -AssetsFile &quot;$(ProjectAssetsFile)&quot; -TargetPlatformVersion &quot;$(TargetPlatformVersion)&quot; $(_HutaoVsArgument)" />
+    <ItemGroup>
+      <CsWinRTInputs Include="$(HutaoArtifacts)references\*.winmd" />
+    </ItemGroup>
+    <Error Condition="!Exists('$(HutaoContractsWinmd)')" Text="MIDL did not generate the plugin contract." />
+    <Error Condition="!Exists('$(HutaoServicesWinmd)')" Text="Build the C# Authoring project to generate the services WinMD." />
+  </Target>
+</Project>

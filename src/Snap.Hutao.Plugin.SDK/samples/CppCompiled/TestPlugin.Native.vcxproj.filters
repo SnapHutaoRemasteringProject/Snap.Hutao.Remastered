@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup><Page Include="PluginPage.xaml" /><Midl Include="PluginPage.idl" /><ClCompile Include="PluginPage.xaml.cpp" /><ClInclude Include="PluginPage.xaml.h" /></ItemGroup>
+  <ItemGroup><ClCompile Include="TestPlugin.cpp" /><ClCompile Include="ModuleCommand.cpp" /><ClInclude Include="pch.h" /><ClInclude Include="XamlWorkaround.h" /><ClInclude Include="XamlGeneratedWorkaround.h" /><ClInclude Include="ModuleCommand.h" /><None Include="TestPlugin.Native.def" /></ItemGroup>
+</Project>

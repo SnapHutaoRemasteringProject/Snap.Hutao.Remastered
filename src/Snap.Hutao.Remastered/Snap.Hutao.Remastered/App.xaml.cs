@@ -14,6 +14,7 @@ using Snap.Hutao.Remastered.Factory.Process;
 using Snap.Hutao.Remastered.Service;
 using Snap.Hutao.Remastered.UI.Windowing;
 using Snap.Hutao.Remastered.Service.Job;
+using Snap.Hutao.Remastered.Service.Plugin;
 using Snap.Hutao.Remastered.Service.Update;
 using Snap.Hutao.Remastered.UI.Xaml.Behavior;
 using System.Diagnostics;
@@ -63,6 +64,11 @@ public sealed partial class App : Application
     /// </summary>
     public partial AppOptions Options { get; }
 
+    partial void PreConstruct(IServiceProvider serviceProvider)
+    {
+        ResourceManagerRequested += OnPluginResourceManagerRequested;
+    }
+
     partial void PostConstruct(IServiceProvider serviceProvider)
     {
         ExceptionHandling.Initialize(serviceProvider, this);
@@ -82,6 +88,8 @@ public sealed partial class App : Application
     private async Task ExitAfterContentDetachedAsync()
     {
         await serviceProvider.GetRequiredService<MsixUpdateProgress>().StopAsync().ConfigureAwait(true);
+        try { await serviceProvider.GetRequiredService<PluginService>().ShutdownAsync().ConfigureAwait(true); }
+        catch (Exception error) { SentrySdk.CaptureException(error); }
         // Shutdown must happen before Application.Start returns. Quartz job setup
         // and running jobs may otherwise await a dispatcher already destroyed.
         await serviceProvider.GetRequiredService<IQuartzService>().ShutdownAsync().ConfigureAwait(true);

@@ -1,0 +1,29 @@
+<Project>
+  <Target Name="IncludeHutaoPluginXamlExports"
+          AfterTargets="MarkupCompilePass2"
+          Condition="'$(HutaoCompiledPluginXaml)' == 'true'">
+    <ItemGroup>
+      <Compile Include="XamlExports.cs" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Native library publish can bypass PrepareForRun, where the PRI is normally built. -->
+  <Target Name="PrepareHutaoPluginPri"
+          BeforeTargets="IlcCompile;ComputeFilesToPublish"
+          DependsOnTargets="GenerateProjectPriFile"
+          Condition="'$(HutaoCompiledPluginXaml)' == 'true' and '$(PublishAot)' == 'true'">
+    <Error Condition="'$(ProjectPriFullPath)' == '' or !Exists('$(ProjectPriFullPath)')"
+           Text="Compiled plugin publish did not generate its component PRI." />
+  </Target>
+
+  <Target Name="IncludeHutaoPluginPriInPublish"
+          AfterTargets="ComputeFilesToPublish"
+          DependsOnTargets="PrepareHutaoPluginPri"
+          Condition="'$(HutaoCompiledPluginXaml)' == 'true' and '$(PublishAot)' == 'true'">
+    <ItemGroup>
+      <_HutaoPluginPri Include="$(ProjectPriFullPath)" RelativePath="$(TargetName).pri" />
+      <ResolvedFileToPublish Remove="@(_HutaoPluginPri)" MatchOnMetadata="RelativePath" MatchOnMetadataOptions="PathLike" />
+      <ResolvedFileToPublish Include="@(_HutaoPluginPri)" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    </ItemGroup>
+  </Target>
+</Project>

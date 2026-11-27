@@ -65,9 +65,10 @@ dotnet test src/Snap.Hutao.Remastered/Snap.Hutao.Remastered.slnx --filter "Fully
   as startup, select `x64`, `F5`. The Debug build deploys
   `Package.development.appxmanifest`; the built exe is also directly runnable (unpackaged) at
   `src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/bin/x64/Debug/net11.0-windows10.0.26100.0/win-x64/Snap.Hutao.Remastered.exe`.
-- **AOT branch scope** — `feat/aot-compatible` has removed the plugin system, its SDK/sample
-  and Harmony. At the user's explicit request, it has also removed the runtime C# scripting
-  window and developer test command; do not add a CoreCLR scripting side process.
+- **AOT branch scope** — Plugin SDK 2.0 supports in-process native DLLs authored in C++/WinRT
+  or C# Native AOT. The [developer SDK](src/Snap.Hutao.Plugin.SDK) includes the WinRT contracts,
+  samples, and Visual Studio templates. The runtime C# scripting window and developer test
+  command were removed at the user's request.
 - **Packaging runtime** — Cake publishes Native AOT by default for Alpha, Canary, Publish
   and SignPath. Public filenames and update paths use the channel name. Use
   `--publishAot=false` for an explicit local R2R build. Native AOT packages retain
@@ -181,8 +182,8 @@ src/
 ### 5.1 Dependency injection
 
 Everything is registered by the `Snap.Hutao.Remastered.SourceGeneration` source generator
-(package `1.3.17`, `PrivateAssets=all`). **Do not hand-wire registrations.** Attribute forms that
-actually exist in the repo (counts as of the audit):
+(package `1.3.19`, pinned in `Directory.Packages.props`, `PrivateAssets=all`).
+**Do not hand-wire registrations.** Attribute forms that actually exist in the repo (counts as of the audit):
 
 | Attribute | Forms in use | Count |
 |---|---|---|
@@ -421,8 +422,10 @@ the build fails with `CS9275`); write a normal constructor in that case.
 
 ### 5.6 Native AOT branch and JSON contracts
 
-- This branch removed the plugin system and Harmony. The historical plugin review entries below
-  describe earlier releases; they are not instructions to restore dynamic assembly loading.
+- Plugin SDK 2.0 verifies a package against its approved SHA-256 before activation. WinRT contracts
+  connect the native plugin to the host. Mapped modules stay resident until process exit. Host and
+  plugin dialogs share the content-dialog queue. See the [plugin architecture](docs/PluginSDK2-Architecture.md).
+  Earlier reviews of managed plugin loading describe the retired design.
 - Runtime C# scripting was removed with user authorization. Roslyn workspace/EF design-time
   packages belong to the database generation host, not the application runtime. Keep the
   production query/model generation entry in `scripts/Generate-DatabaseAot.ps1`.

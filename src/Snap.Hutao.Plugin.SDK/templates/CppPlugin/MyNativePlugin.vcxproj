@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F9CAEE05-10CE-4A1E-9D87-51AD8B6CA6C1}</ProjectGuid>
+    <ProjectName>$(MSBuildProjectName)</ProjectName>
+    <RootNamespace>$(MSBuildProjectName)</RootNamespace>
+    <EnableNativePackageReferenceSupport>true</EnableNativePackageReferenceSupport>
+    <AppContainerApplication>false</AppContainerApplication>
+    <ApplicationType>Windows Store</ApplicationType>
+    <ApplicationTypeRevision>10.0</ApplicationTypeRevision>
+    <WindowsTargetPlatformVersion>10.0.28000.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformMinVersion>10.0.19041.0</WindowsTargetPlatformMinVersion>
+    <DesktopCompatible>true</DesktopCompatible>
+    <UseWinUI>true</UseWinUI>
+    <WinUISDKReferences>false</WinUISDKReferences>
+    <CppWinRTProjectLanguage>C++/WinRT</CppWinRTProjectLanguage>
+    <CppWinRTBuildModule>false</CppWinRTBuildModule>
+    <MinimumVisualStudioVersion Condition="'$(CppWinRTBuildModule)' == 'true'">18.7</MinimumVisualStudioVersion>
+    <HutaoNativeSdkRoot Condition="'$(HutaoNativeSdkRoot)' == ''">$(MSBuildThisFileDirectory)..\..\native</HutaoNativeSdkRoot>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64"><Configuration>Release</Configuration><Platform>x64</Platform></ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64"><Configuration>Debug</Configuration><Platform>x64</Platform></ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <GenerateManifest>false</GenerateManifest>
+    <UseDebugLibraries Condition="'$(Configuration)' == 'Debug'">true</UseDebugLibraries>
+    <UseDebugLibraries Condition="'$(Configuration)' != 'Debug'">false</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup>
+    <OutDir>$(MSBuildThisFileDirectory)bin\$(Configuration)\</OutDir>
+    <IntDir>$(MSBuildThisFileDirectory)obj\$(Configuration)\</IntDir>
+    <WindowsAppSDKSelfContained>false</WindowsAppSDKSelfContained>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <BuildStlModules Condition="'$(CppWinRTBuildModule)' == 'true'">true</BuildStlModules>
+      <AdditionalOptions Condition="'$(CppWinRTBuildModule)' == 'true'">%(AdditionalOptions) /bigobj</AdditionalOptions>
+      <LanguageStandard>stdcpp23</LanguageStandard>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <AdditionalIncludeDirectories>$(HutaoNativeSdkRoot)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WINRT_ENABLE_LEGACY_COM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link><AdditionalDependencies>windowsapp.lib;%(AdditionalDependencies)</AdditionalDependencies></Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="MyPlugin.cpp">
+      <PreprocessorDefinitions Condition="'$(CppWinRTBuildModule)' == 'true'">WINRT_IMPORT_MODULE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <None Include="manifest.template.json;Pack-Plugin.ps1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Snap.Hutao.Plugin.Contracts">
+      <HintPath>$(HutaoNativeSdkRoot)\metadata\Snap.Hutao.Plugin.Contracts.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile><Private>false</Private>
+    </Reference>
+    <Reference Include="Snap.Hutao.Plugin.Services">
+      <HintPath>$(HutaoNativeSdkRoot)\metadata\Snap.Hutao.Plugin.Services.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile><Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <Target Name="RequireContract" BeforeTargets="ResolveAssemblyReferences">
+    <Error Condition="!Exists('$(HutaoNativeSdkRoot)\metadata\Snap.Hutao.Plugin.Contracts.winmd') Or !Exists('$(HutaoNativeSdkRoot)\metadata\Snap.Hutao.Plugin.Services.winmd')" Text="Set HutaoNativeSdkRoot to the unpacked native SDK directory." />
+  </Target>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.CppWinRT" Version="3.0.260818.1" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.6.6-experimental" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2957" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX" Version="1.7.261119100" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4370.26" />
+    <PackageReference Include="Microsoft.Windows.ImplementationLibrary" Version="1.0.260126.7" />
+  </ItemGroup>
+</Project>

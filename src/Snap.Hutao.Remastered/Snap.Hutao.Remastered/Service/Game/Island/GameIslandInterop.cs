@@ -11,6 +11,7 @@ using Snap.Hutao.Remastered.Service.Game.FileSystem;
 using Snap.Hutao.Remastered.Service.Game.Configuration;
 using Snap.Hutao.Remastered.Service.Game.Launching.Context;
 using Snap.Hutao.Remastered.Service.Notification;
+using Snap.Hutao.Remastered.Service.Plugin;
 using System.Net.Http;
 using Snap.Hutao.Remastered.Web.Hutao;
 using Snap.Hutao.Remastered.Web.Hutao.Response;
@@ -29,6 +30,7 @@ public sealed class GameIslandInterop : IGameIslandInterop
     private readonly bool resume;
 
     private string? islandPath;
+    private PluginGameLibrary[] gameLibraries = [];
     private int accumulatedBadStateCount;
     private uint previousUid;
 
@@ -37,11 +39,11 @@ public sealed class GameIslandInterop : IGameIslandInterop
         this.resume = resume;
     }
 
-    public ValueTask BeforeAsync(BeforeLaunchExecutionContext context)
+    public async ValueTask BeforeAsync(BeforeLaunchExecutionContext context)
     {
         if (resume)
         {
-            return ValueTask.CompletedTask;
+            return;
         }
 
         GameInstallationInfo installation = GameInstallationReader.Read(context.FileSystem.GameFilePath, context.FileSystem.GameConfigurationFilePath, context.FileSystem.ScriptVersionFilePath, context.FileSystem.IsExecutableOversea);
@@ -61,7 +63,14 @@ public sealed class GameIslandInterop : IGameIslandInterop
         {
             throw HutaoException.InvalidOperation(SH.ServiceGameIslandTargetVersionFileNotExists);
         }
-        return ValueTask.CompletedTask;
+        // Snapshot only approved active packages, before creating the game process.
+        await context.TaskContext.SwitchToMainThreadAsync();
+        gameLibraries = context.ServiceProvider.GetRequiredService<PluginService>().GetGameLibrariesForLaunch();
+        await context.TaskContext.SwitchToBackgroundAsync();
+        foreach (PluginGameLibrary library in gameLibraries)
+        {
+            using FileStream verified = library.OpenVerified();
+        }
     }
 
     public async ValueTask WaitForExitAsync(LaunchExecutionContext context, CancellationToken token = default)
@@ -105,6 +114,14 @@ public sealed class GameIslandInterop : IGameIslandInterop
                     }
 
                     fullTrustProcess.LoadLibrary(FullTrustLoadLibraryRequest.Create("Island", islandPath));
+                    // Preserve the existing v1 game-library extension point. The approved
+                    // package determines the payload; no arbitrary PID/path ABI is exposed.
+                    foreach (PluginGameLibrary library in gameLibraries)
+                    {
+                        using FileStream verified = library.OpenVerified();
+                        fullTrustProcess.LoadLibrary(FullTrustLoadLibraryRequest.Create(
+                            $"{library.PluginName}::{Path.GetFileName(library.RelativePath)}", library.FullPath));
+                    }
                     fullTrustProcess.ResumeMainThread();
                 }
 

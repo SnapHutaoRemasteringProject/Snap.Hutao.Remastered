@@ -52,6 +52,32 @@
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="App.PluginXaml.MetadataProvider.cs" />
+    <UpToDateCheckInput Include="App.PluginXaml.MetadataProvider.cs" />
+  </ItemGroup>
+
+  <!-- App's generated metadata methods do not exist in the intermediate XamlPreCompile assembly. -->
+  <Target Name="IncludePluginXamlMetadataProvider" AfterTargets="MarkupCompilePass2">
+    <ItemGroup>
+      <Compile Include="App.PluginXaml.MetadataProvider.cs" />
+    </ItemGroup>
+  </Target>
+
+  <!-- Direct main-assembly Authoring migration. CsWinRT 2.x rejects the whole public
+       surface on an invalid declaration; do not turn off its diagnostics. Keep the
+       normal app build available until the public API has been migrated. -->
+  <PropertyGroup Condition="'$(CsWinRTComponent)' == 'true'">
+    <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
+    <CsWinRTEnableLogging>true</CsWinRTEnableLogging>
+    <CsWinRTAotWarningLevel>3</CsWinRTAotWarningLevel>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(CsWinRTComponent)' == 'true'">
+    <CsWinRTInputs Include="$(MSBuildThisFileDirectory)..\..\Snap.Hutao.Plugin.SDK\artifacts\metadata\Snap.Hutao.Plugin.Contracts.winmd" />
+    <CsWinRTInputs Include="$(MSBuildThisFileDirectory)..\..\Snap.Hutao.Plugin.SDK\artifacts\metadata\Snap.Hutao.Plugin.Services.winmd" />
+  </ItemGroup>
+
   <!-- Report future Native AOT blockers without trimming, disabling features, or changing runtime behavior. -->
   <PropertyGroup Condition="'$(AotAnalysis)' == 'true'">
     <EnableAotAnalyzer>true</EnableAotAnalyzer>
@@ -256,6 +282,7 @@
     <Content Include="Resource\Navigation\HardChallenge.png" />
     <Content Include="Resource\Navigation\LaunchGame.png" />
     <Content Include="Resource\Navigation\Passport.png" />
+    <Content Include="Resource\Navigation\Plugin.png" />
     <Content Include="Resource\Navigation\RoleCombat.png" />
     <Content Include="Resource\Navigation\SpiralAbyss.png" />
     <Content Include="Resource\Navigation\WikiAvatar.png" />
@@ -272,6 +299,12 @@
     <Content Include="Resource\ThirdParty\hoyolab128.png" />
     <Content Include="Resource\ThirdParty\miyoushe128.png" />
     <Content Include="Resource\WelcomeView_Background.png" />
+  </ItemGroup>
+
+  <!-- Plugin contracts and package validation are shared with developer tools; hosting is implemented in Service/Plugin. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Snap.Hutao.Plugin.SDK\libraries\Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj" GlobalPropertiesToRemove="CsWinRTComponent" />
+    <ProjectReference Include="..\..\Snap.Hutao.Plugin.SDK\libraries\Snap.Hutao.Plugin.Packaging\Snap.Hutao.Plugin.Packaging.csproj" GlobalPropertiesToRemove="CsWinRTComponent" />
   </ItemGroup>
 
   <!-- Packages -->

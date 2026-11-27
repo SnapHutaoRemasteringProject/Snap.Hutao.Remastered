@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsAotCompatible>true</IsAotCompatible>
+    <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
+    <IsPackable>true</IsPackable>
+    <PackageId>Snap.Hutao.Plugin.SDK</PackageId>
+    <Description>Snap Hutao in-process WinRT plugin developer SDK.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj" />
+    <PackageReference Include="Microsoft.Windows.CsWinRT" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <None Include="..\..\build\CompiledPluginXaml.targets" Pack="true" PackagePath="build/Snap.Hutao.Plugin.SDK.targets" />
+    <None Include="$(HutaoContractsWinmd);$(HutaoServicesWinmd)" Pack="true" PackagePath="tools/native/metadata/" />
+    <None Include="..\..\contracts\HutaoPluginAbi.h;..\Snap.Hutao.Plugin.SDK.Native\HutaoPlugin.hpp" Pack="true" PackagePath="tools/native/include/" />
+  </ItemGroup>
+  <Import Project="..\..\build\VisualStudioTemplates.targets" />
+</Project>

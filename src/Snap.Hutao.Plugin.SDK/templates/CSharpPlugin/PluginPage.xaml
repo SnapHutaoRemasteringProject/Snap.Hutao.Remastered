@@ -1,0 +1,8 @@
+<Page x:Class="Example.MyPlugin.PluginPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Padding="16" Spacing="8">
+        <TextBlock Text="{x:Bind Title}" />
+        <Button x:Name="ClickButton" Content="Click me" />
+    </StackPanel>
+</Page>

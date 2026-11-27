@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "id": "TestPlugin.Native",
+  "name": "TestPlugin.Native",
+  "version": {
+    "major": 2,
+    "minor": 0,
+    "patch": 0
+  },
+  "author": [
+    "SnapHutaoRemasteringProject"
+  ],
+  "description": "SDK 2.0 integration sample",
+  "api": {
+    "major": 1,
+    "minMinor": 0
+  },
+  "minHostVersion": "1.0.0",
+  "runtime": {
+    "kind": "winrt-native",
+    "architecture": "x64",
+    "entry": "bin/x64/TestPlugin.Native.dll"
+  },
+  "ui": {
+    "mode": "compiled",
+    "metadataProvider": "TestPlugin.Native.XamlMetaDataProvider"
+  },
+  "capabilities": [
+    "settings",
+    "notifications",
+    "navigation",
+    "commands",
+    "dialogs"
+  ]
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>Snap Hutao Plugin (C++/WinRT 3.0 Modules)</Name>
+    <Description>Creates an x64 native plugin using C++/WinRT 3.0 named modules for Snap Hutao Plugin SDK 2.0.</Description>
+    <Icon>Icon.ico</Icon>
+    <TemplateID>Snap.Hutao.Plugin.Cpp.WinRT.Modules</TemplateID>
+    <ProjectType>VC</ProjectType>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>MyHutaoModulePlugin</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <LanguageTag>cpp</LanguageTag>
+    <PlatformTag>windows</PlatformTag>
+    <ProjectTypeTag>library</ProjectTypeTag>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="MyNativePlugin.vcxproj" TargetFileName="$safeprojectname$.vcxproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="false">MyPlugin.cpp</ProjectItem>
+      <ProjectItem ReplaceParameters="true">manifest.template.json</ProjectItem>
+      <ProjectItem ReplaceParameters="false">Pack-Plugin.ps1</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>

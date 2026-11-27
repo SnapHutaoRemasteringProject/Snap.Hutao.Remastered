@@ -3,7 +3,7 @@ param([Parameter(Mandatory)][string]$AssemblyPath)
 
 $ErrorActionPreference = 'Stop'
 # Inspect emitted IL, without loading the WinUI application or running its initializers.
-# DisplayMemberPath remains a runtime binding even when ItemsSource uses x:Bind.
+# DisplayMemberPath and the shell navigation path remain runtime bindings even when a page uses x:Bind.
 Add-Type -TypeDefinition @'
 using System;
 using System.Collections.Generic;
@@ -17,6 +17,8 @@ using System.Reflection.PortableExecutable;
 
 public static class ArchiveBindingContracts
 {
+    const string ProviderInterface = "Microsoft.UI.Xaml.Data.IBindableCustomPropertyImplementation";
+
     static readonly Dictionary<ushort, OpCode> Opcodes = typeof(OpCodes)
         .GetFields(BindingFlags.Public | BindingFlags.Static)
         .Where(f => f.FieldType == typeof(OpCode))
@@ -52,6 +54,8 @@ public static class ArchiveBindingContracts
         MetadataReader reader = pe.GetMetadataReader();
         var expected = new Dictionary<string, string[]>
         {
+            ["Snap.Hutao.Remastered.ViewModel.Plugin.PluginViewModel"] = new[] { "IsInitialized" },
+            ["Snap.Hutao.Remastered.ViewModel.Plugin.PluginSettingViewModel"] = new[] { "IsInitialized" },
             ["Snap.Hutao.Remastered.ViewModel.Cultivation.CultivateItemView"] = new[] { "IsToday" },
             ["Snap.Hutao.Remastered.Model.Entity.GachaArchive"] = new[] { "Uid" },
             ["Snap.Hutao.Remastered.Model.Entity.BackpackArchive"] = new[] { "Name" },
@@ -78,12 +82,24 @@ public static class ArchiveBindingContracts
             TypeDefinition type = reader.GetTypeDefinition(handle);
             string name = reader.GetString(type.Namespace) + "." + reader.GetString(type.Name);
             if (!expected.TryGetValue(name, out string[] properties)) continue;
+
+            bool implementsProvider = type.GetInterfaceImplementations().Any(interfaceHandle =>
+            {
+                EntityHandle interfaceType = reader.GetInterfaceImplementation(interfaceHandle).Interface;
+                if (interfaceType.Kind != HandleKind.TypeReference) return false;
+                TypeReference reference = reader.GetTypeReference((TypeReferenceHandle)interfaceType);
+                return reader.GetString(reference.Namespace) + "." + reader.GetString(reference.Name) == ProviderInterface;
+            });
+
             foreach (MethodDefinitionHandle methodHandle in type.GetMethods())
             {
                 MethodDefinition method = reader.GetMethodDefinition(methodHandle);
                 // Check the generated dispatch implementation, not just the source attribute.
                 string methodName = reader.GetString(method.Name).Replace("global::", "");
-                if (methodName != "Microsoft.UI.Xaml.Data.IBindableCustomPropertyImplementation.GetProperty" || method.RelativeVirtualAddress == 0) continue;
+                // Hutao's generator implements the provider implicitly. CsWinRT uses an explicit member.
+                bool isProviderMethod = methodName == ProviderInterface + ".GetProperty"
+                    || (implementsProvider && methodName == "GetProperty" && (method.Attributes & MethodAttributes.Virtual) != 0);
+                if (!isProviderMethod || method.RelativeVirtualAddress == 0) continue;
                 byte[] il = pe.GetMethodBody(method.RelativeVirtualAddress).GetILBytes().ToArray();
                 var literals = new HashSet<string>(StringLiterals(reader, il));
                 foreach (string property in properties)
@@ -99,4 +115,4 @@ $missing = [ArchiveBindingContracts]::Missing((Resolve-Path -LiteralPath $Assemb
 if ($missing.Count -gt 0) {
     throw "Missing emitted AOT property dispatch: $($missing -join ', '). Build current source before checking."
 }
-Write-Output 'PASS: selector, page and control models have emitted AOT property dispatch, including IsToday, generic values and culture labels.'
+Write-Output 'PASS: selector, page and control models have emitted AOT property dispatch, including plugin IsInitialized, IsToday, generic values and culture labels.'

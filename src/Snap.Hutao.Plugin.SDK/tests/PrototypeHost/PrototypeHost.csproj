@@ -1,0 +1,55 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>PrototypeHost</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
+    <UseWinUI>true</UseWinUI>
+    <!-- Emit App.AddOtherProvider in both XAML compiler passes and all configurations. -->
+    <EnableTypeInfoReflection>false</EnableTypeInfoReflection>
+    <XamlCodeGenerationControlFlags>DoNotGenerateOtherProviders</XamlCodeGenerationControlFlags>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <WindowsAppSdkUndockedRegFreeWinRTInitialize>true</WindowsAppSdkUndockedRegFreeWinRTInitialize>
+    <SelfContained>true</SelfContained>
+    <PublishAot Condition="'$(PublishAot)' == ''">false</PublishAot>
+    <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
+  </PropertyGroup>
+  <ItemGroup>
+    <Manifest Include="$(ApplicationManifest)" />
+    <Content Include="Assets\AppIcon.ico" />
+    <ProjectReference Include="..\..\libraries\Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj" />
+    <ProjectReference Include="..\..\libraries\Snap.Hutao.Plugin.Packaging\Snap.Hutao.Plugin.Packaging.csproj" />
+    <PackageReference Include="Microsoft.Windows.CsWinRT" />
+    <PackageReference Include="Microsoft.Windows.CsWin32" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX" PrivateAssets="all" />
+    <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\NativePluginLoader.cs" Link="Host\NativePluginLoader.cs" />
+    <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\PluginHostContext.cs" Link="Host\PluginHostContext.cs" />
+    <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\PluginResidency.cs" Link="Host\PluginResidency.cs" />
+    <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\PluginSession.cs" Link="Host\PluginSession.cs" />
+    <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\PluginPriResources.cs" Link="Host\PluginPriResources.cs" />
+    <Compile Include="..\..\..\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Service\Plugin\SettingStore.cs" Link="Host\SettingStore.cs" />
+  </ItemGroup>
+  <PropertyGroup Condition="'$(PublishAot)' == 'true'">
+    <MarkupCompilePass1DependsOn>$(MarkupCompilePass1DependsOn);ResolveReferences</MarkupCompilePass1DependsOn>
+  </PropertyGroup>
+  <Target Name="PreparePrototypePri" BeforeTargets="IlcCompile;ComputeFilesToPublish" DependsOnTargets="GenerateProjectPriFile">
+    <Error Condition="!Exists('$(ProjectPriFullPath)')" Text="PrototypeHost did not generate its PRI: $(ProjectPriFullPath)" />
+  </Target>
+  <Target Name="RemovePrototypeManagedAppHost" AfterTargets="_ComputeNETCoreBuildOutputFiles" Condition="'$(PublishAot)' == 'true'">
+    <ItemGroup><None Remove="$(AppHostIntermediatePath)" /></ItemGroup>
+  </Target>
+  <Target Name="IncludePrototypePri" AfterTargets="ComputeFilesToPublish">
+    <ItemGroup>
+      <_PrototypePri Include="$(ProjectPriFullPath)" RelativePath="resources.pri" />
+      <ResolvedFileToPublish Remove="@(_PrototypePri)" MatchOnMetadata="RelativePath" MatchOnMetadataOptions="PathLike" />
+      <ResolvedFileToPublish Include="@(_PrototypePri)" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    </ItemGroup>
+  </Target>
+  <Target Name="VerifyPrototypeResources" AfterTargets="Publish">
+    <Error Condition="!Exists('$(PublishDir)resources.pri')" Text="PrototypeHost publish is missing resources.pri. Inspect PRI generation before running." />
+  </Target>
+</Project>
