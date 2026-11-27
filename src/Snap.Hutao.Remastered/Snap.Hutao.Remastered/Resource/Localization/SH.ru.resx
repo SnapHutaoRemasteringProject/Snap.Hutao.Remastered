@@ -6516,4 +6516,52 @@
   <data name="ServiceUpdateMsixWindowsDeploymentFailed" xml:space="preserve">
     <value>Windows 未能完成后台更新，可以在设置中重试</value>
   </data>
+  <data name="ViewPagePluginUpdateButton" xml:space="preserve">
+    <value>更新插件</value>
+  </data>
+  <data name="ViewPagePluginApplyUpdateButton" xml:space="preserve">
+    <value>应用已暂存的更新</value>
+  </data>
+  <data name="ViewPagePluginRollbackButton" xml:space="preserve">
+    <value>回滚插件</value>
+  </data>
+  <data name="ViewPagePluginTrustTitle" xml:space="preserve">
+    <value>信任原生插件？</value>
+  </data>
+  <data name="ViewPagePluginTrustWarning" xml:space="preserve">
+    <value>插件将在本程序进程内执行任意原生代码，拥有与本程序相同的权限。仅信任你确认来源的插件。</value>
+  </data>
+  <data name="ViewPagePluginElevatedWarning" xml:space="preserve">
+    <value>当前进程以管理员权限运行。</value>
+  </data>
+  <data name="ViewPagePluginTrustButton" xml:space="preserve">
+    <value>信任此插件</value>
+  </data>
+  <data name="ViewPagePluginKeepData" xml:space="preserve">
+    <value>将保留插件设置和数据。</value>
+  </data>
+  <data name="ViewPagePluginEnableFirst" xml:space="preserve">
+    <value>请先启用插件。</value>
+  </data>
+  <data name="ViewPagePluginRecovery" xml:space="preserve">
+    <value>上次插件宿主未正常退出，本次已跳过自动启用。</value>
+  </data>
+  <data name="ViewPagePluginPendingRestart" xml:space="preserve">
+    <value>更新已暂存，重启后应用。</value>
+  </data>
+  <data name="ViewPagePluginGameLibrariesWarning" xml:space="preserve">
+    <value>此插件还请求向游戏加载第三方 DLL。无法保证与游戏或反作弊系统的兼容性，也无法保证账号安全。请确认来源及游戏的使用规则。</value>
+  </data>
+  <data name="ViewPagePluginLegacyStatus" xml:space="preserve">
+    <value>旧版插件（SDK 1.x）</value>
+  </data>
+  <data name="ViewPagePluginLegacyDescription" xml:space="preserve">
+    <value>此插件使用旧版 SDK，无法在当前宿主中运行。请安装使用 Plugin SDK 2.0 构建的版本。</value>
+  </data>
+  <data name="ViewPagePluginMoreActions" xml:space="preserve">
+    <value>更多插件操作</value>
+  </data>
+  <data name="ViewPagePluginSettingInvalidInteger" xml:space="preserve">
+    <value>请输入有效的 32 位整数。</value>
+  </data>
 </root>
