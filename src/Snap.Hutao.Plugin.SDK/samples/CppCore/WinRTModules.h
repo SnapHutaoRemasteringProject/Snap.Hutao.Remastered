@@ -42,3 +42,4 @@ import winrt.Microsoft.UI.Xaml.Shapes;
 import winrt.Microsoft.UI.Xaml.XamlTypeInfo;
 import winrt.Microsoft.UI.Dispatching;
 import winrt.Snap.Hutao.Plugin.Contracts;
+import winrt.Snap.Hutao.Plugin.Services;

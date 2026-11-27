@@ -28,6 +28,7 @@ Copy-Item -LiteralPath (Join-Path $root 'libraries\Snap.Hutao.Plugin.SDK.Native\
 Copy-Item -LiteralPath (Join-Path $root 'contracts\HutaoPluginAbi.h') -Destination $include
 Copy-Item -LiteralPath (Join-Path $root 'contracts\HutaoPlugin.idl') -Destination $metadata
 Copy-Item -LiteralPath (Join-Path $root 'artifacts\metadata\Snap.Hutao.Plugin.Contracts.winmd') -Destination $metadata
+Copy-Item -LiteralPath (Join-Path $root 'artifacts\metadata\Snap.Hutao.Plugin.Services.winmd') -Destination $metadata
 Compress-Archive -Path (Join-Path $native '*') -DestinationPath (Join-Path $out "Snap.Hutao.Plugin.Native.$Version.zip")
 Invoke-Dotnet publish (Join-Path $root 'tools\PluginPack\PluginPack.csproj') -c Release -r win-x64 --self-contained true -p:Platform=x64 -p:PublishSingleFile=true -o $tool
 if (!(Test-Path -LiteralPath (Join-Path $tool 'PluginPack.exe'))) { throw 'PluginPack.exe missing.' }

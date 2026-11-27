@@ -38,6 +38,13 @@ public sealed class TestPlugin : HutaoPlugin
         Context.RegisterView("programmatic", CreateProgrammaticView);
         Context.RegisterNavigationItem("programmatic", "C# AOT programmatic UI", "\uE74C", "programmatic");
         Context.RegisterCommand("exercise", "Exercise ABI", ExerciseAsync);
+        Context.RegisterCommand("game-path", "Exercise C# First service", async () =>
+        {
+            var service = Context.GamePath ?? throw new NotSupportedException("Authored game path service unavailable.");
+            string path = await service.LocateAsync();
+            if (!Context.HasThreadAccess) throw new InvalidOperationException("Lost UI thread after authored service.");
+            Context.Log(NotificationKind.Success, "C# First service completed; game path found: " + (path.Length != 0));
+        });
     }
 
     public override void OnUninstall() => Context.Log(NotificationKind.Information, "C# AOT OnUninstall");

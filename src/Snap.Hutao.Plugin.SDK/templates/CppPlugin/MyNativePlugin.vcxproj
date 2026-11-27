@@ -52,6 +52,10 @@
       <HintPath>$(HutaoNativeSdkRoot)\metadata\Snap.Hutao.Plugin.Contracts.winmd</HintPath>
       <IsWinMDFile>true</IsWinMDFile><Private>false</Private>
     </Reference>
+    <Reference Include="Snap.Hutao.Plugin.Services">
+      <HintPath>$(HutaoNativeSdkRoot)\metadata\Snap.Hutao.Plugin.Services.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile><Private>false</Private>
+    </Reference>
   </ItemGroup>
   <Target Name="RequireContract" BeforeTargets="ResolveAssemblyReferences">
     <Error Condition="!Exists('$(HutaoNativeSdkRoot)\metadata\Snap.Hutao.Plugin.Contracts.winmd')" Text="Set HutaoNativeSdkRoot to the unpacked native SDK directory." />

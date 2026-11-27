@@ -8,6 +8,7 @@ using namespace Windows::Foundation;
 using namespace Microsoft::UI::Xaml;
 using namespace Microsoft::UI::Xaml::Controls;
 using namespace Snap::Hutao::Plugin::Contracts;
+using namespace Snap::Hutao::Plugin::Services;
 
 // Independent core test: no compiled XAML metadata or PRI dependency.
 struct CoreView : implements<CoreView, IPluginView>
@@ -81,6 +82,7 @@ struct TestPluginImpl : implements<TestPluginImpl, IHutaoPlugin, IPluginViewFact
         registrations.push_back(contributions.RegisterView(L"loose", self.as<IPluginViewFactory>()));
         registrations.push_back(contributions.RegisterNavigationItem(L"loose", L"C++ loose XAML", L"\uE74C", L"loose"));
         registrations.push_back(contributions.RegisterCommand(L"exercise", L"Exercise ABI", self.as<IPluginCommand>()));
+        registrations.push_back(contributions.RegisterCommand(L"game-path", L"Exercise C# First service", self.as<IPluginCommand>()));
     }
 
     void OnDisable()
@@ -105,6 +107,15 @@ struct TestPluginImpl : implements<TestPluginImpl, IHutaoPlugin, IPluginViewFact
     IAsyncAction ExecuteAsync(hstring id)
     {
         auto lifetime = get_strong();
+        if (id == L"game-path")
+        {
+            auto service = context.GetService(guid_of<IHutaoGamePathService>()).try_as<IHutaoGamePathService>();
+            if (!service) throw hresult_no_interface();
+            auto path = co_await service.LocateAsync();
+            if (!context.Dispatcher().HasThreadAccess()) throw hresult_error(RPC_E_WRONG_THREAD);
+            context.Log(NotificationKind::Success, path.empty() ? L"C# First service completed; game path not found" : L"C# First service completed; game path found");
+            co_return;
+        }
         if (id != L"exercise") throw hresult_invalid_argument();
         auto settings = context.Settings();
         co_await settings.SetInt32Async(L"Counter", ReadCounterUsingModule(get_abi(context)) + 1);

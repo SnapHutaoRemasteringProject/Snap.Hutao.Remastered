@@ -354,6 +354,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Snap.Hutao.Remastered.SourceGeneration">
+      <!-- Optional local review feed override; the central version remains the production default. -->
+      <VersionOverride Condition="'$(HutaoSourceGenerationVersion)' != ''">$(HutaoSourceGenerationVersion)</VersionOverride>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

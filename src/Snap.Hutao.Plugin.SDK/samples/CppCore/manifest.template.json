@@ -30,6 +30,7 @@
     "navigation",
     "commands",
     "dialogs",
-    "xaml"
+    "xaml",
+    "game-path"
   ]
 }

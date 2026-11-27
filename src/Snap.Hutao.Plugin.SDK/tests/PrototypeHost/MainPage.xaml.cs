@@ -26,6 +26,13 @@ public sealed partial class MainPage : Page
         InitializeComponent();
         string[] args = Environment.GetCommandLineArgs();
         if (args.Length == 2) pathBox.Text = args[1];
+        // Deliberately synthetic: PrototypeHost does not access the production game service.
+        async Task<string> LocateFixtureGamePathAsync()
+        {
+            await Task.Yield();
+            return @"C:\PrototypeHostFixture\GenshinImpact.exe";
+        }
+
         void Write(NotificationKind kind, string message)
         {
             log.Text += $"[{kind}] {message}" + Environment.NewLine;
@@ -77,7 +84,7 @@ public sealed partial class MainPage : Page
                     string settings = Path.Combine(TestRoot, "settings", verified.Manifest.Id);
                     string key = verified.Manifest.Id + ":" + verified.Sha256;
                     session = await PluginSession.ActivateApprovedPackageAsync(path, verified.Sha256, workspace, settings, new Version(1, 0, 0),
-                        !installed.Contains(key), () => installed.Add(key), DispatcherQueue, () => panel.XamlRoot, Write, Write, App.CurrentHost.RegisterMetadataProvider);
+                        !installed.Contains(key), () => installed.Add(key), DispatcherQueue, () => panel.XamlRoot, Write, Write, App.CurrentHost.RegisterMetadataProvider, locateGamePath: LocateFixtureGamePathAsync);
                     var manifest = verified.Manifest;
                     Write(NotificationKind.Information, "Verified XAML: " + string.Join(", ", manifest.Files.Keys.Where(file => file.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase)).OrderBy(file => file, StringComparer.OrdinalIgnoreCase)));
                     identity = new(manifest.Id, manifest.Name, manifest.Version.ToString(), workspace, Path.Combine(settings, "data"),
@@ -118,7 +125,7 @@ public sealed partial class MainPage : Page
                 Directory.CreateDirectory(trusted.DataDirectory);
                 Write(NotificationKind.Information, "Activating DLL: " + entryPath);
                 session = await PluginSession.ActivateTrustedAsync(entryPath!, trusted, !installed.Contains(key), () => installed.Add(key),
-                    DispatcherQueue, () => panel.XamlRoot, Write, Write, approvedPackageHash, App.CurrentHost.RegisterMetadataProvider);
+                    DispatcherQueue, () => panel.XamlRoot, Write, Write, approvedPackageHash, App.CurrentHost.RegisterMetadataProvider, locateGamePath: LocateFixtureGamePathAsync);
             }
             try
             {

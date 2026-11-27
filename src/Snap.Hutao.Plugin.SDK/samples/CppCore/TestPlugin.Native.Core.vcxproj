@@ -108,9 +108,15 @@
       <IsWinMDFile>true</IsWinMDFile>
       <Private>false</Private>
     </Reference>
+    <Reference Include="Snap.Hutao.Plugin.Services">
+      <HintPath>$(MSBuildThisFileDirectory)..\..\artifacts\metadata\Snap.Hutao.Plugin.Services.winmd</HintPath>
+      <IsWinMDFile>true</IsWinMDFile>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
   <Target Name="RequireHutaoContracts" BeforeTargets="ResolveAssemblyReferences">
     <Error Condition="!Exists('$(MSBuildThisFileDirectory)..\..\artifacts\metadata\Snap.Hutao.Plugin.Contracts.winmd')" Text="Build the SDK solution to generate the canonical contract first." />
+    <Error Condition="!Exists('$(MSBuildThisFileDirectory)..\..\artifacts\metadata\Snap.Hutao.Plugin.Services.winmd')" Text="Build the SDK solution to generate the C# authored services first." />
   </Target>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
