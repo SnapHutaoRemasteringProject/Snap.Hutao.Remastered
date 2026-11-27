@@ -221,3 +221,7 @@ AddOtherProvider 不是 Application 公共 API，而是 XAML 编译器条件生�
 ### E18：移除 .hxaml 兼容与裸 DLL 额外预检查
 
 SDK 2.0 不要求向后兼容：LoadXaml 仅允许 .xaml，并保留 verified manifest 路径检查；包大小分类也仅按 .xaml 处理。为观察普通 C# IL DLL 在 JIT / AOT PrototypeHost 中的真实行为，撤销 f7bbe39 新增的裸 DLL 与共享原生加载器 PE 预检查（ValidateNativeEntry），保留正式 .hutao 原有 native PE/CorHeader 校验及信任确认。裸 DLL 直接进入 LoadLibraryExW，映射成功才查找 HutaoPluginCreate 导出。实际 Windows 错误码尚未验证（NotRun）。这不是新增普通 C# 插件支持。
+
+### E19：标准 .xaml 切换后 C# AOT LoadXaml 拒绝
+
+2026-11-27 实际日志显示 C# OnInstall/OnLoad 已完成，但 CreateViewCore 调用 LoadXaml 在扩展名或已验证文件清单检查处抛 UnauthorizedAccessException，尚未调用 XamlReader。当前源码和 Pack-Samples 均使用 views/PluginPage.xaml；旧 DLL、旧包或无资源清单的裸 DLL 路径需要靠实际请求和 manifest 证据区分。将两项检查拆开并输出路径、插件 ID 与已声明 XAML；Build-Samples 清理旧 C# 发布输出及包、显式指定 publish 输出，提供仅重建 CSharpAot 的选项。共享 NativePluginLoader 改用 CsWin32 PInvoke，主程序与 PrototypeHost 分别生成相同的必要 Win32 调用，不改变 ABI、模块驻留、搜索 flags 或普通裸 DLL 的诊断路径。修复后 Windows 验收 NotRun。

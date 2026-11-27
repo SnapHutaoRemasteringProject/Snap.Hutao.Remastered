@@ -5,37 +5,45 @@ using Snap.Hutao.Plugin.Contracts;
 using Snap.Hutao.Plugin.Projection;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Win32LibraryFlags = global::Windows.Win32.System.LibraryLoader.LOAD_LIBRARY_FLAGS;
+using Win32Module = global::Windows.Win32.Foundation.HMODULE;
+using Win32HString = global::Windows.Win32.System.WinRT.HSTRING;
+using Win32PInvoke = global::Windows.Win32.PInvoke;
 
 namespace Snap.Hutao.Remastered.Service.Plugin;
 
-internal static unsafe partial class NativePluginLoader
+internal static unsafe class NativePluginLoader
 {
-    private static readonly Dictionary<string, nint> Modules = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly Dictionary<string, Win32Module> Modules = new(StringComparer.OrdinalIgnoreCase);
     private static readonly object Gate = new();
-    private const uint SearchFlags = 0x00000100 | 0x00000200 | 0x00000800;
+    private const Win32LibraryFlags SearchFlags = Win32LibraryFlags.LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR |
+        Win32LibraryFlags.LOAD_LIBRARY_SEARCH_APPLICATION_DIR | Win32LibraryFlags.LOAD_LIBRARY_SEARCH_SYSTEM32;
 
-    [LibraryImport("kernel32.dll", StringMarshalling = StringMarshalling.Utf16, SetLastError = true)]
-    private static partial nint LoadLibraryExW(string path, nint reserved, uint flags);
-
-    [LibraryImport("combase.dll", StringMarshalling = StringMarshalling.Utf16)]
-    private static partial int WindowsCreateString(string source, uint length, out nint value);
-
-    [LibraryImport("combase.dll")]
-    private static partial int WindowsDeleteString(nint value);
+    private static nint GetExport(Win32Module library, string path, string name)
+    {
+        nint address = Win32PInvoke.GetProcAddress(library, name);
+        if (address == 0)
+            throw new EntryPointNotFoundException($"{path}!{name}", new Win32Exception(Marshal.GetLastPInvokeError()));
+        return address;
+    }
 
     // Called only after the approved plugin module has already been mapped.
     internal static IXamlMetadataProvider GetMetadataProvider(string path, string className)
     {
-        nint library;
+        Win32Module library;
         lock (Gate)
             if (!Modules.TryGetValue(Path.GetFullPath(path), out library))
                 throw new InvalidOperationException("Plugin module is not mapped.");
-        var getFactory = (delegate* unmanaged[Stdcall]<nint, nint*, int>)NativeLibrary.GetExport(library, "DllGetActivationFactory");
-        nint name = 0, factory = 0, instance = 0, provider = 0;
+        var getFactory = (delegate* unmanaged[Stdcall]<nint, nint*, int>)GetExport(library, path, "DllGetActivationFactory");
+        Win32HString name = default;
+        nint factory = 0, instance = 0, provider = 0;
         try
         {
-            Marshal.ThrowExceptionForHR(WindowsCreateString(className, (uint)className.Length, out name));
-            Marshal.ThrowExceptionForHR(getFactory(name, &factory));
+            fixed (char* source = className)
+            {
+                Marshal.ThrowExceptionForHR((int)Win32PInvoke.WindowsCreateString(source, (uint)className.Length, &name));
+            }
+            Marshal.ThrowExceptionForHR(getFactory((nint)name.Value, &factory));
             if (factory == 0) throw new COMException("Null XAML activation factory.", PluginAbi.PointerError);
             var activate = (delegate* unmanaged[Stdcall]<nint, nint*, int>)(*(nint**)factory)[6];
             Marshal.ThrowExceptionForHR(activate(factory, &instance));
@@ -50,25 +58,25 @@ internal static unsafe partial class NativePluginLoader
             PluginAbi.Release(provider);
             PluginAbi.Release(instance);
             PluginAbi.Release(factory);
-            if (name != 0) _ = WindowsDeleteString(name);
+            _ = Win32PInvoke.WindowsDeleteString(name);
         }
     }
 
     public static IHutaoPlugin Load(string path)
     {
         path = Path.GetFullPath(path);
-        nint library;
+        Win32Module library;
         lock (Gate)
         {
             if (!Modules.TryGetValue(path, out library))
             {
-                library = LoadLibraryExW(path, 0, SearchFlags);
-                if (library == 0) throw new Win32Exception(Marshal.GetLastPInvokeError());
+                library = Win32PInvoke.LoadLibraryEx(path, SearchFlags);
+                if (library.IsNull) throw new Win32Exception(Marshal.GetLastPInvokeError());
                 Modules.Add(path, library); // Never unload mapped modules.
             }
         }
 
-        var create = (delegate* unmanaged[Cdecl]<uint, nint*, int>)NativeLibrary.GetExport(library, "HutaoPluginCreate");
+        var create = (delegate* unmanaged[Cdecl]<uint, nint*, int>)GetExport(library, path, "HutaoPluginCreate");
         nint plugin = 0;
         int hr = create(PluginAbi.Major, &plugin);
         try

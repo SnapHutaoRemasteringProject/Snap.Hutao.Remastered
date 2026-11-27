@@ -79,6 +79,7 @@ public sealed partial class MainPage : Page
                     session = await PluginSession.ActivateApprovedPackageAsync(path, verified.Sha256, workspace, settings, new Version(1, 0, 0),
                         !installed.Contains(key), () => installed.Add(key), DispatcherQueue, () => panel.XamlRoot, Write, Write, App.CurrentHost.RegisterMetadataProvider);
                     var manifest = verified.Manifest;
+                    Write(NotificationKind.Information, "Verified XAML: " + string.Join(", ", manifest.Files.Keys.Where(file => file.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase)).OrderBy(file => file, StringComparer.OrdinalIgnoreCase)));
                     identity = new(manifest.Id, manifest.Name, manifest.Version.ToString(), workspace, Path.Combine(settings, "data"),
                         settings, manifest.UiMode, manifest.Capabilities, manifest.Files.Keys.ToHashSet(StringComparer.OrdinalIgnoreCase), manifest.MetadataProvider);
                     entryPath = PackagePaths.Resolve(workspace, manifest.Entry);
@@ -99,6 +100,7 @@ public sealed partial class MainPage : Page
                         CloseButtonText = "Cancel"
                     };
                     if (await confirm.ShowAsync() != ContentDialogResult.Primary) return;
+                    Write(NotificationKind.Information, "Development DLL (no verified package resources): " + path);
                     string id = Path.GetFileNameWithoutExtension(path);
                     PackagePaths.ValidateIdentifier(id);
                     string settings = Path.Combine(TestRoot, "settings", id);
@@ -114,6 +116,7 @@ public sealed partial class MainPage : Page
                 PluginIdentity trusted = identity ?? throw new InvalidOperationException("No trusted plugin.");
                 string key = approvalKey!;
                 Directory.CreateDirectory(trusted.DataDirectory);
+                Write(NotificationKind.Information, "Activating DLL: " + entryPath);
                 session = await PluginSession.ActivateTrustedAsync(entryPath!, trusted, !installed.Contains(key), () => installed.Add(key),
                     DispatcherQueue, () => panel.XamlRoot, Write, Write, approvedPackageHash, App.CurrentHost.RegisterMetadataProvider);
             }

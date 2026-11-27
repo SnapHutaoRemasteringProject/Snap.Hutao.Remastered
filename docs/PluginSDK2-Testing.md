@@ -4,27 +4,46 @@
 
 ## 1. 构建与回归
 
-在干净 checkout，VS 2026 打开 src/Snap.Hutao.Plugin.SDK/libraries/Snap.Hutao.Plugin.SDK.slnx，Release|x64，Rebuild。C++ 和 C# 投影由同一 Contracts.winmd 生成；不要并行启动两个独立构建过程同时写 artifacts/metadata/references。C# AOT 发布：
+所有命令均在仓库根目录进入 src\Snap.Hutao.Plugin.SDK 后运行。先关闭旧 PrototypeHost（原生 DLL 不热卸载）。正常插件使用 .hutao；只有非 AOT 诊断使用裸 .dll。
+
+### A. 日常 Debug 测试（先做这个）
+
+在 VS Developer PowerShell：
 
 ```powershell
 cd src\Snap.Hutao.Plugin.SDK
-dotnet publish .\samples\CSharpAot\TestPlugin.Aot.csproj -c Release -p:Platform=x64 -p:PublishProfile=NativeAot -tl:off
-pwsh -File .\build\Pack-Samples.ps1 -Configuration Release
-pwsh -File .\build\Test-Packaging.ps1
+pwsh -File .\build\Build-Samples.ps1 -Configuration Debug
 ```
 
-Pack-Samples 必须显式指定 Debug 或 Release。CppCore 与 CppCompiled 是独立项目和独立 DLL，分别在 artifacts/native/<Configuration>/core 与 compiled；CSharpAot 一律 Release Native AOT Publish。正式应用测试只用 Core 和 C# AOT 包。推荐从 VS Developer PowerShell 执行 build/Build-Samples.ps1 -Configuration Release，自动生成契约、重建两个 C++ 项目、发布 C# 并打包。
-
-重建发布目录：
+如果仅修改 C#，改用：
 
 ```powershell
+pwsh -File .\build\Build-Samples.ps1 -Configuration Debug -Sample CSharpAot
+```
+
+脚本清理旧 C# publish 和包，明确指定 artifacts/aot-plugin 输出，C# 始终 Native AOT Release Publish；All 还重建两个 C++ 项目。打开 SDK 根目录 Snap.Hutao.Plugin.SDK.slnx，设置 PrototypeHost 为启动项目，Debug|x64 F5。每个包启动独立进程：
+
+| 点击的样例按钮 | 实际加载 | 在 Plugin view 中测试 |
+|---|---|---|
+| C++ core | artifacts/TestPlugin.Native.Core.hutao | programmatic、loose，点击按钮 |
+| C++ compiled (experimental) | artifacts/TestPlugin.Native.hutao | main，x:Bind 文本与 Click |
+| C# AOT sample | artifacts/TestPlugin.hutao | main、binding、programmatic；点击 Increment/Save |
+
+样例按钮只填路径，必须再点击 Inspect and load → Trust this package。首个视图自动打开；确认 Activated through the production host sources。C# main 点击计数、编辑并保存；binding 检查 OneWay/TwoWay 和 ICommand；选择 Exercise ABI → Run command → 在对话框点 OK，确认 Command completed。随后 Disable and re-enable（同一 DLL 新实例），Uninstall session。关闭窗口后才换包。不要在普通 UI 测试中填 aot-plugin/TestPlugin.Aot.dll：裸 DLL 没有已验证的资源清单，LoadXaml 会拒绝。
+
+遇到 Loose XAML 异常时，查看完整请求路径与 Declared XAML；.hxaml 表示旧插件代码仍在执行；如果请求 .xaml 但未声明，检查实际加载的包 ID/路径/hash 与 manifest。不要恢复旧扩展名兼容或去掉清单校验。
+
+### B. 两种 Release 宿主（A 通过后）
+
+```powershell
+pwsh -File .\build\Build-Samples.ps1 -Configuration Release
 Remove-Item .\artifacts\jit-host,.\artifacts\aot-host -Recurse -Force -ErrorAction SilentlyContinue
 dotnet publish .\tests\PrototypeHost\PrototypeHost.csproj -c Release -p:Platform=x64 -p:PublishProfile=JitRelease -tl:off
 dotnet publish .\tests\PrototypeHost\PrototypeHost.csproj -c Release -p:Platform=x64 -p:PublishProfile=NativeAot -tl:off
 Get-ChildItem .\artifacts\jit-host\resources.pri,.\artifacts\aot-host\resources.pri
 ```
 
-每个宿主启动一个干净进程、选择 C++ core，重复 C# AOT；切换包时关闭进程。不要以 Debug Build 替代 Release Publish。PrototypeHost 使用标准 App.xaml/MainWindow.xaml/MainPage.xaml，普通 .NET 与 Native AOT 都走生成应用初始化代码，并启用 PRI 发布基础设施。测试宿主的工作区和设置在 LocalAppData/Snap.Hutao.Plugin.SDK.Tests，与正式应用数据隔离；install marker 在测试宿主为内存状态，不是生产安装器。
+分别启动 artifacts/jit-host/PrototypeHost.exe 和 artifacts/aot-host/PrototypeHost.exe，每个宿主重复 A 的三个包。每次换包关闭进程。Debug F5 不是 Release AOT 宿主测试。最后才执行下方普通 IL DLL 诊断和包负例。测试工作区位于 LocalAppData/Snap.Hutao.Plugin.SDK.Tests，与正式应用数据隔离；install marker 在测试宿主是内存状态。
 
 ## 2. 核心用例与证据
 
@@ -57,14 +76,14 @@ Get-ChildItem .\artifacts\jit-host\resources.pri,.\artifacts\aot-host\resources.
 | C# Native AOT | 正向运行 | 正向运行 |
 | C# 普通 IL DLL（PublishAot=false，直接加载裸 DLL） | 观察原始加载异常 | 观察原始加载异常 |
 
-前六项应分别记录真实运行结果；编译期 XAML 仍是实验。后两项是诊断用例，不代表支持普通托管插件。PrototypeHost 的裸 DLL 调试入口不进行额外 PE 预检查，以观察 Windows 原生加载器 LoadLibraryExW 或 NativeLibrary.GetExport 的实际错误。正式 .hutao 包仍要求原生 x64 DLL，保留原有 CorHeader 校验。使用以下命令构建独立的诊断样本，不覆盖 Native AOT 发布输出：
+前六项应分别记录真实运行结果；编译期 XAML 仍是实验。后两项是诊断用例，不代表支持普通托管插件。PrototypeHost 的裸 DLL 调试入口不进行额外 PE 预检查，以观察 Windows 原生加载器 LoadLibraryExW 或 CsWin32 GetProcAddress 的实际错误。正式 .hutao 包仍要求原生 x64 DLL，保留原有 CorHeader 校验。使用以下命令构建独立的诊断样本，不覆盖 Native AOT 发布输出：
 
 ```powershell
 dotnet build .\samples\CSharpAot\TestPlugin.Aot.csproj -c Release -p:Platform=x64 -p:PublishAot=false -p:SelfContained=false -o .\artifacts\managed-fixture
 pwsh -File .\build\Test-Packaging.ps1 -ManagedDll .\artifacts\managed-fixture\TestPlugin.Aot.dll
 ```
 
-测试脚本将普通托管 DLL 替换合法包入口并重新计算正确的 SHA256，再要求 verify 拒绝；因此失败不能被简单归因于哈希错误。随后分别启动 JIT/AOT PrototypeHost，手动填入该裸 DLL 完整路径（不要打包），Inspect and load，确认仅加载本地自己构建的可信样本。记录 LoadLibraryExW 是否成功；若失败，记录 Win32Exception.NativeErrorCode；若映射成功但没有 HutaoPluginCreate 导出，则记录 NativeLibrary.GetExport 的 EntryPointNotFoundException。不得预先将某一种错误写成实测结果，也不恢复 ALC 托管加载器。每项记录 commit、SDK 版本、宿主路径、包 SHA256、Windows build、日志及 Pass/Fail/NotRun。正式 Snap Hutao 本身仍不支持 compiled 模式。
+测试脚本将普通托管 DLL 替换合法包入口并重新计算正确的 SHA256，再要求 verify 拒绝；因此失败不能被简单归因于哈希错误。随后分别启动 JIT/AOT PrototypeHost，手动填入该裸 DLL 完整路径（不要打包），Inspect and load，确认仅加载本地自己构建的可信样本。记录 LoadLibraryExW 是否成功；若失败，记录 Win32Exception.NativeErrorCode；若映射成功但没有 HutaoPluginCreate 导出，则记录 CsWin32 GetProcAddress 的 EntryPointNotFoundException。不得预先将某一种错误写成实测结果，也不恢复 ALC 托管加载器。每项记录 commit、SDK 版本、宿主路径、包 SHA256、Windows build、日志及 Pass/Fail/NotRun。正式 Snap Hutao 本身仍不支持 compiled 模式。
 
 C++ compiled 是单独实验：选择 C++ compiled (experimental)，确认 InitializeComponent deferred、绝对 URI、LoadComponent returned successfully、x:Bind 文本和 Click；然后测试主题、嵌套控件、相同名称资源、多插件、两个发布宿主。标准模板的 App 生成的 AddOtherProvider 接入亦需验证。失败不影响 core 的程序式/loose 测试。正式应用拒绝 compiled，C# compiled 尚无实现。
 

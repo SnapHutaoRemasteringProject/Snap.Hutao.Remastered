@@ -1,0 +1,4 @@
+GetProcAddress
+LoadLibraryExW
+WindowsCreateString
+WindowsDeleteString

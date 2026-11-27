@@ -56,6 +56,8 @@ Snap.Hutao.Plugin.SDK/
 
 ## 快速开始（维护者）
 
+日常调试先运行 `pwsh -File .\build\Build-Samples.ps1 -Configuration Debug`，仅重建 C# 时追加 `-Sample CSharpAot`。然后 F5 启动 PrototypeHost，点 C# AOT sample / C++ core / C++ compiled，再点 Inspect and load；正常测试使用 `.hutao`，不要直接加载 C# 发布 DLL（没有已验证的 XAML 文件清单）。逐步操作和 Release 宿主、普通 IL DLL 诊断见 [测试指南](../../docs/PluginSDK2-Testing.md#1-构建与回归)。
+
 Visual Studio 2026 Developer PowerShell 进入本目录，执行：
 
 ```powershell
