@@ -5,7 +5,6 @@ param(
     [string[]] $WinAppSdkWinmd = @(),
     [version] $TargetPlatformVersion = '10.0.26100.0',
     [string] $VisualStudioInstallDir,
-    [string] $WindowsSdkVersion = '10.0.28000.0',
     [string] $WindowsSdkRoot = (Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) 'Windows Kits\10')
 )
 $ErrorActionPreference = 'Stop'
@@ -61,10 +60,8 @@ function Test-WindowsSdk([string] $Version) {
         (Test-Path -LiteralPath (Join-Path $WindowsSdkRoot "Include\$Version\um") -PathType Container)
 }
 
-if (!(Test-WindowsSdk $WindowsSdkVersion)) {
-    if ($PSBoundParameters.ContainsKey('WindowsSdkVersion')) {
-        throw "Windows SDK $WindowsSdkVersion is incomplete in $WindowsSdkRoot. MIDL, WinRT metadata and headers are required."
-    }
+$windowsSdkVersion = $TargetPlatformVersion.ToString()
+if (!(Test-WindowsSdk $windowsSdkVersion)) {
     $unionMetadata = Join-Path $WindowsSdkRoot 'UnionMetadata'
     $compatible = $null
     if (Test-Path -LiteralPath $unionMetadata -PathType Container) {
@@ -77,12 +74,12 @@ if (!(Test-WindowsSdk $WindowsSdkVersion)) {
             Select-Object -First 1
     }
     if (!$compatible) { throw "No complete Windows SDK $TargetPlatformVersion or newer was found in $WindowsSdkRoot." }
-    $WindowsSdkVersion = $compatible.Name
+    $windowsSdkVersion = $compatible.Name
 }
 
-Write-Host "MIDL Windows SDK: $WindowsSdkVersion ($WindowsSdkRoot)"
-$windowsWinmd = Join-Path $WindowsSdkRoot "UnionMetadata\$WindowsSdkVersion\Windows.winmd"
-$sdkBin = Join-Path $WindowsSdkRoot "bin\$WindowsSdkVersion\x64"
+Write-Host "MIDL Windows SDK: $windowsSdkVersion ($WindowsSdkRoot)"
+$windowsWinmd = Join-Path $WindowsSdkRoot "UnionMetadata\$windowsSdkVersion\Windows.winmd"
+$sdkBin = Join-Path $WindowsSdkRoot "bin\$windowsSdkVersion\x64"
 $midl = Join-Path $sdkBin 'midl.exe'
 $contract = Join-Path $metadata 'Snap.Hutao.Plugin.Contracts.winmd'
 $idl = Join-Path $root 'contracts\HutaoPlugin.idl'
@@ -180,7 +177,7 @@ foreach ($file in ($sourceFiles | Sort-Object Name)) {
 }
 $refs = @(Get-ChildItem -LiteralPath $references -Filter '*.winmd' -File | Sort-Object Name | ForEach-Object FullName)
 
-$includeRoot = Join-Path $WindowsSdkRoot "Include\$WindowsSdkVersion"
+$includeRoot = Join-Path $WindowsSdkRoot "Include\$windowsSdkVersion"
 $midlArgs = @('/nologo', '/winrt', '/nomidl', '/h', 'nul', '/I', (Join-Path $includeRoot 'winrt'), '/I', (Join-Path $includeRoot 'shared'), '/I', (Join-Path $includeRoot 'um'), '/metadata_dir', (Split-Path $windowsWinmd), '/reference', $windowsWinmd, '/winmd', $contract)
 if (Test-Path -LiteralPath $contract) { Remove-Item -LiteralPath $contract -Force }
 foreach ($ref in $refs) { $midlArgs += @('/reference', $ref) }

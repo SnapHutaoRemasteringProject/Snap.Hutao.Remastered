@@ -67,14 +67,13 @@
   <!-- Direct main-assembly Authoring migration. CsWinRT 2.x rejects the whole public
        surface on an invalid declaration; do not turn off its diagnostics. Keep the
        normal app build available until the public API has been migrated. -->
-  <PropertyGroup Condition="'$(HutaoMainAuthoring)' == 'true'">
-    <CsWinRTComponent>true</CsWinRTComponent>
+  <PropertyGroup Condition="'$(CsWinRTComponent)' == 'true'">
     <CsWinRTGenerateProjection>false</CsWinRTGenerateProjection>
     <CsWinRTEnableLogging>true</CsWinRTEnableLogging>
     <CsWinRTAotWarningLevel>3</CsWinRTAotWarningLevel>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(HutaoMainAuthoring)' == 'true'">
+  <ItemGroup Condition="'$(CsWinRTComponent)' == 'true'">
     <CsWinRTInputs Include="$(MSBuildThisFileDirectory)..\..\Snap.Hutao.Plugin.SDK\artifacts\metadata\Snap.Hutao.Plugin.Contracts.winmd" />
     <CsWinRTInputs Include="$(MSBuildThisFileDirectory)..\..\Snap.Hutao.Plugin.SDK\artifacts\metadata\Snap.Hutao.Plugin.Services.winmd" />
   </ItemGroup>
@@ -304,8 +303,8 @@
 
   <!-- Plugin contracts and package validation are shared with developer tools; hosting is implemented in Service/Plugin. -->
   <ItemGroup>
-    <ProjectReference Include="..\..\Snap.Hutao.Plugin.SDK\libraries\Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj" />
-    <ProjectReference Include="..\..\Snap.Hutao.Plugin.SDK\libraries\Snap.Hutao.Plugin.Packaging\Snap.Hutao.Plugin.Packaging.csproj" />
+    <ProjectReference Include="..\..\Snap.Hutao.Plugin.SDK\libraries\Snap.Hutao.Plugin.Projection\Snap.Hutao.Plugin.Projection.csproj" GlobalPropertiesToRemove="CsWinRTComponent" />
+    <ProjectReference Include="..\..\Snap.Hutao.Plugin.SDK\libraries\Snap.Hutao.Plugin.Packaging\Snap.Hutao.Plugin.Packaging.csproj" GlobalPropertiesToRemove="CsWinRTComponent" />
   </ItemGroup>
 
   <!-- Packages -->

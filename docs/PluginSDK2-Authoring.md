@@ -31,11 +31,11 @@ CsWinRT 2.3.1 的 Authoring 是扫描公开 API 的组件生成器，而不是�
 
 ### 复现主程序集直接 Authoring 的诊断
 
-主项目保留 `HutaoMainAuthoring` 开关。启用时会打开 `CsWinRTComponent` 和诊断日志，并把既有的 `Contracts.winmd`、`Services.winmd` 作为输入，供生成器解析接口引用。平常构建继续由独立契约项目生成 WinMD。
+在命令行将 CsWinRT 自带的 `CsWinRTComponent` 设为 `true` 可复现主程序集实验。主项目会开启诊断日志，并把既有的 `Contracts.winmd`、`Services.winmd` 作为输入，供生成器解析接口引用。MSBuild 默认会把 `-p` 属性传给项目引用，主项目通过 `GlobalPropertiesToRemove` 限制该开关只作用于自己。独立契约项目按自身配置继续生成 WinMD。
 
 ```powershell
 $project = '.\src\Snap.Hutao.Remastered\Snap.Hutao.Remastered\Snap.Hutao.Remastered.csproj'
-dotnet build $project -c Debug -p:Platform=x64 -p:HutaoMainAuthoring=true -tl:off -bl:authoring.binlog
+dotnet build $project -c Debug -p:Platform=x64 -p:CsWinRTComponent=true -tl:off -bl:authoring.binlog
 ```
 
 在 `authoring.binlog` 搜索 CsWinRT 诊断。CsWinRT 2.3.1 会在公开声明不满足 WinRT 规则时终止本次 Authoring，连合法的接口也不会得到部分 WinMD。对于上面的 `ValueTask<ValueResult<...>>`，应先定义 WinRT 能表达的服务接口，再在宿主内部适配原有返回类型。消费端的 `CsWinRTIncludes` 只限定要生成投影的命名空间，无法改变组件端扫描的公开声明。独立 Authoring 项目还遇到过 WinMD-only 模式产生 `ExportsType.g.cs` 却缺少 `WinRT.Module` 的问题，见下文构建机制。主程序集迁移的成功条件是公开接口通过扫描、生成 WinMD 可被消费者引用，以及普通版和 Native AOT 版均通过 Windows 验证。参见 [CsWinRT 2.3.1 生成器实现](https://github.com/microsoft/CsWinRT/blob/2.3.1.260716.1/src/Authoring/WinRT.SourceGenerator/Generator.cs#L151-L189) 和 [SourceGeneration #1](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered.SourceGeneration/issues/1)。
@@ -91,7 +91,7 @@ Authoring 项目设置 CsWinRTComponent=true，使用完整组件生成流程；
 
 Projection 以 ReferenceOutputAssembly=false 引用 Authoring 项目；生成的 Services.winmd 放到 artifacts/metadata，与现有 Contracts.winmd 一起成为 CsWinRTInputs，两者的命名空间进入 CsWinRTIncludes。主程序和 C# 插件只消费 Projection；C++ Core 和外部 C++ 模板引用两个 WinMD。Build-Sdk.ps1 随 native SDK 分发 Services.winmd；C# NuGet 的投影 DLL 包含新增接口，不增加运行时依赖于 Authoring DLL。
 
-生成 `Contracts.winmd` 时，MIDL（编译接口定义的工具）优先使用 Windows SDK 10.0.28000.0。未安装完整首选版本时，从已安装的 SDK 中选择满足项目目标版本且同时具备 `midl.exe`、`Windows.winmd` 和所需头文件的最高版本。构建输出会记录选中版本。可用 `-p:HutaoWindowsSdkVersion=10.0.26100.0` 显式复现指定工具链。
+生成 `Contracts.winmd` 时，MIDL（编译接口定义的工具）优先使用项目 `TargetPlatformVersion` 对应的 Windows SDK，目前为 10.0.26100.0。该版本不完整时，选择已安装的较新完整版本。MIDL 工具、`Windows.winmd` 和头文件始终来自同一套 SDK。构建输出会记录选中版本。
 
 主程序 PluginHostContext 是 source-visible partial 类型，直接实现生成的接口，CsWinRT 2.x AOT 优化器可分析其 CCW（托管对象暴露给 COM 的包装）及闭合 IAsyncOperation<string> ABI。若使用 OptIn 而非 Auto，需按实际诊断在原始声明添加 GeneratedWinRTExposedType 等必要元数据；不要仅从另一个 Roslyn 生成器的输出中添加属性。没有运行时反射扫描、没有手写 vtable、没有额外 .NET runtime。Native AOT 发布仍要检查实际分析器警告，验证 async/COM reference lifetime。
 
