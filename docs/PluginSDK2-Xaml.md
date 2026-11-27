@@ -203,7 +203,7 @@ void PluginPage::InitializePluginView(IPluginContext const& context)
 
 物理文件是 views/PluginPage.xbf，传给 WinUI 的逻辑 URI 仍然是 views/PluginPage.xaml。不要把两者反过来。该 URI 形式是当前 WinUI 实验路径，不是微软对任意外部 URI、UNC 路径和所有包环境的稳定承诺。SDK helper 拒绝 ..、空路径段、冒号和反斜杠，按 local drive 生成 URI；资源必须由包验证与 staging 保证存在。
 
-Pack-Samples.ps1 查找唯一 PluginPage.xbf 并复制到 views/PluginPage.xbf；同时保留输出目录存在的 TestPlugin.Native.winmd、TestPlugin.Native.pri、resources.pri。manifest.ui.mode=compiled、metadataProvider=TestPlugin.Native.XamlMetaDataProvider。PrototypeHost 在调用插件生命周期前，从 DLL 的 DllGetActivationFactory 激活 metadata provider，使用 App 生成的 AddOtherProvider 注册。metadata 让 XAML 引擎认识插件类型，**不是**资源根重定向。C++ 示例代码支持 x:Bind 和生成事件连接的实验；C# 编译期 XAML 不可用，不能把普通 C# WinUI class library 的 Publish 当作已支持功能。
+Pack-Samples.ps1 查找唯一 PluginPage.xbf 并复制到 views/PluginPage.xbf；同时保留输出目录存在的 TestPlugin.Native.winmd、TestPlugin.Native.pri、resources.pri。manifest.ui.mode=compiled、metadataProvider=TestPlugin.Native.XamlMetaDataProvider。PrototypeHost 在调用插件生命周期前，从 DLL 的 DllGetActivationFactory 激活 metadata provider，使用 App 生成的 AddOtherProvider 注册。metadata 让 XAML 引擎认识插件类型，**不是**资源根重定向。`AddOtherProvider` 是条件生成方法：PrototypeHost.csproj 必须配置 `EnableTypeInfoReflection=false` 与 `XamlCodeGenerationControlFlags=DoNotGenerateOtherProviders`，并在 `App.InitializeComponent()` 前手动注册 WinUI 控件 provider；见 [E16](PluginSDK2-EngineeringNotes.md#e16标准-prototypehost-编译-cs0103addotherprovider-不存在)。C++ 示例代码支持 x:Bind 和生成事件连接的实验；C# 编译期 XAML 不可用，不能把普通 C# WinUI class library 的 Publish 当作已支持功能。
 
 ## 6. PRI 到底在哪里，如何验证？
 

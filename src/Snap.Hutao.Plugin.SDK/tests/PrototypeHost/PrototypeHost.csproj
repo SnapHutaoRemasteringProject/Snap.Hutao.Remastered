@@ -5,6 +5,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
     <UseWinUI>true</UseWinUI>
+    <!-- Emit App.AddOtherProvider in both XAML compiler passes and all configurations. -->
+    <EnableTypeInfoReflection>false</EnableTypeInfoReflection>
+    <XamlCodeGenerationControlFlags>DoNotGenerateOtherProviders</XamlCodeGenerationControlFlags>
     <EnableMsixTooling>true</EnableMsixTooling>
     <WindowsPackageType>None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>

@@ -13,11 +13,14 @@ public partial class App : Application
     public App()
     {
         CurrentHost = this;
+        // DoNotGenerateOtherProviders disables automatic provider construction.
+        // Restore the platform provider before parsing App.xaml (XamlControlsResources).
+        AddOtherProvider(new global::Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider());
         InitializeComponent();
     }
 
     // The generated WinUI App metadata provider retains the component provider.
-    // No replacement of the host's built-in XAML metadata or resource hooks.
+    // The platform provider is explicitly registered above; resource resolution is unchanged.
     internal void RegisterMetadataProvider(string path, string name, IXamlMetadataProvider provider)
     {
         if (providers.TryGetValue(name, out string? existing))
