@@ -307,7 +307,9 @@ V1 测试支持范围：Grid、StackPanel、Border、TextBlock、TextBox、Butto
 
 **MVVM/Binding 兼容（G2 必须验证）**：提供 SDK 编译期已知、可 AOT 封送的状态容器或 plugin-side 生成的 `ICustomPropertyProvider` 与 `INotifyPropertyChanged`，以及可投影 ICommand 的实现；不依赖 reflection。C# 示例 ViewModel 用 `[GeneratedBindableCustomProperty]` partial class（以当前 CsWinRT 版本实际 API 为准），预生成 Counter/Message 属性、通知、Command，DataContext 由插件设置在返回的 UIElement 上；宿主只看到 UIElement / IInspectable，不需要插件 ViewModel 的 CLR 类型。必须验证跨独立 AOT 模块 CCW（托管对象 COM 包装）与 RCW（原生对象托管包装）正确封送。C++ 版本可直接使用程序式更新事件；如支持任意 `{Binding}` 自定义属性，需独立实现 WinRT 属性 provider 或编译期 metadata 并验证。若跨 AOT 模块 Binding 失败，先保持事件版本完整可用，明确 G2-B 未通过，不假造 Binding 已实现，不偷偷改成 JSON Remote UI；向用户提交技术阻塞。对于 `TestPlugin` 的最终 C# 版本，普通 Binding、INotifyPropertyChanged、ICommand、TwoWay UpdateSourceTrigger=PropertyChanged 是独立验收项，不是仅展示静态界面。
 
-### 6.3 完整编译期 XAML（G3，实验性）
+### 6.3 完整编译期 XAML（G3）
+
+2026-11-27 实现更新：C++ PrototypeHost 已实测 PRI 内嵌 XBF 页面及 Click/ABI；按用户要求生产宿主已接入，正式 Windows 回归仍是发布门槛。插件包只部署同名组件 PRI，不允许独立 .xbf。C# compiled 尚未实现，保留 .xaml loose。下文为原设计验收目标，具体当前状态见 PluginSDK2-Testing.md。
 
 插件自定义 WinRT Page/UserControl 可以用其自身 IDL、XAML、code-behind、WinMD 及 PRI/XBF 构建，工厂 CreateView 通过 UIElement 交接，宿主不用认识具体 class。研究顺序：程序式 C++/WinRT 控件 → 插件 compiled UserControl → XBF/PRI 资源发现 → 自定义控件元数据/绑定/主题资源 → C# Native AOT compiled WinRT component。动态激活可由插件内部直接构造 runtimeclass 或标准 DllGetActivationFactory；不修改核心入口。验证 ResourceManager(path) 只实例化资源管理器不等同把资源自动加入 WinUI 当前资源图；必须验证实际 InitializeComponent、主题切换、x:Bind、事件、名称作用域、不同插件同名资源。参考 DynamicXAML，但其 DynamicLoader.cpp 使用 Detours 及固定 vtable 索引，禁止将它的资源 Hook 作为生产必需；禁止修改 WinUI 内部函数、硬编码偏移或私有 ABI、全局 XAML metadata 注入猜测。若受支持 API 无法满足，则 compiled mode 保持拒绝，附最小复现与上游问题链接，绝不悄悄降级。C# compiled WinRT component 的 AOT authoring 单独验证，不能由 C++ 成功推出。
 

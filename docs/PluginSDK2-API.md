@@ -107,7 +107,7 @@ WinUI 自身的 Click、Command 等事件未必经 SDK ABI adapter，异步事�
 | none | 不注册导航或视图 | 可注册命令、设置等 |
 | programmatic | new Button / StackPanel 等内置控件 | 无 xaml capability |
 | loose | 程序式控件、LoadXaml/ParseXaml | xaml capability；松散 XAML 不含 x:Class 或编译事件 |
-| compiled | 独立 WinUI runtime component + XBF | 仅 PrototypeHost 实验；正式宿主明确拒绝 |
+| compiled | WinUI runtime component + 内嵌 XBF 的组件 PRI | C++ PrototypeHost 已实测，主程序已接入待验收；C# compiled 未实现 |
 
 ### 松散 XAML（.xaml）
 
@@ -164,7 +164,7 @@ public sealed partial class Model : System.ComponentModel.INotifyPropertyChanged
 
 ### 编译期 XAML 实验
 
-C++ runtime component 的 Page 有 IDL、x:Class、x:Bind、XAML 编译器生成的 Connect/GetBindingConnector、XBF（二进制 XAML）与可能的 PRI（资源索引）。C++/WinRT make/make_self 会调用可访问的 InitializeComponent。默认 ms-appx:///Component/Page.xaml URI 在包外插件无法直接定位。仓库 PluginPage.xaml.cpp 使用显式 InitializeComponent 只延迟加载，随后 InitializePluginView 根据已校验 PackageDirectory 构建绝对 ms-appx URI。PrototypeHost 通过直接调用组件 DllGetActivationFactory 创建 IXamlMetadataProvider 并接入标准 App 的生成 provider。该路径曾在旧 Debug harness 成功，但新模板、AOT、主题、嵌套控件、PRI 和多插件冲突仍需验证。不使用 Detours、私有 XAML API、偏移或写入宿主安装目录。正式主程序当前拒绝 compiled 包；C# compiled runtime component 未提供。
+C++ runtime component 的 Page 使用正常 IDL、x:Class、x:Bind、编译器生成的 Connect/GetBindingConnector 与 InitializeComponent。组件 PRI 内嵌 XBF，不分发独立 XBF。两个宿主共享 PluginPriResources：ResourceManagerRequested 接入普通 MRT manager，ResourceNotFound 将未找到的组件资源路由到其 PRI，返回 EmbeddedData。PrototypeHost 使用生成的 AddOtherProvider；主程序保留原有自动 provider 生成并显式实现 IXamlMetadataProvider 补充插件查找。C++ PRI 页面、Click 与 Exercise ABI 已有用户成功日志；主程序编译、两种发布及完整资源行为待验证。C# compiled 尚未实现，保留 Loose XAML，详见 [XAML 指南](PluginSDK2-Xaml.md)。
 
 ## 4. C++/WinRT ABI 参考
 

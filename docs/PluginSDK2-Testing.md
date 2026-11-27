@@ -74,15 +74,15 @@ dotnet build .\samples\CSharpAot\TestPlugin.Aot.csproj -c Release -p:Platform=x6
 pwsh -File .\build\Test-Packaging.ps1 -ManagedDll .\artifacts\managed-fixture\TestPlugin.Aot.dll
 ```
 
-测试脚本将普通托管 DLL 替换合法包入口并重新计算正确的 SHA256，再要求 verify 拒绝；因此失败不能被简单归因于哈希错误。随后分别启动 JIT/AOT PrototypeHost，手动填入该裸 DLL 完整路径（不要打包），Inspect and load，确认仅加载本地自己构建的可信样本。记录 LoadLibraryExW 是否成功；若失败，记录 Win32Exception.NativeErrorCode；若映射成功但没有 HutaoPluginCreate 导出，则记录 CsWin32 GetProcAddress 的 EntryPointNotFoundException。2026-11-27 用户报告两种宿主均不能加载普通 IL DLL；提供的 AOT 日志显示 LoadLibraryExW 成功，GetProcAddress(HutaoPluginCreate) 返回 ERROR_PROC_NOT_FOUND (127)，JIT 也报告失败但未提供完整栈。这证实普通 Build 不会生成原生导出，不恢复 ALC 托管加载器。每项记录 commit、SDK 版本、宿主路径、包 SHA256、Windows build、日志及 Pass/Fail/NotRun。正式 Snap Hutao 本身仍不支持 compiled 模式。
+测试脚本将普通托管 DLL 替换合法包入口并重新计算正确的 SHA256，再要求 verify 拒绝；因此失败不能被简单归因于哈希错误。随后分别启动 JIT/AOT PrototypeHost，手动填入该裸 DLL 完整路径（不要打包），Inspect and load，确认仅加载本地自己构建的可信样本。记录 LoadLibraryExW 是否成功；若失败，记录 Win32Exception.NativeErrorCode；若映射成功但没有 HutaoPluginCreate 导出，则记录 CsWin32 GetProcAddress 的 EntryPointNotFoundException。2026-11-27 用户报告两种宿主均不能加载普通 IL DLL；提供的 AOT 日志显示 LoadLibraryExW 成功，GetProcAddress(HutaoPluginCreate) 返回 ERROR_PROC_NOT_FOUND (127)，JIT 也报告失败但未提供完整栈。这证实普通 Build 不会生成原生导出，不恢复 ALC 托管加载器。每项记录 commit、SDK 版本、宿主路径、包 SHA256、Windows build、日志及 Pass/Fail/NotRun。正式 Snap Hutao 已接入 compiled 模式，仍需真实编译与运行验收。
 
-C++ compiled 是单独实验：重建 CppCompiled 并打包仅含 DLL + PRI 的新包，选择 C++ compiled (experimental)，确认 Generated InitializeComponent returned、[PluginPRI] Last embedded resource 为组件资源（不是 none）、x:Bind 文本和 Click；然后测试主题、嵌套控件、相同名称资源、多插件、两个发布宿主。标准模板的 App 生成的 AddOtherProvider 接入亦需验证。失败不影响 core 的程序式/loose 测试。正式应用拒绝 compiled，C# compiled 尚无实现。
+C++ compiled 是单独实验：重建 CppCompiled 并打包仅含 DLL + PRI 的新包，选择 C++ compiled (experimental)，确认 Generated InitializeComponent returned、[PluginPRI] Last embedded resource 为组件资源（不是 none）、x:Bind 文本和 Click；然后测试主题、嵌套控件、相同名称资源、多插件、两个发布宿主。标准模板的 App 生成的 AddOtherProvider 接入亦需验证。失败不影响 core 的程序式/loose 测试。正式应用现可安装启用 compiled；C# compiled 尚无实现。
 
 ## 3. 当前状态与发布门槛
 
-已报告的真实测试（旧 Debug harness）：两种 DLL 编译/发布与打包成功，两种插件加载 UI 成功；C++ compiled Page 在旧独立 XBF / 绝对 URI 方案中成功；新版 PRI-only 路径仍 NotRun。2026-11-27 用户随后确认 C++ Core 已正常加载（拆分前的代码）。拆分后的三项目、标准扩展名与六正两负矩阵仍需重新验证。C# Exercise ABI 曾报 Expected UI STA，随后提交的同步上下文修复尚无完整回归证据。旧 JIT/AOT Publish 宿主启动均 FailFast，随后用户引入标准 WinUI 模板。
+已报告的真实测试（旧 Debug harness）：两种 DLL 编译/发布与打包成功，两种插件加载 UI 成功；C++ compiled Page 在旧独立 XBF / 绝对 URI 方案中成功；新版 PRI-only 路径由用户确认成功（见下方 E22 证据）。2026-11-27 用户随后确认 C++ Core 已正常加载（拆分前的代码）。拆分后的三项目、标准扩展名与六正两负矩阵仍需重新验证。C# Exercise ABI 曾报 Expected UI STA，随后提交的同步上下文修复尚无完整回归证据。旧 JIT/AOT Publish 宿主启动均 FailFast，随后用户引入标准 WinUI 模板。
 
-本轮结构调整、主程序接入、三种核心 UI、Binding 示例、本地 SDK 分发、更新恢复与测试脚本是源码实现，**没有 Windows 执行环境中的新构建/运行结果**。不得把实现完成当作测试通过。正式合并/发布前必须运行上述测试；特别是标准 WinUI 生成的 metadata provider、资源发布、C# AOT Binding、主程序 DI 生成器、退出与更新故障注入。原始 Design.md 是目标规范，实际差异：更新显式重启应用、旧包先卸载保留数据再安装；编译期 XAML 未正式启用；未发布 NuGet；缺少真实 ABI 引用计数压力测试、全部事务故障注入及生产性能基线。需要后续真实 Windows 日志才能关掉这些门槛，不是隐藏的兼容承诺。
+本轮结构调整、主程序接入、三种核心 UI、Binding 示例、本地 SDK 分发、更新恢复与测试脚本是源码实现，**没有 Windows 执行环境中的新构建/运行结果**。不得把实现完成当作测试通过。正式合并/发布前必须运行上述测试；特别是标准 WinUI 生成的 metadata provider、资源发布、C# AOT Binding、主程序 DI 生成器、退出与更新故障注入。原始 Design.md 是目标规范，实际差异：更新显式重启应用、旧包先卸载保留数据再安装；正式主程序编译期 XAML 已开放源码路径，但运行未验收；未发布 NuGet；缺少真实 ABI 引用计数压力测试、全部事务故障注入及生产性能基线。需要后续真实 Windows 日志才能关掉这些门槛，不是隐藏的兼容承诺。
 
 ## 4. 主程序测试
 
@@ -128,3 +128,9 @@ C++ compiled 是单独实验：重建 CppCompiled 并打包仅含 DLL + PRI 的�
 ### PRI-only 包验证（维护者）
 
 在 SDK 根目录执行 `pwsh -File .\build\Test-Packaging.ps1 -Package .\artifacts\TestPlugin.Native.hutao`，应通过合法包并拒绝已同步修改 manifest 的 missing PRI 和 standalone XBF 两个负例。它只验证包规则；嵌入数据须用实际 WinUI 运行和 makepri dump 验证，见 XAML 指南。
+
+### 主程序 compiled 接入验收（E22）
+
+2026-11-27 用户日志（包 SHA256 `585dd2390d3d29a887caf2ffffde072d620b0c9764f9e8c16b96fd9dfae030dc`）：TestPlugin.Native、compiled、`[PluginPRI] Last embedded resource: Files/TestPlugin.Native/PluginPage.xbf`、`Generated InitializeComponent returned`、两次 `Compiled C++ XAML click`、worker callback、async round trip 和 Exercise ABI completed。上述项目 Pass（宿主发布模式未注明）；不能据此给 x:Bind 显示值、JIT/AOT 矩阵或正式应用标 Pass。
+
+主程序接入 c95e27c：先 Rebuild 主程序 Debug|x64，不安装插件启动，验证已有 SettingsCard、DevWinUI 主题、窗口、导航等资源及自定义控件；再安装刚才已通过的 TestPlugin.Native.hutao，启用、点击导航、检查页面/事件/命令、禁用再启用、重启自动加载。然后分别验证普通与 Native AOT 发布，及更高版本 staged update/rollback。VS Output 应有 `[PluginPRI] EmbeddedData: Files/TestPlugin.Native/PluginPage.xbf`。若生成 provider 类型名、IXamlMetadataProvider 封送或 App 初始化失败，记录第一条编译错误或异常，不将源码接入视为 Pass。正式主程序新接入全部 NotRun。

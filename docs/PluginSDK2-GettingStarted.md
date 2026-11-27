@@ -226,7 +226,7 @@ PrototypeHost 是正常的 WinUI 3 应用，可以从 SDK 分发目录直接启�
 
 更新 DLL：关闭整个 PrototypeHost 进程 → 重新 Build/Publish → 清理并重建 staging → 重新 pack → 启动新进程。Disable and re-enable 只测试同一已映射模块的生命周期，不是重载。松散 XAML 的内容可以编辑后重新打包，重新启动验证；VS XAML Hot Reload 只针对其支持的调试项目和编译资源，不能承诺任意第三方 Native AOT DLL 热替换。
 
-正式应用：打开插件管理入口 → 安装 .hutao → 检查信任对话框 → 启用 → 点击新增导航。设置管理页读取插件注册的设置，命令按钮执行注册命令。安装 .hutaodisabled 只保存包，不运行代码。编译期 XAML 包暂时只允许在 PrototypeHost 实验，不应安装为正式启用插件。
+正式应用：打开插件管理入口 → 安装 .hutao → 检查信任对话框 → 启用 → 点击新增导航。设置管理页读取插件注册的设置，命令按钮执行注册命令。安装 .hutaodisabled 只保存包，不运行代码。编译期 XAML 包可以安装并启用（组件 DLL + 同名 PRI）。先验证 C++ 示例；主程序新接入尚待 Windows 回归，C# Native AOT 的编译期 XAML 还未实现，继续使用 loose 或 programmatic。
 
 ## 7. 下一步
 

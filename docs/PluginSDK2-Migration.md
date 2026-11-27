@@ -23,7 +23,7 @@
 | 用户脚本（动态编译 C#） | 将所需功能改写为原生插件 | 不恢复旧脚本运行时 |
 | ALC 卸载或替换 DLL | 逻辑禁用；重启进程后替换 | 不支持热卸载 |
 | GenerateHutaoPlugin | VS Build/Native AOT Publish + Pack-Plugin.ps1：staging→pack→verify | 已提供脚本，本地验收待完成 |
-| 编译期 .xaml / x:Bind | C++ runtime component 实验；C# 先用 loose + Binding | v1 示例原本不是 XBF；详见 XAML 指南 |
+| 编译期 .xaml / x:Bind | C++ runtime component + 内嵌 PRI；C# 先用 loose + Binding | C++ PrototypeHost 已实测；主程序接入待验收，v1 示例原本不是 XBF |
 
 “已实现”只表示有代码路径，不是所有 Windows/AOT 组合的 Pass。
 

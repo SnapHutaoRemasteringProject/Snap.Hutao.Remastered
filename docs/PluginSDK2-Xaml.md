@@ -7,10 +7,10 @@
 | 简单 UI、排除资源问题 | programmatic | native DLL |
 | 与 v1 .hxaml 页面等价 | loose | native DLL + .xaml |
 | C# MVVM | loose + 生成 Binding 元数据 | native DLL + .xaml；AOT 验收待完成 |
-| C++ x:Class、x:Bind、生成事件、独立 runtime class | compiled 实验 | native DLL + 内嵌 XBF 的 PRI |
+| C++ x:Class、x:Bind、生成事件、独立 runtime class | compiled（推荐 C++ 完整 UI） | native DLL + 内嵌 XBF 的 PRI |
 | C# 编译期 XAML runtime component | 尚未实现验收 | 不承诺支持 |
 
-正式宿主接收 none、programmatic 和 loose；compiled 当前只能在 PrototypeHost 实验，不能将其写成已发布的能力。**v1 的示例本来就不是编译期 XAML。** v1 的 TestPlugin.csproj 将 TestPluginPage.hxaml 嵌入托管程序集；PluginScopedPage.LoadXamlManually 读取字符串并调用 XamlReader.Load。v2 保留这条基本路径，只将资源改为验证过的外部包文件，不需要 XBF 或插件 PRI 来实现它。
+正式宿主现在也接收 compiled（与 PrototypeHost 共享 PRI 路由）；主程序接入仍待验收。C++ 完整 UI 推荐 compiled；C# 仍需 loose，直到 C# Native AOT 编译期 XAML 得到实际验证。保留两种 UI 能力及既有 ABI。**v1 的示例本来就不是编译期 XAML。** v1 的 TestPlugin.csproj 将 TestPluginPage.hxaml 嵌入托管程序集；PluginScopedPage.LoadXamlManually 读取字符串并调用 XamlReader.Load。v2 保留这条基本路径，只将资源改为验证过的外部包文件，不需要 XBF 或插件 PRI 来实现它。
 
 ## 2. 创建一个 loose XAML 页面（完整代码）
 
@@ -234,7 +234,7 @@ ResourceManagerRequested += (_, args) =>
 };
 ```
 
-PluginPriResources 内部订阅真实 ResourceManager 的 ResourceNotFound。普通宿主资源仍走原有 PRI；只有宿主查找失败且名称属于已注册的插件组件时，才查询插件自己的 PRI。注册发生在已批准包加载后、OnLoad 前（与 AddOtherProvider 注册一起）。关键逻辑为：
+PluginPriResources 内部订阅真实 ResourceManager 的 ResourceNotFound。普通宿主资源仍走原有 PRI；只有宿主查找失败且名称属于已注册的插件组件时，才查询插件自己的 PRI。注册发生在已批准包加载后、OnLoad 前（与 Metadata Provider 注册一起）。关键逻辑为：
 
 ```csharp
 ResourceContext context = component.Manager.CreateResourceContext();
@@ -244,9 +244,9 @@ if (candidate?.Kind == ResourceCandidateKind.EmbeddedData)
     args.SetResolvedCandidate(candidate);
 ```
 
-完整代码见 [PluginPriResources.cs](../src/Snap.Hutao.Plugin.SDK/tests/PrototypeHost/PluginPriResources.cs)。MRT Context 属于创建它的 Manager，因此不能把宿主 context 原样传给另一个 PRI；需复制语言、缩放、主题等限定值。组件路由使用 DLL 文件名（不含 .dll）作为唯一资源前缀，示例 TestPlugin.Native.dll 对应 Files/TestPlugin.Native/...；组件自己的 PRI 可以使用此前缀或相对组件根路径。编译器生成的 URI 前缀须与 DLL 名一致，不能与宿主或其他组件重复。默认宿主查找优先，不覆盖已有资源。不处理 FilePath 候选、不写出临时 XBF、不修改宿主 PRI。资源映射与已驻留的 DLL 一起保留到进程退出。
+完整代码见 [PluginPriResources.cs](../src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Plugin/PluginPriResources.cs)。MRT Context 属于创建它的 Manager，因此不能把宿主 context 原样传给另一个 PRI；需复制语言、缩放、主题等限定值。组件路由使用 DLL 文件名（不含 .dll）作为唯一资源前缀，示例 TestPlugin.Native.dll 对应 Files/TestPlugin.Native/...；组件自己的 PRI 可以使用此前缀或相对组件根路径。编译器生成的 URI 前缀须与 DLL 名一致，不能与宿主或其他组件重复。默认宿主查找优先，不覆盖已有资源。不处理 FilePath 候选、不写出临时 XBF、不修改宿主 PRI。资源映射与已驻留的 DLL 一起保留到进程退出。
 
-Metadata Provider 仍是必须的：manifest.ui.mode=compiled、metadataProvider=TestPlugin.Native.XamlMetaDataProvider；宿主通过 DllGetActivationFactory 获取 provider，再用 App.AddOtherProvider 注册。参见 [E16](PluginSDK2-EngineeringNotes.md)。它负责类型信息，不负责资源数据。当前生产宿主仍不开放 compiled；C# 编译期 XAML 尚未实现。
+Metadata Provider 仍是必须的：manifest.ui.mode=compiled、metadataProvider=TestPlugin.Native.XamlMetaDataProvider；两个宿主通过 DllGetActivationFactory 获取 provider。PrototypeHost 仍用已验证的 App.AddOtherProvider；主程序不能关闭现有控件库自动注册，故 App.PluginXaml.cs 显式实现 IXamlMetadataProvider，优先查询编译器生成的完整宿主 provider，再查询插件 provider。PreConstruct 在源生成构造函数 InitializeComponent 之前订阅 ResourceManagerRequested。两者共享 PluginPriResources，不改变宿主 PRI 文件。主程序接入待验收；C# 编译期 XAML 尚未实现。
 
 ## 6. PRI 与 XBF：部署及验证
 
@@ -278,8 +278,8 @@ foreach ($file in $pri) {
 
 上游依据： [ResourceManagerRequested](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.application.resourcemanagerrequested)、[MRT ResourceMap.cpp](https://github.com/microsoft/WindowsAppSDK/blob/main/dev/MRTCore/mrt/Microsoft.Windows.ApplicationModel.Resources/src/ResourceMap.cpp)、[WinUI ModernResourceProvider.cpp](https://github.com/microsoft/microsoft-ui-xaml/blob/main/dxaml/xcp/components/mrt/ModernResourceProvider.cpp)、[MRTResource.cpp](https://github.com/microsoft/microsoft-ui-xaml/blob/main/dxaml/xcp/components/mrt/MRTResource.cpp)。TryGetValue 失败也会触发 ResourceNotFound，WinUI 能直接消费 EmbeddedData。参考 [WinUI #10308](https://github.com/microsoft/microsoft-ui-xaml/issues/10308) 关于 XBF 重复部署的报告。
 
-当前只是 PrototypeHost 的 PRI-backed compiled 实验，尚无新 Windows 实测。x:Uid 使用的 TryGetSubtree 路径不触发上述回调，故本实现不承诺自动本地化属性包；普通文件候选、跨组件资源、嵌套字典、多线程、多插件和 JIT/AOT 宿主仍需独立验证。主程序资源初始化不在本轮改动范围内。
+2026-11-27 用户已验证 PrototypeHost PRI-only 页面初始化、内嵌资源命中、Click 和异步命令。x:Uid 使用的 TryGetSubtree 路径不触发上述回调，故本实现不承诺自动本地化属性包；普通文件候选、跨组件资源、嵌套字典、多线程、多插件和 JIT/AOT 宿主仍需独立验证。主程序现已接入同一 PRI 路由，JIT/AOT 编译、启动与运行仍待验收。
 
 ## 7. 测试顺序
 
-先通过 programmatic → loose + event → loose + Binding，再单独运行 compiled 实验。确认实际包文件、页面创建、Click、x:Bind、关闭、重新打开；再测试主题、嵌套控件、两种宿主发布和多插件。当前没有新 Windows 执行证据，所有新资源与 Binding 组合仍需按 [Testing](PluginSDK2-Testing.md) 验收。
+先通过 programmatic → loose + event → loose + Binding，再单独运行 compiled 实验。确认实际包文件、页面创建、Click、x:Bind、关闭、重新打开；再测试主题、嵌套控件、两种宿主发布和多插件。除上述用户实测通过项目外，其余资源与 Binding 组合仍需按 [Testing](PluginSDK2-Testing.md) 验收。

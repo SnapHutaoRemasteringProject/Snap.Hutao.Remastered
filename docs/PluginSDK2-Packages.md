@@ -35,7 +35,7 @@
 | ui.mode | none / programmatic / loose / compiled |
 | ui.metadataProvider | 仅 compiled 必需；组件 WinRT runtimeclass 全名，如 TestPlugin.Native.XamlMetaDataProvider |
 
-compiled 包必须包含与 runtime.entry 同路径同文件名（扩展名 .pri）的组件 PRI，并列入 files；不接受独立 .xbf。组件 DLL 文件名（不含扩展名）与 XAML URI 的组件前缀一致。PRI 中 XBF 必须实际为 EmbeddedData；包校验只检查路径和完整性，运行时使用 MRT 检查候选，正式应用暂不开放 compiled。
+compiled 包必须包含与 runtime.entry 同路径同文件名（扩展名 .pri）的组件 PRI，并列入 files；不接受独立 .xbf。组件 DLL 文件名（不含扩展名）与 XAML URI 的组件前缀一致。PRI 中 XBF 必须实际为 EmbeddedData；包校验只检查路径和完整性，运行时使用 MRT 检查候选，正式应用已接入 compiled，尚待 Windows 验收。
 | capabilities | 唯一能力字符串数组，见下表 |
 | gameLibraries | 可选数组，最多 16 个唯一顶层 inject/*.dll 路径；与 game-libraries 能力同时声明，全部列入 files 并通过 native x64 PE 校验 |
 | files | 打包器生成 [{path,sha256}]；小写 64 个十六进制字符；不得列 manifest.json 本身 |
@@ -115,7 +115,7 @@ workspace 是当前进程的验证过的解压内容，不是用户数据目录�
 
 ## 4. 更新、回滚、卸载
 
-更新通过插件管理页选择 Update，必须同 ID、更高三段版本、兼容且非 compiled，并确认新包哈希。当前进程只暂存，不热替换；当前 active 插件可继续工作。重启后使用 Apply staged update（当前实现选择显式应用而不是无提示自动替换），将旧 ZIP 保存为 backup，验证 pending 后原子替换为 disabled 新包。用户再次启用新包；成功后清理 backup，失败保留备份供回滚。
+更新通过插件管理页选择 Update，必须同 ID、更高三段版本、与宿主 ABI/版本兼容，并确认新包哈希。当前进程只暂存，不热替换；当前 active 插件可继续工作。重启后使用 Apply staged update（当前实现选择显式应用而不是无提示自动替换），将旧 ZIP 保存为 backup，验证 pending 后原子替换为 disabled 新包。用户再次启用新包；成功后清理 backup，失败保留备份供回滚。
 
 Roll back：尚未应用时取消暂存；已应用时，若新版本未成功启用，恢复已验证的旧 ZIP 为 disabled 并清除批准，用户重新确认信任。若当前进程曾映射新版本，必须再重启才能启用恢复版。中断更新时检查 state.json、pending/backup SHA256；若文件和 marker 不一致，不自动信任其他文件。此更新恢复实现仍需故障注入测试；不是经过证明的完整事务日志实现。
 

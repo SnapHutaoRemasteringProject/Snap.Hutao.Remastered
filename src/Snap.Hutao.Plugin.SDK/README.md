@@ -44,7 +44,7 @@ Snap.Hutao.Plugin.SDK/
   samples/
     CSharpAot/                    # C# 原生 AOT 示例
     CppCore/                      # C++ 程序式/松散 XAML，无 Page/XBF
-    CppCompiled/                  # C++ 编译期 Page/XBF 实验
+    CppCompiled/                  # C++ 编译期 Page + 内嵌 PRI
   templates/                      # 第三方 C#/C++ 独立项目模板
   tools/PluginPack/                # pack / verify
   tests/PrototypeHost/             # 独立 WinUI 调试宿主
@@ -69,7 +69,7 @@ pwsh -File .\build\Pack-Samples.ps1 -Configuration Debug
 
 只打包一个样例时追加 -Sample CSharpAot、CppCore 或 CppCompiled。Configuration 指 C++ 的 VS 构建配置，C# 一律使用已 Publish 的原生 DLL。打包脚本不编译任何插件；若输出不存在，回到 VS 构建或发布。
 
-生成三份包：artifacts/TestPlugin.Native.Core.hutao、artifacts/TestPlugin.hutao、artifacts/TestPlugin.Native.hutao（compiled 仅 PrototypeHost 实验，组件 DLL + 内嵌 XBF 的 PRI，不含独立 XBF）。将 PrototypeHost 设置为启动项目，F5，选择对应样例按钮 → Inspect and load → 信任。测试所有视图、Exercise ABI、Disable and re-enable、Uninstall session。修改 DLL 后关闭整个宿主进程再 Build/Publish/pack；不支持热卸载。正常 UI 测试使用 .hutao，不要直接加载裸 DLL。
+生成三份包：artifacts/TestPlugin.Native.Core.hutao、artifacts/TestPlugin.hutao、artifacts/TestPlugin.Native.hutao（compiled 使用组件 DLL + 内嵌 XBF 的 PRI，不含独立 XBF；主程序已接入，待验收）。将 PrototypeHost 设置为启动项目，F5，选择对应样例按钮 → Inspect and load → 信任。测试所有视图、Exercise ABI、Disable and re-enable、Uninstall session。修改 DLL 后关闭整个宿主进程再 Build/Publish/pack；不支持热卸载。正常 UI 测试使用 .hutao，不要直接加载裸 DLL。
 
 生成 JIT/AOT 测试宿主：右键 PrototypeHost → Publish，分别选择 JitRelease / NativeAot。完整流程及已报告结果见 [测试指南](../../docs/PluginSDK2-Testing.md)。
 
@@ -83,4 +83,4 @@ pwsh -File .\build\Build-Sdk.ps1 -Version 2.0.0-preview.1 -IncludePrototypeHost
 
 输出 `artifacts\sdk\2.0.0-preview.1`；开发者可以只使用该分发目录，不需要引用 Snap Hutao 主工程。NuGet.org 发布需要独立的发布决策与验收。
 
-**验证状态**：2026-11-27 用户确认拆分前的 C++ Core 已正常加载；新目录和独立示例仍需重新构建验收。旧 Debug 测试中两种原生插件均已加载并显示 UI，C++ compiled Page 曾通过旧物理 XBF 方案成功；现已改为内嵌 PRI，需重新验证；C# 后续异步修复、标准模板 Release/AOT、Binding、新正式宿主及本地 SDK 分发尚需真实 Windows 验收。未经过验收的功能不能视作已经发布。详见测试矩阵。
+**验证状态**：2026-11-27 用户确认拆分前的 C++ Core 已正常加载；新目录和独立示例仍需重新构建验收。旧 Debug 测试中两种原生插件均已加载并显示 UI，2026-11-27 用户确认新版内嵌 PRI 路径成功：命中 Files/TestPlugin.Native/PluginPage.xbf，生成 InitializeComponent 返回、两次 Click 和 Exercise ABI 成功；主程序新增接入尚待编译/运行验收；C# 后续异步修复、标准模板 Release/AOT、Binding、新正式宿主及本地 SDK 分发尚需真实 Windows 验收。未经过验收的功能不能视作已经发布。详见测试矩阵。

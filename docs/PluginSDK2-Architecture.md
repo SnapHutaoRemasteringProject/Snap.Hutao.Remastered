@@ -88,7 +88,7 @@ sequenceDiagram
 | Snap.Hutao.Plugin.SDK/libraries/Snap.Hutao.Plugin.Packaging | 独立包校验库；不加载 DLL |
 | Snap.Hutao.Plugin.SDK/tools/PluginPack | 使用 Packaging 的命令行程序 |
 | Snap.Hutao.Plugin.SDK/tests/PrototypeHost | 标准 WinUI App.xaml、MainWindow、MainPage；链接正式核心宿主源码 |
-| Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Plugin | 正式宿主：NativePluginLoader、PluginResidency、PluginSession、PluginHostContext、SettingStore、PluginService、PluginPackageStore |
+| Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Plugin | 正式宿主：NativePluginLoader、PluginResidency、PluginSession、PluginHostContext、PluginPriResources、SettingStore、PluginService、PluginPackageStore |
 | Snap.Hutao.Remastered/Snap.Hutao.Remastered/UI/Xaml/View/Page | PluginPage、PluginSettingPage、PluginHostPage；管理、编辑设置、承载视图 |
 
 PrototypeHost 复用加载器、驻留、会话、context 和设置存储的源码，但并不运行正式 PluginService 的安装/更新事务或主程序导航逻辑。它是独立调试和 ABI 回归工具，不是生产宿主的替代品。项目模板在 templates/CSharpPlugin 与 templates/CppPlugin；samples/CSharpAot、samples/CppCore、samples/CppCompiled 是独立回归示例而不是第三方插件的必需依赖。
@@ -111,4 +111,4 @@ SDK 源码根目录按职责分为 contracts（IDL/ABI）、libraries（可复�
 | 发布给用户 | 分发 .hutao；用户在正式插件管理页检查来源和哈希，确认后启用 |
 | 扩展宿主 API | 先设计并审核 ABI/IID、capability、线程、所有权、版本和测试，不直接引用内部业务类型 |
 
-正式宿主拒绝 compiled XAML；C++ 编译期 Page / x:Bind 当前仅是 PrototypeHost 的内嵌 PRI 实验（不部署独立 XBF），C# compiled 尚无实现。程序式与 loose 路径独立验收。完整开发命令见 [开发者上手](PluginSDK2-GettingStarted.md)，接口见 [API](PluginSDK2-API.md)，包规范见 [Packages](PluginSDK2-Packages.md)，历史技术问题见 [Engineering Notes](PluginSDK2-EngineeringNotes.md)，验证证据见 [Testing](PluginSDK2-Testing.md)。
+C++ 编译期 Page 使用组件 DLL + 内嵌 PRI；PrototypeHost 的初始化、Click 与异步 ABI 已有用户实测成功报告。主程序已接入相同 PluginPriResources，启用/启动/更新不再拒绝 compiled；新的主程序 JIT/AOT 编译及运行尚未验收。主程序保留 XAML 编译器自动发现控件库 provider，App 显式实现 IXamlMetadataProvider，在生成的 provider 后查询插件 provider。C# compiled 尚无实现；因此保留 loose 作为 C# UI/MVVM 路线，不移除 ABI。程序式与 loose 路径独立验收。完整开发命令见 [开发者上手](PluginSDK2-GettingStarted.md)，接口见 [API](PluginSDK2-API.md)，包规范见 [Packages](PluginSDK2-Packages.md)，历史技术问题见 [Engineering Notes](PluginSDK2-EngineeringNotes.md)，验证证据见 [Testing](PluginSDK2-Testing.md)。
