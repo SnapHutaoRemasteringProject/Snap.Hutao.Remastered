@@ -14,7 +14,7 @@
 
 ## 2. 创建一个 loose XAML 页面（完整代码）
 
-现在松散与编译期 XAML 都使用标准 .xaml 扩展名。决定是否编译的是项目项类型（Build Action），不是文件后缀。C# 模板已关闭默认 Page 项；若添加松散 XAML，确保其 Build Action 为 None。C++ Core 项目将 CoreView.xaml 标为 None，只有 CppCompiled 的 PluginPage.xaml 是 Page。松散 XAML 不生成 XBF、代码连接或自己的 PRI；编译期 XAML 则由 XAML compiler 处理。旧 .hxaml 仅作为兼容输入。
+现在松散与编译期 XAML 都使用标准 .xaml 扩展名。决定是否编译的是项目项类型（Build Action），不是文件后缀。C# 模板已关闭默认 Page 项；若添加松散 XAML，确保其 Build Action 为 None。C++ Core 项目将 CoreView.xaml 标为 None，只有 CppCompiled 的 PluginPage.xaml 是 Page。松散 XAML 不生成 XBF、代码连接或自己的 PRI；编译期 XAML 则由 XAML compiler 处理。SDK 2.0 不兼容旧 .hxaml 文件；迁移时重命名为 .xaml，并同步修改项目项、打包路径和 LoadXaml 参数。
 
 ```xml
 <!-- C#：不让 WinUI 把文本资源当 Page 编译 -->

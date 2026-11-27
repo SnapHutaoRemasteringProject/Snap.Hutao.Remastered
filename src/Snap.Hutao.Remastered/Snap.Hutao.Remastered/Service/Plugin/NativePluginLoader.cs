@@ -3,7 +3,6 @@ using Microsoft.UI.Xaml.Markup;
 using WinRT;
 using Snap.Hutao.Plugin.Contracts;
 using Snap.Hutao.Plugin.Projection;
-using Snap.Hutao.Plugin.Packaging;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
@@ -63,7 +62,6 @@ internal static unsafe partial class NativePluginLoader
         {
             if (!Modules.TryGetValue(path, out library))
             {
-                PluginPackage.ValidateNativeEntry(path);
                 library = LoadLibraryExW(path, 0, SearchFlags);
                 if (library == 0) throw new Win32Exception(Marshal.GetLastPInvokeError());
                 Modules.Add(path, library); // Never unload mapped modules.

@@ -285,8 +285,8 @@ internal sealed partial class PluginHostContext : IPluginContext, IPluginSetting
         Demand("xaml"); Active();
         if (identity.UiMode != "loose") throw new UnauthorizedAccessException("Loose XAML not declared.");
         PackagePaths.ValidateRelativePath(relativePath);
-        if ((!relativePath.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase) && !relativePath.EndsWith(".hxaml", StringComparison.OrdinalIgnoreCase)) || !identity.Files.Contains(relativePath))
-            throw new UnauthorizedAccessException("XAML must be listed in the verified manifest.");
+        if (!relativePath.EndsWith(".xaml", StringComparison.OrdinalIgnoreCase) || !identity.Files.Contains(relativePath))
+            throw new UnauthorizedAccessException("Loose XAML must be a .xaml file listed in the verified manifest.");
         string path = PackagePaths.Resolve(identity.PackageDirectory, relativePath);
         PackagePaths.RejectReparseAncestors(path);
         using FileStream stream = File.OpenRead(path);

@@ -111,7 +111,7 @@ WinUI 自身的 Click、Command 等事件未必经 SDK ABI adapter，异步事�
 
 ### 松散 XAML（.xaml）
 
-标准扩展名并不表示编译：C# 项目关闭 EnableDefaultPageItems，将这些文件作为 None，C++ 项目使用 None 而非 Page。旧 .hxaml 仅作兼容输入。
+标准扩展名并不表示编译：C# 项目关闭 EnableDefaultPageItems，将这些文件作为 None，C++ 项目使用 None 而非 Page。SDK 2.0 的 LoadXaml 仅接受 .xaml，不兼容旧 .hxaml。
 
 ```xml
 <StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

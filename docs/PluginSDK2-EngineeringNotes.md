@@ -216,4 +216,8 @@ AddOtherProvider 不是 Application 公共 API，而是 XAML 编译器条件生�
 
 ### E17：C++ Core 错误进入编译期 Page
 
-日志中 Core 执行 Creating Page / LoadComponent URI，说明实际运行进入了原本只属于 compiled 的代码。此前两个包共用 TestPlugin.Native.dll，由 PluginId 选择工厂；旧 DLL、错误包或构建配置混用可能导致该现象，但实际根因没有得到断点或哈希证据。用户随后确认 Core 已恢复正常。为消除示例耦合，`d8979f7` 将两者拆成不同工程与不同 DLL，`cb53dcb` 将工程分别移到 samples/CppCore、samples/CppCompiled，`f7bbe39` 允许标准 .xaml 文件并保留旧 .hxaml 输入兼容；PrototypeHost 的样例按钮不再回退到裸 DLL，记录包 ID、模式、入口、哈希、viewId。Pack-Samples 明确要求构建配置，Build-Samples 自动构建并打包。未修改已验证的外部 Page/XBF URI 机制，也不将 compiled 模式开放到正式宿主。拆分后的六种正向运行组合及普通 IL DLL 拒绝测试为 NotRun；旧 Debug Core 成功不能替代新项目编译验收。
+日志中 Core 执行 Creating Page / LoadComponent URI，说明实际运行进入了原本只属于 compiled 的代码。此前两个包共用 TestPlugin.Native.dll，由 PluginId 选择工厂；旧 DLL、错误包或构建配置混用可能导致该现象，但实际根因没有得到断点或哈希证据。用户随后确认 Core 已恢复正常。为消除示例耦合，`d8979f7` 将两者拆成不同工程与不同 DLL，`cb53dcb` 将工程分别移到 samples/CppCore、samples/CppCompiled，`f7bbe39` 允许标准 .xaml 文件并保留旧 .hxaml 输入兼容；PrototypeHost 的样例按钮不再回退到裸 DLL，记录包 ID、模式、入口、哈希、viewId。Pack-Samples 明确要求构建配置，Build-Samples 自动构建并打包。未修改已验证的外部 Page/XBF URI 机制，也不将 compiled 模式开放到正式宿主。拆分后的六种正向运行组合及普通 IL DLL 测试为 NotRun；旧 Debug Core 成功不能替代新项目编译验收。
+
+### E18：移除 .hxaml 兼容与裸 DLL 额外预检查
+
+SDK 2.0 不要求向后兼容：LoadXaml 仅允许 .xaml，并保留 verified manifest 路径检查；包大小分类也仅按 .xaml 处理。为观察普通 C# IL DLL 在 JIT / AOT PrototypeHost 中的真实行为，撤销 f7bbe39 新增的裸 DLL 与共享原生加载器 PE 预检查（ValidateNativeEntry），保留正式 .hutao 原有 native PE/CorHeader 校验及信任确认。裸 DLL 直接进入 LoadLibraryExW，映射成功才查找 HutaoPluginCreate 导出。实际 Windows 错误码尚未验证（NotRun）。这不是新增普通 C# 插件支持。

@@ -52,7 +52,7 @@ Snap.Hutao.Plugin.SDK/
   artifacts/                      # 生成产物（gitignore）
 ```
 
-正式宿主实现仍位于主程序 Service/Plugin，PrototypeHost 通过 Compile Link 复用核心宿主源码，不存在独立 Host 运行时程序集。三个示例都有独立入口 DLL；C++ Core 不依赖 compiled 的 Page 生成代码。新松散 XAML 使用标准 .xaml 扩展名、Build Action=None；旧 .hxaml 仅兼容读取。
+正式宿主实现仍位于主程序 Service/Plugin，PrototypeHost 通过 Compile Link 复用核心宿主源码，不存在独立 Host 运行时程序集。三个示例都有独立入口 DLL；C++ Core 不依赖 compiled 的 Page 生成代码。新松散 XAML 使用标准 .xaml 扩展名、Build Action=None；旧 .hxaml 不受支持，必须改为 .xaml。
 
 ## 快速开始（维护者）
 
