@@ -39,14 +39,17 @@
         <!--  ReSharper restore Xaml.RedundantResource  -->
 
         <DataTemplate x:Key="ParameterDescriptionTemplate" x:DataType="shmm:ParameterDescription">
-            <cwc:SettingsCard
-                MinHeight="40"
-                Padding="16,0,42,0"
-                Background="{x:Bind IsSpecial, Converter={StaticResource BoolToSpecialBackgroundConverter}, Mode=OneWay}"
-                BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                Header="{x:Bind Description, Mode=OneWay}">
-                <TextBlock Text="{x:Bind Parameter, Mode=OneWay}"/>
-            </cwc:SettingsCard>
+            <!--  Framework root avoids the custom-control template connector CastExtensions.As failure under Native AOT (#389).  -->
+            <Grid>
+                <cwc:SettingsCard
+                    MinHeight="40"
+                    Padding="16,0,42,0"
+                    Background="{x:Bind IsSpecial, Converter={StaticResource BoolToSpecialBackgroundConverter}, Mode=OneWay}"
+                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                    Header="{x:Bind Description, Mode=OneWay}">
+                    <TextBlock Text="{x:Bind Parameter, Mode=OneWay}"/>
+                </cwc:SettingsCard>
+            </Grid>
         </DataTemplate>
     </UserControl.Resources>
 

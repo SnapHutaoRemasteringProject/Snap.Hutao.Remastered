@@ -31,13 +31,16 @@
         <!--  ReSharper restore Xaml.RedundantResource  -->
 
         <DataTemplate x:Key="BaseValueTemplate" x:DataType="shm:INamedValue">
-            <cwc:SettingsCard
-                MinHeight="40"
-                Padding="16,0,42,0"
-                BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                Header="{x:Bind Name, Mode=OneTime}">
-                <TextBlock Text="{x:Bind Value, Mode=OneTime}"/>
-            </cwc:SettingsCard>
+            <!--  Framework root avoids the custom-control template connector CastExtensions.As failure under Native AOT (#389).  -->
+            <Grid>
+                <cwc:SettingsCard
+                    MinHeight="40"
+                    Padding="16,0,42,0"
+                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                    Header="{x:Bind Name, Mode=OneTime}">
+                    <TextBlock Text="{x:Bind Value, Mode=OneTime}"/>
+                </cwc:SettingsCard>
+            </Grid>
         </DataTemplate>
     </UserControl.Resources>
 
