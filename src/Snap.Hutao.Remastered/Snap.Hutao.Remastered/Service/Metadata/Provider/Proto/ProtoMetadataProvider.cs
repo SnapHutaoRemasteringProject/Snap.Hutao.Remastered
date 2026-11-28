@@ -141,6 +141,16 @@ public sealed partial class ProtoMetadataProvider : MetadataProviderBase, IProto
         return true;
     }
 
+    protected override async ValueTask ResetCoreAsync(CancellationToken token)
+    {
+        using (await languageLock.LockAsync().ConfigureAwait(false))
+        {
+            language = null;
+            bundleInfo = null;
+            bundleFilePath = string.Empty;
+        }
+    }
+
     private async ValueTask<LanguageMetadata> GetLanguageAsync(CancellationToken token)
     {
         if (language is { } cached)

@@ -282,6 +282,31 @@
                     </StackPanel>
                 </Expander>
 
+                <TextBlock Style="{ThemeResource SettingsSectionHeaderTextBlockStyle}" Text="Metadata"/>
+
+                <cwc:SettingsCard Header="Override Metadata Bundle Path">
+                    <wl:LiquidGlassTextBox
+                        shuxcth:ControlMaterialState.IsManaged="True"
+                        MinWidth="{ThemeResource SettingsCardContentControlMinWidth}"
+                        PlaceholderText="Select a .hutaobin file or enter its full path"
+                        Text="{x:Bind DataContext.MetadataBundlePath, Mode=TwoWay}"/>
+                </cwc:SettingsCard>
+
+                <cwc:SettingsCard
+                    Command="{x:Bind DataContext.PickMetadataBundlePathCommand, Mode=OneWay}"
+                    Header="Browse Metadata Bundle"
+                    IsClickEnabled="True"/>
+
+                <cwc:SettingsCard
+                    Command="{x:Bind DataContext.ApplyMetadataBundlePathCommand, Mode=OneWay}"
+                    Header="Apply / Clear Metadata Bundle Path"
+                    IsClickEnabled="True"/>
+
+                <cwc:SettingsCard
+                    Command="{x:Bind DataContext.ReloadMetadataCommand, Mode=OneWay}"
+                    Header="Reload Proto Metadata"
+                    IsClickEnabled="True"/>
+
                 <TextBlock Style="{ThemeResource SettingsSectionHeaderTextBlockStyle}" Text="Testing"/>
 
                 <cwc:SettingsCard

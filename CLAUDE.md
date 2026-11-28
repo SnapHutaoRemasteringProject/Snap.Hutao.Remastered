@@ -335,11 +335,15 @@ the build fails with `CS9275`); write a normal constructor in that case.
   `PasswordBox` and `SearchBox` glass types hide the native thumb or paint an inner control, so
   those sites declare `MaterialSwap.Native` and `MaterialSwap.Glass` children. Keep event handlers
   and code-behind name matching (`ReferenceEquals(sender, X)` pairs) on both instances.
-- **`SettingsExpander.ItemTemplate` must root at `SettingsCard`** — the control applies its
-  `SettingsCard` style to the realized item root in `ElementPrepared`. A `Grid` root (including the
-  old #389 AOT workaround) throws `COMException 0x800F1000`, surfaced as a XAML stowed exception
-  `0xc000027b`. Keep the template root a `SettingsCard`; if Native AOT #389 recurs, fix the connector
-  or use `Expander` + `ItemsControl` for that build, never a `Grid` wrapper.
+- **Native AOT `DataTemplate` connectors must not cast custom controls** — `{x:Bind}` generates
+  connector casts for each bound element, and a cast to an application control can fail with
+  `E_NOINTERFACE` (issue #389). In wiki item templates, use classic `{Binding}` for properties
+  bound on custom controls; the source type must expose those properties through
+  `GeneratedBindableCustomProperty` or `IBindableCustomPropertyImplementation`, never the
+  reflection-only fallback. **`SettingsExpander.ItemTemplate` must root at `SettingsCard`** because
+  the control applies its `SettingsCard` style to the realized item root in `ElementPrepared`. A
+  `Grid` root (including the old #389 workaround) throws `COMException 0x800F1000`, surfaced as a
+  XAML stowed exception `0xc000027b`; use `{Binding}` rather than a wrapper there.
 - **Templates shared by `Skill` and `ProudSkill` bind through `ISkillNameIcon`** — after the
   protobuf migration these are unrelated types (`ProudSkill` no longer derives from `Skill`), so a
   header template used by both the skill and talent pivots must use
@@ -704,6 +708,7 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
+| 2026-11-28 | Fixed the recurring Native AOT wiki grid crash (#389): the generated `WikiAvatarPage_obj4_Bindings.Connect` cast its bound custom `ItemIcon`, so avatar/weapon/monster grid templates now use classic bindings on `ItemIcon` and retain compiled bindings on framework elements. Added generated WinRT bindable-property accessors for the exact model properties those bindings read, avoiding reflection fallback. The three wiki `SettingsExpander` item templates also use classic bindings while keeping `SettingsCard` roots, avoiding both the custom-control connector cast and the `Grid`-root style exception; documented the rule in §5.3. |
 | 2026-11-28 | Proto metadata bundle now refreshes with Cloudflare ETag validation (`If-None-Match` / `304`), persists the ETag beside the atomically validated bundle, expires cache entries after 7 days since successful validation/download, retains unexpired cache on refresh failures, and limits cached refreshes to 30 seconds. |
 | 2026-11-22 | Split metadata into `IMetadataProvider` (keyed Git/Proto providers) and the `IMetadataService` manager, added the proto bundle source (codec, HTTP bundle source, 30 category adapters, `MetadataCache` with generation-based `ClearCache`, source switching/fallback/network retry), vendored the `uint32` schema with committed generated C#, and deleted `LegacyMetadataService`; §5.5 rewritten, §8 #11 updated. |
 | 2026-11-10 | Replaced runtime EF migrations with generated versioned SQL and an atomic, history-validating SQLite upgrade runner; added source fingerprint checks, EF-created legacy database parity verification, and an actual Native AOT database test project. EF model/query work remains separate. |

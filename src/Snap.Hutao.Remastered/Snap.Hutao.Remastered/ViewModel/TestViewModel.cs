@@ -20,6 +20,7 @@ using Snap.Hutao.Remastered.Service.Game.Package.Advanced;
 using Snap.Hutao.Remastered.Service.Game.Package.Advanced.Model;
 using Snap.Hutao.Remastered.Service.Game.Scheme;
 using Snap.Hutao.Remastered.Service.Hutao;
+using Snap.Hutao.Remastered.Service.Metadata;
 using Snap.Hutao.Remastered.Service.Notification;
 using Snap.Hutao.Remastered.UI.Windowing;
 using Snap.Hutao.Remastered.UI.Xaml.View.Window;
@@ -52,6 +53,8 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
     private readonly ILogger<TestViewModel> logger;
     private readonly ITaskContext taskContext;
     private readonly IMessenger messenger;
+    private readonly IMetadataService metadataService;
+    private string metadataBundlePath = LocalSetting.Get(SettingKeys.MetadataBundlePath, string.Empty);
 
     [GeneratedConstructor]
     public partial TestViewModel(IServiceProvider serviceProvider);
@@ -69,6 +72,12 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
     public DesignationOptions CdnDesignationOptions { get; } = new();
 
     public RedeemCodeGenerateOptions RedeemCodeGenerateOption { get; set => SetProperty(ref field, value); } = new();
+
+    public string MetadataBundlePath
+    {
+        get => metadataBundlePath;
+        set => SetProperty(ref metadataBundlePath, value);
+    }
 
     public bool OverrideElevationRequirement
     {
@@ -374,6 +383,73 @@ public sealed partial class TestViewModel : Abstraction.ViewModel
             bool isSolidState = PhysicalDrive.DangerousGetIsSolidState(file);
             messenger.Send(InfoBarMessage.Success($"The path '{file}' belongs to a {(isSolidState ? "solid state" : "hard disk")} drive."));
         }
+    }
+
+    [Command("PickMetadataBundlePathCommand")]
+    private void PickMetadataBundlePath()
+    {
+        if (fileSystemPickerInteraction.PickFile("Select metadata bundle", null, "HutaoBin", "*.hutaobin") is not (true, { HasValue: true } file))
+        {
+            return;
+        }
+
+        MetadataBundlePath = file;
+        ApplyMetadataBundlePath();
+    }
+
+    [Command("ApplyMetadataBundlePathCommand")]
+    private void ApplyMetadataBundlePath()
+    {
+        TryApplyMetadataBundlePath();
+    }
+
+    private bool TryApplyMetadataBundlePath()
+    {
+        if (string.IsNullOrWhiteSpace(MetadataBundlePath))
+        {
+            LocalSetting.Set(SettingKeys.MetadataBundlePath, string.Empty);
+            messenger.Send(InfoBarMessage.Success("Metadata bundle path override cleared"));
+            return true;
+        }
+
+        string path;
+        try
+        {
+            path = Path.GetFullPath(MetadataBundlePath);
+        }
+        catch (Exception exception) when (exception is ArgumentException or IOException or NotSupportedException)
+        {
+            messenger.Send(InfoBarMessage.Warning("Metadata bundle path is invalid"));
+            return false;
+        }
+
+        if (!File.Exists(path))
+        {
+            messenger.Send(InfoBarMessage.Warning("Metadata bundle file does not exist"));
+            return false;
+        }
+
+        MetadataBundlePath = path;
+        LocalSetting.Set(SettingKeys.MetadataBundlePath, path);
+        messenger.Send(InfoBarMessage.Success("Metadata bundle path override saved"));
+        return true;
+    }
+
+    [Command("ReloadMetadataCommand")]
+    private async Task ReloadMetadataAsync()
+    {
+        if (!TryApplyMetadataBundlePath())
+        {
+            return;
+        }
+
+        bool initialized = await metadataService.ReloadAsync(MetadataSourceKind.Proto).ConfigureAwait(false);
+        InfoBarMessage message = initialized && metadataService.ActiveSource is MetadataSourceKind.Proto
+            ? InfoBarMessage.Success("Proto metadata reloaded")
+            : InfoBarMessage.Warning(initialized
+                ? $"Proto metadata unavailable; active source is {metadataService.ActiveSource}"
+                : "Proto metadata reload failed");
+        messenger.Send(message);
     }
 
     [Command("ForceUpdateDialogCommand")]

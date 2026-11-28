@@ -113,6 +113,24 @@ public sealed partial class MetadataService : IMetadataService, IDisposable
         return await switching.ConfigureAwait(false);
     }
 
+    public ValueTask<bool> ReloadAsync(MetadataSourceKind kind, CancellationToken token = default)
+    {
+        Task<bool> reloading;
+        lock (gate)
+        {
+            active?.ClearCache();
+            TaskCompletionSource previous = initialized;
+            requested = kind;
+            active = null;
+            attempt = null;
+            initialized = new(TaskCreationOptions.RunContinuationsAsynchronously);
+            previous.TrySetResult();
+            reloading = attempt = ReloadThenInitializeAsync(initialized, kind, token);
+        }
+
+        return new(reloading);
+    }
+
     public ValueTask<ImmutableArray<T>> FromCacheOrSourceAsync<T>(MetadataCategory category, CancellationToken token = default)
         where T : class
     {
@@ -171,6 +189,27 @@ public sealed partial class MetadataService : IMetadataService, IDisposable
     {
         MetadataSourceKind preference = requested ?? sourceOptions.Source.Value;
         return attempt ??= AttemptAsync(initialized, preference, token);
+    }
+
+    private async Task<bool> ReloadThenInitializeAsync(TaskCompletionSource completion, MetadataSourceKind kind, CancellationToken token)
+    {
+        await Task.CompletedTask.ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
+        MetadataSourceKind resetKind = EnumerateCandidates(kind).First();
+        await GetProvider(resetKind).ResetAsync(token).ConfigureAwait(false);
+
+        Task<bool> initialization;
+        lock (gate)
+        {
+            if (!ReferenceEquals(initialized, completion))
+            {
+                return false;
+            }
+
+            attempt = null;
+            initialization = GetOrStartAttempt(token);
+        }
+
+        return await initialization.ConfigureAwait(false);
     }
 
     private async Task<bool> AttemptAsync(TaskCompletionSource completion, MetadataSourceKind preference, CancellationToken token)

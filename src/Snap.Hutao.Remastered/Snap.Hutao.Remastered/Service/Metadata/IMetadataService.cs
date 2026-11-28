@@ -41,6 +41,11 @@ public interface IMetadataService : IMetadataServiceInitialization
     /// </summary>
     ValueTask<bool> SwitchAsync(MetadataSourceKind kind, CancellationToken token = default);
 
+    /// <summary>
+    /// Reloads metadata from the selected source, resetting its provider state before initialization.
+    /// </summary>
+    ValueTask<bool> ReloadAsync(MetadataSourceKind kind, CancellationToken token = default);
+
     ValueTask<ImmutableArray<T>> FromCacheOrSourceAsync<T>(MetadataCategory category, CancellationToken token = default)
         where T : class;
 

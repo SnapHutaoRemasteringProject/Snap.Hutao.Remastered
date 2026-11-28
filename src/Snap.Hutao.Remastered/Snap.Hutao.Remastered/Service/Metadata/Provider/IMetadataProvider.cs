@@ -27,6 +27,11 @@ public interface IMetadataProvider
     /// </summary>
     ValueTask<bool> InitializeAsync(CancellationToken token = default);
 
+    /// <summary>
+    /// Resets initialization and in-memory data so the next initialization observes updated files.
+    /// </summary>
+    ValueTask ResetAsync(CancellationToken token = default);
+
     ValueTask<ImmutableArray<T>> FromCacheOrSourceAsync<T>(MetadataCategory category, CancellationToken token = default)
         where T : class;
 

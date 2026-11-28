@@ -78,6 +78,22 @@ public abstract class MetadataProviderBase : IMetadataProvider, IDisposable
         }
     }
 
+    public async ValueTask ResetAsync(CancellationToken token = default)
+    {
+        using CancellationTokenSource linked = CancellationTokenSource.CreateLinkedTokenSource(token, XamlApplicationLifetime.ShutdownToken);
+        await initializationGate.WaitAsync(linked.Token).ConfigureAwait(false);
+        try
+        {
+            isInitialized = false;
+            ClearCache();
+            await ResetCoreAsync(linked.Token).ConfigureAwait(false);
+        }
+        finally
+        {
+            initializationGate.Release();
+        }
+    }
+
     public abstract ValueTask<ImmutableArray<T>> FromCacheOrSourceAsync<T>(MetadataCategory category, CancellationToken token = default)
         where T : class;
 
@@ -105,4 +121,9 @@ public abstract class MetadataProviderBase : IMetadataProvider, IDisposable
     /// Prepares the source. Returns false when unavailable; cancellation is thrown.
     /// </summary>
     protected abstract ValueTask<bool> InitializeCoreAsync(CancellationToken token);
+
+    protected virtual ValueTask ResetCoreAsync(CancellationToken token)
+    {
+        return ValueTask.CompletedTask;
+    }
 }
