@@ -15,7 +15,11 @@ public sealed partial class AvatarNameCardIconConverter : ValueConverter<string,
             return default!;
         }
 
-        return StaticResourcesEndpoints.StaticRaw("NameCardIcon", $"{name}.png").ToUri();
+        string category = name.StartsWith("UI_NameCardPic_", StringComparison.Ordinal)
+            ? "NameCardPic"
+            : "NameCardIcon";
+
+        return StaticResourcesEndpoints.StaticRaw(category, $"{name}.png").ToUri();
     }
 
     public override Uri Convert(string from)
