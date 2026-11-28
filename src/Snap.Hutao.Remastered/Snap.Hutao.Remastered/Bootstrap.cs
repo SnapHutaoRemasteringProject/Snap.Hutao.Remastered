@@ -54,6 +54,16 @@ public static partial class Bootstrap
         ComWrappersSupport.InitializeComWrappers();
         using IDisposable telemetry = LoggerFactoryExtension.InitializeSentry();
 
+        // Headless tile refresh requested by a scheduled task: no XAML, no single-instance
+        // registration (the running instance keeps owning the key and refreshes on its own),
+        // refresh and exit. Must run before the instance key is claimed.
+        if (TileRefreshActivation.IsRequested(args))
+        {
+            TileRefreshActivation.RunHeadless();
+            SentrySdk.Flush();
+            return;
+        }
+
         // WinAppSDK atomically assigns the single-instance key. Unlike the old
         // open-then-create event check, concurrent launches cannot both become the owner.
         string instanceKey = "Snap.Hutao.Remastered" + AppDataPaths.InstanceSuffix;

@@ -137,12 +137,36 @@ internal sealed partial class DailyNoteTileContentFactory : IDailyNoteTileConten
 
         if (dailyNote.Transformer is { Obtained: true } transformer)
         {
-            // 显示剩余冷却时间（如「2小时30分钟」），而不是「已准备完成」这类状态文案。
-            string transformerText = transformer.RecoveryTime.TimeLeftFormatted;
+            string transformerText = BuildTransformerTileValue(transformer.RecoveryTime);
             rows.Add(BuildIconRow(IconTransformerUrl, SH.FormatServiceDailyNoteTileLabelValue(SH.ServiceDailyNoteNotifierTransformer, transformerText), "caption"));
         }
 
         return BuildLargeEntryRows(rows);
+    }
+
+    /// <summary>
+    /// 参量质变仪在大磁贴上的数值部分，只有两种状态：
+    /// 冷却完成时显示「可使用」，冷却中显示剩余时间——按小时向下取整（如「12 h」），
+    /// 不足一小时时退回分钟（如「30 min」）。
+    /// 不复用 <see cref="RecoveryTime.TimeLeftFormatted"/>：那个是「2 时 30 分」式的多段拼接，
+    /// 磁贴行宽有限且用户只需要一个粗略的整小时数。
+    /// </summary>
+    private static string BuildTransformerTileValue(RecoveryTime recoveryTime)
+    {
+        if (recoveryTime.Reached)
+        {
+            return SH.WebDailyNoteTransformerReached;
+        }
+
+        // Day 是剩余时间里的整天部分、Hour 是余下的小时部分，合起来才是总小时数。
+        int totalHours = (recoveryTime.Day * 24) + recoveryTime.Hour;
+        if (totalHours > 0)
+        {
+            return SH.FormatServiceDailyNoteTileTransformerHours(totalHours);
+        }
+
+        // 不足一小时：向下取整会得到 0，改用分钟，最少显示 1 分钟。
+        return SH.FormatServiceDailyNoteTileTransformerMinutes(Math.Max(1, recoveryTime.Minute));
     }
 
     /// <summary>

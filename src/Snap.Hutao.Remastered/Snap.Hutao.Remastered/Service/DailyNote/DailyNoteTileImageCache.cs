@@ -63,12 +63,14 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
 
     private readonly DailyNoteOptions options;
     private readonly IImageCacheDownloadOperation downloadOperation;
+    private readonly IImageCache imageCache;
     private readonly ILogger<DailyNoteTileImageCache> logger;
 
     /// <summary>
     /// 图标缓存只准备一次；失败时保留 faulted 的任务状态，下一次调用重新尝试。
     /// </summary>
     private Task? iconsPreparedTask;
+
 
     [GeneratedConstructor]
     public partial DailyNoteTileImageCache(IServiceProvider serviceProvider);
@@ -114,13 +116,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
 
         try
         {
-            // 超时必须作为令牌传进下载器：只做 WaitAsync 的话，被放弃的请求会继续跑，
-            // 占着响应体写入临时文件，也占着共享客户端的连接。
-            using (CancellationTokenSource timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(token))
-            {
-                timeoutSource.CancelAfter(TimeSpan.FromSeconds(DownloadTimeoutSeconds));
-                await downloadOperation.DownloadFileAsync(nameCardUri, temporaryFile, timeoutSource.Token).ConfigureAwait(false);
-            }
+            await PrepareSourceImageAsync(nameCardUri, temporaryFile, token).ConfigureAwait(false);
         }
         catch (Exception ex) when (!token.IsCancellationRequested)
         {
@@ -164,6 +160,40 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
         // 两张裁剪图都落盘后才写来源记录：缓存与来源一起提交，替换才算完成。
         await WriteBackgroundSourceAsync(avatarId, nameCardUri, token).ConfigureAwait(false);
         return TileBackgroundImageOutcome.Downloaded;
+    }
+
+    /// <summary>
+    /// 取一张可供裁剪的原始名片图并写到 <paramref name="destination"/>。
+    /// 优先复用程序自己的图片缓存：同一张名片图在角色列表等处早已下载过，
+    /// 直接拷贝本地文件即可，不必再走一次网络。缓存缺失时才真正下载。
+    /// </summary>
+    private async ValueTask PrepareSourceImageAsync(Uri nameCardUri, string destination, CancellationToken token)
+    {
+        // 图片缓存位于 LocalCacheFolder，磁贴引用不到它，但读取源文件不受此限制：
+        // 裁剪结果会写到磁贴真正引用的位置。
+        // 用 TryGetExistingFile 而不是 GetFileFromCacheAsync：后者在缓存未命中时会自行
+        // 发起一次没有取消令牌、也没有超时的下载，服务器卡住时整条选背景流程会无限挂起。
+        if (imageCache.TryGetExistingFile(nameCardUri) is { } cached)
+        {
+            try
+            {
+                await using FileStream source = File.OpenRead(cached);
+                await using FileStream target = File.Create(destination);
+                await source.CopyToAsync(target, token).ConfigureAwait(false);
+                return;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                // 缓存文件读不了（被占用、权限变化）：退回下载，不让选背景失败。
+                logger.LogDebug(ex, "Unable to reuse cached name card image, falling back to download");
+            }
+        }
+
+        // 超时必须作为令牌传进下载器：只做 WaitAsync 的话，被放弃的请求会继续跑，
+        // 占着响应体写入临时文件，也占着共享客户端的连接。
+        using CancellationTokenSource timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(token);
+        timeoutSource.CancelAfter(TimeSpan.FromSeconds(DownloadTimeoutSeconds));
+        await downloadOperation.DownloadFileAsync(nameCardUri, destination, timeoutSource.Token).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -405,6 +435,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     {
         using SentrySpanScope span = SentrySpanScope.StartOperation("daily_note_tile.prepare_icons", "daily_note_tile");
 
+
         string directory = IconCacheDirectory;
         Directory.CreateDirectory(directory);
 
@@ -584,6 +615,7 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     /// </summary>
     public string? ResolveIconSource(string url)
     {
+
         foreach ((string entryUrl, string fileName, _) in IconEntries)
         {
             if (entryUrl == url)
@@ -605,6 +637,22 @@ internal sealed partial class DailyNoteTileImageCache : IDailyNoteTileImageCache
     {
         string? avatarId = options.TileBackgroundAvatarId.Value;
         return string.IsNullOrEmpty(avatarId) ? null : ResolveBackgroundImageSource(avatarId, isWide);
+    }
+
+
+    public string? ResolveCachedBackgroundFilePath(string avatarId, bool isWide)
+    {
+        string suffix = isWide ? "_wide" : "_large";
+        foreach (string extension in BackgroundImageExtensions)
+        {
+            string path = Path.Combine(BackgroundCacheDirectory, $"{avatarId}{suffix}{extension}");
+            if (File.Exists(path))
+            {
+                return path;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>

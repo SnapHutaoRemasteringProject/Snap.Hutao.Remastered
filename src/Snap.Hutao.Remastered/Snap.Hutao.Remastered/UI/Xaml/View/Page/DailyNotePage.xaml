@@ -573,6 +573,22 @@
                                                         </DataTemplate>
                                                     </RadioButtons.ItemTemplate>
                                                 </RadioButtons>
+                                                <cwc:SettingsCard
+                                                    Description="{shuxm:ResourceString Name=ViewPageDailyNoteTileBackgroundRefreshDescription}"
+                                                    Header="{shuxm:ResourceString Name=ViewPageDailyNoteTileBackgroundRefresh}"
+                                                    HeaderIcon="{shuxm:FontIcon Glyph=&#xE895;}">
+                                                    <wl:LiquidGlassToggleSwitch
+                                                        Margin="24,0,0,0"
+                                                        shuxcth:ControlMaterialState.IsManaged="True"
+                                                        IsOn="{x:Bind DataContext.IsTileBackgroundRefreshScheduled, Mode=TwoWay}"/>
+                                                </cwc:SettingsCard>
+                                                <!--  列出依赖文件名，便于用户在被安全软件拦截时按名放行  -->
+                                                <InfoBar
+                                                    IsClosable="False"
+                                                    IsOpen="True"
+                                                    Message="{shuxm:ResourceString Name=ViewPageDailyNoteTileBackgroundRefreshScriptHint}"
+                                                    Severity="Informational"
+                                                    Visibility="{x:Bind DataContext.IsTileBackgroundRefreshScheduled, Mode=OneWay}"/>
                                             </StackPanel>
                                         </cwc:HeaderedContentControl>
 

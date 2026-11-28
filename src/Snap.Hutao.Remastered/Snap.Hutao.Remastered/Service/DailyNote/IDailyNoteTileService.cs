@@ -33,8 +33,41 @@ internal interface IDailyNoteTileService
     /// <summary>
     /// 用给定的便笺条目更新主磁贴；没有内容可发布时清空磁贴。
     /// </summary>
-    /// <returns>磁贴是否已更新；当前进程无法更新磁贴时返回 <see langword="false"/>。</returns>
-    bool TryUpdatePrimaryTile(IReadOnlyCollection<DailyNoteEntry> entries);
+    /// <returns>更新结果。调用方据此给出可区分的提示，而不是笼统的「更新失败」。</returns>
+    TileUpdateResult UpdatePrimaryTile(IReadOnlyCollection<DailyNoteEntry> entries);
+}
+
+/// <summary>
+/// 一次主磁贴更新的结果。原先只返回 <see langword="bool"/>，界面无法区分
+/// 「环境不支持」「没有内容」「写入被系统拒绝」这些完全不同的情况。
+/// </summary>
+internal enum TileUpdateOutcome
+{
+    /// <summary>磁贴已按当前数据更新（或按无内容清空）。</summary>
+    Succeeded,
+
+    /// <summary>未打包运行：进程没有包身份，磁贴 API 不可用。</summary>
+    NotPackaged,
+
+    /// <summary>进程已提权：Shell 通知由未提权的资源管理器接管，提权进程写不进去。</summary>
+    Elevated,
+
+    /// <summary>磁贴 XML 已生成，但系统拒绝写入（配额、格式或通知服务异常）。</summary>
+    UpdateRejected,
+
+    /// <summary>生成磁贴内容时出错（模板或图片地址不可用）。</summary>
+    ContentFailed,
+}
+
+/// <summary>
+/// 磁贴更新结果与失败原因。<see cref="Failure"/> 只用于日志与诊断，
+/// 不直接显示给用户（界面按 <see cref="Outcome"/> 取本地化文案）。
+/// </summary>
+/// <param name="Outcome">结果分类。</param>
+/// <param name="Failure">失败时记录的原因；成功时为 <see langword="null"/>。</param>
+internal sealed record TileUpdateResult(TileUpdateOutcome Outcome, string? Failure = null)
+{
+    public bool Succeeded => Outcome is TileUpdateOutcome.Succeeded;
 }
 
 /// <summary>

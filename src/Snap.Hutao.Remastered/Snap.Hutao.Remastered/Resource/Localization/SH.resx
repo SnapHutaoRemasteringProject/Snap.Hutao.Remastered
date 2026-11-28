@@ -977,6 +977,12 @@
   <data name="ServiceDailyNoteNotifierTransformerHint" xml:space="preserve">
     <value>参量质变仪已准备完成</value>
   </data>
+  <data name="ServiceDailyNoteTileTransformerHours" xml:space="preserve">
+    <value>{0} h</value>
+  </data>
+  <data name="ServiceDailyNoteTileTransformerMinutes" xml:space="preserve">
+    <value>{0} min</value>
+  </data>
   <data name="ServiceGachaLogFactoryAvatarWishName" xml:space="preserve">
     <value>角色活动</value>
   </data>
@@ -2854,6 +2860,63 @@
   </data>
   <data name="ViewPageDailyNoteSettingAutoRefresh" xml:space="preserve">
     <value>自动刷新</value>
+  </data>
+  <data name="ViewPageDailyNoteTileBackgroundRefresh" xml:space="preserve">
+    <value>后台刷新磁贴</value>
+  </data>
+  <data name="ViewPageDailyNoteTileBackgroundRefreshDescription" xml:space="preserve">
+    <value>注册系统计划任务，即使胡桃未运行也会定时更新磁贴（仅 MSIX 安装版可用）</value>
+  </data>
+  <data name="ViewModelDailyNoteTileScheduleScriptMissing" xml:space="preserve">
+    <value>后台刷新任务找不到脚本。若杀毒软件拦截了 TileRefresh.ps1 或 TileRefresh.vbs，请将其加入白名单后重新开启本功能。</value>
+  </data>
+  <data name="ViewModelDailyNoteTileScheduleScriptHostDisabled" xml:space="preserve">
+    <value>系统脚本宿主被禁用（组策略或安全软件），后台刷新无法运行。请允许 wscript.exe 执行后重新开启本功能。</value>
+  </data>
+  <data name="ViewModelDailyNoteTileScheduleVerificationRequired" xml:space="preserve">
+    <value>后台刷新需要人机验证：请打开每日便笺页面刷新一次以完成验证</value>
+  </data>
+  <data name="ViewModelDailyNoteUpdateTileNotPackaged" xml:space="preserve">
+    <value>磁贴仅支持 MSIX 安装包：当前以未打包方式运行，无法更新磁贴</value>
+  </data>
+  <data name="ViewModelDailyNoteUpdateTileElevated" xml:space="preserve">
+    <value>磁贴更新被系统拒绝：请以普通权限运行胡桃后重试</value>
+  </data>
+  <data name="ViewModelDailyNoteUpdateTileRejected" xml:space="preserve">
+    <value>系统未接受磁贴更新：可能是通知被系统关闭，请在「设置 - 系统 - 通知」中允许胡桃</value>
+  </data>
+  <data name="ViewModelDailyNoteUpdateTileContentFailed" xml:space="preserve">
+    <value>生成磁贴内容失败：背景图或图标资源不可用，请尝试重新选择背景</value>
+  </data>
+  <data name="ViewModelDailyNoteClearTileNotPackaged" xml:space="preserve">
+    <value>磁贴仅支持 MSIX 安装包：当前以未打包方式运行，无法清除磁贴</value>
+  </data>
+  <data name="ViewModelDailyNoteClearTileElevated" xml:space="preserve">
+    <value>清除磁贴被系统拒绝：请以普通权限运行胡桃后重试</value>
+  </data>
+  <data name="ViewModelDailyNoteTileScheduleRefreshFailed" xml:space="preserve">
+    <value>后台刷新近期失败，请检查网络与登录状态</value>
+  </data>
+  <data name="ViewModelDailyNoteTileScheduleFailed" xml:space="preserve">
+    <value>后台刷新任务上次运行失败，请查看日志了解详情</value>
+  </data>
+  <data name="ViewPageDailyNoteTileBackgroundRefreshScriptHint" xml:space="preserve">
+    <value>依赖文件：TileRefresh.ps1、TileRefresh.vbs（位于应用数据目录）。若被安全软件拦截请加入白名单。</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundRefreshFailed" xml:space="preserve">
+    <value>注册后台刷新计划任务失败，请查看日志了解详情</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundRefreshScheduledInterval" xml:space="preserve">
+    <value>已注册后台刷新计划任务（每 {0} 分钟）</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundRefreshScheduled" xml:space="preserve">
+    <value>已注册后台刷新计划任务</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundRefreshUnscheduled" xml:space="preserve">
+    <value>已移除后台刷新计划任务</value>
+  </data>
+  <data name="ViewModelDailyNoteTileBackgroundRefreshRequiresMsix" xml:space="preserve">
+    <value>后台刷新磁贴仅支持 MSIX 安装版</value>
   </data>
   <data name="ViewPageDailyNoteSettingAutoRefreshDescription" xml:space="preserve">
     <value>间隔选定的时间后刷新添加的实时便笺</value>

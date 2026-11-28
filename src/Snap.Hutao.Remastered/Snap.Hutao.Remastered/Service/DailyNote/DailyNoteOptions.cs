@@ -1,7 +1,6 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Quartz;
 using Snap.Hutao.Remastered.Core.Property;
 using Snap.Hutao.Remastered.Core.Setting;
 using Snap.Hutao.Remastered.Model;
@@ -17,6 +16,7 @@ public sealed partial class DailyNoteOptions : DbStoreOptions
     private const int OneMinute = 60;
 
     private readonly IQuartzService quartzService;
+    private readonly ITileRefreshScheduler tileRefreshScheduler;
 
     [GeneratedConstructor(CallBaseConstructor = true)]
     public partial DailyNoteOptions(IServiceProvider serviceProvider);
@@ -55,26 +55,52 @@ public sealed partial class DailyNoteOptions : DbStoreOptions
     {
         if (value)
         {
-            if (options.SelectedRefreshTime.Value is not null)
+            if (options.SelectedRefreshTime.Value is { } refreshTime)
             {
-                int refreshTime = options.SelectedRefreshTime.Value.Value;
-                options.quartzService.UpdateJobAsync(JobIdentity.DailyNoteGroupName, JobIdentity.DailyNoteRefreshTriggerName, builder =>
-                {
-                    return builder.WithSimpleSchedule(sb => sb.WithInterval(TimeSpan.FromSeconds(refreshTime)));
-                }).GetAwaiter().GetResult();
+                int intervalSeconds = refreshTime.Value;
+
+                // 开启自动刷新时「确保」Job 已注册：启动时开关若是关的，调度器不会注册 Job，
+                // 此时单纯的 UpdateJobAsync 找不到 trigger 会静默无效。EnsureJobAsync 在
+                // trigger 不存在时首次创建，存在时重建触发器以应用最新间隔。
+                // 必须异步派发：本回调跑在 UI 线程上，而注册要排在启动阶段的配置任务后面
+                //（它可能正在等 UI 线程），同步等待会互相卡死。
+                // shouldApply 在取得队列后复核开关：排队期间用户又关掉时放弃注册。
+                options.quartzService.EnsureJobAsync(
+                    JobIdentity.DailyNoteGroupName,
+                    JobIdentity.DailyNoteRefreshTriggerName,
+                    DailyNoteRefreshJobScheduler.BuildJob,
+                    jobKey => DailyNoteRefreshJobScheduler.BuildTrigger(jobKey, intervalSeconds),
+                    () => options.IsAutoRefreshEnabled.Value).SafeForget();
             }
         }
         else
         {
-            options.quartzService.StopJobAsync(JobIdentity.DailyNoteGroupName, JobIdentity.DailyNoteRefreshTriggerName).GetAwaiter().GetResult();
+            // 与注册共用队列：保证「关闭」一定排在所有已排队的「开启」之后生效。
+            options.quartzService.StopJobSerializedAsync(JobIdentity.DailyNoteGroupName, JobIdentity.DailyNoteRefreshTriggerName).SafeForget();
         }
     }
 
     private static void OnSelectedRefreshTimeChanged(int value, DailyNoteOptions options)
     {
-        options.quartzService.UpdateJobAsync(JobIdentity.DailyNoteGroupName, JobIdentity.DailyNoteRefreshTriggerName, builder =>
+        // 间隔变化只影响「已启用自动刷新」的场景；开关关着时无需调度。
+        // 用 EnsureJobAsync 而非 UpdateJobAsync：切换间隔时 Job 若因开关关闭而从未注册，
+        // UpdateJobAsync 找不到 trigger 会静默无效；EnsureJobAsync 会按需创建。
+        // 必须异步派发：本回调跑在 UI 线程上，而注册路径要排队等启动阶段的
+        // 配置任务（它可能正在等 UI 线程），同步等待会互相卡死。
+        // shouldApply 在取得队列后复核开关：排队期间用户关掉自动刷新时放弃本次重建。
+        if (options.IsAutoRefreshEnabled.Value)
         {
-            return builder.WithSimpleSchedule(sb => sb.WithInterval(TimeSpan.FromSeconds(value)));
-        }).GetAwaiter().GetResult();
+            options.quartzService.EnsureJobAsync(
+                JobIdentity.DailyNoteGroupName,
+                JobIdentity.DailyNoteRefreshTriggerName,
+                DailyNoteRefreshJobScheduler.BuildJob,
+                jobKey => DailyNoteRefreshJobScheduler.BuildTrigger(jobKey, value),
+                () => options.IsAutoRefreshEnabled.Value).SafeForget();
+        }
+
+        // 计划任务的间隔也要跟着设置变，否则后台刷新还停留在旧频率。
+        // SyncIntervalAsync 内部会跳过未注册状态，不会悄悄把开关打开。
+        // 接 ShutdownToken：应用退出时中止挂起的任务重建。
+        options.tileRefreshScheduler.SyncIntervalAsync(Math.Max(1, value / 60), XamlApplicationLifetime.ShutdownToken).AsTask().SafeForget();
     }
 }

@@ -47,6 +47,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
     private readonly IMessenger messenger;
     private readonly IAvatarInfoService avatarInfoService;
     private readonly IDailyNoteTileService dailyNoteTileService;
+    private readonly ITileRefreshScheduler tileRefreshScheduler;
     private readonly IInfoBarService infoBarService;
     private readonly ILogger<DailyNoteViewModel> logger;
 
@@ -84,6 +85,12 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
     [ObservableProperty]
     public partial TileBackgroundAvatarItem? SelectedTileBackgroundAvatar { get; set; }
 
+    /// <summary>
+    /// 是否已注册「后台刷新磁贴」的系统计划任务。切换时立即创建或移除任务。
+    /// </summary>
+    [ObservableProperty]
+    public partial bool IsTileBackgroundRefreshScheduled { get; set; }
+
     public IJSBridgeUriSourceProvider VerifyUrlSource { get; } = new DailyJSBridgeUriSourceProvider();
 
     [ObservableProperty]
@@ -93,6 +100,23 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
     public partial ObservableCollection<DailyNoteEntry>? DailyNoteEntries { get; set; }
 
     private bool _suppressSelectionChange;
+
+    /// <summary>
+    /// 抑制「后台刷新磁贴」开关的回调，用于加载时同步真实状态、以及失败时回退开关。
+    /// </summary>
+    private bool _suppressTileScheduleChange;
+
+    /// <summary>
+    /// 串行化开关切换。快速连点时两次操作会并发跑 schtasks，完成顺序不确定，
+    /// 最终的任务状态可能与开关显示不一致；排队后「最后一次操作生效」。
+    /// </summary>
+    private readonly AsyncLock tileScheduleLock = new();
+
+    /// <summary>
+    /// 切换代际。排队中的旧操作完成时不得改写界面——用户可能已经点了更新的选择，
+    /// 旧操作的状态校正只会把开关拉回它那一代的结论。
+    /// </summary>
+    private int tileScheduleGeneration;
 
     /// <summary>
     /// 当前磁贴背景选择请求；新选择到来时取消旧的，避免晚完成的下载覆盖新选择。
@@ -117,6 +141,40 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             await taskContext.SwitchToMainThreadAsync();
             Users = users;
             DailyNoteEntries = entries;
+
+            // 开关状态以系统里真实存在的计划任务为准。
+            // 查询要启动子进程，必须先离开 UI 线程，否则会冻结界面。
+            await taskContext.SwitchToBackgroundAsync();
+            bool scheduled;
+            try
+            {
+                scheduled = await tileRefreshScheduler.IsRegisteredAsync(token).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                // 查询失败不该拖垮整个页面：便笺与头像列表还要继续加载，
+                // 开关按「未注册」显示，用户重新拨动即可再次尝试。
+                logger.LogWarning(ex, "Unable to query the tile refresh task state");
+                scheduled = false;
+            }
+            TileRefreshScheduleStatus status = scheduled
+                ? await tileRefreshScheduler.GetStatusAsync(token).ConfigureAwait(false)
+                : TileRefreshScheduleStatus.NotRegistered;
+            await taskContext.SwitchToMainThreadAsync();
+
+            // 抑制回调：否则会把读到的值当成用户操作而去建/删任务。
+            SetTileBackgroundRefreshScheduled(scheduled);
+
+            // 已注册但最近一次运行没有成功时，直接告诉用户原因：
+            // 脚本被拦截、脚本宿主被禁用、刷新失败，以及需要在应用内完成人机验证。
+            if (status is TileRefreshScheduleStatus.ScriptMissing
+                or TileRefreshScheduleStatus.ScriptHostDisabled
+                or TileRefreshScheduleStatus.RefreshFailed
+                or TileRefreshScheduleStatus.VerificationRequired
+                or TileRefreshScheduleStatus.Failed)
+            {
+                messenger.Send(InfoBarMessage.Warning(TileRefreshStatusMessage(status)));
+            }
 
             LoadTileBackgroundAvatarsAsync().SafeForget();
             return true;
@@ -408,11 +466,11 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             // 清空设置后立即重发磁贴，否则旧背景图会一直留在开始菜单上
             if (DailyNoteEntries is { Count: > 0 } currentEntries)
             {
-                dailyNoteTileService.TryUpdatePrimaryTile(currentEntries);
+                dailyNoteTileService.UpdatePrimaryTile(currentEntries);
             }
             else
             {
-                dailyNoteTileService.TryUpdatePrimaryTile([]);
+                dailyNoteTileService.UpdatePrimaryTile([]);
             }
             messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteTileBackgroundCleared));
             return;
@@ -446,11 +504,11 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             // 后台下载完成后服务会再重发一次换上新图。
             if (DailyNoteEntries is { Count: > 0 } entries)
             {
-                dailyNoteTileService.TryUpdatePrimaryTile(entries);
+                dailyNoteTileService.UpdatePrimaryTile(entries);
             }
             else
             {
-                dailyNoteTileService.TryUpdatePrimaryTile([]);
+                dailyNoteTileService.UpdatePrimaryTile([]);
             }
 
             ShowBackgroundDownloadProgress(item, result.BackgroundReady, cts);
@@ -571,14 +629,7 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
 
         if (DailyNoteEntries is { Count: > 0 } entries)
         {
-            if (dailyNoteTileService.TryUpdatePrimaryTile(entries))
-            {
-                messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteUpdateTileCompleteHint));
-            }
-            else
-            {
-                messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNoteUpdateTileFailed));
-            }
+            messenger.Send(TileUpdateMessage(dailyNoteTileService.UpdatePrimaryTile(entries), isClear: false));
         }
         else
         {
@@ -586,6 +637,34 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
         }
     }
 
+    /// <summary>
+    /// 按磁贴更新结果给出可区分的提示：环境不支持、提权、被系统拒绝、内容生成失败
+    /// 是四种完全不同的情况，都报「更新失败」会让用户无从下手。
+    /// </summary>
+    private static InfoBarMessage TileUpdateMessage(TileUpdateResult result, bool isClear)
+    {
+        if (result.Succeeded)
+        {
+            return InfoBarMessage.Success(isClear
+                ? SH.ViewModelDailyNoteClearTileComplete
+                : SH.ViewModelDailyNoteUpdateTileCompleteHint);
+        }
+
+        return result.Outcome switch
+        {
+            TileUpdateOutcome.NotPackaged => InfoBarMessage.Warning(isClear
+                ? SH.ViewModelDailyNoteClearTileNotPackaged
+                : SH.ViewModelDailyNoteUpdateTileNotPackaged),
+            TileUpdateOutcome.Elevated => InfoBarMessage.Warning(isClear
+                ? SH.ViewModelDailyNoteClearTileElevated
+                : SH.ViewModelDailyNoteUpdateTileElevated),
+            TileUpdateOutcome.UpdateRejected => InfoBarMessage.Warning(SH.ViewModelDailyNoteUpdateTileRejected),
+            TileUpdateOutcome.ContentFailed => InfoBarMessage.Warning(SH.ViewModelDailyNoteUpdateTileContentFailed),
+            _ => InfoBarMessage.Information(isClear
+                ? SH.ViewModelDailyNoteClearTileFailed
+                : SH.ViewModelDailyNoteUpdateTileFailed),
+        };
+    }
     [Command("UnpinTileCommand")]
     private void UnpinTile()
     {
@@ -605,14 +684,145 @@ public sealed partial class DailyNoteViewModel : Abstraction.ViewModel, IRecipie
             _suppressSelectionChange = false;
         }
 
-        if (dailyNoteTileService.TryUpdatePrimaryTile([]))
+        messenger.Send(TileUpdateMessage(dailyNoteTileService.UpdatePrimaryTile([]), isClear: true));
+    }
+
+    /// <summary>
+    /// 切换「后台刷新磁贴」：注册或移除系统计划任务，使主程序未运行时磁贴也能按时更新。
+    /// 由属性回调驱动而非命令：开关 TwoWay 绑定本属性，拨动时只写属性。
+    /// </summary>
+    partial void OnIsTileBackgroundRefreshScheduledChanged(bool value)
+    {
+        if (_suppressTileScheduleChange)
         {
-            messenger.Send(InfoBarMessage.Success(SH.ViewModelDailyNoteClearTileComplete));
+            return;
         }
-        else
+
+        ToggleTileBackgroundRefreshAsync(value).SafeForget();
+    }
+
+    private async Task ToggleTileBackgroundRefreshAsync(bool enable)
+    {
+        // 记录本次操作的代际：排队等待期间用户可能又点了别的，
+        // 只有最新一代的操作才能决定界面最终状态。
+        int generation = Interlocked.Increment(ref tileScheduleGeneration);
+
+        // 排队执行：连点时不会有两个切换同时改系统任务。
+        using (await tileScheduleLock.LockAsync().ConfigureAwait(false))
         {
-            messenger.Send(InfoBarMessage.Information(SH.ViewModelDailyNoteClearTileFailed));
+            await ToggleTileBackgroundRefreshCoreAsync(enable, generation).ConfigureAwait(false);
         }
+    }
+
+    private async Task ToggleTileBackgroundRefreshCoreAsync(bool enable, int generation)
+    {
+        using SentrySpanScope span = SentrySpanScope.StartCommand(nameof(DailyNoteViewModel));
+        span.SetData("daily_note.tile_schedule.enable", enable);
+
+        if (RuntimeEnvironment.IsUnpackaged)
+        {
+            await taskContext.SwitchToMainThreadAsync();
+            SetTileBackgroundRefreshScheduled(false);
+            messenger.Send(InfoBarMessage.Warning(SH.ViewModelDailyNoteTileBackgroundRefreshRequiresMsix));
+            return;
+        }
+
+        int intervalSeconds = DailyNoteOptions.SelectedRefreshTime.Value?.Value ?? 30 * 60;
+        int intervalMinutes = Math.Max(1, intervalSeconds / 60);
+        span.SetData("daily_note.tile_schedule.interval_minutes", intervalMinutes);
+
+        await taskContext.SwitchToBackgroundAsync();
+
+        // 任务注册可能跨页面存续：接 ShutdownToken，退出时中止挂起的 schtasks 操作。
+        bool ok;
+        try
+        {
+            ok = enable
+                ? await tileRefreshScheduler.RegisterAsync(intervalMinutes, XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false)
+                : await tileRefreshScheduler.UnregisterAsync(XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (XamlApplicationLifetime.ShutdownToken.IsCancellationRequested)
+        {
+            // 应用退出时被取消：既不是成功也不是用户可见的失败，安静结束。
+            return;
+        }
+        catch (Exception ex)
+        {
+            // 其余异常（含 schtasks 20 秒超时）都是真实的失败，要让用户看到。
+            logger.LogWarning(ex, "Toggling the tile refresh schedule failed for {Enable}", enable);
+            ok = false;
+        }
+
+        await taskContext.SwitchToMainThreadAsync();
+
+        if (ok)
+        {
+            if (generation != Volatile.Read(ref tileScheduleGeneration))
+            {
+                // 期间有更新的切换在排队，本次结论已过期，不要覆盖界面。
+                return;
+            }
+
+            messenger.Send(InfoBarMessage.Success(enable
+                ? SH.FormatViewModelDailyNoteTileBackgroundRefreshScheduledInterval(intervalMinutes)
+                : SH.ViewModelDailyNoteTileBackgroundRefreshUnscheduled));
+            return;
+        }
+
+        // 失败时以系统里的真实注册状态为准，而不是把开关简单取反：
+        // 用户快速连点会并发触发多次切换，取反得到的值可能本来就不对。
+        bool registered;
+        try
+        {
+            await taskContext.SwitchToBackgroundAsync();
+            registered = await tileRefreshScheduler.IsRegisteredAsync(XamlApplicationLifetime.ShutdownToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (XamlApplicationLifetime.ShutdownToken.IsCancellationRequested)
+        {
+            return;
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Unable to reconcile the tile refresh task state after a failed toggle");
+            registered = false;
+        }
+
+        await taskContext.SwitchToMainThreadAsync();
+        if (generation != Volatile.Read(ref tileScheduleGeneration))
+        {
+            return;
+        }
+
+        SetTileBackgroundRefreshScheduled(registered);
+        messenger.Send(InfoBarMessage.Warning(SH.ViewModelDailyNoteTileBackgroundRefreshFailed));
+    }
+
+    /// <summary>
+    /// 改开关状态但不触发注册回调。
+    /// </summary>
+    private void SetTileBackgroundRefreshScheduled(bool value)
+    {
+        _suppressTileScheduleChange = true;
+        try
+        {
+            IsTileBackgroundRefreshScheduled = value;
+        }
+        finally
+        {
+            _suppressTileScheduleChange = false;
+        }
+    }
+
+    private static string TileRefreshStatusMessage(TileRefreshScheduleStatus status)
+    {
+        return status switch
+        {
+            TileRefreshScheduleStatus.ScriptMissing => SH.ViewModelDailyNoteTileScheduleScriptMissing,
+            TileRefreshScheduleStatus.ScriptHostDisabled => SH.ViewModelDailyNoteTileScheduleScriptHostDisabled,
+            TileRefreshScheduleStatus.VerificationRequired => SH.ViewModelDailyNoteTileScheduleVerificationRequired,
+            TileRefreshScheduleStatus.RefreshFailed => SH.ViewModelDailyNoteTileScheduleRefreshFailed,
+            _ => SH.ViewModelDailyNoteTileScheduleFailed,
+        };
     }
 
     /// <summary>
