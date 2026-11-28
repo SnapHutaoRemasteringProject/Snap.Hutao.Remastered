@@ -5,9 +5,13 @@ using Snap.Hutao.Remastered.Model.Primitive;
 
 namespace Snap.Hutao.Remastered.Model.Metadata;
 
+[ProtoContract]
+[ProtoInclude(100, typeof(Snap.Hutao.Remastered.Model.Metadata.Achievement.Reward))]
 public class IdCount
 {
-    public required MaterialId Id { get; init; }
+    [ProtoMember(1)]
+    public MaterialId Id { get; init; }
 
-    public required uint Count { get; init; }
+    [ProtoMember(2)]
+    public uint Count { get; init; }
 }

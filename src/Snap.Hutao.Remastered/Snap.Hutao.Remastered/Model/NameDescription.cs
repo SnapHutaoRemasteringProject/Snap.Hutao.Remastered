@@ -2,9 +2,11 @@
 // Licensed under the MIT license.
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using ProtoBuf;
 
 namespace Snap.Hutao.Remastered.Model;
 
+[ProtoContract(IgnoreUnknownSubTypes = true)]
 public partial class NameDescription : ObservableObject
 {
     public NameDescription()
@@ -20,8 +22,10 @@ public partial class NameDescription : ObservableObject
     public static NameDescription Default { get; } = new(SH.ModelNameValueDefaultName, SH.ModelNameValueDefaultDescription);
 
     [ObservableProperty]
+    [ProtoMember(1)]
     public partial string Name { get; set; } = default!;
 
     [ObservableProperty]
+    [ProtoMember(2)]
     public partial string Description { get; set; } = default!;
 }

@@ -7,23 +7,32 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Monster;
 
+[ProtoContract]
 public sealed class MonsterBaseValue : BaseValue
 {
-    public required float FireSubHurt { get; init; }
+    [ProtoMember(4)]
+    public float FireSubHurt { get; init; }
 
-    public required float GrassSubHurt { get; init; }
+    [ProtoMember(5)]
+    public float GrassSubHurt { get; init; }
 
-    public required float WaterSubHurt { get; init; }
+    [ProtoMember(6)]
+    public float WaterSubHurt { get; init; }
 
-    public required float ElecSubHurt { get; init; }
+    [ProtoMember(7)]
+    public float ElecSubHurt { get; init; }
 
-    public required float WindSubHurt { get; init; }
+    [ProtoMember(8)]
+    public float WindSubHurt { get; init; }
 
-    public required float IceSubHurt { get; init; }
+    [ProtoMember(9)]
+    public float IceSubHurt { get; init; }
 
-    public required float RockSubHurt { get; init; }
+    [ProtoMember(10)]
+    public float RockSubHurt { get; init; }
 
-    public required float PhysicalSubHurt { get; init; }
+    [ProtoMember(11)]
+    public float PhysicalSubHurt { get; init; }
 
     public ImmutableArray<NameStringValue> SubHurts
     {

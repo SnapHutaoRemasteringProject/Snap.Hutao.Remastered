@@ -1,41 +1,59 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+#pragma warning disable CS8618
+
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Model.Primitive;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Model.Metadata;
 
+[ProtoContract]
 public sealed class MainQuest
 {
-    public required MainQuestId Id { get; init; }
+    [ProtoMember(1)]
+    public MainQuestId Id { get; init; }
 
-    public required QuestType Type { get; init; }
+    [ProtoMember(2)]
+    public QuestType Type { get; init; }
 
-    public required string Title { get; init; }
+    [ProtoMember(3)]
+    public string Title { get; init; }
 
-    public required string Description { get; init; }
+    [ProtoMember(4)]
+    public string Description { get; init; }
 
+    [ProtoMember(5)]
     public string? UnlockDescription { get; init; }
 
-    public required ChapterId ChapterId { get; init; }
+    [ProtoMember(6)]
+    public ChapterId ChapterId { get; init; }
 
-    public required uint SortWeight { get; init; }
+    [ProtoMember(7)]
+    public uint SortWeight { get; init; }
 
-    public required uint RecommendLevel { get; init; }
+    [ProtoMember(8)]
+    public uint RecommendLevel { get; init; }
 
-    public required uint ActivityId { get; init; }
+    [ProtoMember(9)]
+    public uint ActivityId { get; init; }
 
-    public required MainQuestTag MainQuestTag { get; init; }
+    [ProtoMember(10)]
+    public MainQuestTag MainQuestTag { get; init; }
 
-    public required QuestShowType ShowType { get; init; }
+    [ProtoMember(11)]
+    public QuestShowType ShowType { get; init; }
 
-    public required bool Repeatable { get; init; }
+    [ProtoMember(12)]
+    public bool Repeatable { get; init; }
 
-    public required uint Series { get; init; }
+    [ProtoMember(13)]
+    public uint Series { get; init; }
 
-    public required uint TaskId { get; init; }
+    [ProtoMember(14)]
+    public uint TaskId { get; init; }
 
-    public required ImmutableArray<IdCount> RewardList { get; init; }
+    [ProtoMember(15)]
+    public ImmutableArray<IdCount> RewardList { get; init; } = [];
 }

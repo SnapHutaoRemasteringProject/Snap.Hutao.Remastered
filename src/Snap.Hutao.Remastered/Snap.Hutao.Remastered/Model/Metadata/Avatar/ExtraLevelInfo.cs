@@ -3,9 +3,12 @@
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Avatar;
 
+[ProtoContract]
 public sealed class ExtraLevelInfo
 {
-    public required ExtraLevelIndexKind Index { get; init; }
+    [ProtoMember(1)]
+    public ExtraLevelIndexKind Index { get; init; }
 
-    public required uint Level { get; init; }
+    [ProtoMember(2)]
+    public uint Level { get; init; }
 }

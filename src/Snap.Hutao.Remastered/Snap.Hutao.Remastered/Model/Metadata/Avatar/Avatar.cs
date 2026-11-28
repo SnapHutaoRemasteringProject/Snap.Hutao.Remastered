@@ -1,6 +1,8 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+#pragma warning disable CS8618
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Calculable;
 using Snap.Hutao.Remastered.Model.Intrinsic;
@@ -18,6 +20,7 @@ using System.Diagnostics;
 namespace Snap.Hutao.Remastered.Model.Metadata.Avatar;
 
 [DebuggerDisplay("Name={Name},Id={Id}")]
+[ProtoContract]
 public partial class Avatar : ObservableObject, IDefaultIdentity<AvatarId>,
     INameQualityAccess,
     IStatisticsItemConvertible,
@@ -28,42 +31,69 @@ public partial class Avatar : ObservableObject, IDefaultIdentity<AvatarId>,
     IPropertyValuesProvider,
     IJsonOnDeserialized
 {
-    public required AvatarId Id { get; init; }
+    [ProtoMember(1)]
+    public AvatarId Id { get; init; }
 
-    public required PromoteId PromoteId { get; init; }
+    [ProtoMember(2)]
+    public PromoteId PromoteId { get; init; }
 
-    public required uint Sort { get; init; }
+    [ProtoMember(3)]
+    public uint Sort { get; init; }
 
-    public required BodyType Body { get; init; }
+    [ProtoMember(4)]
+    public BodyType Body { get; init; }
 
-    public required string Icon { get; init; }
+    [ProtoMember(5)]
+    public string Icon { get; init; }
 
-    public required string SideIcon { get; init; }
+    [ProtoMember(6)]
+    public string SideIcon { get; init; }
 
-    public required string Name { get; init; }
+    [ProtoMember(7)]
+    public string Name { get; init; }
 
-    public required string Description { get; init; }
+    [ProtoMember(8)]
+    public string Description { get; init; }
 
-    public required DateTimeOffset BeginTime { get; init; }
+    [ProtoIgnore]
+    public DateTimeOffset BeginTime { get; init; }
 
-    public required QualityType Quality { get; init; }
+    [JsonIgnore]
+    [ProtoMember(9)]
+    public string BeginTimeWire
+    {
+        get => MetadataProtoTime.ToWire(BeginTime);
+        init => BeginTime = MetadataProtoTime.FromWire(value);
+    }
 
-    public required WeaponType Weapon { get; init; }
+    [ProtoMember(10)]
+    public QualityType Quality { get; init; }
 
-    public required AvatarBaseValue BaseValue { get; init; }
+    [ProtoMember(11)]
+    public WeaponType Weapon { get; init; }
 
-    public required TypeValueCollection<FightProperty, GrowCurveType> GrowCurves { get; init; }
+    [ProtoMember(12)]
+    public AvatarBaseValue BaseValue { get; init; }
 
-    public required SkillDepot SkillDepot { get; init; }
+    [ProtoMember(13)]
+    public TypeValueCollection<FightProperty, GrowCurveType> GrowCurves { get; init; }
 
-    public required FetterInfo FetterInfo { get; init; }
+    [ProtoMember(14)]
+    public SkillDepot SkillDepot { get; init; }
 
-    public required ImmutableArray<Costume> Costumes { get; init; }
+    [ProtoMember(15)]
+    public FetterInfo FetterInfo { get; init; }
 
-    public required ImmutableArray<MaterialId> CultivationItems { get; init; }
+    [ProtoMember(16)]
+    public ImmutableArray<Costume> Costumes { get; init; } = [];
 
-    public required AvatarNameCard NameCard { get; init; }
+    [ProtoMember(17)]
+    public ImmutableArray<MaterialId> CultivationItems { get; init; } = [];
 
+    [ProtoMember(18)]
+    public AvatarNameCard NameCard { get; init; }
+
+    [ProtoMember(19)]
     public TraceEffect? TraceEffect { get; init; }
 
     [JsonIgnore]
@@ -142,6 +172,7 @@ public partial class Avatar : ObservableObject, IDefaultIdentity<AvatarId>,
         };
     }
 
+    [ProtoAfterDeserialization]
     public void OnDeserialized()
     {
         if (AvatarIds.UsesGnosis(Id))

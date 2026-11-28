@@ -6,11 +6,15 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Avatar;
 
+[ProtoContract]
 public sealed class CookBonus
 {
-    public required MaterialId OriginItemId { get; init; }
+    [ProtoMember(1)]
+    public MaterialId OriginItemId { get; init; }
 
-    public required MaterialId ItemId { get; init; }
+    [ProtoMember(2)]
+    public MaterialId ItemId { get; init; }
 
-    public required ImmutableArray<MaterialId> InputList { get; init; }
+    [ProtoMember(3)]
+    public ImmutableArray<MaterialId> InputList { get; init; } = [];
 }

@@ -3,17 +3,24 @@
 
 namespace Snap.Hutao.Remastered.Model.Metadata;
 
+[ProtoContract]
 public class TypeValue<TType, TValue>
 {
+    public TypeValue()
+    {
+    }
+
     public TypeValue(TType type, TValue value)
     {
         Type = type;
         Value = value;
     }
 
-    public TType Type { get; }
+    [ProtoMember(1, IsRequired = true)]
+    public TType Type { get; set; } = default!;
 
-    public TValue Value { get; }
+    [ProtoMember(2, IsRequired = true)]
+    public TValue Value { get; set; } = default!;
 
     public override bool Equals(object? obj)
     {

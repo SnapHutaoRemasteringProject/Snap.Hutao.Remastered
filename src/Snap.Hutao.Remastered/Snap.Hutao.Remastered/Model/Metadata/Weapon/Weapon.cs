@@ -1,6 +1,8 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+#pragma warning disable CS8618
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using Snap.Hutao.Remastered.Model.Calculable;
 using Snap.Hutao.Remastered.Model.Intrinsic;
@@ -15,6 +17,7 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Weapon;
 
+[ProtoContract]
 public sealed partial class Weapon : ObservableObject, IDefaultIdentity<WeaponId>,
     INameQualityAccess,
     IStatisticsItemConvertible,
@@ -24,29 +27,41 @@ public sealed partial class Weapon : ObservableObject, IDefaultIdentity<WeaponId
     ICultivationItemsAccess,
     IPropertyValuesProvider
 {
-    public required WeaponId Id { get; init; }
+    [ProtoMember(1)]
+    public WeaponId Id { get; init; }
 
-    public required PromoteId PromoteId { get; init; }
+    [ProtoMember(2)]
+    public PromoteId PromoteId { get; init; }
 
-    public required uint Sort { get; init; }
+    [ProtoMember(3)]
+    public uint Sort { get; init; }
 
-    public required WeaponType WeaponType { get; init; }
+    [ProtoMember(4)]
+    public WeaponType WeaponType { get; init; }
 
-    public required QualityType RankLevel { get; init; }
+    [ProtoMember(5)]
+    public QualityType RankLevel { get; init; }
 
-    public required string Name { get; init; }
+    [ProtoMember(6)]
+    public string Name { get; init; }
 
-    public required string Description { get; init; }
+    [ProtoMember(7)]
+    public string Description { get; init; }
 
-    public required string Icon { get; init; }
+    [ProtoMember(8)]
+    public string Icon { get; init; }
 
-    public required string AwakenIcon { get; init; }
+    [ProtoMember(9)]
+    public string AwakenIcon { get; init; }
 
-    public required WeaponTypeValueCollection GrowCurves { get; init; }
+    [ProtoMember(10)]
+    public WeaponTypeValueCollection GrowCurves { get; init; }
 
+    [ProtoMember(11)]
     public NameDescriptions? Affix { get; init; }
 
-    public required ImmutableArray<MaterialId> CultivationItems { get; init; }
+    [ProtoMember(12)]
+    public ImmutableArray<MaterialId> CultivationItems { get; init; } = [];
 
     [JsonIgnore]
     [ObservableProperty]

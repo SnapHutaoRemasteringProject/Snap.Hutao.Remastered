@@ -1,7 +1,7 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Snap.Hutao.Remastered.Metadata;
+using ProtoBuf.Meta;
 using System.IO;
 using System.IO.Compression;
 using System.Security.Cryptography;
@@ -23,15 +23,16 @@ internal static class MetadataBundleCodec
 
     internal static byte[] AesKey { get; } = Convert.FromHexString(AesKeyHex);
 
-    public static MetadataBundle Read(string path, CancellationToken token = default)
+    public static T Read<T>(string path, TypeModel model, CancellationToken token = default)
     {
         using FileStream stream = File.OpenRead(path);
-        return Read(stream, token);
+        return Read<T>(stream, model, token);
     }
 
-    public static MetadataBundle Read(Stream stream, CancellationToken token = default)
+    public static T Read<T>(Stream stream, TypeModel model, CancellationToken token = default)
     {
         ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(model);
 
         if (!stream.CanRead)
         {
@@ -56,6 +57,6 @@ internal static class MetadataBundleCodec
         using ZLibStream zlib = new(crypto, CompressionMode.Decompress, leaveOpen: true);
         using BoundedReadStream bounded = new(zlib, MaxDecompressedBytes);
 
-        return MetadataBundle.Parser.ParseFrom(bounded);
+        return model.Deserialize<T>(bounded);
     }
 }

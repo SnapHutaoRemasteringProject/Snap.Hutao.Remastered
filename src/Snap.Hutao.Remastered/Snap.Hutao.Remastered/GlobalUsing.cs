@@ -10,6 +10,9 @@ global using Microsoft;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 
+// protobuf-net
+global using ProtoBuf;
+
 // Sentry
 global using Sentry;
 

@@ -4,6 +4,9 @@
 > `MetadataCache` 与 `ClearCache`、proto bundle 解码与 30 个类别适配器、HTTP bundle 源、选源/回退/切换/
 > 网络重试均已落地；**例外**：缓存的新鲜度/远端更新检测尚未实现（本地包存在即信任，见 §8.3）。
 > 与本文设计的差异、验证结果和仍是 builder 侧的待办见 §15。
+>
+> **2026-11-28 更新**：wire 契约已迁移到 `protobuf-net` 注解（§16）。`Proto/Generated`、protoc、
+> 30 个 Adapter 与 `MetadataConvert` 已删除；§7/§15 中关于生成代码和映射层的描述属于历史记录。
 > 本文其余部分保留为设计依据；"应用"原始事实来自 `feat/aot-compatible` @ `b08006116`，"产物"事实来自
 > `D:\SnapHutaoRemasteringProject\MetadataBuilder` @ `cb1eb30` 的 `Proto/`、`Core/Builder/ProtoBuilder.cs`
 > 与 `Core/Builder/*CurveBuilder.cs`。
@@ -1493,3 +1496,40 @@ Proto/                                  (新：vendored schema，§10.5)
 | 2026-11-22（二） | 按"服务管理 provider"重新分层：新增 `IMetadataProvider` / `IMetadataProviderFactory`，原 `IGit/IProtoMetadataService` 改为 `IGit/IProtoMetadataProvider`，`GitMetadataService` / `ProtoMetadataService` 改为 `GitMetadataProvider` / `ProtoMetadataProvider`，`MetadataServiceBase` 改为 `MetadataProviderBase`；keyed 注册移到 `IMetadataProvider`；`IMetadataService` 增加 `SwitchAsync` / `ActiveSource` / `AvailableSources`，provider 不再持有 TCS；`ClearCache` 广播给所有已创建 provider；同步更新数据流、DI、契约、实施与验收。 |
 | 2026-11-22（一） | 同步 builder `cb1eb30`：曲线类别（`89ddba9`）已补齐，`LanguageMetadata` 变为 35 个字段、应用覆盖 30/30；新增 `GrowCurvePoint` 与三个曲线类别映射、`MetadataCategory.ProtoName`（`BydMaterial` ↔ `BeyondItem`，对应 `ProtoBuilder.LegacyJsonFileNames`）；更新包体积（CHS 3.60 MiB、15 语言 3.60–4.73 MiB、合并 59.7 MiB）与 JSON 树实测（19.2 MiB / 349.9 MiB）；§10.2 标记完成，`schema_version`、清单、语言目录、缺失类别致命仍待做；实施计划与验收改为 30 个适配器。 |
 | 2026-11-21 | 初稿：现状、目标数据流、keyed 双源 + 门面、缓存与 `ClearCache`、传输方案、映射规则、分阶段计划。 |
+
+## 16. protobuf-net 迁移（2026-11-28）
+
+wire 契约从「protoc 编译 `Proto/*.proto` + 30 个 Adapter 手工映射」改为「`protobuf-net` 直接反序列化到
+`Model/Metadata`」：
+
+- 删除 `Proto/Generated`（38 个文件）、`scripts/Generate-MetadataProto.ps1`、`ProtoCategoryTable` 的 30 个
+  `Mapper`、`MetadataConvert` 与 `MetadataEntrySkippedException`；`Grpc.Tools` 依赖移除。
+- App 侧新增 `MetadataProtoModel`（`[ProtoModel]` + `[ProtoSerializable]`）与 `Wire/MetadataBundle`；
+  `MetadataBundleCodec.Read<T>(stream, TypeModel)` 直接产出根 DTO，`ProtoCategoryTable` 只保留 30 条
+  「类别 → `LanguageMetadata` 字段」投影。
+- 44 个 identity struct 用 `[ProtoContract(Serializer = ...)]` 的标量 uint32 serializer；`DateTimeOffset`
+  用公开 `*Wire` ISO-8601 字符串成员（生成器不支持 scalar surrogate）；`Uri` 使用 protobuf-net 内置的字符串编码。
+- 形状冲突的处理：`Material` 展平为 `DisplayItem` 1..8 + 9/10；`ProudSkill` 改为独立类并保留
+  `AvatarSkill` 编号；`WeaponTypeValue`/`IdLevelParameters` 独立；三个包装集合实现 `ICollection<T>`。
+- 生产者 `MetadataBuilder` 同步注解自己的输出模型（`double → float` 模型级 surrogate、时间戳同字符串影子成员），
+  重写 `ProtoBuilder` 为按类别收集/回退 JSON，删除 `ProtoMapper`/`ProtoJsonMapper`。
+- 新包覆盖 30/30 类别，15 个语言包 + 合并包已生成；`RoleCombatSchedule.json` 与迁移前逐字节一致（0 diff），
+  确认注解没有改变 JSON 输出。
+- 修复：泛型 DTO（`TypeValue<,>`、`IdLevelParameters<...>`）的 `init` 属性会让生成器的 `UnsafeAccessor` 找不到
+  backing field；改为 `set` 后正常。
+- 验证：App Debug x64、测试项目、`MetadataBuilder` 均 0 errors。另用临时 harness 直接加载 App 程序集，对真实
+  `GenshinMetadata.CHS.hutaobin` 调用 `MetadataProtoModel.Instance.Deserialize`：30/30 类别全部解析成功
+  （Avatar 122、Material 7219、Monster 572、TowerLevel 435、Weapon 253、Achievement 1909 等），确认 App 模型与
+  生产端字节兼容。GUI 启动仍受本机 `AppNotificationManager.Default` `UnauthorizedAccessException` 限制
+  （与 2026-10-31 记录的环境问题相同），未做交互式渲染冒烟。
+- 仍未实现：`schema_version`/清单、客户端字符串驻留、缺失类别致命；生产端与客户端必须同步发布。
+- 后续修复（祈愿记录页卡在加载）：`GachaEvent.UpOrangeList` / `UpPurpleList` 是 `HashSet<uint>`，
+  生产端对空的 repeated 字段不写值，客户端得到 `null`；`HistoryWishBuilder` 构造常驻祈愿
+  （`ActivityCity`，如「辉天的星轨」没有紫色 UP）时对 `UpPurpleList` 调 `Select` 抛
+  `NullReferenceException`，而 `GachaLogViewModel.UpdateStatisticsAsync` 只捕获 `HutaoException`，
+  导致 `IsInitialized` 永远不置位、页面一直显示加载。两处属性补 `= [];` 后恢复。
+- 同批修复 bundle 数据：此前一次生产者运行使用了未包含 `GachaEvent.From/To` 注解的旧 dll，
+  把 `From`/`To` 从 `Snap.Metadata.Work/Genshin/*/GachaEvent.json` 中剥掉，导致所有卡池时间变成
+  `0001-01-01`。已 `git restore` 回正确的 JSON，并用当前 `ProtoBuilder`（仅按类别回退 JSON，不重跑
+  公告抓取，避免重复条目）重新生成 15 个语言包与合并包；校验结果：`GachaEvent` 308 条，时间字段
+  0 条 default，空 repeated 字段读取为非 null 空集合。

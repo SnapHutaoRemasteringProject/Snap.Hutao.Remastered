@@ -8,37 +8,122 @@ using Snap.Hutao.Remastered.Model.Primitive;
 namespace Snap.Hutao.Remastered.Model.Metadata.Avatar;
 
 [JsonConverter(typeof(IdLevelParametersCollectionConverterFactory))]
-public sealed class IdLevelParametersCollection<TId, TLevel, TParameter>
+public sealed class IdLevelParametersCollection<TId, TLevel, TParameter> : ICollection<IdLevelParameters<TId, TLevel, TParameter>>
     where TId : notnull
     where TLevel : notnull
 {
-    private readonly SortedDictionary<TId, ImmutableArray<TParameter>> idParameters = [];
-    private readonly SortedDictionary<TLevel, ImmutableArray<TParameter>> levelParameters = [];
+    private readonly List<IdLevelParameters<TId, TLevel, TParameter>> items = [];
+    private SortedDictionary<TId, ImmutableArray<TParameter>>? idParameters;
+    private SortedDictionary<TLevel, ImmutableArray<TParameter>>? levelParameters;
+
+    public IdLevelParametersCollection()
+    {
+    }
 
     public IdLevelParametersCollection(ImmutableArray<IdLevelParameters<TId, TLevel, TParameter>> entries)
     {
-        Count = entries.Length;
-        foreach (IdLevelParameters<TId, TLevel, TParameter> entry in entries)
-        {
-            idParameters.Add(entry.Id, entry.Parameters);
-            levelParameters.Add(entry.Level, entry.Parameters);
-        }
+        items.AddRange(entries);
     }
 
-    public int Count { get; }
+    public int Count
+    {
+        get => items.Count;
+    }
 
-    public IReadOnlyDictionary<TId, ImmutableArray<TParameter>> IdParameters { get => idParameters; }
+    public bool IsReadOnly
+    {
+        get => false;
+    }
 
-    public IReadOnlyDictionary<TLevel, ImmutableArray<TParameter>> LevelParameters { get => levelParameters; }
+    public IReadOnlyDictionary<TId, ImmutableArray<TParameter>> IdParameters
+    {
+        get => idParameters ??= BuildIdParameters();
+    }
+
+    public IReadOnlyDictionary<TLevel, ImmutableArray<TParameter>> LevelParameters
+    {
+        get => levelParameters ??= BuildLevelParameters();
+    }
 
     public ImmutableArray<TParameter> this[TId id]
     {
-        get => idParameters[id];
+        get => IdParameters[id];
     }
 
     public ImmutableArray<TParameter> this[TLevel level]
     {
-        get => levelParameters[level];
+        get => LevelParameters[level];
+    }
+
+    public void Add(IdLevelParameters<TId, TLevel, TParameter> item)
+    {
+        items.Add(item);
+        Invalidate();
+    }
+
+    public void Clear()
+    {
+        items.Clear();
+        Invalidate();
+    }
+
+    public bool Contains(IdLevelParameters<TId, TLevel, TParameter> item)
+    {
+        return items.Contains(item);
+    }
+
+    public void CopyTo(IdLevelParameters<TId, TLevel, TParameter>[] target, int arrayIndex)
+    {
+        items.CopyTo(target, arrayIndex);
+    }
+
+    public bool Remove(IdLevelParameters<TId, TLevel, TParameter> item)
+    {
+        if (!items.Remove(item))
+        {
+            return false;
+        }
+
+        Invalidate();
+        return true;
+    }
+
+    public IEnumerator<IdLevelParameters<TId, TLevel, TParameter>> GetEnumerator()
+    {
+        return items.GetEnumerator();
+    }
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return items.GetEnumerator();
+    }
+
+    private void Invalidate()
+    {
+        idParameters = null;
+        levelParameters = null;
+    }
+
+    private SortedDictionary<TId, ImmutableArray<TParameter>> BuildIdParameters()
+    {
+        SortedDictionary<TId, ImmutableArray<TParameter>> result = [];
+        foreach (IdLevelParameters<TId, TLevel, TParameter> entry in items)
+        {
+            result.Add(entry.Id, entry.Parameters);
+        }
+
+        return result;
+    }
+
+    private SortedDictionary<TLevel, ImmutableArray<TParameter>> BuildLevelParameters()
+    {
+        SortedDictionary<TLevel, ImmutableArray<TParameter>> result = [];
+        foreach (IdLevelParameters<TId, TLevel, TParameter> entry in items)
+        {
+            result.Add(entry.Level, entry.Parameters);
+        }
+
+        return result;
     }
 }
 

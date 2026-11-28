@@ -5,9 +5,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Avatar;
 
+[ProtoContract]
 public sealed partial class Fetter : ObservableObject
 {
-    public required string Title { get; init => SetProperty(ref field, value); }
+    [ProtoMember(1)]
+    public string Title { get; init => SetProperty(ref field, value); }
 
-    public required string Context { get; init => SetProperty(ref field, value); }
+    [ProtoMember(2)]
+    public string Context { get; init => SetProperty(ref field, value); }
 }

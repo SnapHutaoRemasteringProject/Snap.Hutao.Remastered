@@ -7,17 +7,40 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Model.Metadata;
 
+[ProtoContract]
 public sealed class RoleCombatSchedule : IDefaultIdentity<RoleCombatScheduleId>
 {
-    public required RoleCombatScheduleId Id { get; init; }
+    [ProtoMember(1)]
+    public RoleCombatScheduleId Id { get; init; }
 
-    public required DateTimeOffset Begin { get; init; }
+    [ProtoIgnore]
+    public DateTimeOffset Begin { get; init; }
 
-    public required DateTimeOffset End { get; init; }
+    [JsonIgnore]
+    [ProtoMember(2)]
+    public string BeginWire
+    {
+        get => MetadataProtoTime.ToWire(Begin);
+        init => Begin = MetadataProtoTime.FromWire(value);
+    }
 
-    public required ImmutableArray<ElementType> Elements { get; init; }
+    [ProtoIgnore]
+    public DateTimeOffset End { get; init; }
 
-    public required ImmutableArray<AvatarId> SpecialAvatars { get; init; }
+    [JsonIgnore]
+    [ProtoMember(3)]
+    public string EndWire
+    {
+        get => MetadataProtoTime.ToWire(End);
+        init => End = MetadataProtoTime.FromWire(value);
+    }
 
-    public required ImmutableArray<AvatarId> InitialAvatars { get; init; }
+    [ProtoMember(4)]
+    public ImmutableArray<ElementType> Elements { get; init; } = [];
+
+    [ProtoMember(5)]
+    public ImmutableArray<AvatarId> SpecialAvatars { get; init; } = [];
+
+    [ProtoMember(6)]
+    public ImmutableArray<AvatarId> InitialAvatars { get; init; } = [];
 }

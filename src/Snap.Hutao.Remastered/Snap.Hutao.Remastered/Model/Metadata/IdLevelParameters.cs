@@ -5,13 +5,26 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Model.Metadata;
 
-public sealed class IdLevelParameters<TId, TLevel, TParam> : LevelParameters<TLevel, TParam>
+[ProtoContract]
+public sealed class IdLevelParameters<TId, TLevel, TParam>
 {
-    public IdLevelParameters(TId id, TLevel level, ImmutableArray<TParam> parameters)
-        : base(level, parameters)
+    public IdLevelParameters()
     {
-        Id = id;
     }
 
-    public TId Id { get; }
+    public IdLevelParameters(TId id, TLevel level, ImmutableArray<TParam> parameters)
+    {
+        Id = id;
+        Level = level;
+        Parameters = parameters;
+    }
+
+    [ProtoMember(1, IsRequired = true)]
+    public TId Id { get; set; } = default!;
+
+    [ProtoMember(2, IsRequired = true)]
+    public TLevel Level { get; set; } = default!;
+
+    [ProtoMember(3)]
+    public ImmutableArray<TParam> Parameters { get; set; } = [];
 }

@@ -1,44 +1,41 @@
 # Metadata bundle schema
 
-`*.proto` is the wire contract of `GenshinMetadata.*.hutaobin`, produced by
-[`MetadataBuilder`](https://github.com/SnapHutaoRemasteringProject/Snap.Hutao.Remastered)
-(`D:\SnapHutaoRemasteringProject\MetadataBuilder` on the build machine).
+`*.proto` under this folder is a **reference contract** for `GenshinMetadata.*.hutaobin`,
+produced by `MetadataBuilder` (`D:\SnapHutaoRemasteringProject\MetadataBuilder` on the build
+machine). It is no longer compiled: the wire contract is expressed as `protobuf-net` attributes on
+`Model/Metadata` (the application) and on `MetadataBuilder/Model` (the producer).
 
 | Item | Value |
 |---|---|
-| Source | `MetadataBuilder/Proto` @ `cb1eb30` (2026-11-22), with the identifier/`uint` field-type change described below |
-| Generator | `Grpc.Tools` 2.72.0 (`protoc` 30.0) |
-| Committed output | `Proto/Generated/*.cs` — compiled as normal source; the build does **not** run protoc |
-| Regeneration | `powershell -File scripts/Generate-MetadataProto.ps1` (`-Check` fails when the committed output is stale) |
-| Deviations from the builder schema | `package snap.hutao.metadata;` → `package snap.hutao.remastered.metadata;` and `option csharp_namespace = "MetadataBuilder.Proto";` removed, so the generated namespace is `Snap.Hutao.Remastered.Metadata` instead of `MetadataBuilder.Proto`. The package name only affects descriptor identifiers (no `Any` is used), so the wire format is unchanged. |
+| Runtime serializer | `protobuf-net.Core` 3.4.51, compile-time model (`[ProtoModel]`), no reflection model |
+| Client model | `[ProtoContract]` / `[ProtoMember]` on `Model/Metadata`, plus `MetadataProtoModel` (surrogates) and `Wire/MetadataBundle` |
+| Producer model | `[ProtoContract]` / `[ProtoMember]` on `MetadataBuilder/Model`, plus `MetadataProtoModel` and `Core/Proto/Wire/MetadataBundle` |
+| Generated code | None. `Proto/Generated` and `scripts/Generate-MetadataProto.ps1` were removed |
+| Build-time tools | No `protoc` / `Grpc.Tools`; the app and the producer only need `protobuf-net.Core` |
+| `[Experimental]` | `[ProtoModel]` is gated by `PBN9001`; both projects add it to `NoWarn` |
 
-## Why the generated C# is committed
+## Field numbering
 
-The application used to generate from `.proto` at build time. `Grpc.Tools` only adds its generated
-files to `@(Compile)` when protoc actually ran in that build: after a build that generated but did not
-compile (interrupted build, `bin` cleaned but `obj` kept), every later incremental build failed with
-`CS0234: namespace Snap.Hutao.Remastered.Metadata does not exist`. Committing the generated sources
-makes the build deterministic and offline-friendly, and it is the fallback documented in
-[`docs/proto-metadata.md`](../../../../../docs/proto-metadata.md) §10.5.
+Field numbers are taken from the previous `.proto` schema except where the application model's
+inheritance forces a different layout:
 
-Do **not** hand-edit `Proto/Generated`. Change the schema in `MetadataBuilder/Proto`, copy the files
-here, run the script, and commit both the `.proto` files and the regenerated `Generated` folder.
+- `Material` is the flattened `DisplayItem` (1..8) plus `material_type` 9 and `effect_description` 10;
+  the shared members keep the `DisplayItem` numbers because protobuf-net emits base members first.
+- `Skill` (talents) uses the `AvatarTalent` numbers 1..6. `ProudSkill` is a standalone model with the
+  original `AvatarSkill` numbers (`group_id` 1, `proud` 2, `id` 3, `name` 4, `description` 5,
+  `special_description` 6, `special_energy_type` 7, `icon` 8, `cd_time` 9).
+- `IdLevelParameters` uses `id` 1, `level` 2, `parameters` 3; `WeaponTypeValue` uses `init_value` 1,
+  `type` 2, `value` 3.
+- 44 identity structs are scalar `uint32` varints; `DateTimeOffset` is an ISO-8601 string (a public
+  `*Wire` member keeps the strongly typed property).
+- The producer encodes every `double` as `float` (a model-level scalar surrogate), because the client
+  model uses `float` for all metadata numbers.
 
-## Identifier fields are `uint32`
+## Producer / consumer must ship together
 
-The builder's original schema used `int64`/`int32` for identifiers, levels, ranks and counts, while the
-application model stores them as `uint` (its generated identity structs wrap `uint`). The schema now
-declares those fields as `uint32`, so a mapping cannot receive a value the model cannot represent and
-does not need overflow checks. `MetadataBuilder`'s `ProtoMapper`/`ProtoJsonMapper` convert to
-`uint`/`ulong` for these fields. Values below `2^31` encode identically to the previous `int64`
-declaration, which is why an existing bundle remains readable while the producer is rebuilt.
+The bundle was rewritten under the new layout, so an older bundle is **not** readable and an older
+client cannot read a new bundle. There is still no `schema_version`/manifest on the producer side
+(`docs/proto-metadata.md` §10.1); until it exists, producer and consumer ship in lockstep.
 
-Rules:
-
-- Any schema change that renames, removes, renumbers or changes field semantics must bump
-  `MetadataInfo.schema_version` (still missing on the producer side, see
-  [`docs/proto-metadata.md`](../../../../../docs/proto-metadata.md) §10.1). Until it exists the client
-  validates structure (language, `LanguageMetadata` field coverage) and cannot detect a version skew,
-  so producer and consumer must ship together.
-- Client category coverage is asserted by `ProtoCategoryTable` (30 adapters + 5 ignored categories must
-  equal every message field of `LanguageMetadata`).
+Category coverage is asserted by `ProtoCategoryTable` (30 consumed categories; furniture and
+`ReliquaryAffixWeight` are intentionally ignored and are no longer written into the bundle).

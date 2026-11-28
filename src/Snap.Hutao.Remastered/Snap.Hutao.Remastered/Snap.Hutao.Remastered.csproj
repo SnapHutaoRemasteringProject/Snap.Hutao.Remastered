@@ -14,7 +14,7 @@
     <UseWindowsForms>False</UseWindowsForms>
     <ImplicitUsings>False</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <NoWarn>$(NoWarn);CA2012;MAAI001;SCME0001;MEAI001;OPENAI001</NoWarn>
+    <NoWarn>$(NoWarn);CA2012;MAAI001;SCME0001;MEAI001;OPENAI001;PBN9001</NoWarn>
     <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <DefaultLanguage>zh-CN</DefaultLanguage>
@@ -325,13 +325,7 @@
     <PackageReference Include="CommunityToolkit.WinUI.Media" />
     <PackageReference Include="DevWinUI" />
     <PackageReference Include="Google.Protobuf" />
-    <PackageReference Include="Grpc.Tools">
-      <PrivateAssets>all</PrivateAssets>
-      <!-- Only pins/provides protoc for scripts/Generate-MetadataProto.ps1; the app compiles the
-           committed Proto/Generated sources and must not run protoc during a normal build. -->
-      <ExcludeAssets>all</ExcludeAssets>
-      <IncludeAssets>none</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="protobuf-net.Core" />
     <PackageReference Include="JetBrains.Annotations" />
     <PackageReference Include="Microsoft.Agents.AI.Anthropic" />
     <PackageReference Include="Microsoft.Agents.AI.Harness" />

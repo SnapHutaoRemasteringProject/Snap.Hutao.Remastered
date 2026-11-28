@@ -5,6 +5,7 @@ using Snap.Hutao.Remastered.Model.Intrinsic;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Avatar;
 
+[ProtoContract]
 public sealed class AvatarBaseValue : BaseValue
 {
     public override float GetValue(FightProperty fightProperty)

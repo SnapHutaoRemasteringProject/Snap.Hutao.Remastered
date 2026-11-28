@@ -5,13 +5,19 @@ using Snap.Hutao.Remastered.Model.Intrinsic;
 
 namespace Snap.Hutao.Remastered.Model.Metadata;
 
+[ProtoContract]
+[ProtoInclude(100, typeof(Snap.Hutao.Remastered.Model.Metadata.Avatar.AvatarBaseValue))]
+[ProtoInclude(101, typeof(Snap.Hutao.Remastered.Model.Metadata.Monster.MonsterBaseValue))]
 public class BaseValue
 {
-    public required float HpBase { get; init; }
+    [ProtoMember(1)]
+    public float HpBase { get; init; }
 
-    public required float AttackBase { get; init; }
+    [ProtoMember(2)]
+    public float AttackBase { get; init; }
 
-    public required float DefenseBase { get; init; }
+    [ProtoMember(3)]
+    public float DefenseBase { get; init; }
 
     public virtual float GetValue(FightProperty fightProperty)
     {

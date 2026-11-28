@@ -8,11 +8,11 @@ namespace Snap.Hutao.Remastered.Model.Metadata.Furniture;
 
 public sealed class FurnitureMake
 {
-    public required FurnitureMakeId Id { get; init; }
+    public FurnitureMakeId Id { get; init; }
 
-    public required FurnitureId ItemId { get; init; }
+    public FurnitureId ItemId { get; init; }
 
-    public required uint Experience { get; init; }
+    public uint Experience { get; init; }
 
-    public required ImmutableArray<IdCount> Materials { get; init; }
+    public ImmutableArray<IdCount> Materials { get; init; } = [];
 }

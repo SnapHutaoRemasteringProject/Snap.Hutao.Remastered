@@ -47,6 +47,7 @@
     <PackageVersion Include="Microsoft.Windows.ImplementationLibrary" Version="1.0.260126.7" />
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2957" />
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools.MSIX" Version="1.7.261119100" />
+    <PackageVersion Include="protobuf-net.Core" Version="3.4.51" />
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.6.6-experimental" />
     <PackageVersion Include="MSTest.TestAdapter" Version="4.5.3" />
     <PackageVersion Include="MSTest.TestFramework" Version="4.5.3" />

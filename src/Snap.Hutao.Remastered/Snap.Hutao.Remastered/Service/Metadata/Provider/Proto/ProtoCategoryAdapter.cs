@@ -1,67 +1,44 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
-using Google.Protobuf;
-using Snap.Hutao.Remastered.Core.ExceptionService;
-using Snap.Hutao.Remastered.Metadata;
+using Snap.Hutao.Remastered.Service.Metadata.Provider.Proto.Wire;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Service.Metadata.Provider.Proto;
 
 /// <summary>
-/// Maps one proto category into the application model. A category fails as a whole when an entry
-/// throws; a value the model cannot represent (an overflowing id, a bad required URI) is skipped as a
-/// single entry and reported once per field.
+/// Reads one category from the parsed bundle. A category is a single typed array on
+/// <see cref="LanguageMetadata"/>, so the adapter only projects that array; there is no mapping
+/// layer any more because the domain models are the protobuf-net wire contract.
 /// </summary>
-internal abstract class ProtoCategoryAdapter<TProto, TModel> : IProtoCategoryAdapter
-    where TProto : class, IMessage
+internal interface IProtoCategoryAdapter
 {
-    protected ProtoCategoryAdapter(MetadataCategory category)
+    MetadataCategory Category { get; }
+
+    Type ElementType { get; }
+
+    object Read(LanguageMetadata language);
+}
+
+internal sealed class ProtoCategoryAdapter<T> : IProtoCategoryAdapter
+{
+    private readonly Func<LanguageMetadata, ImmutableArray<T>> read;
+
+    public ProtoCategoryAdapter(MetadataCategory category, Func<LanguageMetadata, ImmutableArray<T>> read)
     {
         Category = category;
+        this.read = read;
     }
 
     public MetadataCategory Category { get; }
 
     public Type ElementType
     {
-        get => typeof(TModel);
+        get => typeof(T);
     }
 
-    public abstract IEnumerable<TProto> Enumerate(LanguageMetadata language);
-
-    public abstract TModel Map(TProto message, MetadataConvert convert);
-
-    object IProtoCategoryAdapter.Read(LanguageMetadata language, MetadataConvert convert)
+    public object Read(LanguageMetadata language)
     {
-        ImmutableArray<TModel>.Builder builder = ImmutableArray.CreateBuilder<TModel>();
-        int index = 0;
-
-        foreach (TProto message in Enumerate(language))
-        {
-            try
-            {
-                builder.Add(Map(message, convert));
-            }
-            catch (MetadataEntrySkippedException exception)
-            {
-                convert.WarnOnce(
-                    $"skip.{Category.ProtoName}.{exception.Field}",
-                    $"Skipped {Category.ProtoName} entry #{index}: {exception.Message}");
-            }
-            catch (Exception exception)
-            {
-                throw HutaoException.InvalidOperation($"Metadata category '{Category.ProtoName}' failed at entry #{index}", exception);
-            }
-
-            index++;
-        }
-
-        if (builder.Count is 0)
-        {
-            convert.WarnOnce($"empty.{Category.ProtoName}", $"Metadata category '{Category.ProtoName}' contains no entries");
-        }
-
-        return builder.ToImmutable();
+        return read(language);
     }
 }

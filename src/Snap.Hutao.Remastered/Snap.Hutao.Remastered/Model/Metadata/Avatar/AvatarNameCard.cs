@@ -1,11 +1,16 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+#pragma warning disable CS8618
+
 namespace Snap.Hutao.Remastered.Model.Metadata.Avatar;
 
+[ProtoContract]
 public sealed partial class AvatarNameCard : NameDescription
 {
-    public required string Icon { get; init; }
+    [ProtoMember(3)]
+    public string Icon { get; init; }
 
-    public required string PicturePrefix { get; init; }
+    [ProtoMember(4)]
+    public string PicturePrefix { get; init; }
 }

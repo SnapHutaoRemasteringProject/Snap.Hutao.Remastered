@@ -4,9 +4,8 @@
 using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation.HttpClient;
 using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.IO.Hashing;
-using Snap.Hutao.Remastered.Metadata;
 using Snap.Hutao.Remastered.Service.BackgroundActivity;
-using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
+using Snap.Hutao.Remastered.Service.Metadata.Provider.Proto.Wire;using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
 using System.Buffers;
@@ -225,8 +224,8 @@ public sealed partial class HttpMetadataBundleSource : IMetadataBundleSource
 
         try
         {
-            MetadataBundle bundle = MetadataBundleCodec.Read(path, token);
-            if (bundle.Languages.Count is not 1 || !string.Equals(bundle.Languages[0].Language, cultureOptions.LocaleName, StringComparison.OrdinalIgnoreCase))
+            MetadataBundle bundle = MetadataBundleCodec.Read<MetadataBundle>(path, MetadataProtoModel.Instance, token);
+            if (bundle.Languages.Length is not 1 || !string.Equals(bundle.Languages[0].Language, cultureOptions.LocaleName, StringComparison.OrdinalIgnoreCase))
             {
                 logger.LogWarning("Metadata bundle language mismatch");
                 return false;

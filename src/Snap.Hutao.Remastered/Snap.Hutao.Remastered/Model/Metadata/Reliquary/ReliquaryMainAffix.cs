@@ -6,9 +6,12 @@ using Snap.Hutao.Remastered.Model.Primitive;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Reliquary;
 
+[ProtoContract]
 public class ReliquaryMainAffix
 {
-    public required ReliquaryMainAffixId Id { get; init; }
+    [ProtoMember(1)]
+    public ReliquaryMainAffixId Id { get; init; }
 
-    public required FightProperty Type { get; init; }
+    [ProtoMember(2)]
+    public FightProperty Type { get; init; }
 }

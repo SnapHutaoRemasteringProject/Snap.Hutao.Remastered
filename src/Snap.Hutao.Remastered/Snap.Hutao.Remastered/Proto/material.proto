@@ -7,16 +7,20 @@ import "enums.proto";
 // ============================================================================
 // Material
 // ============================================================================
+//
+// Material is the flattened DisplayItem contract plus the two material fields:
+// the application model derives Material from DisplayItem, and protobuf-net
+// emits base members first, so the shared members keep the DisplayItem numbers.
 
 message Material {
-  uint32 rank = 1;
-  MaterialType material_type = 2;
-  string effect_description = 3;
-  uint32 id = 4;
-  QualityType rank_level = 5;
-  ItemType item_type = 6;
-  string name = 7;
-  string description = 8;
-  string type_description = 9;
-  string icon = 10;
+  uint32 id = 1;
+  QualityType rank_level = 2;
+  uint32 rank = 3;
+  ItemType item_type = 4;
+  string name = 5;
+  string description = 6;
+  string type_description = 7;
+  string icon = 8;
+  MaterialType material_type = 9;
+  string effect_description = 10;
 }

@@ -331,17 +331,15 @@
         </DataTemplate>
 
         <DataTemplate x:Key="FetterStoryTemplate" x:DataType="shmma:Fetter">
-            <!--  Framework root avoids the custom-control template connector CastExtensions.As failure under Native AOT (#389).  -->
-            <Grid>
-                <cwc:SettingsCard Padding="16,8,8,8" BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}">
-                    <cwc:SettingsCard.Header>
-                        <shuxct:DescriptionTextBlock Description="{x:Bind Title, Mode=OneWay}" TextStyle="{StaticResource BaseTextBlockStyle}"/>
-                    </cwc:SettingsCard.Header>
-                    <cwc:SettingsCard.Description>
-                        <shuxct:DescriptionTextBlock Description="{x:Bind Context, Mode=OneWay}" TextStyle="{StaticResource CaptionTextBlockStyle}"/>
-                    </cwc:SettingsCard.Description>
-                </cwc:SettingsCard>
-            </Grid>
+            <!--  SettingsExpander applies its SettingsCard style to each prepared item; the template root must be a SettingsCard.  -->
+            <cwc:SettingsCard Padding="16,8,8,8" BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}">
+                <cwc:SettingsCard.Header>
+                    <shuxct:DescriptionTextBlock Description="{x:Bind Title, Mode=OneWay}" TextStyle="{StaticResource BaseTextBlockStyle}"/>
+                </cwc:SettingsCard.Header>
+                <cwc:SettingsCard.Description>
+                    <shuxct:DescriptionTextBlock Description="{x:Bind Context, Mode=OneWay}" TextStyle="{StaticResource CaptionTextBlockStyle}"/>
+                </cwc:SettingsCard.Description>
+            </cwc:SettingsCard>
         </DataTemplate>
         <DataTemplate x:Key="AvatarGridTemplate" x:DataType="shmma:Avatar">
             <Grid>

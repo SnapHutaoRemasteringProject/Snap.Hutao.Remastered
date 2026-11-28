@@ -6,13 +6,18 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Tower;
 
+[ProtoContract]
 public sealed class TowerMonster
 {
-    public required MonsterDescribeId Id { get; init; }
+    [ProtoMember(3)]
+    public MonsterDescribeId Id { get; init; }
 
-    public required uint Count { get; init; }
+    [ProtoMember(4)]
+    public uint Count { get; init; }
 
+    [ProtoMember(1)]
     public bool AttackMonolith { get; init; }
 
-    public ImmutableArray<NameDescription> Affixes { get; init; }
+    [ProtoMember(2)]
+    public ImmutableArray<NameDescription> Affixes { get; init; } = [];
 }

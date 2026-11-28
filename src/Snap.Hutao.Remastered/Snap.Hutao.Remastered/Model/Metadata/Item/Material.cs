@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Item;
 
+[ProtoContract]
 public sealed partial class Material : DisplayItem
 {
     public static readonly Material Default = new()
@@ -21,8 +22,10 @@ public sealed partial class Material : DisplayItem
         TypeDescription = "？？？",
     };
 
+    [ProtoMember(9)]
     public MaterialType MaterialType { get; init => SetProperty(ref field, value); }
 
+    [ProtoMember(10)]
     public string? EffectDescription { get; init => SetProperty(ref field, value); }
 
     public bool IsInventoryItem()

@@ -4,7 +4,7 @@
 using Snap.Hutao.Remastered.Core.Diagnostics;
 using Snap.Hutao.Remastered.Core.ExceptionService;
 using Snap.Hutao.Remastered.Core.IO.Hashing;
-using Snap.Hutao.Remastered.Metadata;
+using Snap.Hutao.Remastered.Service.Metadata.Provider.Proto.Wire;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
@@ -27,7 +27,6 @@ public sealed partial class ProtoMetadataProvider : MetadataProviderBase, IProto
     private readonly MetadataBundleOptions bundleOptions;
     private readonly CultureOptions cultureOptions;
     private readonly AsyncLock languageLock = new();
-    private MetadataConvert? convert = null;
 
     private LanguageMetadata? language;
     private MetadataBundleInfo? bundleInfo;
@@ -39,11 +38,6 @@ public sealed partial class ProtoMetadataProvider : MetadataProviderBase, IProto
     public override MetadataSourceKind Kind
     {
         get => MetadataSourceKind.Proto;
-    }
-
-    private MetadataConvert Conversion
-    {
-        get => convert ??= new(Logger);
     }
 
     public MetadataBundleInfo? BundleInfo
@@ -84,7 +78,7 @@ public sealed partial class ProtoMetadataProvider : MetadataProviderBase, IProto
             LanguageMetadata metadata = await GetLanguageAsync(innerToken).ConfigureAwait(false);
 
             // Mapping is pure CPU work; never run it on the caller's (usually UI) thread.
-            return (ImmutableArray<T>)await Task.Run(() => adapter.Read(metadata, Conversion), innerToken).ConfigureAwait(false);
+            return (ImmutableArray<T>)await Task.Run(() => adapter.Read(metadata), innerToken).ConfigureAwait(false);
         }, token).ConfigureAwait(false);
 
         span.SetData("metadata.category.count", result.Length);
@@ -113,7 +107,7 @@ public sealed partial class ProtoMetadataProvider : MetadataProviderBase, IProto
         MetadataBundle bundle;
         try
         {
-            bundle = await Task.Run(() => MetadataBundleCodec.Read(path, token), token).ConfigureAwait(false);
+            bundle = await Task.Run(() => MetadataBundleCodec.Read<MetadataBundle>(path, MetadataProtoModel.Instance, token), token).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {
@@ -167,7 +161,7 @@ public sealed partial class ProtoMetadataProvider : MetadataProviderBase, IProto
                 throw HutaoException.InvalidOperation(SH.ServiceMetadataNotInitialized);
             }
 
-            MetadataBundle bundle = await Task.Run(() => MetadataBundleCodec.Read(path, token), token).ConfigureAwait(false);
+            MetadataBundle bundle = await Task.Run(() => MetadataBundleCodec.Read<MetadataBundle>(path, MetadataProtoModel.Instance, token), token).ConfigureAwait(false);
             LanguageMetadata validated = ValidateBundle(bundle) ?? throw HutaoException.InvalidOperation(SH.ServiceMetadataVersionNotSupported);
 
             if (bundleInfo is null)
@@ -192,9 +186,9 @@ public sealed partial class ProtoMetadataProvider : MetadataProviderBase, IProto
             Logger.LogInformation("Metadata bundle does not declare a publisher");
         }
 
-        if (bundle.Languages.Count is not 1)
+        if (bundle.Languages.Length is not 1)
         {
-            Logger.LogWarning("Metadata bundle must contain exactly one language, found {Count}", bundle.Languages.Count);
+            Logger.LogWarning("Metadata bundle must contain exactly one language, found {Count}", bundle.Languages.Length);
             return null;
         }
 
@@ -224,7 +218,7 @@ public sealed partial class ProtoMetadataProvider : MetadataProviderBase, IProto
                 : default,
 
             // The producer does not write schema_version into the bundle yet; the value stays 0 until
-            // the producer-side versioning contract lands (docs/proto-metadata.md §10.1).
+            // the producer-side versioning contract lands (docs/proto-metadata.md 搂10.1).
             SchemaVersion = 0,
             Language = bundle.Languages[0].Language,
             Hash = hash,
@@ -250,3 +244,4 @@ public sealed partial class ProtoMetadataProvider : MetadataProviderBase, IProto
         }
     }
 }
+

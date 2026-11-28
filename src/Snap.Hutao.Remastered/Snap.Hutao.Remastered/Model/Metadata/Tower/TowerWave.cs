@@ -5,11 +5,15 @@ using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Tower;
 
+[ProtoContract]
 public sealed class TowerWave
 {
-    public required WaveType Type { get; init; }
+    [ProtoMember(1)]
+    public WaveType Type { get; init; }
 
+    [ProtoMember(2)]
     public string? Description { get; init; }
 
-    public required ImmutableArray<TowerMonster> Monsters { get; init; }
+    [ProtoMember(3)]
+    public ImmutableArray<TowerMonster> Monsters { get; init; } = [];
 }

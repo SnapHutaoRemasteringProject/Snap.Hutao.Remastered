@@ -335,6 +335,19 @@ the build fails with `CS9275`); write a normal constructor in that case.
   `PasswordBox` and `SearchBox` glass types hide the native thumb or paint an inner control, so
   those sites declare `MaterialSwap.Native` and `MaterialSwap.Glass` children. Keep event handlers
   and code-behind name matching (`ReferenceEquals(sender, X)` pairs) on both instances.
+- **`SettingsExpander.ItemTemplate` must root at `SettingsCard`** — the control applies its
+  `SettingsCard` style to the realized item root in `ElementPrepared`. A `Grid` root (including the
+  old #389 AOT workaround) throws `COMException 0x800F1000`, surfaced as a XAML stowed exception
+  `0xc000027b`. Keep the template root a `SettingsCard`; if Native AOT #389 recurs, fix the connector
+  or use `Expander` + `ItemsControl` for that build, never a `Grid` wrapper.
+- **Templates shared by `Skill` and `ProudSkill` bind through `ISkillNameIcon`** — after the
+  protobuf migration these are unrelated types (`ProudSkill` no longer derives from `Skill`), so a
+  header template used by both the skill and talent pivots must use
+  `x:DataType="shmma:ISkillNameIcon"`. A template typed as one of the concrete classes silently
+  drops the other list's name/icon.
+- **A XAML-only crash can be invisible under the debugger** — `ExceptionHandling` calls
+  `Debugger.Break()` on a XAML unhandled exception, so an attached debugger pauses and you can
+  continue; always reproduce without one.
 - Pages derive from
   [`UI/Xaml/Control/ScopedPage.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/UI/Xaml/Control/ScopedPage.cs).
   `Loading` creates an `IServiceScope` from `XamlRoot.XamlContext().ServiceProvider`; a page's
@@ -415,10 +428,21 @@ the build fails with `CS9275`); write a normal constructor in that case.
   [`Service/Network/NetworkRetryCoordinator.cs`](src/Snap.Hutao.Remastered/Snap.Hutao.Remastered/Service/Network/NetworkRetryCoordinator.cs)
   (re-runs startup work after the network recovers — this one is the best-quality recent code in
   the repo and a good template).
-- The proto schema is vendored under `Proto/*.proto`; the generated C# is committed under
-  `Proto/Generated` and regenerated with `scripts/Generate-MetadataProto.ps1` (the build does not run
-  protoc). Identifier/level/count fields are `uint32` in the schema; see
-  [`docs/proto-metadata.md`](docs/proto-metadata.md) §15 for the design-to-implementation record.
+- The proto schema is kept under `Proto/*.proto` as a **reference contract only**: it is not compiled
+  and there is no `Proto/Generated` folder or protoc step. The wire contract is the `protobuf-net`
+  attributes on `Model/Metadata` plus `MetadataProtoModel` (scalar identity serializers and the
+  `DateTimeOffset` string member) and `Wire/MetadataBundle`. The producer (`MetadataBuilder`) annotates
+  its own output models with the same field numbers. The application references `protobuf-net.Core`
+  (compile-time `[ProtoModel]`; `PBN9001` is in `NoWarn`) and writes the bundle from the same model.
+  Identifier/level/count fields are `uint32`; the producer narrows every `double` to `float`. See
+  [`docs/proto-metadata.md`](docs/proto-metadata.md) §16 for the migration record.
+- **Absent repeated fields deserialize as `default`, not empty** — protobuf-net does not touch a
+  member when its repeated field is missing, so every non-nullable collection property in the
+  metadata models (`ImmutableArray<T>`, `ImmutableHashSet<T>`, `HashSet<T>`, …) must carry an
+  `= [];` initializer. Otherwise LINQ (`SelectMany`, `Any`, collection expressions) throws
+  `NullReferenceException` on the default struct/reference value (e.g.
+  `ReliquarySet.EquipAffixIds`, `GachaEvent.UpPurpleList`). The producer omits empty repeated
+  fields, so this is also the normal case for a banner with no up items, not only corrupt input.
 
 ### 5.6 Native AOT branch and JSON contracts
 
@@ -595,6 +619,12 @@ the build fails with `CS9275`); write a normal constructor in that case.
   rethrow — a bare `catch { }` is a review blocker (`CODE_REVIEW.md#BUG-19`).
 - **Nullability** — enabled and enforced by the compiler; use
   `[NotNullWhen(true)]`/`[MaybeNull]`/`[field: MaybeNull]` rather than `!`.
+- **No `var` in the main application project** — the WinUI app project (`Snap.Hutao.Remastered`) strictly
+  bans the `var` keyword. Declare the explicit type for every local, `foreach` element, `using`
+  declaration, tuple deconstruction and lambda parameter; do not rely on type inference. This applies to
+  the app's production code and its XAML code-behind. The test project and the tool/generation projects
+  (`Snap.Hutao.Database.Model`, `Snap.Hutao.Database.Schema`, the EF compiled-model output,
+  `MetadataBuilder`, `Snap.Hutao.Plugin.SDK` tooling, etc.) are **allowed** to use `var`.
 - **Analyzer discipline** — `EnforceCodeStyleInBuild=true` is set in the **app csproj only**
   (not in the test project). There is no `TreatWarningsAsErrors`, and `.editorconfig` leaves almost
   every rule at `suggestion`/`none`, so the build being green does **not** mean the analyzers agree.

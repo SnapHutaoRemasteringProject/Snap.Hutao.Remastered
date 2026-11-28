@@ -8,26 +8,119 @@ using Snap.Hutao.Remastered.Core.Text.Json;
 namespace Snap.Hutao.Remastered.Model.Metadata.Weapon;
 
 [JsonConverter(typeof(WeaponTypeValueCollectionConverter))]
-public sealed class WeaponTypeValueCollection
+public sealed class WeaponTypeValueCollection : ICollection<WeaponTypeValue>
 {
-    private readonly SortedDictionary<FightProperty, GrowCurveType> typeValues = [];
-    private readonly SortedDictionary<FightProperty, float> typeInitValues = [];
+    private readonly List<WeaponTypeValue> items = [];
+    private SortedDictionary<FightProperty, GrowCurveType>? typeValues;
+    private SortedDictionary<FightProperty, float>? typeInitValues;
+    private ImmutableArray<WeaponTypeValue> array = default;
+
+    public WeaponTypeValueCollection()
+    {
+    }
 
     public WeaponTypeValueCollection(ImmutableArray<WeaponTypeValue> array)
     {
-        Array = array;
-        foreach (ref readonly WeaponTypeValue entry in array.AsSpan())
-        {
-            typeValues.Add(entry.Type, entry.Value);
-            typeInitValues.Add(entry.Type, entry.InitValue);
-        }
+        items.AddRange(array);
+        this.array = array;
     }
 
-    public ImmutableArray<WeaponTypeValue> Array { get; }
+    public ImmutableArray<WeaponTypeValue> Array
+    {
+        get => array.IsDefault ? array = [.. items] : array;
+    }
 
-    public IReadOnlyDictionary<FightProperty, GrowCurveType> TypeValues { get => typeValues; }
+    public IReadOnlyDictionary<FightProperty, GrowCurveType> TypeValues
+    {
+        get => typeValues ??= BuildTypeValues();
+    }
 
-    public IReadOnlyDictionary<FightProperty, float> TypeInitValues { get => typeInitValues; }
+    public IReadOnlyDictionary<FightProperty, float> TypeInitValues
+    {
+        get => typeInitValues ??= BuildTypeInitValues();
+    }
+
+    public int Count
+    {
+        get => items.Count;
+    }
+
+    public bool IsReadOnly
+    {
+        get => false;
+    }
+
+    public void Add(WeaponTypeValue item)
+    {
+        items.Add(item);
+        Invalidate();
+    }
+
+    public void Clear()
+    {
+        items.Clear();
+        Invalidate();
+    }
+
+    public bool Contains(WeaponTypeValue item)
+    {
+        return items.Contains(item);
+    }
+
+    public void CopyTo(WeaponTypeValue[] target, int arrayIndex)
+    {
+        items.CopyTo(target, arrayIndex);
+    }
+
+    public bool Remove(WeaponTypeValue item)
+    {
+        if (!items.Remove(item))
+        {
+            return false;
+        }
+
+        Invalidate();
+        return true;
+    }
+
+    public IEnumerator<WeaponTypeValue> GetEnumerator()
+    {
+        return items.GetEnumerator();
+    }
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    {
+        return items.GetEnumerator();
+    }
+
+    private void Invalidate()
+    {
+        array = default;
+        typeValues = null;
+        typeInitValues = null;
+    }
+
+    private SortedDictionary<FightProperty, GrowCurveType> BuildTypeValues()
+    {
+        SortedDictionary<FightProperty, GrowCurveType> result = [];
+        foreach (ref readonly WeaponTypeValue entry in Array.AsSpan())
+        {
+            result.Add(entry.Type, entry.Value);
+        }
+
+        return result;
+    }
+
+    private SortedDictionary<FightProperty, float> BuildTypeInitValues()
+    {
+        SortedDictionary<FightProperty, float> result = [];
+        foreach (ref readonly WeaponTypeValue entry in Array.AsSpan())
+        {
+            result.Add(entry.Type, entry.InitValue);
+        }
+
+        return result;
+    }
 }
 
 [SuppressMessage("", "SA1402")]

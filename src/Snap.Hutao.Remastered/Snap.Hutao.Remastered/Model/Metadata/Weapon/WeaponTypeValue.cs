@@ -5,13 +5,26 @@ using Snap.Hutao.Remastered.Model.Intrinsic;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Weapon;
 
-public sealed class WeaponTypeValue : TypeValue<FightProperty, GrowCurveType>
+[ProtoContract]
+public sealed class WeaponTypeValue
 {
-    public WeaponTypeValue(FightProperty type, GrowCurveType value, float initValue)
-        : base(type, value)
+    public WeaponTypeValue()
     {
+    }
+
+    public WeaponTypeValue(FightProperty type, GrowCurveType value, float initValue)
+    {
+        Type = type;
+        Value = value;
         InitValue = initValue;
     }
 
-    public float InitValue { get; }
+    [ProtoMember(1)]
+    public float InitValue { get; init; }
+
+    [ProtoMember(2)]
+    public FightProperty Type { get; init; }
+
+    [ProtoMember(3)]
+    public GrowCurveType Value { get; init; }
 }

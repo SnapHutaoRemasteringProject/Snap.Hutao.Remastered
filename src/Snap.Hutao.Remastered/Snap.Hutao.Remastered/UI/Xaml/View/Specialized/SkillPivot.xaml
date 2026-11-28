@@ -18,21 +18,21 @@
             <Setter Property="Height" Value="80"/>
         </Style>
 
-        <DataTemplate x:Key="SkillHeaderTemplate" x:DataType="shmma:Skill">
+        <DataTemplate x:Key="SkillHeaderTemplate" x:DataType="shmma:ISkillNameIcon">
             <StackPanel
                 Background="Transparent"
                 Spacing="4"
-                ToolTipService.ToolTip="{x:Bind Name, Mode=OneWay}">
+                ToolTipService.ToolTip="{x:Bind Name, Mode=OneTime}">
                 <shuxci:CachedImage
                     Width="36"
                     Height="36"
                     HorizontalAlignment="Center"
-                    Source="{x:Bind Icon, Mode=OneWay, Converter={StaticResource SkillIconConverter}}"/>
+                    Source="{x:Bind Icon, Mode=OneTime, Converter={StaticResource SkillIconConverter}}"/>
                 <TextBlock
                     HorizontalAlignment="Center"
                     Opacity="0.8"
                     Style="{ThemeResource CaptionTextBlockStyle}"
-                    Text="{x:Bind Name, Mode=OneWay}"/>
+                    Text="{x:Bind Name, Mode=OneTime}"/>
             </StackPanel>
         </DataTemplate>
     </UserControl.Resources>

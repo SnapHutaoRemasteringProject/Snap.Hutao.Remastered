@@ -1,29 +1,41 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+#pragma warning disable CS8618
+
 using Snap.Hutao.Remastered.Model.Intrinsic;
 using Snap.Hutao.Remastered.Model.Primitive;
 using System.Collections.Immutable;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Reliquary;
 
+[ProtoContract]
 public sealed class Reliquary
 {
-    public required ImmutableArray<ReliquaryId> Ids { get; init; }
+    [ProtoMember(1)]
+    public ImmutableArray<ReliquaryId> Ids { get; init; } = [];
 
-    public required QualityType RankLevel { get; init; }
+    [ProtoMember(2)]
+    public QualityType RankLevel { get; init; }
 
-    public required ReliquarySetId SetId { get; init; }
+    [ProtoMember(3)]
+    public ReliquarySetId SetId { get; init; }
 
-    public required EquipType EquipType { get; init; }
+    [ProtoMember(4)]
+    public EquipType EquipType { get; init; }
 
-    public required ItemType ItemType { get; init; }
+    [ProtoMember(5)]
+    public ItemType ItemType { get; init; }
 
-    public required string Name { get; init; }
+    [ProtoMember(6)]
+    public string Name { get; init; }
 
-    public required string Description { get; init; }
+    [ProtoMember(7)]
+    public string Description { get; init; }
 
-    public required string Icon { get; init; }
+    [ProtoMember(8)]
+    public string Icon { get; init; }
 
-    public required uint SortOrder { get; init; }
+    [ProtoMember(9)]
+    public uint SortOrder { get; init; }
 }

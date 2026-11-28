@@ -6,17 +6,24 @@ using Snap.Hutao.Remastered.Model.Primitive;
 
 namespace Snap.Hutao.Remastered.Model.Metadata.Avatar;
 
-public partial class Skill : ObservableObject
+[ProtoContract]
+public partial class Skill : ObservableObject, ISkillNameIcon
 {
-    public required SkillId Id { get; init => SetProperty(ref field, value); }
+    [ProtoMember(1)]
+    public SkillId Id { get; init => SetProperty(ref field, value); }
 
-    public required string Name { get; init => SetProperty(ref field, value); }
+    [ProtoMember(2)]
+    public string Name { get; init => SetProperty(ref field, value); }
 
-    public required string Description { get; init => SetProperty(ref field, value); }
+    [ProtoMember(3)]
+    public string Description { get; init => SetProperty(ref field, value); }
 
+    [ProtoMember(4)]
     public string? SpecialDescription { get; init => SetProperty(ref field, value); }
 
-    public required string Icon { get; init => SetProperty(ref field, value); }
+    [ProtoMember(5)]
+    public string Icon { get; init => SetProperty(ref field, value); }
 
+    [ProtoMember(6)]
     public ExtraLevelInfo? ExtraLevel { get; init => SetProperty(ref field, value); }
 }

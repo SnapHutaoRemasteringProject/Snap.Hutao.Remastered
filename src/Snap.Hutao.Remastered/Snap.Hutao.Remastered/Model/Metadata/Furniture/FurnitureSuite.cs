@@ -1,6 +1,8 @@
 // Copyright (c) DGP Studio. All rights reserved.
 // Licensed under the MIT license.
 
+#pragma warning disable CS8618
+
 using Snap.Hutao.Remastered.Model.Primitive;
 using System.Collections.Immutable;
 
@@ -8,19 +10,19 @@ namespace Snap.Hutao.Remastered.Model.Metadata.Furniture;
 
 public sealed class FurnitureSuite
 {
-    public required FurnitureSuiteId Id { get; init; }
+    public FurnitureSuiteId Id { get; init; }
 
-    public required ImmutableArray<FurnitureTypeId> Types { get; init; }
+    public ImmutableArray<FurnitureTypeId> Types { get; init; } = [];
 
-    public required string Name { get; init; }
+    public string Name { get; init; }
 
-    public required string Description { get; init; }
+    public string Description { get; init; }
 
-    public required string ItemIcon { get; init; }
+    public string ItemIcon { get; init; }
 
     public string? MapIcon { get; init; }
 
-    public required ImmutableArray<AvatarId> FavoriteNpcs { get; init; }
+    public ImmutableArray<AvatarId> FavoriteNpcs { get; init; } = [];
 
-    public required ImmutableArray<FurnitureId> Units { get; init; }
+    public ImmutableArray<FurnitureId> Units { get; init; } = [];
 }
