@@ -33,9 +33,20 @@ public sealed partial class ServerDomainRedirectHandler : DelegatingHandler
         while (IsRedirectStatusCode(response.StatusCode) && redirectCount < MaxRedirects)
         {
             Uri? location = response.Headers.Location;
-            if (location is null || !location.IsAbsoluteUri)
+            if (location is null)
             {
                 return response;
+            }
+
+            // Location may be relative to the URI of the current redirect hop.
+            if (!location.IsAbsoluteUri)
+            {
+                if (request.RequestUri is not { IsAbsoluteUri: true } requestUri)
+                {
+                    return response;
+                }
+
+                location = new Uri(requestUri, location);
             }
 
             // Rewrite domain if needed (backup ↔ primary)
