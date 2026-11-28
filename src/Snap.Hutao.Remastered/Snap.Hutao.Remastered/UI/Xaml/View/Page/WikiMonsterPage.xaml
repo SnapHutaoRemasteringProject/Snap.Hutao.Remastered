@@ -119,7 +119,7 @@
             <Grid>
                 <shuxcc:VerticalCard Width="82">
                     <shuxcc:VerticalCard.Top>
-                        <shuxc:ItemIcon Icon="{x:Bind Icon, Converter={StaticResource MonsterIconConverter}, Mode=OneWay}" Quality="QUALITY_NONE"/>
+                        <shuxc:ItemIcon Icon="{Binding Icon, Converter={StaticResource MonsterIconConverter}, Mode=OneWay}" Quality="QUALITY_NONE"/>
                     </shuxcc:VerticalCard.Top>
                     <shuxcc:VerticalCard.Bottom>
                         <TextBlock

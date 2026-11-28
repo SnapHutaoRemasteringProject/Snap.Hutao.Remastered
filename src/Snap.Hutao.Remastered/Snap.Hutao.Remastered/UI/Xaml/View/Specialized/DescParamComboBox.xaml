@@ -38,14 +38,15 @@
         </cwconv:BoolToObjectConverter>
         <!--  ReSharper restore Xaml.RedundantResource  -->
 
-        <DataTemplate x:Key="ParameterDescriptionTemplate" x:DataType="shmm:ParameterDescription">
+        <DataTemplate x:Key="ParameterDescriptionTemplate">
+            <!--  Keep the SettingsCard root for SettingsExpander; classic bindings avoid generated custom-control casts under Native AOT (#389).  -->
             <cwc:SettingsCard
                 MinHeight="40"
                 Padding="16,0,42,0"
-                Background="{x:Bind IsSpecial, Converter={StaticResource BoolToSpecialBackgroundConverter}, Mode=OneWay}"
+                Background="{Binding IsSpecial, Converter={StaticResource BoolToSpecialBackgroundConverter}, Mode=OneWay}"
                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                Header="{x:Bind Description, Mode=OneWay}">
-                <TextBlock Text="{x:Bind Parameter, Mode=OneWay}"/>
+                Header="{Binding Description, Mode=OneWay}">
+                <TextBlock Text="{Binding Parameter, Mode=OneWay}"/>
             </cwc:SettingsCard>
         </DataTemplate>
     </UserControl.Resources>

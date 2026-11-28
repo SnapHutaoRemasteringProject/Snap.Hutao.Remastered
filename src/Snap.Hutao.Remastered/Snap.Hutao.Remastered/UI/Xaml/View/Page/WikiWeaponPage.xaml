@@ -173,7 +173,7 @@
                         </MenuFlyout>
                     </shuxcc:VerticalCard.ContextFlyout>
                     <shuxcc:VerticalCard.Top>
-                        <shuxc:ItemIcon Icon="{x:Bind Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}" Quality="{x:Bind Quality, Mode=OneWay}"/>
+                        <shuxc:ItemIcon Icon="{Binding Icon, Converter={StaticResource EquipIconConverter}, Mode=OneWay}" Quality="{Binding Quality, Mode=OneWay}"/>
                     </shuxcc:VerticalCard.Top>
                     <shuxcc:VerticalCard.Bottom>
                         <TextBlock

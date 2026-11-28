@@ -30,13 +30,14 @@
         <SolidColorBrush x:Key="ToggleButtonBackground" Color="{ThemeResource ControlAltFillColorSecondary}"/>
         <!--  ReSharper restore Xaml.RedundantResource  -->
 
-        <DataTemplate x:Key="BaseValueTemplate" x:DataType="shm:INamedValue">
+        <DataTemplate x:Key="BaseValueTemplate">
+            <!--  Keep the SettingsCard root for SettingsExpander; classic bindings avoid generated custom-control casts under Native AOT (#389).  -->
             <cwc:SettingsCard
                 MinHeight="40"
                 Padding="16,0,42,0"
                 BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                Header="{x:Bind Name, Mode=OneTime}">
-                <TextBlock Text="{x:Bind Value, Mode=OneTime}"/>
+                Header="{Binding Name, Mode=OneTime}">
+                <TextBlock Text="{Binding Value, Mode=OneTime}"/>
             </cwc:SettingsCard>
         </DataTemplate>
     </UserControl.Resources>

@@ -11,6 +11,7 @@ using System.Collections.Immutable;
 namespace Snap.Hutao.Remastered.Model.Metadata.Monster;
 
 [ProtoContract]
+[WinRT.GeneratedBindableCustomProperty([nameof(Icon)], [])]
 public sealed partial class Monster : ObservableObject, IPropertyValuesProvider
 {
     public const uint MaxLevel = 110U;

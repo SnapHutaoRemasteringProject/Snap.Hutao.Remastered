@@ -21,6 +21,7 @@ namespace Snap.Hutao.Remastered.Model.Metadata.Avatar;
 
 [DebuggerDisplay("Name={Name},Id={Id}")]
 [ProtoContract]
+[WinRT.GeneratedBindableCustomProperty([nameof(Icon), nameof(Quality)], [])]
 public partial class Avatar : ObservableObject, IDefaultIdentity<AvatarId>,
     INameQualityAccess,
     IStatisticsItemConvertible,

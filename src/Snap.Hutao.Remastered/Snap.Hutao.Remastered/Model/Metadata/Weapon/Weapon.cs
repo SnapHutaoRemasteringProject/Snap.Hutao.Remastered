@@ -18,6 +18,7 @@ using System.Collections.Immutable;
 namespace Snap.Hutao.Remastered.Model.Metadata.Weapon;
 
 [ProtoContract]
+[WinRT.GeneratedBindableCustomProperty([nameof(Icon), nameof(Quality)], [])]
 public sealed partial class Weapon : ObservableObject, IDefaultIdentity<WeaponId>,
     INameQualityAccess,
     IStatisticsItemConvertible,

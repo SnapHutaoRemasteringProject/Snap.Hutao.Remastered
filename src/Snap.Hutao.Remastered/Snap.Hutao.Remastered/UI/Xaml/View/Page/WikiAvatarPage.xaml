@@ -330,14 +330,14 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="FetterStoryTemplate" x:DataType="shmma:Fetter">
-            <!--  SettingsExpander applies its SettingsCard style to each prepared item; the template root must be a SettingsCard.  -->
+        <DataTemplate x:Key="FetterStoryTemplate">
+            <!--  Keep the SettingsCard root for SettingsExpander; classic bindings avoid generated custom-control casts under Native AOT (#389).  -->
             <cwc:SettingsCard Padding="16,8,8,8" BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}">
                 <cwc:SettingsCard.Header>
-                    <shuxct:DescriptionTextBlock Description="{x:Bind Title, Mode=OneWay}" TextStyle="{StaticResource BaseTextBlockStyle}"/>
+                    <shuxct:DescriptionTextBlock Description="{Binding Title, Mode=OneWay}" TextStyle="{StaticResource BaseTextBlockStyle}"/>
                 </cwc:SettingsCard.Header>
                 <cwc:SettingsCard.Description>
-                    <shuxct:DescriptionTextBlock Description="{x:Bind Context, Mode=OneWay}" TextStyle="{StaticResource CaptionTextBlockStyle}"/>
+                    <shuxct:DescriptionTextBlock Description="{Binding Context, Mode=OneWay}" TextStyle="{StaticResource CaptionTextBlockStyle}"/>
                 </cwc:SettingsCard.Description>
             </cwc:SettingsCard>
         </DataTemplate>
@@ -353,7 +353,7 @@
                         </MenuFlyout>
                     </shuxcc:VerticalCard.ContextFlyout>
                     <shuxcc:VerticalCard.Top>
-                        <shuxc:ItemIcon Icon="{x:Bind Icon, Converter={StaticResource AvatarIconConverter}, Mode=OneWay}" Quality="{x:Bind Quality, Mode=OneWay}"/>
+                        <shuxc:ItemIcon Icon="{Binding Icon, Converter={StaticResource AvatarIconConverter}, Mode=OneWay}" Quality="{Binding Quality, Mode=OneWay}"/>
                     </shuxcc:VerticalCard.Top>
                     <shuxcc:VerticalCard.Bottom>
                         <TextBlock

@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace Snap.Hutao.Remastered.Model.Metadata.Avatar;
 
 [ProtoContract]
+[WinRT.GeneratedBindableCustomProperty([nameof(Title), nameof(Context)], [])]
 public sealed partial class Fetter : ObservableObject
 {
     [ProtoMember(1)]

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Snap.Hutao.Remastered.Model.Metadata;
 
+[WinRT.GeneratedBindableCustomProperty([nameof(Parameter), nameof(Description), nameof(IsSpecial)], [])]
 public sealed partial class ParameterDescription : ObservableObject
 {
     public ParameterDescription(string parameter, string description)
