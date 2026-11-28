@@ -4,8 +4,9 @@
 namespace Snap.Hutao.Remastered.Service.Metadata.Provider.Proto;
 
 /// <summary>
-/// Ensures a local bundle file exists and returns its path. A separate contract so a future git or
-/// snapshot source can replace HTTP without touching <see cref="ProtoMetadataProvider"/>.
+/// Ensures a local bundle file exists, conditionally refreshes it when supported by the source, and
+/// returns its path. A separate contract so a future git or snapshot source can replace HTTP without
+/// touching <see cref="ProtoMetadataProvider"/>.
 /// </summary>
 public interface IMetadataBundleSource
 {

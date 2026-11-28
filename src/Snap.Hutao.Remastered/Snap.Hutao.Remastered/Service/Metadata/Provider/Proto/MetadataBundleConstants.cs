@@ -14,11 +14,17 @@ internal static class MetadataBundleConstants
 
     public const string TempFileSuffix = ".tmp";
 
+    public const string ETagFileSuffix = ".etag";
+
     /// <summary>
     /// A single-locale bundle is a few MiB; the combined bundle is under 64 MiB. Anything larger is
     /// treated as a corrupt or malicious payload.
     /// </summary>
     public const int MaxEncryptedBytes = 64 * 1024 * 1024;
 
+    public static readonly TimeSpan MaxCacheAge = TimeSpan.FromDays(7);
+
     public static readonly TimeSpan DownloadTimeout = TimeSpan.FromMinutes(2);
+
+    public static readonly TimeSpan CachedBundleRefreshTimeout = TimeSpan.FromSeconds(30);
 }

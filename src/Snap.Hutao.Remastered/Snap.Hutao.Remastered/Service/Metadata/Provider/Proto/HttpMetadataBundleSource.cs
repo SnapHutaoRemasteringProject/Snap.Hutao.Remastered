@@ -3,14 +3,16 @@
 
 using Snap.Hutao.Remastered.Core.DependencyInjection.Annotation.HttpClient;
 using Snap.Hutao.Remastered.Core.Diagnostics;
-using Snap.Hutao.Remastered.Core.IO.Hashing;
 using Snap.Hutao.Remastered.Service.BackgroundActivity;
-using Snap.Hutao.Remastered.Service.Metadata.Provider.Proto.Wire;using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
+using Snap.Hutao.Remastered.Service.Metadata.Provider.Proto.Wire;
+using Snap.Hutao.Remastered.Web.Endpoint.Hutao;
 using Snap.Hutao.Remastered.Web.Request.Builder;
 using Snap.Hutao.Remastered.Web.Request.Builder.Abstraction;
 using System.Buffers;
 using System.IO;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using BackgroundActivityTask = Snap.Hutao.Remastered.Service.BackgroundActivity.BackgroundActivity;
 
 namespace Snap.Hutao.Remastered.Service.Metadata.Provider.Proto;
@@ -20,10 +22,10 @@ namespace Snap.Hutao.Remastered.Service.Metadata.Provider.Proto;
 /// <c>{api}/static/metadata</c>.
 /// </summary>
 /// <remarks>
-/// There is no manifest on the producer side yet, so a local bundle is trusted as-is and a download
-/// is validated by size bounds and by decoding it before it replaces the previous file. A transient
-/// network problem or a bad publish therefore never removes the last working bundle. A bundle is
-/// re-fetched only after the local file is missing (or through the developer override path).
+/// There is no manifest on the producer side yet, so a local bundle is revalidated by the server's
+/// ETag and a download is validated by size bounds and by decoding it before it replaces the previous
+/// file. A transient network problem or a bad publish therefore never removes a still-valid cached
+/// bundle.
 /// </remarks>
 [Service(ServiceLifetime.Singleton, typeof(IMetadataBundleSource))]
 [HttpClient(HttpClientConfiguration.Default)]
@@ -58,24 +60,25 @@ public sealed partial class HttpMetadataBundleSource : IMetadataBundleSource
         }
 
         string bundlePath = bundleOptions.BundlePath;
-        if (File.Exists(bundlePath))
-        {
-            span.SetData("metadata.bundle.downloaded", false);
-            return bundlePath;
-        }
-
+        RemoveExpiredCache(bundlePath);
+        bool hasFreshCachedBundle = IsCacheFresh(bundlePath);
         using CancellationTokenSource timeout = CancellationTokenSource.CreateLinkedTokenSource(token, XamlApplicationLifetime.ShutdownToken);
-        timeout.CancelAfter(MetadataBundleConstants.DownloadTimeout);
+        timeout.CancelAfter(
+            hasFreshCachedBundle
+                ? MetadataBundleConstants.CachedBundleRefreshTimeout
+                : MetadataBundleConstants.DownloadTimeout);
 
         Uri bundleUri = BuildUri(hutaoEndpointsFactory.Create().MetadataBundle(cultureOptions.LocaleName));
-        string? downloaded = await TryDownloadAsync(bundleUri, bundlePath, timeout.Token, token).ConfigureAwait(false);
-        if (downloaded is not null)
+        BundleDownloadResult result = await TryDownloadAsync(bundleUri, bundlePath, timeout.Token, token).ConfigureAwait(false);
+        if (result.Path is not null)
         {
-            span.SetData("metadata.bundle.downloaded", true);
-            return downloaded;
+            span.SetData("metadata.bundle.downloaded", result.Downloaded);
+            return result.Path;
         }
 
-        return File.Exists(bundlePath) ? bundlePath : null;
+        span.SetData("metadata.bundle.downloaded", false);
+        RemoveExpiredCache(bundlePath);
+        return IsCacheFresh(bundlePath) ? bundlePath : null;
     }
 
     private static Uri BuildUri(string url)
@@ -85,21 +88,51 @@ public sealed partial class HttpMetadataBundleSource : IMetadataBundleSource
             : throw new ArgumentException($"Metadata URL is not absolute: '{url}'", nameof(url));
     }
 
-    private async ValueTask<string?> TryDownloadAsync(Uri uri, string destination, CancellationToken token, CancellationToken callerToken)
+    private async ValueTask<BundleDownloadResult> TryDownloadAsync(
+        Uri uri,
+        string destination,
+        CancellationToken token,
+        CancellationToken callerToken,
+        bool allowConditionalRequest = true)
     {
         string temp = $"{destination}{MetadataBundleConstants.TempFileSuffix}";
+        string etagPath = $"{destination}{MetadataBundleConstants.ETagFileSuffix}";
         BackgroundActivityTask activity = backgroundActivityOptions.MetadataInitialization;
 
         try
         {
             HttpRequestMessageBuilder builder = httpRequestMessageBuilderFactory.Create().SetRequestUri(uri).Get();
             using HttpRequestMessage request = builder.HttpRequestMessage;
+            bool hasCachedBundle = IsCacheFresh(destination);
+            EntityTagHeaderValue? cachedETag = hasCachedBundle && allowConditionalRequest ? ReadETag(etagPath) : null;
+            if (cachedETag is not null)
+            {
+                request.Headers.IfNoneMatch.Add(cachedETag);
+            }
+
             using HttpResponseMessage response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+            if (response.StatusCode is HttpStatusCode.NotModified)
+            {
+                if (cachedETag is not null && hasCachedBundle && IsCacheFresh(destination))
+                {
+                    logger.LogDebug("Metadata bundle is unchanged according to its ETag");
+                    await WriteETagAsync(etagPath, response.Headers.ETag ?? cachedETag, token).ConfigureAwait(false);
+
+                    return new(destination, false);
+                }
+
+                if (allowConditionalRequest)
+                {
+                    logger.LogWarning("Metadata bundle server returned 304 without a usable local bundle; retrying unconditionally");
+                    return await TryDownloadAsync(uri, destination, token, callerToken, allowConditionalRequest: false).ConfigureAwait(false);
+                }
+            }
+
             if (!response.IsSuccessStatusCode)
             {
                 logger.LogWarning("Metadata bundle download failed with status {StatusCode}", (int)response.StatusCode);
                 activity.Update(taskContext, SH.ServiceMetadataBundleDownloadFailed, false, false, false, false);
-                return null;
+                return default;
             }
 
             long total = response.Content.Headers.ContentLength ?? 0;
@@ -134,7 +167,7 @@ public sealed partial class HttpMetadataBundleSource : IMetadataBundleSource
                             logger.LogWarning("Metadata bundle exceeds the maximum accepted size");
                             TryDelete(temp);
                             activity.Update(taskContext, SH.ServiceMetadataBundleInvalid, false, false, false, false);
-                            return null;
+                            return default;
                         }
 
                         await file.WriteAsync(buffer.AsMemory(0, read), token).ConfigureAwait(false);
@@ -185,20 +218,31 @@ public sealed partial class HttpMetadataBundleSource : IMetadataBundleSource
             {
                 TryDelete(temp);
                 activity.Update(taskContext, SH.ServiceMetadataBundleInvalid, false, false, false, false);
-                return null;
+                return default;
             }
 
             // Validate first, replace second: a failed download never removes the usable bundle.
+            if (!TryDelete(etagPath))
+            {
+                TryDelete(temp);
+                return default;
+            }
+
             File.Move(temp, destination, overwrite: true);
+            if (response.Headers.ETag is { } responseETag)
+            {
+                await WriteETagAsync(etagPath, responseETag, token).ConfigureAwait(false);
+            }
+
             activity.Update(taskContext, SH.ServiceMetadataDecoding, false, false, true, true);
-            return destination;
+            return new(destination, true);
         }
         catch (OperationCanceledException) when (!callerToken.IsCancellationRequested && !XamlApplicationLifetime.ShutdownToken.IsCancellationRequested)
         {
             logger.LogWarning("Metadata bundle download timed out");
             TryDelete(temp);
             activity.Update(taskContext, SH.ServiceMetadataBundleDownloadFailed, false, false, false, false);
-            return null;
+            return default;
         }
         catch (OperationCanceledException)
         {
@@ -210,7 +254,91 @@ public sealed partial class HttpMetadataBundleSource : IMetadataBundleSource
             logger.LogWarning(exception, "Metadata bundle download failed");
             TryDelete(temp);
             activity.Update(taskContext, SH.ServiceMetadataBundleDownloadFailed, false, false, false, false);
+            return default;
+        }
+    }
+
+    private EntityTagHeaderValue? ReadETag(string path)
+    {
+        try
+        {
+            if (!File.Exists(path))
+            {
+                return null;
+            }
+
+            string value = File.ReadAllText(path).Trim();
+            if (EntityTagHeaderValue.TryParse(value, out EntityTagHeaderValue? etag))
+            {
+                return etag;
+            }
+
+            logger.LogWarning("Metadata bundle ETag cache is invalid; refreshing without a conditional request");
+            TryDelete(path);
             return null;
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            logger.LogWarning(exception, "Failed to read metadata bundle ETag cache");
+            return null;
+        }
+    }
+
+    private bool IsCacheFresh(string bundlePath)
+    {
+        if (!File.Exists(bundlePath))
+        {
+            return false;
+        }
+
+        string etagPath = $"{bundlePath}{MetadataBundleConstants.ETagFileSuffix}";
+        string freshnessPath = File.Exists(etagPath) && ReadETag(etagPath) is not null ? etagPath : bundlePath;
+        try
+        {
+            TimeSpan age = DateTime.UtcNow - File.GetLastWriteTimeUtc(freshnessPath);
+            return age >= TimeSpan.Zero && age < MetadataBundleConstants.MaxCacheAge;
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            logger.LogWarning(exception, "Failed to determine metadata bundle cache age");
+            return false;
+        }
+    }
+
+    private void RemoveExpiredCache(string bundlePath)
+    {
+        string etagPath = $"{bundlePath}{MetadataBundleConstants.ETagFileSuffix}";
+        if (!File.Exists(bundlePath))
+        {
+            TryDelete(etagPath);
+            return;
+        }
+
+        if (!IsCacheFresh(bundlePath))
+        {
+            logger.LogInformation("Metadata bundle cache expired; removing it");
+            TryDelete(bundlePath);
+            TryDelete(etagPath);
+        }
+    }
+
+    private async ValueTask WriteETagAsync(string path, EntityTagHeaderValue etag, CancellationToken token)
+    {
+        string temp = $"{path}{MetadataBundleConstants.TempFileSuffix}";
+        try
+        {
+            await File.WriteAllTextAsync(temp, etag.ToString(), token).ConfigureAwait(false);
+            File.Move(temp, path, overwrite: true);
+        }
+        catch (OperationCanceledException)
+        {
+            TryDelete(temp);
+            throw;
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            logger.LogWarning(exception, "Failed to persist metadata bundle ETag; the next refresh will be unconditional");
+            TryDelete(temp);
         }
     }
 
@@ -256,7 +384,7 @@ public sealed partial class HttpMetadataBundleSource : IMetadataBundleSource
             : $"{bytes} B";
     }
 
-    private void TryDelete(string path)
+    private bool TryDelete(string path)
     {
         try
         {
@@ -264,10 +392,15 @@ public sealed partial class HttpMetadataBundleSource : IMetadataBundleSource
             {
                 File.Delete(path);
             }
+
+            return true;
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
         {
-            logger.LogWarning(exception, "Failed to delete a temporary metadata bundle file");
+            logger.LogWarning(exception, "Failed to delete a metadata bundle cache file");
+            return false;
         }
     }
+
+    private readonly record struct BundleDownloadResult(string? Path, bool Downloaded);
 }

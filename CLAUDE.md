@@ -415,8 +415,13 @@ the build fails with `CS9275`); write a normal constructor in that case.
 - **Bundle transport.** `HttpMetadataBundleSource` downloads
   `{apiRoot}/static/metadata/GenshinMetadata.{locale}.hutaobin` (one file per locale; there is no
   manifest yet), writes a `.tmp` file, validates it by bounded size and by decoding, then replaces the
-  local bundle atomically. A local bundle is trusted as-is, so a network failure keeps the previous
-  bundle and a remote update requires deleting the local file (or the Phase 3 reload command).
+  local bundle atomically. It stores the response ETag beside the bundle and sends `If-None-Match` on
+  later initialization; a `304` reuses the local bundle, while a network failure or invalid publish
+  keeps the previous unexpired file. Cache freshness is measured from the last successful ETag
+  validation (or bundle download when no ETag is present) and expires after 7 days; expired bundles
+  and their ETags are removed and are not used as offline fallback. A cached refresh times out after
+  30 seconds; an initial download gets two minutes. Missing/invalid ETags trigger an unconditional
+  refresh.
   `SettingKeys.MetadataBundlePath` is a developer override that skips the download.
 - Pages read through the `GetContextAsync` extensions
   (`Service/Metadata/ContextAbstraction/MetadataServiceContextExtension.cs`) and the
@@ -699,6 +704,7 @@ ID — do not "fix" these by documenting them as if they were intended.
 
 | Date | Change |
 |---|---|
+| 2026-11-28 | Proto metadata bundle now refreshes with Cloudflare ETag validation (`If-None-Match` / `304`), persists the ETag beside the atomically validated bundle, expires cache entries after 7 days since successful validation/download, retains unexpired cache on refresh failures, and limits cached refreshes to 30 seconds. |
 | 2026-11-22 | Split metadata into `IMetadataProvider` (keyed Git/Proto providers) and the `IMetadataService` manager, added the proto bundle source (codec, HTTP bundle source, 30 category adapters, `MetadataCache` with generation-based `ClearCache`, source switching/fallback/network retry), vendored the `uint32` schema with committed generated C#, and deleted `LegacyMetadataService`; §5.5 rewritten, §8 #11 updated. |
 | 2026-11-10 | Replaced runtime EF migrations with generated versioned SQL and an atomic, history-validating SQLite upgrade runner; added source fingerprint checks, EF-created legacy database parity verification, and an actual Native AOT database test project. EF model/query work remains separate. |
 | 2026-11-10 | Replaced cloned per-context JSON options and the hidden reflection retry with a shared generated resolver chain; preserved resolver errors and first-use freezing, registered dictionary/legacy list roots, source-linked their real contexts, and documented the AOT branch's removed plugin scope and validation limits. |
